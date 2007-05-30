@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.css.cssproperties</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        <a href="cssutils.css-module.html">Package&nbsp;css</a> ::
+        Module&nbsp;cssproperties
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.css.cssproperties-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="cssutils.css.cssproperties-module.html">Module cssutils.css.cssproperties</a></h1>
+<pre class="py-src">
+<span class="py-lineno">  1</span>  <span class="py-line"><span class="py-comment">#!/usr/bin/env python</span> </span>
+<span class="py-lineno">  2</span>  <span class="py-line"><span class="py-comment"></span><span class="py-docstring">"""</span> </span>
+<span class="py-lineno">  3</span>  <span class="py-line"><span class="py-docstring">cssvalues uaed as a property validator</span> </span>
+<span class="py-lineno">  4</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno">  5</span>  <span class="py-line"><span class="py-docstring">This module has one importable object, cssvalues, that contains a </span> </span>
+<span class="py-lineno">  6</span>  <span class="py-line"><span class="py-docstring">dictionary of compiled regular expressions.  The keys of this </span> </span>
+<span class="py-lineno">  7</span>  <span class="py-line"><span class="py-docstring">dictionary are all of the valid CSS property names.  The values</span> </span>
+<span class="py-lineno">  8</span>  <span class="py-line"><span class="py-docstring">are compiled regular expressions that can be used to validate</span> </span>
+<span class="py-lineno">  9</span>  <span class="py-line"><span class="py-docstring">the values for that property.  (Actually, the values are references</span> </span>
+<span class="py-lineno"> 10</span>  <span class="py-line"><span class="py-docstring">to the 'match' method of a compiled regular expression, so that</span> </span>
+<span class="py-lineno"> 11</span>  <span class="py-line"><span class="py-docstring">they are simply called like functions.)</span> </span>
+<span class="py-lineno"> 12</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 13</span>  <span class="py-line"><span class="py-docstring">written by Kevin D. Smith, thanks!</span> </span>
+<span class="py-lineno"> 14</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 15</span>  <span class="py-line"><span class="py-docstring">TODO: CSS2Properties</span> </span>
+<span class="py-lineno"> 16</span>  <span class="py-line"><span class="py-docstring">##DOMImplementation</span> </span>
+<span class="py-lineno"> 17</span>  <span class="py-line"><span class="py-docstring">##=================</span> </span>
+<span class="py-lineno"> 18</span>  <span class="py-line"><span class="py-docstring">##The interface found within this section are not mandatory. A DOM</span> </span>
+<span class="py-lineno"> 19</span>  <span class="py-line"><span class="py-docstring">##application can use the hasFeature method of the DOMImplementation</span> </span>
+<span class="py-lineno"> 20</span>  <span class="py-line"><span class="py-docstring">##interface to determine whether it is supported or not. The feature</span> </span>
+<span class="py-lineno"> 21</span>  <span class="py-line"><span class="py-docstring">##string for this extended interface listed in this section is "CSS2"</span> </span>
+<span class="py-lineno"> 22</span>  <span class="py-line"><span class="py-docstring">##and the version is "2.0".</span> </span>
+<span class="py-lineno"> 23</span>  <span class="py-line"><span class="py-docstring">"""</span> </span>
+<span class="py-lineno"> 24</span>  <span class="py-line"><span class="py-name">__all__</span> <span class="py-op">=</span> <span class="py-op">[</span><span class="py-string">'cssvalues'</span><span class="py-op">]</span> </span>
+<span class="py-lineno"> 25</span>  <span class="py-line"><span class="py-name">__docformat__</span> <span class="py-op">=</span> <span class="py-string">'restructuredtext'</span> </span>
+<span class="py-lineno"> 26</span>  <span class="py-line"><span id="link-0" class="py-name"><a title="cssutils.__version__
+cssutils.css.__version__
+cssutils.css.csscharsetrule.__version__
+cssutils.css.csscomment.__version__
+cssutils.css.cssimportrule.__version__
+cssutils.css.cssmediarule.__version__
+cssutils.css.cssnamespacerule.__version__
+cssutils.css.csspagerule.__version__
+cssutils.css.cssproperties.__version__
+cssutils.css.cssrule.__version__
+cssutils.css.cssrulelist.__version__
+cssutils.css.cssstyledeclaration.__version__
+cssutils.css.cssstylerule.__version__
+cssutils.css.cssstylesheet.__version__
+cssutils.css.cssunknownrule.__version__
+cssutils.css.cssvalue.__version__
+cssutils.css.property.__version__
+cssutils.css.selector.__version__
+cssutils.css.selectorlist.__version__
+cssutils.domimplementationcss.__version__
+cssutils.errorhandler.__version__
+cssutils.parse'.__version__
+cssutils.scripts.__version__
+cssutils.serialize.__version__
+cssutils.stylesheets.__version__
+cssutils.stylesheets.medialist.__version__
+cssutils.stylesheets.stylesheet.__version__
+cssutils.stylesheets.stylesheetlist.__version__
+cssutils.tests.__version__
+cssutils.tests.basetest.__version__
+cssutils.tests.test_csscharsetrule.__version__
+cssutils.tests.test_csscomment.__version__
+cssutils.tests.test_cssimportrule.__version__
+cssutils.tests.test_cssmediarule.__version__
+cssutils.tests.test_cssnamespacerule.__version__
+cssutils.tests.test_csspagerule.__version__
+cssutils.tests.test_cssproperties.__version__
+cssutils.tests.test_cssrule.__version__
+cssutils.tests.test_cssrulelist.__version__
+cssutils.tests.test_cssstyledeclaration.__version__
+cssutils.tests.test_cssstylerule.__version__
+cssutils.tests.test_cssstylesheet.__version__
+cssutils.tests.test_cssunknownrule.__version__
+cssutils.tests.test_cssutils.__version__
+cssutils.tests.test_cssutilsimport.__version__
+cssutils.tests.test_cssvalue.__version__
+cssutils.tests.test_medialist.__version__
+cssutils.tests.test_parse.__version__
+cssutils.tests.test_property.__version__
+cssutils.tests.test_selector.__version__
+cssutils.tests.test_selectorlist.__version__
+cssutils.tests.test_serialize.__version__
+cssutils.tests.test_token.__version__
+cssutils.tests.test_tokenize.__version__
+cssutils.token.__version__
+cssutils.tokenize.__version__
+cssutils.util.__version__" class="py-name" href="#" onclick="doclink('link-0', '__version__', 'Variable cssutils.__version__=cssutils-module.html#__version__,Variable cssutils.css.__version__=cssutils.css-module.html#__version__,Variable cssutils.css.csscharsetrule.__version__=cssutils.css.csscharsetrule-module.html#__version__,Variable cssutils.css.csscomment.__version__=cssutils.css.csscomment-module.html#__version__,Variable cssutils.css.cssimportrule.__version__=cssutils.css.cssimportrule-module.html#__version__,Variable cssutils.css.cssmediarule.__version__=cssutils.css.cssmediarule-module.html#__version__,Variable cssutils.css.cssnamespacerule.__version__=cssutils.css.cssnamespacerule-module.html#__version__,Variable cssutils.css.csspagerule.__version__=cssutils.css.csspagerule-module.html#__version__,Variable cssutils.css.cssproperties.__version__=cssutils.css.cssproperties-module.html#__version__,Variable cssutils.css.cssrule.__version__=cssutils.css.cssrule-module.html#__version__,Variable cssutils.css.cssrulelist.__version__=cssutils.css.cssrulelist-module.html#__version__,Variable cssutils.css.cssstyledeclaration.__version__=cssutils.css.cssstyledeclaration-module.html#__version__,Variable cssutils.css.cssstylerule.__version__=cssutils.css.cssstylerule-module.html#__version__,Variable cssutils.css.cssstylesheet.__version__=cssutils.css.cssstylesheet-module.html#__version__,Variable cssutils.css.cssunknownrule.__version__=cssutils.css.cssunknownrule-module.html#__version__,Variable cssutils.css.cssvalue.__version__=cssutils.css.cssvalue-module.html#__version__,Variable cssutils.css.property.__version__=cssutils.css.property-module.html#__version__,Variable cssutils.css.selector.__version__=cssutils.css.selector-module.html#__version__,Variable cssutils.css.selectorlist.__version__=cssutils.css.selectorlist-module.html#__version__,Variable cssutils.domimplementationcss.__version__=cssutils.domimplementationcss-module.html#__version__,Variable cssutils.errorhandler.__version__=cssutils.errorhandler-module.html#__version__,Variable cssutils.parse'.__version__=cssutils.parse%27-module.html#__version__,Variable cssutils.scripts.__version__=cssutils.scripts-module.html#__version__,Variable cssutils.serialize.__version__=cssutils.serialize-module.html#__version__,Variable cssutils.stylesheets.__version__=cssutils.stylesheets-module.html#__version__,Variable cssutils.stylesheets.medialist.__version__=cssutils.stylesheets.medialist-module.html#__version__,Variable cssutils.stylesheets.stylesheet.__version__=cssutils.stylesheets.stylesheet-module.html#__version__,Variable cssutils.stylesheets.stylesheetlist.__version__=cssutils.stylesheets.stylesheetlist-module.html#__version__,Variable cssutils.tests.__version__=cssutils.tests-module.html#__version__,Variable cssutils.tests.basetest.__version__=cssutils.tests.basetest-module.html#__version__,Variable cssutils.tests.test_csscharsetrule.__version__=cssutils.tests.test_csscharsetrule-module.html#__version__,Variable cssutils.tests.test_csscomment.__version__=cssutils.tests.test_csscomment-module.html#__version__,Variable cssutils.tests.test_cssimportrule.__version__=cssutils.tests.test_cssimportrule-module.html#__version__,Variable cssutils.tests.test_cssmediarule.__version__=cssutils.tests.test_cssmediarule-module.html#__version__,Variable cssutils.tests.test_cssnamespacerule.__version__=cssutils.tests.test_cssnamespacerule-module.html#__version__,Variable cssutils.tests.test_csspagerule.__version__=cssutils.tests.test_csspagerule-module.html#__version__,Variable cssutils.tests.test_cssproperties.__version__=cssutils.tests.test_cssproperties-module.html#__version__,Variable cssutils.tests.test_cssrule.__version__=cssutils.tests.test_cssrule-module.html#__version__,Variable cssutils.tests.test_cssrulelist.__version__=cssutils.tests.test_cssrulelist-module.html#__version__,Variable cssutils.tests.test_cssstyledeclaration.__version__=cssutils.tests.test_cssstyledeclaration-module.html#__version__,Variable cssutils.tests.test_cssstylerule.__version__=cssutils.tests.test_cssstylerule-module.html#__version__,Variable cssutils.tests.test_cssstylesheet.__version__=cssutils.tests.test_cssstylesheet-module.html#__version__,Variable cssutils.tests.test_cssunknownrule.__version__=cssutils.tests.test_cssunknownrule-module.html#__version__,Variable cssutils.tests.test_cssutils.__version__=cssutils.tests.test_cssutils-module.html#__version__,Variable cssutils.tests.test_cssutilsimport.__version__=cssutils.tests.test_cssutilsimport-module.html#__version__,Variable cssutils.tests.test_cssvalue.__version__=cssutils.tests.test_cssvalue-module.html#__version__,Variable cssutils.tests.test_medialist.__version__=cssutils.tests.test_medialist-module.html#__version__,Variable cssutils.tests.test_parse.__version__=cssutils.tests.test_parse-module.html#__version__,Variable cssutils.tests.test_property.__version__=cssutils.tests.test_property-module.html#__version__,Variable cssutils.tests.test_selector.__version__=cssutils.tests.test_selector-module.html#__version__,Variable cssutils.tests.test_selectorlist.__version__=cssutils.tests.test_selectorlist-module.html#__version__,Variable cssutils.tests.test_serialize.__version__=cssutils.tests.test_serialize-module.html#__version__,Variable cssutils.tests.test_token.__version__=cssutils.tests.test_token-module.html#__version__,Variable cssutils.tests.test_tokenize.__version__=cssutils.tests.test_tokenize-module.html#__version__,Variable cssutils.token.__version__=cssutils.token-module.html#__version__,Variable cssutils.tokenize.__version__=cssutils.tokenize-module.html#__version__,Variable cssutils.util.__version__=cssutils.util-module.html#__version__'); return false;">__version__</a></span></span> <span class="py-op">=</span> <span class="py-string">'0.9a5'</span> </span>
+<span class="py-lineno"> 27</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 28</span>  <span class="py-line"><span class="py-keyword">import</span> <span class="py-name">re</span> </span>
+<span class="py-lineno"> 29</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 30</span>  <span class="py-line"> </span>
+<a name="expand_macros"></a><div id="expand_macros-def"><span class="py-lineno"> 31</span> <a class="py-toggle" href="#" id="expand_macros-toggle" onclick="toggle('expand_macros'); return false;">-</a><span class="py-line"><span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.css.cssproperties-module.html#expand_macros">expand_macros</a><span class="py-op">(</span><span class="py-param">tokdict</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="expand_macros-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="expand_macros-expanded"><span class="py-lineno"> 32</span>  <span class="py-line">    <span class="py-docstring">""" Expand macros in token dictionary """</span> </span>
+<span class="py-lineno"> 33</span>  <span class="py-line">    <span class="py-keyword">def</span> <span class="py-def-name">macro_value</span><span class="py-op">(</span><span class="py-param">m</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 34</span>  <span class="py-line">        <span class="py-keyword">return</span> <span class="py-string">'(?:%s)'</span> <span class="py-op">%</span> <span id="link-1" class="py-name"><a title="cssutils.css.cssproperties.MACROS" class="py-name" href="#" onclick="doclink('link-1', 'MACROS', 'Variable cssutils.css.cssproperties.MACROS=cssutils.css.cssproperties-module.html#MACROS'); return false;">MACROS</a></span></span><span class="py-op">[</span><span id="link-2" class="py-name"><a title="cssutils.css.cssmediarule.m
+cssutils.stylesheets.medialist.m" class="py-name" href="#" onclick="doclink('link-2', 'm', 'Variable cssutils.css.cssmediarule.m=cssutils.css.cssmediarule-module.html#m,Variable cssutils.stylesheets.medialist.m=cssutils.stylesheets.medialist-module.html#m'); return false;">m</a></span></span><span class="py-op">.</span><span class="py-name">groupdict</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">[</span><span class="py-string">'macro'</span><span class="py-op">]</span><span class="py-op">]</span> </span>
+</div><span class="py-lineno"> 35</span>  <span class="py-line">    <span class="py-keyword">for</span> <span class="py-name">key</span><span class="py-op">,</span> <span id="link-3" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-3', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-keyword">in</span> <span class="py-name">tokdict</span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 36</span>  <span class="py-line">        <span class="py-keyword">while</span> <span class="py-name">re</span><span class="py-op">.</span><span class="py-name">search</span><span class="py-op">(</span><span class="py-string">r'{[a-z][a-z0-9-]*}'</span><span class="py-op">,</span> <span id="link-4" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-4', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 37</span>  <span class="py-line">            <span id="link-5" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-5', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-op">=</span> <span class="py-name">re</span><span class="py-op">.</span><span class="py-name">sub</span><span class="py-op">(</span><span class="py-string">r'{(?P&lt;macro&gt;[a-z][a-z0-9-]*)}'</span><span class="py-op">,</span>  </span>
+<span class="py-lineno"> 38</span>  <span class="py-line">                           <span class="py-name">macro_value</span><span class="py-op">,</span> <span id="link-6" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-6', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 39</span>  <span class="py-line">        <span class="py-name">tokdict</span><span class="py-op">[</span><span class="py-name">key</span><span class="py-op">]</span> <span class="py-op">=</span> <span id="link-7" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-7', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> </span>
+<span class="py-lineno"> 40</span>  <span class="py-line">    <span class="py-keyword">return</span> <span class="py-name">tokdict</span> </span>
+</div><span class="py-lineno"> 41</span>  <span class="py-line"> </span>
+<a name="compile_regexes"></a><div id="compile_regexes-def"><span class="py-lineno"> 42</span> <a class="py-toggle" href="#" id="compile_regexes-toggle" onclick="toggle('compile_regexes'); return false;">-</a><span class="py-line"><span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.css.cssproperties-module.html#compile_regexes">compile_regexes</a><span class="py-op">(</span><span class="py-param">tokdict</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="compile_regexes-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="compile_regexes-expanded"><span class="py-lineno"> 43</span>  <span class="py-line">    <span class="py-docstring">""" Compile all regular expressions into callable objects """</span> </span>
+<span class="py-lineno"> 44</span>  <span class="py-line">    <span class="py-keyword">for</span> <span class="py-name">key</span><span class="py-op">,</span> <span id="link-8" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-8', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-keyword">in</span> <span class="py-name">tokdict</span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 45</span>  <span class="py-line">        <span class="py-name">tokdict</span><span class="py-op">[</span><span class="py-name">key</span><span class="py-op">]</span> <span class="py-op">=</span> <span class="py-name">re</span><span class="py-op">.</span><span class="py-name">compile</span><span class="py-op">(</span><span class="py-string">'^%s$'</span> <span class="py-op">%</span> <span id="link-9" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-9', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">,</span> <span class="py-name">re</span><span class="py-op">.</span><span class="py-name">I</span><span class="py-op">)</span><span class="py-op">.</span><span class="py-name">match</span> </span>
+<span class="py-lineno"> 46</span>  <span class="py-line">    <span class="py-keyword">return</span> <span class="py-name">tokdict</span> </span>
+</div><span class="py-lineno"> 47</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 48</span>  <span class="py-line"><span class="py-string">"""</span> </span>
+<span class="py-lineno"> 49</span>  <span class="py-line"><span class="py-string">Define some regular expression fragments that will be used as </span> </span>
+<span class="py-lineno"> 50</span>  <span class="py-line"><span class="py-string">macros within the CSS property value regular expressions.</span> </span>
+<span class="py-lineno"> 51</span>  <span class="py-line"><span class="py-string"></span> </span>
+<span class="py-lineno"> 52</span>  <span class="py-line"><span class="py-string">"""</span> </span>
+<span class="py-lineno"> 53</span>  <span class="py-line"><span id="link-10" class="py-name"><a title="cssutils.css.cssproperties.MACROS" class="py-name" href="#" onclick="doclink('link-10', 'MACROS', 'Variable cssutils.css.cssproperties.MACROS=cssutils.css.cssproperties-module.html#MACROS'); return false;">MACROS</a></span></span> <span class="py-op">=</span> <span class="py-op">{</span> </span>
+<span class="py-lineno"> 54</span>  <span class="py-line">    <span class="py-string">'ident'</span><span class="py-op">:</span> <span class="py-string">r'[-]?{nmstart}{nmchar}*'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 55</span>  <span class="py-line">    <span class="py-string">'name'</span><span class="py-op">:</span> <span class="py-string">r'{nmchar}+'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 56</span>  <span class="py-line">    <span class="py-string">'nmstart'</span><span class="py-op">:</span> <span class="py-string">r'[_a-z]|{nonascii}|{escape}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 57</span>  <span class="py-line">    <span class="py-string">'nonascii'</span><span class="py-op">:</span> <span class="py-string">r'[^\0-\177]'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 58</span>  <span class="py-line">    <span class="py-string">'unicode'</span><span class="py-op">:</span> <span class="py-string">r'\\[0-9a-f]{1,6}(\r\n|[ \n\r\t\f])?'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 59</span>  <span class="py-line">    <span class="py-string">'escape'</span><span class="py-op">:</span> <span class="py-string">r'{unicode}|\\[ -~\200-\777]'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 60</span>  <span class="py-line"><span class="py-comment">#   'escape': r'{unicode}|\\[ -~\200-\4177777]',</span> </span>
+<span class="py-lineno"> 61</span>  <span class="py-line">    <span class="py-string">'int'</span><span class="py-op">:</span> <span class="py-string">r'[-]?\d+'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 62</span>  <span class="py-line">    <span class="py-string">'nmchar'</span><span class="py-op">:</span> <span class="py-string">r'[\w-]|{nonascii}|{escape}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 63</span>  <span class="py-line">    <span class="py-string">'num'</span><span class="py-op">:</span> <span class="py-string">r'[-]?\d+|\d*\.\d+'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 64</span>  <span class="py-line">    <span class="py-string">'number'</span><span class="py-op">:</span> <span class="py-string">r'{num}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 65</span>  <span class="py-line">    <span class="py-string">'string'</span><span class="py-op">:</span> <span class="py-string">r'{string1}|{string2}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 66</span>  <span class="py-line">    <span class="py-string">'string1'</span><span class="py-op">:</span> <span class="py-string">r'"(\\\"|[^\"])*"'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 67</span>  <span class="py-line">    <span class="py-string">'string2'</span><span class="py-op">:</span> <span class="py-string">r"'(\\\'|[^\'])*'"</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 68</span>  <span class="py-line">    <span class="py-string">'nl'</span><span class="py-op">:</span> <span class="py-string">r'\n|\r\n|\r|\f'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 69</span>  <span class="py-line">    <span class="py-string">'w'</span><span class="py-op">:</span> <span class="py-string">r'\s*'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 70</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 71</span>  <span class="py-line">    <span class="py-string">'integer'</span><span class="py-op">:</span> <span class="py-string">r'{int}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 72</span>  <span class="py-line">    <span class="py-string">'length'</span><span class="py-op">:</span> <span class="py-string">r'0|{num}(em|ex|px|in|cm|mm|pt|pc)'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 73</span>  <span class="py-line">    <span class="py-string">'angle'</span><span class="py-op">:</span> <span class="py-string">r'0|{num}(deg|grad|rad)'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 74</span>  <span class="py-line">    <span class="py-string">'time'</span><span class="py-op">:</span> <span class="py-string">r'0|{num}m?s'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 75</span>  <span class="py-line">    <span class="py-string">'frequency'</span><span class="py-op">:</span> <span class="py-string">r'0|{num}k?Hz'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 76</span>  <span class="py-line">    <span class="py-string">'color'</span><span class="py-op">:</span> <span class="py-string">r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 77</span>  <span class="py-line">    <span class="py-string">'uri'</span><span class="py-op">:</span> <span class="py-string">r'url\({w}({string}|(\\\)|[^\)])+){w}\)'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 78</span>  <span class="py-line">    <span class="py-string">'percentage'</span><span class="py-op">:</span> <span class="py-string">r'{num}%'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 79</span>  <span class="py-line">    <span class="py-string">'border-style'</span><span class="py-op">:</span> <span class="py-string">'none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 80</span>  <span class="py-line">    <span class="py-string">'border-color'</span><span class="py-op">:</span> <span class="py-string">'{color}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 81</span>  <span class="py-line">    <span class="py-string">'border-width'</span><span class="py-op">:</span> <span class="py-string">'{length}|thin|medium|thick'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 82</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 83</span>  <span class="py-line">    <span class="py-string">'background-color'</span><span class="py-op">:</span> <span class="py-string">r'{color}|transparent|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 84</span>  <span class="py-line">    <span class="py-string">'background-image'</span><span class="py-op">:</span> <span class="py-string">r'{uri}|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 85</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 86</span>  <span class="py-line">    <span class="py-comment">##'background-position': r'(({percentage}|{length}|left|center|right)(\s*{percentage}|{length}|top|center|bottom)?)|(left|center|right|top|center|bottom)(\s*(left|center|right|top|center|bottom))?|inherit',</span> </span>
+<span class="py-lineno"> 87</span>  <span class="py-line">    <span class="py-string">'background-position'</span><span class="py-op">:</span> <span class="py-string">r'(({percentage}|{length}|top|center|bottom)\s*({percentage}|{length}|left|center|right)?)|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 88</span>  <span class="py-line">    <span class="py-string">'background-repeat'</span><span class="py-op">:</span> <span class="py-string">r'repeat|repeat-x|repeat-y|no-repeat|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 89</span>  <span class="py-line">    <span class="py-string">'background-attachment'</span><span class="py-op">:</span> <span class="py-string">r'scroll|fixed|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 90</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 91</span>  <span class="py-line">    <span class="py-string">'shape'</span><span class="py-op">:</span> <span class="py-string">r'rect\(({w}({length}|auto}){w},){3}{w}({length}|auto){w}\)'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 92</span>  <span class="py-line">    <span class="py-string">'counter'</span><span class="py-op">:</span> <span class="py-string">r'counter\({w}{identifier}{w}(?:,{w}{list-style-type}{w})?\)'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 93</span>  <span class="py-line">    <span class="py-string">'identifier'</span><span class="py-op">:</span> <span class="py-string">r'{ident}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 94</span>  <span class="py-line">    <span class="py-string">'family-name'</span><span class="py-op">:</span> <span class="py-string">r'{string}|{identifier}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 95</span>  <span class="py-line">    <span class="py-string">'generic-family'</span><span class="py-op">:</span> <span class="py-string">r'serif|sans-serif|cursive|fantasy|monospace'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 96</span>  <span class="py-line">    <span class="py-string">'absolute-size'</span><span class="py-op">:</span> <span class="py-string">r'(x?x-)?(small|large)|medium'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 97</span>  <span class="py-line">    <span class="py-string">'relative-size'</span><span class="py-op">:</span> <span class="py-string">r'smaller|larger'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 98</span>  <span class="py-line">    <span class="py-string">'font-family'</span><span class="py-op">:</span> <span class="py-string">r'(({family-name}|{generic-family}){w},{w})*({family-name}|{generic-family})|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 99</span>  <span class="py-line">    <span class="py-string">'font-size'</span><span class="py-op">:</span> <span class="py-string">r'{absolute-size}|{relative-size}|{length}|{percentage}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">100</span>  <span class="py-line">    <span class="py-string">'font-style'</span><span class="py-op">:</span> <span class="py-string">r'normal|italic|oblique|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">101</span>  <span class="py-line">    <span class="py-string">'font-variant'</span><span class="py-op">:</span> <span class="py-string">r'normal|small-caps|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">102</span>  <span class="py-line">    <span class="py-string">'font-weight'</span><span class="py-op">:</span> <span class="py-string">r'normal|bold|bolder|lighter|[1-9]00|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">103</span>  <span class="py-line">    <span class="py-string">'line-height'</span><span class="py-op">:</span> <span class="py-string">r'normal|{number}|{length}|{percentage}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">104</span>  <span class="py-line">    <span class="py-string">'list-style-image'</span><span class="py-op">:</span> <span class="py-string">r'{uri}|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">105</span>  <span class="py-line">    <span class="py-string">'list-style-position'</span><span class="py-op">:</span> <span class="py-string">r'inside|outside|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">106</span>  <span class="py-line">    <span class="py-string">'list-style-type'</span><span class="py-op">:</span> <span class="py-string">r'disc|circle|square|decimal|decimal-leading-zero|lower-roman|upper-roman|lower-greek|lower-(latin|alpha)|upper-(latin|alpha)|armenian|georgian|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">107</span>  <span class="py-line">    <span class="py-string">'margin-width'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|auto'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">108</span>  <span class="py-line">    <span class="py-string">'outline-color'</span><span class="py-op">:</span> <span class="py-string">r'{color}|invert|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">109</span>  <span class="py-line">    <span class="py-string">'outline-style'</span><span class="py-op">:</span> <span class="py-string">r'{border-style}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">110</span>  <span class="py-line">    <span class="py-string">'outline-width'</span><span class="py-op">:</span> <span class="py-string">r'{border-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">111</span>  <span class="py-line">    <span class="py-string">'padding-width'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">112</span>  <span class="py-line">    <span class="py-string">'specific-voice'</span><span class="py-op">:</span> <span class="py-string">r'{identifier}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">113</span>  <span class="py-line">    <span class="py-string">'generic-voice'</span><span class="py-op">:</span> <span class="py-string">r'male|female|child'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">114</span>  <span class="py-line">    <span class="py-string">'content'</span><span class="py-op">:</span> <span class="py-string">r'{string}|{uri}|{counter}|attr\({w}{identifier}{w}\)|open-quote|close-quote|no-open-quote|no-close-quote'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">115</span>  <span class="py-line">    <span class="py-string">'border-attrs'</span><span class="py-op">:</span> <span class="py-string">r'{border-width}|{border-style}|{border-color}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">116</span>  <span class="py-line">    <span class="py-string">'background-attrs'</span><span class="py-op">:</span> <span class="py-string">r'{background-color}|{background-image}|{background-repeat}|{background-attachment}|{background-position}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">117</span>  <span class="py-line">    <span class="py-string">'list-attrs'</span><span class="py-op">:</span> <span class="py-string">r'{list-style-type}|{list-style-position}|{list-style-image}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">118</span>  <span class="py-line">    <span class="py-string">'font-attrs'</span><span class="py-op">:</span> <span class="py-string">r'{font-style}|{font-variant}|{font-weight}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">119</span>  <span class="py-line">    <span class="py-string">'outline-attrs'</span><span class="py-op">:</span> <span class="py-string">r'{outline-color}|{outline-style}|{outline-width}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">120</span>  <span class="py-line">    <span class="py-string">'text-attrs'</span><span class="py-op">:</span> <span class="py-string">r'underline|overline|line-through|blink'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">121</span>  <span class="py-line"><span class="py-op">}</span> </span>
+<span class="py-lineno">122</span>  <span class="py-line"> </span>
+<span class="py-lineno">123</span>  <span class="py-line"> </span>
+<span class="py-lineno">124</span>  <span class="py-line"><span class="py-string">"""</span> </span>
+<span class="py-lineno">125</span>  <span class="py-line"><span class="py-string">Define the regular expressions for validation all CSS values</span> </span>
+<span class="py-lineno">126</span>  <span class="py-line"><span class="py-string"></span> </span>
+<span class="py-lineno">127</span>  <span class="py-line"><span class="py-string">"""</span> </span>
+<span class="py-lineno">128</span>  <span class="py-line"><span id="link-11" class="py-name"><a title="cssutils.css.cssproperties.cssvalues" class="py-name" href="#" onclick="doclink('link-11', 'cssvalues', 'Variable cssutils.css.cssproperties.cssvalues=cssutils.css.cssproperties-module.html#cssvalues'); return false;">cssvalues</a></span></span> <span class="py-op">=</span> <span class="py-op">{</span> </span>
+<span class="py-lineno">129</span>  <span class="py-line">    <span class="py-string">'azimuth'</span><span class="py-op">:</span> <span class="py-string">r'{angle}|(behind\s+)?(left-side|far-left|left|center-left|center|center-right|right|far-right|right-side)(\s+behind)?|behind|leftwards|rightwards|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">130</span>  <span class="py-line">    <span class="py-string">'background-attachment'</span><span class="py-op">:</span> <span class="py-string">r'{background-attachment}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">131</span>  <span class="py-line">    <span class="py-string">'background-color'</span><span class="py-op">:</span> <span class="py-string">r'{background-color}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">132</span>  <span class="py-line">    <span class="py-string">'background-image'</span><span class="py-op">:</span> <span class="py-string">r'{background-image}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">133</span>  <span class="py-line">    <span class="py-string">'background-position'</span><span class="py-op">:</span> <span class="py-string">r'{background-position}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">134</span>  <span class="py-line">    <span class="py-string">'background-repeat'</span><span class="py-op">:</span> <span class="py-string">r'{background-repeat}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">135</span>  <span class="py-line"> </span>
+<span class="py-lineno">136</span>  <span class="py-line">    <span class="py-comment"># Each piece should only be allowed one time</span> </span>
+<span class="py-lineno">137</span>  <span class="py-line">    <span class="py-string">'background'</span><span class="py-op">:</span> <span class="py-string">r'{background-attrs}(\s+{background-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">138</span>  <span class="py-line">    <span class="py-string">'border-collapse'</span><span class="py-op">:</span> <span class="py-string">r'collapse|separate|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">139</span>  <span class="py-line">    <span class="py-string">'border-color'</span><span class="py-op">:</span> <span class="py-string">r'({border-color}|transparent)(\s+({border-color}|transparent)){0,3}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">140</span>  <span class="py-line">    <span class="py-string">'border-spacing'</span><span class="py-op">:</span> <span class="py-string">r'{length}(\s+{length})?|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">141</span>  <span class="py-line">    <span class="py-string">'border-style'</span><span class="py-op">:</span> <span class="py-string">r'{border-style}(\s+{border-style}){0,3}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">142</span>  <span class="py-line">    <span class="py-string">'border-top'</span><span class="py-op">:</span> <span class="py-string">r'{border-attrs}(\s+{border-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">143</span>  <span class="py-line">    <span class="py-string">'border-right'</span><span class="py-op">:</span> <span class="py-string">r'{border-attrs}(\s+{border-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">144</span>  <span class="py-line">    <span class="py-string">'border-bottom'</span><span class="py-op">:</span> <span class="py-string">r'{border-attrs}(\s+{border-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">145</span>  <span class="py-line">    <span class="py-string">'border-left'</span><span class="py-op">:</span> <span class="py-string">r'{border-attrs}(\s+{border-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">146</span>  <span class="py-line">    <span class="py-string">'border-top-color'</span><span class="py-op">:</span> <span class="py-string">r'{border-color}|transparent|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">147</span>  <span class="py-line">    <span class="py-string">'border-right-color'</span><span class="py-op">:</span> <span class="py-string">r'{border-color}|transparent|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">148</span>  <span class="py-line">    <span class="py-string">'border-bottom-color'</span><span class="py-op">:</span> <span class="py-string">r'{border-color}|transparent|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">149</span>  <span class="py-line">    <span class="py-string">'border-left-color'</span><span class="py-op">:</span> <span class="py-string">r'{border-color}|transparent|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">150</span>  <span class="py-line">    <span class="py-string">'border-top-style'</span><span class="py-op">:</span> <span class="py-string">r'{border-style}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">151</span>  <span class="py-line">    <span class="py-string">'border-right-style'</span><span class="py-op">:</span> <span class="py-string">r'{border-style}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">152</span>  <span class="py-line">    <span class="py-string">'border-bottom-style'</span><span class="py-op">:</span> <span class="py-string">r'{border-style}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">153</span>  <span class="py-line">    <span class="py-string">'border-left-style'</span><span class="py-op">:</span> <span class="py-string">r'{border-style}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">154</span>  <span class="py-line">    <span class="py-string">'border-top-width'</span><span class="py-op">:</span> <span class="py-string">r'{border-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">155</span>  <span class="py-line">    <span class="py-string">'border-right-width'</span><span class="py-op">:</span> <span class="py-string">r'{border-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">156</span>  <span class="py-line">    <span class="py-string">'border-bottom-width'</span><span class="py-op">:</span> <span class="py-string">r'{border-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">157</span>  <span class="py-line">    <span class="py-string">'border-right-width'</span><span class="py-op">:</span> <span class="py-string">r'{border-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">158</span>  <span class="py-line">    <span class="py-string">'border-width'</span><span class="py-op">:</span> <span class="py-string">r'{border-width}(\s+{border-width}){0,3}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">159</span>  <span class="py-line">    <span class="py-string">'border'</span><span class="py-op">:</span> <span class="py-string">r'{border-attrs}(\s+{border-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">160</span>  <span class="py-line">    <span class="py-string">'bottom'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">161</span>  <span class="py-line">    <span class="py-string">'caption-side'</span><span class="py-op">:</span> <span class="py-string">r'top|bottom|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">162</span>  <span class="py-line">    <span class="py-string">'clear'</span><span class="py-op">:</span> <span class="py-string">r'none|left|right|both|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">163</span>  <span class="py-line">    <span class="py-string">'clip'</span><span class="py-op">:</span> <span class="py-string">r'{shape}|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">164</span>  <span class="py-line">    <span class="py-string">'color'</span><span class="py-op">:</span> <span class="py-string">r'{color}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">165</span>  <span class="py-line">    <span class="py-string">'content'</span><span class="py-op">:</span> <span class="py-string">r'normal|{content}(\s+{content})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">166</span>  <span class="py-line">    <span class="py-string">'counter-increment'</span><span class="py-op">:</span> <span class="py-string">r'({identifier}(\s+{integer})?)(\s+({identifier}(\s+{integer})))*|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">167</span>  <span class="py-line">    <span class="py-string">'counter-reset'</span><span class="py-op">:</span> <span class="py-string">r'({identifier}(\s+{integer})?)(\s+({identifier}(\s+{integer})))*|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">168</span>  <span class="py-line">    <span class="py-string">'cue-after'</span><span class="py-op">:</span> <span class="py-string">r'{uri}|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">169</span>  <span class="py-line">    <span class="py-string">'cue-before'</span><span class="py-op">:</span> <span class="py-string">r'{uri}|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">170</span>  <span class="py-line">    <span class="py-string">'cue'</span><span class="py-op">:</span> <span class="py-string">r'({uri}|none|inherit){1,2}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">171</span>  <span class="py-line">    <span class="py-string">'cursor'</span><span class="py-op">:</span> <span class="py-string">r'((({uri}{w},{w})*)?(auto|crosshair|default|pointer|move|(e|ne|nw|n|se|sw|s|w)-resize|text|wait|help|progress))|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">172</span>  <span class="py-line">    <span class="py-string">'direction'</span><span class="py-op">:</span> <span class="py-string">r'ltr|rtl|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">173</span>  <span class="py-line">    <span class="py-string">'display'</span><span class="py-op">:</span> <span class="py-string">r'inline|block|list-item|run-in|inline-block|table|inline-table|table-row-group|table-header-group|table-footer-group|table-row|table-column-group|table-column|table-cell|table-caption|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">174</span>  <span class="py-line">    <span class="py-string">'elevation'</span><span class="py-op">:</span> <span class="py-string">r'{angle}|below|level|above|higher|lower|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">175</span>  <span class="py-line">    <span class="py-string">'empty-cells'</span><span class="py-op">:</span> <span class="py-string">r'show|hide|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">176</span>  <span class="py-line">    <span class="py-string">'float'</span><span class="py-op">:</span> <span class="py-string">r'left|right|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">177</span>  <span class="py-line">    <span class="py-string">'font-family'</span><span class="py-op">:</span> <span class="py-string">r'{font-family}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">178</span>  <span class="py-line">    <span class="py-string">'font-size'</span><span class="py-op">:</span> <span class="py-string">r'{font-size}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">179</span>  <span class="py-line">    <span class="py-string">'font-style'</span><span class="py-op">:</span> <span class="py-string">r'{font-style}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">180</span>  <span class="py-line">    <span class="py-string">'font-variant'</span><span class="py-op">:</span> <span class="py-string">r'{font-variant}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">181</span>  <span class="py-line">    <span class="py-string">'font-weight'</span><span class="py-op">:</span> <span class="py-string">r'{font-weight}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">182</span>  <span class="py-line">    <span class="py-string">'font'</span><span class="py-op">:</span> <span class="py-string">r'({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{font-family}|caption|icon|menu|message-box|small-caption|status-bar|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">183</span>  <span class="py-line">    <span class="py-string">'height'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">184</span>  <span class="py-line">    <span class="py-string">'left'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">185</span>  <span class="py-line">    <span class="py-string">'letter-spacing'</span><span class="py-op">:</span> <span class="py-string">r'normal|{length}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">186</span>  <span class="py-line">    <span class="py-string">'line-height'</span><span class="py-op">:</span> <span class="py-string">r'{line-height}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">187</span>  <span class="py-line">    <span class="py-string">'list-style-image'</span><span class="py-op">:</span> <span class="py-string">r'{list-style-image}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">188</span>  <span class="py-line">    <span class="py-string">'list-style-position'</span><span class="py-op">:</span> <span class="py-string">r'{list-style-position}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">189</span>  <span class="py-line">    <span class="py-string">'list-style-type'</span><span class="py-op">:</span> <span class="py-string">r'{list-style-type}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">190</span>  <span class="py-line">    <span class="py-string">'list-style'</span><span class="py-op">:</span> <span class="py-string">r'{list-attrs}(\s+{list-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">191</span>  <span class="py-line">    <span class="py-string">'margin-right'</span><span class="py-op">:</span> <span class="py-string">r'{margin-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">192</span>  <span class="py-line">    <span class="py-string">'margin-left'</span><span class="py-op">:</span> <span class="py-string">r'{margin-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">193</span>  <span class="py-line">    <span class="py-string">'margin-top'</span><span class="py-op">:</span> <span class="py-string">r'{margin-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">194</span>  <span class="py-line">    <span class="py-string">'margin-bottom'</span><span class="py-op">:</span> <span class="py-string">r'{margin-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">195</span>  <span class="py-line">    <span class="py-string">'margin'</span><span class="py-op">:</span> <span class="py-string">r'{margin-width}(\s+{margin-width}){0,3}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">196</span>  <span class="py-line">    <span class="py-string">'max-height'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">197</span>  <span class="py-line">    <span class="py-string">'max-width'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">198</span>  <span class="py-line">    <span class="py-string">'min-height'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">199</span>  <span class="py-line">    <span class="py-string">'min-width'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">200</span>  <span class="py-line">    <span class="py-string">'orphans'</span><span class="py-op">:</span> <span class="py-string">r'{integer}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">201</span>  <span class="py-line">    <span class="py-string">'outline-color'</span><span class="py-op">:</span> <span class="py-string">r'{outline-color}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">202</span>  <span class="py-line">    <span class="py-string">'outline-style'</span><span class="py-op">:</span> <span class="py-string">r'{outline-style}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">203</span>  <span class="py-line">    <span class="py-string">'outline-width'</span><span class="py-op">:</span> <span class="py-string">r'{outline-width}'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">204</span>  <span class="py-line">    <span class="py-string">'outline'</span><span class="py-op">:</span> <span class="py-string">r'{outline-attrs}(\s+{outline-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">205</span>  <span class="py-line">    <span class="py-string">'overflow'</span><span class="py-op">:</span> <span class="py-string">r'visible|hidden|scroll|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">206</span>  <span class="py-line">    <span class="py-string">'padding-top'</span><span class="py-op">:</span> <span class="py-string">r'{padding-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">207</span>  <span class="py-line">    <span class="py-string">'padding-right'</span><span class="py-op">:</span> <span class="py-string">r'{padding-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">208</span>  <span class="py-line">    <span class="py-string">'padding-bottom'</span><span class="py-op">:</span> <span class="py-string">r'{padding-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">209</span>  <span class="py-line">    <span class="py-string">'padding-left'</span><span class="py-op">:</span> <span class="py-string">r'{padding-width}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">210</span>  <span class="py-line">    <span class="py-string">'padding'</span><span class="py-op">:</span> <span class="py-string">r'{padding-width}(\s+{padding-width}){0,3}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">211</span>  <span class="py-line">    <span class="py-string">'page-break-after'</span><span class="py-op">:</span> <span class="py-string">r'auto|always|avoid|left|right|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">212</span>  <span class="py-line">    <span class="py-string">'page-break-before'</span><span class="py-op">:</span> <span class="py-string">r'auto|always|avoid|left|right|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">213</span>  <span class="py-line">    <span class="py-string">'page-break-inside'</span><span class="py-op">:</span> <span class="py-string">r'avoid|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">214</span>  <span class="py-line">    <span class="py-string">'pause-after'</span><span class="py-op">:</span> <span class="py-string">r'{time}|{percentage}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">215</span>  <span class="py-line">    <span class="py-string">'pause-before'</span><span class="py-op">:</span> <span class="py-string">r'{time}|{percentage}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">216</span>  <span class="py-line">    <span class="py-string">'pause'</span><span class="py-op">:</span> <span class="py-string">r'({time}|{percentage}){1,2}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">217</span>  <span class="py-line">    <span class="py-string">'pitch-range'</span><span class="py-op">:</span> <span class="py-string">r'{number}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">218</span>  <span class="py-line">    <span class="py-string">'pitch'</span><span class="py-op">:</span> <span class="py-string">r'{frequency}|x-low|low|medium|high|x-high|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">219</span>  <span class="py-line">    <span class="py-string">'play-during'</span><span class="py-op">:</span> <span class="py-string">r'{uri}(\s+(mix|repeat))*|auto|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">220</span>  <span class="py-line">    <span class="py-string">'position'</span><span class="py-op">:</span> <span class="py-string">r'static|relative|absolute|fixed|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">221</span>  <span class="py-line">    <span class="py-string">'quotes'</span><span class="py-op">:</span> <span class="py-string">r'({string}\s+{string})(\s+{string}\s+{string})*|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">222</span>  <span class="py-line">    <span class="py-string">'richness'</span><span class="py-op">:</span> <span class="py-string">r'{number}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">223</span>  <span class="py-line">    <span class="py-string">'right'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">224</span>  <span class="py-line">    <span class="py-string">'speak-header'</span><span class="py-op">:</span> <span class="py-string">r'once|always|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">225</span>  <span class="py-line">    <span class="py-string">'speak-numeral'</span><span class="py-op">:</span> <span class="py-string">r'digits|continuous|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">226</span>  <span class="py-line">    <span class="py-string">'speak-punctuation'</span><span class="py-op">:</span> <span class="py-string">r'code|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">227</span>  <span class="py-line">    <span class="py-string">'speak'</span><span class="py-op">:</span> <span class="py-string">r'normal|none|spell-out|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">228</span>  <span class="py-line">    <span class="py-string">'speech-rate'</span><span class="py-op">:</span> <span class="py-string">r'{number}|x-slow|slow|medium|fast|x-fast|faster|slower|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">229</span>  <span class="py-line">    <span class="py-string">'stress'</span><span class="py-op">:</span> <span class="py-string">r'{number}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">230</span>  <span class="py-line">    <span class="py-string">'table-layout'</span><span class="py-op">:</span> <span class="py-string">r'auto|fixed|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">231</span>  <span class="py-line">    <span class="py-string">'text-align'</span><span class="py-op">:</span> <span class="py-string">r'left|right|center|justify|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">232</span>  <span class="py-line">    <span class="py-string">'text-decoration'</span><span class="py-op">:</span> <span class="py-string">r'none|{text-attrs}(\s+{text-attrs})*|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">233</span>  <span class="py-line">    <span class="py-string">'text-indent'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">234</span>  <span class="py-line">    <span class="py-string">'text-transform'</span><span class="py-op">:</span> <span class="py-string">r'capitalize|uppercase|lowercase|none|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">235</span>  <span class="py-line">    <span class="py-string">'top'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">236</span>  <span class="py-line">    <span class="py-string">'unicode-bidi'</span><span class="py-op">:</span> <span class="py-string">r'normal|embed|bidi-override|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">237</span>  <span class="py-line">    <span class="py-string">'vertical-align'</span><span class="py-op">:</span> <span class="py-string">r'baseline|sub|super|top|text-top|middle|bottom|text-bottom|{percentage}|{length}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">238</span>  <span class="py-line">    <span class="py-string">'visibility'</span><span class="py-op">:</span> <span class="py-string">r'visible|hidden|collapse|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">239</span>  <span class="py-line">    <span class="py-string">'voice-family'</span><span class="py-op">:</span> <span class="py-string">r'({specific-voice}|{generic-voice}{w},{w})*({specific-voice}|{generic-voice})|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">240</span>  <span class="py-line">    <span class="py-string">'volume'</span><span class="py-op">:</span> <span class="py-string">r'{number}|{percentage}|silent|x-soft|soft|medium|loud|x-loud|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">241</span>  <span class="py-line">    <span class="py-string">'white-space'</span><span class="py-op">:</span> <span class="py-string">r'normal|pre|nowrap|pre-wrap|pre-line|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">242</span>  <span class="py-line">    <span class="py-string">'widows'</span><span class="py-op">:</span> <span class="py-string">r'{integer}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">243</span>  <span class="py-line">    <span class="py-string">'width'</span><span class="py-op">:</span> <span class="py-string">r'{length}|{percentage}|auto|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">244</span>  <span class="py-line">    <span class="py-string">'word-spacing'</span><span class="py-op">:</span> <span class="py-string">r'normal|{length}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">245</span>  <span class="py-line">    <span class="py-string">'z-index'</span><span class="py-op">:</span> <span class="py-string">r'auto|{integer}|inherit'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">246</span>  <span class="py-line"><span class="py-op">}</span> </span>
+<span class="py-lineno">247</span>  <span class="py-line"> </span>
+<span class="py-lineno">248</span>  <span class="py-line"><span id="link-12" class="py-name"><a title="cssutils.css.cssproperties.compile_regexes" class="py-name" href="#" onclick="doclink('link-12', 'compile_regexes', 'Function cssutils.css.cssproperties.compile_regexes()=cssutils.css.cssproperties-module.html#compile_regexes'); return false;">compile_regexes</a></span></span><span class="py-op">(</span><span id="link-13" class="py-name"><a title="cssutils.css.cssproperties.expand_macros" class="py-name" href="#" onclick="doclink('link-13', 'expand_macros', 'Function cssutils.css.cssproperties.expand_macros()=cssutils.css.cssproperties-module.html#expand_macros'); return false;">expand_macros</a></span></span><span class="py-op">(</span><span id="link-14" class="py-name"><a title="cssutils.css.cssproperties.cssvalues" class="py-name" href="#" onclick="doclink('link-14', 'cssvalues', 'Variable cssutils.css.cssproperties.cssvalues=cssutils.css.cssproperties-module.html#cssvalues'); return false;">cssvalues</a></span></span><span class="py-op">)</span><span class="py-op">)</span> </span>
+<span class="py-lineno">249</span>  <span class="py-line"> </span><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:21 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

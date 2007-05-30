@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.css.cssmediarule.CSSMediaRule</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        <a href="cssutils.css-module.html">Package&nbsp;css</a> ::
+        <a href="cssutils.css.cssmediarule-module.html">Module&nbsp;cssmediarule</a> ::
+        Class&nbsp;CSSMediaRule
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.css.cssmediarule.CSSMediaRule-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class CSSMediaRule</h1><span class="codelink"><a href="cssutils.css.cssmediarule-pysrc.html#CSSMediaRule">source&nbsp;code</a></span><br /><br />
+<pre class="base-tree">
+ object --+        
+          |        
+  util.Base --+    
+              |    
+<a href="cssutils.css.cssrule.CSSRule-class.html">cssrule.CSSRule</a> --+
+                  |
+                 <strong class="uidshort">CSSMediaRule</strong>
+</pre>
+
+<hr />
+<p>represents an &#64;media rule in a CSS style sheet. A &#64;media rule can be
+used to delimit style rules for specific media types.</p>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-properties" name="rst-properties">Properties</a></h1>
+<dl class="rst-docutils">
+<dt>cssRules: A css::CSSRuleList of all CSS rules contained within the</dt>
+<dd>media block.</dd>
+<dt>cssText: of type DOMString</dt>
+<dd>The parsable textual representation of this rule</dd>
+<dt>media: of type stylesheets::MediaList, (DOM readonly)</dt>
+<dd>A list of media types for this rule of type MediaList.</dd>
+</dl>
+<div class="rst-section">
+<h2 class="heading"><a id="rst-cssutils-only" name="rst-cssutils-only">cssutils only</a></h2>
+<dl class="rst-docutils">
+<dt>atkeyword:</dt>
+<dd>the literal keyword used</dd>
+</dl>
+<p>Inherits properties from CSSRule</p>
+</div>
+</div>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-format" name="rst-format">Format</a></h1>
+<dl class="rst-docutils">
+<dt>media</dt>
+<dd>: MEDIA_SYM S* medium [ COMMA S* medium ]* LBRACE S* ruleset* '}' S*;</dd>
+</dl>
+</div><br /><br />
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">readonly</span>=<span class="summary-sig-default">False</span>)</span><br />
+      constructor
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#_getMedia" class="summary-sig-name">_getMedia</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      returns MediaList
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#_getCssRules" class="summary-sig-name">_getCssRules</a>(<span class="summary-sig-arg">self</span>)</span>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#deleteRule" class="summary-sig-name">deleteRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      within the media block's rule collection of the rule to remove.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#insertRule" class="summary-sig-name">insertRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">None</span>)</span><br />
+      The parsable text representing the rule.
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#_getCssText" class="summary-sig-name">_getCssText</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      returns serialized property cssText
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#_setCssText" class="summary-sig-name">_setCssText</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cssText</span>)</span><br />
+      DOMException on setting
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>util.Base</code></b>:
+      <code>getFormatted</code>,
+      <code>pprint</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>util.Base</code></b> (private):
+      <code>_checkReadonly</code>,
+      <code>_normalize</code>,
+      <code>_tokenize</code>,
+      <code>_valuestr</code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__str__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#type">type</a> = <code title="4">4</code><br />
+      The type of this rule, as defined by a CSSRule type constant.
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="cssutils.css.cssrule.CSSRule-class.html">cssrule.CSSRule</a></code></b>:
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#CHARSET_RULE">CHARSET_RULE</a></code>,
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#COMMENT">COMMENT</a></code>,
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#FONT_FACE_RULE">FONT_FACE_RULE</a></code>,
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#IMPORT_RULE">IMPORT_RULE</a></code>,
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#MEDIA_RULE">MEDIA_RULE</a></code>,
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#NAMESPACE_RULE">NAMESPACE_RULE</a></code>,
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#PAGE_RULE">PAGE_RULE</a></code>,
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#STYLE_RULE">STYLE_RULE</a></code>,
+      <code><a href="cssutils.css.cssrule.CSSRule-class.html#UNKNOWN_RULE">UNKNOWN_RULE</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#media">media</a><br />
+      (DOM readonly) A list of media types for this rule of type
+      MediaList
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#cssRules">cssRules</a><br />
+      (DOM readonly) A css::CSSRuleList of all CSS rules contained
+      within the media block.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#cssText">cssText</a><br />
+      (DOM attribute) The parsable textual representation.
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">readonly</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssmediarule-pysrc.html#CSSMediaRule.__init__">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  constructor
+  <dl><dt></dt><dd>
+    <dl><dt>Overrides:
+      <a href="cssutils.css.cssrule.CSSRule-class.html#__init__">cssrule.CSSRule.__init__</a>
+    </dt></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getMedia"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getMedia</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssmediarule-pysrc.html#CSSMediaRule._getMedia">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  returns MediaList
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getCssRules"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getCssRules</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssmediarule-pysrc.html#CSSMediaRule._getCssRules">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="deleteRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">deleteRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssmediarule-pysrc.html#CSSMediaRule.deleteRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>index</dt>
+<dd>within the media block's rule collection of the rule to remove.</dd>
+</dl>
+<p>Used to delete a rule from the media block.</p>
+<p>DOMExceptions</p>
+<ul class="rst-simple">
+<li>INDEX_SIZE_ERR: (self)
+Raised if the specified index does not correspond to a rule in
+the media rule list.</li>
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this media rule is readonly.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="insertRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">insertRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>,
+        <span class="sig-arg">index</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssmediarule-pysrc.html#CSSMediaRule.insertRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>rule</dt>
+<dd><p class="rst-first">The parsable text representing the rule. For rule sets this
+contains both the selector and the style declaration. For
+at-rules, this specifies both the at-identifier and the rule
+content.</p>
+<p class="rst-last">cssutils also allows rule to be a valid <strong>CSSRule</strong> object</p>
+</dd>
+<dt>index</dt>
+<dd>within the media block's rule collection of the rule before
+which to insert the specified rule. If the specified index is
+equal to the length of the media blocks's rule collection, the
+rule will be added to the end of the media block.
+If index is not given or None rule will be appended to rule
+list.</dd>
+</dl>
+<p>Used to insert a new rule into the media block.</p>
+<p>DOMException on setting</p>
+<ul class="rst-simple">
+<li>HIERARCHY_REQUEST_ERR:
+(no use case yet as no &#64;charset or &#64;import allowed))
+Raised if the rule cannot be inserted at the specified index,
+e.g., if an &#64;import rule is inserted after a standard rule set
+or other at-rule.</li>
+<li>INDEX_SIZE_ERR: (self)
+Raised if the specified index is not a valid insertion point.</li>
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this media rule is readonly.</li>
+<li>SYNTAX_ERR: (CSSStyleRule)
+Raised if the specified rule has a syntax error and is
+unparsable.</li>
+</ul>
+<p>returns the index within the media block's rule collection of the
+newly inserted rule.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getCssText"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getCssText</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssmediarule-pysrc.html#CSSMediaRule._getCssText">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  returns serialized property cssText
+  <dl><dt></dt><dd>
+    <dl><dt>Overrides:
+      <a href="cssutils.css.cssrule.CSSRule-class.html#_getCssText">cssrule.CSSRule._getCssText</a>
+    </dt></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_setCssText"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_setCssText</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cssText</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssmediarule-pysrc.html#CSSMediaRule._setCssText">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>DOMException on setting</p>
+<ul class="rst-simple">
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if the rule is readonly.</li>
+<li>INVALID_MODIFICATION_ERR: (self)
+Raised if the specified CSS string value represents a different
+type of rule than the current one.</li>
+<li>HIERARCHY_REQUEST_ERR: (self)
+Raised if the rule cannot be inserted at this point in the
+style sheet.</li>
+<li>SYNTAX_ERR: (self)
+Raised if the specified CSS string value has a syntax error and
+is unparsable.</li>
+</ul>
+  <dl><dt></dt><dd>
+    <dl><dt>Overrides:
+      <a href="cssutils.css.cssrule.CSSRule-class.html#_setCssText">cssrule.CSSRule._setCssText</a>
+    </dt></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="type"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">type</h3>
+  <p>The type of this rule, as defined by a CSSRule type constant.
+Overwritten in derived classes.</p>
+<p>The expectation is that binding-specific casting methods can be used to
+cast down from an instance of the CSSRule interface to the specific
+derived interface implied by the type.
+(Casting not for this Python implementation I guess...)</p>
+  <dl><dt></dt><dd>
+    <dl><dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </pre></td></tr></table></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== PROPERTY DETAILS ==================== -->
+<a name="section-PropertyDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Property Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-PropertyDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="media"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">media</h3>
+  (DOM readonly) A list of media types for this rule of type            
+  MediaList
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#_getMedia" class="summary-sig-name">cssutils.css.cssmediarule.CSSMediaRule._getMedia</a>(<span class="summary-sig-arg">self</span>)</span>
+        - returns MediaList
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="cssRules"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">cssRules</h3>
+  (DOM readonly) A css::CSSRuleList of all CSS rules contained
+  within the media block.
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#_getCssRules" class="summary-sig-name">cssutils.css.cssmediarule.CSSMediaRule._getCssRules</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="cssText"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">cssText</h3>
+  (DOM attribute) The parsable textual representation.
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#_getCssText" class="summary-sig-name">cssutils.css.cssmediarule.CSSMediaRule._getCssText</a>(<span class="summary-sig-arg">self</span>)</span>
+        - returns serialized property cssText
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssmediarule.CSSMediaRule-class.html#_setCssText" class="summary-sig-name">cssutils.css.cssmediarule.CSSMediaRule._setCssText</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cssText</span>)</span>
+        - DOMException on setting
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:17 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.tests.basetest</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        <a href="cssutils.tests-module.html">Package&nbsp;tests</a> ::
+        Module&nbsp;basetest
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.tests.basetest-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="cssutils.tests.basetest-module.html">Module cssutils.tests.basetest</a></h1>
+<pre class="py-src">
+<span class="py-lineno">  1</span>  <span class="py-line"><span class="py-docstring">"""</span> </span>
+<span class="py-lineno">  2</span>  <span class="py-line"><span class="py-docstring">base class for all tests</span> </span>
+<span class="py-lineno">  3</span>  <span class="py-line"><span class="py-docstring">"""</span> </span>
+<span class="py-lineno">  4</span>  <span class="py-line"><span id="link-0" class="py-name"><a title="cssutils.__version__
+cssutils.css.__version__
+cssutils.css.csscharsetrule.__version__
+cssutils.css.csscomment.__version__
+cssutils.css.cssimportrule.__version__
+cssutils.css.cssmediarule.__version__
+cssutils.css.cssnamespacerule.__version__
+cssutils.css.csspagerule.__version__
+cssutils.css.cssproperties.__version__
+cssutils.css.cssrule.__version__
+cssutils.css.cssrulelist.__version__
+cssutils.css.cssstyledeclaration.__version__
+cssutils.css.cssstylerule.__version__
+cssutils.css.cssstylesheet.__version__
+cssutils.css.cssunknownrule.__version__
+cssutils.css.cssvalue.__version__
+cssutils.css.property.__version__
+cssutils.css.selector.__version__
+cssutils.css.selectorlist.__version__
+cssutils.domimplementationcss.__version__
+cssutils.errorhandler.__version__
+cssutils.parse'.__version__
+cssutils.scripts.__version__
+cssutils.serialize.__version__
+cssutils.stylesheets.__version__
+cssutils.stylesheets.medialist.__version__
+cssutils.stylesheets.stylesheet.__version__
+cssutils.stylesheets.stylesheetlist.__version__
+cssutils.tests.__version__
+cssutils.tests.basetest.__version__
+cssutils.tests.test_csscharsetrule.__version__
+cssutils.tests.test_csscomment.__version__
+cssutils.tests.test_cssimportrule.__version__
+cssutils.tests.test_cssmediarule.__version__
+cssutils.tests.test_cssnamespacerule.__version__
+cssutils.tests.test_csspagerule.__version__
+cssutils.tests.test_cssproperties.__version__
+cssutils.tests.test_cssrule.__version__
+cssutils.tests.test_cssrulelist.__version__
+cssutils.tests.test_cssstyledeclaration.__version__
+cssutils.tests.test_cssstylerule.__version__
+cssutils.tests.test_cssstylesheet.__version__
+cssutils.tests.test_cssunknownrule.__version__
+cssutils.tests.test_cssutils.__version__
+cssutils.tests.test_cssutilsimport.__version__
+cssutils.tests.test_cssvalue.__version__
+cssutils.tests.test_medialist.__version__
+cssutils.tests.test_parse.__version__
+cssutils.tests.test_property.__version__
+cssutils.tests.test_selector.__version__
+cssutils.tests.test_selectorlist.__version__
+cssutils.tests.test_serialize.__version__
+cssutils.tests.test_token.__version__
+cssutils.tests.test_tokenize.__version__
+cssutils.token.__version__
+cssutils.tokenize.__version__
+cssutils.util.__version__" class="py-name" href="#" onclick="doclink('link-0', '__version__', 'Variable cssutils.__version__=cssutils-module.html#__version__,Variable cssutils.css.__version__=cssutils.css-module.html#__version__,Variable cssutils.css.csscharsetrule.__version__=cssutils.css.csscharsetrule-module.html#__version__,Variable cssutils.css.csscomment.__version__=cssutils.css.csscomment-module.html#__version__,Variable cssutils.css.cssimportrule.__version__=cssutils.css.cssimportrule-module.html#__version__,Variable cssutils.css.cssmediarule.__version__=cssutils.css.cssmediarule-module.html#__version__,Variable cssutils.css.cssnamespacerule.__version__=cssutils.css.cssnamespacerule-module.html#__version__,Variable cssutils.css.csspagerule.__version__=cssutils.css.csspagerule-module.html#__version__,Variable cssutils.css.cssproperties.__version__=cssutils.css.cssproperties-module.html#__version__,Variable cssutils.css.cssrule.__version__=cssutils.css.cssrule-module.html#__version__,Variable cssutils.css.cssrulelist.__version__=cssutils.css.cssrulelist-module.html#__version__,Variable cssutils.css.cssstyledeclaration.__version__=cssutils.css.cssstyledeclaration-module.html#__version__,Variable cssutils.css.cssstylerule.__version__=cssutils.css.cssstylerule-module.html#__version__,Variable cssutils.css.cssstylesheet.__version__=cssutils.css.cssstylesheet-module.html#__version__,Variable cssutils.css.cssunknownrule.__version__=cssutils.css.cssunknownrule-module.html#__version__,Variable cssutils.css.cssvalue.__version__=cssutils.css.cssvalue-module.html#__version__,Variable cssutils.css.property.__version__=cssutils.css.property-module.html#__version__,Variable cssutils.css.selector.__version__=cssutils.css.selector-module.html#__version__,Variable cssutils.css.selectorlist.__version__=cssutils.css.selectorlist-module.html#__version__,Variable cssutils.domimplementationcss.__version__=cssutils.domimplementationcss-module.html#__version__,Variable cssutils.errorhandler.__version__=cssutils.errorhandler-module.html#__version__,Variable cssutils.parse'.__version__=cssutils.parse%27-module.html#__version__,Variable cssutils.scripts.__version__=cssutils.scripts-module.html#__version__,Variable cssutils.serialize.__version__=cssutils.serialize-module.html#__version__,Variable cssutils.stylesheets.__version__=cssutils.stylesheets-module.html#__version__,Variable cssutils.stylesheets.medialist.__version__=cssutils.stylesheets.medialist-module.html#__version__,Variable cssutils.stylesheets.stylesheet.__version__=cssutils.stylesheets.stylesheet-module.html#__version__,Variable cssutils.stylesheets.stylesheetlist.__version__=cssutils.stylesheets.stylesheetlist-module.html#__version__,Variable cssutils.tests.__version__=cssutils.tests-module.html#__version__,Variable cssutils.tests.basetest.__version__=cssutils.tests.basetest-module.html#__version__,Variable cssutils.tests.test_csscharsetrule.__version__=cssutils.tests.test_csscharsetrule-module.html#__version__,Variable cssutils.tests.test_csscomment.__version__=cssutils.tests.test_csscomment-module.html#__version__,Variable cssutils.tests.test_cssimportrule.__version__=cssutils.tests.test_cssimportrule-module.html#__version__,Variable cssutils.tests.test_cssmediarule.__version__=cssutils.tests.test_cssmediarule-module.html#__version__,Variable cssutils.tests.test_cssnamespacerule.__version__=cssutils.tests.test_cssnamespacerule-module.html#__version__,Variable cssutils.tests.test_csspagerule.__version__=cssutils.tests.test_csspagerule-module.html#__version__,Variable cssutils.tests.test_cssproperties.__version__=cssutils.tests.test_cssproperties-module.html#__version__,Variable cssutils.tests.test_cssrule.__version__=cssutils.tests.test_cssrule-module.html#__version__,Variable cssutils.tests.test_cssrulelist.__version__=cssutils.tests.test_cssrulelist-module.html#__version__,Variable cssutils.tests.test_cssstyledeclaration.__version__=cssutils.tests.test_cssstyledeclaration-module.html#__version__,Variable cssutils.tests.test_cssstylerule.__version__=cssutils.tests.test_cssstylerule-module.html#__version__,Variable cssutils.tests.test_cssstylesheet.__version__=cssutils.tests.test_cssstylesheet-module.html#__version__,Variable cssutils.tests.test_cssunknownrule.__version__=cssutils.tests.test_cssunknownrule-module.html#__version__,Variable cssutils.tests.test_cssutils.__version__=cssutils.tests.test_cssutils-module.html#__version__,Variable cssutils.tests.test_cssutilsimport.__version__=cssutils.tests.test_cssutilsimport-module.html#__version__,Variable cssutils.tests.test_cssvalue.__version__=cssutils.tests.test_cssvalue-module.html#__version__,Variable cssutils.tests.test_medialist.__version__=cssutils.tests.test_medialist-module.html#__version__,Variable cssutils.tests.test_parse.__version__=cssutils.tests.test_parse-module.html#__version__,Variable cssutils.tests.test_property.__version__=cssutils.tests.test_property-module.html#__version__,Variable cssutils.tests.test_selector.__version__=cssutils.tests.test_selector-module.html#__version__,Variable cssutils.tests.test_selectorlist.__version__=cssutils.tests.test_selectorlist-module.html#__version__,Variable cssutils.tests.test_serialize.__version__=cssutils.tests.test_serialize-module.html#__version__,Variable cssutils.tests.test_token.__version__=cssutils.tests.test_token-module.html#__version__,Variable cssutils.tests.test_tokenize.__version__=cssutils.tests.test_tokenize-module.html#__version__,Variable cssutils.token.__version__=cssutils.token-module.html#__version__,Variable cssutils.tokenize.__version__=cssutils.tokenize-module.html#__version__,Variable cssutils.util.__version__=cssutils.util-module.html#__version__'); return false;">__version__</a></span></span> <span class="py-op">=</span> <span class="py-string">'0.9a6'</span> </span>
+<span class="py-lineno">  5</span>  <span class="py-line"> </span>
+<span class="py-lineno">  6</span>  <span class="py-line"><span class="py-keyword">import</span> <span class="py-name">unittest</span> </span>
+<span class="py-lineno">  7</span>  <span class="py-line"> </span>
+<span class="py-lineno">  8</span>  <span class="py-line"><span class="py-keyword">import</span> <span id="link-1" class="py-name"><a title="cssutils" class="py-name" href="#" onclick="doclink('link-1', 'cssutils', 'Package cssutils=cssutils-module.html'); return false;">cssutils</a></span></span> </span>
+<span class="py-lineno">  9</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 10</span>  <span class="py-line"> </span>
+<a name="BaseTestCase"></a><div id="BaseTestCase-def"><span class="py-lineno"> 11</span> <a class="py-toggle" href="#" id="BaseTestCase-toggle" onclick="toggle('BaseTestCase'); return false;">-</a><span class="py-line"><span class="py-keyword">class</span> <a class="py-def-name" href="cssutils.tests.basetest.BaseTestCase-class.html">BaseTestCase</a><span class="py-op">(</span><span class="py-base-class">unittest</span><span class="py-op">.</span><span class="py-base-class">TestCase</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="BaseTestCase-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="BaseTestCase-expanded"><span class="py-lineno"> 12</span>  <span class="py-line"> </span>
+<a name="BaseTestCase.assertRaisesEx"></a><div id="BaseTestCase.assertRaisesEx-def"><span class="py-lineno"> 13</span> <a class="py-toggle" href="#" id="BaseTestCase.assertRaisesEx-toggle" onclick="toggle('BaseTestCase.assertRaisesEx'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.tests.basetest.BaseTestCase-class.html#assertRaisesEx">assertRaisesEx</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">exception</span><span class="py-op">,</span> <span class="py-param">callable</span><span class="py-op">,</span> <span class="py-op">*</span><span class="py-param">args</span><span class="py-op">,</span> <span class="py-op">**</span><span class="py-param">kwargs</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="BaseTestCase.assertRaisesEx-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BaseTestCase.assertRaisesEx-expanded"><span class="py-lineno"> 14</span>  <span class="py-line">        <span class="py-docstring">"""</span> </span>
+<span class="py-lineno"> 15</span>  <span class="py-line"><span class="py-docstring">        from</span> </span>
+<span class="py-lineno"> 16</span>  <span class="py-line"><span class="py-docstring">        http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/307970</span> </span>
+<span class="py-lineno"> 17</span>  <span class="py-line"><span class="py-docstring">        """</span> </span>
+<span class="py-lineno"> 18</span>  <span class="py-line">        <span class="py-keyword">if</span> <span class="py-string">"exc_args"</span> <span class="py-keyword">in</span> <span class="py-name">kwargs</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 19</span>  <span class="py-line">            <span class="py-name">exc_args</span> <span class="py-op">=</span> <span class="py-name">kwargs</span><span class="py-op">[</span><span class="py-string">"exc_args"</span><span class="py-op">]</span> </span>
+<span class="py-lineno"> 20</span>  <span class="py-line">            <span class="py-keyword">del</span> <span class="py-name">kwargs</span><span class="py-op">[</span><span class="py-string">"exc_args"</span><span class="py-op">]</span> </span>
+<span class="py-lineno"> 21</span>  <span class="py-line">        <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 22</span>  <span class="py-line">            <span class="py-name">exc_args</span> <span class="py-op">=</span> <span class="py-name">None</span> </span>
+<span class="py-lineno"> 23</span>  <span class="py-line">        <span class="py-keyword">if</span> <span class="py-string">"exc_pattern"</span> <span class="py-keyword">in</span> <span class="py-name">kwargs</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 24</span>  <span class="py-line">            <span class="py-name">exc_pattern</span> <span class="py-op">=</span> <span class="py-name">kwargs</span><span class="py-op">[</span><span class="py-string">"exc_pattern"</span><span class="py-op">]</span> </span>
+<span class="py-lineno"> 25</span>  <span class="py-line">            <span class="py-keyword">del</span> <span class="py-name">kwargs</span><span class="py-op">[</span><span class="py-string">"exc_pattern"</span><span class="py-op">]</span> </span>
+<span class="py-lineno"> 26</span>  <span class="py-line">        <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 27</span>  <span class="py-line">            <span class="py-name">exc_pattern</span> <span class="py-op">=</span> <span class="py-name">None</span> </span>
+<span class="py-lineno"> 28</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 29</span>  <span class="py-line">        <span class="py-name">argv</span> <span class="py-op">=</span> <span class="py-op">[</span><span class="py-name">repr</span><span class="py-op">(</span><span class="py-name">a</span><span class="py-op">)</span> <span class="py-keyword">for</span> <span class="py-name">a</span> <span class="py-keyword">in</span> <span class="py-name">args</span><span class="py-op">]</span>\ </span>
+<span class="py-lineno"> 30</span>  <span class="py-line">               <span class="py-op">+</span> <span class="py-op">[</span><span class="py-string">"%s=%r"</span> <span class="py-op">%</span> <span class="py-op">(</span><span class="py-name">k</span><span class="py-op">,</span><span class="py-name">v</span><span class="py-op">)</span>  <span class="py-keyword">for</span> <span class="py-name">k</span><span class="py-op">,</span><span class="py-name">v</span> <span class="py-keyword">in</span> <span class="py-name">kwargs</span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">]</span> </span>
+<span class="py-lineno"> 31</span>  <span class="py-line">        <span class="py-name">callsig</span> <span class="py-op">=</span> <span class="py-string">"%s(%s)"</span> <span class="py-op">%</span> <span class="py-op">(</span><span class="py-name">callable</span><span class="py-op">.</span><span class="py-name">__name__</span><span class="py-op">,</span> <span class="py-string">", "</span><span class="py-op">.</span><span class="py-name">join</span><span class="py-op">(</span><span class="py-name">argv</span><span class="py-op">)</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 32</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 33</span>  <span class="py-line">        <span class="py-keyword">try</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 34</span>  <span class="py-line">            <span class="py-name">callable</span><span class="py-op">(</span><span class="py-op">*</span><span class="py-name">args</span><span class="py-op">,</span> <span class="py-op">**</span><span class="py-name">kwargs</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 35</span>  <span class="py-line">        <span class="py-keyword">except</span> <span class="py-name">exception</span><span class="py-op">,</span> <span class="py-name">exc</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 36</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">exc_args</span> <span class="py-keyword">is</span> <span class="py-keyword">not</span> <span class="py-name">None</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 37</span>  <span class="py-line">                <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">failIf</span><span class="py-op">(</span><span class="py-name">exc</span><span class="py-op">.</span><span class="py-name">args</span> <span class="py-op">!=</span> <span class="py-name">exc_args</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 38</span>  <span class="py-line">                            <span class="py-string">"%s raised %s with unexpected args: "</span>\ </span>
+<span class="py-lineno"> 39</span>  <span class="py-line">                            <span class="py-string">"expected=%r, actual=%r"</span>\ </span>
+<span class="py-lineno"> 40</span>  <span class="py-line">                            <span class="py-op">%</span> <span class="py-op">(</span><span class="py-name">callsig</span><span class="py-op">,</span> <span class="py-name">exc</span><span class="py-op">.</span><span class="py-name">__class__</span><span class="py-op">,</span> <span class="py-name">exc_args</span><span class="py-op">,</span> <span class="py-name">exc</span><span class="py-op">.</span><span class="py-name">args</span><span class="py-op">)</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 41</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">exc_pattern</span> <span class="py-keyword">is</span> <span class="py-keyword">not</span> <span class="py-name">None</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 42</span>  <span class="py-line">                <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">failUnless</span><span class="py-op">(</span><span class="py-name">exc_pattern</span><span class="py-op">.</span><span class="py-name">search</span><span class="py-op">(</span><span class="py-name">str</span><span class="py-op">(</span><span class="py-name">exc</span><span class="py-op">)</span><span class="py-op">)</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 43</span>  <span class="py-line">                                <span class="py-string">"%s raised %s, but the exception "</span>\ </span>
+<span class="py-lineno"> 44</span>  <span class="py-line">                                <span class="py-string">"does not match '%s': %r"</span>\ </span>
+<span class="py-lineno"> 45</span>  <span class="py-line">                                <span class="py-op">%</span> <span class="py-op">(</span><span class="py-name">callsig</span><span class="py-op">,</span> <span class="py-name">exc</span><span class="py-op">.</span><span class="py-name">__class__</span><span class="py-op">,</span> <span class="py-name">exc_pattern</span><span class="py-op">.</span><span class="py-name">pattern</span><span class="py-op">,</span> </span>
+<span class="py-lineno"> 46</span>  <span class="py-line">                                   <span class="py-name">str</span><span class="py-op">(</span><span class="py-name">exc</span><span class="py-op">)</span><span class="py-op">)</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 47</span>  <span class="py-line">        <span class="py-keyword">except</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 48</span>  <span class="py-line">            <span class="py-name">exc_info</span> <span class="py-op">=</span> <span class="py-name">sys</span><span class="py-op">.</span><span class="py-name">exc_info</span><span class="py-op">(</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 49</span>  <span class="py-line">            <span class="py-keyword">print</span> <span class="py-name">exc_info</span> </span>
+<span class="py-lineno"> 50</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">fail</span><span class="py-op">(</span><span class="py-string">"%s raised an unexpected exception type: "</span>\ </span>
+<span class="py-lineno"> 51</span>  <span class="py-line">                      <span class="py-string">"expected=%s, actual=%s"</span>\ </span>
+<span class="py-lineno"> 52</span>  <span class="py-line">                      <span class="py-op">%</span> <span class="py-op">(</span><span class="py-name">callsig</span><span class="py-op">,</span> <span class="py-name">exception</span><span class="py-op">,</span> <span class="py-name">exc_info</span><span class="py-op">[</span><span class="py-number">0</span><span class="py-op">]</span><span class="py-op">)</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 53</span>  <span class="py-line">        <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 54</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">fail</span><span class="py-op">(</span><span class="py-string">"%s did not raise %s"</span> <span class="py-op">%</span> <span class="py-op">(</span><span class="py-name">callsig</span><span class="py-op">,</span> <span class="py-name">exception</span><span class="py-op">)</span><span class="py-op">)</span> </span>
+</div><span class="py-lineno"> 55</span>  <span class="py-line"> </span>
+<a name="BaseTestCase.assertRaisesMsg"></a><div id="BaseTestCase.assertRaisesMsg-def"><span class="py-lineno"> 56</span> <a class="py-toggle" href="#" id="BaseTestCase.assertRaisesMsg-toggle" onclick="toggle('BaseTestCase.assertRaisesMsg'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.tests.basetest.BaseTestCase-class.html#assertRaisesMsg">assertRaisesMsg</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">excClass</span><span class="py-op">,</span> <span class="py-param">msg</span><span class="py-op">,</span> <span class="py-param">callableObj</span><span class="py-op">,</span> <span class="py-op">*</span><span class="py-param">args</span><span class="py-op">,</span> <span class="py-op">**</span><span class="py-param">kwargs</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="BaseTestCase.assertRaisesMsg-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BaseTestCase.assertRaisesMsg-expanded"><span class="py-lineno"> 57</span>  <span class="py-line">        <span class="py-docstring">"""</span> </span>
+<span class="py-lineno"> 58</span>  <span class="py-line"><span class="py-docstring">        Just like unittest.TestCase.assertRaises,</span> </span>
+<span class="py-lineno"> 59</span>  <span class="py-line"><span class="py-docstring">        but checks that the message is right too.</span> </span>
+<span class="py-lineno"> 60</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 61</span>  <span class="py-line"><span class="py-docstring">        Usage::</span> </span>
+<span class="py-lineno"> 62</span>  <span class="py-line"><span class="py-docstring">        </span> </span>
+<span class="py-lineno"> 63</span>  <span class="py-line"><span class="py-docstring">            self.assertRaisesMsg(</span> </span>
+<span class="py-lineno"> 64</span>  <span class="py-line"><span class="py-docstring">                MyException, "Exception message",</span> </span>
+<span class="py-lineno"> 65</span>  <span class="py-line"><span class="py-docstring">                my_function, (arg1, arg2)</span> </span>
+<span class="py-lineno"> 66</span>  <span class="py-line"><span class="py-docstring">                )</span> </span>
+<span class="py-lineno"> 67</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 68</span>  <span class="py-line"><span class="py-docstring">        from</span> </span>
+<span class="py-lineno"> 69</span>  <span class="py-line"><span class="py-docstring">        http://www.nedbatchelder.com/blog/200609.html#e20060905T064418</span> </span>
+<span class="py-lineno"> 70</span>  <span class="py-line"><span class="py-docstring">        """</span> </span>
+<span class="py-lineno"> 71</span>  <span class="py-line">        <span class="py-keyword">try</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 72</span>  <span class="py-line">            <span class="py-name">callableObj</span><span class="py-op">(</span><span class="py-op">*</span><span class="py-name">args</span><span class="py-op">,</span> <span class="py-op">**</span><span class="py-name">kwargs</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 73</span>  <span class="py-line">        <span class="py-keyword">except</span> <span class="py-name">excClass</span><span class="py-op">,</span> <span class="py-name">exc</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 74</span>  <span class="py-line">            <span class="py-name">excMsg</span> <span class="py-op">=</span> <span class="py-name">str</span><span class="py-op">(</span><span class="py-name">exc</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 75</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-keyword">not</span> <span class="py-name">msg</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 76</span>  <span class="py-line">                <span class="py-comment"># No message provided: any message is fine.</span> </span>
+<span class="py-lineno"> 77</span>  <span class="py-line"><span class="py-comment"></span>                <span class="py-keyword">return</span> </span>
+<span class="py-lineno"> 78</span>  <span class="py-line">            <span class="py-keyword">elif</span> <span class="py-name">excMsg</span> <span class="py-op">==</span> <span class="py-name">msg</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 79</span>  <span class="py-line">                <span class="py-comment"># Message provided, and we got the right message: passes.</span> </span>
+<span class="py-lineno"> 80</span>  <span class="py-line"><span class="py-comment"></span>                <span class="py-keyword">return</span> </span>
+<span class="py-lineno"> 81</span>  <span class="py-line">            <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 82</span>  <span class="py-line">                <span class="py-comment"># Message provided, and it didn't match: fail!</span> </span>
+<span class="py-lineno"> 83</span>  <span class="py-line"><span class="py-comment"></span>                <span class="py-keyword">raise</span> <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">failureException</span><span class="py-op">(</span> </span>
+<span class="py-lineno"> 84</span>  <span class="py-line">                <span class="py-string">"Right exception, wrong message: got '%s' expected '%s'"</span> <span class="py-op">%</span>  </span>
+<span class="py-lineno"> 85</span>  <span class="py-line">                <span class="py-op">(</span><span class="py-name">excMsg</span><span class="py-op">,</span> <span class="py-name">msg</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 86</span>  <span class="py-line">                <span class="py-op">)</span> </span>
+<span class="py-lineno"> 87</span>  <span class="py-line">        <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 88</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">hasattr</span><span class="py-op">(</span><span class="py-name">excClass</span><span class="py-op">,</span> <span class="py-string">'__name__'</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 89</span>  <span class="py-line">                <span class="py-name">excName</span> <span class="py-op">=</span> <span class="py-name">excClass</span><span class="py-op">.</span><span class="py-name">__name__</span> </span>
+<span class="py-lineno"> 90</span>  <span class="py-line">            <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno"> 91</span>  <span class="py-line">                <span class="py-name">excName</span> <span class="py-op">=</span> <span class="py-name">str</span><span class="py-op">(</span><span class="py-name">excClass</span><span class="py-op">)</span> </span>
+<span class="py-lineno"> 92</span>  <span class="py-line">            <span class="py-keyword">raise</span> <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">failureException</span><span class="py-op">(</span> </span>
+<span class="py-lineno"> 93</span>  <span class="py-line">                <span class="py-string">"Expected to raise %s, didn't get an exception at all"</span> <span class="py-op">%</span>  </span>
+<span class="py-lineno"> 94</span>  <span class="py-line">                <span class="py-name">excName</span> </span>
+<span class="py-lineno"> 95</span>  <span class="py-line">                <span class="py-op">)</span> </span>
+</div><span class="py-lineno"> 96</span>  <span class="py-line"> </span>
+<a name="BaseTestCase.setUp"></a><div id="BaseTestCase.setUp-def"><span class="py-lineno"> 97</span> <a class="py-toggle" href="#" id="BaseTestCase.setUp-toggle" onclick="toggle('BaseTestCase.setUp'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.tests.basetest.BaseTestCase-class.html#setUp">setUp</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="BaseTestCase.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BaseTestCase.setUp-expanded"><span class="py-lineno"> 98</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span id="link-2" class="py-name"><a title="cssutils.css.csscharsetrule.p
+cssutils.css.property.p
+cssutils.parse'.p" class="py-name" href="#" onclick="doclink('link-2', 'p', 'Variable cssutils.css.csscharsetrule.p=cssutils.css.csscharsetrule-module.html#p,Variable cssutils.css.property.p=cssutils.css.property-module.html#p,Variable cssutils.parse'.p=cssutils.parse%27-module.html#p'); return false;">p</a></span></span> <span class="py-op">=</span> <span id="link-3" class="py-name"><a title="cssutils" class="py-name" href="#" onclick="doclink('link-3', 'cssutils', 'Package cssutils=cssutils-module.html'); return false;">cssutils</a></span></span><span class="py-op">.</span><span id="link-4" class="py-name"><a title="cssutils.parse'.CSSParser" class="py-name" href="#" onclick="doclink('link-4', 'CSSParser', 'Class cssutils.parse'.CSSParser=cssutils.parse%27.CSSParser-class.html'); return false;">CSSParser</a></span></span><span class="py-op">(</span><span class="py-name">raiseExceptions</span><span class="py-op">=</span><span class="py-name">True</span><span class="py-op">)</span> </span>
+</div><span class="py-lineno"> 99</span>  <span class="py-line"> </span>
+<span class="py-lineno">100</span>  <span class="py-line"> </span>
+<a name="BaseTestCase.do_equal_p"></a><div id="BaseTestCase.do_equal_p-def"><span class="py-lineno">101</span> <a class="py-toggle" href="#" id="BaseTestCase.do_equal_p-toggle" onclick="toggle('BaseTestCase.do_equal_p'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.tests.basetest.BaseTestCase-class.html#do_equal_p">do_equal_p</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">tests</span><span class="py-op">,</span> <span class="py-param">att</span><span class="py-op">=</span><span class="py-string">'cssText'</span><span class="py-op">,</span> <span class="py-param">debug</span><span class="py-op">=</span><span class="py-name">False</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="BaseTestCase.do_equal_p-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BaseTestCase.do_equal_p-expanded"><span class="py-lineno">102</span>  <span class="py-line">        <span class="py-comment"># parses with self.p and checks att of result</span> </span>
+<span class="py-lineno">103</span>  <span class="py-line"><span class="py-comment"></span>        <span class="py-keyword">for</span> <span class="py-name">test</span><span class="py-op">,</span> <span class="py-name">expected</span> <span class="py-keyword">in</span> <span id="link-5" class="py-name"><a title="cssutils.tests" class="py-name" href="#" onclick="doclink('link-5', 'tests', 'Package cssutils.tests=cssutils.tests-module.html'); return false;">tests</a></span></span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">104</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">debug</span><span class="py-op">:</span> </span>
+<span class="py-lineno">105</span>  <span class="py-line">                <span class="py-keyword">print</span> <span class="py-string">'"%s"'</span> <span class="py-op">%</span> <span class="py-name">test</span> </span>
+<span class="py-lineno">106</span>  <span class="py-line">            <span id="link-6" class="py-name"><a title="cssutils.css.csscharsetrule.s
+cssutils.css.cssstyledeclaration.s
+cssutils.css.selector.s" class="py-name" href="#" onclick="doclink('link-6', 's', 'Variable cssutils.css.csscharsetrule.s=cssutils.css.csscharsetrule-module.html#s,Variable cssutils.css.cssstyledeclaration.s=cssutils.css.cssstyledeclaration-module.html#s,Variable cssutils.css.selector.s=cssutils.css.selector-module.html#s'); return false;">s</a></span></span> <span class="py-op">=</span> <span class="py-name">self</span><span class="py-op">.</span><span id="link-7" class="py-name"><a title="cssutils.css.csscharsetrule.p
+cssutils.css.property.p
+cssutils.parse'.p" class="py-name" href="#" onclick="doclink('link-7', 'p', 'Variable cssutils.css.csscharsetrule.p=cssutils.css.csscharsetrule-module.html#p,Variable cssutils.css.property.p=cssutils.css.property-module.html#p,Variable cssutils.parse'.p=cssutils.parse%27-module.html#p'); return false;">p</a></span></span><span class="py-op">.</span><span id="link-8" class="py-name"><a title="cssutils.parse'.CSSParser.parseString
+cssutils.parseString" class="py-name" href="#" onclick="doclink('link-8', 'parseString', 'Method cssutils.parse'.CSSParser.parseString()=cssutils.parse%27.CSSParser-class.html#parseString,Function cssutils.parseString()=cssutils-module.html#parseString'); return false;">parseString</a></span></span><span class="py-op">(</span><span class="py-name">test</span><span class="py-op">)</span> </span>
+<span class="py-lineno">107</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">expected</span> <span class="py-keyword">is</span> <span class="py-name">None</span><span class="py-op">:</span> </span>
+<span class="py-lineno">108</span>  <span class="py-line">                <span class="py-name">expected</span> <span class="py-op">=</span> <span class="py-name">test</span> </span>
+<span class="py-lineno">109</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">assertEqual</span><span class="py-op">(</span><span class="py-name">expected</span><span class="py-op">,</span> <span id="link-9" class="py-name"><a title="cssutils.css.csscharsetrule.s
+cssutils.css.cssstyledeclaration.s
+cssutils.css.selector.s" class="py-name" href="#" onclick="doclink('link-9', 's', 'Variable cssutils.css.csscharsetrule.s=cssutils.css.csscharsetrule-module.html#s,Variable cssutils.css.cssstyledeclaration.s=cssutils.css.cssstyledeclaration-module.html#s,Variable cssutils.css.selector.s=cssutils.css.selector-module.html#s'); return false;">s</a></span></span><span class="py-op">.</span><span class="py-name">__getattribute__</span><span class="py-op">(</span><span class="py-name">att</span><span class="py-op">)</span><span class="py-op">)</span> </span>
+</div><span class="py-lineno">110</span>  <span class="py-line"> </span>
+<a name="BaseTestCase.do_raise_p"></a><div id="BaseTestCase.do_raise_p-def"><span class="py-lineno">111</span> <a class="py-toggle" href="#" id="BaseTestCase.do_raise_p-toggle" onclick="toggle('BaseTestCase.do_raise_p'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.tests.basetest.BaseTestCase-class.html#do_raise_p">do_raise_p</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">tests</span><span class="py-op">,</span> <span class="py-param">debug</span><span class="py-op">=</span><span class="py-name">False</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="BaseTestCase.do_raise_p-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BaseTestCase.do_raise_p-expanded"><span class="py-lineno">112</span>  <span class="py-line">        <span class="py-comment"># parses with self.p and expects raise</span> </span>
+<span class="py-lineno">113</span>  <span class="py-line"><span class="py-comment"></span>        <span class="py-keyword">for</span> <span class="py-name">test</span><span class="py-op">,</span> <span class="py-name">expected</span> <span class="py-keyword">in</span> <span id="link-10" class="py-name"><a title="cssutils.tests" class="py-name" href="#" onclick="doclink('link-10', 'tests', 'Package cssutils.tests=cssutils.tests-module.html'); return false;">tests</a></span></span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">114</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">debug</span><span class="py-op">:</span> </span>
+<span class="py-lineno">115</span>  <span class="py-line">                <span class="py-keyword">print</span> <span class="py-string">'"%s"'</span> <span class="py-op">%</span> <span class="py-name">test</span> </span>
+<span class="py-lineno">116</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">assertRaises</span><span class="py-op">(</span><span class="py-name">expected</span><span class="py-op">,</span> <span class="py-name">self</span><span class="py-op">.</span><span id="link-11" class="py-name"><a title="cssutils.css.csscharsetrule.p
+cssutils.css.property.p
+cssutils.parse'.p" class="py-name" href="#" onclick="doclink('link-11', 'p', 'Variable cssutils.css.csscharsetrule.p=cssutils.css.csscharsetrule-module.html#p,Variable cssutils.css.property.p=cssutils.css.property-module.html#p,Variable cssutils.parse'.p=cssutils.parse%27-module.html#p'); return false;">p</a></span></span><span class="py-op">.</span><span id="link-12" class="py-name"><a title="cssutils.parse'.CSSParser.parseString
+cssutils.parseString" class="py-name" href="#" onclick="doclink('link-12', 'parseString', 'Method cssutils.parse'.CSSParser.parseString()=cssutils.parse%27.CSSParser-class.html#parseString,Function cssutils.parseString()=cssutils-module.html#parseString'); return false;">parseString</a></span></span><span class="py-op">,</span> <span class="py-name">test</span><span class="py-op">)</span> </span>
+</div><span class="py-lineno">117</span>  <span class="py-line"> </span>
+<span class="py-lineno">118</span>  <span class="py-line"> </span>
+<a name="BaseTestCase.do_equal_r"></a><div id="BaseTestCase.do_equal_r-def"><span class="py-lineno">119</span> <a class="py-toggle" href="#" id="BaseTestCase.do_equal_r-toggle" onclick="toggle('BaseTestCase.do_equal_r'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.tests.basetest.BaseTestCase-class.html#do_equal_r">do_equal_r</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">tests</span><span class="py-op">,</span> <span class="py-param">att</span><span class="py-op">=</span><span class="py-string">'cssText'</span><span class="py-op">,</span> <span class="py-param">debug</span><span class="py-op">=</span><span class="py-name">False</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="BaseTestCase.do_equal_r-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BaseTestCase.do_equal_r-expanded"><span class="py-lineno">120</span>  <span class="py-line">        <span class="py-comment"># sets attribute att of self.r and asserts Equal</span> </span>
+<span class="py-lineno">121</span>  <span class="py-line"><span class="py-comment"></span>        <span class="py-keyword">for</span> <span class="py-name">test</span><span class="py-op">,</span> <span class="py-name">expected</span> <span class="py-keyword">in</span> <span id="link-13" class="py-name"><a title="cssutils.tests" class="py-name" href="#" onclick="doclink('link-13', 'tests', 'Package cssutils.tests=cssutils.tests-module.html'); return false;">tests</a></span></span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">122</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">debug</span><span class="py-op">:</span> </span>
+<span class="py-lineno">123</span>  <span class="py-line">                <span class="py-keyword">print</span> <span class="py-string">'"%s"'</span> <span class="py-op">%</span> <span class="py-name">test</span> </span>
+<span class="py-lineno">124</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span id="link-14" class="py-name"><a title="cssutils.css.csspagerule.r
+cssutils.css.cssstylerule.r" class="py-name" href="#" onclick="doclink('link-14', 'r', 'Variable cssutils.css.csspagerule.r=cssutils.css.csspagerule-module.html#r,Variable cssutils.css.cssstylerule.r=cssutils.css.cssstylerule-module.html#r'); return false;">r</a></span></span><span class="py-op">.</span><span class="py-name">__setattr__</span><span class="py-op">(</span><span class="py-name">att</span><span class="py-op">,</span> <span class="py-name">test</span><span class="py-op">)</span> </span>
+<span class="py-lineno">125</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">expected</span> <span class="py-keyword">is</span> <span class="py-name">None</span><span class="py-op">:</span> </span>
+<span class="py-lineno">126</span>  <span class="py-line">                <span class="py-name">expected</span> <span class="py-op">=</span> <span class="py-name">test</span> </span>
+<span class="py-lineno">127</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">assertEqual</span><span class="py-op">(</span><span class="py-name">expected</span><span class="py-op">,</span> <span class="py-name">self</span><span class="py-op">.</span><span id="link-15" class="py-name"><a title="cssutils.css.csspagerule.r
+cssutils.css.cssstylerule.r" class="py-name" href="#" onclick="doclink('link-15', 'r', 'Variable cssutils.css.csspagerule.r=cssutils.css.csspagerule-module.html#r,Variable cssutils.css.cssstylerule.r=cssutils.css.cssstylerule-module.html#r'); return false;">r</a></span></span><span class="py-op">.</span><span class="py-name">__getattribute__</span><span class="py-op">(</span><span class="py-name">att</span><span class="py-op">)</span><span class="py-op">)</span> </span>
+</div><span class="py-lineno">128</span>  <span class="py-line"> </span>
+<a name="BaseTestCase.do_raise_r"></a><div id="BaseTestCase.do_raise_r-def"><span class="py-lineno">129</span> <a class="py-toggle" href="#" id="BaseTestCase.do_raise_r-toggle" onclick="toggle('BaseTestCase.do_raise_r'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.tests.basetest.BaseTestCase-class.html#do_raise_r">do_raise_r</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">tests</span><span class="py-op">,</span> <span class="py-param">att</span><span class="py-op">=</span><span class="py-string">'_setCssText'</span><span class="py-op">,</span> <span class="py-param">debug</span><span class="py-op">=</span><span class="py-name">False</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="BaseTestCase.do_raise_r-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BaseTestCase.do_raise_r-expanded"><span class="py-lineno">130</span>  <span class="py-line">        <span class="py-comment"># sets self.r and asserts raise</span> </span>
+<span class="py-lineno">131</span>  <span class="py-line"><span class="py-comment"></span>        <span class="py-keyword">for</span> <span class="py-name">test</span><span class="py-op">,</span> <span class="py-name">expected</span> <span class="py-keyword">in</span> <span id="link-16" class="py-name"><a title="cssutils.tests" class="py-name" href="#" onclick="doclink('link-16', 'tests', 'Package cssutils.tests=cssutils.tests-module.html'); return false;">tests</a></span></span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">132</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">debug</span><span class="py-op">:</span> </span>
+<span class="py-lineno">133</span>  <span class="py-line">                <span class="py-keyword">print</span> <span class="py-string">'"%s"'</span> <span class="py-op">%</span> <span class="py-name">test</span> </span>
+<span class="py-lineno">134</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">assertRaises</span><span class="py-op">(</span><span class="py-name">expected</span><span class="py-op">,</span> <span class="py-name">self</span><span class="py-op">.</span><span id="link-17" class="py-name"><a title="cssutils.css.csspagerule.r
+cssutils.css.cssstylerule.r" class="py-name" href="#" onclick="doclink('link-17', 'r', 'Variable cssutils.css.csspagerule.r=cssutils.css.csspagerule-module.html#r,Variable cssutils.css.cssstylerule.r=cssutils.css.cssstylerule-module.html#r'); return false;">r</a></span></span><span class="py-op">.</span><span class="py-name">__getattribute__</span><span class="py-op">(</span><span class="py-name">att</span><span class="py-op">)</span><span class="py-op">,</span> <span class="py-name">test</span><span class="py-op">)</span> </span>
+</div></div><span class="py-lineno">135</span>  <span class="py-line"> </span><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:20 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

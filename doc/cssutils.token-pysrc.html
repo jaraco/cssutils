@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.token</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        Module&nbsp;token
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.token-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="cssutils.token-module.html">Module cssutils.token</a></h1>
+<pre class="py-src">
+<span class="py-lineno">  1</span>  <span class="py-line"><span class="py-comment">#!/usr/bin/env python</span> </span>
+<span class="py-lineno">  2</span>  <span class="py-line"><span class="py-comment"></span><span class="py-docstring">"""</span> </span>
+<span class="py-lineno">  3</span>  <span class="py-line"><span class="py-docstring">Classes used by Tokenizer and Parser</span> </span>
+<span class="py-lineno">  4</span>  <span class="py-line"><span class="py-docstring">"""</span> </span>
+<span class="py-lineno">  5</span>  <span class="py-line"><span class="py-name">__all__</span> <span class="py-op">=</span> <span class="py-op">[</span><span class="py-string">'Token'</span><span class="py-op">,</span> <span class="py-string">'Tokenre'</span><span class="py-op">]</span> </span>
+<span class="py-lineno">  6</span>  <span class="py-line"><span class="py-name">__docformat__</span> <span class="py-op">=</span> <span class="py-string">'restructuredtext'</span> </span>
+<span class="py-lineno">  7</span>  <span class="py-line"><span id="link-0" class="py-name"><a title="cssutils.__version__
+cssutils.css.__version__
+cssutils.css.csscharsetrule.__version__
+cssutils.css.csscomment.__version__
+cssutils.css.cssimportrule.__version__
+cssutils.css.cssmediarule.__version__
+cssutils.css.cssnamespacerule.__version__
+cssutils.css.csspagerule.__version__
+cssutils.css.cssproperties.__version__
+cssutils.css.cssrule.__version__
+cssutils.css.cssrulelist.__version__
+cssutils.css.cssstyledeclaration.__version__
+cssutils.css.cssstylerule.__version__
+cssutils.css.cssstylesheet.__version__
+cssutils.css.cssunknownrule.__version__
+cssutils.css.cssvalue.__version__
+cssutils.css.property.__version__
+cssutils.css.selector.__version__
+cssutils.css.selectorlist.__version__
+cssutils.domimplementationcss.__version__
+cssutils.errorhandler.__version__
+cssutils.parse'.__version__
+cssutils.scripts.__version__
+cssutils.serialize.__version__
+cssutils.stylesheets.__version__
+cssutils.stylesheets.medialist.__version__
+cssutils.stylesheets.stylesheet.__version__
+cssutils.stylesheets.stylesheetlist.__version__
+cssutils.tests.__version__
+cssutils.tests.basetest.__version__
+cssutils.tests.test_csscharsetrule.__version__
+cssutils.tests.test_csscomment.__version__
+cssutils.tests.test_cssimportrule.__version__
+cssutils.tests.test_cssmediarule.__version__
+cssutils.tests.test_cssnamespacerule.__version__
+cssutils.tests.test_csspagerule.__version__
+cssutils.tests.test_cssproperties.__version__
+cssutils.tests.test_cssrule.__version__
+cssutils.tests.test_cssrulelist.__version__
+cssutils.tests.test_cssstyledeclaration.__version__
+cssutils.tests.test_cssstylerule.__version__
+cssutils.tests.test_cssstylesheet.__version__
+cssutils.tests.test_cssunknownrule.__version__
+cssutils.tests.test_cssutils.__version__
+cssutils.tests.test_cssutilsimport.__version__
+cssutils.tests.test_cssvalue.__version__
+cssutils.tests.test_medialist.__version__
+cssutils.tests.test_parse.__version__
+cssutils.tests.test_property.__version__
+cssutils.tests.test_selector.__version__
+cssutils.tests.test_selectorlist.__version__
+cssutils.tests.test_serialize.__version__
+cssutils.tests.test_token.__version__
+cssutils.tests.test_tokenize.__version__
+cssutils.token.__version__
+cssutils.tokenize.__version__
+cssutils.util.__version__" class="py-name" href="#" onclick="doclink('link-0', '__version__', 'Variable cssutils.__version__=cssutils-module.html#__version__,Variable cssutils.css.__version__=cssutils.css-module.html#__version__,Variable cssutils.css.csscharsetrule.__version__=cssutils.css.csscharsetrule-module.html#__version__,Variable cssutils.css.csscomment.__version__=cssutils.css.csscomment-module.html#__version__,Variable cssutils.css.cssimportrule.__version__=cssutils.css.cssimportrule-module.html#__version__,Variable cssutils.css.cssmediarule.__version__=cssutils.css.cssmediarule-module.html#__version__,Variable cssutils.css.cssnamespacerule.__version__=cssutils.css.cssnamespacerule-module.html#__version__,Variable cssutils.css.csspagerule.__version__=cssutils.css.csspagerule-module.html#__version__,Variable cssutils.css.cssproperties.__version__=cssutils.css.cssproperties-module.html#__version__,Variable cssutils.css.cssrule.__version__=cssutils.css.cssrule-module.html#__version__,Variable cssutils.css.cssrulelist.__version__=cssutils.css.cssrulelist-module.html#__version__,Variable cssutils.css.cssstyledeclaration.__version__=cssutils.css.cssstyledeclaration-module.html#__version__,Variable cssutils.css.cssstylerule.__version__=cssutils.css.cssstylerule-module.html#__version__,Variable cssutils.css.cssstylesheet.__version__=cssutils.css.cssstylesheet-module.html#__version__,Variable cssutils.css.cssunknownrule.__version__=cssutils.css.cssunknownrule-module.html#__version__,Variable cssutils.css.cssvalue.__version__=cssutils.css.cssvalue-module.html#__version__,Variable cssutils.css.property.__version__=cssutils.css.property-module.html#__version__,Variable cssutils.css.selector.__version__=cssutils.css.selector-module.html#__version__,Variable cssutils.css.selectorlist.__version__=cssutils.css.selectorlist-module.html#__version__,Variable cssutils.domimplementationcss.__version__=cssutils.domimplementationcss-module.html#__version__,Variable cssutils.errorhandler.__version__=cssutils.errorhandler-module.html#__version__,Variable cssutils.parse'.__version__=cssutils.parse%27-module.html#__version__,Variable cssutils.scripts.__version__=cssutils.scripts-module.html#__version__,Variable cssutils.serialize.__version__=cssutils.serialize-module.html#__version__,Variable cssutils.stylesheets.__version__=cssutils.stylesheets-module.html#__version__,Variable cssutils.stylesheets.medialist.__version__=cssutils.stylesheets.medialist-module.html#__version__,Variable cssutils.stylesheets.stylesheet.__version__=cssutils.stylesheets.stylesheet-module.html#__version__,Variable cssutils.stylesheets.stylesheetlist.__version__=cssutils.stylesheets.stylesheetlist-module.html#__version__,Variable cssutils.tests.__version__=cssutils.tests-module.html#__version__,Variable cssutils.tests.basetest.__version__=cssutils.tests.basetest-module.html#__version__,Variable cssutils.tests.test_csscharsetrule.__version__=cssutils.tests.test_csscharsetrule-module.html#__version__,Variable cssutils.tests.test_csscomment.__version__=cssutils.tests.test_csscomment-module.html#__version__,Variable cssutils.tests.test_cssimportrule.__version__=cssutils.tests.test_cssimportrule-module.html#__version__,Variable cssutils.tests.test_cssmediarule.__version__=cssutils.tests.test_cssmediarule-module.html#__version__,Variable cssutils.tests.test_cssnamespacerule.__version__=cssutils.tests.test_cssnamespacerule-module.html#__version__,Variable cssutils.tests.test_csspagerule.__version__=cssutils.tests.test_csspagerule-module.html#__version__,Variable cssutils.tests.test_cssproperties.__version__=cssutils.tests.test_cssproperties-module.html#__version__,Variable cssutils.tests.test_cssrule.__version__=cssutils.tests.test_cssrule-module.html#__version__,Variable cssutils.tests.test_cssrulelist.__version__=cssutils.tests.test_cssrulelist-module.html#__version__,Variable cssutils.tests.test_cssstyledeclaration.__version__=cssutils.tests.test_cssstyledeclaration-module.html#__version__,Variable cssutils.tests.test_cssstylerule.__version__=cssutils.tests.test_cssstylerule-module.html#__version__,Variable cssutils.tests.test_cssstylesheet.__version__=cssutils.tests.test_cssstylesheet-module.html#__version__,Variable cssutils.tests.test_cssunknownrule.__version__=cssutils.tests.test_cssunknownrule-module.html#__version__,Variable cssutils.tests.test_cssutils.__version__=cssutils.tests.test_cssutils-module.html#__version__,Variable cssutils.tests.test_cssutilsimport.__version__=cssutils.tests.test_cssutilsimport-module.html#__version__,Variable cssutils.tests.test_cssvalue.__version__=cssutils.tests.test_cssvalue-module.html#__version__,Variable cssutils.tests.test_medialist.__version__=cssutils.tests.test_medialist-module.html#__version__,Variable cssutils.tests.test_parse.__version__=cssutils.tests.test_parse-module.html#__version__,Variable cssutils.tests.test_property.__version__=cssutils.tests.test_property-module.html#__version__,Variable cssutils.tests.test_selector.__version__=cssutils.tests.test_selector-module.html#__version__,Variable cssutils.tests.test_selectorlist.__version__=cssutils.tests.test_selectorlist-module.html#__version__,Variable cssutils.tests.test_serialize.__version__=cssutils.tests.test_serialize-module.html#__version__,Variable cssutils.tests.test_token.__version__=cssutils.tests.test_token-module.html#__version__,Variable cssutils.tests.test_tokenize.__version__=cssutils.tests.test_tokenize-module.html#__version__,Variable cssutils.token.__version__=cssutils.token-module.html#__version__,Variable cssutils.tokenize.__version__=cssutils.tokenize-module.html#__version__,Variable cssutils.util.__version__=cssutils.util-module.html#__version__'); return false;">__version__</a></span></span> <span class="py-op">=</span> <span class="py-string">'0.9.1b3'</span> </span>
+<span class="py-lineno">  8</span>  <span class="py-line"> </span>
+<span class="py-lineno">  9</span>  <span class="py-line"><span class="py-keyword">import</span> <span class="py-name">re</span> </span>
+<span class="py-lineno"> 10</span>  <span class="py-line"><span class="py-keyword">import</span> <span id="link-1" class="py-name"><a title="cssutils.util" class="py-name" href="#" onclick="doclink('link-1', 'util', 'Module cssutils.util=cssutils.util-module.html'); return false;">util</a></span></span> </span>
+<span class="py-lineno"> 11</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 12</span>  <span class="py-line"> </span>
+<a name="Token"></a><div id="Token-def"><span class="py-lineno"> 13</span> <a class="py-toggle" href="#" id="Token-toggle" onclick="toggle('Token'); return false;">-</a><span class="py-line"><span class="py-keyword">class</span> <a class="py-def-name" href="cssutils.token.Token-class.html">Token</a><span class="py-op">(</span><span class="py-base-class">object</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Token-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Token-expanded"><span class="py-lineno"> 14</span>  <span class="py-line">    <span class="py-docstring">"""</span> </span>
+<span class="py-lineno"> 15</span>  <span class="py-line"><span class="py-docstring">    constants for Tokenizer and Parser to use</span> </span>
+<span class="py-lineno"> 16</span>  <span class="py-line"><span class="py-docstring">    values are just identifiers!</span> </span>
+<span class="py-lineno"> 17</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 18</span>  <span class="py-line"><span class="py-docstring">    a CSS Token consisting of</span> </span>
+<span class="py-lineno"> 19</span>  <span class="py-line"><span class="py-docstring">    </span> </span>
+<span class="py-lineno"> 20</span>  <span class="py-line"><span class="py-docstring">    line</span> </span>
+<span class="py-lineno"> 21</span>  <span class="py-line"><span class="py-docstring">        startline of the token</span> </span>
+<span class="py-lineno"> 22</span>  <span class="py-line"><span class="py-docstring">    col</span> </span>
+<span class="py-lineno"> 23</span>  <span class="py-line"><span class="py-docstring">        startcol of the token</span> </span>
+<span class="py-lineno"> 24</span>  <span class="py-line"><span class="py-docstring">    type</span> </span>
+<span class="py-lineno"> 25</span>  <span class="py-line"><span class="py-docstring">        of the token</span> </span>
+<span class="py-lineno"> 26</span>  <span class="py-line"><span class="py-docstring">    value</span> </span>
+<span class="py-lineno"> 27</span>  <span class="py-line"><span class="py-docstring">        literal value of the token including backslashes</span> </span>
+<span class="py-lineno"> 28</span>  <span class="py-line"><span class="py-docstring">    normalvalue</span> </span>
+<span class="py-lineno"> 29</span>  <span class="py-line"><span class="py-docstring">        normalized value of the token</span> </span>
+<span class="py-lineno"> 30</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 31</span>  <span class="py-line"><span class="py-docstring">        - no ``\`` like ``c\olor``</span> </span>
+<span class="py-lineno"> 32</span>  <span class="py-line"><span class="py-docstring">        - for type Token.S normalvalue is always u' ' - a single space</span> </span>
+<span class="py-lineno"> 33</span>  <span class="py-line"><span class="py-docstring">        - lowercase</span> </span>
+<span class="py-lineno"> 34</span>  <span class="py-line"><span class="py-docstring">        </span> </span>
+<span class="py-lineno"> 35</span>  <span class="py-line"><span class="py-docstring">    literal</span> </span>
+<span class="py-lineno"> 36</span>  <span class="py-line"><span class="py-docstring">        REMOVED in 0.9.1 (literal value of the token including backslashes)</span> </span>
+<span class="py-lineno"> 37</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 38</span>  <span class="py-line"><span class="py-docstring">    So e.g. a token t might initialized with::</span> </span>
+<span class="py-lineno"> 39</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 40</span>  <span class="py-line"><span class="py-docstring">        t = Token(1, 1, Token.IDENT, u'c\olor')</span> </span>
+<span class="py-lineno"> 41</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 42</span>  <span class="py-line"><span class="py-docstring">    resulting in a token with attributes::</span> </span>
+<span class="py-lineno"> 43</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 44</span>  <span class="py-line"><span class="py-docstring">        t.line == 1 </span> </span>
+<span class="py-lineno"> 45</span>  <span class="py-line"><span class="py-docstring">        t.col == 1</span> </span>
+<span class="py-lineno"> 46</span>  <span class="py-line"><span class="py-docstring">        t.type == Token.IDENT</span> </span>
+<span class="py-lineno"> 47</span>  <span class="py-line"><span class="py-docstring">        t.value == u'c\olor'</span> </span>
+<span class="py-lineno"> 48</span>  <span class="py-line"><span class="py-docstring">        t.normalvalue == u'color'</span> </span>
+<span class="py-lineno"> 49</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno"> 50</span>  <span class="py-line"><span class="py-docstring">    includes some CSS3 parts</span> </span>
+<span class="py-lineno"> 51</span>  <span class="py-line"><span class="py-docstring">        http://www.w3.org/TR/css3-selectors/</span> </span>
+<span class="py-lineno"> 52</span>  <span class="py-line"><span class="py-docstring">    """</span> </span>
+<span class="py-lineno"> 53</span>  <span class="py-line">    <span id="link-2" class="py-name"><a title="cssutils.token.Token.IDENT" class="py-name" href="#" onclick="doclink('link-2', 'IDENT', 'Variable cssutils.token.Token.IDENT=cssutils.token.Token-class.html#IDENT'); return false;">IDENT</a></span></span> <span class="py-op">=</span> <span class="py-string">u'{ident}'</span> </span>
+<span class="py-lineno"> 54</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 55</span>  <span class="py-line">    <span id="link-3" class="py-name"><a title="cssutils.token.Token.ATKEYWORD" class="py-name" href="#" onclick="doclink('link-3', 'ATKEYWORD', 'Variable cssutils.token.Token.ATKEYWORD=cssutils.token.Token-class.html#ATKEYWORD'); return false;">ATKEYWORD</a></span></span> <span class="py-op">=</span> <span class="py-string">u'@{ident}'</span> </span>
+<span class="py-lineno"> 56</span>  <span class="py-line">    <span id="link-4" class="py-name"><a title="cssutils.token.Token.IMPORT_SYM" class="py-name" href="#" onclick="doclink('link-4', 'IMPORT_SYM', 'Variable cssutils.token.Token.IMPORT_SYM=cssutils.token.Token-class.html#IMPORT_SYM'); return false;">IMPORT_SYM</a></span></span> <span class="py-op">=</span> <span class="py-string">u'@import'</span> </span>
+<span class="py-lineno"> 57</span>  <span class="py-line">    <span id="link-5" class="py-name"><a title="cssutils.token.Token.PAGE_SYM" class="py-name" href="#" onclick="doclink('link-5', 'PAGE_SYM', 'Variable cssutils.token.Token.PAGE_SYM=cssutils.token.Token-class.html#PAGE_SYM'); return false;">PAGE_SYM</a></span></span> <span class="py-op">=</span> <span class="py-string">u'@page'</span> <span class="py-comment"># not used</span> </span>
+<span class="py-lineno"> 58</span>  <span class="py-line">    <span id="link-6" class="py-name"><a title="cssutils.token.Token.MEDIA_SYM" class="py-name" href="#" onclick="doclink('link-6', 'MEDIA_SYM', 'Variable cssutils.token.Token.MEDIA_SYM=cssutils.token.Token-class.html#MEDIA_SYM'); return false;">MEDIA_SYM</a></span></span> <span class="py-op">=</span> <span class="py-string">u'@media'</span> </span>
+<span class="py-lineno"> 59</span>  <span class="py-line">    <span id="link-7" class="py-name"><a title="cssutils.token.Token.CHARSET_SYM" class="py-name" href="#" onclick="doclink('link-7', 'CHARSET_SYM', 'Variable cssutils.token.Token.CHARSET_SYM=cssutils.token.Token-class.html#CHARSET_SYM'); return false;">CHARSET_SYM</a></span></span> <span class="py-op">=</span> <span class="py-string">u'@charset'</span> </span>
+<span class="py-lineno"> 60</span>  <span class="py-line">    <span id="link-8" class="py-name"><a title="cssutils.token.Token.NAMESPACE_SYM" class="py-name" href="#" onclick="doclink('link-8', 'NAMESPACE_SYM', 'Variable cssutils.token.Token.NAMESPACE_SYM=cssutils.token.Token-class.html#NAMESPACE_SYM'); return false;">NAMESPACE_SYM</a></span></span> <span class="py-op">=</span> <span class="py-string">u'@namespace'</span> </span>
+<span class="py-lineno"> 61</span>  <span class="py-line">     </span>
+<span class="py-lineno"> 62</span>  <span class="py-line">    <span id="link-9" class="py-name"><a title="cssutils.token.Token.STRING" class="py-name" href="#" onclick="doclink('link-9', 'STRING', 'Variable cssutils.token.Token.STRING=cssutils.token.Token-class.html#STRING'); return false;">STRING</a></span></span> <span class="py-op">=</span> <span class="py-string">u'{string}'</span> </span>
+<span class="py-lineno"> 63</span>  <span class="py-line">    <span id="link-10" class="py-name"><a title="cssutils.token.Token.HASH
+cssutils.token.Tokenre.HASH" class="py-name" href="#" onclick="doclink('link-10', 'HASH', 'Variable cssutils.token.Token.HASH=cssutils.token.Token-class.html#HASH,Variable cssutils.token.Tokenre.HASH=cssutils.token.Tokenre-class.html#HASH'); return false;">HASH</a></span></span> <span class="py-op">=</span> <span class="py-string">u'HASH #{name}'</span>   </span>
+<span class="py-lineno"> 64</span>  <span class="py-line">    <span id="link-11" class="py-name"><a title="cssutils.token.Token.NUMBER" class="py-name" href="#" onclick="doclink('link-11', 'NUMBER', 'Variable cssutils.token.Token.NUMBER=cssutils.token.Token-class.html#NUMBER'); return false;">NUMBER</a></span></span> <span class="py-op">=</span> <span class="py-string">u'{num}'</span> </span>
+<span class="py-lineno"> 65</span>  <span class="py-line">    <span id="link-12" class="py-name"><a title="cssutils.token.Token.PERCENTAGE" class="py-name" href="#" onclick="doclink('link-12', 'PERCENTAGE', 'Variable cssutils.token.Token.PERCENTAGE=cssutils.token.Token-class.html#PERCENTAGE'); return false;">PERCENTAGE</a></span></span> <span class="py-op">=</span> <span class="py-string">u'PERCENTAGE {num}%'</span> </span>
+<span class="py-lineno"> 66</span>  <span class="py-line">    <span id="link-13" class="py-name"><a title="cssutils.token.Token.DIMENSION
+cssutils.token.Tokenre.DIMENSION" class="py-name" href="#" onclick="doclink('link-13', 'DIMENSION', 'Variable cssutils.token.Token.DIMENSION=cssutils.token.Token-class.html#DIMENSION,Variable cssutils.token.Tokenre.DIMENSION=cssutils.token.Tokenre-class.html#DIMENSION'); return false;">DIMENSION</a></span></span> <span class="py-op">=</span> <span class="py-string">u'DIMENSION {num}{ident}'</span> </span>
+<span class="py-lineno"> 67</span>  <span class="py-line">    <span class="py-comment"># TODO</span> </span>
+<span class="py-lineno"> 68</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-14" class="py-name"><a title="cssutils.token.Token.URI
+cssutils.token.Tokenre.URI" class="py-name" href="#" onclick="doclink('link-14', 'URI', 'Variable cssutils.token.Token.URI=cssutils.token.Token-class.html#URI,Variable cssutils.token.Tokenre.URI=cssutils.token.Tokenre-class.html#URI'); return false;">URI</a></span></span> <span class="py-op">=</span> <span class="py-string">u'url\({w}{string}{w}\)|url\({w}([!#$%&amp;*-~]|{nonascii}|{escape})*{w}\)'</span> </span>
+<span class="py-lineno"> 69</span>  <span class="py-line">    <span class="py-comment"># TODO?</span> </span>
+<span class="py-lineno"> 70</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-15" class="py-name"><a title="cssutils.token.Token.UNICODE_RANGE" class="py-name" href="#" onclick="doclink('link-15', 'UNICODE_RANGE', 'Variable cssutils.token.Token.UNICODE_RANGE=cssutils.token.Token-class.html#UNICODE_RANGE'); return false;">UNICODE_RANGE</a></span></span> <span class="py-op">=</span> <span class="py-string">u'U\+[0-9A-F?]{1,6}(-[0-9A-F]{1,6})?'</span> </span>
+<span class="py-lineno"> 71</span>  <span class="py-line">    <span id="link-16" class="py-name"><a title="cssutils.token.Token.CDO" class="py-name" href="#" onclick="doclink('link-16', 'CDO', 'Variable cssutils.token.Token.CDO=cssutils.token.Token-class.html#CDO'); return false;">CDO</a></span></span> <span class="py-op">=</span> <span class="py-string">u'&lt;!--'</span> </span>
+<span class="py-lineno"> 72</span>  <span class="py-line">    <span id="link-17" class="py-name"><a title="cssutils.token.Token.CDC" class="py-name" href="#" onclick="doclink('link-17', 'CDC', 'Variable cssutils.token.Token.CDC=cssutils.token.Token-class.html#CDC'); return false;">CDC</a></span></span> <span class="py-op">=</span> <span class="py-string">u'--&gt;'</span> </span>
+<span class="py-lineno"> 73</span>  <span class="py-line">    <span id="link-18" class="py-name"><a title="cssutils.token.Token.SEMICOLON" class="py-name" href="#" onclick="doclink('link-18', 'SEMICOLON', 'Variable cssutils.token.Token.SEMICOLON=cssutils.token.Token-class.html#SEMICOLON'); return false;">SEMICOLON</a></span></span> <span class="py-op">=</span> <span class="py-string">u';'</span> </span>
+<span class="py-lineno"> 74</span>  <span class="py-line">    <span id="link-19" class="py-name"><a title="cssutils.token.Token.LBRACE" class="py-name" href="#" onclick="doclink('link-19', 'LBRACE', 'Variable cssutils.token.Token.LBRACE=cssutils.token.Token-class.html#LBRACE'); return false;">LBRACE</a></span></span> <span class="py-op">=</span> <span class="py-string">u'{'</span> </span>
+<span class="py-lineno"> 75</span>  <span class="py-line">    <span id="link-20" class="py-name"><a title="cssutils.token.Token.RBRACE" class="py-name" href="#" onclick="doclink('link-20', 'RBRACE', 'Variable cssutils.token.Token.RBRACE=cssutils.token.Token-class.html#RBRACE'); return false;">RBRACE</a></span></span> <span class="py-op">=</span> <span class="py-string">u'}'</span> </span>
+<span class="py-lineno"> 76</span>  <span class="py-line">    <span id="link-21" class="py-name"><a title="cssutils.token.Token.LBRACKET" class="py-name" href="#" onclick="doclink('link-21', 'LBRACKET', 'Variable cssutils.token.Token.LBRACKET=cssutils.token.Token-class.html#LBRACKET'); return false;">LBRACKET</a></span></span> <span class="py-op">=</span> <span class="py-string">u'['</span> </span>
+<span class="py-lineno"> 77</span>  <span class="py-line">    <span id="link-22" class="py-name"><a title="cssutils.token.Token.RBRACKET" class="py-name" href="#" onclick="doclink('link-22', 'RBRACKET', 'Variable cssutils.token.Token.RBRACKET=cssutils.token.Token-class.html#RBRACKET'); return false;">RBRACKET</a></span></span> <span class="py-op">=</span> <span class="py-string">u']'</span> </span>
+<span class="py-lineno"> 78</span>  <span class="py-line">    <span id="link-23" class="py-name"><a title="cssutils.token.Token.LPARANTHESIS" class="py-name" href="#" onclick="doclink('link-23', 'LPARANTHESIS', 'Variable cssutils.token.Token.LPARANTHESIS=cssutils.token.Token-class.html#LPARANTHESIS'); return false;">LPARANTHESIS</a></span></span> <span class="py-op">=</span> <span class="py-string">u'('</span> </span>
+<span class="py-lineno"> 79</span>  <span class="py-line">    <span id="link-24" class="py-name"><a title="cssutils.token.Token.RPARANTHESIS" class="py-name" href="#" onclick="doclink('link-24', 'RPARANTHESIS', 'Variable cssutils.token.Token.RPARANTHESIS=cssutils.token.Token-class.html#RPARANTHESIS'); return false;">RPARANTHESIS</a></span></span> <span class="py-op">=</span> <span class="py-string">u')'</span> </span>
+<span class="py-lineno"> 80</span>  <span class="py-line">    <span id="link-25" class="py-name"><a title="cssutils.token.Token.S" class="py-name" href="#" onclick="doclink('link-25', 'S', 'Variable cssutils.token.Token.S=cssutils.token.Token-class.html#S'); return false;">S</a></span></span> <span class="py-op">=</span> <span class="py-string">u'[ \t\r\n\f]+'</span> </span>
+<span class="py-lineno"> 81</span>  <span class="py-line">    <span id="link-26" class="py-name"><a title="cssutils.css.cssrule.CSSRule.COMMENT
+cssutils.token.Token.COMMENT" class="py-name" href="#" onclick="doclink('link-26', 'COMMENT', 'Variable cssutils.css.cssrule.CSSRule.COMMENT=cssutils.css.cssrule.CSSRule-class.html#COMMENT,Variable cssutils.token.Token.COMMENT=cssutils.token.Token-class.html#COMMENT'); return false;">COMMENT</a></span></span> <span class="py-op">=</span> <span class="py-string">u'COMMENT'</span> <span class="py-comment"># no comment between !important but S ist handled</span> </span>
+<span class="py-lineno"> 82</span>  <span class="py-line">    <span id="link-27" class="py-name"><a title="cssutils.token.Token.FUNCTION" class="py-name" href="#" onclick="doclink('link-27', 'FUNCTION', 'Variable cssutils.token.Token.FUNCTION=cssutils.token.Token-class.html#FUNCTION'); return false;">FUNCTION</a></span></span> <span class="py-op">=</span> <span class="py-string">u'{ident}\('</span> </span>
+<span class="py-lineno"> 83</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 84</span>  <span class="py-line">    <span id="link-28" class="py-name"><a title="cssutils.token.Token.IMPORTANT_SYM" class="py-name" href="#" onclick="doclink('link-28', 'IMPORTANT_SYM', 'Variable cssutils.token.Token.IMPORTANT_SYM=cssutils.token.Token-class.html#IMPORTANT_SYM'); return false;">IMPORTANT_SYM</a></span></span> <span class="py-op">=</span> <span class="py-string">u'!{w}important'</span> </span>
+<span class="py-lineno"> 85</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 86</span>  <span class="py-line">    <span id="link-29" class="py-name"><a title="cssutils.token.Token.DELIM" class="py-name" href="#" onclick="doclink('link-29', 'DELIM', 'Variable cssutils.token.Token.DELIM=cssutils.token.Token-class.html#DELIM'); return false;">DELIM</a></span></span> <span class="py-op">=</span> <span class="py-string">u'DELIM'</span>    </span>
+<span class="py-lineno"> 87</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 88</span>  <span class="py-line">    <span id="link-30" class="py-name"><a title="cssutils.token.Token.UNIVERSAL" class="py-name" href="#" onclick="doclink('link-30', 'UNIVERSAL', 'Variable cssutils.token.Token.UNIVERSAL=cssutils.token.Token-class.html#UNIVERSAL'); return false;">UNIVERSAL</a></span></span> <span class="py-op">=</span> <span class="py-string">u'*'</span> </span>
+<span class="py-lineno"> 89</span>  <span class="py-line">    <span id="link-31" class="py-name"><a title="cssutils.token.Token.CLASS" class="py-name" href="#" onclick="doclink('link-31', 'CLASS', 'Variable cssutils.token.Token.CLASS=cssutils.token.Token-class.html#CLASS'); return false;">CLASS</a></span></span> <span class="py-op">=</span> <span class="py-string">u'.'</span> </span>
+<span class="py-lineno"> 90</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 91</span>  <span class="py-line">    <span class="py-comment"># combinators</span> </span>
+<span class="py-lineno"> 92</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-32" class="py-name"><a title="cssutils.token.Token.GREATER" class="py-name" href="#" onclick="doclink('link-32', 'GREATER', 'Variable cssutils.token.Token.GREATER=cssutils.token.Token-class.html#GREATER'); return false;">GREATER</a></span></span> <span class="py-op">=</span> <span class="py-string">u'&gt;'</span> </span>
+<span class="py-lineno"> 93</span>  <span class="py-line">    <span id="link-33" class="py-name"><a title="cssutils.token.Token.PLUS" class="py-name" href="#" onclick="doclink('link-33', 'PLUS', 'Variable cssutils.token.Token.PLUS=cssutils.token.Token-class.html#PLUS'); return false;">PLUS</a></span></span> <span class="py-op">=</span> <span class="py-string">u'+'</span> </span>
+<span class="py-lineno"> 94</span>  <span class="py-line">    <span id="link-34" class="py-name"><a title="cssutils.token.Token.TILDE" class="py-name" href="#" onclick="doclink('link-34', 'TILDE', 'Variable cssutils.token.Token.TILDE=cssutils.token.Token-class.html#TILDE'); return false;">TILDE</a></span></span> <span class="py-op">=</span> <span class="py-string">u'~'</span> </span>
+<span class="py-lineno"> 95</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 96</span>  <span class="py-line">    <span class="py-comment"># atts:</span> </span>
+<span class="py-lineno"> 97</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-35" class="py-name"><a title="cssutils.token.Token.INCLUDES" class="py-name" href="#" onclick="doclink('link-35', 'INCLUDES', 'Variable cssutils.token.Token.INCLUDES=cssutils.token.Token-class.html#INCLUDES'); return false;">INCLUDES</a></span></span> <span class="py-op">=</span> <span class="py-string">u'~='</span> </span>
+<span class="py-lineno"> 98</span>  <span class="py-line">    <span id="link-36" class="py-name"><a title="cssutils.token.Token.DASHMATCH" class="py-name" href="#" onclick="doclink('link-36', 'DASHMATCH', 'Variable cssutils.token.Token.DASHMATCH=cssutils.token.Token-class.html#DASHMATCH'); return false;">DASHMATCH</a></span></span> <span class="py-op">=</span> <span class="py-string">u'|='</span> </span>
+<span class="py-lineno"> 99</span>  <span class="py-line">    <span class="py-comment"># CSS3</span> </span>
+<span class="py-lineno">100</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-37" class="py-name"><a title="cssutils.token.Token.PREFIXMATCH" class="py-name" href="#" onclick="doclink('link-37', 'PREFIXMATCH', 'Variable cssutils.token.Token.PREFIXMATCH=cssutils.token.Token-class.html#PREFIXMATCH'); return false;">PREFIXMATCH</a></span></span> <span class="py-op">=</span> <span class="py-string">u'^='</span>  </span>
+<span class="py-lineno">101</span>  <span class="py-line">    <span id="link-38" class="py-name"><a title="cssutils.token.Token.SUFFIXMATCH" class="py-name" href="#" onclick="doclink('link-38', 'SUFFIXMATCH', 'Variable cssutils.token.Token.SUFFIXMATCH=cssutils.token.Token-class.html#SUFFIXMATCH'); return false;">SUFFIXMATCH</a></span></span> <span class="py-op">=</span> <span class="py-string">u'$='</span> </span>
+<span class="py-lineno">102</span>  <span class="py-line">    <span id="link-39" class="py-name"><a title="cssutils.token.Token.SUBSTRINGMATCH" class="py-name" href="#" onclick="doclink('link-39', 'SUBSTRINGMATCH', 'Variable cssutils.token.Token.SUBSTRINGMATCH=cssutils.token.Token-class.html#SUBSTRINGMATCH'); return false;">SUBSTRINGMATCH</a></span></span> <span class="py-op">=</span> <span class="py-string">u'*='</span> </span>
+<span class="py-lineno">103</span>  <span class="py-line">    <span id="link-40" class="py-name"><a title="cssutils.token.Token.PSEUDO_ELEMENT" class="py-name" href="#" onclick="doclink('link-40', 'PSEUDO_ELEMENT', 'Variable cssutils.token.Token.PSEUDO_ELEMENT=cssutils.token.Token-class.html#PSEUDO_ELEMENT'); return false;">PSEUDO_ELEMENT</a></span></span> <span class="py-op">=</span> <span class="py-string">u'::'</span> </span>
+<span class="py-lineno">104</span>  <span class="py-line"> </span>
+<span class="py-lineno">105</span>  <span class="py-line">    <span class="py-comment"># TODO?</span> </span>
+<span class="py-lineno">106</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-41" class="py-name"><a title="cssutils.token.Token.INVALID" class="py-name" href="#" onclick="doclink('link-41', 'INVALID', 'Variable cssutils.token.Token.INVALID=cssutils.token.Token-class.html#INVALID'); return false;">INVALID</a></span></span> <span class="py-op">=</span> <span class="py-string">u'INVALID'</span> </span>
+<span class="py-lineno">107</span>  <span class="py-line">    <span class="py-comment">#{invalid}        return INVALID;</span> </span>
+<span class="py-lineno">108</span>  <span class="py-line"><span class="py-comment"></span> </span>
+<span class="py-lineno">109</span>  <span class="py-line">    <span id="link-42" class="py-name"><a title="cssutils.token.Token.COMMA" class="py-name" href="#" onclick="doclink('link-42', 'COMMA', 'Variable cssutils.token.Token.COMMA=cssutils.token.Token-class.html#COMMA'); return false;">COMMA</a></span></span> <span class="py-op">=</span> <span class="py-string">u','</span> <span class="py-comment"># TODO!</span> </span>
+<span class="py-lineno">110</span>  <span class="py-line">    <span class="py-comment">#EQUALS = u'='</span> </span>
+<span class="py-lineno">111</span>  <span class="py-line"><span class="py-comment"></span>    <span class="py-comment">#DASH = u'-'</span> </span>
+<span class="py-lineno">112</span>  <span class="py-line"><span class="py-comment"></span>    <span class="py-comment">#PIPE = u'|'</span> </span>
+<span class="py-lineno">113</span>  <span class="py-line"><span class="py-comment"></span>    <span class="py-comment">#":not("          return NOT;</span> </span>
+<span class="py-lineno">114</span>  <span class="py-line"><span class="py-comment"></span> </span>
+<span class="py-lineno">115</span>  <span class="py-line"> </span>
+<a name="Token.__init__"></a><div id="Token.__init__-def"><span class="py-lineno">116</span> <a class="py-toggle" href="#" id="Token.__init__-toggle" onclick="toggle('Token.__init__'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.token.Token-class.html#__init__">__init__</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">line</span><span class="py-op">=</span><span class="py-number">1</span><span class="py-op">,</span> <span class="py-param">col</span><span class="py-op">=</span><span class="py-number">1</span><span class="py-op">,</span> <span class="py-param">type</span><span class="py-op">=</span><span class="py-name">None</span><span class="py-op">,</span> <span class="py-param">value</span><span class="py-op">=</span><span class="py-string">u''</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Token.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Token.__init__-expanded"><span class="py-lineno">117</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">line</span> <span class="py-op">=</span> <span class="py-name">line</span> </span>
+<span class="py-lineno">118</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">col</span> <span class="py-op">=</span> <span class="py-name">col</span> </span>
+<span class="py-lineno">119</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span id="link-43" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-43', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span> <span class="py-op">=</span> <span id="link-44" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-44', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span> </span>
+<span class="py-lineno">120</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span id="link-45" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-45', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-op">=</span> <span id="link-46" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-46', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> </span>
+</div><span class="py-lineno">121</span>  <span class="py-line"> </span>
+<span class="py-lineno">122</span>  <span class="py-line"> </span>
+<a name="Token._getvalue"></a><div id="Token._getvalue-def"><span class="py-lineno">123</span> <a class="py-toggle" href="#" id="Token._getvalue-toggle" onclick="toggle('Token._getvalue'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.token.Token-class.html#_getvalue">_getvalue</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Token._getvalue-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Token._getvalue-expanded"><span class="py-lineno">124</span>  <span class="py-line">        <span class="py-keyword">return</span> <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">_value</span> </span>
+</div><span class="py-lineno">125</span>  <span class="py-line">     </span>
+<a name="Token._setvalue"></a><div id="Token._setvalue-def"><span class="py-lineno">126</span> <a class="py-toggle" href="#" id="Token._setvalue-toggle" onclick="toggle('Token._setvalue'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.token.Token-class.html#_setvalue">_setvalue</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">value</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Token._setvalue-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Token._setvalue-expanded"><span class="py-lineno">127</span>  <span class="py-line">        <span class="py-keyword">if</span> <span class="py-name">self</span><span class="py-op">.</span><span id="link-47" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-47', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span> <span class="py-op">==</span> <span id="link-48" class="py-name"><a title="cssutils.token.Token" class="py-name" href="#" onclick="doclink('link-48', 'Token', 'Class cssutils.token.Token=cssutils.token.Token-class.html'); return false;">Token</a></span></span><span class="py-op">.</span><span id="link-49" class="py-name"><a title="cssutils.token.Token.S" class="py-name" href="#" onclick="doclink('link-49', 'S', 'Variable cssutils.token.Token.S=cssutils.token.Token-class.html#S'); return false;">S</a></span></span><span class="py-op">:</span> </span>
+<span class="py-lineno">128</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">normalvalue</span> <span class="py-op">=</span> <span class="py-string">u' '</span> </span>
+<span class="py-lineno">129</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">_value</span> <span class="py-op">=</span> <span id="link-50" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-50', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> </span>
+<span class="py-lineno">130</span>  <span class="py-line">             </span>
+<span class="py-lineno">131</span>  <span class="py-line">        <span class="py-keyword">elif</span> <span class="py-name">self</span><span class="py-op">.</span><span id="link-51" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-51', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span> <span class="py-op">==</span> <span id="link-52" class="py-name"><a title="cssutils.token.Token" class="py-name" href="#" onclick="doclink('link-52', 'Token', 'Class cssutils.token.Token=cssutils.token.Token-class.html'); return false;">Token</a></span></span><span class="py-op">.</span><span id="link-53" class="py-name"><a title="cssutils.token.Token.IDENT" class="py-name" href="#" onclick="doclink('link-53', 'IDENT', 'Variable cssutils.token.Token.IDENT=cssutils.token.Token-class.html#IDENT'); return false;">IDENT</a></span></span><span class="py-op">:</span> </span>
+<span class="py-lineno">132</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">normalvalue</span> <span class="py-op">=</span> <span id="link-54" class="py-name"><a title="cssutils.util" class="py-name" href="#" onclick="doclink('link-54', 'util', 'Module cssutils.util=cssutils.util-module.html'); return false;">util</a></span></span><span class="py-op">.</span><span id="link-55" class="py-name"><a title="cssutils.util.normalize" class="py-name" href="#" onclick="doclink('link-55', 'normalize', 'Function cssutils.util.normalize()=cssutils.util-module.html#normalize'); return false;">normalize</a></span></span><span class="py-op">(</span><span id="link-56" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-56', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">)</span> </span>
+<span class="py-lineno">133</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">_value</span> <span class="py-op">=</span> <span id="link-57" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-57', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> </span>
+<span class="py-lineno">134</span>  <span class="py-line">             </span>
+<span class="py-lineno">135</span>  <span class="py-line">        <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno">136</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">normalvalue</span> <span class="py-op">=</span> <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">_value</span> <span class="py-op">=</span> <span id="link-58" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-58', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> </span>
+</div><span class="py-lineno">137</span>  <span class="py-line"> </span>
+<span class="py-lineno">138</span>  <span class="py-line">    <span id="link-59" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-59', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-op">=</span> <span id="link-60" class="py-name"><a title="cssutils.css.property" class="py-name" href="#" onclick="doclink('link-60', 'property', 'Module cssutils.css.property=cssutils.css.property-module.html'); return false;">property</a></span></span><span class="py-op">(</span><span id="link-61" class="py-name"><a title="cssutils.token.Token._getvalue" class="py-name" href="#" onclick="doclink('link-61', '_getvalue', 'Method cssutils.token.Token._getvalue()=cssutils.token.Token-class.html#_getvalue'); return false;">_getvalue</a></span></span><span class="py-op">,</span> <span id="link-62" class="py-name"><a title="cssutils.token.Token._setvalue" class="py-name" href="#" onclick="doclink('link-62', '_setvalue', 'Method cssutils.token.Token._setvalue()=cssutils.token.Token-class.html#_setvalue'); return false;">_setvalue</a></span></span><span class="py-op">,</span> </span>
+<span class="py-lineno">139</span>  <span class="py-line">                     <span class="py-name">doc</span><span class="py-op">=</span><span class="py-string">'value and normalized value'</span><span class="py-op">)</span> </span>
+<span class="py-lineno">140</span>  <span class="py-line"> </span>
+<span class="py-lineno">141</span>  <span class="py-line">     </span>
+<a name="Token.__eq__"></a><div id="Token.__eq__-def"><span class="py-lineno">142</span> <a class="py-toggle" href="#" id="Token.__eq__-toggle" onclick="toggle('Token.__eq__'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.token.Token-class.html#__eq__">__eq__</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">token</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Token.__eq__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Token.__eq__-expanded"><span class="py-lineno">143</span>  <span class="py-line">        <span class="py-docstring">""" </span> </span>
+<span class="py-lineno">144</span>  <span class="py-line"><span class="py-docstring">        how to compare a token to another </span> </span>
+<span class="py-lineno">145</span>  <span class="py-line"><span class="py-docstring">        """</span> </span>
+<span class="py-lineno">146</span>  <span class="py-line">        <span class="py-keyword">if</span> <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">line</span> <span class="py-op">==</span> <span id="link-63" class="py-name"><a title="cssutils.token" class="py-name" href="#" onclick="doclink('link-63', 'token', 'Module cssutils.token=cssutils.token-module.html'); return false;">token</a></span></span><span class="py-op">.</span><span class="py-name">line</span> <span class="py-keyword">and</span>\ </span>
+<span class="py-lineno">147</span>  <span class="py-line">                       <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">col</span> <span class="py-op">==</span> <span id="link-64" class="py-name"><a title="cssutils.token" class="py-name" href="#" onclick="doclink('link-64', 'token', 'Module cssutils.token=cssutils.token-module.html'); return false;">token</a></span></span><span class="py-op">.</span><span class="py-name">col</span> <span class="py-keyword">and</span>\ </span>
+<span class="py-lineno">148</span>  <span class="py-line">                       <span class="py-name">self</span><span class="py-op">.</span><span id="link-65" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-65', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span> <span class="py-op">==</span> <span id="link-66" class="py-name"><a title="cssutils.token" class="py-name" href="#" onclick="doclink('link-66', 'token', 'Module cssutils.token=cssutils.token-module.html'); return false;">token</a></span></span><span class="py-op">.</span><span id="link-67" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-67', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span> <span class="py-keyword">and</span>\ </span>
+<span class="py-lineno">149</span>  <span class="py-line">                       <span class="py-name">self</span><span class="py-op">.</span><span id="link-68" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-68', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-op">==</span> <span id="link-69" class="py-name"><a title="cssutils.token" class="py-name" href="#" onclick="doclink('link-69', 'token', 'Module cssutils.token=cssutils.token-module.html'); return false;">token</a></span></span><span class="py-op">.</span><span id="link-70" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-70', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">:</span> </span>
+<span class="py-lineno">150</span>  <span class="py-line">            <span class="py-keyword">return</span> <span class="py-name">True</span> </span>
+<span class="py-lineno">151</span>  <span class="py-line">        <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno">152</span>  <span class="py-line">            <span class="py-keyword">return</span> <span class="py-name">False</span> </span>
+</div><span class="py-lineno">153</span>  <span class="py-line"> </span>
+<a name="Token.__repr__"></a><div id="Token.__repr__-def"><span class="py-lineno">154</span> <a class="py-toggle" href="#" id="Token.__repr__-toggle" onclick="toggle('Token.__repr__'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.token.Token-class.html#__repr__">__repr__</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Token.__repr__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Token.__repr__-expanded"><span class="py-lineno">155</span>  <span class="py-line">        <span class="py-docstring">""" </span> </span>
+<span class="py-lineno">156</span>  <span class="py-line"><span class="py-docstring">        string representation of Token </span> </span>
+<span class="py-lineno">157</span>  <span class="py-line"><span class="py-docstring">        """</span> </span>
+<span class="py-lineno">158</span>  <span class="py-line">        <span class="py-keyword">return</span> <span class="py-string">u'%03d:%03d %s: %s'</span> <span class="py-op">%</span> <span class="py-op">(</span> </span>
+<span class="py-lineno">159</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">line</span><span class="py-op">,</span> <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">col</span><span class="py-op">,</span> <span class="py-name">self</span><span class="py-op">.</span><span id="link-71" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-71', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span><span class="py-op">,</span> <span class="py-name">self</span><span class="py-op">.</span><span id="link-72" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-72', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">)</span> </span>
+</div></div><span class="py-lineno">160</span>  <span class="py-line"> </span>
+<span class="py-lineno">161</span>  <span class="py-line"> </span>
+<span class="py-lineno">162</span>  <span class="py-line"> </span>
+<a name="Tokenre"></a><div id="Tokenre-def"><span class="py-lineno">163</span> <a class="py-toggle" href="#" id="Tokenre-toggle" onclick="toggle('Tokenre'); return false;">-</a><span class="py-line"><span class="py-keyword">class</span> <a class="py-def-name" href="cssutils.token.Tokenre-class.html">Tokenre</a><span class="py-op">(</span><span class="py-base-class">object</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Tokenre-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Tokenre-expanded"><span class="py-lineno">164</span>  <span class="py-line">    <span class="py-docstring">"""</span> </span>
+<span class="py-lineno">165</span>  <span class="py-line"><span class="py-docstring">    regexes for CSS tokens, on initialization all attributes will</span> </span>
+<span class="py-lineno">166</span>  <span class="py-line"><span class="py-docstring">    be compiled to re.match objects</span> </span>
+<span class="py-lineno">167</span>  <span class="py-line"><span class="py-docstring">    """</span> </span>
+<span class="py-lineno">168</span>  <span class="py-line">    <span class="py-comment"># custom</span> </span>
+<span class="py-lineno">169</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-73" class="py-name"><a title="cssutils.token.Token.DIMENSION
+cssutils.token.Tokenre.DIMENSION" class="py-name" href="#" onclick="doclink('link-73', 'DIMENSION', 'Variable cssutils.token.Token.DIMENSION=cssutils.token.Token-class.html#DIMENSION,Variable cssutils.token.Tokenre.DIMENSION=cssutils.token.Tokenre-class.html#DIMENSION'); return false;">DIMENSION</a></span></span> <span class="py-op">=</span> <span class="py-string">r'{num}{ident}'</span> </span>
+<span class="py-lineno">170</span>  <span class="py-line">    <span id="link-74" class="py-name"><a title="cssutils.token.Token.HASH
+cssutils.token.Tokenre.HASH" class="py-name" href="#" onclick="doclink('link-74', 'HASH', 'Variable cssutils.token.Token.HASH=cssutils.token.Token-class.html#HASH,Variable cssutils.token.Tokenre.HASH=cssutils.token.Tokenre-class.html#HASH'); return false;">HASH</a></span></span> <span class="py-op">=</span> <span class="py-string">r'#{name}'</span> </span>
+<span class="py-lineno">171</span>  <span class="py-line">    <span id="link-75" class="py-name"><a title="cssutils.token.Token.URI
+cssutils.token.Tokenre.URI" class="py-name" href="#" onclick="doclink('link-75', 'URI', 'Variable cssutils.token.Token.URI=cssutils.token.Token-class.html#URI,Variable cssutils.token.Tokenre.URI=cssutils.token.Tokenre-class.html#URI'); return false;">URI</a></span></span> <span class="py-op">=</span> <span class="py-string">u'url\({w}{string}{w}\)|url\({w}([!#$%&amp;*-~]|{nonascii}|{escape})*{w}\)'</span> </span>
+<span class="py-lineno">172</span>  <span class="py-line">     </span>
+<span class="py-lineno">173</span>  <span class="py-line">    <span class="py-comment"># see spec</span> </span>
+<span class="py-lineno">174</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-76" class="py-name"><a title="cssutils.token.Tokenre.atkeyword" class="py-name" href="#" onclick="doclink('link-76', 'atkeyword', 'Variable cssutils.token.Tokenre.atkeyword=cssutils.token.Tokenre-class.html#atkeyword'); return false;">atkeyword</a></span></span> <span class="py-op">=</span> <span class="py-string">r'^@[-]?{nmstart}{nmchar}*'</span> <span class="py-comment">#?</span> </span>
+<span class="py-lineno">175</span>  <span class="py-line">    <span id="link-77" class="py-name"><a title="cssutils.token.Tokenre.ident" class="py-name" href="#" onclick="doclink('link-77', 'ident', 'Variable cssutils.token.Tokenre.ident=cssutils.token.Tokenre-class.html#ident'); return false;">ident</a></span></span> <span class="py-op">=</span> <span class="py-string">r'[-]?{nmstart}{nmchar}*'</span> </span>
+<span class="py-lineno">176</span>  <span class="py-line">    <span id="link-78" class="py-name"><a title="cssutils.css.property._Property.name
+cssutils.token.Tokenre.name" class="py-name" href="#" onclick="doclink('link-78', 'name', 'Variable cssutils.css.property._Property.name=cssutils.css.property._Property-class.html#name,Variable cssutils.token.Tokenre.name=cssutils.token.Tokenre-class.html#name'); return false;">name</a></span></span> <span class="py-op">=</span> <span class="py-string">r'{nmchar}+'</span> </span>
+<span class="py-lineno">177</span>  <span class="py-line">    <span id="link-79" class="py-name"><a title="cssutils.token.Tokenre.nmstart" class="py-name" href="#" onclick="doclink('link-79', 'nmstart', 'Variable cssutils.token.Tokenre.nmstart=cssutils.token.Tokenre-class.html#nmstart'); return false;">nmstart</a></span></span> <span class="py-op">=</span> <span class="py-string">r'[_a-z]|{nonascii}|{escape}'</span> </span>
+<span class="py-lineno">178</span>  <span class="py-line">    <span id="link-80" class="py-name"><a title="cssutils.token.Tokenre.nonascii" class="py-name" href="#" onclick="doclink('link-80', 'nonascii', 'Variable cssutils.token.Tokenre.nonascii=cssutils.token.Tokenre-class.html#nonascii'); return false;">nonascii</a></span></span> <span class="py-op">=</span> <span class="py-string">r'[^\0-\177]'</span> </span>
+<span class="py-lineno">179</span>  <span class="py-line">    <span id="link-81" class="py-name"><a title="cssutils.token.Tokenre.unicode" class="py-name" href="#" onclick="doclink('link-81', 'unicode', 'Variable cssutils.token.Tokenre.unicode=cssutils.token.Tokenre-class.html#unicode'); return false;">unicode</a></span></span> <span class="py-op">=</span> <span class="py-string">r'\\[0-9a-f]{1,6}(\r\n|[ \n\r\t\f])?'</span> </span>
+<span class="py-lineno">180</span>  <span class="py-line">    <span id="link-82" class="py-name"><a title="cssutils.token.Tokenre.escape" class="py-name" href="#" onclick="doclink('link-82', 'escape', 'Variable cssutils.token.Tokenre.escape=cssutils.token.Tokenre-class.html#escape'); return false;">escape</a></span></span> <span class="py-op">=</span> <span class="py-string">r'{unicode}|\\[ -~\200-\777]'</span> </span>
+<span class="py-lineno">181</span>  <span class="py-line">    <span class="py-comment">#    escape = r'{unicode}|\\[ -~\200-\4177777]'</span> </span>
+<span class="py-lineno">182</span>  <span class="py-line"><span class="py-comment"></span>    <span id="link-83" class="py-name"><a title="cssutils.token.Tokenre.int" class="py-name" href="#" onclick="doclink('link-83', 'int', 'Variable cssutils.token.Tokenre.int=cssutils.token.Tokenre-class.html#int'); return false;">int</a></span></span> <span class="py-op">=</span> <span class="py-string">r'[-]?\d+'</span> </span>
+<span class="py-lineno">183</span>  <span class="py-line">    <span id="link-84" class="py-name"><a title="cssutils.token.Tokenre.nmchar" class="py-name" href="#" onclick="doclink('link-84', 'nmchar', 'Variable cssutils.token.Tokenre.nmchar=cssutils.token.Tokenre-class.html#nmchar'); return false;">nmchar</a></span></span> <span class="py-op">=</span> <span class="py-string">r'[\w-]|{nonascii}|{escape}'</span> </span>
+<span class="py-lineno">184</span>  <span class="py-line">    <span id="link-85" class="py-name"><a title="cssutils.token.Tokenre.num" class="py-name" href="#" onclick="doclink('link-85', 'num', 'Variable cssutils.token.Tokenre.num=cssutils.token.Tokenre-class.html#num'); return false;">num</a></span></span> <span class="py-op">=</span> <span class="py-string">r'[-]?\d+|\d*\.\d+'</span> </span>
+<span class="py-lineno">185</span>  <span class="py-line">    <span id="link-86" class="py-name"><a title="cssutils.token.Tokenre.number" class="py-name" href="#" onclick="doclink('link-86', 'number', 'Variable cssutils.token.Tokenre.number=cssutils.token.Tokenre-class.html#number'); return false;">number</a></span></span> <span class="py-op">=</span> <span class="py-string">r'{num}'</span> </span>
+<span class="py-lineno">186</span>  <span class="py-line">    <span id="link-87" class="py-name"><a title="cssutils.token.Tokenre.string" class="py-name" href="#" onclick="doclink('link-87', 'string', 'Variable cssutils.token.Tokenre.string=cssutils.token.Tokenre-class.html#string'); return false;">string</a></span></span> <span class="py-op">=</span> <span class="py-string">r'{string1}|{string2}'</span> </span>
+<span class="py-lineno">187</span>  <span class="py-line">    <span id="link-88" class="py-name"><a title="cssutils.token.Tokenre.string1" class="py-name" href="#" onclick="doclink('link-88', 'string1', 'Variable cssutils.token.Tokenre.string1=cssutils.token.Tokenre-class.html#string1'); return false;">string1</a></span></span> <span class="py-op">=</span> <span class="py-string">r'"(\\\"|[^\"])*"'</span> </span>
+<span class="py-lineno">188</span>  <span class="py-line">    <span id="link-89" class="py-name"><a title="cssutils.token.Tokenre.string2" class="py-name" href="#" onclick="doclink('link-89', 'string2', 'Variable cssutils.token.Tokenre.string2=cssutils.token.Tokenre-class.html#string2'); return false;">string2</a></span></span> <span class="py-op">=</span> <span class="py-string">r"'(\\\'|[^\'])*'"</span> </span>
+<span class="py-lineno">189</span>  <span class="py-line">    <span id="link-90" class="py-name"><a title="cssutils.token.Tokenre.nl" class="py-name" href="#" onclick="doclink('link-90', 'nl', 'Variable cssutils.token.Tokenre.nl=cssutils.token.Tokenre-class.html#nl'); return false;">nl</a></span></span> <span class="py-op">=</span> <span class="py-string">r'\n|\r\n|\r|\f'</span> </span>
+<span class="py-lineno">190</span>  <span class="py-line">    <span id="link-91" class="py-name"><a title="cssutils.token.Tokenre.w" class="py-name" href="#" onclick="doclink('link-91', 'w', 'Variable cssutils.token.Tokenre.w=cssutils.token.Tokenre-class.html#w'); return false;">w</a></span></span> <span class="py-op">=</span> <span class="py-string">r'\s*'</span> </span>
+<span class="py-lineno">191</span>  <span class="py-line"> </span>
+<a name="Tokenre.__init__"></a><div id="Tokenre.__init__-def"><span class="py-lineno">192</span> <a class="py-toggle" href="#" id="Tokenre.__init__-toggle" onclick="toggle('Tokenre.__init__'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.token.Tokenre-class.html#__init__">__init__</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Tokenre.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Tokenre.__init__-expanded"><span class="py-lineno">193</span>  <span class="py-line">        <span class="py-docstring">""" </span> </span>
+<span class="py-lineno">194</span>  <span class="py-line"><span class="py-docstring">        compile class attribute values to re.match objects </span> </span>
+<span class="py-lineno">195</span>  <span class="py-line"><span class="py-docstring">        """</span> </span>
+<span class="py-lineno">196</span>  <span class="py-line">        <span class="py-name">res</span> <span class="py-op">=</span> <span class="py-op">{</span><span class="py-op">}</span> </span>
+<span class="py-lineno">197</span>  <span class="py-line">        <span class="py-keyword">for</span> <span class="py-name">x</span> <span class="py-keyword">in</span> <span class="py-name">dir</span><span class="py-op">(</span><span class="py-name">self</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">198</span>  <span class="py-line">            <span class="py-name">v</span> <span class="py-op">=</span> <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">__getattribute__</span><span class="py-op">(</span><span class="py-name">x</span><span class="py-op">)</span> </span>
+<span class="py-lineno">199</span>  <span class="py-line">            <span class="py-keyword">if</span> <span class="py-name">isinstance</span><span class="py-op">(</span><span class="py-name">v</span><span class="py-op">,</span> <span class="py-name">basestring</span><span class="py-op">)</span> <span class="py-keyword">and</span> <span class="py-keyword">not</span> <span class="py-name">x</span><span class="py-op">.</span><span class="py-name">startswith</span><span class="py-op">(</span><span class="py-string">'_'</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">200</span>  <span class="py-line">                <span class="py-name">res</span><span class="py-op">[</span><span class="py-name">x</span><span class="py-op">]</span> <span class="py-op">=</span> <span class="py-name">v</span> </span>
+<span class="py-lineno">201</span>  <span class="py-line">             </span>
+<span class="py-lineno">202</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span id="link-92" class="py-name"><a title="cssutils.token.Tokenre._compile_regexes" class="py-name" href="#" onclick="doclink('link-92', '_compile_regexes', 'Method cssutils.token.Tokenre._compile_regexes()=cssutils.token.Tokenre-class.html#_compile_regexes'); return false;">_compile_regexes</a></span></span><span class="py-op">(</span><span class="py-name">self</span><span class="py-op">.</span><span id="link-93" class="py-name"><a title="cssutils.token.Tokenre._expand_macros" class="py-name" href="#" onclick="doclink('link-93', '_expand_macros', 'Method cssutils.token.Tokenre._expand_macros()=cssutils.token.Tokenre-class.html#_expand_macros'); return false;">_expand_macros</a></span></span><span class="py-op">(</span><span class="py-name">res</span><span class="py-op">)</span><span class="py-op">)</span> </span>
+</div><span class="py-lineno">203</span>  <span class="py-line">         </span>
+<a name="Tokenre._expand_macros"></a><div id="Tokenre._expand_macros-def"><span class="py-lineno">204</span> <a class="py-toggle" href="#" id="Tokenre._expand_macros-toggle" onclick="toggle('Tokenre._expand_macros'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.token.Tokenre-class.html#_expand_macros">_expand_macros</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">tokdict</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Tokenre._expand_macros-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Tokenre._expand_macros-expanded"><span class="py-lineno">205</span>  <span class="py-line">        <span class="py-docstring">""" </span> </span>
+<span class="py-lineno">206</span>  <span class="py-line"><span class="py-docstring">        Expand macros in token dictionary </span> </span>
+<span class="py-lineno">207</span>  <span class="py-line"><span class="py-docstring">        """</span> </span>
+<span class="py-lineno">208</span>  <span class="py-line">        <span class="py-keyword">def</span> <span class="py-def-name">macro_value</span><span class="py-op">(</span><span class="py-param">m</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">209</span>  <span class="py-line">            <span class="py-keyword">return</span> <span class="py-string">'(?:%s)'</span> <span class="py-op">%</span> <span class="py-name">res</span><span class="py-op">[</span><span id="link-94" class="py-name"><a title="cssutils.css.cssmediarule.m
+cssutils.stylesheets.medialist.m" class="py-name" href="#" onclick="doclink('link-94', 'm', 'Variable cssutils.css.cssmediarule.m=cssutils.css.cssmediarule-module.html#m,Variable cssutils.stylesheets.medialist.m=cssutils.stylesheets.medialist-module.html#m'); return false;">m</a></span></span><span class="py-op">.</span><span class="py-name">groupdict</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">[</span><span class="py-string">'macro'</span><span class="py-op">]</span><span class="py-op">]</span> </span>
+</div><span class="py-lineno">210</span>  <span class="py-line"> </span>
+<span class="py-lineno">211</span>  <span class="py-line">        <span class="py-comment"># copy for macros</span> </span>
+<span class="py-lineno">212</span>  <span class="py-line"><span class="py-comment"></span>        <span class="py-name">res</span> <span class="py-op">=</span> <span class="py-name">tokdict</span><span class="py-op">.</span><span class="py-name">copy</span><span class="py-op">(</span><span class="py-op">)</span>  </span>
+<span class="py-lineno">213</span>  <span class="py-line">        <span class="py-keyword">for</span> <span class="py-name">key</span><span class="py-op">,</span> <span id="link-95" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-95', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-keyword">in</span> <span class="py-name">tokdict</span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">214</span>  <span class="py-line">            <span class="py-keyword">while</span> <span class="py-name">re</span><span class="py-op">.</span><span class="py-name">search</span><span class="py-op">(</span><span class="py-string">r'{[a-z][a-z0-9-]*}'</span><span class="py-op">,</span> <span id="link-96" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-96', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">215</span>  <span class="py-line">                <span id="link-97" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-97', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-op">=</span> <span class="py-name">re</span><span class="py-op">.</span><span class="py-name">sub</span><span class="py-op">(</span><span class="py-string">r'{(?P&lt;macro&gt;[a-z][a-z0-9-]*)}'</span><span class="py-op">,</span>  </span>
+<span class="py-lineno">216</span>  <span class="py-line">                               <span class="py-name">macro_value</span><span class="py-op">,</span> <span id="link-98" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-98', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">)</span> </span>
+<span class="py-lineno">217</span>  <span class="py-line">            <span class="py-name">tokdict</span><span class="py-op">[</span><span class="py-name">key</span><span class="py-op">]</span> <span class="py-op">=</span> <span id="link-99" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-99', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> </span>
+<span class="py-lineno">218</span>  <span class="py-line">        <span class="py-keyword">return</span> <span class="py-name">tokdict</span> </span>
+</div><span class="py-lineno">219</span>  <span class="py-line"> </span>
+<a name="Tokenre._compile_regexes"></a><div id="Tokenre._compile_regexes-def"><span class="py-lineno">220</span> <a class="py-toggle" href="#" id="Tokenre._compile_regexes-toggle" onclick="toggle('Tokenre._compile_regexes'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.token.Tokenre-class.html#_compile_regexes">_compile_regexes</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">tokdict</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="Tokenre._compile_regexes-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Tokenre._compile_regexes-expanded"><span class="py-lineno">221</span>  <span class="py-line">        <span class="py-docstring">""" </span> </span>
+<span class="py-lineno">222</span>  <span class="py-line"><span class="py-docstring">        Compile all regular expressions into callable objects </span> </span>
+<span class="py-lineno">223</span>  <span class="py-line"><span class="py-docstring">        """</span> </span>
+<span class="py-lineno">224</span>  <span class="py-line">        <span class="py-keyword">for</span> <span class="py-name">key</span><span class="py-op">,</span> <span id="link-100" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-100', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span> <span class="py-keyword">in</span> <span class="py-name">tokdict</span><span class="py-op">.</span><span class="py-name">items</span><span class="py-op">(</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+<span class="py-lineno">225</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">__setattr__</span><span class="py-op">(</span><span class="py-name">key</span><span class="py-op">,</span> <span class="py-name">re</span><span class="py-op">.</span><span class="py-name">compile</span><span class="py-op">(</span><span class="py-string">'^%s$'</span> <span class="py-op">%</span> <span id="link-101" class="py-name"><a title="cssutils.css.property._Property.value
+cssutils.token.Token.value" class="py-name" href="#" onclick="doclink('link-101', 'value', 'Variable cssutils.css.property._Property.value=cssutils.css.property._Property-class.html#value,Variable cssutils.token.Token.value=cssutils.token.Token-class.html#value'); return false;">value</a></span></span><span class="py-op">,</span> <span class="py-name">re</span><span class="py-op">.</span><span class="py-name">I</span><span class="py-op">)</span><span class="py-op">.</span><span class="py-name">match</span><span class="py-op">)</span> </span>
+</div></div><span class="py-lineno">226</span>  <span class="py-line"> </span>
+<span class="py-lineno">227</span>  <span class="py-line"> </span>
+<span class="py-lineno">228</span>  <span class="py-line"><span class="py-keyword">if</span> <span class="py-name">__name__</span> <span class="py-op">==</span> <span class="py-string">'__main__'</span><span class="py-op">:</span> </span>
+<span class="py-lineno">229</span>  <span class="py-line">    <span id="link-102" class="py-name"><a title="cssutils.token.t" class="py-name" href="#" onclick="doclink('link-102', 't', 'Variable cssutils.token.t=cssutils.token-module.html#t'); return false;">t</a></span></span> <span class="py-op">=</span> <span id="link-103" class="py-name"><a title="cssutils.token.Token" class="py-name" href="#" onclick="doclink('link-103', 'Token', 'Class cssutils.token.Token=cssutils.token.Token-class.html'); return false;">Token</a></span></span><span class="py-op">(</span><span class="py-op">)</span> </span>
+<span class="py-lineno">230</span>  <span class="py-line">    <span class="py-keyword">print</span> <span id="link-104" class="py-name"><a title="cssutils.token.t" class="py-name" href="#" onclick="doclink('link-104', 't', 'Variable cssutils.token.t=cssutils.token-module.html#t'); return false;">t</a></span></span> </span>
+<span class="py-lineno">231</span>  <span class="py-line"> </span><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:23 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

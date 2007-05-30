@@ -1,0 +1,942 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.serialize.CSSSerializer</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        <a href="cssutils.serialize-module.html">Module&nbsp;serialize</a> ::
+        Class&nbsp;CSSSerializer
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.serialize.CSSSerializer-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class CSSSerializer</h1><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer">source&nbsp;code</a></span><br /><br />
+<pre class="base-tree">
+object --+
+         |
+        <strong class="uidshort">CSSSerializer</strong>
+</pre>
+
+<hr />
+<p>Methods to serialize a CSSStylesheet and its parts</p>
+<p>To use your own serializing method the easiest is to subclass CSS
+Serializer and overwrite the methods you like to customize.</p><br /><br />
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">prefs</span>=<span class="summary-sig-default">None</span>)</span><br />
+      instance of Preferences
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#_serialize" class="summary-sig-name">_serialize</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">text</span>)</span>
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#_noinvalids" class="summary-sig-name">_noinvalids</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>)</span><br />
+      True if x.valid or prefs.removeInvalid == False
+else False
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#_escapestring" class="summary-sig-name">_escapestring</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">s</span>,
+        <span class="summary-sig-arg">delim</span>=<span class="summary-sig-default">u'&quot;'</span>)</span><br />
+      escapes delim charaters in string s with delim
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#_getatkeyword" class="summary-sig-name">_getatkeyword</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>,
+        <span class="summary-sig-arg">default</span>)</span><br />
+      used by all &#64;rules to get the keyword used
+dependent on prefs setting defaultAtKeyword
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#_getpropertyname" class="summary-sig-name">_getpropertyname</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">property</span>,
+        <span class="summary-sig-arg">actual</span>)</span><br />
+      used by all styledeclarations to get the propertyname used
+dependent on prefs setting defaultPropertyName
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#_do_unknown" class="summary-sig-name">_do_unknown</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_stylesheets_medialist" class="summary-sig-name">do_stylesheets_medialist</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">medialist</span>)</span><br />
+      comma-separated list of media, default is 'all'
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_stylesheet" class="summary-sig-name">do_stylesheet</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">stylesheet</span>)</span>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_CSSComment" class="summary-sig-name">do_CSSComment</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      serializes CSSComment which consists only of commentText
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_CSSCharsetRule" class="summary-sig-name">do_CSSCharsetRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      serializes CSSCharsetRule
+encoding: string
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_CSSImportRule" class="summary-sig-name">do_CSSImportRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      serializes CSSImportRule
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_CSSNamespaceRule" class="summary-sig-name">do_CSSNamespaceRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      serializes CSSNamespaceRule
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_CSSMediaRule" class="summary-sig-name">do_CSSMediaRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      serializes CSSMediaRule
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_CSSPageRule" class="summary-sig-name">do_CSSPageRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      serializes CSSPageRule
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_pageselector" class="summary-sig-name">do_pageselector</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">seq</span>)</span><br />
+      a selector of a CSSPageRule including comments
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_CSSUnknownRule" class="summary-sig-name">do_CSSUnknownRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      serializes CSSUnknownRule
+anything until &quot;;&quot; or &quot;{...}&quot;
++ CSSComments
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_CSSStyleRule" class="summary-sig-name">do_CSSStyleRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      serializes CSSStyleRule
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_css_SelectorList" class="summary-sig-name">do_css_SelectorList</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">selectorlist</span>)</span><br />
+      comma-separated list of Selectors
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_css_Selector" class="summary-sig-name">do_css_Selector</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">selector</span>)</span><br />
+      a single selector including comments
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_css_CSSStyleDeclaration" class="summary-sig-name">do_css_CSSStyleDeclaration</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">style</span>)</span><br />
+      Style declaration of CSSStyleRule
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_css_Property" class="summary-sig-name">do_css_Property</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">property</span>)</span><br />
+      Style declaration of CSSStyleRule
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.serialize.CSSSerializer-class.html#do_css_Propertyvalue" class="summary-sig-name">do_css_Propertyvalue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">valueseq</span>)</span><br />
+      serializes a property
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__str__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">prefs</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.__init__">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>prefs</dt>
+<dd>instance of Preferences</dd>
+</dl>
+  <dl><dt></dt><dd>
+    <dl><dt>Overrides:
+      object.__init__
+    </dt></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_serialize"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_serialize</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">text</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer._serialize">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_noinvalids"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_noinvalids</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">x</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer._noinvalids">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>returns</dt>
+<dd>True if x.valid or prefs.removeInvalid == False
+else False</dd>
+</dl>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_escapestring"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_escapestring</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">s</span>,
+        <span class="sig-arg">delim</span>=<span class="sig-default">u'&quot;'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer._escapestring">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  escapes delim charaters in string s with delim
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getatkeyword"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getatkeyword</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>,
+        <span class="sig-arg">default</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer._getatkeyword">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  used by all &#64;rules to get the keyword used
+dependent on prefs setting defaultAtKeyword
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getpropertyname"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getpropertyname</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">property</span>,
+        <span class="sig-arg">actual</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer._getpropertyname">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  used by all styledeclarations to get the propertyname used
+dependent on prefs setting defaultPropertyName
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_do_unknown"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_do_unknown</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer._do_unknown">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_stylesheets_medialist"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_stylesheets_medialist</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">medialist</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_stylesheets_medialist">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>comma-separated list of media, default is 'all'</p>
+<p>If &quot;all&quot; is in the list, every other media <em>except</em> &quot;handheld&quot; will
+be stripped. This is because how Opera handles CSS for PDAs.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_stylesheet"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_stylesheet</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">stylesheet</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_stylesheet">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_CSSComment"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_CSSComment</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_CSSComment">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  serializes CSSComment which consists only of commentText
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_CSSCharsetRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_CSSCharsetRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_CSSCharsetRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>serializes CSSCharsetRule
+encoding: string</p>
+<p>always &#64;charset &quot;encoding&quot;;
+no comments or other things allowed!</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_CSSImportRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_CSSImportRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_CSSImportRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>serializes CSSImportRule</p>
+<dl class="rst-docutils">
+<dt>href</dt>
+<dd>string</dd>
+<dt>hreftype</dt>
+<dd>'uri' or 'string'</dd>
+<dt>media</dt>
+<dd>cssutils.stylesheets.medialist.MediaList</dd>
+</dl>
+<ul class="rst-simple">
+<li>CSSComments</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_CSSNamespaceRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_CSSNamespaceRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_CSSNamespaceRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>serializes CSSNamespaceRule</p>
+<dl class="rst-docutils">
+<dt>uri</dt>
+<dd>string</dd>
+<dt>prefix</dt>
+<dd>string</dd>
+</dl>
+<ul class="rst-simple">
+<li>CSSComments</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_CSSMediaRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_CSSMediaRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_CSSMediaRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>serializes CSSMediaRule</p>
+<ul class="rst-simple">
+<li>CSSComments</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_CSSPageRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_CSSPageRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_CSSPageRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>serializes CSSPageRule</p>
+<dl class="rst-docutils">
+<dt>selectorText</dt>
+<dd>string</dd>
+<dt>style</dt>
+<dd>CSSStyleDeclaration</dd>
+</dl>
+<ul class="rst-simple">
+<li>CSSComments</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_pageselector"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_pageselector</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">seq</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_pageselector">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  a selector of a CSSPageRule including comments
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_CSSUnknownRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_CSSUnknownRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_CSSUnknownRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  serializes CSSUnknownRule
+anything until &quot;;&quot; or &quot;{...}&quot;
++ CSSComments
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_CSSStyleRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_CSSStyleRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_CSSStyleRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>serializes CSSStyleRule</p>
+<p>selectorList
+style</p>
+<ul class="rst-simple">
+<li>CSSComments</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_css_SelectorList"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_css_SelectorList</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">selectorlist</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_css_SelectorList">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  comma-separated list of Selectors
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_css_Selector"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_css_Selector</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">selector</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_css_Selector">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>a single selector including comments</p>
+<p>TODO: style combinators like + &gt;</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_css_CSSStyleDeclaration"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_css_CSSStyleDeclaration</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">style</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_css_CSSStyleDeclaration">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  Style declaration of CSSStyleRule
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_css_Property"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_css_Property</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">property</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_css_Property">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>Style declaration of CSSStyleRule</p>
+<p>Property has a seqs attribute which contains 3 seq lists for
+name, value and priority</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="do_css_Propertyvalue"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_css_Propertyvalue</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">valueseq</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.serialize-pysrc.html#CSSSerializer.do_css_Propertyvalue">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  serializes a property
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:19 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

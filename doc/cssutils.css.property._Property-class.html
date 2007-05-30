@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.css.property._Property</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        <a href="cssutils.css-module.html">Package&nbsp;css</a> ::
+        <a href="cssutils.css.property-module.html">Module&nbsp;property</a> ::
+        Class&nbsp;_Property
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.css.property._Property-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class _Property</h1><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property">source&nbsp;code</a></span><br /><br />
+<pre class="base-tree">
+object --+    
+         |    
+ util.Base --+
+             |
+            <strong class="uidshort">_Property</strong>
+</pre>
+
+<hr />
+<p>(cssutils) a CSS property in a StyleDeclaration of a CSSStyleRule</p>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-properties" name="rst-properties">Properties</a></h1>
+<dl class="rst-docutils">
+<dt>cssValue</dt>
+<dd>the relevant CSSValue instance for this property</dd>
+<dt>name</dt>
+<dd>of the property</dd>
+<dt>normalname</dt>
+<dd>normalized name of the property, e.g. &quot;color&quot; when name is &quot;color&quot;</dd>
+<dt>value</dt>
+<dd>the string value of the property</dd>
+<dt>priority</dt>
+<dd>of the property (currently only &quot;!important&quot; or None)</dd>
+<dt>seqs</dt>
+<dd>3 lists for seq of name, value and
+priority (empty or [!important] currently)</dd>
+<dt>valid</dt>
+<dd>if this Property is valid</dd>
+</dl>
+</div>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-format" name="rst-format">Format</a></h1>
+<dl class="rst-docutils">
+<dt>property = name</dt>
+<dd>: IDENT S*
+;</dd>
+<dt>expr = value</dt>
+<dd>: term [ operator term ]*
+;</dd>
+<dt>term</dt>
+<dd><dl class="rst-first rst-docutils">
+<dt>: unary_operator?</dt>
+<dd><dl class="rst-first rst-last rst-docutils">
+<dt>[ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |</dt>
+<dd>TIME S* | FREQ S* | function ]</dd>
+</dl>
+</dd>
+</dl>
+<div class="rst-line-block">
+<div class="rst-line">STRING S* | IDENT S* | URI S* | hexcolor</div>
+</div>
+<p class="rst-last">;</p>
+</dd>
+<dt>function</dt>
+<dd>: FUNCTION S* expr ')' S*
+;</dd>
+<dt>/*</dt>
+<dd><ul class="rst-first rst-simple">
+<li>There is a constraint on the color that it must</li>
+<li>have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])</li>
+<li>after the &quot;#&quot;; e.g., &quot;#000&quot; is OK, but &quot;#abcd&quot; is not.</li>
+</ul>
+<p class="rst-last"><a href="#id1" name="id2"><span class="rst-problematic" id="rst-id2">*</span></a>/</p>
+</dd>
+<dt>hexcolor</dt>
+<dd>: HASH S*
+;</dd>
+<dt>prio</dt>
+<dd>: IMPORTANT_SYM S*
+;</dd>
+</dl>
+</div><br /><br />
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">priority</span>=<span class="summary-sig-default">None</span>)</span><br />
+      inits property
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#__repr__" class="summary-sig-name">__repr__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      repr(x)
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#__invalidToken" class="summary-sig-name">__invalidToken</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tokens</span>,
+        <span class="summary-sig-arg">x</span>)</span><br />
+      raises SyntaxErr if an INVALID token in tokens
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_getCssValue" class="summary-sig-name">_getCssValue</a>(<span class="summary-sig-arg">self</span>)</span>
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_getName" class="summary-sig-name">_getName</a>(<span class="summary-sig-arg">self</span>)</span>
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_setName" class="summary-sig-name">_setName</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      : IDENT S*
+;
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_getValue" class="summary-sig-name">_getValue</a>(<span class="summary-sig-arg">self</span>)</span>
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_setValue" class="summary-sig-name">_setValue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>)</span><br />
+      : term [ operator term ]*
+;
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_getPriority" class="summary-sig-name">_getPriority</a>(<span class="summary-sig-arg">self</span>)</span>
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_setPriority" class="summary-sig-name">_setPriority</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">priority</span>)</span><br />
+      currently &quot;!important&quot; to set an important priority
+or None or the empty string to set no priority only
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_Property__invalidToken" class="summary-sig-name">_Property__invalidToken</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tokens</span>,
+        <span class="summary-sig-arg">x</span>)</span><br />
+      raises SyntaxErr if an INVALID token in tokens
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>util.Base</code></b>:
+      <code>getFormatted</code>,
+      <code>pprint</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>util.Base</code></b> (private):
+      <code>_checkReadonly</code>,
+      <code>_normalize</code>,
+      <code>_tokenize</code>,
+      <code>_valuestr</code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__str__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.property._Property-class.html#cssValue">cssValue</a><br />
+      (cssutils readonly) CSSValue object of this property
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.property._Property-class.html#name">name</a><br />
+      (cssutils) Name of this property
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.property._Property-class.html#value">value</a><br />
+      (cssutils) Value of this property
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.property._Property-class.html#priority">priority</a><br />
+      (cssutils) Priority of this property
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">priority</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property.__init__">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  inits property
+  <dl><dt></dt><dd>
+    <dl><dt>Overrides:
+      util.Base.__init__
+    </dt></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="__repr__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__repr__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Representation operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property.__repr__">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  repr(x)
+  <dl><dt></dt><dd>
+    <dl><dt>Overrides:
+      object.__repr__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="__invalidToken"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__invalidToken</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tokens</span>,
+        <span class="sig-arg">x</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property.__invalidToken">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>raises SyntaxErr if an INVALID token in tokens</p>
+<dl class="rst-docutils">
+<dt>x</dt>
+<dd>name, value or priority, used for error message</dd>
+</dl>
+<p>returns True if INVALID found, else False</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getCssValue"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getCssValue</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property._getCssValue">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getName"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getName</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property._getName">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_setName"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_setName</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property._setName">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>property = name</dt>
+<dd>: IDENT S*
+;</dd>
+</dl>
+<p>DOMException on setting</p>
+<ul class="rst-simple">
+<li>SYNTAX_ERR: (self)
+Raised if the specified name has a syntax error and is
+unparsable.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getValue"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getValue</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property._getValue">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_setValue"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_setValue</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">value</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property._setValue">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>expr = value</dt>
+<dd>: term [ operator term ]*
+;</dd>
+<dt>term</dt>
+<dd><dl class="rst-first rst-docutils">
+<dt>: unary_operator?</dt>
+<dd><dl class="rst-first rst-last rst-docutils">
+<dt>[ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* |</dt>
+<dd>ANGLE S* | TIME S* | FREQ S* | function ]</dd>
+</dl>
+</dd>
+</dl>
+<div class="rst-line-block">
+<div class="rst-line">STRING S* | IDENT S* | URI S* | hexcolor</div>
+</div>
+<p class="rst-last">;</p>
+</dd>
+<dt>function</dt>
+<dd>: FUNCTION S* expr ')' S*
+;</dd>
+<dt>/*</dt>
+<dd><ul class="rst-first rst-simple">
+<li>There is a constraint on the color that it must</li>
+<li>have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])</li>
+<li>after the &quot;#&quot;; e.g., &quot;#000&quot; is OK, but &quot;#abcd&quot; is not.</li>
+</ul>
+<p class="rst-last"><a href="#id1" name="id2"><span class="rst-problematic" id="rst-id2">*</span></a>/</p>
+</dd>
+<dt>hexcolor</dt>
+<dd>: HASH S*
+;</dd>
+</dl>
+<p>DOMException on setting</p>
+<ul class="rst-simple">
+<li>SYNTAX_ERR: (self)
+Raised if the specified value has a syntax error and is
+unparsable.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getPriority"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getPriority</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property._getPriority">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_setPriority"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_setPriority</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">priority</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property._setPriority">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>priority</dt>
+<dd>currently &quot;!important&quot; to set an important priority
+or None or the empty string to set no priority only</dd>
+</dl>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-format" name="rst-format">Format</a></h1>
+<dl class="rst-docutils">
+<dt>prio</dt>
+<dd>: IMPORTANT_SYM S*
+;</dd>
+</dl>
+<p>&quot;!&quot;{w}&quot;important&quot;       {return IMPORTANT_SYM;}</p>
+<p>DOMException on setting</p>
+<ul class="rst-simple">
+<li>SYNTAX_ERR: (self)
+Raised if the specified priority has a syntax error and is
+unparsable.
+In this case a priority not equal to None, &quot;&quot; or &quot;!{w}important&quot;.</li>
+</ul>
+</div>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_Property__invalidToken"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_Property__invalidToken</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tokens</span>,
+        <span class="sig-arg">x</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.property-pysrc.html#_Property._Property__invalidToken">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>raises SyntaxErr if an INVALID token in tokens</p>
+<dl class="rst-docutils">
+<dt>x</dt>
+<dd>name, value or priority, used for error message</dd>
+</dl>
+<p>returns True if INVALID found, else False</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== PROPERTY DETAILS ==================== -->
+<a name="section-PropertyDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Property Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-PropertyDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="cssValue"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">cssValue</h3>
+  (cssutils readonly) CSSValue object of this property
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_getCssValue" class="summary-sig-name">cssutils.css.property._Property._getCssValue</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="name"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">name</h3>
+  (cssutils) Name of this property
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_getName" class="summary-sig-name">cssutils.css.property._Property._getName</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_setName" class="summary-sig-name">cssutils.css.property._Property._setName</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span>
+        - : IDENT S*
+;
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="value"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">value</h3>
+  (cssutils) Value of this property
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_getValue" class="summary-sig-name">cssutils.css.property._Property._getValue</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_setValue" class="summary-sig-name">cssutils.css.property._Property._setValue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>)</span>
+        - : term [ operator term ]*
+;
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="priority"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">priority</h3>
+  (cssutils) Priority of this property
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_getPriority" class="summary-sig-name">cssutils.css.property._Property._getPriority</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.property._Property-class.html#_setPriority" class="summary-sig-name">cssutils.css.property._Property._setPriority</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">priority</span>)</span>
+        - currently &quot;!important&quot; to set an important priority
+or None or the empty string to set no priority only
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:18 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

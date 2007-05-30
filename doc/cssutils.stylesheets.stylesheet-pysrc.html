@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.stylesheets.stylesheet</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        <a href="cssutils.stylesheets-module.html">Package&nbsp;stylesheets</a> ::
+        Module&nbsp;stylesheet
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.stylesheets.stylesheet-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="cssutils.stylesheets.stylesheet-module.html">Module cssutils.stylesheets.stylesheet</a></h1>
+<pre class="py-src">
+<span class="py-lineno"> 1</span>  <span class="py-line"><span class="py-docstring">"""</span> </span>
+<span class="py-lineno"> 2</span>  <span class="py-line"><span class="py-docstring">StyleSheet implements DOM Level 2 Style Sheets StyleSheet.</span> </span>
+<span class="py-lineno"> 3</span>  <span class="py-line"><span class="py-docstring">"""</span> </span>
+<span class="py-lineno"> 4</span>  <span class="py-line"><span class="py-name">__all__</span> <span class="py-op">=</span> <span class="py-op">[</span><span class="py-string">'StyleSheet'</span><span class="py-op">]</span> </span>
+<span class="py-lineno"> 5</span>  <span class="py-line"><span class="py-name">__docformat__</span> <span class="py-op">=</span> <span class="py-string">'restructuredtext'</span> </span>
+<span class="py-lineno"> 6</span>  <span class="py-line"><span id="link-0" class="py-name"><a title="cssutils.__version__
+cssutils.css.__version__
+cssutils.css.csscharsetrule.__version__
+cssutils.css.csscomment.__version__
+cssutils.css.cssimportrule.__version__
+cssutils.css.cssmediarule.__version__
+cssutils.css.cssnamespacerule.__version__
+cssutils.css.csspagerule.__version__
+cssutils.css.cssproperties.__version__
+cssutils.css.cssrule.__version__
+cssutils.css.cssrulelist.__version__
+cssutils.css.cssstyledeclaration.__version__
+cssutils.css.cssstylerule.__version__
+cssutils.css.cssstylesheet.__version__
+cssutils.css.cssunknownrule.__version__
+cssutils.css.cssvalue.__version__
+cssutils.css.property.__version__
+cssutils.css.selector.__version__
+cssutils.css.selectorlist.__version__
+cssutils.domimplementationcss.__version__
+cssutils.errorhandler.__version__
+cssutils.parse'.__version__
+cssutils.scripts.__version__
+cssutils.serialize.__version__
+cssutils.stylesheets.__version__
+cssutils.stylesheets.medialist.__version__
+cssutils.stylesheets.stylesheet.__version__
+cssutils.stylesheets.stylesheetlist.__version__
+cssutils.tests.__version__
+cssutils.tests.basetest.__version__
+cssutils.tests.test_csscharsetrule.__version__
+cssutils.tests.test_csscomment.__version__
+cssutils.tests.test_cssimportrule.__version__
+cssutils.tests.test_cssmediarule.__version__
+cssutils.tests.test_cssnamespacerule.__version__
+cssutils.tests.test_csspagerule.__version__
+cssutils.tests.test_cssproperties.__version__
+cssutils.tests.test_cssrule.__version__
+cssutils.tests.test_cssrulelist.__version__
+cssutils.tests.test_cssstyledeclaration.__version__
+cssutils.tests.test_cssstylerule.__version__
+cssutils.tests.test_cssstylesheet.__version__
+cssutils.tests.test_cssunknownrule.__version__
+cssutils.tests.test_cssutils.__version__
+cssutils.tests.test_cssutilsimport.__version__
+cssutils.tests.test_cssvalue.__version__
+cssutils.tests.test_medialist.__version__
+cssutils.tests.test_parse.__version__
+cssutils.tests.test_property.__version__
+cssutils.tests.test_selector.__version__
+cssutils.tests.test_selectorlist.__version__
+cssutils.tests.test_serialize.__version__
+cssutils.tests.test_token.__version__
+cssutils.tests.test_tokenize.__version__
+cssutils.token.__version__
+cssutils.tokenize.__version__
+cssutils.util.__version__" class="py-name" href="#" onclick="doclink('link-0', '__version__', 'Variable cssutils.__version__=cssutils-module.html#__version__,Variable cssutils.css.__version__=cssutils.css-module.html#__version__,Variable cssutils.css.csscharsetrule.__version__=cssutils.css.csscharsetrule-module.html#__version__,Variable cssutils.css.csscomment.__version__=cssutils.css.csscomment-module.html#__version__,Variable cssutils.css.cssimportrule.__version__=cssutils.css.cssimportrule-module.html#__version__,Variable cssutils.css.cssmediarule.__version__=cssutils.css.cssmediarule-module.html#__version__,Variable cssutils.css.cssnamespacerule.__version__=cssutils.css.cssnamespacerule-module.html#__version__,Variable cssutils.css.csspagerule.__version__=cssutils.css.csspagerule-module.html#__version__,Variable cssutils.css.cssproperties.__version__=cssutils.css.cssproperties-module.html#__version__,Variable cssutils.css.cssrule.__version__=cssutils.css.cssrule-module.html#__version__,Variable cssutils.css.cssrulelist.__version__=cssutils.css.cssrulelist-module.html#__version__,Variable cssutils.css.cssstyledeclaration.__version__=cssutils.css.cssstyledeclaration-module.html#__version__,Variable cssutils.css.cssstylerule.__version__=cssutils.css.cssstylerule-module.html#__version__,Variable cssutils.css.cssstylesheet.__version__=cssutils.css.cssstylesheet-module.html#__version__,Variable cssutils.css.cssunknownrule.__version__=cssutils.css.cssunknownrule-module.html#__version__,Variable cssutils.css.cssvalue.__version__=cssutils.css.cssvalue-module.html#__version__,Variable cssutils.css.property.__version__=cssutils.css.property-module.html#__version__,Variable cssutils.css.selector.__version__=cssutils.css.selector-module.html#__version__,Variable cssutils.css.selectorlist.__version__=cssutils.css.selectorlist-module.html#__version__,Variable cssutils.domimplementationcss.__version__=cssutils.domimplementationcss-module.html#__version__,Variable cssutils.errorhandler.__version__=cssutils.errorhandler-module.html#__version__,Variable cssutils.parse'.__version__=cssutils.parse%27-module.html#__version__,Variable cssutils.scripts.__version__=cssutils.scripts-module.html#__version__,Variable cssutils.serialize.__version__=cssutils.serialize-module.html#__version__,Variable cssutils.stylesheets.__version__=cssutils.stylesheets-module.html#__version__,Variable cssutils.stylesheets.medialist.__version__=cssutils.stylesheets.medialist-module.html#__version__,Variable cssutils.stylesheets.stylesheet.__version__=cssutils.stylesheets.stylesheet-module.html#__version__,Variable cssutils.stylesheets.stylesheetlist.__version__=cssutils.stylesheets.stylesheetlist-module.html#__version__,Variable cssutils.tests.__version__=cssutils.tests-module.html#__version__,Variable cssutils.tests.basetest.__version__=cssutils.tests.basetest-module.html#__version__,Variable cssutils.tests.test_csscharsetrule.__version__=cssutils.tests.test_csscharsetrule-module.html#__version__,Variable cssutils.tests.test_csscomment.__version__=cssutils.tests.test_csscomment-module.html#__version__,Variable cssutils.tests.test_cssimportrule.__version__=cssutils.tests.test_cssimportrule-module.html#__version__,Variable cssutils.tests.test_cssmediarule.__version__=cssutils.tests.test_cssmediarule-module.html#__version__,Variable cssutils.tests.test_cssnamespacerule.__version__=cssutils.tests.test_cssnamespacerule-module.html#__version__,Variable cssutils.tests.test_csspagerule.__version__=cssutils.tests.test_csspagerule-module.html#__version__,Variable cssutils.tests.test_cssproperties.__version__=cssutils.tests.test_cssproperties-module.html#__version__,Variable cssutils.tests.test_cssrule.__version__=cssutils.tests.test_cssrule-module.html#__version__,Variable cssutils.tests.test_cssrulelist.__version__=cssutils.tests.test_cssrulelist-module.html#__version__,Variable cssutils.tests.test_cssstyledeclaration.__version__=cssutils.tests.test_cssstyledeclaration-module.html#__version__,Variable cssutils.tests.test_cssstylerule.__version__=cssutils.tests.test_cssstylerule-module.html#__version__,Variable cssutils.tests.test_cssstylesheet.__version__=cssutils.tests.test_cssstylesheet-module.html#__version__,Variable cssutils.tests.test_cssunknownrule.__version__=cssutils.tests.test_cssunknownrule-module.html#__version__,Variable cssutils.tests.test_cssutils.__version__=cssutils.tests.test_cssutils-module.html#__version__,Variable cssutils.tests.test_cssutilsimport.__version__=cssutils.tests.test_cssutilsimport-module.html#__version__,Variable cssutils.tests.test_cssvalue.__version__=cssutils.tests.test_cssvalue-module.html#__version__,Variable cssutils.tests.test_medialist.__version__=cssutils.tests.test_medialist-module.html#__version__,Variable cssutils.tests.test_parse.__version__=cssutils.tests.test_parse-module.html#__version__,Variable cssutils.tests.test_property.__version__=cssutils.tests.test_property-module.html#__version__,Variable cssutils.tests.test_selector.__version__=cssutils.tests.test_selector-module.html#__version__,Variable cssutils.tests.test_selectorlist.__version__=cssutils.tests.test_selectorlist-module.html#__version__,Variable cssutils.tests.test_serialize.__version__=cssutils.tests.test_serialize-module.html#__version__,Variable cssutils.tests.test_token.__version__=cssutils.tests.test_token-module.html#__version__,Variable cssutils.tests.test_tokenize.__version__=cssutils.tests.test_tokenize-module.html#__version__,Variable cssutils.token.__version__=cssutils.token-module.html#__version__,Variable cssutils.tokenize.__version__=cssutils.tokenize-module.html#__version__,Variable cssutils.util.__version__=cssutils.util-module.html#__version__'); return false;">__version__</a></span></span> <span class="py-op">=</span> <span class="py-string">'0.9.1b4'</span> </span>
+<span class="py-lineno"> 7</span>  <span class="py-line"> </span>
+<span class="py-lineno"> 8</span>  <span class="py-line"><span class="py-keyword">import</span> <span id="link-1" class="py-name"><a title="cssutils" class="py-name" href="#" onclick="doclink('link-1', 'cssutils', 'Package cssutils=cssutils-module.html'); return false;">cssutils</a></span></span> </span>
+<span class="py-lineno"> 9</span>  <span class="py-line"> </span>
+<a name="StyleSheet"></a><div id="StyleSheet-def"><span class="py-lineno">10</span> <a class="py-toggle" href="#" id="StyleSheet-toggle" onclick="toggle('StyleSheet'); return false;">-</a><span class="py-line"><span class="py-keyword">class</span> <a class="py-def-name" href="cssutils.stylesheets.stylesheet.StyleSheet-class.html">StyleSheet</a><span class="py-op">(</span><span class="py-base-class">cssutils</span><span class="py-op">.</span><span class="py-base-class">util</span><span class="py-op">.</span><span class="py-base-class">Base</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="StyleSheet-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="StyleSheet-expanded"><span class="py-lineno">11</span>  <span class="py-line">    <span class="py-docstring">"""</span> </span>
+<span class="py-lineno">12</span>  <span class="py-line"><span class="py-docstring">    The StyleSheet interface is the abstract base interface</span> </span>
+<span class="py-lineno">13</span>  <span class="py-line"><span class="py-docstring">    for any type of style sheet. It represents a single style</span> </span>
+<span class="py-lineno">14</span>  <span class="py-line"><span class="py-docstring">    sheet associated with a structured document.</span> </span>
+<span class="py-lineno">15</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno">16</span>  <span class="py-line"><span class="py-docstring">    In HTML, the StyleSheet interface represents either an</span> </span>
+<span class="py-lineno">17</span>  <span class="py-line"><span class="py-docstring">    external style sheet, included via the HTML LINK element,</span> </span>
+<span class="py-lineno">18</span>  <span class="py-line"><span class="py-docstring">    or an inline STYLE element (-ch: also an @import stylesheet?).</span> </span>
+<span class="py-lineno">19</span>  <span class="py-line"><span class="py-docstring"></span> </span>
+<span class="py-lineno">20</span>  <span class="py-line"><span class="py-docstring">    In XML, this interface represents</span> </span>
+<span class="py-lineno">21</span>  <span class="py-line"><span class="py-docstring">    an external style sheet, included via a style sheet</span> </span>
+<span class="py-lineno">22</span>  <span class="py-line"><span class="py-docstring">    processing instruction.</span> </span>
+<span class="py-lineno">23</span>  <span class="py-line"><span class="py-docstring">    """</span> </span>
+<a name="StyleSheet.__init__"></a><div id="StyleSheet.__init__-def"><span class="py-lineno">24</span> <a class="py-toggle" href="#" id="StyleSheet.__init__-toggle" onclick="toggle('StyleSheet.__init__'); return false;">-</a><span class="py-line">    <span class="py-keyword">def</span> <a class="py-def-name" href="cssutils.stylesheets.stylesheet.StyleSheet-class.html#__init__">__init__</a><span class="py-op">(</span><span class="py-param">self</span><span class="py-op">,</span> <span class="py-param">type</span><span class="py-op">=</span><span class="py-string">'text/css'</span><span class="py-op">,</span> </span>
+<span class="py-lineno">25</span>  <span class="py-line">                 <span class="py-param">href</span><span class="py-op">=</span><span class="py-name">None</span><span class="py-op">,</span> </span>
+<span class="py-lineno">26</span>  <span class="py-line">                 <span class="py-param">media</span><span class="py-op">=</span><span class="py-name">None</span><span class="py-op">,</span> </span>
+<span class="py-lineno">27</span>  <span class="py-line">                 <span class="py-param">title</span><span class="py-op">=</span><span class="py-string">u''</span><span class="py-op">,</span> </span>
+<span class="py-lineno">28</span>  <span class="py-line">                 <span class="py-param">disabled</span><span class="py-op">=</span><span class="py-name">None</span><span class="py-op">,</span> </span>
+<span class="py-lineno">29</span>  <span class="py-line">                 <span class="py-param">ownerNode</span><span class="py-op">=</span><span class="py-name">None</span><span class="py-op">,</span> </span>
+<span class="py-lineno">30</span>  <span class="py-line">                 <span class="py-param">parentStyleSheet</span><span class="py-op">=</span><span class="py-name">None</span><span class="py-op">)</span><span class="py-op">:</span> </span>
+</div><div id="StyleSheet.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="StyleSheet.__init__-expanded"><span class="py-lineno">31</span>  <span class="py-line">        <span class="py-docstring">"""</span> </span>
+<span class="py-lineno">32</span>  <span class="py-line"><span class="py-docstring">        type: readonly</span> </span>
+<span class="py-lineno">33</span>  <span class="py-line"><span class="py-docstring">            This specifies the style sheet language for this</span> </span>
+<span class="py-lineno">34</span>  <span class="py-line"><span class="py-docstring">            style sheet. The style sheet language is specified</span> </span>
+<span class="py-lineno">35</span>  <span class="py-line"><span class="py-docstring">            as a content type (e.g. "text/css"). The content</span> </span>
+<span class="py-lineno">36</span>  <span class="py-line"><span class="py-docstring">            type is often specified in the ownerNode. Also see</span> </span>
+<span class="py-lineno">37</span>  <span class="py-line"><span class="py-docstring">            the type attribute definition for the LINK element</span> </span>
+<span class="py-lineno">38</span>  <span class="py-line"><span class="py-docstring">            in HTML 4.0, and the type pseudo-attribute for the</span> </span>
+<span class="py-lineno">39</span>  <span class="py-line"><span class="py-docstring">            XML style sheet processing instruction.</span> </span>
+<span class="py-lineno">40</span>  <span class="py-line"><span class="py-docstring">        href: readonly</span> </span>
+<span class="py-lineno">41</span>  <span class="py-line"><span class="py-docstring">            If the style sheet is a linked style sheet, the value</span> </span>
+<span class="py-lineno">42</span>  <span class="py-line"><span class="py-docstring">            of this attribute is its location. For inline style</span> </span>
+<span class="py-lineno">43</span>  <span class="py-line"><span class="py-docstring">            sheets, the value of this attribute is None. See the</span> </span>
+<span class="py-lineno">44</span>  <span class="py-line"><span class="py-docstring">            href attribute definition for the LINK element in HTML</span> </span>
+<span class="py-lineno">45</span>  <span class="py-line"><span class="py-docstring">            4.0, and the href pseudo-attribute for the XML style</span> </span>
+<span class="py-lineno">46</span>  <span class="py-line"><span class="py-docstring">            sheet processing instruction.</span> </span>
+<span class="py-lineno">47</span>  <span class="py-line"><span class="py-docstring">        media: of type MediaList, readonly</span> </span>
+<span class="py-lineno">48</span>  <span class="py-line"><span class="py-docstring">            The intended destination media for style information.</span> </span>
+<span class="py-lineno">49</span>  <span class="py-line"><span class="py-docstring">            The media is often specified in the ownerNode. If no</span> </span>
+<span class="py-lineno">50</span>  <span class="py-line"><span class="py-docstring">            media has been specified, the MediaList will be empty.</span> </span>
+<span class="py-lineno">51</span>  <span class="py-line"><span class="py-docstring">            See the media attribute definition for the LINK element</span> </span>
+<span class="py-lineno">52</span>  <span class="py-line"><span class="py-docstring">            in HTML 4.0, and the media pseudo-attribute for the XML</span> </span>
+<span class="py-lineno">53</span>  <span class="py-line"><span class="py-docstring">            style sheet processing instruction. Modifying the media</span> </span>
+<span class="py-lineno">54</span>  <span class="py-line"><span class="py-docstring">            list may cause a change to the attribute disabled.</span> </span>
+<span class="py-lineno">55</span>  <span class="py-line"><span class="py-docstring">        title: readonly</span> </span>
+<span class="py-lineno">56</span>  <span class="py-line"><span class="py-docstring">            The advisory title. The title is often specified in</span> </span>
+<span class="py-lineno">57</span>  <span class="py-line"><span class="py-docstring">            the ownerNode. See the title attribute definition for</span> </span>
+<span class="py-lineno">58</span>  <span class="py-line"><span class="py-docstring">            the LINK element in HTML 4.0, and the title</span> </span>
+<span class="py-lineno">59</span>  <span class="py-line"><span class="py-docstring">            pseudo-attribute for the XML style sheet processing</span> </span>
+<span class="py-lineno">60</span>  <span class="py-line"><span class="py-docstring">            instruction.</span> </span>
+<span class="py-lineno">61</span>  <span class="py-line"><span class="py-docstring">        disabled: False if the style sheet is applied to the</span> </span>
+<span class="py-lineno">62</span>  <span class="py-line"><span class="py-docstring">            document. True if it is not. Modifying this attribute</span> </span>
+<span class="py-lineno">63</span>  <span class="py-line"><span class="py-docstring">            may cause a new resolution of style for the document.</span> </span>
+<span class="py-lineno">64</span>  <span class="py-line"><span class="py-docstring">            A stylesheet only applies if both an appropriate medium</span> </span>
+<span class="py-lineno">65</span>  <span class="py-line"><span class="py-docstring">            definition is present and the disabled attribute is False.</span> </span>
+<span class="py-lineno">66</span>  <span class="py-line"><span class="py-docstring">            So, if the media doesn't apply to the current user agent,</span> </span>
+<span class="py-lineno">67</span>  <span class="py-line"><span class="py-docstring">            the disabled attribute is ignored.</span> </span>
+<span class="py-lineno">68</span>  <span class="py-line"><span class="py-docstring">        ownerNode: of type Node, readonly</span> </span>
+<span class="py-lineno">69</span>  <span class="py-line"><span class="py-docstring">            The node that associates this style sheet with the</span> </span>
+<span class="py-lineno">70</span>  <span class="py-line"><span class="py-docstring">            document. For HTML, this may be the corresponding LINK</span> </span>
+<span class="py-lineno">71</span>  <span class="py-line"><span class="py-docstring">            or STYLE element. For XML, it may be the linking</span> </span>
+<span class="py-lineno">72</span>  <span class="py-line"><span class="py-docstring">            processing instruction. For style sheets that are</span> </span>
+<span class="py-lineno">73</span>  <span class="py-line"><span class="py-docstring">            included by other style sheets, the value of this</span> </span>
+<span class="py-lineno">74</span>  <span class="py-line"><span class="py-docstring">            attribute is None.</span> </span>
+<span class="py-lineno">75</span>  <span class="py-line"><span class="py-docstring">        parentStyleSheet: of type StyleSheet, readonly</span> </span>
+<span class="py-lineno">76</span>  <span class="py-line"><span class="py-docstring">            For style sheet languages that support the concept</span> </span>
+<span class="py-lineno">77</span>  <span class="py-line"><span class="py-docstring">            of style sheet inclusion, this attribute represents</span> </span>
+<span class="py-lineno">78</span>  <span class="py-line"><span class="py-docstring">            the including style sheet, if one exists. If the style</span> </span>
+<span class="py-lineno">79</span>  <span class="py-line"><span class="py-docstring">            sheet is a top-level style sheet, or the style sheet</span> </span>
+<span class="py-lineno">80</span>  <span class="py-line"><span class="py-docstring">            language does not support inclusion, the value of this</span> </span>
+<span class="py-lineno">81</span>  <span class="py-line"><span class="py-docstring">            attribute is None.</span> </span>
+<span class="py-lineno">82</span>  <span class="py-line"><span class="py-docstring">        """</span> </span>
+<span class="py-lineno">83</span>  <span class="py-line">        <span class="py-name">super</span><span class="py-op">(</span><span id="link-2" class="py-name"><a title="cssutils.stylesheets.stylesheet.StyleSheet" class="py-name" href="#" onclick="doclink('link-2', 'StyleSheet', 'Class cssutils.stylesheets.stylesheet.StyleSheet=cssutils.stylesheets.stylesheet.StyleSheet-class.html'); return false;">StyleSheet</a></span></span><span class="py-op">,</span> <span class="py-name">self</span><span class="py-op">)</span><span class="py-op">.</span><span id="link-3" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.__init__
+cssutils.css.csscomment.CSSComment.__init__
+cssutils.css.cssimportrule.CSSImportRule.__init__
+cssutils.css.cssmediarule.CSSMediaRule.__init__
+cssutils.css.cssnamespacerule.CSSNamespaceRule.__init__
+cssutils.css.csspagerule.CSSPageRule.__init__
+cssutils.css.cssrule.CSSRule.__init__
+cssutils.css.cssstyledeclaration.CSSStyleDeclaration.__init__
+cssutils.css.cssstyledeclaration.SameNamePropertyList.__init__
+cssutils.css.cssstylerule.CSSStyleRule.__init__
+cssutils.css.cssstylesheet.CSSStyleSheet.__init__
+cssutils.css.cssunknownrule.CSSUnknownRule.__init__
+cssutils.css.cssvalue.CSSValue.__init__
+cssutils.css.property._Property.__init__
+cssutils.css.selector.Selector.__init__
+cssutils.css.selectorlist.SelectorList.__init__
+cssutils.errorhandler.ErrorHandler.__init__
+cssutils.errorhandler._ErrorHandler.__init__
+cssutils.parse'.CSSParser.__init__
+cssutils.serialize.CSSSerializer.__init__
+cssutils.serialize.Preferences.__init__
+cssutils.stylesheets.medialist.MediaList.__init__
+cssutils.stylesheets.stylesheet.StyleSheet.__init__
+cssutils.token.Token.__init__
+cssutils.token.Tokenre.__init__
+cssutils.tokenize.Tokenizer.__init__" class="py-name" href="#" onclick="doclink('link-3', '__init__', 'Method cssutils.css.csscharsetrule.CSSCharsetRule.__init__()=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#__init__,Method cssutils.css.csscomment.CSSComment.__init__()=cssutils.css.csscomment.CSSComment-class.html#__init__,Method cssutils.css.cssimportrule.CSSImportRule.__init__()=cssutils.css.cssimportrule.CSSImportRule-class.html#__init__,Method cssutils.css.cssmediarule.CSSMediaRule.__init__()=cssutils.css.cssmediarule.CSSMediaRule-class.html#__init__,Method cssutils.css.cssnamespacerule.CSSNamespaceRule.__init__()=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#__init__,Method cssutils.css.csspagerule.CSSPageRule.__init__()=cssutils.css.csspagerule.CSSPageRule-class.html#__init__,Method cssutils.css.cssrule.CSSRule.__init__()=cssutils.css.cssrule.CSSRule-class.html#__init__,Method cssutils.css.cssstyledeclaration.CSSStyleDeclaration.__init__()=cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#__init__,Method cssutils.css.cssstyledeclaration.SameNamePropertyList.__init__()=cssutils.css.cssstyledeclaration.SameNamePropertyList-class.html#__init__,Method cssutils.css.cssstylerule.CSSStyleRule.__init__()=cssutils.css.cssstylerule.CSSStyleRule-class.html#__init__,Method cssutils.css.cssstylesheet.CSSStyleSheet.__init__()=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#__init__,Method cssutils.css.cssunknownrule.CSSUnknownRule.__init__()=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#__init__,Method cssutils.css.cssvalue.CSSValue.__init__()=cssutils.css.cssvalue.CSSValue-class.html#__init__,Method cssutils.css.property._Property.__init__()=cssutils.css.property._Property-class.html#__init__,Method cssutils.css.selector.Selector.__init__()=cssutils.css.selector.Selector-class.html#__init__,Method cssutils.css.selectorlist.SelectorList.__init__()=cssutils.css.selectorlist.SelectorList-class.html#__init__,Method cssutils.errorhandler.ErrorHandler.__init__()=cssutils.errorhandler.ErrorHandler-class.html#__init__,Method cssutils.errorhandler._ErrorHandler.__init__()=cssutils.errorhandler._ErrorHandler-class.html#__init__,Method cssutils.parse'.CSSParser.__init__()=cssutils.parse%27.CSSParser-class.html#__init__,Method cssutils.serialize.CSSSerializer.__init__()=cssutils.serialize.CSSSerializer-class.html#__init__,Method cssutils.serialize.Preferences.__init__()=cssutils.serialize.Preferences-class.html#__init__,Method cssutils.stylesheets.medialist.MediaList.__init__()=cssutils.stylesheets.medialist.MediaList-class.html#__init__,Method cssutils.stylesheets.stylesheet.StyleSheet.__init__()=cssutils.stylesheets.stylesheet.StyleSheet-class.html#__init__,Method cssutils.token.Token.__init__()=cssutils.token.Token-class.html#__init__,Method cssutils.token.Tokenre.__init__()=cssutils.token.Tokenre-class.html#__init__,Method cssutils.tokenize.Tokenizer.__init__()=cssutils.tokenize.Tokenizer-class.html#__init__'); return false;">__init__</a></span></span><span class="py-op">(</span><span class="py-op">)</span> </span>
+<span class="py-lineno">84</span>  <span class="py-line">         </span>
+<span class="py-lineno">85</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span id="link-4" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-4', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span> <span class="py-op">=</span> <span id="link-5" class="py-name"><a title="cssutils.css.csscharsetrule.CSSCharsetRule.type
+cssutils.css.csscomment.CSSComment.type
+cssutils.css.cssimportrule.CSSImportRule.type
+cssutils.css.cssmediarule.CSSMediaRule.type
+cssutils.css.cssnamespacerule.CSSNamespaceRule.type
+cssutils.css.csspagerule.CSSPageRule.type
+cssutils.css.cssrule.CSSRule.type
+cssutils.css.cssstylerule.CSSStyleRule.type
+cssutils.css.cssstylesheet.CSSStyleSheet.type
+cssutils.css.cssunknownrule.CSSUnknownRule.type" class="py-name" href="#" onclick="doclink('link-5', 'type', 'Variable cssutils.css.csscharsetrule.CSSCharsetRule.type=cssutils.css.csscharsetrule.CSSCharsetRule-class.html#type,Variable cssutils.css.csscomment.CSSComment.type=cssutils.css.csscomment.CSSComment-class.html#type,Variable cssutils.css.cssimportrule.CSSImportRule.type=cssutils.css.cssimportrule.CSSImportRule-class.html#type,Variable cssutils.css.cssmediarule.CSSMediaRule.type=cssutils.css.cssmediarule.CSSMediaRule-class.html#type,Variable cssutils.css.cssnamespacerule.CSSNamespaceRule.type=cssutils.css.cssnamespacerule.CSSNamespaceRule-class.html#type,Variable cssutils.css.csspagerule.CSSPageRule.type=cssutils.css.csspagerule.CSSPageRule-class.html#type,Variable cssutils.css.cssrule.CSSRule.type=cssutils.css.cssrule.CSSRule-class.html#type,Variable cssutils.css.cssstylerule.CSSStyleRule.type=cssutils.css.cssstylerule.CSSStyleRule-class.html#type,Variable cssutils.css.cssstylesheet.CSSStyleSheet.type=cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type,Variable cssutils.css.cssunknownrule.CSSUnknownRule.type=cssutils.css.cssunknownrule.CSSUnknownRule-class.html#type'); return false;">type</a></span></span> </span>
+<span class="py-lineno">86</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span id="link-6" class="py-name"><a title="cssutils.css.cssimportrule.CSSImportRule.href" class="py-name" href="#" onclick="doclink('link-6', 'href', 'Variable cssutils.css.cssimportrule.CSSImportRule.href=cssutils.css.cssimportrule.CSSImportRule-class.html#href'); return false;">href</a></span></span> <span class="py-op">=</span> <span id="link-7" class="py-name"><a title="cssutils.css.cssimportrule.CSSImportRule.href" class="py-name" href="#" onclick="doclink('link-7', 'href', 'Variable cssutils.css.cssimportrule.CSSImportRule.href=cssutils.css.cssimportrule.CSSImportRule-class.html#href'); return false;">href</a></span></span> </span>
+<span class="py-lineno">87</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span id="link-8" class="py-name"><a title="cssutils.css.cssimportrule.CSSImportRule.media
+cssutils.css.cssmediarule.CSSMediaRule.media" class="py-name" href="#" onclick="doclink('link-8', 'media', 'Variable cssutils.css.cssimportrule.CSSImportRule.media=cssutils.css.cssimportrule.CSSImportRule-class.html#media,Variable cssutils.css.cssmediarule.CSSMediaRule.media=cssutils.css.cssmediarule.CSSMediaRule-class.html#media'); return false;">media</a></span></span> <span class="py-op">=</span> <span id="link-9" class="py-name"><a title="cssutils.css.cssimportrule.CSSImportRule.media
+cssutils.css.cssmediarule.CSSMediaRule.media" class="py-name" href="#" onclick="doclink('link-9', 'media', 'Variable cssutils.css.cssimportrule.CSSImportRule.media=cssutils.css.cssimportrule.CSSImportRule-class.html#media,Variable cssutils.css.cssmediarule.CSSMediaRule.media=cssutils.css.cssmediarule.CSSMediaRule-class.html#media'); return false;">media</a></span></span> </span>
+<span class="py-lineno">88</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">title</span> <span class="py-op">=</span> <span class="py-name">title</span> </span>
+<span class="py-lineno">89</span>  <span class="py-line">        <span class="py-keyword">if</span> <span class="py-name">disabled</span><span class="py-op">:</span> </span>
+<span class="py-lineno">90</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">disabled</span> <span class="py-op">=</span> <span class="py-name">True</span> </span>
+<span class="py-lineno">91</span>  <span class="py-line">        <span class="py-keyword">else</span><span class="py-op">:</span> </span>
+<span class="py-lineno">92</span>  <span class="py-line">            <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">disabled</span> <span class="py-op">=</span> <span class="py-name">False</span> </span>
+<span class="py-lineno">93</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">ownerNode</span> <span class="py-op">=</span> <span class="py-name">ownerNode</span> </span>
+<span class="py-lineno">94</span>  <span class="py-line">        <span class="py-name">self</span><span class="py-op">.</span><span class="py-name">parentStyleSheet</span> <span class="py-op">=</span> <span class="py-name">parentStyleSheet</span> </span>
+</div></div><span class="py-lineno">95</span>  <span class="py-line"> </span><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:21 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

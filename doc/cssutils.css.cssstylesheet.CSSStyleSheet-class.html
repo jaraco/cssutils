@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.css.cssstylesheet.CSSStyleSheet</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        <a href="cssutils.css-module.html">Package&nbsp;css</a> ::
+        <a href="cssutils.css.cssstylesheet-module.html">Module&nbsp;cssstylesheet</a> ::
+        Class&nbsp;CSSStyleSheet
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class CSSStyleSheet</h1><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet">source&nbsp;code</a></span><br /><br />
+<pre class="base-tree">
+                   object --+        
+                            |        
+                    util.Base --+    
+                                |    
+<a href="cssutils.stylesheets.stylesheet.StyleSheet-class.html">stylesheets.stylesheet.StyleSheet</a> --+
+                                    |
+                                   <strong class="uidshort">CSSStyleSheet</strong>
+</pre>
+
+<hr />
+<blockquote>
+The CSSStyleSheet interface is a concrete interface used to represent
+a CSS style sheet i.e., a style sheet whose content type is
+&quot;text/css&quot;.</blockquote>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-properties" name="rst-properties">Properties</a></h1>
+<dl class="rst-docutils">
+<dt>cssRules: of type CSSRuleList, (DOM readonly)</dt>
+<dd>The list of all CSS rules contained within the style sheet. This
+includes both rule sets and at-rules.</dd>
+<dt>namespaces: set</dt>
+<dd>A set of declared namespaces via &#64;namespace rules. Each
+CSSStyleRule is checked if it uses additional prefixes which are
+not declared. If they are &quot;invalidated&quot;.</dd>
+<dt>ownerRule: of type CSSRule, readonly</dt>
+<dd>If this style sheet comes from an &#64;import rule, the ownerRule
+attribute will contain the CSSImportRule. In that case, the
+ownerNode attribute in the StyleSheet interface will be None. If
+the style sheet comes from an element or a processing instruction,
+the ownerRule attribute will be None and the ownerNode attribute
+will contain the Node.</dd>
+</dl>
+<p>Inherits properties from stylesheet.StyleSheet</p>
+</div>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-format" name="rst-format">Format</a></h1>
+<dl class="rst-docutils">
+<dt>stylesheet</dt>
+<dd><dl class="rst-first rst-last rst-docutils">
+<dt>: [ CHARSET_SYM S* STRING S* ';' ]?</dt>
+<dd>[S|CDO|CDC]* [ import [S|CDO|CDC]* ]*
+[ namespace [S|CDO|CDC]* ]* # according to &#64;namespace WD
+[ [ ruleset | media | page ] [S|CDO|CDC]* ]*</dd>
+</dl>
+</dd>
+</dl>
+</div><br /><br />
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">href</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">media</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">title</span>=<span class="summary-sig-default">u''</span>,
+        <span class="summary-sig-arg">disabled</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ownerNode</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">parentStyleSheet</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">readonly</span>=<span class="summary-sig-default">False</span>)</span><br />
+      This specifies the style sheet language for this
+style sheet.
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#__checknamespaces" class="summary-sig-name">__checknamespaces</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">stylerule</span>,
+        <span class="summary-sig-arg">namespaces</span>)</span><br />
+      checks if all namespaces used in stylerule have been declared
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#_getCssText" class="summary-sig-name">_getCssText</a>(<span class="summary-sig-arg">self</span>)</span>
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#_setCssText" class="summary-sig-name">_setCssText</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cssText</span>)</span><br />
+      (cssutils)
+Parses cssText and overwrites the whole stylesheet.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#deleteRule" class="summary-sig-name">deleteRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      Used to delete a rule from the style sheet.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#insertRule" class="summary-sig-name">insertRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Used to insert a new rule into the style sheet.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#addRule" class="summary-sig-name">addRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rule</span>)</span><br />
+      DEPRECATED, use appendRule instead
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#_getsetOwnerRuleDummy" class="summary-sig-name">_getsetOwnerRuleDummy</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      NOT IMPLEMENTED YET
+If this style sheet comes from an &#64;import rule, the ownerRule
+attribute will contain the CSSImportRule.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#setSerializer" class="summary-sig-name">setSerializer</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cssserializer</span>)</span><br />
+      Sets Serializer used for output of this stylesheet
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#setSerializerPref" class="summary-sig-name">setSerializerPref</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">pref</span>,
+        <span class="summary-sig-arg">value</span>)</span><br />
+      Sets Preference of CSSSerializer used for output of this
+stylesheet.
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>util.Base</code></b>:
+      <code>getFormatted</code>,
+      <code>pprint</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>util.Base</code></b> (private):
+      <code>_checkReadonly</code>,
+      <code>_normalize</code>,
+      <code>_tokenize</code>,
+      <code>_valuestr</code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__str__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#type">type</a> = <code title="'text/css'">'text/css'</code>
+  </td>
+</tr>
+</table>
+
+<br />
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#cssText">cssText</a>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#ownerRule">ownerRule</a><br />
+      (DOM attribute) NOT IMPLEMENTED YET
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">href</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">media</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">title</span>=<span class="sig-default">u''</span>,
+        <span class="sig-arg">disabled</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ownerNode</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">parentStyleSheet</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">readonly</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet.__init__">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>type: readonly</dt>
+<dd>This specifies the style sheet language for this
+style sheet. The style sheet language is specified
+as a content type (e.g. &quot;text/css&quot;). The content
+type is often specified in the ownerNode. Also see
+the type attribute definition for the LINK element
+in HTML 4.0, and the type pseudo-attribute for the
+XML style sheet processing instruction.</dd>
+<dt>href: readonly</dt>
+<dd>If the style sheet is a linked style sheet, the value
+of this attribute is its location. For inline style
+sheets, the value of this attribute is None. See the
+href attribute definition for the LINK element in HTML
+4.0, and the href pseudo-attribute for the XML style
+sheet processing instruction.</dd>
+<dt>media: of type MediaList, readonly</dt>
+<dd>The intended destination media for style information.
+The media is often specified in the ownerNode. If no
+media has been specified, the MediaList will be empty.
+See the media attribute definition for the LINK element
+in HTML 4.0, and the media pseudo-attribute for the XML
+style sheet processing instruction. Modifying the media
+list may cause a change to the attribute disabled.</dd>
+<dt>title: readonly</dt>
+<dd>The advisory title. The title is often specified in
+the ownerNode. See the title attribute definition for
+the LINK element in HTML 4.0, and the title
+pseudo-attribute for the XML style sheet processing
+instruction.</dd>
+<dt>disabled: False if the style sheet is applied to the</dt>
+<dd>document. True if it is not. Modifying this attribute
+may cause a new resolution of style for the document.
+A stylesheet only applies if both an appropriate medium
+definition is present and the disabled attribute is False.
+So, if the media doesn't apply to the current user agent,
+the disabled attribute is ignored.</dd>
+<dt>ownerNode: of type Node, readonly</dt>
+<dd>The node that associates this style sheet with the
+document. For HTML, this may be the corresponding LINK
+or STYLE element. For XML, it may be the linking
+processing instruction. For style sheets that are
+included by other style sheets, the value of this
+attribute is None.</dd>
+<dt>parentStyleSheet: of type StyleSheet, readonly</dt>
+<dd>For style sheet languages that support the concept
+of style sheet inclusion, this attribute represents
+the including style sheet, if one exists. If the style
+sheet is a top-level style sheet, or the style sheet
+language does not support inclusion, the value of this
+attribute is None.</dd>
+</dl>
+  <dl><dt></dt><dd>
+    <dl><dt>Overrides:
+      <a href="cssutils.stylesheets.stylesheet.StyleSheet-class.html#__init__">stylesheets.stylesheet.StyleSheet.__init__</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="__checknamespaces"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__checknamespaces</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">stylerule</span>,
+        <span class="sig-arg">namespaces</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet.__checknamespaces">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  checks if all namespaces used in stylerule have been declared
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getCssText"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getCssText</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet._getCssText">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_setCssText"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_setCssText</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cssText</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet._setCssText">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>(cssutils)
+Parses cssText and overwrites the whole stylesheet.</p>
+<dl class="rst-docutils">
+<dt>cssText</dt>
+<dd>textual text to set</dd>
+</dl>
+<p>DOMException on setting</p>
+<ul class="rst-simple">
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if the rule is readonly.</li>
+<li>SYNTAX_ERR:
+Raised if the specified CSS string value has a syntax error and
+is unparsable.</li>
+<li>NAMESPACE_ERR:
+If a namespace prefix is found which is not declared.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="deleteRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">deleteRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet.deleteRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>Used to delete a rule from the style sheet.</p>
+<dl class="rst-docutils">
+<dt>index</dt>
+<dd>of the rule to remove in the StyleSheet's rule list</dd>
+</dl>
+<p>DOMException</p>
+<ul class="rst-simple">
+<li>INDEX_SIZE_ERR: (self)
+Raised if the specified index does not correspond to a rule in
+the style sheet's rule list.</li>
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this style sheet is readonly.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="insertRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">insertRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>,
+        <span class="sig-arg">index</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet.insertRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>Used to insert a new rule into the style sheet. The new rule now
+becomes part of the cascade.</p>
+<p>Rule may be a string or a valid CSSRule.</p>
+<dl class="rst-docutils">
+<dt>rule</dt>
+<dd>a parsable DOMString (cssutils: or Rule object)</dd>
+<dt>index</dt>
+<dd>of the rule before the new rule will be inserted.
+If the specified index is equal to the length of the
+StyleSheet's rule collection, the rule will be added to the end
+of the style sheet.
+If index is not given or None rule will be appended to rule
+list.</dd>
+</dl>
+<p>returns the index within the stylesheet's rule collection</p>
+<p>DOMException</p>
+<ul class="rst-simple">
+<li>HIERARCHY_REQUEST_ERR: (self)
+Raised if the rule cannot be inserted at the specified index
+e.g. if an &#64;import rule is inserted after a standard rule set
+or other at-rule.</li>
+<li>INDEX_SIZE_ERR: (not raised at all)
+Raised if the specified index is not a valid insertion point.</li>
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this style sheet is readonly.</li>
+<li>SYNTAX_ERR: (rule)
+Raised if the specified rule has a syntax error and is
+unparsable.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="addRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">addRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet.addRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  DEPRECATED, use appendRule instead
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getsetOwnerRuleDummy"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getsetOwnerRuleDummy</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet._getsetOwnerRuleDummy">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  NOT IMPLEMENTED YET
+If this style sheet comes from an &#64;import rule, the ownerRule
+attribute will contain the CSSImportRule. In that case, the
+ownerNode attribute in the StyleSheet interface will be null. If
+the style sheet comes from an element or a processing instruction,
+the ownerRule attribute will be null and the ownerNode attribute
+will contain the Node.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="setSerializer"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setSerializer</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cssserializer</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet.setSerializer">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  Sets Serializer used for output of this stylesheet
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="setSerializerPref"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setSerializerPref</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">pref</span>,
+        <span class="sig-arg">value</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstylesheet-pysrc.html#CSSStyleSheet.setSerializerPref">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  Sets Preference of CSSSerializer used for output of this
+stylesheet. See cssutils.serialize.Preferences for possible
+preferences to be set.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="type"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">type</h3>
+  None
+  <dl><dt></dt><dd>
+    <dl><dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<span class="variable-quote">'</span>text/css<span class="variable-quote">'</span>                                                             
+      </pre></td></tr></table></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== PROPERTY DETAILS ==================== -->
+<a name="section-PropertyDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Property Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-PropertyDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="cssText"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">cssText</h3>
+  None
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#_getCssText" class="summary-sig-name">cssutils.css.cssstylesheet.CSSStyleSheet._getCssText</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#_setCssText" class="summary-sig-name">cssutils.css.cssstylesheet.CSSStyleSheet._setCssText</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cssText</span>)</span>
+        - (cssutils)
+Parses cssText and overwrites the whole stylesheet.
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+<span class="variable-quote">'</span>(cssutils) a textual representation of the stylesheet<span class="variable-quote">'</span>                
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="ownerRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ownerRule</h3>
+  (DOM attribute) NOT IMPLEMENTED YET
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#_getsetOwnerRuleDummy" class="summary-sig-name">cssutils.css.cssstylesheet.CSSStyleSheet._getsetOwnerRuleDummy</a>(<span class="summary-sig-arg">self</span>)</span>
+        - NOT IMPLEMENTED YET
+If this style sheet comes from an &#64;import rule, the ownerRule
+attribute will contain the CSSImportRule.
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstylesheet.CSSStyleSheet-class.html#_getsetOwnerRuleDummy" class="summary-sig-name">cssutils.css.cssstylesheet.CSSStyleSheet._getsetOwnerRuleDummy</a>(<span class="summary-sig-arg">self</span>)</span>
+        - NOT IMPLEMENTED YET
+If this style sheet comes from an &#64;import rule, the ownerRule
+attribute will contain the CSSImportRule.
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:18 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

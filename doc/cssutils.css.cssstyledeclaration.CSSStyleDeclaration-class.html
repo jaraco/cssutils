@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>cssutils.css.cssstyledeclaration.CSSStyleDeclaration</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="cssutils-module.html">Package&nbsp;cssutils</a> ::
+        <a href="cssutils.css-module.html">Package&nbsp;css</a> ::
+        <a href="cssutils.css.cssstyledeclaration-module.html">Module&nbsp;cssstyledeclaration</a> ::
+        Class&nbsp;CSSStyleDeclaration
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript: void(0);" class="privatelink"
+    onclick="toggle_private();">hide private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class CSSStyleDeclaration</h1><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration">source&nbsp;code</a></span><br /><br />
+<pre class="base-tree">
+object --+    
+         |    
+ util.Base --+
+             |
+            <strong class="uidshort">CSSStyleDeclaration</strong>
+</pre>
+
+<hr />
+<p>The CSSStyleDeclaration class represents a single CSS declaration
+block. This class may be used to determine the style properties
+currently set in a block or to set style properties explicitly
+within the block.</p>
+<p>While an implementation may not recognize all CSS properties within
+a CSS declaration block, it is expected to provide access to all
+specified properties in the style sheet through the
+CSSStyleDeclaration interface.
+Furthermore, implementations that support a specific level of CSS
+should correctly handle CSS shorthand properties for that level. For
+a further discussion of shorthand properties, see the CSS2Properties
+interface.</p>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-properties" name="rst-properties">Properties</a></h1>
+<dl class="rst-docutils">
+<dt>cssText: of type DOMString</dt>
+<dd>The parsable textual representation of the declaration block
+(excluding the surrounding curly braces). Setting this attribute
+will result in the parsing of the new value and resetting of the
+properties in the declaration block. It also allows the insertion
+of additional properties and their values into the block.</dd>
+<dt>length: of type unsigned long, readonly</dt>
+<dd>The number of properties that have been explicitly set in this
+declaration block. The range of valid indices is 0 to length-1
+inclusive.</dd>
+<dt>parentRule: of type CSSRule, readonly</dt>
+<dd>The CSS rule that contains this declaration block or None if this
+CSSStyleDeclaration is not attached to a CSSRule.</dd>
+<dt>seq: a list (cssutils)</dt>
+<dd>All parts of this style declaration including CSSComments</dd>
+</dl>
+</div>
+<div class="rst-section">
+<h1 class="heading"><a id="rst-format" name="rst-format">Format</a></h1>
+<p>[Property: Value;]* Property: Value?</p>
+</div><br /><br />
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parentRule</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">cssText</span>=<span class="summary-sig-default">u''</span>,
+        <span class="summary-sig-arg">readonly</span>=<span class="summary-sig-default">False</span>)</span><br />
+      The CSS rule that contains this declaration block or
+None if this CSSStyleDeclaration is not attached to a CSSRule.
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_getCssText" class="summary-sig-name">_getCssText</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      returns serialized property cssText
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_setCssText" class="summary-sig-name">_setCssText</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cssText</span>)</span><br />
+      Setting this attribute will result in the parsing of the new value
+and resetting of all the properties in the declaration block
+including the removal or addition of properties.
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_getLength" class="summary-sig-name">_getLength</a>(<span class="summary-sig-arg">self</span>)</span>
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_getParentRule" class="summary-sig-name">_getParentRule</a>(<span class="summary-sig-arg">self</span>)</span>
+  </td>
+</tr>
+<tr class="private">
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_setParentRule" class="summary-sig-name">_setParentRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parentRule</span>)</span>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#getPropertyCSSValue" class="summary-sig-name">getPropertyCSSValue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      (DOM)
+Used to retrieve the object representation of the value of a CSS
+property if it has been explicitly set within this declaration
+block.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#getPropertyValue" class="summary-sig-name">getPropertyValue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      (DOM)
+Used to retrieve the value of a CSS property if it has been
+explicitly set within this declaration block.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#getPropertyPriority" class="summary-sig-name">getPropertyPriority</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      (DOM)
+Used to retrieve the priority of a CSS property (e.g.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#getSameNamePropertyList" class="summary-sig-name">getSameNamePropertyList</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      (cssutils) EXPERIMENTAL
+Used to retrieve all properties set with this name.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#item" class="summary-sig-name">item</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      (DOM)
+Used to retrieve the properties that have been explicitly set in
+this declaration block.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#removeProperty" class="summary-sig-name">removeProperty</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      (DOM)
+Used to remove a CSS property if it has been explicitly set within
+this declaration block.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#setProperty" class="summary-sig-name">setProperty</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">priority</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">overwrite</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">_seq</span>=<span class="summary-sig-default">None</span>)</span><br />
+      (DOM)
+Used to set a property value and priority within this declaration
+block.
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>util.Base</code></b>:
+      <code>getFormatted</code>,
+      <code>pprint</code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code>util.Base</code></b> (private):
+      <code>_checkReadonly</code>,
+      <code>_normalize</code>,
+      <code>_tokenize</code>,
+      <code>_valuestr</code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__str__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#cssText">cssText</a><br />
+      (DOM) The parsable textual representation of the declaration
+      block excluding the surrounding curly braces.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#length">length</a><br />
+      (DOM) the number of properties that have been explicitly set
+      in this declaration block.
+  </td>
+</tr>
+<tr>
+  <td width="15%" align="right" valign="top" class="summary">
+    <code class="summary-type">&nbsp;</code>
+  </td><td class="summary">
+    <a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#parentRule">parentRule</a><br />
+      (DOM) The CSS rule that contains this declaration block or        
+      None if this CSSStyleDeclaration is not attached to a CSSRule.
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br />
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parentRule</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">cssText</span>=<span class="sig-default">u''</span>,
+        <span class="sig-arg">readonly</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration.__init__">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <dl class="rst-docutils">
+<dt>parentRule</dt>
+<dd>The CSS rule that contains this declaration block or
+None if this CSSStyleDeclaration is not attached to a CSSRule.</dd>
+<dt>readonly</dt>
+<dd>defaults to False</dd>
+</dl>
+  <dl><dt></dt><dd>
+    <dl><dt>Overrides:
+      util.Base.__init__
+    </dt></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getCssText"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getCssText</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration._getCssText">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  returns serialized property cssText
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_setCssText"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_setCssText</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cssText</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration._setCssText">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>Setting this attribute will result in the parsing of the new value
+and resetting of all the properties in the declaration block
+including the removal or addition of properties.</p>
+<p>DOMException on setting</p>
+<ul class="rst-simple">
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this declaration is readonly or a property is readonly.</li>
+<li>SYNTAX_ERR: (self)
+Raised if the specified CSS string value has a syntax error and
+is unparsable.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getLength"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getLength</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration._getLength">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_getParentRule"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_getParentRule</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration._getParentRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="_setParentRule"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_setParentRule</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parentRule</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration._setParentRule">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  None
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="getPropertyCSSValue"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getPropertyCSSValue</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration.getPropertyCSSValue">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>(DOM)
+Used to retrieve the object representation of the value of a CSS
+property if it has been explicitly set within this declaration
+block. This method returns None if the property is a shorthand
+property. Shorthand property values can only be accessed and
+modified as strings, using the getPropertyValue and setProperty
+methods.</p>
+<dl class="rst-docutils">
+<dt>name</dt>
+<dd><p class="rst-first">of the CSS property</p>
+<p class="rst-last">The name will be normalized (lowercase, no simple escapes) so
+&quot;color&quot;, &quot;COLOR&quot; or &quot;Color&quot; are all equivalent</p>
+</dd>
+</dl>
+<p>returns CSSValue, the value of the property if it has been
+explicitly set for this declaration block. Returns None if the
+property has not been set.</p>
+<dl class="rst-docutils">
+<dt>for more on shorthand properties see</dt>
+<dd><a class="rst-reference" href="http://www.dustindiaz.com/css-shorthand/" target="_top">http://www.dustindiaz.com/css-shorthand/</a></dd>
+</dl>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="getPropertyValue"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getPropertyValue</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration.getPropertyValue">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>(DOM)
+Used to retrieve the value of a CSS property if it has been
+explicitly set within this declaration block.</p>
+<dl class="rst-docutils">
+<dt>name</dt>
+<dd><p class="rst-first">of the CSS property</p>
+<p class="rst-last">The name will be normalized (lowercase, no simple escapes) so
+&quot;color&quot;, &quot;COLOR&quot; or &quot;Color&quot; are all equivalent</p>
+</dd>
+</dl>
+<p>returns the value of the property if it has been explicitly set
+for this declaration block. Returns the empty string if the
+property has not been set.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="getPropertyPriority"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getPropertyPriority</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration.getPropertyPriority">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>(DOM)
+Used to retrieve the priority of a CSS property (e.g. the
+&quot;important&quot; qualifier) if the property has been explicitly set in
+this declaration block.</p>
+<dl class="rst-docutils">
+<dt>name</dt>
+<dd><p class="rst-first">of the CSS property</p>
+<p class="rst-last">The name will be normalized (lowercase, no simple escapes) so
+&quot;color&quot;, &quot;COLOR&quot; or &quot;Color&quot; are all equivalent</p>
+</dd>
+</dl>
+<p>returns a string representing the priority (e.g. &quot;important&quot;) if
+one exists. The empty string if none exists.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="getSameNamePropertyList"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getSameNamePropertyList</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration.getSameNamePropertyList">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>(cssutils) EXPERIMENTAL
+Used to retrieve all properties set with this name. For cases where
+a property is set multiple times with different values or
+priorities for different UAs:</p>
+<pre class="rst-literal-block">
+background: url(1.gif) fixed;
+background: url(2.gif) scroll;
+</pre>
+<dl class="rst-docutils">
+<dt>name</dt>
+<dd><p class="rst-first">of the CSS property</p>
+<p class="rst-last">The name will be normalized (lowercase, no simple escapes) so
+&quot;color&quot;, &quot;COLOR&quot; or &quot;Color&quot; are all equivalent</p>
+</dd>
+</dl>
+<p>Returns the SameNamePropertyList object if available for the given
+property name, else returns <tt class="rst-docutils literal"><span class="pre">None</span></tt>.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="item"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">item</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration.item">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>(DOM)
+Used to retrieve the properties that have been explicitly set in
+this declaration block. The order of the properties retrieved using
+this method does not have to be the order in which they were set.
+This method can be used to iterate over all properties in this
+declaration block.</p>
+<dl class="rst-docutils">
+<dt>index</dt>
+<dd>of the property to retrieve, negative values behave like
+negative indexes on Python lists, so -1 is the last element</dd>
+</dl>
+<p>returns the name of the property at this ordinal position. The
+empty string if no property exists at this position.</p>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="removeProperty"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">removeProperty</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration.removeProperty">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>(DOM)
+Used to remove a CSS property if it has been explicitly set within
+this declaration block.</p>
+<dl class="rst-docutils">
+<dt>name</dt>
+<dd><p class="rst-first">of the CSS property to remove</p>
+<p class="rst-last">The name will be normalized (lowercase, no simple escapes) so
+&quot;color&quot;, &quot;COLOR&quot; or &quot;Color&quot; are all equivalent</p>
+</dd>
+</dl>
+<p>returns the value of the property if it has been explicitly set for
+this declaration block. Returns the empty string if the property
+has not been set or the property name does not correspond to a
+known CSS property</p>
+<p>raises DOMException</p>
+<ul class="rst-simple">
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this declaration is readonly or the property is
+readonly.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="setProperty"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setProperty</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">priority</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">overwrite</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">_seq</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="cssutils.css.cssstyledeclaration-pysrc.html#CSSStyleDeclaration.setProperty">source&nbsp;code</a></span>&nbsp;</span
+    ></td>
+  </table>
+  
+  <p>(DOM)
+Used to set a property value and priority within this declaration
+block.</p>
+<dl class="rst-docutils">
+<dt>name</dt>
+<dd>of the CSS property to set
+(in W3C DOM the parameter is called &quot;propertyName&quot;)
+will be normalized in the Property</dd>
+<dt>value</dt>
+<dd>the new value of the property</dd>
+<dt>priority</dt>
+<dd>the optional priority of the property (e.g. &quot;important&quot;)</dd>
+<dt>_seq</dt>
+<dd>used by self._setCssText only as in temp seq</dd>
+</dl>
+<p>DOMException on setting</p>
+<ul class="rst-simple">
+<li>SYNTAX_ERR: (self)
+Raised if the specified value has a syntax error and is
+unparsable.</li>
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this declaration is readonly or the property is
+readonly.</li>
+</ul>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== PROPERTY DETAILS ==================== -->
+<a name="section-PropertyDetails"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Property Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-PropertyDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="cssText"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">cssText</h3>
+  (DOM) The parsable textual representation of the declaration        
+  block excluding the surrounding curly braces.
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_getCssText" class="summary-sig-name">cssutils.css.cssstyledeclaration.CSSStyleDeclaration._getCssText</a>(<span class="summary-sig-arg">self</span>)</span>
+        - returns serialized property cssText
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_setCssText" class="summary-sig-name">cssutils.css.cssstyledeclaration.CSSStyleDeclaration._setCssText</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cssText</span>)</span>
+        - Setting this attribute will result in the parsing of the new value
+and resetting of all the properties in the declaration block
+including the removal or addition of properties.
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="length"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">length</h3>
+  (DOM) the number of properties that have been explicitly set        in
+  this declaration block. The range of valid indices is 0 to        
+  length-1 inclusive.
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_getLength" class="summary-sig-name">cssutils.css.cssstyledeclaration.CSSStyleDeclaration._getLength</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<a name="parentRule"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">parentRule</h3>
+  (DOM) The CSS rule that contains this declaration block or        None
+  if this CSSStyleDeclaration is not attached to a CSSRule.
+  <dl><dt></dt><dd>
+    <dl><dt>Get Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_getParentRule" class="summary-sig-name">cssutils.css.cssstyledeclaration.CSSStyleDeclaration._getParentRule</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd></dl>
+    <dl><dt>Set Method:</dt>
+    <dd><span class="summary-sig"><a href="cssutils.css.cssstyledeclaration.CSSStyleDeclaration-class.html#_setParentRule" class="summary-sig-name">cssutils.css.cssstyledeclaration.CSSStyleDeclaration._setParentRule</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parentRule</span>)</span>
+    </dd></dl>
+    <dl><dt>Delete Method:</dt>
+    <dd><table><tr><td><pre class="variable">
+&lt;cssutils.errorhandler._ErrorHandler object at 0x00D28990&gt;             
+</pre></td></tr></table>
+
+    </dd></dl>
+  </dd></dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="cssutils-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://cthedot.de/cssutils/">cssutils</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">Generated by Epydoc
+        3.0alpha3 on Wed May 30 14:56:18 2007</td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>
