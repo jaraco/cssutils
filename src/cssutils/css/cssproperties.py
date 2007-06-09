@@ -20,12 +20,14 @@ TODO: CSS2Properties
 ##interface to determine whether it is supported or not. The feature
 ##string for this extended interface listed in this section is "CSS2"
 ##and the version is "2.0".
+
+# TEST
 """
 __all__ = ['cssvalues']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy:$'
-__date__ = '$Date:$'
-__version__ = '0.9.2a1, SVN revision $Revision:$'
+__author__ = "$LastChangedBy$"
+__date__ = '$Date$'
+__version__ = '0.9.2a1, SVN revision $Revision$'
 
 import re
 
