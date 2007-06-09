@@ -1,4 +1,5 @@
-"""CSSStyleDeclaration implements DOM Level 2 CSS CSSStyleDeclaration.
+"""CSSStyleDeclaration implements DOM Level 2 CSS CSSStyleDeclaration and
+CSS2Properties
 
 see
     http://www.w3.org/TR/1998/REC-CSS2-19980512/syndata.html#parsing-errors
@@ -14,7 +15,8 @@ the user agent will treat this as if the style sheet had been::
 
     H1 { color: red }
 
-Cssutils gives a warning about an unknown CSS2 Property "rotation".
+Cssutils gives a warning about an unknown CSS2 Property "rotation" but
+keeps any property.
 
 Illegal values
 --------------
@@ -48,12 +50,13 @@ TODO:
 """
 __all__ = ['CSSStyleDeclaration']
 __docformat__ = 'restructuredtext'
-__version__ = '0.9.1b4'
+__version__ = '0.9.2a1'
 
 import xml.dom 
 
 import cssutils
 from property import _Property as Property
+from cssproperties import CSS2Properties
 
 
 class CSSStyleDeclaration(cssutils.util.Base):
@@ -72,6 +75,20 @@ class CSSStyleDeclaration(cssutils.util.Base):
     a further discussion of shorthand properties, see the CSS2Properties
     interface.
 
+    Additionally the CSS2Properties interface is implemented:
+    
+        The CSS2Properties interface represents a convenience mechanism
+        for retrieving and setting properties within a CSSStyleDeclaration.
+        The attributes of this interface correspond to all the properties
+        specified in CSS2. Getting an attribute of this interface is
+        equivalent to calling the getPropertyValue method of the
+        CSSStyleDeclaration interface. Setting an attribute of this
+        interface is equivalent to calling the setProperty method of the
+        CSSStyleDeclaration interface.
+
+    cssutils actually also allows usage of ``del`` to remove a CSS property
+    from a CSSStyleDeclaration.
+        
     Properties
     ==========
     cssText: of type DOMString
@@ -90,9 +107,23 @@ class CSSStyleDeclaration(cssutils.util.Base):
     seq: a list (cssutils)
         All parts of this style declaration including CSSComments
 
+    $css2propertyname
+        All properties defined in the CSS2Properties class are available
+        as direct properties of CSSStyleDeclaration with their respective
+        DOM name, so e.g. ``fontStyle`` for property 'font-style'
+
+        These may be used as::
+
+            >>> style = CSSStyleDeclaration(cssText='color: red')
+            >>> style.color = 'green'
+            >>> print style.color
+            green
+            >>> del style.color
+            >>> print style.color # print empty string
+            
     Format
     ======
-    [Property: Value;]* Property: Value?    
+    [Property: Value;]* Property: Value?           
     """
     def __init__(self, parentRule=None, cssText=u'', readonly=False):
         """
@@ -103,12 +134,14 @@ class CSSStyleDeclaration(cssutils.util.Base):
             defaults to False        
         """
         super(CSSStyleDeclaration, self).__init__()
+
+        self.valid = True
         
         self.seq = []
         self.parentRule = parentRule
         self.cssText = cssText
         self._readonly = readonly
-        
+
 
     def _getCssText(self):
         """
@@ -493,6 +526,69 @@ class CSSStyleDeclaration(cssutils.util.Base):
                     _seq[index].append(newp)
                     
 
+
+# add CSS2Properties to CSSStyleDeclaration:
+def __named_property_def(name):
+    "using a closure to keep name known in each function"
+    CSSname = CSS2Properties._CSSname(name)
+    def _get(self):
+        """
+        (DOM CSS2Properties)
+        CSS2Properties hook, returns value of CSS property of given DOMname
+        which is converted to its CSSname before ('fontStyle' ->
+        'font-style'). Effectively the same as
+        ``CSSStyleDeclaration.self.getPropertyValue(CSSname)``.
+
+        Raises AttributeError for properties not known to 
+        CSS2Properties, see the relevant class.
+        For these unknown properties ``getPropertyValue(CSSname)`` has to
+        be called explicitly.
+
+        Example::
+
+            >>> style = CSSStyleDeclaration(cssText='font-style:italic;')
+            >>> print style.fontStyle
+        """
+        return self.getPropertyValue(CSSname)
+    
+    def _set(self, value):
+        """
+        (DOM CSS2Properties)
+        CSS2Properties hook, sets value of CSS property for given name
+        which may be a DOMname or an attribute of this class in which
+        case the normal attribute setting functionality is used.
+        
+        A DOMname is converted to its CSSname before ('fontStyle' ->
+        'font-style') usage. Effectively the same as
+        ``CSSStyleDeclaration.self.setProperty(CSSname, value)``.
+
+        Raises AttributeError for properties not known to 
+        CSS2Properties, see the relevant class.
+        For these unknown properties ``setPropertyValue(CSSname, value)``
+        has to be called explicitly.
+        Also setting the priority of properties needs to be done with a
+        call like ``setPropertyValue(CSSname, value, priority)``.
+
+        Example::
+
+            >>> style = CSSStyleDeclaration()
+            >>> style.fontStyle = 'italic'
+            >>> # or
+            >>> style.setProperty('font-style', 'italic', '!important')
+        """
+        self.setProperty(CSSname, value)
+    
+    def _del(self):
+        self.removeProperty(CSSname)
+        
+    return _get, _set, _del
+
+# add all CSS2Properties to CSSStyleDeclaration
+for n in CSS2Properties._properties:
+    setattr(CSSStyleDeclaration, n, property(*__named_property_def(n)))
+
+
+
 class SameNamePropertyList(list):
     """
     (cssutils) EXPERIMENTAL
@@ -536,8 +632,13 @@ if __name__ == '__main__':
     cssutils.css.cssstyledeclaration.Property = Property
     
     s = cssutils.parseString('''a {
-        c\olor: green;
         color: red;
-    }''')#color:green
-    print s.cssText
+        font-weight: bold;
+    }''')
+    style = s.cssRules[0].style
+
+    style.color = 'green'
+    print style.color
+    del style.color
+    print style.color
 
