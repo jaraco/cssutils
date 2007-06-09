@@ -37,34 +37,37 @@ class _Property(cssutils.util.Base):
 
     Format
     ======
-    property = name
-      : IDENT S*
-      ;
-      
-    expr = value
-      : term [ operator term ]*
-      ;
-    term
-      : unary_operator?
-        [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
-          TIME S* | FREQ S* | function ]
-      | STRING S* | IDENT S* | URI S* | hexcolor
-      ;
-    function
-      : FUNCTION S* expr ')' S*
-      ;
-    /*
-     * There is a constraint on the color that it must
-     * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
-     * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
-     */
-    hexcolor
-      : HASH S*
-      ;
+    ::
+    
+        property = name
+          : IDENT S*
+          ;
+          
+        expr = value
+          : term [ operator term ]*
+          ;
+        term
+          : unary_operator?
+            [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
+              TIME S* | FREQ S* | function ]
+          | STRING S* | IDENT S* | URI S* | hexcolor
+          ;
+        function
+          : FUNCTION S* expr ')' S*
+          ;
+        /*
+         * There is a constraint on the color that it must
+         * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
+         * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
+         */
+        hexcolor
+          : HASH S*
+          ;
 
-    prio
-      : IMPORTANT_SYM S*
-      ;
+        prio
+          : IMPORTANT_SYM S*
+          ;
+          
     """
     def __init__(self, name, value, priority=None):
         """ 
@@ -175,26 +178,28 @@ class _Property(cssutils.util.Base):
         """
         Format
         ======
-        expr = value
-          : term [ operator term ]*
-          ;
-        term
-          : unary_operator?
-            [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* |
-              ANGLE S* | TIME S* | FREQ S* | function ]
-          | STRING S* | IDENT S* | URI S* | hexcolor
-          ;
-        function
-          : FUNCTION S* expr ')' S*
-          ;
-        /*
-         * There is a constraint on the color that it must
-         * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
-         * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
-         */
-        hexcolor
-          : HASH S*
-          ;
+        ::
+        
+            expr = value
+              : term [ operator term ]*
+              ;
+            term
+              : unary_operator?
+                [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* |
+                  ANGLE S* | TIME S* | FREQ S* | function ]
+              | STRING S* | IDENT S* | URI S* | hexcolor
+              ;
+            function
+              : FUNCTION S* expr ')' S*
+              ;
+            /*
+             * There is a constraint on the color that it must
+             * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
+             * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
+             */
+            hexcolor
+              : HASH S*
+              ;
         
         DOMException on setting
         
@@ -256,10 +261,12 @@ class _Property(cssutils.util.Base):
 
         Format
         ======
-        prio
-          : IMPORTANT_SYM S*
-          ;
-        "!"{w}"important"	{return IMPORTANT_SYM;}
+        ::
+        
+            prio
+              : IMPORTANT_SYM S*
+              ;
+            "!"{w}"important"	{return IMPORTANT_SYM;}
 
         DOMException on setting
         

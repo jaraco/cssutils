@@ -15,8 +15,11 @@ currently implemented
     - CSSStyleRule
     - CSSUnkownRule  
     - CSSStyleDeclaration
+    - CSS2Properties
+    
 in progress
     - CSSValue
+    
 todo
     - value classes
 """
