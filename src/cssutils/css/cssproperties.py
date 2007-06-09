@@ -1,8 +1,8 @@
-#!/usr/bin/env python
-"""
+"""CSS2Properties implements DOM Level 2 CSS CSS2Properties?
+
 cssvalues uaed as a property validator
 
-This module has one importable object, cssvalues, that contains a 
+This module has an importable object, cssvalues, that contains a 
 dictionary of compiled regular expressions.  The keys of this 
 dictionary are all of the valid CSS property names.  The values
 are compiled regular expressions that can be used to validate
@@ -23,27 +23,11 @@ TODO: CSS2Properties
 """
 __all__ = ['cssvalues']
 __docformat__ = 'restructuredtext'
-__version__ = '0.9a5'
+__author__ = '$LastChangedBy:$'
+__date__ = '$Date:$'
+__version__ = '0.9.2a1, SVN revision $Revision:$'
 
 import re
-
-
-def expand_macros(tokdict):
-    """ Expand macros in token dictionary """
-    def macro_value(m):
-        return '(?:%s)' % MACROS[m.groupdict()['macro']]
-    for key, value in tokdict.items():
-        while re.search(r'{[a-z][a-z0-9-]*}', value):
-            value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}', 
-                           macro_value, value)
-        tokdict[key] = value
-    return tokdict
-
-def compile_regexes(tokdict):
-    """ Compile all regular expressions into callable objects """
-    for key, value in tokdict.items():
-        tokdict[key] = re.compile('^%s$' % value, re.I).match
-    return tokdict
 
 """
 Define some regular expression fragments that will be used as 
@@ -123,7 +107,6 @@ MACROS = {
 
 """
 Define the regular expressions for validation all CSS values
-
 """
 cssvalues = {
     'azimuth': r'{angle}|(behind\s+)?(left-side|far-left|left|center-left|center|center-right|right|far-right|right-side)(\s+behind)?|behind|leftwards|rightwards|inherit',
@@ -245,4 +228,70 @@ cssvalues = {
     'z-index': r'auto|{integer}|inherit',
 }
 
+
+def expand_macros(tokdict):
+    """ Expand macros in token dictionary """
+    def macro_value(m):
+        return '(?:%s)' % MACROS[m.groupdict()['macro']]
+    for key, value in tokdict.items():
+        while re.search(r'{[a-z][a-z0-9-]*}', value):
+            value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}', 
+                           macro_value, value)
+        tokdict[key] = value
+    return tokdict
+
+def compile_regexes(tokdict):
+    """ Compile all regular expressions into callable objects """
+    for key, value in tokdict.items():
+        tokdict[key] = re.compile('^%s$' % value, re.I).match
+    return tokdict
+
+
 compile_regexes(expand_macros(cssvalues))
+
+
+class CSS2Properties(object):
+    """
+    Used by CSSStyleDeclaration to check if a property is a CSS property at
+    all.
+    Includes (private!) functions to convert a DOMname to a CSSname and
+    vice versa.
+    """
+    __reCSStoDOMname = re.compile('-[a-z]', re.I)
+    __reDOMtoCSSname = re.compile('[A-Z]')
+    _properties = cssvalues.keys()
+
+    @staticmethod
+    def __doCSStoDOMname(m):
+        "converts CSS name to DOM name like font-style => fontStyle"
+        return m.group(0)[1].capitalize()
+
+    @staticmethod
+    def __doDOMtoCSSname(m):
+        "converts DOM name to CSS name like fontStyle => font-style"
+        return '-' + m.group(0).lower()
+
+    @staticmethod
+    def _CSSname(DOMname):
+        """
+        returns CSSname for given DOMname or None if unknown property name
+        e.g. DOMname = 'fontStyle' returns 'font-style'
+        """
+        CSSname = CSS2Properties.__reDOMtoCSSname.sub(
+                   CSS2Properties.__doDOMtoCSSname, DOMname)
+        if CSSname in CSS2Properties._properties:
+            return CSSname
+        else:
+            return None
+
+
+if __name__=='__main__':
+    c = CSS2Properties()
+    #print type(CSS2Properties.color)
+    c.color = 'green'
+    #print type(CSS2Properties.color), c.color
+    print c.color
+    del c.color
+    #print type(CSS2Properties.color), c.color
+    
+
