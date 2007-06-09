@@ -3,7 +3,10 @@
 testcases for cssutils.css.CSSCharsetRule
 """
 __all__ = ['CSSutilsTestCase']
-__version__ = '0.9a3'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+
 
 import codecs
 import os

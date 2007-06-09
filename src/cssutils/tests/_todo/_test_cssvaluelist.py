@@ -1,4 +1,6 @@
-__version__ = '0.4'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.4, SVN revision $LastChangedRevision$'
 
 import unittest
 import xml.dom
