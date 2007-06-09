@@ -40,11 +40,11 @@ known issues
 
 changes
 =======
-0.9.2a1
     **TODO AND NOT USED YET!**
     - FEATURE: Implemented css.CSSValue
-    
-    - implemented parts of css.CSS2Properties so you can now use::
+
+0.9.2a1    
+    - FEATURE: Implemented css.CSS2Properties so you can now use::
     
         >>> sheet = cssutils.parseString('a { font-style: italic; }')
         >>> style = sheet.cssRules[0].style
@@ -55,12 +55,12 @@ changes
       Each property can be retrieved from CSSStyleDeclaration object with its name as
     an object property. Names with "-" in it like ``font-style`` need to be called by 
     the respective DOM name ``fontStyle``.
-      Setting a properties value works the same way. For details see 
+      Setting a property value works the same way and even ``del`` which effectively removes a property from a CSSStyleDeclaration works. For details see 
     CSSStyleDeclaration.
             
-    - CSSStyleDeclaration.getPropertyCSSValue returns None for all shorthand properties
-    - refactored some parts
-    - added more tests
+    - BUGFIX: CSSStyleDeclaration.getPropertyCSSValue returns None for all shorthand properties
+    
+    - refactored some parts and added more tests
     
 
 0.9.1b3 070114
