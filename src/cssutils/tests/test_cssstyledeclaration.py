@@ -1,5 +1,8 @@
 """Testcases for cssutils.css.cssstyledelaration.CSSStyleDeclaration."""
-__version__ = '0.9.1b4'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+
 
 import xml.dom
 
@@ -347,7 +350,42 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual('2px', s.removeProperty('TOP'))
         s.setProperty('top', '2px', '!important')
         self.assertEqual('2px', s.removeProperty('T\op'))
-        
+
+
+    def test_css2properties(self):
+        "CSSStyleDeclaration.$css2property get set del"
+        s = cssutils.css.CSSStyleDeclaration(
+            cssText='left: 1px;color: red; font-style: italic')
+
+        s.color = 'green'
+        s.fontStyle = 'normal'
+        self.assertEqual('green', s.color)
+        self.assertEqual('normal', s.fontStyle)
+        self.assertEqual('green', s.getPropertyValue('color'))
+        self.assertEqual('normal', s.getPropertyValue('font-style'))
+        self.assertEqual(
+            '''\n    left: 1px;\n    color: green;\n    font-style: normal\n    ''',
+            s.cssText)
+
+        del s.color               
+        self.assertEqual(
+            '''\n    left: 1px;\n    font-style: normal\n    ''',
+            s.cssText)
+        del s.fontStyle               
+        self.assertEqual(
+            '''\n    left: 1px\n    ''', s.cssText)
+
+        self.assertRaises(AttributeError, s.__setattr__, 'UNKNOWN', 'red')
+        # unknown properties must be set with setProperty!        
+        s.setProperty('UNKNOWN', 'red')
+        # but are still not usable as property!
+        self.assertRaises(AttributeError, s.__getattribute__, 'UNKNOWN')
+        self.assertRaises(AttributeError, s.__delattr__, 'UNKNOWN')
+        # but are kept 
+        self.assertEqual('red', s.getPropertyValue('UNKNOWN'))
+        self.assertEqual(
+            '''\n    left: 1px;\n    unknown: red\n    ''', s.cssText)
+
 
 if __name__ == '__main__':
     import unittest
