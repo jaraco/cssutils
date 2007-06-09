@@ -20,4 +20,4 @@ from stylesheetlist import StyleSheetList
 
 if __name__ == '__main__':
     for x in __all__:
-        print x, eval(x)()    
+        print x, eval(x)()
