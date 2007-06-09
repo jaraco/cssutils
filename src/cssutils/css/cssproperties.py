@@ -257,20 +257,31 @@ class CSS2Properties(object):
     all.
     Includes (private!) functions to convert a DOMname to a CSSname and
     vice versa.
-    """
-    __reCSStoDOMname = re.compile('-[a-z]', re.I)
-    __reDOMtoCSSname = re.compile('[A-Z]')
-    _properties = cssvalues.keys()
 
+    attribute ``_properties`` will be added after class definition
+    """
+    _reCSStoDOMname = re.compile('-[a-z]', re.I)
+    _reDOMtoCSSname = re.compile('[A-Z]')
+    
     @staticmethod
-    def __doCSStoDOMname(m):
+    def _doCSStoDOMname(m):
         "converts CSS name to DOM name like font-style => fontStyle"
         return m.group(0)[1].capitalize()
 
     @staticmethod
-    def __doDOMtoCSSname(m):
+    def _doDOMtoCSSname(m):
         "converts DOM name to CSS name like fontStyle => font-style"
         return '-' + m.group(0).lower()
+
+    @staticmethod
+    def _DOMname(CSSname):
+        """
+        returns DOMname for given CSSname or None if unknown property name
+        e.g. CSSname = 'font-style' returns 'fontStyle' 
+        """
+        DOMname = CSS2Properties._reCSStoDOMname.sub(
+                   CSS2Properties._doCSStoDOMname, CSSname)
+        return DOMname
 
     @staticmethod
     def _CSSname(DOMname):
@@ -278,12 +289,20 @@ class CSS2Properties(object):
         returns CSSname for given DOMname or None if unknown property name
         e.g. DOMname = 'fontStyle' returns 'font-style'
         """
-        CSSname = CSS2Properties.__reDOMtoCSSname.sub(
-                   CSS2Properties.__doDOMtoCSSname, DOMname)
-        if CSSname in CSS2Properties._properties:
+        if DOMname in CSS2Properties._properties:
+            CSSname = CSS2Properties._reDOMtoCSSname.sub(
+                       CSS2Properties._doDOMtoCSSname, DOMname)
             return CSSname
         else:
             return None
+"""
+add list of DOMname properties to CSS2Properties
+TODO:
+    implementation is not really nice, any alternative?
+"""
+CSS2Properties._properties = [CSS2Properties._reCSStoDOMname.sub(
+                       CSS2Properties._doCSStoDOMname, p) for p in cssvalues.keys()]
+
 
 
 if __name__=='__main__':
