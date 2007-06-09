@@ -25,8 +25,8 @@ TODO: CSS2Properties
 __all__ = ['cssvalues']
 __docformat__ = 'restructuredtext'
 __author__ = "$LastChangedBy$"
-__date__ = "$Date$"
-__version__ = "0.9.2a1, SVN revision $Revision$"
+__date__ = "$Date:$ "
+__version__ = "0.9.2a1, SVN revision $Revision:$"
 
 import re
 
