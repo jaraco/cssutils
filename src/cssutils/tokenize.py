@@ -2,7 +2,9 @@
 """CSS Tokenizer
 """
 __docformat__ = 'restructuredtext'
-__version__ = '0.9.1a2'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
 
 import string
 import xml.dom

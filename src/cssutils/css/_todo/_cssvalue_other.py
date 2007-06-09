@@ -4,7 +4,9 @@ contains DOM Level 2 CSS ValueList implementation classes.
 ** NOT USED CURRENTLY
 """
 __docformat__ = 'restructuredtext'
-__version__ = '0.55_5'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
 
 import xml.dom
 

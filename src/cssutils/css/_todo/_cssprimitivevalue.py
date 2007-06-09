@@ -3,7 +3,9 @@ CSSPrimitiveValue implements DOM Level 2 CSS PrimitiveValue.
 """
 __all__ = ['CSSPrimitiveValue']
 __docformat__ = 'restructuredtext'
-__version__ = '0.9a1'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
 
  TODO: conversion (mm->cm etc.)
  TODO: cssText: fset

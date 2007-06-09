@@ -9,7 +9,9 @@ currently implemented:
 """
 __all__ = ['MediaList', 'StyleSheet', 'StyleSheetList']
 __docformat__ = 'restructuredtext'
-__version__ = '0.9a2'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
 
 from medialist import MediaList
 from stylesheet import StyleSheet
