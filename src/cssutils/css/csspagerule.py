@@ -39,13 +39,16 @@ class CSSPageRule(cssrule.CSSRule):
 
     Format
     ======
-    page
-      : PAGE_SYM S* pseudo_page? S*
-        LBRACE S* declaration [ ';' S* declaration ]* '}' S*
-      ;
-    pseudo_page
-      : ':' IDENT # :first, :left, :right in CSS 2.1
-      ;
+    ::
+
+        page
+          : PAGE_SYM S* pseudo_page? S*
+            LBRACE S* declaration [ ';' S* declaration ]* '}' S*
+          ;
+        pseudo_page
+          : ':' IDENT # :first, :left, :right in CSS 2.1
+          ;
+          
     """
     type = cssrule.CSSRule.PAGE_RULE 
 
