@@ -4,7 +4,9 @@ CURRENTLY DISFUNCTIONAL !
 """
 __docformat__ = 'restructuredtext'
 
-__version__ = '0.3'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.3, SVN revision $LastChangedRevision$'
 
 ##from cssbuilder import *
 ##from cssexceptions import *

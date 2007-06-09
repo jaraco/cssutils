@@ -3,7 +3,9 @@ StyleSheetList implements DOM Level 2 Style Sheets StyleSheetList.
 """
 __all__ = ['StyleSheetList']
 __docformat__ = 'restructuredtext'
-__version__ = '0.9a1'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
 
 
 class StyleSheetList(list):

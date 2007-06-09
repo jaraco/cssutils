@@ -4,7 +4,9 @@ Internal use only, may be removed in the future!
 """
 __all__ = []
 __docformat__ = 'restructuredtext'
-__version__ = '0.9.1b4'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
 
 import xml.dom 
 
