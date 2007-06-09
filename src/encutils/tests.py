@@ -1,7 +1,9 @@
 """
 tests for encutils.py
 """
-__version__ = '0.7a1'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.7a2, SVN revision $LastChangedRevision$'
 
 import httplib
 from StringIO import StringIO

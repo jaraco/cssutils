@@ -52,7 +52,9 @@ TODO:
     - check for more texttypes if only text given
 """
 __docformat__ = 'restructuredtext'
-__version__ = '0.7a2'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.7a2, SVN revision $LastChangedRevision$'
 __all__ = ['buildlog',
            'encodingByMediaType',
            'getHTTPInfo',
