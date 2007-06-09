@@ -5,9 +5,9 @@ use EasyInstall or install with
     >python setup.py install
 """
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-06-09 21:35:56 +0200 (Sa, 09 Jun 2007) $'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision: 24 $'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
 
 import ez_setup
 ez_setup.use_setuptools()
