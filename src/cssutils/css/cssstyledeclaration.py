@@ -112,7 +112,7 @@ class CSSStyleDeclaration(cssutils.util.Base):
     $css2propertyname
         All properties defined in the CSS2Properties class are available
         as direct properties of CSSStyleDeclaration with their respective
-        DOM name, so e.g. ``fontStyle`` for property 'font-style'
+        DOM name, so e.g. ``fontStyle`` for property 'font-style'.
 
         These may be used as::
 
@@ -127,6 +127,27 @@ class CSSStyleDeclaration(cssutils.util.Base):
     ======
     [Property: Value;]* Property: Value?           
     """
+    def __setattr__(self, n, v):
+        """
+        Prevent setting of unknown properties on CSSStyleDeclaration
+        which would not work anyway. For these
+        ``CSSStyleDeclaration.setProperty`` MUST be called explicitly!
+
+        TODO:
+            implementation of known is not really nice, any alternative?
+        """
+        known = ['_tokenizer', '_log', '_ttypes',
+                 'valid', 'seq', 'parentRule', '_parentRule', 'cssText',
+                 '_readonly']
+        known.extend(CSS2Properties._properties)
+        if n in known:
+            super(CSSStyleDeclaration, self).__setattr__(n, v)
+        else:
+            raise AttributeError(
+                'Unknown CSS Property, ``CSSStyleDeclaration.setProperty("%s")`` MUST be used.'
+                % n)
+
+    
     def __init__(self, parentRule=None, cssText=u'', readonly=False):
         """
         parentRule
@@ -530,9 +551,9 @@ class CSSStyleDeclaration(cssutils.util.Base):
 
 
 # add CSS2Properties to CSSStyleDeclaration:
-def __named_property_def(name):
+def __named_property_def(DOMname):
     "using a closure to keep name known in each function"
-    CSSname = CSS2Properties._CSSname(name)
+    CSSname = CSS2Properties._CSSname(DOMname)
     def _get(self):
         """
         (DOM CSS2Properties)
@@ -579,6 +600,7 @@ def __named_property_def(name):
             >>> style.setProperty('font-style', 'italic', '!important')
         """
         self.setProperty(CSSname, value)
+
     
     def _del(self):
         self.removeProperty(CSSname)
@@ -586,8 +608,9 @@ def __named_property_def(name):
     return _get, _set, _del
 
 # add all CSS2Properties to CSSStyleDeclaration
-for n in CSS2Properties._properties:
-    setattr(CSSStyleDeclaration, n, property(*__named_property_def(n)))
+for DOMname in CSS2Properties._properties:
+    setattr(CSSStyleDeclaration, DOMname,
+        property(*__named_property_def(DOMname)))
 
 
 
@@ -635,12 +658,17 @@ if __name__ == '__main__':
     
     s = cssutils.parseString('''a {
         color: red;
-        font-weight: bold;
+        font-style: italic;
     }''')
     style = s.cssRules[0].style
+    print 1, style.fontStyle, style.getPropertyValue('font-style')
+    print 1, style.color, style.getPropertyValue('color')
 
     style.color = 'green'
-    print style.color
-    del style.color
-    print style.color
+    style.fontStyle = 'normal'    
+    
+    print 2, style.fontStyle, style.getPropertyValue('font-style')
+    print 2, style.color, style.getPropertyValue('color')
+
+    style.xxx = '1'    
 
