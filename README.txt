@@ -28,12 +28,11 @@ Before using EasyInstall the first time or using the sdist please remove any old
 
 known issues
 ============
+- CSSStyleDeclaration.getCSSValue and Value Classes are not implemented. These may be implemented in one of the next releases (0.9.2)
+
 - @charset not implemented according to spec (plan: 0.9.2)
 - CSS2Properties not implemented completely
 - Unexpected end of style sheet not handled according to spec
-
-- CSSStyleDeclaration.getCSSValue and Value Classes are not implemented. These may be implemented in one of the next releases (0.9.2 or following)
-
 - Properties are not bound to any CSS Version, so all properties are handled so 
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 1.0 or 2.1)
 - Property.value is only checked for valid CSS2 properties, so will accept more than allowed. In case of an error a WARNING is issued only
@@ -41,10 +40,11 @@ known issues
 
 changes
 =======
-    **TODO AND NOT USED YET!**
-    - FEATURE: Implemented css.CSSValue
+- TODO: FEATURE: Implemented css.CSSValue
 
 0.9.2a2
+    - API CHANGE: removed cssutils.util.normalize function, use static method cssutils.util.Base._normalize if absolutely needed which may be changed too though
+    - API CHANGE (minor): removed ``getFormatted`` and ```pprint`` from various classes which were both DEPRECATED for some time anyway
     - API CHANGE (minor): _Property.value is DEPRECATED, use Property.cssValue.cssText i
 nstead, _Property was defined as private anyway so should not have been used directly
 
