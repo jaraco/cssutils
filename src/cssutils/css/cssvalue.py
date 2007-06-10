@@ -10,13 +10,9 @@ TODO
 """
 __all__ = ['CSSValue']
 __docformat__ = 'restructuredtext'
-__version__ = '0.9.1b4'
-
-__all__ = ['CSSStyleDeclaration']
-__docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
 
 import xml.dom 
 
@@ -34,7 +30,14 @@ class CSSValue(cssutils.util.Base):
         A string representation of the current value.
     cssValueType
         A (readonly) code defining the type of the value.
+
+    seq: a list (cssutils)
+        All parts of this style declaration including CSSComments
+        
+    _value
+        value without any comments, used by Property to validate
     """
+    
     CSS_INHERIT = 0         
     """ 
     The value is inherited and the cssText contains "inherit".
@@ -67,37 +70,112 @@ class CSSValue(cssutils.util.Base):
             defaults to False        
         """
         super(CSSValue, self).__init__()
-        
+
+        self.seq = []
+        self._value = u''
         self.cssText = cssText
         self._readonly = readonly
 
 
+    def __invalidToken(self, tokens, x):
+        """
+        raises SyntaxErr if an INVALID token in tokens
+
+        x
+            used for error message
+
+        returns True if INVALID found, else False            
+        """
+        for t in tokens:
+            if t.type == self._ttypes.INVALID:
+                self._log.error(u'CSSValue: Invalid token found in %s.' % x, t)
+                return True
+        return False
+    
+
     def _getCssText(self):
-        return self._value
+        return cssutils.ser.do_css_CSSvalue(self)
 
     def _setCssText(self, cssText):
         """
-        DOMException on setting
+        Format
+        ======
+        ::
         
-        - SYNTAX_ERR:
+            expr = value
+              : term [ operator term ]*
+              ;
+            term
+              : unary_operator?
+                [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* |
+                  ANGLE S* | TIME S* | FREQ S* | function ]
+              | STRING S* | IDENT S* | URI S* | hexcolor
+              ;
+            function
+              : FUNCTION S* expr ')' S*
+              ;
+            /*
+             * There is a constraint on the color that it must
+             * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
+             * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
+             */
+            hexcolor
+              : HASH S*
+              ;
+        
+        DOMException on setting
+                
+        - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error
           (according to the attached property) or is unparsable.
-        - INVALID_MODIFICATION_ERR:
+        - TODO: INVALID_MODIFICATION_ERR: 
           Raised if the specified CSS string value represents a different
           type of values than the values allowed by the CSS property.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this value is readonly.
         """
         self._checkReadonly()
-        
-        # TODO: parse value, exceptions
-        self._value = u' '.join(cssText.split())
 
-        if cssText == u'inherit':
-            self._cssValueType = self.CSS_INHERIT
+        tokens = self._tokenize(cssText)
+        if self.__invalidToken(tokens, 'value'):
+            self._log.error(
+                u'CSSValue: Unknown value syntax: "%s".' % cssText)
+            return
+        
+        hasvalue = False
+        newseq = []
+        
+        for i in range(0, len(tokens)):
+            t = tokens[i]
+            if self._ttypes.S == t.type: # add single space
+                if newseq and newseq[-1] == u' ':
+                    pass
+                else:
+                    newseq.append(u' ')
+            elif self._ttypes.COMMENT == t.type: # just add
+                newseq.append(cssutils.css.CSSComment(t))
+            elif t.type in (self._ttypes.SEMICOLON, self._ttypes.IMPORTANT_SYM) or\
+                 t.value in u':':
+                 self._log.error(u'CSSValue: Syntax error.', t)
+                 return
+            else:
+                newseq.append(t.value)
+                hasvalue = True
+                
+        if hasvalue:
+            self.seq = newseq
+            self._value = u''.join([x for x in newseq if not isinstance(
+                               x, cssutils.css.CSSComment)]).strip()
+
+            if self._value == u'inherit':
+                self._cssValueType = CSSValue.CSS_INHERIT
+            else:
+                self._cssValueType = CSSValue.CSS_CUSTOM
+
         else:
-            # TODO: set correct valuetype
-            self._cssValueType = self.CSS_CUSTOM
+            self._log.error(
+                u'CSSValue: Unknown value syntax: "%s".' % cssText)
+
 
     cssText = property(_getCssText, _setCssText,
         doc="A string representation of the current value.")
