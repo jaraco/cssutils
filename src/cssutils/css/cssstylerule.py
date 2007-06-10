@@ -8,7 +8,7 @@ __all__ = ['CSSStyleRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import xml.dom
 
@@ -116,7 +116,7 @@ class CSSStyleRule(cssrule.CSSRule):
         newseq = []
         
         # get selector (must be one, see above)
-        selectortokens, endi = self._tokenizer.tokensupto(tokens,
+        selectortokens, endi = self._tokensupto(tokens,
                                                     blockstartonly=True)
         expected = '{' # or None (end)
         if selectortokens[-1].value != expected:
@@ -137,7 +137,7 @@ class CSSStyleRule(cssrule.CSSRule):
                 newseq.append(cssutils.css.CSSComment(t))
                 
             elif self._ttypes.LBRACE == t.type:
-                foundtokens, endi = self._tokenizer.tokensupto(
+                foundtokens, endi = self._tokensupto(
                     tokens[i:], blockendonly=True)
                 i += endi
                 if len(foundtokens) < 2:

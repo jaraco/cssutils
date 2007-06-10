@@ -4,7 +4,7 @@ __all__ = ['DOMImplementationCSS']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import css
 
@@ -17,7 +17,7 @@ class DOMImplementationCSS(object):
     _features = [
         ('css', '2.0'),
         ('stylesheets', '2.0')
-        ]
+    ]
 
     def hasFeature(self, feature, version):
         if version == "":

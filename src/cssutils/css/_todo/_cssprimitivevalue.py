@@ -5,7 +5,7 @@ __all__ = ['CSSPrimitiveValue']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
  TODO: conversion (mm->cm etc.)
  TODO: cssText: fset
@@ -116,7 +116,7 @@ class CSSPrimitiveValue (cssvalue.Value):
         self.cssText = text
         self._readonly = readonly
 
-    def getFormatted(self):
+    def __getFormatted(self):
         "returns a string representation of the current value"
         # TODO: URI representation and other!
         if self._primitivetype == self.CSS_RGBCOLOR:
@@ -164,7 +164,7 @@ class CSSPrimitiveValue (cssvalue.Value):
             self._primitivetype = self.CSS_UNKNOWN
         self._value = v
 
-    cssText = property(getFormatted, _setCssText,
+    cssText = property(__getFormatted, _setCssText,
                     doc="A string representation of the current value.")
 
     def _getType(self):

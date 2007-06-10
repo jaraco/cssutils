@@ -4,7 +4,7 @@ __all__ = ['CSSMediaRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import xml.dom
 
@@ -209,7 +209,7 @@ class CSSMediaRule(cssrule.CSSRule):
             newatkeyword = tokens[0].value
             
         newmedia = cssutils.stylesheets.MediaList()
-        mediatokens, endi = self._tokenizer.tokensupto(tokens[1:],
+        mediatokens, endi = self._tokensupto(tokens[1:],
                                                     blockstartonly=True)
 
         # checks if media ends with rules start and if at least
@@ -245,7 +245,7 @@ class CSSMediaRule(cssrule.CSSRule):
                 # @UNKNOWN
                 self._log.info(u'CSSMediaRule: Found unknown @rule.', t,
                          error=None)
-                atruletokens, endi = self._tokenizer.tokensupto(tokens[i:])
+                atruletokens, endi = self._tokensupto(tokens[i:])
                 i += endi 
                 atrule = cssutils.css.CSSUnknownRule()
                 atrule.cssText = atruletokens
@@ -253,7 +253,7 @@ class CSSMediaRule(cssrule.CSSRule):
 
             elif t.type in (self._ttypes.CHARSET_SYM, self._ttypes.IMPORT_SYM,
                             self._ttypes.MEDIA_SYM, self._ttypes.PAGE_SYM):
-                atruletokens, endi = self._tokenizer.tokensupto(tokens[i:])
+                atruletokens, endi = self._tokensupto(tokens[i:])
                 i += endi + 1
                 self._log.error(
                     u'CSSMediaRule: This rule is not allowed in CSSMediaRule - ignored: %s.'
@@ -263,7 +263,7 @@ class CSSMediaRule(cssrule.CSSRule):
 
             else:
                 # StyleRule
-                ruletokens, endi = self._tokenizer.tokensupto(
+                ruletokens, endi = self._tokensupto(
                     tokens[i:], blockendonly=True)
                 i += endi 
                 rule = cssutils.css.CSSStyleRule()

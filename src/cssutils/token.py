@@ -6,7 +6,7 @@ __all__ = ['Token', 'Tokenre']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import re
 import util
@@ -131,7 +131,7 @@ class Token(object):
             self._value = value
             
         elif self.type == Token.IDENT:
-            self.normalvalue = util.normalize(value)
+            self.normalvalue = util.Base._normalize(value)
             self._value = value
             
         else:

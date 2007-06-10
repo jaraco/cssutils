@@ -11,7 +11,7 @@ __all__ = ['CSSStyleSheet']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import xml.dom
 
@@ -103,14 +103,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         self._checkReadonly()
 
-        tokens = self._tokenizer.tokenize(cssText)
+        tokens = self._tokenize(cssText)
         
         newcssRules = cssutils.css.CSSRuleList()
         newnamespaces = set()
 
         # @charset only once at beginning
         if tokens and tokens[0].type == self._ttypes.CHARSET_SYM: 
-            charsetruletokens, endi = self._tokenizer.tokensupto(tokens)
+            charsetruletokens, endi = self._tokensupto(tokens)
             charsetrule = cssutils.css.CSSCharsetRule()
             charsetrule.cssText = charsetruletokens
             newcssRules.append(charsetrule)
@@ -136,14 +136,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 
             # @charset only at beginning
             elif self._ttypes.CHARSET_SYM == t.type: 
-                atruletokens, endi = self._tokenizer.tokensupto(tokens[i:])
+                atruletokens, endi = self._tokensupto(tokens[i:])
                 i += endi 
                 self._log.error(u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
                     t, xml.dom.HierarchyRequestErr)
 
             # @import before any StyleRule and @rule except @charset
             elif self._ttypes.IMPORT_SYM == t.type:
-                atruletokens, endi = self._tokenizer.tokensupto(tokens[i:])
+                atruletokens, endi = self._tokensupto(tokens[i:])
                 if expected == '@import': 
                     atrule = cssutils.css.CSSImportRule()
                     atrule.cssText = atruletokens
@@ -157,7 +157,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             # @namespace before any StyleRule and
             #  before @rule except @charset, @import
             elif self._ttypes.NAMESPACE_SYM == t.type:
-                atruletokens, endi = self._tokenizer.tokensupto(tokens[i:])
+                atruletokens, endi = self._tokensupto(tokens[i:])
                 if expected in ('@import', '@namespace'): 
                     atrule = cssutils.css.CSSNamespaceRule()
                     atrule.cssText = atruletokens
@@ -172,7 +172,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             # @media
             elif self._ttypes.MEDIA_SYM == t.type:
-                atruletokens, endi = self._tokenizer.tokensupto(tokens[i:])
+                atruletokens, endi = self._tokensupto(tokens[i:])
                 atrule = cssutils.css.CSSMediaRule()
                 atrule.cssText = atruletokens
                 newcssRules.append(atrule)
@@ -181,7 +181,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             # @page
             elif self._ttypes.PAGE_SYM == t.type:
-                atruletokens, endi = self._tokenizer.tokensupto(tokens[i:])
+                atruletokens, endi = self._tokensupto(tokens[i:])
                 atrule = cssutils.css.CSSPageRule()
                 atrule.cssText = atruletokens
                 newcssRules.append(atrule)
@@ -190,14 +190,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             # @unknown, insert in any case (but after @charset)
             elif self._ttypes.ATKEYWORD == t.type:
-                atruletokens, endi = self._tokenizer.tokensupto(tokens[i:])
+                atruletokens, endi = self._tokensupto(tokens[i:])
                 atrule = cssutils.css.CSSUnknownRule()
                 atrule.cssText = atruletokens
                 newcssRules.append(atrule)
                 i += endi 
 
             else: # probable StyleRule
-                ruletokens, endi = self._tokenizer.tokensupto(
+                ruletokens, endi = self._tokensupto(
                     tokens[i:], blockendonly=True)
                 rule = cssutils.css.CSSStyleRule()
                 rule.cssText = ruletokens

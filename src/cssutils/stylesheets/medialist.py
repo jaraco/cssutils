@@ -9,7 +9,7 @@ __all__ = ['MediaList']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import xml.dom
 
@@ -39,6 +39,7 @@ class MediaList(cssutils.util.Base, list):
     ======
     medium [ COMMA S* medium ]*
     """
+
     _MEDIA = [u'all', u'aural', u'braille', u'embossed', u'handheld',
         u'print', u'projection', u'screen', u'tty', u'tv']
     "available media types"

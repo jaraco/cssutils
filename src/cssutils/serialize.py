@@ -9,7 +9,7 @@ __all__ = ['CSSSerializer']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import cssutils
 
@@ -304,15 +304,6 @@ class CSSSerializer(object):
                 out.append(rtext + u'\n')
         out.append('%s}' % self.prefs.indent)
         return u''.join(out)
-
-
-        indentspace = indent * ' '
-        out = []
-        out.append(u'@media %s {' % (self._media.getFormatted()))
-        for rule in self._rules:
-            out.append(rule.getFormatted(indent, indent))
-        out.append(u'}')
-        return u'\n'.join(out)
 
 
     def do_CSSPageRule(self, rule):

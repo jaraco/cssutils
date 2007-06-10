@@ -6,7 +6,7 @@ contains DOM Level 2 CSS ValueList implementation classes.
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import xml.dom
 
@@ -66,7 +66,7 @@ class RGBColor(cssutils.css.Value):
                         '"%s" is not valid for a RGB Color value' % v)
         return v, p
     
-    def getFormatted(self):
+    def __getFormatted(self):
         """
         (cssutils only) returns a string representation 
         like rgb(1%, 20%, 100%)
@@ -76,7 +76,7 @@ class RGBColor(cssutils.css.Value):
             self.green[0], self.green[1], 
             self.blue[0], self.blue[1])
         
-    cssText = property(getFormatted, doc=
+    cssText = property(__getFormatted, doc=
             '(cssutils only) readonly string representation')
 
 
