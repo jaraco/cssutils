@@ -52,7 +52,7 @@ __all__ = ['CSSStyleDeclaration']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
 
 import xml.dom 
 
@@ -385,13 +385,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             self._log.info(
                 u'Shorthand property "%s" always returns None.' %
                 normalname, neverraise=True)
-            
             return None
 
         for pl in self.seq:
             if isinstance(pl, SameNamePropertyList) and \
                pl.name == normalname:
-                return pl[pl._currentIndex()].value
+                return pl[pl._currentIndex()].cssValue
 
 
     def getPropertyValue(self, name):
@@ -415,7 +414,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         for pl in self.seq:
             if isinstance(pl, SameNamePropertyList) and \
                pl.name == normalname:
-                return pl[pl._currentIndex()].value #.cssText
+                print pl
+                return pl[pl._currentIndex()].cssValue._value
         return u''
 
 
@@ -526,7 +526,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         for i, pl in enumerate(self.seq):
             if isinstance(pl, SameNamePropertyList) and \
                pl.name == normalname:
-                r = pl[pl._currentIndex()].value #.cssText
+                r = pl[pl._currentIndex()].cssValue._value
                 del self.seq[i]
                 break        
                     
@@ -592,9 +592,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     # append to pl
                     _seq[index].append(newp)
                     
-
-
-
 
 class SameNamePropertyList(list):
     """

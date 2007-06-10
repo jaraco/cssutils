@@ -6,12 +6,13 @@ __all__ = []
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
 
 import xml.dom 
 
 import cssutils
 import cssproperties
+from cssvalue import CSSValue
 
 class _Property(cssutils.util.Base):
     """
@@ -19,21 +20,22 @@ class _Property(cssutils.util.Base):
 
     Properties
     ==========
-    cssValue
-        the relevant CSSValue instance for this property
     name
         of the property
     normalname
         normalized name of the property, e.g. "color" when name is "c\olor"
-    value
-        the string value of the property
+    cssValue
+        the relevant CSSValue instance for this property
     priority
         of the property (currently only "!important" or None)
     seqs
-        3 lists for seq of name, value and
-        priority (empty or [!important] currently)
+        combination of a list for seq of name, a CSSValue object, and
+        a list for seq of  priority (empty or [!important] currently)
     valid
         if this Property is valid
+
+    DEPRECATED: value
+        the string value of the property, use cssValue.cssText instead!
 
     Format
     ======
@@ -75,17 +77,16 @@ class _Property(cssutils.util.Base):
         """
         super(_Property, self).__init__()
         
-        self.css2values = cssproperties.cssvalues
-
-        self.seqs = [[], [], []]
+        self.seqs = [[], None, []]
         self.valid = True
         self.name = name
-        self.value = value
+        self.cssValue = value
         self.priority = priority
 
 
     def __repr__(self):
-        return '<Property> %s: %s %s' % (self.name, self.value, self.priority)
+        return '<Property> %s: %s %s' % (
+            self.name, self.cssValue._value, self.priority)
 
 
     def __invalidToken(self, tokens, x):
@@ -103,13 +104,6 @@ class _Property(cssutils.util.Base):
                 return True
         return False
     
-
-    def _getCssValue(self):
-        raise NotImplementedError()
-        
-    cssValue = property(_getCssValue,
-        doc="(cssutils readonly) CSSValue object of this property")   
-
 
     def _getName(self):
         try:
@@ -160,7 +154,7 @@ class _Property(cssutils.util.Base):
             self.seqs[0] = newseq
 
             # validate
-            if newname not in self.css2values:
+            if newname not in cssproperties.cssvalues:
                 self._log.info(u'Property: No CSS2 Property: "%s".' %
                          newname, neverraise=True)
             
@@ -171,80 +165,37 @@ class _Property(cssutils.util.Base):
         doc="(cssutils) Name of this property")   
 
 
-    def _getValue(self):
-        return cssutils.ser.do_css_Propertyvalue(self.seqs[1])
+    def _getCSSValue(self):
+        return self.seqs[1]
 
-    def _setValue(self, value):
+    def _setCSSValue(self, cssText):
         """
-        Format
-        ======
-        ::
-        
-            expr = value
-              : term [ operator term ]*
-              ;
-            term
-              : unary_operator?
-                [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* |
-                  ANGLE S* | TIME S* | FREQ S* | function ]
-              | STRING S* | IDENT S* | URI S* | hexcolor
-              ;
-            function
-              : FUNCTION S* expr ')' S*
-              ;
-            /*
-             * There is a constraint on the color that it must
-             * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
-             * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
-             */
-            hexcolor
-              : HASH S*
-              ;
-        
-        DOMException on setting
-        
+        see css.CSSValue
+
+        DOMException on setting?
+                
         - SYNTAX_ERR: (self)
-          Raised if the specified value has a syntax error and is
-          unparsable.
+          Raised if the specified CSS string value has a syntax error
+          (according to the attached property) or is unparsable.
+        - TODO: INVALID_MODIFICATION_ERR: 
+          Raised if the specified CSS string value represents a different
+          type of values than the values allowed by the CSS property.
         """
-        tokens = self._tokenize(value)
-        if self.__invalidToken(tokens, 'value'):
-            return
-        hasvalue = None
-        newseq = []
-        for i in range(0, len(tokens)):
-            t = tokens[i]
-            if self._ttypes.S == t.type: # add single space
-                if newseq and newseq[-1] == u' ':
-                    pass
-                else:
-                    newseq.append(u' ')
-            elif self._ttypes.COMMENT == t.type: # just add
-                newseq.append(cssutils.css.CSSComment(t))
-            elif t.type in (self._ttypes.SEMICOLON, self._ttypes.IMPORTANT_SYM) or\
-                 t.value in u':':
-                 self._log.error(u'Property: Value syntax error.', t)
-                 return
-            else:
-                hasvalue = t.value 
-                newseq.append(hasvalue)
-        if hasvalue: # check if a value at all...
-            self.seqs[1] = newseq
+        cssvalue = CSSValue(cssText=cssText)
+        v = cssvalue._value
 
-            # validate
-            if self.name in self.css2values:
-                _v = u''.join([x for x in newseq if not isinstance(
-                                   x, cssutils.css.CSSComment)]).strip()
-                if not self.css2values[self.name](_v):
-                    self._log.warn(u'Property: Invalid value for CSS2 property %s: %s' %
-                         (self.name, _v), neverraise=True)
-
-            
-        else:
-            self._log.error(u'Property: Unknown value syntax: "%s".' % value)
+        if v:
+            self.seqs[1] = cssvalue
         
-    value = property(_getValue, _setValue,
-        doc="(cssutils) Value of this property")   
+            # validate if known
+            if self.name in cssproperties.cssvalues and \
+               not cssproperties.cssvalues[self.name](v):
+                self._log.warn(
+                    u'Property: Invalid value for CSS2 property %s: %s' %
+                    (self.name, v), neverraise=True)
+        
+    cssValue = property(_getCSSValue, _setCSSValue,
+        doc="(cssutils) CSSValue object of this property")   
 
 
     def _getPriority(self):
@@ -301,6 +252,16 @@ class _Property(cssutils.util.Base):
 
     priority = property(_getPriority, _setPriority,
         doc="(cssutils) Priority of this property")   
+
+
+    # DEPRECATED
+    def _getValue(self):
+        if self.cssValue: return self.cssValue._value
+        else: return u''
+    def _setValue(self, value):
+        self.cssValue.cssText = value
+    value = property(_getValue, _setValue,
+                     doc="DEPRECATED string value of property")   
 
 
 if __name__ == '__main__':
