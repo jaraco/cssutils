@@ -44,6 +44,10 @@ changes
     **TODO AND NOT USED YET!**
     - FEATURE: Implemented css.CSSValue
 
+0.9.2a2
+    - API CHANGE (minor): _Property.value is DEPRECATED, use Property.cssValue.cssText i
+nstead, _Property was defined as private anyway so should not have been used directly
+
 0.9.2a1    
     - FEATURE: Partly Implemented css.CSS2Properties so you can now use::
     
