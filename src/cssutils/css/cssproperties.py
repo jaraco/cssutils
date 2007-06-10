@@ -1,28 +1,65 @@
-"""CSS2Properties implements DOM Level 2 CSS CSS2Properties?
+"""CSS2Properties (partly!) implements DOM Level 2 CSS CSS2Properties used
+by CSSStyleDeclaration
 
-cssvalues uaed as a property validator
+TODO: CSS2Properties 
+    If an implementation does implement this interface, it is expected to
+    understand the specific syntax of the shorthand properties, and apply
+    their semantics; when the margin property is set, for example, the
+    marginTop, marginRight, marginBottom and marginLeft properties are
+    actually being set by the underlying implementation.
 
-This module has an importable object, cssvalues, that contains a 
-dictionary of compiled regular expressions.  The keys of this 
-dictionary are all of the valid CSS property names.  The values
-are compiled regular expressions that can be used to validate
-the values for that property.  (Actually, the values are references
-to the 'match' method of a compiled regular expression, so that
-they are simply called like functions.)
+    When dealing with CSS "shorthand" properties, the shorthand properties
+    should be decomposed into their component longhand properties as
+    appropriate, and when querying for their value, the form returned
+    should be the shortest form exactly equivalent to the declarations made
+    in the ruleset. However, if there is no shorthand declaration that
+    could be added to the ruleset without changing in any way the rules
+    already declared in the ruleset (i.e., by adding longhand rules that
+    were previously not declared in the ruleset), then the empty string
+    should be returned for the shorthand property.
 
-written by Kevin D. Smith, thanks!
+    For example, querying for the font property should not return
+    "normal normal normal 14pt/normal Arial, sans-serif", when
+    "14pt Arial, sans-serif" suffices. (The normals are initial values, and
+    are implied by use of the longhand property.)
 
-TODO: CSS2Properties
-##DOMImplementation
-##=================
-##The interface found within this section are not mandatory. A DOM
-##application can use the hasFeature method of the DOMImplementation
-##interface to determine whether it is supported or not. The feature
-##string for this extended interface listed in this section is "CSS2"
-##and the version is "2.0".
+    If the values for all the longhand properties that compose a particular
+    string are the initial values, then a string consisting of all the
+    initial values should be returned (e.g. a border-width value of
+    "medium" should be returned as such, not as "").
+
+    For some shorthand properties that take missing values from other
+    sides, such as the margin, padding, and border-[width|style|color]
+    properties, the minimum number of sides possible should be used; i.e.,
+    "0px 10px" will be returned instead of "0px 10px 0px 10px".
+
+    If the value of a shorthand property can not be decomposed into its
+    component longhand properties, as is the case for the font property
+    with a value of "menu", querying for the values of the component
+    longhand properties should return the empty string.
+    
+TODO: CSS2Properties DOMImplementation
+    The interface found within this section are not mandatory. A DOM
+    application can use the hasFeature method of the DOMImplementation
+    interface to determine whether it is supported or not. The feature
+    string for this extended interface listed in this section is "CSS2"
+    and the version is "2.0".
+
+
+cssvalues
+=========
+contributed by Kevin D. Smith, thanks!
+
+"cssvalues" is used as a property validator.
+it is an importable object that contains a dictionary of compiled regular
+expressions.  The keys of this dictionary are all of the valid CSS property
+names.  The values are compiled regular expressions that can be used to
+validate the values for that property. (Actually, the values are references
+to the 'match' method of a compiled regular expression, so that they are
+simply called like functions.)
 
 """
-__all__ = ['cssvalues']
+__all__ = ['CSS2Properties', 'cssvalues']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
@@ -30,10 +67,10 @@ __version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
 
 import re
 
+
 """
 Define some regular expression fragments that will be used as 
 macros within the CSS property value regular expressions.
-
 """
 MACROS = {
     'ident': r'[-]?{nmstart}{nmchar}*',
@@ -105,7 +142,6 @@ MACROS = {
     'text-attrs': r'underline|overline|line-through|blink',
 }
 
-
 """
 Define the regular expressions for validation all CSS values
 """
@@ -116,7 +152,6 @@ cssvalues = {
     'background-image': r'{background-image}',
     'background-position': r'{background-position}',
     'background-repeat': r'{background-repeat}',
-
     # Each piece should only be allowed one time
     'background': r'{background-attrs}(\s+{background-attrs})*|inherit',
     'border-collapse': r'collapse|separate|inherit',
@@ -229,8 +264,7 @@ cssvalues = {
     'z-index': r'auto|{integer}|inherit',
 }
 
-
-def expand_macros(tokdict):
+def _expand_macros(tokdict):
     """ Expand macros in token dictionary """
     def macro_value(m):
         return '(?:%s)' % MACROS[m.groupdict()['macro']]
@@ -241,77 +275,95 @@ def expand_macros(tokdict):
         tokdict[key] = value
     return tokdict
 
-def compile_regexes(tokdict):
+def _compile_regexes(tokdict):
     """ Compile all regular expressions into callable objects """
     for key, value in tokdict.items():
         tokdict[key] = re.compile('^%s$' % value, re.I).match
     return tokdict
 
+_compile_regexes(_expand_macros(cssvalues))
 
-compile_regexes(expand_macros(cssvalues))
+
+# functions to convert between CSS and DOM name
+
+_reCSStoDOMname = re.compile('-[a-z]', re.I)
+def _toDOMname(CSSname):
+    """
+    returns DOMname for given CSSname e.g. for CSSname 'font-style' returns
+    'fontStyle' 
+    """
+    def _doCSStoDOMname2(m): return m.group(0)[1].capitalize()
+    return _reCSStoDOMname.sub(_doCSStoDOMname2, CSSname)
+
+_reDOMtoCSSname = re.compile('([A-Z])[a-z]+')
+def _toCSSname(DOMname):
+    """
+    returns CSSname for given DOMname e.g. for DOMname 'fontStyle' returns
+    'font-style'
+    """
+    def _doDOMtoCSSname2(m): return '-' + m.group(0).lower()
+    return _reDOMtoCSSname.sub(_doDOMtoCSSname2, DOMname)
 
 
 class CSS2Properties(object):
     """
-    Used by CSSStyleDeclaration to check if a property is a CSS property at
-    all.
-    Includes (private!) functions to convert a DOMname to a CSSname and
-    vice versa.
+    The CSS2Properties interface represents a convenience mechanism
+    for retrieving and setting properties within a CSSStyleDeclaration.
+    The attributes of this interface correspond to all the properties
+    specified in CSS2. Getting an attribute of this interface is
+    equivalent to calling the getPropertyValue method of the
+    CSSStyleDeclaration interface. Setting an attribute of this
+    interface is equivalent to calling the setProperty method of the
+    CSSStyleDeclaration interface.
 
-    attribute ``_properties`` will be added after class definition
-    """
-    _reCSStoDOMname = re.compile('-[a-z]', re.I)
-    _reDOMtoCSSname = re.compile('[A-Z]')
+    cssutils actually also allows usage of ``del`` to remove a CSS property
+    from a CSSStyleDeclaration.
+
+    This is an abstract class, the following functions need to be present
+    in inheriting class:
     
-    @staticmethod
-    def _doCSStoDOMname(m):
-        "converts CSS name to DOM name like font-style => fontStyle"
-        return m.group(0)[1].capitalize()
+    - ``_getP``
+    - ``_setP``
+    - ``_delP`` 
+    """
+    # actual properties are set after the class definition!
+    def _getP(self, CSSname): pass
+    def _setP(self, CSSname, value): pass
+    def _delP(self, CSSname): pass
+    
+    
+# add list of DOMname properties to CSS2Properties
+# used for CSSStyleDeclaration to check if allowed properties
+# but somehow doubled, any better way?
+CSS2Properties._properties = [_toDOMname(p) for p in cssvalues.keys()]
 
-    @staticmethod
-    def _doDOMtoCSSname(m):
-        "converts DOM name to CSS name like fontStyle => font-style"
-        return '-' + m.group(0).lower()
+# add CSS2Properties to CSSStyleDeclaration:
+def __named_property_def(DOMname):
+    """
+    closure to keep name known in each properties accessor function
+    DOMname is converted to CSSname here, so actual calls use CSSname
+    """
+    CSSname = _toCSSname(DOMname)
+    def _get(self): return self._getP(CSSname)
+    def _set(self, value): self._setP(CSSname, value)
+    def _del(self): self._delP(CSSname)
+    return _get, _set, _del
 
-    @staticmethod
-    def _DOMname(CSSname):
-        """
-        returns DOMname for given CSSname or None if unknown property name
-        e.g. CSSname = 'font-style' returns 'fontStyle' 
-        """
-        DOMname = CSS2Properties._reCSStoDOMname.sub(
-                   CSS2Properties._doCSStoDOMname, CSSname)
-        return DOMname
-
-    @staticmethod
-    def _CSSname(DOMname):
-        """
-        returns CSSname for given DOMname or None if unknown property name
-        e.g. DOMname = 'fontStyle' returns 'font-style'
-        """
-        if DOMname in CSS2Properties._properties:
-            CSSname = CSS2Properties._reDOMtoCSSname.sub(
-                       CSS2Properties._doDOMtoCSSname, DOMname)
-            return CSSname
-        else:
-            return None
-"""
-add list of DOMname properties to CSS2Properties
-TODO:
-    implementation is not really nice, any alternative?
-"""
-CSS2Properties._properties = [CSS2Properties._reCSStoDOMname.sub(
-                       CSS2Properties._doCSStoDOMname, p) for p in cssvalues.keys()]
+# add all CSS2Properties to CSSStyleDeclaration
+for DOMname in CSS2Properties._properties:
+    setattr(CSS2Properties, DOMname,
+        property(*__named_property_def(DOMname)))
 
 
 
 if __name__=='__main__':
     c = CSS2Properties()
-    #print type(CSS2Properties.color)
-    c.color = 'green'
-    #print type(CSS2Properties.color), c.color
-    print c.color
-    del c.color
-    #print type(CSS2Properties.color), c.color
+    print CSS2Properties.color
+##    #print type(CSS2Properties.color)
+##    c.color = 'green'
+##    #print type(CSS2Properties.color), c.color
+##    print c.color
+##    del c.color
+##    #print type(CSS2Properties.color), c.color
     
 
