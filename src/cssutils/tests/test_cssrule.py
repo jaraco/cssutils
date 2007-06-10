@@ -2,7 +2,7 @@
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
 
 
 import xml.dom
@@ -61,9 +61,10 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         called by subclasses
 
         startwithspace
-            for test starting with this not the test but " test" is tested
-            e.g. " @page {}"
-            exception is the style rule test
+        
+        for test starting with this not the test but " test" is tested
+        e.g. " @page {}"
+        exception is the style rule test
         """
         tests = (u'',
                  u'/* comment */',

@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.property._Property."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
 
 import xml.dom
 
@@ -20,8 +20,13 @@ class PropertyTestCase(basetest.BaseTestCase):
         p = cssutils.css.property._Property('top', '1px')
         self.assertEqual('top', p.name)
         self.assertEqual('1px', p.value)
+        self.assertEqual('1px', p.cssValue.cssText)
         self.assertEqual(u'', p.priority)
-        self.assertEqual([[u'top'], [u'1px'], []], p.seqs)
+
+        self.assertEqual([u'top'], p.seqs[0])
+        self.assertEqual(type(cssutils.css.CSSValue()), type(p.seqs[1]))
+        self.assertEqual([], p.seqs[2])
+
         self.assertEqual(True, p.valid)
 
 
@@ -69,47 +74,12 @@ class PropertyTestCase(basetest.BaseTestCase):
         p.value = 'red'
 
         
-
     def test_cssValue(self):
         "_Property.cssValue"
         pass
         #TODO
 
 
-    def test_value(self):
-        "_Property.value"
-        # TODO: extend tests
-        p = cssutils.css.property._Property('top', u'1px')
-        self.assertEqual('1px', p.value)
-        p.value = '2px'
-        self.assertEqual('2px', p.value)
-##        p.value = 2
-##        self.assertEqual('2', p.value)
-
-        tests = {
-            u'1px': None,
-            u' 1px': u'1px',
-            u'1px ': u'1px',
-            u' 1px ': u'1px',
-            u'1px 1px': u'1px 1px',
-            }
-        self.do_equal_r(tests, att='value')        
-
-        tests = {
-            # no value
-            None: xml.dom.SyntaxErr,
-            u'': xml.dom.SyntaxErr,
-            u' ': xml.dom.SyntaxErr,
-            u'"\n': xml.dom.SyntaxErr,
-            u'/*x*/': xml.dom.SyntaxErr,
-            # not allowed:
-            u':': xml.dom.SyntaxErr,
-            u';': xml.dom.SyntaxErr,
-            u'!important': xml.dom.SyntaxErr,            
-            }
-        self.do_raise_r(tests, att='_setValue')
-
-        
     def test_priority(self):
         "_Property.priority"
         p = cssutils.css.property._Property('top', '1px', '!important')
@@ -137,6 +107,38 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.do_raise_r(tests, att='_setPriority')
 
 
+    def test_value(self):
+        "_Property.value (DEPRECATED)"
+        # TODO: extend tests
+        p = cssutils.css.property._Property('top', u'1px')
+        self.assertEqual('1px', p.value)
+        p.value = '2px'
+        self.assertEqual('2px', p.value)
+
+        tests = {
+            u'1px': None,
+            u' 2px': u'2px',
+            u'3px ': u'3px',
+            u' 4px ': u'4px',
+            u'5px 1px': u'5px 1px',
+            }
+        self.do_equal_r(tests, att='value')        
+
+        tests = {
+            # no value
+            None: xml.dom.SyntaxErr,
+            u'': xml.dom.SyntaxErr,
+            u' ': xml.dom.SyntaxErr,
+            u'"\n': xml.dom.SyntaxErr,
+            u'/*x*/': xml.dom.SyntaxErr,
+            # not allowed:
+            u':': xml.dom.SyntaxErr,
+            u';': xml.dom.SyntaxErr,
+            u'!important': xml.dom.SyntaxErr,            
+            }
+        self.do_raise_r(tests, att='_setValue')
+
+        
 if __name__ == '__main__':
     import unittest
     unittest.main() 
