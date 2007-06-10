@@ -2,10 +2,10 @@
 """cssutils ErrorHandler
 
 ErrorHandler
-    used as log with usual functions (debug, info, warn, error)
+    used as log with usual levels (debug, info, warn, error)
     
-    is instanciated with raiseExceptions=True raises exeptions instead of
-    logging
+    if instanciated with ``raiseExceptions=True`` raises exeptions instead
+    of logging
     
 log
     defaults to instance of ErrorHandler for any kind of log message from
@@ -18,7 +18,7 @@ __all__ = ['ErrorHandler']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import logging
 import xml.dom

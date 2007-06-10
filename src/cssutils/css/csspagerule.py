@@ -4,7 +4,7 @@ __all__ = ['CSSPageRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, $LastChangedRevision$'
 
 import xml.dom
 
@@ -169,13 +169,13 @@ class CSSPageRule(cssrule.CSSRule):
         newstyle = cssstyledeclaration.CSSStyleDeclaration(parentRule=self)
 
         # selector
-        selectortokens, stylestarti = self._tokenizer.tokensupto(
+        selectortokens, stylestarti = self._tokensupto(
             tokens, blockstartonly=True)
         newselectortext, newseq = self.__parseSelectorText(
             selectortokens[1:-1]) # without @page and {
 
         # style
-        styletokens, styleendi = self._tokenizer.tokensupto(
+        styletokens, styleendi = self._tokensupto(
             tokens[stylestarti:], blockendonly=True)
 
         if not styletokens or \

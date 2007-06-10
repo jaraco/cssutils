@@ -52,7 +52,7 @@ __all__ = ['CSSStyleDeclaration']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import xml.dom 
 
@@ -232,7 +232,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         def ignoreuptopropend(i, tokens):
             "returns position of ending ;"
-            ignoredtokens, endi = self._tokenizer.tokensupto(
+            ignoredtokens, endi = self._tokensupto(
                     tokens[i:], propertypriorityendonly=True)
             if ignoredtokens:
                 ignored = ''.join([x.value for x in ignoredtokens])
@@ -253,7 +253,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 newseq.append(cssutils.css.CSSComment(t))            
             else:
                 # name upto ":" (or ; -> error)
-                nametokens, endi = self._tokenizer.tokensupto(
+                nametokens, endi = self._tokensupto(
                     tokens[i:], propertynameendonly=True)
                 i += endi
 
@@ -284,7 +284,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     continue
                 
                 # value upto ";" or "!important" or end
-                valuetokens, endi = self._tokenizer.tokensupto(
+                valuetokens, endi = self._tokensupto(
                     tokens[i:], propertyvalueendonly=True)
                 i += endi
                 if valuetokens and \
@@ -296,7 +296,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     del valuetokens[-1] # exclude !important
 
                     # priority upto ; or end                    
-                    prioritytokens, endi = self._tokenizer.tokensupto(
+                    prioritytokens, endi = self._tokensupto(
                             tokens[i:], propertypriorityendonly=True)
                     i += endi
                     
@@ -613,7 +613,7 @@ class SameNamePropertyList(list):
     parsing. See ``Serializer.prefs.keepAllProperties``
     """
     def __init__(self, name):
-        self.name = cssutils.util.normalize(name)
+        self.name = cssutils.util.Base._normalize(name)
 
 
     def _currentIndex(self):

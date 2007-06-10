@@ -23,7 +23,7 @@ __all__ = ['Selector']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2 $LastChangedRevision$'
 
 import xml.dom
 
@@ -352,7 +352,7 @@ class Selector(cssutils.util.Base):
                 elif expected == 'pseudoclass' and \
                      t.type == self._ttypes.FUNCTION:
                     # pseudo "function" like lang(...)
-                    functokens, endi = self._tokenizer.tokensupto(
+                    functokens, endi = self._tokensupto(
                         tokens[i:], selectorattendonly=True)
                     i += endi
                     funcseq = getFunc(functokens)
@@ -399,7 +399,7 @@ class Selector(cssutils.util.Base):
                 
                 # attribute selector 
                 elif expected.startswith('simple_selector') and t.value == u'[':
-                    atttokens, endi = self._tokenizer.tokensupto(
+                    atttokens, endi = self._tokensupto(
                         tokens[i:], selectorattendonly=True)
                     i += endi
                     attseq = getAttrib(atttokens)
