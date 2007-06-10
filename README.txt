@@ -29,6 +29,7 @@ Before using EasyInstall the first time or using the sdist please remove any old
 known issues
 ============
 - @charset not implemented according to spec (plan: 0.9.2)
+- CSS2Properties not implemented completely
 - Unexpected end of style sheet not handled according to spec
 
 - CSSStyleDeclaration.getCSSValue and Value Classes are not implemented. These may be implemented in one of the next releases (0.9.2 or following)
@@ -44,7 +45,7 @@ changes
     - FEATURE: Implemented css.CSSValue
 
 0.9.2a1    
-    - FEATURE: Implemented css.CSS2Properties so you can now use::
+    - FEATURE: Partly Implemented css.CSS2Properties so you can now use::
     
         >>> sheet = cssutils.parseString('a { font-style: italic; }')
         >>> style = sheet.cssRules[0].style
@@ -57,6 +58,9 @@ changes
     the respective DOM name ``fontStyle``.
       Setting a property value works the same way and even ``del`` which effectively removes a property from a CSSStyleDeclaration works. For details see 
     CSSStyleDeclaration.
+    
+      Not implemented are the finer details, see the module documentation of 
+      cssutils.css.cssproperties.
             
     - BUGFIX: CSSStyleDeclaration.getPropertyCSSValue returns None for all shorthand properties
     
