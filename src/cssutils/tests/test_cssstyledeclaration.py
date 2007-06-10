@@ -217,23 +217,22 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual('color', pl.name)
         self.assertEqual(1, len(pl))
         self.assertEqual(0, pl._currentIndex())
-        self.assertEqual('[<Property> color: red ]', str(pl))
 
         s.setProperty('C\olor', 'green', '!important', overwrite=False) 
         self.assertEqual('color', pl.name)
         self.assertEqual(2, len(pl))
         self.assertEqual(1, pl._currentIndex())
-        self.assertEqual(
-            '[<Property> color: red , <Property> c\\olor: green !important]',
-            str(pl))
+##        self.assertEqual(
+##            '[<Property> color: red , <Property> c\\olor: green !important]',
+##            str(pl))
 
         s.setProperty('COLOR', 'blue', overwrite=False) 
         self.assertEqual('color', pl.name)
         self.assertEqual(3, len(pl))
         self.assertEqual(1, pl._currentIndex())
-        self.assertEqual(
-            '[<Property> color: red , <Property> c\\olor: green !important, <Property> color: blue ]',
-            str(pl))
+##        self.assertEqual(
+##            '[<Property> color: red , <Property> c\\olor: green !important, <Property> color: blue ]',
+##            str(pl))
 
     
     def test_item(self):
@@ -336,9 +335,9 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual('1px', s.getPropertyValue('TOP'))
         self.assertEqual('1px', s.getPropertyValue('T\op'))
 
-        self.assertEqual('1px', s.getPropertyCSSValue('top'))
-        self.assertEqual('1px', s.getPropertyCSSValue('TOP'))
-        self.assertEqual('1px', s.getPropertyCSSValue('T\op'))
+##        self.assertEqual('1px', s.getPropertyCSSValue('top'))
+##        self.assertEqual('1px', s.getPropertyCSSValue('TOP'))
+##        self.assertEqual('1px', s.getPropertyCSSValue('T\op'))
 
         self.assertEqual('!important', s.getPropertyPriority('top'))
         self.assertEqual('!important', s.getPropertyPriority('TOP'))
