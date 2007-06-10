@@ -502,14 +502,14 @@ class CSSSerializer(object):
         """
         Style declaration of CSSStyleRule
 
-        Property has a seqs attribute which contains 3 seq lists for
-        name, value and priority
+        Property has a seqs attribute which contains seq lists for
+        name, a CSSvalue and a seq list for priority
         """
         if not property.seqs[0] or self._noinvalids(property):
             return u''
         else:
             out = []
-            nameseq, valueseq, priorityseq = property.seqs
+            nameseq, cssvalue, priorityseq = property.seqs
 
             for part in nameseq:
                 if isinstance(part, cssutils.css.csscomment.CSSComment):
@@ -520,7 +520,7 @@ class CSSSerializer(object):
                     out.append(part)
             if out:
                 out.append(u': ')
-            v = self.do_css_Propertyvalue(valueseq)
+            v = self.do_css_CSSvalue(cssvalue)
             if v:
                 out.append(v)
 
@@ -535,17 +535,17 @@ class CSSSerializer(object):
             return u''.join(out)
 
 
-    def do_css_Propertyvalue(self, valueseq):
+    def do_css_CSSvalue(self, cssvalue):
         """
-        serializes a property
+        serializes a CSSValue
         """
-        if not valueseq:
+        if not cssvalue:
             return u''
         else:
             out = []
-            for part in valueseq:
+            for part in cssvalue.seq:
                 if hasattr(part, 'cssText'): # comments
                     out.append(part.cssText)
                 else:
                     out.append(part)
-            return u''.join(out).strip()
+            return (u''.join(out)).strip()
