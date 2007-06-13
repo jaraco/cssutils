@@ -1,7 +1,7 @@
 """testcases for cssutils.css.CSSUnkownRule"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
 
 
 import xml.dom
@@ -28,6 +28,7 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSUnknownRule(cssText=u'@init;')
         self.assertEqual(u'@init;', r.cssText)
 
+        # @-... not allowed?
         r = cssutils.css.CSSUnknownRule(cssText=u'@-init;')
         self.assertEqual(u'@-init;', r.cssText)
 
