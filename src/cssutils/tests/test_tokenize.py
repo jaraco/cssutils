@@ -4,7 +4,7 @@ testcases for cssutils.tokenize.Tokenizer
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
 
 import xml.dom
 
@@ -165,11 +165,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
                (1, 2, tt.S, u' '), (1, 3, tt.NUMBER, u'1.1'),
                (1, 6, tt.S, u' '), (1, 7, tt.NUMBER, u'-1'),
                (1, 9, tt.S, u' '), (1, 10, tt.NUMBER, u'-1.1'),
-               (1, 14, tt.S, u' '), (1, 15, tt.CLASS, u'.'),
-               (1, 16, tt.NUMBER, u'1'), (1, 17, tt.S, u' '),
-               (1, 18, tt.DELIM, u'-'), (1, 19, tt.CLASS, u'.'),
-               (1, 20, tt.NUMBER, u'1'), (1, 21, tt.S, u' '),
-               (1, 22, tt.NUMBER, u'1'), (1, 23, tt.CLASS, u'.')
+               (1, 14, tt.S, u' '), (1, 15, tt.NUMBER, u'0.1'),
+               (1, 18, tt.S, u' '), (1, 19, tt.NUMBER, u'-0.1'),
+               (1, 23, tt.S, u' '), 
+               (1, 24, tt.NUMBER, u'1'), (1, 25, tt.CLASS, u'.')
                                          ],
             # Attribute INCLUDES & DASHMATCH + CSS3
             u'a=1': [(1, 1, tt.IDENT, u'a'), (1, 2, tt.DELIM, u'='),
@@ -208,6 +207,23 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
             # DIMENSION
             u'5em': [(1, 1, tt.DIMENSION, u'5em')],
+            u' 5em': [(1, 1, tt.S, u' '), (1, 2, tt.DIMENSION, u'5em')],
+            u'5em ': [(1, 1, tt.DIMENSION, u'5em'), (1, 4, tt.S, u' ')],
+
+            u'-5em': [(1, 1, tt.DIMENSION, u'-5em')],
+            u' -5em': [(1, 1, tt.S, u' '), (1, 2, tt.DIMENSION, u'-5em')],
+            u'-5em ': [(1, 1, tt.DIMENSION, u'-5em'), (1, 5, tt.S, u' ')],
+
+            u'.5em': [(1, 1, tt.DIMENSION, u'0.5em')],
+            u' .5em': [(1, 1, tt.S, u' '), (1, 2, tt.DIMENSION, u'0.5em')],
+            u'.5em ': [(1, 1, tt.DIMENSION, u'0.5em'), (1, 6, tt.S, u' ')],
+
+            u'-.5em': [(1, 1, tt.DIMENSION, u'-0.5em')],
+            u' -.5em': [(1, 1, tt.S, u' '), (1, 2, tt.DIMENSION, u'-0.5em')],
+            u'-.5em ': [(1, 1, tt.DIMENSION, u'-0.5em'), (1, 7, tt.S, u' ')],
+
+            u'5em5_-': [(1, 1, tt.DIMENSION, u'5em5_-')],
+
             u'a a5 a5a 5 5a 5a5': [(1, 1, tt.IDENT, u'a'),
                (1, 2, tt.S, u' '),
                (1, 3, tt.IDENT, u'a5'),
@@ -218,8 +234,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                (1, 11, tt.S, u' '),
                (1, 12, tt.DIMENSION, u'5a'),
                (1, 14, tt.S, u' '),
-               (1, 15, tt.DIMENSION, u'5a'),
-               (1, 17, tt.NUMBER, u'5')],
+               (1, 15, tt.DIMENSION, u'5a5')],
 
             # URI            
             u'url("x")': [(1, 1, tt.URI, u'url("x")')],
