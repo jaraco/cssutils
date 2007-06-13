@@ -63,7 +63,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             # TODO: u'@media all { @x{': u'@media all {\n    @x{}\n    }',
             u'''@media all { a{} }''': u'''@media all {\n    a {}\n    }''',
             u'''@MEDIA all { a{} }''': u'''@media all {\n    a {}\n    }''',
-            u'''@\media all { a{} }''': u'''@media all {\n    a {}\n    }''',
+            u'''@\\media all { a{} }''': u'''@media all {\n    a {}\n    }''',
             u'''@media all {@x some;a{color: red;}b{color: green;}}''':
                 u'''@media all {
     @x some;

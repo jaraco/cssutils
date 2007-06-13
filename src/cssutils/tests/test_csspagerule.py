@@ -56,7 +56,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@page :UNKNOWNIDENT { margin: 0 }': EXP % u'UNKNOWNIDENT',
 
             u'@PAGE:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
-            u'@\page:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
+            u'@\\page:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
             
             u'@page/*1*/:left/*2*/{margin:0;}':
                 u'@page /*1*/:left/*2*/ {\n    margin: 0\n    }',

@@ -130,7 +130,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSImportRule.cssText 1"
         tests = {
             u'''@import "str";''': None,
-            u'''@\import "str";''': u'''@import "str";''',
+            u'''@\\import "str";''': u'''@import "str";''',
             u'''@IMPORT "str";''': u'''@import "str";''',
 
             u'''@import 'str';''': u'''@import "str";''',
