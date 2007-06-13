@@ -79,7 +79,7 @@ class Token(object):
     RBRACKET = u']'
     LPARANTHESIS = u'('
     RPARANTHESIS = u')'
-    S = u'[ \t\r\n\f]+'
+    S = ur'[ ]'#\t\r\n\f]+'
     COMMENT = u'COMMENT' # no comment between !important but S ist handled
     FUNCTION = u'{ident}\('
 
@@ -107,6 +107,8 @@ class Token(object):
     # TODO?
     INVALID = u'INVALID'
     #{invalid}        return INVALID;
+
+    URL = 'URL'    
 
     COMMA = u',' # TODO!
     #EQUALS = u'='
@@ -170,8 +172,7 @@ class Tokenre(object):
     # custom
     DIMENSION = r'{num}{ident}'
     HASH = r'#{name}'
-    URI = u'url\({w}{string}{w}\)|url\({w}([!#$%&*-~]|{nonascii}|{escape})*{w}\)'
-    
+    URI = u'url\({w}{string}{w}\)|url\({w}{url}{w}\)'
     # see spec
     atkeyword = r'^@[-]?{nmstart}{nmchar}*' #?
     ident = r'[-]?{nmstart}{nmchar}*'
@@ -188,6 +189,7 @@ class Tokenre(object):
     string = r'{string1}|{string2}'
     string1 = r'"(\\\"|[^\"])*"'
     string2 = r"'(\\\'|[^\'])*'"
+    url = u'([!#$%&*-~]|{nonascii}|{escape})*'    
     nl = r'\n|\r\n|\r|\f'
     w = r'\s*'
 
