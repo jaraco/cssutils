@@ -63,7 +63,7 @@ __all__ = ['CSS2Properties', 'cssvalues']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
 
 import re
 
@@ -82,7 +82,7 @@ MACROS = {
 #   'escape': r'{unicode}|\\[ -~\200-\4177777]',
     'int': r'[-]?\d+',
     'nmchar': r'[\w-]|{nonascii}|{escape}',
-    'num': r'[-]?\d+|\d*\.\d+',
+    'num': r'[-]?\d+|[-]?\d*\.\d+',
     'number': r'{num}',
     'string': r'{string1}|{string2}',
     'string1': r'"(\\\"|[^\"])*"',
