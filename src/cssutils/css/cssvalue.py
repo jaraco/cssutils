@@ -148,7 +148,7 @@ class CSSValue(cssutils.util.Base):
         for i in range(0, len(tokens)):
             t = tokens[i]
             if self._ttypes.S == t.type: # add single space
-                if newseq and newseq[-1] == u' ':
+                if not newseq or newseq and newseq[-1] == u' ':
                     pass
                 else:
                     newseq.append(u' ')
