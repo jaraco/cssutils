@@ -31,6 +31,7 @@ known issues
 - CSSStyleDeclaration.getCSSValue and Value Classes are not implemented. These may be implemented in one of the next releases (0.9.2)
 
 - @charset not implemented according to spec (plan: 0.9.2)
+- selector .\1 does not work (it is very uncommon though)
 - CSS2Properties not implemented completely
 - Unexpected end of style sheet not handled according to spec
 - Properties are not bound to any CSS Version, so all properties are handled so 
@@ -40,15 +41,21 @@ known issues
 
 changes
 =======
-- TODO: FEATURE: Implemented css.CSSValue
+- TODO: FEATURE: Implemente css.CSSValue
 
 0.9.2a2
-    - API CHANGE: removed cssutils.util.normalize function, use static method cssutils.util.Base._normalize if absolutely needed which may be changed too though
+    - API CHANGE: removed cssutils.util.normalize function, use static (but private!) method cssutils.util.Base._normalize if absolutely needed which may be change too though
     - API CHANGE (minor): removed ``getFormatted`` and ```pprint`` from various classes which were both DEPRECATED for some time anyway
-    - API CHANGE (minor): _Property.value is DEPRECATED, use Property.cssValue.cssText i
-nstead, _Property was defined as private anyway so should not have been used directly
+    - API CHANGE (minor): _Property.value is DEPRECATED, use _Property.cssValue.cssText instead, _Property is defined as private anyway so should not be used directly
+   
+    - CHANGE: Numbers and Dimensions starting with "." like ".1em" in the original stylesheet will be output as "0.1em" with a proceding 0 now.
 
-0.9.2a1    
+    - BUGFIX: The css validator definition for "num" was wrong, so values like ``-5.5em`` would issue a warning but should be correct
+    - BUGFIX: Dimension were not parsed correcly so 1em5 was parsed a "1em" + 5 which should really be one "1em5" were "em5" is an unknown dimension. This had probably no effect on current stylesheets but was a tokenizing error
+
+    - IMPROVEMENT: Performance of the tokenizer has been improved, it is now about 20% faster (testing the unittests) which may not hold for all usages but is not too bad as well ;)
+
+0.9.2a1 070610
     - FEATURE: Partly Implemented css.CSS2Properties so you can now use::
     
         >>> sheet = cssutils.parseString('a { font-style: italic; }')
