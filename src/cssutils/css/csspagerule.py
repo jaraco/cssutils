@@ -90,9 +90,9 @@ class CSSPageRule(cssrule.CSSRule):
         newselectortext = None
         newseq = []
 
-        i = 0
         expected = ':' # means no selector but 1 like ":first" is okay
-        while i < len(tokens):
+        i, imax = 0, len(tokens)
+        while i < imax:
             t = tokens[i]
             if self._ttypes.S == t.type and 'ident' != expected: # ignore
                 pass

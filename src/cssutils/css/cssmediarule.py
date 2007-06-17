@@ -224,8 +224,8 @@ class CSSMediaRule(cssrule.CSSRule):
             return
 
         newrules = cssutils.css.CSSRuleList()
-        i = endi + 2 # ???
-        while i < len(tokens):
+        i, imax = endi + 2, len(tokens)
+        while i < imax:
             t = tokens[i]
             
             if self._ttypes.S == t.type: # ignore
