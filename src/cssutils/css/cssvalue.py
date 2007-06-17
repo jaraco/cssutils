@@ -139,7 +139,8 @@ class CSSValue(cssutils.util.Base):
         tokens = self._tokenize(cssText)
         if self.__invalidToken(tokens, 'value'):
             self._log.error(
-                u'CSSValue: Unknown value syntax: "%s".' % cssText)
+                u'CSSValue: Unknown value syntax: "%s".' % self._valuestr(
+                    cssText))
             return
         
         hasvalue = False
@@ -186,7 +187,8 @@ class CSSValue(cssutils.util.Base):
 
         else:
             self._log.error(
-                u'CSSValue: Unknown value syntax: "%s".' % cssText)
+                u'CSSValue: Unknown value syntax: "%s".' % self._valuestr(
+                    cssText))
 
 
     cssText = property(_getCssText, _setCssText,
