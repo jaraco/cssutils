@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.cssvalue.CSSValue."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, $LastChangedRevision$'
 
 import xml.dom
 
@@ -37,6 +37,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
 
         v.cssText = u'  1   px    '
         self.assertEqual(v.CSS_CUSTOM, v.cssValueType)
+        self.assertEqual('1 px', v._value)
         self.assertEqual('1 px', v.cssText)
 
 
