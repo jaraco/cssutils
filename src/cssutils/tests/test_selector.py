@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.selector.Selector."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, $LastChangedRevision$'
 
 import xml.dom
 
@@ -37,6 +37,11 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''a''': None,
             u'''h1''': None,
             u'''.a a''': None,
+
+            u'''a1''': None,
+            u'''a1-1''': None,
+            u'''.a1-1''': None,
+            u'''.a1._1''': None,
 
             u'''[x]''': None,
             u'''*[x]''': None,
@@ -89,6 +94,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''a   .b''': 'a .b',
             u'''ab''': 'ab',
             u'''a.b''': None,
+            u'''a.b.c''': None,
 
             u'''a#b''': None,
             u'''a #b''': None,
@@ -136,6 +142,8 @@ class SelectorTestCase(basetest.BaseTestCase):
 
             u'#.x': xml.dom.SyntaxErr,
             u'.': xml.dom.SyntaxErr,
+            u'.1': xml.dom.SyntaxErr,
+            u'.a.1': xml.dom.SyntaxErr,
 
             u'[a': xml.dom.SyntaxErr,
             u'a]': xml.dom.SyntaxErr,

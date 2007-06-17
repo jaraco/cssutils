@@ -4,7 +4,7 @@ testcases for cssutils.tokenize.Tokenizer
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, $LastChangedRevision$'
 
 import xml.dom
 
