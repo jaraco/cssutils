@@ -52,6 +52,8 @@ class Token(object):
     includes some CSS3 parts
         http://www.w3.org/TR/css3-selectors/
     """
+    EOF = u'EOF' # EndOfFile 
+    
     IDENT = u'{ident}'
 
     ATKEYWORD = u'@{ident}'
