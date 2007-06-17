@@ -12,7 +12,7 @@ __all__ = ['CSSValue']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, SVN revision $LastChangedRevision$'
+__version__ = '0.9.2a2, $LastChangedRevision$'
 
 import xml.dom 
 
@@ -144,23 +144,35 @@ class CSSValue(cssutils.util.Base):
         
         hasvalue = False
         newseq = []
-        
-        for i in range(0, len(tokens)):
+        i, imax = 0, len(tokens)
+        while i < imax:
             t = tokens[i]
             if self._ttypes.S == t.type: # add single space
-                if not newseq or newseq and newseq[-1] == u' ':
-                    pass
+                if not newseq or newseq[-1] == u' ':
+                    pass # not 1st and no 2 spaces after each other
                 else:
                     newseq.append(u' ')
             elif self._ttypes.COMMENT == t.type: # just add
                 newseq.append(cssutils.css.CSSComment(t))
-            elif t.type in (self._ttypes.SEMICOLON, self._ttypes.IMPORTANT_SYM) or\
-                 t.value in u':':
+            elif t.type in (
+                self._ttypes.SEMICOLON, self._ttypes.IMPORTANT_SYM) or\
+                u':' == t.value:
                  self._log.error(u'CSSValue: Syntax error.', t)
                  return
+            elif t.type == self._ttypes.FUNCTION:
+                _functokens, endi = self._tokensupto(
+                    tokens, funcendonly=True)
+                _func = []
+                for _t in _functokens:
+                    _func.append(_t.value)
+                newseq.append(u''.join(_func))
+                i += endi #-1
+                hasvalue = True
             else:
                 newseq.append(t.value)
                 hasvalue = True
+
+            i += 1
                 
         if hasvalue:
             self.seq = newseq
