@@ -1,7 +1,7 @@
 """testcases for cssutils.css.CSSImportRule"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '0.9.2a2, $LastChangedRevision$'
 
 
 import xml.dom
@@ -85,7 +85,11 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
             u'@namespace/*1*/p/*2*/"u"/*3*/;': u'@namespace/*1*/ p/*2*/ "u"/*3*/;',
 
-            u'@namespace p url(u);': u'@namespace p "u";', # deprecated
+            # deprecated
+            u'@namespace p url(u);': u'@namespace p "u";', 
+            u'@namespace p url(\'u\');': u'@namespace p "u";',
+            u'@namespace p url(\"u\");': u'@namespace p "u";',
+            u'@namespace p url( \"u\" );': u'@namespace p "u";',
             }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
