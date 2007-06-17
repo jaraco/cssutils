@@ -73,6 +73,7 @@ class CSSValue(cssutils.util.Base):
 
         self.seq = []
         self._value = u''
+        self._linetoken = None # used for line report only
         self.cssText = cssText
         self._readonly = readonly
 
@@ -179,6 +180,9 @@ class CSSValue(cssutils.util.Base):
             self.seq = newseq
             self._value = u''.join([x for x in newseq if not isinstance(
                                x, cssutils.css.CSSComment)]).strip()
+
+            if tokens:
+                self._linetoken = tokens[0] # used for line report
 
             if self._value == u'inherit':
                 self._cssValueType = CSSValue.CSS_INHERIT
