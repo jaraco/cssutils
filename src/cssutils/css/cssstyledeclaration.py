@@ -244,8 +244,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         tokens = self._tokenize(cssText)
 
         newseq = []
-        i = 0
-        while i < len(tokens):
+        i, imax = 0, len(tokens)
+        while i < imax:
             t = tokens[i]
             if self._ttypes.S == t.type: # ignore
                 pass
