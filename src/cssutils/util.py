@@ -85,52 +85,54 @@ class Base(object):
         returns tokens upto end of atrule and end index
         end is defined by parameters, might be ; } ) or other
 
-        blockendonly
-            if True only looks for ending "}" else also for ending ";"
+        default looks for ending "}" and ";"
         """
-        ends = (self._ttypes.SEMICOLON, self._ttypes.RBRACE)
-        endvalues = ()
-        blocklevel = 0 # check only for blockend }
+        ends = u';}'
 
         if blockstartonly: # { 
-            ends = (self._ttypes.LBRACE,)
-            blocklevel = -1 # end is { so blocklevel gets 0
+            ends = u'{'
         if blockendonly: # }
-            ends = (self._ttypes.RBRACE,)
+            ends = u'}'
         elif propertynameendonly: # : and ; in case of an error
-            ends = (self._ttypes.DELIM, self._ttypes.SEMICOLON)
-            endvalues = u':'
-        elif propertyvalueendonly: # ; or '!important'
-            ends = (self._ttypes.SEMICOLON, self._ttypes.IMPORTANT_SYM)
+            ends = u':;' 
+        elif propertyvalueendonly: # ; or !important
+            ends = (u';', u'!important')
         elif propertypriorityendonly: # ;
-            ends = (self._ttypes.SEMICOLON,)
+            ends = u';'
         elif selectorattendonly: # ]
-            ends = (self._ttypes.RBRACKET,)
+            ends = u']'
         elif funcendonly: # )
-            ends = (self._ttypes.RPARANTHESIS,)
-        
-        resulttokens = []
-        i = 0 # if no tokens
-        
-        for i, t in enumerate(tokens):
-            if u'{' == t.value:
-                blocklevel += 1
-            elif u'}' == t.value:
-                blocklevel -= 1
+            ends = u')'
+
+        brace = bracket = parant = 0 # {}, [], ()
+        if blockstartonly:
+            brace = -1 # set to 0 with first {
+        resulttokens = []        
+        i, imax = 0, len(tokens)
+        while i < imax:
+            t = tokens[i]
+
+            if u'{' == t.value: brace += 1
+            elif u'}' == t.value: brace -= 1
+            if u'[' == t.value: bracket += 1
+            elif u']' == t.value: bracket -= 1
+            # function( or single (
+            if u'(' == t.value or \
+               Base._ttypes.FUNCTION == t.type: parant += 1
+            elif u')' == t.value: parant -= 1
 
             resulttokens.append(t)            
                 
-            if t.type in ends and (
-                  # ":" is special case: t.type == DELIM
-                  # which is NOT in ends but used anyhow
-                  t.type != self._ttypes.DELIM or
-                  (t.type == self._ttypes.DELIM and t.value in endvalues)
-                ) and (
-                  # only closed blocks except }
-                  blocklevel == 0 # OR: t.value != u'}'
-                ):                    
+            if t.value in ends and (brace == bracket == parant == 0):
                 break
+
+            i += 1
             
+##        print '--- %s ---\n' % (str(ends))
+##        print u''.join([x.value for x in tokens])
+##        print u''.join([x.value for x in resulttokens])
+##        print
+        
         return resulttokens, i
 
 
