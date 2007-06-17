@@ -56,7 +56,7 @@ class Base(object):
         return False
 
     
-    def _tokenize(self, textortokens):
+    def _tokenize(self, textortokens, _fullSheet=False):
         """
         returns tokens of textortokens which may already be tokens in which
         case simply returns input
@@ -65,12 +65,12 @@ class Base(object):
             return textortokens # already tokenized
         elif isinstance(textortokens, cssutils.token.Token):
             return [textortokens] # comment is a single token
-        elif isinstance(textortokens, basestring):
-            return self.__tokenizer.tokenize(textortokens) # already string
+        elif isinstance(textortokens, basestring): # already string
+            return self.__tokenizer.tokenize(textortokens, _fullSheet) 
         else:
             if textortokens is not None:
                 textortokens = unicode(textortokens)
-            return self.__tokenizer.tokenize(textortokens)
+            return self.__tokenizer.tokenize(textortokens, _fullSheet)
 
 
     def _tokensupto(self, tokens, 
