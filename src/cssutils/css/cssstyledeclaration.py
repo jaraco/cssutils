@@ -237,7 +237,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             if ignoredtokens:
                 ignored = ''.join([x.value for x in ignoredtokens])
                 self._log.error(u'CSSStyleDeclaration: Ignored: "%s".' %
-                          self._valuestr(ignoredtokens))
+                          self._valuestr(ignoredtokens), t)
             return endi + 1
 
         self._checkReadonly()
@@ -263,13 +263,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 elif shouldbecolon.value == u';': # ERROR: premature ;
                     self._log.error(
                         u'CSSStyleDeclaration: Incomplete Property starting here: %s.' %
-                        self._valuestr(tokens[i-1:]))
+                        self._valuestr(tokens[i-1:]), t)
                     i += 1 # exclude ending :
                     continue
                 else: # ERROR: no :
                     self._log.error(
                         u'CSSStyleDeclaration: No Propertyname and/or ":" found: %s.' %
-                              self._valuestr(tokens[i:]))
+                              self._valuestr(tokens[i:]), t)
                     i += ignoreuptopropend(i, tokens)
                     continue
 
@@ -279,7 +279,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 else: # ERROR: no name
                     self._log.error(
                         u'CSSStyleDeclaration: No Propertyname found: %s.'
-                        % self._valuestr(tokens[i-1:]))
+                        % self._valuestr(tokens[i-1:]), t)
                     i += ignoreuptopropend(i, tokens)
                     continue
                 
