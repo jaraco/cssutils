@@ -103,7 +103,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         self._checkReadonly()
 
-        tokens = self._tokenize(cssText)
+        tokens = self._tokenize(cssText, _fullSheet=True) 
         
         newcssRules = cssutils.css.CSSRuleList()
         newnamespaces = set()
@@ -121,7 +121,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         imax = len(tokens)
         while i < imax:
             t = tokens[i]
-            
+
+            if t.type == self._ttypes.EOF:
+                break
+                
             # ignore
             if t.type in (self._ttypes.S, self._ttypes.CDO, self._ttypes.CDC): 
                 pass
