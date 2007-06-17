@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 """
-testcases for cssutils.tokenize.Tokenizer
+testcases for cssutils.util
 """
 __author__ = '$LastChangedBy: cthedot $'
 __date__ = '$LastChangedDate: 2007-06-13 20:38:01 +0200 (Mi, 13 Jun 2007) $'
@@ -16,10 +16,6 @@ from cssutils.util import Base
 
 
 class UtilTestCase(basetest.BaseTestCase):
-
-    def setUp(self):
-        pass
-
 
     def test_tokenupto(self):
         "util.Base._tokensupto()"
