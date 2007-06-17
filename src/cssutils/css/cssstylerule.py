@@ -127,8 +127,8 @@ class CSSStyleRule(cssrule.CSSRule):
         newseq.append(newselectorList)
 
         # get rest (StyleDeclaration and Comments)
-        i = endi
-        while i < len(tokens): 
+        i, imax = endi, len(tokens)
+        while i < imax:
             t = tokens[i]
             if self._ttypes.S == t.type: # ignore
                 pass
