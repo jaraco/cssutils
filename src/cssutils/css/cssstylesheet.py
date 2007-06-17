@@ -118,7 +118,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         else:
             i = 0
         expected = '@import' # @namespace | any
-        while i < len(tokens):
+        imax = len(tokens)
+        while i < imax:
             t = tokens[i]
             
             # ignore
