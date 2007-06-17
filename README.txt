@@ -28,11 +28,13 @@ Before using EasyInstall the first time or using the sdist please remove any old
 
 known issues
 ============
-- CSSStyleDeclaration.getCSSValue and Value Classes are not implemented. These may be implemented in one of the next releases (0.9.2)
-
+- CSSStyleDeclaration.getCSSValue and Value Classes are not fully implemented. These are currently in work and may be fully implemented in one of the next releases (0.9.2)
 - @charset not implemented according to spec (plan: 0.9.2)
-- selector .\1 does not work (it is very uncommon though)
-- CSS2Properties not implemented completely
+- CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc
+
+- Tantek hack (using ``voice-family``) is mangled so does not work after reserializing. This is as property order is changed and the hack needs a specific order. Other CSS hacks do work though (e.g. ``color: red; c\olor: green;``.
+
+- escapes of CSS special characters does not really work but is very uncommon (e.g \@a without being an atkeyword or .\1 being a classname selector)
 - Unexpected end of style sheet not handled according to spec
 - Properties are not bound to any CSS Version, so all properties are handled so 
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 1.0 or 2.1)
@@ -41,18 +43,27 @@ known issues
 
 changes
 =======
-- TODO: FEATURE: Implemente css.CSSValue
+- TODO: FEATURE: Implementation of css.CSSValue
 
-0.9.2a2
+0.9.2a2 071017
     - API CHANGE: removed cssutils.util.normalize function, use static (but private!) method cssutils.util.Base._normalize if absolutely needed which may be change too though
     - API CHANGE (minor): removed ``getFormatted`` and ```pprint`` from various classes which were both DEPRECATED for some time anyway
     - API CHANGE (minor): _Property.value is DEPRECATED, use _Property.cssValue.cssText instead, _Property is defined as private anyway so should not be used directly
+    -
+ API CHANGE (minor): removed ``Tokenizer.tokensupto`` which was used internally only
    
     - CHANGE: Numbers and Dimensions starting with "." like ".1em" in the original stylesheet will be output as "0.1em" with a proceding 0 now.
+    - CHANGE: Report of parsing errors have a slightly different syntax now.
+    
+    - FEATURE: New ``Preferences.omitLastSemicolon`` option. If ``True`` omits ; after last property of CSSStyleDeclaration
 
     - BUGFIX: The css validator definition for "num" was wrong, so values like ``-5.5em`` would issue a warning but should be correct
     - BUGFIX: Dimension were not parsed correcly so 1em5 was parsed a "1em" + 5 which should really be one "1em5" were "em5" is an unknown dimension. This had probably no effect on current stylesheets but was a tokenizing error
+    - BUGFIX: Parsing of nested blocks like {}, [] or () is improved
+    - BUGFIX: Comment were not parsed correctly, now ``/*\*/`` is a valid comment
+    - BUGFIX: ``css.Selector`` had a warning which called "warning" which in fact is named "warn". Some other error messages gave token list instead of a more useful string in case of an error, that is fixed as well (CSSComment and CSSValue).
 
+    - IMPROVEMENT: Line number are still not given for all errors reported but for at least some more now
     - IMPROVEMENT: Performance of the tokenizer has been improved, it is now about 20% faster (testing the unittests) which may not hold for all usages but is not too bad as well ;)
 
 0.9.2a1 070610
