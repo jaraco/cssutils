@@ -77,7 +77,9 @@ class TokenizerTestCase(basetest.BaseTestCase):
             u'/*x*//': [(1, 1, tt.COMMENT, u'/*x*/'), (1, 6, tt.DELIM, u'/')],
             u'/* */ */': [(1, 1, tt.COMMENT, u'/* */'), (1, 6, tt.S, u' '),
                           (1, 7, tt.UNIVERSAL, u'*'), (1, 8, tt.DELIM, u'/')],
-            u'/* \\*/ */': [(1, 1, tt.COMMENT, u'/* \\*/ */')],
+            u'1/*\\*/2': [(1, 1, tt.NUMBER, u'1'),
+                          (1, 2, tt.COMMENT, u'/*\\*/'),
+                             (1, 7, tt.NUMBER, u'2')],
 
             # STRING
             u'"x"': [(1, 1, tt.STRING, u'"x"')],
