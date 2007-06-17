@@ -518,63 +518,6 @@ class Tokenizer(object):
         return self.tokens
 
 
-    def tokensupto(self, tokens, 
-                   blockstartonly=False, blockendonly=False,
-                   propertynameendonly=False, propertyvalueendonly=False,
-                   propertypriorityendonly=False,
-                   selectorattendonly=False,
-                   funcendonly=False):
-        """
-        returns tokens upto end of atrule and end index
-        end is ; or first closed block {...}
-
-        blockendonly
-            if True only looks for ending "}" else also for ending ";"
-        """
-        blocklevel = 0 # check only for blockend }
-
-        ends = (self.ttypes.SEMICOLON, self.ttypes.RBRACE)
-        endvalues = ()
-        if blockstartonly:
-            ends = (self.ttypes.LBRACE,)
-            blocklevel = -1 # end is { so blocklevel gets 0
-        if blockendonly:
-            ends = (self.ttypes.RBRACE,)
-        elif propertynameendonly:
-            ends = (self.ttypes.DELIM, self.ttypes.SEMICOLON) # ; = error!
-            endvalues = u':'
-        elif propertyvalueendonly:
-            ends = (self.ttypes.SEMICOLON, self.ttypes.IMPORTANT_SYM)
-        elif propertypriorityendonly:
-            ends = (self.ttypes.SEMICOLON,)
-        elif selectorattendonly:
-            ends = (self.ttypes.RBRACKET,)
-        elif funcendonly:
-            ends = (self.ttypes.RPARANTHESIS,)
-        
-        resulttokens = []
-        i = 0 # if no tokens
-        for i, t in enumerate(tokens):
-            if u'{' == t.value:
-                blocklevel += 1
-            elif u'}' == t.value:
-                blocklevel -= 1
-
-            resulttokens.append(t)            
-                
-            if t.type in ends and (
-                  # ":" is special case: t.type == DELIM
-                  # which is NOT in ends but uses anyhow
-                  t.type != self.ttypes.DELIM or
-                  (t.type == self.ttypes.DELIM and t.value in endvalues)
-                ) and (
-                  # only closed blocks except }
-                  blocklevel == 0# or t.value != u'}'
-                ):                    
-                    break
-        return resulttokens, i
-
-
 if __name__ == '__main__':
     """
     NOT LIKE SPEC:
