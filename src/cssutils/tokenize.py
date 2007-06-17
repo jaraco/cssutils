@@ -13,41 +13,59 @@ from token import Token, Tokenre
 import cssutils
 
 
+tokenregex = Tokenre()
+tokentype = Token
+
+
 class Tokenizer(object):
     """
     generates a list of Token objects
     """
     WS = ' \t\r\n\f'
-    ttypes = Token
-    tre = Tokenre()
+    ttypes = tokentype
+
+    _typelist = [
+        (lambda t: t == u';', tokentype.SEMICOLON),
+        (lambda t: t == u'{', tokentype.LBRACE),
+        (lambda t: t == u'}', tokentype.RBRACE),
+        (lambda t: t == u'[', tokentype.LBRACKET),
+        (lambda t: t == u']', tokentype.RBRACKET),
+        (lambda t: t == u'(', tokentype.LPARANTHESIS),
+        (lambda t: t == u')', tokentype.RPARANTHESIS),
+        (lambda t: t == u',', tokentype.COMMA),
+        (lambda t: t == u'.', tokentype.CLASS),
+        (tokenregex.w, tokentype.S),
+        (tokenregex.num, tokentype.NUMBER), 
+        (tokenregex.atkeyword, tokentype.ATKEYWORD),
+        (tokenregex.HASH, tokentype.HASH), 
+        (tokenregex.DIMENSION, tokentype.DIMENSION), 
+        (tokenregex.ident, tokentype.IDENT), 
+        (tokenregex.string, tokentype.STRING)
+    ]
+    _delimmap = {
+        u'*': tokentype.UNIVERSAL,
+        u'.': tokentype.CLASS,
+        u'>': tokentype.GREATER,
+        u'+': tokentype.PLUS,
+        u'~': tokentype.TILDE
+    }
+    _attmap = {
+        u'~=': tokentype.INCLUDES,
+        u'|=': tokentype.DASHMATCH,
+        u'^=': tokentype.PREFIXMATCH,
+        u'$=': tokentype.SUFFIXMATCH,
+        u'*=': tokentype.SUBSTRINGMATCH
+    }
+    _atkeywordmap = {
+        u'charset': tokentype.CHARSET_SYM,
+        u'import': tokentype.IMPORT_SYM,
+        u'media': tokentype.MEDIA_SYM,
+        u'namespace': tokentype.NAMESPACE_SYM,
+        u'page': tokentype.PAGE_SYM
+        }
 
     def __init__(self):
         self.log = cssutils.log
-        self._typemap = [
-            (lambda t: t == u';', self.ttypes.SEMICOLON),
-            (lambda t: t == u'{', self.ttypes.LBRACE),
-            (lambda t: t == u'}', self.ttypes.RBRACE),
-            (lambda t: t == u'[', self.ttypes.LBRACKET),
-            (lambda t: t == u']', self.ttypes.RBRACKET),
-            (lambda t: t == u'(', self.ttypes.LPARANTHESIS),
-            (lambda t: t == u')', self.ttypes.RPARANTHESIS),
-            (lambda t: t == u',', self.ttypes.COMMA),
-            (lambda t: t == u'.', self.ttypes.CLASS),
-            (self.tre.w, self.ttypes.S),
-            (self.tre.num, self.ttypes.NUMBER), 
-            (self.tre.atkeyword, self.ttypes.ATKEYWORD),
-            (self.tre.HASH, self.ttypes.HASH), 
-            (self.tre.DIMENSION, self.ttypes.DIMENSION), 
-            (self.tre.ident, self.ttypes.IDENT), 
-            (self.tre.string, self.ttypes.STRING)
-        ]
-        self._atkeywords = {
-            u'charset': self.ttypes.CHARSET_SYM,
-            u'import': self.ttypes.IMPORT_SYM,
-            u'media': self.ttypes.MEDIA_SYM,
-            u'namespace': self.ttypes.NAMESPACE_SYM,
-            u'page': self.ttypes.PAGE_SYM
-            }
         self._sub1ofcol = False
   
     def getttype(self, t):
@@ -57,10 +75,10 @@ class Tokenizer(object):
         """
         if isinstance(t, list): t = u''.join(t)
         
-        for check, result in self._typemap:
+        for check, result in Tokenizer._typelist:
             if check(t): return result
          
-        return self.ttypes.DELIM
+        return tokentype.DELIM
 
             
     def addtoken(self, value, ttype=None):
@@ -92,58 +110,58 @@ class Tokenizer(object):
         todo = False
 
         # ATKEYWORD: standard, need to adjust type
-        if ttype == self.ttypes.ATKEYWORD:
+        if ttype == tokentype.ATKEYWORD:
             normkeyword  = value[1:].lower().replace(u'\\', u'')
-            ttype = self._atkeywords.get(
-                normkeyword, self.ttypes.ATKEYWORD)
+            ttype = Tokenizer._atkeywordmap.get(
+                normkeyword, tokentype.ATKEYWORD)
             todo = True
 
         # ATKEYWORD: replace last token if @xxx 
-        if u'@' == last.value and ttype == self.ttypes.IDENT:
+        if u'@' == last.value and ttype == tokentype.IDENT:
             keyword = value.lower()
             normkeyword = keyword.replace(u'\\', u'')
-            last.type = self._atkeywords.get(
-                normkeyword, self.ttypes.ATKEYWORD)
+            last.type = Tokenizer._atkeywordmap.get(
+                normkeyword, tokentype.ATKEYWORD)
             last.value = u'@%s' % keyword # replace @
 
-        ## really???
-        # @-ATKEYWORD: replace last2 if @-xxx and remove last          
+        # @-ATKEYWORD: replace last2 if @-xxx and remove last
+        # probably vendor specific
         elif u'@' == last2.value and u'-' == last.value and \
-           ttype == self.ttypes.IDENT:
+           ttype == tokentype.IDENT:
             keyword = value.lower()
             normkeyword = keyword.replace(u'\\', u'')
-            last2.type = self._atkeywords.get(
-                normkeyword, self.ttypes.ATKEYWORD)
+            last2.type = Tokenizer._atkeywordmap.get(
+                normkeyword, tokentype.ATKEYWORD)
             last2.value = u'@-%s' % keyword # replace @
             self.tokens.pop(-1) # remove -
 
-        ## really IDENT???
         # IDENT, NUMBER or DIMENSION with -, replace last token
+        # -IDENT probably vendor specific
         elif u'-' == last.value and (ttype in (
-           self.ttypes.IDENT, self.ttypes.NUMBER, self.ttypes.DIMENSION)):
+           tokentype.IDENT, tokentype.NUMBER, tokentype.DIMENSION)):
             last.type = ttype
             last.value = u'-%s' % value.lower()        
       
         # DIMENSION: replace last token with num + ident
-        elif last.type == self.ttypes.NUMBER and\
-             ttype == self.ttypes.IDENT:
-            last.type = self.ttypes.DIMENSION
+        elif last.type == tokentype.NUMBER and\
+             ttype == tokentype.IDENT:
+            last.type = tokentype.DIMENSION
             last.value = u'%s%s' % (last.value, value.lower())
             ## check if before was a -?
 
         # HASH: replace last token with # + name
-        elif self.getttype(last.value + value) == self.ttypes.HASH:
-            last.type = self.ttypes.HASH
+        elif self.getttype(last.value + value) == tokentype.HASH:
+            last.type = tokentype.HASH
             last.value = u'#%s' % value ## ???: last.value instead of #
 
         # FUNCTION: replace last token with last.value(
-        elif last.type == self.ttypes.IDENT and u'(' == value:
-            last.type = self.ttypes.FUNCTION
+        elif last.type == tokentype.IDENT and u'(' == value:
+            last.type = tokentype.FUNCTION
             last.value = u'%s(' % last.value.lower()
 
         # PERCENTAGE: replace last token with NUMBER%
-        elif last.type == self.ttypes.NUMBER and u'%' == value:
-            last.type = self.ttypes.PERCENTAGE
+        elif last.type == tokentype.NUMBER and u'%' == value:
+            last.type = tokentype.PERCENTAGE
             last.value = u'%s%%' % last.value
 
         # IMPORTANT_SYM: combine with preceding "!" if only WS in between
@@ -153,12 +171,12 @@ class Tokenizer(object):
                 _t = self.tokens[i - 1]
                 # check if preceding was "!" => !important and delete nexts
                 if u'!' == _t.value:
-                    _t.type = self.ttypes.IMPORTANT_SYM
+                    _t.type = tokentype.IMPORTANT_SYM
                     _t.value = u'!%s' % value.lower() # keep im\portant?
                     del self.tokens[i:]
                     break
                 # other than S means no !important => add
-                elif _t.type != self.ttypes.S:
+                elif _t.type != tokentype.S:
                     self.tokens.append(
                         Token(self.line, self.col, ttype, value))
                     break
@@ -169,10 +187,10 @@ class Tokenizer(object):
             _uriindex = -1
             for i in range(len(self.tokens), 0, -1):
                 _t = self.tokens[i-1]
-                if self.ttypes.FUNCTION == _t.type and u'url(' == _t.value:
+                if tokentype.FUNCTION == _t.type and u'url(' == _t.value:
                     _uriindex = i - 1
                     break
-                elif self.ttypes.FUNCTION == _t.type:
+                elif tokentype.FUNCTION == _t.type:
                     # no url( found but other so stop searching
                     todo = True # add )
                     break
@@ -182,7 +200,7 @@ class Tokenizer(object):
                 _uricontent = u''
                 for i in range(_uriindex+1, len(self.tokens)):
                     _t = self.tokens[i]
-                    if _t.type == self.ttypes.S and\
+                    if _t.type == tokentype.S and\
                      ((i == _uriindex+1) or (i == len(self.tokens)-1)):
                         # 1st or last WS ok
                         continue
@@ -192,9 +210,9 @@ class Tokenizer(object):
                 if _uricontent:
                   # check if valid URI and save if yes
                   _uri = u'url(%s)' % _uricontent
-                  if self.tre.URI(_uri):
+                  if tokenregex.URI(_uri):
                       _urit = self.tokens[_uriindex]
-                      _urit.type = self.ttypes.URI
+                      _urit.type = tokentype.URI
                       _urit.value = _uri
                       del self.tokens[_uriindex + 1:]
                   else:
@@ -283,7 +301,7 @@ class Tokenizer(object):
         ttype
             str description of token to be found        
         """
-        if ttype == self.ttypes.STRING:
+        if ttype == tokentype.STRING:
             isstring = True
             kind = 'string'
         else:
@@ -316,8 +334,13 @@ class Tokenizer(object):
             elif isstring and c in '\n\r\f':
                 # nl in String makes it invalid
                 t.append(c)
-                self.addtoken(t, self.ttypes.INVALID)
+                self.addtoken(t, tokentype.INVALID)
                 break
+
+            elif u'\\' == c and isstring==False:
+                # escape in comment does not work
+                # simply keep
+                t.append(c)
 
             elif u'\\' == c and c2 and c2 not in string.hexdigits:
                 # simple escape
@@ -372,28 +395,28 @@ class Tokenizer(object):
             tt, ct = self.getttype(t), self.getttype(c)            
 ##            print '"%s": (%s)\t %s: (%s)' % (c, ct, t, tt),
             
-            if tt in (self.ttypes.ATKEYWORD, self.ttypes.IDENT)\
+            if tt in (tokentype.ATKEYWORD, tokentype.IDENT)\
                or (t and t[-1] == u'-')\
-               and ct in (self.ttypes.IDENT, self.ttypes.NUMBER):
+               and ct in (tokentype.IDENT, tokentype.NUMBER):
                 # @keyword or a number starting with -
                 # wait for new token "x1..."
                 t.append(c)
 
             # . is always followed by number here as calling function
             # checks this!
-            elif (t[-1] == u'.' or tt == self.ttypes.NUMBER)\
-               and ct == self.ttypes.NUMBER:
+            elif (t[-1] == u'.' or tt == tokentype.NUMBER)\
+               and ct == tokentype.NUMBER:
                 # start of number which may be 1 OR 1. OR .
                 if t[0] == u'.':
                     t[0] = '0.' # add 0 in any case
                     self._sub1ofcol = True
                 t.append(c)
 
-            elif tt == self.ttypes.NUMBER and c == u'.':
+            elif tt == tokentype.NUMBER and c == u'.':
                 # start of number which may be 1 OR 1. OR .
                 t.append(c)
 
-            elif ct == self.ttypes.DELIM: 
+            elif ct == tokentype.DELIM: 
                 # escape always alone
                 # . not with number always alone
                 self.addtoken(t)
@@ -427,20 +450,20 @@ class Tokenizer(object):
                         t.append(self.text.pop(0))
                 except IndexError: # end of CSS
                     pass
-                self.addtoken(t, self.ttypes.S) # add WS
+                self.addtoken(t, tokentype.S) # add WS
                 t = [] # reset
 
             elif u'/' == c and u'*' == c2:
                 # Comment
                 self.addtoken(t) # add saved    
                 del self.text[0] # remove *
-                self.dostrorcomment([u'/*'], u'*/', self.ttypes.COMMENT)
+                self.dostrorcomment([u'/*'], u'*/', tokentype.COMMENT)
                 t = []
 
             elif c in '"\'':
                 # strings
                 self.addtoken(t) # add saved
-                self.dostrorcomment([c], c, self.ttypes.STRING)
+                self.dostrorcomment([c], c, tokentype.STRING)
                 t = []
                 
             elif c in u';{}[](),':
@@ -456,22 +479,15 @@ class Tokenizer(object):
             elif u'::' == c + c2:
                 # CSS3 pseudo
                 self.addtoken(t) # add saved
-                self.addtoken(u'::', self.ttypes.PSEUDO_ELEMENT)
+                self.addtoken(u'::', tokentype.PSEUDO_ELEMENT)
                 del self.text[0] # remove c2
                 t = []
 
             elif c in u'~|^$*' and u'=' == c2:
                 # INCLUDES ~= or DASHMATCH |= + CSS3 Selectors
                 self.addtoken(t) # add saved
-                _map = {
-                    u'~=': self.ttypes.INCLUDES,
-                    u'|=': self.ttypes.DASHMATCH,
-                    u'^=': self.ttypes.PREFIXMATCH,
-                    u'$=': self.ttypes.SUFFIXMATCH,
-                    u'*=': self.ttypes.SUBSTRINGMATCH
-                    }
                 _t = c + c2
-                self.addtoken(_t, _map[_t])
+                self.addtoken(_t, Tokenizer._attmap[_t])
                 del self.text[0] # remove c2
                 t = []
 
@@ -479,26 +495,20 @@ class Tokenizer(object):
                 # CDO
                 self.addtoken(t) # add saved       
                 del self.text[:3]
-                self.addtoken(u'<!--', self.ttypes.CDO)
+                self.addtoken(u'<!--', tokentype.CDO)
                 t = []
             elif c == u'-' and u''.join(self.text[:2]) == u'->':
                 # CDC
                 self.addtoken(t) # add saved       
                 del self.text[:2]
-                self.addtoken(u'-->', self.ttypes.CDC)
+                self.addtoken(u'-->', tokentype.CDC)
                 t = []
 
             elif c in u'.=~|*+>#!%:&$':
                 # DELIM reservedchars, possibly combined later
-                _map = {
-                    u'*': self.ttypes.UNIVERSAL,
-                    u'.': self.ttypes.CLASS,
-                    u'>': self.ttypes.GREATER,
-                    u'+': self.ttypes.PLUS,
-                    u'~': self.ttypes.TILDE
-                    }
                 self.addtoken(t) # add saved               
-                self.addtoken(c, _map.get(c, self.ttypes.DELIM))
+                self.addtoken(
+                    c, Tokenizer._delimmap.get(c, tokentype.DELIM))
                 t = []
                 
             elif u'\\' == c and c2 not in string.hexdigits:
@@ -520,7 +530,7 @@ class Tokenizer(object):
 
         if _fullSheet:
             # add EOF token if from parse or CSSStyleSheet.cssText
-            self.addtoken(u'EOF', self.ttypes.EOF)
+            self.addtoken(u'EOF', tokentype.EOF)
 
         return self.tokens
 
