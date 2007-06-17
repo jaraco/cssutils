@@ -76,7 +76,8 @@ class CSSComment(cssrule.CSSRule):
                 error=xml.dom.InvalidModificationErr)
         elif len(tokens) > 1:
             self._log.error(
-                u'CSSComment: Syntax error. %s' % cssText)
+                u'CSSComment: Syntax error. %s' % self._valuestr(
+                    cssText))
         else:
             token = tokens[0]
             self._cssText = token.value
