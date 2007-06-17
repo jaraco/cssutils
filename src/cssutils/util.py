@@ -140,7 +140,9 @@ class Base(object):
         """
         returns string value of t (t may be string of tokenlist)
         """
-        if isinstance(t, basestring):
+        if t is None:
+            return u''
+        elif isinstance(t, basestring):
             return t
         else:
             return u''.join([x.value for x in t])
