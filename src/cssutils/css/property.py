@@ -128,9 +128,9 @@ class _Property(cssutils.util.Base):
         tokens = self._tokenize(name)
         if self.__invalidToken(tokens, 'name'):
             return
-
         newname = newnormalname = None
         newseq = []
+        t = None # used later
         for i in range(0, len(tokens)):
             t = tokens[i]
             if self._ttypes.S == t.type: # ignore
@@ -156,10 +156,10 @@ class _Property(cssutils.util.Base):
             # validate
             if newname not in cssproperties.cssvalues:
                 self._log.info(u'Property: No CSS2 Property: "%s".' %
-                         newname, neverraise=True)
+                         newname, t, neverraise=True)
             
         else:
-            self._log.error(u'Property: No name found: "%s".' % name)
+            self._log.error(u'Property: No name found: "%s".' % name, t)
 
     name = property(_getName, _setName,
         doc="(cssutils) Name of this property")   
@@ -190,9 +190,11 @@ class _Property(cssutils.util.Base):
             # validate if known
             if self.name in cssproperties.cssvalues and \
                not cssproperties.cssvalues[self.name](v):
+                
+                linetoken = cssvalue._linetoken
                 self._log.warn(
                     u'Property: Invalid value for CSS2 property %s: %s' %
-                    (self.name, v), neverraise=True)
+                    (self.name, v), linetoken, neverraise=True)
         
     cssValue = property(_getCSSValue, _setCSSValue,
         doc="(cssutils) CSSValue object of this property")   
