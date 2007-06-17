@@ -9,7 +9,7 @@ __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '0.9.2a2, $LastChangedRevision$'
 
 import xml.dom
 
@@ -190,7 +190,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
             elif self._ttypes.COMMENT == t.type:
                 newseq.append(cssutils.css.CSSComment(t))
                 
-            elif 'uri or prefix' == expected and self._ttypes.IDENT == t.type:
+            elif 'uri or prefix' == expected and\
+                 self._ttypes.IDENT == t.type:
                 newprefix = t.value
                 newseq.append(newprefix)
                 expected = 'uri'
@@ -198,7 +199,10 @@ class CSSNamespaceRule(cssrule.CSSRule):
             elif expected.startswith('uri') and \
                  t.type in (self._ttypes.URI, self._ttypes.STRING):
                 if t.type == self._ttypes.URI:
-                    newuri = t.value[4:-1] # url(href)
+                    newuri = t.value[4:-1].strip() # url(href)
+                    if newuri[0] ==  newuri[-1] == '"' or\
+                       newuri[0] ==  newuri[-1] == "'":
+                        newuri = newuri[1:-1]
                     self._log.warn(
                         u'CSSNamespaceRule: Found namespace definition with url(uri), this may be deprecated in the future, use string format "uri" instead.',
                         t, error = None, neverraise=True)
