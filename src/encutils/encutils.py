@@ -54,7 +54,7 @@ TODO:
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.7a2, SVN revision $LastChangedRevision$'
+__version__ = '0.7a2, $LastChangedRevision$'
 __all__ = ['buildlog',
            'encodingByMediaType',
            'getHTTPInfo',
