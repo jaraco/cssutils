@@ -4,7 +4,7 @@ testcases for cssutils.css.CSSComment
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '0.9.2a2, $LastChangedRevision$'
 
 
 import xml
@@ -41,6 +41,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
             u'/* x */': None,
             u'/*\t12\n*/': None,
             u'/* /* */': None,
+            u'/* \\*/': None,
             u'/*"*/': None,
             u'''/*"
             */''': None,
