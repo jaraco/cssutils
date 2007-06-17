@@ -113,8 +113,10 @@ class Selector(cssutils.util.Base):
             COMBINATORS_NO_S = u'+>~'
             r = []
             attlevel = 0
-            i = 0
-            while i < len(tokens):
+            i = 0 
+
+            i, imax = 0, len(tokens) # imax may be changed later!
+            while i < imax:
                 t = tokens[i]
                 if self._ttypes.S == t.type and attlevel > 0:
                     # remove all WS in atts 1st level
@@ -132,10 +134,11 @@ class Selector(cssutils.util.Base):
                             break
                     # remove following S from tokens except token!=Comment
                     after = i+1 
-                    while after < len(tokens):
+                    while after < imax:
                         if tokens[after].type == self._ttypes.S:
                             del tokens[after]
                             after -= 1 # BECAUSE DELETED ONE!
+                            imax = len(tokens) # new imax!
                         elif tokens[after].type != self._ttypes.COMMENT:
                             break
                         after += 1                        
@@ -187,8 +190,8 @@ class Selector(cssutils.util.Base):
             """
             attseq = []
             expected = "[" # att, comb or ], value, pipe
-            i = 0
-            while i < len(atttokens):
+            i, imax = 0, len(atttokens)
+            while i < imax:
                 t = atttokens[i]
                 if self._ttypes.COMMENT == t.type: # just add
                     attseq.append(cssutils.css.CSSComment(t))
@@ -273,9 +276,10 @@ class Selector(cssutils.util.Base):
             """
             funcseq = [{'type': 'function', 'value': functokens[0].value}]
             expected = ")" # expr or )
-            i = 1
-            while i < len(functokens):
+            i, imax = 1, len(functokens)
+            while i < imax:
                 t = functokens[i]
+                
                 if self._ttypes.COMMENT == t.type: # just add
                     funcseq.append(cssutils.css.CSSComment(t))
 
@@ -309,11 +313,11 @@ class Selector(cssutils.util.Base):
             newseq = []
             newnamespaces = set()
             found1 = False
-            i = 0
             # simple_selector | combinator: u' >+~' |
             # pseudoclass after : | pseudoelement after ::
             expected = 'simple_selector' 
-            while i < len(tokens):
+            i, imax = 0, len(tokens)
+            while i < imax:
                 t = tokens[i]
                 ##print t.value, t.type, expected
                 # , invalid SelectorList
@@ -404,7 +408,7 @@ class Selector(cssutils.util.Base):
                     i += endi
                     attseq = getAttrib(atttokens)
                     if not attseq:
-                        self._log.warning(
+                        self._log.warn(
                             u'Selector: Empty attribute selector.', t)
                         return
                     newseq.extend(attseq)
