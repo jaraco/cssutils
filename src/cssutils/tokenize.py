@@ -48,6 +48,7 @@ class Tokenizer(object):
             u'namespace': self.ttypes.NAMESPACE_SYM,
             u'page': self.ttypes.PAGE_SYM
             }
+        self._sub1ofcol = False
   
     def getttype(self, t):
         """
@@ -70,13 +71,16 @@ class Tokenizer(object):
         if isinstance(value, list): value = u''.join(value)
         if not value: return
 
-        if not ttype: ttype = self.getttype(value)                 
+        if not ttype: ttype = self.getttype(value)
 
         # save x,y, position
         lines = value.count('\n')
         cols = len(value)
         if value.endswith('\n'):
             cols = -self.col + 1;
+        if self._sub1ofcol: # a 0 to .1!
+            cols -= 1
+            self._sub1ofcol = False
          
         # last two tokens, if none simple use empty Token
         if len(self.tokens) > 0: last = self.tokens[-1]
@@ -346,7 +350,7 @@ class Tokenizer(object):
                 token, xml.dom.SyntaxErr)
                 
 
-    def tokenize(self, text):
+    def tokenize(self, text, _fullSheet=False):
         """
         tokenizes text and returns tokens     
         """
@@ -382,8 +386,7 @@ class Tokenizer(object):
                 # start of number which may be 1 OR 1. OR .
                 if t[0] == u'.':
                     t[0] = '0.' # add 0 in any case
-##                    if self.col > 0:
-##                        self.col = self.col - 1
+                    self._sub1ofcol = True
                 t.append(c)
 
             elif tt == self.ttypes.NUMBER and c == u'.':
@@ -514,6 +517,10 @@ class Tokenizer(object):
         else:
             # add remaining
             self.addtoken(t)
+
+        if _fullSheet:
+            # add EOF token if from parse or CSSStyleSheet.cssText
+            self.addtoken(u'EOF', self.ttypes.EOF)
 
         return self.tokens
 
