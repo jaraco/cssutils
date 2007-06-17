@@ -36,6 +36,8 @@ class Preferences(object):
         same name are kept!
     keepComments = True
         If ``False`` removes all CSSComments
+    omitLastSemicolon = True
+        If ``True`` omits ; after last property of CSSStyleDeclaration
     lineNumbers = False
         Only used if a complete CSSStyleSheet is serialized.
     removeInvalid = True
@@ -53,6 +55,7 @@ class Preferences(object):
         self.importHrefFormat = None
         self.keepAllProperties = False
         self.keepComments = True
+        self.omitLastSemicolon = True
         self.lineNumbers = False
         self.removeInvalid = True
         self.setBOM = False # TODO
@@ -484,7 +487,10 @@ class CSSSerializer(object):
             if not done1:
                 return u''
             if lastwasprop:
-                out.append(u'\n')
+                if self.prefs.omitLastSemicolon:
+                    out.append(u'\n')
+                else:
+                    out.append(u';\n')
             out.append(self.prefs.indent)
             return u''.join(out)
 
