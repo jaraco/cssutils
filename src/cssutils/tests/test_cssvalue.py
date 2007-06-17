@@ -40,6 +40,11 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assertEqual('1 px', v._value)
         self.assertEqual('1 px', v.cssText)
 
+        v.cssText = u'expression(document.body.clientWidth > 972 ? "1014px": "100%" )'
+        self.assertEqual(v.CSS_CUSTOM, v.cssValueType)
+        self.assertEqual('expression(document.body.clientWidth > 972 ? "1014px": "100%" )', v._value)
+        self.assertEqual('expression(document.body.clientWidth > 972 ? "1014px": "100%" )', v.cssText)
+
 
     def test_cssValueType(self):
         "CSSValue.cssValueType"
