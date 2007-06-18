@@ -7,7 +7,7 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2'
+__version__ = '0.9.2a3'
 
 import ez_setup
 ez_setup.use_setuptools()
@@ -17,15 +17,6 @@ from setuptools import setup, find_packages
 setup(
     name='cssutils',
     version=__version__,
-    package_dir={'':'src'},
-    packages=find_packages('src'),
-    include_package_data=True,
-    # this does not really work, using MANIFEST.in
-    package_data={
-        '': ['LICENSE.txt', 'README.txt'], # automatically?
-        '': ['doc/*.*'], #?
-        'examples': ['examples/*.py'] # automatically?
-    },
     test_suite='cssutils.tests',
     entry_points={
         'console_scripts': [
@@ -46,7 +37,7 @@ official DOM yet is included from v0.9.1.''',
     author='Christof Hoeke',
     author_email='c@cthedot.de',
     url='http://cthedot.de/cssutils/',
-    download_url='http://cssutils.googlecode.com/svn/trunk/dist/',
+    download_url='http://code.google.com/p/cssutils/downloads/list',
     license='http://cthedot.de/cssutils/license.html',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
     platforms='Python 2.4 and later.',
