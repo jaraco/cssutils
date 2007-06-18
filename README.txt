@@ -45,6 +45,10 @@ changes
 =======
 - TODO: FEATURE: Implementation of css.CSSValue
 
+
+0.9.2a3 071018
+    - no changes to the library, just optimized setuptools dist
+
 0.9.2a2 071017
     - API CHANGE: removed cssutils.util.normalize function, use static (but private!) method cssutils.util.Base._normalize if absolutely needed which may be change too though
     - API CHANGE (minor): removed ``getFormatted`` and ```pprint`` from various classes which were both DEPRECATED for some time anyway
