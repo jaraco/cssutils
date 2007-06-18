@@ -1,3 +1,13 @@
+include ez_setup.py
 include doc/*.*
-include examples/*.*
+include examples/*.py
 include src/csscapture.py
+exclude PLAN.txt
+exclude MANIFEST.in
+exclude *.bat
+exclude *.css
+exclude dist/*.*
+exclude src/_old/*.*
+exclude src/*/_old/*.*
+exclude src/_todo/*.*
+exclude src/*/_todo/*.*
