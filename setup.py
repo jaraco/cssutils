@@ -7,7 +7,7 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a3'
+__version__ = '0.9.2a4'
 
 import ez_setup
 ez_setup.use_setuptools()
@@ -17,6 +17,8 @@ from setuptools import setup, find_packages
 setup(
     name='cssutils',
     version=__version__,
+    package_dir={'':'src'},
+    packages=find_packages('src'),
     test_suite='cssutils.tests',
     entry_points={
         'console_scripts': [
