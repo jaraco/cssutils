@@ -1,7 +1,7 @@
 """testcases for cssutils.css.CSSImportRule"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 
 import xml.dom
@@ -33,6 +33,13 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSNamespaceRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@namespace')
         
+
+    def test_incomplete(self):
+        "CSSNamespaceRule (incomplete)"
+        tests = {
+            u'@namespace "uri': u'@namespace "uri";'
+        }
+        self.do_equal_p(tests) # parse
 
     def test_initparameter(self):
         "CSSNamespaceRule.__init__(uri=None, prefix=u'')"
@@ -98,10 +105,13 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace;': xml.dom.SyntaxErr, # nothing
             u'@namespace p;': xml.dom.SyntaxErr, # no uri 
             u'@namespace "u" p;': xml.dom.SyntaxErr, # order
-            u'@namespace p "u"': xml.dom.SyntaxErr, # missing ;
             }
-        self.do_raise_p(tests)
-        self.do_raise_r(tests)
+        self.do_raise_p(tests) # parse
+        tests.update({
+            u'@namespace p url(x)': xml.dom.SyntaxErr, # missing ;
+            u'@namespace p "u"': xml.dom.SyntaxErr, # missing ;
+            })
+        self.do_raise_r(tests) # set cssText
 
 
 if __name__ == '__main__':

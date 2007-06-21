@@ -1,7 +1,7 @@
 """testcases for cssutils.css.CSSUnkownRule"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 
 import xml.dom
@@ -53,19 +53,20 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         self._test_InvalidModificationErr(u'@unknown')
 
 
-##    def test_cssText(self):
-##        "CSSUnknownRule.cssText"
-##        tests = {
-##            '''
-##        @three-dee {
-##          @background-lighting {
-##            azimuth: 30deg;
-##            elevation: 190deg;
-##          }
-##        }
-##            ''': None
-##        }
-##        self.do_equal_p(tests)
+    def test_cssText(self):
+        "CSSUnknownRule.cssText"
+        tests = {
+            '@x;': None,
+            '@x {}': None,
+            '''@a {
+    @b {
+        x: 1x;
+        y: 2y;
+    }
+}''': None
+        }
+        self.do_equal_p(tests)
+        self.do_equal_r(tests)
 
 
     def test_SyntaxErr(self):
@@ -75,6 +76,10 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
                           self.r._setCssText, '@;')
         self.assertRaises(xml.dom.InvalidModificationErr,
                           self.r._setCssText, '@{}')
+        self.assertRaises(xml.dom.InvalidModificationErr,
+                          self.r._setCssText, '@ ;')
+        self.assertRaises(xml.dom.InvalidModificationErr,
+                          self.r._setCssText, '@ {}')
         # rule end
 ##        self.assertRaises(xml.dom.SyntaxErr,
 ##                          self.r._setCssText, '@x }  ')

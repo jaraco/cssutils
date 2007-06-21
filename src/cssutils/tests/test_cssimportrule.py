@@ -3,7 +3,7 @@ testcases for cssutils.css.CSSImportRule
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 
 import xml.dom
@@ -38,6 +38,20 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_InvalidModificationErr(self):
         "CSSImportRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@import')
+
+
+    def test_incomplete(self):
+        "CSSImportRule (incomplete)"
+        tests = {
+            u'@import "x.css': u'@import "x.css";',
+            u"@import 'x": u'@import "x";',
+            u"@import url(x": u'@import url(x);',
+            u"@import url('x": u'@import url(\'x\');',
+            u'@import url("x;': u'@import url("x;");',
+            u'@import url("x ': u'@import url("x ");',
+            u'@import url(x ': u'@import url(x);',
+        }
+        self.do_equal_p(tests) # parse
 
 
     def test_initparameter(self):
@@ -150,28 +164,37 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
             u'''@import url(x.css);''': None,
             }
-        self.do_equal_p(tests)
-        self.do_equal_r(tests)
+        self.do_equal_r(tests) # set cssText
+        tests.update({
+            u'@import "x.css"': '@import "x.css";', # no ;
+            u"@import 'x.css'": '@import "x.css";', # no ;
+            u'@import url(x.css)': '@import url(x.css);', # no ;
+            u'@import "x.css" tv': '@import "x.css" tv;',
+            u'@import "x;': '@import "x;";', # no "! 
+            })
+        self.do_equal_p(tests) # parse
 
         tests = {
-            u'@import url(x.css)': xml.dom.SyntaxErr,
-            u'@import "x.css"': xml.dom.SyntaxErr,
-            u"@import 'x.css'": xml.dom.SyntaxErr,
-
             u'''@import;''': xml.dom.SyntaxErr,
             u'''@import all;''': xml.dom.SyntaxErr,
             u'''@import;''': xml.dom.SyntaxErr,
             
-            u'''@import "x;''': xml.dom.SyntaxErr,
             u'''@import x";''': xml.dom.SyntaxErr,
-            u'''@import url("x);''': xml.dom.SyntaxErr,
 
             u'''@import "str" ,all;''': xml.dom.SyntaxErr,
             u'''@import "str" all,;''': xml.dom.SyntaxErr,
             u'''@import "str" all tv;''': xml.dom.SyntaxErr,
             }
-        self.do_raise_p(tests)
-        self.do_raise_r(tests)
+        self.do_raise_p(tests) # parse
+        tests.update({
+            u'@import "x.css"': xml.dom.SyntaxErr,
+            u"@import 'x.css'": xml.dom.SyntaxErr,
+            u'@import url(x.css)': xml.dom.SyntaxErr,
+            u'@import "x.css" tv': xml.dom.SyntaxErr,
+            u'@import "x;': xml.dom.SyntaxErr,
+            u'''@import url("x);''': xml.dom.SyntaxErr,
+            })
+        self.do_raise_r(tests) # set cssText
 
 
 if __name__ == '__main__':

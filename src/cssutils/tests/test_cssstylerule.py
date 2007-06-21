@@ -1,7 +1,7 @@
 """testcases for cssutils.css.CSSStyleRuleTestCase"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 
 import xml.dom
@@ -37,6 +37,16 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self._test_InvalidModificationErr(u'a style rule')
 
 
+    def test_incomplete(self):
+        "CSSStyleRule (incomplete)"
+        tests = {
+            u'a {': u'a {}', # no }
+            u'a { font-family: "arial sans': # no "
+                u'a {\n    font-family: "arial sans"\n    }',
+        }
+        self.do_equal_p(tests) # parse
+        
+
     def test_cssText(self):
         "CSSStyleRule.cssText"
         tests = {
@@ -54,7 +64,6 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         tests = {
             u'''a;''': xml.dom.SyntaxErr,
-            u'''a {''': xml.dom.SyntaxErr,
             u'''a {{}''': xml.dom.SyntaxErr,
             u'''a }''': xml.dom.SyntaxErr,
             }
@@ -62,6 +71,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests.update({
             u'''a {}x''': xml.dom.SyntaxErr, # trailing
             u'''/*x*/''': xml.dom.SyntaxErr,
+            u'''a {''': xml.dom.SyntaxErr, 
             })
         self.do_raise_r(tests) # set cssText
 
