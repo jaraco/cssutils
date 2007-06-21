@@ -4,7 +4,7 @@
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '0.9.2a5 $LastChangedRevision$'
 
 import string
 import xml.dom
@@ -181,8 +181,8 @@ class Tokenizer(object):
                         Token(self.line, self.col, ttype, value))
                     break
 
-        # URI: possible combine if closed URI
-        elif u')' == value:
+        # URI: possible combine if closed URI or EOF
+        elif u')' == value or ttype == tokentype.EOF:
             # find opening {ident}(
             _uriindex = -1
             for i in range(len(self.tokens), 0, -1):
@@ -218,13 +218,13 @@ class Tokenizer(object):
                   else:
                       todo = True # add )
             else:
-              todo = True # add )
+                todo = True # add )
                       
         else:
-          todo = True
+            todo = True
 
         # add if not two WS nodes after another
-        if todo:
+        if todo or ttype == tokentype.EOF:
             self.tokens.append(Token(self.line, self.col, ttype, value))
 
         # adjust x,y, position
@@ -288,7 +288,7 @@ class Tokenizer(object):
         return escape
 
 
-    def dostrorcomment(self, t=[], end=None, ttype=None):
+    def dostrorcomment(self, t=[], end=None, ttype=None, _fullSheet=False):
         """
         handles
           strings: "..." or '...'
@@ -299,7 +299,9 @@ class Tokenizer(object):
         end
             string at which to end 
         ttype
-            str description of token to be found        
+            str description of token to be found
+        _fullSheet
+            if no more tokens complete found tokens
         """
         if ttype == tokentype.STRING:
             isstring = True
@@ -337,7 +339,7 @@ class Tokenizer(object):
                 self.addtoken(t, tokentype.INVALID)
                 break
 
-            elif u'\\' == c and isstring==False:
+            elif not isstring and u'\\' == c:
                 # escape in comment does not work
                 # simply keep
                 t.append(c)
@@ -359,18 +361,23 @@ class Tokenizer(object):
                 t.append(c)
 
         else:
-            # not complete:
-            value = ''.join(t)
-            lines = value.count('\n')
-            cols = len(value)
-            if value.endswith('\n'):
-                cols = -self.col + 1;
-            token = Token(self.line, self.col, None, value)
-            self.line += lines
-            self.col += cols
-            self.log.error(
-                u'Tokenizer: Syntax Error, incomplete %s.' % kind,
-                token, xml.dom.SyntaxErr)
+            # EOF but complete string or comment
+            if _fullSheet:
+                t.append(end)
+                self.addtoken(t, ttype)
+            else:
+                # not complete:
+                value = ''.join(t)
+                lines = value.count('\n')
+                cols = len(value)
+                if value.endswith('\n'):
+                    cols = -self.col + 1;
+                token = Token(self.line, self.col, None, value)
+                self.line += lines
+                self.col += cols
+                self.log.error(
+                    u'Tokenizer: Syntax Error, incomplete %s.' % kind,
+                    token, xml.dom.SyntaxErr)
                 
 
     def tokenize(self, text, _fullSheet=False):
@@ -457,13 +464,15 @@ class Tokenizer(object):
                 # Comment
                 self.addtoken(t) # add saved    
                 del self.text[0] # remove *
-                self.dostrorcomment([u'/*'], u'*/', tokentype.COMMENT)
+                self.dostrorcomment(
+                    [u'/*'], u'*/', tokentype.COMMENT, _fullSheet)
                 t = []
 
             elif c in '"\'':
                 # strings
                 self.addtoken(t) # add saved
-                self.dostrorcomment([c], c, tokentype.STRING)
+                self.dostrorcomment(
+                    [c], c, tokentype.STRING, _fullSheet)
                 t = []
                 
             elif c in u';{}[](),':
