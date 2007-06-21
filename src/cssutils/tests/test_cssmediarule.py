@@ -3,7 +3,7 @@ testcases for cssutils.css.CSSMediaRule
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 
 import xml.dom
@@ -44,6 +44,16 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSMediaRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@media')
 
+
+    def test_incomplete(self):
+        "CSSMediaRule (incomplete)"
+        tests = {
+            u'@media all { @unknown;': # no }
+                u'@media all {\n    @unknown;\n    }',
+            u'@media all { a {}': # no }
+                u'@media all {\n    a {}\n    }',
+        }
+        self.do_equal_p(tests) # parse
 
     def test_cssRules(self):
         "CSSMediaRule.cssRules"

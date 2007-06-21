@@ -2,7 +2,7 @@
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 
 import xml.dom
@@ -43,6 +43,17 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_raise_r(tests)
 
 
+    def test_incomplete(self):
+        "CSSPageRule (incomplete)"
+        tests = {
+            u'@page :left { ':
+                u'', # no } and no content
+            u'@page :left { color: red':
+                u'@page :left {\n    color: red\n    }', # no }
+        }
+        self.do_equal_p(tests) # parse
+
+
     def test_cssText(self):
         "CSSPageRule.cssText"
         EXP = u'@page :%s {\n    margin: 0\n    }'
@@ -72,11 +83,14 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@page :left a {}': xml.dom.SyntaxErr,
 
             u'@page :left;': xml.dom.SyntaxErr,
-            u'@page :left {': xml.dom.SyntaxErr,
             u'@page :left }': xml.dom.SyntaxErr,
             }
-        self.do_raise_r(tests)
-        self.do_raise_p(tests)
+        self.do_raise_p(tests) # parse
+        tests.update({
+            u'@page :left {': xml.dom.SyntaxErr, # no }
+            })
+        self.do_raise_r(tests) # set cssText
+        
 
         
     def test_selectorText(self):

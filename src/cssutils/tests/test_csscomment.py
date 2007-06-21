@@ -4,7 +4,7 @@ testcases for cssutils.css.CSSComment
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 
 import xml
@@ -44,21 +44,27 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
             u'/* \\*/': None,
             u'/*"*/': None,
             u'''/*"
-            */''': None,
-            
+            */''': None,            
             u'/** / ** //*/': None
             }
-        self.do_equal_r(tests)
+        self.do_equal_r(tests) # set cssText
+        tests.update({
+            u'/*x': u'/*x*/',
+            u'\n /*': u'/**/',
+            })
+        self.do_equal_p(tests) # parse
         
         tests = {
             u'/* */ */': xml.dom.SyntaxErr,
-            u'  */ /* ': xml.dom.SyntaxErr,
-            u'\n /*': xml.dom.SyntaxErr,
-            u'/*': xml.dom.SyntaxErr,
+            u'  */ /* ': xml.dom.SyntaxErr
+            }
+        self.do_raise_p(tests) # parse
+        tests.update({
             u'*/': xml.dom.InvalidModificationErr,
             u'@x /* x */': xml.dom.InvalidModificationErr
-            }
-        self.do_raise_r(tests)
+            })
+        self.do_raise_r(tests) # set cssText
+
 
 
 if __name__ == '__main__':
