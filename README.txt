@@ -29,13 +29,14 @@ Before using EasyInstall the first time or using the sdist please remove any old
 known issues
 ============
 - CSSStyleDeclaration.getCSSValue and Value Classes are not fully implemented. These are currently in work and may be fully implemented in one of the next releases (0.9.2)
-- @charset not implemented according to spec (plan: 0.9.2)
 - CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc
+
+- @charset not implemented according to spec (plan: 0.9.2)
+- unknown @-rules are not handled properly in cases, tests are spotty there too
 
 - Tantek hack (using ``voice-family``) is mangled so does not work after reserializing. This is as property order is changed and the hack needs a specific order. Other CSS hacks do work though (e.g. ``color: red; c\olor: green;``.
 
 - escapes of CSS special characters does not really work but is very uncommon (e.g \@a without being an atkeyword or .\1 being a classname selector)
-- Unexpected end of style sheet not handled according to spec
 - Properties are not bound to any CSS Version, so all properties are handled so 
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 1.0 or 2.1)
 - Property.value is only checked for valid CSS2 properties, so will accept more than allowed. In case of an error a WARNING is issued only
@@ -45,7 +46,11 @@ changes
 =======
 - TODO: FEATURE: Implementation of css.CSSValue
 
-
+0.9.2.a5 
+    - BUGFIX: Unexpected end of style sheet now handled according to spec for most cases, e.g. incomplete CSSStyleRule, CSSMediaRule, CSSImportRule, CSSNamespaceRule, CSSPageRule. 
+    
+0.9.2a4 071020 
+    - BUGFIX (major): no changes to the library, but fixed setup of source dist
 0.9.2a3 071018
     - no changes to the library, just optimized setuptools dist
 
