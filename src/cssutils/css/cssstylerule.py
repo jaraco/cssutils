@@ -130,7 +130,10 @@ class CSSStyleRule(cssrule.CSSRule):
         i, imax = endi, len(tokens)
         while i < imax:
             t = tokens[i]
-            if self._ttypes.S == t.type: # ignore
+            if self._ttypes.EOF == t.type:
+                expected = 'EOF'
+
+            elif self._ttypes.S == t.type: # ignore
                 pass
                 
             elif self._ttypes.COMMENT == t.type: # just add
@@ -165,7 +168,7 @@ class CSSStyleRule(cssrule.CSSRule):
             self._log.error(u'CSSStyleRule: No StyleDeclaration found: %s' %
                       self._valuestr(cssText))
             return
-        elif expected:
+        elif expected and expected == 'EOF':
             self._log.error(u'CSSStyleRule: Trailing text after ending "}" or no end of StyleDeclaration found: %s' %
                       self._valuestr(cssText))
             return

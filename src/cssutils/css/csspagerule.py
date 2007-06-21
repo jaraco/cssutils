@@ -4,7 +4,7 @@ __all__ = ['CSSPageRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 import xml.dom
 
@@ -179,9 +179,10 @@ class CSSPageRule(cssrule.CSSRule):
             tokens[stylestarti:], blockendonly=True)
 
         if not styletokens or \
-           styletokens[0].value != u'{' or \
-           styletokens[-1].value != u'}' or \
-           len(tokens) > stylestarti + styleendi + 1:
+           styletokens[0].value != u'{' or\
+               styletokens[-1].type not in(
+                   self._ttypes.EOF, self._ttypes.RBRACE) or\
+               len(tokens) > stylestarti + styleendi + 1:
             self._log.error(u'CSSPageRule: Invalid style found: %s' %
                       self._valuestr(styletokens[1:-1]))
             return

@@ -185,7 +185,11 @@ class CSSImportRule(cssrule.CSSRule):
         expected = 'href' # href medialist end
         for i in range(1, len(tokens)):
             t = tokens[i]
-            if self._ttypes.S == t.type: # ignore
+
+            if self._ttypes.EOF == t.type:
+                expected = 'EOF'
+
+            elif self._ttypes.S == t.type: # ignore
                 pass 
                 
             elif self._ttypes.COMMENT == t.type:
@@ -220,7 +224,7 @@ class CSSImportRule(cssrule.CSSRule):
                 valid = False
                 self._log.error(u'CSSImportRule: Syntax Error.', t)
 
-        if expected:
+        if expected and expected != 'EOF':
             valid = False
             self._log.error(u'CSSImportRule: Syntax Error, no ";" found: %s' %
                       self._valuestr(cssText))

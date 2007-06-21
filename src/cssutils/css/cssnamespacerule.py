@@ -9,7 +9,7 @@ __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 import xml.dom
 
@@ -184,7 +184,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
         expected = 'uri or prefix' # uri semicolon
         for i in range(1, len(tokens)):
             t = tokens[i]
-            if self._ttypes.S == t.type: # ignore
+
+            if self._ttypes.EOF == t.type:
+                expected = 'EOF'
+
+            elif self._ttypes.S == t.type: # ignore
                 pass 
                 
             elif self._ttypes.COMMENT == t.type:
@@ -223,7 +227,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 valid = False
                 self._log.error(u'CSSNamespaceRule: Syntax Error.', t)
 
-        if expected:
+        if expected and expected != 'EOF':
             valid = False
             self._log.error(u'CSSNamespaceRule: Syntax Error, no ";" found: %s' %
                       self._valuestr(cssText))
