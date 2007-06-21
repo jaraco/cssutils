@@ -4,7 +4,7 @@ __all__ = ['CSSUnknownRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 import xml.dom
 
@@ -89,6 +89,9 @@ class CSSUnknownRule(cssrule.CSSRule):
         expected = ''
         for i in range(1, len(tokens)):
             t = tokens[i]
+            if self._ttypes.EOF == t.type:
+                break
+
             if self._ttypes.S == t.type:
                 newseq.append(t.value) # whitespace: add
                 

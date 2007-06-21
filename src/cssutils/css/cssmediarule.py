@@ -4,7 +4,7 @@ __all__ = ['CSSMediaRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '0.9.2a5 $LastChangedRevision$'
 
 import xml.dom
 
@@ -228,7 +228,10 @@ class CSSMediaRule(cssrule.CSSRule):
         while i < imax:
             t = tokens[i]
             
-            if self._ttypes.S == t.type: # ignore
+            if t.type == self._ttypes.EOF:
+                break
+
+            elif self._ttypes.S == t.type: # ignore
                 pass
 
             elif self._ttypes.COMMENT == t.type: # just add

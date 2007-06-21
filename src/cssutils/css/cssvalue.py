@@ -12,7 +12,7 @@ __all__ = ['CSSValue']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '0.9.2a5, $LastChangedRevision$'
 
 import xml.dom 
 
@@ -191,8 +191,8 @@ class CSSValue(cssutils.util.Base):
 
         else:
             self._log.error(
-                u'CSSValue: Unknown value syntax: "%s".' % self._valuestr(
-                    cssText))
+                u'CSSValue: Unknown syntax or no value: "%s".' % self._valuestr(
+                    cssText).strip())
 
 
     cssText = property(_getCssText, _setCssText,
