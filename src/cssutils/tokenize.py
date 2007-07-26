@@ -4,7 +4,7 @@
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5 $LastChangedRevision$'
+__version__ = '0.9.2b1 $LastChangedRevision$'
 
 import string
 import xml.dom
@@ -89,7 +89,7 @@ class Tokenizer(object):
         if isinstance(value, list): value = u''.join(value)
         if not value: return
 
-        if not ttype: ttype = self.getttype(value)
+        if not ttype: ttype = self.getttype(value)        
 
         # save x,y, position
         lines = value.count('\n')
@@ -109,15 +109,19 @@ class Tokenizer(object):
         # marker if token already added
         todo = False
 
+        # WS, simply add later
+        if ttype == tokentype.S:
+            todo = True
+            
         # ATKEYWORD: standard, need to adjust type
-        if ttype == tokentype.ATKEYWORD:
+        elif ttype == tokentype.ATKEYWORD:
             normkeyword  = value[1:].lower().replace(u'\\', u'')
             ttype = Tokenizer._atkeywordmap.get(
                 normkeyword, tokentype.ATKEYWORD)
             todo = True
 
         # ATKEYWORD: replace last token if @xxx 
-        if u'@' == last.value and ttype == tokentype.IDENT:
+        elif u'@' == last.value and ttype == tokentype.IDENT:
             keyword = value.lower()
             normkeyword = keyword.replace(u'\\', u'')
             last.type = Tokenizer._atkeywordmap.get(
@@ -564,13 +568,13 @@ if __name__ == '__main__':
     in CSS2, a space is required before "serif". (Some UAs accepted
     the first example, but not the second.)        
     """
-##    css = u'''5px -5px'''
-##
-##    tokens = Tokenizer().tokenize(css)
-##    import pprint
-##    pprint.pprint(tokens)
-##    print 40* '-'
-##
-##    sheet = cssutils.parseString(css)
-##    print sheet.cssText
-##    print 40* '-'
+    css = u'''5px -5px'''
+
+    tokens = Tokenizer().tokenize(css)
+    import pprint
+    pprint.pprint(tokens)
+    print 40* '-'
+
+    sheet = cssutils.parseString(css)
+    print sheet.cssText
+    print 40* '-'
