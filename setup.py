@@ -7,7 +7,7 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5'
+__version__ = '0.9.2b1'
 
 import ez_setup
 ez_setup.use_setuptools()
