@@ -51,7 +51,10 @@ changes
 =======
 - TODO: FEATURE: Implementation of css.CSSValue
 
-0.9.2.a5 070624
+0.9.2b1 070727
+    - BUGFIX: Fixed Issue #3, WS was not handles properly if added to token list by tokenizer
+
+0.9.2a5 070624
     - BUGFIX: Unexpected end of style sheet now handled according to spec for most cases, e.g. incomplete CSSStyleRule, CSSMediaRule, CSSImportRule, CSSNamespaceRule, CSSPageRule. 
     
 0.9.2a4 070620 
