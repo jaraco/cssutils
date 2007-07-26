@@ -1,7 +1,7 @@
 """testcases for cssutils.css.CSSStyleRuleTestCase"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
+__version__ = '0.9.2b1, $LastChangedRevision$'
 
 
 import xml.dom
@@ -50,6 +50,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_cssText(self):
         "CSSStyleRule.cssText"
         tests = {
+            u'''#id\n{}''': '#id {}', # issue 3
             u'''* {}''': None,
             u'a {}': None,
             u'b { a: 1; }': u'b {\n    a: 1\n    }',
