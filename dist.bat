@@ -15,7 +15,8 @@ pause
 epydoc.py -o doc --name cssutils --url http://cthedot.de/cssutils/ src/cssutils --show-imports
 pause
 
-python setup.py sdist bdist_egg
-rem setup.py register sdist bdist_egg upload
+rem python setup.py sdist bdist_egg
+python setup.py register sdist bdist_egg 
+rem upload
 
 @echo on
