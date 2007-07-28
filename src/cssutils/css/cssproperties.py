@@ -278,7 +278,7 @@ def _expand_macros(tokdict):
 def _compile_regexes(tokdict):
     """ Compile all regular expressions into callable objects """
     for key, value in tokdict.items():
-        tokdict[key] = re.compile('^%s$' % value, re.I).match
+        tokdict[key] = re.compile('^(?:%s)$' % value, re.I).match
     return tokdict
 
 _compile_regexes(_expand_macros(cssvalues))
