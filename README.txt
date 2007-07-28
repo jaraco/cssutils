@@ -28,7 +28,9 @@ Before using EasyInstall the first time or using the sdist please remove any old
 
 known issues
 ============
-- CSSStyleDeclaration.getCSSValue and Value Classes are not fully implemented. These are currently in work and may be fully implemented in one of the next releases (0.9.2)
+- implementation is not after the latest grammar and specification. There will be minor differences but generally nothing too serious (I hope ;).
+
+- CSSStyleDeclaration.getCSSValue and Value Classes are not fully implemented. These are currently in work and may be fully implemented in one of the next releases (0.9.3)
 
 - media queries like ``@media all and (color)`` result in an error and the rules are not parsed or included in the resulting CSSStyleSheet. Media queries will be added in one of the next releases (0.9.3 maybe)
 
@@ -51,8 +53,11 @@ changes
 =======
 - TODO: FEATURE: Implementation of css.CSSValue
 
-0.9.2b1 070727
-    - BUGFIX: Fixed Issue #3, WS was not handles properly if added to token list by tokenizer
+0.9.2b2 070728
+    - BUGFIX: Fixed Issue #4, tokenizing of color values like ``#00a`` was buggy (mixture of numbers and characters). Also warnings of invalid property values should be more reliable now (regexes in ``css.cssproperties`` changed).
+
+0.9.2b1 070726
+    - BUGFIX: Fixed Issue #3, WS was not handled properly if added to token list by tokenizer
 
 0.9.2a5 070624
     - BUGFIX: Unexpected end of style sheet now handled according to spec for most cases, e.g. incomplete CSSStyleRule, CSSMediaRule, CSSImportRule, CSSNamespaceRule, CSSPageRule. 
