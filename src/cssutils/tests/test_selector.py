@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.selector.Selector."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '0.9.2b2, $LastChangedRevision$'
 
 import xml.dom
 
@@ -96,6 +96,10 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''a.b''': None,
             u'''a.b.c''': None,
 
+            u'''#a''': None,
+            u'''#a1''': None,
+            u'''#1a''': None, # valid to grammar but not for HTML
+            u'''#1''': None, # valid to grammar but not for HTML
             u'''a#b''': None,
             u'''a #b''': None,
 
