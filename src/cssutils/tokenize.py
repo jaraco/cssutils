@@ -4,7 +4,7 @@
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b1 $LastChangedRevision$'
+__version__ = '0.9.2b2 $LastChangedRevision$'
 
 import string
 import xml.dom
@@ -156,7 +156,7 @@ class Tokenizer(object):
         # HASH: replace last token with # + name
         elif self.getttype(last.value + value) == tokentype.HASH:
             last.type = tokentype.HASH
-            last.value = u'#%s' % value ## ???: last.value instead of #
+            last.value += value # last value starts with # anyway
 
         # FUNCTION: replace last token with last.value(
         elif last.type == tokentype.IDENT and u'(' == value:
