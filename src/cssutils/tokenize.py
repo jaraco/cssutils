@@ -90,16 +90,7 @@ class Tokenizer(object):
         if not value: return
 
         if not ttype: ttype = self.getttype(value)        
-
-        # save x,y, position
-        lines = value.count('\n')
-        cols = len(value)
-        if value.endswith('\n'):
-            cols = -self.col + 1;
-        if self._sub1ofcol: # a 0 to .1!
-            cols -= 1
-            self._sub1ofcol = False
-         
+        
         # last two tokens, if none simple use empty Token
         if len(self.tokens) > 0: last = self.tokens[-1]
         else: last = Token()
@@ -231,8 +222,18 @@ class Tokenizer(object):
         if todo or ttype == tokentype.EOF:
             self.tokens.append(Token(self.line, self.col, ttype, value))
 
-        # adjust x,y, position
-        self.line += lines
+        # adjust x,y position
+        cols = len(value)
+        if self._sub1ofcol: 
+            # added a "0" to ".1" -> "0.1" so PLUS 1
+            cols -= 1
+            self._sub1ofcol = False
+        if value.find('\n') != -1: 
+            # end of a line, start anew but count present chars
+            self.col = 1
+            cols = len(value[value.rfind('\n')+1:])
+
+        self.line += value.count('\n')
         self.col += cols
 
 
