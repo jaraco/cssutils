@@ -4,7 +4,7 @@ testcases for cssutils.tokenize.Tokenizer
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '0.9.2b2, $LastChangedRevision$'
 
 import xml.dom
 
@@ -292,7 +292,38 @@ class TokenizerTestCase(basetest.BaseTestCase):
                 (1, 13, tt.S, u' '),
                 (1, 14, tt.HASH, u'#1')                            
                 ],
-
+            u'#1a1 ': [
+                (1, 1, tt.HASH, u'#1a1'),
+                (1, 5, tt.S, u' '),
+                ],
+            u'#1a1\n': [
+                (1, 1, tt.HASH, u'#1a1'),
+                (1, 5, tt.S, u'\n'),
+                ],
+            u'#1a1{': [
+                (1, 1, tt.HASH, u'#1a1'),
+                (1, 5, tt.LBRACE, u'{'),
+                ],
+            u'#1a1 {': [
+                (1, 1, tt.HASH, u'#1a1'),
+                (1, 5, tt.S, u' '),
+                (1, 6, tt.LBRACE, u'{'),
+                ],
+            u'#1a1\n{': [
+                (1, 1, tt.HASH, u'#1a1'),
+                (1, 5, tt.S, u'\n'),
+                (2, 1, tt.LBRACE, u'{'),
+                ],
+            u'#1a1\n {': [
+                (1, 1, tt.HASH, u'#1a1'),
+                (1, 5, tt.S, u'\n '),
+                (2, 2, tt.LBRACE, u'{'),
+                ],
+            u'#1a1 \n{': [
+                (1, 1, tt.HASH, u'#1a1'),
+                (1, 5, tt.S, u' \n'),
+                (2, 1, tt.LBRACE, u'{'),
+                ],
             # STRINGS with NL
             u'"x\n': [(1,1, tt.INVALID, u'"x\n')],
             u'"x\r': [(1,1, tt.INVALID, u'"x\r')],
