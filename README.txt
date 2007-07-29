@@ -8,6 +8,7 @@ A Python package to parse and build CSS Cascading Style Sheets. Partly implement
 
 Please visit http://cthedot.de/cssutils/ for full details and updates.
 
+TEST
 
 installation
 ============
