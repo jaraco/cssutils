@@ -55,6 +55,7 @@ changes
 
 
 0.9.2b3 
+    - BUGFIX: Fixed Issue #5: false warning for certain values for ``background-position`` removed
     - BUGFIX: Report of line/col for any node was not correct if a node contained line breaks itself
     - IMPROVEMENT: Added tests for issues #3 and #4 to tokenizer too
 
