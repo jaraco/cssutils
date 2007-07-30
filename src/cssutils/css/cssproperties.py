@@ -105,8 +105,7 @@ MACROS = {
     'background-color': r'{color}|transparent|inherit',
     'background-image': r'{uri}|none|inherit',
 
-    ##'background-position': r'(({percentage}|{length}|left|center|right)(\s*{percentage}|{length}|top|center|bottom)?)|(left|center|right|top|center|bottom)(\s*(left|center|right|top|center|bottom))?|inherit',
-    'background-position': r'(({percentage}|{length}|top|center|bottom)\s*({percentage}|{length}|left|center|right)?)|inherit',
+    'background-position': r'(({percentage}|{length}|left|center|right)(\s*{percentage}|{length}|top|center|bottom)?)|(left|center|right|top|center|bottom)(\s*(left|center|right|top|center|bottom))?|inherit',
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
 
