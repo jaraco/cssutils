@@ -16,11 +16,11 @@ From 0.9 cssutils uses EasyInstall. Please find installation instructions and mo
 After installing EasyInstall simple use::
 
     > easy_install cssutils
-    
+
 to install the latest version of cssutils.
 
 Alternatively download the provided source distribution. Expand the file and from a command line install with::
-    
+
     > python setup.py install
 
 Before using EasyInstall the first time or using the sdist please remove any old version which should be installed at PYTHONDIR/Lib/site-packages/cssutils.
@@ -43,9 +43,9 @@ known issues
 
 - escapes of CSS special characters does not really work but is very uncommon (e.g \@a without being an atkeyword or .\1 being a classname selector)
 
-- Properties are not bound to any CSS Version, so all properties are handled so 
+- Properties are not bound to any CSS Version, so all properties are handled so
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 1.0 or 2.1)
-  
+
 - Property.value is only checked for valid CSS2 properties, so will accept more than allowed. In case of an error a WARNING is issued only
 
 
@@ -54,7 +54,7 @@ changes
 - TODO: FEATURE: Implementation of css.CSSValue
 
 
-0.9.2b3 
+0.9.2b3
     - BUGFIX: Fixed Issue #5: false warning for certain values for ``background-position`` removed
     - BUGFIX: Report of line/col for any node was not correct if a node contained line breaks itself
     - IMPROVEMENT: Added tests for issues #3 and #4 to tokenizer too
@@ -67,9 +67,9 @@ changes
     - BUGFIX: Fixed Issue #3, WS was not handled properly if added to token list by tokenizer
 
 0.9.2a5 070624
-    - BUGFIX: Unexpected end of style sheet now handled according to spec for most cases, e.g. incomplete CSSStyleRule, CSSMediaRule, CSSImportRule, CSSNamespaceRule, CSSPageRule. 
-    
-0.9.2a4 070620 
+    - BUGFIX: Unexpected end of style sheet now handled according to spec for most cases, e.g. incomplete CSSStyleRule, CSSMediaRule, CSSImportRule, CSSNamespaceRule, CSSPageRule.
+
+0.9.2a4 070620
     - BUGFIX (major): no changes to the library, but fixed setup of source dist
 0.9.2a3 071018
     - no changes to the library, just optimized setuptools dist
@@ -80,10 +80,10 @@ changes
     - API CHANGE (minor): _Property.value is DEPRECATED, use _Property.cssValue.cssText instead, _Property is defined as private anyway so should not be used directly
     -
  API CHANGE (minor): removed ``Tokenizer.tokensupto`` which was used internally only
-   
+
     - CHANGE: Numbers and Dimensions starting with "." like ".1em" in the original stylesheet will be output as "0.1em" with a proceding 0 now.
     - CHANGE: Report of parsing errors have a slightly different syntax now.
-    
+
     - FEATURE: New ``Preferences.omitLastSemicolon`` option. If ``True`` omits ; after last property of CSSStyleDeclaration
 
     - BUGFIX: The css validator definition for "num" was wrong, so values like ``-5.5em`` would issue a warning but should be correct
@@ -97,34 +97,34 @@ changes
 
 0.9.2a1 070610
     - FEATURE: Partly Implemented css.CSS2Properties so you can now use::
-    
+
         >>> sheet = cssutils.parseString('a { font-style: italic; }')
         >>> style = sheet.cssRules[0].style
         >>> style.fontStyle = 'normal'
         >>> print style.fontStyle
         normal
-        
+
       Each property can be retrieved from CSSStyleDeclaration object with its name as
-    an object property. Names with "-" in it like ``font-style`` need to be called by 
+    an object property. Names with "-" in it like ``font-style`` need to be called by
     the respective DOM name ``fontStyle``.
-      Setting a property value works the same way and even ``del`` which effectively removes a property from a CSSStyleDeclaration works. For details see 
+      Setting a property value works the same way and even ``del`` which effectively removes a property from a CSSStyleDeclaration works. For details see
     CSSStyleDeclaration.
-    
-      Not implemented are the finer details, see the module documentation of 
+
+      Not implemented are the finer details, see the module documentation of
       cssutils.css.cssproperties.
-            
+
     - BUGFIX: CSSStyleDeclaration.getPropertyCSSValue returns None for all shorthand properties
-    
+
     - refactored some parts and added more tests
-    
+
 
 0.9.1b3 070114
     - **CHANGE** for Serializer preference options:
-    
+
         new name
         + ``defaultAtKeyword`` instead of ``normalkeyword``
         + ``defaultPropertyName`` instead of ``normalpropertyname``
-        
+
         camelcase now:
         + ``keepComments`` instead of ``keepComments``
         + ``lineNumbers`` instead of ``linenumbers``
@@ -135,39 +135,39 @@ changes
     - FEATURE: ``Serializer.prefs.keepAllProperties`` replaces `` ``keepsimilarnamedproperties``:
         if ``True`` all properties given in the parsed CSS are kept.
         This may be useful for cases like::
-        
+
             background: url(1.gif) fixed;
             background: url(2.gif) scroll;
-            
+
         Certain UAs may not know fixed and will therefor ignore property 1 but
         an application might simply like to prettyprint the stylesheet without
         loosing any information.
-        
+
         Defaults to ``False``.
-        
+
         See examples/serialize.py for an usage example.
 
     - FEATURE(experimental, might change!):
         ``CSSStyleDeclaration.getSameNamePropertyList(name)``
-        Experimental method to retrieve a SameNamePropertyList object which 
-        holds all Properties with the given ``name``. The object has an 
-        attribute ``name`` and a list of Property objects each with an actual name, 
+        Experimental method to retrieve a SameNamePropertyList object which
+        holds all Properties with the given ``name``. The object has an
+        attribute ``name`` and a list of Property objects each with an actual name,
         value and priority.
-        
-        ``CSSStyleDeclaration.setProperty`` has a new positional parameter 
+
+        ``CSSStyleDeclaration.setProperty`` has a new positional parameter
         ``overwrite`` which defines if the property which is set overwrites any former
-        value (or values, see ``getSameNamePropertyList``) (default behaviour) or the 
+        value (or values, see ``getSameNamePropertyList``) (default behaviour) or the
         given value is appended to any former value (overwrite=False).
         Useful for cases where a property should have different values for different UAs.
-        
+
         Example 1: CSS hacks::
-        
+
             width: 100px; /* wrong box model value for IE5-5.5 */
             padding: 5px;
             w\idth: 90px; /* correct box model value for later browsers */
 
         Example 2: UA capabilities::
-        
+
             background: url(2.gif) scroll; /* Fallback for UA which do not understand fixed */
             background: url(1.gif) fixed; /* UA which do know fixed */
 
@@ -186,20 +186,20 @@ changes
         actual names are kept, e.g. color, c\olor, co\lor.
         This is mainly useful to keep a stylesheet complete which uses
         xbrowser hacks as above.
-        
+
         **UPDATE IN 0.9.1b3!**
-        
-    - BUGFIX (minor): ``Serializer.prefs.normalpropertyname`` did not work properly if a property was set 2 times in the same declaration, e.g. ``color: red;c\olor: green`` setting the pref to ``False`` results in ``c\olor: green`` now. 
+
+    - BUGFIX (minor): ``Serializer.prefs.normalpropertyname`` did not work properly if a property was set 2 times in the same declaration, e.g. ``color: red;c\olor: green`` setting the pref to ``False`` results in ``c\olor: green`` now.
     - BUGFIX (minor): Serializing of CSSStyleDeclaration did not work well when CSSComments were mixed with Properties.
-    
+
 
 0.9.1b1
     - FUTURE CHANGE: ``readonly`` will be removed from most rules. It is not used anyway, may be readded in a future release
 
     - CHANGE: order of constructor parameters changed in ``CSSImportRule``. Should be no problem as positional parameters are discouraged anyway
-    - CHANGE: cssutils needs Python 2.4 from the release on as it uses the buildin ``set`` 
+    - CHANGE: cssutils needs Python 2.4 from the release on as it uses the buildin ``set``
     - CHANGE: removed ``CSSMediaRule.addRule`` which was deprecated anyway
-    
+
     - FEATURE: implemented @page CSSRule including testcases
     - FEATURE: implemented @namespace CSSRule according to http://www.w3.org/TR/2006/WD-css3-namespace-20060828/ with the following changes
         * the url() syntax is not implemented as it may (?) be deprecated anyway
@@ -231,11 +231,11 @@ changes
     - removed ``Token.literal`` which value is in ``value`` now, normalized value is in ``normalvalue``
     - removed ``Token.ESCAPE``. Escapes are contained in IDENTifiers now.
     - internal change: WS is generally kept by tokenizer now, former normalized value ``u' '`` is hold in ``Token.normalvalue``. Serializer does not use it yet and some classes (like Selector) use normalvalue.
-    
+
       uses normalized form of @keyword in source CSS if ``True`` (e.g. ``@import``), else literal form in CSS sourcefile (e.g. ``@i\mport``). Defaults to ``True``.
-    
-    
-    
+
+
+
 0.9a6
     - NEW ``Serializer.prefs.keepcomments`` removes all comments if ``False``, defaults to ``True``
 
@@ -247,13 +247,13 @@ changes
         * constructor has **no** parameters anymore (``mediaText`` is removed!)
         * ``addRule`` is DEPRECATED, use ``insertRule(rule)`` with no index instead.
           Synchronized with ``CSSStyleSheet.insertRule``
-          
+
     - setting of ``CSSImportRule.media`` removed, use methods of this object directly.
       Synchronized with ``CSSMediaRule.media``
-        
+
     - ``CSSStyleSheet.insertRule`` raises ``xml.dom.IndexSizeErr`` if an invalid index is given. Index may be ``None`` in which case the rule will be appended.
         Synchronized with ``CSSMediaRule.insertRule``
-      
+
     - CSSStyleDeclaration bugfixes in parsing invalid tokens
     - stylesheets.MediaList bugfixes in parsing uppercase media values like ``PRINT``
     - added more unittests (CSSMediaRule)
@@ -266,47 +266,47 @@ changes
         - for invalid CSS2 Property values a WARNING message is issued
 
     - atrules have a new property ``atkeyword`` which is the keyword used in the CSS provided. Normally something like "@import" but may also be an escaped version like "@im\port" or a custom one used in CSSUnknownRule.
-    
-    - tokenizer and css.selector.Selector 
+
+    - tokenizer and css.selector.Selector
         - added CSS3 combinator ``~``
-        - added CSS3 attribute selectors ``^=``, ``$=``, ``*=`` 
+        - added CSS3 attribute selectors ``^=``, ``$=``, ``*=``
         - added CSS3 pseudo selector ``::`` and pseudo-functions like ``:lang(fr)``
-        
+
     - Token
         - added some new constants mainly replacing DELIM, e.g. UNIVERSAL, GREATER, PLUS, TILDE
-        
+
         (CSS3 see http://www.w3.org/TR/css3-selectors)
-        
+
     - Improved parsing of "Unexpected end of string" according to spec
     - fixed serializing of CSSUnknownRule if ``valid == False``
-    
+
     - Properties may also be set with a numeric value now, before everything had to be a string. Direct use of _Property is discouraged though as it may well be changed again in a future version.
 
 0.9a4 060927
-    - CSSStyleSheet: 
+    - CSSStyleSheet:
         - removed init parameter ``type`` which is now set as a static type to "text/css"
         - removed ``addRule`` which emits DeprecationWarning now
-          Use ``insertRule`` without parameter ``index`` 
-        - added new methods ``setSerializer(cssserializer)`` and 
+          Use ``insertRule`` without parameter ``index``
+        - added new methods ``setSerializer(cssserializer)`` and
           ``setSerializerPref(self, pref, value)`` to control output
           of a stylesheet directly.
-          
+
     - CSSStyleRule:
         - new property ``selectorList`` is an instance of SelectorList
           which contains a list of all Selector elements of the rule
         - removed ``addSelector()`` and ``getSelectors()``,
           use property ``selectorList`` instead
-        - removed ``getStyleDeclaration()`` and ``setStyleDeclaration()``, 
+        - removed ``getStyleDeclaration()`` and ``setStyleDeclaration()``,
           use property ``style`` instead
 
     - CSSStyleDeclaration:
         - new constructor parameter ``cssText``
-    
+
     - moved ``SelectorList``, ``Selector`` and ``Property`` to own modules.
       Should not be used directly yet anyway.
-      
+
     - Token: renamed ``IMPORTANT`` to ``IMPORTANT_SYM``
-        
+
     - unittests:
         - added tests for CSSStyleSheet, CSSStyleRule, SelectorList, Selector
           CSSStyleDeclaration, _Property
@@ -315,17 +315,17 @@ changes
     - refined EasyInstall (still some issues to be done)
     - CSSCharsetRule serialized and parsed according to spec only as ``@charset "ENCODING";`` so no comments allowed, only one space before encoding string which MUST use ``"`` as delimiter (see http://www.w3.org/TR/CSS21/syndata.html#q23)
         NOT COMPLETE YET, E.G. BOM HANDLING
-        
+
     - added tests for setting empty cssText for all @rules and CSSStyleRule
     - bugfixes
         - CSSStyleDeclaration: Of two Properties if written directly after another``a:1;b:2`` one was swallowed
-    - CSSSerializer: 
+    - CSSSerializer:
         added new class cssutils.serialize.Preferences to control output or CSSSerializer
 
 0.9a2 - 060908
     - using setuptools for deployment
         - new script ``cssparse`` which pprints css "filename"
-    
+
     - subpackages ``css`` and ``stylesheets`` are directly available from ``cssutils`` now
     - renamed module ``cssutils.cssparser`` to ``cssutils.parse`` which should not be used directly anyway. Always use ``cssutils.CSSParser`` or ``cssutils.parse`` (s.b)
     - added utility functions ``parse(cssText)`` and ``parse(filename, encoding='utf-8')`` to cssutils main package which work like the CSSParser functions with the same name and API
@@ -337,30 +337,30 @@ changes
         - cssutils has a property "ser" which is used by all classes to serialize themselves
         it is definable with a custom instance of cssutils.Serializer by setting
             cssutils.setCSSSerializer(newserializer)
-            
-        - prefs['CSSImportrule.href format'] may be set to 
+
+        - prefs['CSSImportrule.href format'] may be set to
             - 'uri': renders url(...) (default)
             - 'string': renders "..."
             - None: renders as set in CSSImportRule.hreftype
-            
-    - css.CSSCharsetRule: 
+
+    - css.CSSCharsetRule:
         - improved parsing
         - fixed API handling (setting of encoding did not work)
-        
+
     - css.CSSImportRule:
         - improved parsing
-        
+
     - usage of *.getFormatted emits DeprecationWarning now and returns *.cssText
-    
+
     - lots of bugfixes and refactoring of modules, classes
     - extension and refactoring of unittests
-    
+
 0.9a1 - 060905
     - new tokenizer, complete rewrite
         * parses strings and comments
         * parses unicode escape sequences (see following)
         * emits CSS tokens according to spec (update: not all yet (ESCAPE)!)
-        
+
     - renamed module "comment" to "csscomment" and class "Comment" to "CSSComment"
     - configurable Serializer instead of pprint
     - reimplemented CSSMediaRule
@@ -389,14 +389,14 @@ changes
         cssparser.py filename.css [encoding[, "debug"]]
         1. encoding of the filename.css to parse
         2. if called with "debug" debugging mode is enabled and default log prints all messages
-        
+
     - cssutils.css.CSSUnknownRule reintegrated and Tests added
     - cssutils.Comment reintegrated
         implements css.CSSRule, there a new typevalue COMMENT (=-1) is added
     - lexer does handle strings *almost* right now...
     - bugfixes
     - simplified lexer, still lots of simplification todo
-    
+
 0.8a2 - 050731
     - CSSParser may now directly be used from cssutils
       cssutils.cssparser as a standalone script does work too.
@@ -405,7 +405,7 @@ changes
     - xml.dom.InvalidModificationErr now raised by CSSRule subclasses instead of xml.dom.SyntaxErr in case a non expected rule has been tried to set
     - test are updated to the new API and work (not complete and exhaustive though but a bit more than for 0.61)
     - bugfixes in some classes due to reanimated tests
-    - moved module valuevalidator from cssutils.css to cssutils. 
+    - moved module valuevalidator from cssutils.css to cssutils.
       Should not be used directly anyway
     - split CSSParser in actual CSSParser and utility module used by CSSParser and each css class cssText setting method
     - loghandler.ErrorHandler does raiseExceptions by default now. Only CSSParser does overwrite this behaviour. Some tests still need to be looked into...
@@ -418,7 +418,7 @@ changes
     docs
         new examples and new structure on the website
 
-    NEW API **INCOMPATIBLE API CHANGES**    
+    NEW API **INCOMPATIBLE API CHANGES**
         * new package cssutils.css which contains CSS interface implementations (css.CSSStyleSheet, css.CSSRuleList etc)
         * new package cssutils.stylesheets which contains Stylesheets interface implementations are in (stylesheets.StyleSheet, stylesheets.MediaList etc)
         * module cssutils.cssbuilder has therefor been removed and is replaced by packages cssutils.css and cssutils.stylesheets.
@@ -431,7 +431,7 @@ changes
         * some parameters have been renamed to their respective DOM names (e.g. selector is selectorText now in CSSStyleRule constructor
         * the API has been cleaned up a bit. Some redundant methods have been removed.
             - cssmediarule: removed  getRules(), use cssRules property instead
-    
+
         * Comment as a rule is removed currently, might be reintegrated in a future version.
         * some classes which have not been implemented fully anyway are not available until they are finished. This is mainly CSSMediaRule (will follow shortly), CSSUnknownRule, CSSValue and other value classes.
 
@@ -440,63 +440,63 @@ changes
 0.61 - 050604
     bugfix reported and fixed thanks to Matt Harrison:
         'border-left-width' property was missing from cssvalues.py
-    
+
 0.60b
     tiny internal changes
 
 0.60a
     added modules to validate Properties and Values
     thanks to Kevin D. Smith
-    
+
     MediaList renamed media type "speech" to "aural"
 
 0.55_52 - 040517 bugfix bugfix release
     should do test first ;)
     added unittest and fix for fix
-    
+
 0.55_51 - 040517 bugfix release
     cssstylesheet.StyleSheet _pprint was renamed to _getCssText but
     the call in pprint was not changed...
 
 0.55_5 - 040509
     API CHANGES
-    
-    StyleDeclaration 
-        addProperty made/named private 
+
+    StyleDeclaration
+        addProperty made/named private
         DEPRECATED anyway, use setProperty
-        
+
         parentRule raises NotImplementedError
 
     RGBColor Implemented
     PrimitiveValue uses RGBColor
-    
+
     CSSParser uses setProperty instead of addProperty now
     StyleDeclaration, Value, ValueList, PrimitiveValue, RGBcolor
     done comparing spec and module docstrings
-    
+
     made list of TODOs
-    
+
 0.55_4 - 040502
     implement \*Rule.cssText setting (UnknownRule not complete)
-     
+
     lexer has no log anymore, simply "logs" everything to the
     resulting tokenlist
-    
+
     cssstylesheet simplified
-    
+
     bugfixes
 
 0.55_3 not released
-    cssnormalizer renamed, does not work anyway at the moment   
+    cssnormalizer renamed, does not work anyway at the moment
 
     implemented StyleRule.cssText setting
-    
+
     cssproperties.Property has new init param raiseExceptions
     similar to the one of CSSParser. does not log yet
     and functionality might change as well
     * what will not change is that you can specify not
     officially specified properties (like moz-opacity etc)
-    
+
     some cleanup in various classes
 
 0.55_2 not released
@@ -511,7 +511,7 @@ changes
         CSSRule
         implementation cssText setting
         improved docstrings
-    
+
     CSSCharsetRule, CSSFontFaceRule, CSSFontFaceRule, CSSImportRule, CSSSMediaRule, CSSPageRule, CSSStyleRule, CSSUnknownRule
         use CSSRule implementation
     CSSCharsetRule
@@ -521,11 +521,11 @@ changes
 
     simplified and cleaned up sources
     some bugfixes
-    
+
     added tests
         test_cssrule
         test_csscharsetrule, test_cssfontfacerule, test_cssimportrule,
-        
+
         test_mediarule, test_stylesheetrule, test_unknownrule
             subclass test_cssrule now
     improved unittests
@@ -572,7 +572,7 @@ changes
 
     implemented at least partly almost all DOM Level 2 CSS interfaces now
     so the API should be more stable from now on
-    
+
     new statemachine and lexer helper classes for parsing
     complete rewrite of CSSParser
     CSSParser and lexer put all error messages in a log now
@@ -586,28 +586,28 @@ changes
     API CHANGES
     StyleSheet.getRules() returns a RuleList now
     class Selector removed, integrated into Rules now
-    
+
     moved most Classes to own module
         StyleSheet, StyleRule, MediaRule, ...
 
 0.40a - 040321
     !cssnormalizer does not work in this version
-    
+
     API CHANGES:
     cssbuilder.RuleList subclasses list
     cssbuilder.Selector moved to cssrules
     attribute style of class StyleRule made private (_style)
-    removed StyleRule.clearStyleDeclaration 
+    removed StyleRule.clearStyleDeclaration
     attribute selectorlist of class Selector renamed to _selectors and made private
 
     NEW:
-    MediaList class 
+    MediaList class
 
     moved tests to directory test
 
     made a dist package complete with setup.py
-        
-        
+
+
 0.31 - 040320
     !cssnormalizer does not work in this version
 
@@ -618,87 +618,87 @@ changes
     removed CSSParser.pprint(). use CSSParser.getStyleSheet().pprint() instead
         (a StyleSheet object had a pprint method anyway)
 
-    replaced cssutils own exceptions with standard xml.dom.DOMException 
+    replaced cssutils own exceptions with standard xml.dom.DOMException
         and subclasses
         !catch these exceptions instead of CSSException or CSSParserException
 
     moved internal lists (e.g. StyleSheet.nodes list) to private vars
         StyleSheet._nodes
         !please use methods instead of implementation details
-    
-    
+
+
     removed cssexception module
     removed csscomment module, classes now directly in cssutils
 
     more unittests, start with python cssutils/_test.py
-    
+
     more docs
 
     integrated patches by Cory Dodt for SGML comments and Declaration additions
-    added some w3c DOM methods 
+    added some w3c DOM methods
 
 
 0.30b - 040216
     severe API changes
     renamed some classes to (almost) DOM names, the CSS prefix of DOM names is ommited though
-    
+
     renamed are
         - Stylesheet TO StyleSheet
         - Rule TO StyleRule
         - AtMediaRule TO MediaRule
         - Declaration TO StyleDeclaration
-        
-    the according methods are renamed as well
-    
-    class hierarchy is changed as well, please see the example
-    
-    classes are organized in new modules
-    
 
-0.24_1 - 040214  
-    legal stuff: added licensing information 
+    the according methods are renamed as well
+
+    class hierarchy is changed as well, please see the example
+
+    classes are organized in new modules
+
+
+0.24_1 - 040214
+    legal stuff: added licensing information
     no files released
 
-0.24 - 040111   
+0.24 - 040111
     split classes in modules, has to be cleaned up again
 
-0.24b - 040106  
+0.24b - 040106
     cleaned up cssbuilder
         - Comment now may only contain text
-            and no comment end delimiter. 
-            (before it had to be a complete css 
+            and no comment end delimiter.
+            (before it had to be a complete css
             comment including delimiters)
         - AtMediaRule revised completely
             validates given media types
             new method: addMediaType(media_type)
-            
+
     cssparser updated to new cssbuilder interface and logic
     started unittests (v0.0.0.1..., not included yet)
-    
-    
-0.23 - 031228   
+
+
+0.23 - 031228
     new CSSNormalizer.normalizeDeclarationOrder(stylesheet)
-    
+
     cssbuilder: added methods needed by CSSNormalizer
-    
+
     CSSParser.parse bugfix
 
 
-0.22 - 031226   
-    CSSParser: 
+0.22 - 031226
+    CSSParser:
             added \n for a declaration ending in addition to ; and }
     cssbuilder:
         docstrings added for @import and @charset
         support build of a selector list in a rule
 
 
-0.21 - 031226   
+0.21 - 031226
     cleaned up docstrings and added version information
 
-0.20 - 031224   
+0.20 - 031224
     complete rewrite with combination of parser and builder classes
 
-0.10 - 031221   
+0.10 - 031221
     first version to try if i can bring it to work at all
     only a prettyprinter included, no builder
 
