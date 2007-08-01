@@ -360,7 +360,7 @@ if __name__ == '__main__':
     options, url = parser.parse_args()
 
     if not url:
-        sys.exit('no URL given')
+        parser.error('no URL given')
     else:
         url = url[0]
 

@@ -90,38 +90,3 @@ class CSSParser(object):
             cssText = cssText[1:]
             
         return self.parseString(cssText)
-
-
-if __name__ == '__main__':
-    import logging
-    import sys
-
-    try:
-        filename = sys.argv[1]
-    except:
-        print '\nusage:\n\tpython cssutils/parse.py filename.css [encoding, debug]'
-        sys.exit(0)
-    print 
-
-##    newlog = logging.getLogger('CSSPARSER')
-##    hdlr = logging.FileHandler('CSSPARSER.log', 'w')      
-##    formatter = logging.Formatter('%(levelname)s\t%(message)s')
-##    hdlr.setFormatter(formatter)
-##    newlog.addHandler(hdlr)
-##    newlog.setLevel(logging.DEBUG)  
-##    p = CSSParser(log=newlog, loglevel=logging.DEBUG)
-
-    if len(sys.argv) == 3 and sys.argv[2] == 'debug' or\
-            len(sys.argv) == 4 and sys.argv[3] == 'debug':
-        p = CSSParser(loglevel=logging.DEBUG)
-    else:
-        p = CSSParser()
-
-    if len(sys.argv) > 2 and sys.argv[2] <> 'debug':      
-        sheet = p.parse(filename, encoding=sys.argv[2])
-    else:
-        sheet = p.parse(filename)
-    
-    print sheet.cssText
-
-
