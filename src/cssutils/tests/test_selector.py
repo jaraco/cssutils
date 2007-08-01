@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.selector.Selector."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b2, $LastChangedRevision$'
+__version__ = '0.9.2b3, $LastChangedRevision$'
 
 import xml.dom
 
@@ -125,6 +125,9 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''n|e''': None,
             u'''n|*''': None,
             u'''*|b[x|a]''': None,
+            
+            u'''x:lang() y''': None,
+            u'''x:nth-child(odd) y''': None,
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText') 
