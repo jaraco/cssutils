@@ -23,7 +23,7 @@ __all__ = ['Selector']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '0.9.2b3 $LastChangedRevision$'
 
 import xml.dom
 
@@ -357,7 +357,7 @@ class Selector(cssutils.util.Base):
                      t.type == self._ttypes.FUNCTION:
                     # pseudo "function" like lang(...)
                     functokens, endi = self._tokensupto(
-                        tokens[i:], selectorattendonly=True)
+                        tokens[i:], funcendonly=True)
                     i += endi
                     funcseq = getFunc(functokens)
                     if not funcseq:
