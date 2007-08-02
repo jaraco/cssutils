@@ -131,12 +131,12 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSImportRule.media"
         self.r.href = 'x' # @import url(x)
 
-        # only medialist allowed 
+        # only medialist allowed
         self.assertRaises(AttributeError,
-                          self.r.__setattr__, 'media', None)  
+                          self.r.__setattr__, 'media', None)
 
         # set mediaText instead
-        self.r.media.mediaText = 'print'        
+        self.r.media.mediaText = 'print'
         self.assertEqual(u'@import url(x) print;', self.r.cssText)
 
 
@@ -170,7 +170,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             u"@import 'x.css'": '@import "x.css";', # no ;
             u'@import url(x.css)': '@import url(x.css);', # no ;
             u'@import "x.css" tv': '@import "x.css" tv;',
-            u'@import "x;': '@import "x;";', # no "! 
+            u'@import "x;': '@import "x;";', # no "!
             })
         self.do_equal_p(tests) # parse
 
@@ -178,7 +178,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'''@import;''': xml.dom.SyntaxErr,
             u'''@import all;''': xml.dom.SyntaxErr,
             u'''@import;''': xml.dom.SyntaxErr,
-            
+
             u'''@import x";''': xml.dom.SyntaxErr,
 
             u'''@import "str" ,all;''': xml.dom.SyntaxErr,
@@ -199,4 +199,4 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

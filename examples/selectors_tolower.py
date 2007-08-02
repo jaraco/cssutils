@@ -5,11 +5,11 @@ examplecss = u"""@charset "ascii";
     A { color: red }
     SOME > WeIrD + selector ~ used here {}
 """
-##   
-##    
+##
+##
 
 import logging
-c = cssutils.CSSParser(loglevel=logging.DEBUG) .parseString(examplecss)   
+c = cssutils.CSSParser(loglevel=logging.DEBUG) .parseString(examplecss)
 
 for r in c.cssRules:
     if r.type == css.CSSRule.STYLE_RULE:
@@ -18,6 +18,6 @@ for r in c.cssRules:
 
 print "--- ORIGINAL ---"
 print examplecss
-print 
+print
 print "--- ALL SELECTORS TO LOWER CASE ---"
 print c.cssText # or save to ...

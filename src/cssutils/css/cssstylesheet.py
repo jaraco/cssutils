@@ -50,19 +50,19 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
       : [ CHARSET_SYM S* STRING S* ';' ]?
         [S|CDO|CDC]* [ import [S|CDO|CDC]* ]*
         [ namespace [S|CDO|CDC]* ]* # according to @namespace WD
-        [ [ ruleset | media | page ] [S|CDO|CDC]* ]*            
+        [ [ ruleset | media | page ] [S|CDO|CDC]* ]*
     """
     type = 'text/css'
-    
+
     def __init__(self, href=None, media=None,
                  title=u'', disabled=None,
                  ownerNode=None, parentStyleSheet=None,
                  readonly=False):
-        
+
         super(CSSStyleSheet, self).__init__(
                 self.type, href, media, title, disabled,
                 ownerNode, parentStyleSheet)
-        
+
         self.cssRules = cssutils.css.CSSRuleList()
         self.namespaces = set()
         self._readonly = readonly
@@ -82,7 +82,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
     def _getCssText(self):
         return cssutils.ser.do_stylesheet(self)
-    
+
     def _setCssText(self, cssText):
         """
         (cssutils)
@@ -91,8 +91,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         cssText
             textual text to set
 
-        DOMException on setting  
-        
+        DOMException on setting
+
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if the rule is readonly.
         - SYNTAX_ERR:
@@ -103,13 +103,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         self._checkReadonly()
 
-        tokens = self._tokenize(cssText, _fullSheet=True) 
-        
+        tokens = self._tokenize(cssText, _fullSheet=True)
+
         newcssRules = cssutils.css.CSSRuleList()
         newnamespaces = set()
 
         # @charset only once at beginning
-        if tokens and tokens[0].type == self._ttypes.CHARSET_SYM: 
+        if tokens and tokens[0].type == self._ttypes.CHARSET_SYM:
             charsetruletokens, endi = self._tokensupto(tokens)
             charsetrule = cssutils.css.CSSCharsetRule()
             charsetrule.cssText = charsetruletokens
@@ -124,31 +124,31 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             if t.type == self._ttypes.EOF:
                 break
-                
+
             # ignore
-            if t.type in (self._ttypes.S, self._ttypes.CDO, self._ttypes.CDC): 
+            if t.type in (self._ttypes.S, self._ttypes.CDO, self._ttypes.CDC):
                 pass
 
             # unexpected: } ;
             elif t.type in (self._ttypes.SEMICOLON,
-                            self._ttypes.LBRACE, self._ttypes.RBRACE): 
+                            self._ttypes.LBRACE, self._ttypes.RBRACE):
                 self._log.error(u'CSSStyleSheet: Syntax Error',t)
 
             # simply add
-            elif self._ttypes.COMMENT == t.type: 
+            elif self._ttypes.COMMENT == t.type:
                 newcssRules.append(cssutils.css.CSSComment(t))
-                
+
             # @charset only at beginning
-            elif self._ttypes.CHARSET_SYM == t.type: 
+            elif self._ttypes.CHARSET_SYM == t.type:
                 atruletokens, endi = self._tokensupto(tokens[i:])
-                i += endi 
+                i += endi
                 self._log.error(u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
                     t, xml.dom.HierarchyRequestErr)
 
             # @import before any StyleRule and @rule except @charset
             elif self._ttypes.IMPORT_SYM == t.type:
                 atruletokens, endi = self._tokensupto(tokens[i:])
-                if expected == '@import': 
+                if expected == '@import':
                     atrule = cssutils.css.CSSImportRule()
                     atrule.cssText = atruletokens
                     newcssRules.append(atrule)
@@ -156,13 +156,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     self._log.error(
                         u'CSSStylesheet: CSSImportRule not allowed here.',
                         t, xml.dom.HierarchyRequestErr)
-                i += endi 
+                i += endi
 
             # @namespace before any StyleRule and
             #  before @rule except @charset, @import
             elif self._ttypes.NAMESPACE_SYM == t.type:
                 atruletokens, endi = self._tokensupto(tokens[i:])
-                if expected in ('@import', '@namespace'): 
+                if expected in ('@import', '@namespace'):
                     atrule = cssutils.css.CSSNamespaceRule()
                     atrule.cssText = atruletokens
                     newcssRules.append(atrule)
@@ -180,7 +180,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 atrule = cssutils.css.CSSMediaRule()
                 atrule.cssText = atruletokens
                 newcssRules.append(atrule)
-                i += endi 
+                i += endi
                 expected = 'any'
 
             # @page
@@ -189,7 +189,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 atrule = cssutils.css.CSSPageRule()
                 atrule.cssText = atruletokens
                 newcssRules.append(atrule)
-                i += endi 
+                i += endi
                 expected = 'any'
 
             # @unknown, insert in any case (but after @charset)
@@ -198,7 +198,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 atrule = cssutils.css.CSSUnknownRule()
                 atrule.cssText = atruletokens
                 newcssRules.append(atrule)
-                i += endi 
+                i += endi
 
             else: # probable StyleRule
                 ruletokens, endi = self._tokensupto(
@@ -207,13 +207,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 rule.cssText = ruletokens
                 notdeclared = self.__checknamespaces(rule, newnamespaces)
                 if notdeclared:
-                    rule.valid = False    
+                    rule.valid = False
                     self._log.error(
                         u'CSSStylesheet: CSSStyleRule uses undeclared namespace prefixes: %s.' %
                         ', '.join(notdeclared),
                         t, xml.dom.NamespaceErr)
                 newcssRules.append(rule)
-                i += endi                   
+                i += endi
                 expected = 'any'
 
             i += 1
@@ -232,10 +232,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         Used to delete a rule from the style sheet.
 
         index
-            of the rule to remove in the StyleSheet's rule list  
+            of the rule to remove in the StyleSheet's rule list
 
         DOMException
-    
+
         - INDEX_SIZE_ERR: (self)
           Raised if the specified index does not correspond to a rule in
           the style sheet's rule list.
@@ -243,7 +243,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
           Raised if this style sheet is readonly.
         """
         self._checkReadonly()
-        
+
         try:
             self.cssRules[index].parentStyleSheet = None # detach
             del self.cssRules[index] # delete from StyleSheet
@@ -258,7 +258,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         Used to insert a new rule into the style sheet. The new rule now
         becomes part of the cascade.
 
-        Rule may be a string or a valid CSSRule.        
+        Rule may be a string or a valid CSSRule.
 
         rule
             a parsable DOMString (cssutils: or Rule object)
@@ -269,11 +269,11 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             of the style sheet.
             If index is not given or None rule will be appended to rule
             list.
-            
+
         returns the index within the stylesheet's rule collection
 
         DOMException
-        
+
         - HIERARCHY_REQUEST_ERR: (self)
           Raised if the rule cannot be inserted at the specified index
           e.g. if an @import rule is inserted after a standard rule set
@@ -284,10 +284,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
           Raised if this style sheet is readonly.
         - SYNTAX_ERR: (rule)
           Raised if the specified rule has a syntax error and is
-          unparsable.        
+          unparsable.
         """
         self._checkReadonly()
-        
+
         # check position
         if index is None:
             index = len(self.cssRules)
@@ -295,7 +295,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             raise xml.dom.IndexSizeErr(
                 u'CSSStyleSheet: Invalid index %s for CSSRuleList with a length of %s.' % (
                     index, self.cssRules.length))
-        
+
         # parse
         if isinstance(rule, basestring):
             tempsheet = CSSStyleSheet()
@@ -321,7 +321,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             else:
                 self.cssRules.insert(index, rule)
                 rule.parentStyleSheet = self
-            
+
         # @unknown or comment
         elif isinstance(rule, cssutils.css.CSSUnknownRule) or \
            isinstance(rule, cssutils.css.CSSComment):
@@ -360,7 +360,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         # @namespace
         elif isinstance(rule, cssutils.css.CSSNamespaceRule):
-            # after @charset and @import 
+            # after @charset and @import
             for r in self.cssRules[index:]:
                 if isinstance(r, cssutils.css.CSSCharsetRule) or \
                    isinstance(r, cssutils.css.CSSImportRule):
@@ -399,7 +399,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         return index
 
-            
+
     def addRule(self, rule):
         "DEPRECATED, use appendRule instead"
         import warnings
@@ -460,5 +460,3 @@ if __name__ == '__main__':
 ##    print "type: ", c.type
 ##    print c.cssRules
 ##    c.addRule(cssutils.css.CSSImportRule('x'))
-
-    

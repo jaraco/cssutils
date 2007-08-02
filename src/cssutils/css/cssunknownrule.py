@@ -131,4 +131,3 @@ if __name__ == '__main__':
           }
         }''')
     print "SHEET:", sheet.cssText
-    

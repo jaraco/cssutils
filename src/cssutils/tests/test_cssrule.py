@@ -19,9 +19,9 @@ class CSSRuleTestCase(basetest.BaseTestCase):
     overwrite setUp with the appriopriate values, will be used in
     test_init and test_readonly
     overwrite all tests as you please, use::
-    
+
         super(CLASSNAME, self).test_TESTNAME(params)
-    
+
     to use the base class tests too
     """
 
@@ -39,7 +39,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.r_type = cssutils.css.CSSRule.UNKNOWN_RULE
 
     def test_init(self):
-        "CSSRule.type and init"        
+        "CSSRule.type and init"
         self.assertEqual(self.r_type, self.r.type)
         self.assertEqual(u'', self.r.cssText)
         self.assertEqual(None, self.r.parentRule)
@@ -53,7 +53,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
                           self.rRO._setCssText, u'x')
         self.assertEqual(u'', self.rRO.cssText)
 
-        
+
     def _test_InvalidModificationErr(self, startwithspace):
         """
         CSSRule.cssText InvalidModificationErr
@@ -61,7 +61,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         called by subclasses
 
         startwithspace
-        
+
         for test starting with this not the test but " test" is tested
         e.g. " @page {}"
         exception is the style rule test
@@ -80,9 +80,9 @@ class CSSRuleTestCase(basetest.BaseTestCase):
             if startwithspace in (u'a style rule', ) and test in (
                 u'/* comment */', u'a style rule {}'):
                 continue
-            
+
             if test.startswith(startwithspace):
-                test = u' %s' % test             
+                test = u' %s' % test
 
             self.assertRaises(xml.dom.InvalidModificationErr,
                  self.r._setCssText, test)

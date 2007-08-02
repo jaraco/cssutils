@@ -76,7 +76,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
                     self.r.__setattr__, 'encoding', enc,
                     exc_pattern=re.compile("Unknown \(Python\) encoding"))
 
-                
+
     def test_cssText(self):
         """CSSCharsetRule.cssText
 
@@ -106,4 +106,4 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

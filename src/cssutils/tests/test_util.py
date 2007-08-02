@@ -57,7 +57,7 @@ class UtilTestCase(basetest.BaseTestCase):
                     if u'(' == t.value:
                         tokens[i].value = u'func('
                         tokens[i].type = Token.FUNCTION
-            
+
             if 1 == callid:
                 restokens, i = b._tokensupto(tokens)
             elif 2 == callid:
@@ -76,14 +76,14 @@ class UtilTestCase(basetest.BaseTestCase):
                 restokens, i = b._tokensupto(
                     tokens, selectorattendonly=True)
 
-                
+
             res = u''.join([t.value for t in restokens])
 
             self.assertEqual(True, (lambda x: i > 1)(i))
             self.assertEqual(exp, res)
 
-                
+
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

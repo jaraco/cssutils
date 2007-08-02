@@ -14,7 +14,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '0.9.2a5, $LastChangedRevision$'
 
-import xml.dom 
+import xml.dom
 
 import cssutils
 
@@ -33,16 +33,16 @@ class CSSValue(cssutils.util.Base):
 
     seq: a list (cssutils)
         All parts of this style declaration including CSSComments
-        
+
     _value
         value without any comments, used by Property to validate
     """
-    
-    CSS_INHERIT = 0         
-    """ 
+
+    CSS_INHERIT = 0
+    """
     The value is inherited and the cssText contains "inherit".
     """
-    CSS_PRIMITIVE_VALUE = 1 
+    CSS_PRIMITIVE_VALUE = 1
     """
     The value is a primitive value and an instance of the
     CSSPrimitiveValue interface can be obtained by using binding-specific
@@ -54,11 +54,11 @@ class CSSValue(cssutils.util.Base):
     interface can be obtained by using binding-specific casting
     methods on this instance of the CSSValue interface.
     """
-    CSS_CUSTOM = 3          
+    CSS_CUSTOM = 3
     """
     The value is a custom value.
     """
-                            
+
     def __init__(self, cssText=u'inherit', readonly=False):
         """
         (cssutils)
@@ -67,7 +67,7 @@ class CSSValue(cssutils.util.Base):
         cssText
             the parsable cssText of the value
         readonly
-            defaults to False        
+            defaults to False
         """
         super(CSSValue, self).__init__()
 
@@ -85,14 +85,14 @@ class CSSValue(cssutils.util.Base):
         x
             used for error message
 
-        returns True if INVALID found, else False            
+        returns True if INVALID found, else False
         """
         for t in tokens:
             if t.type == self._ttypes.INVALID:
                 self._log.error(u'CSSValue: Invalid token found in %s.' % x, t)
                 return True
         return False
-    
+
 
     def _getCssText(self):
         return cssutils.ser.do_css_CSSvalue(self)
@@ -102,7 +102,7 @@ class CSSValue(cssutils.util.Base):
         Format
         ======
         ::
-        
+
             expr = value
               : term [ operator term ]*
               ;
@@ -123,13 +123,13 @@ class CSSValue(cssutils.util.Base):
             hexcolor
               : HASH S*
               ;
-        
+
         DOMException on setting
-                
+
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error
           (according to the attached property) or is unparsable.
-        - TODO: INVALID_MODIFICATION_ERR: 
+        - TODO: INVALID_MODIFICATION_ERR:
           Raised if the specified CSS string value represents a different
           type of values than the values allowed by the CSS property.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
@@ -143,7 +143,7 @@ class CSSValue(cssutils.util.Base):
                 u'CSSValue: Unknown value syntax: "%s".' % self._valuestr(
                     cssText))
             return
-        
+
         hasvalue = False
         newseq = []
         i, imax = 0, len(tokens)
@@ -159,8 +159,8 @@ class CSSValue(cssutils.util.Base):
             elif t.type in (
                 self._ttypes.SEMICOLON, self._ttypes.IMPORTANT_SYM) or\
                 u':' == t.value:
-                 self._log.error(u'CSSValue: Syntax error.', t)
-                 return
+                self._log.error(u'CSSValue: Syntax error.', t)
+                return
             elif t.type == self._ttypes.FUNCTION:
                 _functokens, endi = self._tokensupto(
                     tokens, funcendonly=True)
@@ -175,7 +175,7 @@ class CSSValue(cssutils.util.Base):
                 hasvalue = True
 
             i += 1
-                
+
         if hasvalue:
             self.seq = newseq
             self._value = u''.join([x for x in newseq if not isinstance(

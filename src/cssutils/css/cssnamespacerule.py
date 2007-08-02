@@ -24,7 +24,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
     The @namespace at-rule declares a namespace prefix and associates
     it with a given namespace (a string). This namespace prefix can then be
     used in namespace-qualified names such as those described in the
-    Selectors Module [SELECT] or the Values and Units module [CSS3VAL].    
+    Selectors Module [SELECT] or the Values and Units module [CSS3VAL].
 
     Properties
     ==========
@@ -38,10 +38,10 @@ class CSSNamespaceRule(cssrule.CSSRule):
         The prefix used in the stylesheet for the given
         ``CSSNamespaceRule.nsuri``. If prefix is empty uri sets the default
         namespace for the stylesheet.
-        
+
     cssutils only
     -------------
-    atkeyword: 
+    atkeyword:
         the literal keyword used
 
     Inherits properties from CSSRule
@@ -53,7 +53,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
       ;
     namespace_prefix
       : IDENT
-      ;        
+      ;
     """
     type = cssrule.CSSRule.NAMESPACE_RULE
 
@@ -73,23 +73,23 @@ class CSSNamespaceRule(cssrule.CSSRule):
             ``CSSNamespaceRule.uri``.
         """
         super(CSSNamespaceRule, self).__init__()
-        
+
         self.atkeyword = u'@namespace'
         self.uri = uri
         self.prefix = prefix
         self.seq = [self.prefix, self.uri]
 
-        self._readonly = readonly        
-    
+        self._readonly = readonly
+
 
     def _getURI(self):
         """ returns uri as a string """
         return self._uri
 
     def _setURI(self, uri):
-        """ 
+        """
         DOMException on setting
-        
+
         - SYNTAX_ERR: (not checked here)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
@@ -117,9 +117,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
         return self._prefix
 
     def _setPrefix(self, prefix=u''):
-        """ 
+        """
         DOMException on setting
-        
+
         - SYNTAX_ERR: (not checked here)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
@@ -143,32 +143,32 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
 
     def _getCssText(self):
-        """ 
-        returns serialized property cssText 
+        """
+        returns serialized property cssText
         """
         return cssutils.ser.do_CSSNamespaceRule(self)
 
     def _setCssText(self, cssText):
         """
         DOMException on setting
-        
+
         - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
           Raised if the rule cannot be inserted at this point in the
           style sheet.
         - INVALID_MODIFICATION_ERR: (self)
           Raised if the specified CSS string value represents a different
-          type of rule than the current one.            
+          type of rule than the current one.
         - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
           Raised if the rule is readonly.
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
-        super(CSSNamespaceRule, self)._setCssText(cssText)          
+        super(CSSNamespaceRule, self)._setCssText(cssText)
         tokens = self._tokenize(cssText)
         valid = True
 
-        # check if right type    
+        # check if right type
         if not tokens or tokens and tokens[0].type != self._ttypes.NAMESPACE_SYM:
             self._log.error(u'CSSNamespaceRule: No CSSNamespaceRule found: %s' %
                       self._valuestr(cssText),
@@ -176,7 +176,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             return
         else:
             newatkeyword = tokens[0].value
-            
+
         newseq = []
         newuri = None
         newprefix = u''
@@ -189,11 +189,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 expected = 'EOF'
 
             elif self._ttypes.S == t.type: # ignore
-                pass 
-                
+                pass
+
             elif self._ttypes.COMMENT == t.type:
                 newseq.append(cssutils.css.CSSComment(t))
-                
+
             elif 'uri or prefix' == expected and\
                  self._ttypes.IDENT == t.type:
                 newprefix = t.value
@@ -220,7 +220,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                     valid = False
                     self._log.error(
                         u'CSSNamespaceRule: No namespace URI found.', t)
-                expected = None                     
+                expected = None
                 continue
 
             else:
@@ -249,5 +249,5 @@ if __name__ == '__main__':
     print c.cssText
     c.prefix = "p"
     print c.cssText
-    c.cssText = r'''@namespace "\"";'''   
+    c.cssText = r'''@namespace "\"";'''
     print c.cssText

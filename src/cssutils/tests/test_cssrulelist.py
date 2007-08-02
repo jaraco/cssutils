@@ -29,4 +29,4 @@ class CSSRuleListTestCase(basetest.BaseTestCase):
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

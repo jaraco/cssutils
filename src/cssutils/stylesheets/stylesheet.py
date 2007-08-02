@@ -83,7 +83,7 @@ class StyleSheet(cssutils.util.Base):
             attribute is None.
         """
         super(StyleSheet, self).__init__()
-        
+
         self.type = type
         self.href = href
         self.media = media
@@ -94,6 +94,3 @@ class StyleSheet(cssutils.util.Base):
             self.disabled = False
         self.ownerNode = ownerNode
         self.parentStyleSheet = parentStyleSheet
-
-
-

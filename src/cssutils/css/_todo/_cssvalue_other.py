@@ -29,7 +29,7 @@ class RGBColor(cssutils.css.Value):
     as a float in the specified or the computed style.
 
     A color percentage value can always be converted to a number and
-    vice versa.    
+    vice versa.
     """
     def __init__(self, red, green, blue):
         """
@@ -41,7 +41,7 @@ class RGBColor(cssutils.css.Value):
         self.red = self.__parse(red)
         self.green = self.__parse(green)
         self.blue = self.__parse(blue)
-    
+
     def __parse(self, v):
         "returns (value, percent[u'%' or ''])"
         # TODO: exceptions! - logging?
@@ -65,17 +65,17 @@ class RGBColor(cssutils.css.Value):
                     raise xml.dom.SyntaxErr(
                         '"%s" is not valid for a RGB Color value' % v)
         return v, p
-    
+
     def __getFormatted(self):
         """
-        (cssutils only) returns a string representation 
+        (cssutils only) returns a string representation
         like rgb(1%, 20%, 100%)
         """
         return u'rgb(%s%s, %s%s, %s%s)' % (
-            self.red[0], self.red[1], 
-            self.green[0], self.green[1], 
+            self.red[0], self.red[1],
+            self.green[0], self.green[1],
             self.blue[0], self.blue[1])
-        
+
     cssText = property(__getFormatted, doc=
             '(cssutils only) readonly string representation')
 
@@ -93,7 +93,7 @@ class Rect(cssbuilder.Value):
           readonly attribute CSSPrimitiveValue  right;
           readonly attribute CSSPrimitiveValue  bottom;
           readonly attribute CSSPrimitiveValue  left;
-        };    
+        };
     """
 
 
@@ -108,7 +108,5 @@ class Counter(cssbuilder.Value):
           readonly attribute DOMString        identifier;
           readonly attribute DOMString        listStyle;
           readonly attribute DOMString        separator;
-        };        
+        };
     """
-    
-    

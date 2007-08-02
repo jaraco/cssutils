@@ -28,7 +28,7 @@ setup(
     },
     description='A CSS Cascading Style Sheets library for Python',
     long_description='''A Python package to parse and build CSS Cascading
-Style Sheets. Partly implements the `DOM Level 2 
+Style Sheets. Partly implements the `DOM Level 2
 Style <http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/>`_
 `Stylesheets
 <http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/stylesheets.html>`_

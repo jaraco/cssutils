@@ -32,20 +32,20 @@ class SelectorList(cssutils.util.Base, list):
     Properties
     ==========
     length: of type unsigned long, readonly
-        The number of Selector elements in the list. 
+        The number of Selector elements in the list.
     selectorText: of type DOMString
         The textual representation of the selector for the rule set. The
         implementation may have stripped out insignificant whitespace while
         parsing the selector.
     seq:
         A list of interwoven Selector objects and u','
-    """    
+    """
     def __init__(self, selectorText=None, readonly=False):
         """
         initializes SelectorList with optional selectorText
         """
         super(SelectorList, self).__init__()
-        
+
         self.seq = []
         if selectorText:
             self.selectorText = selectorText
@@ -58,10 +58,10 @@ class SelectorList(cssutils.util.Base, list):
         returns new Selector
 
         DOMException on setting
-        
+
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error
-          and is unparsable.     
+          and is unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this rule is readonly.
         """
@@ -78,7 +78,7 @@ class SelectorList(cssutils.util.Base, list):
             self.seq.append(newS)
             self.append(newS)
 
-        return newS      
+        return newS
 
 
     def _getLength(self):
@@ -87,7 +87,7 @@ class SelectorList(cssutils.util.Base, list):
     length = property(_getLength,
         doc="The number of Selector elements in the list.")
 
-        
+
     def _getSelectorText(self):
         """ returns serialized format """
         return cssutils.ser.do_css_SelectorList(self)
@@ -95,10 +95,10 @@ class SelectorList(cssutils.util.Base, list):
     def _setSelectorText(self, selectorText):
         """
         DOMException on setting
-        
+
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error
-          and is unparsable.     
+          and is unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this rule is readonly.
         """
@@ -106,7 +106,7 @@ class SelectorList(cssutils.util.Base, list):
         tokens = self._tokenize(selectorText)
         if tokens:
             oldseq, self.seq = self.seq, [] # save and empty
-            self.seq = [] 
+            self.seq = []
             selectorparts = []
             found = None
             for i in range(len(tokens)):
@@ -123,11 +123,11 @@ class SelectorList(cssutils.util.Base, list):
                 else:
                     found = 'selectorpart'
                     selectorparts.append(t)
-                    
+
             if found == 'comma':
                 self._log.error(u'SelectorList: Selectorlist ends with ",".')
                 self.seq = oldseq
-                return 
+                return
             elif selectorparts: # add new selector
                 try:
                     done = self.appendSelector(selectorparts)
@@ -135,7 +135,7 @@ class SelectorList(cssutils.util.Base, list):
                     self.seq = oldseq
                     self._log.error(e)
                     return
-                   
+
         else:
             self._log.error(u'SelectorList: No selectors found.')
 
@@ -145,7 +145,7 @@ class SelectorList(cssutils.util.Base, list):
 
 
 if __name__ == '__main__':
-    cssutils.css.cssstylerule.Selector = Selector # for main test        
+    cssutils.css.cssstylerule.Selector = Selector # for main test
     L = SelectorList()
     L.selectorText = 'a'
     print 1, L.selectorText
@@ -153,5 +153,4 @@ if __name__ == '__main__':
         L.selectorText = ','
     except Exception, e:
         print e
-    print 2, L.selectorText 
- 
+    print 2, L.selectorText

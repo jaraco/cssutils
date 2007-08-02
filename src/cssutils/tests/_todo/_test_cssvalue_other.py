@@ -22,7 +22,7 @@ class RGBColorTestCase(unittest.TestCase):
 
         v = cvo.RGBColor(u'  0.0  %  ', u'49.5%', u' 100.8   %  ')
         self.assertEqual(u'rgb(0.0%, 49.5%, 100.8%)', v.cssText)
-    
+
         v = cvo.RGBColor(u'  0.0  ', 1, u' 100.8   %  ')
         self.assertEqual(u'rgb(0.0%, 1, 100.8%)', v.cssText)
 
@@ -38,11 +38,11 @@ class RectTestCase(unittest.TestCase):
         v = cvo.Rect()
 
 
-class CounterTestCase(unittest.TestCase):   
+class CounterTestCase(unittest.TestCase):
 
     def test_init(self):
         v = cvo.Counter()
-        
+
 
 if __name__ == '__main__':
-    unittest.main() 
+    unittest.main()

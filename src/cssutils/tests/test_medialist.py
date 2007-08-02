@@ -27,11 +27,11 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(0, ml.length)
         self.assertEqual(u'all', ml.mediaText)
 
-        ml.mediaText = u' print   , screen '        
+        ml.mediaText = u' print   , screen '
         self.assertEqual(2, ml.length)
         self.assertEqual(u'print, screen', ml.mediaText)
 
-        ml.mediaText = u' print , all  , screen '        
+        ml.mediaText = u' print , all  , screen '
         self.assertEqual(1, ml.length)
         self.assertEqual(u'all', ml.mediaText)
 
@@ -50,12 +50,12 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(2, ml.length)
         self.assertEqual(u'print, screen', ml.mediaText)
 
-        # automatic del and append!        
+        # automatic del and append!
         ml.appendMedium(u'print')
         self.assertEqual(2, ml.length)
         self.assertEqual(u'screen, print', ml.mediaText)
 
-        # automatic del and append!        
+        # automatic del and append!
         ml.appendMedium(u'SCREEN')
         self.assertEqual(2, ml.length)
         self.assertEqual(u'print, screen', ml.mediaText)
@@ -101,12 +101,12 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(u'print', ml.item(0))
         self.assertEqual(u'screen', ml.item(1))
         self.assertEqual(None, ml.item(2))
-    
+
     def test_handheld(self):
         "MediaList handheld"
         ml = cssutils.stylesheets.MediaList()
 
-        ml.mediaText = u' handheld , all  , screen '        
+        ml.mediaText = u' handheld , all  , screen '
         self.assertEqual(1, ml.length)
         # keeps all explicitly set incl ,
         self.assertEqual(5, len(ml.seq)) # ?
@@ -138,7 +138,7 @@ class MediaListTestCase(basetest.BaseTestCase):
             }
         self.do_equal_r(tests, att='mediaText')
 
-        
+
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

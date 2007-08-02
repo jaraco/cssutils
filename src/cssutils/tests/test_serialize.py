@@ -41,7 +41,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
                          True)
         self.assertEqual(cssutils.ser.prefs.setBOM,
                          False)
-        
+
 
     def test_defaultAtKeyword(self):
         "CSSSerializer Preferences.defaultAtKeyword"
@@ -57,9 +57,9 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 
     def test_defaultPropertyName(self):
         "CSSSerializer Preferences.defaultPropertyName"
-        # does not actually work as once the name is set it is used also if used with 
+        # does not actually work as once the name is set it is used also if used with
         # a backslash in it later...
-        
+
         s = cssutils.parseString(u'a { c\olor: green; }')
         self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
         cssutils.ser.prefs.defaultPropertyName = True
@@ -161,11 +161,11 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual('@import url(str);', r1.cssText)
         self.assertEqual('@import url(uri);', r2.cssText)
 
-        cssutils.ser.prefs.importHrefFormat = 'not defined' 
+        cssutils.ser.prefs.importHrefFormat = 'not defined'
         self.assertEqual('@import url(not);', r0.cssText)
         self.assertEqual('@import "str";', r1.cssText)
         self.assertEqual('@import url(uri);', r2.cssText)
-        
+
         self._resetprefs()
 
 

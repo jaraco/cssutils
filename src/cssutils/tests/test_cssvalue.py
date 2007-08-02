@@ -11,7 +11,7 @@ import cssutils
 
 
 class CSSValueTestCase(basetest.BaseTestCase):
-        
+
     def test_init(self):
         "CSSValue.__init__()"
         v = cssutils.css.CSSValue()
@@ -63,7 +63,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.NoModificationAllowedErr, v._setCssText, u'x')
         self.assertEqual(u'inherit', v.cssText)
 
-                        
+
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

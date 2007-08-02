@@ -136,7 +136,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(m, r.parentRule)
         m.deleteRule(-1)
         self.assertEqual(None, r.parentRule)
-        
+
         self.assertEqual(4, m.cssRules.length)
         self.assertEqual(
             u'@media all {\n    a {}\n    /* x */\n    b {}\n    c {}\n    }', m.cssText)
@@ -165,7 +165,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         stylerule = cssutils.css.CSSStyleRule('a')
         comment1 = cssutils.css.CSSComment(u'/*1*/')
         comment2 = cssutils.css.CSSComment(u'/*2*/')
-        
+
         # hierarchy
         self.assertRaises(xml.dom.HierarchyRequestErr,
                           r.insertRule, charsetrule, 0)
@@ -200,12 +200,12 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_media(self):
         "CSSMediaRule.media"
         # see CSSImportRule.media
-        
+
         # setting not allowed
         self.assertRaises(AttributeError,
-                          self.r.__setattr__, 'media', None)  
+                          self.r.__setattr__, 'media', None)
         self.assertRaises(AttributeError,
-                          self.r.__setattr__, 'media', 0)  
+                          self.r.__setattr__, 'media', 0)
 
         # set mediaText instead
         self.r.media.mediaText = 'print'
@@ -215,4 +215,4 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

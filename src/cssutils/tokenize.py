@@ -35,11 +35,11 @@ class Tokenizer(object):
         (lambda t: t == u',', tokentype.COMMA),
         (lambda t: t == u'.', tokentype.CLASS),
         (tokenregex.w, tokentype.S),
-        (tokenregex.num, tokentype.NUMBER), 
+        (tokenregex.num, tokentype.NUMBER),
         (tokenregex.atkeyword, tokentype.ATKEYWORD),
-        (tokenregex.HASH, tokentype.HASH), 
-        (tokenregex.DIMENSION, tokentype.DIMENSION), 
-        (tokenregex.ident, tokentype.IDENT), 
+        (tokenregex.HASH, tokentype.HASH),
+        (tokenregex.DIMENSION, tokentype.DIMENSION),
+        (tokenregex.ident, tokentype.IDENT),
         (tokenregex.string, tokentype.STRING)
     ]
     _delimmap = {
@@ -67,20 +67,20 @@ class Tokenizer(object):
     def __init__(self):
         self.log = cssutils.log
         self._sub1ofcol = False
-  
+
     def getttype(self, t):
         """
         check type of tokentype in t which may be string or list
         returns ttype
         """
         if isinstance(t, list): t = u''.join(t)
-        
+
         for check, result in Tokenizer._typelist:
             if check(t): return result
-         
+
         return tokentype.DELIM
 
-            
+
     def addtoken(self, value, ttype=None):
         """
         adds a new Token to self.tokens
@@ -89,8 +89,8 @@ class Tokenizer(object):
         if isinstance(value, list): value = u''.join(value)
         if not value: return
 
-        if not ttype: ttype = self.getttype(value)        
-        
+        if not ttype: ttype = self.getttype(value)
+
         # last two tokens, if none simple use empty Token
         if len(self.tokens) > 0: last = self.tokens[-1]
         else: last = Token()
@@ -103,7 +103,7 @@ class Tokenizer(object):
         # WS, simply add later
         if ttype == tokentype.S:
             todo = True
-            
+
         # ATKEYWORD: standard, need to adjust type
         elif ttype == tokentype.ATKEYWORD:
             normkeyword  = value[1:].lower().replace(u'\\', u'')
@@ -111,7 +111,7 @@ class Tokenizer(object):
                 normkeyword, tokentype.ATKEYWORD)
             todo = True
 
-        # ATKEYWORD: replace last token if @xxx 
+        # ATKEYWORD: replace last token if @xxx
         elif u'@' == last.value and ttype == tokentype.IDENT:
             keyword = value.lower()
             normkeyword = keyword.replace(u'\\', u'')
@@ -135,8 +135,8 @@ class Tokenizer(object):
         elif u'-' == last.value and (ttype in (
            tokentype.IDENT, tokentype.NUMBER, tokentype.DIMENSION)):
             last.type = ttype
-            last.value = u'-%s' % value.lower()        
-      
+            last.value = u'-%s' % value.lower()
+
         # DIMENSION: replace last token with num + ident
         elif last.type == tokentype.NUMBER and\
              ttype == tokentype.IDENT:
@@ -203,18 +203,18 @@ class Tokenizer(object):
                         # found other content
                         _uricontent += _t.value
                 if _uricontent:
-                  # check if valid URI and save if yes
-                  _uri = u'url(%s)' % _uricontent
-                  if tokenregex.URI(_uri):
-                      _urit = self.tokens[_uriindex]
-                      _urit.type = tokentype.URI
-                      _urit.value = _uri
-                      del self.tokens[_uriindex + 1:]
-                  else:
-                      todo = True # add )
+                    # check if valid URI and save if yes
+                    _uri = u'url(%s)' % _uricontent
+                    if tokenregex.URI(_uri):
+                        _urit = self.tokens[_uriindex]
+                        _urit.type = tokentype.URI
+                        _urit.value = _uri
+                        del self.tokens[_uriindex + 1:]
+                    else:
+                        todo = True # add )
             else:
                 todo = True # add )
-                      
+
         else:
             todo = True
 
@@ -224,11 +224,11 @@ class Tokenizer(object):
 
         # adjust x,y position
         cols = len(value)
-        if self._sub1ofcol: 
+        if self._sub1ofcol:
             # added a "0" to ".1" -> "0.1" so PLUS 1
             cols -= 1
             self._sub1ofcol = False
-        if value.find('\n') != -1: 
+        if value.find('\n') != -1:
             # end of a line, start anew but count present chars
             self.col = 1
             cols = len(value[value.rfind('\n')+1:])
@@ -259,7 +259,7 @@ class Tokenizer(object):
         In fact, these two methods may be combined. Only one
         whitespace character is ignored after a hexadecimal escape.
         Note that this means that a "real" space after the escape
-        sequence must itself either be escaped or doubled. 
+        sequence must itself either be escaped or doubled.
         """
         escape = u'\\'
         MAX = 6
@@ -298,11 +298,11 @@ class Tokenizer(object):
         handles
           strings: "..." or '...'
           comment: /*...*/
-        
+
         t
             initial token to start result with
         end
-            string at which to end 
+            string at which to end
         ttype
             str description of token to be found
         _fullSheet
@@ -314,7 +314,7 @@ class Tokenizer(object):
         else:
             isstring = False
             kind = 'comment'
-            
+
         while self.text:
             # c is removed from self.text, c2 may be removed too later here
             c, c2 = self.text.pop(0), u''.join(self.text[:1])
@@ -327,7 +327,7 @@ class Tokenizer(object):
                 if not isstring:
                     del self.text[0] # remove ending / (c2)
                 break
-            
+
             elif isstring and u'\\' == c and c2 in u'\n\r\f':
                 # in STRING ignore and remove a combi of \ + nl
                 if u'\r' == c2 and \
@@ -337,7 +337,7 @@ class Tokenizer(object):
                     del self.text[0] # remove "c3" = \n
                 else:
                     del self.text[0] #remove c2 \r or \n or \f
-                            
+
             elif isstring and c in '\n\r\f':
                 # nl in String makes it invalid
                 t.append(c)
@@ -383,15 +383,15 @@ class Tokenizer(object):
                 self.log.error(
                     u'Tokenizer: Syntax Error, incomplete %s.' % kind,
                     token, xml.dom.SyntaxErr)
-                
+
 
     def tokenize(self, text, _fullSheet=False):
         """
-        tokenizes text and returns tokens     
+        tokenizes text and returns tokens
         """
         if not text:
-          return []
-        
+            return []
+
         self.text = list(text)
         self.tokens = []
         self.line = 1
@@ -403,10 +403,10 @@ class Tokenizer(object):
             """
             if len(t) == 0:
                 return [c] # new t
-            
-            tt, ct = self.getttype(t), self.getttype(c)            
+
+            tt, ct = self.getttype(t), self.getttype(c)
 ##            print '"%s": (%s)\t %s: (%s)' % (c, ct, t, tt),
-            
+
             if tt in (tokentype.ATKEYWORD, tokentype.IDENT)\
                or (t and t[-1] == u'-')\
                and ct in (tokentype.IDENT, tokentype.NUMBER):
@@ -428,22 +428,22 @@ class Tokenizer(object):
                 # start of number which may be 1 OR 1. OR .
                 t.append(c)
 
-            elif ct == tokentype.DELIM: 
+            elif ct == tokentype.DELIM:
                 # escape always alone
                 # . not with number always alone
                 self.addtoken(t)
                 self.addtoken(c)
                 t = []
-               
+
             elif tt != ct:
                 # finish old and start new token with c
                 self.addtoken(t)
                 t = [c]
 
-            else: 
+            else:
                 # wait for new token or end
                 t.append(c)
-                
+
 ##            print '"%s": (%s)\t %s: (%s)\n' % (c, ct, t, tt)
 ##            print '----',self.tokens
             return t
@@ -452,7 +452,7 @@ class Tokenizer(object):
         while self.text:
             # next two chars
             c, c2 = self.text.pop(0), u''.join(self.text[:1])
-            
+
             if c in self.WS:
                 # WhiteSpace
                 self.addtoken(t) # add saved
@@ -467,7 +467,7 @@ class Tokenizer(object):
 
             elif u'/' == c and u'*' == c2:
                 # Comment
-                self.addtoken(t) # add saved    
+                self.addtoken(t) # add saved
                 del self.text[0] # remove *
                 self.dostrorcomment(
                     [u'/*'], u'*/', tokentype.COMMENT, _fullSheet)
@@ -479,10 +479,10 @@ class Tokenizer(object):
                 self.dostrorcomment(
                     [c], c, tokentype.STRING, _fullSheet)
                 t = []
-                
+
             elif c in u';{}[](),':
                 # reservedchars, type will be handled above
-                self.addtoken(t) # add saved               
+                self.addtoken(t) # add saved
                 self.addtoken(c)
                 t = []
 
@@ -507,24 +507,24 @@ class Tokenizer(object):
 
             elif c == u'<' and u''.join(self.text[:3]) == u'!--':
                 # CDO
-                self.addtoken(t) # add saved       
+                self.addtoken(t) # add saved
                 del self.text[:3]
                 self.addtoken(u'<!--', tokentype.CDO)
                 t = []
             elif c == u'-' and u''.join(self.text[:2]) == u'->':
                 # CDC
-                self.addtoken(t) # add saved       
+                self.addtoken(t) # add saved
                 del self.text[:2]
                 self.addtoken(u'-->', tokentype.CDC)
                 t = []
 
             elif c in u'.=~|*+>#!%:&$':
                 # DELIM reservedchars, possibly combined later
-                self.addtoken(t) # add saved               
+                self.addtoken(t) # add saved
                 self.addtoken(
                     c, Tokenizer._delimmap.get(c, tokentype.DELIM))
                 t = []
-                
+
             elif u'\\' == c and c2 not in string.hexdigits:
                 # simple escape
                 t.append(c)
@@ -553,11 +553,11 @@ if __name__ == '__main__':
     """
     NOT LIKE SPEC:
       between ! and important only WS is allowed, no comments, this should
-      be very seldomly used anyway 
+      be very seldomly used anyway
 
     TODO:
       Tokenizer:
-        
+
       parser:
         - filter CDO/CDC
         - lengths: % px pt pc em ex in cm mm
@@ -567,7 +567,7 @@ if __name__ == '__main__':
     and an identifier. That means that in CSS1, the declaration
     'font: 10pt/1.2serif' was correct, as was 'font: 10pt/12pt serif';
     in CSS2, a space is required before "serif". (Some UAs accepted
-    the first example, but not the second.)        
+    the first example, but not the second.)
     """
     css = u'''5px -5px'''
 

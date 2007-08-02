@@ -13,13 +13,13 @@ currently implemented
     - CSSNamespaceRule (WD)
     - CSSPageRule
     - CSSStyleRule
-    - CSSUnkownRule  
+    - CSSUnkownRule
     - CSSStyleDeclaration
     - CSS2Properties
-    
+
 in progress
     - CSSValue
-    
+
 todo
     - value classes
 """

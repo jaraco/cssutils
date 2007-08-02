@@ -24,7 +24,7 @@ print styledeclaration
 print "------------"
 
 print "setting cssText"
-style = cssutils.css.CSSStyleDeclaration(cssText=styledeclaration)       
+style = cssutils.css.CSSStyleDeclaration(cssText=styledeclaration)
 show(style)
 
 print "------------"
@@ -50,5 +50,3 @@ show(style)
 print "style.setProperty('color', 'blue', overwrite=False)"
 style.setProperty('color', 'blue', overwrite=False)
 show(style)
-
-

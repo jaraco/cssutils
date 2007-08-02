@@ -6,8 +6,8 @@ Usage::
     parser = CSSParser()
     stylesheet = p.parse('test1.css', 'ascii')
 
-    print stylesheet.cssText 
-    
+    print stylesheet.cssText
+
 """
 __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
@@ -39,9 +39,9 @@ class CSSParser(object):
             cssutils.log.setlog(log)
         if loglevel is not None:
             cssutils.log.setloglevel(loglevel)
-            
+
         cssutils.log.raiseExceptions = raiseExceptions
-     
+
 
     def parseString(self, cssText):
         """
@@ -49,18 +49,18 @@ class CSSParser(object):
         returns the parsed CSS as a CSSStyleSheet object
 
         cssText
-            CSS string to parse        
+            CSS string to parse
         """
         stylesheet = cssutils.css.CSSStyleSheet()
         stylesheet.cssText = cssText
         return stylesheet
 
 
-    def parse(self, filename, encoding=None):  
+    def parse(self, filename, encoding=None):
         """
         parse a CSSStyleSheet file
         returns the parsed CSS as a CSSStyleSheet object
-        
+
         filename
             name of the CSS file to parse
         encoding
@@ -88,5 +88,5 @@ class CSSParser(object):
         # utf-8 BOM
         if cssText.startswith(u'\ufeff'):
             cssText = cssText[1:]
-            
+
         return self.parseString(cssText)

@@ -16,8 +16,8 @@ class CSSValueList(list):
     Some properties allow an empty list into their syntax. In that case,
     these properties take the none identifier. So, an empty list means
     that the property has the value none.
-    
-    The items in the CSSValueList are accessible via an integral index, 
+
+    The items in the CSSValueList are accessible via an integral index,
     starting from 0.
     """
 
@@ -39,4 +39,3 @@ class CSSValueList(list):
             return self[index]
         except IndexError:
             return None
-

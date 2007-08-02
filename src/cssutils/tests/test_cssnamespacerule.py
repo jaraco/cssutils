@@ -32,7 +32,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_InvalidModificationErr(self):
         "CSSNamespaceRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@namespace')
-        
+
 
     def test_incomplete(self):
         "CSSNamespaceRule (incomplete)"
@@ -82,7 +82,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
             u'@namespace p "u";': None,
             u"@namespace p 'u';": u'@namespace p "u";',
-            
+
             u'@\\namespace p "u";': u'@namespace p "u";',
             u'@NAMESPACE p "u";': u'@namespace p "u";',
 
@@ -93,7 +93,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace/*1*/p/*2*/"u"/*3*/;': u'@namespace/*1*/ p/*2*/ "u"/*3*/;',
 
             # deprecated
-            u'@namespace p url(u);': u'@namespace p "u";', 
+            u'@namespace p url(u);': u'@namespace p "u";',
             u'@namespace p url(\'u\');': u'@namespace p "u";',
             u'@namespace p url(\"u\");': u'@namespace p "u";',
             u'@namespace p url( \"u\" );': u'@namespace p "u";',
@@ -103,7 +103,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         tests = {
             u'@namespace;': xml.dom.SyntaxErr, # nothing
-            u'@namespace p;': xml.dom.SyntaxErr, # no uri 
+            u'@namespace p;': xml.dom.SyntaxErr, # no uri
             u'@namespace "u" p;': xml.dom.SyntaxErr, # order
             }
         self.do_raise_p(tests) # parse
@@ -116,4 +116,4 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

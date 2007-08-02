@@ -125,12 +125,12 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''n|e''': None,
             u'''n|*''': None,
             u'''*|b[x|a]''': None,
-            
+
             u'''x:lang() y''': None,
             u'''x:nth-child(odd) y''': None,
             }
         # do not parse as not complete
-        self.do_equal_r(tests, att='selectorText') 
+        self.do_equal_r(tests, att='selectorText')
 
         tests = {
             u'': xml.dom.SyntaxErr,
@@ -175,7 +175,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a,': xml.dom.InvalidModificationErr,
             }
         # only set as not complete
-        self.do_raise_r(tests, att='_setSelectorText') 
+        self.do_raise_r(tests, att='_setSelectorText')
 
 
 if __name__ == '__main__':

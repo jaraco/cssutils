@@ -9,7 +9,7 @@ import xml.dom
 
 import cssutils
 
-  
+
 class CSSRule(cssutils.util.Base):
     """
     Abstract base interface for any type of CSS statement. This includes
@@ -42,13 +42,13 @@ class CSSRule(cssutils.util.Base):
         excluding @KEYWORD and braces
     valid:
         if this rule is valid
-        
+
     """
 
     """
     CSSRule type constants.
     An integer indicating which type of rule this is.
-    """    
+    """
     COMMENT = -1
     "cssutils only"
     UNKNOWN_RULE = 0
@@ -61,12 +61,12 @@ class CSSRule(cssutils.util.Base):
     PAGE_RULE = 6
     NAMESPACE_RULE = 7
     "TODO: WD, may be different later"
-        
+
     type = UNKNOWN_RULE
     """
     The type of this rule, as defined by a CSSRule type constant.
     Overwritten in derived classes.
-    
+
     The expectation is that binding-specific casting methods can be used to
     cast down from an instance of the CSSRule interface to the specific
     derived interface implied by the type.
@@ -75,7 +75,7 @@ class CSSRule(cssutils.util.Base):
 
     def __init__(self, readonly=False):
         super(CSSRule, self).__init__()
-            
+
         self.parentRule = None
         self.parentStyleSheet = None
 
@@ -83,22 +83,22 @@ class CSSRule(cssutils.util.Base):
         self.valid = True
 
         # must be set after initialization of #inheriting rule
-        self._readonly = False        
+        self._readonly = False
 
 
     def _getCssText(self):
         return u''
-    
+
     def _setCssText(self, cssText):
         """
         DOMException on setting
-        
+
         - SYNTAX_ERR:
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         - INVALID_MODIFICATION_ERR:
           Raised if the specified CSS string value represents a different
-          type of rule than the current one.            
+          type of rule than the current one.
         - HIERARCHY_REQUEST_ERR:
           Raised if the rule cannot be inserted at this point in the
           style sheet.

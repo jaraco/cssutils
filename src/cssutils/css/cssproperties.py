@@ -1,7 +1,7 @@
 """CSS2Properties (partly!) implements DOM Level 2 CSS CSS2Properties used
 by CSSStyleDeclaration
 
-TODO: CSS2Properties 
+TODO: CSS2Properties
     If an implementation does implement this interface, it is expected to
     understand the specific syntax of the shorthand properties, and apply
     their semantics; when the margin property is set, for example, the
@@ -37,7 +37,7 @@ TODO: CSS2Properties
     component longhand properties, as is the case for the font property
     with a value of "menu", querying for the values of the component
     longhand properties should return the empty string.
-    
+
 TODO: CSS2Properties DOMImplementation
     The interface found within this section are not mandatory. A DOM
     application can use the hasFeature method of the DOMImplementation
@@ -69,7 +69,7 @@ import re
 
 
 """
-Define some regular expression fragments that will be used as 
+Define some regular expression fragments that will be used as
 macros within the CSS property value regular expressions.
 """
 MACROS = {
@@ -269,7 +269,7 @@ def _expand_macros(tokdict):
         return '(?:%s)' % MACROS[m.groupdict()['macro']]
     for key, value in tokdict.items():
         while re.search(r'{[a-z][a-z0-9-]*}', value):
-            value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}', 
+            value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
                            macro_value, value)
         tokdict[key] = value
     return tokdict
@@ -289,7 +289,7 @@ _reCSStoDOMname = re.compile('-[a-z]', re.I)
 def _toDOMname(CSSname):
     """
     returns DOMname for given CSSname e.g. for CSSname 'font-style' returns
-    'fontStyle' 
+    'fontStyle'
     """
     def _doCSStoDOMname2(m): return m.group(0)[1].capitalize()
     return _reCSStoDOMname.sub(_doCSStoDOMname2, CSSname)
@@ -320,17 +320,17 @@ class CSS2Properties(object):
 
     This is an abstract class, the following functions need to be present
     in inheriting class:
-    
+
     - ``_getP``
     - ``_setP``
-    - ``_delP`` 
+    - ``_delP``
     """
     # actual properties are set after the class definition!
     def _getP(self, CSSname): pass
     def _setP(self, CSSname, value): pass
     def _delP(self, CSSname): pass
-    
-    
+
+
 # add list of DOMname properties to CSS2Properties
 # used for CSSStyleDeclaration to check if allowed properties
 # but somehow doubled, any better way?
@@ -364,5 +364,3 @@ if __name__=='__main__':
 ##    print c.color
 ##    del c.color
 ##    #print type(CSS2Properties.color), c.color
-    
-

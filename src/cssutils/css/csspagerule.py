@@ -130,7 +130,7 @@ class CSSPageRule(cssrule.CSSRule):
 
         return newselectortext, newseq
 
-        
+
     def _getCssText(self):
         """ 
         returns serialized property cssText 
@@ -200,7 +200,7 @@ class CSSPageRule(cssrule.CSSRule):
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")
 
-  
+
     def _getSelectorText(self):
         """
         wrapper for cssutils Selector object

@@ -8,7 +8,7 @@ __version__ = '0.9.2a2, $LastChangedRevision: 63 $'
 import xml.dom
 
 import basetest
-                
+
 
 import cssutils.css
 

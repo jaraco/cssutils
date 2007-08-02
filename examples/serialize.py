@@ -32,4 +32,3 @@ print '\t.getPropertyValue("c\\olor") ==',
 print sheet.cssRules[0].style.getPropertyValue('c\olor')
 print '\t.getPropertyValue("c\\o\\l\\o\\r") ==',
 print sheet.cssRules[0].style.getPropertyValue('c\\o\\l\\o\\r')
-
