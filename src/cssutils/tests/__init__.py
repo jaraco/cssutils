@@ -23,11 +23,11 @@ __version__ = '0.9.2a1, $LastChangedRevision$'
 
 ##testcases = (
 ##    TokenizerTestCase,
-##    CSSutilsImportTestCase, 
+##    CSSutilsImportTestCase,
 ##    CSSutilsTestCase,
 ##    CSSSerializerTestCase,
 ##    CSSCharsetRuleTestCase,
-##    CSSCommentTestCase,    
+##    CSSCommentTestCase,
 ##    CSSImportRuleTestCase,
 ##    CSSRuleTestCase,
 ##    CSSRuleListTestCase,
@@ -43,8 +43,6 @@ __version__ = '0.9.2a1, $LastChangedRevision$'
 ##suites = []
 ##for case in testcases:
 ##    suites.append(unittest.makeSuite(case))
-##    
-##suite = unittest.TestSuite(tuple(suites))  
+##
+##suite = unittest.TestSuite(tuple(suites))
 ##unittest.TextTestRunner(verbosity=2).run(suite)
-
-

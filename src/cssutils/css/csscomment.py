@@ -28,7 +28,7 @@ class CSSComment(cssrule.CSSRule):
     Format
     ======
     ::
-    
+
         /*...*/
     """
     type = cssrule.CSSRule.COMMENT # value = -1
@@ -43,7 +43,7 @@ class CSSComment(cssrule.CSSRule):
 
         self._readonly = readonly
 
-        
+
     def _getCssText(self):
         """returns serialized property cssText"""
         return cssutils.ser.do_CSSComment(self)
@@ -57,18 +57,18 @@ class CSSComment(cssrule.CSSRule):
             if called from cssparser directly this is Parser instance
 
         DOMException on setting
-        
+
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         - INVALID_MODIFICATION_ERR: (self)
           Raised if the specified CSS string value represents a different
-          type of rule than the current one.            
+          type of rule than the current one.
         - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
           Raised if the rule is readonly.
         """
         super(CSSComment, self)._setCssText(cssText)
-        tokens = self._tokenize(cssText)        
+        tokens = self._tokenize(cssText)
 
         if not tokens or tokens[0].type != self._ttypes.COMMENT:
             self._log.error(u'CSSComent: Not a CSSComment: %s' %

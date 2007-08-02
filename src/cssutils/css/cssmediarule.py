@@ -14,7 +14,7 @@ import cssutils
 class CSSMediaRule(cssrule.CSSRule):
     """
     represents an @media rule in a CSS style sheet. A @media rule can be
-    used to delimit style rules for specific media types.  
+    used to delimit style rules for specific media types.
 
     Properties
     ==========
@@ -27,7 +27,7 @@ class CSSMediaRule(cssrule.CSSRule):
 
     cssutils only
     -------------
-    atkeyword: 
+    atkeyword:
         the literal keyword used
 
     Inherits properties from CSSRule
@@ -38,14 +38,14 @@ class CSSMediaRule(cssrule.CSSRule):
       : MEDIA_SYM S* medium [ COMMA S* medium ]* LBRACE S* ruleset* '}' S*;
     """
     # CONSTANT
-    type = cssrule.CSSRule.MEDIA_RULE 
+    type = cssrule.CSSRule.MEDIA_RULE
 
     def __init__(self, readonly=False):
         """
         constructor
         """
         super(CSSMediaRule, self).__init__()
-        
+
         self.atkeyword = u'@media'
         self._media = cssutils.stylesheets.MediaList()
         self._rules = cssutils.css.cssrulelist.CSSRuleList()
@@ -56,12 +56,12 @@ class CSSMediaRule(cssrule.CSSRule):
     def _getMedia(self):
         "returns MediaList"
         return self._media
-    
+
     media = property(_getMedia,
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
 
-    
+
     def _getCssRules(self):
         return self._rules
 
@@ -75,18 +75,18 @@ class CSSMediaRule(cssrule.CSSRule):
         index
             within the media block's rule collection of the rule to remove.
 
-        Used to delete a rule from the media block.        
+        Used to delete a rule from the media block.
 
         DOMExceptions
-        
+
         - INDEX_SIZE_ERR: (self)
           Raised if the specified index does not correspond to a rule in
           the media rule list.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this media rule is readonly.            
-        """        
+          Raised if this media rule is readonly.
+        """
         self._checkReadonly()
-        
+
         try:
             self._rules[index].parentRule = None # detach
             del self._rules[index] # remove from @media
@@ -103,9 +103,9 @@ class CSSMediaRule(cssrule.CSSRule):
             contains both the selector and the style declaration. For
             at-rules, this specifies both the at-identifier and the rule
             content.
-            
+
             cssutils also allows rule to be a valid **CSSRule** object
-            
+
         index
             within the media block's rule collection of the rule before
             which to insert the specified rule. If the specified index is
@@ -115,9 +115,9 @@ class CSSMediaRule(cssrule.CSSRule):
             list.
 
         Used to insert a new rule into the media block.
-        
-        DOMException on setting        
-        
+
+        DOMException on setting
+
         - HIERARCHY_REQUEST_ERR:
           (no use case yet as no @charset or @import allowed))
           Raised if the rule cannot be inserted at the specified index,
@@ -136,7 +136,7 @@ class CSSMediaRule(cssrule.CSSRule):
 
         """
         self._checkReadonly()
-            
+
         # check position
         if index is None:
             index = len(self.cssRules)
@@ -144,7 +144,7 @@ class CSSMediaRule(cssrule.CSSRule):
             raise xml.dom.IndexSizeErr(
                 u'CSSMediaRule: Invalid index %s for CSSRuleList with a length of %s.' % (
                     index, self.cssRules.length))
-        
+
         # parse
         if isinstance(rule, basestring):
             tempsheet = CSSStyleSheet()
@@ -167,7 +167,7 @@ class CSSMediaRule(cssrule.CSSRule):
                       rule.cssText,
                       error=xml.dom.HierarchyRequestErr)
             return
-            
+
         self.cssRules.insert(index, rule)
         rule.parentRule = self
         return index
@@ -175,14 +175,14 @@ class CSSMediaRule(cssrule.CSSRule):
 
     def _getCssText(self):
         """
-        returns serialized property cssText 
+        returns serialized property cssText
         """
         return cssutils.ser.do_CSSMediaRule(self)
 
     def _setCssText(self, cssText):
         """
         DOMException on setting
-         
+
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if the rule is readonly.
         - INVALID_MODIFICATION_ERR: (self)
@@ -195,11 +195,11 @@ class CSSMediaRule(cssrule.CSSRule):
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
-        super(CSSMediaRule, self)._setCssText(cssText)          
-        tokens = self._tokenize(cssText)        
+        super(CSSMediaRule, self)._setCssText(cssText)
+        tokens = self._tokenize(cssText)
         valid = True
 
-        # check if right token    
+        # check if right token
         if not tokens or tokens and tokens[0].type != self._ttypes.MEDIA_SYM:
             self._log.error(u'CSSMediaRule: No CSSMediaRule found: %s' %
                       self._valuestr(cssText),
@@ -207,7 +207,7 @@ class CSSMediaRule(cssrule.CSSRule):
             return
         else:
             newatkeyword = tokens[0].value
-            
+
         newmedia = cssutils.stylesheets.MediaList()
         mediatokens, endi = self._tokensupto(tokens[1:],
                                                     blockstartonly=True)
@@ -227,7 +227,7 @@ class CSSMediaRule(cssrule.CSSRule):
         i, imax = endi + 2, len(tokens)
         while i < imax:
             t = tokens[i]
-            
+
             if t.type == self._ttypes.EOF:
                 break
 
@@ -249,7 +249,7 @@ class CSSMediaRule(cssrule.CSSRule):
                 self._log.info(u'CSSMediaRule: Found unknown @rule.', t,
                          error=None)
                 atruletokens, endi = self._tokensupto(tokens[i:])
-                i += endi 
+                i += endi
                 atrule = cssutils.css.CSSUnknownRule()
                 atrule.cssText = atruletokens
                 newrules.append(atrule)
@@ -268,7 +268,7 @@ class CSSMediaRule(cssrule.CSSRule):
                 # StyleRule
                 ruletokens, endi = self._tokensupto(
                     tokens[i:], blockendonly=True)
-                i += endi 
+                i += endi
                 rule = cssutils.css.CSSStyleRule()
                 rule.cssText = ruletokens
                 newrules.append(rule)

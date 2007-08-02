@@ -39,12 +39,12 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
                 ; }'''
         s = cssutils.parseString(css)
         self.assertEqual(u'a {}', s.cssText)
-        
+
 
     def tearDown(self):
         # needs to be reenabled here for other tests
         cssutils.log.raiseExceptions = True
-        
+
 
 if __name__ == '__main__':
     import unittest

@@ -36,10 +36,10 @@ class CSSImportRule(cssrule.CSSRule):
         not supported by the user agent).
 
         Currently always None
-        
+
     cssutils only
     -------------
-    atkeyword: 
+    atkeyword:
         the literal keyword used
     hreftype: 'uri' (serializer default) or 'string'
         The original usage of href, not really relevant as it may be
@@ -52,9 +52,9 @@ class CSSImportRule(cssrule.CSSRule):
     import
       : IMPORT_SYM S*
       [STRING|URI] S* [ medium [ COMMA S* medium]* ]? ';' S*
-      ;            
+      ;
     """
-    type = cssrule.CSSRule.IMPORT_RULE 
+    type = cssrule.CSSRule.IMPORT_RULE
 
     def __init__(self, href=None, mediaText=u'all', hreftype=None,
                  readonly=False):
@@ -72,10 +72,10 @@ class CSSImportRule(cssrule.CSSRule):
             'uri' (default) or 'string'
         """
         super(CSSImportRule, self).__init__()
-        
+
         self.atkeyword = u'@import'
         self.href = href
-        self.hreftype = hreftype        
+        self.hreftype = hreftype
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)
         if not self.media.valid:
@@ -86,7 +86,7 @@ class CSSImportRule(cssrule.CSSRule):
         self._styleSheet = None
 
         self._readonly = readonly
-    
+
 
     def _getHref(self):
         """ returns href as a string """
@@ -96,14 +96,14 @@ class CSSImportRule(cssrule.CSSRule):
         """
         TODO:
             parse properly
-        
+
         DOMException on setting
-        
+
         - SYNTAX_ERR: (not checked here)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if this rule is readonly.          
+          Raised if this rule is readonly.
         """
         self._checkReadonly()
 
@@ -124,7 +124,7 @@ class CSSImportRule(cssrule.CSSRule):
     def _getMedia(self):
         "returns MediaList"
         return self._media
-    
+
     media = property(_getMedia,
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
@@ -141,33 +141,33 @@ class CSSImportRule(cssrule.CSSRule):
 
 
     def _getCssText(self):
-        """ 
-        returns serialized property cssText 
+        """
+        returns serialized property cssText
         """
         return cssutils.ser.do_CSSImportRule(self)
 
     def _setCssText(self, cssText):
         """
         DOMException on setting
-        
+
         - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
           Raised if the rule cannot be inserted at this point in the
           style sheet.
         - INVALID_MODIFICATION_ERR: (self)
           Raised if the specified CSS string value represents a different
-          type of rule than the current one.            
+          type of rule than the current one.
         - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
           Raised if the rule is readonly.
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
-        super(CSSImportRule, self)._setCssText(cssText)          
+        super(CSSImportRule, self)._setCssText(cssText)
         valid = True
 
         tokens = self._tokenize(cssText)
 
-        # check if right type    
+        # check if right type
         if not tokens or tokens and tokens[0].type != self._ttypes.IMPORT_SYM:
             self._log.error(u'CSSImportRule: No CSSImportRule found: %s' %
                       self._valuestr(cssText),
@@ -175,7 +175,7 @@ class CSSImportRule(cssrule.CSSRule):
             return
         else:
             newatkeyword = tokens[0].value
-            
+
         newseq = []
         newhref = None
         newhreftype = None
@@ -190,14 +190,14 @@ class CSSImportRule(cssrule.CSSRule):
                 expected = 'EOF'
 
             elif self._ttypes.S == t.type: # ignore
-                pass 
-                
+                pass
+
             elif self._ttypes.COMMENT == t.type:
                 if 'href' == expected: # before href
                     newseq.append(cssutils.css.CSSComment(t))
                 else: # after href
                     mediatokens.append(t)
-                
+
             elif 'href' == expected and \
                  t.type in (self._ttypes.URI, self._ttypes.STRING):
                 if t.type == self._ttypes.URI:
@@ -214,7 +214,7 @@ class CSSImportRule(cssrule.CSSRule):
                     valid = False
                     self._log.error(
                         u'CSSImportRule: Syntax Error, no href found.', t)
-                expected = None                     
+                expected = None
                 break
 
             elif 'medialist' == expected:
@@ -252,4 +252,3 @@ if __name__ == '__main__':
     print c.seq#, c.media.seq
     print c.cssText
     c.cssText = '@import'
-    

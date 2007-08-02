@@ -18,7 +18,7 @@ class Token(object):
     values are just identifiers!
 
     a CSS Token consisting of
-    
+
     line
         startline of the token
     col
@@ -33,7 +33,7 @@ class Token(object):
         - no ``\`` like ``c\olor``
         - for type Token.S normalvalue is always u' ' - a single space
         - lowercase
-        
+
     literal
         REMOVED in 0.9.1 (literal value of the token including backslashes)
 
@@ -43,7 +43,7 @@ class Token(object):
 
     resulting in a token with attributes::
 
-        t.line == 1 
+        t.line == 1
         t.col == 1
         t.type == Token.IDENT
         t.value == u'c\olor'
@@ -52,8 +52,8 @@ class Token(object):
     includes some CSS3 parts
         http://www.w3.org/TR/css3-selectors/
     """
-    EOF = u'EOF' # EndOfFile 
-    
+    EOF = u'EOF' # EndOfFile
+
     IDENT = u'{ident}'
 
     ATKEYWORD = u'@{ident}'
@@ -62,9 +62,9 @@ class Token(object):
     MEDIA_SYM = u'@media'
     CHARSET_SYM = u'@charset'
     NAMESPACE_SYM = u'@namespace'
-    
+
     STRING = u'{string}'
-    HASH = u'HASH #{name}'  
+    HASH = u'HASH #{name}'
     NUMBER = u'{num}'
     PERCENTAGE = u'PERCENTAGE {num}%'
     DIMENSION = u'DIMENSION {num}{ident}'
@@ -87,7 +87,7 @@ class Token(object):
 
     IMPORTANT_SYM = u'!{w}important'
 
-    DELIM = u'DELIM'   
+    DELIM = u'DELIM'
 
     UNIVERSAL = u'*'
     CLASS = u'.'
@@ -101,7 +101,7 @@ class Token(object):
     INCLUDES = u'~='
     DASHMATCH = u'|='
     # CSS3
-    PREFIXMATCH = u'^=' 
+    PREFIXMATCH = u'^='
     SUFFIXMATCH = u'$='
     SUBSTRINGMATCH = u'*='
     PSEUDO_ELEMENT = u'::'
@@ -110,7 +110,7 @@ class Token(object):
     INVALID = u'INVALID'
     #{invalid}        return INVALID;
 
-    URL = 'URL'    
+    URL = 'URL'
 
     COMMA = u',' # TODO!
     #EQUALS = u'='
@@ -128,26 +128,26 @@ class Token(object):
 
     def _getvalue(self):
         return self._value
-    
+
     def _setvalue(self, value):
         if self.type == Token.S:
             self.normalvalue = u' '
             self._value = value
-            
+
         elif self.type == Token.IDENT:
             self.normalvalue = util.Base._normalize(value)
             self._value = value
-            
+
         else:
             self.normalvalue = self._value = value
 
     value = property(_getvalue, _setvalue,
                      doc='value and normalized value')
 
-    
+
     def __eq__(self, token):
-        """ 
-        how to compare a token to another 
+        """
+        how to compare a token to another
         """
         if self.line == token.line and\
                        self.col == token.col and\
@@ -158,8 +158,8 @@ class Token(object):
             return False
 
     def __repr__(self):
-        """ 
-        string representation of Token 
+        """
+        string representation of Token
         """
         return u'%03d:%03d %s: %s' % (
             self.line, self.col, self.type, self.value)
@@ -191,41 +191,41 @@ class Tokenre(object):
     string = r'{string1}|{string2}'
     string1 = r'"(\\\"|[^\"])*"'
     string2 = r"'(\\\'|[^\'])*'"
-    url = u'([!#$%&*-~]|{nonascii}|{escape})*'    
+    url = u'([!#$%&*-~]|{nonascii}|{escape})*'
     nl = r'\n|\r\n|\r|\f'
     w = r'\s*'
 
     def __init__(self):
-        """ 
-        compile class attribute values to re.match objects 
+        """
+        compile class attribute values to re.match objects
         """
         res = {}
         for x in dir(self):
             v = self.__getattribute__(x)
             if isinstance(v, basestring) and not x.startswith('_'):
                 res[x] = v
-            
+
         self._compile_regexes(self._expand_macros(res))
-        
+
     def _expand_macros(self, tokdict):
-        """ 
-        Expand macros in token dictionary 
+        """
+        Expand macros in token dictionary
         """
         def macro_value(m):
             return '(?:%s)' % res[m.groupdict()['macro']]
 
         # copy for macros
-        res = tokdict.copy() 
+        res = tokdict.copy()
         for key, value in tokdict.items():
             while re.search(r'{[a-z][a-z0-9-]*}', value):
-                value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}', 
+                value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
                                macro_value, value)
             tokdict[key] = value
         return tokdict
 
     def _compile_regexes(self, tokdict):
-        """ 
-        Compile all regular expressions into callable objects 
+        """
+        Compile all regular expressions into callable objects
         """
         for key, value in tokdict.items():
             self.__setattr__(key, re.compile('^%s$' % value, re.I).match)

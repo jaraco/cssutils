@@ -3,10 +3,10 @@
 
 ErrorHandler
     used as log with usual levels (debug, info, warn, error)
-    
+
     if instanciated with ``raiseExceptions=True`` raises exeptions instead
     of logging
-    
+
 log
     defaults to instance of ErrorHandler for any kind of log message from
     lexerm, parser etc.
@@ -28,7 +28,7 @@ class _ErrorHandler(object):
     """
     handles all errors and log messages
     """
-    
+
     def __init__(self, log,
                  defaultloglevel=logging.DEBUG, raiseExceptions=False):
         """
@@ -49,18 +49,18 @@ class _ErrorHandler(object):
         else:
             import sys
             self._log = logging.getLogger('CSSUTILS')
-            hdlr = logging.StreamHandler(sys.stderr)      
+            hdlr = logging.StreamHandler(sys.stderr)
             formatter = logging.Formatter('%(levelname)s\t%(message)s')
             hdlr.setFormatter(formatter)
             self._log.addHandler(hdlr)
-            self._log.setLevel(defaultloglevel)    
+            self._log.setLevel(defaultloglevel)
 
         self.raiseExceptions = raiseExceptions
 
 
     def __getattr__(self, name):
         # here if new log has been set
-        _logcalls = {          
+        _logcalls = {
             u'debug': self._log.debug,
             u'info': self._log.info,
             u'warn': self._log.warn,
@@ -68,7 +68,7 @@ class _ErrorHandler(object):
             u'fatal': self._log.fatal,
             u'error': self._log.error
             }
-        
+
         if name in _logcalls.keys():
             self._logcall = _logcalls[name]
             return self.__handle
@@ -85,7 +85,7 @@ class _ErrorHandler(object):
     def setloglevel(self, level):
         """set level of errorhandler's log"""
         self._log.setLevel(level)
-        
+
 
     def __handle(self, msg=u'', token=None, error=xml.dom.SyntaxErr,
                  neverraise=False):
@@ -96,21 +96,21 @@ class _ErrorHandler(object):
         if token:
             msg = u'%s [%s:%s: %s]' % (
                 msg, token.line, token.col, token.value)
-            
+
         if error and self.raiseExceptions and not neverraise:
             raise error(msg)
         else:
-            self._logcall(msg)    
+            self._logcall(msg)
 
 
 class ErrorHandler(_ErrorHandler):
     "Singleton, see _ErrorHandler"
-    
+
     instance = None
 
     def __init__(self,
             log=None, defaultloglevel=logging.INFO, raiseExceptions=True):
-        
+
         if ErrorHandler.instance is None:
             ErrorHandler.instance = _ErrorHandler(log=log,
                                         defaultloglevel=defaultloglevel,

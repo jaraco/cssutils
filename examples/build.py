@@ -21,7 +21,7 @@ c.insertRule(stylerule)
 
 ir = css.CSSImportRule(href=u'example.css')
 
-# until 0.8 (now deprecated): 
+# until 0.8 (now deprecated):
 ml = stylesheets.MediaList(mediaText=u'print')
 try:
     ir.media = ml
@@ -36,4 +36,3 @@ c.insertRule(ir, 0)
 # to set indent set Preferences of Serializer with indentation string
 cssutils.ser.prefs.indent = 2 * u' '
 print c.cssText
-

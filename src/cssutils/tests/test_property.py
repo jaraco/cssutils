@@ -14,7 +14,7 @@ class PropertyTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         self.r = cssutils.css.property._Property('top', '1px')
-        
+
     def test_init(self):
         "_Property.__init__()"
         p = cssutils.css.property._Property('top', '1px')
@@ -73,7 +73,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         p.name = 'left'
         p.value = 'red'
 
-        
+
     def test_cssValue(self):
         "_Property.cssValue"
         pass
@@ -86,7 +86,7 @@ class PropertyTestCase(basetest.BaseTestCase):
 
         p.priority = ''
         self.assertEqual('', p.priority)
-        
+
         p.priority = '!important'
         self.assertEqual('!important', p.priority)
 
@@ -122,7 +122,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u' 4px ': u'4px',
             u'5px 1px': u'5px 1px',
             }
-        self.do_equal_r(tests, att='value')        
+        self.do_equal_r(tests, att='value')
 
         tests = {
             # no value
@@ -134,11 +134,11 @@ class PropertyTestCase(basetest.BaseTestCase):
             # not allowed:
             u':': xml.dom.SyntaxErr,
             u';': xml.dom.SyntaxErr,
-            u'!important': xml.dom.SyntaxErr,            
+            u'!important': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests, att='_setValue')
 
-        
+
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

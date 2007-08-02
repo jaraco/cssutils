@@ -12,7 +12,7 @@ from tokenize import Tokenizer
 
 import cssutils
 
-  
+
 class Base(object):
     """
     Base class for most CSS and StyleSheets classes
@@ -28,25 +28,25 @@ class Base(object):
         * _tokensupto()
         * _valuestr()
 
-    for inheriting classes helping parsing    
+    for inheriting classes helping parsing
     """
     __tokenizer = Tokenizer()
-    
+
     _log = __tokenizer.log
     _ttypes = __tokenizer.ttypes
-    
+
     @staticmethod
     def _normalize(x):
         """
         normalizes x namely replaces any \ with the empty string
         so for x=="c\olor\" return "color"
-        
+
         used in Token for normalized value and CSSStyleDeclaration
         currently
         """
         return x.replace(u'\\', u'').lower()
 
-    
+
     def _checkReadonly(self):
         "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
         if hasattr(self, '_readonly') and self._readonly:
@@ -55,7 +55,7 @@ class Base(object):
             return True
         return False
 
-    
+
     def _tokenize(self, textortokens, _fullSheet=False):
         """
         returns tokens of textortokens which may already be tokens in which
@@ -66,14 +66,14 @@ class Base(object):
         elif isinstance(textortokens, cssutils.token.Token):
             return [textortokens] # comment is a single token
         elif isinstance(textortokens, basestring): # already string
-            return self.__tokenizer.tokenize(textortokens, _fullSheet) 
+            return self.__tokenizer.tokenize(textortokens, _fullSheet)
         else:
             if textortokens is not None:
                 textortokens = unicode(textortokens)
             return self.__tokenizer.tokenize(textortokens, _fullSheet)
 
 
-    def _tokensupto(self, tokens, 
+    def _tokensupto(self, tokens,
                     blockstartonly=False,
                     blockendonly=False,
                     propertynameendonly=False,
@@ -89,12 +89,12 @@ class Base(object):
         """
         ends = u';}'
 
-        if blockstartonly: # { 
+        if blockstartonly: # {
             ends = u'{'
         if blockendonly: # }
             ends = u'}'
         elif propertynameendonly: # : and ; in case of an error
-            ends = u':;' 
+            ends = u':;'
         elif propertyvalueendonly: # ; or !important
             ends = (u';', u'!important')
         elif propertypriorityendonly: # ;
@@ -107,7 +107,7 @@ class Base(object):
         brace = bracket = parant = 0 # {}, [], ()
         if blockstartonly:
             brace = -1 # set to 0 with first {
-        resulttokens = []        
+        resulttokens = []
         i, imax = 0, len(tokens)
         while i < imax:
             t = tokens[i]
@@ -121,18 +121,18 @@ class Base(object):
                Base._ttypes.FUNCTION == t.type: parant += 1
             elif u')' == t.value: parant -= 1
 
-            resulttokens.append(t)            
-                
+            resulttokens.append(t)
+
             if t.value in ends and (brace == bracket == parant == 0):
                 break
 
             i += 1
-            
+
 ##        print '--- %s ---\n' % (str(ends))
 ##        print u''.join([x.value for x in tokens])
 ##        print u''.join([x.value for x in resulttokens])
 ##        print
-        
+
         return resulttokens, i
 
 

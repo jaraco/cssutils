@@ -40,9 +40,9 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
     def test_NoModificationAllowedErr(self):
         "CSSStyleSheet NoModificationAllowedErr"
         css = cssutils.css.CSSStyleSheet(readonly=True)
-        
+
         self.assertEqual(True, css._readonly) # internal...
-        
+
         self.assertRaises(xml.dom.NoModificationAllowedErr,
                           css._setCssText, u'@x;')
         self.assertRaises(xml.dom.NoModificationAllowedErr,
@@ -72,7 +72,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             u'@page {} @import "x";': xml.dom.HierarchyRequestErr,
             u'a {} @import "x";': xml.dom.HierarchyRequestErr,
 
-            # @namespace: before @media, @page, sr            
+            # @namespace: before @media, @page, sr
             u'@media all {} @namespace a "x";': xml.dom.HierarchyRequestErr,
             u'@page {} @namespace a "x";': xml.dom.HierarchyRequestErr,
             u'a {} @namespace a "x";': xml.dom.HierarchyRequestErr,
@@ -110,13 +110,13 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             # @import
             u'@x;\n@import "x";': None,
             u'@import "x";\n@import "y";': None,
-            u'@import "x";\n@media all {}': u'@import "x";', 
+            u'@import "x";\n@media all {}': u'@import "x";',
             u'@import "x";\n@x;': None,
             u'@import "x";\na {}': None,
             # @namespace
             u'@x;\n@namespace a "x";': None,
             u'@namespace a "x";\n@namespace b "y";': None,
-            u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";', 
+            u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";',
             u'@namespace a "x";\n@x;': None,
             u'@namespace a "x";\na {}': None,
             }
@@ -134,7 +134,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         "CSSStyleSheet.deleteRule()"
         self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {}@y;'
         self.assertEqual(5, self.s.cssRules.length)
-        
+
         self.assertRaises(xml.dom.IndexSizeErr, self.s.deleteRule, 5)
 
         # end -1
@@ -159,7 +159,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.s.deleteRule(1)
         self.assertEqual(1, self.s.cssRules.length)
         self.assertEqual(u'@import "x";', self.s.cssText)
-        
+
 
     def _gets(self):
         # complete
@@ -172,7 +172,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.pr = cssutils.css.CSSPageRule()
         self.pr.style = u'margin: 0;'
         self.sr = cssutils.css.CSSStyleRule('a')
-        self.mr.cssText = u'@media all { m {} }'        
+        self.mr.cssText = u'@media all { m {} }'
 
         s = cssutils.css.CSSStyleSheet()
         s.insertRule(self.cr) # 0
@@ -196,7 +196,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
                   s.insertRule, self.sr, -1)
         self.assertRaises(xml.dom.IndexSizeErr,
                   s.insertRule, self.sr, s.cssRules.length + 1)
-        #   check if rule is really not in 
+        #   check if rule is really not in
         self.assertEqual(L, s.cssRules.length)
 
 
@@ -207,23 +207,23 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         or after rules in after but before and after rules in anywhere
         """
         for rule in rules:
-                for r in notbefore:
-                    s = cssutils.css.CSSStyleSheet()
-                    s.insertRule(r)
-                    self.assertRaises(xml.dom.HierarchyRequestErr,
-                                      s.insertRule, rule, 0)
-                for r in notafter:
-                    s = cssutils.css.CSSStyleSheet()
-                    s.insertRule(r)
-                    self.assertRaises(xml.dom.HierarchyRequestErr,
-                                      s.insertRule, rule, 1)
-                for r in anywhere:
-                    s = cssutils.css.CSSStyleSheet()
-                    s.insertRule(r)
-                    s.insertRule(rule, 0) # before
-                    s.insertRule(rule) # after
-                    self.assertEqual(s.cssRules.length, 3)
-                    self.assertEqual(s, r.parentStyleSheet)
+            for r in notbefore:
+                s = cssutils.css.CSSStyleSheet()
+                s.insertRule(r)
+                self.assertRaises(xml.dom.HierarchyRequestErr,
+                                  s.insertRule, rule, 0)
+            for r in notafter:
+                s = cssutils.css.CSSStyleSheet()
+                s.insertRule(r)
+                self.assertRaises(xml.dom.HierarchyRequestErr,
+                                  s.insertRule, rule, 1)
+            for r in anywhere:
+                s = cssutils.css.CSSStyleSheet()
+                s.insertRule(r)
+                s.insertRule(rule, 0) # before
+                s.insertRule(rule) # after
+                self.assertEqual(s.cssRules.length, 3)
+                self.assertEqual(s, r.parentStyleSheet)
 
     def test_insertRule_charset(self):
         "CSSStyleSheet.insertRule(@charset)"
@@ -243,7 +243,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         anywhere = (self.c, self.ur, self.ir)
         self._insertRule((self.ir,),
                          notbefore, notafter, anywhere)
-        
+
     def test_insertRule_namespace(self):
         "CSSStyleSheet.insertRule(@namespace)"
         s, L = self._gets()
@@ -270,7 +270,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
                     self.sr)
         self._insertRule((self.ur,),
                          notbefore, notafter, anywhere)
-              
+
 
 if __name__ == '__main__':
     import unittest

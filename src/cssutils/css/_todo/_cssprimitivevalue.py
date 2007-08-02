@@ -7,10 +7,10 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '0.9.2a2 $LastChangedRevision$'
 
- TODO: conversion (mm->cm etc.)
- TODO: cssText: fset
- TODO: getXXXValue methods
- TODO: readonly
+    TODO: conversion (mm->cm etc.)
+    TODO: cssText: fset
+    TODO: getXXXValue methods
+    TODO: readonly
 
 import re
 import xml.dom
@@ -25,14 +25,14 @@ class CSSPrimitiveValue (cssvalue.Value):
     specific style property currently set in a block or to set a specific
     style property explicitly within the block. Might be obtained from the
     getPropertyCSSValue method of CSSStyleDeclaration.
-    
+
     Conversions are allowed between absolute values (from millimeters to
     centimeters, from degrees to radians, and so on) but not between
-    relative values. (For example, a pixel value cannot be converted to a 
-    centimeter value.) Percentage values can't be converted since they are 
-    relative to the parent value (or another property value). There is one 
-    exception for color percentage values: since a color percentage value 
-    is relative to the range 0-255, a color percentage value can be 
+    relative values. (For example, a pixel value cannot be converted to a
+    centimeter value.) Percentage values can't be converted since they are
+    relative to the parent value (or another property value). There is one
+    exception for color percentage values: since a color percentage value
+    is relative to the range 0-255, a color percentage value can be
     converted to a number; (see also the RGBColor interface).
     """
     """
@@ -65,7 +65,7 @@ class CSSPrimitiveValue (cssvalue.Value):
     CSS_COUNTER = 23
     CSS_RECT = 24
     CSS_RGBCOLOR = 25
-        
+
     "string representations for most unit types"
     _unitstrings = {
         0: u'', # UNKNOWN
@@ -140,23 +140,23 @@ class CSSPrimitiveValue (cssvalue.Value):
             raise xml.dom.SyntaxErr(u'no value given.')
         # parse
         v = text = text.strip()
-        
+
         # a valid rgb value?
         RE_rgb = re.compile(u"""
-            rgb \s* \( 
-                ( \s* \d*\.?\d+ \s*%?\s* ,){2} 
-                \s* \d*\.?\d+ \s*%?\s* 
+            rgb \s* \(
+                ( \s* \d*\.?\d+ \s*%?\s* ,){2}
+                \s* \d*\.?\d+ \s*%?\s*
             \)
-            """, re.VERBOSE | re.UNICODE | re.IGNORECASE)    
+            """, re.VERBOSE | re.UNICODE | re.IGNORECASE)
         # a single r, g or b value (2, 2.0 or 2% or 2.0%)
         RE_rgb2 = re.compile(u"""\d*\.?\d+ \s*%?""",
-             re.VERBOSE | re.UNICODE | re.IGNORECASE)     
+             re.VERBOSE | re.UNICODE | re.IGNORECASE)
 
 
         if text == u'inherit':
             # TODO: return normal Value!
             pass
-        elif RE_rgb.match(text): #text.startswith(u'rgb('):           
+        elif RE_rgb.match(text): #text.startswith(u'rgb('):
             r, g, b = RE_rgb2.findall(text)
             v = cssbuilder.RGBColor(r, g, b)
             self._primitivetype = self.CSS_RGBCOLOR
@@ -169,7 +169,7 @@ class CSSPrimitiveValue (cssvalue.Value):
 
     def _getType(self):
         return self._primitivetype
-        
+
     primitiveType = property(_getType, doc="The type of the value as\
             defined by the constants specified above.")
 
@@ -191,7 +191,7 @@ class CSSPrimitiveValue (cssvalue.Value):
         specified unit. If this CSS value doesn't contain a float value
         or can't be converted into the specified unit, a DOMException
         is raised.
-        
+
         unitType
             to get the float value. The unit code can only be a float unit type
             (i.e. CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS, CSS_PX, CSS_CM,
@@ -202,7 +202,7 @@ class CSSPrimitiveValue (cssvalue.Value):
             raise xml.dom.InvalidAccessErr(
                 u'unitType Parameter is not a float type')
         return self._value
-    
+
     def getRGBColorValue(self):
         """
         (DOM method) This method is used to get the RGB color. If this
@@ -215,7 +215,7 @@ class CSSPrimitiveValue (cssvalue.Value):
             raise xml.dom.InvalidAccessErr(u'Value is not a RGB value')
         # TODO: use RGBColor class
         return self._value
-        
+
     def getRectValue(self):
         """
         (DOM method) This method is used to get the Rect value. If this CSS
@@ -239,22 +239,22 @@ class CSSPrimitiveValue (cssvalue.Value):
         if self.primitiveType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(u'value is not a string type')
         return self._value
-        
+
     def setFloatValue(self, unitType, floatValue):
         """
         (DOM method) A method to set the float value with a specified unit.
         If the property attached with this value can not accept the
         specified unit or the float value, the value will be unchanged and
         a DOMException will be raised.
-        
-        unitType 
+
+        unitType
             a unit code as defined above. The unit code can only be a float
             unit type
         floatValue
             the new float value
 
         raises DOMException
-            - INVALID_ACCESS_ERR: Raised if the attached property doesn't 
+            - INVALID_ACCESS_ERR: Raised if the attached property doesn't
                 support the float value or the unit type.
             - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
         """
@@ -270,14 +270,14 @@ class CSSPrimitiveValue (cssvalue.Value):
         unit. If the property attached to this value can't accept the
         specified unit or the string value, the value will be unchanged and
         a DOMException will be raised.
-        
+
         stringType
             a string code as defined above. The string code can only be a
-            string unit type (i.e. CSS_STRING, CSS_URI, CSS_IDENT, and 
+            string unit type (i.e. CSS_STRING, CSS_URI, CSS_IDENT, and
             CSS_ATTR).
         stringValue
             the new string value
-            
+
         raises
             DOMException
             - INVALID_ACCESS_ERR: Raised if the CSS value doesn't contain a
@@ -290,5 +290,3 @@ class CSSPrimitiveValue (cssvalue.Value):
             raise xml.dom.InvalidAccessErr(u'value is not a string type')
         self._primitiveType = stringType
         self._value = stringValue
-
-  

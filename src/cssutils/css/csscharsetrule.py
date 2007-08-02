@@ -40,7 +40,7 @@ class CSSCharsetRule(cssrule.CSSRule):
     cssText: of type DOMString
         The parsable textual representation of this rule
     encoding: of type DOMString
-        The encoding information used in this @charset rule.    
+        The encoding information used in this @charset rule.
 
     Inherits properties from CSSRule
 
@@ -52,27 +52,27 @@ class CSSCharsetRule(cssrule.CSSRule):
     BUT: Only valid format is:
         @charset "ENCODING";
     """
-    type = cssrule.CSSRule.CHARSET_RULE 
+    type = cssrule.CSSRule.CHARSET_RULE
 
     def __init__(self, encoding=None, readonly=False):
         """
-        encoding: 
+        encoding:
             a valid character encoding
-        readonly: 
-            defaults to False, not used yet        
+        readonly:
+            defaults to False, not used yet
 
         if readonly allows setting of properties in constructor only
         """
         super(CSSCharsetRule, self).__init__()
-        
+
         self._encoding = None
         if encoding:
             self.encoding = encoding
 
         self._pat = re.compile(u'^@charset "(.+?)";$',
-                                 re.DOTALL | re.IGNORECASE | re.UNICODE) 
+                                 re.DOTALL | re.IGNORECASE | re.UNICODE)
 
-        self._readonly = readonly        
+        self._readonly = readonly
 
     def _getEncoding(self):
         """ returns encoding as a string """
@@ -81,14 +81,14 @@ class CSSCharsetRule(cssrule.CSSRule):
     def _setEncoding(self, encoding):
         """
         DOMException on setting
-        
+
         - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
           Raised if this encoding rule is readonly.
         - SYNTAX_ERR: (self)
           Raised if the specified encoding value has a syntax error and
           is unparsable.
-          Currently only valid Python encodings are allowed.            
-        """        
+          Currently only valid Python encodings are allowed.
+        """
         self._checkReadonly()
         tokens = self._tokenize(encoding)
         valid = True
@@ -106,7 +106,7 @@ class CSSCharsetRule(cssrule.CSSRule):
                       encoding)
         if valid:
             self._encoding = encoding.lower()
-                
+
     encoding = property(_getEncoding, _setEncoding,
         doc="(DOM)The encoding information used in this @charset rule.")
 
@@ -118,10 +118,10 @@ class CSSCharsetRule(cssrule.CSSRule):
     def _setCssText(self, cssText):
         """
         DOMException on setting
-        
+
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error and
-          is unparsable.          
+          is unparsable.
         - INVALID_MODIFICATION_ERR: (self)
           Raised if the specified CSS string value represents a different
           type of rule than the current one.
@@ -135,7 +135,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         tokens = self._tokenize(cssText)
 
         text = ''.join([t.value for t in tokens])
-        # check if right token            
+        # check if right token
         if not text.startswith(u'@charset'):
             self._log.error(
                 u'No CSSCharsetRule: %s' % text,
@@ -155,7 +155,7 @@ class CSSCharsetRule(cssrule.CSSRule):
             else:
                 encoding
                 self.encoding = encoding # also sets self.valid
-        
+
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
 
@@ -167,4 +167,3 @@ if __name__ == '__main__':
 
     c = CSSCharsetRule('utf-8')
     c.cssText = u' @charset "ascii" ;'
-    

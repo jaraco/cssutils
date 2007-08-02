@@ -39,4 +39,3 @@ class StyleSheetList(list):
             return self[index]
         except IndexError:
             return None
-

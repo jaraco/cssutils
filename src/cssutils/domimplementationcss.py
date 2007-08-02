@@ -37,12 +37,10 @@ class DOMImplementationCSS(object):
             sheet. See also the Style Sheet Interfaces section.
 
         returns
-            CSSStyleSheet: A new CSS style sheet.            
+            CSSStyleSheet: A new CSS style sheet.
 
-        TODO: DOMException 
+        TODO: DOMException
             SYNTAX_ERR: Raised if the specified media string value has a
             syntax error and is unparsable.
         """
         return css.CSSStyleSheet(title=title, media=media)
-
-    

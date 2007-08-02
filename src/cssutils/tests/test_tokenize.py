@@ -17,7 +17,7 @@ from cssutils.token import Token
 class TokenizerTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        #log = cssutils.errorhandler.ErrorHandler() 
+        #log = cssutils.errorhandler.ErrorHandler()
         self.tokenizer = Tokenizer()
         self.ttype = Token
 
@@ -169,7 +169,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                (1, 9, tt.S, u' '), (1, 10, tt.NUMBER, u'-1.1'),
                (1, 14, tt.S, u' '), (1, 15, tt.NUMBER, u'0.1'),
                (1, 17, tt.S, u' '), (1, 18, tt.NUMBER, u'-0.1'),
-               (1, 21, tt.S, u' '), 
+               (1, 21, tt.S, u' '),
                (1, 22, tt.NUMBER, u'1'), (1, 23, tt.CLASS, u'.')
                                          ],
             # Attribute INCLUDES & DASHMATCH + CSS3
@@ -238,7 +238,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                (1, 14, tt.S, u' '),
                (1, 15, tt.DIMENSION, u'5a5')],
 
-            # URI            
+            # URI
             u'url("x")': [(1, 1, tt.URI, u'url("x")')],
             u'url( "x")': [(1, 1, tt.URI, u'url("x")')],
             u'url("x" )': [(1, 1, tt.URI, u'url("x")')],
@@ -290,7 +290,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                 (1, 9, tt.S, u' '),
                 (1, 10, tt.HASH, u'#-a'),
                 (1, 13, tt.S, u' '),
-                (1, 14, tt.HASH, u'#1')                            
+                (1, 14, tt.HASH, u'#1')
                 ],
             u'#1a1 ': [
                 (1, 1, tt.HASH, u'#1a1'),
@@ -363,4 +363,4 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

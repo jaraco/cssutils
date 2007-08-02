@@ -42,7 +42,7 @@ class Selector(cssutils.util.Base):
         a set which namespaces have been used in this selector
     seq
         sequence of Selector parts including comments
-    
+
     Format
     ======
     combinator
@@ -52,7 +52,7 @@ class Selector(cssutils.util.Base):
     simple_selector
       : element_name [ HASH | class | attrib | pseudo ]*
       | [ HASH | class | attrib | pseudo ]+ ;
-    class 
+    class
       : '.' IDENT ;
     element_name
       : IDENT | '*' ;
@@ -63,7 +63,7 @@ class Selector(cssutils.util.Base):
     pseudo
       : ':' [ IDENT | FUNCTION S* IDENT? S* ')' ] ;
 
-    plus some from http://www.w3.org/TR/css3-selectors/      
+    plus some from http://www.w3.org/TR/css3-selectors/
     """
     def __init__(self, selectorText=None, readonly=False):
         """
@@ -73,7 +73,7 @@ class Selector(cssutils.util.Base):
             default to False
         """
         super(Selector, self).__init__()
-        
+
         self.seq = []
         self.namespaces = set()
         if selectorText:
@@ -82,8 +82,8 @@ class Selector(cssutils.util.Base):
 
 
     def _getSelectorText(self):
-        """ 
-        returns serialized format 
+        """
+        returns serialized format
         """
         return cssutils.ser.do_css_Selector(self)
 
@@ -94,12 +94,12 @@ class Selector(cssutils.util.Base):
         - INVALID_MODIFICATION_ERR: (self)
         - INVALID_MODIFICATION_ERR: (self)
           Raised if the specified CSS string value represents a different
-          type than the current one, e.g. a SelectorList.              
+          type than the current one, e.g. a SelectorList.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this rule is readonly.
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error
-          and is unparsable.     
+          and is unparsable.
         """
         def preprocess(tokens):
             """
@@ -113,7 +113,7 @@ class Selector(cssutils.util.Base):
             COMBINATORS_NO_S = u'+>~'
             r = []
             attlevel = 0
-            i = 0 
+            i = 0
 
             i, imax = 0, len(tokens) # imax may be changed later!
             while i < imax:
@@ -125,7 +125,7 @@ class Selector(cssutils.util.Base):
 
                 elif t.value in COMBINATORS_NO_S and attlevel == 0:
                     # remove preceding S from found except token!=Comment
-                    before = len(r) 
+                    before = len(r)
                     while before >= 0:
                         before -= 1
                         if r[before].type == self._ttypes.S:
@@ -133,7 +133,7 @@ class Selector(cssutils.util.Base):
                         elif r[before].type != self._ttypes.COMMENT:
                             break
                     # remove following S from tokens except token!=Comment
-                    after = i+1 
+                    after = i+1
                     while after < imax:
                         if tokens[after].type == self._ttypes.S:
                             del tokens[after]
@@ -141,7 +141,7 @@ class Selector(cssutils.util.Base):
                             imax = len(tokens) # new imax!
                         elif tokens[after].type != self._ttypes.COMMENT:
                             break
-                        after += 1                        
+                        after += 1
                 elif t.value == u'[':
                     attlevel += 1
                 elif t.value == u']':
@@ -169,7 +169,7 @@ class Selector(cssutils.util.Base):
                     newnamespaces.add('')
             except IndexError:
                 pass
-            
+
         def getAttrib(atttokens):
             """
             atttokens
@@ -184,9 +184,9 @@ class Selector(cssutils.util.Base):
                 [ IDENT | STRING ] S* ]? ']' ;
 
             CSS3 additionally:
-                ^= PREFIXMATCH 
+                ^= PREFIXMATCH
                 $= SUFFIXMATCH
-                *= SUBSTRINGMATCH 
+                *= SUBSTRINGMATCH
             """
             attseq = []
             expected = "[" # att, comb or ], value, pipe
@@ -195,7 +195,7 @@ class Selector(cssutils.util.Base):
                 t = atttokens[i]
                 if self._ttypes.COMMENT == t.type: # just add
                     attseq.append(cssutils.css.CSSComment(t))
-                
+
                 # [ start
                 elif expected == '[' and t.value == u'[':
                     attseq.append({'type': 'attribute selector', 'value': t.value})
@@ -231,7 +231,7 @@ class Selector(cssutils.util.Base):
                 elif expected == 'att':
                     self._log.error(u'Selector: No Attrib found.', t)
                     return
-                
+
                 # CSS3 selectors added
                 elif expected == 'comb or ]' and t.value in (
                      u'=', u'~=', u'|=', u'^=', u'$=', u'*='):
@@ -258,7 +258,7 @@ class Selector(cssutils.util.Base):
             else: # in case of ] not found
                 self._log.error(u'Selector: Incomplete Attrib.', t)
                 return
-            
+
             return attseq
 
         def getFunc(functokens):
@@ -279,7 +279,7 @@ class Selector(cssutils.util.Base):
             i, imax = 1, len(functokens)
             while i < imax:
                 t = functokens[i]
-                
+
                 if self._ttypes.COMMENT == t.type: # just add
                     funcseq.append(cssutils.css.CSSComment(t))
 
@@ -300,7 +300,7 @@ class Selector(cssutils.util.Base):
                     u'Selector: Incomplete functional pseudo "%s".' %
                     self._valuestr(functokens))
                 return
-            
+
             return funcseq
 
         self._checkReadonly()
@@ -309,13 +309,13 @@ class Selector(cssutils.util.Base):
         if tokens:
             COMBINATORS = u' >+~'
             tokens = preprocess(tokens)
-            
+
             newseq = []
             newnamespaces = set()
             found1 = False
             # simple_selector | combinator: u' >+~' |
             # pseudoclass after : | pseudoelement after ::
-            expected = 'simple_selector' 
+            expected = 'simple_selector'
             i, imax = 0, len(tokens)
             while i < imax:
                 t = tokens[i]
@@ -342,7 +342,7 @@ class Selector(cssutils.util.Base):
                     newseq.append({'value': t.value, 'type': 'classname'})
                     expected = 'simple_selector or combinator'
 
-                # pseudoclass ":" or pseudoelement "::"                    
+                # pseudoclass ":" or pseudoelement "::"
                 elif expected.startswith('simple_selector') and \
                      t.value == u':' or t.value == u'::':
                     expected = {
@@ -372,7 +372,7 @@ class Selector(cssutils.util.Base):
                 elif expected == 'pseudoelement':
                     self._log.error(u'Selector: Pseudoelement name expected.', t)
                     return
-                
+
                 # #hash
                 elif expected.startswith('simple_selector') and \
                      t.type == self._ttypes.HASH:
@@ -385,7 +385,7 @@ class Selector(cssutils.util.Base):
                      t.value == u'|':
                     addprefix(newseq)
                     newseq.append({'type': 'pipe', 'value': t.value})
-                    found1 = True                        
+                    found1 = True
                     expected = 'namespaced element'
 
                 # element, *
@@ -400,8 +400,8 @@ class Selector(cssutils.util.Base):
                      t.type not in (self._ttypes.IDENT, self._ttypes.UNIVERSAL):
                     self._log.error(u'Selector: Namespaced element expected.', t)
                     return
-                
-                # attribute selector 
+
+                # attribute selector
                 elif expected.startswith('simple_selector') and t.value == u'[':
                     atttokens, endi = self._tokensupto(
                         tokens[i:], selectorattendonly=True)
@@ -432,7 +432,7 @@ class Selector(cssutils.util.Base):
                     return
 
                 i += 1
-                
+
             if expected == 'classname':
                 self._log.error(u'Selector: Class name expected: %s.' %
                           selectorText)
@@ -453,7 +453,7 @@ class Selector(cssutils.util.Base):
                     isinstance(newseq[-1], basestring) and \
                     newseq[-1] in COMBINATORS
                     ) or ( # may be a dict
-                    isinstance(newseq[-1], dict) and 
+                    isinstance(newseq[-1], dict) and
                     isinstance(newseq[-1]['value'], basestring) and \
                     newseq[-1]['value'] in COMBINATORS)):
                 self._log.error(u'Selector: Cannot end with combinator: %s.' %

@@ -91,8 +91,8 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 ##                          self.r._setCssText, '@x {  ;')
 ##        self.assertRaises(xml.dom.SyntaxErr,
 ##                          self.r._setCssText, '@x ')
-            
+
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

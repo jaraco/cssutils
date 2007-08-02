@@ -22,17 +22,17 @@ __version__ = '0.3, SVN revision $LastChangedRevision$'
 ##    _PAGED_MEDIA_MODULE = []
 ##    _RUBY_MODULE = []
 ##    _GENERAL_AND_REPLACED_CONTENT_MODULE = ['quotes', 'content', 'counter-increment', 'counter-reset'] # 'display'
-##    _BASIC_UI_MODULE = ['cursor']# ...        
-##    _TEXT_MODULE = ['direction', 'text-align', 'text-decoration', 'text-indent', 'text-shadow', 'text-transform', 'unicode-bidi', 
+##    _BASIC_UI_MODULE = ['cursor']# ...
+##    _TEXT_MODULE = ['direction', 'text-align', 'text-decoration', 'text-indent', 'text-shadow', 'text-transform', 'unicode-bidi',
 ##        'letter-spacing', 'word-spacing', 'white-space'
 ##        ]
 ##    _FONT_MODULE = ['font', 'font-style', 'font-variant', 'font-weight', 'font-size', 'font-size-adjust', 'font-family',
-##        'font-stretch' 
+##        'font-stretch'
 ##        ]
 ##    _LINE_MODULE = ['line-height', 'vertical-align'] # ... text-height ...
 ##    _LIST_MODULE = ['list-style', 'list-style-type', 'list-style-image', 'list-style-position']
 ##    # other properties
-##    _PRINT_PROFILE = ['clip', 'position', 'right', 'left', 'top', 'bottom', 'z-index',        
+##    _PRINT_PROFILE = ['clip', 'position', 'right', 'left', 'top', 'bottom', 'z-index',
 ##        'caption-side', 'table-layout', 'empty-cells', 'border-collapse', 'border-spacing']
 ##    _COLOR_MODULE = ['color', 'opacity'] # ... @color-profile 'color-profile', 'rendering-intent'
 ##    _BACKGROUNDS_MODULE = ['background', 'background-color', 'background-image', 'background-repeat', 'background-attachment', 'background-position']
@@ -89,7 +89,7 @@ __version__ = '0.3, SVN revision $LastChangedRevision$'
 ##            for key in keys:
 ##                np = newProperties[key]
 ##                newStyle.addProperty(np.getName(), np.getValue())
-##            rule.setStyleDeclaration(newStyle)              
+##            rule.setStyleDeclaration(newStyle)
 ##
 ##
 ##if __name__ == '__main__':
@@ -104,13 +104,13 @@ __version__ = '0.3, SVN revision $LastChangedRevision$'
 ##    border: 1px
 ##    padding: 5px;
 ##    }
-##    '''  
+##    '''
 ##    import cssparser
 ##
 ##    cp = cssparser.CSSParser()
-##    cp.parseString(cssstr)  
-##    s = cp.getStyleSheet()   
-##    print '--- PARSED' 
+##    cp.parseString(cssstr)
+##    s = cp.getStyleSheet()
+##    print '--- PARSED'
 ##    s.pprint()
 ##
 ##    normalizer = CSSNormalizer()
@@ -120,5 +120,4 @@ __version__ = '0.3, SVN revision $LastChangedRevision$'
 ##        print e
 ##    print '--- NORMALIZED'
 ##    s.pprint()
-##    
-    
+##

@@ -68,7 +68,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
             u'@PAGE:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
             u'@\\page:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
-            
+
             u'@page/*1*/:left/*2*/{margin:0;}':
                 u'@page /*1*/:left/*2*/ {\n    margin: 0\n    }',
             }
@@ -90,9 +90,9 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@page :left {': xml.dom.SyntaxErr, # no }
             })
         self.do_raise_r(tests) # set cssText
-        
 
-        
+
+
     def test_selectorText(self):
         "CSSPageRule.selectorText"
         tests = {
@@ -101,7 +101,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u':right': None,
             u':first': None,
             u':UNKNOWNIDENT': None,
-            
+
             u' :left': u':left',
             u':left': u':left',
             u'/*1*/:left/*a*/': u':left',
@@ -129,7 +129,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(self.r, d.parentRule)
 
 
-    def test_properties(self):                
+    def test_properties(self):
         "CSSPageRule.style properties"
         r = cssutils.css.CSSPageRule()
         r.style.cssText = '''
@@ -163,4 +163,4 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

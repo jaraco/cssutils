@@ -13,7 +13,7 @@ import os
 
 import basetest
 
-import cssutils    
+import cssutils
 
 
 class CSSutilsTestCase(basetest.BaseTestCase):
@@ -23,10 +23,10 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         # temp css for tests
         name = '__cssutils_temptestfile__.css'
         css = u'a:after { content: "äu\u2020" }'
-        
+
         if os.path.exists(name):
             raise IOError('skipping test as file "%s" exists' % name)
-        
+
         css = u'a:after { content: "äu\u2020" }'
         t = codecs.open(name, 'w', encoding='utf-8')
         t.write(css)
@@ -47,7 +47,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
 
         # clean up
-        os.remove(name)      
+        os.remove(name)
 
 
     def test_parseString(self):
@@ -59,7 +59,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
         self.assertEqual(exp, s.cssText)
 
-    
+
     def test_setCSSSerializer(self):
         "cssutils.setSerializer() and cssutils.ser"
         s = cssutils.parseString('a { left: 0 }')
@@ -80,4 +80,4 @@ class CSSutilsTestCase(basetest.BaseTestCase):
 
 if __name__ == '__main__':
     import unittest
-    unittest.main() 
+    unittest.main()

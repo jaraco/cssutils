@@ -46,7 +46,7 @@ TODO:
       2px 2px 2px 2px -> 2px for border/padding...
     - normalize compound properties like:
       background: no-repeat left url()  #fff
-      -> background: #fff url() no-repeat left      
+      -> background: #fff url() no-repeat left
 """
 __all__ = ['CSSStyleDeclaration']
 __docformat__ = 'restructuredtext'
@@ -54,7 +54,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '0.9.2a2 $LastChangedRevision$'
 
-import xml.dom 
+import xml.dom
 
 import cssutils
 from cssproperties import CSS2Properties
@@ -67,18 +67,18 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
     block. This class may be used to determine the style properties
     currently set in a block or to set style properties explicitly
     within the block.
-    
+
     While an implementation may not recognize all CSS properties within
-    a CSS declaration block, it is expected to provide access to all 
-    specified properties in the style sheet through the 
-    CSSStyleDeclaration interface. 
+    a CSS declaration block, it is expected to provide access to all
+    specified properties in the style sheet through the
+    CSSStyleDeclaration interface.
     Furthermore, implementations that support a specific level of CSS
     should correctly handle CSS shorthand properties for that level. For
     a further discussion of shorthand properties, see the CSS2Properties
     interface.
 
     Additionally the CSS2Properties interface is implemented.
-    
+
     Properties
     ==========
     cssText: of type DOMString
@@ -110,10 +110,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             green
             >>> del style.color
             >>> print style.color # print empty string
-            
+
     Format
     ======
-    [Property: Value;]* Property: Value?           
+    [Property: Value;]* Property: Value?
     """
     def __init__(self, parentRule=None, cssText=u'', readonly=False):
         """
@@ -121,12 +121,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             The CSS rule that contains this declaration block or
             None if this CSSStyleDeclaration is not attached to a CSSRule.
         readonly
-            defaults to False        
+            defaults to False
         """
         super(CSSStyleDeclaration, self).__init__()
 
         self.valid = True
-        
+
         self.seq = []
         self.parentRule = parentRule
         self.cssText = cssText
@@ -167,7 +167,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             >>> style = CSSStyleDeclaration(cssText='font-style:italic;')
             >>> print style.fontStyle
             italic
-            
+
         """
         return self.getPropertyValue(CSSname)
 
@@ -190,7 +190,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             >>> style.fontStyle = 'italic'
             >>> # or
             >>> style.setProperty('font-style', 'italic', '!important')
-            
+
         """
         self.setProperty(CSSname, value)
 
@@ -209,7 +209,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         self.removeProperty(CSSname)
 
-    
+
     def _getCssText(self):
         """
         returns serialized property cssText
@@ -223,12 +223,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         including the removal or addition of properties.
 
         DOMException on setting
-        
+
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this declaration is readonly or a property is readonly.
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error and
-          is unparsable.          
+          is unparsable.
         """
         def ignoreuptopropend(i, tokens):
             "returns position of ending ;"
@@ -250,7 +250,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             if self._ttypes.S == t.type: # ignore
                 pass
             elif self._ttypes.COMMENT == t.type: # just add
-                newseq.append(cssutils.css.CSSComment(t))            
+                newseq.append(cssutils.css.CSSComment(t))
             else:
                 # name upto ":" (or ; -> error)
                 nametokens, endi = self._tokensupto(
@@ -259,7 +259,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
                 shouldbecolon = nametokens.pop()
                 if shouldbecolon.value == u':': # OK: exclude ending :
-                    i += 1 
+                    i += 1
                 elif shouldbecolon.value == u';': # ERROR: premature ;
                     self._log.error(
                         u'CSSStyleDeclaration: Incomplete Property starting here: %s.' %
@@ -282,24 +282,24 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                         % self._valuestr(tokens[i-1:]), t)
                     i += ignoreuptopropend(i, tokens)
                     continue
-                
+
                 # value upto ";" or "!important" or end
                 valuetokens, endi = self._tokensupto(
                     tokens[i:], propertyvalueendonly=True)
                 i += endi
                 if valuetokens and \
                    valuetokens[-1].type == self._ttypes.SEMICOLON:
-                    del valuetokens[-1] # exclude ending ;            
+                    del valuetokens[-1] # exclude ending ;
                     prioritytokens = None
                 elif valuetokens and \
                      valuetokens[-1].type == self._ttypes.IMPORTANT_SYM:
                     del valuetokens[-1] # exclude !important
 
-                    # priority upto ; or end                    
+                    # priority upto ; or end
                     prioritytokens, endi = self._tokensupto(
                             tokens[i:], propertypriorityendonly=True)
                     i += endi
-                    
+
                     if prioritytokens and prioritytokens[-1].type == \
                        self._ttypes.SEMICOLON:
                         del prioritytokens[-1] # exclude ending ;
@@ -312,9 +312,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     prioritytokens = None
 
                 self.setProperty(nametokens, valuetokens, prioritytokens,
-                                 overwrite=False, _seq=newseq)        
+                                 overwrite=False, _seq=newseq)
             i += 1
-            
+
         self.seq = newseq
 
     cssText = property(_getCssText, _setCssText,
@@ -324,7 +324,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
     def _getLength(self):
         return len([x for x in self.seq if isinstance(x, SameNamePropertyList)])
-    
+
     length = property(_getLength,
         doc="(DOM) the number of properties that have been explicitly set\
         in this declaration block. The range of valid indices is 0 to\
@@ -333,7 +333,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
     def _getParentRule(self):
         return self._parentRule
-        
+
     def _setParentRule(self, parentRule):
         self._parentRule = parentRule
 
@@ -341,7 +341,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         doc="(DOM) The CSS rule that contains this declaration block or\
         None if this CSSStyleDeclaration is not attached to a CSSRule.")
 
-    
+
     def getPropertyCSSValue(self, name):
         """
         (DOM)
@@ -357,7 +357,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
             The name will be normalized (lowercase, no simple escapes) so
             "color", "COLOR" or "C\olor" are all equivalent
-        
+
         returns CSSValue, the value of the property if it has been
         explicitly set for this declaration block. Returns None if the
         property has not been set.
@@ -398,16 +398,16 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         (DOM)
         Used to retrieve the value of a CSS property if it has been
         explicitly set within this declaration block.
-        
+
         name
             of the CSS property
 
             The name will be normalized (lowercase, no simple escapes) so
             "color", "COLOR" or "C\olor" are all equivalent
-        
+
         returns the value of the property if it has been explicitly set
         for this declaration block. Returns the empty string if the
-        property has not been set. 
+        property has not been set.
         """
         normalname = self._normalize(name)
 
@@ -425,18 +425,18 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         Used to retrieve the priority of a CSS property (e.g. the
         "important" qualifier) if the property has been explicitly set in
         this declaration block.
-        
+
         name
             of the CSS property
-            
+
             The name will be normalized (lowercase, no simple escapes) so
             "color", "COLOR" or "C\olor" are all equivalent
-        
+
         returns a string representing the priority (e.g. "important") if
         one exists. The empty string if none exists.
         """
         normalname = self._normalize(name)
-        
+
         for pl in self.seq:
             if isinstance(pl, SameNamePropertyList) and \
                pl.name == normalname:
@@ -451,19 +451,19 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         a property is set multiple times with different values or
         priorities for different UAs::
 
-            background: url(1.gif) fixed;        
-            background: url(2.gif) scroll;        
-        
+            background: url(1.gif) fixed;
+            background: url(2.gif) scroll;
+
         name
             of the CSS property
-            
+
             The name will be normalized (lowercase, no simple escapes) so
             "color", "COLOR" or "C\olor" are all equivalent
-        
+
         Returns the SameNamePropertyList object if available for the given
-        property name, else returns ``None``. 
+        property name, else returns ``None``.
         """
-        normalname = self._normalize(name) 
+        normalname = self._normalize(name)
 
         for pl in self.seq:
             if isinstance(pl, SameNamePropertyList) and \
@@ -483,7 +483,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         index
             of the property to retrieve, negative values behave like
             negative indexes on Python lists, so -1 is the last element
-        
+
         returns the name of the property at this ordinal position. The
         empty string if no property exists at this position.
         """
@@ -500,10 +500,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         (DOM)
         Used to remove a CSS property if it has been explicitly set within
         this declaration block.
-        
+
         name
             of the CSS property to remove
-                    
+
             The name will be normalized (lowercase, no simple escapes) so
             "color", "COLOR" or "C\olor" are all equivalent
 
@@ -511,9 +511,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         this declaration block. Returns the empty string if the property
         has not been set or the property name does not correspond to a
         known CSS property
-        
+
         raises DOMException
-        
+
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this declaration is readonly or the property is
           readonly.
@@ -521,15 +521,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         self._checkReadonly()
 
         normalname = self._normalize(name)
-        
+
         r = u''
         for i, pl in enumerate(self.seq):
             if isinstance(pl, SameNamePropertyList) and \
                pl.name == normalname:
                 r = pl[pl._currentIndex()].cssValue._value
                 del self.seq[i]
-                break        
-                    
+                break
+
         return r
 
 
@@ -539,21 +539,21 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         (DOM)
         Used to set a property value and priority within this declaration
         block.
-        
+
         name
             of the CSS property to set
             (in W3C DOM the parameter is called "propertyName")
             will be normalized in the Property
-            
+
         value
             the new value of the property
         priority
             the optional priority of the property (e.g. "important")
         _seq
             used by self._setCssText only as in temp seq
-        
+
         DOMException on setting
-        
+
         - SYNTAX_ERR: (self)
           Raised if the specified value has a syntax error and is
           unparsable.
@@ -562,15 +562,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
           readonly.
         """
         self._checkReadonly()
-        
+
         if _seq is None: # seq to update
             _seq = self.seq
 
         newp = Property(name, value, priority)
-        if newp.name and newp.value:            
+        if newp.name and newp.value:
             newnormalname = newp.normalname
-            
-            # index of pl to exchange or append to, maybe 
+
+            # index of pl to exchange or append to, maybe
             index = -1
             for i, pl in enumerate(_seq):
                 if isinstance(pl, SameNamePropertyList) and \
@@ -583,20 +583,20 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 newpl = SameNamePropertyList(newnormalname)
                 newpl.append(newp)
                 _seq.append(newpl)
-            else:                    
+            else:
                 if overwrite:
                     # empty proplist and add new property
-                    del _seq[index][:] 
+                    del _seq[index][:]
                     _seq[index].append(newp)
                 else:
                     # append to pl
                     _seq[index].append(newp)
-                    
+
 
 class SameNamePropertyList(list):
     """
     (cssutils) EXPERIMENTAL
-    
+
     A list of properties with the same normalname. Used for equivelant
     properties like color, c\olor, co\lor.
     To get the actual Property (latest with the highest priority) use
@@ -606,9 +606,9 @@ class SameNamePropertyList(list):
     ==========
     name
         normalized Property name (e.g. ``color``)
-        
+
         see ``token.Token`` for details on "normalized"
-        
+
     Useful only if all similar named properties should be kept after
     parsing. See ``Serializer.prefs.keepAllProperties``
     """
@@ -630,11 +630,11 @@ class SameNamePropertyList(list):
                       if not p.priority]
             if normals:
                 return normals[-1]
-            
+
 
 if __name__ == '__main__':
     cssutils.css.cssstyledeclaration.Property = Property
-    
+
     s = cssutils.parseString('''a {
         color: red;
         font-style: italic;
@@ -644,10 +644,9 @@ if __name__ == '__main__':
     print 1, style.color, style.getPropertyValue('color')
 
     style.color = 'green'
-    style.fontStyle = 'normal'    
-    
+    style.fontStyle = 'normal'
+
     print 2, style.fontStyle, style.getPropertyValue('font-style')
     print 2, style.color, style.getPropertyValue('color')
 
-    style.xxx = '1'    
-
+    style.xxx = '1'

@@ -14,9 +14,9 @@ def parse(args=None):
     """
     usage:
         cssparse filenames [--encoding=ENCODING] [--debug]
-    
+
     Parses given filename (using optional encoding) and prints the content
-    
+
     Redirect to file to save it.
     """
 
@@ -37,11 +37,11 @@ def parse(args=None):
         p.error("no filename given")
 
 ##    newlog = logging.getLogger('CSSPARSER')
-##    hdlr = logging.FileHandler('CSSPARSER.log', 'w')      
+##    hdlr = logging.FileHandler('CSSPARSER.log', 'w')
 ##    formatter = logging.Formatter('%(levelname)s\t%(message)s')
 ##    hdlr.setFormatter(formatter)
 ##    newlog.addHandler(hdlr)
-##    newlog.setLevel(logging.DEBUG)  
+##    newlog.setLevel(logging.DEBUG)
 ##    p = CSSParser(log=newlog, loglevel=logging.DEBUG)
 
     for filename in filenames:

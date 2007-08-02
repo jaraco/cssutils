@@ -50,7 +50,7 @@ class SelectorListTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.SyntaxErr, s._setSelectorText, u',')
         # not changed as invalid!
         self.assertEqual(u'a, b', s.selectorText)
-        
+
         tests = {
             u'*': None,
             u'/*1*/ *': None,

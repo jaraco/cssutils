@@ -29,7 +29,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_InvalidModificationErr(self):
         "CSSComment.cssText InvalidModificationErr"
-        self._test_InvalidModificationErr(u'/* comment */')        
+        self._test_InvalidModificationErr(u'/* comment */')
 
 
     def test_csstext(self):
@@ -44,7 +44,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
             u'/* \\*/': None,
             u'/*"*/': None,
             u'''/*"
-            */''': None,            
+            */''': None,
             u'/** / ** //*/': None
             }
         self.do_equal_r(tests) # set cssText
@@ -53,7 +53,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
             u'\n /*': u'/**/',
             })
         self.do_equal_p(tests) # parse
-        
+
         tests = {
             u'/* */ */': xml.dom.SyntaxErr,
             u'  */ /* ': xml.dom.SyntaxErr

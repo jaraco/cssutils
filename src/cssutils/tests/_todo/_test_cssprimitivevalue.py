@@ -24,24 +24,24 @@ class CSSPrimitiveValueTestCase(unittest.TestCase):
         self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
 
     def test_readonly(self):
-        pass 
-        
+        pass
+
     def test_cssText(self):
         pass
-        
+
     def test_primitiveValue(self):
         pass
 
     def test_getFloat(self):
         v = cssutils.cssprimitivevalue.PrimitiveValue(u'1')
-        self.assertRaises(xml.dom.InvalidAccessErr, v.getFloatValue, 
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getFloatValue,
             v.CSS_UNKNOWN)
 
     def test_setFloat(self):
         v = cssutils.cssprimitivevalue.PrimitiveValue(u'1')
         v.setFloatValue(v.CSS_MM, '8')
         # TODO: more tests
-        
+
     def test_setString(self):
         v = cssutils.cssprimitivevalue.PrimitiveValue(u'1')
         v.setStringValue(v.CSS_STRING, 'brown')
@@ -59,7 +59,7 @@ class CSSPrimitiveValueTestCase(unittest.TestCase):
         v = cssutils.cssprimitivevalue.PrimitiveValue('rgb(1%, 5%, 10%)')
         self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
         self.assertEqual(u'rgb(1.0%, 5.0%, 10.0%)', v.cssText)
-    
+
         v = cssutils.cssprimitivevalue.PrimitiveValue('  rgb(  1 ,5,  10  )')
         self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
         v = cssutils.cssprimitivevalue.PrimitiveValue('rgb (1,5,10)')
@@ -68,6 +68,6 @@ class CSSPrimitiveValueTestCase(unittest.TestCase):
         self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
 
 
-        
+
 if __name__ == '__main__':
-    unittest.main() 
+    unittest.main()

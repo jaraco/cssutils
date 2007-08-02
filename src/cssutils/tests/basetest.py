@@ -62,7 +62,7 @@ class BaseTestCase(unittest.TestCase):
         but checks that the message is right too.
 
         Usage::
-        
+
             self.assertRaisesMsg(
                 MyException, "Exception message",
                 my_function, (arg1, arg2)
@@ -84,7 +84,7 @@ class BaseTestCase(unittest.TestCase):
             else:
                 # Message provided, and it didn't match: fail!
                 raise self.failureException(
-                "Right exception, wrong message: got '%s' expected '%s'" % 
+                "Right exception, wrong message: got '%s' expected '%s'" %
                 (excMsg, msg)
                 )
         else:
@@ -93,7 +93,7 @@ class BaseTestCase(unittest.TestCase):
             else:
                 excName = str(excClass)
             raise self.failureException(
-                "Expected to raise %s, didn't get an exception at all" % 
+                "Expected to raise %s, didn't get an exception at all" %
                 excName
                 )
 

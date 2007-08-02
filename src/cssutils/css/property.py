@@ -8,7 +8,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '0.9.2b2, $LastChangedRevision$'
 
-import xml.dom 
+import xml.dom
 
 import cssutils
 import cssproperties
@@ -40,11 +40,11 @@ class _Property(cssutils.util.Base):
     Format
     ======
     ::
-    
+
         property = name
           : IDENT S*
           ;
-          
+
         expr = value
           : term [ operator term ]*
           ;
@@ -69,14 +69,14 @@ class _Property(cssutils.util.Base):
         prio
           : IMPORTANT_SYM S*
           ;
-          
+
     """
     def __init__(self, name, value, priority=None):
-        """ 
-        inits property 
+        """
+        inits property
         """
         super(_Property, self).__init__()
-        
+
         self.seqs = [[], None, []]
         self.valid = True
         self.name = name
@@ -96,14 +96,14 @@ class _Property(cssutils.util.Base):
         x
             name, value or priority, used for error message
 
-        returns True if INVALID found, else False            
+        returns True if INVALID found, else False
         """
         for t in tokens:
             if t.type == self._ttypes.INVALID:
                 self._log.error(u'Property: Invalid token found in %s.' % x, t)
                 return True
         return False
-    
+
 
     def _getName(self):
         try:
@@ -120,7 +120,7 @@ class _Property(cssutils.util.Base):
           ;
 
         DOMException on setting
-        
+
         - SYNTAX_ERR: (self)
           Raised if the specified name has a syntax error and is
           unparsable.
@@ -134,16 +134,16 @@ class _Property(cssutils.util.Base):
         for i in range(0, len(tokens)):
             t = tokens[i]
             if self._ttypes.S == t.type: # ignore
-                pass 
-                
+                pass
+
             elif self._ttypes.COMMENT == t.type: # just add
                 newseq.append(cssutils.css.CSSComment(t))
-                            
-            elif self._ttypes.IDENT == t.type and not newname: 
+
+            elif self._ttypes.IDENT == t.type and not newname:
                 newname = t.value.lower()
                 newnormalname = t.normalvalue
                 newseq.append(newname)
-                
+
             else:
                 self._log.error(u'Property: Syntax error in name.', t)
                 return
@@ -157,12 +157,12 @@ class _Property(cssutils.util.Base):
             if newname not in cssproperties.cssvalues:
                 self._log.info(u'Property: No CSS2 Property: "%s".' %
                          newname, t, neverraise=True)
-            
+
         else:
             self._log.error(u'Property: No name found: "%s".' % name, t)
 
     name = property(_getName, _setName,
-        doc="(cssutils) Name of this property")   
+        doc="(cssutils) Name of this property")
 
 
     def _getCSSValue(self):
@@ -173,11 +173,11 @@ class _Property(cssutils.util.Base):
         see css.CSSValue
 
         DOMException on setting?
-                
+
         - SYNTAX_ERR: (self)
           Raised if the specified CSS string value has a syntax error
           (according to the attached property) or is unparsable.
-        - TODO: INVALID_MODIFICATION_ERR: 
+        - TODO: INVALID_MODIFICATION_ERR:
           Raised if the specified CSS string value represents a different
           type of values than the values allowed by the CSS property.
         """
@@ -186,18 +186,18 @@ class _Property(cssutils.util.Base):
 
         if v:
             self.seqs[1] = cssvalue
-        
+
             # validate if known
             if self.name in cssproperties.cssvalues and \
                not cssproperties.cssvalues[self.name](v):
-                
+
                 linetoken = cssvalue._linetoken
                 self._log.warn(
                     u'Property: Invalid value for CSS2 property %s: %s' %
                     (self.name, v), linetoken, neverraise=True)
-        
+
     cssValue = property(_getCSSValue, _setCSSValue,
-        doc="(cssutils) CSSValue object of this property")   
+        doc="(cssutils) CSSValue object of this property")
 
 
     def _getPriority(self):
@@ -215,14 +215,14 @@ class _Property(cssutils.util.Base):
         Format
         ======
         ::
-        
+
             prio
               : IMPORTANT_SYM S*
               ;
-            "!"{w}"important"	{return IMPORTANT_SYM;}
+            "!"{w}"important"   {return IMPORTANT_SYM;}
 
         DOMException on setting
-        
+
         - SYNTAX_ERR: (self)
           Raised if the specified priority has a syntax error and is
           unparsable.
@@ -231,15 +231,15 @@ class _Property(cssutils.util.Base):
         if priority is None or priority == u'':
             self._priority = u''
             self.seqs[2] = []
-        else:   
+        else:
             tokens = self._tokenize(priority)
             if self.__invalidToken(tokens, 'priority'):
-                return 
+                return
 
-            newpriority = None        
+            newpriority = None
             for t in tokens:
                 if t.type in (self._ttypes.S, self._ttypes.COMMENT): # ignored
-                    pass 
+                    pass
                 elif self._ttypes.IMPORTANT_SYM == t.type and not newpriority:
                     newpriority = t.value.lower()
                 else:
@@ -253,7 +253,7 @@ class _Property(cssutils.util.Base):
                 self._log.error(u'Property: Unknown priority: "%s".' % priority)
 
     priority = property(_getPriority, _setPriority,
-        doc="(cssutils) Priority of this property")   
+        doc="(cssutils) Priority of this property")
 
 
     # DEPRECATED
@@ -263,7 +263,7 @@ class _Property(cssutils.util.Base):
     def _setValue(self, value):
         self.cssValue.cssText = value
     value = property(_getValue, _setValue,
-                     doc="DEPRECATED string value of property")   
+                     doc="DEPRECATED string value of property")
 
 
 if __name__ == '__main__':

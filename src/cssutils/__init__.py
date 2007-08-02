@@ -36,7 +36,7 @@ Usage may be::
     >>> parser = CSSParser()
     >>> sheet = parser.parseString(u'a { color: red}')
     >>> print sheet.cssText
-    
+
 """
 __all__ = ['css', 'stylesheets',
            'CSSParser', 'CSSSerializer']
@@ -87,4 +87,3 @@ def setSerializer(serializer):
 
 if __name__ == '__main__':
     print __doc__
-    

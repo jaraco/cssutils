@@ -76,7 +76,7 @@ class CSSStyleRule(cssrule.CSSRule):
 
         self._readonly = readonly
 
-        
+
     def _getCssText(self):
         """ 
         returns serialized property cssText 
@@ -209,7 +209,7 @@ class CSSStyleRule(cssrule.CSSRule):
     selectorList = property(_getSelectorList, _setSelectorList,
         doc="The SelectorList of this rule.")
 
-  
+
     def _getSelectorText(self):
         """
         wrapper for cssutils Selector object

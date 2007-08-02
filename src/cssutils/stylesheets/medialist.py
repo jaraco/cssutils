@@ -21,9 +21,9 @@ class MediaList(cssutils.util.Base, list):
     """
     Provides the abstraction of an ordered collection of media,
     without defining or constraining how this collection is
-    implemented. 
+    implemented.
     An empty list is the same as a list that contains the medium "all".
-    
+
     Properties
     ==========
     length:
@@ -32,7 +32,7 @@ class MediaList(cssutils.util.Base, list):
         The parsable textual representation of this medialist
     seq: a list (cssutils)
         All parts of this MediaList including CSSComments
-    valid: 
+    valid:
         if this list is valid
 
     Format
@@ -43,23 +43,23 @@ class MediaList(cssutils.util.Base, list):
     _MEDIA = [u'all', u'aural', u'braille', u'embossed', u'handheld',
         u'print', u'projection', u'screen', u'tty', u'tv']
     "available media types"
-    
+
     def __init__(self, mediaText=None, readonly=False):
         """
         mediaText
             unicodestring of parsable comma separared media
         """
         super(MediaList, self).__init__()
-        
+
         self.valid = True
-        
+
         if mediaText:
             self._seq = []
             self.mediaText = mediaText
         else:
             self.seq = []
         self._readonly = readonly
-        
+
 
     def _getLength(self):
         """
@@ -83,8 +83,8 @@ class MediaList(cssutils.util.Base, list):
 
 
     def _getMediaText(self):
-        """ 
-        returns serialized property mediaText 
+        """
+        returns serialized property mediaText
         """
         return cssutils.ser.do_stylesheets_medialist(self)
 
@@ -93,16 +93,16 @@ class MediaList(cssutils.util.Base, list):
         mediaText
             simple value or comma-separated list of media
 
-        DOMException  
-        
+        DOMException
+
         - SYNTAX_ERR: (self)
           Raised if the specified string value has a syntax error and is
           unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this media list is readonly.            
+          Raised if this media list is readonly.
         """
         self._checkReadonly()
-        tokens = self._tokenize(mediaText)    
+        tokens = self._tokenize(mediaText)
 
         newseq = []
         del self[:] # reset
@@ -111,11 +111,11 @@ class MediaList(cssutils.util.Base, list):
         for i in range(len(tokens)):
             t = tokens[i]
             if self._ttypes.S == t.type: # ignore
-                pass 
-                            
+                pass
+
             elif self._ttypes.COMMENT == t.type: # just add
                 newseq.append(csscomment.CSSComment(t))
-                
+
             elif expected.startswith('medium') and self._ttypes.IDENT == t.type:
                 _newmed = t.value.lower()
                 self.appendMedium(_newmed)
@@ -131,7 +131,7 @@ class MediaList(cssutils.util.Base, list):
                 newseq.append(t.value)
                 expected = 'medium'
 
-            elif self._ttypes.COMMA == t.type:            
+            elif self._ttypes.COMMA == t.type:
                 valid = False
                 self._log.error(u'MediaList: Syntax Error, expected ",".', t)
 
@@ -148,39 +148,39 @@ class MediaList(cssutils.util.Base, list):
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="""(DOM) The parsable textual representation of the media list.
-            This is a comma-separated list of media.""")    
+            This is a comma-separated list of media.""")
 
-    
+
     def appendMedium(self, newMedium):
         """
         (DOM)
         Adds the medium newMedium to the end of the list. If the newMedium
         is already used, it is first removed.
 
-        returns if newMedium is valid        
+        returns if newMedium is valid
 
         DOMException
-        
+
         - INVALID_CHARACTER_ERR: (self)
           If the medium contains characters that are invalid in the
           underlying style language.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this list is readonly.         
+          Raised if this list is readonly.
         """
-        self._checkReadonly()        
-        tokens = self._tokenize(newMedium)    
+        self._checkReadonly()
+        tokens = self._tokenize(newMedium)
 
         valid = True
 
         # ? should check format only?
         try:
-            newMedium = tokens[0].value.lower()            
+            newMedium = tokens[0].value.lower()
         except (IndexError, AttributeError):
             self._log.error(
                 u'MediaList: "%s" is not a valid medium.' % self._valuestr(
                     newMedium), error=xml.dom.InvalidCharacterErr)
             return
-                        
+
         if newMedium not in self._MEDIA:
             valid = False
             self._log.error(
@@ -219,26 +219,26 @@ class MediaList(cssutils.util.Base, list):
                     else:
                         newseq.append(x)
                 self._seq = newseq
-                
+
             if len(self) > 0: # already 1 there, add "," + medium 2 seq
                 self._seq.append(u',')
-                
+
             self._seq.append(newMedium)
             self.append(newMedium)
         return valid
 
-    
+
     def deleteMedium(self, oldMedium):
         """
         (DOM)
         Deletes the medium indicated by oldMedium from the list.
 
         DOMException
-        
+
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this list is readonly.
         - NOT_FOUND_ERR: (self)
-          Raised if oldMedium is not in the list.         
+          Raised if oldMedium is not in the list.
         """
         self._checkReadonly()
         oldMedium = oldMedium.lower()
