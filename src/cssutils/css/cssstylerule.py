@@ -1,6 +1,6 @@
 """CSSStyleRule implements DOM Level 2 CSS CSSStyleRule.
 
-TODO        
+TODO
 - parentRule?
 - parentStyleSheet?
 """
@@ -49,19 +49,19 @@ class CSSStyleRule(cssrule.CSSRule):
       LBRACE S* declaration [ ';' S* declaration ]* '}' S*
       ;
     """
-    type = cssrule.CSSRule.STYLE_RULE 
+    type = cssrule.CSSRule.STYLE_RULE
 
     def __init__(self, selectorText=None, style=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
-        
+
         selectorText
             type string
         style
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSStyleRule, self).__init__()
-                
+
         if selectorText:
             self.selectorText = selectorText
             self.seq.append(self.selectorText)
@@ -78,19 +78,19 @@ class CSSStyleRule(cssrule.CSSRule):
 
 
     def _getCssText(self):
-        """ 
-        returns serialized property cssText 
+        """
+        returns serialized property cssText
         """
         return cssutils.ser.do_CSSStyleRule(self)
-    
+
     def _setCssText(self, cssText):
         """
-        DOMException on setting  
-        
+        DOMException on setting
+
         - SYNTAX_ERR: (self, StyleDeclaration)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
-        - INVALID_MODIFICATION_ERR: (self) 
+        - INVALID_MODIFICATION_ERR: (self)
           Raised if the specified CSS string value represents a different
           type of rule than the current one.
         - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
@@ -101,9 +101,9 @@ class CSSStyleRule(cssrule.CSSRule):
         """
         super(CSSStyleRule, self)._setCssText(cssText)
         tokens = self._tokenize(cssText)
-        valid = True        
+        valid = True
 
-        # check if right token            
+        # check if right token
         if not tokens or tokens[0].value.startswith(u'@'):
             self._log.error(u'CSSStyleRule: No CSSStyleRule found: %s' %
                       self._valuestr(cssText),
@@ -114,7 +114,7 @@ class CSSStyleRule(cssrule.CSSRule):
         newselectorList = SelectorList()
         newstyle = cssstyledeclaration.CSSStyleDeclaration(parentRule=self)
         newseq = []
-        
+
         # get selector (must be one, see above)
         selectortokens, endi = self._tokensupto(tokens,
                                                     blockstartonly=True)
@@ -135,10 +135,10 @@ class CSSStyleRule(cssrule.CSSRule):
 
             elif self._ttypes.S == t.type: # ignore
                 pass
-                
+
             elif self._ttypes.COMMENT == t.type: # just add
                 newseq.append(cssutils.css.CSSComment(t))
-                
+
             elif self._ttypes.LBRACE == t.type:
                 foundtokens, endi = self._tokensupto(
                     tokens[i:], blockendonly=True)
@@ -146,7 +146,7 @@ class CSSStyleRule(cssrule.CSSRule):
                 if len(foundtokens) < 2:
                     self._log.error(u'CSSStyleRule: Syntax Error.', t)
                     return
-                else:                
+                else:
                     styletokens = foundtokens[1:-1] # without { and }
                     newstyle = cssstyledeclaration.CSSStyleDeclaration(
                         parentRule=self)
@@ -186,12 +186,12 @@ class CSSStyleRule(cssrule.CSSRule):
         """
         (cssutils)
         set the SelectorList of this rule
-        
+
         selectorList
             instance of SelectorList
 
         DOMException on setting
-        
+
         - NO_MODIFICATION_ALLOWED_ERR:
           Raised if this rule is readonly.
         """
@@ -205,7 +205,7 @@ class CSSStyleRule(cssrule.CSSRule):
         see selectorText for a textual representation
         """
         return self._selectorList
-    
+
     selectorList = property(_getSelectorList, _setSelectorList,
         doc="The SelectorList of this rule.")
 
@@ -225,10 +225,10 @@ class CSSStyleRule(cssrule.CSSRule):
             selectors
 
         DOMException on setting
-        
+
         - SYNTAX_ERR:
           Raised if the specified CSS string value has a syntax error
-          and is unparsable.     
+          and is unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this rule is readonly.
         """
@@ -261,9 +261,12 @@ class CSSStyleRule(cssrule.CSSRule):
     style = property(_getStyle, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")
 
+    def __repr__(self):
+        return "<%s.%s object selector=%r at 0x%x>" % (self.__class__.__module__, self.__class__.__name__, self.selectorText, id(self))
+
 
 if __name__ == '__main__':
-    cssutils.css.cssstylerule.Selector = Selector # for main test        
+    cssutils.css.cssstylerule.Selector = Selector # for main test
     r = CSSStyleRule()
     r.cssText = 'a {}a'
     r.selectorText = u'b + a'
