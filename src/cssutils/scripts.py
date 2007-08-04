@@ -5,26 +5,22 @@ utility scripts installed as Python scripts
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '0.9.2b3 $LastChangedRevision$'
 
-import sys
 import cssutils
+import logging
+import optparse
+import sys
 
 def parse(args=None):
     """
-    usage:
-        cssparse filenames [--encoding=ENCODING] [--debug]
+    Parses given filename(s) (using optional encoding) and prints the content
 
-    Parses given filename (using optional encoding) and prints the content
-
-    Redirect to file to save it.
+    Redirect stdout to save CSS. Redirect stderr to save parser log infos.
     """
 
-    import logging
-    import sys
-    import optparse
-
-    usage = "usage: %prog [options] filename1.css [filename2.css ...]"
+    usage = """usage: %prog [options] filename1.css [filename2.css ...]
+        [>filename_combined.css] [2>parserinfo.log] """
     p = optparse.OptionParser(usage=usage)
     p.add_option('-e', '--encoding', action='store', dest='encoding',
         help='encoding of the file')
@@ -44,10 +40,14 @@ def parse(args=None):
 ##    newlog.setLevel(logging.DEBUG)
 ##    p = CSSParser(log=newlog, loglevel=logging.DEBUG)
 
+    if options.debug:
+        p = cssutils.CSSParser(loglevel=logging.DEBUG)
+    else:
+        p = cssutils.CSSParser()
+
     for filename in filenames:
-        if options.debug:
-            p = cssutils.CSSParser(loglevel=logging.DEBUG)
-        else:
-            p = cssutils.CSSParser()
+        sys.stderr.write('=== CSS FILE: "%s" ===\n' % filename)        
         sheet = p.parse(filename, encoding=options.encoding)
         print sheet.cssText
+        print 
+        sys.stderr.write('\n')
