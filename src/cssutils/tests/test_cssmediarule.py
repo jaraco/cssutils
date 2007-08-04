@@ -212,6 +212,9 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.insertRule(self.stylerule)
         self.assertEqual(u'@media print {\n    a {}\n    }', self.r.cssText)
 
+    def test_repr(self):
+        self.r.media.mediaText = 'screen'
+        self.assert_('screen' in repr(self.r))
 
 if __name__ == '__main__':
     import unittest

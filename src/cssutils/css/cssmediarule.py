@@ -285,6 +285,9 @@ class CSSMediaRule(cssrule.CSSRule):
     cssText = property(_getCssText, _setCssText,
         doc="(DOM attribute) The parsable textual representation.")
 
+    def __repr__(self):
+        return "<%s.%s object media=%r at 0x%x>" % (self.__class__.__module__, self.__class__.__name__, self.media, id(self))
+
 
 if __name__ == '__main__':
     m = CSSMediaRule()
