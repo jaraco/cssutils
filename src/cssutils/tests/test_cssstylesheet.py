@@ -271,6 +271,11 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self._insertRule((self.ur,),
                          notbefore, notafter, anywhere)
 
+    def test_repr(self):
+        s = cssutils.css.CSSStyleSheet()
+        s.href = 'file:foo.css'
+        self.assert_('file:foo.css' in repr(s))
+
 
 if __name__ == '__main__':
     import unittest

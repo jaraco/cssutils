@@ -45,7 +45,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
                 u'a {\n    font-family: "arial sans"\n    }',
         }
         self.do_equal_p(tests) # parse
-        
+
 
     def test_cssText(self):
         "CSSStyleRule.cssText"
@@ -95,7 +95,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         # only simple selector!
         self.assertRaises(xml.dom.InvalidModificationErr,
                           r.selectorList.appendSelector, u'  h1, x ')
-        
+
         self.assertEqual(2, r.selectorList.length)
         self.assertEqual(u'a, b', r.selectorText)
 
@@ -103,11 +103,11 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_selectorText(self):
         "CSSStyleRule.selectorText"
         r = cssutils.css.CSSStyleRule()
-        
+
         r.selectorText = u'a'
         self.assertEqual(1, r.selectorList.length)     
         self.assertEqual(u'a', r.selectorText)
-        
+
         r.selectorText = u' b, h1  '
         self.assertEqual(2, r.selectorList.length)
         self.assertEqual(u'b, h1', r.selectorText)
@@ -121,6 +121,13 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # check if parentRule of sd set
         self.assertEqual(self.r, d.parentRule)
+
+
+    def test_repr(self):
+        r = cssutils.css.CSSStyleRule()
+
+        r.selectorText = u'div.this-is-a-test'
+        self.assert_('div.this-is-a-test' in repr(r))
 
 
 if __name__ == '__main__':
