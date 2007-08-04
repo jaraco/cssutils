@@ -124,6 +124,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
 
     def test_repr(self):
+        "CSSStyleRule.__repr__()"
         r = cssutils.css.CSSStyleRule()
 
         r.selectorText = u'div.this-is-a-test'
