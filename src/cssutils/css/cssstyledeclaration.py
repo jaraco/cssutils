@@ -414,7 +414,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         for pl in self.seq:
             if isinstance(pl, SameNamePropertyList) and \
                pl.name == normalname:
-                print pl
                 return pl[pl._currentIndex()].cssValue._value
         return u''
 
