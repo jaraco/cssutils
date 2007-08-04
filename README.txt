@@ -56,6 +56,7 @@ changes
 
 HEAD
     - CHANGE: Added __repr__ methods to CSSMediaRule (showing the media list), CSSStyleRule (showing the selector) and CSSStyleSheet (showing the href).
+    - BUGFIX (minor): removed debeg output in CSSStyleDeclaration
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
