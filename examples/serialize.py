@@ -13,6 +13,8 @@ print "\nGiven CSS:"
 print css
 print "------------"
 
+print cssutils.ser
+
 print "\nCSS Serialized"
 print sheet.cssText
 
