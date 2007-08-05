@@ -1,6 +1,13 @@
-========================================================
-cssutils - CSS Cascading Style Sheets library for Python
-========================================================
+=============================================
+                 cssutils
+=============================================
+---------------------------------------------
+CSS Cascading Style Sheets library for Python
+---------------------------------------------
+:author: $LastChangedBy: $
+:date: $LastChangedDate: 2007-08-02 22:58:23 +0200 (Do, 02 Aug 2007) $
+:version: 0.9.2b4, $LastChangedRevision: 160 $
+
 Copyright (C) 2004-2007 Christof Hoeke
 Published under the LGPL, see http://cthedot.de/cssutils/license.html
 
@@ -8,6 +15,8 @@ A Python package to parse and build CSS Cascading Style Sheets. Partly implement
 
 Please visit http://cthedot.de/cssutils/ for full details and updates.
 
+
+.. contents::
 
 installation
 ============
@@ -86,8 +95,7 @@ HEAD
     - API CHANGE: removed cssutils.util.normalize function, use static (but private!) method cssutils.util.Base._normalize if absolutely needed which may be change too though
     - API CHANGE (minor): removed ``getFormatted`` and ```pprint`` from various classes which were both DEPRECATED for some time anyway
     - API CHANGE (minor): _Property.value is DEPRECATED, use _Property.cssValue.cssText instead, _Property is defined as private anyway so should not be used directly
-    -
- API CHANGE (minor): removed ``Tokenizer.tokensupto`` which was used internally only
+    - API CHANGE (minor): removed ``Tokenizer.tokensupto`` which was used internally only
 
     - CHANGE: Numbers and Dimensions starting with "." like ".1em" in the original stylesheet will be output as "0.1em" with a proceding 0 now.
     - CHANGE: Report of parsing errors have a slightly different syntax now.
@@ -113,10 +121,9 @@ HEAD
         normal
 
       Each property can be retrieved from CSSStyleDeclaration object with its name as
-    an object property. Names with "-" in it like ``font-style`` need to be called by
-    the respective DOM name ``fontStyle``.
-      Setting a property value works the same way and even ``del`` which effectively removes a property from a CSSStyleDeclaration works. For details see
-    CSSStyleDeclaration.
+      an object property. Names with "-" in it like ``font-style`` need to be called by
+      the respective DOM name ``fontStyle``.
+      Setting a property value works the same way and even ``del`` which effectively removes a property from a CSSStyleDeclaration works. For details see CSSStyleDeclaration.
 
       Not implemented are the finer details, see the module documentation of
       cssutils.css.cssproperties.
@@ -343,8 +350,8 @@ HEAD
         - cssutils.Serializer renamed to cssutils.CSSSerializer to improve usage of
            ``from cssutils import *``
         - cssutils has a property "ser" which is used by all classes to serialize themselves
-        it is definable with a custom instance of cssutils.Serializer by setting
-            cssutils.setCSSSerializer(newserializer)
+          it is definable with a custom instance of cssutils.Serializer by setting
+          cssutils.setCSSSerializer(newserializer)
 
         - prefs['CSSImportrule.href format'] may be set to
             - 'uri': renders url(...) (default)
@@ -358,7 +365,7 @@ HEAD
     - css.CSSImportRule:
         - improved parsing
 
-    - usage of *.getFormatted emits DeprecationWarning now and returns *.cssText
+    - usage of \*.getFormatted emits DeprecationWarning now and returns \*.cssText
 
     - lots of bugfixes and refactoring of modules, classes
     - extension and refactoring of unittests
