@@ -443,7 +443,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         cssutils.ser.prefs.__setattr__(pref, value)
 
     def __repr__(self):
-        return "<%s.%s object href=%r at 0x%x>" % (self.__class__.__module__, self.__class__.__name__, self.href, id(self))
+        return "<%s.%s object href=%r at 0x%x>" % (
+                self.__class__.__module__, self.__class__.__name__,
+                self.href, id(self))
+
 
 if __name__ == '__main__':
     print "CSSStyleSheet"

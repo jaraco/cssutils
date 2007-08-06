@@ -262,7 +262,9 @@ class CSSStyleRule(cssrule.CSSRule):
         doc="(DOM) The declaration-block of this rule set.")
 
     def __repr__(self):
-        return "<%s.%s object selector=%r at 0x%x>" % (self.__class__.__module__, self.__class__.__name__, self.selectorText, id(self))
+        return "<%s.%s object selector=%r at 0x%x>" % (
+                self.__class__.__module__, self.__class__.__name__,
+                self.selectorText, id(self))
 
 
 if __name__ == '__main__':
