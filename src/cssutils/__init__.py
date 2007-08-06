@@ -61,7 +61,7 @@ from serialize import CSSSerializer
 ser = CSSSerializer()
 
 # parser helper functions
-def parse(filename, encoding=None):
+def parse(filename, encoding=None, href=None, media=None):
     """
     reads file with given filename in given encoding (if given)
     and returns CSSStyleSheet object
@@ -69,12 +69,12 @@ def parse(filename, encoding=None):
     parser = CSSParser()
     return parser.parse(filename, encoding)
 
-def parseString(cssText):
+def parseString(cssText, href=None, media=None):
     """
     parses given string and returns CSSStyleSheet object
     """
     parser = CSSParser()
-    return parser.parseString(cssText)
+    return parser.parseString(cssText, href=href, media=media)
 
 # set "ser", default serializer
 def setSerializer(serializer):

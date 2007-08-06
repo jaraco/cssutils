@@ -18,6 +18,7 @@ __version__ = '0.9.2a2 $LastChangedRevision$'
 import codecs
 
 import cssutils
+from cssutils import stylesheets
 
 
 class CSSParser(object):
@@ -43,20 +44,29 @@ class CSSParser(object):
         cssutils.log.raiseExceptions = raiseExceptions
 
 
-    def parseString(self, cssText):
+    def parseString(self, cssText, href=None, media=None):
         """
         parse a CSSStyleSheet string
         returns the parsed CSS as a CSSStyleSheet object
 
         cssText
             CSS string to parse
+        href
+            The href attribute to assign to the generated stylesheet
+        media
+            The media attribute to assign to the generated stylesheet
+            (may be a MediaList or a string)
         """
         stylesheet = cssutils.css.CSSStyleSheet()
         stylesheet.cssText = cssText
+        stylesheet.href = href
+        if not isinstance(media, stylesheets.MediaList):
+            media = stylesheets.MediaList(media)
+        stylesheet.media = media
         return stylesheet
 
 
-    def parse(self, filename, encoding=None):
+    def parse(self, filename, encoding=None, href=None, media=None):
         """
         parse a CSSStyleSheet file
         returns the parsed CSS as a CSSStyleSheet object
@@ -65,6 +75,11 @@ class CSSParser(object):
             name of the CSS file to parse
         encoding
             of the CSS file
+        href
+            The href attribute to assign to the generated stylesheet
+        media
+            The media attribute to assign to the generated stylesheet
+            (may be a MediaList or a string)
 
         TODO:
             - parse encoding from CSS file? (@charset if given)
@@ -89,4 +104,4 @@ class CSSParser(object):
         if cssText.startswith(u'\ufeff'):
             cssText = cssText[1:]
 
-        return self.parseString(cssText)
+        return self.parseString(cssText, href=href, media=media)
