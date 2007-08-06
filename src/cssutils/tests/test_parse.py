@@ -41,6 +41,13 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(u'a {}', s.cssText)
 
 
+    def test_attributes(self):
+        "cssutils.parseString(href, media)"
+        s = cssutils.parseString("a{}", href="file:foo.css", media="screen, projection, tv")
+        self.assertEqual(s.href, "file:foo.css")
+        self.assertEqual(s.media, ["screen", "projection", "tv"])
+
+
     def tearDown(self):
         # needs to be reenabled here for other tests
         cssutils.log.raiseExceptions = True

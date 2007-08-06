@@ -66,6 +66,7 @@ changes
 HEAD
     - CHANGE: Added __repr__ methods to CSSMediaRule (showing the media list), CSSStyleRule (showing the selector), CSSStyleSheet (showing the href), CSSCharsetRule (showing the encoding).
     - BUGFIX (minor): removed debeg output in CSSStyleDeclaration
+    - FEATURE: href and media arguments can now be passed to parse() and parseString() functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
