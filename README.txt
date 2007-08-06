@@ -64,7 +64,7 @@ changes
 
 
 HEAD
-    - CHANGE: Added __repr__ methods to CSSMediaRule (showing the media list), CSSStyleRule (showing the selector) and CSSStyleSheet (showing the href).
+    - CHANGE: Added __repr__ methods to CSSMediaRule (showing the media list), CSSStyleRule (showing the selector), CSSStyleSheet (showing the href), CSSCharsetRule (showing the encoding).
     - BUGFIX (minor): removed debeg output in CSSStyleDeclaration
 
 0.9.2b3 070804

@@ -159,6 +159,11 @@ class CSSCharsetRule(cssrule.CSSRule):
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
 
+    def __repr__(self):
+        return "<%s.%s object encoding=%r at 0x%x>" % (
+                self.__class__.__module__, self.__class__.__name__,
+                self.encoding, id(self))
+
 
 if __name__ == '__main__':
     p = cssutils.CSSParser()

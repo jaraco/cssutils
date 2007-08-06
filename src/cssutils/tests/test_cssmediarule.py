@@ -216,6 +216,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.media.mediaText = 'screen'
         self.assert_('screen' in repr(self.r))
 
+
 if __name__ == '__main__':
     import unittest
     unittest.main()
