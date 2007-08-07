@@ -55,12 +55,14 @@ class CSSParser(object):
             The href attribute to assign to the generated stylesheet
         media
             The media attribute to assign to the generated stylesheet
-            (may be a MediaList or a string)
+            (may be a MediaList, list or a string)
         """
         stylesheet = cssutils.css.CSSStyleSheet()
         stylesheet.cssText = cssText
         stylesheet.href = href
         if not isinstance(media, stylesheets.MediaList):
+            if isinstance(media, list):
+                media = ",".join(media)
             media = stylesheets.MediaList(media)
         stylesheet.media = media
         return stylesheet
