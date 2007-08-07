@@ -29,7 +29,7 @@ class CSSUnknownRule(cssrule.CSSRule):
 
     cssutils only
     -------------
-    atkeyword: 
+    atkeyword:
         the literal keyword used
 
     Inherits properties from CSSRule
@@ -48,11 +48,11 @@ class CSSUnknownRule(cssrule.CSSRule):
         """
         super(CSSUnknownRule, self).__init__()
 
-        if cssText:        
+        if cssText:
             self.cssText = cssText
         else:
             self.atkeyword = None
-            
+
         self._readonly = readonly
 
 
@@ -63,7 +63,7 @@ class CSSUnknownRule(cssrule.CSSRule):
     def _setCssText(self, cssText):
         """
         DOMException on setting
-        
+
         - SYNTAX_ERR:
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
@@ -76,14 +76,14 @@ class CSSUnknownRule(cssrule.CSSRule):
         - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
           Raised if the rule is readonly.
         """
-        super(CSSUnknownRule, self)._setCssText(cssText)          
-        tokens = self._tokenize(cssText)        
+        super(CSSUnknownRule, self)._setCssText(cssText)
+        tokens = self._tokenize(cssText)
 
         if not tokens or tokens and tokens[0].type != self._ttypes.ATKEYWORD:
             self._log.error(u'CSSUnknown: No CSSUnknown found.',
                                 error=xml.dom.InvalidModificationErr)
             return
-           
+
         newatkeyword = tokens[0].value[1:]
         newseq = []
         expected = ''
@@ -94,7 +94,7 @@ class CSSUnknownRule(cssrule.CSSRule):
 
             if self._ttypes.S == t.type:
                 newseq.append(t.value) # whitespace: add
-                
+
             elif self._ttypes.COMMENT == t.type:
                 # Comment: just add
                 newseq.append(cssutils.css.CSSComment(t))

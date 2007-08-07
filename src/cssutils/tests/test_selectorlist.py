@@ -41,7 +41,7 @@ class SelectorListTestCase(basetest.BaseTestCase):
 
         self.assertEqual(u'a', s.selectorText)
 
-    
+
     def test_selectorText(self):
         "SelectorList.selectorText"
         s = SelectorList()
