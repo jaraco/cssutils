@@ -66,7 +66,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 # by process_command_line() to avoid getting wrong results.
                 pub.set_source(None, p[1:])
                 pub.set_destination(None, p[1:])
-                html = pub.publish()  
+                html = pub.publish()
             except:
                 output = traceback.format_exc()
                 print >>sys.stderr, output
