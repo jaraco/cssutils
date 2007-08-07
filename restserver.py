@@ -1,4 +1,4 @@
-""" 
+"""
 ReSTserver
 ==========
 :Author: Christof Hoeke
@@ -30,11 +30,11 @@ import sys
 import traceback
 
 import docutils.core
-import docutils.io                                                                  
+import docutils.io
 
 
 class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
-    
+
     def do_GET(self):
         """
         RST_EXT files will be transformed to HTML with docutils
@@ -43,7 +43,7 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         p = str(self.path)
         if p == '/':
             p = '/index.html'
-        
+
         # should be generated from RST_EXT?
         if p.endswith('.html'):
             temp = p[:-5] + RST_EXT
@@ -52,10 +52,10 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 self.send_header("Location", temp)
                 self.end_headers()
                 return
-                
+
         if p.endswith(RST_EXT):
             html = output = ''
-            try:               
+            try:
                 pub = docutils.core.Publisher(
                     source_class=docutils.io.FileInput,
                     destination_class=docutils.io.StringOutput)
@@ -83,8 +83,8 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.wfile.write(output)
         else:
             SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
-        
-        
+
+
 def run(server_class=BaseHTTPServer.HTTPServer,
         handler_class=Handler):
     server_address = (PATH, PORT)
