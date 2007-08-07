@@ -46,8 +46,8 @@ def parse(args=None):
         p = cssutils.CSSParser()
 
     for filename in filenames:
-        sys.stderr.write('=== CSS FILE: "%s" ===\n' % filename)        
+        sys.stderr.write('=== CSS FILE: "%s" ===\n' % filename)
         sheet = p.parse(filename, encoding=options.encoding)
         print sheet.cssText
-        print 
+        print
         sys.stderr.write('\n')
