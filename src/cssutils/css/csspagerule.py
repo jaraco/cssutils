@@ -32,7 +32,7 @@ class CSSPageRule(cssrule.CSSRule):
 
     cssutils only
     -------------
-    atkeyword: 
+    atkeyword:
         the literal keyword used
 
     Inherits properties from CSSRule
@@ -48,21 +48,21 @@ class CSSPageRule(cssrule.CSSRule):
         pseudo_page
           : ':' IDENT # :first, :left, :right in CSS 2.1
           ;
-          
+
     """
-    type = cssrule.CSSRule.PAGE_RULE 
+    type = cssrule.CSSRule.PAGE_RULE
 
     def __init__(self, selectorText=None, style=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
-        
+
         selectorText
             type string
         style
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSPageRule, self).__init__()
-        
+
         self.atkeyword = u'@page'
         if selectorText:
             self.selectorText = selectorText
@@ -84,9 +84,9 @@ class CSSPageRule(cssrule.CSSRule):
         and returns (selectorText, seq)
 
         raises SYNTAX_ERR:
-        """        
+        """
         tokens = self._tokenize(selectorText)
-            
+
         newselectortext = None
         newseq = []
 
@@ -96,7 +96,7 @@ class CSSPageRule(cssrule.CSSRule):
             t = tokens[i]
             if self._ttypes.S == t.type and 'ident' != expected: # ignore
                 pass
-                
+
             elif self._ttypes.COMMENT == t.type and 'ident' != expected: # just add
                 newseq.append(cssutils.css.CSSComment(t))
 
@@ -112,9 +112,9 @@ class CSSPageRule(cssrule.CSSRule):
                 self._log.error(u'CSSPageRule: Syntax Error in selector: "%s".' %
                           self._valuestr(tokens))
                 return None, None
-            
+
             i += 1
-            
+
         if expected and expected != ':':
             self._log.error(u'CSSPageRule: Invalid Selector: "%s".' %
                       self._valuestr(tokens))
@@ -132,19 +132,19 @@ class CSSPageRule(cssrule.CSSRule):
 
 
     def _getCssText(self):
-        """ 
-        returns serialized property cssText 
+        """
+        returns serialized property cssText
         """
         return cssutils.ser.do_CSSPageRule(self)
-    
+
     def _setCssText(self, cssText):
         """
-        DOMException on setting  
-        
+        DOMException on setting
+
         - SYNTAX_ERR: (self, StyleDeclaration)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
-        - INVALID_MODIFICATION_ERR: (self) 
+        - INVALID_MODIFICATION_ERR: (self)
           Raised if the specified CSS string value represents a different
           type of rule than the current one.
         - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
@@ -156,7 +156,7 @@ class CSSPageRule(cssrule.CSSRule):
         super(CSSPageRule, self)._setCssText(cssText)
         tokens = self._tokenize(cssText)
 
-        # check if right token    
+        # check if right token
         if not tokens or tokens and tokens[0].type != self._ttypes.PAGE_SYM:
             self._log.error(u'CSSPageRule: No CSSPageRule found: %s' %
                       self._valuestr(cssText),
@@ -222,18 +222,18 @@ class CSSPageRule(cssrule.CSSRule):
         way to add a comment is via setting ``cssText``
 
         DOMException on setting
-        
+
         - SYNTAX_ERR:
           Raised if the specified CSS string value has a syntax error
-          and is unparsable.     
+          and is unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this rule is readonly.
         """
         self._checkReadonly()
 
         # may raise SYNTAX_ERR
-        newselectortext, newseq = self.__parseSelectorText(selectorText)  
-        
+        newselectortext, newseq = self.__parseSelectorText(selectorText)
+
         if newselectortext:
             for i, x in enumerate(self.seq):
                 if x == self._selectorText:
@@ -269,7 +269,7 @@ class CSSPageRule(cssrule.CSSRule):
 if __name__ == '__main__':
     import property
     cssutils.css.cssstyledeclaration.Property = property._Property
-    cssutils.css.cssstylerule.Selector = Selector # for main test        
+    cssutils.css.cssstylerule.Selector = Selector # for main test
     r = CSSPageRule()
     r.cssText = '@page :right { margin: 0 }'
     #r.selectorText = u':left :a'

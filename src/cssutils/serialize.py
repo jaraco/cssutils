@@ -16,7 +16,7 @@ import cssutils
 class Preferences(object):
     """
     controls output of CSSSerializer
-    
+
     defaultAtKeyword = True
         Should the literal @keyword from src CSS be used or the default
         form, e.g. if ``True``: ``@import`` else: ``@i\mport``
@@ -27,7 +27,7 @@ class Preferences(object):
         Only used if ``keepAllProperties==False``.
 
     importHrefFormat = None
-        Uses hreftype if ``None`` or explicit 'string' or 'uri'        
+        Uses hreftype if ``None`` or explicit 'string' or 'uri'
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
     keepAllProperties = False
@@ -46,7 +46,7 @@ class Preferences(object):
         NOT USED YET
     """
     def __init__(self, indent=u'    '):
-        """        
+        """
         Always use named instead of positional parameters!
         """
         self.defaultAtKeyword = True
@@ -59,7 +59,7 @@ class Preferences(object):
         self.lineNumbers = False
         self.removeInvalid = True
         self.setBOM = False # TODO
-    
+
 
 class CSSSerializer(object):
     """
@@ -77,7 +77,7 @@ class CSSSerializer(object):
             prefs = Preferences()
         self.prefs = prefs
         self.ttypes = cssutils.token.Token
-        
+
         self._map = {
             cssutils.css.cssrule.CSSRule.COMMENT:
                 self.do_CSSComment,
@@ -96,7 +96,7 @@ class CSSSerializer(object):
             cssutils.css.cssrule.CSSRule.UNKNOWN_RULE:
                 self.do_CSSUnknownRule
             }
-        
+
 
     def _serialize(self, text):
         if self.prefs.lineNumbers:
@@ -228,14 +228,14 @@ class CSSSerializer(object):
     def do_CSSImportRule(self, rule):
         """
         serializes CSSImportRule
-        
-        href 
+
+        href
             string
         hreftype
             'uri' or 'string'
         media
             cssutils.stylesheets.medialist.MediaList
-            
+
         + CSSComments
         """
         if not rule.href or self._noinvalids(rule):
@@ -264,8 +264,8 @@ class CSSSerializer(object):
     def do_CSSNamespaceRule(self, rule):
         """
         serializes CSSNamespaceRule
-        
-        uri 
+
+        uri
             string
         prefix
             string
@@ -274,7 +274,7 @@ class CSSSerializer(object):
         """
         if not rule.uri or self._noinvalids(rule):
             return u''
-        
+
         out = [u'%s' % self._getatkeyword(rule, u'@namespace')]
         for part in rule.seq:
             if rule.prefix == part and part != u'':
@@ -294,7 +294,7 @@ class CSSSerializer(object):
         + CSSComments
         """
         if not rule.cssRules or self._noinvalids(rule.media):
-            return u''        
+            return u''
         mediaText = self.do_stylesheets_medialist(rule.media).strip()
         out = [u'%s %s {\n' % (
             self._getatkeyword(rule, u'@media'), mediaText)]
@@ -317,13 +317,13 @@ class CSSSerializer(object):
             string
         style
             CSSStyleDeclaration
-        
+
         + CSSComments
         """
         styleText = self.do_css_CSSStyleDeclaration(rule.style)
         if not styleText or self._noinvalids(rule):
             return u''
-        
+
         sel = self.do_pageselector(rule.seq)
         return u'%s%s {%s}' % (
             self._getatkeyword(rule, u'@page'),
@@ -374,7 +374,7 @@ class CSSSerializer(object):
 
         selectorList
         style
-        
+
         + CSSComments
         """
         selectorText = self.do_css_SelectorList(rule.selectorList)
@@ -383,7 +383,7 @@ class CSSSerializer(object):
         styleText = self.do_css_CSSStyleDeclaration(rule.style)
         if not styleText:
             styleText = u''
-        
+
         return u'%s {%s}' % (selectorText, styleText)
 
 
@@ -411,7 +411,7 @@ class CSSSerializer(object):
         """
         a single selector including comments
 
-        TODO: style combinators like + >        
+        TODO: style combinators like + >
         """
         if len(selector.seq) == 0 or self._noinvalids(selector):
             return u''
@@ -437,7 +437,7 @@ class CSSSerializer(object):
         else:
             out = ['\n']
             done1 = False # if no content empty done1
-            lastwasprop = False            
+            lastwasprop = False
             for part in style.seq:
                 # CSSComment
                 if isinstance(part,
@@ -450,7 +450,7 @@ class CSSSerializer(object):
                         out.append(part.cssText)
                         out.append(u'\n')
                         lastwasprop = False
-                        
+
                 # PropertySimilarNameList
                 elif isinstance(part,
                   cssutils.css.cssstyledeclaration.SameNamePropertyList):
@@ -468,7 +468,7 @@ class CSSSerializer(object):
                                 o.append(u';\n')
                                 o.append(self.prefs.indent)
                         propertytext = u''.join(o[:-2]) # omit last \n and indent
-                        
+
                     if propertytext:
                         done1 = True
                         if lastwasprop:
@@ -528,7 +528,7 @@ class CSSSerializer(object):
                     out.append(part.cssText)
                 else:
                     out.append(part)
-            
+
             return u''.join(out)
 
 
