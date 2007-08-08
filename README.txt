@@ -4,9 +4,9 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:author: $LastChangedBy: doerwalter $
-:date: $LastChangedDate: 2007-08-02 22:58:23 +0200 (Do, 02 Aug 2007) $
-:version: trunk, $LastChangedRevision: 160 $
+:author: $LastChangedBy$
+:date: $LastChangedDate$
+:version: trunk, $LastChangedRevision$
 
 Copyright (C) 2004-2007 Christof Hoeke
 Published under the LGPL, see http://cthedot.de/cssutils/license.html
