@@ -34,6 +34,9 @@ h1, h2, h3, dt {
 	h1, h2.subtitle {
 		font-size: 1.6em;
 		}
+	h2 {
+		font-size: 1.3em;
+		}
 p, ul, ol, dl, pre, table {	
 	margin-bottom: 0.9em;
 	}
@@ -69,6 +72,9 @@ table {
 	th {
 		text-align: left;
 		}
+	.field-name {
+		width: 20%;
+	}
 code, pre, tt, .pre {
 	font-family: "Lucida Console", monospace;	
 	color: #00a;

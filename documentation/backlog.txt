@@ -5,7 +5,199 @@ backlog
 :date: $LastChangedDate: 2007-08-02 22:58:23 +0200 (Do, 02 Aug 2007) $
 :version: 0.9.2b4, $LastChangedRevision: 160 $
 
+.. contents::
+
+in work
+=======
+- CSSValue, CSSPrimitiveValue, CSSValueList
+
+improvements
+============
+
+CSS2Properties
+--------------
+:prio: 1
+
+needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
+
+specification
+-------------
+:prio: 2
+
+compare with latest CSS 2.1 spec
+
+- #1 is valid HASH?
+
+@charset
+--------
+:prio: 2
+
+@charset and parse() properly, use @charset for parsing, currently ignored
+
+http://www.w3.org/TR/CSS21/syndata.html#q23
+    
+@charset must be written literally, i.e., the 10 characters '@charset "' (lowercase, no backslash escapes), followed by the encoding name, followed by '";'.
+
+Only one @charset rule may appear in an external style sheet and it must appear at the very start of the document. It must not be preceded by any characters, not even comments.
+    
+1. An HTTP "charset" parameter in a "Content-Type" field (or similar parameters in other protocols)
+2. BOM and/or @charset (see below)
+3. <link charset=""> or other metadata from the linking mechanism (if any)
+4. charset of referring style sheet or document (if any)
+5. Assume UTF-8
+
+@import 
+-------
+:prio: 3
+
+parse href properly
+
+@namespace
+----------
+:prio: 3
+
+- stylesheet: 
+    - tests for undeclared prefixes in stylerules, mediarule
+    - use parentRule or parentStyleSheet to look for @namespace!
+    - remove from stylesheet!
+- CSSRule.nsvalid ?
+  
+@unknown
+--------
+:prio: 3
+
+needs to be parsed properly, check for open blocks () [] {}
+
+
+conformance
+-----------
+:prio: 3
+
+http://www.w3.org/TR/CSS21/syndata.html#ignore
+
+- escape sequences?
+    - Token.normalvalue for simple escapes only
+    - unknownrule tests
+    - escaped keywords and function names?
+
+
+performance
+-----------
+:prio: 3
+
 - Use of the XIST CSS-tokenizer
     TODO:
-        + renaming of tokens
-        + add of line and column information
+    
+    + renaming of tokens
+    + add of line and column information
+
+- other bottlenecksß
+
+
+test improvements
+-----------------
+:prio: 2
+
+- Token.EOF handle in all classes for end of stylesheet 
+    
+    User agents must close all open constructs (for example: blocks, parentheses, brackets, rules, strings, and comments) at the end of the style sheet.
+
+- line/col reporting tests
+- tests with almost all details with comments
+- check escape handling::
+    
+    \\@a \\{ \\: : \\; ; \\} }
+    .\1 is valid selector
+
+- csshack tests, see online tables (comment hack?)
+- Tantek hack
+
+    order changes currently::
+    
+        font-size: x-small;
+        voice-family: "\"}\"";
+        voice-family: inherit;
+        font-size: small            
+
+- test tigris.css            
+- implement testsuite on HTML? http://www.w3.org/Style/CSS/Test/CSS3/Selectors/current/xhtml/index.html
+
+
+refactoring
+-----------
+:prio: 3
+
+- add __repr__ for all remaining classes
+- Base._prepare -> ._tokenize ?
+- check if setuptools not installed, try, except
+
+csscapture
+----------
+:prio: 3
+
+- cssText = sheet.literalCssText, not anymore, save in csscapture itself!
+- tests!        
+
+
+----
+
+new features
+============
+rbga()
+------
+:prio: 1
+
+implement rgba
+
+media queries
+-------------
+:prio: 1
+
+http://www.w3.org/TR/2007/CR-css3-mediaqueries-20070606/::
+
+    @media all and (width > 200)
+    @media and @import
+    @import url() all { min-width: 100px };
+
+
+serializer
+----------
+:prio: 2
+
+- output escapes depending on charset?
+- prettyprint convinience serializer?
+- XML serializer to be able to handle CSS with XSLT, schemas etc?
+- speed/size optimized? (suggestion by Paulo)
+    remove empty styledeclarations, comments etc
+    
+- different coding styles?
+
+
+Properties 
+----------
+:prio: 3
+
+Set styledeclaration properties with dict or list of tuples?
+
+
+DOMImplementationCSS
+--------------------
+:prio: 3
+
++ import xml.dom CONSTANTS and Exceptions?
++ import in __init__.py and put in __all__?
+
+LinkStyle, DocumentStyle
+------------------------
+:prio: 3
+
+::
+
+    // Introduced in DOM Level 2:
+    interface LinkStyle {
+      readonly attribute StyleSheet       sheet;
+    };
+    // Introduced in DOM Level 2:
+    interface DocumentStyle {
+      readonly attribute StyleSheetList   styleSheets;
+    };
