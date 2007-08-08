@@ -3,14 +3,11 @@ testcases for cssutils.css.CSSCharsetRule
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import re
 import xml.dom
-
 import test_cssrule
-
 import cssutils.css
 
 
@@ -22,18 +19,15 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.rRO = cssutils.css.CSSCharsetRule(readonly=True)
         self.r_type = cssutils.css.CSSCharsetRule.CHARSET_RULE
 
-
     def test_init(self):
         "CSSCharsetRule.__init__()"
         super(CSSCharsetRuleTestCase, self).test_init()
         self.assertEqual(None, self.r.encoding)
         self.assertEqual(u'', self.r.cssText)
 
-
     def test_InvalidModificationErr(self):
         "CSSCharsetRule InvalidModificationErr"
         self._test_InvalidModificationErr(u'@charset')
-
 
     def test_init_encoding(self):
         "CSSCharsetRule.__init__(encoding)"
@@ -57,7 +51,6 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
                     cssutils.css.CSSCharsetRule, enc,
                     exc_pattern=re.compile("Unknown \(Python\) encoding"))
 
-
     def test_encoding(self):
         "CSSCharsetRule.encoding"
         for enc in (u'UTF-8', u'utf-8', u'iso-8859-1', u'ascii'):
@@ -75,7 +68,6 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertRaisesEx(xml.dom.SyntaxErr,
                     self.r.__setattr__, 'encoding', enc,
                     exc_pattern=re.compile("Unknown \(Python\) encoding"))
-
 
     def test_cssText(self):
         """CSSCharsetRule.cssText
@@ -102,9 +94,9 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@charset /**/;': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests)
-
-
+        
     def test_repr(self):
+        "CSSCharsetRule.__repr__()"
         self.r.encoding = 'utf-8'
         self.assert_('utf-8' in repr(self.r))
 
