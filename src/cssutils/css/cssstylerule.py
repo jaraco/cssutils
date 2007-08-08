@@ -8,17 +8,14 @@ __all__ = ['CSSStyleRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssrule
 import cssstyledeclaration
 import cssutils
-
 from selector import Selector
 from selectorlist import SelectorList
-
 
 class CSSStyleRule(cssrule.CSSRule):
     """
@@ -75,7 +72,6 @@ class CSSStyleRule(cssrule.CSSRule):
                 parentRule=self)
 
         self._readonly = readonly
-
 
     def _getCssText(self):
         """
@@ -181,7 +177,6 @@ class CSSStyleRule(cssrule.CSSRule):
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")
 
-
     def _setSelectorList(self, selectorList):
         """
         (cssutils)
@@ -208,7 +203,6 @@ class CSSStyleRule(cssrule.CSSRule):
 
     selectorList = property(_getSelectorList, _setSelectorList,
         doc="The SelectorList of this rule.")
-
 
     def _getSelectorText(self):
         """
@@ -239,7 +233,6 @@ class CSSStyleRule(cssrule.CSSRule):
         doc="""(DOM) The textual representation of the selector for the
             rule set.""")
 
-
     def _getStyle(self):
         return self._style
 
@@ -262,9 +255,8 @@ class CSSStyleRule(cssrule.CSSRule):
         doc="(DOM) The declaration-block of this rule set.")
 
     def __repr__(self):
-        return "<%s.%s object selector=%r at 0x%x>" % (
-                self.__class__.__module__, self.__class__.__name__,
-                self.selectorText, id(self))
+        return "<cssutils.css.%s object selector=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, id(self))
 
 
 if __name__ == '__main__':

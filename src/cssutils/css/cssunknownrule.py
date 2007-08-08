@@ -52,7 +52,7 @@ class CSSUnknownRule(cssrule.CSSRule):
             self.cssText = cssText
         else:
             self.atkeyword = None
-
+            
         self._readonly = readonly
 
 
@@ -63,7 +63,7 @@ class CSSUnknownRule(cssrule.CSSRule):
     def _setCssText(self, cssText):
         """
         DOMException on setting
-
+        
         - SYNTAX_ERR:
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
@@ -83,7 +83,7 @@ class CSSUnknownRule(cssrule.CSSRule):
             self._log.error(u'CSSUnknown: No CSSUnknown found.',
                                 error=xml.dom.InvalidModificationErr)
             return
-
+           
         newatkeyword = tokens[0].value[1:]
         newseq = []
         expected = ''
@@ -94,7 +94,7 @@ class CSSUnknownRule(cssrule.CSSRule):
 
             if self._ttypes.S == t.type:
                 newseq.append(t.value) # whitespace: add
-
+                
             elif self._ttypes.COMMENT == t.type:
                 # Comment: just add
                 newseq.append(cssutils.css.CSSComment(t))
@@ -114,6 +114,10 @@ class CSSUnknownRule(cssrule.CSSRule):
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
+    
+    def __repr__(self):
+        return "<cssutils.css.%s object at 0x%x>" % (
+                self.__class__.__name__, id(self))
 
 
 if __name__ == '__main__':
