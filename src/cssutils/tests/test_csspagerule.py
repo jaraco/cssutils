@@ -2,15 +2,11 @@
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import test_cssrule
-
 import cssutils
-
 
 class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
@@ -18,8 +14,8 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         super(CSSPageRuleTestCase, self).setUp()
         self.r = cssutils.css.CSSPageRule()
         self.rRO = cssutils.css.CSSPageRule(readonly=True)
-        self.r_type = cssutils.css.CSSPageRule.PAGE_RULE
-
+        self.r_type = cssutils.css.CSSPageRule.PAGE_RULE#
+        self.r_typeString = 'PAGE_RULE'
 
     def test_init(self):
         "CSSPageRule.__init__()"
@@ -33,7 +29,6 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         # until any properties
         self.assertEqual(u'', r.cssText)
 
-
     def test_InvalidModificationErr(self):
         "CSSPageRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@page')
@@ -41,7 +36,6 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@pag\e {}': xml.dom.InvalidModificationErr,
             }
         self.do_raise_r(tests)
-
 
     def test_incomplete(self):
         "CSSPageRule (incomplete)"
@@ -52,7 +46,6 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
                 u'@page :left {\n    color: red\n    }', # no }
         }
         self.do_equal_p(tests) # parse
-
 
     def test_cssText(self):
         "CSSPageRule.cssText"
@@ -91,8 +84,6 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             })
         self.do_raise_r(tests) # set cssText
 
-
-
     def test_selectorText(self):
         "CSSPageRule.selectorText"
         tests = {
@@ -120,14 +111,12 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             }
         self.do_raise_r(tests, att='_setSelectorText')
 
-
     def test_style(self):
         "CSSPageRule.style"
         d = cssutils.css.CSSStyleDeclaration()
         self.r.style = d
         self.assertEqual(d, self.r.style)
         self.assertEqual(self.r, d.parentRule)
-
 
     def test_properties(self):
         "CSSPageRule.style properties"
@@ -159,6 +148,11 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
     widows: 3
     }'''
         self.assertEqual(exp, r.cssText)
+
+    def test_repr(self):
+        "CSSPageRule.__repr__()"
+        self.r.selectorText = ':left'
+        self.assert_(':left' in repr(self.r))
 
 
 if __name__ == '__main__':

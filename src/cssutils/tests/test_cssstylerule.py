@@ -1,15 +1,11 @@
 """testcases for cssutils.css.CSSStyleRuleTestCase"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b2, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import test_cssrule
-
 import cssutils
-
 
 class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
@@ -18,7 +14,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r = cssutils.css.CSSStyleRule()
         self.rRO = cssutils.css.CSSStyleRule(readonly=True)
         self.r_type = cssutils.css.CSSStyleRule.STYLE_RULE
-
+        self.r_typeString = 'STYLE_RULE'
 
     def test_init(self):
         "CSSStyleRule.type and init"
@@ -31,11 +27,9 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
                          type(self.r.style))
         self.assertEqual(self.r, self.r.style.parentRule)
 
-
     def test_InvalidModificationErr(self):
         "CSSStyleRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'a style rule')
-
 
     def test_incomplete(self):
         "CSSStyleRule (incomplete)"
@@ -45,7 +39,6 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
                 u'a {\n    font-family: "arial sans"\n    }',
         }
         self.do_equal_p(tests) # parse
-
 
     def test_cssText(self):
         "CSSStyleRule.cssText"
@@ -82,7 +75,6 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             })
         self.do_raise_r(tests) # set cssText
 
-
     def test_selectorList(self):
         "CSSStyleRule.selectorList"
         r = cssutils.css.CSSStyleRule()
@@ -99,7 +91,6 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(2, r.selectorList.length)
         self.assertEqual(u'a, b', r.selectorText)
 
-
     def test_selectorText(self):
         "CSSStyleRule.selectorText"
         r = cssutils.css.CSSStyleRule()
@@ -112,7 +103,6 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(2, r.selectorList.length)
         self.assertEqual(u'b, h1', r.selectorText)
 
-
     def test_style(self):
         "CSSStyleRule.style"
         d = cssutils.css.CSSStyleDeclaration()
@@ -122,11 +112,9 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         # check if parentRule of sd set
         self.assertEqual(self.r, d.parentRule)
 
-
     def test_repr(self):
         "CSSStyleRule.__repr__()"
         r = cssutils.css.CSSStyleRule()
-
         r.selectorText = u'div.this-is-a-test'
         self.assert_('div.this-is-a-test' in repr(r))
 

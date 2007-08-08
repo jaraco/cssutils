@@ -1,15 +1,11 @@
 """testcases for cssutils.css.CSSImportRule"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import test_cssrule
-
 import cssutils
-
 
 class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
@@ -18,7 +14,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r = cssutils.css.CSSNamespaceRule()
         self.rRO = cssutils.css.CSSNamespaceRule(readonly=True)
         self.r_type = cssutils.css.CSSRule.NAMESPACE_RULE
-
+        self.r_typeString = 'NAMESPACE_RULE'
 
     def test_init(self):
         "CSSNamespaceRule.__init__()"
@@ -28,11 +24,9 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(u'', self.r.prefix)
         self.assertEqual(u'', self.r.cssText)
 
-
     def test_InvalidModificationErr(self):
         "CSSNamespaceRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@namespace')
-
 
     def test_incomplete(self):
         "CSSNamespaceRule (incomplete)"
@@ -53,7 +47,6 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(u'', r.prefix)
         self.assertEqual(u'@namespace "uri";', r.cssText)
 
-
     def test_uri(self):
         "CSSNamespaceRule.uri"
         # set
@@ -63,7 +56,6 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         self.r.uri = '"' # weird but legal
         self.assertEqual(u'@namespace "\\"";', self.r.cssText)
-
 
     def test_prefix(self):
         "CSSNamespaceRule.prefix"
@@ -75,7 +67,6 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         r.uri = 'u'
         self.assertEqual('p' , r.prefix)
         self.assertEqual(u'@namespace p "u";', r.cssText)
-
 
     def test_cssText(self):
         "CSSNamespaceRule.cssText"
@@ -112,6 +103,13 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace p "u"': xml.dom.SyntaxErr, # missing ;
             })
         self.do_raise_r(tests) # set cssText
+
+    def test_repr(self):
+        "CSSNamespaceRule.__repr__()"
+        self.r.prefix = 'x-prefix'
+        self.r.uri = 'example.html'
+        self.assert_('x-prefix' in repr(self.r))
+        self.assert_('example.html' in repr(self.r))
 
 
 if __name__ == '__main__':
