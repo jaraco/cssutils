@@ -1,13 +1,10 @@
 """Testcases for cssutils.css.cssstyledelaration.CSSStyleDeclaration."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import basetest
-
 import cssutils
 
 
@@ -30,7 +27,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         sheet = cssutils.css.CSSStyleRule()
         s = cssutils.css.CSSStyleDeclaration(sheet)
         self.assertEqual(sheet, s.parentRule)
-
 
     def test_parseString(self):
         "CSSStyleDeclaration parseString()"
@@ -65,7 +61,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             elif exp != u'':
                 exp = u'\n    %s\n    ' % exp
             self.assertEqual(exp, sh.cssRules[0].style.cssText)
-
 
     def test_cssText(self):
         "CSSStyleDeclaration.cssText"
@@ -128,7 +123,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             }
         self.do_raise_r(tests)
 
-
     def test_length(self):
         "CSSStyleDeclaration.length"
         s = cssutils.css.CSSStyleDeclaration()
@@ -149,7 +143,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(1, s.length)
         s.setProperty('left', '1')
 
-
     def test_parentRule(self):
         "CSSStyleDeclaration.parentRule"
         s = cssutils.css.CSSStyleDeclaration()
@@ -161,7 +154,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         s = sheet.cssRules[0]
         d = s.style
         self.assertEqual(s, d.parentRule)
-
 
     def test_getPropertyCSSValue(self):
         "CSSStyleDeclaration.getPropertyCSSValue()"
@@ -188,7 +180,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             s.setProperty(short, u'inherit')
             self.assertEqual(None, s.getPropertyCSSValue(short))
 
-
     def test_getPropertyPriority(self):
         "CSSStyleDeclaration.getPropertyPriority()"
         s = cssutils.css.CSSStyleDeclaration()
@@ -196,7 +187,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
 
         s.setProperty(u'left', u'0', u'!important')
         self.assertEqual(u'!important', s.getPropertyPriority('left'))
-
 
     def test_getPropertyValue(self):
         "CSSStyleDeclaration.getPropertyValue()"
@@ -208,7 +198,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
 
         s.setProperty(u'border', '1px  solid  green')
         self.assertEqual(u'1px solid green', s.getPropertyValue('border'))
-
 
     def test_getSameNamePropertyList(self):
         "CSSStyleDeclaration.getSameNamePropertyList()"
@@ -234,7 +223,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
 ##            '[<Property> color: red , <Property> c\\olor: green !important, <Property> color: blue ]',
 ##            str(pl))
 
-
     def test_item(self):
         "CSSStyleDeclaration.item()"
         _props = ('left', 'top', 'right')
@@ -246,7 +234,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(u'', s.item(3))
         self.assertEqual(u'', s.item(-4))
 
-
     def test_removeProperty(self):
         "CSSStyleDeclaration.removeProperty()"
         s = cssutils.css.CSSStyleDeclaration(cssText='top: 0 !important')
@@ -254,7 +241,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(0, s.length)
         self.assertEqual('', s.removeProperty('top'))
         self.assertEqual(0, s.length)
-
 
     def test_setProperty_overwrite(self):
         "CSSStyleDeclaration.setProperty(overwrite=True)"
@@ -292,7 +278,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         pl = s.getSameNamePropertyList('color')
         self.assertEqual(1, len(pl))
 
-
     def test_setProperty(self):
         "CSSStyleDeclaration.setProperty()"
         s = cssutils.css.CSSStyleDeclaration()
@@ -325,7 +310,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             self.assertEqual(v, s.getPropertyValue(n))
             self.assertEqual(p, s.getPropertyPriority(n))
 
-
     def test_nameParameter(self):
         "CSSStyleDeclaration.XXX(name)"
         s = cssutils.css.CSSStyleDeclaration()
@@ -349,7 +333,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual('2px', s.removeProperty('TOP'))
         s.setProperty('top', '2px', '!important')
         self.assertEqual('2px', s.removeProperty('T\op'))
-
 
     def test_css2properties(self):
         "CSSStyleDeclaration.$css2property get set del"
@@ -384,6 +367,14 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual('red', s.getPropertyValue('UNKNOWN'))
         self.assertEqual(
             '''\n    left: 1px;\n    unknown: red\n    ''', s.cssText)
+
+    def test_repr(self):
+        "CSSStyleDeclaration.__repr__()"
+        s = cssutils.css.CSSStyleDeclaration(cssText=u'color: red; top: 0')
+        self.assert_('length=2' in repr(s))
+        
+        self.assert_("name=u'color'" in repr(s.getSameNamePropertyList('color')))
+        
 
 
 if __name__ == '__main__':
