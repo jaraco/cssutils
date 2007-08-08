@@ -242,6 +242,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
 
+    def __repr__(self):
+        return "<cssutils.css.%s object prefix=%r uri=%r at 0x%x>" % (
+                self.__class__.__name__, self.prefix, self.uri, id(self))
 
 if __name__ == '__main__':
     c = CSSNamespaceRule()
