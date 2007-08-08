@@ -6,10 +6,9 @@ __all__ = []
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b2, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssutils
 import cssproperties
 from cssvalue import CSSValue
@@ -83,12 +82,6 @@ class _Property(cssutils.util.Base):
         self.cssValue = value
         self.priority = priority
 
-
-    def __repr__(self):
-        return '<Property> %s: %s %s' % (
-            self.name, self.cssValue._value, self.priority)
-
-
     def __invalidToken(self, tokens, x):
         """
         raises SyntaxErr if an INVALID token in tokens
@@ -103,7 +96,6 @@ class _Property(cssutils.util.Base):
                 self._log.error(u'Property: Invalid token found in %s.' % x, t)
                 return True
         return False
-
 
     def _getName(self):
         try:
@@ -164,7 +156,6 @@ class _Property(cssutils.util.Base):
     name = property(_getName, _setName,
         doc="(cssutils) Name of this property")
 
-
     def _getCSSValue(self):
         return self.seqs[1]
 
@@ -198,7 +189,6 @@ class _Property(cssutils.util.Base):
 
     cssValue = property(_getCSSValue, _setCSSValue,
         doc="(cssutils) CSSValue object of this property")
-
 
     def _getPriority(self):
         try:
@@ -255,6 +245,11 @@ class _Property(cssutils.util.Base):
     priority = property(_getPriority, _setPriority,
         doc="(cssutils) Priority of this property")
 
+    def __repr__(self):
+        return "<%s.%s object name=%r value=%r priority=%r at 0x%x>" % (
+                self.__class__.__module__, self.__class__.__name__, 
+                self.name, self.cssValue._value, self.priority, id(self))        
+
 
     # DEPRECATED
     def _getValue(self):
@@ -264,6 +259,7 @@ class _Property(cssutils.util.Base):
         self.cssValue.cssText = value
     value = property(_getValue, _setValue,
                      doc="DEPRECATED string value of property")
+
 
 
 if __name__ == '__main__':
