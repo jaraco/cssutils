@@ -6,7 +6,7 @@ CSS Cascading Style Sheets library for Python
 ---------------------------------------------
 :author: $LastChangedBy: $
 :date: $LastChangedDate: 2007-08-02 22:58:23 +0200 (Do, 02 Aug 2007) $
-:version: 0.9.2b4, $LastChangedRevision: 160 $
+:version: trunk, $LastChangedRevision: 160 $
 
 Copyright (C) 2004-2007 Christof Hoeke
 Published under the LGPL, see http://cthedot.de/cssutils/license.html
@@ -64,9 +64,29 @@ changes
 
 
 HEAD
-    - CHANGE: Added __repr__ methods to CSSMediaRule (showing the media list), CSSStyleRule (showing the selector), CSSStyleSheet (showing the href), CSSCharsetRule (showing the encoding).
-    - BUGFIX (minor): removed debeg output in CSSStyleDeclaration
+    - FEATURE: Implemented css.CSSValue and css.CSSPrimitiveValue. 
+        THESE ARE NOT FINISHED YET! TODO: tests, css.CSSValueList and some details
+
+    - FEATURE: CSSRule and sub classes have a property ``typeString`` which is the name of the relevant ``type``, e.g. "STYLE_RULE". Mainly useful for debugging.
+    - FEATURE: CSSValue has property ``cssValueTypeString`` which is the name of the relevant ``cssValueType``, e.g. "CSS_PRIMITIVE_TYPE". Mainly useful for debugging.
+    - FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
+
     - FEATURE: href and media arguments can now be passed to parse() and parseString() functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
+
+    - CHANGE: Added __repr__ methods to most classes. The module is slightly bended as all classes are imported to cssutils.css but not defined there.
+    
+        - CSSStyleSheet (showing the title and href),
+        - CSSCharsetRule (showing the encoding).
+        - CSSImportRule (showing the href).
+        - CSSNameSpaceRule (showing the prefix and uri).
+        - CSSPageRule (showing the selectorText)
+        - CSSMediaRule (showing the media list)
+        - CSSStyleRule (showing the selector)
+        - CSSStyleDeclaration (showing the number of properties set)
+        - CSSValue (showing the value type and value)
+        - CSSPrimitiveValue (showing the primitive value type and value)
+        
+    - BUGFIX (minor): removed debug output in CSSStyleDeclaration
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
