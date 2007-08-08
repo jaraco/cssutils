@@ -19,6 +19,7 @@ currently implemented
 
 in progress
     - CSSValue
+    - CSSPrimitiveValue
 
 todo
     - value classes
@@ -37,11 +38,12 @@ __all__ = [
     'CSSUnknownRule',
     'CSSStyleDeclaration',
     'CSSValue',
+    'CSSPrimitiveValue',
     ]
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 from cssstylesheet import *
 from cssrulelist import *
@@ -55,7 +57,7 @@ from csspagerule import *
 from cssstylerule import *
 from cssunknownrule import *
 from cssstyledeclaration import *
-from cssvalue import CSSValue
+from cssvalue import *
 
 
 if __name__ == '__main__':
