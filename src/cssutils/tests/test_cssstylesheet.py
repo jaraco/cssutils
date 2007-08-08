@@ -3,7 +3,7 @@ tests for css.CSSStyleSheet
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
 
@@ -272,6 +272,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
                          notbefore, notafter, anywhere)
 
     def test_repr(self):
+        "CSSStyleSheet.__repr__()"
         s = cssutils.css.CSSStyleSheet()
         s.href = 'file:foo.css'
         self.assert_('file:foo.css' in repr(s))
