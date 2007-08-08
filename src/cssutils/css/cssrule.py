@@ -3,12 +3,10 @@ __all__ = ['CSSRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssutils
-
 
 class CSSRule(cssutils.util.Base):
     """
@@ -40,17 +38,18 @@ class CSSRule(cssutils.util.Base):
     seq:
         contains sequence of parts of the rule including comments but
         excluding @KEYWORD and braces
+    typeString: string
+        A string name of the type of this rule, e.g. 'STYLE_RULE'. Mainly 
+        useful for debugging
     valid:
         if this rule is valid
-
     """
 
     """
     CSSRule type constants.
     An integer indicating which type of rule this is.
     """
-    COMMENT = -1
-    "cssutils only"
+    COMMENT = -1 # cssutils only
     UNKNOWN_RULE = 0
     STYLE_RULE = 1
     CHARSET_RULE = 2
@@ -61,6 +60,11 @@ class CSSRule(cssutils.util.Base):
     PAGE_RULE = 6
     NAMESPACE_RULE = 7
     "TODO: WD, may be different later"
+    "cssutils only"
+
+    _typestrings = ['UNKNOWN_RULE', 'STYLE_RULE', 'CHARSET_RULE', 'IMPORT_RULE',
+                     'MEDIA_RULE', 'FONT_FACE_RULE', 'PAGE_RULE', 'NAMESPACE_RULE',
+                     'COMMENT']
 
     type = UNKNOWN_RULE
     """
@@ -84,7 +88,6 @@ class CSSRule(cssutils.util.Base):
 
         # must be set after initialization of #inheriting rule
         self._readonly = False
-
 
     def _getCssText(self):
         return u''
@@ -113,3 +116,8 @@ class CSSRule(cssutils.util.Base):
         The initial value is saved, but this may be removed in a future
         version!
         MUST BE OVERWRITTEN IN SUBCLASS TO WORK!""")
+
+    def _getTypeString(self):
+        return CSSRule._typestrings[self.type]
+    
+    typeString = property(_getTypeString, doc="Name of this rules type.")  
