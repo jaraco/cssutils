@@ -84,3 +84,7 @@ class CSSComment(cssrule.CSSRule):
 
     cssText = property(_getCssText, _setCssText,
         doc=u"(cssutils) Textual representation of this comment")
+
+    def __repr__(self):
+        return "<cssutils.css.%s object at 0x%x>" % (
+                self.__class__.__name__, id(self))

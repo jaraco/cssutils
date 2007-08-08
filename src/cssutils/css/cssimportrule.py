@@ -7,13 +7,11 @@ __all__ = ['CSSImportRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssrule
 import cssutils
-
 
 class CSSImportRule(cssrule.CSSRule):
     """
@@ -246,6 +244,10 @@ class CSSImportRule(cssrule.CSSRule):
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
 
+    def __repr__(self):
+        return "<cssutils.css.%s object href=%r at 0x%x>" % (
+                self.__class__.__name__, self.href, id(self))
+        
 
 if __name__ == '__main__':
     c = CSSImportRule(href='"1.css"', mediaText='handheld, all, tv')
