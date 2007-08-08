@@ -160,9 +160,8 @@ class CSSCharsetRule(cssrule.CSSRule):
         doc="(DOM) The parsable textual representation.")
 
     def __repr__(self):
-        return "<%s.%s object encoding=%r at 0x%x>" % (
-                self.__class__.__module__, self.__class__.__name__,
-                self.encoding, id(self))
+        return "<cssutils.css.%s object encoding=%r at 0x%x>" % (
+                self.__class__.__name__, self.encoding, id(self))
 
 
 if __name__ == '__main__':
