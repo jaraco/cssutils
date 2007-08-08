@@ -3,15 +3,11 @@ testcases for cssutils.css.CSSImportRule
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import test_cssrule
-
 import cssutils
-
 
 class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
@@ -20,7 +16,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r = cssutils.css.CSSImportRule()
         self.rRO = cssutils.css.CSSImportRule(readonly=True)
         self.r_type = cssutils.css.CSSImportRule.IMPORT_RULE
-
+        self.r_typeString = 'IMPORT_RULE'
 
     def test_init(self):
         "CSSImportRule.__init__()"
@@ -34,11 +30,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(None, self.r.styleSheet)
         self.assertEqual(u'', self.r.cssText)
 
-
     def test_InvalidModificationErr(self):
         "CSSImportRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@import')
-
 
     def test_incomplete(self):
         "CSSImportRule (incomplete)"
@@ -52,7 +46,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@import url(x ': u'@import url(x);',
         }
         self.do_equal_p(tests) # parse
-
 
     def test_initparameter(self):
         "CSSImportRule.__init__(href, media, hreftype)"
@@ -76,7 +69,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(u'tv, screen', self.r.media.mediaText)
         self.assertEqual(None, self.r.href)
         self.assertEqual(u'', self.r.cssText)
-
 
     def test_href(self):
         "CSSImportRule.href"
@@ -107,7 +99,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@import "XXX\\"123";',
             self.r.cssText)
 
-
     def test_hreftype(self):
         "CSSImportRule.hreftype"
         self.r = cssutils.css.CSSImportRule()
@@ -126,7 +117,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.hreftype='uri'
         self.assertEqual(u'@import /*1*/url(new) /*2*/;', self.r.cssText)
 
-
     def test_media(self):
         "CSSImportRule.media"
         self.r.href = 'x' # @import url(x)
@@ -138,7 +128,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         # set mediaText instead
         self.r.media.mediaText = 'print'
         self.assertEqual(u'@import url(x) print;', self.r.cssText)
-
 
     def test_cssText1(self):
         "CSSImportRule.cssText 1"
@@ -196,6 +185,11 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             })
         self.do_raise_r(tests) # set cssText
 
+    def test_repr(self):
+        "CSSImportRule.__repr__()"
+        self.r.href = 'x.css'
+        self.assert_('x.css' in repr(self.r))
+        
 
 if __name__ == '__main__':
     import unittest

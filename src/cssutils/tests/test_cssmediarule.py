@@ -3,15 +3,11 @@ testcases for cssutils.css.CSSMediaRule
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import test_cssrule
-
 import cssutils
-
 
 class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
@@ -20,10 +16,10 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r = cssutils.css.CSSMediaRule()
         self.rRO = cssutils.css.CSSMediaRule(readonly=True)
         self.r_type = cssutils.css.CSSMediaRule.MEDIA_RULE
+        self.r_typeString = 'MEDIA_RULE'
         # for tests
         self.stylerule = cssutils.css.CSSStyleRule()
         self.stylerule.cssText = u'a {}'
-
 
     def test_init(self):
         "CSSMediaRule.__init__()"
@@ -39,11 +35,9 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         # until any rules
         self.assertEqual(u'', r.cssText)
 
-
     def test_InvalidModificationErr(self):
         "CSSMediaRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@media')
-
 
     def test_incomplete(self):
         "CSSMediaRule (incomplete)"
@@ -62,7 +56,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         ir = cssutils.css.CSSImportRule()
         r.cssRules.append(ir)
         self.assertEqual([ir], r.cssRules)
-
 
     def test_cssText(self):
         "CSSMediaRule.cssText"
@@ -115,7 +108,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         for r in m.cssRules:
             self.assertEqual(m, r.parentRule)
 
-
     def test_deleteRule(self):
         "CSSMediaRule.deleteRule"
         # see CSSStyleSheet.deleteRule
@@ -152,7 +144,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         m.deleteRule(1)
         self.assertEqual(1, m.cssRules.length)
         self.assertEqual(u'@media all {\n    /* x */\n    }', m.cssText)
-
 
     def test_insertRule(self):
         "CSSMediaRule.insertRule"
@@ -196,7 +187,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaises(xml.dom.IndexSizeErr,
                   r.insertRule, stylerule, r.cssRules.length + 1)
 
-
     def test_media(self):
         "CSSMediaRule.media"
         # see CSSImportRule.media
@@ -213,6 +203,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(u'@media print {\n    a {}\n    }', self.r.cssText)
 
     def test_repr(self):
+        "CSSMediaRule.__repr__()"
         self.r.media.mediaText = 'screen'
         self.assert_('screen' in repr(self.r))
 

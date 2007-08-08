@@ -24,7 +24,6 @@ class CSSRuleTestCase(basetest.BaseTestCase):
 
     to use the base class tests too
     """
-
     def setUp(self):
         """
         OVERWRITE!
@@ -37,10 +36,12 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.rRO = cssutils.css.CSSRule()
         self.rRO._readonly = True # must be set here!
         self.r_type = cssutils.css.CSSRule.UNKNOWN_RULE
+        self.r_typeString = 'UNKNOWN_RULE'
 
     def test_init(self):
         "CSSRule.type and init"
         self.assertEqual(self.r_type, self.r.type)
+        self.assertEqual(self.r_typeString, self.r.typeString)
         self.assertEqual(u'', self.r.cssText)
         self.assertEqual(None, self.r.parentRule)
         self.assertEqual(None, self.r.parentStyleSheet)
@@ -52,7 +53,6 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.NoModificationAllowedErr,
                           self.rRO._setCssText, u'x')
         self.assertEqual(u'', self.rRO.cssText)
-
 
     def _test_InvalidModificationErr(self, startwithspace):
         """

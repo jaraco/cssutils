@@ -10,7 +10,6 @@ import xml.dom
 import test_cssrule
 import cssutils.css
 
-
 class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
@@ -18,6 +17,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r = cssutils.css.CSSCharsetRule()
         self.rRO = cssutils.css.CSSCharsetRule(readonly=True)
         self.r_type = cssutils.css.CSSCharsetRule.CHARSET_RULE
+        self.r_typeString = 'CHARSET_RULE'
 
     def test_init(self):
         "CSSCharsetRule.__init__()"

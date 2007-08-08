@@ -1,15 +1,11 @@
 """testcases for cssutils.css.CSSUnkownRule"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import test_cssrule
-
 import cssutils
-
 
 class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 
@@ -18,7 +14,7 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r = cssutils.css.CSSUnknownRule()
         self.rRO = cssutils.css.CSSUnknownRule(readonly=True)
         self.r_type = cssutils.css.CSSUnknownRule.UNKNOWN_RULE
-
+        self.r_typeString = 'UNKNOWN_RULE'
 
     def test_init(self):
         "CSSUnknownRule.type and init"
@@ -47,11 +43,9 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSUnknownRule(cssText=u'@init xxx { yyy }')
         self.assertEqual(u'@init xxx { yyy }', r.cssText)
 
-
     def test_InvalidModificationErr(self):
         "CSSUnknownRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@unknown')
-
 
     def test_cssText(self):
         "CSSUnknownRule.cssText"
@@ -67,7 +61,6 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
-
 
     def test_SyntaxErr(self):
         "CSSUnknownRule.cssText"

@@ -275,6 +275,8 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         "CSSStyleSheet.__repr__()"
         s = cssutils.css.CSSStyleSheet()
         s.href = 'file:foo.css'
+        s.title = 'title-of-css'
+        self.assert_('title-of-css' in repr(s))
         self.assert_('file:foo.css' in repr(s))
 
 

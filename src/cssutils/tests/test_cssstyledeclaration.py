@@ -371,10 +371,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
     def test_repr(self):
         "CSSStyleDeclaration.__repr__()"
         s = cssutils.css.CSSStyleDeclaration(cssText=u'color: red; top: 0')
-        self.assert_('length=2' in repr(s))
-        
-        self.assert_("name=u'color'" in repr(s.getSameNamePropertyList('color')))
-        
+        self.assert_('length=2' in repr(s))        
 
 
 if __name__ == '__main__':

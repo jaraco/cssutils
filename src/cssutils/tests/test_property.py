@@ -1,12 +1,10 @@
 """Testcases for cssutils.css.property._Property."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import basetest
-
 import cssutils
 
 
@@ -24,11 +22,10 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual(u'', p.priority)
 
         self.assertEqual([u'top'], p.seqs[0])
-        self.assertEqual(type(cssutils.css.CSSValue()), type(p.seqs[1]))
+        self.assertEqual(type(cssutils.css.CSSPrimitiveValue(cssText="1")), type(p.seqs[1]))
         self.assertEqual([], p.seqs[2])
 
         self.assertEqual(True, p.valid)
-
 
     def test_name(self):
         "_Property.name"
@@ -73,12 +70,10 @@ class PropertyTestCase(basetest.BaseTestCase):
         p.name = 'left'
         p.value = 'red'
 
-
     def test_cssValue(self):
         "_Property.cssValue"
         pass
         #TODO
-
 
     def test_priority(self):
         "_Property.priority"
@@ -105,7 +100,6 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'!important !important': xml.dom.SyntaxErr
             }
         self.do_raise_r(tests, att='_setPriority')
-
 
     def test_value(self):
         "_Property.value (DEPRECATED)"

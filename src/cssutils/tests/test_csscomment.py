@@ -4,15 +4,11 @@ testcases for cssutils.css.CSSComment
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml
-
 import test_cssrule
-
 import cssutils.css
-
 
 class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
 
@@ -21,16 +17,15 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         self.r = cssutils.css.CSSComment()
         self.rRO = cssutils.css.CSSComment(readonly=True)
         self.r_type = cssutils.css.CSSComment.COMMENT
+        self.r_typeString = 'COMMENT'
 
     def test_init(self):
         "CSSComment.type and init"
         super(CSSCommentTestCase, self).test_init()
 
-
     def test_InvalidModificationErr(self):
         "CSSComment.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'/* comment */')
-
 
     def test_csstext(self):
         "CSSComment.cssText"
@@ -64,7 +59,6 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
             u'@x /* x */': xml.dom.InvalidModificationErr
             })
         self.do_raise_r(tests) # set cssText
-
 
 
 if __name__ == '__main__':
