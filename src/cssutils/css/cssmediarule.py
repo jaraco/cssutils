@@ -4,10 +4,9 @@ __all__ = ['CSSMediaRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssrule
 import cssutils
 
@@ -52,7 +51,6 @@ class CSSMediaRule(cssrule.CSSRule):
 
         self._readonly = readonly
 
-
     def _getMedia(self):
         "returns MediaList"
         return self._media
@@ -61,14 +59,12 @@ class CSSMediaRule(cssrule.CSSRule):
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
 
-
     def _getCssRules(self):
         return self._rules
 
     cssRules = property(_getCssRules,
         doc="(DOM readonly) A css::CSSRuleList of all CSS rules contained\
             within the media block.")
-
 
     def deleteRule(self, index):
         """
@@ -94,7 +90,6 @@ class CSSMediaRule(cssrule.CSSRule):
             raise xml.dom.IndexSizeErr(
                 u'CSSMediaRule: %s is not a valid index in the rulelist of length %i' % (
                 index, self.cssRules.length))
-
 
     def insertRule(self, rule, index=None):
         """
@@ -171,7 +166,6 @@ class CSSMediaRule(cssrule.CSSRule):
         self.cssRules.insert(index, rule)
         rule.parentRule = self
         return index
-
 
     def _getCssText(self):
         """
@@ -286,9 +280,8 @@ class CSSMediaRule(cssrule.CSSRule):
         doc="(DOM attribute) The parsable textual representation.")
 
     def __repr__(self):
-        return "<%s.%s object media=%r at 0x%x>" % (
-                self.__class__.__module__, self.__class__.__name__,
-                self.media, id(self))
+        return "<cssutils.css.%s object media=%r at 0x%x>" % (
+                self.__class__.__name__, self.media, id(self))
 
 
 if __name__ == '__main__':
