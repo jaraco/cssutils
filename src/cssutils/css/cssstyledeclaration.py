@@ -591,6 +591,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     # append to pl
                     _seq[index].append(newp)
 
+    def __repr__(self):
+        return "<%s.%s object length=%r at 0x%x>" % (
+                self.__class__.__module__, self.__class__.__name__,
+                self.length, id(self))
+
 
 class SameNamePropertyList(list):
     """
@@ -630,6 +635,11 @@ class SameNamePropertyList(list):
             if normals:
                 return normals[-1]
 
+    def __repr__(self):
+        return "<%s.%s object name=%r at 0x%x>" % (
+                self.__class__.__module__, self.__class__.__name__,
+                self.name, id(self))
+        
 
 if __name__ == '__main__':
     cssutils.css.cssstyledeclaration.Property = Property
