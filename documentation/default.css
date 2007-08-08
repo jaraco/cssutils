@@ -54,6 +54,12 @@ ul {
 	li:hover, dd:hover {
 		background-color: #f5f5f7;		
 		}
+		li li:hover, dd li:hover {
+			background-color: #fff;		
+			}
+			li li li:hover, dd li li:hover {
+				background-color: #f5f5f7;		
+				}
 table {
 	width: 100%;
 	}
