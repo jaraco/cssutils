@@ -60,11 +60,7 @@ class CSSParser(object):
         stylesheet = cssutils.css.CSSStyleSheet()
         stylesheet.cssText = cssText
         stylesheet.href = href
-        if not isinstance(media, stylesheets.MediaList):
-            if isinstance(media, list):
-                media = ",".join(media)
-            media = stylesheets.MediaList(media)
-        stylesheet.media = media
+        stylesheet.media = stylesheets.MediaList(media)
         return stylesheet
 
 
