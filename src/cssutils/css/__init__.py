@@ -58,6 +58,7 @@ from cssstylerule import *
 from cssunknownrule import *
 from cssstyledeclaration import *
 from cssvalue import *
+from selector import *
 
 
 if __name__ == '__main__':
