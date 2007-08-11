@@ -6,11 +6,10 @@ __all__ = ['Token', 'Tokenre']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import re
 import util
-
 
 class Token(object):
     """
@@ -107,21 +106,17 @@ class Token(object):
     INVALID = u'INVALID'
     #{invalid}        return INVALID;
 
-    URL = 'URL'
-
     COMMA = u',' # TODO!
     #EQUALS = u'='
     #DASH = u'-'
     #PIPE = u'|'
     #":not("          return NOT;
 
-
     def __init__(self, line=1, col=1, type=None, value=u''):
         self.line = line
         self.col = col
         self.type = type
         self.value = value
-
 
     def _getvalue(self):
         return self._value
@@ -141,7 +136,6 @@ class Token(object):
     value = property(_getvalue, _setvalue,
                      doc='value and normalized value')
 
-
     def __eq__(self, token):
         """
         how to compare a token to another
@@ -160,7 +154,6 @@ class Token(object):
         """
         return u'%03d:%03d %s: %s' % (
             self.line, self.col, self.type, self.value)
-
 
 
 class Tokenre(object):
