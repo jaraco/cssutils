@@ -183,6 +183,7 @@ class _Property(cssutils.util.Base):
                not cssproperties.cssvalues[self.name](v):
 
                 linetoken = cssvalue._linetoken
+                cssvalue.valid = False
                 self._log.warn(
                     u'Property: Invalid value for CSS2 property %s: %s' %
                     (self.name, v), linetoken, neverraise=True)
