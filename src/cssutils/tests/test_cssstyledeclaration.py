@@ -162,7 +162,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         # not set
         self.assertEqual(None, s.getPropertyCSSValue('color'))
 
-        # shorthand
+        # shorthand CSSValue should be None
         SHORTHAND = [
             u'background',
             u'border',
