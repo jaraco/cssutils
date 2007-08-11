@@ -15,6 +15,7 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import re
+import types
 import xml.dom
 import cssutils
 from cssutils.token import Token
@@ -34,6 +35,8 @@ class CSSValue(cssutils.util.Base):
 
     seq: a list (cssutils)
         All parts of this style declaration including CSSComments
+    valid: boolean 
+        if the value is valid at all, False for e.g. color: #1
 
     _value
         value without any comments, used by Property to validate
@@ -75,6 +78,7 @@ class CSSValue(cssutils.util.Base):
         super(CSSValue, self).__init__()
 
         self.seq = []
+        self.valid = True # may be set to False by Property
         self._value = u''
         self._linetoken = None # used for line report only
         self.cssText = cssText
@@ -189,12 +193,8 @@ class CSSValue(cssutils.util.Base):
                 self._cssValueType = CSSValue.CSS_INHERIT
                 self.__class__ = CSSValue # reset
             elif numvalues == 1:
-                #self._cssValueType = CSSValue.CSS_PRIMITIVE_VALUE
                 self.__class__ = CSSPrimitiveValue
             elif numvalues > 1 and u' ' in newseq:
-                #self._cssValueType = CSSValue.CSS_VALUE_LIST
-                #self.__class__ = CSSValue # reset
-                # TODO: CSSValueList!
                 self.__class__ = CSSValueList
             else:
                 self._cssValueType = CSSValue.CSS_CUSTOM
@@ -300,7 +300,7 @@ class CSSPrimitiveValue(CSSValue):
         ('CSS_KHZ', Token.DIMENSION, 'khz'),
         ('CSS_DIMENSION', Token.DIMENSION, None),
         ('CSS_STRING', Token.STRING, None),
-        ('CSS_URI', Token.URL, None),
+        ('CSS_URI', Token.URI, None),
         ('CSS_IDENT', Token.IDENT, None),
         ('CSS_ATTR', Token.FUNCTION, 'attr('),
         ('CSS_COUNTER', Token.FUNCTION, 'counter('),
@@ -326,7 +326,7 @@ class CSSPrimitiveValue(CSSValue):
         "CSSValue decides if a primitive value at all"
         super(CSSPrimitiveValue, self).__init__(cssText, readonly)
 
-    def _setPrimitiveType(self):
+    def __setPrimitiveType(self):
         """
         primitiveType is readonly but is set lazy if accessed 
         no value is given as self._value is used
@@ -337,31 +337,37 @@ class CSSPrimitiveValue(CSSValue):
             t = tokens[0]
         except IndexError:
             self._log.error(u'CSSPrimitiveValue: No value.')
-        for i, (name, tokentype, search) in enumerate(CSSPrimitiveValue._unitinfos):
-            if t.type == tokentype:
-                if tokentype == Token.DIMENSION:
-                    if not search:
+
+        if self.valid == False:
+            primitiveType = CSSPrimitiveValue.CSS_UNKNOWN
+        elif t.type == Token.HASH:
+            # special case, maybe should be converted to rgb in any case?
+            primitiveType = CSSPrimitiveValue.CSS_RGBCOLOR
+        else:
+            for i, (name, tokentype, search) in enumerate(CSSPrimitiveValue._unitinfos):
+                if t.type == tokentype:
+                    if tokentype == Token.DIMENSION:
+                        if not search:
+                            primitiveType = i
+                            break
+                        elif re.match(ur'^[^a-z]*(%s)$' % search, t.value):                       
+                            primitiveType = i
+                            break
+                    elif tokentype == Token.FUNCTION:
+                        if not search:
+                            primitiveType = i
+                            break
+                        elif t.value.startswith(search):                        
+                            primitiveType = i
+                            break
+                    else:
                         primitiveType = i
                         break
-                    elif re.match(ur'^[^a-z]*(%s)$' % search, t.value):                       
-                        primitiveType = i
-                        break
-                elif tokentype == Token.FUNCTION:
-                    if not search:
-                        primitiveType = i
-                        break
-                    elif t.value.startswith(search):                        
-                        primitiveType = i
-                        break
-                else:
-                    primitiveType = i
-                    break
-                
         self._primitiveType = primitiveType
     
     def _getPrimitiveType(self):
         if not hasattr(self, '_primitivetype'):
-            self._setPrimitiveType() 
+            self.__setPrimitiveType() 
         return self._primitiveType
 
     primitiveType = property(_getPrimitiveType,
@@ -491,8 +497,6 @@ class CSSPrimitiveValue(CSSValue):
         self._primitiveType = stringType
         self._value = stringValue
 
-
-
     def __repr__(self):
         return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
                 self.__class__.__name__, self.primitiveTypeString, self.cssText, id(self))
@@ -511,10 +515,19 @@ class CSSValueList(CSSValue):
     starting from 0.
     """
     cssValueType = CSSValue.CSS_VALUE_LIST
+    __ws = re.compile(ur'^\s*$')
+
+    def _getValueList(self):
+        # SHOULD BE CACHED!
+        values = [v for v in self.seq 
+                  if type(v) in types.StringTypes and not self.__ws.match(v)]
+        return values
+
+    _valueList = property(_getValueList, 'internal use')
 
     def _getLength(self):
-        "same as len(ValueList)"
-        return # TODOlen(self)
+        "todo"
+        return len(self._valueList)
 
     length = property(_getLength,
                 doc="(DOM attribute) The number of CSSValues in the list.")
@@ -527,7 +540,7 @@ class CSSValueList(CSSValue):
         of values in the list, this returns None.
         """
         try:
-            return self[index]
+            return CSSValue(cssText=self._valueList[index])
         except IndexError:
             return None
 
