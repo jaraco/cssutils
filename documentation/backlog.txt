@@ -172,6 +172,12 @@ serializer
 
 - different coding styles?
 
+Selector
+--------
+:prio: 2
+- CSS2XPath converter?
+- optimize selector parsing
+
 
 Properties
 ----------
