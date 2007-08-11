@@ -34,14 +34,11 @@ class Token(object):
         - for type Token.S normalvalue is always u' ' - a single space
         - lowercase
 
-    literal
-        REMOVED in 0.9.1 (literal value of the token including backslashes)
-
-    So e.g. a token t might initialized with::
+    So e.g. a token t might be initialized with::
 
         t = Token(1, 1, Token.IDENT, u'c\olor')
 
-    resulting in a token with attributes::
+    resulting in a token with the following attributes::
 
         t.line == 1
         t.col == 1
