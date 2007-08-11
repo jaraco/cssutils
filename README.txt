@@ -73,6 +73,8 @@ HEAD
 
     - FEATURE: href and media arguments can now be passed to parse() and parseString() functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
 
+    - FEATURE: The MediaList constructor can now be passed a list of media types.
+
     - CHANGE: Added __repr__ methods to most classes. The module is slightly bended as all classes are imported to cssutils.css but not defined there.
     
         - CSSStyleSheet (showing the title and href),
@@ -87,7 +89,6 @@ HEAD
         - CSSPrimitiveValue (showing the primitive value type and value)
         
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
-    - FEATURE: The MediaList constructor can now be passed a list of media types.
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
