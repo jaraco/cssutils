@@ -49,11 +49,12 @@ class MediaList(cssutils.util.Base, list):
         mediaText
             unicodestring of parsable comma separared media
         """
-        if isinstance(mediaText, list):
-            mediaText = ", ".join(mediaText)
         super(MediaList, self).__init__()
 
         self.valid = True
+
+        if isinstance(mediaText, list):
+            mediaText = ", ".join(mediaText)
 
         if mediaText:
             self._seq = []
