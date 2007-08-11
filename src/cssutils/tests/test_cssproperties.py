@@ -1,14 +1,11 @@
 """Testcases for cssutils.css.cssproperties."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import basetest
-
 import cssutils.css
-
 
 class CSSPropertiesTestCase(basetest.BaseTestCase):
 
@@ -26,7 +23,6 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
         self.assertEquals(True, bool(match['left']('-1px')))
         self.assertEquals(True, bool(match['left']('-.1px')))
         self.assertEquals(True, bool(match['left']('-0.1px')))
-
 
     def test_toDOMname(self):
         "cssproperties _toDOMname(CSSname)"
@@ -47,7 +43,6 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
         self.assertEquals('-moz-opacity', _toCSSname('MozOpacity'))
         self.assertEquals('UNKNOWN', _toCSSname('UNKNOWN'))
         self.assertEquals('-anUNKNOWN', _toCSSname('AnUNKNOWN'))
-
 
     def test_CSS2Properties(self):
         "CSS2Properties"
