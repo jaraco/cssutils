@@ -1,0 +1,18 @@
+==========
+CSS Values
+==========
+:author: $LastChangedBy: cthedot $
+:date: $LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $
+:version: 0.9.2b4, $LastChangedRevision: 206 $
+
+.. contents::
+
+random notes about values
+=========================
+- CSSValue is always the base class of a Properties value. It may be more specific like a CSSPrimitiveValue or a CSSValueList which itself contains CSSValue or CSSPrimitiveValue objects
+
+- if a CSSValue is invalid the resulting CSSPrimitiveValue.primitiveType is ``CSSPrimitiveValue.CSS_UNKNOWN``, e.g.::
+
+    color: #1
+
+  which is no valid value for a color.
