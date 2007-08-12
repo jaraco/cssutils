@@ -20,6 +20,32 @@ CSS2Properties
 
 needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
 
+serializer
+----------
+- add preference option how color values should be serializer:
+
+  ser.prefs.COLORS_HEX, also the DEFAULT?
+        e.g. #123, so short form is possible
+        ignored for rgba()
+  ser.prefs.COLORS_HEXFULL
+        e.g. #112233, so always 6digit hex
+        ignored for rgba()
+  ser.prefs.COLORS_RGB_INTEGER
+        e.g. rgb(1.1, 55, 255), so range from 0-255
+        also for rgba()
+  ser.prefs.COLORS_RGB_PERCENTAGE
+        e.g. rgb(10%, 20%, 100%), so range from 0 to 100%
+        also for rgba()
+  ser.prefs.COLORS_FROM_SOURCE
+        use colors as used in CSS Source
+        
+  additionally:
+    ser.prefs.NAMES_COLORS
+        e.g. white for #fff or rgb(100%, 100%, 100%)
+        
+    
+- **refactor**: all preferences values should be constansts like above
+
 specification
 -------------
 :prio: 2
@@ -139,7 +165,7 @@ csscapture
 - tests!
 
 
-----
+--------------------
 
 new features
 ============
@@ -148,6 +174,25 @@ rbga()
 :prio: 1
 
 implement rgba
+
+- names colors::
+
+    Black = #000000 		Green = #008000
+    Silver = #C0C0C0 		Lime = #00FF00
+    Gray = #808080 		Olive = #808000
+    White = #FFFFFF 		Yellow = #FFFF00
+    Maroon = #800000 		Navy = #000080
+    Red = #FF0000 		Blue = #0000FF
+    Purple = #800080 		Teal = #008080
+    Fuchsia = #FF00FF 		Aqua = #00FFFF
+    
+- "transparent"
+- rgba(R, G, B, opacity): opacity in range (0,1)
+- hsl(), hsla() ?
+- SVG colors?
+- "currentColor"
+- System Colors are DEPRECATED!
+- "flavor"?
 
 media queries
 -------------
@@ -175,6 +220,7 @@ serializer
 Selector
 --------
 :prio: 2
+
 - CSS2XPath converter?
 - optimize selector parsing
 
