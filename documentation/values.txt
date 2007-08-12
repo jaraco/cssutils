@@ -11,8 +11,9 @@ random notes about values
 =========================
 - CSSValue is always the base class of a Properties value. It may be more specific like a CSSPrimitiveValue or a CSSValueList which itself contains CSSValue or CSSPrimitiveValue objects
 
-- if a CSSValue is invalid the resulting CSSPrimitiveValue.primitiveType is ``CSSPrimitiveValue.CSS_UNKNOWN``, e.g.::
+- setting cssText of CSSValue validates if context property is set
 
-    color: #1
+- CSSValue values are invalid if no contest property is set (``self.valid = False``). This may currently be set during initialization with parameter "_propertyname". This will propably change again.
 
-  which is no valid value for a color.
+- SyntaxError in case of invalid value for a known property is not raised yet!
+
