@@ -383,9 +383,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         if normalname in SHORTHAND:
             self._log.info(
-                u'Shorthand property "%s" always returns None.' %
+                u'CSSValue for shorthand property "%s" should be None, this may be implemented later.' %
                 normalname, neverraise=True)
-            return None
 
         for pl in self.seq:
             if isinstance(pl, SameNamePropertyList) and \
@@ -566,7 +565,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             _seq = self.seq
 
         newp = Property(name, value, priority)
-        if newp.name and newp.value:
+        if newp.name and newp.cssValue:
             newnormalname = newp.normalname
 
             # index of pl to exchange or append to, maybe
