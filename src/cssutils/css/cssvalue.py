@@ -1,14 +1,11 @@
-"""CSSValue implements DOM Level 2 CSS CSSValue.
+"""CSSValue related classes
 
-TODO
-    parsing and exception raising
-    setting of correct CSSValueType
+- CSSValue implements DOM Level 2 CSS CSSValue
+- CSSPrimitiveValue implements DOM Level 2 CSS CSSPrimitiveValue
+- CSSValueList implements DOM Level 2 CSS CSSValueList
 
-    pprint of value/unit e.g.   3 px  5px ->  3px 5px
-    simplify colors if possible e.g. #ffaa55 ->  #fa5
-    simplify values:    0px; ->  0;
 """
-__all__ = ['CSSValue', 'CSSPrimitiveValue']
+__all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
@@ -18,8 +15,8 @@ import re
 import types
 import xml.dom
 import cssutils
+import cssproperties
 from cssutils.token import Token
-
 
 class CSSValue(cssutils.util.Base):
     """
@@ -65,39 +62,31 @@ class CSSValue(cssutils.util.Base):
     _typestrings = ['CSS_INHERIT' , 'CSS_PRIMITIVE_VALUE', 'CSS_VALUE_LIST', 
                      'CSS_CUSTOM']
 
-    def __init__(self, cssText=u'inherit', readonly=False):
+    def __init__(self, cssText=None, readonly=False, _propertyname=None):
         """
-        (cssutils)
         inits a new CSS Value
 
         cssText
             the parsable cssText of the value
         readonly
             defaults to False
+        _propertyname
+            used to validate this value in the context of a property
+            the name must be normalized: lowercase with no escapes
         """
         super(CSSValue, self).__init__()
 
         self.seq = []
-        self.valid = True # may be set to False by Property
+        self.valid = False
         self._value = u''
         self._linetoken = None # used for line report only
-        self.cssText = cssText
+
+        self._propertyname = _propertyname
+
+        if cssText is not None: # may be 0
+            self.cssText = cssText
+
         self._readonly = readonly
-
-    def __invalidToken(self, tokens, x):
-        """
-        raises SyntaxErr if an INVALID token in tokens
-
-        x
-            used for error message
-
-        returns True if INVALID found, else False
-        """
-        for t in tokens:
-            if t.type == self._ttypes.INVALID:
-                self._log.error(u'CSSValue: Invalid token found in %s.' % x, t)
-                return True
-        return False
 
     def _getCssText(self):
         return cssutils.ser.do_css_CSSvalue(self)
@@ -140,13 +129,28 @@ class CSSValue(cssutils.util.Base):
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this value is readonly.
         """
+        def invalidToken(tokens, x):
+            """
+            raises SyntaxErr if an INVALID token in tokens
+    
+            x
+                used for error message
+    
+            returns True if INVALID found, else False
+            """
+            for t in tokens:
+                if t.type == self._ttypes.INVALID:
+                    return u'Invalid token found in %s.' % x, t
+            return False
+        
         self._checkReadonly()
 
         tokens = self._tokenize(cssText)
-        if self.__invalidToken(tokens, 'value'):
+        msg = invalidToken(tokens, 'value') 
+        if msg:
             self._log.error(
-                u'CSSValue: Unknown value syntax: "%s".' % self._valuestr(
-                    cssText))
+                u'CSSValue: Unknown value syntax: "%s". (%s)' % (
+                    self._valuestr(cssText), msg))
             return
 
         numvalues = 0
@@ -184,11 +188,25 @@ class CSSValue(cssutils.util.Base):
         if numvalues:
             if tokens:
                 self._linetoken = tokens[0] # used for line report
-
             self.seq = newseq
             self._value = u''.join([x for x in newseq if not isinstance(
                                x, cssutils.css.CSSComment)]).strip()
-              
+            self.valid = False
+            # validate if known
+            if self._propertyname and\
+               self._propertyname in cssproperties.cssvalues:
+                if cssproperties.cssvalues[self._propertyname](self._value):
+                    self.valid = True
+                else:
+                    self._log.warn(
+                        u'CSSValue: Invalid value for CSS2 property %s: %s' %
+                        (self._propertyname, self._value), 
+                        self._linetoken, neverraise=True)
+            else:
+                self._log.info(
+                    u'CSSValue: Unable to validate as no property context set or unknown property: "%s"'
+                    % self._value, neverraise=True)
+            
             if self._value == u'inherit':
                 self._cssValueType = CSSValue.CSS_INHERIT
                 self.__class__ = CSSValue # reset
@@ -209,23 +227,26 @@ class CSSValue(cssutils.util.Base):
         doc="A string representation of the current value.")
 
     def _getCssValueType(self):
-        "readonly"
-        return self._cssValueType
+        if hasattr(self, '_cssValueType'):
+            return self._cssValueType
 
     cssValueType = property(_getCssValueType,
-        doc="A code defining the type of the value as defined above.")
+        doc="A (readonly) code defining the type of the value as defined above.")
     
     def _getCssValueTypeString(self):
-        "cssutils: readonly"
-        return CSSValue._typestrings[self.cssValueType]
+        t = self.cssValueType
+        if t is not None: # may be 0!
+            return CSSValue._typestrings[t]
+        else:
+            return None
 
     cssValueTypeString = property(_getCssValueTypeString,
-        doc="Name of cssValueType of this CSSValue.")
+        doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
 
-    
     def __repr__(self):
-        return "<cssutils.css.%s object cssValueType=%s cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssValueTypeString, self.cssText, id(self))
+        return "<cssutils.css.%s object cssValueType=%r cssText=%r propname=%r valid=%r at 0x%x>" % (
+                self.__class__.__name__, self.cssValueTypeString, 
+                self.cssText, self._propertyname, self.valid, id(self))
 
 
 class CSSPrimitiveValue(CSSValue):
@@ -331,16 +352,16 @@ class CSSPrimitiveValue(CSSValue):
         primitiveType is readonly but is set lazy if accessed 
         no value is given as self._value is used
         """
-        primitiveType = 0
+        primitiveType = self.CSS_UNKNOWN
         tokens = self._tokenize(self._value)
         try:
             t = tokens[0]
         except IndexError:
             self._log.error(u'CSSPrimitiveValue: No value.')
 
-        if self.valid == False:
-            primitiveType = CSSPrimitiveValue.CSS_UNKNOWN
-        elif t.type == Token.HASH:
+        #if self.valid == False:
+        #    primitiveType = CSSPrimitiveValue.CSS_UNKNOWN
+        if t.type == Token.HASH:
             # special case, maybe should be converted to rgb in any case?
             primitiveType = CSSPrimitiveValue.CSS_RGBCOLOR
         else:
@@ -404,6 +425,8 @@ class CSSPrimitiveValue(CSSValue):
             CSS_MM, CSS_IN, CSS_PT, CSS_PC, CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS,
             CSS_S, CSS_HZ, CSS_KHZ, CSS_DIMENSION).
         """
+        raise NotImplementedError()
+        
         if unitType not in self._floattypes:
             raise xml.dom.InvalidAccessErr(
                 u'unitType Parameter is not a float type')
@@ -416,6 +439,8 @@ class CSSPrimitiveValue(CSSValue):
         is raised. Modification to the corresponding style property
         can be achieved using the RGBColor interface.
         """
+        raise NotImplementedError()
+
         # TODO: what about coercing #000 to RGBColor?
         if self.primitiveType not in self._rbgtypes:
             raise xml.dom.InvalidAccessErr(u'Value is not a RGB value')
@@ -429,6 +454,8 @@ class CSSPrimitiveValue(CSSValue):
         Modification to the corresponding style property can be achieved
         using the Rect interface.
         """
+        raise NotImplementedError()
+
         if self.primitiveType not in self._recttypes:
             raise xml.dom.InvalidAccessErr(u'value is not a Rect value')
         # TODO: use Rect class
@@ -464,6 +491,8 @@ class CSSPrimitiveValue(CSSValue):
                 support the float value or the unit type.
             - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
         """
+        raise NotImplementedError()
+        
         self._checkReadonly()
         if unitType not in self._floattypes:
             raise xml.dom.InvalidAccessErr(u'value is not a float type')
@@ -491,6 +520,8 @@ class CSSPrimitiveValue(CSSValue):
                 the specified unit.
             - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
         """
+        raise NotImplementedError()
+        
         self._checkReadonly()
         if stringType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(u'value is not a string type')
@@ -498,8 +529,9 @@ class CSSPrimitiveValue(CSSValue):
         self._value = stringValue
 
     def __repr__(self):
-        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.primitiveTypeString, self.cssText, id(self))
+        return "<cssutils.css.%s object primitiveType=%s cssText=%r propname=%r valid=%r at 0x%x>" % (
+                self.__class__.__name__, self.primitiveTypeString, 
+                self.cssText, self._propertyname, self.valid, id(self))
         
 
 class CSSValueList(CSSValue):
