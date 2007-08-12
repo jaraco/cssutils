@@ -20,6 +20,7 @@ currently implemented
 in progress
     - CSSValue
     - CSSPrimitiveValue
+    - CSSValueList
 
 todo
     - value classes
@@ -37,8 +38,7 @@ __all__ = [
     'CSSStyleRule',
     'CSSUnknownRule',
     'CSSStyleDeclaration',
-    'CSSValue',
-    'CSSPrimitiveValue',
+    'CSSValue', 'CSSPrimitiveValue', 'CSSValueList',
     ]
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
@@ -63,4 +63,4 @@ from selector import *
 
 if __name__ == '__main__':
     for x in __all__:
-        print x, eval(x)()
+        print x
