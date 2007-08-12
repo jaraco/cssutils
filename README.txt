@@ -64,16 +64,22 @@ changes
 
 
 HEAD
-    - FEATURE: Implemented css.CSSValue and css.CSSPrimitiveValue. 
-        THESE ARE NOT FINISHED YET! TODO: tests, css.CSSValueList and some details
+    - FEATURE: Implemented css.CSSValue css.CSSPrimitiveValue and css.CSSValueList. 
+        
+        **THESE ARE NOT FINISHED YET!**
+
+        + CSSValue has an init Parameter ``_propertyname`` to set a context property for validation. If none is set the value is always invalid. **THIS MAY CHANGE!**
+        + FEATURE: CSSValue has property ``cssValueTypeString`` which is the name of the relevant ``cssValueType``, e.g. "CSS_PRIMITIVE_TYPE". Mainly useful for debugging.
+        + FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
+    
 
     - FEATURE: CSSRule and sub classes have a property ``typeString`` which is the name of the relevant ``type``, e.g. "STYLE_RULE". Mainly useful for debugging.
-    - FEATURE: CSSValue has property ``cssValueTypeString`` which is the name of the relevant ``cssValueType``, e.g. "CSS_PRIMITIVE_TYPE". Mainly useful for debugging.
-    - FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
 
     - FEATURE: href and media arguments can now be passed to parse() and parseString() functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
-
     - FEATURE: The MediaList constructor can now be passed a list of media types.
+
+    - API CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
+    - API CHANGE: CSSValue default cssText is now ``u""`` and not ``u"inherit"`` anymore
 
     - CHANGE: Added __repr__ methods to most classes. The module is slightly bended as all classes are imported to cssutils.css but not defined there.
     
