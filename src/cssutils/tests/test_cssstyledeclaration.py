@@ -162,23 +162,23 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         # not set
         self.assertEqual(None, s.getPropertyCSSValue('color'))
 
-        # shorthand CSSValue should be None
-        SHORTHAND = [
-            u'background',
-            u'border',
-            u'border-left', u'border-right',
-            u'border-top', u'border-bottom',
-            u'border-color', u'border-style', u'border-width',
-            u'cue',
-            u'font',
-            u'list-style',
-            u'margin',
-            u'outline',
-            u'padding',
-            u'pause']
-        for short in SHORTHAND:
-            s.setProperty(short, u'inherit')
-            self.assertEqual(None, s.getPropertyCSSValue(short))
+#        # shorthand CSSValue should be None
+#        SHORTHAND = [
+#            u'background',
+#            u'border',
+#            u'border-left', u'border-right',
+#            u'border-top', u'border-bottom',
+#            u'border-color', u'border-style', u'border-width',
+#            u'cue',
+#            u'font',
+#            u'list-style',
+#            u'margin',
+#            u'outline',
+#            u'padding',
+#            u'pause']
+#        for short in SHORTHAND:
+#            s.setProperty(short, u'inherit')
+#            self.assertEqual(None, s.getPropertyCSSValue(short))
 
     def test_getPropertyPriority(self):
         "CSSStyleDeclaration.getPropertyPriority()"
