@@ -7,7 +7,6 @@ import xml.dom
 import basetest
 import cssutils
 
-
 class PropertyTestCase(basetest.BaseTestCase):
 
     def setUp(self):
@@ -59,16 +58,15 @@ class PropertyTestCase(basetest.BaseTestCase):
             }
         self.do_raise_r(tests, att='_setName')
 
-
-    def test_validate(self):
-        "_Property.name Validating (TEST NOT COMPLETE!)"
-        p = cssutils.css.property._Property('left', '1px')
-
-        # expects message
-        p.name = 'notcss2'
-
-        p.name = 'left'
-        p.value = 'red'
+#    def test_validate(self):
+#        "_Property.name Validating (TEST NOT COMPLETE!)"
+#        p = cssutils.css.property._Property('left', '1px')
+#
+#        # expects message
+#        p.name = 'notcss2'
+#
+#        p.name = 'left'
+#        p.value = 'red'
 
     def test_cssValue(self):
         "_Property.cssValue"
@@ -91,7 +89,6 @@ class PropertyTestCase(basetest.BaseTestCase):
         p.priority = '!   important'
         self.assertEqual('!important', p.priority)
 
-
         tests = {
             u' ': xml.dom.SyntaxErr,
             u'"\n': xml.dom.SyntaxErr,
@@ -103,7 +100,6 @@ class PropertyTestCase(basetest.BaseTestCase):
 
     def test_value(self):
         "_Property.value (DEPRECATED)"
-        # TODO: extend tests
         p = cssutils.css.property._Property('top', u'1px')
         self.assertEqual('1px', p.value)
         p.value = '2px'
