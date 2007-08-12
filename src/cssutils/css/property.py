@@ -172,21 +172,9 @@ class _Property(cssutils.util.Base):
           Raised if the specified CSS string value represents a different
           type of values than the values allowed by the CSS property.
         """
-        cssvalue = CSSValue(cssText=cssText)
-        v = cssvalue._value
-
-        if v:
+        cssvalue = CSSValue(cssText=cssText, _propertyname=self.name)
+        if cssvalue._value:
             self.seqs[1] = cssvalue
-
-            # validate if known
-            if self.name in cssproperties.cssvalues and \
-               not cssproperties.cssvalues[self.name](v):
-
-                linetoken = cssvalue._linetoken
-                cssvalue.valid = False
-                self._log.warn(
-                    u'Property: Invalid value for CSS2 property %s: %s' %
-                    (self.name, v), linetoken, neverraise=True)
 
     cssValue = property(_getCSSValue, _setCSSValue,
         doc="(cssutils) CSSValue object of this property")
@@ -251,18 +239,25 @@ class _Property(cssutils.util.Base):
                 self.__class__.__module__, self.__class__.__name__, 
                 self.name, self.cssValue._value, self.priority, id(self))        
 
-
     # DEPRECATED
     def _getValue(self):
+        import warnings
+        warnings.warn(
+            'value is deprecated, use cssValue instead.',
+            DeprecationWarning)
         if self.cssValue: return self.cssValue._value
         else: return u''
     def _setValue(self, value):
+        import warnings
+        warnings.warn(
+            'value is deprecated, use cssValue instead.',
+            DeprecationWarning)
         self.cssValue.cssText = value
     value = property(_getValue, _setValue,
-                     doc="DEPRECATED string value of property")
+                     doc="DEPRECATED use cssValue instead")
 
 
 
 if __name__ == '__main__':
     p = _Property(u'color', 'red', '! important')
-    print p.name, p.value, p.priority
+    print p.name, p.cssValue, p.priority
