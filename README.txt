@@ -95,6 +95,7 @@ HEAD
         - CSSPrimitiveValue (showing the primitive value type and value)
         
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
+    - CHANGE: The Selector class is now available from cssutils.css too.
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
