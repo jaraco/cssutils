@@ -15,6 +15,7 @@ Available documentation
 * `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
 * `cssutils at cthedot <http://cthedot.de/cssutils/>`_
 
++ `Serializing and serializer preferences <documentation/serialize.txt>`_
 + `CSS values <documentation/values.txt>`_
 
 * `backlog <documentation/backlog.txt>`_
