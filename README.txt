@@ -64,14 +64,28 @@ changes
 
 
 HEAD
-    - FEATURE: Implemented css.CSSValue css.CSSPrimitiveValue and css.CSSValueList. 
+    - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList. 
         
         **THESE ARE NOT FINISHED YET!**
+
+        CURRENTLY IN WORK:
+            - css.CSSPrimitiveValue.getStringValue, .setStringValue
+            
+        TODO:
+            - css.CSSPrimitiveValue.getFloatValue, .setFloatValue
+            - css.CSSPrimitiveValue.getCounterValue
+            - css.CSSPrimitiveValue.getRGBColorValue
+            - css.CSSPrimitiveValue.getRectValue
+        
+        css.CSSValueList
+            - the list is iterable so may be used in a for loop
+            
 
         + CSSValue has an init Parameter ``_propertyname`` to set a context property for validation. If none is set the value is always invalid. **THIS MAY CHANGE!**
         + FEATURE: CSSValue has property ``cssValueTypeString`` which is the name of the relevant ``cssValueType``, e.g. "CSS_PRIMITIVE_TYPE". Mainly useful for debugging.
         + FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
     
+    - FEATURE (**experimental**): added ``CSSStyleDeclaration.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style declaration.
 
     - FEATURE: CSSRule and sub classes have a property ``typeString`` which is the name of the relevant ``type``, e.g. "STYLE_RULE". Mainly useful for debugging.
 
@@ -81,6 +95,7 @@ HEAD
     - API CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
     - API CHANGE: CSSValue default cssText is now ``u""`` and not ``u"inherit"`` anymore
 
+    - CHANGE: The Selector class is now available from cssutils.css too.
     - CHANGE: Added __repr__ methods to most classes. The module is slightly bended as all classes are imported to cssutils.css but not defined there.
     
         - CSSStyleSheet (showing the title and href),
@@ -95,16 +110,15 @@ HEAD
         - CSSPrimitiveValue (showing the primitive value type and value)
         
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
-    - CHANGE: The Selector class is now available from cssutils.css too.
 
 0.9.2b3 070804
-    - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
+    - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dï¿½rwald)
 
     - BUGFIX: Fixed Issue #7: typo gave AssertionError for selectors like ``tr:nth-child(odd) td{}``
     - BUGFIX: Fixed Issue #5: false warning for certain values for ``background-position`` removed
     - BUGFIX: Report of line/col for any node was not correct if a node contained line breaks itself
 
-    - Quite a few internal optimizations (thanks to Walter Dörwald)
+    - Quite a few internal optimizations (thanks to Walter Dï¿½rwald)
     - Added tests for issues #3 and #4 to tokenizer too
 
 0.9.2b2 070728
