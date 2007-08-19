@@ -25,7 +25,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assert_(u'1px' == v.cssText)
         self.assert_(False is v.valid)
 
-        v = cssutils.css.CSSValue(_propertyname="left")
+        v = cssutils.css.CSSValue(_propertyName="left")
         v.cssText = u'1px'
         self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
         self.assert_(v.CSS_PX == v.primitiveType)
@@ -38,18 +38,19 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assert_('1 px' == v.cssText)
         self.assert_(False is v.valid)
 
-        v = cssutils.css.CSSValue(_propertyname="left")
+        v = cssutils.css.CSSValue(_propertyName="left")
         v.cssText = u'  1   px    '
         self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
         self.assert_(u'1 px' == v.cssText)
         self.assert_(False is v.valid)
 
-
         v.cssText = u'expression(document.body.clientWidth > 972 ? "1014px": "100%" )'
         self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
         self.assert_(v.CSS_UNKNOWN == v.primitiveType)
-        self.assert_('expression(document.body.clientWidth > 972 ? "1014px": "100%" )' == v._value)
-        self.assert_('expression(document.body.clientWidth > 972 ? "1014px": "100%" )' == v.cssText)
+        self.assertEqual('expression(document.body.clientWidth > 972 ? "1014px": "100%" )',
+                         v._value)
+        self.assert_('expression(document.body.clientWidth > 972 ? "1014px": "100%" )'
+                      == v.cssText)
         self.assert_(False is v.valid)
 
     def test_valid(self):
@@ -62,7 +63,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
             ('left', '1px', True)
             ]
         for n, v, exp in tests:
-            v = cssutils.css.CSSValue(cssText=v, _propertyname=n)
+            v = cssutils.css.CSSValue(cssText=v, _propertyName=n)
             self.assert_(v.valid is exp)
         
     def test_cssValueType(self):
@@ -191,10 +192,76 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 #        v.setFloatValue(v.CSS_MM, '8')
 #        # TODO: more tests
 #
-#    def test_setString(self):
-#        v = cssutils.cssprimitivevalue.PrimitiveValue(u'1')
-#        v.setStringValue(v.CSS_STRING, 'brown')
-#        # TODO: more tests
+    def test_getString(self):
+        "CSSPrimitiveValue.getStringValue()"
+        v = cssutils.css.CSSPrimitiveValue(u'1px')
+        self.assert_(v.primitiveType == v.CSS_PX)
+        self.assertRaises(xml.dom.InvalidAccessErr, 
+                          v.getStringValue)
+
+    def test_setString(self):
+        "CSSPrimitiveValue.setStringValue()"
+        # CSS_STRING
+        v = cssutils.css.CSSPrimitiveValue(u'"a"')
+        v.setStringValue(v.CSS_STRING, 'b')
+        self.assert_('b' == v._value)
+        self.assert_('b' == v.getStringValue())
+        # possible to coerce
+        v.setStringValue(v.CSS_IDENT, 'ident')
+        self.assert_('ident' == v._value)
+        self.assert_('ident' == v.getStringValue())
+        
+        v.setStringValue(v.CSS_ATTR, 'attr')
+        self.assert_('attr' == v._value)
+        self.assert_('attr' == v.getStringValue())
+
+        # cannot coerce CSS_URI
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_IDENT to CSS_URI',  
+            v.setStringValue, *(v.CSS_URI, 'x'))
+
+
+        # CSS_URI
+        v = cssutils.css.CSSPrimitiveValue(u'url(xxx)')
+        v.setStringValue(v.CSS_URI, 'x')
+        self.assert_('url(x)' == v._value)
+        self.assert_('x' == v.getStringValue())
+        v.setStringValue(v.CSS_URI, '"x"')
+        self.assert_('url("x")' == v._value)
+        self.assert_('"x"' == v.getStringValue())
+        v.setStringValue(v.CSS_URI, "'y'")
+        self.assert_("url('y')" == v._value)
+        self.assert_("'y'" == v.getStringValue())
+
+        # the following are coerced to CSS_URI!
+        v.setStringValue(v.CSS_STRING, 'str')
+        self.assert_('url(str)' == v._value)
+        self.assert_('str' == v.getStringValue())
+
+        v.setStringValue(v.CSS_IDENT, 'ident')
+        self.assert_('url(ident)' == v._value)
+        self.assert_('ident' == v.getStringValue())
+
+        v.setStringValue(v.CSS_ATTR, 'attr')
+        self.assert_('url(attr)' == v._value)
+        self.assert_('attr' == v.getStringValue())
+
+        
+        # TypeError as 'x' is no valid type
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: stringType 'x' (UNKNOWN TYPE) is not a string type",                  
+            v.setStringValue, *('x', 'brown'))
+        # IndexError as 111 is no valid type 
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr, 
+            u"CSSPrimitiveValue: stringType 111 (UNKNOWN TYPE) is not a string type",                  
+            v.setStringValue, *(111, 'brown'))
+        # CSS_PX is no string type 
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr, 
+            u"CSSPrimitiveValue: stringType CSS_PX is not a string type",                  
+            v.setStringValue, *(v.CSS_PX, 'brown'))
+
+
+
 #
 #    def test_typeRGBColor(self):
 #        v = cssutils.cssprimitivevalue.PrimitiveValue('RGB(1, 5, 10)')
@@ -221,6 +288,24 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         v = cssutils.css.CSSPrimitiveValue('111')
         self.assert_('111' in repr(v))
         self.assert_('CSS_NUMBER' in repr(v))
+
+
+class CSSValueListTestCase(basetest.BaseTestCase):
+
+    def test_init(self):
+        "CSSValueList.__init__()"
+        v = cssutils.css.CSSValue(cssText=u'red blue', _propertyName='border-color')
+        self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
+        self.assert_('red blue' == v._value)
+        self.assert_('red blue' == v.cssText)
+        self.assert_(True is v.valid)
+        
+        self.assert_(2 == v.length)
+        
+        item = v.item(0)
+        item.setStringValue(item.CSS_STRING, 'green')
+        self.assertEqual('green blue', v._value)
+        self.assertEqual('green blue', v.cssText)
 
         
 if __name__ == '__main__':
