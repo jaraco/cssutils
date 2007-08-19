@@ -148,6 +148,8 @@ test improvements
 - test tigris.css
 - implement testsuite on HTML? http://www.w3.org/Style/CSS/Test/CSS3/Selectors/current/xhtml/index.html
 
+- CSSStyleSheet.setSerializer()
+- CSSStyleSheet.setSerializerPref()
 
 refactoring
 -----------

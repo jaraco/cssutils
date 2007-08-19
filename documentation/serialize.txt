@@ -1,0 +1,64 @@
+===========
+Serializing
+===========
+:author: $LastChangedBy: cthedot $
+:date: $LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $
+:version: 0.9.2b4, $LastChangedRevision: 206 $
+
+.. contents::
+
+Serializer
+==========
+A custom serializer must implement all methods the default one implements. Easiest would be to subclass ``cssutils.serialize.Serializer``.
+
+To set a new serializer, use::
+
+    sheet = CSSStyleSheet()
+    sheet.setSerializer(newser)
+
+You may also set ``cssutils.ser`` directly but the above method is the preferred one.
+
+
+Serializer Preferences
+======================
+Quite a few preferences of the cssutils serializer may be tweaked.
+
+To set a preference use::
+
+    sheet = CSSStyleSheet()
+    sheet.setSerializerPref(pref, value)
+    
+You may also set ``cssutils.ser.prefs.pref`` directly but the above method is the preferred one.
+
+Preferences are always used *globally*, so for all stylesheets until preferences are set again.
+    
+The following preferences are currently available
+
+defaultAtKeyword = True
+    Should the literal @keyword from src CSS be used or the default
+    form, e.g. if ``True``: ``@import`` else: ``@i\mport``
+defaultPropertyName = True
+    Should the normalized propertyname be used or the one given in
+    the src file, e.g. if ``True``: ``color`` else: ``c\olor``
+
+    Only used if ``keepAllProperties==False``.
+
+importHrefFormat = None
+    Uses hreftype if ``None`` or explicit 'string' or 'uri'
+indent = 4 * ' '
+    Indentation of e.g Properties inside a CSSStyleDeclaration
+keepAllProperties = False
+    If ``True`` all properties set in the original CSSStylesheet
+    are kept meaning even properties set twice with the exact same
+    same name are kept!
+keepComments = True
+    If ``False`` removes all CSSComments
+omitLastSemicolon = True
+    If ``True`` omits ; after last property of CSSStyleDeclaration
+lineNumbers = False
+    Only used if a complete CSSStyleSheet is serialized.
+removeInvalid = True
+    Omits invalid rules, MAY CHANGE!
+setBOM = False
+    NOT USED YET
+
