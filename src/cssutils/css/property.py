@@ -172,7 +172,7 @@ class _Property(cssutils.util.Base):
           Raised if the specified CSS string value represents a different
           type of values than the values allowed by the CSS property.
         """
-        cssvalue = CSSValue(cssText=cssText, _propertyname=self.name)
+        cssvalue = CSSValue(cssText=cssText, _propertyName=self.name)
         if cssvalue._value:
             self.seqs[1] = cssvalue
 
