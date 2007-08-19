@@ -63,10 +63,9 @@ __all__ = ['CSS2Properties', 'cssvalues']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b3, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import re
-
 
 """
 Define some regular expression fragments that will be used as
@@ -329,8 +328,7 @@ class CSS2Properties(object):
     def _getP(self, CSSname): pass
     def _setP(self, CSSname, value): pass
     def _delP(self, CSSname): pass
-
-
+    
 # add list of DOMname properties to CSS2Properties
 # used for CSSStyleDeclaration to check if allowed properties
 # but somehow doubled, any better way?
