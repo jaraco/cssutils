@@ -154,7 +154,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 % n)
 
     # overwritten accessor functions for CSS2Properties' properties
-    def _getP(self, CSSname):
+    def _getP(self, CSSName):
         """
         (DOM CSS2Properties)
         Overwritten here and effectively the same as
@@ -169,9 +169,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             italic
 
         """
-        return self.getPropertyValue(CSSname)
+        return self.getPropertyValue(CSSName)
 
-    def _setP(self, CSSname, value):
+    def _setP(self, CSSName, value):
         """
         (DOM CSS2Properties)
         Overwritten here and effectively the same as
@@ -192,9 +192,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             >>> style.setProperty('font-style', 'italic', '!important')
 
         """
-        self.setProperty(CSSname, value)
+        if 'background-image' == CSSName:
+#            for p in self._properties():
+#                if p.name == 'background':
+#                    print p
+            self.setProperty(CSSName, value)
+        else:
+            self.setProperty(CSSName, value)
 
-    def _delP(self, CSSname):
+    def _delP(self, CSSName):
         """
         (cssutils only)
         Overwritten here and effectively the same as
@@ -207,7 +213,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             >>> print style.fontStyle # prints u''
 
         """
-        self.removeProperty(CSSname)
+        self.removeProperty(CSSName)
 
 
     def _getCssText(self):
@@ -468,7 +474,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                pl.name == normalname:
                 return pl
 
-
     def item(self, index):
         """
         (DOM)
@@ -491,7 +496,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             return properties[index]
         except IndexError:
             return u''
-
 
     def removeProperty(self, name):
         """
@@ -590,6 +594,34 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     # append to pl
                     _seq[index].append(newp)
 
+    def replaceUrls(self, replacer):
+        """
+        **EXPERIMENTAL**
+        
+        utility function to replace all url(urlstring) values in a 
+        CSSStyleDeclaration.
+        
+        replacement must be a function which is called with a single 
+        argument ``urlstring`` which is the current value of url()
+        excluding "url(" and ")". It still may have surrounding single or
+        double quotes 
+        """
+        def set(v):
+            if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
+               v.CSS_URI == v.primitiveType:
+                    v.setStringValue(v.CSS_URI, 
+                                     replacer(v.getStringValue()))
+        
+        pls = [x for x in self.seq if isinstance(x, SameNamePropertyList)]
+        for pl in pls:
+            for p in pl:
+                v = p.cssValue
+                if v.CSS_VALUE_LIST == v.cssValueType:
+                    for item in v:
+                        set(item)
+                elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
+                    set(v)
+
     def __repr__(self):
         return "<cssutils.css.%s object length=%r at 0x%x>" % (
                 self.__class__.__name__, self.length, id(self))
@@ -616,7 +648,6 @@ class SameNamePropertyList(list):
     """
     def __init__(self, name):
         self.name = cssutils.util.Base._normalize(name)
-
 
     def _currentIndex(self):
         """
