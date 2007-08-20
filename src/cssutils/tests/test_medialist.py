@@ -4,21 +4,17 @@ testcases for cssutils.stylesheets.MediaList
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import basetest
-
 import cssutils.stylesheets
-
 
 class MediaListTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         super(MediaListTestCase, self).setUp()
         self.r = cssutils.stylesheets.MediaList()
-
 
     def test_set(self):
         "MediaList.mediaText 1"
@@ -138,6 +134,18 @@ class MediaListTestCase(basetest.BaseTestCase):
             }
         self.do_equal_r(tests, att='mediaText')
 
+    def test_reprANDstr(self):
+        "MediaList.__repr__(), .__str__()"
+        mediaText='tv, print'
+        
+        s = cssutils.stylesheets.MediaList(mediaText=mediaText)
+        
+        self.assert_(mediaText in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(mediaText == s2.mediaText)
+        
 
 if __name__ == '__main__':
     import unittest

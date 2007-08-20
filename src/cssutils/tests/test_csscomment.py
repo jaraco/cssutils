@@ -60,6 +60,15 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
             })
         self.do_raise_r(tests) # set cssText
 
+    def test_reprANDstr(self):
+        "CSSComment.__repr__(), .__str__()"
+        text = '/* test */'
+        
+        s = cssutils.css.CSSComment(cssText=text)
+        
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(text == s2.cssText)
 
 if __name__ == '__main__':
     import unittest

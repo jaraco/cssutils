@@ -100,6 +100,17 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.encoding = 'utf-8'
         self.assert_('utf-8' in repr(self.r))
 
+    def test_reprANDstr(self):
+        "CSSCharsetRule.__repr__(), .__str__()"
+        encoding='utf-8'
+        
+        s = cssutils.css.CSSCharsetRule(encoding=encoding)
+        
+        self.assert_(encoding in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(encoding == s2.encoding)
 
 if __name__ == '__main__':
     import unittest

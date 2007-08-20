@@ -104,12 +104,20 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             })
         self.do_raise_r(tests) # set cssText
 
-    def test_repr(self):
-        "CSSNamespaceRule.__repr__()"
-        self.r.prefix = 'x-prefix'
-        self.r.uri = 'example.html'
-        self.assert_('x-prefix' in repr(self.r))
-        self.assert_('example.html' in repr(self.r))
+    def test_reprANDstr(self):
+        "CSSNamespaceRule.__repr__(), .__str__()"
+        uri=u'http://example.com'
+        prefix=u'ex'
+        
+        s = cssutils.css.CSSNamespaceRule(uri=uri, prefix=prefix)
+        
+        self.assert_(uri in str(s))
+        self.assert_(prefix in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(uri == s2.uri)
+        self.assert_(prefix == s2.prefix)
 
 
 if __name__ == '__main__':

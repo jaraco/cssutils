@@ -30,7 +30,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual([], r.cssRules)
 
         self.assertEqual(cssutils.stylesheets.MediaList, type(r.media))
-        self.assertEqual([], r.media)
+        self.assertEqual(['all'], r.media)
 
         # until any rules
         self.assertEqual(u'', r.cssText)
@@ -202,10 +202,17 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.insertRule(self.stylerule)
         self.assertEqual(u'@media print {\n    a {}\n    }', self.r.cssText)
 
-    def test_repr(self):
-        "CSSMediaRule.__repr__()"
-        self.r.media.mediaText = 'screen'
-        self.assert_('screen' in repr(self.r))
+    def test_reprANDstr(self):
+        "CSSMediaRule.__repr__(), .__str__()"
+        mediaText='tv, print'
+        
+        s = cssutils.css.CSSMediaRule(mediaText=mediaText)
+        
+        self.assert_(mediaText in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(mediaText == s2.media.mediaText)
 
 
 if __name__ == '__main__':

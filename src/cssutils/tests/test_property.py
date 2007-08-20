@@ -128,6 +128,23 @@ class PropertyTestCase(basetest.BaseTestCase):
             }
         self.do_raise_r(tests, att='_setValue')
 
+    def test_reprANDstr(self):
+        "_Property.__repr__(), .__str__()"
+        name="color"
+        value="red"
+        priority="!important"
+        
+        s = cssutils.css.property._Property(name=name, value=value, priority=priority)
+        
+        self.assert_(name in str(s))
+        self.assert_(value in str(s))
+        self.assert_(priority in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(name == s2.name)
+        self.assert_(value == s2.value)
+        self.assert_(priority == s2.priority)
 
 if __name__ == '__main__':
     import unittest

@@ -1,23 +1,21 @@
 """Testcases for cssutils.css.selector.Selector."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b3, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import basetest
-
-from cssutils.css.selector import Selector
+import cssutils
 
 
 class SelectorTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        self.r = Selector('*')
+        self.r = cssutils.css.Selector('*')
 
     def test_init(self):
         "Selector.__init__()"
-        s = Selector('*')
+        s = cssutils.css.Selector('*')
 
     def test_selectorText(self):
         "Selector.selectorText"
@@ -177,6 +175,17 @@ class SelectorTestCase(basetest.BaseTestCase):
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
 
+    def test_reprANDstr(self):
+        "Selector.__repr__(), .__str__()"
+        sel=u'a+b'
+        
+        s = cssutils.css.Selector(selectorText=sel)
+        
+        self.assert_(sel in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(sel == s2.selectorText)
 
 if __name__ == '__main__':
     import unittest
