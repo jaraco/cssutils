@@ -4,11 +4,11 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:author: $LastChangedBy$
-:date: $LastChangedDate$
-:version: trunk, $LastChangedRevision$
+:Author: $LastChangedBy$
+:Copyright: 2004-2007 Christof Hoeke
+:Date: $LastChangedDate$
+:Version: trunk, $LastChangedRevision$
 
-Copyright (C) 2004-2007 Christof Hoeke
 Published under the LGPL, see http://cthedot.de/cssutils/license.html
 
 A Python package to parse and build CSS Cascading Style Sheets. Partly implements the `DOM Level 2 Style <http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/>`_ Stylesheets and DOM Level 2 CSS interfaces.
