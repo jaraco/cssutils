@@ -60,14 +60,17 @@ known issues
 
 changes
 =======
-- TODO: FEATURE: Implementation of css.CSSValue
 
+Version 0.9x with a new parser (again)
+--------------------------------------
+
+- TODO: FEATURE: Implementation of css.CSSValue
 
 HEAD
     - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList. 
         
         **THESE ARE NOT FINISHED YET!**
-
+    
         CURRENTLY IN WORK:
             - css.CSSPrimitiveValue.getStringValue, .setStringValue
             
@@ -114,6 +117,7 @@ HEAD
       
       stylesheets
         - MediaList shows the mediaText
+    
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter D�rwald)
@@ -428,7 +432,9 @@ HEAD
     - configurable Serializer instead of pprint
     - reimplemented CSSMediaRule
 
-----
+
+Version 0.8x with a new parser
+------------------------------
 
 0.8a6 - 050827
     - bugfixes in valuevalidator regarding values of "background-position", thanks to Tim Gerla!
@@ -473,7 +479,6 @@ HEAD
     - split CSSParser in actual CSSParser and utility module used by CSSParser and each css class cssText setting method
     - loghandler.ErrorHandler does raiseExceptions by default now. Only CSSParser does overwrite this behaviour. Some tests still need to be looked into...
 
-
 0.8a1 - 050730
     bugfix medialist
         medium "projection" was spelled wrong (ended with a space)
@@ -498,7 +503,9 @@ HEAD
         * Comment as a rule is removed currently, might be reintegrated in a future version.
         * some classes which have not been implemented fully anyway are not available until they are finished. This is mainly CSSMediaRule (will follow shortly), CSSUnknownRule, CSSValue and other value classes.
 
-----
+
+Version 0.6x
+------------
 
 0.61 - 050604
     bugfix reported and fixed thanks to Matt Harrison:
@@ -512,6 +519,9 @@ HEAD
     thanks to Kevin D. Smith
 
     MediaList renamed media type "speech" to "aural"
+
+Version 0.5x
+------------
 
 0.55_52 - 040517 bugfix bugfix release
     should do test first ;)
@@ -643,6 +653,10 @@ HEAD
     CSSParser might be configured just to log errors or to raise
     xml.dom.DOMExceptions when finding an error
 
+
+Version 0.4x
+------------
+
 0.41 - 040328
     !cssnormalizer does not work in this version - on hold for 1.0
 
@@ -670,6 +684,9 @@ HEAD
 
     made a dist package complete with setup.py
 
+
+Version 0.3x
+------------
 
 0.31 - 040320
     !cssnormalizer does not work in this version
@@ -718,6 +735,9 @@ HEAD
     classes are organized in new modules
 
 
+Version 0.2x
+------------
+
 0.24_1 - 040214
     legal stuff: added licensing information
     no files released
@@ -761,7 +781,9 @@ HEAD
 0.20 - 031224
     complete rewrite with combination of parser and builder classes
 
-0.10 - 031221
+Version 0.1x
+------------
+    0.10 - 031221
     first version to try if i can bring it to work at all
     only a prettyprinter included, no builder
 
