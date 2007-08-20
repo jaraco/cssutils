@@ -5,7 +5,7 @@ __all__ = ['StyleSheet']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import cssutils
 
