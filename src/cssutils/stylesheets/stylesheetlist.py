@@ -5,8 +5,7 @@ __all__ = ['StyleSheetList']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 class StyleSheetList(list):
     """
@@ -27,7 +26,6 @@ class StyleSheetList(list):
     length = property(_getLength,
         doc="""The number of StyleSheets in the list. The range of valid
         child stylesheet indices is 0 to length-1 inclusive.""")
-
 
     def item(self, index):
         """
