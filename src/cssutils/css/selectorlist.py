@@ -17,13 +17,11 @@ __all__ = ['SelectorList']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssutils
 from selector import Selector
-
 
 class SelectorList(cssutils.util.Base, list):
     """
@@ -50,7 +48,6 @@ class SelectorList(cssutils.util.Base, list):
         if selectorText:
             self.selectorText = selectorText
         self._readonly = readonly
-
 
     def appendSelector(self, newSelector):
         """
@@ -80,13 +77,11 @@ class SelectorList(cssutils.util.Base, list):
 
         return newS
 
-
     def _getLength(self):
         return len(self)
 
     length = property(_getLength,
         doc="The number of Selector elements in the list.")
-
 
     def _getSelectorText(self):
         """ returns serialized format """
