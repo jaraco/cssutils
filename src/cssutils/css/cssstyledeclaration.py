@@ -48,11 +48,11 @@ TODO:
       background: no-repeat left url()  #fff
       -> background: #fff url() no-repeat left
 """
-__all__ = ['CSSStyleDeclaration']
+__all__ = ['CSSStyleDeclaration', 'SameNamePropertyList']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
 
@@ -623,6 +623,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     set(v)
 
     def __repr__(self):
+        return "cssutils.css.%s()" % (
+                self.__class__.__name__)
+        
+    def __str__(self):
         return "<cssutils.css.%s object length=%r at 0x%x>" % (
                 self.__class__.__name__, self.length, id(self))
 
@@ -663,6 +667,14 @@ class SameNamePropertyList(list):
                       if not p.priority]
             if normals:
                 return normals[-1]
+
+    def __repr__(self):
+        return "cssutils.css.%s(name=%r)" % (
+                self.__class__.__name__, self.name)
+        
+    def __str__(self):
+        return "<cssutils.css.%s object name=%r at 0x%x>" % (
+                self.__class__.__name__, self.name, id(self))
         
 
 if __name__ == '__main__':

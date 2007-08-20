@@ -23,7 +23,7 @@ __all__ = ['Selector']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b3 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
 
@@ -473,6 +473,14 @@ class Selector(cssutils.util.Base):
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="(DOM) The parsable textual representation of the selector.")
+
+    def __repr__(self):
+        return "cssutils.css.%s(selectorText=%r)" % (
+                self.__class__.__name__, self.selectorText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object selectorText=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, id(self))
 
 
 if __name__ == '__main__':

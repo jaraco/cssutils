@@ -254,6 +254,10 @@ class CSSValue(cssutils.util.Base):
         doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
 
     def __repr__(self):
+        return "cssutils.css.%s(%r)" % (
+                self.__class__.__name__, self.cssText)
+
+    def __str__(self):
         return "<cssutils.css.%s object cssValueType=%r cssText=%r propname=%r valid=%r at 0x%x>" % (
                 self.__class__.__name__, self.cssValueTypeString, 
                 self.cssText, self._propertyName, self.valid, id(self))
@@ -571,6 +575,10 @@ class CSSPrimitiveValue(CSSValue):
             return u'%r (UNKNOWN TYPE)' % type
             
     def __repr__(self):
+        return "cssutils.css.%s(%r)" % (
+                self.__class__.__name__, self.cssText)
+
+    def __str__(self):
         return "<cssutils.css.%s object primitiveType=%s cssText=%r _propertyName=%r valid=%r at 0x%x>" % (
                 self.__class__.__name__, self.primitiveTypeString, 
                 self.cssText, self._propertyName, self.valid, id(self))
@@ -649,5 +657,9 @@ class CSSValueList(CSSValue):
             yield self.item(i)
 
     def __repr__(self):
+        return "cssutils.css.%s(%r)" % (
+                self.__class__.__name__, self.cssText)
+
+    def __str_(self):
         return "<cssutils.css.%s object length=%s at 0x%x>" % (
                 self.__class__.__name__, self.length, id(self))

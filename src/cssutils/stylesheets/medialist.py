@@ -9,13 +9,11 @@ __all__ = ['MediaList']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
-from cssutils.css import csscomment
 import cssutils
-
+from cssutils.css import csscomment
 
 class MediaList(cssutils.util.Base, list):
     """
@@ -63,7 +61,6 @@ class MediaList(cssutils.util.Base, list):
             self.seq = []
         self._readonly = readonly
 
-
     def _getLength(self):
         """
         returns count of media in this list which is not the same as
@@ -74,7 +71,6 @@ class MediaList(cssutils.util.Base, list):
     length = property(_getLength,
         doc="(DOM readonly) The number of media in the list.")
 
-
     def _getSeq(self):
         return self._seq
 
@@ -83,7 +79,6 @@ class MediaList(cssutils.util.Base, list):
 
     seq = property(_getSeq, _setSeq,
         doc="All parts of this MediaList including CSSComments")
-
 
     def _getMediaText(self):
         """
@@ -152,7 +147,6 @@ class MediaList(cssutils.util.Base, list):
     mediaText = property(_getMediaText, _setMediaText,
         doc="""(DOM) The parsable textual representation of the media list.
             This is a comma-separated list of media.""")
-
 
     def appendMedium(self, newMedium):
         """
@@ -230,7 +224,6 @@ class MediaList(cssutils.util.Base, list):
             self.append(newMedium)
         return valid
 
-
     def deleteMedium(self, oldMedium):
         """
         (DOM)
@@ -252,7 +245,6 @@ class MediaList(cssutils.util.Base, list):
             raise xml.dom.NotFoundErr(
                 u'"%s" not in this MediaList' % oldMedium)
 
-
     def item(self, index):
         """
         (DOM)
@@ -264,7 +256,15 @@ class MediaList(cssutils.util.Base, list):
         except IndexError:
             return None
 
-
+    def __repr__(self):
+        return "cssutils.stylesheets.%s(mediaText=%r)" % (
+                self.__class__.__name__, self.mediaText)
+        
+    def __str__(self):
+        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
+                self.__class__.__name__, self.mediaText, id(self))
+        
+        
 if __name__ == '__main__':
     m = MediaList()
     m.mediaText = u'all; @x'

@@ -4,13 +4,11 @@ __all__ = ['CSSUnknownRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssrule
 import cssutils
-
 
 class CSSUnknownRule(cssrule.CSSRule):
     """
@@ -116,6 +114,10 @@ class CSSUnknownRule(cssrule.CSSRule):
         doc="(DOM) The parsable textual representation.")
     
     def __repr__(self):
+        return "cssutils.css.%s()" % (
+                self.__class__.__name__)
+        
+    def __str__(self):
         return "<cssutils.css.%s object at 0x%x>" % (
                 self.__class__.__name__, id(self))
 
