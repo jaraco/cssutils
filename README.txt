@@ -80,36 +80,40 @@ HEAD
         css.CSSValueList
             - the list is iterable so may be used in a for loop
             
-
         + CSSValue has an init Parameter ``_propertyname`` to set a context property for validation. If none is set the value is always invalid. **THIS MAY CHANGE!**
         + FEATURE: CSSValue has property ``cssValueTypeString`` which is the name of the relevant ``cssValueType``, e.g. "CSS_PRIMITIVE_TYPE". Mainly useful for debugging.
         + FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
     
     - FEATURE (**experimental**): added ``CSSStyleDeclaration.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style declaration.
-
+    - FEATURE: CSSMediaRule has an init parameter ``mediaText`` synchronous to CSSImportRule now
     - FEATURE: CSSRule and sub classes have a property ``typeString`` which is the name of the relevant ``type``, e.g. "STYLE_RULE". Mainly useful for debugging.
-
     - FEATURE: href and media arguments can now be passed to parse() and parseString() functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
     - FEATURE: The MediaList constructor can now be passed a list of media types.
-
     - API CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
     - API CHANGE: CSSValue default cssText is now ``u""`` and not ``u"inherit"`` anymore
-
-    - CHANGE: The Selector class is now available from cssutils.css too.
-    - CHANGE: Added __repr__ methods to most classes. The module is slightly bended as all classes are imported to cssutils.css but not defined there.
-    
-        - CSSStyleSheet (showing the title and href),
-        - CSSCharsetRule (showing the encoding).
-        - CSSImportRule (showing the href).
-        - CSSNameSpaceRule (showing the prefix and uri).
-        - CSSPageRule (showing the selectorText)
-        - CSSMediaRule (showing the media list)
-        - CSSStyleRule (showing the selector)
-        - CSSStyleDeclaration (showing the number of properties set)
-        - CSSValue (showing the value type and value)
-        - CSSPrimitiveValue (showing the primitive value type and value)
-        
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
+    - CHANGE: The Selector and SameNamePropertyList (which might be renamed as it is experimental) class are now available from cssutils.css too.
+    - CHANGE: Added __repr__ and __str__ methods to most classes. __str__ reports e.g. ``<cssutils.css.CSSImportRule object href=None at 0xaaa870>``, __repr__  e.g. ``cssutils.css.CSSImportRule(href=None, mediaText=u'all')`` which is a valid contructor  for the object in most cases (which might not be complete for all init parameter for all classes like in this case though). The following details are included:
+    
+      css
+        - CSSStyleSheet shows the title and href
+        - CSSCharsetRule shows the encoding
+        - CSSCharsetRule shows the cssText (not in __str__ though)
+        - CSSImportRule shows the href and the MediaList mediaText
+        - CSSMediaRule shows the MediaList mediaText
+        - CSSNameSpaceRule shows the prefix and uri
+        - CSSPageRule shows the selectorText
+        - CSSStyleRule shows the selectorText
+        - CSSUnknownRule shows nothing special
+        - CSSStyleDeclaration shows the number of properties set for __str__ but an empty CSSStyleDeclaration constructor for __repr__ as showing cssText might be way too much
+        - SameNamePropertyList shows the name
+        - CSSValue, CSSPrimitiveValue show the actual value for __repr__, some details for __str__
+        - CSSValueList shows an __repr__ which is **not** possible to ``eval()`` and some details for __str__
+        - _Property shows infos but should be used directly for now anyway!
+        - Selector the selectorText
+      
+      stylesheets
+        - MediaList shows the mediaText
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter D�rwald)
