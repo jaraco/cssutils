@@ -6,7 +6,7 @@ __all__ = ['CSSComment']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
 
@@ -86,5 +86,9 @@ class CSSComment(cssrule.CSSRule):
         doc=u"(cssutils) Textual representation of this comment")
 
     def __repr__(self):
+        return "cssutils.css.%s(cssText=%r)" % (
+                self.__class__.__name__, self.cssText)
+    
+    def __str__(self):
         return "<cssutils.css.%s object at 0x%x>" % (
                 self.__class__.__name__, id(self))

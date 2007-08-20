@@ -245,9 +245,12 @@ class CSSImportRule(cssrule.CSSRule):
         doc="(DOM attribute) The parsable textual representation.")
 
     def __repr__(self):
+        return "cssutils.css.%s(href=%r, mediaText=%r)" % (
+                self.__class__.__name__, self.href, self.media.mediaText)        
+
+    def __str__(self):
         return "<cssutils.css.%s object href=%r at 0x%x>" % (
                 self.__class__.__name__, self.href, id(self))
-        
 
 if __name__ == '__main__':
     c = CSSImportRule(href='"1.css"', mediaText='handheld, all, tv')

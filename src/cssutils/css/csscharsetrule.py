@@ -8,7 +8,7 @@ __all__ = ['CSSCharsetRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import codecs
 import re
@@ -160,6 +160,10 @@ class CSSCharsetRule(cssrule.CSSRule):
         doc="(DOM) The parsable textual representation.")
 
     def __repr__(self):
+        return "cssutils.css.%s(encoding=%r)" % (
+                self.__class__.__name__, self.encoding)
+        
+    def __str__(self):
         return "<cssutils.css.%s object encoding=%r at 0x%x>" % (
                 self.__class__.__name__, self.encoding, id(self))
 

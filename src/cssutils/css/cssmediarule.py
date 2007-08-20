@@ -39,14 +39,17 @@ class CSSMediaRule(cssrule.CSSRule):
     # CONSTANT
     type = cssrule.CSSRule.MEDIA_RULE
 
-    def __init__(self, readonly=False):
+    def __init__(self, mediaText='all', readonly=False):
         """
         constructor
         """
         super(CSSMediaRule, self).__init__()
 
         self.atkeyword = u'@media'
-        self._media = cssutils.stylesheets.MediaList()
+        self._media = cssutils.stylesheets.MediaList(
+            mediaText, readonly=readonly)
+        if not self.media.valid:
+            self._media = cssutils.stylesheets.MediaList()
         self._rules = cssutils.css.cssrulelist.CSSRuleList()
 
         self._readonly = readonly
@@ -280,8 +283,12 @@ class CSSMediaRule(cssrule.CSSRule):
         doc="(DOM attribute) The parsable textual representation.")
 
     def __repr__(self):
-        return "<cssutils.css.%s object media=%r at 0x%x>" % (
-                self.__class__.__name__, self.media, id(self))
+        return "cssutils.css.%s(mediaText=%r)" % (
+                self.__class__.__name__, self.media.mediaText)
+        
+    def __str__(self):
+        return "<cssutils.css.%s object mediaText=%r at 0x%x>" % (
+                self.__class__.__name__, self.media.mediaText, id(self))
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a5, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
 
@@ -243,8 +243,12 @@ class CSSNamespaceRule(cssrule.CSSRule):
         doc="(DOM attribute) The parsable textual representation.")
 
     def __repr__(self):
-        return "<cssutils.css.%s object prefix=%r uri=%r at 0x%x>" % (
-                self.__class__.__name__, self.prefix, self.uri, id(self))
+        return "cssutils.css.%s(uri=%r, prefix=%r)" % (
+                self.__class__.__name__, self.uri, self.prefix)
+    
+    def __str__(self):
+        return "<cssutils.css.%s object uri=%r prefix=%r at 0x%x>" % (
+                self.__class__.__name__, self.uri, self.prefix, id(self))
 
 if __name__ == '__main__':
     c = CSSNamespaceRule()
