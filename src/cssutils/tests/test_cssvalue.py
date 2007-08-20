@@ -97,13 +97,17 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.NoModificationAllowedErr, v._setCssText, u'x')
         self.assert_(u'inherit', v.cssText)
 
-    def test_repr(self):
-        "CSSValue.__repr__()"
-        v = cssutils.css.CSSValue(cssText='inherit')
-        self.assert_('CSS_INHERIT' in repr(v))
-        # no CSSValue but CSSPrimitiveValue now!
-        v.cssText='red'
-        self.assert_('primitiveType' in repr(v)) 
+    def test_reprANDstr(self):
+        "CSSValue.__repr__(), .__str__()"
+        cssText='inherit'
+        
+        s = cssutils.css.CSSValue(cssText=cssText)
+        
+        self.assert_(cssText in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(cssText == s2.cssText)
 
 
 class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
@@ -283,11 +287,18 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 #        v = cssutils.cssprimitivevalue.PrimitiveValue('rgb(1%, .5%, 10.1%)')
 #        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
 
-    def test_repr(self):
-        "CSSPrimitiveValue.__repr__()"
-        v = cssutils.css.CSSPrimitiveValue('111')
-        self.assert_('111' in repr(v))
-        self.assert_('CSS_NUMBER' in repr(v))
+    def test_reprANDstr(self):
+        "CSSPrimitiveValue.__repr__(), .__str__()"
+        v='111'
+        
+        s = cssutils.css.CSSPrimitiveValue(v)
+        
+        self.assert_(v in str(s))
+        self.assert_('CSS_NUMBER' in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(v == s2.cssText)
 
 
 class CSSValueListTestCase(basetest.BaseTestCase):
@@ -306,6 +317,20 @@ class CSSValueListTestCase(basetest.BaseTestCase):
         item.setStringValue(item.CSS_STRING, 'green')
         self.assertEqual('green blue', v._value)
         self.assertEqual('green blue', v.cssText)
+
+    def test_reprANDstr(self):
+        "CSSValueList.__repr__(), .__str__()"
+        v='1px 2px'
+        
+        s = cssutils.css.CSSValue(v)
+        self.assert_(isinstance(s, cssutils.css.CSSValueList))
+        
+        self.assert_(v in str(s))
+
+        # not "eval()"able!
+        #s2 = eval(repr(s))
+        
+
 
         
 if __name__ == '__main__':

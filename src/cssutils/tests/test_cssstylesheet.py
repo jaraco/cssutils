@@ -271,13 +271,21 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self._insertRule((self.ur,),
                          notbefore, notafter, anywhere)
 
-    def test_repr(self):
-        "CSSStyleSheet.__repr__()"
-        s = cssutils.css.CSSStyleSheet()
-        s.href = 'file:foo.css'
-        s.title = 'title-of-css'
-        self.assert_('title-of-css' in repr(s))
-        self.assert_('file:foo.css' in repr(s))
+    def test_reprANDstr(self):
+        "CSSStyleSheet.__repr__(), .__str__()"
+        href = 'file:foo.css'
+        title = 'title-of-css'
+        
+        s = cssutils.css.CSSStyleSheet(href=href, title=title)
+        
+        self.assert_(href in str(s))
+        self.assert_(title in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(href == s2.href)
+        self.assert_(title == s2.title)
+
 
 
 if __name__ == '__main__':

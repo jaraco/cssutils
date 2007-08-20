@@ -149,10 +149,17 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
     }'''
         self.assertEqual(exp, r.cssText)
 
-    def test_repr(self):
-        "CSSPageRule.__repr__()"
-        self.r.selectorText = ':left'
-        self.assert_(':left' in repr(self.r))
+    def test_reprANDstr(self):
+        "CSSPageRule.__repr__(), .__str__()"
+        sel=u':left'
+        
+        s = cssutils.css.CSSPageRule(selectorText=sel)
+        
+        self.assert_(sel in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(sel == s2.selectorText)
 
 
 if __name__ == '__main__':

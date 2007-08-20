@@ -368,11 +368,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(
             '''\n    left: 1px;\n    unknown: red\n    ''', s.cssText)
 
-    def test_repr(self):
-        "CSSStyleDeclaration.__repr__()"
-        s = cssutils.css.CSSStyleDeclaration(cssText=u'color: red; top: 0')
-        self.assert_('length=2' in repr(s))        
-
     def test_replaceUrls(self):
         cssutils.ser.prefs.keepAllProperties = True
 
@@ -391,6 +386,30 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
 
         cssutils.ser.prefs.keepAllProperties = False
 
+    def test_reprANDstr(self):
+        "CSSStyleDeclaration.__repr__(), .__str__()"        
+        s = cssutils.css.CSSStyleDeclaration(cssText='a:1;b:2')
+        
+        self.assert_("2" in str(s)) # length
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+
+
+class SameNamePropertyListTestCase(basetest.BaseTestCase):
+    
+    def test_reprANDstr(self):
+        "SameNamePropertyList.__repr__(), .__str__()"
+        name='test'
+        
+        s = cssutils.css.SameNamePropertyList(name=name)
+        
+        self.assert_(name in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(name == s2.name)
+        
 
 if __name__ == '__main__':
     import unittest

@@ -185,10 +185,20 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             })
         self.do_raise_r(tests) # set cssText
 
-    def test_repr(self):
-        "CSSImportRule.__repr__()"
-        self.r.href = 'x.css'
-        self.assert_('x.css' in repr(self.r))
+    def test_reprANDstr(self):
+        "CSSImportRule.__repr__(), .__str__()"
+        href='x.css'
+        mediaText='tv, print'
+        
+        s = cssutils.css.CSSImportRule(href=href, mediaText=mediaText)
+        
+        self.assert_(href in str(s))
+        # mediaText is not present in str(s)
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(href == s2.href)
+        self.assert_(mediaText == s2.media.mediaText)
         
 
 if __name__ == '__main__':

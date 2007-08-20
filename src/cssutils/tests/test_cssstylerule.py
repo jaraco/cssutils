@@ -112,11 +112,17 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         # check if parentRule of sd set
         self.assertEqual(self.r, d.parentRule)
 
-    def test_repr(self):
-        "CSSStyleRule.__repr__()"
-        r = cssutils.css.CSSStyleRule()
-        r.selectorText = u'div.this-is-a-test'
-        self.assert_('div.this-is-a-test' in repr(r))
+    def test_reprANDstr(self):
+        "CSSStyleRule.__repr__(), .__str__()"
+        sel=u'a>b+c'
+        
+        s = cssutils.css.CSSStyleRule(selectorText=sel)
+        
+        self.assert_(sel in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assert_(sel == s2.selectorText)
 
 
 if __name__ == '__main__':

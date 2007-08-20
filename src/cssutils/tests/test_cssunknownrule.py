@@ -85,6 +85,13 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 ##        self.assertRaises(xml.dom.SyntaxErr,
 ##                          self.r._setCssText, '@x ')
 
+    def test_reprANDstr(self):
+        "CSSUnknownRule.__repr__(), .__str__()"        
+        s = cssutils.css.CSSUnknownRule(cssText='@x;')
+        
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+
 
 if __name__ == '__main__':
     import unittest
