@@ -2,15 +2,11 @@
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a2, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import basetest
-
 import cssutils.css
-
 
 class CSSRuleTestCase(basetest.BaseTestCase):
     """
