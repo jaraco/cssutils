@@ -22,8 +22,8 @@ setup(
     test_suite='cssutils.tests',
     entry_points={
         'console_scripts': [
-            'cssparse = cssutils.scripts:parse',
-            'csscapture = csscapture:CSSCapture.capture'
+            'cssparse = cssutils.scripts.cssparse:main',
+            'csscapture = cssutils.scripts.csscapture:main'
         ]
     },
     description='A CSS Cascading Style Sheets library for Python',

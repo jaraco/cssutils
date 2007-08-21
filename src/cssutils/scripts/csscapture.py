@@ -341,8 +341,7 @@ class CSSCapture(object):
             self._log.info('(C) Saving "%s"', savefn)
 
 
-if __name__ == '__main__':
-
+def main(args=None):
     import optparse
 
     usage = "usage: %prog [options] URL"
@@ -383,3 +382,7 @@ if __name__ == '__main__':
     else:
         for i, s in enumerate(stylesheetlist):
             print i+1, '\tTitle: "%s", \n\thref: "%s"\n' % (s.title, s.href)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
