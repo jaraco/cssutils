@@ -3,16 +3,16 @@
 utility scripts installed as Python scripts
 """
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '0.9.2b3 $LastChangedRevision$'
+__author__ = '$LastChangedBy: doerwalter $'
+__date__ = '$LastChangedDate: 2007-08-07 12:33:59 +0200 (Di, 07 Aug 2007) $'
+__version__ = '0.9.2b3 $LastChangedRevision: 185 $'
 
 import cssutils
 import logging
 import optparse
 import sys
 
-def parse(args=None):
+def main(args=None):
     """
     Parses given filename(s) (using optional encoding) and prints the content
 
@@ -51,3 +51,7 @@ def parse(args=None):
         print sheet.cssText
         print
         sys.stderr.write('\n')
+
+
+if __name__ == "__main__":
+ 	sys.exit(main())
