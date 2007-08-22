@@ -92,6 +92,8 @@ HEAD
     - FEATURE: CSSRule and sub classes have a property ``typeString`` which is the name of the relevant ``type``, e.g. "STYLE_RULE". Mainly useful for debugging.
     - FEATURE: href and media arguments can now be passed to parse() and parseString() functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
     - FEATURE: The MediaList constructor can now be passed a list of media types.
+    - FEATURE: ``cssutils.serialize.Preferences`` has a new option ``lineEnd`` that is used as a linefeed character.
+    - CHANGE: ``cssutils.serialize.CSSSerializer`` has been refactored internally to support the lineEnd option.
     - API CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
     - API CHANGE: CSSValue default cssText is now ``u""`` and not ``u"inherit"`` anymore
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
