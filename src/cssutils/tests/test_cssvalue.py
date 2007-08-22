@@ -3,6 +3,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+# from decimal import Decimal # maybe for later tests?
 import xml.dom
 import basetest
 import cssutils
@@ -186,11 +187,59 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                 self.assert_(getattr(v, name) == v.primitiveType)
                 self.assert_(name == v.primitiveTypeString)
 
-#    def test_getFloat(self):
-#        v = cssutils.cssprimitivevalue.PrimitiveValue(u'1')
-#        self.assertRaises(xml.dom.InvalidAccessErr, v.getFloatValue,
-#            v.CSS_UNKNOWN)
-#
+    def test_getFloat(self):
+        "CSSPrimitiveValue.getFloatValue()"
+        # NOT TESTED are float values as it seems difficult to 
+        # compare these. Maybe use decimal.Decimal?
+        
+        v = cssutils.css.CSSPrimitiveValue(u'1px')
+        tests = {
+            '0': (v.CSS_NUMBER, 0),
+            '-1.1': (v.CSS_NUMBER, -1.1),
+            '1%': (v.CSS_PERCENTAGE, 1),
+            '-1%': (v.CSS_PERCENTAGE, -1),
+            '1em': (v.CSS_EMS, 1),
+            '-1.1em': (v.CSS_EMS, -1.1),
+            '1ex': (v.CSS_EXS, 1),
+            '1px': (v.CSS_PX, 1),
+
+            '1cm': (v.CSS_CM, 1),
+            '1cm': (v.CSS_MM, 10),
+            '254cm': (v.CSS_IN, 100),
+            '1mm': (v.CSS_MM, 1),
+            '10mm': (v.CSS_CM, 1),
+            '254mm': (v.CSS_IN, 10),
+            '1in': (v.CSS_IN, 1),
+            '100in': (v.CSS_CM, 254), # ROUNDED!!!
+            '10in': (v.CSS_MM, 254), # ROUNDED!!!
+            
+            '1pt': (v.CSS_PT, 1),
+            '1pc': (v.CSS_PC, 1),
+            
+            '1deg': (v.CSS_DEG, 1),
+            '1rad': (v.CSS_RAD, 1),
+            '1grad': (v.CSS_GRAD, 1),
+            
+            '1ms': (v.CSS_MS, 1),
+            '1000ms': (v.CSS_S, 1),
+            '1s': (v.CSS_S, 1),
+            '1s': (v.CSS_MS, 1000),
+            
+            '1hz': (v.CSS_HZ, 1),
+            '1000hz': (v.CSS_KHZ, 1),
+            '1khz': (v.CSS_KHZ, 1),
+            '1khz': (v.CSS_HZ, 1000),
+            
+            '1DIMENSION': (v.CSS_DIMENSION, 1)
+            }
+        for cssText in tests:
+            v.cssText = cssText
+            unitType, exp = tests[cssText]
+            val = v.getFloatValue(unitType)
+            if unitType in (v.CSS_IN, v.CSS_CM):
+                val = round(val)
+            self.assertEqual(val , exp)
+
 #    def test_setFloat(self):
 #        v = cssutils.cssprimitivevalue.PrimitiveValue(u'1')
 #        v.setFloatValue(v.CSS_MM, '8')
@@ -203,54 +252,92 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.InvalidAccessErr, 
                           v.getStringValue)
 
+        pv = cssutils.css.CSSPrimitiveValue
+        tests = {
+            pv.CSS_STRING: ("'red'", 'red'),
+            pv.CSS_STRING: ('"red"', 'red'),
+            pv.CSS_URI: ('url(http://example.com)', None),
+            pv.CSS_URI: ("url('http://example.com')", 
+                         u"'http://example.com'"),
+            pv.CSS_URI: ('url("http://example.com")', 
+                         u'"http://example.com"'),
+            pv.CSS_IDENT: ('red', None),
+            pv.CSS_ATTR: ('attr(att-name)', 
+                         u'att-name'), # the name of the attrr 
+            }
+        for t in tests:
+            val, exp = tests[t]
+            if not exp:
+                exp = val
+                
+            v = cssutils.css.CSSPrimitiveValue(val)
+            self.assert_(v.primitiveType == t)
+            self.assert_(v.getStringValue() == exp)
+
+
     def test_setString(self):
         "CSSPrimitiveValue.setStringValue()"
         # CSS_STRING
         v = cssutils.css.CSSPrimitiveValue(u'"a"')
+        self.assert_(v.CSS_STRING == v.primitiveType)
         v.setStringValue(v.CSS_STRING, 'b')
-        self.assert_('b' == v._value)
+        self.assert_('"b"' == v._value)
         self.assert_('b' == v.getStringValue())
-        # possible to coerce
-        v.setStringValue(v.CSS_IDENT, 'ident')
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_STRING to CSS_URI',  
+            v.setStringValue, *(v.CSS_URI, 'x'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_STRING to CSS_IDENT',  
+            v.setStringValue, *(v.CSS_IDENT, 'x'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_STRING to CSS_ATTR',  
+            v.setStringValue, *(v.CSS_ATTR, 'x'))
+        
+        # CSS_IDENT
+        v = cssutils.css.CSSPrimitiveValue('ident')
+        self.assert_(v.CSS_IDENT == v.primitiveType)
         self.assert_('ident' == v._value)
         self.assert_('ident' == v.getStringValue())
-        
-        v.setStringValue(v.CSS_ATTR, 'attr')
-        self.assert_('attr' == v._value)
-        self.assert_('attr' == v.getStringValue())
-
-        # cannot coerce CSS_URI
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
             u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_IDENT to CSS_URI',  
             v.setStringValue, *(v.CSS_URI, 'x'))
-
-
-        # CSS_URI
-        v = cssutils.css.CSSPrimitiveValue(u'url(xxx)')
-        v.setStringValue(v.CSS_URI, 'x')
-        self.assert_('url(x)' == v._value)
-        self.assert_('x' == v.getStringValue())
-        v.setStringValue(v.CSS_URI, '"x"')
-        self.assert_('url("x")' == v._value)
-        self.assert_('"x"' == v.getStringValue())
-        v.setStringValue(v.CSS_URI, "'y'")
-        self.assert_("url('y')" == v._value)
-        self.assert_("'y'" == v.getStringValue())
-
-        # the following are coerced to CSS_URI!
-        v.setStringValue(v.CSS_STRING, 'str')
-        self.assert_('url(str)' == v._value)
-        self.assert_('str' == v.getStringValue())
-
-        v.setStringValue(v.CSS_IDENT, 'ident')
-        self.assert_('url(ident)' == v._value)
-        self.assert_('ident' == v.getStringValue())
-
-        v.setStringValue(v.CSS_ATTR, 'attr')
-        self.assert_('url(attr)' == v._value)
-        self.assert_('attr' == v.getStringValue())
-
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_IDENT to CSS_STRING',  
+            v.setStringValue, *(v.CSS_STRING, '"x"'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_IDENT to CSS_ATTR',  
+            v.setStringValue, *(v.CSS_ATTR, 'x'))
         
+        # CSS_URI
+        v = cssutils.css.CSSPrimitiveValue('url(a)')
+        self.assert_(v.CSS_URI == v.primitiveType)
+        self.assert_('url(a)' == v._value)
+        self.assert_('a' == v.getStringValue())
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_URI to CSS_IDENT',  
+            v.setStringValue, *(v.CSS_IDENT, 'x'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_URI to CSS_STRING',  
+            v.setStringValue, *(v.CSS_STRING, '"x"'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_URI to CSS_ATTR',  
+            v.setStringValue, *(v.CSS_ATTR, 'x'))
+        
+        # CSS_ATTR
+        v = cssutils.css.CSSPrimitiveValue('attr(a)')
+        self.assert_(v.CSS_ATTR == v.primitiveType)
+        self.assert_('attr(a)' == v._value)
+        self.assert_('a' == v.getStringValue())
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_ATTR to CSS_IDENT',  
+            v.setStringValue, *(v.CSS_IDENT, 'x'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_ATTR to CSS_STRING',  
+            v.setStringValue, *(v.CSS_STRING, '"x"'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_ATTR to CSS_URI',  
+            v.setStringValue, *(v.CSS_URI, 'x'))
+
         # TypeError as 'x' is no valid type
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
             u"CSSPrimitiveValue: stringType 'x' (UNKNOWN TYPE) is not a string type",                  
@@ -263,8 +350,6 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assertRaisesMsg(xml.dom.InvalidAccessErr, 
             u"CSSPrimitiveValue: stringType CSS_PX is not a string type",                  
             v.setStringValue, *(v.CSS_PX, 'brown'))
-
-
 
 #
 #    def test_typeRGBColor(self):
@@ -314,7 +399,7 @@ class CSSValueListTestCase(basetest.BaseTestCase):
         self.assert_(2 == v.length)
         
         item = v.item(0)
-        item.setStringValue(item.CSS_STRING, 'green')
+        item.setStringValue(item.CSS_IDENT, 'green')
         self.assertEqual('green blue', v._value)
         self.assertEqual('green blue', v.cssText)
 
@@ -331,8 +416,6 @@ class CSSValueListTestCase(basetest.BaseTestCase):
         #s2 = eval(repr(s))
         
 
-
-        
 if __name__ == '__main__':
     import unittest
     unittest.main()
