@@ -30,6 +30,8 @@ class Preferences(object):
         Uses hreftype if ``None`` or explicit 'string' or 'uri'
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
+    lineEnd = '\n'
+        How to end a line
     keepAllProperties = False
         If ``True`` all properties set in the original CSSStylesheet
         are kept meaning even properties set twice with the exact same
@@ -45,13 +47,14 @@ class Preferences(object):
     setBOM = False
         NOT USED YET
     """
-    def __init__(self, indent=u'    '):
+    def __init__(self, indent=u'    ', lineEnd='\n'):
         """
         Always use named instead of positional parameters!
         """
         self.defaultAtKeyword = True
         self.defaultPropertyName = True
         self.indent = indent
+        self.lineEnd = lineEnd
         self.importHrefFormat = None
         self.keepAllProperties = False
         self.keepComments = True
@@ -77,6 +80,7 @@ class CSSSerializer(object):
             prefs = Preferences()
         self.prefs = prefs
         self.ttypes = cssutils.token.Token
+        self._level = 0 # current nesting level
 
         self._map = {
             cssutils.css.cssrule.CSSRule.COMMENT:
@@ -199,7 +203,7 @@ class CSSSerializer(object):
             cssText = self._map.get(rule.type, self._do_unknown)(rule)
             if cssText:
                 out.append(cssText)
-        return self._serialize(u'\n'.join(out))
+        return self._serialize(u''.join(out))
 
 
     def do_CSSComment(self, rule):
@@ -207,7 +211,7 @@ class CSSSerializer(object):
         serializes CSSComment which consists only of commentText
         """
         if self.prefs.keepComments and rule._cssText:
-            return rule._cssText
+            return "%s%s%s" % (self._level*self.prefs.indent, rule._cssText, self.prefs.lineEnd)
         else:
             return u''
 
@@ -222,7 +226,7 @@ class CSSSerializer(object):
         """
         if not rule.encoding or self._noinvalids(rule):
             return u''
-        return u'@charset "%s";' % self._escapestring(rule.encoding)
+        return u'@charset "%s";%s' % (self._escapestring(rule.encoding), self.prefs.lineEnd)
 
 
     def do_CSSImportRule(self, rule):
@@ -257,8 +261,7 @@ class CSSSerializer(object):
                     out.append(u' %s' % mediaText)
             elif hasattr(part, 'cssText'): # comments
                 out.append(part.cssText)
-        out.append(';')
-        return u''.join(out)
+        return u'%s%s;%s' % (self._level*self.prefs.indent, u''.join(out), self.prefs.lineEnd)
 
 
     def do_CSSNamespaceRule(self, rule):
@@ -283,8 +286,7 @@ class CSSSerializer(object):
                 out.append(' "%s"' % self._escapestring(part))
             elif hasattr(part, 'cssText'): # comments
                 out.append(part.cssText)
-        out.append(';')
-        return u''.join(out)
+        return u'%s%s;%s' % (self._level*self.prefs.indent, u''.join(out), self.prefs.lineEnd)
 
 
     def do_CSSMediaRule(self, rule):
@@ -296,16 +298,17 @@ class CSSSerializer(object):
         if not rule.cssRules or self._noinvalids(rule.media):
             return u''
         mediaText = self.do_stylesheets_medialist(rule.media).strip()
-        out = [u'%s %s {\n' % (
-            self._getatkeyword(rule, u'@media'), mediaText)]
-        for r in rule.cssRules:
-            rtext = r.cssText
-            if rtext:
-                rtext = '\n'.join(
-                    [u'%s%s' % (self.prefs.indent, line)
-                         for line in rtext.split('\n')])
-                out.append(rtext + u'\n')
-        out.append('%s}' % self.prefs.indent)
+        out = [u'%s%s %s {%s' % (self._level*self.prefs.indent,
+            self._getatkeyword(rule, u'@media'), mediaText, self.prefs.lineEnd)]
+        self._level += 1
+        try:
+            for r in rule.cssRules:
+                rtext = r.cssText
+                if rtext:
+                    out.append(rtext)
+        finally:
+            self._level -= 1
+        out.append('%s}%s' % (self._level*self.prefs.indent, self.prefs.lineEnd))
         return u''.join(out)
 
 
@@ -320,15 +323,24 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        styleText = self.do_css_CSSStyleDeclaration(rule.style)
+        self._level += 1
+        try:
+            styleText = self.do_css_CSSStyleDeclaration(rule.style)
+        finally:
+            self._level -= 1
+
         if not styleText or self._noinvalids(rule):
             return u''
 
-        sel = self.do_pageselector(rule.seq)
-        return u'%s%s {%s}' % (
+        return u'%s%s%s {%s%s%s}%s' % (
+            self._level*self.prefs.indent,
             self._getatkeyword(rule, u'@page'),
-            sel,
-            self.do_css_CSSStyleDeclaration(rule.style))
+            self.do_pageselector(rule.seq),
+            self.prefs.lineEnd,
+            styleText,
+            self._level*self.prefs.indent,
+            self.prefs.lineEnd,
+        )
 
 
     def do_pageselector(self, seq):
@@ -380,11 +392,15 @@ class CSSSerializer(object):
         selectorText = self.do_css_SelectorList(rule.selectorList)
         if not selectorText or self._noinvalids(rule):
             return u''
-        styleText = self.do_css_CSSStyleDeclaration(rule.style)
+        self._level += 1
+        try:
+            styleText = self.do_css_CSSStyleDeclaration(rule.style)
+        finally:
+            self._level -= 1
         if not styleText:
             styleText = u''
 
-        return u'%s {%s}' % (selectorText, styleText)
+        return u'%s%s {%s%s%s}%s' % (self._level*self.prefs.indent, selectorText, self.prefs.lineEnd, styleText, self._level*self.prefs.indent, self.prefs.lineEnd)
 
 
     def do_css_SelectorList(self, selectorlist):
@@ -435,21 +451,13 @@ class CSSSerializer(object):
         if len(style.seq) == 0 or self._noinvalids(style):
             return u''
         else:
-            out = ['\n']
-            done1 = False # if no content empty done1
-            lastwasprop = False
-            for part in style.seq:
+            out = []
+            for (i, part) in enumerate(style.seq):
                 # CSSComment
                 if isinstance(part,
                   cssutils.css.csscomment.CSSComment):
                     if self.prefs.keepComments:
-                        done1 = True
-                        if lastwasprop:
-                            out.append(u';\n')
-                        out.append(self.prefs.indent)
-                        out.append(part.cssText)
-                        out.append(u'\n')
-                        lastwasprop = False
+                        out.append(self.do_CSSComment(part))
 
                 # PropertySimilarNameList
                 elif isinstance(part,
@@ -457,45 +465,25 @@ class CSSSerializer(object):
                     # only last valid Property
                     if not self.prefs.keepAllProperties:
                         _index = part._currentIndex()
-                        propertytext = self.do_css_Property(part[_index])
+                        out.append(
+                            self.do_css_Property(part[_index],
+                                                 self.prefs.omitLastSemicolon and
+                                                 i==len(style.seq)-1))
                     else:
                         # or all Properties
-                        o = []
-                        for p in part:
-                            pt = self.do_css_Property(p)
-                            if pt:
-                                o.append(pt)
-                                o.append(u';\n')
-                                o.append(self.prefs.indent)
-                        propertytext = u''.join(o[:-2]) # omit last \n and indent
-
-                    if propertytext:
-                        done1 = True
-                        if lastwasprop:
-                            out.append(u';\n')
-                        out.append(self.prefs.indent)
-                        out.append(propertytext)
-                        lastwasprop = True
-
+                        for (j, p) in enumerate(part):
+                            out.append(
+                                self.do_css_Property(p,
+                                                     self.prefs.omitLastSemicolon and
+                                                     i==len(style.seq)-1 and
+                                                     j==len(part)-1))
                 # other?
                 else:
-                    done1 = True
-                    if lastwasprop:
-                        out.append(u';\n')
                     out.append(part)
-                    lastwasprop = False
-            if not done1:
-                return u''
-            if lastwasprop:
-                if self.prefs.omitLastSemicolon:
-                    out.append(u'\n')
-                else:
-                    out.append(u';\n')
-            out.append(self.prefs.indent)
             return u''.join(out)
 
 
-    def do_css_Property(self, property):
+    def do_css_Property(self, property, omitSemicolon=False):
         """
         Style declaration of CSSStyleRule
 
@@ -528,8 +516,7 @@ class CSSSerializer(object):
                     out.append(part.cssText)
                 else:
                     out.append(part)
-
-            return u''.join(out)
+        return u'%s%s%s%s' % (self._level*self.prefs.indent, u''.join(out), (";", "")[bool(omitSemicolon)], self.prefs.lineEnd)
 
 
     def do_css_CSSvalue(self, cssvalue):
