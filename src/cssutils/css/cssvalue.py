@@ -89,8 +89,18 @@ class CSSValue(cssutils.util.Base):
         self._readonly = readonly
 
     def _getValue(self):
-        return u''.join([x for x in self.seq if not isinstance(
-                               x, cssutils.css.CSSComment)]).strip()
+        v = []
+        for x in self.seq:
+            if isinstance(x, cssutils.css.CSSComment):
+                continue
+            elif type(x) in types.StringTypes:
+                v.append(x)
+            else: # maybe CSSPrimitiveValue
+                v.append(x.cssText)
+        return u''.join(v).strip()
+        
+#        return u''.join([x for x in self.seq if not isinstance(
+#                               x, cssutils.css.CSSComment)]).strip()
 
     def _setValue(self, value):
         "overwritten by CSSValueList!"
@@ -155,9 +165,9 @@ class CSSValue(cssutils.util.Base):
             return False
         
         self._checkReadonly()
-
         tokens = self._tokenize(cssText)
-        msg = invalidToken(tokens, 'value') 
+        msg = invalidToken(tokens, 'value')
+        
         if msg:
             self._log.error(
                 u'CSSValue: Unknown value syntax: "%s". (%s)' % (
@@ -189,10 +199,10 @@ class CSSValue(cssutils.util.Base):
                     _func.append(_t.value)
                 newseq.append(u''.join(_func))
                 i += endi #-1
-                numvalues += True
+                numvalues += 1
             else:
                 newseq.append(t.value)
-                numvalues += True
+                numvalues += 1
 
             i += 1
 
@@ -254,8 +264,8 @@ class CSSValue(cssutils.util.Base):
         doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
 
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (
-                self.__class__.__name__, self.cssText)
+        return "cssutils.css.%s(%r, _propertyName=%r)" % (
+                self.__class__.__name__, self.cssText, self._propertyName)
 
     def __str__(self):
         return "<cssutils.css.%s object cssValueType=%r cssText=%r propname=%r valid=%r at 0x%x>" % (
@@ -279,10 +289,10 @@ class CSSPrimitiveValue(CSSValue):
     is relative to the range 0-255, a color percentage value can be
     converted to a number; (see also the RGBColor interface).
     """
-    """
-    Unit Types
-    An integer indicating which type of unit applies to the value.
-    """
+    # constant: type of this CSSValue class
+    cssValueType = CSSValue.CSS_PRIMITIVE_VALUE
+    
+    # An integer indicating which type of unit applies to the value.
     CSS_UNKNOWN = 0 # only obtainable via cssText
     CSS_NUMBER = 1
     CSS_PERCENTAGE = 2
@@ -311,6 +321,16 @@ class CSSPrimitiveValue(CSSValue):
     CSS_RGBCOLOR = 25
     # NOT OFFICIAL:
     CSS_RGBACOLOR = 26
+
+    _floattypes = [CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS,
+                   CSS_PX, CSS_CM, CSS_MM, CSS_IN, CSS_PT, CSS_PC,
+                   CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS, CSS_S,
+                   CSS_HZ, CSS_KHZ, CSS_DIMENSION
+                   ]
+    _stringtypes = [CSS_ATTR, CSS_IDENT, CSS_STRING, CSS_URI]
+    _countertypes = [CSS_COUNTER]
+    _recttypes = [CSS_RECT]
+    _rbgtypes = [CSS_RGBCOLOR, CSS_RGBACOLOR]
 
     #(String representation for unit types, token type of unit type, detail)
     # used to detect primitiveType and for __repr__
@@ -344,24 +364,9 @@ class CSSPrimitiveValue(CSSValue):
         ('CSS_RGBACOLOR', Token.FUNCTION, 'rgba('),
         ]
 
-    _floattypes = [CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS,
-                   CSS_PX, CSS_CM, CSS_MM, CSS_IN, CSS_PT, CSS_PC,
-                   CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS, CSS_S,
-                   CSS_HZ, CSS_KHZ, CSS_DIMENSION
-                   ]
-    _stringtypes = [CSS_ATTR, CSS_IDENT, CSS_STRING, CSS_URI]
-    _countertypes = [CSS_COUNTER]
-    _recttypes = [CSS_RECT]
-    _rbgtypes = [CSS_RGBCOLOR, CSS_RGBACOLOR]
+    _reNumDim = re.compile(ur'^(.*?)([a-z]+|%)$', re.I| re.U|re.X)
 
-    # type of this value
-    cssValueType = CSSValue.CSS_PRIMITIVE_VALUE
-
-    def __init__(self, cssText=u'', readonly=False):
-        "CSSValue decides if a primitive value at all"
-        super(CSSPrimitiveValue, self).__init__(cssText, readonly)
-
-    def __setPrimitiveType(self):
+    def __set_primitiveType(self):
         """
         primitiveType is readonly but is set lazy if accessed 
         no value is given as self._value is used
@@ -402,7 +407,7 @@ class CSSPrimitiveValue(CSSValue):
     
     def _getPrimitiveType(self):
         if not hasattr(self, '_primitivetype'):
-            self.__setPrimitiveType() 
+            self.__set_primitiveType() 
         return self._primitiveType
 
     primitiveType = property(_getPrimitiveType,
@@ -414,19 +419,45 @@ class CSSPrimitiveValue(CSSValue):
     primitiveTypeString = property(_getPrimitiveTypeString,
                                    doc="Name of primitive type of this value.")
 
-    def getCounterValue(self):
-        """
-        (DOM method) This method is used to get the Counter value. If
-        this CSS value doesn't contain a counter value, a DOMException
-        is raised. Modification to the corresponding style property
-        can be achieved using the Counter interface.
-        """
-        raise NotImplementedError()
+    def _getCSSPrimitiveTypeString(self, type):
+        "get TypeString by given type which may be unknown, used by setters"
+        try: 
+            return CSSPrimitiveValue._unitinfos[type][0]
+        except (IndexError, TypeError):
+            return u'%r (UNKNOWN TYPE)' % type
 
-#        if not self.CSS_COUNTER == self.primitiveType:
-#            raise xml.dom.InvalidAccessErr(u'Value is not a counter type')
-#        # TODO: use Counter class    
-#        return self._value
+    # oldtype: newType: converterfunc
+    _converter = {
+        # cm <-> mm <-> in
+        (CSS_CM, CSS_MM): lambda x: x * 10,
+        (CSS_CM, CSS_IN): lambda x: x * 0.393700787,
+        (CSS_MM, CSS_CM): lambda x: x * 0.1,
+        (CSS_MM, CSS_IN): lambda x: x * 0.0393700787,
+        (CSS_IN, CSS_CM): lambda x: x * 2.54,
+        (CSS_IN, CSS_MM): lambda x: x * 25.4,
+        # hz <-> khz
+        (CSS_KHZ, CSS_HZ): lambda x: x * 1000,
+        (CSS_HZ, CSS_KHZ): lambda x: x * 0.001,
+        # s <-> ms
+        (CSS_S, CSS_MS): lambda x: x * 1000,
+        (CSS_MS, CSS_S): lambda x: x * 0.001
+        # TODO: convert deg <-> rad <-> grad
+    }        
+
+    def __getValDim(self):
+        "splits self._value in numerical and dimension part"
+        try:
+            val, dim = self._reNumDim.findall(self._value)[0]
+        except IndexError:
+            val, dim = self._value, None
+        try:
+            val = float(val)
+        except ValueError:
+            raise xml.dom.InvalidAccessErr(
+                u'CSSPrimitiveValue: No float value %s' 
+                % (self._value))
+
+        return val, dim
 
     def getFloatValue(self, unitType):
         """
@@ -440,42 +471,28 @@ class CSSPrimitiveValue(CSSValue):
             (i.e. CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS, CSS_PX, CSS_CM,
             CSS_MM, CSS_IN, CSS_PT, CSS_PC, CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS,
             CSS_S, CSS_HZ, CSS_KHZ, CSS_DIMENSION).
-        """
-        raise NotImplementedError()
+            
+        returns not necessarily a float but some cases just an int
+        e.g. if the value is ``1px`` it return ``1`` and **not** ``1.0``
         
-#        if unitType not in self._floattypes:
-#            raise xml.dom.InvalidAccessErr(
-#                u'unitType Parameter is not a float type')
-#        return self._value
-
-    def getRGBColorValue(self):
+        conversions might return strange values like 1.000000000001
         """
-        (DOM method) This method is used to get the RGB color. If this
-        CSS value doesn't contain a RGB color value, a DOMException
-        is raised. Modification to the corresponding style property
-        can be achieved using the RGBColor interface.
-        """
-        raise NotImplementedError()
+        if unitType not in self._floattypes:
+            raise xml.dom.InvalidAccessErr(
+                u'unitType Parameter is not a float type')            
+        
+        val, dim = self.__getValDim()
+        
+        if self.primitiveType != unitType: 
+            try:
+                val = self._converter[self.primitiveType, unitType](val) 
+            except KeyError:
+                raise xml.dom.InvalidAccessErr(
+                u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s' 
+                % (self.primitiveTypeString, 
+                   self._getCSSPrimitiveTypeString(unitType)))
 
-#        # TODO: what about coercing #000 to RGBColor?
-#        if self.primitiveType not in self._rbgtypes:
-#            raise xml.dom.InvalidAccessErr(u'Value is not a RGB value')
-#        # TODO: use RGBColor class
-#        return self._value
-
-    def getRectValue(self):
-        """
-        (DOM method) This method is used to get the Rect value. If this CSS
-        value doesn't contain a rect value, a DOMException is raised.
-        Modification to the corresponding style property can be achieved
-        using the Rect interface.
-        """
-        raise NotImplementedError()
-
-#        if self.primitiveType not in self._recttypes:
-#            raise xml.dom.InvalidAccessErr(u'value is not a Rect value')
-#        # TODO: use Rect class
-#        return self._value
+        return val 
 
     def setFloatValue(self, unitType, floatValue):
         """
@@ -488,20 +505,37 @@ class CSSPrimitiveValue(CSSValue):
             a unit code as defined above. The unit code can only be a float
             unit type
         floatValue
-            the new float value
+            the new float value which does not have to be a float value but 
+            may simple be an int e.g. if setting:: 
+            
+                setFloatValue(CSS_PX, 1)
 
         raises DOMException
             - INVALID_ACCESS_ERR: Raised if the attached property doesn't
                 support the float value or the unit type.
             - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
-        """
+        """        
+        self._checkReadonly()
+        if unitType not in self._floattypes:
+            raise xml.dom.InvalidAccessErr(u'value is not a float type')
+        
         raise NotImplementedError()
         
-#        self._checkReadonly()
-#        if unitType not in self._floattypes:
-#            raise xml.dom.InvalidAccessErr(u'value is not a float type')
-#        self._primitiveType = unitType
-#        self._value = floatValue
+#        oldval, dim = self.__getValDim()
+#        
+#        if self.primitiveType != unittype:
+#            try:
+#                floatValue = self._converter[
+#                                self.primitiveType][unitType](floatValue) 
+#            except KeyError:
+#                raise xml.dom.InvalidAccessErr(
+#                u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s' 
+#                % (self.primitiveTypeString, 
+#                   self._getCSSPrimitiveTypeString(unitType)))
+#                
+
+        # check if possible depending on dim
+        self._value = floatValue
 
     def getStringValue(self):
         """
@@ -510,14 +544,21 @@ class CSSPrimitiveValue(CSSValue):
 
         Some properties (like 'font-family' or 'voice-family')
         convert a whitespace separated list of idents to a string.
+        
+        Only the actual value is returned so e.g. all the following return the 
+        actual value ``a``: url(a), attr(a), "a", 'a'
         """
         if self.primitiveType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(
                 u'CSSPrimitiveValue %s is not a string type' 
                 % self.primitiveTypeString)
 
-        if CSSPrimitiveValue.CSS_URI == self.primitiveType:
+        if CSSPrimitiveValue.CSS_STRING == self.primitiveType:
+            return self._value[1:-1]
+        elif CSSPrimitiveValue.CSS_URI == self.primitiveType:
             return self._value[4:-1]
+        elif CSSPrimitiveValue.CSS_ATTR == self.primitiveType:
+            return self._value[5:-1]
         else:
             return self._value
 
@@ -534,6 +575,10 @@ class CSSPrimitiveValue(CSSValue):
             CSS_ATTR).
         stringValue
             the new string value
+            Only the actual value is expected so for (CSS_URI, "a") the 
+            new value will be ``url(a)``. For (CSS_STRING, "'a'")
+            the new value will be ``"\\'a\\'"`` as the surrounding ``'`` are
+            not part of the string value
 
         raises
             DOMException
@@ -543,41 +588,70 @@ class CSSPrimitiveValue(CSSValue):
             - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
         """
         self._checkReadonly()
+        # self not stringType
         if self.primitiveType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(
                 u'CSSPrimitiveValue %s is not a string type' 
                 % self.primitiveTypeString)
-            return 
+        # given stringType is no StringType
         if stringType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(
                 u'CSSPrimitiveValue: stringType %s is not a string type' 
                 % self._getCSSPrimitiveTypeString(stringType))
-            return 
 
-        if CSSPrimitiveValue.CSS_URI == stringType and\
-           CSSPrimitiveValue.CSS_URI != self._primitiveType:
+        if self._primitiveType != stringType:
             raise xml.dom.InvalidAccessErr(
                 u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s' 
                 % (self.primitiveTypeString, 
                    self._getCSSPrimitiveTypeString(stringType)))
-            return 
 
-        if CSSPrimitiveValue.CSS_URI == self._primitiveType:
-            self.cssText = 'url(%s)' % stringValue
+        if CSSPrimitiveValue.CSS_STRING == self._primitiveType:
+            self.cssText = u'"%s"' % stringValue.replace(u'"', ur'\\"')
+        elif CSSPrimitiveValue.CSS_URI == self._primitiveType:
+            self.cssText = u'url(%s)' % stringValue
+        elif CSSPrimitiveValue.CSS_ATTR == self._primitiveType:
+            self.cssText = u'attr(%s)' % stringValue
         else:
             self.cssText = stringValue
         self._primitiveType = stringType
 
-    def _getCSSPrimitiveTypeString(self, type):
-        try: 
-            return CSSPrimitiveValue._unitinfos[type][0]
-        except (IndexError, TypeError):
-            return u'%r (UNKNOWN TYPE)' % type
-            
-    def __repr__(self):
-        return "cssutils.css.%s(%r)" % (
-                self.__class__.__name__, self.cssText)
+    def getCounterValue(self):
+        """
+        (DOM method) This method is used to get the Counter value. If
+        this CSS value doesn't contain a counter value, a DOMException
+        is raised. Modification to the corresponding style property
+        can be achieved using the Counter interface.
+        """
+        if not self.CSS_COUNTER == self.primitiveType:
+            raise xml.dom.InvalidAccessErr(u'Value is not a counter type')
+        # TODO: use Counter class    
+        raise NotImplementedError()
 
+    def getRGBColorValue(self):
+        """
+        (DOM method) This method is used to get the RGB color. If this
+        CSS value doesn't contain a RGB color value, a DOMException
+        is raised. Modification to the corresponding style property
+        can be achieved using the RGBColor interface.
+        """
+        # TODO: what about coercing #000 to RGBColor?
+        if self.primitiveType not in self._rbgtypes:
+            raise xml.dom.InvalidAccessErr(u'Value is not a RGB value')
+        # TODO: use RGBColor class
+        raise NotImplementedError()
+
+    def getRectValue(self):
+        """
+        (DOM method) This method is used to get the Rect value. If this CSS
+        value doesn't contain a rect value, a DOMException is raised.
+        Modification to the corresponding style property can be achieved
+        using the Rect interface.
+        """
+        if self.primitiveType not in self._recttypes:
+            raise xml.dom.InvalidAccessErr(u'value is not a Rect value')
+        # TODO: use Rect class
+        raise NotImplementedError()
+            
     def __str__(self):
         return "<cssutils.css.%s object primitiveType=%s cssText=%r _propertyName=%r valid=%r at 0x%x>" % (
                 self.__class__.__name__, self.primitiveTypeString, 
@@ -599,36 +673,28 @@ class CSSValueList(CSSValue):
     cssValueType = CSSValue.CSS_VALUE_LIST
     __ws = re.compile(ur'^\s*$')
     
+    def __init__(self, cssText=None, readonly=False, _propertyName=None):
+        """
+        inits a new CSSValueList
+        """
+        super(CSSValueList, self).__init__(cssText=cssText, 
+                                       readonly=readonly,
+                                       _propertyName=_propertyName)
+        self._init()
+    
     def _init(self):
         "called by CSSValue if newly identified as CSSValueList"
         self._items = []
         newseq = []
         for v in self.seq: 
             if type(v) in types.StringTypes and not self.__ws.match(v):
-                o = CSSValue(cssText=v)
+                o = CSSValue(cssText=v, _propertyName=self._propertyName)
                 self._items.append(o)
                 newseq.append(o)
             else:
                 newseq.append(v)
         self.seq = newseq
-
-    def _getValue(self):
-        "value need to be calculated as it is list of individual items!"
-        self._valueValue = u''
-        for item in self:
-            itemvalue = u''.join([x for x in item.seq 
-                if not isinstance(x, cssutils.css.CSSComment)]).strip()
-            if itemvalue:
-                self._valueValue += ' %s' % itemvalue
-        return self._valueValue.strip()
    
-    def _setValue(self, value):
-        "overwritten from CSSValue!"
-        self._valueValue = value
-
-    _value = property(_getValue, _setValue,
-                doc="Actual cssText value of this CSSValue.")
-    
     def _getLength(self):
         return len(self._items)
 
@@ -655,10 +721,6 @@ class CSSValueList(CSSValue):
         "the iterator"
         for i in range (0, self.length):
             yield self.item(i)
-
-    def __repr__(self):
-        return "cssutils.css.%s(%r)" % (
-                self.__class__.__name__, self.cssText)
 
     def __str_(self):
         return "<cssutils.css.%s object length=%s at 0x%x>" % (
