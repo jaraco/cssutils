@@ -15,8 +15,8 @@ the user agent will treat this as if the style sheet had been::
 
     H1 { color: red }
 
-Cssutils gives a warning about an unknown CSS2 Property "rotation" but
-keeps any property.
+Cssutils gives a WARNING about an unknown CSS2 Property "rotation" but
+keeps any property (if syntactical correct).
 
 Illegal values
 --------------
@@ -35,7 +35,7 @@ style sheet had been::
     IMG { }
     IMG { }
 
-Cssutils again will issue warning about invalid CSS2 property values.
+Cssutils again will issue WARNING about invalid CSS2 property values.
 
 TODO:
     This interface is also used to provide a read-only access to the
@@ -59,7 +59,6 @@ import xml.dom
 import cssutils
 from cssproperties import CSS2Properties
 from property import _Property as Property
-
 
 class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
     """
@@ -327,6 +326,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         doc="(DOM) The parsable textual representation of the declaration\
         block excluding the surrounding curly braces.")
 
+    def getCssText(self, separator=None):
+        """
+        returns serialized property cssText, each property separated by
+        given ``separator`` which may e.g. be u'' to be able to use
+        cssText directly in an HTML style attribute. ";" is always part of 
+        each property (except the last one) and is **not** settable with 
+        separator!
+        """
+        return cssutils.ser.do_css_CSSStyleDeclaration(self, separator)
 
     def _getLength(self):
         return len([x for x in self.seq if isinstance(x, SameNamePropertyList)])
@@ -335,7 +343,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         doc="(DOM) the number of properties that have been explicitly set\
         in this declaration block. The range of valid indices is 0 to\
         length-1 inclusive.")
-
 
     def _getParentRule(self):
         return self._parentRule
@@ -346,7 +353,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
     parentRule = property(_getParentRule, _setParentRule,
         doc="(DOM) The CSS rule that contains this declaration block or\
         None if this CSSStyleDeclaration is not attached to a CSSRule.")
-
 
     def getPropertyCSSValue(self, name):
         """
@@ -397,7 +403,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                pl.name == normalname:
                 return pl[pl._currentIndex()].cssValue
 
-
     def getPropertyValue(self, name):
         """
         (DOM)
@@ -422,7 +427,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 return pl[pl._currentIndex()].cssValue._value
         return u''
 
-
     def getPropertyPriority(self, name):
         """
         (DOM)
@@ -446,7 +450,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                pl.name == normalname:
                 return pl[pl._currentIndex()].priority
         return u''
-
 
     def getSameNamePropertyList(self, name):
         """
@@ -533,7 +536,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 break
 
         return r
-
 
     def setProperty(self, name, value, priority=None, overwrite=True,
                     _seq=None):
@@ -678,20 +680,4 @@ class SameNamePropertyList(list):
         
 
 if __name__ == '__main__':
-    cssutils.css.cssstyledeclaration.Property = Property
-
-    s = cssutils.parseString('''a {
-        color: red;
-        font-style: italic;
-    }''')
-    style = s.cssRules[0].style
-    print 1, style.fontStyle, style.getPropertyValue('font-style')
-    print 1, style.color, style.getPropertyValue('color')
-
-    style.color = 'green'
-    style.fontStyle = 'normal'
-
-    print 2, style.fontStyle, style.getPropertyValue('font-style')
-    print 2, style.color, style.getPropertyValue('color')
-
-    style.xxx = '1'
+    pass
