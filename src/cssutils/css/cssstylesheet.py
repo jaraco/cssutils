@@ -81,7 +81,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
 
     def _getCssText(self):
-        return cssutils.ser.do_stylesheet(self)
+        return cssutils.ser.do_CSSStyleSheet(self)
 
     def _setCssText(self, cssText):
         """
