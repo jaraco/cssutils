@@ -556,7 +556,11 @@ class CSSPrimitiveValue(CSSValue):
         if CSSPrimitiveValue.CSS_STRING == self.primitiveType:
             return self._value[1:-1]
         elif CSSPrimitiveValue.CSS_URI == self.primitiveType:
-            return self._value[4:-1]
+            url = self._value[4:-1]
+            if url and url[0] in ('"', "'") and url[0] == url[-1]:
+                return url[1:-1]
+            else:
+                return url
         elif CSSPrimitiveValue.CSS_ATTR == self.primitiveType:
             return self._value[5:-1]
         else:
@@ -608,6 +612,8 @@ class CSSPrimitiveValue(CSSValue):
         if CSSPrimitiveValue.CSS_STRING == self._primitiveType:
             self.cssText = u'"%s"' % stringValue.replace(u'"', ur'\\"')
         elif CSSPrimitiveValue.CSS_URI == self._primitiveType:
+            if stringValue.find(u')') > -1:
+                stringValue = '"%s"' % stringValue.replace(u'"', ur'\\"')
             self.cssText = u'url(%s)' % stringValue
         elif CSSPrimitiveValue.CSS_ATTR == self._primitiveType:
             self.cssText = u'attr(%s)' % stringValue
