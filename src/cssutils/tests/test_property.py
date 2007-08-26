@@ -146,6 +146,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assert_(value == s2.value)
         self.assert_(priority == s2.priority)
 
+
 if __name__ == '__main__':
     import unittest
     unittest.main()
