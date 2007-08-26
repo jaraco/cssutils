@@ -21,7 +21,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(None, s.parentRule)
 
         s = cssutils.css.CSSStyleDeclaration(cssText='left: 0')
-        self.assertEqual(u'\n    left: 0\n    ', s.cssText)
+        self.assertEqual(u'left: 0', s.cssText)
         self.assertEqual('0', s.getPropertyValue('left'))
 
         sheet = cssutils.css.CSSStyleRule()
@@ -50,16 +50,16 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
                 u'color: green',
             # tantek hack
             ur'''color: red;
-  voice-family: "\"}\"";
-  voice-family:inherit;
-  color: green;''': 'color: green;\n    voice-family: inherit'
+voice-family: "\"}\"";
+voice-family:inherit;
+color: green;''': 'color: green;\nvoice-family: inherit'
             }
         for test, exp in tests.items():
             sh = cssutils.parseString('a { %s }' % test)
             if exp is None:
-                exp = u'\n    %s\n    ' % test
+                exp = u'%s' % test
             elif exp != u'':
-                exp = u'\n    %s\n    ' % exp
+                exp = u'%s' % exp
             self.assertEqual(exp, sh.cssRules[0].style.cssText)
 
     def test_cssText(self):
@@ -70,7 +70,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             u'': u'',
             u' ': u'',
             u' \t \n  ': u'',
-            u'/*x*/': u'\n    /*x*/\n    '
+            u'/*x*/': u'/*x*/'
             }
         for test, exp in tests.items():
             s.cssText = 'left: 0;' # dummy to reset s
@@ -86,10 +86,9 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             u'left: 0;': u'left: 0',
             u'left: 0 !important ': u'left: 0 !important',
             u'left:0!important': u'left: 0 !important',
-            u'left: 0; top: 1': u'left: 0;\n    top: 1',
+            u'left: 0; top: 1': u'left: 0;\ntop: 1',
             }
         for test, exp in tests.items():
-            exp = u'\n    %s\n    ' % exp
             s.cssText = test
             self.assertEqual(exp, s.cssText)
 
@@ -304,7 +303,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         for test, exp in tests.items():
             s = cssutils.css.CSSStyleDeclaration()
             n, v, p = test
-            exp = u'\n    %s\n    ' % exp
             s.setProperty(n, v, p)
             self.assertEqual(exp, s.cssText)
             self.assertEqual(v, s.getPropertyValue(n))
@@ -346,16 +344,15 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual('green', s.getPropertyValue('color'))
         self.assertEqual('normal', s.getPropertyValue('font-style'))
         self.assertEqual(
-            '''\n    left: 1px;\n    color: green;\n    font-style: normal\n    ''',
+            u'''left: 1px;\ncolor: green;\nfont-style: normal''',
             s.cssText)
 
         del s.color
         self.assertEqual(
-            '''\n    left: 1px;\n    font-style: normal\n    ''',
+            u'''left: 1px;\nfont-style: normal''',
             s.cssText)
         del s.fontStyle
-        self.assertEqual(
-            '''\n    left: 1px\n    ''', s.cssText)
+        self.assertEqual(u'left: 1px', s.cssText)
 
         self.assertRaises(AttributeError, s.__setattr__, 'UNKNOWN', 'red')
         # unknown properties must be set with setProperty!
@@ -366,7 +363,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         # but are kept
         self.assertEqual('red', s.getPropertyValue('UNKNOWN'))
         self.assertEqual(
-            '''\n    left: 1px;\n    unknown: red\n    ''', s.cssText)
+            '''left: 1px;\nunknown: red''', s.cssText)
 
     def test_replaceUrls(self):
         cssutils.ser.prefs.keepAllProperties = True
@@ -378,11 +375,9 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             }'''
         st = cssutils.parseString(css).cssRules[0].style
         st.replaceUrls(lambda old: "NEW" + old)
-        self.assertEqual(u'''
-    background-image: url(NEWc) !important;
-    background-\\image: url(NEWb);
-    background: url(NEWa) no-repeat !important
-    ''', st.cssText)
+        self.assertEqual(u'''background-image: url(NEWc) !important;
+background-\\image: url(NEWb);
+background: url(NEWa) no-repeat !important''', st.cssText)
 
         cssutils.ser.prefs.keepAllProperties = False
 
