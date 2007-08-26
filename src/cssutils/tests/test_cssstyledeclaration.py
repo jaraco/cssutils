@@ -122,6 +122,13 @@ color: green;''': 'color: green;\nvoice-family: inherit'
             }
         self.do_raise_r(tests)
 
+    def test_cssText(self):
+        "CSSStyleDeclaration.getCssText(separator)"
+        s = cssutils.css.CSSStyleDeclaration(cssText=u'a:1;b:2')
+        self.assertEqual(u'a: 1;\nb: 2', s.getCssText())
+        self.assertEqual(u'a: 1;b: 2', s.getCssText(separator=u''))
+        self.assertEqual(u'a: 1;/*x*/b: 2', s.getCssText(separator=u'/*x*/'))
+
     def test_length(self):
         "CSSStyleDeclaration.length"
         s = cssutils.css.CSSStyleDeclaration()
