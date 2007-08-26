@@ -331,7 +331,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         returns serialized property cssText, each property separated by
         given ``separator`` which may e.g. be u'' to be able to use
         cssText directly in an HTML style attribute. ";" is always part of 
-        each property (except the last one) and is **not** settable with 
+        each property (except the last one) and can **not** be set with 
         separator!
         """
         return cssutils.ser.do_css_CSSStyleDeclaration(self, separator)
