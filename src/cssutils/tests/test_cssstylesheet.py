@@ -6,11 +6,8 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import basetest
-
 import cssutils.css
-
 
 class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
@@ -270,6 +267,27 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
                     self.sr)
         self._insertRule((self.ur,),
                          notbefore, notafter, anywhere)
+
+    def test_replaceUrls(self):
+        cssutils.ser.prefs.keepAllProperties = True
+
+        css='''
+        @import "im1";
+        @import url(im2);
+        a { 
+            background-image: url(c) !important;
+            background-\image: url(b);
+            background: url(a) no-repeat !important;    
+            }'''
+        s = cssutils.parseString(css)
+        s.replaceUrls(lambda old: "NEW" + old)
+        self.assertEqual(u'@import "NEWim1";', s.cssRules[0].cssText)
+        self.assertEqual(u'NEWim2', s.cssRules[1].href)
+        self.assertEqual(u'''background-image: url(NEWc) !important;
+background-\\image: url(NEWb);
+background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
+
+        cssutils.ser.prefs.keepAllProperties = False
 
     def test_reprANDstr(self):
         "CSSStyleSheet.__repr__(), .__str__()"

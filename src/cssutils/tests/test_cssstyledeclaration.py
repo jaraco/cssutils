@@ -372,22 +372,6 @@ color: green;''': 'color: green;\nvoice-family: inherit'
         self.assertEqual(
             '''left: 1px;\nunknown: red''', s.cssText)
 
-    def test_replaceUrls(self):
-        cssutils.ser.prefs.keepAllProperties = True
-
-        css='''a { 
-            background-image: url(c) !important;
-            background-\image: url(b);
-            background: url(a) no-repeat !important;    
-            }'''
-        st = cssutils.parseString(css).cssRules[0].style
-        st.replaceUrls(lambda old: "NEW" + old)
-        self.assertEqual(u'''background-image: url(NEWc) !important;
-background-\\image: url(NEWb);
-background: url(NEWa) no-repeat !important''', st.cssText)
-
-        cssutils.ser.prefs.keepAllProperties = False
-
     def test_reprANDstr(self):
         "CSSStyleDeclaration.__repr__(), .__str__()"        
         s = cssutils.css.CSSStyleDeclaration(cssText='a:1;b:2')
