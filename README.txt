@@ -85,10 +85,10 @@ HEAD
         + FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
         + CSSValue has an init Parameter ``_propertyname`` to set a context property for validation. If none is set the value is always invalid. **THIS MAY CHANGE!**
     
+    - FEATURE (**experimental**): added ``CSSStyleSheet.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style sheet (currently in CSSStyleDeclarations and CSSImportRules).
     - FEATURE: href and media arguments can now be passed to parse() and parseString() functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
     - FEATURE: CSSMediaRule has an init parameter ``mediaText`` synchronous to CSSImportRule now
     - FEATURE: CSSRule and sub classes have a property ``typeString`` which is the name of the relevant ``type``, e.g. "STYLE_RULE". Mainly useful for debugging.
-    - FEATURE (**experimental**): added ``CSSStyleDeclaration.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style declaration.
     - FEATURE: The ``MediaList`` constructor can now be passed a list of media types.
     - FEATURE: added ``CSSStyleDeclaration.getCssText(separator=None)`` which returns serialized property cssText, each property separated by given ``separator`` which may e.g. be u'' to be able to use cssText directly in an HTML style attribute. ";" is always part of each property (except the last one) and is **not** settable with separator!
     - FEATURE: ``cssutils.serialize.Preferences`` has a new option ``lineSeparator`` that is used as linefeed character(s). May also be set to ``u''`` for ``CSSStyleDeclareation.cssText'`` to be directly usable in e.g. HTML style attributes
