@@ -2,11 +2,10 @@
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import basetest
 import cssutils
-
 
 class CSSSerializerTestCase(basetest.BaseTestCase):
     """
@@ -15,10 +14,8 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 ##    def test_init(self):
 ##        "CSSSerializer.__init__()"
 
-
     def _resetprefs(self):
         cssutils.ser.prefs = cssutils.serialize.Preferences()
-
 
     def test_preferences(self):
         "Preferences"
@@ -42,18 +39,16 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.setBOM,
                          False)
 
-
     def test_defaultAtKeyword(self):
         "CSSSerializer Preferences.defaultAtKeyword"
-        s = cssutils.parseString('@im\port "x";')
-        self.assertEqual('@import "x";', s.cssText)
+        s = cssutils.parseString(u'@im\port "x";')
+        self.assertEqual(u'@import "x";', s.cssText)
         cssutils.ser.prefs.defaultAtKeyword = True
-        self.assertEqual('@import "x";', s.cssText)
+        self.assertEqual(u'@import "x";', s.cssText)
         cssutils.ser.prefs.defaultAtKeyword = False
-        self.assertEqual('@im\\port "x";', s.cssText)
+        self.assertEqual(u'@im\\port "x";', s.cssText)
 
         self._resetprefs()
-
 
     def test_defaultPropertyName(self):
         "CSSSerializer Preferences.defaultPropertyName"
@@ -76,14 +71,13 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 
         self._resetprefs()
 
-
     def test_indent(self):
         "CSSSerializer Preferences.ident"
-        s = cssutils.parseString('a { left: 0 }')
-        exp4 = '''a {
+        s = cssutils.parseString(u'a { left: 0 }')
+        exp4 = u'''a {
     left: 0
     }'''
-        exp1 = '''a {
+        exp1 = u'''a {
  left: 0
  }'''
         self.assertEqual(exp4, s.cssText)
@@ -93,7 +87,6 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(exp4, s.cssText)
 
         self._resetprefs()
-
 
     def test_lineNumbers(self):
         "CSSSerializer Preferences.lineNumbers"
@@ -114,7 +107,6 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 
         self._resetprefs()
 
-
     def test_keepComments(self):
         "CSSSerializer Preferences.keepComments"
         s = cssutils.parseString('/*1*/ a { /*2*/ }')
@@ -122,7 +114,6 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual('a {}', s.cssText)
 
         self._resetprefs()
-
 
     def test_keepAllProperties(self):
         "CSSSerializer Preferences.keepAllProperties"
@@ -134,41 +125,60 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
             }'''
         s = cssutils.parseString(css)
         # keep only last
-        self.assertEqual('a {\n    color: green\n    }', s.cssText)
+        self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
         # keep all
         cssutils.ser.prefs.keepAllProperties = True
-        self.assertEqual('a {\n    color: pink;\n    color: red;\n    c\olor: blue;\n    c\olor: green\n    }', s.cssText)
+        self.assertEqual(u'a {\n    color: pink;\n    color: red;\n    c\olor: blue;\n    c\olor: green\n    }', s.cssText)
 
         self._resetprefs()
-
 
     def test_CSSImportRule(self):
         "CSSSerializer 'CSSImportrule.href format'"
         r0 = cssutils.css.CSSImportRule(u'not')
         r1 = cssutils.css.CSSImportRule(u'str', hreftype="string")
         r2 = cssutils.css.CSSImportRule(u'uri', hreftype="uri")
-        self.assertEqual('@import url(not);', r0.cssText)
-        self.assertEqual('@import "str";', r1.cssText)
-        self.assertEqual('@import url(uri);', r2.cssText)
+        self.assertEqual(u'@import url(not);', r0.cssText)
+        self.assertEqual(u'@import "str";', r1.cssText)
+        self.assertEqual(u'@import url(uri);', r2.cssText)
 
         cssutils.ser.prefs.importHrefFormat = 'string'
-        self.assertEqual('@import "not";', r0.cssText)
-        self.assertEqual('@import "str";', r1.cssText)
-        self.assertEqual('@import "uri";', r2.cssText)
+        self.assertEqual(u'@import "not";', r0.cssText)
+        self.assertEqual(u'@import "str";', r1.cssText)
+        self.assertEqual(u'@import "uri";', r2.cssText)
 
         cssutils.ser.prefs.importHrefFormat = 'uri'
-        self.assertEqual('@import url(not);', r0.cssText)
-        self.assertEqual('@import url(str);', r1.cssText)
-        self.assertEqual('@import url(uri);', r2.cssText)
+        self.assertEqual(u'@import url(not);', r0.cssText)
+        self.assertEqual(u'@import url(str);', r1.cssText)
+        self.assertEqual(u'@import url(uri);', r2.cssText)
 
         cssutils.ser.prefs.importHrefFormat = 'not defined'
-        self.assertEqual('@import url(not);', r0.cssText)
-        self.assertEqual('@import "str";', r1.cssText)
-        self.assertEqual('@import url(uri);', r2.cssText)
+        self.assertEqual(u'@import url(not);', r0.cssText)
+        self.assertEqual(u'@import "str";', r1.cssText)
+        self.assertEqual(u'@import url(uri);', r2.cssText)
 
         self._resetprefs()
 
+    def test__Property(self):
+        "CSSSerializer.do_css_Property"
+        name="color"
+        value="red"
+        priority="!important"
+        
+        s = cssutils.css.property._Property(
+            name=name, value=value, priority=priority)        
+        self.assertEqual(u'color: red !important;', 
+                    cssutils.ser.do_css_Property(s))
+        self.assertEqual(u'color: red !important', 
+                    cssutils.ser.do_css_Property(s, omitSemicolon=True))
 
+        s = cssutils.css.property._Property(
+            name=name, value=value)        
+        self.assertEqual(u'color: red;', 
+                    cssutils.ser.do_css_Property(s))
+        self.assertEqual(u'color: red', 
+                    cssutils.ser.do_css_Property(s, omitSemicolon=True))
+
+        
 if __name__ == '__main__':
     import unittest
     unittest.main()
