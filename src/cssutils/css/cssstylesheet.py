@@ -424,6 +424,50 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     ownerRule = property(_getsetOwnerRuleDummy, _getsetOwnerRuleDummy,
                          doc="(DOM attribute) NOT IMPLEMENTED YET")
 
+    def replaceUrls(self, replacer):
+        """
+        **EXPERIMENTAL**
+        
+        utility function to replace all url(urlstring) values in 
+        CSSImportRules and CSSStyleDeclaration objects.
+        
+        replacer must be a function which is called with a single 
+        argument ``urlstring`` which is the current value of url()
+        excluding "url(" and ")". It still may have surrounding single or
+        double quotes 
+        """
+        for importrule in [
+            r for r in self.cssRules if hasattr(r, 'href')]:
+            importrule.href = replacer(importrule.href)
+        
+        def setProperty(v):
+            if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
+               v.CSS_URI == v.primitiveType:
+                    v.setStringValue(v.CSS_URI, 
+                                     replacer(v.getStringValue()))
+            
+        def styleDeclarations(base):
+            "recurive function to find all CSSStyleDeclarations"
+            styles = []
+            if hasattr(base, 'cssRules'):
+                for rule in base.cssRules:
+                    styles.extend(styleDeclarations(rule))
+            elif hasattr(base, 'style'):
+                styles.append(base.style)
+            return styles 
+            
+        for style in styleDeclarations(self):
+            snpl = [x for x in style.seq 
+                   if isinstance(x, cssutils.css.SameNamePropertyList)]
+            for pl in snpl:
+                for p in pl:
+                    v = p.cssValue
+                    if v.CSS_VALUE_LIST == v.cssValueType:
+                        for item in v:
+                            setProperty(item)
+                    elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
+                        setProperty(v)
+            print style.cssText
 
     def setSerializer(self, cssserializer):
         """

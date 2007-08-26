@@ -596,34 +596,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     # append to pl
                     _seq[index].append(newp)
 
-    def replaceUrls(self, replacer):
-        """
-        **EXPERIMENTAL**
-        
-        utility function to replace all url(urlstring) values in a 
-        CSSStyleDeclaration.
-        
-        replacement must be a function which is called with a single 
-        argument ``urlstring`` which is the current value of url()
-        excluding "url(" and ")". It still may have surrounding single or
-        double quotes 
-        """
-        def set(v):
-            if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
-               v.CSS_URI == v.primitiveType:
-                    v.setStringValue(v.CSS_URI, 
-                                     replacer(v.getStringValue()))
-        
-        pls = [x for x in self.seq if isinstance(x, SameNamePropertyList)]
-        for pl in pls:
-            for p in pl:
-                v = p.cssValue
-                if v.CSS_VALUE_LIST == v.cssValueType:
-                    for item in v:
-                        set(item)
-                elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
-                    set(v)
-
     def __repr__(self):
         return "cssutils.css.%s()" % (
                 self.__class__.__name__)
