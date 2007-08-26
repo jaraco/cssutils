@@ -258,9 +258,11 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             pv.CSS_STRING: ('"red"', 'red'),
             pv.CSS_URI: ('url(http://example.com)', None),
             pv.CSS_URI: ("url('http://example.com')", 
-                         u"'http://example.com'"),
+                         u"http://example.com"),
             pv.CSS_URI: ('url("http://example.com")', 
-                         u'"http://example.com"'),
+                         u'http://example.com'),
+            pv.CSS_URI: ('url("http://example.com?)")', 
+                         u'http://example.com?)'),
             pv.CSS_IDENT: ('red', None),
             pv.CSS_ATTR: ('attr(att-name)', 
                          u'att-name'), # the name of the attrr 
@@ -271,8 +273,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                 exp = val
                 
             v = cssutils.css.CSSPrimitiveValue(val)
-            self.assert_(v.primitiveType == t)
-            self.assert_(v.getStringValue() == exp)
+            self.assertEqual(v.primitiveType, t)
+            self.assertEqual(v.getStringValue(), exp)
 
 
     def test_setString(self):
@@ -294,7 +296,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             v.setStringValue, *(v.CSS_ATTR, 'x'))
         
         # CSS_IDENT
-        v = cssutils.css.CSSPrimitiveValue('ident')
+        v = cssutils.css.CSSPrimitiveValue('new')
+        v.setStringValue(v.CSS_IDENT, 'ident')
         self.assert_(v.CSS_IDENT == v.primitiveType)
         self.assert_('ident' == v._value)
         self.assert_('ident' == v.getStringValue())
@@ -309,7 +312,12 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             v.setStringValue, *(v.CSS_ATTR, 'x'))
         
         # CSS_URI
-        v = cssutils.css.CSSPrimitiveValue('url(a)')
+        v = cssutils.css.CSSPrimitiveValue('url(old)')
+        v.setStringValue(v.CSS_URI, 'a)')
+        self.assertEqual(u'url("a)")', v._value)
+        self.assertEqual(u'a)', v.getStringValue())
+
+        v.setStringValue(v.CSS_URI, 'a')
         self.assert_(v.CSS_URI == v.primitiveType)
         self.assert_('url(a)' == v._value)
         self.assert_('a' == v.getStringValue())
@@ -324,7 +332,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             v.setStringValue, *(v.CSS_ATTR, 'x'))
         
         # CSS_ATTR
-        v = cssutils.css.CSSPrimitiveValue('attr(a)')
+        v = cssutils.css.CSSPrimitiveValue('attr(old)')
+        v.setStringValue(v.CSS_ATTR, 'a')
         self.assert_(v.CSS_ATTR == v.primitiveType)
         self.assert_('attr(a)' == v._value)
         self.assert_('a' == v.getStringValue())
