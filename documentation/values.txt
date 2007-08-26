@@ -5,6 +5,8 @@ CSS Values
 :date: $LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $
 :version: 0.9.2b4, $LastChangedRevision: 206 $
 
+`Index <../index.txt>`_
+
 .. contents::
 
 random notes about values

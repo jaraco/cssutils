@@ -5,6 +5,8 @@ backlog
 :date: $LastChangedDate$
 :version: 0.9.2b4, $LastChangedRevision$
 
+`Index <../index.txt>`_
+
 .. contents::
 
 in work
