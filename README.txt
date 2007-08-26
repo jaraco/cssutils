@@ -69,7 +69,6 @@ Version 0.9x with a new parser (again)
 HEAD
     - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList. 
         
-            
         **THESE ARE NOT FINISHED YET!**
     
         CURRENTLY IN WORK:
@@ -85,21 +84,34 @@ HEAD
         + FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
         + CSSValue has an init Parameter ``_propertyname`` to set a context property for validation. If none is set the value is always invalid. **THIS MAY CHANGE!**
     
-    - FEATURE (**experimental**): added ``CSSStyleSheet.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style sheet (currently in CSSStyleDeclarations and CSSImportRules).
-    - FEATURE: href and media arguments can now be passed to parse() and parseString() functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
+    - FEATURE (**experimental**): added ``CSSStyleSheet.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style sheet (currently in CSSStyleDeclaration and CSSImportRules).
+    - FEATURE: added ``CSSStyleDeclaration.getCssText(separator=None)`` which returns serialized property cssText, each property separated by given ``separator`` which may e.g. be u'' to be able to use cssText directly in an HTML style attribute. ";" is always part of each property (except the last one) and can **not** be set with separator!
+    
+    - FEATURE: ``href`` and ``media`` arguments can now be passed to ``parse()`` and ``parseString()`` functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
+    
     - FEATURE: CSSMediaRule has an init parameter ``mediaText`` synchronous to CSSImportRule now
-    - FEATURE: CSSRule and sub classes have a property ``typeString`` which is the name of the relevant ``type``, e.g. "STYLE_RULE". Mainly useful for debugging.
+    
     - FEATURE: The ``MediaList`` constructor can now be passed a list of media types.
-    - FEATURE: added ``CSSStyleDeclaration.getCssText(separator=None)`` which returns serialized property cssText, each property separated by given ``separator`` which may e.g. be u'' to be able to use cssText directly in an HTML style attribute. ";" is always part of each property (except the last one) and is **not** settable with separator!
+    
+    - FEATURE: ``CSSRule`` and subclasses have a property ``typeString`` which is the name of the relevant ``type``, e.g. ``STYLE_RULE``. Mainly useful for debugging.
+    
     - FEATURE: ``cssutils.serialize.Preferences`` has a new option ``lineSeparator`` that is used as linefeed character(s). May also be set to ``u''`` for ``CSSStyleDeclareation.cssText'`` to be directly usable in e.g. HTML style attributes
-    - CHANGE: ``css.CSSStyleDeclaration.cssText`` indents its property not anymore.
-    - CHANGE: ``cssutils.serialize.CSSSerializer`` has been refactored internally to support the lineSeparator option.
-    - API CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
-    - API CHANGE: CSSValue default cssText is now ``u""`` and not ``u"inherit"`` anymore
-    - API CHANGE (internal): renamed serializers method ``do_stylesheet`` to ``do_CSSStyleSheet``
+
+    + API CHANGE (internal): renamed serializers method ``do_stylesheet`` to ``do_CSSStyleSheet``
+
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
-    - CHANGE: The Selector and SameNamePropertyList (which might be renamed as it is experimental) class are now available from cssutils.css too.
-    - CHANGE: Added __repr__ and __str__ methods to most classes. __str__ reports e.g. ``<cssutils.css.CSSImportRule object href=None at 0xaaa870>``, __repr__  e.g. ``cssutils.css.CSSImportRule(href=None, mediaText=u'all')`` which is a valid contructor  for the object in most cases (which might not be complete for all init parameter for all classes like in this case though). The following details are included:
+
+    + CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
+    
+    + CHANGE: CSSValue default cssText is now ``u""`` and not ``u"inherit"`` anymore
+    
+    + CHANGE: ``css.CSSStyleDeclaration.cssText`` indents its property not anymore.
+    
+    + CHANGE: ``cssutils.serialize.CSSSerializer`` has been refactored internally to support the lineSeparator option.
+    
+    + CHANGE: The Selector and SameNamePropertyList (which might be renamed as it is experimental) class are now available from cssutils.css too.
+    
+    + CHANGE: Added __repr__ and __str__ methods to most classes. __str__ reports e.g. ``<cssutils.css.CSSImportRule object href=None at 0xaaa870>``, __repr__  e.g. ``cssutils.css.CSSImportRule(href=None, mediaText=u'all')`` which is a valid contructor  for the object in most cases (which might not be complete for all init parameter for all classes like in this case though). The following details are included:
     
       css
         - CSSStyleSheet shows the title and href
@@ -123,7 +135,7 @@ HEAD
     
 
 0.9.2b3 070804
-    - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter D�rwald)
+    - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
 
     - BUGFIX: Fixed Issue #7: typo gave AssertionError for selectors like ``tr:nth-child(odd) td{}``
     - BUGFIX: Fixed Issue #5: false warning for certain values for ``background-position`` removed
