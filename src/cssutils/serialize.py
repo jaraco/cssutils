@@ -326,7 +326,7 @@ class CSSSerializer(object):
         else:
             out = []
             for part in seq:
-                if isinstance(part, cssutils.css.csscomment.CSSComment):
+                if hasattr(part, 'cssText'):
                     out.append(part.cssText)
                 else:
                     out.append(part)
@@ -393,7 +393,7 @@ class CSSSerializer(object):
         else:
             out = []
             for part in selectorlist.seq:
-                if isinstance(part, cssutils.css.csscomment.CSSComment):
+                if hasattr(part, 'cssText'):
                     out.append(part.cssText)
                 elif u',' == part:
                     out.append(u', ')
@@ -414,7 +414,7 @@ class CSSSerializer(object):
         else:
             out = []
             for part in selector.seq:
-                if isinstance(part, cssutils.css.csscomment.CSSComment):
+                if hasattr(part, 'cssText'):
                     out.append(part.cssText)
                 else:
                     if type(part) == dict:
