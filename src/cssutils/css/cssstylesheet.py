@@ -467,7 +467,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                             setProperty(item)
                     elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
                         setProperty(v)
-            print style.cssText
 
     def setSerializer(self, cssserializer):
         """
