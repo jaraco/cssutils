@@ -81,10 +81,10 @@ class CSSSerializer(object):
 
     def _serialize(self, text):
         if self.prefs.lineNumbers:
-            pad = text.count(self.prefs.lineSeparator) / 10 + 1
+            pad = len(str(text.count(self.prefs.lineSeparator)+1))
             out = []
             for i, line in enumerate(text.split(self.prefs.lineSeparator)):
-                out.append((u'%'+str(pad)+'i: %s') % (i+1, line))
+                out.append((u'%*i: %s') % (pad, i+1, line))
             text = self.prefs.lineSeparator.join(out)
         return text
 

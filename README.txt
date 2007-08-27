@@ -132,6 +132,8 @@ HEAD
       
       stylesheets
         - MediaList shows the mediaText
+
+    - BUGFIX: Handling of linenumbers in the serializer has been fixed.
     
 
 0.9.2b3 070804
