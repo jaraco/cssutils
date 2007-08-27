@@ -99,6 +99,7 @@ HEAD
 
     + API CHANGE (internal): renamed serializers method ``do_stylesheet`` to ``do_CSSStyleSheet``
 
+    - BUGFIX (issue #9): Parsing of empty ``url()`` values has been fixed 
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
 
     + CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
