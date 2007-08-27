@@ -212,6 +212,11 @@ class Tokenizer(object):
                         del self.tokens[_uriindex + 1:]
                     else:
                         todo = True # add )
+                else:
+                    # empty url()
+                    _urit = self.tokens[_uriindex]
+                    _urit.type = tokentype.URI
+                    _urit.value = u'url()'
             else:
                 todo = True # add )
 
