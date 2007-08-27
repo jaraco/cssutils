@@ -4,7 +4,7 @@ testcases for cssutils.tokenize.Tokenizer
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b2, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
 
@@ -239,6 +239,8 @@ class TokenizerTestCase(basetest.BaseTestCase):
                (1, 15, tt.DIMENSION, u'5a5')],
 
             # URI
+            u'url()': [(1, 1, tt.URI, u'url()')],
+            u'url();': [(1, 1, tt.URI, u'url()'), (1, 6, tt.SEMICOLON, ';')],
             u'url("x")': [(1, 1, tt.URI, u'url("x")')],
             u'url( "x")': [(1, 1, tt.URI, u'url("x")')],
             u'url("x" )': [(1, 1, tt.URI, u'url("x")')],
