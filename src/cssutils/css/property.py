@@ -237,13 +237,12 @@ class _Property(cssutils.util.Base):
     def __repr__(self):
         return "cssutils.css.property.%s(name=%r, value=%r, priority=%r)" % (
                 self.__class__.__name__, 
-                self.name, self.value, self.priority)
+                self.name, self.cssValue.cssText, self.priority)
         
     def __str__(self):
         return "<%s.%s object name=%r value=%r priority=%r at 0x%x>" % (
                 self.__class__.__module__, self.__class__.__name__, 
-                self.name, self.cssValue._value, self.priority, id(self))        
-
+                self.name, self.cssValue.cssText, self.priority, id(self))        
 
     # DEPRECATED
     def _getValue(self):
