@@ -7,6 +7,7 @@ __version__ = '$LastChangedRevision$'
 import xml.dom
 import basetest
 import cssutils
+import types
 
 class CSSValueTestCase(basetest.BaseTestCase):
 
@@ -240,11 +241,108 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                 val = round(val)
             self.assertEqual(val , exp)
 
-#    def test_setFloat(self):
-#        v = cssutils.cssprimitivevalue.PrimitiveValue(u'1')
-#        v.setFloatValue(v.CSS_MM, '8')
-#        # TODO: more tests
-#
+    def test_setFloat(self):
+        "CSSPrimitiveValue.setFloatValue()"
+        V = cssutils.css.CSSPrimitiveValue
+        
+        tests = {
+            # unitType, value
+            (V.CSS_NUMBER, 1): [
+                # unitType, setvalue, 
+                #    getvalue or expected exception, msg or cssText
+                (V.CSS_NUMBER, 0, 0, '0'),
+                (V.CSS_NUMBER, 0.1, 0.1, '0.1'),
+                (V.CSS_NUMBER, -0, 0, '0'),
+                (V.CSS_NUMBER, 2, 2, '2'),
+                (V.CSS_NUMBER, 2.0, 2, '2'),
+                (V.CSS_NUMBER, 2.1, 2.1, '2.1'),
+                (V.CSS_NUMBER, -2.1, -2.1, '-2.1'),
+                # setting with string does work
+                (V.CSS_NUMBER, '1', 1, '1'), 
+                (V.CSS_NUMBER, '1.1', 1.1, '1.1'),
+                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_RAD, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_GRAD, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_S, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_MS, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_KHZ, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_HZ, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_DIMENSION, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_MM, 2, xml.dom.InvalidAccessErr, None),
+                
+                (V.CSS_NUMBER, 'x', xml.dom.InvalidAccessErr, 
+                 'CSSPrimitiveValue: floatValue "x" is not a float'),
+                (V.CSS_NUMBER, '1x', xml.dom.InvalidAccessErr, 
+                 'CSSPrimitiveValue: floatValue "1x" is not a float'),
+
+                (V.CSS_STRING, 'x', xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: unitType CSS_STRING is not a float type'),
+                (V.CSS_URI, 'x', xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: unitType CSS_URI is not a float type'),
+                (V.CSS_ATTR, 'x', xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: unitType CSS_ATTR is not a float type'),
+                (V.CSS_IDENT, 'x', xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: unitType CSS_IDENT is not a float type'),
+                (V.CSS_RGBCOLOR, 'x', xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: unitType CSS_RGBCOLOR is not a float type'),
+                (V.CSS_RGBACOLOR, 'x', xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: unitType CSS_RGBACOLOR is not a float type'),
+                (V.CSS_RECT, 'x', xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: unitType CSS_RECT is not a float type'),
+                (V.CSS_COUNTER, 'x', xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: unitType CSS_COUNTER is not a float type'),
+                (V.CSS_EMS, 1, xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: Cannot coerce primitiveType CSS_NUMBER to CSS_EMS'),
+                (V.CSS_EXS, 1, xml.dom.InvalidAccessErr,
+                 'CSSPrimitiveValue: Cannot coerce primitiveType CSS_NUMBER to CSS_EXS')
+            ],
+            (V.CSS_MM, '1mm'): [
+                (V.CSS_MM, 2, 2, '2mm'),
+                (V.CSS_MM, 0, 0, '0mm'),
+                (V.CSS_MM, 0.1, 0.1, '0.1mm'),
+                (V.CSS_MM, -0, -0, '0mm'),
+                (V.CSS_MM, 3.0, 3, '3mm'),
+                (V.CSS_MM, 3.1, 3.1, '3.1mm'),
+                (V.CSS_MM, -3.1, -3.1, '-3.1mm'),
+                (V.CSS_CM, 1, 10, '10mm'),
+                (V.CSS_IN, 10, 254, '254mm'),
+                (V.CSS_PT, 1, 1828.8, '1828.8mm'),
+                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_NUMBER, 2, xml.dom.InvalidAccessErr, None)
+            ],
+            (V.CSS_PT, '1pt'): [
+                (V.CSS_PT, 2, 2, '2pt'),
+                (V.CSS_PC, 12, 1, '1pt'),
+                (V.CSS_NUMBER, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None)
+            ],
+            (V.CSS_KHZ, '1khz'): [
+                (V.CSS_HZ, 2000, 2, '2khz'),
+                (V.CSS_NUMBER, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None)
+            ]
+        }
+        for test in tests:
+            initialType, initialValue = test
+            pv = cssutils.css.CSSPrimitiveValue(initialValue)
+            for setType, setValue, exp, msg in tests[test]:
+                if type(exp) == types.TypeType:
+                    if msg:
+                        self.assertRaisesMsg(
+                            exp, msg, pv.setFloatValue, setType, setValue)
+                    else:
+                        self.assertRaises(
+                            exp, pv.setFloatValue, setType, setValue)
+                else:
+                    pv.setFloatValue(setType, setValue)
+                    self.assertEqual(pv.cssText, msg)
+                    self.assertEqual(pv.getFloatValue(initialType), exp)
+                    self.assertEqual(pv._value, msg)
+                    
+
     def test_getString(self):
         "CSSPrimitiveValue.getStringValue()"
         v = cssutils.css.CSSPrimitiveValue(u'1px')
