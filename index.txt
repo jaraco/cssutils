@@ -16,6 +16,7 @@ Available documentation
 * `cssutils at cthedot <http://cthedot.de/cssutils/>`_
 
 + `Serializing and serializer preferences <documentation/serialize.txt>`_
++ `CSSStyleDeclaration <documentation/cssstyledeclaration.txt>`_
 + `CSS values <documentation/values.txt>`_
 
 * `backlog <documentation/backlog.txt>`_
