@@ -39,13 +39,13 @@ known issues
 ============
 - implementation is not after the latest grammar and specification. There will be minor differences but generally nothing too serious (I hope ;).
 
-- CSSStyleDeclaration.getCSSValue and Value Classes are not fully implemented. These are currently in work and may be fully implemented in one of the next releases (0.9.3)
+- Some methods of css.CSSPrimitiveValue, Rect, Counter and RGBColor are not yet implemented. They may be implemented in one of the next releases (0.9.4?)
 
-- media queries like ``@media all and (color)`` result in an error and the rules are not parsed or included in the resulting CSSStyleSheet. Media queries will be added in one of the next releases (0.9.3 maybe)
+- media queries like ``@media all and (color)`` result in an error and the rules are not parsed or included in the resulting CSSStyleSheet. Media queries will be added in one of the next releases (0.9.4?)
 
-- CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc
+- CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.4?)
 
-- @charset not implemented according to spec (plan: 0.9.2)
+- @charset not implemented according to spec (plan: 0.9.4)
 - unknown @-rules are not handled properly in cases, tests are spotty there too
 
 - Tantek hack (using ``voice-family``) is mangled so does not work after reserializing. This is as property order is changed and the hack needs a specific order. Other CSS hacks do work though (e.g. ``color: red; c\olor: green;``.
@@ -55,36 +55,58 @@ known issues
 - Properties are not bound to any CSS Version, so all properties are handled so
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 1.0 or 2.1)
 
-- Property.value is only checked for valid CSS2 properties, so will accept more than allowed. In case of an error a WARNING is issued only
+- _Property.value is only checked for valid CSS2 properties, so will accept more than allowed. In case of an error a WARNING is issued only
 
 
 changes
 =======
 
-Version 0.9x with a new parser (again)
---------------------------------------
-
-- TODO: FEATURE: Implementation of css.CSSValue
+Version 0.9x
+------------
 
 HEAD
+
+0.9.3a1
     - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList. 
         
-        **THESE ARE NOT FINISHED YET!**
+        Not yet implemented are:        
+            - css.CSSPrimitiveValue.getCounterValue and css. Counter
+            - css.CSSPrimitiveValue.getRGBColorValue and css.RGBColor
+            - css.CSSPrimitiveValue.getRectValue and css.Rect
     
-        CURRENTLY IN WORK:
-            - css.CSSPrimitiveValue.getFloatValue, .setFloatValue
-            
-        TODO:
-            - css.CSSPrimitiveValue.getCounterValue
-            - css.CSSPrimitiveValue.getRGBColorValue
-            - css.CSSPrimitiveValue.getRectValue
-        
         + FEATURE: css.CSSValueList is iterable so may be used in a for loop
         + FEATURE: CSSValue has property ``cssValueTypeString`` which is the name of the relevant ``cssValueType``, e.g. "CSS_PRIMITIVE_TYPE". Mainly useful for debugging.
         + FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
         + CSSValue has an init Parameter ``_propertyname`` to set a context property for validation. If none is set the value is always invalid. **THIS MAY CHANGE!**
     
+    - FEATURE (**experimental**): CSSStyleDeclaration is iterable now. The iterator returns *all* properties set in this style as objects with properties ``name``, ``cssValue`` and ``priority``. Calling CSSStyleDeclaration.item(index) on the other hand simply returns a property name and also only the normalized name (once). Example::
+    
+            sheet = cssutils.parseString('a { color: red; c\olor: blue; left: 0 !important }')
+            for rule in sheet.cssRules:
+                style = rule.style
+                for property in style:
+                    name = property.name
+                    cssValue = property.cssValue
+                    priority = property.priority
+                    print name, '=', cssValue.cssText, priority
+                    
+                # prints:
+                # color = red
+                # c\olor = blue
+                # left = 0 !important
+        
+                for i in range(0, style.length):
+                    name = style.item(i)
+                    cssValue = style.getPropertyCSSValue(name)
+                    priority = style.getPropertyPriority(name)
+                    print name, '=', cssValue.cssText , priority
+        
+                # prints:
+                # color = blue
+                # left = 0 !important
+    
     - FEATURE (**experimental**): added ``CSSStyleSheet.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style sheet (currently in CSSStyleDeclaration and CSSImportRules).
+    
     - FEATURE: added ``CSSStyleDeclaration.getCssText(separator=None)`` which returns serialized property cssText, each property separated by given ``separator`` which may e.g. be u'' to be able to use cssText directly in an HTML style attribute. ";" is always part of each property (except the last one) and can **not** be set with separator!
     
     - FEATURE: ``href`` and ``media`` arguments can now be passed to ``parse()`` and ``parseString()`` functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
@@ -100,6 +122,7 @@ HEAD
     + API CHANGE (internal): renamed serializers method ``do_stylesheet`` to ``do_CSSStyleSheet``
 
     - BUGFIX (issue #9): Parsing of empty ``url()`` values has been fixed 
+    - BUGFIX: Handling of linenumbers in the serializer has been fixed.
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
 
     + CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
@@ -134,7 +157,6 @@ HEAD
       stylesheets
         - MediaList shows the mediaText
 
-    - BUGFIX: Handling of linenumbers in the serializer has been fixed.
     
 
 0.9.2b3 070804
@@ -440,7 +462,7 @@ HEAD
     - lots of bugfixes and refactoring of modules, classes
     - extension and refactoring of unittests
 
-0.9a1 - 060905
+0.9a1 - 060905 with a new parser (again)
     - new tokenizer, complete rewrite
         * parses strings and comments
         * parses unicode escape sequences (see following)
