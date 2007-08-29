@@ -99,9 +99,6 @@ class CSSValue(cssutils.util.Base):
                 v.append(x.cssText)
         return u''.join(v).strip()
         
-#        return u''.join([x for x in self.seq if not isinstance(
-#                               x, cssutils.css.CSSComment)]).strip()
-
     def _setValue(self, value):
         "overwritten by CSSValueList!"
         self._valueValue = value
@@ -366,6 +363,46 @@ class CSSPrimitiveValue(CSSValue):
 
     _reNumDim = re.compile(ur'^(.*?)([a-z]+|%)$', re.I| re.U|re.X)
 
+    # oldtype: newType: converterfunc
+    _converter = {
+        # cm <-> mm <-> in, 1 inch is equal to 2.54 centimeters.
+        # pt <-> pc, the points used by CSS 2.1 are equal to 1/72nd of an inch.
+        # pc: picas - 1 pica is equal to 12 points
+        (CSS_CM, CSS_MM): lambda x: x * 10,
+        (CSS_MM, CSS_CM): lambda x: x / 10,
+
+        (CSS_PT, CSS_PC): lambda x: x * 12,
+        (CSS_PC, CSS_PT): lambda x: x / 12,
+
+        (CSS_CM, CSS_IN): lambda x: x / 2.54,
+        (CSS_IN, CSS_CM): lambda x: x * 2.54,
+        (CSS_MM, CSS_IN): lambda x: x / 25.4,
+        (CSS_IN, CSS_MM): lambda x: x * 25.4,
+
+        (CSS_IN, CSS_PT): lambda x: x / 72,
+        (CSS_PT, CSS_IN): lambda x: x * 72,
+        (CSS_CM, CSS_PT): lambda x: x / 2.54 / 72,
+        (CSS_PT, CSS_CM): lambda x: x * 72 * 2.54,
+        (CSS_MM, CSS_PT): lambda x: x / 25.4 / 72,
+        (CSS_PT, CSS_MM): lambda x: x * 72 * 25.4,
+        
+        (CSS_IN, CSS_PC): lambda x: x / 72 / 12,
+        (CSS_PC, CSS_IN): lambda x: x * 12 * 72,
+        (CSS_CM, CSS_PC): lambda x: x / 2.54 / 72 / 12,
+        (CSS_PC, CSS_CM): lambda x: x * 12 * 72 * 2.54,
+        (CSS_MM, CSS_PC): lambda x: x / 25.4 / 72 / 12,
+        (CSS_PC, CSS_MM): lambda x: x * 12 * 72 * 25.4,
+
+        # hz <-> khz
+        (CSS_KHZ, CSS_HZ): lambda x: x * 1000,
+        (CSS_HZ, CSS_KHZ): lambda x: x / 1000,
+        # s <-> ms
+        (CSS_S, CSS_MS): lambda x: x * 1000,
+        (CSS_MS, CSS_S): lambda x: x / 1000
+        
+        # TODO: convert deg <-> rad <-> grad        
+    }        
+
     def __set_primitiveType(self):
         """
         primitiveType is readonly but is set lazy if accessed 
@@ -426,30 +463,12 @@ class CSSPrimitiveValue(CSSValue):
         except (IndexError, TypeError):
             return u'%r (UNKNOWN TYPE)' % type
 
-    # oldtype: newType: converterfunc
-    _converter = {
-        # cm <-> mm <-> in
-        (CSS_CM, CSS_MM): lambda x: x * 10,
-        (CSS_CM, CSS_IN): lambda x: x * 0.393700787,
-        (CSS_MM, CSS_CM): lambda x: x * 0.1,
-        (CSS_MM, CSS_IN): lambda x: x * 0.0393700787,
-        (CSS_IN, CSS_CM): lambda x: x * 2.54,
-        (CSS_IN, CSS_MM): lambda x: x * 25.4,
-        # hz <-> khz
-        (CSS_KHZ, CSS_HZ): lambda x: x * 1000,
-        (CSS_HZ, CSS_KHZ): lambda x: x * 0.001,
-        # s <-> ms
-        (CSS_S, CSS_MS): lambda x: x * 1000,
-        (CSS_MS, CSS_S): lambda x: x * 0.001
-        # TODO: convert deg <-> rad <-> grad
-    }        
-
     def __getValDim(self):
         "splits self._value in numerical and dimension part"
         try:
             val, dim = self._reNumDim.findall(self._value)[0]
         except IndexError:
-            val, dim = self._value, None
+            val, dim = self._value, u''
         try:
             val = float(val)
         except ValueError:
@@ -485,12 +504,15 @@ class CSSPrimitiveValue(CSSValue):
         
         if self.primitiveType != unitType: 
             try:
-                val = self._converter[self.primitiveType, unitType](val) 
+                val = self._converter[self.primitiveType, unitType](val)
             except KeyError:
                 raise xml.dom.InvalidAccessErr(
                 u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s' 
                 % (self.primitiveTypeString, 
                    self._getCSSPrimitiveTypeString(unitType)))
+
+        if val == int(val):
+            val = int(val)
 
         return val 
 
@@ -517,25 +539,33 @@ class CSSPrimitiveValue(CSSValue):
         """        
         self._checkReadonly()
         if unitType not in self._floattypes:
-            raise xml.dom.InvalidAccessErr(u'value is not a float type')
+            raise xml.dom.InvalidAccessErr(
+               u'CSSPrimitiveValue: unitType %s is not a float type' % 
+               self._getCSSPrimitiveTypeString(unitType))
+        try:
+            val = float(floatValue)
+        except ValueError, e:
+            raise xml.dom.InvalidAccessErr(
+               u'CSSPrimitiveValue: floatValue "%s" is not a float' % 
+               floatValue)
         
-        raise NotImplementedError()
+        oldval, dim = self.__getValDim()
         
-#        oldval, dim = self.__getValDim()
-#        
-#        if self.primitiveType != unittype:
-#            try:
-#                floatValue = self._converter[
-#                                self.primitiveType][unitType](floatValue) 
-#            except KeyError:
-#                raise xml.dom.InvalidAccessErr(
-#                u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s' 
-#                % (self.primitiveTypeString, 
-#                   self._getCSSPrimitiveTypeString(unitType)))
-#                
-
-        # check if possible depending on dim
-        self._value = floatValue
+        if self.primitiveType != unitType:
+            # convert if possible
+            try:
+                val = self._converter[
+                    unitType, self.primitiveType](val)
+            except KeyError:
+                raise xml.dom.InvalidAccessErr(
+                u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s' 
+                % (self.primitiveTypeString, 
+                   self._getCSSPrimitiveTypeString(unitType)))
+        
+        if val == int(val):
+            val = int(val)
+              
+        self.cssText = '%s%s' % (val, dim)
 
     def getStringValue(self):
         """
