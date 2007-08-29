@@ -152,6 +152,25 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 'Unknown CSS Property, ``CSSStyleDeclaration.setProperty("%s")`` MUST be used.'
                 % n)
 
+    def __iter__(self):
+        "CSSStyleDeclaration is iterable"
+        return CSSStyleDeclaration.__items(self)
+        
+    def __items(self):
+        """
+        the iterator
+        
+        returns in contrast to calling item(index) property objects
+        """
+        props = []
+        for x in self.seq:
+            if isinstance(x, SameNamePropertyList):
+                for y in x:
+                    props.append(y)
+        le = len(props)
+        for i in range (0, le):
+            yield props[i]
+
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
         """
@@ -394,7 +413,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         normalname = self._normalize(name)
 
         if normalname in SHORTHAND:
-            self._log.info(
+            self._log.debug(
                 u'CSSValue for shorthand property "%s" should be None, this may be implemented later.' %
                 normalname, neverraise=True)
 
