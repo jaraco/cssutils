@@ -135,6 +135,8 @@ HEAD
     
     + CHANGE: The Selector and SameNamePropertyList (which might be renamed as it is experimental) class are now available from cssutils.css too.
     
+    + CHANGE: Tokenizer strips HTML comment tokens CDO and CDC from tokenlist now.
+
     + CHANGE: Added __repr__ and __str__ methods to most classes. __str__ reports e.g. ``<cssutils.css.CSSImportRule object href=None at 0xaaa870>``, __repr__  e.g. ``cssutils.css.CSSImportRule(href=None, mediaText=u'all')`` which is a valid contructor  for the object in most cases (which might not be complete for all init parameter for all classes like in this case though). The following details are included:
     
       css
