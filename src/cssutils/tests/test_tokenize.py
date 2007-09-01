@@ -13,14 +13,12 @@ import basetest
 from cssutils.tokenize import Tokenizer
 from cssutils.token import Token
 
-
 class TokenizerTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         #log = cssutils.errorhandler.ErrorHandler()
         self.tokenizer = Tokenizer()
         self.ttype = Token
-
 
     def test_tokenize(self):
         "Tokenizer tests"
@@ -117,15 +115,18 @@ class TokenizerTestCase(basetest.BaseTestCase):
             # escape inside string, escape end removed!
             u'"\\29 a "': [(1, 1, tt.STRING, u'"\\29 a "')],
 
-            # HTML CDO and CDC
+            # HTML CDO and CDC are filtered out by tokenizer
             u'1 <!-- x --> 2': [(1, 1, tt.NUMBER, u'1'), (1, 2, tt.S, u' '),
-                                (1, 3, tt.CDO, u'<!--'), (1, 7, tt.S, u' '),
+                                #(1, 3, tt.CDO, u'<!--'), 
+                                (1, 7, tt.S, u' '),
                                 (1, 8, tt.IDENT, u'x'), (1, 9, tt.S, u' '),
-                                (1, 10, tt.CDC, u'-->'), (1, 13, tt.S, u' '),
+                                #(1, 10, tt.CDC, u'-->'), 
+                                (1, 13, tt.S, u' '),
                                 (1, 14, tt.NUMBER, u'2')],
-            u'<!--"--><!--"-->': [(1, 1, tt.CDO, u'<!--'),
+            u'<!--"--><!--"-->': [#(1, 1, tt.CDO, u'<!--'),
                                   (1, 5, tt.STRING, u'"--><!--"'),
-                                  (1, 14, tt.CDC, u'-->')],
+                                  #(1, 14, tt.CDC, u'-->')
+                                  ],
 
             # PERCENTAGE
             u'1 2% 3': [(1, 1, tt.NUMBER, u'1'),
