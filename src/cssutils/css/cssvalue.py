@@ -171,24 +171,39 @@ class CSSValue(cssutils.util.Base):
                     self._valuestr(cssText), msg))
             return
 
-        numvalues = 0
+        numvalues = numcommas = 0
         newseq = []
         i, imax = 0, len(tokens)
         while i < imax:
             t = tokens[i]
             if self._ttypes.S == t.type: # add single space
-                if not newseq or newseq[-1] == u' ':
-                    pass # not 1st and no 2 spaces after each other
+                if not newseq or newseq[-1] in (u', ', u' '):
+                    # not 1st and no 2 spaces after each other
+                    # also no space after a comma
+                    pass 
                 else:
                     newseq.append(u' ')
             elif self._ttypes.COMMENT == t.type: # just add
                 newseq.append(cssutils.css.CSSComment(t))
-            elif t.type in (
-                self._ttypes.SEMICOLON, self._ttypes.IMPORTANT_SYM) or\
-                u':' == t.value:
-                self._log.error(u'CSSValue: Syntax error.', t)
-                return
-            elif t.type == self._ttypes.FUNCTION:
+            elif t.type == self._ttypes.COMMA:
+                if newseq and newseq[-1] == u' ':
+                    # TODO: COMMA is set as ", " and used as this later
+                    # SHOULD be in serializer...
+                    # so only a space OR a comma between values
+                    newseq[-1] = u', '
+                else:
+                    newseq.append(u', ')
+                numcommas += 1
+            elif t.type in (self._ttypes.IDENT, 
+                            self._ttypes.STRING,
+                            self._ttypes.HASH,
+                            self._ttypes.NUMBER,
+                            self._ttypes.PERCENTAGE,
+                            self._ttypes.DIMENSION,
+                            self._ttypes.URI):
+                newseq.append(t.value)
+                numvalues += 1
+            elif self._ttypes.FUNCTION == t.type:
                 _functokens, endi = self._tokensupto(
                     tokens, funcendonly=True)
                 _func = []
@@ -197,9 +212,13 @@ class CSSValue(cssutils.util.Base):
                 newseq.append(u''.join(_func))
                 i += endi #-1
                 numvalues += 1
+#            elif t.type in (
+#                self._ttypes.SEMICOLON, self._ttypes.IMPORTANT_SYM) or\
+#                u':' == t.value:
+#                self._log.error(u'CSSValue: Syntax error.', t)
+#                return
             else:
-                newseq.append(t.value)
-                numvalues += 1
+                self._log.error(u'CSSValue: Unknown value: "%s".' % t)
 
             i += 1
 
@@ -228,7 +247,11 @@ class CSSValue(cssutils.util.Base):
                 self.__class__ = CSSValue # reset
             elif numvalues == 1:
                 self.__class__ = CSSPrimitiveValue
-            elif numvalues > 1 and u' ' in newseq:
+            elif numvalues > 1 and numcommas == numvalues - 1:
+                # e.g. value for font-family: a, b
+                self.__class__ = CSSPrimitiveValue
+            elif numvalues > 1:
+                # separated by S
                 self.__class__ = CSSValueList
                 self._init() # inits CSSValueList
             else:
@@ -417,7 +440,12 @@ class CSSPrimitiveValue(CSSValue):
 
         #if self.valid == False:
         #    primitiveType = CSSPrimitiveValue.CSS_UNKNOWN
-        if t.type == Token.HASH:
+        alltypes = set([x.type for x in tokens])
+        commalisttypes = set([Token.COMMA, Token.IDENT, Token.STRING])
+        if commalisttypes.issubset(alltypes):
+            # special case: e.g. for font-family: a, b;
+            primitiveType = CSSPrimitiveValue.CSS_STRING
+        elif t.type == Token.HASH:
             # special case, maybe should be converted to rgb in any case?
             primitiveType = CSSPrimitiveValue.CSS_RGBCOLOR
         else:
@@ -642,8 +670,24 @@ class CSSPrimitiveValue(CSSValue):
         if CSSPrimitiveValue.CSS_STRING == self._primitiveType:
             self.cssText = u'"%s"' % stringValue.replace(u'"', ur'\\"')
         elif CSSPrimitiveValue.CSS_URI == self._primitiveType:
-            if stringValue.find(u')') > -1:
-                stringValue = '"%s"' % stringValue.replace(u'"', ur'\\"')
+            # Some characters appearing in an unquoted URI, such as 
+            # parentheses, commas, whitespace characters, single quotes 
+            # (') and double quotes ("), must be escaped with a backslash
+            # so that the resulting URI value is a URI token: 
+            # '\(', '\)', '\,'.
+            # 
+            # Here the URI is set in quotes alltogether!
+            if u'(' in stringValue or\
+               u')' in stringValue or\
+               u',' in stringValue or\
+               u'"' in stringValue or\
+               u'\'' in stringValue or\
+               u'\n' in stringValue or\
+               u'\t' in stringValue or\
+               u'\r' in stringValue or\
+               u'\f' in stringValue or\
+               u' ' in stringValue:
+                stringValue = '"%s"' % stringValue.replace(u'"', ur'\"')
             self.cssText = u'url(%s)' % stringValue
         elif CSSPrimitiveValue.CSS_ATTR == self._primitiveType:
             self.cssText = u'attr(%s)' % stringValue
@@ -722,13 +766,53 @@ class CSSValueList(CSSValue):
         "called by CSSValue if newly identified as CSSValueList"
         self._items = []
         newseq = []
-        for v in self.seq: 
+        i, max = 0, len(self.seq)
+        while i < max:
+            v = self.seq[i]
             if type(v) in types.StringTypes and not self.__ws.match(v):
-                o = CSSValue(cssText=v, _propertyName=self._propertyName)
+                if i+1 < max and self.seq[i+1] == u', ':
+                    # a comma separated list of values as ONE value
+                    # e.g. font-family: a,b                    
+                    fullvalue = [v]
+                    expected = 'comma' # or 'value'
+                    for j in range(i+1, max):
+                        testv = self.seq[j]
+                        if u' ' == testv: # a single value follows
+                            break
+                        elif u', ' == testv and expected == 'comma':
+                            fullvalue.append(testv)
+                            expected = 'value'
+                        elif u', ' != testv and expected == 'value':
+                            fullvalue.append(testv)
+                            expected = 'comma'
+                        else:
+                            self._log.error(
+                                u'CSSValueList: Unknown syntax: "%s".'
+                                % testv)
+                            return
+                    if expected == 'value':
+                        self._log.error(
+                            u'CSSValueList: Unknown syntax: "%s".'
+                            % u''.join(self.seq))
+                        return
+                    # setting _propertyName this way does not work 
+                    # for compound props like font!                 
+                    i += len(fullvalue) - 1
+                    o = CSSValue(cssText=u''.join(fullvalue), 
+                             _propertyName=self._propertyName)
+                else:
+                    # a single value, u' ' or nothing should be following
+                    o = CSSValue(cssText=v, _propertyName=self._propertyName)
+                        
                 self._items.append(o)
                 newseq.append(o)
+
             else:
+                # S (or TODO: comment?)
                 newseq.append(v)
+                
+            i += 1
+            
         self.seq = newseq
    
     def _getLength(self):
