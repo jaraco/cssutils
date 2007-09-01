@@ -551,7 +551,8 @@ class Tokenizer(object):
             # add EOF token if from parse or CSSStyleSheet.cssText
             self.addtoken(u'EOF', tokentype.EOF)
 
-        return self.tokens
+        return [t for t in self.tokens
+                  if t.type not in (tokentype.CDO, tokentype.CDC)]
 
 
 if __name__ == '__main__':
