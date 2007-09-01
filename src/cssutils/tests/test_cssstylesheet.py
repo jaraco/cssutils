@@ -19,7 +19,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
         self.rule = cssutils.css.CSSStyleRule()
 
-
     def test_init(self):
         "CSSStyleSheet.__init__()"
         self.assertEqual(False, self.s._readonly)
@@ -32,7 +31,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(None, self.s.ownerNode)
         self.assertEqual(None, self.s.parentStyleSheet)
         self.assertEqual(u'', self.s.title)
-
 
     def test_NoModificationAllowedErr(self):
         "CSSStyleSheet NoModificationAllowedErr"
@@ -48,7 +46,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
                           css.insertRule, self.rule, 0)
         self.assertRaises(xml.dom.NoModificationAllowedErr,
                           css.deleteRule, 0)
-
 
     def test_cssText_HierarchyRequestErr(self):
         "CSSStyleSheet.cssText HierarchyRequestErr"
@@ -77,7 +74,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.do_raise_r(tests)
         self.do_raise_p(tests)
 
-
     def test_cssText_SyntaxErr(self):
         """CSSStyleSheet.cssText SyntaxErr
 
@@ -93,7 +89,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             }
         self.do_raise_r(tests)
         self.do_raise_p(tests)
-
 
     def test_cssText(self):
         "CSSStyleSheet.cssText"
@@ -116,6 +111,25 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";',
             u'@namespace a "x";\n@x;': None,
             u'@namespace a "x";\na {}': None,
+            # HTML comment test, delimiters are simply filtered
+            u'''body { color: red }
+<!-- comment -->
+body { color: blue }
+body { color: pink }
+<!-- comment -->
+body { color: green }''': 
+                u'''body {
+    color: red
+    }
+comment  body {
+    color: blue
+    }
+body {
+    color: pink
+    }
+comment  body {
+    color: green
+    }'''
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
@@ -125,7 +139,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         @media all {/*1*/}@page {margin: 0}a {}@unknown;/*comment*/'''
         for r in s.cssRules:
             self.assertEqual(s, r.parentStyleSheet)
-
 
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule()"
@@ -157,7 +170,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(1, self.s.cssRules.length)
         self.assertEqual(u'@import "x";', self.s.cssText)
 
-
     def _gets(self):
         # complete
         self.cr = cssutils.css.CSSCharsetRule('ascii')
@@ -183,7 +195,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(u'@charset "ascii";\n@import url(x);\n@namespace "uri";\n@media all {\n    m {}\n    }\na {}\n@media all {\n    m {}\n    }\n@page {\n    margin: 0\n    }\na {}', s.cssText)
         return s, s.cssRules.length
 
-
     def test_insertRule(self):
         "CSSStyleSheet.insertRule()"
         s, L = self._gets()
@@ -195,7 +206,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
                   s.insertRule, self.sr, s.cssRules.length + 1)
         #   check if rule is really not in
         self.assertEqual(L, s.cssRules.length)
-
 
     def _insertRule(self, rules, notbefore, notafter, anywhere):
         """
