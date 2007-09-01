@@ -1,31 +1,67 @@
+# -*- coding: utf-8 -*-
 import sys
-
 from pprint import pprint as pp
 import cssutils
 
 if 0: # tokenize
-    css='rect(1)'
+    css='''body { color: red }
+<!-- comment -->
+body { color: blue }
+body { color: pink }
+<!-- comment -->
+body { color: green }
+'''
     t = cssutils.tokenize.Tokenizer()
     pp(t.tokenize(css))
     print t.tokenize(css)[0].value
     sys.exit()
 
+if 0: # parse
+    css='''body { color: red }
+<!-- comment -->
+body { color: blue }
+body { color: pink }
+<!-- comment -->
+body { color: green }
+'''
+    sheet = cssutils.parseString(css)
+    print sheet.cssText
+    
+    sys.exit()
+    
+    s = cssutils.parse('../sheets/ll.css')
+    for r in s.cssRules:
+        st = r.style
+        for p in st:
+            v = st.getPropertyCSSValue(p).cssText
+            if v.find(',') > -1:
+                print p, ':', v            
+    sys.exit()
 
-if 1: # URL change
-    cssutils.ser.prefs.keepAllProperties = True
 
-    css='''a { 
-        margin: 0px;
-        background-image: url(c) !important;
-        background-\image: url(b);
-        background: url(a) no-repeat !important;    
+if 1: # parse
+    css = '''a {
+        font: normal 1em arial, serif;
+        font-family: "a", "b", c;
+        voice-family: comedian, male;
         }'''
-    ss = cssutils.parseString(css)
-    ru = ss.cssRules[0]
-    st = ru.style
-    st.replaceUrls(lambda old: "NEW" + old)
-    print st.cssText
+    #css = '''a{font: normal 1em   a   ,    "b" UNKN}'''
+    s = cssutils.parseString(css)            
+    print s.cssText
+    for p in  s.cssRules[0].style:
+        v = p.cssValue
+        print v
+        if v.cssValueType == v.CSS_VALUE_LIST:
+            for vv in v:
+                print vv
+        print    
+    sys.exit()
 
+if 1: 
+    v, p = '"a", "b"', 'font-family'    
+    v = cssutils.css.CSSValue(v, _propertyName=p)
+    print v
+    
     sys.exit()
 
 
