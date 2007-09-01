@@ -514,8 +514,8 @@ class CSSSerializer(object):
         else:
             out = []
             for part in cssvalue.seq:
-                # comments or CSSValue if a CSSValueList
                 if hasattr(part, 'cssText'): 
+                    # comments or CSSValue if a CSSValueList
                     out.append(part.cssText)
                 else:
                     out.append(part)
