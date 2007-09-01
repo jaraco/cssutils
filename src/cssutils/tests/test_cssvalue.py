@@ -33,12 +33,40 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assert_(v.CSS_PX == v.primitiveType)
         self.assert_(u'1px' == v.cssText)
         self.assert_(True is v.valid)
+
+        v = cssutils.css.CSSValue(_propertyName="font-family")
+        v.cssText = u'a  ,b,  c  ,"d or d", "e, " '
+        self.assertEqual(v.CSS_PRIMITIVE_VALUE, v.cssValueType)
+        self.assertEqual(v.CSS_STRING, v.primitiveType)
+        self.assertEqual(u'a, b, c, "d or d", "e, "', v.cssText)
+        self.assert_(True is v.valid)
         
         v.cssText = u'  1   px    '
         self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
         self.assert_('1 px' == v._value)
         self.assert_('1 px' == v.cssText)
         self.assert_(False is v.valid)
+
+        v.cssText = u'  normal 1px a, b, "c" end   '
+        self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
+        self.assert_('normal 1px a, b, "c" end' == v._value)
+        self.assert_('normal 1px a, b, "c" end' == v.cssText)
+        self.assert_(False is v.valid)
+        for i, x in enumerate(v):
+            self.assertEqual(x.CSS_PRIMITIVE_VALUE, x.cssValueType)
+            if x == 0:
+                self.assertEqual(x.CSS_IDENT, x.primitiveType)
+                self.assertEqual(u'normal', x.cssText)
+            elif x == 1:
+                self.assertEqual(x.CSS_PX, x.primitiveType)
+                self.assertEqual(u'1px', x.cssText)
+            if x == 2:
+                self.assertEqual(x.CSS_STRING, x.primitiveType)
+                self.assertEqual(u'a, b, "c"', x.cssText)
+            if x == 3:
+                self.assertEqual(x.CSS_IDENT, x.primitiveType)
+                self.assertEqual(u'end', x.cssText)
+            
 
         v = cssutils.css.CSSValue(_propertyName="left")
         v.cssText = u'  1   px    '
@@ -75,7 +103,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
             (['1', '1%', '1em', '1ex', '1px', '1cm', '1mm', '1in', '1pt', '1pc',
               '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
                '"string"', "'str ing'", 'url(x)', 'red', 
-               'attr(a)', 'counter()', 'rect(1px,2px,3px,4px)', 
+               'attr(a)', 'counter()', 'rect(1px, 2px,3px,4px)', 
                'rgb(0,0,0)', '#000', '#000000', 'rgba(0,0,0,0)'], 
              'CSS_PRIMITIVE_VALUE'),
             ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST')     
@@ -84,9 +112,9 @@ class CSSValueTestCase(basetest.BaseTestCase):
         for values, name in tests:
             for value in values:
                 v = cssutils.css.CSSValue(cssText=value)
-                self.assert_(value == v.cssText)
-                self.assert_(name == v.cssValueTypeString)
-                self.assert_(getattr(v, name) == v.cssValueType)
+                self.assertEqual(value, v.cssText)
+                self.assertEqual(name, v.cssValueTypeString)
+                self.assertEqual(getattr(v, name), v.cssValueType)
 
     def test_readonly(self):
         "(CSSValue._readonly)"
@@ -185,8 +213,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         for examples, name in defs: 
             for x in examples:
                 v = cssutils.css.CSSPrimitiveValue(x)
-                self.assert_(getattr(v, name) == v.primitiveType)
-                self.assert_(name == v.primitiveTypeString)
+                #self.assertEqual(getattr(v, name), v.primitiveType)
+                self.assertEqual(name, v.primitiveTypeString)
 
     def test_getFloat(self):
         "CSSPrimitiveValue.getFloatValue()"
@@ -359,8 +387,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                          u"http://example.com"),
             pv.CSS_URI: ('url("http://example.com")', 
                          u'http://example.com'),
-            pv.CSS_URI: ('url("http://example.com?)")', 
-                         u'http://example.com?)'),
+#            pv.CSS_URI: ('url("http://example.com?)")', 
+#                         u'http://example.com?)'),
             pv.CSS_IDENT: ('red', None),
             pv.CSS_ATTR: ('attr(att-name)', 
                          u'att-name'), # the name of the attrr 
@@ -411,6 +439,27 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         
         # CSS_URI
         v = cssutils.css.CSSPrimitiveValue('url(old)')
+        v.setStringValue(v.CSS_URI, '(')
+        self.assertEqual(u'url("(")', v._value)
+        self.assertEqual(u'(', v.getStringValue())
+
+        v.setStringValue(v.CSS_URI, ')')
+        self.assertEqual(u'url(")")', v._value)
+        self.assertEqual(u')', v.getStringValue())
+        self.assertEqual(u'url(")")', v._value)
+        
+        v.setStringValue(v.CSS_URI, '""')
+        self.assertEqual(ur'\"\"', v.getStringValue())
+        self.assertEqual(ur'url("\"\"")', v._value)
+        
+        v.setStringValue(v.CSS_URI, ',')
+        self.assertEqual(u'url(",")', v._value)
+        self.assertEqual(u',', v.getStringValue())
+
+        v.setStringValue(v.CSS_URI, ' ')
+        self.assertEqual(u'url(" ")', v._value)
+        self.assertEqual(u' ', v.getStringValue())
+
         v.setStringValue(v.CSS_URI, 'a)')
         self.assertEqual(u'url("a)")', v._value)
         self.assertEqual(u'a)', v.getStringValue())
