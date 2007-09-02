@@ -357,7 +357,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             initialType, initialValue = test
             pv = cssutils.css.CSSPrimitiveValue(initialValue)
             for setType, setValue, exp, msg in tests[test]:
-                if type(exp) == types.TypeType:
+                if type(exp) == types.TypeType or\
+                   type(exp) == types.ClassType: # 2.4 compactibility
                     if msg:
                         self.assertRaisesMsg(
                             exp, msg, pv.setFloatValue, setType, setValue)
