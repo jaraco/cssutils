@@ -7,11 +7,13 @@ CSS Cascading Style Sheets library for Python
 :Author: $LastChangedBy$
 :Copyright: 2004-2007 Christof Hoeke
 :Date: $LastChangedDate$
-:Version: trunk, $LastChangedRevision$
+:Version: 0.9.3a2 (rev $LastChangedRevision$)
+
+A Python package to parse and build CSS Cascading Style Sheets.
+
+Partly implements the DOM Level 2 Style `Stylesheets  <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_ and `CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ interfaces . An implementation of the `WD CSS Module: Namespaces <http://www.w3.org/TR/css3-namespace/>`_ which has no official DOM yet is included since v0.9.1.
 
 Published under the LGPL, see http://cthedot.de/cssutils/license.html
-
-A Python package to parse and build CSS Cascading Style Sheets. Partly implements the `DOM Level 2 Style <http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/>`_ Stylesheets and DOM Level 2 CSS interfaces.
 
 Please visit http://cthedot.de/cssutils/ for full details and updates.
 
@@ -65,8 +67,12 @@ Version 0.9x
 ------------
 
 HEAD
+    TODO: 
+        - rethink <!-- and -->
+        - new tokenizer
 
-0.9.3a1
+
+0.9.3a1 - 070905
     - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList. 
         
         Not yet implemented are:        
@@ -827,5 +833,6 @@ Version 0.1x
 ------------
     0.10 - 031221
     first version to try if i can bring it to work at all
+    
     only a prettyprinter included, no builder
 
