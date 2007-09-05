@@ -3,7 +3,7 @@ backlog
 ========
 :author: $LastChangedBy$
 :date: $LastChangedDate$
-:version: 0.9.2b4, $LastChangedRevision$
+:version: $LastChangedRevision$
 
 `Index <../index.txt>`_
 
@@ -40,12 +40,12 @@ serializer
         also for rgba()
   ser.prefs.COLORS_FROM_SOURCE
         use colors as used in CSS Source
-        
+
   additionally:
     ser.prefs.NAMES_COLORS
         e.g. white for #fff or rgb(100%, 100%, 100%)
-        
-    
+
+
 - **refactor**: all preferences values should be constansts like above
 
 specification
@@ -189,7 +189,7 @@ implement rgba
     Red = #FF0000 		Blue = #0000FF
     Purple = #800080 		Teal = #008080
     Fuchsia = #FF00FF 		Aqua = #00FFFF
-    
+
 - "transparent"
 - rgba(R, G, B, opacity): opacity in range (0,1)
 - hsl(), hsla() ?
