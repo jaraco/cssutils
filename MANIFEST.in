@@ -5,7 +5,6 @@ include src/csscapture.py
 exclude PLAN.txt
 exclude MANIFEST.in
 exclude *.bat
-exclude *.css
 exclude dist/*.*
 exclude src/_old/*.*
 exclude src/*/_old/*.*
