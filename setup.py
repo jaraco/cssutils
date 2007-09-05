@@ -7,7 +7,7 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b3'
+__version__ = '0.9.3a1'
 
 #import ez_setup
 #ez_setup.use_setuptools()
@@ -44,7 +44,7 @@ official DOM yet is included from v0.9.1.''',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
     platforms='Python 2.4 and later.',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        #'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
