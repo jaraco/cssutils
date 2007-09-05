@@ -43,7 +43,7 @@ __all__ = ['css', 'stylesheets',
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b1 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 # log, internal use only TODO: make configurable
 # must be 1st import!
