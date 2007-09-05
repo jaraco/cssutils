@@ -6,20 +6,25 @@ CSS Cascading Style Sheets library for Python
 ---------------------------------------------
 :author: $LastChangedBy$
 :date: $LastChangedDate$
-:version: 0.9.2b4, $LastChangedRevision$
+:version: 0.9.3a2 (rev $LastChangedRevision$)
 
 Available documentation
 =======================
-* `README <README.txt>`_
-* `API docs (Epydoc) <doc/index.html>`_
-* `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
-* `cssutils at cthedot <http://cthedot.de/cssutils/>`_
 
-+ `Serializing and serializer preferences <documentation/serialize.txt>`_
-+ `CSSStyleDeclaration <documentation/cssstyledeclaration.txt>`_
-+ `CSS values <documentation/values.txt>`_
 
-* `backlog <documentation/backlog.txt>`_
+General
+	* `README <README.txt>`_
+	* `API docs (Epydoc) <doc/index.html>`_
+	* `backlog <documentation/backlog.txt>`_
+	* `license <LICENSE.txt>`_
 
-.. * `license <LICENSE.txt>`_
+Details
+	* `CSSStyleDeclaration <documentation/cssstyledeclaration.txt>`_
+	* `CSS values <documentation/values.txt>`_
+	* `Serializing and serializer preferences <documentation/serialize.txt>`_
+
+see also
+	* `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
+	* `cssutils at cthedot <http://cthedot.de/cssutils/>`_
+
 
