@@ -4,7 +4,7 @@
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2b2 $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import string
 import xml.dom
