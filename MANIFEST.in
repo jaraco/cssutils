@@ -10,3 +10,4 @@ exclude src/_old/*.*
 exclude src/*/_old/*.*
 exclude src/_todo/*.*
 exclude src/*/_todo/*.*
+include showdocs.bat
