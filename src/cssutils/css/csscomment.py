@@ -1,5 +1,5 @@
 """CSSComment is not defined in DOM Level 2 at all but a cssutils defined
-class.
+class only.
 Implements CSSRule which is also extended for a CSSComment rule type
 """
 __all__ = ['CSSComment']
@@ -9,10 +9,8 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssrule
 import cssutils
-
 
 class CSSComment(cssrule.CSSRule):
     """
@@ -43,7 +41,6 @@ class CSSComment(cssrule.CSSRule):
 
         self._readonly = readonly
 
-
     def _getCssText(self):
         """returns serialized property cssText"""
         return cssutils.ser.do_CSSComment(self)
@@ -68,19 +65,16 @@ class CSSComment(cssrule.CSSRule):
           Raised if the rule is readonly.
         """
         super(CSSComment, self)._setCssText(cssText)
-        tokens = self._tokenize(cssText)
 
-        if not tokens or tokens[0].type != self._ttypes.COMMENT:
-            self._log.error(u'CSSComent: Not a CSSComment: %s' %
+        tokens = self._tokenize2(cssText)
+        if not tokens:
+            self._log.error(u'CSSComment: Syntax error, no comment given.')
+        if self._type(tokens[0]) != self._pds.COMMENT or len(tokens) > 1:
+            self._log.error(u'CSSComment: Not a CSSComment: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
-        elif len(tokens) > 1:
-            self._log.error(
-                u'CSSComment: Syntax error. %s' % self._valuestr(
-                    cssText))
         else:
-            token = tokens[0]
-            self._cssText = token.value
+            self._cssText = self._value(tokens[0])
 
     cssText = property(_getCssText, _setCssText,
         doc=u"(cssutils) Textual representation of this comment")
@@ -88,7 +82,7 @@ class CSSComment(cssrule.CSSRule):
     def __repr__(self):
         return "cssutils.css.%s(cssText=%r)" % (
                 self.__class__.__name__, self.cssText)
-    
+
     def __str__(self):
         return "<cssutils.css.%s object at 0x%x>" % (
                 self.__class__.__name__, id(self))
