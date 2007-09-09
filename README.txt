@@ -67,9 +67,9 @@ Version 0.9x
 ------------
 
 HEAD
-    TODO: 
-        - rethink <!-- and -->
-        - new tokenizer
+    *INWORK*
+        - New Tokenizer which probably breaks almost everything for now
+        - rethink handling of ``<!--`` and ``-->`` in parser
 
 
 0.9.3a1 - 070905
