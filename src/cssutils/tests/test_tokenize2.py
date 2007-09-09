@@ -1,6 +1,13 @@
 # -*- coding: iso-8859-1 -*-
-"""
-testcases for new cssutils.tokenize.Tokenizer
+"""testcases for new cssutils.tokenize.Tokenizer
+
+TODO:
+    - escape ends with explicit space but \r\n as single space
+    - ur'"\""': [('STRING', ur'"\""', 1, 1)],
+    - font-face with escaped "-"
+    - ! comment important
+
+    + old tests as new ones are **not complete**!
 """
 __author__ = '$LastChangedBy: cthedot $'
 __date__ = '$LastChangedDate: 2007-09-01 15:56:36 +0200 (Sa, 01 Sep 2007) $'
@@ -8,7 +15,7 @@ __version__ = '$LastChangedRevision: 302 $'
 
 import xml.dom
 import basetest
-from cssutils.newtokenize import *
+from cssutils.tokenize2 import *
 from cssutils.token import Token
 
 class TokenizerTestCase(basetest.BaseTestCase):
@@ -52,7 +59,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('STRING', u"''", 1, 2),
                  ('S', u' ', 1, 4)],
         # TODO:
-        ##u'"\\""': [('STRING', u'"\\""', 1, 1)],
+        ##ur'"\""': [('STRING', ur'"\""', 1, 1)],
 
         u"'\\''": [('STRING', u"'\\''", 1, 1)],
         u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
@@ -201,27 +208,60 @@ class TokenizerTestCase(basetest.BaseTestCase):
                   ('S', u' ', 1, 3)],
         }
 
-
-    tests2_1 = {
+    tests2 = {
+        # escapes work not for a-f!
         # IMPORT_SYM
         u' @import ': [('S', u' ', 1, 1),
                  ('IMPORT_SYM', u'@import', 1, 2),
                  ('S', u' ', 1, 9)],
-        ##u'@IMport': [('IMPORT_SYM', u'@IM\\port', 1, 1)],
+        u'@IMPORT': [('IMPORT_SYM', u'@IMPORT', 1, 1)],
+        ur'@\i\m\p\o\r\t': [('IMPORT_SYM', ur'@\i\m\p\o\r\t', 1, 1)],
+        ur'@\I\M\P\O\R\T': [('IMPORT_SYM', ur'@\I\M\P\O\R\T', 1, 1)],
+        ur'@\49 \04d\0050\0004f\000052\54': [('IMPORT_SYM',
+                                        ur'@\49 \04d\0050\0004f\000052\54',
+                                        1, 1)],
+        ur'@\69 \06d\0070\0006f\000072\74': [('IMPORT_SYM',
+                                        ur'@\69 \06d\0070\0006f\000072\74',
+                                        1, 1)],
 
         # PAGE_SYM
         u' @page ': [('S', u' ', 1, 1),
                  ('PAGE_SYM', u'@page', 1, 2),
                  ('S', u' ', 1, 7)],
+        u'@PAGE': [('PAGE_SYM', u'@PAGE', 1, 1)],
+        ur'@\pa\ge': [('PAGE_SYM', ur'@\pa\ge', 1, 1)],
+        ur'@\PA\GE': [('PAGE_SYM', ur'@\PA\GE', 1, 1)],
+        ur'@\50\41\47\45': [('PAGE_SYM', ur'@\50\41\47\45', 1, 1)],
+        ur'@\70\61\67\65': [('PAGE_SYM', ur'@\70\61\67\65', 1, 1)],
+
         # MEDIA_SYM
         u' @media ': [('S', u' ', 1, 1),
                  ('MEDIA_SYM', u'@media', 1, 2),
                  ('S', u' ', 1, 8)],
+        u'@MEDIA': [('MEDIA_SYM', u'@MEDIA', 1, 1)],
+        ur'@\med\ia': [('MEDIA_SYM', ur'@\med\ia', 1, 1)],
+        ur'@\MED\IA': [('MEDIA_SYM', ur'@\MED\IA', 1, 1)],
+        u'@\\4d\n\\45\r\\44\t\\49\r\n\\41\f': [('MEDIA_SYM',
+                                        u'@\\4d\n\\45\r\\44\t\\49\r\n\\41\f',
+                                        1, 1)],
+        u'@\\6d\n\\65\r\\64\t\\69\r\n\\61\f': [('MEDIA_SYM',
+                                        u'@\\6d\n\\65\r\\64\t\\69\r\n\\61\f',
+                                        1, 1)],
+
         # FONT_FACE_SYM
         u' @font-face ': [('S', u' ', 1, 1),
                  ('FONT_FACE_SYM', u'@font-face', 1, 2),
                  ('S', u' ', 1, 12)],
-        # CHARSET_SYM
+        u'@FONT-FACE': [('FONT_FACE_SYM', u'@FONT-FACE', 1, 1)],
+        ur'@f\o\n\t\-face': [('FONT_FACE_SYM', ur'@f\o\n\t\-face', 1, 1)],
+        ur'@F\O\N\T\-FACE': [('FONT_FACE_SYM', ur'@F\O\N\T\-FACE', 1, 1)],
+        # TODO: "-" as hex!
+        ur'@\46\4f\4e\54\-\46\41\43\45': [('FONT_FACE_SYM',
+            ur'@\46\4f\4e\54\-\46\41\43\45', 1, 1)],
+        ur'@\66\6f\6e\74\-\66\61\63\65': [('FONT_FACE_SYM',
+            ur'@\66\6f\6e\74\-\66\61\63\65', 1, 1)],
+
+        # CHARSET_SYM only if "@charset"!
         u' @charset ': [('S', u' ', 1, 1),
                  ('CHARSET_SYM', u'@charset', 1, 2),
                  ('S', u' ', 1, 10)],
@@ -232,6 +272,14 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' @namespace ': [('S', u' ', 1, 1),
                  ('NAMESPACE_SYM', u'@namespace', 1, 2),
                  ('S', u' ', 1, 12)],
+        ur'@NAMESPACE': [('NAMESPACE_SYM', ur'@NAMESPACE', 1, 1)],
+        ur'@\na\me\s\pace': [('NAMESPACE_SYM', ur'@\na\me\s\pace', 1, 1)],
+        ur'@\NA\ME\S\PACE': [('NAMESPACE_SYM', ur'@\NA\ME\S\PACE', 1, 1)],
+        ur'@\4e\41\4d\45\53\50\41\43\45': [('NAMESPACE_SYM',
+            ur'@\4e\41\4d\45\53\50\41\43\45', 1, 1)],
+        ur'@\6e\61\6d\65\73\70\61\63\65': [('NAMESPACE_SYM',
+            ur'@\6e\61\6d\65\73\70\61\63\65', 1, 1)],
+
         # ATKEYWORD
         u' @unknown ': [('S', u' ', 1, 1),
                  ('ATKEYWORD', u'@unknown', 1, 2),
@@ -257,11 +305,23 @@ class TokenizerTestCase(basetest.BaseTestCase):
         #{invalid}        {return INVALID; /* unclosed string */}
 
         # IMPORTANT_SYM
+        # TODO: check if comment between "!" and "important"
         u' !important ': [('S', u' ', 1, 1),
                  ('IMPORTANT_SYM', u'!important', 1, 2),
                  ('S', u' ', 1, 12)],
         u'! important': [('IMPORTANT_SYM', u'! important', 1, 1)],
         u'!\n\timportant': [('IMPORTANT_SYM', u'!\n\timportant', 1, 1)],
+        u'!IMPORTANT': [('IMPORTANT_SYM', u'!IMPORTANT', 1, 1)],
+        ur'!\i\m\p\o\r\ta\n\t': [('IMPORTANT_SYM',
+                                  ur'!\i\m\p\o\r\ta\n\t', 1, 1)],
+        ur'!\I\M\P\O\R\Ta\N\T': [('IMPORTANT_SYM',
+                                  ur'!\I\M\P\O\R\Ta\N\T', 1, 1)],
+        ur'!\49\4d\50\4f\52\54\41\4e\54': [('IMPORTANT_SYM',
+                                            ur'!\49\4d\50\4f\52\54\41\4e\54',
+                                            1, 1)],
+        ur'!\69\6d\70\6f\72\74\61\6e\74': [('IMPORTANT_SYM',
+                                            ur'!\69\6d\70\6f\72\74\61\6e\74',
+                                            1, 1)],
 
         # .
         u' . ': [('S', u' ', 1, 1),
@@ -279,9 +339,26 @@ class TokenizerTestCase(basetest.BaseTestCase):
         "Tokenizer line + col"
         pass
 
+    def test_tokenize(self):
+        "cssutils Tokenizer().tokenize()"
+        import cssutils.cssproductions
+        tokenizer = Tokenizer(cssutils.cssproductions.MACROS,
+                              cssutils.cssproductions.PRODUCTIONS)
+        tests = {}
+        tests.update(self.testsall)
+        tests.update(self.tests2)
+        tests.update(self.tests3)
+        for css in tests:
+            tokens = tokenizer.tokenize(css)
+            for i, actual in enumerate(tokens):
+                expected = tests[css][i]
+                self.assertEqual(expected, actual)
+
     def test_tokenizeCSS3(self):
-        "Tokenizer(CSS3_MACROS, CSS3_PRODUCTIONS).tokenize()"
-        tokenizer = Tokenizer(CSS3_MACROS, CSS3_PRODUCTIONS)
+        "CSS3 Tokenizer().tokenize()"
+        import cssutils.css3productions
+        tokenizer = Tokenizer(cssutils.css3productions.MACROS,
+                              cssutils.css3productions.PRODUCTIONS)
         tests = {}
         tests.update(self.testsall)
         tests.update(self.tests3)
@@ -292,16 +369,20 @@ class TokenizerTestCase(basetest.BaseTestCase):
                 self.assertEqual(expected, actual)
 
     def test_tokenizeCSS2_1(self):
-        "Tokenizer(CSS2_1_MACROS, CSS2_1_PRODUCTIONS).tokenize()"
-        tokenizer = Tokenizer(CSS2_1_MACROS, CSS2_1_PRODUCTIONS)
+        "CSS2 Tokenizer().tokenize()"
+        import cssutils.css2productions
+        tokenizer = Tokenizer(cssutils.css2productions.MACROS,
+                              cssutils.css2productions.PRODUCTIONS)
         tests = {}
         tests.update(self.testsall)
-        tests.update(self.tests2_1)
+        #tests.update(self.tests2)
         for css in tests:
             tokens = tokenizer.tokenize(css)
             for i, actual in enumerate(tokens):
                 expected = tests[css][i]
                 self.assertEqual(expected, actual)
+
+    # --------------
 
     def __old(self):
 
