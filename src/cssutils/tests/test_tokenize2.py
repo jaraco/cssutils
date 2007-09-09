@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 """testcases for new cssutils.tokenize.Tokenizer
 
 TODO:
@@ -21,6 +21,8 @@ from cssutils.token import Token
 class TokenizerTestCase(basetest.BaseTestCase):
 
     testsall = {
+        u'äöüß€': [('IDENT', u'äöüß€', 1, 1)],
+
         # IDENT
         u' a ': [('S', u' ', 1, 1),
                  ('IDENT', u'a', 1, 2),
@@ -33,6 +35,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'\\1\nb': [('IDENT', u'\\1\nb', 1, 1)],
         u'\\1\rb': [('IDENT', u'\\1\rb', 1, 1)],
         u'\\1\fb': [('IDENT', u'\\1\fb', 1, 1)],
+
 
         # TODO: escape ends with explicit space but \r\n as single space
         #u'\\1\r\nb': [('IDENT', u'\\1\r\nb', 1, 1)],
