@@ -7,11 +7,9 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import xml.dom
-
-from tokenize import Tokenizer
-
 import cssutils
-
+from tokenize import Tokenizer
+from tokenize2 import Tokenizer as Tokenizer2
 
 class Base(object):
     """
@@ -30,31 +28,56 @@ class Base(object):
 
     for inheriting classes helping parsing
     """
+    _log = cssutils.log
+
+    __tokenizer2 = Tokenizer2()
+    _pds = cssutils.tokenize2.CSSProductions
+
+    def _tokenize2(self, textortokens, fullsheet=False):
+        """
+        returns tokens of textortokens which may already be tokens in which
+        case simply returns input
+        """
+        if isinstance(textortokens, basestring):
+            return self.__tokenizer2.tokenize(
+                     textortokens, fullsheet=fullsheet)
+        else:
+            return textortokens # already tokenized
+
+    def _type(self, token):
+        "type of Tokenizer2 token"
+        return token[0]
+
+    def _value(self, token):
+        "value of Tokenizer2 token"
+        return token[1]
+
+    # ----
+
+    def _lex(self, seq, tokens, productions, default=None):
+        for token in tokens:
+            typ, val, lin, col = token
+            p = productions.get(typ, default)
+            if p is None:
+                self._log.Error('Unexpected token (%s, %s, %s, %s)' % token)
+            else:
+                p(seq, token)
+
+    def _S(self, seq, token):
+        "default implementation for S token"
+        pass
+
+    def _COMMENT(self, seq, token):
+        "default implementation for comment token"
+        seq.append(cssutils.css.CSSComment([token]))
+
+    def _EOF(self, seq, token):
+        "default implementation for EOF token"
+        print token
+
+    # --- OLD ---
     __tokenizer = Tokenizer()
-
-    _log = __tokenizer.log
     _ttypes = __tokenizer.ttypes
-
-    @staticmethod
-    def _normalize(x):
-        """
-        normalizes x namely replaces any \ with the empty string
-        so for x=="c\olor\" return "color"
-
-        used in Token for normalized value and CSSStyleDeclaration
-        currently
-        """
-        return x.replace(u'\\', u'').lower()
-
-
-    def _checkReadonly(self):
-        "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
-        if hasattr(self, '_readonly') and self._readonly:
-            raise xml.dom.NoModificationAllowedErr(
-                u'%s is readonly.' % self.__class__)
-            return True
-        return False
-
 
     def _tokenize(self, textortokens, _fullSheet=False):
         """
@@ -72,6 +95,24 @@ class Base(object):
                 textortokens = unicode(textortokens)
             return self.__tokenizer.tokenize(textortokens, _fullSheet)
 
+    @staticmethod
+    def _normalize(x):
+        """
+        normalizes x namely replaces any \ with the empty string
+        so for x=="c\olor\" return "color"
+
+        used in Token for normalized value and CSSStyleDeclaration
+        currently
+        """
+        return x.replace(u'\\', u'').lower()
+
+    def _checkReadonly(self):
+        "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
+        if hasattr(self, '_readonly') and self._readonly:
+            raise xml.dom.NoModificationAllowedErr(
+                u'%s is readonly.' % self.__class__)
+            return True
+        return False
 
     def _tokensupto(self, tokens,
                     blockstartonly=False,
@@ -128,21 +169,22 @@ class Base(object):
 
             i += 1
 
-##        print '--- %s ---\n' % (str(ends))
-##        print u''.join([x.value for x in tokens])
-##        print u''.join([x.value for x in resulttokens])
-##        print
-
         return resulttokens, i
-
 
     def _valuestr(self, t):
         """
-        returns string value of t (t may be string of tokenlist)
+        returns string value of t (t may be a string, a list of token tuples
+        or a single tuple in format (type, value, line, col) or a
+        tokenlist[old])
         """
         if t is None:
             return u''
         elif isinstance(t, basestring):
             return t
-        else:
+        elif isinstance(t, list) and isinstance(t[0], tuple):
+            return u''.join([x[1] for x in t])
+        elif isinstance(t, tuple): # needed?
+            return self._value(t)
+        else: # old
             return u''.join([x.value for x in t])
+
