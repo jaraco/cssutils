@@ -1,9 +1,9 @@
 """
 testcases for cssutils.codec
 """
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-08-20 22:09:16 +0200 (Mo, 20 Aug 2007) $'
-__version__ = '$LastChangedRevision: 258 $'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '$LastChangedRevision$'
 
 import unittest
 
