@@ -165,6 +165,8 @@ def encode(input, errors="strict", encoding=None):
     consumed = len(input)
     if encoding is None:
         encoding = _detectencoding(input, True)
+        if encoding.replace("_", "-").lower() == "utf-8-sig":
+            input = _fixencoding(input, u"utf-8", True)
     else:
         input = _fixencoding(input, unicode(encoding), True)
     if encoding == "css":
