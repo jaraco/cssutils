@@ -116,14 +116,14 @@ class CodecTestCase(unittest.TestCase):
             outputencoding = encoding
             if outputencoding == "utf-8-sig":
                 outputencoding = "utf-8"
-            # Check stateless decoder
+            # Check stateless decoder with encoding autodetection
             d = codecs.getdecoder("css")
             self.assertEqual(d(input.encode(encoding))[0], input.replace('"x"', '"%s"' % outputencoding))
 
             # Check stateless decoder with specified encoding
             self.assertEqual(d(input.encode(encoding), encoding=encoding)[0], input.replace('"x"', '"%s"' % outputencoding))
 
-            # Check incremental decoder
+            # Check incremental decoder with encoding autodetection
             id = codecs.getincrementaldecoder("css")()
             self.assertEqual("".join(id.iterdecode(input.encode(encoding))), input.replace('"x"', '"%s"' % outputencoding))
 
@@ -131,7 +131,7 @@ class CodecTestCase(unittest.TestCase):
             id = codecs.getincrementaldecoder("css")(encoding)
             self.assertEqual("".join(id.iterdecode(input.encode(encoding))), input.replace('"x"', '"%s"' % outputencoding))
 
-            # Check stream reader
+            # Check stream reader with encoding autodetection
             q = Queue()
             sr = codecs.getreader("css")(q)
             result = []
