@@ -163,6 +163,9 @@ class CodecTestCase(unittest.TestCase):
             # Check stateless decoder with encoding autodetection
             d = codecs.getdecoder("css")
             input = input % encoding
+            outputencoding = encoding
+            if outputencoding == "utf-8-sig":
+                outputencoding = "utf-8"
             self.assertEqual(d(input.encode(encoding))[0], input)
 
             # Check stateless decoder with specified encoding
@@ -175,6 +178,20 @@ class CodecTestCase(unittest.TestCase):
             # Check incremental decoder with specified encoding
             id = codecs.getincrementaldecoder("css")(encoding)
             self.assertEqual("".join(id.iterdecode(input.encode(encoding))), input)
+
+            # Check stream writer with encoding autodetection
+            q = Queue()
+            sw = codecs.getwriter("css")(q)
+            for c in input:
+                sw.write(c)
+            self.assertEqual(q.read().decode(encoding), input.replace('"x"', '"%s"' % outputencoding))
+
+            # Check stream writer with specified encoding
+            q = Queue()
+            sw = codecs.getwriter("css")(q, encoding=encoding)
+            for c in input:
+                sw.write(c)
+            self.assertEqual(q.read().decode(encoding), input.replace('"x"', '"%s"' % outputencoding))
 
         # Use correct declaration
         checkdecl("utf-8")
