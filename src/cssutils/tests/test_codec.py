@@ -43,51 +43,57 @@ class Queue(object):
 
 class CodecTestCase(unittest.TestCase):
 
-    def test_detectencoding(self):
-        self.assert_(codec._detectencoding('') is None)
-        self.assert_(codec._detectencoding('\xef') is None)
-        self.assertEqual(codec._detectencoding('\xef\x33'), "utf-8")
-        self.assert_(codec._detectencoding('\xef\xbb') is None)
-        self.assertEqual(codec._detectencoding('\xef\xbb\x33'), "utf-8")
-        self.assertEqual(codec._detectencoding('\xef\xbb\xbf'), "utf-8-sig")
-        self.assert_(codec._detectencoding('\xff') is None)
-        self.assertEqual(codec._detectencoding('\xff\x33'), "utf-8")
-        self.assert_(codec._detectencoding('\xff\xfe') is None)
-        self.assertEqual(codec._detectencoding('\xff\xfe\x33'), "utf-16")
-        self.assert_(codec._detectencoding('\xff\xfe\x00') is None)
-        self.assertEqual(codec._detectencoding('\xff\xfe\x00\x33'), "utf-16")
-        self.assertEqual(codec._detectencoding('\xff\xfe\x00\x00'), "utf-32")
-        self.assert_(codec._detectencoding('\x00') is None)
-        self.assertEqual(codec._detectencoding('\x00\x33'), "utf-8")
-        self.assert_(codec._detectencoding('\x00\x00') is None)
-        self.assertEqual(codec._detectencoding('\x00\x00\x33'), "utf-8")
-        self.assert_(codec._detectencoding('\x00\x00\xfe') is None)
-        self.assertEqual(codec._detectencoding('\x00\x00\x00\x33'), "utf-8")
-        self.assertEqual(codec._detectencoding('\x00\x00\x00@'), "utf-32-be")
-        self.assertEqual(codec._detectencoding('\x00\x00\xfe\xff'), "utf-32")
-        self.assert_(codec._detectencoding('@') is None)
-        self.assertEqual(codec._detectencoding('@\x33'), "utf-8")
-        self.assert_(codec._detectencoding('@\x00') is None)
-        self.assertEqual(codec._detectencoding('@\x00\x33'), "utf-8")
-        self.assert_(codec._detectencoding('@\x00\x00') is None)
-        self.assertEqual(codec._detectencoding('@\x00\x00\x33'), "utf-8")
-        self.assertEqual(codec._detectencoding('@\x00\x00\x00'), "utf-32-le")
-        self.assert_(codec._detectencoding('@c') is None)
-        self.assert_(codec._detectencoding('@ch') is None)
-        self.assert_(codec._detectencoding('@cha') is None)
-        self.assert_(codec._detectencoding('@char') is None)
-        self.assert_(codec._detectencoding('@chars') is None)
-        self.assert_(codec._detectencoding('@charse') is None)
-        self.assert_(codec._detectencoding('@charset') is None)
-        self.assert_(codec._detectencoding('@charset ') is None)
-        self.assert_(codec._detectencoding('@charset "') is None)
-        self.assert_(codec._detectencoding('@charset "x') is None)
-        self.assertEqual(codec._detectencoding('@charset ""'), "")
-        self.assertEqual(codec._detectencoding('@charset "x"'), "x")
-        self.assert_(codec._detectencoding("@", False) is None)
-        self.assertEqual(codec._detectencoding("@", True), "utf-8")
-        self.assert_(codec._detectencoding("@c", False) is None)
-        self.assertEqual(codec._detectencoding("@c", True), "utf-8")
+    def test_detectencoding_str(self):
+        self.assert_(codec._detectencoding_str('') is None)
+        self.assert_(codec._detectencoding_str('\xef') is None)
+        self.assertEqual(codec._detectencoding_str('\xef\x33'), "utf-8")
+        self.assert_(codec._detectencoding_str('\xef\xbb') is None)
+        self.assertEqual(codec._detectencoding_str('\xef\xbb\x33'), "utf-8")
+        self.assertEqual(codec._detectencoding_str('\xef\xbb\xbf'), "utf-8-sig")
+        self.assert_(codec._detectencoding_str('\xff') is None)
+        self.assertEqual(codec._detectencoding_str('\xff\x33'), "utf-8")
+        self.assert_(codec._detectencoding_str('\xff\xfe') is None)
+        self.assertEqual(codec._detectencoding_str('\xff\xfe\x33'), "utf-16")
+        self.assert_(codec._detectencoding_str('\xff\xfe\x00') is None)
+        self.assertEqual(codec._detectencoding_str('\xff\xfe\x00\x33'), "utf-16")
+        self.assertEqual(codec._detectencoding_str('\xff\xfe\x00\x00'), "utf-32")
+        self.assert_(codec._detectencoding_str('\x00') is None)
+        self.assertEqual(codec._detectencoding_str('\x00\x33'), "utf-8")
+        self.assert_(codec._detectencoding_str('\x00\x00') is None)
+        self.assertEqual(codec._detectencoding_str('\x00\x00\x33'), "utf-8")
+        self.assert_(codec._detectencoding_str('\x00\x00\xfe') is None)
+        self.assertEqual(codec._detectencoding_str('\x00\x00\x00\x33'), "utf-8")
+        self.assertEqual(codec._detectencoding_str('\x00\x00\x00@'), "utf-32-be")
+        self.assertEqual(codec._detectencoding_str('\x00\x00\xfe\xff'), "utf-32")
+        self.assert_(codec._detectencoding_str('@') is None)
+        self.assertEqual(codec._detectencoding_str('@\x33'), "utf-8")
+        self.assert_(codec._detectencoding_str('@\x00') is None)
+        self.assertEqual(codec._detectencoding_str('@\x00\x33'), "utf-8")
+        self.assert_(codec._detectencoding_str('@\x00\x00') is None)
+        self.assertEqual(codec._detectencoding_str('@\x00\x00\x33'), "utf-8")
+        self.assertEqual(codec._detectencoding_str('@\x00\x00\x00'), "utf-32-le")
+        self.assert_(codec._detectencoding_str('@c') is None)
+        self.assert_(codec._detectencoding_str('@ch') is None)
+        self.assert_(codec._detectencoding_str('@cha') is None)
+        self.assert_(codec._detectencoding_str('@char') is None)
+        self.assert_(codec._detectencoding_str('@chars') is None)
+        self.assert_(codec._detectencoding_str('@charse') is None)
+        self.assert_(codec._detectencoding_str('@charset') is None)
+        self.assert_(codec._detectencoding_str('@charset ') is None)
+        self.assert_(codec._detectencoding_str('@charset "') is None)
+        self.assert_(codec._detectencoding_str('@charset "x') is None)
+        self.assertEqual(codec._detectencoding_str('@charset ""'), "")
+        self.assertEqual(codec._detectencoding_str('@charset "x"'), "x")
+        self.assert_(codec._detectencoding_str("@", False) is None)
+        self.assertEqual(codec._detectencoding_str("@", True), "utf-8")
+        self.assert_(codec._detectencoding_str("@c", False) is None)
+        self.assertEqual(codec._detectencoding_str("@c", True), "utf-8")
+
+    def test_detectencoding_unicode(self):
+        # Unicode version (only parses the header)
+        self.assert_(codec._detectencoding_unicode(u'@charset "x') is None)
+        self.assertEqual(codec._detectencoding_unicode(u'@charset "x', True), "utf-8")
+        self.assertEqual(codec._detectencoding_unicode(u'@charset "x"'), "x")
 
     def test_fixencoding(self):
         s = u'@charset "'
@@ -169,6 +175,46 @@ class CodecTestCase(unittest.TestCase):
 
         # No recursion
         self.assertRaises(ValueError, '@charset "css";div{}'.decode, "css")
+
+    def test_encoder(self):
+        def check(encoding, input=u'@charset "x";g\xfcrk\u20ac{}'):
+            outputencoding = encoding
+            if outputencoding == "utf-8-sig":
+                outputencoding = "utf-8"
+
+            # Check stateless encoder with encoding autodetection
+            e = codecs.getencoder("css")
+            inputdecl = input.replace('"x"', '"%s"' % encoding)
+            outputdecl = input.replace('"x"', '"%s"' % outputencoding)
+            self.assertEqual(e(inputdecl)[0].decode(encoding), outputdecl)
+
+            # Check stateless encoder with specified encoding
+            self.assertEqual(e(input, encoding=encoding)[0].decode(encoding), outputdecl)
+
+            # Check incremental encoder with encoding autodetection
+            ie = codecs.getincrementalencoder("css")()
+            self.assertEqual("".join(ie.iterencode(inputdecl)).decode(encoding), outputdecl)
+
+            # Check incremental encoder with specified encoding
+            ie = codecs.getincrementalencoder("css")(encoding=encoding)
+            self.assertEqual("".join(ie.iterencode(input)).decode(encoding), outputdecl)
+
+        # Autodetectable encodings
+        check("utf-8-sig")
+        check("utf-16")
+        check("utf-16-le")
+        check("utf-16-be")
+        if haveutf32:
+            check("utf-32")
+            check("utf-32-le")
+            check("utf-32-be")
+        check("utf-8")
+        check("iso-8859-1", u'@charset "x";g\xfcrk{}')
+        check("iso-8859-15")
+        check("cp1252")
+
+        # No recursion
+        self.assertRaises(ValueError, u'@charset "css";div{}'.encode, "css")
 
 
 if __name__ == '__main__':
