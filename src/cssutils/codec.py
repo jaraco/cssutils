@@ -122,7 +122,7 @@ def _detectencoding(input, final=False):
         elif candidates == CANDIDATE_CHARSET and li >= 4:
             prefix = '@charset "'
             if input.startswith(prefix):
-                pos = input.find(u'"', len(prefix))
+                pos = input.find('"', len(prefix))
                 if pos >= 0:
                     return input[len(prefix):pos]
     # if this is the last call, and we haven't determined an encoding yet,
