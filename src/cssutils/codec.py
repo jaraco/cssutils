@@ -5,9 +5,9 @@ Python codec for CSS.
 """
 
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-09-01 15:55:42 +0200 (Sa, 01 Sep 2007) $'
-__version__ = '$LastChangedRevision: 300 $'
+__author__ = '$LastChangedBy$'
+__date__ = '$LastChangedDate$'
+__version__ = '$LastChangedRevision$'
 
 import codecs
 
