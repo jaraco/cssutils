@@ -128,12 +128,21 @@ class CodecTestCase(unittest.TestCase):
             self.assertEqual("".join(id.iterdecode(input.encode(encoding))), input.replace('"x"', '"%s"' % outputencoding))
 
             # Check incremental decoder with specified encoding
-            id = codecs.getincrementaldecoder("css")(encoding)
+            id = codecs.getincrementaldecoder("css")(encoding=encoding)
             self.assertEqual("".join(id.iterdecode(input.encode(encoding))), input.replace('"x"', '"%s"' % outputencoding))
 
             # Check stream reader with encoding autodetection
             q = Queue()
             sr = codecs.getreader("css")(q)
+            result = []
+            for c in input.encode(encoding):
+                q.write(c)
+                result.append(sr.read())
+            self.assertEqual("".join(result), input.replace('"x"', '"%s"' % outputencoding))
+
+            # Check stream reader with specified encoding
+            q = Queue()
+            sr = codecs.getreader("css")(q, encoding=encoding)
             result = []
             for c in input.encode(encoding):
                 q.write(c)

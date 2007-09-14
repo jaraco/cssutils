@@ -341,9 +341,9 @@ class StreamWriter(codecs.StreamWriter):
 
 
 class StreamReader(codecs.StreamReader):
-    def __init__(self, stream, errors="strict"):
+    def __init__(self, stream, errors="strict", encoding=None):
         codecs.StreamReader.__init__(self, stream, errors)
-        self.decoder = IncrementalDecoder(errors)
+        self.decoder = IncrementalDecoder(errors, encoding)
         self._errors = errors
 
     def decode(self, input, errors='strict'):
