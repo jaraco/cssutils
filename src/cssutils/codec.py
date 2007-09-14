@@ -321,9 +321,9 @@ class IncrementalEncoder(codecs.IncrementalEncoder):
 
 
 class StreamWriter(codecs.StreamWriter):
-    def __init__(self, stream, errors="strict", encoding="utf-8", header=False):
+    def __init__(self, stream, errors="strict", encoding=None, header=False):
         codecs.StreamWriter.__init__(self, stream, errors)
-        self.encoder = IncrementalEncoder(errors)
+        self.encoder = IncrementalEncoder(errors, encoding)
         self._errors = errors
 
     def encode(self, input, errors='strict'):
