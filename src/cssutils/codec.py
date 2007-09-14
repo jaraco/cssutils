@@ -30,7 +30,7 @@ import codecs
 
 
 
-def _detectencoding(input, final=False):
+def _detectencoding_str(input, final=False):
     CANDIDATE_UTF_8_SIG    =   1
     CANDIDATE_UTF_16_AS_LE =   2
     CANDIDATE_UTF_16_AS_BE =   4
@@ -132,6 +132,19 @@ def _detectencoding(input, final=False):
     return None # dont' know yet
 
 
+def _detectencoding_unicode(input, final=False):
+    prefix = u'@charset "'
+    if input.startswith(prefix):
+        pos = input.find(u'"', len(prefix))
+        if pos >= 0:
+            return input[len(prefix):pos]
+    # if this is the last call, and we haven't determined an encoding yet,
+    # we default to UTF-8
+    if final:
+        return "utf-8"
+    return None # dont' know yet
+
+
 def _fixencoding(input, encoding, final=False):
     prefix = u'@charset "'
     if len(input) > len(prefix):
@@ -139,7 +152,7 @@ def _fixencoding(input, encoding, final=False):
             pos = input.find(u'"', len(prefix))
             if pos >= 0:
                 if encoding.replace("_", "-").lower() == "utf-8-sig":
-                    encoding = "utf-8"
+                    encoding = u"utf-8"
                 return prefix + encoding + input[pos:]
             # we haven't seen the end of the encoding name yet => fall through
         else:
@@ -154,7 +167,7 @@ def _fixencoding(input, encoding, final=False):
 
 def decode(input, errors="strict", encoding=None):
     if encoding is None:
-        encoding = _detectencoding(input, True)
+        encoding = _detectencoding_str(input, True)
     if encoding == "css":
         raise ValueError("css not allowed as encoding name")
     (input, consumed) = codecs.getdecoder(encoding)(input, errors)
@@ -164,7 +177,7 @@ def decode(input, errors="strict", encoding=None):
 def encode(input, errors="strict", encoding=None):
     consumed = len(input)
     if encoding is None:
-        encoding = _detectencoding(input, True)
+        encoding = _detectencoding_unicode(input, True)
         if encoding.replace("_", "-").lower() == "utf-8-sig":
             input = _fixencoding(input, u"utf-8", True)
     else:
@@ -203,7 +216,7 @@ class IncrementalDecoder(codecs.IncrementalDecoder):
         # overhead.
         if self.decoder is None:
             input = self.buffer + input
-            self.encoding = _detectencoding(input, final)
+            self.encoding = _detectencoding_str(input, final)
             if self.encoding is None:
                 self.buffer = input # retry the complete input on the next call
                 return u"" # no encoding determined yet, so no output
@@ -273,7 +286,7 @@ class IncrementalEncoder(codecs.IncrementalEncoder):
                 input = newinput
             else:
                 # Use encoding from the @charset declaration
-                self.encoding = _detectencoding(input, final)
+                self.encoding = _detectencoding_unicode(input, final)
             if self.encoding is not None:
                 if self.encoding == "css":
                     raise ValueError("css not allowed as encoding name")
