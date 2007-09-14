@@ -279,7 +279,10 @@ class IncrementalEncoder(codecs.IncrementalEncoder):
             input = self.buffer + input
             if self.encoding is not None:
                 # Replace encoding in the @charset rule with the specified one
-                newinput = _fixencoding(input, unicode(self.encoding), final)
+                encoding = self.encoding
+                if encoding.replace("_", "-").lower() == "utf-8-sig":
+                    encoding = "utf-8"
+                newinput = _fixencoding(input, unicode(encoding), final)
                 if newinput is None: # @charset rule inomplete => Retry next time
                     self.buffer = input
                     return ""
