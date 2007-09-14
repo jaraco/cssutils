@@ -283,7 +283,7 @@ class IncrementalEncoder(codecs.IncrementalEncoder):
                 if encoding.replace("_", "-").lower() == "utf-8-sig":
                     encoding = "utf-8"
                 newinput = _fixencoding(input, unicode(encoding), final)
-                if newinput is None: # @charset rule inomplete => Retry next time
+                if newinput is None: # @charset rule incomplete => Retry next time
                     self.buffer = input
                     return ""
                 input = newinput
