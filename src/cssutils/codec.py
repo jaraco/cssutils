@@ -31,6 +31,16 @@ import codecs
 
 
 def _detectencoding_str(input, final=False):
+    """
+    Detect the encoding of the byte string ``input``, which contains the
+    beginning of a CSS file. To detect the encoding the first few bytes are
+    used (or if ``input`` is ASCII compatible and starts with a charset rule
+    the encoding name from the rule.
+
+    If the encoding can't be detected yet, ``None`` is returned. ``final``
+    specifies whether more data is available in later calls or not. If ``final``
+    is true, ``_detectencoding_str()`` will never return ``None``.
+    """
     CANDIDATE_UTF_8_SIG    =   1
     CANDIDATE_UTF_16_AS_LE =   2
     CANDIDATE_UTF_16_AS_BE =   4
