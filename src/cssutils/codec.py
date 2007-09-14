@@ -143,6 +143,16 @@ def _detectencoding_str(input, final=False):
 
 
 def _detectencoding_unicode(input, final=False):
+    """
+    Detect the encoding of the unicode string ``input``, which contains the
+    beginning of a CSS file. The encoding ist detected for the charset rule
+    at the beginning of ``input``. If there is no charset rule, ``"utf-8"``
+    will be returned.
+
+    If the encoding can't be detected yet, ``None`` is returned. ``final``
+    specifies whether more data is available in later calls or not. If ``final``
+    is true, ``_detectencoding_unicode()`` will never return ``None``.
+    """
     prefix = u'@charset "'
     if input.startswith(prefix):
         pos = input.find(u'"', len(prefix))
