@@ -294,6 +294,9 @@ class IncrementalEncoder(codecs.IncrementalEncoder):
                 if self.encoding == "css":
                     raise ValueError("css not allowed as encoding name")
                 info = codecs.lookup(self.encoding)
+                encoding = self.encoding
+                if self.encoding.replace("_", "-").lower() == "utf-8-sig":
+                    input = _fixencoding(input, u"utf-8", True)
                 self.encoder = info.incrementalencoder(self._errors)
                 self.buffer = u""
             else:
