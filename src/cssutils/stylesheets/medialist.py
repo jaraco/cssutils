@@ -50,15 +50,14 @@ class MediaList(cssutils.util.Base, list):
         super(MediaList, self).__init__()
 
         self.valid = True
+        self._seq = []
 
         if isinstance(mediaText, list):
             mediaText = ", ".join(mediaText)
 
         if mediaText:
-            self._seq = []
             self.mediaText = mediaText
-        else:
-            self.seq = []
+
         self._readonly = readonly
 
     def _getLength(self):
@@ -100,36 +99,37 @@ class MediaList(cssutils.util.Base, list):
           Raised if this media list is readonly.
         """
         self._checkReadonly()
-        tokens = self._tokenize(mediaText)
+        tokens = self._tokenize2(mediaText, aslist=True)
 
-        newseq = []
-        del self[:] # reset
-        expected = 'medium1'
         valid = True
+        newseq = []
+        expected = 'medium1'
         for i in range(len(tokens)):
             t = tokens[i]
-            if self._ttypes.S == t.type: # ignore
+            typ, val = self._type(t), self._value(t)
+
+            if self._prods.S == typ: # ignore
                 pass
 
-            elif self._ttypes.COMMENT == t.type: # just add
+            elif self._prods.COMMENT == typ: # just add
                 newseq.append(csscomment.CSSComment(t))
 
-            elif expected.startswith('medium') and self._ttypes.IDENT == t.type:
-                _newmed = t.value.lower()
+            elif expected.startswith('medium') and self._prods.IDENT == typ:
+                _newmed = val.lower()
                 self.appendMedium(_newmed)
                 newseq.append(_newmed)
                 expected = 'comma'
 
-            elif self._ttypes.IDENT == t.type:
+            elif self._prods.IDENT == typ:
                 valid = False
                 self._log.error(
                     u'MediaList: Syntax Error, expected ",".', t)
 
-            elif 'comma' == expected and self._ttypes.COMMA == t.type:
-                newseq.append(t.value)
+            elif 'comma' == expected and u',' == val:
+                newseq.append(val)
                 expected = 'medium'
 
-            elif self._ttypes.COMMA == t.type:
+            elif u',' == val:
                 valid = False
                 self._log.error(u'MediaList: Syntax Error, expected ",".', t)
 
@@ -141,8 +141,10 @@ class MediaList(cssutils.util.Base, list):
             valid = False
             self._log.error(
                 u'MediaList: Syntax Error, cannot end with ",".')
-        self.seq = newseq
+
         self.valid = valid
+        if valid:
+            self.seq = newseq
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="""(DOM) The parsable textual representation of the media list.
@@ -165,63 +167,61 @@ class MediaList(cssutils.util.Base, list):
           Raised if this list is readonly.
         """
         self._checkReadonly()
-        tokens = self._tokenize(newMedium)
-
         valid = True
+        tokens = self._tokenize2(newMedium, aslist=True)
 
-        # ? should check format only?
-        try:
-            newMedium = tokens[0].value.lower()
-        except (IndexError, AttributeError):
+        if not tokens or len(tokens) > 1:
+            valid = False
             self._log.error(
                 u'MediaList: "%s" is not a valid medium.' % self._valuestr(
                     newMedium), error=xml.dom.InvalidCharacterErr)
-            return
-
-        if newMedium not in self._MEDIA:
-            valid = False
-            self._log.error(
-                u'MediaList: "%s" is not a valid medium.' % newMedium,
-                tokens[0], xml.dom.InvalidCharacterErr)
-
-        # all contains every other (except handheld!)
-        if u'all' in self and newMedium != u'handheld':
-            return valid
-        if newMedium == u'all':
-            if u'handheld' in self:
-                addhandheld2seq = True
-            else:
-                addhandheld2seq = False
-            del self[:]
-            self.append(u'all')
-            self._seq = [u'all']
-            if addhandheld2seq:
-                #self.append(u'handheld')
-                self._seq.append(u',')
-                self._seq.append(u'handheld')
         else:
-            if newMedium in self:
-                self.remove(newMedium)
+            newMedium = self._value(tokens[0]).lower()
 
-                # remove medium and possible ,!
-                look4comma = False
-                newseq = []
-                for x in self._seq:
-                    if newMedium == x:
-                        look4comma = True
-                        continue # remove
-                    if u',' == x and look4comma:
-                        look4comma = False
-                        continue
-                    else:
-                        newseq.append(x)
-                self._seq = newseq
+            if newMedium not in self._MEDIA:
+                valid = False
+                self._log.error(
+                    u'MediaList: "%s" is not a valid medium.' % newMedium,
+                    tokens[0], xml.dom.InvalidCharacterErr)
 
-            if len(self) > 0: # already 1 there, add "," + medium 2 seq
-                self._seq.append(u',')
+            # all contains every other (except handheld! for Opera)
+            elif u'all' in self and newMedium != u'handheld':
+                return valid
+            elif newMedium == u'all':
+                if u'handheld' in self:
+                    addhandheld2seq = True
+                else:
+                    addhandheld2seq = False
+                del self[:]
+                self.append(u'all')
+                self._seq = [u'all']
+                if addhandheld2seq:
+                    self._seq.append(u',')
+                    self._seq.append(u'handheld')
+            else:
+                if newMedium in self:
+                    self.remove(newMedium)
 
-            self._seq.append(newMedium)
-            self.append(newMedium)
+                    # remove medium and possible ,!
+                    look4comma = False
+                    newseq = []
+                    for x in self._seq:
+                        if newMedium == x:
+                            look4comma = True
+                            continue # remove
+                        if u',' == x and look4comma:
+                            look4comma = False
+                            continue
+                        else:
+                            newseq.append(x)
+                    self._seq = newseq
+
+                if len(self) > 0: # already 1 there, add "," + medium 2 seq
+                    self._seq.append(u',')
+
+                self._seq.append(newMedium)
+                self.append(newMedium)
+
         return valid
 
     def deleteMedium(self, oldMedium):
@@ -259,12 +259,12 @@ class MediaList(cssutils.util.Base, list):
     def __repr__(self):
         return "cssutils.stylesheets.%s(mediaText=%r)" % (
                 self.__class__.__name__, self.mediaText)
-        
+
     def __str__(self):
         return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
                 self.__class__.__name__, self.mediaText, id(self))
-        
-        
+
+
 if __name__ == '__main__':
     m = MediaList()
     m.mediaText = u'all; @x'
