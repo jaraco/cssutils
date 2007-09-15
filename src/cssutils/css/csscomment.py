@@ -69,7 +69,7 @@ class CSSComment(cssrule.CSSRule):
         tokens = self._tokenize2(cssText)
         if not tokens:
             self._log.error(u'CSSComment: Syntax error, no comment given.')
-        if self._type(tokens[0]) != self._pds.COMMENT or len(tokens) > 1:
+        elif self._type(tokens[0]) != self._prods.COMMENT or len(tokens) > 1:
             self._log.error(u'CSSComment: Not a CSSComment: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)

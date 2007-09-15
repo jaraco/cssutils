@@ -13,10 +13,8 @@ __version__ = '$LastChangedRevision$'
 import codecs
 import re
 import xml.dom
-
 import cssrule
 import cssutils
-
 
 class CSSCharsetRule(cssrule.CSSRule):
     """
@@ -53,6 +51,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         @charset "ENCODING";
     """
     type = cssrule.CSSRule.CHARSET_RULE
+    __syntax = re.compile(u'^@charset "(.+?)";$', re.DOTALL | re.UNICODE)
 
     def __init__(self, encoding=None, readonly=False):
         """
@@ -68,9 +67,6 @@ class CSSCharsetRule(cssrule.CSSRule):
         self._encoding = None
         if encoding:
             self.encoding = encoding
-
-        self._pat = re.compile(u'^@charset "(.+?)";$',
-                                 re.DOTALL | re.IGNORECASE | re.UNICODE)
 
         self._readonly = readonly
 
@@ -90,10 +86,11 @@ class CSSCharsetRule(cssrule.CSSRule):
           Currently only valid Python encodings are allowed.
         """
         self._checkReadonly()
-        tokens = self._tokenize(encoding)
+        tokens = self._tokenize2(encoding, aslist=True)
         valid = True
 
-        if tokens and tokens[0].type != self._ttypes.IDENT or len(tokens) != 1:
+        if not tokens or len(tokens) > 1 or\
+           self._prods.IDENT != self._type(tokens[0]):
             valid = False
             self._log.error(
                 'CSSCharsetRule: Syntax Error in encoding value "%s".' %
@@ -104,6 +101,8 @@ class CSSCharsetRule(cssrule.CSSRule):
             valid = False
             self._log.error('CSSCharsetRule: Unknown (Python) encoding "%s".' %
                       encoding)
+
+        self.valid = valid
         if valid:
             self._encoding = encoding.lower()
 
@@ -132,29 +131,31 @@ class CSSCharsetRule(cssrule.CSSRule):
           Raised if the rule is readonly.
         """
         super(CSSCharsetRule, self)._setCssText(cssText)
-        tokens = self._tokenize(cssText)
-
-        text = ''.join([t.value for t in tokens])
+        valid = True
+        tokens = self._tokenize2(cssText, aslist=True)
+        text = ''.join([self._value(t) for t in tokens])
         # check if right token
-        if not text.startswith(u'@charset'):
-            self._log.error(
-                u'No CSSCharsetRule: %s' % text,
-                error=xml.dom.InvalidModificationErr)
-            return
-
-        encoding = self._pat.match(text)
-        if not encoding:
-            self._log.error(u'CSSCharsetRule: Syntax Error: "%s".' % text,
-                      tokens[0])
+        if not text.lower().startswith(u'@charset'):
+            valid = False
+            self._log.error(u'No CSSCharsetRule: %s' % text,
+                            error=xml.dom.InvalidModificationErr)
         else:
-            encoding = encoding.group(1)
+            encoding = CSSCharsetRule.__syntax.match(text)
             if not encoding:
-                self._log.error(
-                    u'CSSCharsetRule: No Encoding found: "%s".' % text,
-                    tokens[0])
+                valid = False
+                self._log.error(u'CSSCharsetRule: Syntax Error: "%s".'
+                                % text, tokens[0])
             else:
-                encoding
-                self.encoding = encoding # also sets self.valid
+                encoding = encoding.group(1)
+                if not encoding:
+                    valid = False
+                    self._log.error(u'CSSCharsetRule: No Encoding found: "%s".'
+                                    % text, tokens[0])
+                else:
+                    self.encoding = encoding
+                    valid = self.valid # gets set by encoding!
+
+        self.valid = valid
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
@@ -162,7 +163,7 @@ class CSSCharsetRule(cssrule.CSSRule):
     def __repr__(self):
         return "cssutils.css.%s(encoding=%r)" % (
                 self.__class__.__name__, self.encoding)
-        
+
     def __str__(self):
         return "<cssutils.css.%s object encoding=%r at 0x%x>" % (
                 self.__class__.__name__, self.encoding, id(self))

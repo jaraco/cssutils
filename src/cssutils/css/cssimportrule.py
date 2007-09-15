@@ -160,80 +160,84 @@ class CSSImportRule(cssrule.CSSRule):
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
+        # import : IMPORT_SYM S* [STRING|URI]
+        #            S* [ medium [ ',' S* medium]* ]? ';' S*  ;
         super(CSSImportRule, self)._setCssText(cssText)
         valid = True
 
-        tokens = self._tokenize(cssText)
+        tokens = self._tokenize2(cssText, aslist=True)
 
         # check if right type
-        if not tokens or tokens and tokens[0].type != self._ttypes.IMPORT_SYM:
+        if not tokens or\
+           tokens and self._type(tokens[0]) != self._prods.IMPORT_SYM:
+            valid = False
             self._log.error(u'CSSImportRule: No CSSImportRule found: %s' %
-                      self._valuestr(cssText),
-                      error=xml.dom.InvalidModificationErr)
-            return
+                self._valuestr(cssText),
+                error=xml.dom.InvalidModificationErr)
         else:
-            newatkeyword = tokens[0].value
+            newatkeyword = self._value(tokens[0])
 
-        newseq = []
-        newhref = None
-        newhreftype = None
-        newmedia = cssutils.stylesheets.MediaList()
+            newseq = []
+            newhref = None
+            newhreftype = None
+            newmedia = cssutils.stylesheets.MediaList()
 
-        mediatokens = []
-        expected = 'href' # href medialist end
-        for i in range(1, len(tokens)):
-            t = tokens[i]
+            mediatokens = []
+            expected = 'href' # href medialist EOF
+            for i in range(1, len(tokens)):
+                t = tokens[i]
+                typ, val = self._type(t), self._value(t)
 
-            if self._ttypes.EOF == t.type:
-                expected = 'EOF'
+                if self._prods.EOF == typ:
+                    expected = 'EOF'
 
-            elif self._ttypes.S == t.type: # ignore
-                pass
+                elif self._prods.S == typ: # ignore
+                    pass
 
-            elif self._ttypes.COMMENT == t.type:
-                if 'href' == expected: # before href
-                    newseq.append(cssutils.css.CSSComment(t))
-                else: # after href
+                elif self._prods.COMMENT == typ:
+                    if 'href' == expected: # before href
+                        newseq.append(cssutils.css.CSSComment(t))
+                    else: # after href
+                        mediatokens.append(t)
+
+                elif 'href' == expected and \
+                     typ in (self._prods.URI, self._prods.STRING):
+                    if typ == self._prods.URI:
+                        newhref = val[4:-1].strip() # url(href)
+                        newhreftype = 'uri'
+                    else:
+                        newhref = val[1:-1].strip() # "href" or 'href'
+                        newhreftype = 'string'
+                    newseq.append(newhref)
+                    expected = 'medialist'
+
+                elif u';' == val:
+                    if 'medialist' != expected: # normal end
+                        valid = False
+                        self._log.error(
+                            u'CSSImportRule: Syntax Error, no href found.', t)
+                    expected = None
+                    break
+
+                elif 'medialist' == expected:
                     mediatokens.append(t)
 
-            elif 'href' == expected and \
-                 t.type in (self._ttypes.URI, self._ttypes.STRING):
-                if t.type == self._ttypes.URI:
-                    newhref = t.value[4:-1].strip() # url(href)
-                    newhreftype = 'uri'
                 else:
-                    newhref = t.value[1:-1].strip() # "href" or 'href'
-                    newhreftype = 'string'
-                newseq.append(newhref)
-                expected = 'medialist'
-
-            elif self._ttypes.SEMICOLON == t.type:
-                if 'medialist' != expected: # normal end
                     valid = False
-                    self._log.error(
-                        u'CSSImportRule: Syntax Error, no href found.', t)
-                expected = None
-                break
+                    self._log.error(u'CSSImportRule: Syntax Error.', t)
 
-            elif 'medialist' == expected:
-                mediatokens.append(t)
-
-            else:
+            if expected and expected != 'EOF':
                 valid = False
-                self._log.error(u'CSSImportRule: Syntax Error.', t)
+                self._log.error(u'CSSImportRule: Syntax Error, no ";" found: %s' %
+                          self._valuestr(cssText))
 
-        if expected and expected != 'EOF':
-            valid = False
-            self._log.error(u'CSSImportRule: Syntax Error, no ";" found: %s' %
-                      self._valuestr(cssText))
-            return
+            if mediatokens:
+                newmedia.mediaText = mediatokens
+                if not newmedia.valid:
+                    valid = False
+                newseq.append(newmedia)
 
-        if mediatokens:
-            newmedia.mediaText = mediatokens
-            if not newmedia.valid:
-                valid = False
-            newseq.append(newmedia)
-
+        self.valid = valid
         if valid:
             self.atkeyword = newatkeyword
             self.href = newhref
@@ -246,7 +250,7 @@ class CSSImportRule(cssrule.CSSRule):
 
     def __repr__(self):
         return "cssutils.css.%s(href=%r, mediaText=%r)" % (
-                self.__class__.__name__, self.href, self.media.mediaText)        
+                self.__class__.__name__, self.href, self.media.mediaText)
 
     def __str__(self):
         return "<cssutils.css.%s object href=%r at 0x%x>" % (
