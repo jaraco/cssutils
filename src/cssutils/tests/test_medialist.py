@@ -103,7 +103,7 @@ class MediaListTestCase(basetest.BaseTestCase):
         ml = cssutils.stylesheets.MediaList()
 
         ml.mediaText = u' handheld , all  , screen '
-        self.assertEqual(1, ml.length)
+        self.assertEqual(2, ml.length)
         # keeps all explicitly set incl ,
         self.assertEqual(5, len(ml.seq)) # ?
         self.assertEqual(u'handheld, all', ml.mediaText)
@@ -137,15 +137,15 @@ class MediaListTestCase(basetest.BaseTestCase):
     def test_reprANDstr(self):
         "MediaList.__repr__(), .__str__()"
         mediaText='tv, print'
-        
+
         s = cssutils.stylesheets.MediaList(mediaText=mediaText)
-        
+
         self.assert_(mediaText in str(s))
 
         s2 = eval(repr(s))
         self.assert_(isinstance(s2, s.__class__))
         self.assert_(mediaText == s2.mediaText)
-        
+
 
 if __name__ == '__main__':
     import unittest
