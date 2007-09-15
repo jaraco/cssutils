@@ -77,12 +77,12 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         """
         tests = {
             u'@charset "utf-8";': None,
-            u'@CHARSET "UTF-8";': '@charset "utf-8";',
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests) # also parse
 
         tests = {
+            u'@CHARSET "UTF-8";': xml.dom.SyntaxErr,
             u'''@charset 'utf-8';''': xml.dom.SyntaxErr,
             u'''@charset /*1*/"utf-8"/*2*/;''': xml.dom.SyntaxErr,
             u'''@charset /*1*/"utf-8";''': xml.dom.SyntaxErr,
@@ -94,7 +94,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@charset /**/;': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests)
-        
+
     def test_repr(self):
         "CSSCharsetRule.__repr__()"
         self.r.encoding = 'utf-8'
@@ -103,9 +103,9 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_reprANDstr(self):
         "CSSCharsetRule.__repr__(), .__str__()"
         encoding='utf-8'
-        
+
         s = cssutils.css.CSSCharsetRule(encoding=encoding)
-        
+
         self.assert_(encoding in str(s))
 
         s2 = eval(repr(s))
