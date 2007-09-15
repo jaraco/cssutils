@@ -102,9 +102,14 @@ class Tokenizer(object):
                     else:
                         col += len(found)
                     break
+
             else:
-                raise Exception('no token match "%s(...)"' % text[:10])
-                text = text[1:]
+                if text.startswith('"') or text.startswith("'"):
+                    yield ('STRING', text + text[0], line, col)
+                    text = ''
+                else:
+                    raise xml.dom.SyntaxErr('no token match "%s(...)"' % text[:10])
+                    text = text[1:]
 
         if fullsheet:
             yield ('EOF', None, line, col)
