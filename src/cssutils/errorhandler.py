@@ -94,8 +94,12 @@ class _ErrorHandler(object):
         logs or raises exception
         """
         if token:
-            msg = u'%s [%s:%s: %s]' % (
-                msg, token.line, token.col, token.value)
+            if isinstance(token, tuple):
+                msg = u'%s [%s:%s: %s]' % (
+                    msg, token[2], token[3], token[1])
+            else:
+                msg = u'%s [%s:%s: %s]' % (
+                    msg, token.line, token.col, token.value)
 
         if error and self.raiseExceptions and not neverraise:
             raise error(msg)
