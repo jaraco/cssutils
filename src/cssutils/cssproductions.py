@@ -105,7 +105,11 @@ PRODUCTIONS = [
     ]
 
 class CSSProductions(object):
-    pass
+    """
+    most attributes are set later
+    """
+    EOF = True
+
 
 for i, t in enumerate(PRODUCTIONS):
     setattr(CSSProductions, t[0], t[0])
