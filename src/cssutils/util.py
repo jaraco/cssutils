@@ -31,16 +31,23 @@ class Base(object):
     _log = cssutils.log
 
     __tokenizer2 = Tokenizer2()
-    _pds = cssutils.tokenize2.CSSProductions
+    _prods = cssutils.tokenize2.CSSProductions
 
-    def _tokenize2(self, textortokens, fullsheet=False):
+    def _tokenize2(self, textortokens, aslist=False, fullsheet=False):
         """
         returns tokens of textortokens which may already be tokens in which
         case simply returns input
         """
         if isinstance(textortokens, basestring):
-            return self.__tokenizer2.tokenize(
+            if aslist:
+                return [t for t in self.__tokenizer2.tokenize(
+                     textortokens, fullsheet=fullsheet)]
+            else:
+                return self.__tokenizer2.tokenize(
                      textortokens, fullsheet=fullsheet)
+        elif isinstance(textortokens, tuple):
+            # a single token (like a comment)
+            return [textortokens]
         else:
             return textortokens # already tokenized
 
@@ -52,28 +59,113 @@ class Base(object):
         "value of Tokenizer2 token"
         return token[1]
 
+    def _tokensupto2(self,
+                     tokenizer,
+                     token,
+                     blockstartonly=False,
+                     blockendonly=False,
+                     propertynameendonly=False,
+                     propertyvalueendonly=False,
+                     propertypriorityendonly=False,
+                     selectorattendonly=False,
+                     funcendonly=False):
+        """
+        returns tokens upto end of atrule and end index
+        end is defined by parameters, might be ; } ) or other
+
+        default looks for ending "}" and ";"
+        """
+        ends = u';}'
+
+        if blockstartonly: # {
+            ends = u'{'
+        if blockendonly: # }
+            ends = u'}'
+        elif propertynameendonly: # : and ; in case of an error
+            ends = u':;'
+        elif propertyvalueendonly: # ; or !important
+            ends = (u';', u'!important')
+        elif propertypriorityendonly: # ;
+            ends = u';'
+        elif selectorattendonly: # ]
+            ends = u']'
+        elif funcendonly: # )
+            ends = u')'
+
+        brace = bracket = parant = 0 # {}, [], ()
+        if blockstartonly:
+            brace = -1 # set to 0 with first {
+
+        resulttokens = [token]
+        for token in tokenizer:
+            if self._type(token) == 'EOF':
+                break
+
+            if u'{' == self._value(token): brace += 1
+            elif u'}' == self._value(token): brace -= 1
+            if u'[' == self._value(token): bracket += 1
+            elif u']' == self._value(token): bracket -= 1
+            # function( or single (
+            if u'(' == self._value(token) or \
+               Base._ttypes.FUNCTION == self._type(token): parant += 1
+            elif u')' == self._value(token): parant -= 1
+            resulttokens.append(token)
+            if self._value(token) in ends and (
+                                    brace == bracket == parant == 0):
+                break
+
+        return resulttokens
+
     # ----
 
-    def _lex(self, seq, tokens, productions, default=None):
-        for token in tokens:
-            typ, val, lin, col = token
-            p = productions.get(typ, default)
-            if p is None:
-                self._log.Error('Unexpected token (%s, %s, %s, %s)' % token)
-            else:
-                p(seq, token)
-
-    def _S(self, seq, token):
+    def _S(seq, token, tokenizer=None):
         "default implementation for S token"
         pass
 
-    def _COMMENT(self, seq, token):
+    def _COMMENT(seq, token, tokenizer=None):
         "default implementation for comment token"
         seq.append(cssutils.css.CSSComment([token]))
 
-    def _EOF(self, seq, token):
+    def _EOF(seq=None, token=None, tokenizer=None):
         "default implementation for EOF token"
-        print token
+        return 'EOF'
+
+    def _atrule(seq, token, tokenizer=None):
+        pass#print "@rule", token
+
+    default_productions = {
+        'COMMENT': _COMMENT,
+        'S': _S,
+        'EOF': _EOF,
+        'ATKEYWORD': _atrule
+        }
+
+    def _parse(self, seq, tokenizer, productions, default=None):
+        """
+        puts parsed tokens in seq by calling a production with
+            (seq, tokenizer, token)
+
+        seq
+            to add rules etc to
+        tokenizer
+            call tokenizer.next() to get next token
+        productions
+            callbacks {tokentype: callback}
+        default
+            default callback if tokentype not in productions
+        """
+        prods = self.default_productions
+        prods.update(productions)
+
+        for token in tokenizer:
+            typ, val, lin, col = token
+            p = prods.get(typ, default)
+            if p is None:
+                self._log.Error('Unexpected token (%s, %s, %s, %s)' % token)
+            else:
+                p(seq, token, tokenizer)
+
+
 
     # --- OLD ---
     __tokenizer = Tokenizer()
@@ -84,7 +176,13 @@ class Base(object):
         returns tokens of textortokens which may already be tokens in which
         case simply returns input
         """
-        if isinstance(textortokens, list):
+        if isinstance(textortokens, list) and\
+           isinstance(textortokens[0], tuple):
+            # todo: convert tokenizer 2 list to tokenizer 1 list
+            return textortokens # already tokenized
+
+
+        elif isinstance(textortokens, list):
             return textortokens # already tokenized
         elif isinstance(textortokens, cssutils.token.Token):
             return [textortokens] # comment is a single token
@@ -187,4 +285,18 @@ class Base(object):
             return self._value(t)
         else: # old
             return u''.join([x.value for x in t])
+
+    # ----
+
+#    def parseproduction(self, prod, expected):
+#        """
+#        parses a production for certain rules and returns sequence
+#        if it matches expectedseq
+#        """
+#        prod = "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
+#        for part in prod.split(' '):
+#            quant = part[-1]
+#            if quant != '?' and quant != '*':
+#                quant = ''
+
 
