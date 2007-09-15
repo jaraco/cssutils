@@ -16,7 +16,7 @@ __version__ = '$LastChangedRevision$'
 import xml.dom
 
 import cssutils.stylesheets
-import cssutils.tokenize
+import cssutils.tokenize2
 
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
@@ -67,7 +67,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.namespaces = set()
         self._readonly = readonly
 
-
     def __checknamespaces(self, stylerule, namespaces):
         """
         checks if all namespaces used in stylerule have been declared
@@ -78,7 +77,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 if not prefix in namespaces:
                     notdeclared.add(prefix)
         return notdeclared
-
 
     def _getCssText(self):
         return cssutils.ser.do_CSSStyleSheet(self)
@@ -103,76 +101,135 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         self._checkReadonly()
 
-        tokens = self._tokenize(cssText, _fullSheet=True)
+        # stylesheet  : [ CDO | CDC | S | statement ]*;
 
-        newcssRules = cssutils.css.CSSRuleList()
+        newseq = cssutils.css.CSSRuleList()
         newnamespaces = set()
 
-        # @charset only once at beginning
-        if tokens and tokens[0].type == self._ttypes.CHARSET_SYM:
-            charsetruletokens, endi = self._tokensupto(tokens)
-            charsetrule = cssutils.css.CSSCharsetRule()
-            charsetrule.cssText = charsetruletokens
-            newcssRules.append(charsetrule)
-            i = endi + 1 # ?
-        else:
-            i = 0
-        expected = '@import' # @namespace | any
-        imax = len(tokens)
+        # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
+        self.orderposition = 0
+
+        def charsetrule(seq, token, tokenizer):
+            rule = cssutils.css.CSSCharsetRule()
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            if self.orderposition > 0:
+                self._log.error(
+                    u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
+                    token, xml.dom.HierarchyRequestErr)
+            else:
+                if rule.valid:
+                    seq.append(rule)
+            self.orderposition = 1
+
+        def importrule(seq, token, tokenizer):
+            rule = cssutils.css.CSSImportRule()
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            if self.orderposition > 1:
+                self._log.error(
+                    u'CSSStylesheet: CSSImportRule not allowed here.',
+                    token, xml.dom.HierarchyRequestErr)
+            else:
+                self.orderposition = 1
+                if rule.valid:
+                    seq.append(rule)
+
+        def namespacerule(seq, token, tokenizer):
+            rule = cssutils.css.CSSNamespaceRule()
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            if self.orderposition > 2:
+                self._log.error(
+                    u'CSSStylesheet: CSSNamespaceRule not allowed here.',
+                    token, xml.dom.HierarchyRequestErr)
+            else:
+                self.orderposition = 2
+                if rule.valid:
+                    seq.append(rule)
+                    newnamespaces.add(rule.prefix)
+
+        def ruleset(seq, token, tokenizer):
+            orderposition = 3
+            tokens = self._tokensupto2(tokenizer, token)
+            print '\n\n--- RULESET ---\n', tokens
+
+        self._parse(newseq,
+                  self._tokenize2(cssText, fullsheet=True),
+                  {'CDO': lambda *ignored: None,
+                   'CDC': lambda *ignored: None,
+                   'CHARSET_SYM': charsetrule,
+                   'IMPORT_SYM': importrule,
+                   'NAMESPACE_SYM': namespacerule
+                   },
+                   ruleset)
+
+        self.cssRules = newseq
+        self.namespaces = newnamespaces
+
+        for r in self.cssRules:
+            r.parentStyleSheet = self
+
+
+        print '\nNEWSEQ:\n', newseq
+
+        return
+
+        # -----------------
+
+        newcssRules = cssutils.css.CSSRuleList()
+
         while i < imax:
             t = tokens[i]
 
-            if t.type == self._ttypes.EOF:
-                break
-
-            # ignore
-            if t.type in (self._ttypes.S, self._ttypes.CDO, self._ttypes.CDC):
-                pass
+#            if t.type == self._ttypes.EOF:
+#                break
+#
+#            # ignore
+#            if t.type in (self._ttypes.S, self._ttypes.CDO, self._ttypes.CDC):
+#                pass
 
             # unexpected: } ;
-            elif t.type in (self._ttypes.SEMICOLON,
+            if t.type in (self._ttypes.SEMICOLON,
                             self._ttypes.LBRACE, self._ttypes.RBRACE):
                 self._log.error(u'CSSStyleSheet: Syntax Error',t)
 
-            # simply add
-            elif self._ttypes.COMMENT == t.type:
-                newcssRules.append(cssutils.css.CSSComment(t))
+#            # simply add
+#            elif self._ttypes.COMMENT == t.type:
+#                newcssRules.append(cssutils.css.CSSComment(t))
 
-            # @charset only at beginning
-            elif self._ttypes.CHARSET_SYM == t.type:
-                atruletokens, endi = self._tokensupto(tokens[i:])
-                i += endi
-                self._log.error(u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
-                    t, xml.dom.HierarchyRequestErr)
+#            # @charset only at beginning
+#            elif self._ttypes.CHARSET_SYM == t.type:
+#                atruletokens, endi = self._tokensupto(tokens[i:])
+#                i += endi
+#                self._log.error(u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
+#                    t, xml.dom.HierarchyRequestErr)
 
-            # @import before any StyleRule and @rule except @charset
-            elif self._ttypes.IMPORT_SYM == t.type:
-                atruletokens, endi = self._tokensupto(tokens[i:])
-                if expected == '@import':
-                    atrule = cssutils.css.CSSImportRule()
-                    atrule.cssText = atruletokens
-                    newcssRules.append(atrule)
-                else:
-                    self._log.error(
-                        u'CSSStylesheet: CSSImportRule not allowed here.',
-                        t, xml.dom.HierarchyRequestErr)
-                i += endi
+#            # @import before any StyleRule and @rule except @charset
+#            elif self._ttypes.IMPORT_SYM == t.type:
+#                atruletokens, endi = self._tokensupto(tokens[i:])
+#                if expected == '@import':
+#                    atrule = cssutils.css.CSSImportRule()
+#                    atrule.cssText = atruletokens
+#                    newcssRules.append(atrule)
+#                else:
+#                    self._log.error(
+#                        u'CSSStylesheet: CSSImportRule not allowed here.',
+#                        t, xml.dom.HierarchyRequestErr)
+#                i += endi
 
-            # @namespace before any StyleRule and
-            #  before @rule except @charset, @import
-            elif self._ttypes.NAMESPACE_SYM == t.type:
-                atruletokens, endi = self._tokensupto(tokens[i:])
-                if expected in ('@import', '@namespace'):
-                    atrule = cssutils.css.CSSNamespaceRule()
-                    atrule.cssText = atruletokens
-                    newcssRules.append(atrule)
-                    newnamespaces.add(atrule.prefix)
-                else:
-                    self._log.error(
-                        u'CSSStylesheet: CSSNamespaceRule not allowed here.',
-                        t, xml.dom.HierarchyRequestErr)
-                i += endi
-                expected = '@namespace' # now no @import anymore!
+#            # @namespace before any StyleRule and
+#            #  before @rule except @charset, @import
+#            elif self._ttypes.NAMESPACE_SYM == t.type:
+#                atruletokens, endi = self._tokensupto(tokens[i:])
+#                if expected in ('@import', '@namespace'):
+#                    atrule = cssutils.css.CSSNamespaceRule()
+#                    atrule.cssText = atruletokens
+#                    newcssRules.append(atrule)
+#                    newnamespaces.add(atrule.prefix)
+#                else:
+#                    self._log.error(
+#                        u'CSSStylesheet: CSSNamespaceRule not allowed here.',
+#                        t, xml.dom.HierarchyRequestErr)
+#                i += endi
+#                expected = '@namespace' # now no @import anymore!
 
             # @media
             elif self._ttypes.MEDIA_SYM == t.type:
@@ -226,7 +283,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
 
-
     def deleteRule(self, index):
         """
         Used to delete a rule from the style sheet.
@@ -251,7 +307,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             raise xml.dom.IndexSizeErr(
                 u'CSSStyleSheet: %s is not a valid index in the rulelist of length %i' % (
                 index, self.cssRules.length))
-
 
     def insertRule(self, rule, index=None):
         """
@@ -399,7 +454,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         return index
 
-
     def addRule(self, rule):
         "DEPRECATED, use appendRule instead"
         import warnings
@@ -407,7 +461,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             '``addRule`` is deprecated: Use ``insertRule(rule)``.',
             DeprecationWarning)
         return self.insertRule(rule)
-
 
     def _getsetOwnerRuleDummy(self):
         """
@@ -427,25 +480,25 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     def replaceUrls(self, replacer):
         """
         **EXPERIMENTAL**
-        
-        utility function to replace all url(urlstring) values in 
+
+        utility function to replace all url(urlstring) values in
         CSSImportRules and CSSStyleDeclaration objects.
-        
-        replacer must be a function which is called with a single 
+
+        replacer must be a function which is called with a single
         argument ``urlstring`` which is the current value of url()
         excluding "url(" and ")". It still may have surrounding single or
-        double quotes 
+        double quotes
         """
         for importrule in [
             r for r in self.cssRules if hasattr(r, 'href')]:
             importrule.href = replacer(importrule.href)
-        
+
         def setProperty(v):
             if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
                v.CSS_URI == v.primitiveType:
-                    v.setStringValue(v.CSS_URI, 
+                    v.setStringValue(v.CSS_URI,
                                      replacer(v.getStringValue()))
-            
+
         def styleDeclarations(base):
             "recurive function to find all CSSStyleDeclarations"
             styles = []
@@ -454,10 +507,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     styles.extend(styleDeclarations(rule))
             elif hasattr(base, 'style'):
                 styles.append(base.style)
-            return styles 
-            
+            return styles
+
         for style in styleDeclarations(self):
-            snpl = [x for x in style.seq 
+            snpl = [x for x in style.seq
                    if isinstance(x, cssutils.css.SameNamePropertyList)]
             for pl in snpl:
                 for p in pl:

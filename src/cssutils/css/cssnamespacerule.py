@@ -12,10 +12,8 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssrule
 import cssutils
-
 
 class CSSNamespaceRule(cssrule.CSSRule):
     """
@@ -71,6 +69,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
         prefix
             The prefix used in the stylesheet for the given
             ``CSSNamespaceRule.uri``.
+
+        format namespace::
+
+            : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
+            ;
         """
         super(CSSNamespaceRule, self).__init__()
 
@@ -164,75 +167,75 @@ class CSSNamespaceRule(cssrule.CSSRule):
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
+        # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
+
         super(CSSNamespaceRule, self)._setCssText(cssText)
-        tokens = self._tokenize(cssText)
+        tokens = self._tokenize2(cssText, aslist=True)
         valid = True
 
-        # check if right type
-        if not tokens or tokens and tokens[0].type != self._ttypes.NAMESPACE_SYM:
-            self._log.error(u'CSSNamespaceRule: No CSSNamespaceRule found: %s' %
-                      self._valuestr(cssText),
-                      error=xml.dom.InvalidModificationErr)
-            return
-        else:
-            newatkeyword = tokens[0].value
-
-        newseq = []
-        newuri = None
-        newprefix = u''
-
-        expected = 'uri or prefix' # uri semicolon
-        for i in range(1, len(tokens)):
-            t = tokens[i]
-
-            if self._ttypes.EOF == t.type:
-                expected = 'EOF'
-
-            elif self._ttypes.S == t.type: # ignore
-                pass
-
-            elif self._ttypes.COMMENT == t.type:
-                newseq.append(cssutils.css.CSSComment(t))
-
-            elif 'uri or prefix' == expected and\
-                 self._ttypes.IDENT == t.type:
-                newprefix = t.value
-                newseq.append(newprefix)
-                expected = 'uri'
-
-            elif expected.startswith('uri') and \
-                 t.type in (self._ttypes.URI, self._ttypes.STRING):
-                if t.type == self._ttypes.URI:
-                    newuri = t.value[4:-1].strip() # url(href)
-                    if newuri[0] ==  newuri[-1] == '"' or\
-                       newuri[0] ==  newuri[-1] == "'":
-                        newuri = newuri[1:-1]
-                    self._log.warn(
-                        u'CSSNamespaceRule: Found namespace definition with url(uri), this may be deprecated in the future, use string format "uri" instead.',
-                        t, error = None, neverraise=True)
-                else:
-                    newuri = t.value[1:-1] # "href" or 'href'
-                newseq.append(newuri)
-                expected = 'semicolon'
-
-            elif self._ttypes.SEMICOLON == t.type:
-                if 'semicolon' != expected: # normal end
-                    valid = False
-                    self._log.error(
-                        u'CSSNamespaceRule: No namespace URI found.', t)
-                expected = None
-                continue
-
-            else:
-                valid = False
-                self._log.error(u'CSSNamespaceRule: Syntax Error.', t)
-
-        if expected and expected != 'EOF':
+        if not tokens or self._type(tokens[0]) != self._prods.NAMESPACE_SYM:
             valid = False
-            self._log.error(u'CSSNamespaceRule: Syntax Error, no ";" found: %s' %
-                      self._valuestr(cssText))
-            return
+            self._log.error(u'CSSNamespaceRule: No CSSNamespaceRule found: %s' %
+                self._valuestr(cssText),
+                error=xml.dom.InvalidModificationErr)
 
+        else:
+            newatkeyword = self._value(tokens[0])
+            newseq = []
+            newuri = None
+            newprefix = u''
+
+            expected = 'prefix or uri'
+            for i in range(1, len(tokens)):
+                t = tokens[i]
+                typ, val = self._type(t), self._value(t)
+
+                try:
+                    self.default_productions[typ](newseq, t)
+                except KeyError:
+                    pass
+                else:
+                    continue
+
+                if 'prefix or uri' == expected and\
+                     self._prods.IDENT == typ:
+                    newprefix = val
+                    newseq.append(newprefix)
+                    expected = 'uri'
+
+                elif expected.endswith('uri') and \
+                     typ in (self._prods.URI, self._prods.STRING):
+                    if typ == self._prods.URI:
+                        newuri = val[4:-1].strip() # url(uri)
+                        if newuri[0] == newuri[-1] == '"' or\
+                           newuri[0] == newuri[-1] == "'":
+                            newuri = newuri[1:-1]
+                        self._log.warn(
+                            u'CSSNamespaceRule: Found namespace definition with url(uri), this may be deprecated in the future, use string format "uri" instead.',
+                            t, error = None, neverraise=True)
+                    else:
+                        newuri = val[1:-1] # "uri" or 'uri'
+                    newseq.append(newuri)
+                    expected = 'semicolon'
+
+                elif u';' == val:
+                    if 'semicolon' != expected: # normal end
+                        valid = False
+                        self._log.error(
+                            u'CSSNamespaceRule: No namespace URI found.', t)
+                    expected = None
+                    continue
+
+                else:
+                    valid = False
+                    self._log.error(u'CSSNamespaceRule: Syntax Error.', t)
+
+            if expected and expected != 'EOF':
+                valid = False
+                self._log.error(u'CSSNamespaceRule: Syntax Error, no ";" found: %s' %
+                          self._valuestr(cssText))
+
+        self.valid = valid
         if valid:
             self.atkeyword = newatkeyword
             self.uri = newuri
@@ -245,7 +248,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
     def __repr__(self):
         return "cssutils.css.%s(uri=%r, prefix=%r)" % (
                 self.__class__.__name__, self.uri, self.prefix)
-    
+
     def __str__(self):
         return "<cssutils.css.%s object uri=%r prefix=%r at 0x%x>" % (
                 self.__class__.__name__, self.uri, self.prefix, id(self))
