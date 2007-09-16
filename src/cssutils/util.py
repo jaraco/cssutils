@@ -68,7 +68,8 @@ class Base(object):
                      propertyvalueendonly=False,
                      propertypriorityendonly=False,
                      selectorattendonly=False,
-                     funcendonly=False):
+                     funcendonly=False,
+                     keepEOF=False):
         """
         returns tokens upto end of atrule and end index
         end is defined by parameters, might be ; } ) or other
@@ -99,6 +100,8 @@ class Base(object):
         resulttokens = [token]
         for token in tokenizer:
             if self._type(token) == 'EOF':
+                if keepEOF:
+                    resulttokens.append(token)
                 break
 
             if u'{' == self._value(token): brace += 1
@@ -116,35 +119,47 @@ class Base(object):
 
         return resulttokens
 
-    # ----
 
-    def _S(seq, token, tokenizer=None):
-        "default implementation for S token"
-        pass
+    def _getProductions(self, productions):
+        """
+        each production should return the next expected token
+        normaly a name like "uri" or "EOF"
+        some have no expectation like S or COMMENT, so simply return
+        the current value of self.__expected
+        """
+        def _COMMENT(expected, seq, token, tokenizer=None):
+            "default implementation for comment token"
+            seq.append(cssutils.css.CSSComment([token]))
+            return expected
 
-    def _COMMENT(seq, token, tokenizer=None):
-        "default implementation for comment token"
-        seq.append(cssutils.css.CSSComment([token]))
+        def _EOF(expected=None, seq=None, token=None, tokenizer=None):
+            "default implementation for EOF token"
+            return 'EOF'
 
-    def _EOF(seq=None, token=None, tokenizer=None):
-        "default implementation for EOF token"
-        return 'EOF'
+        def _S(expected, seq, token, tokenizer=None):
+            "default implementation for S token"
+            return expected
 
-    def _atrule(seq, token, tokenizer=None):
-        pass#print "@rule", token
+        def _atrule(expected, seq, token, tokenizer=None):
+            return expected
+            #print "@rule", token
 
-    default_productions = {
-        'COMMENT': _COMMENT,
-        'S': _S,
-        'EOF': _EOF,
-        'ATKEYWORD': _atrule
-        }
+        p = {
+            'COMMENT': _COMMENT,
+            'S': _S,
+            'EOF': _EOF,
+            'ATKEYWORD': _atrule
+            }
+        p.update(productions)
+        return p
 
-    def _parse(self, seq, tokenizer, productions, default=None):
+    def _parse(self, expected, seq, tokenizer, productions, default=None):
         """
         puts parsed tokens in seq by calling a production with
             (seq, tokenizer, token)
 
+        expected
+            a name what token or value is expected next, e.g. 'uri'
         seq
             to add rules etc to
         tokenizer
@@ -153,19 +168,21 @@ class Base(object):
             callbacks {tokentype: callback}
         default
             default callback if tokentype not in productions
-        """
-        prods = self.default_productions
-        prods.update(productions)
 
+        returns (valid, expected) which the last prod might have set
+        """
+        prods = self._getProductions(productions)
+        valid = True
         for token in tokenizer:
             typ, val, lin, col = token
             p = prods.get(typ, default)
-            if p is None:
-                self._log.Error('Unexpected token (%s, %s, %s, %s)' % token)
+            if p:
+                expected = p(expected, seq, token, tokenizer)
             else:
-                p(seq, token, tokenizer)
+                valid = False
+                self._log.error('Unexpected token (%s, %s, %s, %s)' % token)
 
-
+        return valid, expected
 
     # --- OLD ---
     __tokenizer = Tokenizer()
