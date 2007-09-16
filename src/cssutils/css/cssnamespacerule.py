@@ -167,11 +167,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
-        # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
-
         super(CSSNamespaceRule, self)._setCssText(cssText)
-        tokens = self._tokenize2(cssText, aslist=True)
         valid = True
+        tokens = self._tokenize2(cssText, aslist=True)
 
         if not tokens or self._type(tokens[0]) != self._prods.NAMESPACE_SYM:
             valid = False
@@ -180,66 +178,99 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 error=xml.dom.InvalidModificationErr)
 
         else:
-            newatkeyword = self._value(tokens[0])
+            # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
             newseq = []
-            newuri = None
-            newprefix = u''
+            # for closures: must be a mutable
+            new = {
+                   'keyword': self._value(tokens[0]),
+                   'prefix': None,
+                   'uri': None,
+                   'valid': True
+                   }
 
-            expected = 'prefix or uri'
-            for i in range(1, len(tokens)):
-                t = tokens[i]
-                typ, val = self._type(t), self._value(t)
-
-                try:
-                    self.default_productions[typ](newseq, t)
-                except KeyError:
-                    pass
+            def _ident(expected, seq, token, tokenizer=None):
+                # the namespace prefix, optional
+                if 'prefix or uri' == expected:
+                    new['prefix'] = self._value(token)
+                    seq.append(new['prefix'])
+                    return 'uri'
                 else:
-                    continue
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSNamespaceRule: Unexpected ident.', token)
+                    return expected
 
-                if 'prefix or uri' == expected and\
-                     self._prods.IDENT == typ:
-                    newprefix = val
-                    newseq.append(newprefix)
-                    expected = 'uri'
-
-                elif expected.endswith('uri') and \
-                     typ in (self._prods.URI, self._prods.STRING):
-                    if typ == self._prods.URI:
-                        newuri = val[4:-1].strip() # url(uri)
-                        if newuri[0] == newuri[-1] == '"' or\
-                           newuri[0] == newuri[-1] == "'":
-                            newuri = newuri[1:-1]
-                        self._log.warn(
-                            u'CSSNamespaceRule: Found namespace definition with url(uri), this may be deprecated in the future, use string format "uri" instead.',
-                            t, error = None, neverraise=True)
-                    else:
-                        newuri = val[1:-1] # "uri" or 'uri'
-                    newseq.append(newuri)
-                    expected = 'semicolon'
-
-                elif u';' == val:
-                    if 'semicolon' != expected: # normal end
-                        valid = False
-                        self._log.error(
-                            u'CSSNamespaceRule: No namespace URI found.', t)
-                    expected = None
-                    continue
+            def _string(expected, seq, token, tokenizer=None):
+                # the namespace URI as a STRING
+                if expected.endswith('uri'):
+                    new['uri'] = val = self._value(token)[1:-1] # "uri" or 'uri'
+                    seq.append(new['uri'])
+                    return ';'
 
                 else:
-                    valid = False
-                    self._log.error(u'CSSNamespaceRule: Syntax Error.', t)
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSNamespaceRule: Unexpected string.', token)
+                    return expected
 
-            if expected and expected != 'EOF':
-                valid = False
-                self._log.error(u'CSSNamespaceRule: Syntax Error, no ";" found: %s' %
-                          self._valuestr(cssText))
+            def _uri(expected, seq, token, tokenizer=None):
+                # the namespace URI as URI which is DEPRECATED
+                if expected.endswith('uri'):
+                    uri = self._value(token)[4:-1].strip() # url(uri)
+                    if uri[0] == uri[-1] == '"' or\
+                       uri[0] == uri[-1] == "'":
+                        uri = uri[1:-1]
+                    self._log.warn(
+                        u'CSSNamespaceRule: Found namespace definition with url(uri), this may be deprecated in the future, use string format "uri" instead.',
+                        token, error = None, neverraise=True)
+                    new['uri'] = uri
+                    seq.append(new['uri'])
+                    return ';'
+                else:
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSNamespaceRule: Unexpected URI.', token)
+                    return expected
 
-        self.valid = valid
-        if valid:
-            self.atkeyword = newatkeyword
-            self.uri = newuri
-            self.prefix = newprefix
+            def _char(expected, seq, token, tokenizer=None):
+                # final ;
+                val = self._value(token)
+                if ';' == expected and u';' == val:
+                    return 'EOF'
+                else:
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSNamespaceRule: Unexpected char.', token)
+                    return expected
+
+            # main loop
+            valid, expected = self._parse(expected='prefix or uri',
+                seq=newseq, tokenizer=tokens[1:],
+                productions={'IDENT': _ident,
+                             'STRING': _string,
+                             'URI': _uri,
+                             'CHAR': _char})
+
+            # valid set by parse
+            new['valid'] = new['valid'] and valid
+
+            # post condition
+            if not new['uri']:
+                new['valid'] = False
+                self._log.error(u'CSSNamespaceRule: No namespace URI found: %s' %
+                    self._valuestr(cssText))
+
+            if expected != 'EOF':
+                new['valid'] = False
+                self._log.error(u'CSSNamespaceRule: No ";" found: %s' %
+                    self._valuestr(cssText))
+
+        # set all
+        self.valid = new['valid']
+        if new['valid']:
+            self.atkeyword = new['keyword']
+            self.prefix = new['prefix']
+            self.uri = new['uri']
             self.seq = newseq
 
     cssText = property(fget=_getCssText, fset=_setCssText,
