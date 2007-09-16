@@ -34,6 +34,10 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace "uri': u'@namespace "uri";'
         }
         self.do_equal_p(tests) # parse
+        tests = {
+            u'@namespace "uri': xml.dom.SyntaxErr
+            }
+        self.do_raise_r(tests) # set cssText
 
     def test_initparameter(self):
         "CSSNamespaceRule.__init__(uri=None, prefix=u'')"
@@ -108,9 +112,9 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSNamespaceRule.__repr__(), .__str__()"
         uri=u'http://example.com'
         prefix=u'ex'
-        
+
         s = cssutils.css.CSSNamespaceRule(uri=uri, prefix=prefix)
-        
+
         self.assert_(uri in str(s))
         self.assert_(prefix in str(s))
 
