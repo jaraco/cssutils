@@ -33,6 +33,12 @@ MACROS = {
     'string':  r'''\'({stringchar}|\")*\'|\"({stringchar}|\')*\"''',
     'stringchar':  r'{urlchar}| |\\{nl}',
     'urlchar':  r'[\x09\x21\x23-\x26\x27-\x7E]|{nonascii}|{escape}',
+
+    # from CSS2.1
+    'invalid': r'{invalid1}|{invalid2}',
+    'invalid1': r'\"([^\n\r\f\\"]|\\{nl}|{escape})*',
+    'invalid2': r"\'([^\n\r\f\\']|\\{nl}|{escape})*",
+
     # what if \r\n, \n matches first?
     'nl': r'\n|\r\n|\r|\f',
     'w': r'{wc}*',
@@ -61,23 +67,29 @@ MACROS = {
     'Z': r'Z|z|\\0{0,4}(?:5a|7a)(?:\r\n|[ \t\r\n\f])?|\\Z|\\z',
     }
 
-# The following productions are the complete list of tokens in CSS3, the productions are **ordered**:
+# The following productions are the complete list of tokens
+# used by cssutils, a mix of CSS3 and some CSS2.1 productions.
+# The productions are **ordered**:
 PRODUCTIONS = [
     ('BOM', r'\xFEFF'),
     ('URI', r'url\({w}({string}|{urlchar}*){w}\)'),
     ('FUNCTION', r'{ident}\('),
 
+    # from CSS2.1
     ('IMPORT_SYM', r'@{I}{M}{P}{O}{R}{T}'),#'),
     ('PAGE_SYM', r'@{P}{A}{G}{E}'),
     ('MEDIA_SYM', r'@{M}{E}{D}{I}{A}'),
     ('FONT_FACE_SYM', r'@{F}{O}{N}{T}\\?\-{F}{A}{C}{E}'),
-    # CHANGED TO SPEC: only @charset
-    ('CHARSET_SYM', r'@charset'),
+    ('CHARSET_SYM', r'@charset'), # CHANGED TO SPEC: only @charset
     ('NAMESPACE_SYM', r'@{N}{A}{M}{E}{S}{P}{A}{C}{E}'),
+    # from CSS3
     ('ATKEYWORD', r'@{ident}'),
 
     ('IDENT', r'{ident}'),
     ('STRING', r'{string}'),
+    # from CSS2.1
+    ('INVALID', r'{invalid}'),
+
     ('HASH', r'\#{name}'),
     ('PERCENTAGE', r'{num}\%'),
     ('DIMENSION', r'{num}{ident}'),
@@ -94,12 +106,8 @@ PRODUCTIONS = [
     ('SUBSTRINGMATCH', r'\*\='),
     ('COMMENT', r'{comment}'), #r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
 
+    # from CSS2.1
     ('IMPORTANT_SYM', r'\!({w}|{comment})*{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
-
-    ('LBRACE', r'\{'), #{w}"{"
-    ('PLUS', r'\+'), #{w}"+"
-    ('GREATER', r'\>'), #{w}">"
-    ('COMMA', r'\,'), #{w}","
 
     ('CHAR', r'[^"\']')
     ]
