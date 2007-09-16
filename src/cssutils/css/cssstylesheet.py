@@ -30,10 +30,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     cssRules: of type CSSRuleList, (DOM readonly)
         The list of all CSS rules contained within the style sheet. This
         includes both rule sets and at-rules.
-    namespaces: set
-        A set of declared namespaces via @namespace rules. Each
+    prefixes: set
+        A set of declared prefixes via @namespace rules. Each
         CSSStyleRule is checked if it uses additional prefixes which are
-        not declared. If they are "invalidated".
+        not declared. If they do they are "invalidated".
     ownerRule: of type CSSRule, readonly
         If this style sheet comes from an @import rule, the ownerRule
         attribute will contain the CSSImportRule. In that case, the
@@ -64,17 +64,17 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 ownerNode, parentStyleSheet)
 
         self.cssRules = cssutils.css.CSSRuleList()
-        self.namespaces = set()
+        self.prefixes = set()
         self._readonly = readonly
 
-    def __checknamespaces(self, stylerule, namespaces):
+    def __checkprefixes(self, stylerule, prefixes):
         """
-        checks if all namespaces used in stylerule have been declared
+        checks if all prefixes used in stylerule have been declared
         """
         notdeclared = set()
         for s in stylerule.selectorList:
-            for prefix in s.namespaces:
-                if not prefix in namespaces:
+            for prefix in s.prefixes:
+                if not prefix in prefixes:
                     notdeclared.add(prefix)
         return notdeclared
 
@@ -99,76 +99,75 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         - NAMESPACE_ERR:
           If a namespace prefix is found which is not declared.
         """
+        # stylesheet  : [ CDO | CDC | S | statement ]*;
         self._checkReadonly()
 
-        # stylesheet  : [ CDO | CDC | S | statement ]*;
-
         newseq = cssutils.css.CSSRuleList()
-        newnamespaces = set()
+        # for closures: must be a mutable
+        new = { 'prefixes': set() }
 
-        # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
-        self.orderposition = 0
-
-        def charsetrule(seq, token, tokenizer):
+        def charsetrule(expected, seq, token, tokenizer):
+            # TODO: check if at absolute beginning of sheet
             rule = cssutils.css.CSSCharsetRule()
             rule.cssText = self._tokensupto2(tokenizer, token)
-            if self.orderposition > 0:
+            if expected > 0:
                 self._log.error(
                     u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
                     token, xml.dom.HierarchyRequestErr)
             else:
                 if rule.valid:
                     seq.append(rule)
-            self.orderposition = 1
+            return 1
 
-        def importrule(seq, token, tokenizer):
+        def importrule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSImportRule()
             rule.cssText = self._tokensupto2(tokenizer, token)
-            if self.orderposition > 1:
+            if expected > 1:
                 self._log.error(
                     u'CSSStylesheet: CSSImportRule not allowed here.',
                     token, xml.dom.HierarchyRequestErr)
             else:
-                self.orderposition = 1
                 if rule.valid:
                     seq.append(rule)
+            return 1
 
-        def namespacerule(seq, token, tokenizer):
+        def namespacerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSNamespaceRule()
-            rule.cssText = self._tokensupto2(tokenizer, token)
-            if self.orderposition > 2:
+            rule.cssText = self._tokensupto2(tokenizer, token, keepEOF=True)
+            if expected > 2:
                 self._log.error(
                     u'CSSStylesheet: CSSNamespaceRule not allowed here.',
                     token, xml.dom.HierarchyRequestErr)
             else:
-                self.orderposition = 2
                 if rule.valid:
                     seq.append(rule)
-                    newnamespaces.add(rule.prefix)
+                    new['prefixes'].add(rule.prefix)
+            return 2
 
-        def ruleset(seq, token, tokenizer):
-            orderposition = 3
+        def ruleset(expected, seq, token, tokenizer):
             tokens = self._tokensupto2(tokenizer, token)
             print '\n\n--- RULESET ---\n', tokens
+            return 3
 
-        self._parse(newseq,
-                  self._tokenize2(cssText, fullsheet=True),
-                  {'CDO': lambda *ignored: None,
-                   'CDC': lambda *ignored: None,
-                   'CHARSET_SYM': charsetrule,
-                   'IMPORT_SYM': importrule,
-                   'NAMESPACE_SYM': namespacerule
-                   },
-                   ruleset)
+        # expected:
+        # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
+
+        valid, expected = self._parse(0, newseq,
+            self._tokenize2(cssText, fullsheet=True),
+            {'CDO': lambda *ignored: None,
+             'CDC': lambda *ignored: None,
+             'CHARSET_SYM': charsetrule,
+             'IMPORT_SYM': importrule,
+             'NAMESPACE_SYM': namespacerule
+             }, ruleset)
 
         self.cssRules = newseq
-        self.namespaces = newnamespaces
-
+        self.prefixes = new['prefixes']
         for r in self.cssRules:
             r.parentStyleSheet = self
 
-
         print '\nNEWSEQ:\n', newseq
+        print self.prefixes
 
         return
 
@@ -262,7 +261,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     tokens[i:], blockendonly=True)
                 rule = cssutils.css.CSSStyleRule()
                 rule.cssText = ruletokens
-                notdeclared = self.__checknamespaces(rule, newnamespaces)
+                notdeclared = self.__checkprefixes(rule, newprefixes)
                 if notdeclared:
                     rule.valid = False
                     self._log.error(
@@ -278,7 +277,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.cssRules = newcssRules
         for r in self.cssRules:
             r.parentStyleSheet = self
-        self.namespaces = newnamespaces
+        self.prefixes = newprefixes
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
@@ -436,7 +435,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     return
             self.cssRules.insert(index, rule)
             rule.parentStyleSheet = self
-            self.namespaces.add(rule.prefix)
+            self.prefixes.add(rule.prefix)
 
         # all other
         else:
@@ -545,22 +544,3 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     def __str__(self):
         return "<cssutils.css.%s object title=%r href=%r at 0x%x>" % (
                 self.__class__.__name__, self.title, self.href, id(self))
-
-
-if __name__ == '__main__':
-    print "CSSStyleSheet"
-    c = CSSStyleSheet(href=None,
-                        #
-                        media="all",
-                        title="test",
-                        disabled=None,
-                        ownerNode=None,
-                        parentStyleSheet=None)
-    c.cssText = u'''@\\namespace n1 "utf-8";
-       |a[n1|b], n2|c {}
-    '''
-    print c.cssText
-##    print "title: ", c.title
-##    print "type: ", c.type
-##    print c.cssRules
-##    c.addRule(cssutils.css.CSSImportRule('x'))
