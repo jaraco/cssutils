@@ -38,8 +38,8 @@ class Selector(cssutils.util.Base):
     ==========
     selectorText
         textual representation of this Selector
-    namespaces
-        a set which namespaces have been used in this selector
+    prefixes
+        a set which prefixes have been used in this selector
     seq
         sequence of Selector parts including comments
 
@@ -75,7 +75,7 @@ class Selector(cssutils.util.Base):
         super(Selector, self).__init__()
 
         self.seq = []
-        self.namespaces = set()
+        self.prefixes = set()
         if selectorText:
             self.selectorText = selectorText
         self._readonly = readonly
@@ -157,16 +157,16 @@ class Selector(cssutils.util.Base):
         def addprefix(seq):
             """
             checks if last item in seq was a namespace prefix
-            and if yes adds it to newnamespaces
+            and if yes adds it to newprefixes
             """
             try:
                 # may also be comment...
                 if isinstance(seq[-1], dict) and \
                    seq[-1]['type'] in ('type', 'attributename'):
-                    newnamespaces.add(seq[-1]['value'])
+                    newprefixes.add(seq[-1]['value'])
                     seq[-1]['type'] = 'prefix'
                 else:
-                    newnamespaces.add('')
+                    newprefixes.add('')
             except IndexError:
                 pass
 
@@ -311,7 +311,7 @@ class Selector(cssutils.util.Base):
             tokens = preprocess(tokens)
 
             newseq = []
-            newnamespaces = set()
+            newprefixes = set()
             found1 = False
             # simple_selector | combinator: u' >+~' |
             # pseudoclass after : | pseudoelement after ::
@@ -462,9 +462,9 @@ class Selector(cssutils.util.Base):
 
             if found1:
                 self.seq = newseq
-                self.namespaces = newnamespaces
+                self.prefixes = newprefixes
 ##                import pprint;pprint.pprint(newseq)
-##                print self.namespaces
+##                print self.prefixes
             else:
                 self._log.error(
                     u'Selector: No selector found: %s.' % selectorText)
