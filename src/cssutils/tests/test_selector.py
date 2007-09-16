@@ -117,7 +117,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''a ~ b''': 'a~b',
 
             u'''a+ b c''': 'a+b c',
-            # namespaces
+            # namespaceprefixes
             u'''|e''': None,
             u'''*|e''': None,
             u'''n|e''': None,
@@ -178,9 +178,9 @@ class SelectorTestCase(basetest.BaseTestCase):
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
         sel=u'a+b'
-        
+
         s = cssutils.css.Selector(selectorText=sel)
-        
+
         self.assert_(sel in str(s))
 
         s2 = eval(repr(s))
