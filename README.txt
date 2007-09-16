@@ -75,22 +75,24 @@ HEAD
           that can be used for encoding and decoding CSS.
           (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
 
+     + API CHANGE: renamed attribute ``namespaces`` of CSSStyleSheet and Selector to ``prefixes`` as they really are the prefixes of declared namespaces
+
 
 0.9.3a1 - 070905
-    - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList. 
-        
-        Not yet implemented are:        
+    - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList.
+
+        Not yet implemented are:
             - css.CSSPrimitiveValue.getCounterValue and css. Counter
             - css.CSSPrimitiveValue.getRGBColorValue and css.RGBColor
             - css.CSSPrimitiveValue.getRectValue and css.Rect
-    
+
         + FEATURE: css.CSSValueList is iterable so may be used in a for loop
         + FEATURE: CSSValue has property ``cssValueTypeString`` which is the name of the relevant ``cssValueType``, e.g. "CSS_PRIMITIVE_TYPE". Mainly useful for debugging.
         + FEATURE: CSSPrimitiveValue has property ``primitiveTypeString`` which is the name of the relevant ``primitiveType``, e.g. "CSS_PX". Mainly useful for debugging.
         + CSSValue has an init Parameter ``_propertyname`` to set a context property for validation. If none is set the value is always invalid. **THIS MAY CHANGE!**
-    
+
     - FEATURE (**experimental**): CSSStyleDeclaration is iterable now. The iterator returns *all* properties set in this style as objects with properties ``name``, ``cssValue`` and ``priority``. Calling CSSStyleDeclaration.item(index) on the other hand simply returns a property name and also only the normalized name (once). Example::
-    
+
             sheet = cssutils.parseString('a { color: red; c\olor: blue; left: 0 !important }')
             for rule in sheet.cssRules:
                 style = rule.style
@@ -99,56 +101,56 @@ HEAD
                     cssValue = property.cssValue
                     priority = property.priority
                     print name, '=', cssValue.cssText, priority
-                    
+
                 # prints:
                 # color = red
                 # c\olor = blue
                 # left = 0 !important
-        
+
                 for i in range(0, style.length):
                     name = style.item(i)
                     cssValue = style.getPropertyCSSValue(name)
                     priority = style.getPropertyPriority(name)
                     print name, '=', cssValue.cssText , priority
-        
+
                 # prints:
                 # color = blue
                 # left = 0 !important
-    
+
     - FEATURE (**experimental**): added ``CSSStyleSheet.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style sheet (currently in CSSStyleDeclaration and CSSImportRules).
-    
+
     - FEATURE: added ``CSSStyleDeclaration.getCssText(separator=None)`` which returns serialized property cssText, each property separated by given ``separator`` which may e.g. be u'' to be able to use cssText directly in an HTML style attribute. ";" is always part of each property (except the last one) and can **not** be set with separator!
-    
+
     - FEATURE: ``href`` and ``media`` arguments can now be passed to ``parse()`` and ``parseString()`` functions and methods. This sets the appropriate attributes on the generated stylesheet objects.
-    
+
     - FEATURE: CSSMediaRule has an init parameter ``mediaText`` synchronous to CSSImportRule now
-    
+
     - FEATURE: The ``MediaList`` constructor can now be passed a list of media types.
-    
+
     - FEATURE: ``CSSRule`` and subclasses have a property ``typeString`` which is the name of the relevant ``type``, e.g. ``STYLE_RULE``. Mainly useful for debugging.
-    
+
     - FEATURE: ``cssutils.serialize.Preferences`` has a new option ``lineSeparator`` that is used as linefeed character(s). May also be set to ``u''`` for ``CSSStyleDeclareation.cssText'`` to be directly usable in e.g. HTML style attributes
 
     + API CHANGE (internal): renamed serializers method ``do_stylesheet`` to ``do_CSSStyleSheet``
 
-    - BUGFIX (issue #9): Parsing of empty ``url()`` values has been fixed 
+    - BUGFIX (issue #9): Parsing of empty ``url()`` values has been fixed
     - BUGFIX: Handling of linenumbers in the serializer has been fixed.
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
 
     + CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. ``background`` should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later
-    
+
     + CHANGE: CSSValue default cssText is now ``u""`` and not ``u"inherit"`` anymore
-    
+
     + CHANGE: ``css.CSSStyleDeclaration.cssText`` indents its property not anymore.
-    
+
     + CHANGE: ``cssutils.serialize.CSSSerializer`` has been refactored internally to support the lineSeparator option.
-    
+
     + CHANGE: The Selector and SameNamePropertyList (which might be renamed as it is experimental) class are now available from cssutils.css too.
-    
+
     + CHANGE: Tokenizer strips HTML comment tokens CDO and CDC from tokenlist now.
 
     + CHANGE: Added __repr__ and __str__ methods to most classes. __str__ reports e.g. ``<cssutils.css.CSSImportRule object href=None at 0xaaa870>``, __repr__  e.g. ``cssutils.css.CSSImportRule(href=None, mediaText=u'all')`` which is a valid contructor  for the object in most cases (which might not be complete for all init parameter for all classes like in this case though). The following details are included:
-    
+
       css
         - CSSStyleSheet shows the title and href
         - CSSCharsetRule shows the encoding
@@ -165,11 +167,11 @@ HEAD
         - CSSValueList shows an __repr__ which is **not** possible to ``eval()`` and some details for __str__
         - _Property shows infos but should be used directly for now anyway!
         - Selector the selectorText
-      
+
       stylesheets
         - MediaList shows the mediaText
 
-    
+
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
@@ -837,6 +839,6 @@ Version 0.1x
 ------------
     0.10 - 031221
     first version to try if i can bring it to work at all
-    
+
     only a prettyprinter included, no builder
 
