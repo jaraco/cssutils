@@ -61,8 +61,11 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u" '' ": [('S', u' ', 1, 1),
                  ('STRING', u"''", 1, 2),
                  ('S', u' ', 1, 4)],
+        u" '' ": [('S', u' ', 1, 1),
+                 ('STRING', u"''", 1, 2),
+                 ('S', u' ', 1, 4)],
         # TODO:
-        ##ur'"\""': [('STRING', ur'"\""', 1, 1)],
+        #u'"\\" "': [('STRING', u'"\\" "', 1, 1)],
 
         u"'\\''": [('STRING', u"'\\''", 1, 1)],
         u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
@@ -160,7 +163,30 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' @ ': [('S', u' ', 1, 1),
                   ('CHAR', u'@', 1, 2),
                   ('S', u' ', 1, 3)],
-    }
+
+        # --- overwritten for CSS 2.1 ---
+        # LBRACE
+        u' { ': [('S', u' ', 1, 1),
+                 ('CHAR', u'{', 1, 2),
+                 ('S', u' ', 1, 3)],
+        # PLUS
+        u' + ': [('S', u' ', 1, 1),
+                 ('CHAR', u'+', 1, 2),
+                 ('S', u' ', 1, 3)],
+        # GREATER
+        u' > ': [('S', u' ', 1, 1),
+                 ('CHAR', u'>', 1, 2),
+                 ('S', u' ', 1, 3)],
+        # COMMA
+        u' , ': [('S', u' ', 1, 1),
+                 ('CHAR', u',', 1, 2),
+                 ('S', u' ', 1, 3)],
+
+        # class
+        u' . ': [('S', u' ', 1, 1),
+                  ('CHAR', u'.', 1, 2),
+                  ('S', u' ', 1, 3)],
+        }
 
     tests3 = {
         # ATKEYWORD
@@ -205,10 +231,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
                   ('BOM', u'\xFEFF', 1, 2), # len=3
                   ('S', u' ', 1, 5)],
 
-        # CHAR
-        u' . ': [('S', u' ', 1, 1),
-                  ('CHAR', u'.', 1, 2),
-                  ('S', u' ', 1, 3)],
         }
 
     tests2 = {
@@ -288,24 +310,41 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('ATKEYWORD', u'@unknown', 1, 2),
                  ('S', u' ', 1, 10)],
 
-        # LBRACE
-        u' { ': [('S', u' ', 1, 1),
-                 ('LBRACE', u'{', 1, 2),
-                 ('S', u' ', 1, 3)],
-        # PLUS
-        u' + ': [('S', u' ', 1, 1),
-                 ('PLUS', u'+', 1, 2),
-                 ('S', u' ', 1, 3)],
-        # GREATER
-        u' > ': [('S', u' ', 1, 1),
-                 ('GREATER', u'>', 1, 2),
-                 ('S', u' ', 1, 3)],
-        # COMMA
-        u' , ': [('S', u' ', 1, 1),
-                 ('COMMA', u',', 1, 2),
-                 ('S', u' ', 1, 3)],
+        # STRING
+        # strings with linebreak in it
+        u' "\\na"\na': [('S', u' ', 1, 1),
+                   ('STRING', u'"\\na"', 1, 2),
+                   ('S', u'\n', 1, 7),
+                   ('IDENT', u'a', 1, 8)],
+        u" '\\na'\na": [('S', u' ', 1, 1),
+                   ('STRING', u"'\\na'", 1, 2),
+                   ('S', u'\n', 1, 7),
+                   ('IDENT', u'a', 1, 8)],
+        u' "\\r\\n\\t\\f\\n\\ra"a': [('S', u' ', 1, 1),
+                   ('STRING', u'"\\r\\n\\t\\f\\n\\ra"', 1, 2),
+                   ('IDENT', u'a', 1, 17)],
 
-        #{invalid}        {return INVALID; /* unclosed string */}
+        # INVALID (STRING)
+        u' " ': [('S', u' ', 1, 1),
+                 ('INVALID', u'" ', 1, 2)],
+        u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
+                 ('INVALID', u"'abc\"with quote\" in it", 1, 2)],
+        u' "\na': [('S', u' ', 1, 1),
+                   ('INVALID', u'"', 1, 2),
+                   ('S', u'\n', 1, 3),
+                   ('IDENT', u'a', 1, 4)],
+        # strings with linebreak in it
+        u' "\\na\na': [('S', u' ', 1, 1),
+                   ('INVALID', u'"\\na', 1, 2),
+                   ('S', u'\n', 1, 6),
+                   ('IDENT', u'a', 1, 7)],
+        u' "\\r\\n\\t\\f\\n\\ra\na': [('S', u' ', 1, 1),
+                   ('INVALID', u'"\\r\\n\\t\\f\\n\\ra', 1, 2),
+                   ('S', u'\n', 1, 16),
+                   ('IDENT', u'a', 1, 17)],
+
+
+
 
         # IMPORTANT_SYM
         # TODO: check if comment between "!" and "important"
@@ -325,12 +364,30 @@ class TokenizerTestCase(basetest.BaseTestCase):
         ur'!\69\6d\70\6f\72\74\61\6e\74': [('IMPORTANT_SYM',
                                             ur'!\69\6d\70\6f\72\74\61\6e\74',
                                             1, 1)],
+        }
 
-        # .
+    tests2only = {
+        # --- overwriting ---
+        # LBRACE
+        u' { ': [('S', u' ', 1, 1),
+                 ('LBRACE', u'{', 1, 2),
+                 ('S', u' ', 1, 3)],
+        # PLUS
+        u' + ': [('S', u' ', 1, 1),
+                 ('PLUS', u'+', 1, 2),
+                 ('S', u' ', 1, 3)],
+        # GREATER
+        u' > ': [('S', u' ', 1, 1),
+                 ('GREATER', u'>', 1, 2),
+                 ('S', u' ', 1, 3)],
+        # COMMA
+        u' , ': [('S', u' ', 1, 1),
+                 ('COMMA', u',', 1, 2),
+                 ('S', u' ', 1, 3)],
+        # class
         u' . ': [('S', u' ', 1, 1),
                  ('CLASS', u'.', 1, 2),
                  ('S', u' ', 1, 3)],
-
         }
 
 
@@ -352,10 +409,15 @@ class TokenizerTestCase(basetest.BaseTestCase):
         tests.update(self.tests2)
         tests.update(self.tests3)
         for css in tests:
+            # check token format
             tokens = tokenizer.tokenize(css)
             for i, actual in enumerate(tokens):
                 expected = tests[css][i]
                 self.assertEqual(expected, actual)
+
+            # check if all same number of tokens
+            tokens = [t for t in tokenizer.tokenize(css)]
+            self.assertEqual(len(tokens), len(tests[css]))
 
     def test_tokenizeCSS3(self):
         "CSS3 Tokenizer().tokenize()"
@@ -379,6 +441,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         tests = {}
         tests.update(self.testsall)
         #tests.update(self.tests2)
+        tests.update(self.tests2only)
         for css in tests:
             tokens = tokenizer.tokenize(css)
             for i, actual in enumerate(tokens):
