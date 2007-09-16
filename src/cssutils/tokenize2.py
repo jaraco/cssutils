@@ -93,7 +93,14 @@ class Tokenizer(object):
                 match = matcher(text)
                 if match:
                     found = match.group(0)
+
+                    if fullsheet and 'INVALID' == name:
+                        # if parsed INVALID is fixed to valid STRING
+                        name = 'STRING'
+                        found = '%s%s' % (found, found[0])
+
                     yield (name, found, line, col)
+
                     text = text[len(found):]
                     nls = found.count(linesep)
                     line += nls
@@ -104,15 +111,12 @@ class Tokenizer(object):
                     break
 
             else:
-                if text.startswith('"') or text.startswith("'"):
-                    yield ('STRING', text + text[0], line, col)
-                    text = ''
-                else:
-                    raise xml.dom.SyntaxErr('no token match "%s(...)"' % text[:10])
-                    text = text[1:]
+                # should not happen at all
+                raise xml.dom.SyntaxErr('no token match "%s(...)"' % text[:10])
+                text = text[1:]
 
         if fullsheet:
-            yield ('EOF', None, line, col)
+            yield ('EOF', u'', line, col)
 
 
 if __name__ == '__main__':
