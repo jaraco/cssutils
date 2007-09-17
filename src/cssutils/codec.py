@@ -343,11 +343,42 @@ class IncrementalEncoder(codecs.IncrementalEncoder):
 class StreamWriter(codecs.StreamWriter):
     def __init__(self, stream, errors="strict", encoding=None, header=False):
         codecs.StreamWriter.__init__(self, stream, errors)
-        self.encoder = IncrementalEncoder(errors, encoding)
+        self.streamwriter = None
+        self.encoding = encoding
         self._errors = errors
+        self.buffer = u""
 
     def encode(self, input, errors='strict'):
-        return (self.encoder.encode(input, False), len(input))
+        li = len(input)
+        if self.streamwriter is None:
+            input = self.buffer + input
+            li = len(input)
+            if self.encoding is not None:
+                # Replace encoding in the @charset rule with the specified one
+                encoding = self.encoding
+                if encoding.replace("_", "-").lower() == "utf-8-sig":
+                    encoding = "utf-8"
+                newinput = _fixencoding(input, unicode(encoding), False)
+                if newinput is None: # @charset rule incomplete => Retry next time
+                    self.buffer = input
+                    return ("", 0)
+                input = newinput
+            else:
+                # Use encoding from the @charset declaration
+                self.encoding = _detectencoding_unicode(input, False)
+            if self.encoding is not None:
+                if self.encoding == "css":
+                    raise ValueError("css not allowed as encoding name")
+                info = codecs.lookup(self.encoding)
+                encoding = self.encoding
+                if self.encoding.replace("_", "-").lower() == "utf-8-sig":
+                    input = _fixencoding(input, u"utf-8", True)
+                self.streamwriter = info.streamwriter(self.stream, self._errors)
+                self.buffer = u""
+            else:
+                self.buffer = input
+                return ("", 0)
+        return (self.streamwriter.encode(input, errors)[0], li)
 
     def _geterrors(self):
         return self._errors
