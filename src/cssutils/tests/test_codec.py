@@ -179,20 +179,6 @@ class CodecTestCase(unittest.TestCase):
             id = codecs.getincrementaldecoder("css")(encoding)
             self.assertEqual("".join(id.iterdecode(input.encode(encoding))), input)
 
-            # Check stream writer with encoding autodetection
-            q = Queue()
-            sw = codecs.getwriter("css")(q)
-            for c in input:
-                sw.write(c)
-            self.assertEqual(q.read().decode(encoding), input.replace('"x"', '"%s"' % outputencoding))
-
-            # Check stream writer with specified encoding
-            q = Queue()
-            sw = codecs.getwriter("css")(q, encoding=encoding)
-            for c in input:
-                sw.write(c)
-            self.assertEqual(q.read().decode(encoding), input.replace('"x"', '"%s"' % outputencoding))
-
         # Use correct declaration
         checkdecl("utf-8")
         checkdecl("iso-8859-1", u'@charset "%s";g\xfcrk')
@@ -224,6 +210,20 @@ class CodecTestCase(unittest.TestCase):
             # Check incremental encoder with specified encoding
             ie = codecs.getincrementalencoder("css")(encoding=encoding)
             self.assertEqual("".join(ie.iterencode(input)).decode(encoding), outputdecl)
+
+            # Check stream writer with encoding autodetection
+            q = Queue()
+            sw = codecs.getwriter("css")(q)
+            for c in inputdecl:
+                sw.write(c)
+            self.assertEqual(q.read().decode(encoding), input.replace('"x"', '"%s"' % outputencoding))
+
+            # Check stream writer with specified encoding
+            q = Queue()
+            sw = codecs.getwriter("css")(q, encoding=encoding)
+            for c in input:
+                sw.write(c)
+            self.assertEqual(q.read().decode(encoding), input.replace('"x"', '"%s"' % outputencoding))
 
         # Autodetectable encodings
         check("utf-8-sig")
