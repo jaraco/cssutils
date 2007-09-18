@@ -39,7 +39,7 @@ class Preferences(object):
     lineNumbers = False
         Only used if a complete CSSStyleSheet is serialized.
     lineSeparator = u'\n'
-        How to end a line. This may be set to e.g. u'' for serializing 
+        How to end a line. This may be set to e.g. u'' for serializing
         of CSSStyleDeclarations usable in HTML style attribute.
     omitLastSemicolon = True
         If ``True`` omits ; after last property of CSSStyleDeclaration
@@ -143,6 +143,22 @@ class CSSSerializer(object):
         # TODO: REMOVE???
         raise NotImplementedError(
             "Serializer not implemented for %s" % rule)
+
+    def do_stylesheets_mediaquery(self, mediaquery):
+        """
+        a single media used in medialist
+        """
+        if len(mediaquery.seq) == 0:
+            return u''
+        else:
+            out = []
+            for part in mediaquery.seq:
+                if hasattr(part, 'cssText'): # comments
+                    out.append(part.cssText)
+                else:
+                    # TODO: media queries!
+                    out.append(part)
+            return u' '.join(out)
 
     def do_stylesheets_medialist(self, medialist):
         """
@@ -278,7 +294,7 @@ class CSSSerializer(object):
         if not rule.cssRules or self._noinvalids(rule.media):
             return u''
         mediaText = self.do_stylesheets_medialist(rule.media).strip()
-        out = [u'%s %s {%s' % (self._getatkeyword(rule, u'@media'), 
+        out = [u'%s %s {%s' % (self._getatkeyword(rule, u'@media'),
                                mediaText, self.prefs.lineSeparator)]
         for r in rule.cssRules:
             rtext = r.cssText
@@ -370,18 +386,18 @@ class CSSSerializer(object):
             styleText = self.do_css_CSSStyleDeclaration(rule.style)
         finally:
             self._level -= 1
-            
+
         if not styleText:
             return u'%s {}' % (
-                selectorText, 
+                selectorText,
                 )
         else:
             return u'%s {%s%s%s%s}' % (
-                selectorText, 
-                self.prefs.lineSeparator, 
-                self._indentblock(styleText, self._level + 1), 
-                self.prefs.lineSeparator, 
-                (self._level + 1) * self.prefs.indent, 
+                selectorText,
+                self.prefs.lineSeparator,
+                self._indentblock(styleText, self._level + 1),
+                self.prefs.lineSeparator,
+                (self._level + 1) * self.prefs.indent,
                 )
 
     def do_css_SelectorList(self, selectorlist):
@@ -432,7 +448,7 @@ class CSSSerializer(object):
         else:
             if separator is None:
                 separator = self.prefs.lineSeparator
-            
+
             out = []
             for (i, part) in enumerate(style.seq):
                 # CSSComment
@@ -465,10 +481,10 @@ class CSSSerializer(object):
                 # other?
                 else:
                     out.append(part)
-            
+
             if out and out[-1] == separator:
                 del out[-1]
-                                    
+
             return u''.join(out)
 
     def do_css_Property(self, property, omitSemicolon=False):
@@ -514,7 +530,7 @@ class CSSSerializer(object):
         else:
             out = []
             for part in cssvalue.seq:
-                if hasattr(part, 'cssText'): 
+                if hasattr(part, 'cssText'):
                     # comments or CSSValue if a CSSValueList
                     out.append(part.cssText)
                 else:
