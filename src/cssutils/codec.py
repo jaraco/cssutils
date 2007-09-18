@@ -9,7 +9,8 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
-import codecs
+
+import codecs, marshal
 
 
 # We're using bits to store all possible candidate encodings (or variants, i.e.
@@ -220,6 +221,23 @@ def encode(input, errors="strict", encoding=None):
     return (encoder(input, errors)[0], consumed)
 
 
+def _bytes2int(bytes):
+    # Helper for Python 3.0: convert a ``bytes`` object into an ``int``.
+    i = 0
+    for byte in bytes:
+        i = (i<<8) + byte
+    return i
+
+
+def _int2bytes(i):
+    # Helper for Python 3.0: convert an ``int`` into a ``bytes`` object.
+    v = []
+    while i:
+        v.insert(0, chr(i&0xff))
+        i >>= 8
+    return "".join(v)
+
+
 if hasattr(codecs, "IncrementalDecoder"):
     class IncrementalDecoder(codecs.IncrementalDecoder):
         def __init__(self, errors="strict", encoding=None):
@@ -290,6 +308,26 @@ if hasattr(codecs, "IncrementalDecoder"):
             self._errors = errors
         errors = property(_geterrors, _seterrors)
 
+        # For Python 3.0
+        def getstate(self):
+            if self.decoder is not None:
+                state = (self.encoding, self.buffer, self.headerfixed, True, self.decoder.getstate())
+            else:
+                state = (self.encoding, self.buffer, self.headerfixed, False, None)
+            return _bytes2int(marshal.dumps(state))
+
+        # For Python 3.0
+        def setstate(self, state):
+            state = _int2bytes(marshal.loads(state))
+            self.encoding = state[0]
+            self.buffer = state[1]
+            self.headerfixed = state[2]
+            if state[3] is not None:
+                self.decoder = codecs.getincrementaldecoder(self.encoding)(self._errors)
+                self.decoder.setstate(state[4])
+            else:
+                self.decoder = None
+
 
 if hasattr(codecs, "IncrementalEncoder"):
     class IncrementalEncoder(codecs.IncrementalEncoder):
@@ -355,6 +393,25 @@ if hasattr(codecs, "IncrementalEncoder"):
                 self.encoder.errors = errors
             self._errors = errors
         errors = property(_geterrors, _seterrors)
+
+        # For Python 3.0
+        def getstate(self):
+            if self.encoder is not None:
+                state = (self.encoding, self.buffer, True, self.encoder.getstate())
+            else:
+                state = (self.encoding, self.buffer, False, None)
+            return _bytes2int(marshal.dumps(state))
+
+        # For Python 3.0
+        def setstate(self, state):
+            state = _int2bytes(marshal.loads(state))
+            self.encoding = state[0]
+            self.buffer = state[1]
+            if state[2] is not None:
+                self.encoder = codecs.getincrementalencoder(self.encoding)(self._errors)
+                self.encoder.setstate(state[4])
+            else:
+                self.encoder = None
 
 
 class StreamWriter(codecs.StreamWriter):
