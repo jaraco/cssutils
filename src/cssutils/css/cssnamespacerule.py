@@ -252,26 +252,26 @@ class CSSNamespaceRule(cssrule.CSSRule):
                              'CHAR': _char})
 
             # valid set by parse
-            new['valid'] = new['valid'] and valid
+            valid = valid and new['valid']
 
-            # post condition
+            # post conditions
             if not new['uri']:
-                new['valid'] = False
+                valid = False
                 self._log.error(u'CSSNamespaceRule: No namespace URI found: %s' %
                     self._valuestr(cssText))
 
             if expected != 'EOF':
-                new['valid'] = False
+                valid = False
                 self._log.error(u'CSSNamespaceRule: No ";" found: %s' %
                     self._valuestr(cssText))
 
-        # set all
-        self.valid = new['valid']
-        if new['valid']:
-            self.atkeyword = new['keyword']
-            self.prefix = new['prefix']
-            self.uri = new['uri']
-            self.seq = newseq
+            # set all
+            self.valid = valid
+            if valid:
+                self.atkeyword = new['keyword']
+                self.prefix = new['prefix']
+                self.uri = new['uri']
+                self.seq = newseq
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
