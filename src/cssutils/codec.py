@@ -153,8 +153,8 @@ def _detectencoding_unicode(input, final=False):
     will be returned.
 
     If the encoding can't be detected yet, ``None`` is returned. ``final``
-    specifies whether more data is available in later calls or not. If ``final``
-    is true, ``_detectencoding_unicode()`` will never return ``None``.
+    specifies whether more data will be available in later calls or not. If
+    ``final`` is true, ``_detectencoding_unicode()`` will never return ``None``.
     """
     prefix = u'@charset "'
     if input.startswith(prefix):
@@ -169,6 +169,15 @@ def _detectencoding_unicode(input, final=False):
 
 
 def _fixencoding(input, encoding, final=False):
+    """
+    Replace the name of the encoding in the charset rule at the beginning of
+    ``input`` with ``encoding``. If ``input`` doesn't starts with a charset
+    rule, ``input`` will be returned unmodified.
+
+    If the encoding can't be found yet, ``None`` is returned. ``final``
+    specifies whether more data will be available in later calls or not.
+    If ``final`` is true, ``_fixencoding()`` will never return ``None``.
+    """
     prefix = u'@charset "'
     if len(input) > len(prefix):
         if input.startswith(prefix):
