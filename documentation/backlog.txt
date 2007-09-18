@@ -200,13 +200,14 @@ implement rgba
 
 media queries
 -------------
-:prio: 1
+:prio: 1 (mostly done)
 
 http://www.w3.org/TR/2007/CR-css3-mediaqueries-20070606/::
 
     @media all and (width > 200)
-    @media and @import
-    @import url() all { min-width: 100px };
+    @import url() all and (min-width: 100px)
+
+- add possibility to access feature properties?
 
 
 serializer
