@@ -48,7 +48,7 @@ TODO:
       background: no-repeat left url()  #fff
       -> background: #fff url() no-repeat left
 """
-__all__ = ['CSSStyleDeclaration', 'SameNamePropertyList']
+__all__ = ['CSSStyleDeclaration', 'Property']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
@@ -58,7 +58,7 @@ import xml.dom
 
 import cssutils
 from cssproperties import CSS2Properties
-from property import _Property as Property
+from property import Property
 
 class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
     """
@@ -155,11 +155,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
     def __iter__(self):
         "CSSStyleDeclaration is iterable"
         return CSSStyleDeclaration.__items(self)
-        
+
     def __items(self):
         """
         the iterator
-        
+
         returns in contrast to calling item(index) property objects
         """
         props = []
@@ -349,8 +349,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         returns serialized property cssText, each property separated by
         given ``separator`` which may e.g. be u'' to be able to use
-        cssText directly in an HTML style attribute. ";" is always part of 
-        each property (except the last one) and can **not** be set with 
+        cssText directly in an HTML style attribute. ";" is always part of
+        each property (except the last one) and can **not** be set with
         separator!
         """
         return cssutils.ser.do_css_CSSStyleDeclaration(self, separator)
@@ -618,7 +618,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
     def __repr__(self):
         return "cssutils.css.%s()" % (
                 self.__class__.__name__)
-        
+
     def __str__(self):
         return "<cssutils.css.%s object length=%r at 0x%x>" % (
                 self.__class__.__name__, self.length, id(self))
@@ -664,11 +664,11 @@ class SameNamePropertyList(list):
     def __repr__(self):
         return "cssutils.css.%s(name=%r)" % (
                 self.__class__.__name__, self.name)
-        
+
     def __str__(self):
         return "<cssutils.css.%s object name=%r at 0x%x>" % (
                 self.__class__.__name__, self.name, id(self))
-        
+
 
 if __name__ == '__main__':
     pass
