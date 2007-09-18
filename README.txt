@@ -70,10 +70,7 @@ HEAD
     *INWORK*
         - New Tokenizer which probably breaks almost everything for now
         - rethink handling of ``<!--`` and ``-->`` in parser
-    *INWORK*
-        - Added a new module cssutils.codec that registers a codec
-          that can be used for encoding and decoding CSS.
-          (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
+    - FEATURE: Added a new module cssutils.codec that registers a codec that can be used for encoding and decoding CSS. (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
 
      + API CHANGE: renamed attribute ``namespaces`` of CSSStyleSheet and Selector to ``prefixes`` as they really are the prefixes of declared namespaces
 
