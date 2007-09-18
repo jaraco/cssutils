@@ -37,7 +37,7 @@ __all__ = [
     'CSSPageRule',
     'CSSStyleRule',
     'CSSUnknownRule',
-    'CSSStyleDeclaration',
+    'CSSStyleDeclaration', 'Property',
     'CSSValue', 'CSSPrimitiveValue', 'CSSValueList',
     ]
 __docformat__ = 'restructuredtext'
