@@ -61,7 +61,7 @@ class Base(object):
 
     def _tokensupto2(self,
                      tokenizer,
-                     token,
+                     starttoken=None, # not needed anymore?
                      blockstartonly=False,
                      blockendonly=False,
                      propertynameendonly=False,
@@ -69,6 +69,7 @@ class Base(object):
                      propertypriorityendonly=False,
                      selectorattendonly=False,
                      funcendonly=False,
+                     keepEnd=True,
                      keepEOF=False):
         """
         returns tokens upto end of atrule and end index
@@ -77,9 +78,11 @@ class Base(object):
         default looks for ending "}" and ";"
         """
         ends = u';}'
+        brace = bracket = parant = 0 # {}, [], ()
 
         if blockstartonly: # {
             ends = u'{'
+            brace = -1 # set to 0 with first {
         if blockendonly: # }
             ends = u'}'
         elif propertynameendonly: # : and ; in case of an error
@@ -92,33 +95,37 @@ class Base(object):
             ends = u']'
         elif funcendonly: # )
             ends = u')'
+            parant = 1
 
-        brace = bracket = parant = 0 # {}, [], ()
-        if blockstartonly:
-            brace = -1 # set to 0 with first {
+        resulttokens = []
 
-        resulttokens = [token]
+        # NEEDED?
+        if starttoken:
+            resulttokens.append(starttoken)
+
         for token in tokenizer:
             if self._type(token) == 'EOF':
                 if keepEOF:
                     resulttokens.append(token)
                 break
-
-            if u'{' == self._value(token): brace += 1
-            elif u'}' == self._value(token): brace -= 1
-            if u'[' == self._value(token): bracket += 1
-            elif u']' == self._value(token): bracket -= 1
+            val = self._value(token)
+            if u'{' == val: brace += 1
+            elif u'}' == val: brace -= 1
+            elif u'[' == val: bracket += 1
+            elif u']' == val: bracket -= 1
             # function( or single (
-            if u'(' == self._value(token) or \
-               Base._ttypes.FUNCTION == self._type(token): parant += 1
-            elif u')' == self._value(token): parant -= 1
-            resulttokens.append(token)
-            if self._value(token) in ends and (
-                                    brace == bracket == parant == 0):
+            elif u'(' == val or \
+               Base._prods.FUNCTION == self._type(token): parant += 1
+            elif u')' == val: parant -= 1
+
+            if val in ends and (brace == bracket == parant == 0):
+                if keepEnd:
+                    resulttokens.append(token)
                 break
+            else:
+                resulttokens.append(token)
 
         return resulttokens
-
 
     def _getProductions(self, productions):
         """
