@@ -13,7 +13,7 @@ import cssutils
 import cssproperties
 from cssvalue import CSSValue
 
-class _Property(cssutils.util.Base):
+class Property(cssutils.util.Base):
     """
     (cssutils) a CSS property in a StyleDeclaration of a CSSStyleRule
 
@@ -70,16 +70,20 @@ class _Property(cssutils.util.Base):
           ;
 
     """
-    def __init__(self, name, value, priority=None):
+    def __init__(self, name=None, value=None, priority=None):
         """
         inits property
         """
-        super(_Property, self).__init__()
+        super(Property, self).__init__()
 
         self.seqs = [[], None, []]
         self.valid = True
-        self.name = name
-        self.cssValue = value
+        if name:
+            self.name = name
+        if value:
+            self.cssValue = value
+        else:
+            self.cssValue = CSSValue()
         self.priority = priority
 
     def __invalidToken(self, tokens, x):
@@ -236,13 +240,13 @@ class _Property(cssutils.util.Base):
 
     def __repr__(self):
         return "cssutils.css.property.%s(name=%r, value=%r, priority=%r)" % (
-                self.__class__.__name__, 
+                self.__class__.__name__,
                 self.name, self.cssValue.cssText, self.priority)
-        
+
     def __str__(self):
         return "<%s.%s object name=%r value=%r priority=%r at 0x%x>" % (
-                self.__class__.__module__, self.__class__.__name__, 
-                self.name, self.cssValue.cssText, self.priority, id(self))        
+                self.__class__.__module__, self.__class__.__name__,
+                self.name, self.cssValue.cssText, self.priority, id(self))
 
     # DEPRECATED
     def _getValue(self):
@@ -264,5 +268,5 @@ class _Property(cssutils.util.Base):
 
 
 if __name__ == '__main__':
-    p = _Property(u'color', 'red', '! important')
+    p = Property(u'color', 'red', '! important')
     print p.name, p.cssValue, p.priority
