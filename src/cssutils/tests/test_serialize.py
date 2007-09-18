@@ -163,27 +163,27 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 
         self._resetprefs()
 
-    def test__Property(self):
-        "CSSSerializer.do_css_Property"
+    def test_Property(self):
+        "CSSSerializer.do_cssProperty"
         name="color"
         value="red"
         priority="!important"
-        
-        s = cssutils.css.property._Property(
-            name=name, value=value, priority=priority)        
-        self.assertEqual(u'color: red !important;', 
-                    cssutils.ser.do_css_Property(s))
-        self.assertEqual(u'color: red !important', 
-                    cssutils.ser.do_css_Property(s, omitSemicolon=True))
 
-        s = cssutils.css.property._Property(
-            name=name, value=value)        
-        self.assertEqual(u'color: red;', 
-                    cssutils.ser.do_css_Property(s))
-        self.assertEqual(u'color: red', 
-                    cssutils.ser.do_css_Property(s, omitSemicolon=True))
+        s = cssutils.css.property.Property(
+            name=name, value=value, priority=priority)
+        self.assertEqual(u'color: red !important;',
+                    cssutils.ser.do_cssProperty(s))
+        self.assertEqual(u'color: red !important',
+                    cssutils.ser.do_cssProperty(s, omitSemicolon=True))
 
-        
+        s = cssutils.css.property.Property(
+            name=name, value=value)
+        self.assertEqual(u'color: red;',
+                    cssutils.ser.do_cssProperty(s))
+        self.assertEqual(u'color: red',
+                    cssutils.ser.do_cssProperty(s, omitSemicolon=True))
+
+
 if __name__ == '__main__':
     import unittest
     unittest.main()
