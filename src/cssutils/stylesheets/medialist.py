@@ -35,7 +35,13 @@ class MediaList(cssutils.util.Base, list):
 
     Format
     ======
-    medium [ COMMA S* medium ]*
+    ::
+
+        medium [ COMMA S* medium ]*
+
+    New::
+
+        <media_query> [, <media_query> ]*
     """
 
     _MEDIA = [u'all', u'aural', u'braille', u'embossed', u'handheld',
