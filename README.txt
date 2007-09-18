@@ -70,7 +70,18 @@ HEAD
     *INWORK*
         - New Tokenizer which probably breaks almost everything for now
         - rethink handling of ``<!--`` and ``-->`` in parser
-    - FEATURE: Added a new module cssutils.codec that registers a codec that can be used for encoding and decoding CSS. (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
+
+    + CHANGE: css.Property is now official and constructor has only optiomal parameter now
+
+      ** not complete yet **
+
+    - FEATURE: Added implementation of stylesheets.MediaQuery which are part of  stylesheets.MediaList. Currently simple mediaType
+values like ``all`` or ``print`` are possible. Plan is to implement the complete spec at http://www.w3.org/TR/css3-mediaqueries/ with additional media features.
+
+      ** not complete yet **
+
+    - FEATURE: Added a new module cssutils.codec that registers a codec that can be used for encoding and decoding CSS.
+    (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
 
      + API CHANGE: renamed attribute ``namespaces`` of CSSStyleSheet and Selector to ``prefixes`` as they really are the prefixes of declared namespaces
 
