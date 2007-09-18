@@ -45,21 +45,21 @@ class CSSPageRule(cssrule.CSSRule):
         pseudo_page
           : ':' IDENT # :first, :left, :right in CSS 2.1
           ;
-          
+
     """
     type = cssrule.CSSRule.PAGE_RULE
 
     def __init__(self, selectorText=None, style=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
-        
+
         selectorText
             type string
         style
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSPageRule, self).__init__()
-        
+
         self.atkeyword = u'@page'
         if selectorText:
             self.selectorText = selectorText
@@ -82,7 +82,7 @@ class CSSPageRule(cssrule.CSSRule):
         raises SYNTAX_ERR:
         """
         tokens = self._tokenize(selectorText)
-            
+
         newselectortext = None
         newseq = []
 
@@ -92,7 +92,7 @@ class CSSPageRule(cssrule.CSSRule):
             t = tokens[i]
             if self._ttypes.S == t.type and 'ident' != expected: # ignore
                 pass
-                
+
             elif self._ttypes.COMMENT == t.type and 'ident' != expected: # just add
                 newseq.append(cssutils.css.CSSComment(t))
 
@@ -108,9 +108,9 @@ class CSSPageRule(cssrule.CSSRule):
                 self._log.error(u'CSSPageRule: Syntax Error in selector: "%s".' %
                           self._valuestr(tokens))
                 return None, None
-            
+
             i += 1
-            
+
         if expected and expected != ':':
             self._log.error(u'CSSPageRule: Invalid Selector: "%s".' %
                       self._valuestr(tokens))
@@ -131,7 +131,7 @@ class CSSPageRule(cssrule.CSSRule):
         returns serialized property cssText
         """
         return cssutils.ser.do_CSSPageRule(self)
-    
+
     def _setCssText(self, cssText):
         """
         DOMException on setting
@@ -216,7 +216,7 @@ class CSSPageRule(cssrule.CSSRule):
         way to add a comment is via setting ``cssText``
 
         DOMException on setting
-        
+
         - SYNTAX_ERR:
           Raised if the specified CSS string value has a syntax error
           and is unparsable.
@@ -226,7 +226,7 @@ class CSSPageRule(cssrule.CSSRule):
         self._checkReadonly()
 
         # may raise SYNTAX_ERR
-        newselectortext, newseq = self.__parseSelectorText(selectorText)  
+        newselectortext, newseq = self.__parseSelectorText(selectorText)
 
         if newselectortext:
             for i, x in enumerate(self.seq):
@@ -267,13 +267,5 @@ class CSSPageRule(cssrule.CSSRule):
                 self.__class__.__name__, self.selectorText, id(self))
 
 
-if __name__ == '__main__':
-    import property
-    cssutils.css.cssstyledeclaration.Property = property._Property
-    cssutils.css.cssstylerule.Selector = Selector # for main test
-    r = CSSPageRule()
-    r.cssText = '@page :right { margin: 0 }'
-    #r.selectorText = u':left :a'
-    print r.cssText
 
 
