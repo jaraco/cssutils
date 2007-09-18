@@ -10,11 +10,11 @@ import cssutils
 class PropertyTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        self.r = cssutils.css.property._Property('top', '1px')
+        self.r = cssutils.css.property.Property('top', '1px')
 
     def test_init(self):
-        "_Property.__init__()"
-        p = cssutils.css.property._Property('top', '1px')
+        "Property.__init__()"
+        p = cssutils.css.property.Property('top', '1px')
         self.assertEqual('top', p.name)
         self.assertEqual('1px', p.value)
         self.assertEqual('1px', p.cssValue.cssText)
@@ -27,8 +27,8 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual(True, p.valid)
 
     def test_name(self):
-        "_Property.name"
-        p = cssutils.css.property._Property('top', '1px')
+        "Property.name"
+        p = cssutils.css.property.Property('top', '1px')
         p.name = 'left'
         self.assertEqual('left', p.name)
 
@@ -59,8 +59,8 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.do_raise_r(tests, att='_setName')
 
 #    def test_validate(self):
-#        "_Property.name Validating (TEST NOT COMPLETE!)"
-#        p = cssutils.css.property._Property('left', '1px')
+#        "Property.name Validating (TEST NOT COMPLETE!)"
+#        p = cssutils.css.property.Property('left', '1px')
 #
 #        # expects message
 #        p.name = 'notcss2'
@@ -69,13 +69,13 @@ class PropertyTestCase(basetest.BaseTestCase):
 #        p.value = 'red'
 
     def test_cssValue(self):
-        "_Property.cssValue"
+        "Property.cssValue"
         pass
         #TODO
 
     def test_priority(self):
-        "_Property.priority"
-        p = cssutils.css.property._Property('top', '1px', '!important')
+        "Property.priority"
+        p = cssutils.css.property.Property('top', '1px', '!important')
 
         p.priority = ''
         self.assertEqual('', p.priority)
@@ -99,8 +99,8 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.do_raise_r(tests, att='_setPriority')
 
     def test_value(self):
-        "_Property.value (DEPRECATED)"
-        p = cssutils.css.property._Property('top', u'1px')
+        "Property.value (DEPRECATED)"
+        p = cssutils.css.property.Property('top', u'1px')
         self.assertEqual('1px', p.value)
         p.value = '2px'
         self.assertEqual('2px', p.value)
@@ -129,13 +129,13 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.do_raise_r(tests, att='_setValue')
 
     def test_reprANDstr(self):
-        "_Property.__repr__(), .__str__()"
+        "Property.__repr__(), .__str__()"
         name="color"
         value="red"
         priority="!important"
-        
-        s = cssutils.css.property._Property(name=name, value=value, priority=priority)
-        
+
+        s = cssutils.css.property.Property(name=name, value=value, priority=priority)
+
         self.assert_(name in str(s))
         self.assert_(value in str(s))
         self.assert_(priority in str(s))
