@@ -250,7 +250,10 @@ class IncrementalDecoder(codecs.IncrementalDecoder):
         # If we haven't fixed the header yet,
         # the content of ``self.buffer`` is a ``unicode`` object
         output = self.buffer + self.decoder.decode(input, final)
-        newoutput = _fixencoding(output, unicode(self.encoding), final)
+        encoding = self.encoding
+        if encoding.replace("_", "-").lower() == "utf-8-sig":
+            encoding = "utf-8"
+        newoutput = _fixencoding(output, unicode(encoding), final)
         if newoutput is None:
             # retry fixing the @charset rule (but keep the decoded stuff)
             self.buffer = output
@@ -384,9 +387,9 @@ class StreamWriter(codecs.StreamWriter):
         return self._errors
 
     def _seterrors(self, errors):
-        # Setting ``errors`` must be done on the encoder too
-        if self.encoder is not None:
-            self.encoder.errors = errors
+        # Setting ``errors`` must be done on the streamwriter too
+        if self.streamwriter is not None:
+            self.streamwriter.errors = errors
         self._errors = errors
     errors = property(_geterrors, _seterrors)
 
@@ -394,19 +397,37 @@ class StreamWriter(codecs.StreamWriter):
 class StreamReader(codecs.StreamReader):
     def __init__(self, stream, errors="strict", encoding=None):
         codecs.StreamReader.__init__(self, stream, errors)
-        self.decoder = IncrementalDecoder(errors, encoding)
+        self.streamreader = None
+        self.encoding = encoding
         self._errors = errors
 
     def decode(self, input, errors='strict'):
-        return (self.decoder.decode(input, False), len(input))
+        if self.streamreader is None:
+            self.encoding = _detectencoding_str(input, False)
+            if self.encoding is None:
+                return (u"", 0) # no encoding determined yet, so no output
+            if self.encoding == "css":
+                raise ValueError("css not allowed as encoding name")
+            streamreader = codecs.getreader(self.encoding)
+            streamreader = streamreader(self.stream, self._errors)
+            (output, consumed) = streamreader.decode(input, errors)
+            encoding = self.encoding
+            if encoding.replace("_", "-").lower() == "utf-8-sig":
+                encoding = "utf-8"
+            newoutput = _fixencoding(output, unicode(encoding), False)
+            if newoutput is not None:
+                self.streamreader = streamreader
+                return (newoutput, consumed)
+            return (u"", 0) # we will create a new streamreader on the next call
+        return self.streamreader.decode(input, errors)
 
     def _geterrors(self):
         return self._errors
 
     def _seterrors(self, errors):
-        # Setting ``errors`` must be done on the decoder too
-        if self.decoder is not None:
-            self.decoder.errors = errors
+        # Setting ``errors`` must be done on the streamreader too
+        if self.streamreader is not None:
+            self.streamreader.errors = errors
         self._errors = errors
     errors = property(_geterrors, _seterrors)
 
