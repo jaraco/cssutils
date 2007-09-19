@@ -100,9 +100,9 @@ class MediaQuery(cssutils.util.Base):
           Raised if this media query is readonly.
         """
         self._checkReadonly()
-        tokens = self._tokenize2(mediaText)
+        tokenizer = self._tokenize2(mediaText)
 
-        if not tokens:
+        if not tokenizer:
             self._log.error(u'MediaQuery: No MediaText given.')
         else:
             # expected: only|not or mediatype, mediatype, feature, and
@@ -148,12 +148,12 @@ class MediaQuery(cssutils.util.Base):
                     return 'and or EOF'
                 else:
                     self._log.error(
-                        u'MediaQuery: Unexpected syntax, expected "and".',
-                        token)
+                        u'MediaQuery: Unexpected syntax, expected "and" but found "%s".' %
+                        val, token)
 
             # main loop
             valid, expected = self._parse(expected='only|not or mediatype',
-                seq=newseq, tokenizer=tokens,
+                seq=newseq, tokenizer=tokenizer,
                 productions={'IDENT': _ident,
                              'CHAR': _char})
             valid = valid and new['valid']
