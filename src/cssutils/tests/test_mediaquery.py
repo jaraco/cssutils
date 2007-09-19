@@ -17,7 +17,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
         self.r = cssutils.stylesheets.MediaQuery()
 
     def test_mediaText(self):
-        "MediaList.mediaText"
+        "MediaQuery.mediaText"
         tests = {
             u'all': u'all',
             }
