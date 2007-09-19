@@ -5,16 +5,13 @@ testcases for cssutils.css.CSSCharsetRule
 __all__ = ['CSSutilsTestCase']
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import codecs
 import os
-
+import xml.dom
 import basetest
-
 import cssutils
-
 
 class CSSutilsTestCase(basetest.BaseTestCase):
 
@@ -49,7 +46,6 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         # clean up
         os.remove(name)
 
-
     def test_parseString(self):
         "cssutils.parseString()"
         exp = '''a {
@@ -58,7 +54,6 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         s = cssutils.parseString(exp)
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
         self.assertEqual(exp, s.cssText)
-
 
     def test_setCSSSerializer(self):
         "cssutils.setSerializer() and cssutils.ser"
