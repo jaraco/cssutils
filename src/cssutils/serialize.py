@@ -167,36 +167,21 @@ class CSSSerializer(object):
         If "all" is in the list, every other media *except* "handheld" will
         be stripped. This is because how Opera handles CSS for PDAs.
         """
-        if len(medialist.seq) == 0:
+        if len(medialist) == 0:
             return u'all'
         else:
-            hasall = bool(
-                [1 for part in medialist.seq if part == u'all'])
-            hashandheld = bool(
-                [1 for part in medialist.seq if part == u'handheld'])
-            doneall = donehandheld = False
-            out = []
-            for part in medialist.seq:
-                if hasattr(part, 'cssText'): # comments
-                    out.append(part.cssText)
-                elif u',' == part and not hasall:
-                    out.append(u', ')
-                elif not hasall or (
-                           hasall and hashandheld and \
-                           part in (u'handheld', u'all')):
-                    if hasall and hashandheld and (
-                        (donehandheld and part == u'all') or\
-                        (doneall and part == u'handheld')
-                         ):
-                        out.append(u', ')
-                    if part == u'all':
-                        doneall = True
-                    else:
-                        donehandheld = True
-                    out.append(part)
-            if out == []:
-                out = [u'all']
-            return u''.join(out)
+            mqs = [mq for mq in medialist]
+
+            all_or_handheld = []
+            for mq in mqs:
+                if mq.mediaType == u'all':
+                    all_or_handheld.append(mq)
+                if mq.mediaType == u'handheld':
+                    all_or_handheld.append(mq)
+            if all_or_handheld:
+                mqs = all_or_handheld
+
+            return u', '.join((mt.mediaText for mt in mqs))
 
     def do_CSSStyleSheet(self, stylesheet):
         out = []
