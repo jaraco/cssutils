@@ -49,7 +49,8 @@ class Base(object):
             # a single token (like a comment)
             return [textortokens]
         else:
-            return textortokens # already tokenized
+            # already tokenized but return generator
+            return (x for x in textortokens)
 
     def _type(self, token):
         "type of Tokenizer2 token"
@@ -58,6 +59,13 @@ class Base(object):
     def _value(self, token):
         "value of Tokenizer2 token"
         return token[1]
+
+    def _nexttoken(self, tokenizer, default=None):
+        "returns next token in tokenizer of the default value"
+        try:
+            return tokenizer.next()
+        except StopIteration:
+            return default
 
     def _tokensupto2(self,
                      tokenizer,
@@ -69,6 +77,7 @@ class Base(object):
                      propertypriorityendonly=False,
                      selectorattendonly=False,
                      funcendonly=False,
+                     listseponly=False, # ,
                      keepEnd=True,
                      keepEOF=False):
         """
@@ -83,7 +92,7 @@ class Base(object):
         if blockstartonly: # {
             ends = u'{'
             brace = -1 # set to 0 with first {
-        if blockendonly: # }
+        elif blockendonly: # }
             ends = u'}'
         elif propertynameendonly: # : and ; in case of an error
             ends = u':;'
@@ -96,6 +105,8 @@ class Base(object):
         elif funcendonly: # )
             ends = u')'
             parant = 1
+        elif listseponly: # ,
+            ends = u','
 
         resulttokens = []
 
