@@ -21,13 +21,18 @@ cssutils - CSS Cascading Style Sheets library for Python
 A Python package to parse and build CSS Cascading Style Sheets. Partly
 implements the DOM Level 2 Stylesheets and DOM Level 2 CSS interfaces.
 
+cssutils is registered to xml.dom.DOMImplementation claiming to implement
+CSS 1.0, CSS 2.0, StyleSheets 1.0 and StyleSheets 2.0. This is probably not
+absolutely correct as cssutils currently is not a fully compliant
+implementation but I guess this is used very rarely anyway.
+
 Please visit http://cthedot.de/cssutils/ for full details and updates.
 
 Tested with Python 2.5 on Windows XP.
 
 
 This package is optimized for usage of ``from cssutils import *`` which
-import subpackages ``css`` and ``stylesheets``, the CSSParser and
+import subpackages ``css`` and ``stylesheets`` and the CSSParser and
 CSSSerializer classes only.
 
 Usage may be::
@@ -38,27 +43,78 @@ Usage may be::
     >>> print sheet.cssText
 
 """
-__all__ = ['css', 'stylesheets',
+__all__ = ['DOMImplementationCSS',
+           'css', 'stylesheets',
            'CSSParser', 'CSSSerializer']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
-# log, internal use only TODO: make configurable
-# must be 1st import!
+# order of imports is important (maybe as it is partly circular)
+import xml.dom
+
 import errorhandler
 log = errorhandler.ErrorHandler()
 
 import util
-
-# import subpackages and main classes
 import css
 import stylesheets
 from parse import CSSParser
+
 from serialize import CSSSerializer
-# serializer: configure cssutils.ser or set a custom serializer
 ser = CSSSerializer()
+
+class DOMImplementationCSS(object):
+    """
+    This interface allows the DOM user to create a CSSStyleSheet
+    outside the context of a document. There is no way to associate
+    the new CSSStyleSheet with a document in DOM Level 2.
+
+    This class is its *own factory*, as it is given to
+    xml.dom.registerDOMImplementation which simply calls it and receives
+    an instance of this class then.
+    """
+    _features = [
+        ('css', '1.0'),
+        ('css', '2.0'),
+        ('stylesheets', '1.0'),
+        ('stylesheets', '2.0')
+    ]
+
+    def createCSSStyleSheet(self, title, media):
+        """
+        Creates a new CSSStyleSheet.
+
+        title of type DOMString
+            The advisory title. See also the Style Sheet Interfaces
+            section.
+        media of type DOMString
+            The comma-separated list of media associated with the new style
+            sheet. See also the Style Sheet Interfaces section.
+
+        returns
+            CSSStyleSheet: A new CSS style sheet.
+
+        TODO: DOMException
+            SYNTAX_ERR: Raised if the specified media string value has a
+            syntax error and is unparsable.
+        """
+        return css.CSSStyleSheet(title=title, media=media)
+
+    def createDocument(self, *args):
+        # not needed to HTML, also not for CSS?
+        raise NotImplementedError
+
+    def createDocumentType(self, *args):
+        # not needed to HTML, also not for CSS?
+        raise NotImplementedError
+
+    def hasFeature(self, feature, version):
+        return (feature.lower(), unicode(version)) in self._features
+
+xml.dom.registerDOMImplementation('cssutils', DOMImplementationCSS)
+
 
 # parser helper functions
 def parse(filename, encoding=None, href=None, media=None):
@@ -66,15 +122,13 @@ def parse(filename, encoding=None, href=None, media=None):
     reads file with given filename in given encoding (if given)
     and returns CSSStyleSheet object
     """
-    parser = CSSParser()
-    return parser.parse(filename, encoding)
+    return CSSParser().parse(filename, encoding)
 
 def parseString(cssText, href=None, media=None):
     """
     parses given string and returns CSSStyleSheet object
     """
-    parser = CSSParser()
-    return parser.parseString(cssText, href=href, media=media)
+    return CSSParser().parseString(cssText, href=href, media=media)
 
 # set "ser", default serializer
 def setSerializer(serializer):
