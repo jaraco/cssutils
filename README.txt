@@ -80,6 +80,10 @@ values like ``all`` or ``print`` are possible. Plan is to implement the complete
 
       ** not complete yet **
 
+    - FEATURE: Implemented cssutils.DOMImplementationCSS. This way it is possible to create a new StyleSheet by calling ``DOMImplementationCSS.createCSSStyleSheet(title, media)``. For most cases it is probably easier to make a new StyleSheet by getting an instance of ``cssutils.css.CSSStyleSheet`` though.
+
+    - FEATURE: cssutils is registered to xml.dom.DOMImplementation claiming to implement CSS 1.0, CSS 2.0, StyleSheets 1.0 and StyleSheets 2.0. This is probably not absolutely correct as cssutils currently is not a fully compliant implementation but I guess this is used very rarely anyway.
+
     - FEATURE: Added a new module cssutils.codec that registers a codec that can be used for encoding and decoding CSS.
     (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
 
