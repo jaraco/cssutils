@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 """
 testcases for cssutils.css.CSSComment
 """
@@ -30,7 +30,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
     def test_csstext(self):
         "CSSComment.cssText"
         tests = {
-            u'/*öäüß€ÖÄÜ*/': None,
+            u'/*Ã¶Ã¤Ã¼ÃŸâ‚¬â‚¬Ã–Ã„Ãœ*/': None,
 
             u'/*x*/': None,
             u'/* x */': None,
@@ -63,9 +63,9 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
     def test_reprANDstr(self):
         "CSSComment.__repr__(), .__str__()"
         text = '/* test */'
-        
+
         s = cssutils.css.CSSComment(cssText=text)
-        
+
         s2 = eval(repr(s))
         self.assert_(isinstance(s2, s.__class__))
         self.assert_(text == s2.cssText)
