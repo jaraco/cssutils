@@ -65,16 +65,19 @@ class CSSComment(cssrule.CSSRule):
           Raised if the rule is readonly.
         """
         super(CSSComment, self)._setCssText(cssText)
+        tokenizer = self._tokenize2(cssText)
 
-        tokens = self._tokenize2(cssText)
-        if not tokens:
-            self._log.error(u'CSSComment: Syntax error, no comment given.')
-        elif self._type(tokens[0]) != self._prods.COMMENT or len(tokens) > 1:
-            self._log.error(u'CSSComment: Not a CSSComment: %s' %
+        commenttoken = self._nexttoken(tokenizer)
+        unexpected = self._nexttoken(tokenizer)
+
+        if not commenttoken or\
+           self._type(commenttoken) != self._prods.COMMENT or\
+           unexpected:
+            self._log.error(u'CSSComment: Not a CSSComment: %r' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
-            self._cssText = self._value(tokens[0])
+            self._cssText = self._value(commenttoken)
 
     cssText = property(_getCssText, _setCssText,
         doc=u"(cssutils) Textual representation of this comment")
@@ -84,5 +87,5 @@ class CSSComment(cssrule.CSSRule):
                 self.__class__.__name__, self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object at 0x%x>" % (
-                self.__class__.__name__, id(self))
+        return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.cssText, id(self))
