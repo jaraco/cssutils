@@ -14,12 +14,16 @@ __version__ = '$LastChangedRevision$'
 import xml.dom
 import cssutils
 from cssutils.css import csscomment
+from mediaquery import MediaQuery
 
 class MediaList(cssutils.util.Base, list):
     """
     Provides the abstraction of an ordered collection of media,
     without defining or constraining how this collection is
     implemented.
+
+    A media is always an instance of MediaQuery.
+
     An empty list is the same as a list that contains the medium "all".
 
     Properties
@@ -28,8 +32,8 @@ class MediaList(cssutils.util.Base, list):
         The number of media in the list.
     mediaText: of type DOMString
         The parsable textual representation of this medialist
-    seq: a list (cssutils)
-        All parts of this MediaList including CSSComments
+    self: a list (cssutils)
+        All MediaQueries in this MediaList
     valid:
         if this list is valid
 
@@ -43,23 +47,19 @@ class MediaList(cssutils.util.Base, list):
 
         <media_query> [, <media_query> ]*
     """
-
-    _MEDIA = [u'all', u'aural', u'braille', u'embossed', u'handheld',
-        u'print', u'projection', u'screen', u'tty', u'tv']
-    "available media types"
-
     def __init__(self, mediaText=None, readonly=False):
         """
         mediaText
             unicodestring of parsable comma separared media
+            or a list of media
         """
         super(MediaList, self).__init__()
 
         self.valid = True
-        self._seq = []
+        #self.seq = []
 
         if isinstance(mediaText, list):
-            mediaText = ", ".join(mediaText)
+            mediaText = u','.join(mediaText)
 
         if mediaText:
             self.mediaText = mediaText
@@ -76,15 +76,6 @@ class MediaList(cssutils.util.Base, list):
     length = property(_getLength,
         doc="(DOM readonly) The number of media in the list.")
 
-    def _getSeq(self):
-        return self._seq
-
-    def _setSeq(self, seq):
-        self._seq = seq
-
-    seq = property(_getSeq, _setSeq,
-        doc="All parts of this MediaList including CSSComments")
-
     def _getMediaText(self):
         """
         returns serialized property mediaText
@@ -98,59 +89,28 @@ class MediaList(cssutils.util.Base, list):
 
         DOMException
 
-        - SYNTAX_ERR: (self)
+        - SYNTAX_ERR: (MediaQuery)
           Raised if the specified string value has a syntax error and is
           unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this media list is readonly.
         """
         self._checkReadonly()
-        tokens = self._tokenize2(mediaText, aslist=True)
+        tokenizer = self._tokenize2(mediaText)
 
-        valid = True
         newseq = []
-        expected = 'medium1'
-        for i in range(len(tokens)):
-            t = tokens[i]
-            typ, val = self._type(t), self._value(t)
-
-            if self._prods.S == typ: # ignore
-                pass
-
-            elif self._prods.COMMENT == typ: # just add
-                newseq.append(csscomment.CSSComment(t))
-
-            elif expected.startswith('medium') and self._prods.IDENT == typ:
-                _newmed = val.lower()
-                self.appendMedium(_newmed)
-                newseq.append(_newmed)
-                expected = 'comma'
-
-            elif self._prods.IDENT == typ:
-                valid = False
-                self._log.error(
-                    u'MediaList: Syntax Error, expected ",".', t)
-
-            elif 'comma' == expected and u',' == val:
-                newseq.append(val)
-                expected = 'medium'
-
-            elif u',' == val:
-                valid = False
-                self._log.error(u'MediaList: Syntax Error, expected ",".', t)
-
+        while True:
+            # find all upto but excluding next ","
+            mqtokens = self._tokensupto2(
+                tokenizer, listseponly=True, keepEnd=False)
+            if mqtokens:
+                newseq.append(MediaQuery(mqtokens))
             else:
-                self._log.error(u'MediaList: Syntax Error in "%s".' %
-                          self._valuestr(tokens), t)
+                break
 
-        if 'medium' == expected:
-            valid = False
-            self._log.error(
-                u'MediaList: Syntax Error, cannot end with ",".')
-
-        self.valid = valid
-        if valid:
-            self.seq = newseq
+        del self[:]
+        for mq in newseq:
+            self.append(mq)
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="""(DOM) The parsable textual representation of the media list.
@@ -173,62 +133,35 @@ class MediaList(cssutils.util.Base, list):
           Raised if this list is readonly.
         """
         self._checkReadonly()
-        valid = True
-        tokens = self._tokenize2(newMedium, aslist=True)
 
-        if not tokens or len(tokens) > 1:
-            valid = False
-            self._log.error(
-                u'MediaList: "%s" is not a valid medium.' % self._valuestr(
-                    newMedium), error=xml.dom.InvalidCharacterErr)
+        newmq = MediaQuery(newMedium)
+        if not newmq.valid:
+            return False
+
+        mts = [mq.mediaType for mq in self]
+        newmt = newmq.mediaType
+
+        if newmt in mts:
+            self.deleteMedium(newmt)
+            self.append(newmq)
+        elif u'all' == newmt:
+            # remove all except handheld (Opera)
+            h = None
+            for mq in self:
+                if mq.mediaType == u'handheld':
+                    h = mq
+            del self[:]
+            self.append(newmq)
+            if h:
+                self.append(h)
+        elif u'all' in mts:
+            if u'handheld' == newmt:
+                self.append(newmq)
         else:
-            newMedium = self._value(tokens[0]).lower()
+            self.append(newmq)
 
-            if newMedium not in self._MEDIA:
-                valid = False
-                self._log.error(
-                    u'MediaList: "%s" is not a valid medium.' % newMedium,
-                    tokens[0], xml.dom.InvalidCharacterErr)
+        return True
 
-            # all contains every other (except handheld! for Opera)
-            elif u'all' in self and newMedium != u'handheld':
-                return valid
-            elif newMedium == u'all':
-                if u'handheld' in self:
-                    addhandheld2seq = True
-                else:
-                    addhandheld2seq = False
-                del self[:]
-                self.append(u'all')
-                self._seq = [u'all']
-                if addhandheld2seq:
-                    self._seq.append(u',')
-                    self._seq.append(u'handheld')
-            else:
-                if newMedium in self:
-                    self.remove(newMedium)
-
-                    # remove medium and possible ,!
-                    look4comma = False
-                    newseq = []
-                    for x in self._seq:
-                        if newMedium == x:
-                            look4comma = True
-                            continue # remove
-                        if u',' == x and look4comma:
-                            look4comma = False
-                            continue
-                        else:
-                            newseq.append(x)
-                    self._seq = newseq
-
-                if len(self) > 0: # already 1 there, add "," + medium 2 seq
-                    self._seq.append(u',')
-
-                self._seq.append(newMedium)
-                self.append(newMedium)
-
-        return valid
 
     def deleteMedium(self, oldMedium):
         """
@@ -244,10 +177,12 @@ class MediaList(cssutils.util.Base, list):
         """
         self._checkReadonly()
         oldMedium = oldMedium.lower()
-        try:
-            self.remove(oldMedium)
-            self._seq.remove(oldMedium)
-        except ValueError:
+
+        for i, mq in enumerate(self):
+            if mq.mediaType == oldMedium:
+                del self[i]
+                break
+        else:
             raise xml.dom.NotFoundErr(
                 u'"%s" not in this MediaList' % oldMedium)
 
