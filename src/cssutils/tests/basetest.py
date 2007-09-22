@@ -7,6 +7,7 @@ __version__ = '$LastChangedRevision$'
 
 import logging
 import unittest
+import sys
 import cssutils
 
 cssutils.log.setloglevel(logging.FATAL)
