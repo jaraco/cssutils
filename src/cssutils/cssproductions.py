@@ -28,8 +28,7 @@ MACROS = {
     #   'escape': r'{unicode}|\\[ -~\200-\4177777]',
     'nmchar': r'[-_a-zA-Z0-9]|{nonascii}|{escape}',
 
-    # CHANGED TO SPEC: added "[\-\+]?"
-    'num': r'[\-\+]?[0-9]*\.[0-9]+|[0-9]+', #r'[-]?\d+|[-]?\d*\.\d+',
+    'num': r'[0-9]*\.[0-9]+|[0-9]+', #r'[-]?\d+|[-]?\d*\.\d+',
     'string':  r'''\'({stringchar}|\")*\'|\"({stringchar}|\')*\"''',
     'stringchar':  r'{urlchar}| |\\{nl}',
     'urlchar':  r'[\x09\x21\x23-\x26\x27-\x7E]|{nonascii}|{escape}',
@@ -85,6 +84,9 @@ PRODUCTIONS = [
     # from CSS3
     ('ATKEYWORD', r'@{ident}'),
 
+    # in CSS2.1: r'\!({w}|{comment})*{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
+    ('IMPORTANT_SYM', r'{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
+
     ('IDENT', r'{ident}'),
     ('STRING', r'{string}'),
     # from CSS2.1
@@ -106,8 +108,6 @@ PRODUCTIONS = [
     ('SUBSTRINGMATCH', r'\*\='),
     ('COMMENT', r'{comment}'), #r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
 
-    # from CSS2.1
-    ('IMPORTANT_SYM', r'\!({w}|{comment})*{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
 
     ('CHAR', r'[^"\']')
     ]
