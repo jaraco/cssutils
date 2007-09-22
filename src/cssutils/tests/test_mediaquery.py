@@ -20,11 +20,13 @@ class MediaQueryTestCase(basetest.BaseTestCase):
         "MediaQuery.mediaText"
         tests = {
             u'all': u'all',
+            # TODO: more with and ...
             }
         self.do_equal_r(tests, att='mediaText')
 
         tests = {
             u'': xml.dom.SyntaxErr,
+            u'3d': xml.dom.InvalidCharacterErr, # a dimension
             }
         self.do_raise_r(tests, att='_setMediaText')
 
@@ -41,15 +43,18 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             self.assertEqual(mq.mediaType, mt)
 
         mt = u'3D-UNKOwn-MEDIAtype0123'
-        mq.mediaType = mt
-        self.assertEqual(mq.mediaType, mt.lower())
+        #mq.mediaType = mt
+        self.assertRaises(xml.dom.InvalidCharacterErr, mq._setMediaType, mt)
 
-#    def test_comments(self):
-#        "MediaQuery.mediaText comments"
-#        tests = {
-#            u'/*1*/tv/*2*/, /*3*/handheld/*4*/, tv': None,
-#            }
-#        self.do_equal_r(tests, att='mediaText')
+    def test_comments(self):
+        "MediaQuery.mediaText comments"
+        tests = {
+            u'/*1*/ tv /*2*/': None,
+            u'/*0*/ only /*1*/ tv /*2*/': None,
+            u'/*0* /not /*1*/ tv /*2*/': None,
+            # TODO: more with and ...
+            }
+        self.do_equal_r(tests, att='mediaText')
 
     def test_reprANDstr(self):
         "MediaQuery.__repr__(), .__str__()"
