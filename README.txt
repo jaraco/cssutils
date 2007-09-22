@@ -75,6 +75,8 @@ HEAD
 
       ** not complete yet **
 
+    - API CHANGE (internal): renamed ``Serializer.do_css_Property`` to ``Serializer.do_Property`` as it is ``Property`` is not in the official DOM, may not stay in package ``css`` and is used by MediaQuery too
+
     - FEATURE: Added implementation of stylesheets.MediaQuery which are part of  stylesheets.MediaList. Currently simple mediaType
 values like ``all`` or ``print`` are possible. Plan is to implement the complete spec at http://www.w3.org/TR/css3-mediaqueries/ with additional media features.
 
