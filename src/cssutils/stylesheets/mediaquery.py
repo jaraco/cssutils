@@ -111,7 +111,7 @@ class MediaQuery(cssutils.util.Base):
             new = {'mediatype': None,
                    'valid': True }
 
-            def _ident(expected, seq, token, tokenizer=None):
+            def _ident_or_dim(expected, seq, token, tokenizer=None):
                 # only|not or mediatype or and
                 val = self._value(token).lower() # ident always lowercase
                 if expected.endswith('mediatype'):
@@ -154,7 +154,8 @@ class MediaQuery(cssutils.util.Base):
             # main loop
             valid, expected = self._parse(expected='only|not or mediatype',
                 seq=newseq, tokenizer=tokenizer,
-                productions={'IDENT': _ident,
+                productions={'IDENT': _ident_or_dim, # e.g. "print"
+                             'DIMENSION': _ident_or_dim, # e.g. "3d"
                              'CHAR': _char})
             valid = valid and new['valid']
 
@@ -204,9 +205,9 @@ class MediaQuery(cssutils.util.Base):
         else:
             mediaType = mediaType.lower()
             if mediaType not in MediaQuery.MEDIA_TYPES:
-                self._log.warn(
+                self._log.error(
                     u'MediaQuery: Unknown media type "%s".' % mediaType,
-                    error=xml.dom.InvalidCharacterErr, neverraise=True)
+                    error=xml.dom.InvalidCharacterErr)
 
             # set
             self._mediaType = mediaType

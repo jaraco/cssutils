@@ -29,9 +29,9 @@ class MediaList(cssutils.util.Base, list):
     Properties
     ==========
     length:
-        The number of media in the list.
+        The number of MediaQuery objects in the list.
     mediaText: of type DOMString
-        The parsable textual representation of this medialist
+        The parsable textual representation of this MediaList
     self: a list (cssutils)
         All MediaQueries in this MediaList
     valid:
@@ -110,7 +110,7 @@ class MediaList(cssutils.util.Base, list):
 
         del self[:]
         for mq in newseq:
-            self.append(mq)
+            self.appendMedium(mq)
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="""(DOM) The parsable textual representation of the media list.
@@ -121,6 +121,9 @@ class MediaList(cssutils.util.Base, list):
         (DOM)
         Adds the medium newMedium to the end of the list. If the newMedium
         is already used, it is first removed.
+
+        newMedium
+            a string or a MediaQuery object
 
         returns if newMedium is valid
 
@@ -134,16 +137,15 @@ class MediaList(cssutils.util.Base, list):
         """
         self._checkReadonly()
 
-        newmq = MediaQuery(newMedium)
-        if not newmq.valid:
-            return False
+        if not isinstance(newMedium, MediaQuery):
+            newMedium = MediaQuery(newMedium)
 
         mts = [mq.mediaType for mq in self]
-        newmt = newmq.mediaType
+        newmt = newMedium.mediaType
 
         if newmt in mts:
             self.deleteMedium(newmt)
-            self.append(newmq)
+            self.append(newMedium)
         elif u'all' == newmt:
             # remove all except handheld (Opera)
             h = None
@@ -151,17 +153,16 @@ class MediaList(cssutils.util.Base, list):
                 if mq.mediaType == u'handheld':
                     h = mq
             del self[:]
-            self.append(newmq)
+            self.append(newMedium)
             if h:
                 self.append(h)
         elif u'all' in mts:
             if u'handheld' == newmt:
-                self.append(newmq)
+                self.append(newMedium)
         else:
-            self.append(newmq)
+            self.append(newMedium)
 
         return True
-
 
     def deleteMedium(self, oldMedium):
         """
@@ -189,11 +190,12 @@ class MediaList(cssutils.util.Base, list):
     def item(self, index):
         """
         (DOM)
-        Returns the index'th element in the list. If index is greater than
-        or equal to the number of media in the list, this returns None.
+        Returns the mediaType of the index'th element in the list.
+        If index is greater than or equal to the number of media in the
+        list, returns None.
         """
         try:
-            return self[index]
+            return self[index].mediaType
         except IndexError:
             return None
 
