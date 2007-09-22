@@ -19,6 +19,8 @@ class Property(cssutils.util.Base):
 
     Properties
     ==========
+    cssText
+        A parsable textual representation
     name
         of the property
     normalname
@@ -73,6 +75,13 @@ class Property(cssutils.util.Base):
     def __init__(self, name=None, value=None, priority=None):
         """
         inits property
+
+        name
+            a property name string
+        value
+            a property value string
+        priority
+            an optional priority string
         """
         super(Property, self).__init__()
 
@@ -80,82 +89,176 @@ class Property(cssutils.util.Base):
         self.valid = True
         if name:
             self.name = name
+        else:
+            self._name = u''
         if value:
             self.cssValue = value
         else:
-            self.cssValue = CSSValue()
+            self.seqs[1] = CSSValue()
         self.priority = priority
 
-    def __invalidToken(self, tokens, x):
-        """
-        raises SyntaxErr if an INVALID token in tokens
+#    def __invalidToken(self, tokens, x):
+#        """
+#        raises SyntaxErr if an INVALID token in tokens
+#
+#        x
+#            name, value or priority, used for error message
+#
+#        returns True if INVALID found, else False
+#        """
+#        for t in tokens:
+#            if t.type == self._ttypes.INVALID:
+#                self._log.error(u'Property: Invalid token found in %s.' % x, t)
+#                return True
+#        return False
 
-        x
-            name, value or priority, used for error message
-
-        returns True if INVALID found, else False
+    def _getCssText(self):
         """
-        for t in tokens:
-            if t.type == self._ttypes.INVALID:
-                self._log.error(u'Property: Invalid token found in %s.' % x, t)
-                return True
-        return False
+        returns serialized property cssText
+        """
+        return cssutils.ser.do_Property(self)
+
+    def _setCssText(self, cssText):
+        """
+        DOMException on setting
+
+        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
+          Raised if the rule is readonly.
+        - SYNTAX_ERR: (self)
+          Raised if the specified CSS string value has a syntax error and
+          is unparsable.
+        """
+        pass
+#        valid = True
+#        tokenizer = self._tokenize2(cssText)
+#
+#        newseq = []
+#        # for closures: must be a mutable
+#        new = {
+#               'name': None,
+#               'value': None,
+#               'priority': None,
+#               'valid': True
+#               }
+#
+#        def _ident(expected, seq, token, tokenizer=None):
+#            # name or priotity: "important"
+#            if 'name' == expected:
+#                new['name'] = self._tokenvalue(token)
+#                #seq.append(new['prefix'])
+#                return ':'
+#            elif u'important' == expected == val:
+#                new['priority'] = u'!important'
+#                #seq.append(new['prefix'])
+#                return ':'
+#            else:
+#                new['valid'] = False
+#                self._log.error(
+#                    u'Property: Unexpected ident.', token)
+#                return expected
+#
+#        def _char(expected, seq, token, tokenizer=None):
+#            # ":" or "!"
+#            val = self._tokenvalue(token)
+#            if u':' == expected == val:
+#                # do value
+#
+#                return 'EOF or !'
+#            if expected.endswith('!') and u'!' == val:
+#                return 'important'
+#            else:
+#                new['valid'] = False
+#                self._log.error(
+#                    u'CSSNamespaceRule: Unexpected char.', token)
+#                return expected
+#
+#        # main loop: name: value* [! S* important]
+#        valid, expected = self._parse(expected='name',
+#            seq=newseq, tokenizer=tokenizer,
+#            productions={'IDENT': _ident,
+#                         'CHAR': _char})
+#
+#        # valid set by parse
+#        valid = valid and new['valid']
+#
+#        # post conditions
+#        if not new['name']:
+#            valid = False
+#            self._log.error(u'Property: No name found: %s' %
+#                self._valuestr(cssText))
+#
+#        if not new['value']:
+#            valid = False
+#            self._log.error(u'Property: No value found: %s' %
+#                self._valuestr(cssText))
+#
+#        if expected == 'important':
+#            valid = False
+#            self._log.error(u'Property: "!" but not "important": %s' %
+#                self._valuestr(cssText))
+#        elif expected != 'EOF':
+#            valid = False
+#            self._log.error(u'Property: No ";" found: %s' %
+#                self._valuestr(cssText))
+#
+#        # set all
+#        self.valid = valid
+#        if valid:
+#            self.atkeyword = new['keyword']
+#            self.prefix = new['prefix']
+#            self.uri = new['uri']
+#            self.seq = newseq
+#
+    cssText = property(fget=_getCssText, fset=_setCssText,
+        doc="A parsable textual representation.")
 
     def _getName(self):
-        try:
-            return self._name
-        except AttributeError:
-            return u''
+        return self._name
 
     def _setName(self, name):
         """
-        Format
-        ======
-        property = name
-          : IDENT S*
-          ;
-
         DOMException on setting
 
         - SYNTAX_ERR: (self)
           Raised if the specified name has a syntax error and is
           unparsable.
         """
-        tokens = self._tokenize(name)
-        if self.__invalidToken(tokens, 'name'):
-            return
-        newname = newnormalname = None
-        newseq = []
-        t = None # used later
-        for i in range(0, len(tokens)):
-            t = tokens[i]
-            if self._ttypes.S == t.type: # ignore
-                pass
+        # for closures: must be a mutable
+        new = {'name': None, 'valid': True}
 
-            elif self._ttypes.COMMENT == t.type: # just add
-                newseq.append(cssutils.css.CSSComment(t))
-
-            elif self._ttypes.IDENT == t.type and not newname:
-                newname = t.value.lower()
-                newnormalname = t.normalvalue
-                newseq.append(newname)
-
+        def _ident(expected, seq, token, tokenizer=None):
+            # name
+            if 'name' == expected:
+                new['name'] = self._tokenvalue(token)
+                seq.append(new['name'])
+                return 'EOF'
             else:
-                self._log.error(u'Property: Syntax error in name.', t)
-                return
+                new['valid'] = False
+                self._log.error(u'Property: Unexpected ident.', token)
+                return expected
 
-        if newname:
-            self._name = newname
-            self.normalname = newnormalname
+        newseq = []
+        valid, expected = self._parse(expected='name',
+            seq=newseq, tokenizer=self._tokenize2(name),
+            productions={'IDENT': _ident})
+        valid = valid and new['valid']
+
+        # post conditions
+        if not new['name']:
+            valid = False
+            self._log.error(u'Property: No name found: %s' %
+                self._valuestr(name))
+
+        # OK
+        else:
+            self._name = new['name']
+            self.normalname = self._normalize(self._name)
             self.seqs[0] = newseq
 
             # validate
-            if newname not in cssproperties.cssvalues:
+            if self.normalname not in cssproperties.cssvalues:
                 self._log.info(u'Property: No CSS2 Property: "%s".' %
-                         newname, t, neverraise=True)
-
-        else:
-            self._log.error(u'Property: No name found: "%s".' % name, t)
+                         new['name'], neverraise=True)
 
     name = property(_getName, _setName,
         doc="(cssutils) Name of this property")
@@ -184,16 +287,12 @@ class Property(cssutils.util.Base):
         doc="(cssutils) CSSValue object of this property")
 
     def _getPriority(self):
-        try:
-            return self._priority
-        except AttributeError:
-            return u''
+        return cssutils.ser.do_Property_priority(self.seqs[2])
 
     def _setPriority(self, priority):
         """
         priority
-            currently "!important" to set an important priority
-            or None or the empty string to set no priority only
+            a string
 
         Format
         ======
@@ -202,6 +301,7 @@ class Property(cssutils.util.Base):
             prio
               : IMPORTANT_SYM S*
               ;
+
             "!"{w}"important"   {return IMPORTANT_SYM;}
 
         DOMException on setting
@@ -211,29 +311,48 @@ class Property(cssutils.util.Base):
           unparsable.
           In this case a priority not equal to None, "" or "!{w}important".
         """
-        if priority is None or priority == u'':
-            self._priority = u''
-            self.seqs[2] = []
-        else:
-            tokens = self._tokenize(priority)
-            if self.__invalidToken(tokens, 'priority'):
-                return
+        # for closures: must be a mutable
+        new = {'priority': u'', 'valid': True}
 
-            newpriority = None
-            for t in tokens:
-                if t.type in (self._ttypes.S, self._ttypes.COMMENT): # ignored
-                    pass
-                elif self._ttypes.IMPORTANT_SYM == t.type and not newpriority:
-                    newpriority = t.value.lower()
-                else:
-                    self._log.error(u'Property: Unknown priority.', t)
-                    return
-
-            if newpriority:
-                self._priority = newpriority
-                self.seqs[2] = ['!important']
+        def _char(expected, seq, token, tokenizer=None):
+            # "!"
+            val = self._tokenvalue(token)
+            if u'!' == expected == val:
+                seq.append(val)
+                return 'important'
             else:
-                self._log.error(u'Property: Unknown priority: "%s".' % priority)
+                new['valid'] = False
+                self._log.error(u'Property: Unexpected char.', token)
+                return expected
+
+        def _important(expected, seq, token, tokenizer=None):
+            # "important"
+            if 'important' == expected:
+                new['priority'] = self._tokenvalue(token)
+                seq.append(new['priority'])
+                return 'EOF'
+            else:
+                new['valid'] = False
+                self._log.error(u'Property: Unexpected ident.', token)
+                return expected
+
+        newseq = []
+        valid, expected = self._parse(expected='!',
+            seq=newseq, tokenizer=self._tokenize2(priority),
+            productions={'CHAR': _char, 'IMPORTANT_SYM': _important})
+
+        valid = valid and new['valid']
+
+        # post conditions
+        if priority and not new['priority']:
+            valid = False
+            self._log.info(u'Property: Invalid priority: %r.' %
+                    self._valuestr(priority))
+
+        if valid:
+            self._priority = new['priority']
+            self._normalpriority = self._normalize(self._priority)
+            self.seqs[2] = newseq
 
     priority = property(_getPriority, _setPriority,
         doc="(cssutils) Priority of this property")
@@ -264,7 +383,6 @@ class Property(cssutils.util.Base):
         self.cssValue.cssText = value
     value = property(_getValue, _setValue,
                      doc="DEPRECATED use cssValue instead")
-
 
 
 if __name__ == '__main__':
