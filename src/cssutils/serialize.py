@@ -153,7 +153,7 @@ class CSSSerializer(object):
         else:
             out = []
             for part in mediaquery.seq:
-                if hasattr(part, 'cssText'): # comments
+                if hasattr(part, 'cssText'): # comments, Property
                     out.append(part.cssText)
                 else:
                     # TODO: media queries!
@@ -439,7 +439,7 @@ class CSSSerializer(object):
                     if not self.prefs.keepAllProperties:
                         _index = part._currentIndex()
                         out.append(
-                            self.do_css_Property(part[_index],
+                            self.do_Property(part[_index],
                                                  self.prefs.omitLastSemicolon and
                                                  i==len(style.seq)-1))
                         out.append(separator)
@@ -447,7 +447,7 @@ class CSSSerializer(object):
                         # or all Properties
                         for (j, p) in enumerate(part):
                             out.append(
-                                self.do_css_Property(p,
+                                self.do_Property(p,
                                                      self.prefs.omitLastSemicolon and
                                                      i==len(style.seq)-1 and
                                                      j==len(part)-1))
@@ -461,7 +461,7 @@ class CSSSerializer(object):
 
             return u''.join(out)
 
-    def do_css_Property(self, property, omitSemicolon=False):
+    def do_Property(self, property, omitSemicolon=False):
         """
         Style declaration of CSSStyleRule
 
@@ -495,7 +495,21 @@ class CSSSerializer(object):
                         out.append(part)
         return u'%s%s' % (u''.join(out), (";", "")[bool(omitSemicolon)])
 
-    def do_css_CSSvalue(self, cssvalue):
+    def do_Property_priority(self, priorityseq, omitSemicolon=False):
+        """
+        a Properties priority "!" S* "important"
+        """
+        out = []
+        for part in priorityseq:
+            if hasattr(part, 'cssText'): # comments
+                out.append(u' ')
+                out.append(part.cssText)
+                out.append(u' ')
+            else:
+                out.append(part)
+        return u''.join(out).strip()
+
+    def do_css_CSSValue(self, cssvalue):
         """
         serializes a CSSValue
         """
@@ -507,6 +521,8 @@ class CSSSerializer(object):
                 if hasattr(part, 'cssText'):
                     # comments or CSSValue if a CSSValueList
                     out.append(part.cssText)
+                elif isinstance(part, basestring) and part == u',':
+                    out.append(', ')
                 else:
                     out.append(part)
             return (u''.join(out)).strip()
