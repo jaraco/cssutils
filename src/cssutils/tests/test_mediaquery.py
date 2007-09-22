@@ -62,6 +62,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
 
         s = cssutils.stylesheets.MediaQuery(mediaText=mediaText)
 
+        self.assertEqual(mediaText, str(s))
         self.assert_(mediaText in str(s))
 
         s2 = eval(repr(s))
