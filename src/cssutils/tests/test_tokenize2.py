@@ -91,6 +91,13 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('NUMBER', u'.0', 1, 2),
                  ('S', u' ', 1, 4)],
 
+        u' -0 ': [('S', u' ', 1, 1),
+                 ('CHAR', u'-', 1, 2),
+                 ('NUMBER', u'0', 1, 3),
+                 ('S', u' ', 1, 4)],
+        # for plus see CSS3
+
+
         # PERCENTAGE
         u' 0% ': [('S', u' ', 1, 1),
                  ('PERCENTAGE', u'0%', 1, 2),
@@ -207,6 +214,18 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('DIMENSION', u'1s', 1, 2),
                  ('S', u' ', 1, 4)],
         u'0.2EM': [('DIMENSION', u'0.2EM', 1, 1)],
+
+        # NUMBER
+        u' - 0 ': [('S', u' ', 1, 1),
+                 ('CHAR', u'-', 1, 2),
+                 ('S', u' ', 1, 3),
+                 ('NUMBER', u'0', 1, 4),
+                 ('S', u' ', 1, 5)],
+        u' + 0 ': [('S', u' ', 1, 1),
+                 ('CHAR', u'+', 1, 2),
+                 ('S', u' ', 1, 3),
+                 ('NUMBER', u'0', 1, 4),
+                 ('S', u' ', 1, 5)],
 
         # PREFIXMATCH
         u' ^= ': [('S', u' ', 1, 1),
@@ -343,27 +362,40 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('S', u'\n', 1, 16),
                    ('IDENT', u'a', 1, 17)],
 
-
-
-
         # IMPORTANT_SYM
-        # TODO: check if comment between "!" and "important"
         u' !important ': [('S', u' ', 1, 1),
-                 ('IMPORTANT_SYM', u'!important', 1, 2),
+                ('CHAR', u'!', 1, 2),
+                 ('IMPORTANT_SYM', u'important', 1, 3),
                  ('S', u' ', 1, 12)],
-        u'! important': [('IMPORTANT_SYM', u'! important', 1, 1)],
-        u'!\n\timportant': [('IMPORTANT_SYM', u'!\n\timportant', 1, 1)],
-        u'!IMPORTANT': [('IMPORTANT_SYM', u'!IMPORTANT', 1, 1)],
-        ur'!\i\m\p\o\r\ta\n\t': [('IMPORTANT_SYM',
-                                  ur'!\i\m\p\o\r\ta\n\t', 1, 1)],
-        ur'!\I\M\P\O\R\Ta\N\T': [('IMPORTANT_SYM',
-                                  ur'!\I\M\P\O\R\Ta\N\T', 1, 1)],
-        ur'!\49\4d\50\4f\52\54\41\4e\54': [('IMPORTANT_SYM',
-                                            ur'!\49\4d\50\4f\52\54\41\4e\54',
-                                            1, 1)],
-        ur'!\69\6d\70\6f\72\74\61\6e\74': [('IMPORTANT_SYM',
-                                            ur'!\69\6d\70\6f\72\74\61\6e\74',
-                                            1, 1)],
+        u'! /*1*/ important ': [
+                ('CHAR', u'!', 1, 1),
+                ('S', u' ', 1, 2),
+                ('COMMENT', u'/*1*/', 1, 3),
+                ('S', u' ', 1, 8),
+                 ('IMPORTANT_SYM', u'important', 1, 9),
+                 ('S', u' ', 1, 18)],
+        u'! important': [('CHAR', u'!', 1, 1),
+                         ('S', u' ', 1, 2),
+                         ('IMPORTANT_SYM', u'important', 1, 3)],
+        u'!\n\timportant': [('CHAR', u'!', 1, 1),
+                            ('S', u'\n\t', 1, 2),
+                            ('IMPORTANT_SYM', u'important', 1, 4)],
+        u'!IMPORTANT': [('CHAR', u'!', 1, 1),
+                        ('IMPORTANT_SYM', u'IMPORTANT', 1, 2)],
+        ur'!\i\m\p\o\r\ta\n\t': [('CHAR', u'!', 1, 1),
+                                 ('IMPORTANT_SYM',
+                                  ur'\i\m\p\o\r\ta\n\t', 1, 2)],
+        ur'!\I\M\P\O\R\Ta\N\T': [('CHAR', u'!', 1, 1),
+                                 ('IMPORTANT_SYM',
+                                  ur'\I\M\P\O\R\Ta\N\T', 1, 2)],
+        ur'!\49\4d\50\4f\52\54\41\4e\54': [('CHAR', u'!', 1, 1),
+                                           ('IMPORTANT_SYM',
+                                            ur'\49\4d\50\4f\52\54\41\4e\54',
+                                            1, 2)],
+        ur'!\69\6d\70\6f\72\74\61\6e\74': [('CHAR', u'!', 1, 1),
+                                           ('IMPORTANT_SYM',
+                                            ur'\69\6d\70\6f\72\74\61\6e\74',
+                                            1, 2)],
         }
 
     tests2only = {
