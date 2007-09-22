@@ -28,11 +28,11 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(u'print, screen', ml.mediaText)
 
         ml.mediaText = u' print , all  , screen '
-        self.assertEqual(1, ml.length)
         self.assertEqual(u'all', ml.mediaText)
+        self.assertEqual(1, ml.length)
 
         self.assertRaises(xml.dom.InvalidCharacterErr,
-                          ml._setMediaText, u'test')
+                          ml.appendMedium, u'test')
 
     def test_append(self):
         "MediaList.append() 1"
@@ -104,9 +104,7 @@ class MediaListTestCase(basetest.BaseTestCase):
 
         ml.mediaText = u' handheld , all  , screen '
         self.assertEqual(2, ml.length)
-        # keeps all explicitly set incl ,
-        self.assertEqual(5, len(ml.seq)) # ?
-        self.assertEqual(u'handheld, all', ml.mediaText)
+        self.assertEqual(u'all, handheld', ml.mediaText)
 
     def test_mediaText(self):
         "MediaList.mediaText 2"
@@ -123,14 +121,14 @@ class MediaListTestCase(basetest.BaseTestCase):
 
         tests = {
             u'all;': xml.dom.SyntaxErr,
-            u'UNKNOWN': xml.dom.SyntaxErr,
+            u'UNKNOWN': xml.dom.InvalidCharacterErr,
             }
-        self.do_raise_p(tests)
+        self.do_raise_r(tests, att='_setMediaText')
 
     def test_comments(self):
         "MediaList.mediaText comments"
         tests = {
-            u'/*1*/tv/*2*/, /*3*/handheld/*4*/, tv': None,
+            u'/*1*/ tv /*2*/, /*3*/ handheld /*4*/, print': None,
             }
         self.do_equal_r(tests, att='mediaText')
 
