@@ -169,9 +169,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
         """
         super(CSSNamespaceRule, self)._setCssText(cssText)
         valid = True
-        tokens = self._tokenize2(cssText, aslist=True)
+        tokenizer = self._tokenize2(cssText)
 
-        if not tokens or self._type(tokens[0]) != self._prods.NAMESPACE_SYM:
+        attoken = self._nexttoken(tokenizer, None)
+
+        if not attoken or self._type(attoken) != self._prods.NAMESPACE_SYM:
             valid = False
             self._log.error(u'CSSNamespaceRule: No CSSNamespaceRule found: %s' %
                 self._valuestr(cssText),
@@ -182,7 +184,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             newseq = []
             # for closures: must be a mutable
             new = {
-                   'keyword': self._value(tokens[0]),
+                   'keyword': self._tokenvalue(attoken),
                    'prefix': None,
                    'uri': None,
                    'valid': True
@@ -191,7 +193,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             def _ident(expected, seq, token, tokenizer=None):
                 # the namespace prefix, optional
                 if 'prefix or uri' == expected:
-                    new['prefix'] = self._value(token)
+                    new['prefix'] = self._tokenvalue(token)
                     seq.append(new['prefix'])
                     return 'uri'
                 else:
@@ -203,7 +205,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             def _string(expected, seq, token, tokenizer=None):
                 # the namespace URI as a STRING
                 if expected.endswith('uri'):
-                    new['uri'] = val = self._value(token)[1:-1] # "uri" or 'uri'
+                    new['uri'] = val = self._tokenvalue(token)[1:-1] # "uri" or 'uri'
                     seq.append(new['uri'])
                     return ';'
 
@@ -216,7 +218,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             def _uri(expected, seq, token, tokenizer=None):
                 # the namespace URI as URI which is DEPRECATED
                 if expected.endswith('uri'):
-                    uri = self._value(token)[4:-1].strip() # url(uri)
+                    uri = self._tokenvalue(token)[4:-1].strip() # url(uri)
                     if uri[0] == uri[-1] == '"' or\
                        uri[0] == uri[-1] == "'":
                         uri = uri[1:-1]
@@ -234,7 +236,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
             def _char(expected, seq, token, tokenizer=None):
                 # final ;
-                val = self._value(token)
+                val = self._tokenvalue(token)
                 if ';' == expected and u';' == val:
                     return 'EOF'
                 else:
@@ -245,7 +247,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
             # main loop
             valid, expected = self._parse(expected='prefix or uri',
-                seq=newseq, tokenizer=tokens[1:],
+                seq=newseq, tokenizer=tokenizer,
                 productions={'IDENT': _ident,
                              'STRING': _string,
                              'URI': _uri,
