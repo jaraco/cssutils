@@ -165,17 +165,17 @@ class CSSImportRule(cssrule.CSSRule):
         super(CSSImportRule, self)._setCssText(cssText)
         valid = True
 
-        tokens = self._tokenize2(cssText, aslist=True)
+        tokenizer = self._tokenize2(cssText, aslist=True)
 
         # check if right type
-        if not tokens or\
-           tokens and self._type(tokens[0]) != self._prods.IMPORT_SYM:
+        if not tokenizer or\
+           tokenizer and self._type(tokenizer[0]) != self._prods.IMPORT_SYM:
             valid = False
             self._log.error(u'CSSImportRule: No CSSImportRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
-            newatkeyword = self._value(tokens[0])
+            newatkeyword = self._tokenvalue(tokenizer[0])
 
             newseq = []
             newhref = None
@@ -186,7 +186,7 @@ class CSSImportRule(cssrule.CSSRule):
             expected = 'href' # href medialist EOF
             for i in range(1, len(tokens)):
                 t = tokens[i]
-                typ, val = self._type(t), self._value(t)
+                typ, val = self._type(t), self._tokenvalue(t)
 
                 if self._prods.EOF == typ:
                     expected = 'EOF'
