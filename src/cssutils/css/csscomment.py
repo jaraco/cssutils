@@ -77,7 +77,7 @@ class CSSComment(cssrule.CSSRule):
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
-            self._cssText = self._value(commenttoken)
+            self._cssText = self._tokenvalue(commenttoken)
 
     cssText = property(_getCssText, _setCssText,
         doc=u"(cssutils) Textual representation of this comment")
