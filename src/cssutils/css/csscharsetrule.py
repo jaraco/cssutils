@@ -86,25 +86,27 @@ class CSSCharsetRule(cssrule.CSSRule):
           Currently only valid Python encodings are allowed.
         """
         self._checkReadonly()
-        tokens = self._tokenize2(encoding, aslist=True)
-        valid = True
+        tokenizer = self._tokenize2(encoding)
+        encodingtoken = self._nexttoken(tokenizer)
+        unexpected = self._nexttoken(tokenizer)
 
-        if not tokens or len(tokens) > 1 or\
-           self._prods.IDENT != self._type(tokens[0]):
+        valid = True
+        if not encodingtoken or unexpected or\
+           self._prods.IDENT != self._type(encodingtoken):
             valid = False
             self._log.error(
-                'CSSCharsetRule: Syntax Error in encoding value "%s".' %
+                'CSSCharsetRule: Syntax Error in encoding value %r.' %
                       encoding)
-        try:
-            codecs.lookup(encoding)
-        except LookupError:
-            valid = False
-            self._log.error('CSSCharsetRule: Unknown (Python) encoding "%s".' %
-                      encoding)
-
+        else:
+            try:
+                codecs.lookup(encoding)
+            except LookupError:
+                valid = False
+                self._log.error('CSSCharsetRule: Unknown (Python) encoding %r.' %
+                          encoding)
+            else:
+                self._encoding = encoding.lower()
         self.valid = valid
-        if valid:
-            self._encoding = encoding.lower()
 
     encoding = property(_getEncoding, _setEncoding,
         doc="(DOM)The encoding information used in this @charset rule.")
@@ -131,26 +133,27 @@ class CSSCharsetRule(cssrule.CSSRule):
           Raised if the rule is readonly.
         """
         super(CSSCharsetRule, self)._setCssText(cssText)
+        tokenizer = self._tokenize2(cssText)
+        text = ''.join([self._tokenvalue(t) for t in tokenizer])
+
         valid = True
-        tokens = self._tokenize2(cssText, aslist=True)
-        text = ''.join([self._value(t) for t in tokens])
         # check if right token
         if not text.lower().startswith(u'@charset'):
             valid = False
-            self._log.error(u'No CSSCharsetRule: %s' % text,
+            self._log.error(u'No valid CSSCharsetRule: %s' % text,
                             error=xml.dom.InvalidModificationErr)
         else:
             encoding = CSSCharsetRule.__syntax.match(text)
             if not encoding:
                 valid = False
                 self._log.error(u'CSSCharsetRule: Syntax Error: "%s".'
-                                % text, tokens[0])
+                                % text)
             else:
                 encoding = encoding.group(1)
                 if not encoding:
                     valid = False
                     self._log.error(u'CSSCharsetRule: No Encoding found: "%s".'
-                                    % text, tokens[0])
+                                    % text)
                 else:
                     self.encoding = encoding
                     valid = self.valid # gets set by encoding!
