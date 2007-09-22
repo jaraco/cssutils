@@ -89,6 +89,9 @@ class PropertyTestCase(basetest.BaseTestCase):
         p.priority = '!   important'
         self.assertEqual('!important', p.priority)
 
+        p.priority = '!/*1*/important'
+        self.assertEqual('! /*1*/ important', p.priority)
+
         tests = {
             u' ': xml.dom.SyntaxErr,
             u'"\n': xml.dom.SyntaxErr,
