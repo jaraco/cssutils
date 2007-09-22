@@ -170,18 +170,7 @@ class CSSSerializer(object):
         if len(medialist) == 0:
             return u'all'
         else:
-            mqs = [mq for mq in medialist]
-
-            all_or_handheld = []
-            for mq in mqs:
-                if mq.mediaType == u'all':
-                    all_or_handheld.append(mq)
-                if mq.mediaType == u'handheld':
-                    all_or_handheld.append(mq)
-            if all_or_handheld:
-                mqs = all_or_handheld
-
-            return u', '.join((mt.mediaText for mt in mqs))
+            return u', '.join((mq.mediaText for mq in medialist))
 
     def do_CSSStyleSheet(self, stylesheet):
         out = []
