@@ -113,7 +113,7 @@ class MediaQuery(cssutils.util.Base):
 
             def _ident_or_dim(expected, seq, token, tokenizer=None):
                 # only|not or mediatype or and
-                val = self._value(token).lower() # ident always lowercase
+                val = self._tokenvalue(token).lower() # ident always lowercase
                 if expected.endswith('mediatype'):
                     if val in (u'only', u'not'):
                         # only or not
@@ -134,11 +134,11 @@ class MediaQuery(cssutils.util.Base):
             def _char(expected, seq, token, tokenizer=None):
                 # starting a feature which basically is a CSS Property
                 # but may simply be a property name too
-                val = self._value(token)
+                val = self._tokenvalue(token)
                 if val == u'(' and expected == 'feature':
 
                     # TODO:
-                    property = 'cssutils.css.Property()'
+                    property = cssutils.css.Property()
                     proptokens = self._tokensupto2(
                         tokenizer, funcendonly=True, keepEnd=False)
                     # property.cssText = self._tokensupto2(
