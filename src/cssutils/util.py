@@ -48,6 +48,8 @@ class Base(object):
         elif isinstance(textortokens, tuple):
             # a single token (like a comment)
             return [textortokens]
+        elif not textortokens:
+            return None
         else:
             # already tokenized but return generator
             return (x for x in textortokens)
@@ -56,7 +58,7 @@ class Base(object):
         "type of Tokenizer2 token"
         return token[0]
 
-    def _value(self, token):
+    def _tokenvalue(self, token):
         "value of Tokenizer2 token"
         return token[1]
 
@@ -64,7 +66,7 @@ class Base(object):
         "returns next token in tokenizer of the default value"
         try:
             return tokenizer.next()
-        except StopIteration:
+        except (StopIteration, AttributeError):
             return default
 
     def _tokensupto2(self,
@@ -119,7 +121,7 @@ class Base(object):
                 if keepEOF:
                     resulttokens.append(token)
                 break
-            val = self._value(token)
+            val = self._tokenvalue(token)
             if u'{' == val: brace += 1
             elif u'}' == val: brace -= 1
             elif u'[' == val: bracket += 1
@@ -189,8 +191,12 @@ class Base(object):
 
         returns (valid, expected) which the last prod might have set
         """
-        prods = self._getProductions(productions)
         valid = True
+
+        if not tokenizer:
+            return valid, expected
+
+        prods = self._getProductions(productions)
         for token in tokenizer:
             typ, val, lin, col = token
             p = prods.get(typ, default)
@@ -317,7 +323,7 @@ class Base(object):
         elif isinstance(t, list) and isinstance(t[0], tuple):
             return u''.join([x[1] for x in t])
         elif isinstance(t, tuple): # needed?
-            return self._value(t)
+            return self._tokenvalue(t)
         else: # old
             return u''.join([x.value for x in t])
 
