@@ -15,6 +15,7 @@ class PropertyTestCase(basetest.BaseTestCase):
     def test_init(self):
         "Property.__init__()"
         p = cssutils.css.property.Property('top', '1px')
+        self.assertEqual('top: 1px', p.cssText)
         self.assertEqual('top', p.name)
         self.assertEqual('1px', p.value)
         self.assertEqual('1px', p.cssValue.cssText)
@@ -25,6 +26,56 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual([], p.seqs[2])
 
         self.assertEqual(True, p.valid)
+
+        # Prop of MediaQuery
+        p = cssutils.css.property.Property('top', _mediaQuery=True)
+        self.assertEqual('top', p.cssText)
+        self.assertEqual('top', p.name)
+        self.assertEqual('', p.value)
+        self.assertEqual('', p.cssValue.cssText)
+        self.assertEqual(u'', p.priority)
+        self.assertEqual(True, p.valid)
+        p.cssValue.cssText = '1px'
+        self.assertEqual('top: 1px', p.cssText)
+        p.cssValue = ''
+        self.assertEqual('top', p.cssText)
+
+    def test_cssText(self):
+        "Property.cssText"
+        p = cssutils.css.property.Property()
+
+        tests = {
+            u'a: 1': None,
+            u'a: 1px 2px': None,
+            u'a: 1 !important': None,
+            u'a: 1 !IMPORTANT': None,
+            u'a: 1 !impor\\tant': None,
+            # TODO: important with unicode escapes!
+            }
+        self.do_equal_r(tests)
+
+        tests = {
+            u'': (xml.dom.SyntaxErr,
+                   u'''Property: No property name found: u''.'''),
+            u':': (xml.dom.SyntaxErr,
+                   u'''Property: No property name found: u':'. [1:1: :]'''),
+            u'a': (xml.dom.SyntaxErr,
+                   u'''Property: No ":" after name found: u'a' [1:1: a]'''),
+            u'a !': (xml.dom.SyntaxErr,
+                   u'''Property: No ":" after name found: u'a !' [1:3: !]'''),
+            u'a:': (xml.dom.SyntaxErr,
+                   u'''Property: No property value found: u'a:'. [1:2: :]'''),
+            u'a: ': (xml.dom.SyntaxErr,
+                   u'''CSSValue: Unknown syntax or no value: u' '.'''),
+            u'a: 1!': (xml.dom.SyntaxErr,
+                   u'''Property: Invalid priority: u'!'.'''),
+            u'a: 1!importantX': (xml.dom.SyntaxErr,
+                   u'''Property: Unexpected ident. [1:6: importantX]'''),
+            }
+        for test in tests:
+            ecp, msg = tests[test]
+            self.assertRaisesMsg(ecp, msg, p._setCssText, test)
+
 
     def test_name(self):
         "Property.name"

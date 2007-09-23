@@ -116,6 +116,7 @@ class MediaListTestCase(basetest.BaseTestCase):
             u'all, handheld': None,
             u'tv': None,
             u'tv, handheld, print': None,
+            u'tv and (color), handheld and (width: 1px) and (color)': None,
             }
         self.do_equal_r(tests, att='mediaText')
 
