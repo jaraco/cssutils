@@ -71,11 +71,13 @@ HEAD
         - New Tokenizer which probably breaks almost everything for now
         - rethink handling of ``<!--`` and ``-->`` in parser
 
-    + CHANGE: css.Property is now official and constructor has only optiomal parameter now
+    + CHANGE: css.Property is now official and constructor has only optional parameters now
 
       ** not complete yet **
 
     - API CHANGE (internal): renamed ``Serializer.do_css_Property`` to ``Serializer.do_Property`` as it is ``Property`` is not in the official DOM, may not stay in package ``css`` and is used by MediaQuery too
+
+    - API CHANGE (internal): renamed ``Serializer.do_CSSvalue`` to ``Serializer.do_CSSValue``
 
     - FEATURE: Added implementation of stylesheets.MediaQuery which are part of  stylesheets.MediaList. Currently simple mediaType
 values like ``all`` or ``print`` are possible. Plan is to implement the complete spec at http://www.w3.org/TR/css3-mediaqueries/ with additional media features.
