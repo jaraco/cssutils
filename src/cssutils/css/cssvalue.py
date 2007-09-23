@@ -82,7 +82,9 @@ class CSSValue(cssutils.util.Base):
         self._propertyName = _propertyName
 
         if cssText is not None: # may be 0
-            self.cssText = unicode(cssText) # if it is a number
+            if type(cssText) in (int, float):
+                cssText = unicode(cssText) # if it is a number
+            self.cssText = cssText
 
         self._readonly = readonly
 
