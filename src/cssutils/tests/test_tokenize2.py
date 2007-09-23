@@ -5,7 +5,6 @@ TODO:
     - escape ends with explicit space but \r\n as single space
     - ur'"\""': [('STRING', ur'"\""', 1, 1)],
     - font-face with escaped "-"
-    - ! comment important
 
     + old tests as new ones are **not complete**!
 """
@@ -362,38 +361,38 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('S', u'\n', 1, 16),
                    ('IDENT', u'a', 1, 17)],
 
-        # IMPORTANT_SYM
+        # IMPORTANT_SYM is not IDENT!!!
         u' !important ': [('S', u' ', 1, 1),
                 ('CHAR', u'!', 1, 2),
-                 ('IMPORTANT_SYM', u'important', 1, 3),
+                 ('IDENT', u'important', 1, 3),
                  ('S', u' ', 1, 12)],
         u'! /*1*/ important ': [
                 ('CHAR', u'!', 1, 1),
                 ('S', u' ', 1, 2),
                 ('COMMENT', u'/*1*/', 1, 3),
                 ('S', u' ', 1, 8),
-                 ('IMPORTANT_SYM', u'important', 1, 9),
+                 ('IDENT', u'important', 1, 9),
                  ('S', u' ', 1, 18)],
         u'! important': [('CHAR', u'!', 1, 1),
                          ('S', u' ', 1, 2),
-                         ('IMPORTANT_SYM', u'important', 1, 3)],
+                         ('IDENT', u'important', 1, 3)],
         u'!\n\timportant': [('CHAR', u'!', 1, 1),
                             ('S', u'\n\t', 1, 2),
-                            ('IMPORTANT_SYM', u'important', 1, 4)],
+                            ('IDENT', u'important', 1, 4)],
         u'!IMPORTANT': [('CHAR', u'!', 1, 1),
-                        ('IMPORTANT_SYM', u'IMPORTANT', 1, 2)],
+                        ('IDENT', u'IMPORTANT', 1, 2)],
         ur'!\i\m\p\o\r\ta\n\t': [('CHAR', u'!', 1, 1),
-                                 ('IMPORTANT_SYM',
+                                 ('IDENT',
                                   ur'\i\m\p\o\r\ta\n\t', 1, 2)],
         ur'!\I\M\P\O\R\Ta\N\T': [('CHAR', u'!', 1, 1),
-                                 ('IMPORTANT_SYM',
+                                 ('IDENT',
                                   ur'\I\M\P\O\R\Ta\N\T', 1, 2)],
         ur'!\49\4d\50\4f\52\54\41\4e\54': [('CHAR', u'!', 1, 1),
-                                           ('IMPORTANT_SYM',
+                                           ('IDENT',
                                             ur'\49\4d\50\4f\52\54\41\4e\54',
                                             1, 2)],
         ur'!\69\6d\70\6f\72\74\61\6e\74': [('CHAR', u'!', 1, 1),
-                                           ('IMPORTANT_SYM',
+                                           ('IDENT',
                                             ur'\69\6d\70\6f\72\74\61\6e\74',
                                             1, 2)],
         }
