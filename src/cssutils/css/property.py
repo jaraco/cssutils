@@ -20,7 +20,7 @@ class Property(cssutils.util.Base):
     Properties
     ==========
     cssText
-        A parsable textual representation
+        A parsable textual representation of this property
     name
         of the property
     normalname
@@ -35,7 +35,7 @@ class Property(cssutils.util.Base):
     valid
         if this Property is valid
 
-    DEPRECATED: value
+    value (DEPRECATED)
         the string value of the property, use cssValue.cssText instead!
 
     Format
@@ -72,7 +72,7 @@ class Property(cssutils.util.Base):
           ;
 
     """
-    def __init__(self, name=None, value=None, priority=None):
+    def __init__(self, name=None, value=None, priority=None, _mediaQuery=False):
         """
         inits property
 
@@ -82,11 +82,15 @@ class Property(cssutils.util.Base):
             a property value string
         priority
             an optional priority string
+        _mediaQuery boolean
+            if True value is optional as used by MediaQuery objects
         """
         super(Property, self).__init__()
 
         self.seqs = [[], None, []]
         self.valid = True
+        self._mediaQuery = _mediaQuery
+
         if name:
             self.name = name
         else:
@@ -96,21 +100,6 @@ class Property(cssutils.util.Base):
         else:
             self.seqs[1] = CSSValue()
         self.priority = priority
-
-#    def __invalidToken(self, tokens, x):
-#        """
-#        raises SyntaxErr if an INVALID token in tokens
-#
-#        x
-#            name, value or priority, used for error message
-#
-#        returns True if INVALID found, else False
-#        """
-#        for t in tokens:
-#            if t.type == self._ttypes.INVALID:
-#                self._log.error(u'Property: Invalid token found in %s.' % x, t)
-#                return True
-#        return False
 
     def _getCssText(self):
         """
@@ -128,87 +117,54 @@ class Property(cssutils.util.Base):
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
-        pass
-#        valid = True
-#        tokenizer = self._tokenize2(cssText)
-#
-#        newseq = []
-#        # for closures: must be a mutable
-#        new = {
-#               'name': None,
-#               'value': None,
-#               'priority': None,
-#               'valid': True
-#               }
-#
-#        def _ident(expected, seq, token, tokenizer=None):
-#            # name or priotity: "important"
-#            if 'name' == expected:
-#                new['name'] = self._tokenvalue(token)
-#                #seq.append(new['prefix'])
-#                return ':'
-#            elif u'important' == expected == val:
-#                new['priority'] = u'!important'
-#                #seq.append(new['prefix'])
-#                return ':'
-#            else:
-#                new['valid'] = False
-#                self._log.error(
-#                    u'Property: Unexpected ident.', token)
-#                return expected
-#
-#        def _char(expected, seq, token, tokenizer=None):
-#            # ":" or "!"
-#            val = self._tokenvalue(token)
-#            if u':' == expected == val:
-#                # do value
-#
-#                return 'EOF or !'
-#            if expected.endswith('!') and u'!' == val:
-#                return 'important'
-#            else:
-#                new['valid'] = False
-#                self._log.error(
-#                    u'CSSNamespaceRule: Unexpected char.', token)
-#                return expected
-#
-#        # main loop: name: value* [! S* important]
-#        valid, expected = self._parse(expected='name',
-#            seq=newseq, tokenizer=tokenizer,
-#            productions={'IDENT': _ident,
-#                         'CHAR': _char})
-#
-#        # valid set by parse
-#        valid = valid and new['valid']
-#
-#        # post conditions
-#        if not new['name']:
-#            valid = False
-#            self._log.error(u'Property: No name found: %s' %
-#                self._valuestr(cssText))
-#
-#        if not new['value']:
-#            valid = False
-#            self._log.error(u'Property: No value found: %s' %
-#                self._valuestr(cssText))
-#
-#        if expected == 'important':
-#            valid = False
-#            self._log.error(u'Property: "!" but not "important": %s' %
-#                self._valuestr(cssText))
-#        elif expected != 'EOF':
-#            valid = False
-#            self._log.error(u'Property: No ";" found: %s' %
-#                self._valuestr(cssText))
-#
-#        # set all
-#        self.valid = valid
-#        if valid:
-#            self.atkeyword = new['keyword']
-#            self.prefix = new['prefix']
-#            self.uri = new['uri']
-#            self.seq = newseq
-#
+        # check and prepare tokenlists for setting
+        valid = True
+
+        tokenizer = self._tokenize2(cssText)
+
+        nametokens = self._tokensupto2(tokenizer, propertynameendonly=True)
+        valuetokens = self._tokensupto2(tokenizer, propertyvalueendonly=True)
+        prioritytokens = self._tokensupto2(tokenizer, propertypriorityendonly=True)
+
+        if nametokens:
+
+            if self._mediaQuery and not valuetokens:
+                # MediaQuery may consist of name only
+                self.name = nametokens
+                self.cssValue = None
+                self.priority = None
+                return
+
+            # remove colon from nametokens
+            colontoken = nametokens.pop()
+            if self._tokenvalue(colontoken) != u':':
+                valid = False
+                self._log.error(u'Property: No ":" after name found: %r' %
+                                self._valuestr(cssText), colontoken)
+            elif not nametokens:
+                valid = False
+                self._log.error(u'Property: No property name found: %r.' %
+                            self._valuestr(cssText), colontoken)
+
+            if valuetokens:
+                if self._tokenvalue(valuetokens[-1]) == u'!':
+                    # priority given, move "!" to prioritytokens
+                    prioritytokens.insert(0, valuetokens.pop(-1))
+            else:
+                valid = False
+                self._log.error(u'Property: No property value found: %r.' %
+                                self._valuestr(cssText), colontoken)
+
+        else:
+            valid = False
+            self._log.error(u'Property: No property name found: %r.' %
+                            self._valuestr(cssText))
+
+        if valid:
+            self.name = nametokens
+            self.cssValue = valuetokens
+            self.priority = prioritytokens
+
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="A parsable textual representation.")
 
@@ -279,9 +235,12 @@ class Property(cssutils.util.Base):
           Raised if the specified CSS string value represents a different
           type of values than the values allowed by the CSS property.
         """
-        cssvalue = CSSValue(cssText=cssText, _propertyName=self.name)
-        if cssvalue._value:
-            self.seqs[1] = cssvalue
+        if self._mediaQuery and not cssText:
+            self.seqs[1] = CSSValue()
+        else:
+            cssvalue = CSSValue(cssText=cssText, _propertyName=self.name)
+            if cssvalue._value:
+                self.seqs[1] = cssvalue
 
     cssValue = property(_getCSSValue, _setCSSValue,
         doc="(cssutils) CSSValue object of this property")
@@ -325,11 +284,13 @@ class Property(cssutils.util.Base):
                 self._log.error(u'Property: Unexpected char.', token)
                 return expected
 
-        def _important(expected, seq, token, tokenizer=None):
+        def _ident(expected, seq, token, tokenizer=None):
             # "important"
-            if 'important' == expected:
-                new['priority'] = self._tokenvalue(token)
-                seq.append(new['priority'])
+            val = self._tokenvalue(token)
+            normalval = self._tokenvalue(token, normalize=True)
+            if 'important' == expected == normalval:
+                new['priority'] = val
+                seq.append(val)
                 return 'EOF'
             else:
                 new['valid'] = False
@@ -339,7 +300,7 @@ class Property(cssutils.util.Base):
         newseq = []
         valid, expected = self._parse(expected='!',
             seq=newseq, tokenizer=self._tokenize2(priority),
-            productions={'CHAR': _char, 'IMPORTANT_SYM': _important})
+            productions={'CHAR': _char, 'IDENT': _ident})
 
         valid = valid and new['valid']
 
