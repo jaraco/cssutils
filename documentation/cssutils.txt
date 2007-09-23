@@ -1,0 +1,52 @@
+`Index <../index.txt>`_
+
+====================
+package ``cssutils``
+====================
+:author: $LastChangedBy: cthedot $
+:date: $LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $
+:version: $LastChangedRevision: 206 $
+
+.. contents::
+
+overview
+========
+Main tokenizer, parser and helper classes used by subpackages ``css`` and ``stylesheets``.
+Implemented is also the interface `DOMImplementationCSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-DOMImplementationCSS>`_.
+
+:CSSParser: A CSS parser
+:CSSSerializer: A configurable CSS serializer
+:log: A configurable ``cssutils.errorhandler.ErrorHandler()`` logger
+:DOMImplementationCSS: Registers cssutils by standard package ``xml.com``
+
+
+parsing CSS
+===========
+Options to parse a given stylesheet:
+
+* use the helper functions:
+
+  - ``cssutils.parse(filename, encoding)``
+  - ``cssutils.parseString(cssText, href=None, media=None)``
+
+* or get an instance of cssutils.CSSParser and use the provided parse methods which are the same as the helper functions. The parser is reusable.
+
+
+serializing CSS
+===============
+There is only one global serializer used throughout the library. You may configure it or even replace it with your own.
+
+For more details see `Serializing <serialize.txt>`_
+
+
+logging
+=======
+A global logger is used throughout the library. You may configure it or even replace it with your own. Customizing the default log should be sufficient for most purposes though.
+
+The default logger is available as ``cssutils.log``. It has the following methods:
+
+* ``log.setlog``: To redirect logging output, the default output is sent to ``stderr``
+* ``log.setloglevel``: To change the log level. This should be a level defined by the ``logging`` module, e.g.::
+
+    import logging
+    cssutils.log.setloglevel(logging.FATAL)

@@ -1,0 +1,33 @@
+`Index <../index.txt>`_
+
+========================
+package ``cssutils.css``
+========================
+
+:author: $LastChangedBy: cthedot $
+:date: $LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $
+:version: $LastChangedRevision: 206 $
+
+.. contents::
+
+
+overview
+========
+Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ and `CSS Module: Namespaces (W3C Working Draft 28 August 2006) <http://www.w3.org/TR/css3-namespace/>`_
+
+:CSSStyleSheet: Implements ``stylesheets.StyleSheet`` and is the *root* of a stylesheet.
+:CSSCharset: @charset rule
+:CSSImport: @import rule
+:CSSPage: @page rule
+:CSSMedia: @media rule
+:CSSNamespace: @namespace rule
+:CSSFontfaceRule: @font-face rule **NOT IMPLEMENTED**
+:CSSStyleRule: Main Rule with Selectors and ``CSSStyleDeclaration``
+:`CSSStyleDeclaration <cssstyledeclaration.txt>`_: Containing a list of Properties
+:Property: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
+:CSSValue: A CSS value which might also be a CSSPrimitiveValue or CSSValueList.
+
+
+values
+======
+`CSS values <values.txt>`_
