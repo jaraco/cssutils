@@ -153,7 +153,9 @@ class CSSSerializer(object):
         else:
             out = []
             for part in mediaquery.seq:
-                if hasattr(part, 'cssText'): # comments, Property
+                if isinstance(part, cssutils.css.Property): # Property
+                    out.append(u'(%s)' % part.cssText)
+                elif hasattr(part, 'cssText'): # comments
                     out.append(part.cssText)
                 else:
                     # TODO: media queries!
@@ -438,19 +440,18 @@ class CSSSerializer(object):
                     # only last valid Property
                     if not self.prefs.keepAllProperties:
                         _index = part._currentIndex()
-                        out.append(
-                            self.do_Property(part[_index],
-                                                 self.prefs.omitLastSemicolon and
-                                                 i==len(style.seq)-1))
+                        out.append(self.do_Property(part[_index]))
+                        if not (self.prefs.omitLastSemicolon and i==len(style.seq)-1):
+                            out.append(u';')
                         out.append(separator)
                     else:
                         # or all Properties
                         for (j, p) in enumerate(part):
-                            out.append(
-                                self.do_Property(p,
-                                                     self.prefs.omitLastSemicolon and
-                                                     i==len(style.seq)-1 and
-                                                     j==len(part)-1))
+                            out.append(self.do_Property(p))
+                            if not (self.prefs.omitLastSemicolon and
+                                    i==len(style.seq)-1 and
+                                    j==len(part)-1):
+                                out.append(u';')
                             out.append(separator)
                 # other?
                 else:
@@ -461,7 +462,7 @@ class CSSSerializer(object):
 
             return u''.join(out)
 
-    def do_Property(self, property, omitSemicolon=False):
+    def do_Property(self, property):
         """
         Style declaration of CSSStyleRule
 
@@ -473,6 +474,7 @@ class CSSSerializer(object):
         else:
             out = []
             nameseq, cssvalue, priorityseq = property.seqs
+
             #name
             for part in nameseq:
                 if hasattr(part, 'cssText'):
@@ -481,10 +483,15 @@ class CSSSerializer(object):
                     out.append(self._getpropertyname(property, part))
                 else:
                     out.append(part)
-            if out:
+
+            if out and (not property._mediaQuery or
+                        property._mediaQuery and cssvalue.cssText):
+                # MediaQuery may consist of name only
                 out.append(u': ')
+
             # value
-            out.append(self.do_css_CSSvalue(cssvalue))
+            out.append(cssvalue.cssText)
+
             # priority
             if out and priorityseq:
                 out.append(u' ')
@@ -493,9 +500,10 @@ class CSSSerializer(object):
                         out.append(part.cssText)
                     else:
                         out.append(part)
-        return u'%s%s' % (u''.join(out), (";", "")[bool(omitSemicolon)])
 
-    def do_Property_priority(self, priorityseq, omitSemicolon=False):
+        return u''.join(out)
+
+    def do_Property_priority(self, priorityseq):
         """
         a Properties priority "!" S* "important"
         """
