@@ -9,21 +9,18 @@ backlog
 
 .. contents::
 
-in work
-=======
-- CSSValue, CSSPrimitiveValue, CSSValueList
 
 improvements
 ============
 
-CSS2Properties
---------------
+CSSValue
+--------
 :prio: 1
 
-needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
+implement RGBColor, Rect and Counter
 
 serializer
-----------
+~~~~~~~~~~
 - add preference option how color values should be serializer:
 
   ser.prefs.COLORS_HEX, also the DEFAULT?
@@ -42,19 +39,18 @@ serializer
         use colors as used in CSS Source
 
   additionally:
-    ser.prefs.NAMES_COLORS
+    ser.prefs.NAMED_COLORS
         e.g. white for #fff or rgb(100%, 100%, 100%)
 
 
 - **refactor**: all preferences values should be constansts like above
 
-specification
--------------
-:prio: 2
 
-compare with latest CSS 2.1 spec
+CSS2Properties
+--------------
+:prio: 1
 
-- #1 is valid HASH?
+needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
 
 @charset
 --------
@@ -158,7 +154,6 @@ refactoring
 :prio: 3
 
 - add __repr__ for all remaining classes
-- Base._prepare -> ._tokenize ?
 - check if setuptools not installed, try, except
 
 csscapture
@@ -198,17 +193,6 @@ implement rgba
 - System Colors are DEPRECATED!
 - "flavor"?
 
-media queries
--------------
-:prio: 1 (mostly done)
-
-http://www.w3.org/TR/2007/CR-css3-mediaqueries-20070606/::
-
-    @media all and (width > 200)
-    @import url() all and (min-width: 100px)
-
-- add possibility to access feature properties?
-
 
 serializer
 ----------
@@ -221,6 +205,7 @@ serializer
     remove empty styledeclarations, comments etc
 
 - different coding styles?
+
 
 Selector
 --------
@@ -236,13 +221,6 @@ Properties
 
 Set styledeclaration properties with dict or list of tuples?
 
-
-DOMImplementationCSS
---------------------
-:prio: 3
-
-+ import xml.dom CONSTANTS and Exceptions?
-+ import in __init__.py and put in __all__?
 
 LinkStyle, DocumentStyle
 ------------------------
