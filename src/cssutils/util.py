@@ -58,9 +58,12 @@ class Base(object):
         "type of Tokenizer2 token"
         return token[0]
 
-    def _tokenvalue(self, token):
+    def _tokenvalue(self, token, normalize=False):
         "value of Tokenizer2 token"
-        return token[1]
+        if normalize:
+            return Base._normalize(token[1])
+        else:
+            return token[1]
 
     def _nexttoken(self, tokenizer, default=None):
         "returns next token in tokenizer of the default value"
@@ -99,7 +102,7 @@ class Base(object):
         elif propertynameendonly: # : and ; in case of an error
             ends = u':;'
         elif propertyvalueendonly: # ; or !important
-            ends = (u';', u'!important')
+            ends = (u';', u'!')
         elif propertypriorityendonly: # ;
             ends = u';'
         elif selectorattendonly: # ]
