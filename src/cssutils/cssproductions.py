@@ -85,7 +85,7 @@ PRODUCTIONS = [
     ('ATKEYWORD', r'@{ident}'),
 
     # in CSS2.1: r'\!({w}|{comment})*{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
-    ('IMPORTANT_SYM', r'{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
+    ##('IMPORTANT_SYM', r'{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
 
     ('IDENT', r'{ident}'),
     ('STRING', r'{string}'),
@@ -107,7 +107,6 @@ PRODUCTIONS = [
     ('SUFFIXMATCH', r'\$\='),
     ('SUBSTRINGMATCH', r'\*\='),
     ('COMMENT', r'{comment}'), #r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
-
 
     ('CHAR', r'[^"\']')
     ]
