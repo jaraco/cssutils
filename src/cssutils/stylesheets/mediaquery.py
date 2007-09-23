@@ -138,11 +138,10 @@ class MediaQuery(cssutils.util.Base):
                 if val == u'(' and expected == 'feature':
 
                     # TODO:
-                    property = cssutils.css.Property()
                     proptokens = self._tokensupto2(
                         tokenizer, funcendonly=True, keepEnd=False)
-                    # property.cssText = self._tokensupto2(
-                    #    tokenizer, funcendonly=True, keepEnd=False)
+                    property = cssutils.css.Property(_mediaQuery=True)
+                    property.cssText = proptokens
 
                     seq.append(property)
                     return 'and or EOF'
