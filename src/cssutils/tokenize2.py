@@ -81,15 +81,29 @@ class Tokenizer(object):
         linesep
             used to detect the linenumber, defaults to os.linesep
         fullsheet
-            if ``True`` appends EOF token as last one
+            if ``True`` appends EOF token as last one and completes incomplete
+            COMMENT tokens
         """
         if not linesep:
             linesep = os.linesep
         line = col = 1
 
+        commentmatcher = [x[1] for x in self.tokenmatches if x[0] == 'COMMENT'][0]
         tokens = []
         while text:
             for name, matcher in self.tokenmatches:
+
+                if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
+                    # after all tokens except CHAR have been tested
+                    # test for incomplete comment
+                    possiblecomment = '%s*/' % text
+                    match = commentmatcher(possiblecomment)
+                    if match:
+                        yield ('COMMENT', possiblecomment, line, col)
+                        text = None
+                        break
+
+                # default
                 match = matcher(text)
                 if match:
                     found = match.group(0)
@@ -109,6 +123,8 @@ class Tokenizer(object):
                     else:
                         col += len(found)
                     break
+
+
 
             else:
                 # should not happen at all
