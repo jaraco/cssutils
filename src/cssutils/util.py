@@ -6,10 +6,13 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+import types
 import xml.dom
 import cssutils
-from tokenize import Tokenizer
 from tokenize2 import Tokenizer as Tokenizer2
+# OLD
+from tokenize import Tokenizer
+
 
 class Base(object):
     """
@@ -38,6 +41,11 @@ class Base(object):
         returns tokens of textortokens which may already be tokens in which
         case simply returns input
         """
+        if not textortokens:
+            return None
+        if types.GeneratorType == type(textortokens) and not aslist:
+            # already tokenized
+            return textortokens
         if isinstance(textortokens, basestring):
             if aslist:
                 return [t for t in self.__tokenizer2.tokenize(
@@ -48,8 +56,6 @@ class Base(object):
         elif isinstance(textortokens, tuple):
             # a single token (like a comment)
             return [textortokens]
-        elif not textortokens:
-            return None
         else:
             # already tokenized but return generator
             return (x for x in textortokens)
@@ -77,6 +83,7 @@ class Base(object):
                      starttoken=None, # not needed anymore?
                      blockstartonly=False,
                      blockendonly=False,
+                     semicolon=False,
                      propertynameendonly=False,
                      propertyvalueendonly=False,
                      propertypriorityendonly=False,
@@ -84,7 +91,7 @@ class Base(object):
                      funcendonly=False,
                      listseponly=False, # ,
                      keepEnd=True,
-                     keepEOF=False):
+                     keepEOF=True):
         """
         returns tokens upto end of atrule and end index
         end is defined by parameters, might be ; } ) or other
@@ -99,6 +106,8 @@ class Base(object):
             brace = -1 # set to 0 with first {
         elif blockendonly: # }
             ends = u'}'
+        elif semicolon:
+            ends = u';'
         elif propertynameendonly: # : and ; in case of an error
             ends = u':;'
         elif propertyvalueendonly: # ; or !important
@@ -119,29 +128,32 @@ class Base(object):
         if starttoken:
             resulttokens.append(starttoken)
 
-        for token in tokenizer:
-            if self._type(token) == 'EOF':
-                if keepEOF:
-                    resulttokens.append(token)
-                break
-            val = self._tokenvalue(token)
-            if u'{' == val: brace += 1
-            elif u'}' == val: brace -= 1
-            elif u'[' == val: bracket += 1
-            elif u']' == val: bracket -= 1
-            # function( or single (
-            elif u'(' == val or \
-               Base._prods.FUNCTION == self._type(token): parant += 1
-            elif u')' == val: parant -= 1
+        if not tokenizer:
+            return resulttokens
+        else:
+            for token in tokenizer:
+                if self._type(token) == 'EOF':
+                    if keepEOF and keepEnd:
+                        resulttokens.append(token)
+                    break
+                val = self._tokenvalue(token)
+                if u'{' == val: brace += 1
+                elif u'}' == val: brace -= 1
+                elif u'[' == val: bracket += 1
+                elif u']' == val: bracket -= 1
+                # function( or single (
+                elif u'(' == val or \
+                   Base._prods.FUNCTION == self._type(token): parant += 1
+                elif u')' == val: parant -= 1
 
-            if val in ends and (brace == bracket == parant == 0):
-                if keepEnd:
+                if val in ends and (brace == bracket == parant == 0):
+                    if keepEnd:
+                        resulttokens.append(token)
+                    break
+                else:
                     resulttokens.append(token)
-                break
-            else:
-                resulttokens.append(token)
 
-        return resulttokens
+            return resulttokens
 
     def _getProductions(self, productions):
         """
@@ -155,23 +167,22 @@ class Base(object):
             seq.append(cssutils.css.CSSComment([token]))
             return expected
 
-        def _EOF(expected=None, seq=None, token=None, tokenizer=None):
-            "default implementation for EOF token"
-            return 'EOF'
-
         def _S(expected, seq, token, tokenizer=None):
             "default implementation for S token"
             return expected
 
         def _atrule(expected, seq, token, tokenizer=None):
             return expected
-            #print "@rule", token
+
+        def _EOF(expected=None, seq=None, token=None, tokenizer=None):
+            "default implementation for EOF token"
+            return 'EOF'
 
         p = {
             'COMMENT': _COMMENT,
             'S': _S,
-            'EOF': _EOF,
-            'ATKEYWORD': _atrule
+            'ATKEYWORD': _atrule,
+            'EOF': _EOF # only available if fullsheet
             }
         p.update(productions)
         return p
@@ -329,18 +340,5 @@ class Base(object):
             return self._tokenvalue(t)
         else: # old
             return u''.join([x.value for x in t])
-
-    # ----
-
-#    def parseproduction(self, prod, expected):
-#        """
-#        parses a production for certain rules and returns sequence
-#        if it matches expectedseq
-#        """
-#        prod = "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
-#        for part in prod.split(' '):
-#            quant = part[-1]
-#            if quant != '?' and quant != '*':
-#                quant = ''
 
 
