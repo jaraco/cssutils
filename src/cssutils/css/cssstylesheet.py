@@ -14,10 +14,7 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssutils.stylesheets
-import cssutils.tokenize2
-
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     """
@@ -101,7 +98,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         # stylesheet  : [ CDO | CDC | S | statement ]*;
         self._checkReadonly()
-
+        tokenizer = self._tokenize2(cssText)
         newseq = cssutils.css.CSSRuleList()
         # for closures: must be a mutable
         new = { 'prefixes': set() }
@@ -133,7 +130,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def namespacerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSNamespaceRule()
-            rule.cssText = self._tokensupto2(tokenizer, token, keepEOF=True)
+            rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 2:
                 self._log.error(
                     u'CSSStylesheet: CSSNamespaceRule not allowed here.',
@@ -152,8 +149,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         # expected:
         # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
 
-        valid, expected = self._parse(0, newseq,
-            self._tokenize2(cssText, fullsheet=True),
+        valid, expected = self._parse(0, newseq, tokenizer,
             {'CDO': lambda *ignored: None,
              'CDC': lambda *ignored: None,
              'CHARSET_SYM': charsetrule,
