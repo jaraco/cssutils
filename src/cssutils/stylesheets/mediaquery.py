@@ -71,10 +71,9 @@ class MediaQuery(cssutils.util.Base):
 
         self.valid = False
         self.seq = []
+        self._mediaType = u''
         if mediaText:
             self.mediaText = mediaText # sets self._mediaType too
-        else:
-            self._mediaType = u''
 
         self._readonly = readonly
 
@@ -130,25 +129,24 @@ class MediaQuery(cssutils.util.Base):
                 else:
                     self._log.error(
                         u'MediaQuery: Unexpected syntax.', token=token)
+                    return expected
 
             def _char(expected, seq, token, tokenizer=None):
                 # starting a feature which basically is a CSS Property
                 # but may simply be a property name too
                 val = self._tokenvalue(token)
                 if val == u'(' and expected == 'feature':
-
-                    # TODO:
                     proptokens = self._tokensupto2(
                         tokenizer, funcendonly=True, keepEnd=False)
                     property = cssutils.css.Property(_mediaQuery=True)
                     property.cssText = proptokens
-
                     seq.append(property)
                     return 'and or EOF'
                 else:
                     self._log.error(
                         u'MediaQuery: Unexpected syntax, expected "and" but found "%s".' %
                         val, token)
+                    return expected
 
             # main loop
             valid, expected = self._parse(expected='only|not or mediatype',
