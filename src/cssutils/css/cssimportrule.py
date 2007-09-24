@@ -118,7 +118,6 @@ class CSSImportRule(cssrule.CSSRule):
     href = property(_getHref, _setHref,
         doc="Location of the style sheet to be imported.")
 
-
     def _getMedia(self):
         "returns MediaList"
         return self._media
@@ -126,7 +125,6 @@ class CSSImportRule(cssrule.CSSRule):
     media = property(_getMedia,
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
-
 
     def _getStyleSheet(self):
         """
@@ -136,7 +134,6 @@ class CSSImportRule(cssrule.CSSRule):
 
     styleSheet = property(_getStyleSheet,
         doc="(readonly) The style sheet referred to by this rule.")
-
 
     def _getCssText(self):
         """
@@ -160,21 +157,167 @@ class CSSImportRule(cssrule.CSSRule):
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
-        # import : IMPORT_SYM S* [STRING|URI]
-        #            S* [ medium [ ',' S* medium]* ]? ';' S*  ;
         super(CSSImportRule, self)._setCssText(cssText)
         valid = True
+        tokenizer = self._tokenize2(cssText)
 
-        tokenizer = self._tokenize2(cssText, aslist=True)
+        attoken = self._nexttoken(tokenizer, None)
 
-        # check if right type
-        if not tokenizer or\
-           tokenizer and self._type(tokenizer[0]) != self._prods.IMPORT_SYM:
+        if not attoken or self._type(attoken) != self._prods.IMPORT_SYM:
             valid = False
             self._log.error(u'CSSImportRule: No CSSImportRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
+
         else:
+            # import : IMPORT_SYM S* [STRING|URI]
+            #            S* [ medium [ ',' S* medium]* ]? ';' S*  ;
+            newseq = []
+            # for closures: must be a mutable
+            new = {
+                   'keyword': self._tokenvalue(attoken),
+                   'href': None,
+                   'hreftype': None,
+                   'media': cssutils.stylesheets.MediaList(),
+                   'valid': True
+                   }
+
+            def _string(expected, seq, token, tokenizer=None):
+                # href
+                if 'href' == expected:
+                    new['hreftype'] = 'string'
+                    new['href'] = self._tokenvalue(token)[1:-1] # "uri" or 'uri'
+                    seq.append(new['href'])
+                    return 'media or ;'
+                else:
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSImportRule: Unexpected string.', token)
+                    return expected
+
+            def _uri(expected, seq, token, tokenizer=None):
+                # href
+                if 'href' == expected:
+                    new['hreftype'] = 'uri'
+                    uri = self._tokenvalue(token)[4:-1].strip() # url(uri)
+                    if uri[0] == uri[-1] == '"' or\
+                       uri[0] == uri[-1] == "'":
+                        uri = uri[1:-1]
+                    new['href'] = uri
+                    seq.append(new['href'])
+                    return 'media or ;'
+                else:
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSImportRule: Unexpected URI.', token)
+                    return expected
+
+            # TODO!!!
+            def _function(expected, seq, token, tokenizer=None):
+                # href: incomplete URI!!!
+                eof = self._type(tokenizer.next()) # should end here
+                val = self._tokenvalue(token, normalize=True)
+                if eof == 'EOF' and 'href' == expected and val.startswith(u'url('):
+                    new['hreftype'] = 'uri'
+                    uri = self._tokenvalue(token)[4:].strip() # url(uri INCOMPLETE!
+                    if uri and (
+                       uri[0] == uri[-1] == '"' or
+                       uri[0] == uri[-1] == "'"):
+                        uri = uri[1:-1]
+                    new['href'] = uri
+                    seq.append(new['href'])
+                    return 'EOF'
+                else:
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSImportRule: Unexpected FUNCTION.', token)
+                    return expected
+
+
+            def _ident(expected, seq, token, tokenizer=None):
+                # medialist ending with ; which is checked upon too
+                if expected.startswith('media'):
+                    mediatokens = self._tokensupto2(
+                        tokenizer, semicolon=True, keepEnd=True)
+                    mediatokens.insert(0, token) # push found token
+
+                    semicolonOrEOF = mediatokens.pop() # retrieve ;
+                    if self._tokenvalue(semicolonOrEOF) != u';' and\
+                       self._type(semicolonOrEOF) != 'EOF':
+                        new['valid'] = False
+                        self._log.error(u'CSSImportRule: No ";" found: %s' %
+                                        self._valuestr(cssText), token=token)
+
+                    media = cssutils.stylesheets.MediaList()
+                    media.mediaText = mediatokens
+                    if media.valid:
+                        new['media'] = media
+                        seq.append(media)
+                    else:
+                        new['valid'] = False
+                        self._log.error(u'CSSImportRule: Invalid MediaList: %s' %
+                                        self._valuestr(cssText), token=token)
+                    return 'EOF' # ';' is found already
+                else:
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSImportRule: Unexpected ident.', token)
+                    return expected
+
+            def _char(expected, seq, token, tokenizer=None):
+                # final ;
+                val = self._tokenvalue(token)
+                if expected.endswith(';') and u';' == val:
+                    return 'EOF'
+                else:
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSImportRule: Unexpected char.', token)
+                    return expected
+
+            # main loop
+            valid, expected = self._parse(expected='href',
+                seq=newseq, tokenizer=tokenizer,
+                productions={'STRING': _string,
+                             'URI': _uri,
+                             'FUNCTION': _function,
+                             'IDENT': _ident,
+                             'CHAR': _char})
+
+            # valid set by parse
+            valid = valid and new['valid']
+
+            # post conditions
+            if not new['href']:
+                valid = False
+                self._log.error(u'CSSImportRule: No href found: %s' %
+                    self._valuestr(cssText))
+
+            if expected != 'EOF':
+                valid = False
+                self._log.error(u'CSSImportRule: No ";" found: %s' %
+                    self._valuestr(cssText))
+
+            # set all
+            if valid:
+                self.valid = True
+                self.atkeyword = new['keyword']
+                self.href = new['href']
+                self.hreftype = new['hreftype']
+                self._media = new['media']
+                self.seq = newseq
+
+
+
+            return
+
+
+
+
+
+
+
+
             newatkeyword = self._tokenvalue(tokenizer[0])
 
             newseq = []
