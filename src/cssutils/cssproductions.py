@@ -43,7 +43,6 @@ MACROS = {
     'w': r'{wc}*',
     'wc': r'\t|\r|\n|\f|\x20',
 
-    # CSS 2.1
     'comment': r'\/\*[^*]*\*+([^/][^*]*\*+)*\/',
 
     'A': r'A|a|\\0{0,4}(?:41|61)(?:\r\n|[ \t\r\n\f])?',
@@ -106,8 +105,11 @@ PRODUCTIONS = [
     ('PREFIXMATCH', r'\^\='),
     ('SUFFIXMATCH', r'\$\='),
     ('SUBSTRINGMATCH', r'\*\='),
+
+    # checked specially if fullsheet is parsed
     ('COMMENT', r'{comment}'), #r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
 
+    # MUST always be last
     ('CHAR', r'[^"\']')
     ]
 
