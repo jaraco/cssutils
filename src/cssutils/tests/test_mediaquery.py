@@ -27,6 +27,8 @@ class MediaQueryTestCase(basetest.BaseTestCase):
         tests = {
             u'': xml.dom.SyntaxErr,
             u'3d': xml.dom.InvalidCharacterErr, # a dimension
+            u'print and(color)': xml.dom.SyntaxErr, # a function
+            ## TODO: u'all tv': xml.dom.SyntaxErr, # a function
             }
         self.do_raise_r(tests, att='_setMediaText')
 
@@ -64,6 +66,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             u'/*0*/ only /*1*/ tv /*2*/': None,
             u'/*0* /not /*1*/ tv /*2*/': None,
             u'/*x*/ only /*x*/ print /*x*/ and /*x*/ (/*x*/min-width/*x*/: /*x*/100px/*x*/)': None,
+            u'print and/*1*/(color)': u'print and /*1*/ (color)'
             }
         self.do_equal_r(tests, att='mediaText')
 
