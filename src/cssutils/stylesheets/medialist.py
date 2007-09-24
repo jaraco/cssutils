@@ -54,9 +54,7 @@ class MediaList(cssutils.util.Base, list):
             or a list of media
         """
         super(MediaList, self).__init__()
-
         self.valid = True
-        #self.seq = []
 
         if isinstance(mediaText, list):
             mediaText = u','.join(mediaText)
@@ -96,21 +94,39 @@ class MediaList(cssutils.util.Base, list):
           Raised if this media list is readonly.
         """
         self._checkReadonly()
+        valid = True
         tokenizer = self._tokenize2(mediaText)
-
         newseq = []
+
+        expected = None
         while True:
-            # find all upto but excluding next ","
-            mqtokens = self._tokensupto2(
-                tokenizer, listseponly=True, keepEnd=False)
+            # find all upto and including next ",", EOF or nothing
+            mqtokens = self._tokensupto2(tokenizer, listseponly=True)
             if mqtokens:
-                newseq.append(MediaQuery(mqtokens))
+                if self._tokenvalue(mqtokens[-1]) == ',':
+                    expected = mqtokens.pop()
+                else:
+                    expected = None
+
+                mq = MediaQuery(mqtokens)
+                if mq.valid:
+                    newseq.append(mq)
+                else:
+                    valid = False
+                    self._log.error(u'MediaList: Invalid MediaQuery: %s' %
+                                    ''.join(mqtokens))
             else:
                 break
 
-        del self[:]
-        for mq in newseq:
-            self.appendMedium(mq)
+        # post condition
+        if expected:
+            valid = False
+            self._log.error(u'MediaList: Cannot end with ",".')
+
+        if valid:
+            del self[:]
+            for mq in newseq:
+                self.appendMedium(mq)
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="""(DOM) The parsable textual representation of the media list.
@@ -140,29 +156,34 @@ class MediaList(cssutils.util.Base, list):
         if not isinstance(newMedium, MediaQuery):
             newMedium = MediaQuery(newMedium)
 
-        mts = [mq.mediaType for mq in self]
-        newmt = newMedium.mediaType
+        if newMedium.valid:
 
-        if newmt in mts:
-            self.deleteMedium(newmt)
-            self.append(newMedium)
-        elif u'all' == newmt:
-            # remove all except handheld (Opera)
-            h = None
-            for mq in self:
-                if mq.mediaType == u'handheld':
-                    h = mq
-            del self[:]
-            self.append(newMedium)
-            if h:
-                self.append(h)
-        elif u'all' in mts:
-            if u'handheld' == newmt:
+            mts = [mq.mediaType for mq in self]
+            newmt = newMedium.mediaType
+
+            if newmt in mts:
+                self.deleteMedium(newmt)
                 self.append(newMedium)
-        else:
-            self.append(newMedium)
+            elif u'all' == newmt:
+                # remove all except handheld (Opera)
+                h = None
+                for mq in self:
+                    if mq.mediaType == u'handheld':
+                        h = mq
+                del self[:]
+                self.append(newMedium)
+                if h:
+                    self.append(h)
+            elif u'all' in mts:
+                if u'handheld' == newmt:
+                    self.append(newMedium)
+            else:
+                self.append(newMedium)
 
-        return True
+            return True
+
+        else:
+            return False
 
     def deleteMedium(self, oldMedium):
         """
