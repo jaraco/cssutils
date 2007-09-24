@@ -205,7 +205,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             def _string(expected, seq, token, tokenizer=None):
                 # the namespace URI as a STRING
                 if expected.endswith('uri'):
-                    new['uri'] = val = self._tokenvalue(token)[1:-1] # "uri" or 'uri'
+                    new['uri'] = self._tokenvalue(token)[1:-1] # "uri" or 'uri'
                     seq.append(new['uri'])
                     return ';'
 
