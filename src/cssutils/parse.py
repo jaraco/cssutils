@@ -15,11 +15,10 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
-import codecs
-
+import codec
 import cssutils
+import cssutils.tokenize2
 from cssutils import stylesheets
-
 
 class CSSParser(object):
     """
@@ -43,7 +42,6 @@ class CSSParser(object):
 
         cssutils.log.raiseExceptions = raiseExceptions
 
-
     def parseString(self, cssText, href=None, media=None):
         """
         parse a CSSStyleSheet string
@@ -57,12 +55,12 @@ class CSSParser(object):
             The media attribute to assign to the generated stylesheet
             (may be a MediaList, list or a string)
         """
+        tokenizer = cssutils.tokenize2.Tokenizer().tokenize(cssText, fullsheet=True)
         stylesheet = cssutils.css.CSSStyleSheet()
-        stylesheet.cssText = cssText
+        stylesheet.cssText = tokenizer
         stylesheet.href = href
         stylesheet.media = stylesheets.MediaList(media)
         return stylesheet
-
 
     def parse(self, filename, encoding=None, href=None, media=None):
         """
