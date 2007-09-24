@@ -20,9 +20,12 @@ from cssutils.token import Token
 class TokenizerTestCase(basetest.BaseTestCase):
 
     testsall = {
-        u'äöüß€': [('IDENT', u'äöüß€', 1, 1)],
-
         # IDENT
+
+        # TODO: escape ends with explicit space but \r\n as single space
+        #u'\\1\r\nb': [('IDENT', u'\\1\r\nb', 1, 1)],
+
+        u'äöüß€': [('IDENT', u'äöüß€', 1, 1)],
         u' a ': [('S', u' ', 1, 1),
                  ('IDENT', u'a', 1, 2),
                  ('S', u' ', 1, 3)],
@@ -36,8 +39,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'\\1\fb': [('IDENT', u'\\1\fb', 1, 1)],
 
 
-        # TODO: escape ends with explicit space but \r\n as single space
-        #u'\\1\r\nb': [('IDENT', u'\\1\r\nb', 1, 1)],
         u'\\1 b': [('IDENT', u'\\1 b', 1, 1)],
         u'\\12 b': [('IDENT', u'\\12 b', 1, 1)],
         u'\\123 b': [('IDENT', u'\\123 b', 1, 1)],
@@ -51,6 +52,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
             [('IDENT', u'\\{\\}\\(\\)\\[\\]\\#\\@\\.\\,', 1, 1)],
 
         # STRING
+
+        # TODO: ?
+        #u'"\\" "': [('STRING', u'"\\" "', 1, 1)],
+
         u' "" ': [('S', u' ', 1, 1),
                  ('STRING', u'""', 1, 2),
                  ('S', u' ', 1, 4)],
@@ -63,9 +68,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u" '' ": [('S', u' ', 1, 1),
                  ('STRING', u"''", 1, 2),
                  ('S', u' ', 1, 4)],
-        # TODO:
-        #u'"\\" "': [('STRING', u'"\\" "', 1, 1)],
-
         u"'\\''": [('STRING', u"'\\''", 1, 1)],
         u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
         u"'\\\n\\\n\\\n'": [('STRING', u"'\\\n\\\n\\\n'", 1, 1)],
@@ -79,7 +81,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('HASH', u'#a', 1, 2),
                  ('S', u' ', 1, 4)],
 
-        # NUMBER
+        # NUMBER, for plus see CSS3
         u' 0 ': [('S', u' ', 1, 1),
                  ('NUMBER', u'0', 1, 2),
                  ('S', u' ', 1, 3)],
@@ -94,8 +96,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('CHAR', u'-', 1, 2),
                  ('NUMBER', u'0', 1, 3),
                  ('S', u' ', 1, 4)],
-        # for plus see CSS3
-
 
         # PERCENTAGE
         u' 0% ': [('S', u' ', 1, 1),
@@ -144,7 +144,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'\t': [('S', u'\t', 1, 1)],
         u'\r\n\r\n\f\t ': [('S', u'\r\n\r\n\f\t ', 1, 1)],
 
-        # COMMENT
+        # COMMENT, for incomplete see later
         u'/*x*/ ': [('COMMENT', u'/*x*/', 1, 1),
                     ('S', u' ', 1, 6)],
 
@@ -342,25 +342,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('STRING', u'"\\r\\n\\t\\f\\n\\ra"', 1, 2),
                    ('IDENT', u'a', 1, 17)],
 
-        # INVALID (STRING)
-        u' " ': [('S', u' ', 1, 1),
-                 ('INVALID', u'" ', 1, 2)],
-        u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
-                 ('INVALID', u"'abc\"with quote\" in it", 1, 2)],
-        u' "\na': [('S', u' ', 1, 1),
-                   ('INVALID', u'"', 1, 2),
-                   ('S', u'\n', 1, 3),
-                   ('IDENT', u'a', 1, 4)],
-        # strings with linebreak in it
-        u' "\\na\na': [('S', u' ', 1, 1),
-                   ('INVALID', u'"\\na', 1, 2),
-                   ('S', u'\n', 1, 6),
-                   ('IDENT', u'a', 1, 7)],
-        u' "\\r\\n\\t\\f\\n\\ra\na': [('S', u' ', 1, 1),
-                   ('INVALID', u'"\\r\\n\\t\\f\\n\\ra', 1, 2),
-                   ('S', u'\n', 1, 16),
-                   ('IDENT', u'a', 1, 17)],
-
         # IMPORTANT_SYM is not IDENT!!!
         u' !important ': [('S', u' ', 1, 1),
                 ('CHAR', u'!', 1, 2),
@@ -397,8 +378,8 @@ class TokenizerTestCase(basetest.BaseTestCase):
                                             1, 2)],
         }
 
+    # overwriting tests in testsall
     tests2only = {
-        # --- overwriting ---
         # LBRACE
         u' { ': [('S', u' ', 1, 1),
                  ('LBRACE', u'{', 1, 2),
@@ -422,6 +403,56 @@ class TokenizerTestCase(basetest.BaseTestCase):
         }
 
 
+    # tests if fullsheet=False is set on tokenizer
+    testsfullsheetfalse = {
+        # INVALID (STRING)
+        u' " ': [('S', u' ', 1, 1),
+                 ('INVALID', u'" ', 1, 2)],
+        u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
+                 ('INVALID', u"'abc\"with quote\" in it", 1, 2)],
+        u' "\na': [('S', u' ', 1, 1),
+                   ('INVALID', u'"', 1, 2),
+                   ('S', u'\n', 1, 3),
+                   ('IDENT', u'a', 1, 4)],
+        # strings with linebreak in it
+        u' "\\na\na': [('S', u' ', 1, 1),
+                   ('INVALID', u'"\\na', 1, 2),
+                   ('S', u'\n', 1, 6),
+                   ('IDENT', u'a', 1, 7)],
+        u' "\\r\\n\\t\\f\\n\\ra\na': [('S', u' ', 1, 1),
+                   ('INVALID', u'"\\r\\n\\t\\f\\n\\ra', 1, 2),
+                   ('S', u'\n', 1, 16),
+                   ('IDENT', u'a', 1, 17)],
+
+        # COMMENT incomplete
+        u'/*': [('CHAR', u'/', 1, 1),
+                ('CHAR', u'*', 1, 2)]
+        }
+
+    # tests if fullsheet=True is set on tokenizer
+    testsfullsheettrue = {
+        # INVALID is reported as valid STRING!
+        u' " ': [('S', u' ', 1, 1),
+                 ('STRING', u'" "', 1, 2)],
+        u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
+                 ('STRING', u"'abc\"with quote\" in it'", 1, 2)],
+        u' "\na': [('S', u' ', 1, 1),
+                   ('STRING', u'""', 1, 2),
+                   ('IDENT', u'a', 1, 4)],
+        # strings with linebreak in it
+        u' "\\na\na': [('S', u' ', 1, 1),
+                   ('STRING', u'"\\na"', 1, 2),
+                   #('S', u'\n', 1, 7),
+                   ('IDENT', u'a', 1, 7),
+                   ],
+        u' "\\r\\n\\t\\f\\n\\ra\na': [('S', u' ', 1, 1),
+                   ('STRING', u'"\\r\\n\\t\\f\\n\\ra"', 1, 2),
+                   ('IDENT', u'a', 1, 17)],
+
+        # COMMENT incomplete
+        u'/*': [('COMMENT', u'/**/', 1, 1)]
+        }
+
     def setUp(self):
         #log = cssutils.errorhandler.ErrorHandler()
         self.tokenizer = Tokenizer()
@@ -439,6 +470,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         tests.update(self.testsall)
         tests.update(self.tests2)
         tests.update(self.tests3)
+        tests.update(self.testsfullsheetfalse)
         for css in tests:
             # check token format
             tokens = tokenizer.tokenize(css)
@@ -450,6 +482,35 @@ class TokenizerTestCase(basetest.BaseTestCase):
             tokens = [t for t in tokenizer.tokenize(css)]
             self.assertEqual(len(tokens), len(tests[css]))
 
+    def test_tokenizefullsheet(self):
+        "cssutils Tokenizer().tokenize(fullsheet=True)"
+        import cssutils.cssproductions
+        tokenizer = Tokenizer(cssutils.cssproductions.MACROS,
+                              cssutils.cssproductions.PRODUCTIONS)
+        tests = {}
+        tests.update(self.testsall)
+        tests.update(self.tests2)
+        tests.update(self.tests3)
+        tests.update(self.testsfullsheettrue)
+        for css in tests:
+            # check token format
+            tokens = tokenizer.tokenize(css, fullsheet=True)
+            for i, actual in enumerate(tokens):
+                try:
+                    expected = tests[css][i]
+                except IndexError:
+                    # EOF is added
+                    self.assertEqual(actual[0], 'EOF')
+                else:
+                    self.assertEqual(expected, actual)
+
+            # check if all same number of tokens
+            tokens = [t for t in tokenizer.tokenize(css, fullsheet=True)]
+            # EOF is added so -1
+            self.assertEqual(len(tokens) - 1, len(tests[css]))
+
+
+    # not really needed
     def test_tokenizeCSS3(self):
         "CSS3 Tokenizer().tokenize()"
         import cssutils.css3productions
@@ -464,6 +525,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                 expected = tests[css][i]
                 self.assertEqual(expected, actual)
 
+    # not really needed
     def test_tokenizeCSS2_1(self):
         "CSS2 Tokenizer().tokenize()"
         import cssutils.css2productions

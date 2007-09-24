@@ -50,15 +50,14 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         self.do_equal_p(tests) # parse
 
         tests = {
-            u'/* */ */': xml.dom.SyntaxErr,
-            u'  */ /* ': xml.dom.SyntaxErr
-            }
-        self.do_raise_p(tests) # parse
-        tests.update({
+            u'/* */ */': xml.dom.InvalidModificationErr,
+            u'  */ /* ': xml.dom.InvalidModificationErr,
             u'*/': xml.dom.InvalidModificationErr,
             u'@x /* x */': xml.dom.InvalidModificationErr
-            })
+            }
         self.do_raise_r(tests) # set cssText
+        # no raising of error possible?
+        # self.do_raise_p(tests) # parse
 
     def test_reprANDstr(self):
         "CSSComment.__repr__(), .__str__()"

@@ -56,6 +56,12 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(2, ml.length)
         self.assertEqual(u'print, screen', ml.mediaText)
 
+        # append invalid MediaQuery
+        mq = cssutils.stylesheets.MediaQuery()
+        ml.appendMedium(mq)
+        self.assertEqual(2, ml.length)
+        self.assertEqual(u'print, screen', ml.mediaText)
+
     def test_appendAll(self):
         "MediaList.append() 2"
         ml = cssutils.stylesheets.MediaList()
@@ -121,8 +127,19 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.do_equal_r(tests, att='mediaText')
 
         tests = {
-            u'all;': xml.dom.SyntaxErr,
             u'UNKNOWN': xml.dom.InvalidCharacterErr,
+            u'a,b': xml.dom.InvalidCharacterErr,
+            u'a and (color)': xml.dom.InvalidCharacterErr,
+            u'not': xml.dom.SyntaxErr, # known but need media
+            u'only': xml.dom.SyntaxErr, # known but need media
+            u'not tv,': xml.dom.SyntaxErr, # known but need media
+            u'all;': xml.dom.SyntaxErr,
+            u'all, and(color)': xml.dom.SyntaxErr,
+            u'all,': xml.dom.SyntaxErr,
+            u'all, ': xml.dom.SyntaxErr,
+            u'all ,': xml.dom.SyntaxErr,
+            u'all, /*1*/': xml.dom.SyntaxErr,
+            u'all and (color),': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests, att='_setMediaText')
 
