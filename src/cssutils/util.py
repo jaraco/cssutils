@@ -257,7 +257,10 @@ class Base(object):
         - removes any \ (TODO: check for escapes like \65)
           so for x=="c\olor\" return "color"
         """
-        return x.replace(u'\\', u'').lower()
+        if x:
+            return x.replace(u'\\', u'').lower()
+        else:
+            return x
 
     def _checkReadonly(self):
         "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
