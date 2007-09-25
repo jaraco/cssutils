@@ -251,11 +251,11 @@ class Base(object):
     @staticmethod
     def _normalize(x):
         """
-        normalizes x namely replaces any \ with the empty string
-        so for x=="c\olor\" return "color"
+        normalizes x namely:
 
-        used in Token for normalized value and CSSStyleDeclaration
-        currently
+        - lowercase
+        - removes any \ (TODO: check for escapes like \65)
+          so for x=="c\olor\" return "color"
         """
         return x.replace(u'\\', u'').lower()
 
