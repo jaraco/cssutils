@@ -5,8 +5,7 @@ __all__ = ['CSSRuleList']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 class CSSRuleList(list):
     """
@@ -25,13 +24,11 @@ class CSSRuleList(list):
         The number of CSSRules in the list. The range of valid child rule
         indices is 0 to length-1 inclusive.
     """
-
     def _getLength(self):
         return len(self)
 
     length = property(_getLength,
         doc="(DOM) The number of CSSRules in the list.")
-
 
     def item(self, index):
         """
@@ -48,4 +45,3 @@ class CSSRuleList(list):
             return self[index]
         except IndexError:
             return None
-
