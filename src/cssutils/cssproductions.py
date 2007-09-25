@@ -29,9 +29,12 @@ MACROS = {
     'nmchar': r'[-_a-zA-Z0-9]|{nonascii}|{escape}',
 
     'num': r'[0-9]*\.[0-9]+|[0-9]+', #r'[-]?\d+|[-]?\d*\.\d+',
-    'string':  r'''\'({stringchar}|\")*\'|\"({stringchar}|\')*\"''',
+    'string':  r"""\'({stringchar}|\")*\'""" + "|" + '''\"({stringchar}|\')*\"''',
     'stringchar':  r'{urlchar}| |\\{nl}',
-    'urlchar':  r'[\x09\x21\x23-\x26\x27-\x7E]|{nonascii}|{escape}',
+
+    # urlchar  ::= [#x9#x21#x23-#x26#x27-#x7E] | nonascii | escape
+    # 0x27 is "'" which should not be in here...
+    'urlchar':  r'[\x09\x21\x23-\x26\x28-\x7E]|{nonascii}|{escape}',
 
     # from CSS2.1
     'invalid': r'{invalid1}|{invalid2}',
