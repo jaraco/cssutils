@@ -7,7 +7,6 @@ import xml.dom
 import basetest
 import cssutils
 
-
 class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
 
     def setUp(self):
@@ -31,7 +30,6 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
     def test_parseString(self):
         "CSSStyleDeclaration parseString()"
         # error but parse
-
         tests = {
             # property names are caseinsensitive
             u'TOP:0': u'top: 0',
@@ -205,29 +203,29 @@ color: green;''': 'color: green;\nvoice-family: inherit'
         s.setProperty(u'border', '1px  solid  green')
         self.assertEqual(u'1px solid green', s.getPropertyValue('border'))
 
-    def test_getSameNamePropertyList(self):
-        "CSSStyleDeclaration.getSameNamePropertyList()"
-        s = cssutils.css.CSSStyleDeclaration(cssText='color: red')
-        pl = s.getSameNamePropertyList('color')
-        self.assertEqual('color', pl.name)
-        self.assertEqual(1, len(pl))
-        self.assertEqual(0, pl._currentIndex())
-
-        s.setProperty('C\olor', 'green', '!important', overwrite=False)
-        self.assertEqual('color', pl.name)
-        self.assertEqual(2, len(pl))
-        self.assertEqual(1, pl._currentIndex())
-##        self.assertEqual(
-##            '[<Property> color: red , <Property> c\\olor: green !important]',
-##            str(pl))
-
-        s.setProperty('COLOR', 'blue', overwrite=False)
-        self.assertEqual('color', pl.name)
-        self.assertEqual(3, len(pl))
-        self.assertEqual(1, pl._currentIndex())
-##        self.assertEqual(
-##            '[<Property> color: red , <Property> c\\olor: green !important, <Property> color: blue ]',
-##            str(pl))
+#    def test_getSameNamePropertyList(self):
+#        "CSSStyleDeclaration.getSameNamePropertyList()"
+#        s = cssutils.css.CSSStyleDeclaration(cssText='color: red')
+#        pl = s.getSameNamePropertyList('color')
+#        self.assertEqual('color', pl.name)
+#        self.assertEqual(1, len(pl))
+#        self.assertEqual(0, pl._currentIndex())
+#
+#        s.setProperty('C\olor', 'green', '!important', overwrite=False)
+#        self.assertEqual('color', pl.name)
+#        self.assertEqual(2, len(pl))
+#        self.assertEqual(1, pl._currentIndex())
+###        self.assertEqual(
+###            '[<Property> color: red , <Property> c\\olor: green !important]',
+###            str(pl))
+#
+#        s.setProperty('COLOR', 'blue', overwrite=False)
+#        self.assertEqual('color', pl.name)
+#        self.assertEqual(3, len(pl))
+#        self.assertEqual(1, pl._currentIndex())
+###        self.assertEqual(
+###            '[<Property> color: red , <Property> c\\olor: green !important, <Property> color: blue ]',
+###            str(pl))
 
     def test_item(self):
         "CSSStyleDeclaration.item()"
@@ -265,24 +263,24 @@ color: green;''': 'color: green;\nvoice-family: inherit'
         pl = s.getSameNamePropertyList('color')
         self.assertEqual(1, len(pl))
 
-        # append value
-        s.setProperty('color', 'blue', overwrite=False)
-        self.assertEqual(2, s.length)
-        self.assertEqual('color', s.item(0))
-        self.assertEqual('top', s.item(1))
-        # new value is not important
-        self.assertEqual('green', s.getPropertyValue('color'))
-        pl = s.getSameNamePropertyList('color')
-        self.assertEqual(2, len(pl))
-
-        # overwrite
-        s.setProperty('color', 'red', overwrite=True)
-        self.assertEqual(2, s.length)
-        self.assertEqual('color', s.item(0))
-        self.assertEqual('top', s.item(1))
-        self.assertEqual('red', s.getPropertyValue('color'))
-        pl = s.getSameNamePropertyList('color')
-        self.assertEqual(1, len(pl))
+#        # append value
+#        s.setProperty('color', 'blue', overwrite=False)
+#        self.assertEqual(2, s.length)
+#        self.assertEqual('color', s.item(0))
+#        self.assertEqual('top', s.item(1))
+#        # new value is not important
+#        self.assertEqual('green', s.getPropertyValue('color'))
+#        pl = s.getSameNamePropertyList('color')
+#        self.assertEqual(2, len(pl))
+#
+#        # overwrite
+#        s.setProperty('color', 'red', overwrite=True)
+#        self.assertEqual(2, s.length)
+#        self.assertEqual('color', s.item(0))
+#        self.assertEqual('top', s.item(1))
+#        self.assertEqual('red', s.getPropertyValue('color'))
+#        pl = s.getSameNamePropertyList('color')
+#        self.assertEqual(1, len(pl))
 
     def test_setProperty(self):
         "CSSStyleDeclaration.setProperty()"
@@ -297,9 +295,9 @@ color: green;''': 'color: green;\nvoice-family: inherit'
         # case insensitive
         s.setProperty('TOP', '0', '!IMPORTANT')
         self.assertEqual('0', s.getPropertyValue('top'))
-        self.assertEqual('!important', s.getPropertyPriority('top'))
+        self.assertEqual('!IMPORTANT', s.getPropertyPriority('top'))
         self.assertEqual('0', s.getPropertyValue('top'))
-        self.assertEqual('!important', s.getPropertyPriority('top'))
+        self.assertEqual('!IMPORTANT', s.getPropertyPriority('top'))
 
         tests = {
             (u'left', u'0px', u''): u'left: 0px',
@@ -373,29 +371,29 @@ color: green;''': 'color: green;\nvoice-family: inherit'
             '''left: 1px;\nunknown: red''', s.cssText)
 
     def test_reprANDstr(self):
-        "CSSStyleDeclaration.__repr__(), .__str__()"        
+        "CSSStyleDeclaration.__repr__(), .__str__()"
         s = cssutils.css.CSSStyleDeclaration(cssText='a:1;b:2')
-        
+
         self.assert_("2" in str(s)) # length
 
         s2 = eval(repr(s))
         self.assert_(isinstance(s2, s.__class__))
 
 
-class SameNamePropertyListTestCase(basetest.BaseTestCase):
-    
-    def test_reprANDstr(self):
-        "SameNamePropertyList.__repr__(), .__str__()"
-        name='test'
-        
-        s = cssutils.css.SameNamePropertyList(name=name)
-        
-        self.assert_(name in str(s))
+#class SameNamePropertyListTestCase(basetest.BaseTestCase):
+#
+#    def test_reprANDstr(self):
+#        "SameNamePropertyList.__repr__(), .__str__()"
+#        name='test'
+#
+#        s = cssutils.css.SameNamePropertyList(name=name)
+#
+#        self.assert_(name in str(s))
+#
+#        s2 = eval(repr(s))
+#        self.assert_(isinstance(s2, s.__class__))
+#        self.assert_(name == s2.name)
 
-        s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
-        self.assert_(name == s2.name)
-        
 
 if __name__ == '__main__':
     import unittest
