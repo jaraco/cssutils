@@ -51,6 +51,8 @@ class Tokenizer(object):
             productions = PRODUCTIONS
         self.tokenmatches = self._compile_productions(
                 self._expand_macros(macros, productions))
+        self.commentmatcher = [x[1] for x in self.tokenmatches if x[0] == 'COMMENT'][0]
+        self.urimatcher = [x[1] for x in self.tokenmatches if x[0] == 'URI'][0]
 
     def _expand_macros(self, macros, productions):
         """returns macro expanded productions, order of productions is kept"""
@@ -88,7 +90,6 @@ class Tokenizer(object):
             linesep = os.linesep
         line = col = 1
 
-        commentmatcher = [x[1] for x in self.tokenmatches if x[0] == 'COMMENT'][0]
         tokens = []
         while text:
             for name, matcher in self.tokenmatches:
@@ -97,7 +98,7 @@ class Tokenizer(object):
                     # after all tokens except CHAR have been tested
                     # test for incomplete comment
                     possiblecomment = '%s*/' % text
-                    match = commentmatcher(possiblecomment)
+                    match = self.commentmatcher(possiblecomment)
                     if match:
                         yield ('COMMENT', possiblecomment, line, col)
                         text = None
@@ -108,10 +109,26 @@ class Tokenizer(object):
                 if match:
                     found = match.group(0)
 
-                    if fullsheet and 'INVALID' == name:
-                        # if parsed INVALID is fixed to valid STRING
-                        name = 'STRING'
-                        found = '%s%s' % (found, found[0])
+                    if fullsheet:
+                        # incomplete STRING or URI?
+                        if 'INVALID' == name:
+                            # INVALID is fixed to valid STRING
+                            name = 'STRING'
+                            found = '%s%s' % (found, found[0])
+
+                        elif 'FUNCTION' == name:
+                            f = found.replace('\\', '')
+                            if f.startswith(u'url('):
+                                # "url(" is literaland my not be URL( but u\\rl(
+                                # FUNCTION url( is fixed to URI
+                                # FUNCTION production MUST BE after URI production!
+                                for end in (u"')", u'")', u')'):
+                                    possibleuri = '%s%s' % (text, end)
+                                    match = self.urimatcher(possibleuri)
+                                    if match:
+                                        name = 'URI'
+                                        found = match.group(0)
+                                        break
 
                     yield (name, found, line, col)
 
