@@ -16,14 +16,12 @@ currently implemented
     - CSSUnkownRule
     - CSSStyleDeclaration
     - CSS2Properties
-
-in progress
     - CSSValue
     - CSSPrimitiveValue
     - CSSValueList
 
 todo
-    - value classes
+    - RGBColor, Rect, Counter
 """
 __all__ = [
     'CSSStyleSheet',
