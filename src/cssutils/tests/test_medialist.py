@@ -54,13 +54,13 @@ class MediaListTestCase(basetest.BaseTestCase):
         # automatic del and append!
         ml.appendMedium(u'SCREEN')
         self.assertEqual(2, ml.length)
-        self.assertEqual(u'print, screen', ml.mediaText)
+        self.assertEqual(u'print, SCREEN', ml.mediaText)
 
         # append invalid MediaQuery
         mq = cssutils.stylesheets.MediaQuery()
         ml.appendMedium(mq)
         self.assertEqual(2, ml.length)
-        self.assertEqual(u'print, screen', ml.mediaText)
+        self.assertEqual(u'print, SCREEN', ml.mediaText)
 
     def test_appendAll(self):
         "MediaList.append() 2"
@@ -116,8 +116,8 @@ class MediaListTestCase(basetest.BaseTestCase):
         "MediaList.mediaText 2"
         tests = {
             u'': u'all',
-            u'ALL': u'all',
-            u'Tv': u'tv',
+            u'ALL': u'ALL',
+            u'Tv': u'Tv',
             u'all': None,
             u'all, handheld': None,
             u'tv': None,
@@ -140,6 +140,7 @@ class MediaListTestCase(basetest.BaseTestCase):
             u'all ,': xml.dom.SyntaxErr,
             u'all, /*1*/': xml.dom.SyntaxErr,
             u'all and (color),': xml.dom.SyntaxErr,
+            u'all tv, print': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests, att='_setMediaText')
 
