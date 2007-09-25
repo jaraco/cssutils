@@ -100,21 +100,19 @@ class MediaQuery(cssutils.util.Base):
         """
         self._checkReadonly()
         tokenizer = self._tokenize2(mediaText)
-
         if not tokenizer:
             self._log.error(u'MediaQuery: No MediaText given.')
         else:
-            # expected: only|not or mediatype, mediatype, feature, and
-            newseq = []
             # for closures: must be a mutable
             new = {'mediatype': None,
                    'valid': True }
 
             def _ident_or_dim(expected, seq, token, tokenizer=None):
                 # only|not or mediatype or and
-                val = self._tokenvalue(token).lower() # ident always lowercase
+                val = self._tokenvalue(token)
+                nval = self._normalize(val)
                 if expected.endswith('mediatype'):
-                    if val in (u'only', u'not'):
+                    if nval in (u'only', u'not'):
                         # only or not
                         seq.append(val)
                         return 'mediatype'
@@ -123,7 +121,7 @@ class MediaQuery(cssutils.util.Base):
                         new['mediatype'] = val
                         seq.append(val)
                         return 'and'
-                elif expected.startswith('and'):
+                elif 'and' == nval and expected.startswith('and'):
                     seq.append(u'and')
                     return 'feature'
                 else:
@@ -148,7 +146,8 @@ class MediaQuery(cssutils.util.Base):
                         val, token)
                     return expected
 
-            # main loop
+            # expected: only|not or mediatype, mediatype, feature, and
+            newseq = []
             valid, expected = self._parse(expected='only|not or mediatype',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'IDENT': _ident_or_dim, # e.g. "print"
@@ -194,14 +193,14 @@ class MediaQuery(cssutils.util.Base):
           Raised if this media query is readonly.
         """
         self._checkReadonly()
+        nmediaType = self._normalize(mediaType)
 
-        if not MediaQuery.__mediaTypeMatch(mediaType):
+        if not MediaQuery.__mediaTypeMatch(nmediaType):
             self._log.error(
                 u'MediaQuery: Syntax Error in media type "%s".' % mediaType,
                 error=xml.dom.SyntaxErr)
         else:
-            mediaType = mediaType.lower()
-            if mediaType not in MediaQuery.MEDIA_TYPES:
+            if nmediaType not in MediaQuery.MEDIA_TYPES:
                 self._log.error(
                     u'MediaQuery: Unknown media type "%s".' % mediaType,
                     error=xml.dom.InvalidCharacterErr)
@@ -212,7 +211,7 @@ class MediaQuery(cssutils.util.Base):
             # update seq
             for i, x in enumerate(self.seq):
                 if isinstance(x, basestring):
-                    if x in (u'only', u'not'):
+                    if self._normalize(x) in (u'only', u'not'):
                         continue
                     else:
                         self.seq[i] = mediaType
