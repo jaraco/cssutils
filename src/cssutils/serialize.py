@@ -11,6 +11,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+import re
 import cssutils
 
 class Preferences(object):
@@ -68,6 +69,9 @@ class CSSSerializer(object):
     To use your own serializing method the easiest is to subclass CSS
     Serializer and overwrite the methods you like to customize.
     """
+    __notinurimatcher = re.compile(ur'''.*?[\)\s\;]''', re.U).match
+    # chars not in URI without quotes around
+
     def __init__(self, prefs=None):
         """
         prefs
@@ -104,7 +108,7 @@ class CSSSerializer(object):
         """
         escapes delim charaters in string s with \delim
         """
-        return s.replace(delim, u'\%s' % delim)
+        return s.replace(delim, u'\\%s' % delim)
 
     def _getatkeyword(self, rule, default):
         """
@@ -139,10 +143,14 @@ class CSSSerializer(object):
                 for line in text.split(self.prefs.lineSeparator)]
         )
 
-    def _do_unknown(self, rule):
-        # TODO: REMOVE???
-        raise NotImplementedError(
-            "Serializer not implemented for %s" % rule)
+    def _uri(self, uri):
+        """
+        returns uri enclosed in " if necessary
+        """
+        if CSSSerializer.__notinurimatcher(uri):
+            return '"%s"' % uri
+        else:
+            return uri
 
     def do_stylesheets_mediaquery(self, mediaquery):
         """
@@ -222,12 +230,12 @@ class CSSSerializer(object):
         for part in rule.seq:
             if rule.href == part:
                 if self.prefs.importHrefFormat == 'uri':
-                    out.append(u'url(%s)' % part)
+                    out.append(u'url(%s)' % self._uri(part))
                 elif self.prefs.importHrefFormat == 'string' or \
                    rule.hreftype == 'string':
                     out.append(u'"%s"' % self._escapestring(part))
                 else:
-                    out.append(u'url(%s)' % part)
+                    out.append(u'url(%s)' % self._uri(part))
             elif isinstance(
                   part, cssutils.stylesheets.medialist.MediaList):
                 mediaText = self.do_stylesheets_medialist(part).strip()
