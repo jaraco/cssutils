@@ -78,8 +78,7 @@ class CSSValue(cssutils.util.Base):
         self.valid = False
         self._valueValue = u''
         self._linetoken = None # used for line report only
-
-        self._propertyName = _propertyName
+        self._propertyName = self._normalize(_propertyName)
 
         if cssText is not None: # may be 0
             if type(cssText) in (int, float):
