@@ -34,17 +34,75 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSImportRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@import')
 
+    def test_cssText(self):
+        "CSSImportRule.cssText"
+        tests = {
+            u'''@import "str";''': None,
+            u'''@\\import "str";''': u'''@import "str";''',
+            u'''@IMPORT "str";''': u'''@import "str";''',
+
+            u'''@import 'str';''': u'''@import "str";''',
+            u'''@import 'str' ;''': u'''@import "str";''',
+            u'''@import "str";''': None,
+            u'''@import "str"  ;''': u'''@import "str";''',
+
+            u'''@import /*1*/"str"/*2*/;''': None,
+            u'''@import/*1*/ "str" /*2*/ ;''':
+                u'''@import /*1*/"str"/*2*/;''',
+
+            u'''@import "str";''': None,
+            u'''@import "str" tv, print;''': None,
+            u'''@import "str" tv, print, all;''': u'''@import "str";''',
+            u'''@import "str" handheld, all;''': u'''@import "str" all, handheld;''',
+            u'''@import "str" all, handheld;''': None,
+
+            u'''@import "str" not tv;''': None,
+            u'''@import "str" only tv;''': None,
+            u'''@import "str" only tv and (color: 2);''': None,
+
+            u'''@import url(x.css);''': None,
+            }
+        self.do_equal_r(tests) # set cssText
+        tests.update({
+            u'@import "x.css" tv': '@import "x.css" tv;',
+            u'@import "x.css"': '@import "x.css";', # no ;
+            u"@import 'x.css'": '@import "x.css";', # no ;
+            u'@import url(x.css)': '@import url(x.css);', # no ;
+            u'@import "x;': '@import "x;";', # no "!
+            })
+        self.do_equal_p(tests) # parse
+
+        tests = {
+            u'''@import;''': xml.dom.SyntaxErr,
+            u'''@import all;''': xml.dom.SyntaxErr,
+            u'''@import;''': xml.dom.SyntaxErr,
+            u'''@import x";''': xml.dom.SyntaxErr,
+            u'''@import "str" ,all;''': xml.dom.SyntaxErr,
+            u'''@import "str" all,;''': xml.dom.SyntaxErr,
+            u'''@import "str" all tv;''': xml.dom.SyntaxErr,
+            }
+        self.do_raise_p(tests) # parse
+        tests.update({
+            u'@import "x.css"': xml.dom.SyntaxErr,
+            u"@import 'x.css'": xml.dom.SyntaxErr,
+            u'@import url(x.css)': xml.dom.SyntaxErr,
+            u'@import "x.css" tv': xml.dom.SyntaxErr,
+            u'@import "x;': xml.dom.SyntaxErr,
+            u'''@import url("x);''': xml.dom.SyntaxErr,
+            })
+        self.do_raise_r(tests) # set cssText
+
     # TODO
     def test_incomplete(self):
         "CSSImportRule (incomplete)"
         tests = {
             u'@import "x.css': u'@import "x.css";',
             u"@import 'x": u'@import "x";',
-#            u"@import url(x": u'@import url(x);',
-#            u"@import url('x": u'@import url(\'x\');',
-#            u'@import url("x;': u'@import url("x;");',
-#            u'@import url("x ': u'@import url("x ");',
-#            u'@import url(x ': u'@import url(x);',
+            u"@import url(x": u'@import url(x);',
+            u"@import url('x": u'@import url(x);',
+            u'@import url("x;': u'@import url("x;");',
+            u'@import url("x ': u'@import url("x ");',
+            u'@import url(x ': u'@import url(x);',
         }
         self.do_equal_p(tests) # parse
 
@@ -129,60 +187,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         # set mediaText instead
         self.r.media.mediaText = 'print'
         self.assertEqual(u'@import url(x) print;', self.r.cssText)
-
-    def test_cssText1(self):
-        "CSSImportRule.cssText 1"
-        tests = {
-            u'''@import "str";''': None,
-            u'''@\\import "str";''': u'''@import "str";''',
-            u'''@IMPORT "str";''': u'''@import "str";''',
-
-            u'''@import 'str';''': u'''@import "str";''',
-            u'''@import 'str' ;''': u'''@import "str";''',
-            u'''@import "str";''': None,
-            u'''@import "str"  ;''': u'''@import "str";''',
-
-            u'''@import /*1*/"str"/*2*/;''': None,
-            u'''@import/*1*/ "str" /*2*/ ;''':
-                u'''@import /*1*/"str"/*2*/;''',
-
-            u'''@import "str";''': None,
-            u'''@import "str" tv, print;''': None,
-            u'''@import "str" tv, print, all;''': u'''@import "str";''',
-            u'''@import "str" handheld, all;''': u'''@import "str" all, handheld;''',
-            u'''@import "str" all, handheld;''': None,
-
-            u'''@import url(x.css);''': None,
-            }
-        self.do_equal_r(tests) # set cssText
-        tests.update({
-            u'@import "x.css" tv': '@import "x.css" tv;',
-            u'@import "x.css"': '@import "x.css";', # no ;
-            u"@import 'x.css'": '@import "x.css";', # no ;
-            u'@import url(x.css)': '@import url(x.css);', # no ;
-            u'@import "x;': '@import "x;";', # no "!
-            })
-        self.do_equal_p(tests) # parse
-
-        tests = {
-            u'''@import;''': xml.dom.SyntaxErr,
-            u'''@import all;''': xml.dom.SyntaxErr,
-            u'''@import;''': xml.dom.SyntaxErr,
-            u'''@import x";''': xml.dom.SyntaxErr,
-            u'''@import "str" ,all;''': xml.dom.SyntaxErr,
-            u'''@import "str" all,;''': xml.dom.SyntaxErr,
-            u'''@import "str" all tv;''': xml.dom.SyntaxErr,
-            }
-        self.do_raise_p(tests) # parse
-        tests.update({
-            u'@import "x.css"': xml.dom.SyntaxErr,
-            u"@import 'x.css'": xml.dom.SyntaxErr,
-            u'@import url(x.css)': xml.dom.SyntaxErr,
-            u'@import "x.css" tv': xml.dom.SyntaxErr,
-            u'@import "x;': xml.dom.SyntaxErr,
-            u'''@import url("x);''': xml.dom.SyntaxErr,
-            })
-        self.do_raise_r(tests) # set cssText
 
     def test_reprANDstr(self):
         "CSSImportRule.__repr__(), .__str__()"
