@@ -433,36 +433,40 @@ class CSSSerializer(object):
             if separator is None:
                 separator = self.prefs.lineSeparator
 
-            out = []
-            for (i, part) in enumerate(style.seq):
-                # CSSComment
-                if isinstance(part,
-                  cssutils.css.csscomment.CSSComment):
-                    if self.prefs.keepComments:
-                        out.append(self.do_CSSComment(part))
-                        out.append(separator)
-
-                # PropertySimilarNameList
-                elif isinstance(part,
-                  cssutils.css.cssstyledeclaration.SameNamePropertyList):
-                    # only last valid Property
-                    if not self.prefs.keepAllProperties:
-                        _index = part._currentIndex()
-                        out.append(self.do_Property(part[_index]))
-                        if not (self.prefs.omitLastSemicolon and i==len(style.seq)-1):
-                            out.append(u';')
-                        out.append(separator)
+            if self.prefs.keepAllProperties:
+                parts = style.seq
+            else:
+                # find distinct names
+                nnames = set()
+                for x in style.seq:
+                    if isinstance(x, cssutils.css.Property):
+                        nnames.add(x.normalname)
+                # filter list
+                parts = []
+                for x in reversed(style.seq):
+                    if isinstance(x, cssutils.css.Property):
+                        if x.normalname in nnames:
+                            parts.append(x)
+                            nnames.remove(x.normalname)
                     else:
-                        # or all Properties
-                        for (j, p) in enumerate(part):
-                            out.append(self.do_Property(p))
-                            if not (self.prefs.omitLastSemicolon and
-                                    i==len(style.seq)-1 and
-                                    j==len(part)-1):
-                                out.append(u';')
-                            out.append(separator)
-                # other?
+                        parts.append(x)
+                parts.reverse()
+
+            out = []
+            for (i, part) in enumerate(parts):
+                if isinstance(part, cssutils.css.CSSComment):
+                    # CSSComment
+                    if self.prefs.keepComments:
+                        out.append(part.cssText)
+                        out.append(separator)
+                elif isinstance(part, cssutils.css.Property):
+                    # PropertySimilarNameList
+                    out.append(self.do_Property(part))
+                    if not (self.prefs.omitLastSemicolon and i==len(parts)-1):
+                        out.append(u';')
+                    out.append(separator)
                 else:
+                    # other?
                     out.append(part)
 
             if out and out[-1] == separator:
