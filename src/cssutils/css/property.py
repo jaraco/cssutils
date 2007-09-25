@@ -2,7 +2,7 @@
 
 Internal use only, may be removed in the future!
 """
-__all__ = []
+__all__ = ['Property']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
@@ -95,6 +95,7 @@ class Property(cssutils.util.Base):
             self.name = name
         else:
             self._name = u''
+            self.normalname = u''
         if value:
             self.cssValue = value
         else:
@@ -319,7 +320,7 @@ class Property(cssutils.util.Base):
         doc="(cssutils) Priority of this property")
 
     def __repr__(self):
-        return "cssutils.css.property.%s(name=%r, value=%r, priority=%r)" % (
+        return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
                 self.__class__.__name__,
                 self.name, self.cssValue.cssText, self.priority)
 
