@@ -39,7 +39,7 @@ class CSSRule(cssutils.util.Base):
         contains sequence of parts of the rule including comments but
         excluding @KEYWORD and braces
     typeString: string
-        A string name of the type of this rule, e.g. 'STYLE_RULE'. Mainly 
+        A string name of the type of this rule, e.g. 'STYLE_RULE'. Mainly
         useful for debugging
     valid:
         if this rule is valid
@@ -79,14 +79,11 @@ class CSSRule(cssutils.util.Base):
 
     def __init__(self, readonly=False):
         super(CSSRule, self).__init__()
-
         self.parentRule = None
         self.parentStyleSheet = None
-
         self.seq = []
         self.valid = True
-
-        # must be set after initialization of #inheriting rule
+        # must be set after initialization of #inheriting rule is done
         self._readonly = False
 
     def _getCssText(self):
@@ -119,5 +116,5 @@ class CSSRule(cssutils.util.Base):
 
     def _getTypeString(self):
         return CSSRule._typestrings[self.type]
-    
-    typeString = property(_getTypeString, doc="Name of this rules type.")  
+
+    typeString = property(_getTypeString, doc="Name of this rules type.")
