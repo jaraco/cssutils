@@ -114,7 +114,7 @@ class MediaList(cssutils.util.Base, list):
                 else:
                     valid = False
                     self._log.error(u'MediaList: Invalid MediaQuery: %s' %
-                                    ''.join(mqtokens))
+                                    self._valuestr(tokens))
             else:
                 break
 
