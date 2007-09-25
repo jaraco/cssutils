@@ -168,20 +168,13 @@ class CSSNamespaceRule(cssrule.CSSRule):
           is unparsable.
         """
         super(CSSNamespaceRule, self)._setCssText(cssText)
-        valid = True
         tokenizer = self._tokenize2(cssText)
-
         attoken = self._nexttoken(tokenizer, None)
-
         if not attoken or self._type(attoken) != self._prods.NAMESPACE_SYM:
-            valid = False
             self._log.error(u'CSSNamespaceRule: No CSSNamespaceRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
-
         else:
-            # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
-            newseq = []
             # for closures: must be a mutable
             new = {
                    'keyword': self._tokenvalue(attoken),
@@ -245,7 +238,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
                         u'CSSNamespaceRule: Unexpected char.', token)
                     return expected
 
-            # main loop
+            # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
+            newseq = []
             valid, expected = self._parse(expected='prefix or uri',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'IDENT': _ident,

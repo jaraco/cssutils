@@ -158,21 +158,13 @@ class CSSImportRule(cssrule.CSSRule):
           is unparsable.
         """
         super(CSSImportRule, self)._setCssText(cssText)
-        valid = True
         tokenizer = self._tokenize2(cssText)
-
         attoken = self._nexttoken(tokenizer, None)
-
         if not attoken or self._type(attoken) != self._prods.IMPORT_SYM:
-            valid = False
             self._log.error(u'CSSImportRule: No CSSImportRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
-
         else:
-            # import : IMPORT_SYM S* [STRING|URI]
-            #            S* [ medium [ ',' S* medium]* ]? ';' S*  ;
-            newseq = []
             # for closures: must be a mutable
             new = {
                    'keyword': self._tokenvalue(attoken),
@@ -275,7 +267,9 @@ class CSSImportRule(cssrule.CSSRule):
                         u'CSSImportRule: Unexpected char.', token)
                     return expected
 
-            # main loop
+            # import : IMPORT_SYM S* [STRING|URI]
+            #            S* [ medium [ ',' S* medium]* ]? ';' S*  ;
+            newseq = []
             valid, expected = self._parse(expected='href',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'STRING': _string,
@@ -306,87 +300,6 @@ class CSSImportRule(cssrule.CSSRule):
                 self.hreftype = new['hreftype']
                 self._media = new['media']
                 self.seq = newseq
-
-
-
-            return
-
-
-
-
-
-
-
-
-            newatkeyword = self._tokenvalue(tokenizer[0])
-
-            newseq = []
-            newhref = None
-            newhreftype = None
-            newmedia = cssutils.stylesheets.MediaList()
-
-            mediatokens = []
-            expected = 'href' # href medialist EOF
-            for i in range(1, len(tokens)):
-                t = tokens[i]
-                typ, val = self._type(t), self._tokenvalue(t)
-
-                if self._prods.EOF == typ:
-                    expected = 'EOF'
-
-                elif self._prods.S == typ: # ignore
-                    pass
-
-                elif self._prods.COMMENT == typ:
-                    if 'href' == expected: # before href
-                        newseq.append(cssutils.css.CSSComment(t))
-                    else: # after href
-                        mediatokens.append(t)
-
-                elif 'href' == expected and \
-                     typ in (self._prods.URI, self._prods.STRING):
-                    if typ == self._prods.URI:
-                        newhref = val[4:-1].strip() # url(href)
-                        newhreftype = 'uri'
-                    else:
-                        newhref = val[1:-1].strip() # "href" or 'href'
-                        newhreftype = 'string'
-                    newseq.append(newhref)
-                    expected = 'medialist'
-
-                elif u';' == val:
-                    if 'medialist' != expected: # normal end
-                        valid = False
-                        self._log.error(
-                            u'CSSImportRule: Syntax Error, no href found.', t)
-                    expected = None
-                    break
-
-                elif 'medialist' == expected:
-                    mediatokens.append(t)
-
-                else:
-                    valid = False
-                    self._log.error(u'CSSImportRule: Syntax Error.', t)
-
-            if expected and expected != 'EOF':
-                valid = False
-                self._log.error(u'CSSImportRule: Syntax Error, no ";" found: %s' %
-                          self._valuestr(cssText))
-
-            if mediatokens:
-                newmedia.mediaText = mediatokens
-                if not newmedia.valid:
-                    valid = False
-                newseq.append(newmedia)
-
-        self.valid = valid
-        if valid:
-            self.atkeyword = newatkeyword
-            self.href = newhref
-            self.hreftype = newhreftype
-            self._media = newmedia
-            self.seq = newseq
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
