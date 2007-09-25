@@ -19,16 +19,27 @@ class MediaQueryTestCase(basetest.BaseTestCase):
     def test_mediaText(self):
         "MediaQuery.mediaText"
         tests = {
-            u'all': u'all',
-            # TODO: more with and ...
+            u'all': None,
+            u'a\\ll': None,
+            u'not tv': None,
+            u'n\\ot t\\v': None,
+            u'only tv': None,
+            u'\\only \\tv': None,
+            u'PRINT': None,
+            u'NOT PRINT': None,
+            u'ONLY PRINT': None,
+            u'tv and (color)': None,
+            u'not tv and (color)': None,
+            u'only tv and (color)': None,
             }
         self.do_equal_r(tests, att='mediaText')
 
         tests = {
             u'': xml.dom.SyntaxErr,
-            u'3d': xml.dom.InvalidCharacterErr, # a dimension
+            u'two values': xml.dom.SyntaxErr,
+            u'or even three': xml.dom.SyntaxErr,
             u'print and(color)': xml.dom.SyntaxErr, # a function
-            ## TODO: u'all tv': xml.dom.SyntaxErr, # a function
+            u'3d': xml.dom.InvalidCharacterErr, # a dimension
             }
         self.do_raise_r(tests, att='_setMediaText')
 
@@ -42,7 +53,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             mq.mediaType = mt
             self.assertEqual(mq.mediaType, mt)
             mq.mediaType = mt.upper()
-            self.assertEqual(mq.mediaType, mt)
+            self.assertEqual(mq.mediaType, mt.upper())
 
         mt = u'3D-UNKOwn-MEDIAtype0123'
         #mq.mediaType = mt
