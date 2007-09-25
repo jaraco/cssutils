@@ -55,7 +55,6 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssutils
 from cssproperties import CSS2Properties
 from property import Property
@@ -123,14 +122,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             defaults to False
         """
         super(CSSStyleDeclaration, self).__init__()
-
         self.valid = True
-
         self.seq = []
         self.parentRule = parentRule
         self.cssText = cssText
         self._readonly = readonly
-
 
     def __setattr__(self, n, v):
         """
@@ -153,7 +149,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 % n)
 
     def __iter__(self):
-        "CSSStyleDeclaration is iterable"
+        "CSSStyleDeclaration is iterable, see __items()"
         return CSSStyleDeclaration.__items(self)
 
     def __items(self):
@@ -162,14 +158,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         returns in contrast to calling item(index) property objects
         """
-        props = []
-        for x in self.seq:
-            if isinstance(x, SameNamePropertyList):
-                for y in x:
-                    props.append(y)
-        le = len(props)
-        for i in range (0, le):
-            yield props[i]
+        for property in self.seq:
+            yield property
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
@@ -210,13 +200,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             >>> style.setProperty('font-style', 'italic', '!important')
 
         """
-        if 'background-image' == CSSName:
+        self.setProperty(CSSName, value)
+        # TODO:
+#        if 'background-image' == CSSName:
 #            for p in self._properties():
 #                if p.name == 'background':
 #                    print p
-            self.setProperty(CSSName, value)
-        else:
-            self.setProperty(CSSName, value)
+#            self.setProperty(CSSName, value)
+#        else:
+#            self.setProperty(CSSName, value)
 
     def _delP(self, CSSName):
         """
@@ -232,7 +224,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         """
         self.removeProperty(CSSName)
-
 
     def _getCssText(self):
         """
@@ -254,92 +245,31 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         """
-        def ignoreuptopropend(i, tokens):
-            "returns position of ending ;"
-            ignoredtokens, endi = self._tokensupto(
-                    tokens[i:], propertypriorityendonly=True)
-            if ignoredtokens:
-                ignored = ''.join([x.value for x in ignoredtokens])
-                self._log.error(u'CSSStyleDeclaration: Ignored: "%s".' %
-                          self._valuestr(ignoredtokens), t)
-            return endi + 1
-
         self._checkReadonly()
-        tokens = self._tokenize(cssText)
-
+        tokenizer = self._tokenize2(cssText)
+        valid = True
         newseq = []
-        i, imax = 0, len(tokens)
-        while i < imax:
-            t = tokens[i]
-            if self._ttypes.S == t.type: # ignore
-                pass
-            elif self._ttypes.COMMENT == t.type: # just add
-                newseq.append(cssutils.css.CSSComment(t))
-            else:
-                # name upto ":" (or ; -> error)
-                nametokens, endi = self._tokensupto(
-                    tokens[i:], propertynameendonly=True)
-                i += endi
-
-                shouldbecolon = nametokens.pop()
-                if shouldbecolon.value == u':': # OK: exclude ending :
-                    i += 1
-                elif shouldbecolon.value == u';': # ERROR: premature ;
-                    self._log.error(
-                        u'CSSStyleDeclaration: Incomplete Property starting here: %s.' %
-                        self._valuestr(tokens[i-1:]), t)
-                    i += 1 # exclude ending :
-                    continue
-                else: # ERROR: no :
-                    self._log.error(
-                        u'CSSStyleDeclaration: No Propertyname and/or ":" found: %s.' %
-                              self._valuestr(tokens[i:]), t)
-                    i += ignoreuptopropend(i, tokens)
-                    continue
-
-                for x in nametokens:
-                    if x.type == self._ttypes.IDENT:
-                        break
-                else: # ERROR: no name
-                    self._log.error(
-                        u'CSSStyleDeclaration: No Propertyname found: %s.'
-                        % self._valuestr(tokens[i-1:]), t)
-                    i += ignoreuptopropend(i, tokens)
-                    continue
-
-                # value upto ";" or "!important" or end
-                valuetokens, endi = self._tokensupto(
-                    tokens[i:], propertyvalueendonly=True)
-                i += endi
-                if valuetokens and \
-                   valuetokens[-1].type == self._ttypes.SEMICOLON:
-                    del valuetokens[-1] # exclude ending ;
-                    prioritytokens = None
-                elif valuetokens and \
-                     valuetokens[-1].type == self._ttypes.IMPORTANT_SYM:
-                    del valuetokens[-1] # exclude !important
-
-                    # priority upto ; or end
-                    prioritytokens, endi = self._tokensupto(
-                            tokens[i:], propertypriorityendonly=True)
-                    i += endi
-
-                    if prioritytokens and prioritytokens[-1].type == \
-                       self._ttypes.SEMICOLON:
-                        del prioritytokens[-1] # exclude ending ;
-                elif not valuetokens:
-                    self._log.error(u'CSSStyleDeclaration: No property value: %s'
-                              % self._valuestr(cssText))
-                    i += ignoreuptopropend(i, tokens)
-                    continue
+        while True:
+            # find all upto and including next ",", EOF or nothing
+            tokens = self._tokensupto2(tokenizer, semicolon=True)
+            if tokens:
+                if self._tokenvalue(tokens[-1]) == ';' or\
+                   self._type(tokens[-1]) == 'EOF':
+                    tokens.pop()
+                property = Property()
+                property.cssText = tokens
+                if property.valid:
+                    newseq.append(property)
                 else:
-                    prioritytokens = None
+                    valid = False
+                    self._log.error(u'CSSStyleDeclaration: Invalid Property: %s'
+                                    % self._valuestr(tokens))
+            else:
+                break
 
-                self.setProperty(nametokens, valuetokens, prioritytokens,
-                                 overwrite=False, _seq=newseq)
-            i += 1
-
-        self.seq = newseq
+        # no post condition
+        if valid:
+            self.seq = newseq
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the declaration\
@@ -355,14 +285,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         return cssutils.ser.do_css_CSSStyleDeclaration(self, separator)
 
-    def _getLength(self):
-        return len([x for x in self.seq if isinstance(x, SameNamePropertyList)])
-
-    length = property(_getLength,
-        doc="(DOM) the number of properties that have been explicitly set\
-        in this declaration block. The range of valid indices is 0 to\
-        length-1 inclusive.")
-
     def _getParentRule(self):
         return self._parentRule
 
@@ -373,7 +295,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         doc="(DOM) The CSS rule that contains this declaration block or\
         None if this CSSStyleDeclaration is not attached to a CSSRule.")
 
-    def getPropertyCSSValue(self, name):
+    def getPropertyCSSValue(self, name, normalize=True):
         """
         (DOM)
         Used to retrieve the object representation of the value of a CSS
@@ -410,19 +332,18 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             u'padding',
             u'pause']
 
-        normalname = self._normalize(name)
-
-        if normalname in SHORTHAND:
+        nname = self._normalize(name)
+        if nname in SHORTHAND:
             self._log.debug(
                 u'CSSValue for shorthand property "%s" should be None, this may be implemented later.' %
-                normalname, neverraise=True)
+                nname, neverraise=True)
 
-        for pl in self.seq:
-            if isinstance(pl, SameNamePropertyList) and \
-               pl.name == normalname:
-                return pl[pl._currentIndex()].cssValue
+        for property in reversed(self.seq):
+            if property.normalname == nname:
+                return property.cssValue
+        return None
 
-    def getPropertyValue(self, name):
+    def getPropertyValue(self, name, normalize=True):
         """
         (DOM)
         Used to retrieve the value of a CSS property if it has been
@@ -438,15 +359,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         for this declaration block. Returns the empty string if the
         property has not been set.
         """
-        normalname = self._normalize(name)
-
-        for pl in self.seq:
-            if isinstance(pl, SameNamePropertyList) and \
-               pl.name == normalname:
-                return pl[pl._currentIndex()].cssValue._value
+        nname = self._normalize(name)
+        for property in reversed(self.seq):
+            if property.normalname == nname:
+                return property.cssValue.cssText
         return u''
 
-    def getPropertyPriority(self, name):
+    def getPropertyPriority(self, name, normalize=True):
         """
         (DOM)
         Used to retrieve the priority of a CSS property (e.g. the
@@ -462,64 +381,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         returns a string representing the priority (e.g. "important") if
         one exists. The empty string if none exists.
         """
-        normalname = self._normalize(name)
-
-        for pl in self.seq:
-            if isinstance(pl, SameNamePropertyList) and \
-               pl.name == normalname:
-                return pl[pl._currentIndex()].priority
+        nname = self._normalize(name)
+        for property in reversed(self.seq):
+            if property.normalname == nname:
+                return property.priority
         return u''
 
-    def getSameNamePropertyList(self, name):
-        """
-        (cssutils) EXPERIMENTAL
-        Used to retrieve all properties set with this name. For cases where
-        a property is set multiple times with different values or
-        priorities for different UAs::
-
-            background: url(1.gif) fixed;
-            background: url(2.gif) scroll;
-
-        name
-            of the CSS property
-
-            The name will be normalized (lowercase, no simple escapes) so
-            "color", "COLOR" or "C\olor" are all equivalent
-
-        Returns the SameNamePropertyList object if available for the given
-        property name, else returns ``None``.
-        """
-        normalname = self._normalize(name)
-
-        for pl in self.seq:
-            if isinstance(pl, SameNamePropertyList) and \
-               pl.name == normalname:
-                return pl
-
-    def item(self, index):
-        """
-        (DOM)
-        Used to retrieve the properties that have been explicitly set in
-        this declaration block. The order of the properties retrieved using
-        this method does not have to be the order in which they were set.
-        This method can be used to iterate over all properties in this
-        declaration block.
-
-        index
-            of the property to retrieve, negative values behave like
-            negative indexes on Python lists, so -1 is the last element
-
-        returns the name of the property at this ordinal position. The
-        empty string if no property exists at this position.
-        """
-        properties = [x.name for x in self.seq
-                      if isinstance(x, SameNamePropertyList)]
-        try:
-            return properties[index]
-        except IndexError:
-            return u''
-
-    def removeProperty(self, name):
+    def removeProperty(self, name, normalize=True):
         """
         (DOM)
         Used to remove a CSS property if it has been explicitly set within
@@ -543,21 +411,16 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
           readonly.
         """
         self._checkReadonly()
-
-        normalname = self._normalize(name)
-
         r = u''
-        for i, pl in enumerate(self.seq):
-            if isinstance(pl, SameNamePropertyList) and \
-               pl.name == normalname:
-                r = pl[pl._currentIndex()].cssValue._value
-                del self.seq[i]
+        nname = self._normalize(name)
+        for i, property in enumerate(reversed(self.seq)):
+            if property.normalname == nname:
+                r = property.cssValue.cssText
+                del self.seq[len(self.seq)- 1 - i] # reversed!!!
                 break
-
         return r
 
-    def setProperty(self, name, value, priority=None, overwrite=True,
-                    _seq=None):
+    def setProperty(self, name, value, priority=None, normalize=True):
         """
         (DOM)
         Used to set a property value and priority within this declaration
@@ -572,8 +435,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             the new value of the property
         priority
             the optional priority of the property (e.g. "important")
-        _seq
-            used by self._setCssText only as in temp seq
 
         DOMException on setting
 
@@ -586,34 +447,102 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         self._checkReadonly()
 
-        if _seq is None: # seq to update
-            _seq = self.seq
-
         newp = Property(name, value, priority)
-        if newp.name and newp.cssValue:
-            newnormalname = newp.normalname
-
-            # index of pl to exchange or append to, maybe
-            index = -1
-            for i, pl in enumerate(_seq):
-                if isinstance(pl, SameNamePropertyList) and \
-                   pl.name == newnormalname:
-                    index = i
+        if not newp.valid:
+            self._log.error(u'Invalid value for this Property: %s: %s %s'
+                                    % name, value, priority)
+        else:
+            nname = self._normalize(name)
+            for property in reversed(self.seq):
+                if property.normalname == nname:
+                    property.cssValue = newp.cssValue.cssText
+                    property.priority = newp.priority
                     break
-
-            if index == -1:
-                # not yet in _seq -> append
-                newpl = SameNamePropertyList(newnormalname)
-                newpl.append(newp)
-                _seq.append(newpl)
             else:
-                if overwrite:
-                    # empty proplist and add new property
-                    del _seq[index][:]
-                    _seq[index].append(newp)
-                else:
-                    # append to pl
-                    _seq[index].append(newp)
+                self.seq.append(newp)
+
+    def getSameNamePropertyList(self, name):
+        """
+        (cssutils) EXPERIMENTAL
+        Used to retrieve all properties set with this name. For cases where
+        a property is set multiple times with different values or
+        priorities for different UAs::
+
+            background: url(1.gif) fixed;
+            background: url(2.gif) scroll;
+
+        name
+            of the CSS property
+
+            The name will be normalized (lowercase, no simple escapes) so
+            "color", "COLOR" or "C\olor" are all equivalent
+
+        TODO: CHANGED!!!!
+        Returns the SameNamePropertyList object if available for the given
+        property name, else returns ``None``.
+        """
+        nname = self._normalize(name)
+        props = []
+        for property in self.seq:
+            if property.normalname == nname:
+                props.append(property)
+        return props
+
+    def __nnames(self):
+        nnames = set()
+        for x in self.seq:
+            if isinstance(x, Property):
+                nnames.add(x.normalname)
+        return nnames
+
+    def item(self, index):
+        """
+        **NOTE**:
+        Compare to ``for property in declaration`` which works on **all**
+        properties set in this declaration and not just the effecitve ones.
+
+        (DOM)
+        Used to retrieve the properties that have been explicitly set in
+        this declaration block. The order of the properties retrieved using
+        this method does not have to be the order in which they were set.
+        This method can be used to iterate over all properties in this
+        declaration block.
+
+        index
+            of the property to retrieve, negative values behave like
+            negative indexes on Python lists, so -1 is the last element
+
+        returns the name of the property at this ordinal position. The
+        empty string if no property exists at this position.
+
+        ATTENTION:
+        Only properties with a different normalname are counted. If two
+        properties with the same normalname are present in this declaration
+        only the last set (and effectively *in style*) is used.
+
+        ``item()`` and ``length`` work on the same set here.
+        """
+        nnames = self.__nnames()
+        orderednnames = []
+        for x in reversed(self.seq):
+            nname = x.normalname
+            if isinstance(x, Property) and nname in nnames:
+                nnames.remove(nname)
+                orderednnames.append(nname)
+        orderednnames.reverse()
+        try:
+            return orderednnames[index]
+        except IndexError:
+            return u''
+
+    def _getLength(self):
+        return len(self.__nnames())
+
+    length = property(_getLength,
+        doc="(DOM) the number of distince properties that have been explicitly\
+        in this declaration block. The range of valid indices is 0 to\
+        length-1 inclusive. These are properties with the same ``normalename``\
+        only. ``item()`` and ``length`` work on the same set here.")
 
     def __repr__(self):
         return "cssutils.css.%s()" % (
