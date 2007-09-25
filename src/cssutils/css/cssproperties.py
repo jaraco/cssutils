@@ -328,7 +328,7 @@ class CSS2Properties(object):
     def _getP(self, CSSname): pass
     def _setP(self, CSSname, value): pass
     def _delP(self, CSSname): pass
-    
+
 # add list of DOMname properties to CSS2Properties
 # used for CSSStyleDeclaration to check if allowed properties
 # but somehow doubled, any better way?
@@ -350,15 +350,3 @@ def __named_property_def(DOMname):
 for DOMname in CSS2Properties._properties:
     setattr(CSS2Properties, DOMname,
         property(*__named_property_def(DOMname)))
-
-
-
-if __name__=='__main__':
-    c = CSS2Properties()
-    print CSS2Properties.color
-##    #print type(CSS2Properties.color)
-##    c.color = 'green'
-##    #print type(CSS2Properties.color), c.color
-##    print c.color
-##    del c.color
-##    #print type(CSS2Properties.color), c.color
