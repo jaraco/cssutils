@@ -68,7 +68,8 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u" '' ": [('S', u' ', 1, 1),
                  ('STRING', u"''", 1, 2),
                  ('S', u' ', 1, 4)],
-        u"'\\''": [('STRING', u"'\\''", 1, 1)],
+        #TODO: u"""'\\''""": [('STRING', u"""'\\''""", 1, 1)],
+        #TODO: u'''"\\""''': [('STRING', u'''"\\""''', 1, 1)],
         u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
         u"'\\\n\\\n\\\n'": [('STRING', u"'\\\n\\\n\\\n'", 1, 1)],
         u"'\\\f'": [('STRING', u"'\\\f'", 1, 1)],
@@ -118,6 +119,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' url( a ) ': [('S', u' ', 1, 1),
                  ('URI', u'url( a )', 1, 2),
                  ('S', u' ', 1, 10)],
+        u'ur\\l(': [('FUNCTION', u'ur\\l(', 1, 1)],
 
         # UNICODE-RANGE
 
@@ -152,6 +154,9 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' x( ': [('S', u' ', 1, 1),
                   ('FUNCTION', u'x(', 1, 2),
                   ('S', u' ', 1, 4)],
+        # only url( is a valid URI so this must be a function
+        u'URL(': [('FUNCTION', u'URL(', 1, 1)],
+        u'uRl(': [('FUNCTION', u'uRl(', 1, 1)],
 
         # INCLUDES
         u' ~= ': [('S', u' ', 1, 1),
@@ -426,7 +431,14 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
         # COMMENT incomplete
         u'/*': [('CHAR', u'/', 1, 1),
-                ('CHAR', u'*', 1, 2)]
+                ('CHAR', u'*', 1, 2)],
+        # COMMENT incomplete
+        u'url(a': [('FUNCTION', u'url(', 1, 1),
+                   ('IDENT', u'a', 1, 5)],
+        u'url("a': [('FUNCTION', u'url(', 1, 1),
+                   ('INVALID', u'"a', 1, 5)],
+        u"url('a": [('FUNCTION', u'url(', 1, 1),
+                   ('INVALID', u"'a", 1, 5)],
         }
 
     # tests if fullsheet=True is set on tokenizer
@@ -450,7 +462,13 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('IDENT', u'a', 1, 17)],
 
         # COMMENT incomplete
-        u'/*': [('COMMENT', u'/**/', 1, 1)]
+        u'/*': [('COMMENT', u'/**/', 1, 1)],
+
+        # URI incomplete
+        u'url(a': [('URI', u'url(a)', 1, 1)],
+        u'url("a': [('URI', u'url("a")', 1, 1)],
+        u"url('a": [('URI', u"url('a')", 1, 1)],
+
         }
 
     def setUp(self):
