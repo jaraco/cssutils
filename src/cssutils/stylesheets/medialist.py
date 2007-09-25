@@ -158,8 +158,8 @@ class MediaList(cssutils.util.Base, list):
 
         if newMedium.valid:
 
-            mts = [mq.mediaType for mq in self]
-            newmt = newMedium.mediaType
+            mts = [self._normalize(mq.mediaType) for mq in self]
+            newmt = self._normalize(newMedium.mediaType)
 
             if newmt in mts:
                 self.deleteMedium(newmt)
@@ -198,10 +198,10 @@ class MediaList(cssutils.util.Base, list):
           Raised if oldMedium is not in the list.
         """
         self._checkReadonly()
-        oldMedium = oldMedium.lower()
+        oldMedium = self._normalize(oldMedium)
 
         for i, mq in enumerate(self):
-            if mq.mediaType == oldMedium:
+            if self._normalize(mq.mediaType) == oldMedium:
                 del self[i]
                 break
         else:
