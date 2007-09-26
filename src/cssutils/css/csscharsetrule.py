@@ -134,7 +134,10 @@ class CSSCharsetRule(cssrule.CSSRule):
         """
         super(CSSCharsetRule, self)._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
-        text = ''.join([self._tokenvalue(t) for t in tokenizer])
+        if tokenizer:
+            text = u''.join([self._tokenvalue(t) for t in tokenizer])
+        else:
+            text = u''
 
         valid = True
         # check if right token
