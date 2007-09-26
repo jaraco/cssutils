@@ -25,9 +25,5 @@ Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/cs
 :CSSStyleRule: Main Rule with Selectors and ``CSSStyleDeclaration``
 :`CSSStyleDeclaration <cssstyledeclaration.txt>`_: Containing a list of Properties
 :Property: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
-:CSSValue: A CSS value which might also be a CSSPrimitiveValue or CSSValueList.
-
-
-values
-======
-`CSS values <values.txt>`_
+:`CSSValue <values.txt>`_: A CSS value which might also be a CSSPrimitiveValue or CSSValueList.
+:CSSComment: A comment anywhere in the stylesheet. Not in any official spec.

@@ -1,3 +1,5 @@
+`Index <../index.txt>`_
+
 ========
 backlog
 ========
@@ -5,9 +7,9 @@ backlog
 :date: $LastChangedDate$
 :version: $LastChangedRevision$
 
-`Index <../index.txt>`_
-
 .. contents::
+
+
 
 
 improvements
@@ -198,11 +200,13 @@ serializer
 ----------
 :prio: 2
 
+- speed/size optimized? (suggestion by Paulo)
+
+  **minimized**: remove empty styledeclarations, comments etc
+
 - output escapes depending on charset?
 - prettyprint convinience serializer?
 - XML serializer to be able to handle CSS with XSLT, schemas etc?
-- speed/size optimized? (suggestion by Paulo)
-    remove empty styledeclarations, comments etc
 
 - different coding styles?
 
@@ -211,7 +215,7 @@ Selector
 --------
 :prio: 2
 
-- CSS2XPath converter?
+- CSS2XPath converter? -> lxml.cssselector!
 - optimize selector parsing
 
 

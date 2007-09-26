@@ -9,12 +9,80 @@ CSSStyleDeclaration
 
 .. contents::
 
-random notes about style declarations
-=====================================
+CSSStyleDeclaration
+===================
+A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule.
 
+Example::
+
+    /* a comment */
+    color: red;
+    /* properties might be set more than once for different UAs */
+    c\\olor: green;
+    background-color: #fff
+
+attributes
+----------
+cssText
+    a parsable textual representation of the declaration. See also:
+
+    getCssText(separator=None)
+        returns serialized property cssText, each property separated by
+        given ``separator`` which may e.g. be u'' to be able to use
+        cssText directly in an HTML style attribute. ";" is always part of
+        each property (except the last one) and can **not** be set with
+        separator!
+
+length
+    The number of distince properties that have been explicitly
+    in this declaration These are properties with the same ``normalname``
+    only. ``item()`` and ``length`` work on the same set here.
+parentRule
+    The CSS rule that contains this declaration block or
+    None if this CSSStyleDeclaration is not attached to a CSSRule.
+
+methods
+-------
+
+getProperties(name=None, all=False):
+    returns a list of Property objects set in this declaration in order
+    they have been set e.g. in the original stylesheet
+
+The following methods all have a parameter ``normalize`` which if set to ``False`` results in handling of ``name`` not being normalized. Default behaviour is to always access the effective property in this rule (the last set). An *un*\-normalized name like ``c\\olor`` gives access to the property with this actual name. To work on all properties it is probably easiest to iterate directly over all properties or to use ``getProperties()``.
+
+getPropertyCSSValue(self, name, normalize=True)
+    returns a CSSValue object
+getPropertyValue(self, name, normalize=True)
+    returns the string value
+getPropertyPriority(self, name, normalize=True)
+    returns the priority
+removeProperty(self, name, normalize=True)
+    removes the property. Even if ``normlize=True`` only removes the last property with this name - not all.
+
+setProperty(self, name, value, priority=None, normalize=True)
+    sets value and priority
+item(index)
+    returns property at index. Same as ``length`` item works on
+    effective properties only and not on the complete set!
+
+random notes
+------------
+
+CSS2Properties
+~~~~~~~~~~~~~~
+CSSStyleDeclaration implements CSS2Properties so most CSS 2 properties may be used like::
+
+    declaration.color = 'red'
+    declaration.backgroundColor = '#000'
+
+As some properties contain a "-" character these have to be used in camelcase instead!
+
+cssutils implements only a subset of CSS2Properties so setting e.g. ``declaration.border = '1px solid red'`` does only set border but **not** ``border-style``, ``border-color`` etc which it should. This may be implemented later.
+
+iterable
+~~~~~~~~
 CSSStyleDeclaration is iterable (**experimental**). The iterator returns  *all* properties set in this style as objects with properties ``name``, ``cssValue`` and ``priority``. Calling CSSStyleDeclaration.item(index) on the other hand simply returns a property name and also only the normalized name (once). Example::
 
-    
     sheet = cssutils.parseString('a { color: red; c\olor: blue; left: 0 !important }')
     for rule in sheet.cssRules:
         style = rule.style
@@ -23,7 +91,7 @@ CSSStyleDeclaration is iterable (**experimental**). The iterator returns  *all* 
             cssValue = property.cssValue
             priority = property.priority
             print name, '=', cssValue.cssText, priority
-            
+
         # prints:
         # color = red
         # c\olor = blue
@@ -38,3 +106,23 @@ CSSStyleDeclaration is iterable (**experimental**). The iterator returns  *all* 
         # prints:
         # color = blue
         # left = 0 !important
+
+
+Property
+========
+A Property is used in a ``CSSStyleDeclaration`` but also in a `MediaQuery <stylesheets.txt>`_ object. Only in the latter case a value is optional and a priority not used at all. As MediaQuery is not a finished spec so some details may still change.
+
+A property has the following attributes:
+
+cssText
+    a parsable textual representation of this property
+name
+    of the property
+normalname
+    normalized name of the property, e.g. "color" when name is "c\olor"
+cssValue
+    the relevant CSSValue instance for this property
+value
+    the string value of the property, same as cssValue.cssText
+priority
+    of the property (currently only ``!important`` or None)
