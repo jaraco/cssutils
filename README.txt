@@ -11,7 +11,8 @@ CSS Cascading Style Sheets library for Python
 
 A Python package to parse and build CSS Cascading Style Sheets.
 
-Partly implements the DOM Level 2 Style `Stylesheets  <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_ and `CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ interfaces . An implementation of the `WD CSS Module: Namespaces <http://www.w3.org/TR/css3-namespace/>`_ which has no official DOM yet is included since v0.9.1.
+Partly implements the DOM Level 2 Style `Stylesheets  <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_ and `CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ interfaces. An implementation of the `WD CSS Module: Namespaces <http://www.w3.org/TR/css3-namespace/>`_ which has no official DOM yet is included since v0.9.1. An implementation of `MediaQuery <http://www.w3.org/TR/css3-mediaqueries/>`_ which form ``stylesheets.MediaList`` is included since 0.9.4.
+
 
 Published under the LGPL, see http://cthedot.de/cssutils/license.html
 
@@ -39,25 +40,18 @@ Before using EasyInstall the first time or using the sdist please remove any old
 
 known issues
 ============
-- implementation is not after the latest grammar and specification. There will be minor differences but generally nothing too serious (I hope ;).
-
 - Some methods of css.CSSPrimitiveValue, Rect, Counter and RGBColor are not yet implemented. They may be implemented in one of the next releases (0.9.4?)
 
-- media queries like ``@media all and (color)`` result in an error and the rules are not parsed or included in the resulting CSSStyleSheet. Media queries will be added in one of the next releases (0.9.4?)
+- @charset not implemented according to spec (plan: 0.9.5)
 
-- CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.4?)
+- CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.5?)
 
-- @charset not implemented according to spec (plan: 0.9.4)
 - unknown @-rules are not handled properly in cases, tests are spotty there too
-
-- Tantek hack (using ``voice-family``) is mangled so does not work after reserializing. This is as property order is changed and the hack needs a specific order. Other CSS hacks do work though (e.g. ``color: red; c\olor: green;``.
-
-- escapes of CSS special characters does not really work but is very uncommon (e.g \@a without being an atkeyword or .\1 being a classname selector)
 
 - Properties are not bound to any CSS Version, so all properties are handled so
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 1.0 or 2.1)
 
-- _Property.value is only checked for valid CSS2 properties, so will accept more than allowed. In case of an error a WARNING is issued only
+- A Properties CSSValue is only checked for valid CSS2 properties, so will accept more than allowed. In case of an error a WARNING is issued only
 
 
 changes
@@ -70,29 +64,33 @@ HEAD
     *INWORK*
         - New Tokenizer which probably breaks almost everything for now
         - rethink handling of ``<!--`` and ``-->`` in parser
+        - uses CSS3Syntax Module
 
-    + CHANGE: css.Property is now official and constructor has only optional parameters now
+        - Tantek hack (using ``voice-family``) is mangled so does not work after reserializing. This is as property order is changed and the hack needs a specific order. Other CSS hacks do work though (e.g. ``color: red; c\olor: green;``. **???**
 
-      ** not complete yet **
+        - escapes of CSS special characters does not really work but is very uncommon (e.g \@a without being an atkeyword or .\1 being a classname selector)
 
-    - API CHANGE (internal): renamed ``Serializer.do_css_Property`` to ``Serializer.do_Property`` as it is ``Property`` is not in the official DOM, may not stay in package ``css`` and is used by MediaQuery too
+    - **Documentation**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
 
-    - API CHANGE (internal): renamed ``Serializer.do_CSSvalue`` to ``Serializer.do_CSSValue``
+    - **FEATURE**: Added a new module ``cssutils.codec`` that registers a codec that can be used for encoding and decoding CSS. (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
 
-    - FEATURE: Added implementation of stylesheets.MediaQuery which are part of  stylesheets.MediaList. Currently simple mediaType
-values like ``all`` or ``print`` are possible. Plan is to implement the complete spec at http://www.w3.org/TR/css3-mediaqueries/ with additional media features.
+    - **FEATURE**: Added implementation of ``stylesheets.MediaQuery`` which are part of  stylesheets.MediaList. See the complete spec at http://www.w3.org/TR/css3-mediaqueries/ for details.
 
-      ** not complete yet **
+      **Not complete yet**: Properties are not validated for now and maybe some details are missing
 
     - FEATURE: Implemented cssutils.DOMImplementationCSS. This way it is possible to create a new StyleSheet by calling ``DOMImplementationCSS.createCSSStyleSheet(title, media)``. For most cases it is probably easier to make a new StyleSheet by getting an instance of ``cssutils.css.CSSStyleSheet`` though.
 
     - FEATURE: cssutils is registered to xml.dom.DOMImplementation claiming to implement CSS 1.0, CSS 2.0, StyleSheets 1.0 and StyleSheets 2.0. This is probably not absolutely correct as cssutils currently is not a fully compliant implementation but I guess this is used very rarely anyway.
 
-    - FEATURE: Added a new module cssutils.codec that registers a codec that can be used for encoding and decoding CSS.
-    (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
+    + **API CHANGE**: ``_Property`` has been renamed to ``css.Property`` and is used in context of ``CSSStyleDeclaration`` and ``MediaQuery``. Attribute ``Property.value`` has been *de-deprecated* and may be used normally now (again). The Property constructor has only optional parameters now.
 
-     + API CHANGE: renamed attribute ``namespaces`` of CSSStyleSheet and Selector to ``prefixes`` as they really are the prefixes of declared namespaces
+    + **API CHANGE**: Removed experimental class ``SameNamePropertyList`` which was used in ``CSSStyleDeclaration`` and also method ``CSSStyleDeclaration.getSameNamePropertyList``. A new method ``CSSStyleDeclaration.getProperties`` has been added which is simpler and more useful
 
+    + **API CHANGE**: renamed attribute ``namespaces`` of CSSStyleSheet and Selector to ``prefixes`` as they really are the prefixes of declared namespaces
+
+    - API CHANGE (internal): renamed ``Serializer.do_css_Property`` to ``Serializer.do_Property`` as it is ``Property`` is not in the official DOM, may not stay in package ``css`` and is used by MediaQuery too
+
+    - API CHANGE (internal): renamed ``Serializer.do_CSSvalue`` to ``Serializer.do_CSSValue``
 
 0.9.3a1 - 070905
     - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList.
@@ -163,6 +161,8 @@ values like ``all`` or ``print`` are possible. Plan is to implement the complete
 
     + CHANGE: The Selector and SameNamePropertyList (which might be renamed as it is experimental) class are now available from cssutils.css too.
 
+       **UPDATE: SameNamePropertyList removed in 0.9.4**
+
     + CHANGE: Tokenizer strips HTML comment tokens CDO and CDC from tokenlist now.
 
     + CHANGE: Added __repr__ and __str__ methods to most classes. __str__ reports e.g. ``<cssutils.css.CSSImportRule object href=None at 0xaaa870>``, __repr__  e.g. ``cssutils.css.CSSImportRule(href=None, mediaText=u'all')`` which is a valid contructor  for the object in most cases (which might not be complete for all init parameter for all classes like in this case though). The following details are included:
@@ -186,8 +186,6 @@ values like ``all`` or ``print`` are possible. Plan is to implement the complete
 
       stylesheets
         - MediaList shows the mediaText
-
-
 
 0.9.2b3 070804
     - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
@@ -290,6 +288,8 @@ values like ``all`` or ``print`` are possible. Plan is to implement the complete
         holds all Properties with the given ``name``. The object has an
         attribute ``name`` and a list of Property objects each with an actual name,
         value and priority.
+
+        **UPDATE: SameNamePropertyList removed in 0.9.4**
 
         ``CSSStyleDeclaration.setProperty`` has a new positional parameter
         ``overwrite`` which defines if the property which is set overwrites any former
