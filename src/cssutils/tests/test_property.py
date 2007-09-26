@@ -71,6 +71,8 @@ class PropertyTestCase(basetest.BaseTestCase):
                    u'''Property: Invalid priority: u'!'.'''),
             u'a: 1!importantX': (xml.dom.SyntaxErr,
                    u'''Property: Unexpected ident. [1:6: importantX]'''),
+            u'a:!important': (xml.dom.SyntaxErr,
+                   u'''CSSValue: Unknown syntax or no value: "".'''),
             }
         for test in tests:
             ecp, msg = tests[test]
