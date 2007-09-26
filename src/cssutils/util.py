@@ -333,7 +333,7 @@ class Base(object):
         or a single tuple in format (type, value, line, col) or a
         tokenlist[old])
         """
-        if t is None:
+        if not t:
             return u''
         elif isinstance(t, basestring):
             return t
