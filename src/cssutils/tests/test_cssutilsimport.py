@@ -1,17 +1,15 @@
-"""
-testcases for cssutils.css.CSSCharsetRule
+"""testcase for cssutils imports
 """
 __all__ = ['CSSutilsImportTestCase']
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 before = len(locals()) # to check is only exp amount is imported
 from cssutils import *
 after = len(locals()) # to check is only exp amount is imported
 
 import unittest
-
 
 class CSSutilsImportTestCase(unittest.TestCase):
 
@@ -20,11 +18,10 @@ class CSSutilsImportTestCase(unittest.TestCase):
         import cssutils
 
         act = globals()
-        exp = {
-            'CSSParser': CSSParser,
-            'CSSSerializer': CSSSerializer,
-            'css': cssutils.css,
-            'stylesheets': cssutils.stylesheets,
+        exp = {'CSSParser': CSSParser,
+               'CSSSerializer': CSSSerializer,
+               'css': cssutils.css,
+               'stylesheets': cssutils.stylesheets,
         }
         exptotal = before + len(exp) + 1
         # imports before + * + "after"
@@ -36,7 +33,6 @@ class CSSutilsImportTestCase(unittest.TestCase):
             self.assert_(act[e] == exp[e], '%s not the same' %e)
             found += 1
         self.assert_(found == len(exp))
-
 
 if __name__ == '__main__':
     import unittest
