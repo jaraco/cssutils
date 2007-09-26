@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-"""
-cssutils - CSS Cascading Style Sheets library for Python
+"""cssutils - CSS Cascading Style Sheets library for Python
 
     Copyright (C) 2004-2007 Christof Hoeke
 
@@ -18,21 +17,29 @@ cssutils - CSS Cascading Style Sheets library for Python
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-A Python package to parse and build CSS Cascading Style Sheets. Partly
-implements the DOM Level 2 Stylesheets and DOM Level 2 CSS interfaces.
+A Python package to parse and build CSS Cascading Style Sheets.
+
+Partly implements the DOM Level 2 Style
+`Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_ and
+`CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ interfaces.
+An implementation of the `WD CSS Module: Namespaces
+<http://www.w3.org/TR/css3-namespace/>`_ which has no official DOM yet is
+included since v0.9.1. An implementation of
+`MediaQuery <http://www.w3.org/TR/css3-mediaqueries/>`_ which form
+``stylesheets.MediaList`` is included since 0.9.4.
 
 cssutils is registered to xml.dom.DOMImplementation claiming to implement
 CSS 1.0, CSS 2.0, StyleSheets 1.0 and StyleSheets 2.0. This is probably not
 absolutely correct as cssutils currently is not a fully compliant
-implementation but I guess this is used very rarely anyway.
+implementation but I guess DOMImplementation is queried very rarely anyway.
 
 Please visit http://cthedot.de/cssutils/ for full details and updates.
 
 Tested with Python 2.5 on Windows XP.
 
 
-This package is optimized for usage of ``from cssutils import *`` which
-import subpackages ``css`` and ``stylesheets`` and the CSSParser and
+This library is optimized for usage of ``from cssutils import *`` which
+import subpackages ``css`` and ``stylesheets``, CSSParser and
 CSSSerializer classes only.
 
 Usage may be::
@@ -43,8 +50,7 @@ Usage may be::
     >>> print sheet.cssText
 
 """
-__all__ = ['DOMImplementationCSS',
-           'css', 'stylesheets',
+__all__ = ['css', 'stylesheets',
            'CSSParser', 'CSSSerializer']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
