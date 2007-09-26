@@ -222,15 +222,15 @@ def encode(input, errors="strict", encoding=None):
 
 
 def _bytes2int(bytes):
-    # Helper for Python 3.0: convert a ``bytes`` object into an ``int``.
+    # Helper: convert an 8 bit string into an ``int``.
     i = 0
     for byte in bytes:
-        i = (i<<8) + byte
+        i = (i<<8) + ord(byte)
     return i
 
 
 def _int2bytes(i):
-    # Helper for Python 3.0: convert an ``int`` into a ``bytes`` object.
+    # Helper: convert an ``int`` into an 8-bit string.
     v = []
     while i:
         v.insert(0, chr(i&0xff))
@@ -308,17 +308,15 @@ if hasattr(codecs, "IncrementalDecoder"):
             self._errors = errors
         errors = property(_geterrors, _seterrors)
 
-        # For Python 3.0
         def getstate(self):
             if self.decoder is not None:
                 state = (self.encoding, self.buffer, self.headerfixed, True, self.decoder.getstate())
             else:
                 state = (self.encoding, self.buffer, self.headerfixed, False, None)
-            return _bytes2int(marshal.dumps(state))
+            return ("", _bytes2int(marshal.dumps(state)))
 
-        # For Python 3.0
         def setstate(self, state):
-            state = _int2bytes(marshal.loads(state))
+            state = _int2bytes(marshal.loads(state[1])) # ignore buffered input
             self.encoding = state[0]
             self.buffer = state[1]
             self.headerfixed = state[2]
@@ -394,7 +392,6 @@ if hasattr(codecs, "IncrementalEncoder"):
             self._errors = errors
         errors = property(_geterrors, _seterrors)
 
-        # For Python 3.0
         def getstate(self):
             if self.encoder is not None:
                 state = (self.encoding, self.buffer, True, self.encoder.getstate())
@@ -402,7 +399,6 @@ if hasattr(codecs, "IncrementalEncoder"):
                 state = (self.encoding, self.buffer, False, None)
             return _bytes2int(marshal.dumps(state))
 
-        # For Python 3.0
         def setstate(self, state):
             state = _int2bytes(marshal.loads(state))
             self.encoding = state[0]
