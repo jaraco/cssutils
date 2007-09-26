@@ -45,25 +45,85 @@ class Selector(cssutils.util.Base):
 
     Format
     ======
-    combinator
-      : PLUS S* | GREATER S* | S+ ;
-    selector
-      : simple_selector [ combinator simple_selector ]* ;
-    simple_selector
-      : element_name [ HASH | class | attrib | pseudo ]*
-      | [ HASH | class | attrib | pseudo ]+ ;
-    class
-      : '.' IDENT ;
-    element_name
-      : IDENT | '*' ;
-    attrib
-      : '[' S* IDENT S* [ [ '=' | INCLUDES | DASHMATCH ] S*
-      [ IDENT | STRING ] S* ]? ']'
-      ;
-    pseudo
-      : ':' [ IDENT | FUNCTION S* IDENT? S* ')' ] ;
+    ::
 
-    plus some from http://www.w3.org/TR/css3-selectors/
+        # implemented in SelectorList
+        selectors_group
+          : selector [ COMMA S* selector ]*
+          ;
+
+        selector
+          : simple_selector_sequence [ combinator simple_selector_sequence ]*
+          ;
+
+        combinator
+          /* combinators can be surrounded by white space */
+          : PLUS S* | GREATER S* | TILDE S* | S+
+          ;
+
+        simple_selector_sequence
+          : [ type_selector | universal ]
+            [ HASH | class | attrib | pseudo | negation ]*
+          | [ HASH | class | attrib | pseudo | negation ]+
+          ;
+
+        type_selector
+          : [ namespace_prefix ]? element_name
+          ;
+
+        namespace_prefix
+          : [ IDENT | '*' ]? '|'
+          ;
+
+        element_name
+          : IDENT
+          ;
+
+        universal
+          : [ namespace_prefix ]? '*'
+          ;
+
+        class
+          : '.' IDENT
+          ;
+
+        attrib
+          : '[' S* [ namespace_prefix ]? IDENT S*
+                [ [ PREFIXMATCH |
+                    SUFFIXMATCH |
+                    SUBSTRINGMATCH |
+                    '=' |
+                    INCLUDES |
+                    DASHMATCH ] S* [ IDENT | STRING ] S*
+                ]? ']'
+          ;
+
+        pseudo
+          /* '::' starts a pseudo-element, ':' a pseudo-class */
+          /* Exceptions: :first-line, :first-letter, :before and :after. */
+          /* Note that pseudo-elements are restricted to one per selector and */
+          /* occur only in the last simple_selector_sequence. */
+          : ':' ':'? [ IDENT | functional_pseudo ]
+          ;
+
+        functional_pseudo
+          : FUNCTION S* expression ')'
+          ;
+
+        expression
+          /* In CSS3, the expressions are identifiers, strings, */
+          /* or of the form "an+b" */
+          : [ [ PLUS | '-' | DIMENSION | NUMBER | STRING | IDENT ] S* ]+
+          ;
+
+        negation
+          : NOT S* negation_arg S* ')'
+          ;
+
+        negation_arg
+          : type_selector | universal | HASH | class | attrib | pseudo
+          ;
+
     """
     def __init__(self, selectorText=None, readonly=False):
         """
@@ -89,9 +149,118 @@ class Selector(cssutils.util.Base):
 
     def _setSelectorText(self, selectorText):
         """
+        NEW
+        """
+        self._checkReadonly()
+        tokenizer = self._tokenize2(selectorText)
+        if not tokenizer:
+            self._log.error(u'Selector: No selectorText given.')
+        else:
+            # for closures: must be a mutable
+            new = {'valid': True,
+                   'prefixes': []
+                   }
+            S = u' '
+
+            #expected
+            simple_selector_sequence1 =\
+                'type_selector universal HASH class attrib pseudo negation ' +\
+                'combinator'
+            simple_selector_sequence2 =\
+                'HASH class attrib pseudo negation ' + 'combinator'
+            combinator = 'combinator'
+            negation_arg = 'type_selector universal HASH class attrib pseudo'
+
+            colon1 = 'pseudo-element pseudo-class FUNCTION'
+
+            def _func(expected, seq, token, tokenizer=None):
+                # not(
+                val = self._tokenvalue(token, normalize=True)
+                if colon1 == expected:
+                    seq.append(val)
+                    return negation_arg
+                else:
+                    self._log.error(
+                        u'Selector: Unexpected FUNCTION.', token=token)
+                    return expected
+
+            def _ident(expected, seq, token, tokenizer=None):
+                # identifier
+                val = self._tokenvalue(token)
+                if 'type_selector' in expected:
+                    seq.append(val)
+                    return simple_selector_sequence2 + combinator
+                else:
+                    self._log.error(
+                        u'Selector: Unexpected syntax.', token=token)
+                    return expected
+
+            def _char(expected, seq, token, tokenizer=None):
+                # + > ~ S
+                val, typ = self._tokenvalue(token), self._type(token)
+
+                if 'universal' in expected and u'*' == val:
+                    # normal or negation_arg
+                    seq.append(val)
+                    if expected == negation_arg:
+                        return ')'
+                    else:
+                        # simple_selector_sequence
+                        return simple_selector_sequence2
+
+                elif val in u'+>~' and expected.endswith('combinator'):
+                    # no other combinator except S may be following
+                    if seq and S == seq[-1]:
+                        seq[-1] = val
+                    else:
+                        seq.append(val)
+                    return simple_selector_sequence1
+
+                elif u':' == val and 'pseudo' in expected:
+                    # followed by : or colon1
+                    seq.append(val)
+                    return colon1
+
+                elif u')' == val and ')' == expected:
+                    # end of "not(negation_arg"
+                    seq.append(val)
+                    return 'sss'
+
+                else:
+                    self._log.error(
+                        u'Selector: Unexpected CHAR.', token=token)
+                    return expected
+
+            def _S(expected, seq, token, tokenizer=None):
+                # S
+                val, typ = self._tokenvalue(token), self._type(token)
+                if expected.endswith('combinator'):
+                    seq.append(S)
+                    return 'type_selector universal HASH class attrib pseudo negation   combinator'
+                else:
+                    return expected
+
+            # expected: only|not or mediatype, mediatype, feature, and
+            newseq = []
+            valid, expected = self._parse(expected=simple_selector_sequence1,
+                seq=newseq, tokenizer=tokenizer,
+                productions={'IDENT': _ident,
+                             'CHAR': _char,
+                             'S': _S})
+            valid = valid and new['valid']
+
+            if valid:
+                self.seq = newseq
+                self.prefixes = new['prefixes']
+
+
+
+
+
+    def OLD_setSelectorText(self, selectorText):
+        """
         DOMException on setting
 
-        - INVALID_MODIFICATION_ERR: (self)
         - INVALID_MODIFICATION_ERR: (self)
           Raised if the specified CSS string value represents a different
           type than the current one, e.g. a SelectorList.
