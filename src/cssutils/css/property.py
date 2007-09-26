@@ -20,13 +20,15 @@ class Property(cssutils.util.Base):
     Properties
     ==========
     cssText
-        A parsable textual representation of this property
+        a parsable textual representation of this property
     name
         of the property
     normalname
         normalized name of the property, e.g. "color" when name is "c\olor"
     cssValue
         the relevant CSSValue instance for this property
+    value
+        the string value of the property, same as cssValue.cssText
     priority
         of the property (currently only "!important" or None)
     seqs
@@ -34,9 +36,6 @@ class Property(cssutils.util.Base):
         a list for seq of  priority (empty or [!important] currently)
     valid
         if this Property is valid
-
-    value (DEPRECATED)
-        the string value of the property, use cssValue.cssText instead!
 
     Format
     ======
@@ -246,6 +245,16 @@ class Property(cssutils.util.Base):
     cssValue = property(_getCSSValue, _setCSSValue,
         doc="(cssutils) CSSValue object of this property")
 
+    def _getValue(self):
+        if self.cssValue: return self.cssValue._value
+        else: return u''
+
+    def _setValue(self, value):
+        self.cssValue.cssText = value
+
+    value = property(_getValue, _setValue,
+                     doc="The textual value of this Properties cssValue.")
+
     def _getPriority(self):
         return cssutils.ser.do_Property_priority(self.seqs[2])
 
@@ -328,23 +337,6 @@ class Property(cssutils.util.Base):
         return "<%s.%s object name=%r value=%r priority=%r at 0x%x>" % (
                 self.__class__.__module__, self.__class__.__name__,
                 self.name, self.cssValue.cssText, self.priority, id(self))
-
-    # DEPRECATED
-    def _getValue(self):
-        import warnings
-        warnings.warn(
-            'value is deprecated, use cssValue instead.',
-            DeprecationWarning)
-        if self.cssValue: return self.cssValue._value
-        else: return u''
-    def _setValue(self, value):
-        import warnings
-        warnings.warn(
-            'value is deprecated, use cssValue instead.',
-            DeprecationWarning)
-        self.cssValue.cssText = value
-    value = property(_getValue, _setValue,
-                     doc="DEPRECATED use cssValue instead")
 
 
 if __name__ == '__main__':
