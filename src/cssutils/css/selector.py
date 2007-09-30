@@ -29,7 +29,6 @@ import xml.dom
 
 import cssutils
 
-
 class Selector(cssutils.util.Base):
     """
     (cssutils) a single selector in a SelectorList of a CSSStyleRule
@@ -134,7 +133,7 @@ class Selector(cssutils.util.Base):
         """
         super(Selector, self).__init__()
 
-        self.seq = []
+        self.seq = self._newseq()
         self.prefixes = set()
         if selectorText:
             self.selectorText = selectorText
@@ -156,29 +155,140 @@ class Selector(cssutils.util.Base):
         if not tokenizer:
             self._log.error(u'Selector: No selectorText given.')
         else:
+            # prepare tokenlist!
+            # "*" -> type "universal"
+            # "*"|IDENT + "|" -> combined to "namespace_prefix"
+            # "|" -> type "namespace_prefix"
+            # "." + IDENT -> combined to "class"
+            tokens = []
+            for t in tokenizer:
+                typ, val, lin, col = t
+                if val == u':' and tokens and self._type(tokens[-1]) == 'pseudo-class' and\
+                   self._tokenvalue(tokens[-1]) != u'::':
+                    tokens[-1] = ('pseudo-element', u'::', lin, col)
+                elif val == u':':
+                    tokens.append(('pseudo-class', u':', lin, col))
+
+                elif val == u'*' and tokens and self._type(tokens[-1]) == 'namespace_prefix' and\
+                     self._tokenvalue(tokens[-1]).endswith(u'|'):
+                    tokens[-1] = ('universal', self._tokenvalue(tokens[-1])+val, lin, col)
+                elif val == u'*':
+                    tokens.append(('universal', val, lin, col))
+
+                elif typ == 'IDENT' and tokens and self._tokenvalue(tokens[-1]) == u'.':
+                    tokens[-1] = ('class', u'.'+val, lin, col)
+
+                elif val == u'|' and tokens and self._type(tokens[-1]) in ('IDENT', 'universal') and\
+                     self._tokenvalue(tokens[-1]).find(u'|') == -1:
+                    tokens[-1] = ('namespace_prefix', self._tokenvalue(tokens[-1])+u'|', lin, col)
+                elif val == u'|':
+                    tokens.append(('namespace_prefix', val, lin, col))
+
+                elif typ == u'FUNCTION' and val == u'not(':
+                    tokens.append(('negation', val, lin, col))
+                else:
+                    tokens.append(t)
+                #import pprint;pprint.pprint( tokens)
+
+            tokenizer = (t for t in tokens) # TODO: not elegant at all!
+
             # for closures: must be a mutable
             new = {'valid': True,
-                   'prefixes': []
+                   'prefixes': set(),
+                   'lastindex': None
                    }
+            # used for equality checks and setting of a space combinator
             S = u' '
 
-            #expected
-            simple_selector_sequence1 =\
-                'type_selector universal HASH class attrib pseudo negation ' +\
-                'combinator'
-            simple_selector_sequence2 =\
-                'HASH class attrib pseudo negation ' + 'combinator'
-            combinator = 'combinator'
-            negation_arg = 'type_selector universal HASH class attrib pseudo'
+            def append(seq, val, typ=None):
+                "appends to seq and sets lastindex"
+                seq.append(val, typ)
+                new['lastindex'] = len(seq) - 1
 
+            def last(seq):
+                "returns value of last relevant token, new['lastindex'] needs to be updated!"
+                if new['lastindex'] is not None:
+                    return seq[new['lastindex']]
+                else:
+                    return None
+
+            def setlasttype(seq, type):
+                "sets type of last relevant token, new['lastindex'] needs to be updated!"
+                if new['lastindex'] is not None:
+                    seq.types[new['lastindex']] = type
+
+            #expected
+            simple_selector_sequence = 'type_selector universal HASH class attrib pseudo negation '
+            simple_selector_sequence2 = 'HASH class attrib pseudo negation '
+
+            combinator = ' combinator'
+            negation_arg = 'type_selector universal HASH class attrib pseudo'
             colon1 = 'pseudo-element pseudo-class FUNCTION'
+
+            def _universal(expected, seq, token, tokenizer=None):
+                # *|* or prefix|*
+                val, typ = self._tokenvalue(token), self._type(token)
+                if 'universal' in expected:
+                    append(seq, val, typ)
+                    new['prefixes'].add(val.split(u'|')[0])
+                    if negation_arg == expected:
+                        return ')'
+                    else:
+                        return simple_selector_sequence2 + combinator
+
+                else:
+                    self._log.error(
+                        u'Selector: Unexpected universal.', token=token)
+                    return expected
+
+            def _namespace_prefix(expected, seq, token, tokenizer=None):
+                # prefix| => element_name
+                val, typ = self._tokenvalue(token), self._type(token)
+                if 'type_selector' in expected:
+                    append(seq, val, typ)
+                    new['prefixes'].add(val.split(u'|')[0])
+                    return 'element_name'
+                else:
+                    self._log.error(
+                        u'Selector: Unexpected namespace prefix.', token=token)
+                    return expected
+
+            def _pseudo(expected, seq, token, tokenizer=None):
+                # pseudo-class or pseudo-element
+                val, typ = self._tokenvalue(token), self._type(token)
+                if 'pseudo' in expected and not expected[0] == 'pseudo':
+                    append(seq, val, typ)
+                    if negation_arg == expected:
+                        return ('pseudo', ')') # two steps expected!
+                        #return ('pseudo', negation_arg) # two steps expected!
+                    else:
+                        return ('pseudo', simple_selector_sequence2 + combinator)
+                        #return ('pseudo', simple_selector_sequence + combinator)
+
+                else:
+                    self._log.error(
+                        u'Selector: Unexpected start of pseudo.', token=token)
+                    return expected
 
             def _func(expected, seq, token, tokenizer=None):
                 # not(
                 val = self._tokenvalue(token, normalize=True)
-                if colon1 == expected:
-                    seq.append(val)
-                    return negation_arg
+                if 'pseudo' == expected[0]:
+                    # part of pseudo, will be combined
+                    lasttype = seq.types[len(seq)-1]
+                    seq[-1] = (seq[-1] + val, lasttype)
+
+                    # TODO: do FUNCTION
+                    functokens = self._tokensupto2(tokenizer, funcendonly=True)
+
+                    append(seq, '...)', 'TODO')
+
+                    if lasttype == 'pseudo-element':
+                        # pseudo-element (::) must be last of simple_selector_sequence
+                        return combinator
+                    else:
+                        return expected[1]
+
                 else:
                     self._log.error(
                         u'Selector: Unexpected FUNCTION.', token=token)
@@ -186,66 +296,150 @@ class Selector(cssutils.util.Base):
 
             def _ident(expected, seq, token, tokenizer=None):
                 # identifier
-                val = self._tokenvalue(token)
-                if 'type_selector' in expected:
-                    seq.append(val)
-                    return simple_selector_sequence2 + combinator
+                val, typ = self._tokenvalue(token), self._type(token)
+                if 'type_selector' in expected or 'element_name' == expected:
+                    # element name after ns or complete type_selector
+                    append(seq, val, typ)
+                    if negation_arg == expected:
+                        return ')'
+                    else:
+                        return simple_selector_sequence2 + combinator
+
+                elif 'pseudo' == expected[0]:
+                    # part of pseudo, will be combined
+                    lasttype = seq.types[len(seq)-1]
+                    seq[-1] = (seq[-1] + val, lasttype)
+
+                    lastnval = self._normalize(seq[-1])
+                    if lasttype == 'pseudo-element' or lastnval in (
+                       ':first-line', ':first-letter', ':before', ':after'):
+                        # pseudo-element (::)  or :first-line, :first-letter, :before and :after
+                        # must be last of simple_selector_sequence
+                        return combinator
+                    elif expected[1] != negation_arg:
+                        return expected[1]
+                    else:
+                        return u')'
+
+                else:
+                    print expected
+                    self._log.error(
+                        u'Selector: Unexpected IDENT.', token=token)
+                    return expected
+
+            def _class(expected, seq, token, tokenizer=None):
+                # .IDENT
+                val, typ = self._tokenvalue(token), self._type(token)
+                if 'class' in expected:
+                    append(seq, val, typ)
+
+                    if negation_arg == expected:
+                        return ')'
+                    else:
+                        return simple_selector_sequence2 + combinator
+
                 else:
                     self._log.error(
-                        u'Selector: Unexpected syntax.', token=token)
+                        u'Selector: Unexpected class.', token=token)
+                    return expected
+
+            def _hash(expected, seq, token, tokenizer=None):
+                # #IDENT
+                val, typ = self._tokenvalue(token), self._type(token)
+                if 'HASH' in expected:
+                    append(seq, val, typ)
+
+                    if negation_arg == expected:
+                        return ')'
+                    else:
+                        return simple_selector_sequence2 + combinator
+
+                else:
+                    self._log.error(
+                        u'Selector: Unexpected HASH.', token=token)
+                    return expected
+
+            def _S(expected, seq, token, tokenizer=None):
+                # S
+                val, typ = self._tokenvalue(token), self._type(token)
+                if 'combinator' in expected:
+                    append(seq, S, 'combinator')
+                    return simple_selector_sequence + combinator
+                else:
                     return expected
 
             def _char(expected, seq, token, tokenizer=None):
                 # + > ~ S
                 val, typ = self._tokenvalue(token), self._type(token)
-
-                if 'universal' in expected and u'*' == val:
-                    # normal or negation_arg
-                    seq.append(val)
-                    if expected == negation_arg:
-                        return ')'
-                    else:
-                        # simple_selector_sequence
-                        return simple_selector_sequence2
-
-                elif val in u'+>~' and expected.endswith('combinator'):
+                if val in u'+>~' and 'combinator' in expected:
                     # no other combinator except S may be following
                     if seq and S == seq[-1]:
-                        seq[-1] = val
+                        seq[-1] = (val, 'combinator')
                     else:
-                        seq.append(val)
-                    return simple_selector_sequence1
+                        append(seq, val, 'combinator')
+                    return simple_selector_sequence
 
                 elif u':' == val and 'pseudo' in expected:
-                    # followed by : or colon1
-                    seq.append(val)
-                    return colon1
+                    # ':' ':'? [ IDENT | functional_pseudo ]
+                    append(seq, val)
+                    if negation_arg == expected:
+                        return ') pseudo'
+                    elif ') pseudo' == expected:
+                        return ')'
+                    else:
+                        return simple_selector_sequence2 + combinator
 
-                elif u')' == val and ')' == expected:
-                    # end of "not(negation_arg"
-                    seq.append(val)
-                    return 'sss'
+                elif u')' == val and u')' in expected:
+                    # end of "not( negation_arg"
+                    append(seq, val)
+
+                    if type(expected) == tuple:
+                        return expected[1]
+                    else:
+                        return simple_selector_sequence
+
+                elif u'[' == val and 'attrib' in expected:
+                    # start of [attrib]
+                    attribtokens = self._tokensupto2(tokenizer, starttoken=token,
+                                                     selectorattendonly=True)
+                    # TODO
+                    append(seq, '[...]', 'TODO')
+                    if negation_arg == expected:
+                        return ')'
+                    else:
+                        return simple_selector_sequence2 + combinator
 
                 else:
                     self._log.error(
                         u'Selector: Unexpected CHAR.', token=token)
                     return expected
 
-            def _S(expected, seq, token, tokenizer=None):
-                # S
-                val, typ = self._tokenvalue(token), self._type(token)
-                if expected.endswith('combinator'):
-                    seq.append(S)
-                    return 'type_selector universal HASH class attrib pseudo negation   combinator'
+
+            def _negation(expected, seq, token, tokenizer=None):
+                # not(
+                val = self._tokenvalue(token, normalize=True)
+                if 'negation' in expected:
+                    append(seq, val, 'negation')
+                    return negation_arg
                 else:
+                    self._log.error(
+                        u'Selector: Unexpected not(.', token=token)
                     return expected
 
             # expected: only|not or mediatype, mediatype, feature, and
-            newseq = []
-            valid, expected = self._parse(expected=simple_selector_sequence1,
+            newseq = self._newseq()
+            valid, expected = self._parse(expected=simple_selector_sequence,
                 seq=newseq, tokenizer=tokenizer,
-                productions={'IDENT': _ident,
-                             'CHAR': _char,
+                productions={'CHAR': _char,
+                             'class': _class,
+                             'FUNCTION': _func,
+                             'HASH': _hash,
+                             'IDENT': _ident,
+                             'namespace_prefix': _namespace_prefix,
+                             'negation': _negation,
+                             'pseudo-class': _pseudo,
+                             'pseudo-element': _pseudo,
+                             'universal': _universal,
                              'S': _S})
             valid = valid and new['valid']
 
