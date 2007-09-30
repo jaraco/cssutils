@@ -13,6 +13,67 @@ from tokenize2 import Tokenizer as Tokenizer2
 # OLD
 from tokenize import Tokenizer
 
+class Seq(object):
+    """
+    (EXPERIMENTAL)
+    a list like sequence of (value, type) used in almost all cssutils classes
+
+    behaves almost like a list but keeps extra attribute "type" for
+    each value in the list
+
+    types are tokens types like e.g. "COMMENT" (value='/*...*/', all uppercase)
+    or productions like e.g. "universal" (value='*', all lowercase)
+    """
+    def __init__(self):
+        self.values = []
+        self.types = []
+
+    def __contains__(self, item):
+        return item in self.values
+
+    def __getitem__(self, index):
+        return self.values[index]
+
+    def __setitem__(self, index, value_type):
+        "might be set with tuple (value, type) or a single value"
+        if type(value_type) == tuple:
+            val = value_type[0]
+            typ = value_type[1]
+        else:
+            val = value_type
+            typ = None
+        self.values[index] = val
+        self.types[index] = typ
+
+    def __iter__(self):
+        "returns an iterator of values only "
+        return iter(self.values)
+
+    def __len__(self):
+        "same as len(list)"
+        return len(self.values)
+
+    def __repr__(self):
+        "returns a repr same as a list of tuples of (value, type)"
+        return u'[%s]' % u',\n '.join([u'(%r, %r)' % (value, self.types[i])
+                                    for i, value in enumerate(self.values)])
+    def __str__(self):
+        "returns a concanated string of all values"
+        items = []
+        for i, value in enumerate(self.values):
+            if self.types[i]:
+                if self.types[i] != 'COMMENT':
+                    items.append(value)
+            items.append(value)
+        return u''.join(items)
+
+    def append(self, value, type=None):
+        """
+        same as list.append but not a simple value but a SeqItem is appended
+        """
+        self.values.append(str(value))
+        self.types.append(type)
+
 
 class Base(object):
     """
@@ -35,6 +96,9 @@ class Base(object):
 
     __tokenizer2 = Tokenizer2()
     _prods = cssutils.tokenize2.CSSProductions
+
+    def _newseq(self):
+        return Seq()
 
     def _tokenize2(self, textortokens, aslist=False, fullsheet=False):
         """
@@ -116,6 +180,8 @@ class Base(object):
             ends = u';'
         elif selectorattendonly: # ]
             ends = u']'
+            if self._tokenvalue(starttoken) == u'[':
+                bracket = 1
         elif funcendonly: # )
             ends = u')'
             parant = 1
@@ -145,7 +211,6 @@ class Base(object):
                 elif u'(' == val or \
                    Base._prods.FUNCTION == self._type(token): parant += 1
                 elif u')' == val: parant -= 1
-
                 if val in ends and (brace == bracket == parant == 0):
                     if keepEnd:
                         resulttokens.append(token)
