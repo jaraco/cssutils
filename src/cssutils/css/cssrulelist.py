@@ -1,5 +1,8 @@
 """
 CSSRuleList implements DOM Level 2 CSS CSSRuleList.
+
+Partly also
+    * http://dev.w3.org/csswg/cssom/#the-cssrulelist
 """
 __all__ = ['CSSRuleList']
 __docformat__ = 'restructuredtext'
@@ -9,8 +12,7 @@ __version__ = '$LastChangedRevision$'
 
 class CSSRuleList(list):
     """
-    The CSSRuleList interface provides the abstraction of an ordered
-    collection of CSS rules.
+    The CSSRuleList object represents an (ordered) list of statements.
 
     The items in the CSSRuleList are accessible via an integral index,
     starting from 0.
