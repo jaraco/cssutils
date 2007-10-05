@@ -2,7 +2,8 @@
 CSSStyleSheet implements DOM Level 2 CSS CSSStyleSheet.
 
 Partly also:
-    http://www.w3.org/TR/2006/WD-css3-namespace-20060828/
+    - http://dev.w3.org/csswg/cssom/#the-cssstylesheet
+    - http://www.w3.org/TR/2006/WD-css3-namespace-20060828/
 
 TODO:
     - ownerRule and ownerNode
@@ -18,28 +19,27 @@ import cssutils.stylesheets
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     """
-     The CSSStyleSheet interface is a concrete interface used to represent
-     a CSS style sheet i.e., a style sheet whose content type is
-     "text/css".
+    The CSSStyleSheet interface represents a CSS style sheet.
 
     Properties
     ==========
-    cssRules: of type CSSRuleList, (DOM readonly)
-        The list of all CSS rules contained within the style sheet. This
-        includes both rule sets and at-rules.
+    CSSOM
+    -----
+    cssRules
+        of type CSSRuleList, (DOM readonly)
+    ownerRule
+        of type CSSRule, readonly (NOT IMPLEMENTED YET)
+
+    Inherits properties from stylesheet.StyleSheet
+
+    cssutils
+    --------
+    cssText: string
+        a textual representation of the stylesheet
     prefixes: set
         A set of declared prefixes via @namespace rules. Each
         CSSStyleRule is checked if it uses additional prefixes which are
         not declared. If they do they are "invalidated".
-    ownerRule: of type CSSRule, readonly
-        If this style sheet comes from an @import rule, the ownerRule
-        attribute will contain the CSSImportRule. In that case, the
-        ownerNode attribute in the StyleSheet interface will be None. If
-        the style sheet comes from an element or a processing instruction,
-        the ownerRule attribute will be None and the ownerNode attribute
-        will contain the Node.
-
-    Inherits properties from stylesheet.StyleSheet
 
     Format
     ======
@@ -81,10 +81,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     def _setCssText(self, cssText):
         """
         (cssutils)
-        Parses cssText and overwrites the whole stylesheet.
-
-        cssText
-            textual text to set
+        Parses ``cssText`` and overwrites the whole stylesheet.
 
         DOMException on setting
 
@@ -283,7 +280,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         Used to delete a rule from the style sheet.
 
         index
-            of the rule to remove in the StyleSheet's rule list
+            of the rule to remove in the StyleSheet's rule list. For an
+            index < 0 **no** INDEX_SIZE_ERR is raised but rules for
+            normal Python lists are used. E.g. ``deleteRule(-1)`` removes
+            the last rule in cssRules.
 
         DOMException
 
@@ -311,7 +311,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         Rule may be a string or a valid CSSRule.
 
         rule
-            a parsable DOMString (cssutils: or Rule object)
+            a parsable DOMString (cssutils: or CSSRule object)
         index
             of the rule before the new rule will be inserted.
             If the specified index is equal to the length of the
@@ -328,7 +328,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
           Raised if the rule cannot be inserted at the specified index
           e.g. if an @import rule is inserted after a standard rule set
           or other at-rule.
-        - INDEX_SIZE_ERR: (not raised at all)
+        - INDEX_SIZE_ERR: (self)
           Raised if the specified index is not a valid insertion point.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this style sheet is readonly.
@@ -449,23 +449,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         return index
 
-    def addRule(self, rule):
-        "DEPRECATED, use appendRule instead"
-        import warnings
-        warnings.warn(
-            '``addRule`` is deprecated: Use ``insertRule(rule)``.',
-            DeprecationWarning)
-        return self.insertRule(rule)
-
     def _getsetOwnerRuleDummy(self):
         """
         NOT IMPLEMENTED YET
-        If this style sheet comes from an @import rule, the ownerRule
-        attribute will contain the CSSImportRule. In that case, the
-        ownerNode attribute in the StyleSheet interface will be null. If
-        the style sheet comes from an element or a processing instruction,
-        the ownerRule attribute will be null and the ownerNode attribute
-        will contain the Node.
+
+        CSSOM
+        -----
+        The ownerRule  attribute, on getting, must return the CSSImportRule
+        that caused this style sheet to be imported (if any). Otherwise, if
+        no CSSImportRule caused it to be imported the attribute must return
+        null.
         """
         raise NotImplementedError()
 
@@ -476,13 +469,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         **EXPERIMENTAL**
 
-        utility function to replace all url(urlstring) values in
-        CSSImportRules and CSSStyleDeclaration objects.
+        Utility method to replace all url(urlstring) values in
+        CSSImportRules and CSSStyleDeclaration objects (properties).
 
-        replacer must be a function which is called with a single
+        ``replacer`` must be a function which is called with a single
         argument ``urlstring`` which is the current value of url()
-        excluding "url(" and ")". It still may have surrounding single or
-        double quotes
+        excluding ``url(`` and ``)``. It still may have surrounding
+        single or double quotes though.
         """
         for importrule in [
             r for r in self.cssRules if hasattr(r, 'href')]:
