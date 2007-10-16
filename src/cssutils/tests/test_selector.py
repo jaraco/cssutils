@@ -7,7 +7,6 @@ import xml.dom
 import basetest
 import cssutils
 
-
 class SelectorTestCase(basetest.BaseTestCase):
 
     def setUp(self):
@@ -124,7 +123,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''n|*''': None,
             u'''*|b[x|a]''': None,
 
-            u'''x:lang() y''': None,
+            u'''x:lang(de) y''': None,
             u'''x:nth-child(odd) y''': None,
             }
         # do not parse as not complete
@@ -141,7 +140,8 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'::': xml.dom.SyntaxErr,
             u': a': xml.dom.SyntaxErr,
             u':: a': xml.dom.SyntaxErr,
-            u'::a()': xml.dom.SyntaxErr, # pseudoelement only
+            u':a()': xml.dom.SyntaxErr, # no value
+            u'::a()': xml.dom.SyntaxErr, # no value
             u':::a': xml.dom.SyntaxErr,
             u':1': xml.dom.SyntaxErr,
 
