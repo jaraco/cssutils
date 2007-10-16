@@ -63,22 +63,23 @@ class SelectorList(cssutils.util.Base, list):
           Raised if this rule is readonly.
         """
         self._checkReadonly()
-        tokens = self._tokenize(newSelector)
-        newS = Selector(tokens)
-        if not newS.selectorText:
-            self._log.error(u'SelectorList: Not a valid selector: "%s".' %
-                      self._valuestr(newSelector), error=xml.dom.SyntaxErr)
-            return
-        else:
-            if len(self.seq) > 0:
-                self.seq.append(u',')
-            self.seq.append(newS)
-            self.append(newS)
+        
+        if not isinstance(newSelector, Selector):
+            newSelector = Selector(newSelector)
 
-        return newS
+        if newSelector.valid:
+            newseq = []
+            for s in self.seq:
+                if s.selectorText != newSelector.selectorText:
+                    newseq.append(s)
+            newseq.append(newSelector)
+            self.seq = newseq
+            return True
+        else:
+            return False
 
     def _getLength(self):
-        return len(self)
+        return len(self.seq)
 
     length = property(_getLength,
         doc="The number of Selector elements in the list.")
@@ -87,8 +88,12 @@ class SelectorList(cssutils.util.Base, list):
         """ returns serialized format """
         return cssutils.ser.do_css_SelectorList(self)
 
+
     def _setSelectorText(self, selectorText):
         """
+        selectortext
+            comma-separated list of selectors
+
         DOMException on setting
 
         - SYNTAX_ERR: (self)
@@ -98,54 +103,53 @@ class SelectorList(cssutils.util.Base, list):
           Raised if this rule is readonly.
         """
         self._checkReadonly()
-        tokens = self._tokenize(selectorText)
-        if tokens:
-            oldseq, self.seq = self.seq, [] # save and empty
-            self.seq = []
-            selectorparts = []
-            found = None
-            for i in range(len(tokens)):
-                t = tokens[i]
-                if self._ttypes.COMMA == t.type: # add new selector
-                    found = 'comma'
-                    try:
-                        done = self.appendSelector(selectorparts)
-                    except xml.dom.SyntaxErr, e:
-                        self.seq = oldseq
-                        self._log.error(e)
-                        return
-                    selectorparts = []
+        valid = True
+        tokenizer = self._tokenize2(selectorText)
+        newseq = []
+
+        expected = True
+        while True:
+            # find all upto and including next ",", EOF or nothing
+            selectortokens = self._tokensupto2(tokenizer, listseponly=True)
+            if selectortokens:
+                if self._tokenvalue(selectortokens[-1]) == ',':
+                    expected = selectortokens.pop()
                 else:
-                    found = 'selectorpart'
-                    selectorparts.append(t)
+                    expected = None
 
-            if found == 'comma':
-                self._log.error(u'SelectorList: Selectorlist ends with ",".')
-                self.seq = oldseq
-                return
-            elif selectorparts: # add new selector
-                try:
-                    done = self.appendSelector(selectorparts)
-                except xml.dom.SyntaxErr, e:
-                    self.seq = oldseq
-                    self._log.error(e)
-                    return
+                selector = Selector(selectortokens)
+                if selector.valid:
+                    newseq.append(selector)
+                else:
+                    valid = False
+                    self._log.error(u'SelectorList: Invalid Selector: %s' %
+                                    self._valuestr(selectortokens))
+            else:
+                break
 
-        else:
-            self._log.error(u'SelectorList: No selectors found.')
+        # post condition
+        if u',' == expected:
+            valid = False
+            self._log.error(u'SelectorList: Cannot end with ",": %r' %
+                            self._valuestr(selectorText))
+        elif expected:
+            valid = False
+            self._log.error(u'SelectorList: Unknown Syntax: %r' %
+                            self._valuestr(selectorText))
+
+        if valid:
+            self.seq = newseq
+            #for selector in newseq:
+            #    self.appendSelector(selector)
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(cssutils) The textual representation of the selector for
             a rule set.""")
+    
+    def __repr__(self):
+        return "cssutils.css.%s(selectorText=%r)" % (
+                self.__class__.__name__, self.selectorText)
 
-
-if __name__ == '__main__':
-    cssutils.css.cssstylerule.Selector = Selector # for main test
-    L = SelectorList()
-    L.selectorText = 'a'
-    print 1, L.selectorText
-    try:
-        L.selectorText = ','
-    except Exception, e:
-        print e
-    print 2, L.selectorText
+    def __str__(self):
+        return "<cssutils.css.%s object selectorText=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, id(self))
