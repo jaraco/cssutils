@@ -71,7 +71,7 @@ class Seq(object):
         """
         same as list.append but not a simple value but a SeqItem is appended
         """
-        self.values.append(str(value))
+        self.values.append(value) # str(value)??? does not work if value is e.g. comment
         self.types.append(type)
 
 
