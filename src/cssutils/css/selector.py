@@ -133,6 +133,7 @@ class Selector(cssutils.util.Base):
         """
         super(Selector, self).__init__()
 
+        self.valid = False
         self.seq = self._newseq()
         self.prefixes = set()
         if selectorText:
@@ -148,7 +149,10 @@ class Selector(cssutils.util.Base):
 
     def _setSelectorText(self, selectorText):
         """
-        NEW
+        sets this selectorText
+        
+        TODO:
+        raises xml.dom.Exception
         """
         self._checkReadonly()
         tokenizer = self._tokenize2(selectorText)
@@ -596,6 +600,7 @@ class Selector(cssutils.util.Base):
 
             # set
             if valid:
+                self.valid = True
                 self.seq = newseq
                 self.prefixes = new['prefixes']
 
