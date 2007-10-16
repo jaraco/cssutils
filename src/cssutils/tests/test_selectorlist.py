@@ -1,14 +1,11 @@
 """Testcases for cssutils.css.selectorlist.SelectorList."""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import basetest
-
 from cssutils.css.selectorlist import SelectorList
-
 
 class SelectorListTestCase(basetest.BaseTestCase):
 
@@ -28,7 +25,6 @@ class SelectorListTestCase(basetest.BaseTestCase):
         self.assertEqual(1, s.length)
         self.assertEqual(u'a', s.selectorText)
 
-
     def test_appendSelector(self):
         "SelectorList.appendSelector() and .length"
         s = SelectorList()
@@ -41,7 +37,6 @@ class SelectorListTestCase(basetest.BaseTestCase):
 
         self.assertEqual(u'a', s.selectorText)
 
-
     def test_selectorText(self):
         "SelectorList.selectorText"
         s = SelectorList()
@@ -53,8 +48,8 @@ class SelectorListTestCase(basetest.BaseTestCase):
 
         tests = {
             u'*': None,
-            u'/*1*/ *': None,
-            u'/*1*/ *, a': None,
+            u'/*1*/*': None,
+            u'/*1*/*, a': None,
             u'a, b': None,
             u'a ,b': u'a, b',
             u'a , b': u'a, b',
