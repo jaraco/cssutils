@@ -56,6 +56,7 @@ from cssstylerule import *
 from cssunknownrule import *
 from cssstyledeclaration import *
 from cssvalue import *
+from selectorlist import *
 from selector import *
 
 
