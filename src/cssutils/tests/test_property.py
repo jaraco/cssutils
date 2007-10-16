@@ -155,7 +155,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.do_raise_r(tests, att='_setPriority')
 
     def test_value(self):
-        "Property.value (DEPRECATED)"
+        "Property.value"
         p = cssutils.css.property.Property('top', u'1px')
         self.assertEqual('1px', p.value)
         p.value = '2px'
