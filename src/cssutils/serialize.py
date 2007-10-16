@@ -401,7 +401,7 @@ class CSSSerializer(object):
                     out.append(self.do_css_Selector(part).strip())
                 else:
                     out.append(part) # ?
-            return u''.join(out)
+            return u', '.join(out)
 
     def do_css_Selector(self, selector):
         """
