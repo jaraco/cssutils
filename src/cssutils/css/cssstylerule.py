@@ -1,8 +1,4 @@
 """CSSStyleRule implements DOM Level 2 CSS CSSStyleRule.
-
-TODO
-- parentRule?
-- parentStyleSheet?
 """
 __all__ = ['CSSStyleRule']
 __docformat__ = 'restructuredtext'
@@ -12,39 +8,43 @@ __version__ = '$LastChangedRevision$'
 
 import xml.dom
 import cssrule
-import cssstyledeclaration
 import cssutils
-from selector import Selector
 from selectorlist import SelectorList
+from cssstyledeclaration import CSSStyleDeclaration
 
 class CSSStyleRule(cssrule.CSSRule):
     """
-    represents a single rule set in a CSS style sheet.
-
+    The CSSStyleRule object represents a ruleset specified (if any) in a CSS
+    style sheet. It provides access to a declaration block as well as to the
+    associated group of selectors.
+    
     Properties
     ==========
-    cssText: of type DOMString
-        The parsable textual representation of this rule
     selectorText: of type DOMString
         The textual representation of the selector for the rule set. The
         implementation may have stripped out insignificant whitespace while
         parsing the selector.
     style: of type CSSStyleDeclaration, (DOM)
         The declaration-block of this rule set.
+        
+    inherited properties:
+        - cssText
+        - parentRule
+        - parentStyleSheet
+        - type: STYLE_RULE
 
     cssutils only
     -------------
     selectorList: of type SelectorList (cssutils only)
         A list of all Selector elements for the rule set.
-
-    Inherits properties from CSSRule
-
+    
     Format
     ======
-    ruleset
-      : selector [ COMMA S* selector ]*
-      LBRACE S* declaration [ ';' S* declaration ]* '}' S*
-      ;
+    ruleset::
+    
+        : selector [ COMMA S* selector ]*
+        LBRACE S* declaration [ ';' S* declaration ]* '}' S*
+        ;
     """
     type = cssrule.CSSRule.STYLE_RULE
 
@@ -68,8 +68,7 @@ class CSSStyleRule(cssrule.CSSRule):
             self.style = style
             self.seq.append(self.style)
         else:
-            self._style = cssstyledeclaration.CSSStyleDeclaration(
-                parentRule=self)
+            self._style = CSSStyleDeclaration(parentRule=self)
 
         self._readonly = readonly
 
@@ -83,7 +82,7 @@ class CSSStyleRule(cssrule.CSSRule):
         """
         DOMException on setting
 
-        - SYNTAX_ERR: (self, StyleDeclaration)
+        - SYNTAX_ERR: (self, StyleDeclaration, etc)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         - INVALID_MODIFICATION_ERR: (self)
@@ -96,83 +95,56 @@ class CSSStyleRule(cssrule.CSSRule):
           Raised if the rule is readonly.
         """
         super(CSSStyleRule, self)._setCssText(cssText)
-        tokens = self._tokenize(cssText)
-        valid = True
+        
+        tokenizer = self._tokenize2(cssText)
+        selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
+        styletokens = self._tokensupto2(tokenizer, blockendonly=True)
+        
+        if not selectortokens or self._tokenvalue(
+                                        selectortokens[0]).startswith(u'@'):
+            self._log.error(u'CSSStyleRule: No content or no style rule.',
+                    error=xml.dom.InvalidModificationErr)
 
-        # check if right token
-        if not tokens or tokens[0].value.startswith(u'@'):
-            self._log.error(u'CSSStyleRule: No CSSStyleRule found: %s' %
-                      self._valuestr(cssText),
-                      error=xml.dom.InvalidModificationErr)
-            return
-
-        # init
-        newselectorList = SelectorList()
-        newstyle = cssstyledeclaration.CSSStyleDeclaration(parentRule=self)
-        newseq = []
-
-        # get selector (must be one, see above)
-        selectortokens, endi = self._tokensupto(tokens,
-                                                    blockstartonly=True)
-        expected = '{' # or None (end)
-        if selectortokens[-1].value != expected:
-            self._log.error(u'CSSStyleRule: No StyleDeclaration found.',
-                selectortokens[-1])
-            return
-        newselectorList.selectorText = selectortokens[:-1]
-        newseq.append(newselectorList)
-
-        # get rest (StyleDeclaration and Comments)
-        i, imax = endi, len(tokens)
-        while i < imax:
-            t = tokens[i]
-            if self._ttypes.EOF == t.type:
-                expected = 'EOF'
-
-            elif self._ttypes.S == t.type: # ignore
-                pass
-
-            elif self._ttypes.COMMENT == t.type: # just add
-                newseq.append(cssutils.css.CSSComment(t))
-
-            elif self._ttypes.LBRACE == t.type:
-                foundtokens, endi = self._tokensupto(
-                    tokens[i:], blockendonly=True)
-                i += endi
-                if len(foundtokens) < 2:
-                    self._log.error(u'CSSStyleRule: Syntax Error.', t)
-                    return
-                else:
-                    styletokens = foundtokens[1:-1] # without { and }
-                    newstyle = cssstyledeclaration.CSSStyleDeclaration(
-                        parentRule=self)
-                    newstyle.cssText = styletokens
-                    newseq.append(newstyle)
-                    expected = '}'
-                continue
-
-            elif '}' == expected and self._ttypes.RBRACE == t.type:
-                expected = None
-
-            else:
-                self._log.error(u'CSSStyleRule: Unexpected token.', t)
-                return
-
-            i += 1
-
-        if expected == '{':
-            self._log.error(u'CSSStyleRule: No StyleDeclaration found: %s' %
-                      self._valuestr(cssText))
-            return
-        elif expected and expected == 'EOF':
-            self._log.error(u'CSSStyleRule: Trailing text after ending "}" or no end of StyleDeclaration found: %s' %
-                      self._valuestr(cssText))
-            return
         else:
-            # everything ok
-            self.selectorList = newselectorList
-            self.style = newstyle
-            self.seq = newseq
+            valid = True
+            
+            bracetoken = selectortokens.pop()
+            if self._tokenvalue(bracetoken) != u'{':
+                valid = False
+                self._log.error(
+                    u'CSSStyleRule: No start { of style declaration found: %r' %
+                    self._valuestr(cssText), bracetoken)
+            elif not selectortokens:
+                valid = False
+                self._log.error(u'CSSStyleRule: No selector found: %r.' %
+                            self._valuestr(cssText), colontoken)
+                
+            newselectorlist = SelectorList(selectorText=selectortokens)
+
+            newstyle = CSSStyleDeclaration()
+            if not styletokens:
+                valid = False
+                self._log.error(
+                    u'CSSStyleRule: No style declaration or "}" found: %r' %
+                    self._valuestr(cssText))            
+
+            braceorEOFtoken = styletokens.pop()
+            val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
+            if val != u'}' and typ != 'EOF':
+                valid = False
+                self._log.error(
+                    u'CSSStyleRule: No "}" after style declaration found: %r' %
+                    self._valuestr(cssText))
+            else:
+                if 'EOF' == typ:
+                    # add again as style needs it
+                    styletokens.append(braceorEOFtoken)
+                newstyle.cssText = styletokens
+
+            if valid:
+                self.valid = True
+                self.selectorList = newselectorlist
+                self.style = newstyle
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")
@@ -206,13 +178,13 @@ class CSSStyleRule(cssrule.CSSRule):
 
     def _getSelectorText(self):
         """
-        wrapper for cssutils Selector object
+        wrapper for cssutils SelectorList object
         """
         return self._selectorList.selectorText
 
     def _setSelectorText(self, selectorText):
         """
-        wrapper for cssutils Selector object
+        wrapper for cssutils SelectorList object
 
         selector
             of type string, might also be a comma separated list of
@@ -220,7 +192,7 @@ class CSSStyleRule(cssrule.CSSRule):
 
         DOMException on setting
 
-        - SYNTAX_ERR:
+        - SYNTAX_ERR: (SelectorList, Selector)
           Raised if the specified CSS string value has a syntax error
           and is unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
@@ -243,10 +215,7 @@ class CSSStyleRule(cssrule.CSSRule):
         """
         self._checkReadonly()
         if isinstance(style, basestring):
-            # may raise Exception!
-            temp = cssstyledeclaration.CSSStyleDeclaration(parentRule=self)
-            temp.cssText = style
-            self._style = temp
+            self._style = CSSStyleDeclaration(parentRule=self, cssText=style)
         else:
             self._style = style
             style.parentRule = self
@@ -255,19 +224,10 @@ class CSSStyleRule(cssrule.CSSRule):
         doc="(DOM) The declaration-block of this rule set.")
 
     def __repr__(self):
-        return "cssutils.css.%s(selectorText=%r)" % (
-                self.__class__.__name__, self.selectorText)
+        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
+                self.__class__.__name__, self.selectorText, self.style.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object selector=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, id(self))
-
-
-if __name__ == '__main__':
-    cssutils.css.cssstylerule.Selector = Selector # for main test
-    r = CSSStyleRule()
-    r.cssText = 'a {}a'
-    r.selectorText = u'b + a'
-    print r.cssText
-
-
+        return "<cssutils.css.%s object selector=%r style=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self.style.cssText, 
+                id(self))
