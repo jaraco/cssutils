@@ -121,7 +121,6 @@ class Property(cssutils.util.Base):
         valid = True
 
         tokenizer = self._tokenize2(cssText)
-
         nametokens = self._tokensupto2(tokenizer, propertynameendonly=True)
         valuetokens = self._tokensupto2(tokenizer, propertyvalueendonly=True)
         prioritytokens = self._tokensupto2(tokenizer, propertypriorityendonly=True)
@@ -341,8 +340,3 @@ class Property(cssutils.util.Base):
         return "<%s.%s object name=%r value=%r priority=%r at 0x%x>" % (
                 self.__class__.__module__, self.__class__.__name__,
                 self.name, self.cssValue.cssText, self.priority, id(self))
-
-
-if __name__ == '__main__':
-    p = Property(u'color', 'red', '! important')
-    print p.name, p.cssValue, p.priority

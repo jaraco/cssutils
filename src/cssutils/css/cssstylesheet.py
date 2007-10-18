@@ -64,17 +64,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.prefixes = set()
         self._readonly = readonly
 
-#    def __checkprefixes(self, stylerule, prefixes):
-#        """
-#        checks if all prefixes used in stylerule have been declared
-#        """
-#        notdeclared = set()
-#        for s in stylerule.selectorList:
-#            for prefix in s.prefixes:
-#                if not prefix in prefixes:
-#                    notdeclared.add(prefix)
-#        return notdeclared
-
     def _getCssText(self):
         return cssutils.ser.do_CSSStyleSheet(self)
 
@@ -204,119 +193,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.prefixes = new['prefixes']
         for r in self.cssRules:
             r.parentStyleSheet = self
-
-        #print '\nNEWSEQ:\n', newseq
-        #print self.prefixes
-
-        return
-
-        # -----------------
-
-        newcssRules = cssutils.css.CSSRuleList()
-
-        while i < imax:
-            t = tokens[i]
-
-#            if t.type == self._ttypes.EOF:
-#                break
-#
-#            # ignore
-#            if t.type in (self._ttypes.S, self._ttypes.CDO, self._ttypes.CDC):
-#                pass
-
-            # unexpected: } ;
-            if t.type in (self._ttypes.SEMICOLON,
-                            self._ttypes.LBRACE, self._ttypes.RBRACE):
-                self._log.error(u'CSSStyleSheet: Syntax Error',t)
-
-#            # simply add
-#            elif self._ttypes.COMMENT == t.type:
-#                newcssRules.append(cssutils.css.CSSComment(t))
-
-#            # @charset only at beginning
-#            elif self._ttypes.CHARSET_SYM == t.type:
-#                atruletokens, endi = self._tokensupto(tokens[i:])
-#                i += endi
-#                self._log.error(u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
-#                    t, xml.dom.HierarchyRequestErr)
-
-#            # @import before any StyleRule and @rule except @charset
-#            elif self._ttypes.IMPORT_SYM == t.type:
-#                atruletokens, endi = self._tokensupto(tokens[i:])
-#                if expected == '@import':
-#                    atrule = cssutils.css.CSSImportRule()
-#                    atrule.cssText = atruletokens
-#                    newcssRules.append(atrule)
-#                else:
-#                    self._log.error(
-#                        u'CSSStylesheet: CSSImportRule not allowed here.',
-#                        t, xml.dom.HierarchyRequestErr)
-#                i += endi
-
-#            # @namespace before any StyleRule and
-#            #  before @rule except @charset, @import
-#            elif self._ttypes.NAMESPACE_SYM == t.type:
-#                atruletokens, endi = self._tokensupto(tokens[i:])
-#                if expected in ('@import', '@namespace'):
-#                    atrule = cssutils.css.CSSNamespaceRule()
-#                    atrule.cssText = atruletokens
-#                    newcssRules.append(atrule)
-#                    newnamespaces.add(atrule.prefix)
-#                else:
-#                    self._log.error(
-#                        u'CSSStylesheet: CSSNamespaceRule not allowed here.',
-#                        t, xml.dom.HierarchyRequestErr)
-#                i += endi
-#                expected = '@namespace' # now no @import anymore!
-
-            # @media
-            elif self._ttypes.MEDIA_SYM == t.type:
-                atruletokens, endi = self._tokensupto(tokens[i:])
-                atrule = cssutils.css.CSSMediaRule()
-                atrule.cssText = atruletokens
-                newcssRules.append(atrule)
-                i += endi
-                expected = 'any'
-
-            # @page
-            elif self._ttypes.PAGE_SYM == t.type:
-                atruletokens, endi = self._tokensupto(tokens[i:])
-                atrule = cssutils.css.CSSPageRule()
-                atrule.cssText = atruletokens
-                newcssRules.append(atrule)
-                i += endi
-                expected = 'any'
-
-            # @unknown, insert in any case (but after @charset)
-            elif self._ttypes.ATKEYWORD == t.type:
-                atruletokens, endi = self._tokensupto(tokens[i:])
-                atrule = cssutils.css.CSSUnknownRule()
-                atrule.cssText = atruletokens
-                newcssRules.append(atrule)
-                i += endi
-
-            else: # probable StyleRule
-                ruletokens, endi = self._tokensupto(
-                    tokens[i:], blockendonly=True)
-                rule = cssutils.css.CSSStyleRule()
-                rule.cssText = ruletokens
-                notdeclared = self.__checkprefixes(rule, newprefixes)
-                if notdeclared:
-                    rule.valid = False
-                    self._log.error(
-                        u'CSSStylesheet: CSSStyleRule uses undeclared namespace prefixes: %s.' %
-                        ', '.join(notdeclared),
-                        t, xml.dom.NamespaceErr)
-                newcssRules.append(rule)
-                i += endi
-                expected = 'any'
-
-            i += 1
-
-        self.cssRules = newcssRules
-        for r in self.cssRules:
-            r.parentStyleSheet = self
-        self.prefixes = newprefixes
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")

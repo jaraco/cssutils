@@ -254,8 +254,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             # a property
             tokens = self._tokensupto2(tokenizer, starttoken=token,
                                        semicolon=True)
-            if self._tokenvalue(tokens[-1]) == u';' or\
-               self._type(tokens[-1]) == 'EOF':
+            if self._tokenvalue(tokens[-1]) == u';':
                 tokens.pop()
             property = Property()
             property.cssText = tokens

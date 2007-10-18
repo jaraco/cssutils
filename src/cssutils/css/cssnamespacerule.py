@@ -208,6 +208,19 @@ class CSSNamespaceRule(cssrule.CSSRule):
                         u'CSSNamespaceRule: Unexpected string.', token)
                     return expected
 
+            def _invalid(expected, seq, token, tokenizer=None):
+                # complete rule is invalid and ignored if not EOF is found!
+                eof = self._nexttoken(tokenizer, None)
+                if eof and 'EOF' == self._type(eof) and expected.endswith('uri'):
+                    new['uri'] = self._tokenvalue(token)[1:].strip() # "uri" or 'uri'
+                    seq.append(new['uri'])
+                    return 'EOF'
+                else:
+                    new['valid'] = False
+                    self._log.error(
+                        u'CSSNamespaceRule: Unexpected INVALID.', token)
+                    return expected
+
             def _uri(expected, seq, token, tokenizer=None):
                 # the namespace URI as URI which is DEPRECATED
                 if expected.endswith('uri'):
@@ -244,6 +257,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 seq=newseq, tokenizer=tokenizer,
                 productions={'IDENT': _ident,
                              'STRING': _string,
+                             'INVALID': _invalid,
                              'URI': _uri,
                              'CHAR': _char})
 
@@ -279,12 +293,3 @@ class CSSNamespaceRule(cssrule.CSSRule):
     def __str__(self):
         return "<cssutils.css.%s object uri=%r prefix=%r at 0x%x>" % (
                 self.__class__.__name__, self.uri, self.prefix, id(self))
-
-if __name__ == '__main__':
-    c = CSSNamespaceRule()
-    c.uri = "x"
-    print c.cssText
-    c.prefix = "p"
-    print c.cssText
-    c.cssText = r'''@namespace "\"";'''
-    print c.cssText
