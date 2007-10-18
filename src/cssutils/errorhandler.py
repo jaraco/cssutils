@@ -23,7 +23,6 @@ __version__ = '$LastChangedRevision$'
 import logging
 import xml.dom
 
-
 class _ErrorHandler(object):
     """
     handles all errors and log messages
