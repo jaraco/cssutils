@@ -110,13 +110,7 @@ class Tokenizer(object):
                     found = match.group(0)
 
                     if fullsheet:
-                        # incomplete STRING or URI?
-                        if 'INVALID' == name:
-                            # INVALID is fixed to valid STRING
-                            name = 'STRING'
-                            found = '%s%s' % (found, found[0])
-
-                        elif 'FUNCTION' == name:
+                        if 'FUNCTION' == name:
                             f = found.replace('\\', '')
                             if f.startswith(u'url('):
                                 # "url(" is literaland my not be URL( but u\\rl(
@@ -141,8 +135,6 @@ class Tokenizer(object):
                         col += len(found)
                     break
 
-
-
             else:
                 # should not happen at all
                 raise xml.dom.SyntaxErr('no token match "%s(...)"' % text[:10])
@@ -150,28 +142,3 @@ class Tokenizer(object):
 
         if fullsheet:
             yield ('EOF', u'', line, col)
-
-
-if __name__ == '__main__':
-    from pprint import pprint
-    css = u'''@charset "utf-8";
-    a {
-        color: red;
-        left: 1px "a string" url("a") 'string';
-    }
-    /** / comment */
-    @media all {
-        x+b>c#a.f {
-            color: #000;
-            c\olor: rgb(1,2,3)
-            }
-        } '''
-    css = '''@import ident" string "'string'
-  #hash 0px0%0 0.0 1.0 url("a") url( "a  ") url('a')func(    <!-- --> \n\f\t~=|=^=$=*=/* * / /* */ ()[{}.
-    #000
-    '''
-    css = r'\1 \22 \333 \4444 \55555 \666666 \777777 7 \7777777'
-    from css2productions import *
-    tokens = Tokenizer(MACROS, PRODUCTIONS).tokenize(css, '\n')
-    for token in tokens:
-        print token
