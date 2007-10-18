@@ -64,16 +64,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.prefixes = set()
         self._readonly = readonly
 
-    def __checkprefixes(self, stylerule, prefixes):
-        """
-        checks if all prefixes used in stylerule have been declared
-        """
-        notdeclared = set()
-        for s in stylerule.selectorList:
-            for prefix in s.prefixes:
-                if not prefix in prefixes:
-                    notdeclared.add(prefix)
-        return notdeclared
+#    def __checkprefixes(self, stylerule, prefixes):
+#        """
+#        checks if all prefixes used in stylerule have been declared
+#        """
+#        notdeclared = set()
+#        for s in stylerule.selectorList:
+#            for prefix in s.prefixes:
+#                if not prefix in prefixes:
+#                    notdeclared.add(prefix)
+#        return notdeclared
 
     def _getCssText(self):
         return cssutils.ser.do_CSSStyleSheet(self)
@@ -138,29 +138,60 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     new['prefixes'].add(rule.prefix)
             return 2
 
+        def pagerule(expected, seq, token, tokenizer):
+            rule = cssutils.css.CSSPageRule()
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            if rule.valid:
+                seq.append(rule)
+            return 3
+
+        def mediarule(expected, seq, token, tokenizer):
+            rule = cssutils.css.CSSMediaRule()
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            if rule.valid:
+                seq.append(rule)
+            return 3
+
         def ruleset(expected, seq, token, tokenizer):
-            tokens = self._tokensupto2(tokenizer, token)
-            print '\n\n--- RULESET ---\n', tokens
+            rule = cssutils.css.CSSStyleRule()
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            
+            # check namespaces
+            notdeclared = set()           
+            for selector in rule.selectorList.seq:
+                for prefix in selector.prefixes:
+                    if not prefix in new['prefixes']:
+                        notdeclared.add(prefix)
+            if notdeclared:
+                rule.valid = False
+                self._log.error(
+                    u'CSSStylesheet: CSSStyleRule uses undeclared namespace prefixes: %s.' %
+                    u', '.join(notdeclared), error=xml.dom.NamespaceErr)
+
+            if rule.valid:
+                seq.append(rule)
             return 3
 
         # expected:
         # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
-
         valid, expected = self._parse(0, newseq, tokenizer,
             {'CDO': lambda *ignored: None,
              'CDC': lambda *ignored: None,
              'CHARSET_SYM': charsetrule,
              'IMPORT_SYM': importrule,
-             'NAMESPACE_SYM': namespacerule
-             }, ruleset)
+             'NAMESPACE_SYM': namespacerule,
+             'PAGE_SYM': pagerule,
+             'MEDIA_SYM': mediarule
+             }, 
+             default=ruleset)
 
         self.cssRules = newseq
         self.prefixes = new['prefixes']
         for r in self.cssRules:
             r.parentStyleSheet = self
 
-        print '\nNEWSEQ:\n', newseq
-        print self.prefixes
+        #print '\nNEWSEQ:\n', newseq
+        #print self.prefixes
 
         return
 
