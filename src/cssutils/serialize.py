@@ -397,7 +397,7 @@ class CSSSerializer(object):
                     out.append(part.cssText)
                 elif u',' == part:
                     out.append(u', ')
-                elif isinstance(part, cssutils.css.cssstylerule.Selector):
+                elif isinstance(part, cssutils.css.Selector):
                     out.append(self.do_css_Selector(part).strip())
                 else:
                     out.append(part) # ?
