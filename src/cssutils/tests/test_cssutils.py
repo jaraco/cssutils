@@ -7,11 +7,11 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
-import codecs
 import os
 import xml.dom
 import basetest
 import cssutils
+import codecs
 
 class CSSutilsTestCase(basetest.BaseTestCase):
 
