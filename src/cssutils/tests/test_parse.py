@@ -12,14 +12,18 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
     def test_invalidstring(self):
         "cssutils.parseString(INVALID_STRING)"
-        validfromhere = '@import "x";'
+        validfromhere = '@namespace "x";'
         csss = (
             u'''@charset "ascii
                 ;''' + validfromhere,
             u'''@charset 'ascii
                 ;''' + validfromhere,
-#            u'''@import "y
-#                ;''' + validfromhere,
+            u'''@namespace "y
+                ;''' + validfromhere,
+            u'''@import "y
+                ;''' + validfromhere,
+            u'''@import url('a
+                );''' + validfromhere,
             u'''@unknown "y
                 ;''' + validfromhere)
         for css in csss:
