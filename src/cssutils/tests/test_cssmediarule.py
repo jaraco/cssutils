@@ -30,7 +30,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual([], r.cssRules)
 
         self.assertEqual(cssutils.stylesheets.MediaList, type(r.media))
-        self.assertEqual(['all'], r.media)
+        self.assertEqual('all', r.media.mediaText)
 
         # until any rules
         self.assertEqual(u'', r.cssText)
@@ -104,7 +104,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_raise_r(tests)
 
         m = cssutils.css.CSSMediaRule()
-        m.cssText = u'''@media all {@x; /*1*/a{color: red;}'''
+        m.cssText = u'''@media all {@x; /*1*/a{color: red;}}'''
         for r in m.cssRules:
             self.assertEqual(m, r.parentRule)
 
