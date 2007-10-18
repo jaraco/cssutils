@@ -250,9 +250,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         self._checkReadonly()
         tokenizer = self._tokenize2(cssText)
 
-        # for closures: must be a mutable
-        new = {'valid': True}
-
         def _ident(expected, seq, token, tokenizer=None):
             # a property
             tokens = self._tokensupto2(tokenizer, starttoken=token,
@@ -265,7 +262,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             if property.valid:
                 seq.append(property)
             else:
-                new['valid'] = False
                 self._log.error(u'CSSStyleDeclaration: Invalid Property: %s'
                                 % self._valuestr(tokens))
             return expected
@@ -278,7 +274,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         # valid set by parse
         # no post conditions
-        if valid and new['valid']:
+        if valid:
             self.seq = newseq
 
     cssText = property(_getCssText, _setCssText,
