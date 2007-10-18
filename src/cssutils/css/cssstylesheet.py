@@ -100,11 +100,17 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         # for closures: must be a mutable
         new = { 'prefixes': set() }
 
+        def S(expected, seq, token, tokenizer=None):
+            # @charset must be at absolute beginning of style sheet
+            if expected == 0:
+                return 1
+            else: 
+                return expected
+
         def charsetrule(expected, seq, token, tokenizer):
-            # TODO: check if at absolute beginning of sheet
             rule = cssutils.css.CSSCharsetRule()
             rule.cssText = self._tokensupto2(tokenizer, token)
-            if expected > 0:
+            if expected > 0 or len(seq) > 0:
                 self._log.error(
                     u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
                     token, xml.dom.HierarchyRequestErr)
@@ -152,6 +158,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 seq.append(rule)
             return 3
 
+        def unknownrule(expected, seq, token, tokenizer):
+            rule = cssutils.css.CSSUnknownRule()
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            if rule.valid:
+                seq.append(rule)
+            return expected
+
         def ruleset(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSStyleRule()
             rule.cssText = self._tokensupto2(tokenizer, token)
@@ -175,13 +188,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         # expected:
         # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
         valid, expected = self._parse(0, newseq, tokenizer,
-            {'CDO': lambda *ignored: None,
+            {'S': S,
+             'CDO': lambda *ignored: None,
              'CDC': lambda *ignored: None,
              'CHARSET_SYM': charsetrule,
              'IMPORT_SYM': importrule,
              'NAMESPACE_SYM': namespacerule,
              'PAGE_SYM': pagerule,
-             'MEDIA_SYM': mediarule
+             'MEDIA_SYM': mediarule,
+             'ATKEYWORD': unknownrule
              }, 
              default=ruleset)
 
@@ -529,16 +544,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             return styles
 
         for style in styleDeclarations(self):
-            snpl = [x for x in style.seq
-                   if isinstance(x, cssutils.css.SameNamePropertyList)]
-            for pl in snpl:
-                for p in pl:
-                    v = p.cssValue
-                    if v.CSS_VALUE_LIST == v.cssValueType:
-                        for item in v:
-                            setProperty(item)
-                    elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
-                        setProperty(v)
+            for p in style:
+                v = p.cssValue
+                if v.CSS_VALUE_LIST == v.cssValueType:
+                    for item in v:
+                        setProperty(item)
+                elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
+                    setProperty(v)
 
     def setSerializer(self, cssserializer):
         """
