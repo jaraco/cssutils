@@ -136,7 +136,7 @@ class Base(object):
             return token[1]
 
     def _nexttoken(self, tokenizer, default=None):
-        "returns next token in tokenizer of the default value"
+        "returns next token in generator tokenizer or the default value"
         try:
             return tokenizer.next()
         except (StopIteration, AttributeError):
@@ -147,6 +147,7 @@ class Base(object):
                      starttoken=None, # not needed anymore?
                      blockstartonly=False,
                      blockendonly=False,
+                     mediaendonly=False,
                      semicolon=False,
                      propertynameendonly=False,
                      propertyvalueendonly=False,
@@ -170,6 +171,9 @@ class Base(object):
             brace = -1 # set to 0 with first {
         elif blockendonly: # }
             ends = u'}'
+        elif mediaendonly: # }
+            ends = u'}'
+            brace = 1 # rules } and mediarules }
         elif semicolon:
             ends = u';'
         elif propertynameendonly: # : and ; in case of an error
@@ -284,7 +288,7 @@ class Base(object):
                 expected = p(expected, seq, token, tokenizer)
             else:
                 valid = False
-                self._log.error('Unexpected token (%s, %s, %s, %s)' % token)
+                self._log.error(u'Unexpected token (%s, %s, %s, %s)' % token)
 
         return valid, expected
 
