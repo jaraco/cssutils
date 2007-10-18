@@ -339,7 +339,7 @@ class CSSSerializer(object):
         + CSSComments
         """
         if rule.atkeyword and not self._noinvalids(rule):
-            out = [u'@%s' % rule.atkeyword]
+            out = [u'%s' % rule.atkeyword]
             for part in rule.seq:
                 if isinstance(part, cssutils.css.csscomment.CSSComment):
                     if self.prefs.keepComments:
