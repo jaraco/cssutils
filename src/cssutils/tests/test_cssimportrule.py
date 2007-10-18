@@ -92,7 +92,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             })
         self.do_raise_r(tests) # set cssText
 
-    # TODO
     def test_incomplete(self):
         "CSSImportRule (incomplete)"
         tests = {
