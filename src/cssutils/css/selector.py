@@ -284,7 +284,10 @@ class Selector(cssutils.util.Base):
                 val, typ = self._tokenvalue(token), self._type(token)
                 if 'universal' in expected:
                     append(seq, val, typ)
-                    new['prefixes'].add(val.split(u'|')[0])
+                    
+                    newprefix = val.split(u'|')[0]
+                    if newprefix and newprefix != u'*':
+                        new['prefixes'].add(newprefix)
                     
                     if 'negation' == context:
                         return negationend
@@ -304,12 +307,20 @@ class Selector(cssutils.util.Base):
                 if 'attrib' == context and 'prefix' in expected:
                     # [PREFIX|att]
                     append(seq, val, typ)
-                    new['prefixes'].add(val.split(u'|')[0])
+                    
+                    newprefix = val.split(u'|')[0]
+                    if newprefix and newprefix != u'*':
+                        new['prefixes'].add(newprefix)
+                        
                     return attname2
                 elif 'type_selector' in expected:
                     # PREFIX|*
                     append(seq, val, typ)
-                    new['prefixes'].add(val.split(u'|')[0])
+                    
+                    newprefix = val.split(u'|')[0]
+                    if newprefix and newprefix != u'*':
+                        new['prefixes'].add(newprefix)
+                        
                     return element_name
                 else:
                     self._log.error(
