@@ -151,6 +151,8 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSMediaRule()
         charsetrule = cssutils.css.CSSCharsetRule('ascii')
         importrule = cssutils.css.CSSImportRule('x')
+        namespacerule = cssutils.css.CSSNamespaceRule()
+        pagerule = cssutils.css.CSSPageRule()
         mediarule = cssutils.css.CSSMediaRule()
         unknownrule = cssutils.css.CSSUnknownRule('@x;')
         stylerule = cssutils.css.CSSStyleRule('a')
@@ -162,6 +164,10 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
                           r.insertRule, charsetrule, 0)
         self.assertRaises(xml.dom.HierarchyRequestErr,
                           r.insertRule, importrule, 0)
+        self.assertRaises(xml.dom.HierarchyRequestErr,
+                          r.insertRule, namespacerule, 0)
+        self.assertRaises(xml.dom.HierarchyRequestErr,
+                          r.insertRule, pagerule, 0)
         self.assertRaises(xml.dom.HierarchyRequestErr,
                           r.insertRule, mediarule, 0)
 
