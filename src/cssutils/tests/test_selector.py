@@ -187,6 +187,13 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assert_(isinstance(s2, s.__class__))
         self.assert_(sel == s2.selectorText)
 
+    def test_prefixes(self):
+        "Selector.prefixes"
+        sel=u'a|x1 a|x2 |y *|z [b|x] [a|x="1"]'
+        s = cssutils.css.Selector(selectorText=sel)
+        
+        self.assertEqual(set('ab'), s.prefixes)
+
 if __name__ == '__main__':
     import unittest
     unittest.main()
