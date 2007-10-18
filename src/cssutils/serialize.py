@@ -80,7 +80,6 @@ class CSSSerializer(object):
         if not prefs:
             prefs = Preferences()
         self.prefs = prefs
-        self.ttypes = cssutils.token.Token
         self._level = 0 # current nesting level
 
     def _serialize(self, text):
