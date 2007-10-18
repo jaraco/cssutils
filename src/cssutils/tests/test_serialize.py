@@ -164,7 +164,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self._resetprefs()
 
     def test_Property(self):
-        "CSSSerializer.do_cssProperty"
+        "CSSSerializer.do_Property"
         name="color"
         value="red"
         priority="!important"
@@ -172,12 +172,12 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         s = cssutils.css.property.Property(
             name=name, value=value, priority=priority)
         self.assertEqual(u'color: red !important',
-                    cssutils.ser.do_cssProperty(s))
+                    cssutils.ser.do_Property(s))
 
         s = cssutils.css.property.Property(
             name=name, value=value)
         self.assertEqual(u'color: red',
-                    cssutils.ser.do_cssProperty(s))
+                    cssutils.ser.do_Property(s))
 
 
 if __name__ == '__main__':
