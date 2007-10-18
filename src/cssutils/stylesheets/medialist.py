@@ -227,9 +227,3 @@ class MediaList(cssutils.util.Base, list):
     def __str__(self):
         return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
                 self.__class__.__name__, self.mediaText, id(self))
-
-
-if __name__ == '__main__':
-    m = MediaList()
-    m.mediaText = u'all; @x'
-    print m.mediaText
