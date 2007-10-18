@@ -16,6 +16,7 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import codec
+import codecs
 import cssutils
 import cssutils.tokenize2
 from cssutils import stylesheets
