@@ -231,29 +231,28 @@ class Base(object):
         some have no expectation like S or COMMENT, so simply return
         the current value of self.__expected
         """
-        def _COMMENT(expected, seq, token, tokenizer=None):
+        def COMMENT(expected, seq, token, tokenizer=None):
             "default implementation for comment token"
             seq.append(cssutils.css.CSSComment([token]))
             return expected
 
-        def _S(expected, seq, token, tokenizer=None):
+        def S(expected, seq, token, tokenizer=None):
             "default implementation for S token"
             return expected
 
-        def _atrule(expected, seq, token, tokenizer=None):
+        def ATKEYWORD(expected, seq, token, tokenizer=None):
             "TODO: add default impl for unexpected @rule"
             return expected
 
-        def _EOF(expected=None, seq=None, token=None, tokenizer=None):
+        def EOF(expected=None, seq=None, token=None, tokenizer=None):
             "default implementation for EOF token"
             return 'EOF'
 
-        p = {
-            'COMMENT': _COMMENT,
-            'S': _S,
-            'ATKEYWORD': _atrule,
-            'EOF': _EOF # only available if fullsheet
-            }
+        p = {'COMMENT': COMMENT,
+             'S': S,
+             'ATKEYWORD': ATKEYWORD,
+             'EOF': EOF # only available if fullsheet
+             }
         p.update(productions)
         return p
 
