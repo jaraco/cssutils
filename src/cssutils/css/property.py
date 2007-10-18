@@ -154,7 +154,6 @@ class Property(cssutils.util.Base):
                 valid = False
                 self._log.error(u'Property: No property value found: %r.' %
                                 self._valuestr(cssText), colontoken)
-
         else:
             valid = False
             self._log.error(u'Property: No property name found: %r.' %
@@ -164,6 +163,11 @@ class Property(cssutils.util.Base):
             self.name = nametokens
             self.cssValue = valuetokens
             self.priority = prioritytokens
+
+            if not self.cssValue._value:
+                valid = False
+
+        self.valid = valid # set in any case
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="A parsable textual representation.")
