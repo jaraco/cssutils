@@ -125,7 +125,7 @@ class CSSPageRule(cssrule.CSSRule):
                 u'CSSPageRule selectorText: No valid selector: %r' %
                     self._valuestr(selectorText))
             
-        if not newselector in (u'', u':first', u':left', u':right'):
+        if not newselector in (None, u':first', u':left', u':right'):
             self._log.warn(u'CSSPageRule: Unknown CSS 2.1 @page selector: %r' %
                      newselector, neverraise=True)
 
@@ -156,19 +156,21 @@ class CSSPageRule(cssrule.CSSRule):
         super(CSSPageRule, self)._setCssText(cssText)
         
         tokenizer = self._tokenize2(cssText)
-        selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
-        styletokens = self._tokensupto2(tokenizer, blockendonly=True)
-
-        if len(selectortokens) < 2 or not self._tokenvalue(
-                selectortokens[0], normalize=True).startswith(u'@page'):
-            self._log.error(u'CSSPageRule: No content or no page rule.',
-                    error=xml.dom.InvalidModificationErr)
-            
+        attoken = self._nexttoken(tokenizer, None)
+        if not attoken or u'@page' != self._tokenvalue(
+                                                attoken, normalize=True):
+            self._log.error(u'CSSPageRule: No CSSPageRule found: %s' %
+                self._valuestr(cssText),
+                error=xml.dom.InvalidModificationErr)
         else:
             valid = True
-            # already checked if at least 2 tokens
-            atpagetoken = selectortokens.pop(0) 
-            bracetoken = selectortokens.pop()
+            selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
+            styletokens = self._tokensupto2(tokenizer, blockendonly=True)
+            
+            try:
+                bracetoken = selectortokens.pop()
+            except IndexError:
+                bracetoken = None
             if self._tokenvalue(bracetoken) != u'{':
                 valid = False
                 self._log.error(
@@ -258,7 +260,7 @@ class CSSPageRule(cssrule.CSSRule):
         """
         self._checkReadonly()
         if isinstance(style, basestring):
-            self._style = CSSStyleDeclaration(parentRule=self)
+            self._style = CSSStyleDeclaration(parentRule=self, cssText=style)
         else:
             self._style = style
             style.parentRule = self
