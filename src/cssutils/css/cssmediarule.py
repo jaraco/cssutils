@@ -12,24 +12,23 @@ import cssutils
 
 class CSSMediaRule(cssrule.CSSRule):
     """
-    represents an @media rule in a CSS style sheet. A @media rule can be
-    used to delimit style rules for specific media types.
+    Objects implementing the CSSMediaRule interface can be identified by the
+    MEDIA_RULE constant. On these objects the type attribute must return the
+    value of that constant.
 
     Properties
     ==========
     cssRules: A css::CSSRuleList of all CSS rules contained within the
         media block.
-    cssText: of type DOMString
-        The parsable textual representation of this rule
     media: of type stylesheets::MediaList, (DOM readonly)
         A list of media types for this rule of type MediaList.
+    inherited from CSSRule
+        cssText
 
     cssutils only
     -------------
     atkeyword:
         the literal keyword used
-
-    Inherits properties from CSSRule
 
     Format
     ======
@@ -50,9 +49,113 @@ class CSSMediaRule(cssrule.CSSRule):
             mediaText, readonly=readonly)
         if not self.media.valid:
             self._media = cssutils.stylesheets.MediaList()
-        self._rules = cssutils.css.cssrulelist.CSSRuleList()
+        self._cssRules = cssutils.css.cssrulelist.CSSRuleList()
 
         self._readonly = readonly
+
+    def _getCssText(self):
+        """
+        returns serialized property cssText
+        """
+        return cssutils.ser.do_CSSMediaRule(self)
+
+    def _setCssText(self, cssText):
+        """
+        DOMException on setting
+
+        - NO_MODIFICATION_ALLOWED_ERR: (self)
+          Raised if the rule is readonly.
+        - INVALID_MODIFICATION_ERR: (self)
+          Raised if the specified CSS string value represents a different
+          type of rule than the current one.
+        - HIERARCHY_REQUEST_ERR: (self)
+          Raised if the rule cannot be inserted at this point in the
+          style sheet.
+        - SYNTAX_ERR: (self)
+          Raised if the specified CSS string value has a syntax error and
+          is unparsable.
+        """
+        super(CSSMediaRule, self)._setCssText(cssText)
+        
+        tokenizer = self._tokenize2(cssText)
+        attoken = self._nexttoken(tokenizer, None)
+        if not attoken or u'@media' != self._tokenvalue(
+                                                    attoken, normalize=True):
+            self._log.error(u'CSSMediaRule: No CSSMediaRule found: %s' %
+                self._valuestr(cssText),
+                error=xml.dom.InvalidModificationErr)
+        else:
+            # media
+            valid = True
+            mediatokens = self._tokensupto2(tokenizer, blockstartonly=True)        
+            if len(mediatokens) < 1 or\
+               u'{' != self._tokenvalue(mediatokens[-1]):
+                self._log.error(u'CSSMediaRule: No "{" found.')
+            else:
+                newmedia = cssutils.stylesheets.MediaList()
+                newmedia.mediaText = mediatokens[:-1] # omit {
+            
+            # cssRules
+            cssrulestokens = self._tokensupto2(tokenizer, mediaendonly=True)
+            newcssrules = cssutils.css.CSSRuleList()
+            if len(cssrulestokens) < 1 or (
+               u'}' != self._tokenvalue(cssrulestokens[-1]) and
+               'EOF' != self._type(cssrulestokens[-1])):
+                self._log.error(u'CSSMediaRule: No "}" found.')
+            elif self._nexttoken(tokenizer, None):
+                self._log.error(u'CSSMediaRule: Content after "}" found.')
+            else:
+                brace = cssrulestokens.pop()
+                
+                # for closures: must be a mutable
+                new = {'valid': True }
+                
+                def ruleset(expected, seq, token, tokenizer):
+                    rule = cssutils.css.CSSStyleRule()
+                    rule.cssText = self._tokensupto2(tokenizer, token)
+                    if new['valid']:
+                        seq.append(rule)
+                    return expected
+        
+                def atrule(expected, seq, token, tokenizer):
+                    # TODO: get complete rule!
+                    tokens = self._tokensupto2(tokenizer, token)
+                    atval = self._tokenvalue(token)
+                    if atval in ('@charset', '@import', '@namespace', '@page', 
+                                 '@media'):
+                        self._log.error(
+                            u'CSSMediaRule: This rule is not allowed in CSSMediaRule - ignored: %s.'
+                                % self._valuestr(tokens), 
+                                error=xml.dom.HierarchyRequestErr)
+                    else:
+                        rule = cssutils.css.CSSUnknownRule()
+                        rule.cssText = tokens
+                        seq.append(rule)
+                    return expected
+                
+                tokenizer = (t for t in cssrulestokens) # TODO: not elegant!
+                valid, expected = self._parse('}', newcssrules, tokenizer, {
+                     'CHARSET_SYM': atrule,
+                     'IMPORT_SYM': atrule,
+                     'NAMESPACE_SYM': atrule,
+                     'PAGE_SYM': atrule,
+                     'MEDIA_SYM': atrule,
+                     'ATKEYWORD': atrule
+                     }, 
+                     default=ruleset)
+                
+                # no post condition
+                    
+            if newmedia.valid and valid:
+                self._media = newmedia
+                self._cssRules = newcssrules
+                for r in self.cssRules:
+                    r.parentRule = self # for CSSComment possible only here
+        
+        
+
+    cssText = property(_getCssText, _setCssText,
+        doc="(DOM attribute) The parsable textual representation.")
 
     def _getMedia(self):
         "returns MediaList"
@@ -63,7 +166,7 @@ class CSSMediaRule(cssrule.CSSRule):
             MediaList")
 
     def _getCssRules(self):
-        return self._rules
+        return self._cssRules
 
     cssRules = property(_getCssRules,
         doc="(DOM readonly) A css::CSSRuleList of all CSS rules contained\
@@ -87,8 +190,8 @@ class CSSMediaRule(cssrule.CSSRule):
         self._checkReadonly()
 
         try:
-            self._rules[index].parentRule = None # detach
-            del self._rules[index] # remove from @media
+            self._cssRules[index].parentRule = None # detach
+            del self._cssRules[index] # remove from @media
         except IndexError:
             raise xml.dom.IndexSizeErr(
                 u'CSSMediaRule: %s is not a valid index in the rulelist of length %i' % (
@@ -170,118 +273,6 @@ class CSSMediaRule(cssrule.CSSRule):
         rule.parentRule = self
         return index
 
-    def _getCssText(self):
-        """
-        returns serialized property cssText
-        """
-        return cssutils.ser.do_CSSMediaRule(self)
-
-    def _setCssText(self, cssText):
-        """
-        DOMException on setting
-
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if the rule is readonly.
-        - INVALID_MODIFICATION_ERR: (self)
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - HIERARCHY_REQUEST_ERR: (self)
-          Raised if the rule cannot be inserted at this point in the
-          style sheet.
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
-        """
-        super(CSSMediaRule, self)._setCssText(cssText)
-        tokens = self._tokenize(cssText)
-        valid = True
-
-        # check if right token
-        if not tokens or tokens and tokens[0].type != self._ttypes.MEDIA_SYM:
-            self._log.error(u'CSSMediaRule: No CSSMediaRule found: %s' %
-                      self._valuestr(cssText),
-                      error=xml.dom.InvalidModificationErr)
-            return
-        else:
-            newatkeyword = tokens[0].value
-
-        newmedia = cssutils.stylesheets.MediaList()
-        mediatokens, endi = self._tokensupto(tokens[1:],
-                                                    blockstartonly=True)
-
-        # checks if media ends with rules start and if at least
-        # one media found, medialist default to all which is wrong here!
-        if mediatokens and mediatokens[-1].value == u'{' and \
-           self._ttypes.IDENT in [_t.type for _t in mediatokens]:
-            newmedia.mediaText = mediatokens[:-1]
-        else:
-            self._log.error(xml.dom.SyntaxErr(
-                u'CSSMediaRule: Syntax error in MediaList: %s' %
-                self._valuestr(cssText)))
-            return
-
-        newrules = cssutils.css.CSSRuleList()
-        i, imax = endi + 2, len(tokens)
-        while i < imax:
-            t = tokens[i]
-
-            if t.type == self._ttypes.EOF:
-                break
-
-            elif self._ttypes.S == t.type: # ignore
-                pass
-
-            elif self._ttypes.COMMENT == t.type: # just add
-                newrules.append(cssutils.css.CSSComment(t))
-
-            elif u'}' == t.value: # end
-                if i+1 < len(tokens):
-                    self._log.error(
-                        u'CSSMediaRule: Unexpected tokens found: "%s".'
-                        % self._valuestr(tokens[i:]), t)
-                break
-
-            elif self._ttypes.ATKEYWORD == t.type:
-                # @UNKNOWN
-                self._log.info(u'CSSMediaRule: Found unknown @rule.', t,
-                         error=None)
-                atruletokens, endi = self._tokensupto(tokens[i:])
-                i += endi
-                atrule = cssutils.css.CSSUnknownRule()
-                atrule.cssText = atruletokens
-                newrules.append(atrule)
-
-            elif t.type in (self._ttypes.CHARSET_SYM, self._ttypes.IMPORT_SYM,
-                            self._ttypes.MEDIA_SYM, self._ttypes.PAGE_SYM):
-                atruletokens, endi = self._tokensupto(tokens[i:])
-                i += endi + 1
-                self._log.error(
-                    u'CSSMediaRule: This rule is not allowed in CSSMediaRule - ignored: %s.'
-                    % self._valuestr(atruletokens), t,
-                    xml.dom.HierarchyRequestErr)
-                continue
-
-            else:
-                # StyleRule
-                ruletokens, endi = self._tokensupto(
-                    tokens[i:], blockendonly=True)
-                i += endi
-                rule = cssutils.css.CSSStyleRule()
-                rule.cssText = ruletokens
-                newrules.append(rule)
-
-            i += 1
-
-        if valid:
-            self.atkeyword = newatkeyword
-            self._media = newmedia
-            self._rules = newrules
-            for r in self._rules:
-                r.parentRule = self
-
-    cssText = property(_getCssText, _setCssText,
-        doc="(DOM attribute) The parsable textual representation.")
-
     def __repr__(self):
         return "cssutils.css.%s(mediaText=%r)" % (
                 self.__class__.__name__, self.media.mediaText)
@@ -289,9 +280,3 @@ class CSSMediaRule(cssrule.CSSRule):
     def __str__(self):
         return "<cssutils.css.%s object mediaText=%r at 0x%x>" % (
                 self.__class__.__name__, self.media.mediaText, id(self))
-
-
-if __name__ == '__main__':
-    m = CSSMediaRule()
-    m.cssText = u'@media all {@;}'
-    print m.cssText
