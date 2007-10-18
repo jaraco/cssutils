@@ -21,10 +21,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
     testsall = {
         # IDENT
-
-        # TODO: escape ends with explicit space but \r\n as single space
-        #u'\\1\r\nb': [('IDENT', u'\\1\r\nb', 1, 1)],
-
         u'äöüß€': [('IDENT', u'äöüß€', 1, 1)],
         u' a ': [('S', u' ', 1, 1),
                  ('IDENT', u'a', 1, 2),
@@ -52,10 +48,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
             [('IDENT', u'\\{\\}\\(\\)\\[\\]\\#\\@\\.\\,', 1, 1)],
 
         # STRING
-
-        # TODO: ?
-        #u'"\\" "': [('STRING', u'"\\" "', 1, 1)],
-
         u' "" ': [('S', u' ', 1, 1),
                  ('STRING', u'""', 1, 2),
                  ('S', u' ', 1, 4)],
@@ -68,8 +60,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u" '' ": [('S', u' ', 1, 1),
                  ('STRING', u"''", 1, 2),
                  ('S', u' ', 1, 4)],
-        #TODO: u"""'\\''""": [('STRING', u"""'\\''""", 1, 1)],
-        #TODO: u'''"\\""''': [('STRING', u'''"\\""''', 1, 1)],
         u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
         u"'\\\n\\\n\\\n'": [('STRING', u"'\\\n\\\n\\\n'", 1, 1)],
         u"'\\\f'": [('STRING', u"'\\\f'", 1, 1)],
@@ -197,9 +187,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' . ': [('S', u' ', 1, 1),
                   ('CHAR', u'.', 1, 2),
                   ('S', u' ', 1, 3)],
+
         }
 
-    tests3 = {
+    tests3 = {                      
         # ATKEYWORD
         u' @x ': [('S', u' ', 1, 1),
                   ('ATKEYWORD', u'@x', 1, 2),
@@ -407,9 +398,15 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('S', u' ', 1, 3)],
         }
 
+    testsfullsheet = {
+        # TODO: escape ends with explicit space but \r\n as single space
+        #u'\\1\r\nb': [('IDENT', u'\\1\r', 1, 1), ('IDENT', u'b', 1, 4)],
 
-    # tests if fullsheet=False is set on tokenizer
-    testsfullsheetfalse = {
+        # STRING
+        ur'"\" "': [('STRING', ur'"\" "', 1, 1)],
+        u"""'\\''""": [('STRING', u"""'\\''""", 1, 1)],
+        u'''"\\""''': [('STRING', u'''"\\""''', 1, 1)],
+
         # INVALID (STRING)
         u' " ': [('S', u' ', 1, 1),
                  ('INVALID', u'" ', 1, 2)],
@@ -428,7 +425,9 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('INVALID', u'"\\r\\n\\t\\f\\n\\ra', 1, 2),
                    ('S', u'\n', 1, 16),
                    ('IDENT', u'a', 1, 17)],
-
+        }
+    # tests if fullsheet=False is set on tokenizer
+    testsfullsheetfalse = {
         # COMMENT incomplete
         u'/*': [('CHAR', u'/', 1, 1),
                 ('CHAR', u'*', 1, 2)],
@@ -443,24 +442,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
     # tests if fullsheet=True is set on tokenizer
     testsfullsheettrue = {
-        # INVALID is reported as valid STRING!
-        u' " ': [('S', u' ', 1, 1),
-                 ('STRING', u'" "', 1, 2)],
-        u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
-                 ('STRING', u"'abc\"with quote\" in it'", 1, 2)],
-        u' "\na': [('S', u' ', 1, 1),
-                   ('STRING', u'""', 1, 2),
-                   ('IDENT', u'a', 1, 4)],
-        # strings with linebreak in it
-        u' "\\na\na': [('S', u' ', 1, 1),
-                   ('STRING', u'"\\na"', 1, 2),
-                   #('S', u'\n', 1, 7),
-                   ('IDENT', u'a', 1, 7),
-                   ],
-        u' "\\r\\n\\t\\f\\n\\ra\na': [('S', u' ', 1, 1),
-                   ('STRING', u'"\\r\\n\\t\\f\\n\\ra"', 1, 2),
-                   ('IDENT', u'a', 1, 17)],
-
         # COMMENT incomplete
         u'/*': [('COMMENT', u'/**/', 1, 1)],
 
@@ -488,6 +469,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         tests.update(self.testsall)
         tests.update(self.tests2)
         tests.update(self.tests3)
+        tests.update(self.testsfullsheet)
         tests.update(self.testsfullsheetfalse)
         for css in tests:
             # check token format
@@ -509,6 +491,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         tests.update(self.testsall)
         tests.update(self.tests2)
         tests.update(self.tests3)
+        tests.update(self.testsfullsheet)
         tests.update(self.testsfullsheettrue)
         for css in tests:
             # check token format
@@ -738,8 +721,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
                ]
 
             }
-
-
 
 #        tests = {
 #            u'/*a': xml.dom.SyntaxErr,
