@@ -33,7 +33,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSPageRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@page')
         tests = {
-            u'@pag\e {}': xml.dom.InvalidModificationErr,
+            u'@pag {}': xml.dom.InvalidModificationErr,
             }
         self.do_raise_r(tests)
 
