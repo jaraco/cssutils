@@ -237,6 +237,7 @@ class Base(object):
             return expected
 
         def _atrule(expected, seq, token, tokenizer=None):
+            "TODO: add default impl for unexpected @rule"
             return expected
 
         def _EOF(expected=None, seq=None, token=None, tokenizer=None):
