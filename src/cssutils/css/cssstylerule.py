@@ -117,7 +117,7 @@ class CSSStyleRule(cssrule.CSSRule):
             elif not selectortokens:
                 valid = False
                 self._log.error(u'CSSStyleRule: No selector found: %r.' %
-                            self._valuestr(cssText), colontoken)
+                            self._valuestr(cssText), bracetoken)
                 
             newselectorlist = SelectorList(selectorText=selectortokens)
 
@@ -126,20 +126,20 @@ class CSSStyleRule(cssrule.CSSRule):
                 valid = False
                 self._log.error(
                     u'CSSStyleRule: No style declaration or "}" found: %r' %
-                    self._valuestr(cssText))            
-
-            braceorEOFtoken = styletokens.pop()
-            val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
-            if val != u'}' and typ != 'EOF':
-                valid = False
-                self._log.error(
-                    u'CSSStyleRule: No "}" after style declaration found: %r' %
                     self._valuestr(cssText))
             else:
-                if 'EOF' == typ:
-                    # add again as style needs it
-                    styletokens.append(braceorEOFtoken)
-                newstyle.cssText = styletokens
+                braceorEOFtoken = styletokens.pop()
+                val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
+                if val != u'}' and typ != 'EOF':
+                    valid = False
+                    self._log.error(
+                        u'CSSStyleRule: No "}" after style declaration found: %r' %
+                        self._valuestr(cssText))
+                else:
+                    if 'EOF' == typ:
+                        # add again as style needs it
+                        styletokens.append(braceorEOFtoken)
+                    newstyle.cssText = styletokens
 
             if valid:
                 self.valid = True
