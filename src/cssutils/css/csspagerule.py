@@ -8,9 +8,10 @@ __version__ = '$LastChangedRevision$'
 
 import xml.dom
 import cssrule
-import cssstyledeclaration
 import cssutils
-from selector import Selector
+from selectorlist import SelectorList
+from cssstyledeclaration import CSSStyleDeclaration
+#from selector import Selector
 
 class CSSPageRule(cssrule.CSSRule):
     """
@@ -61,6 +62,7 @@ class CSSPageRule(cssrule.CSSRule):
         super(CSSPageRule, self).__init__()
 
         self.atkeyword = u'@page'
+        
         if selectorText:
             self.selectorText = selectorText
             self.seq.append(self.selectorText)
@@ -68,10 +70,10 @@ class CSSPageRule(cssrule.CSSRule):
             self._selectorText = u''
         if style:
             self.style = style
+            self.seq.append(self.style)
         else:
-            self._style = cssstyledeclaration.CSSStyleDeclaration(
-                parentRule=self)
-
+            self._style = CSSStyleDeclaration(parentRule=self)
+        
         self._readonly = readonly
 
     def __parseSelectorText(self, selectorText):
@@ -79,52 +81,55 @@ class CSSPageRule(cssrule.CSSRule):
         parses selectorText which may also be a list of tokens
         and returns (selectorText, seq)
 
-        raises SYNTAX_ERR:
+        see _setSelectorText for details
         """
-        tokens = self._tokenize(selectorText)
+        # for closures: must be a mutable
+        new = {'selector': None, 'valid': True}
 
-        newselectortext = None
-        newseq = []
-
-        expected = ':' # means no selector but 1 like ":first" is okay
-        i, imax = 0, len(tokens)
-        while i < imax:
-            t = tokens[i]
-            if self._ttypes.S == t.type and 'ident' != expected: # ignore
-                pass
-
-            elif self._ttypes.COMMENT == t.type and 'ident' != expected: # just add
-                newseq.append(cssutils.css.CSSComment(t))
-
-            elif u':' == t.value  and ':' == expected: # selector start :
-                expected = 'ident'
-
-            elif self._ttypes.IDENT == t.type and 'ident' == expected: # selector
-                newselectortext = u':%s' % t.value
-                newseq.append(newselectortext)
-                expected = None
-
+        def _char(expected, seq, token, tokenizer=None):
+            # name
+            val = self._tokenvalue(token)
+            if ':' == expected and u':' == val:
+                try:
+                    identtoken = tokenizer.next()
+                except StopIteration:
+                    self._log.error(
+                        u'CSSPageRule selectorText: No IDENT found.', token)
+                else:
+                    ival, ityp = self._tokenvalue(identtoken), self._type(identtoken)
+                    if 'IDENT' != ityp:
+                        self._log.error(
+                            u'CSSPageRule selectorText: Expected IDENT but found: %r' % 
+                            ival, token)
+                    else:
+                        new['selector'] = val + ival
+                        seq.append(new['selector'])
+                        return 'EOF'
+                return expected
             else:
-                self._log.error(u'CSSPageRule: Syntax Error in selector: "%s".' %
-                          self._valuestr(tokens))
-                return None, None
+                new['valid'] = False
+                self._log.error(
+                    u'CSSPageRule selectorText: Unexpected CHAR: %r' % val, token)
+                return expected
 
-            i += 1
+        newseq = []
+        valid, expected = self._parse(expected=':',
+            seq=newseq, tokenizer=self._tokenize2(selectorText),
+            productions={'CHAR': _char})
+        valid = valid and new['valid']
+        newselector = new['selector']
+        
+        # post conditions
+        if expected == 'ident':
+            self._log.error(
+                u'CSSPageRule selectorText: No valid selector: %r' %
+                    self._valuestr(selectorText))
+            
+        if not newselector in (u'', u':first', u':left', u':right'):
+            self._log.warn(u'CSSPageRule: Unknown CSS 2.1 @page selector: %r' %
+                     newselector, neverraise=True)
 
-        if expected and expected != ':':
-            self._log.error(u'CSSPageRule: Invalid Selector: "%s".' %
-                      self._valuestr(tokens))
-            return None, None
-
-        if newselectortext is None:
-            newselectortext = u''
-
-        # warn only
-        if not newselectortext in (u'', u':first', u':left', u':right'):
-            self._log.warn(u'CSSPageRule: Unknown CSS 2.1 @page selector: "%s".' %
-                     self._valuestr(tokens), neverraise=True)
-
-        return newselectortext, newseq
+        return newselector, newseq
 
     def _getCssText(self):
         """
@@ -149,48 +154,54 @@ class CSSPageRule(cssrule.CSSRule):
           Raised if the rule is readonly.
         """
         super(CSSPageRule, self)._setCssText(cssText)
-        tokens = self._tokenize(cssText)
+        
+        tokenizer = self._tokenize2(cssText)
+        selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
+        styletokens = self._tokensupto2(tokenizer, blockendonly=True)
 
-        # check if right token
-        if not tokens or tokens and tokens[0].type != self._ttypes.PAGE_SYM:
-            self._log.error(u'CSSPageRule: No CSSPageRule found: %s' %
-                      self._valuestr(cssText),
-                      error=xml.dom.InvalidModificationErr)
-            return
+        if len(selectortokens) < 2 or not self._tokenvalue(
+                selectortokens[0], normalize=True).startswith(u'@page'):
+            self._log.error(u'CSSPageRule: No content or no page rule.',
+                    error=xml.dom.InvalidModificationErr)
+            
         else:
-            newatkeyword = tokens[0].value
+            valid = True
+            # already checked if at least 2 tokens
+            atpagetoken = selectortokens.pop(0) 
+            bracetoken = selectortokens.pop()
+            if self._tokenvalue(bracetoken) != u'{':
+                valid = False
+                self._log.error(
+                    u'CSSPageRule: No start { of style declaration found: %r' %
+                    self._valuestr(cssText), bracetoken)
+                
+            newselector, newselectorseq = self.__parseSelectorText(selectortokens)
 
-        # init
-        newstyle = cssstyledeclaration.CSSStyleDeclaration(parentRule=self)
+            newstyle = CSSStyleDeclaration()
+            if not styletokens:
+                valid = False
+                self._log.error(
+                    u'CSSPageRule: No style declaration or "}" found: %r' %
+                    self._valuestr(cssText))            
 
-        # selector
-        selectortokens, stylestarti = self._tokensupto(
-            tokens, blockstartonly=True)
-        newselectortext, newseq = self.__parseSelectorText(
-            selectortokens[1:-1]) # without @page and {
+            braceorEOFtoken = styletokens.pop()
+            val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
+            if val != u'}' and typ != 'EOF':
+                valid = False
+                self._log.error(
+                    u'CSSPageRule: No "}" after style declaration found: %r' %
+                    self._valuestr(cssText))
+            else:
+                if 'EOF' == typ:
+                    # add again as style needs it
+                    styletokens.append(braceorEOFtoken)
+                newstyle.cssText = styletokens
 
-        # style
-        styletokens, styleendi = self._tokensupto(
-            tokens[stylestarti:], blockendonly=True)
-
-        if not styletokens or \
-           styletokens[0].value != u'{' or\
-               styletokens[-1].type not in(
-                   self._ttypes.EOF, self._ttypes.RBRACE) or\
-               len(tokens) > stylestarti + styleendi + 1:
-            self._log.error(u'CSSPageRule: Invalid style found: %s' %
-                      self._valuestr(styletokens[1:-1]))
-            return
-
-        newstyle = cssstyledeclaration.CSSStyleDeclaration(
-                parentRule=self, cssText=styletokens[1:-1])
-
-        # seems ok
-        if newstyle:
-            if newselectortext: # optional
-                self._selectorText = newselectortext
-            self.seq = newseq
-            self.style = newstyle
+            if valid:
+                self.valid = True
+                self._selectorText = newselector # already parsed
+                self.style = newstyle
+                self.seq = newselectorseq # contains upto style only
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")
@@ -247,10 +258,7 @@ class CSSPageRule(cssrule.CSSRule):
         """
         self._checkReadonly()
         if isinstance(style, basestring):
-            # may raise Exception!
-            temp = cssstyledeclaration.CSSStyleDeclaration(parentRule=self)
-            temp.cssText = style
-            self._style = temp
+            self._style = CSSStyleDeclaration(parentRule=self)
         else:
             self._style = style
             style.parentRule = self
@@ -259,13 +267,10 @@ class CSSPageRule(cssrule.CSSRule):
         doc="(DOM) The declaration-block of this rule set.")
 
     def __repr__(self):
-        return "cssutils.css.%s(selectorText=%r)" % (
-                self.__class__.__name__, self.selectorText)
+        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
+                self.__class__.__name__, self.selectorText, self.style.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, id(self))
-
-
-
-
+        return "<cssutils.css.%s object selectorText=%r style=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self.style.cssText,
+                id(self))
