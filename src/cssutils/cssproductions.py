@@ -29,7 +29,11 @@ MACROS = {
     'nmchar': r'[-_a-zA-Z0-9]|{nonascii}|{escape}',
 
     'num': r'[0-9]*\.[0-9]+|[0-9]+', #r'[-]?\d+|[-]?\d*\.\d+',
-    'string':  r"""\'({stringchar}|\")*\'""" + "|" + '''\"({stringchar}|\')*\"''',
+    'string':  r"""\'({stringesc1}|{stringchar}|")*\'""" + "|" + '''\"({stringesc2}|{stringchar}|')*\"''',
+    # seems an error in CSS 3 but is allowed in CSS 2.1
+    'stringesc1' : r"\\'",
+    'stringesc2' : r'\\"',
+    
     'stringchar':  r'{urlchar}| |\\{nl}',
 
     # urlchar  ::= [#x9#x21#x23-#x26#x27-#x7E] | nonascii | escape
