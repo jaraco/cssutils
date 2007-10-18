@@ -86,6 +86,16 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.do_raise_r(tests)
         self.do_raise_p(tests)
 
+    def test_incomplete(self):
+        "CSSStyleRule (incomplete)"
+        tests = {
+            u'@import "a': u'@import "a";', # no }
+            u'a {': u'a {}', # no }
+            u'a { font-family: "arial sans': # no "
+                u'a {\n    font-family: "arial sans"\n    }',
+        }
+        self.do_equal_p(tests) # parse
+
     def test_cssText(self):
         "CSSStyleSheet.cssText"
         tests = {
@@ -110,8 +120,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
-
-
 
         s = cssutils.css.CSSStyleSheet()
         s.cssText = u'''@charset "ascii";@import "x";@namespace a "x";
