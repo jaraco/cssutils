@@ -80,6 +80,8 @@ class CSSUnknownRule(cssrule.CSSRule):
             newatkeyword = self._tokenvalue(attoken)
             newseq = []
             for token in tokenizer:
+                if 'INVALID' == self._type(token):
+                    return
                 newseq.append(self._tokenvalue(token))
 
             self.atkeyword = newatkeyword

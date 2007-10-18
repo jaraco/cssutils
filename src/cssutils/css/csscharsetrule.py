@@ -173,12 +173,3 @@ class CSSCharsetRule(cssrule.CSSRule):
     def __str__(self):
         return "<cssutils.css.%s object encoding=%r at 0x%x>" % (
                 self.__class__.__name__, self.encoding, id(self))
-
-
-if __name__ == '__main__':
-    p = cssutils.CSSParser()
-    s = p.parseString('@charset')
-    print s.cssRules
-
-    c = CSSCharsetRule('utf-8')
-    c.cssText = u' @charset "ascii" ;'

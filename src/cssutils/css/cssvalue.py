@@ -156,12 +156,6 @@ class CSSValue(cssutils.util.Base):
         # for closures: must be a mutable
         new = {'values': [], 'commas': 0, 'valid': True}
 
-        def _invalid(expected, seq, token, tokenizer=None):
-            self._log.error(
-                u'CSSValue: Unknown value syntax (invalid token): %r.' %
-                    self._valuestr(cssText))
-            return expected
-
         def _S(expected, seq, token, tokenizer=None):
             val = self._tokenvalue(token)
             if expected.endswith('operator'):
@@ -250,7 +244,7 @@ class CSSValue(cssutils.util.Base):
                 return expected
 
         def _string_ident_uri_hexcolor(expected, seq, token, tokenizer=None):
-            # STRING IODENT URI HASH
+            # STRING IDENT URI HASH
             if expected.startswith('term'):
                 # normal value
                 val = self._tokenvalue(token)
@@ -264,6 +258,21 @@ class CSSValue(cssutils.util.Base):
             else:
                 new['valid'] = False
                 self._log.error(u'CSSValue: Unexpected token.', token)
+                return expected
+
+        def _invalid(expected, seq, token, tokenizer=None):
+            # complete value is invalid and ignored if not EOF is found!
+            eof = self._nexttoken(tokenizer, None)
+            if eof and 'EOF' == self._type(eof) and expected.startswith('term'):
+                val = self._tokenvalue(token)
+                val += val[0]
+                new['values'].append(val)
+                seq.append(val)
+                return 'EOF'
+            else:
+                self._log.error(
+                    u'CSSValue: Unknown value syntax (invalid token): %r.' %
+                    self._valuestr(cssText))
                 return expected
 
         def _function(expected, seq, token, tokenizer=None):
@@ -295,13 +304,13 @@ class CSSValue(cssutils.util.Base):
                 seq=newseq, tokenizer=tokenizer,
                 productions={'S': _S,
                              'CHAR': _char,
-                             'INVALID': _invalid,
 
                              'NUMBER': _number_percentage_dimension,
                              'PERCENTAGE': _number_percentage_dimension,
                              'DIMENSION': _number_percentage_dimension,
 
                              'STRING': _string_ident_uri_hexcolor,
+                             'INVALID': _invalid,
                              'IDENT': _string_ident_uri_hexcolor,
                              'URI': _string_ident_uri_hexcolor,
                              'HASH': _string_ident_uri_hexcolor,

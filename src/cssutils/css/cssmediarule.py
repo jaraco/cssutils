@@ -260,9 +260,11 @@ class CSSMediaRule(cssrule.CSSRule):
             return
 
         # CHECK HIERARCHY
-        # @charset @import @media -> TODO: @page @namespace
+        # @charset @import @page @namespace @media
         if isinstance(rule, cssutils.css.CSSCharsetRule) or \
            isinstance(rule, cssutils.css.CSSImportRule) or \
+           isinstance(rule, cssutils.css.CSSNamespaceRule) or \
+           isinstance(rule, cssutils.css.CSSPageRule) or \
            isinstance(rule, CSSMediaRule):
             self._log.error(u'CSSMediaRule: This type of rule is not allowed here: %s' %
                       rule.cssText,

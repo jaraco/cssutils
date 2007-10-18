@@ -55,12 +55,9 @@ class CSSRule(cssutils.util.Base):
     CHARSET_RULE = 2
     IMPORT_RULE = 3
     MEDIA_RULE = 4
-    FONT_FACE_RULE = 5
-    "Not in CSS 2.1 specification and not implemented"
+    FONT_FACE_RULE = 5 # currently not implemented
     PAGE_RULE = 6
-    NAMESPACE_RULE = 7
-    "TODO: WD, may be different later"
-    "cssutils only"
+    NAMESPACE_RULE = 7 # cssutils only, WD, may be different later
 
     _typestrings = ['UNKNOWN_RULE', 'STYLE_RULE', 'CHARSET_RULE', 'IMPORT_RULE',
                      'MEDIA_RULE', 'FONT_FACE_RULE', 'PAGE_RULE', 'NAMESPACE_RULE',
