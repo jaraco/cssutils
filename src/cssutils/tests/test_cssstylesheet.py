@@ -13,10 +13,8 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         super(CSSStyleSheetTestCase, self).setUp()
-
         self.r = cssutils.css.CSSStyleSheet() # used by basetest
         self.s = self.r # used here
-
         self.rule = cssutils.css.CSSStyleRule()
 
     def test_init(self):
@@ -24,7 +22,6 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(False, self.s._readonly)
         self.assertEqual([], self.s.cssRules)
         self.assertEqual('text/css', self.s.type)
-
         self.assertEqual(False, self.s.disabled)
         self.assertEqual(None, self.s.href)
         self.assertEqual(None, self.s.media)
@@ -52,8 +49,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         tests = {
             # @charset: only one and always 1st
             u' @charset "utf-8";': xml.dom.HierarchyRequestErr,
-            u'@charset "ascii";@charset "ascii";': xml.dom.HierarchyRequestErr,
-            u'/*c*/@charset "ascii";': xml.dom.HierarchyRequestErr,
+            u'@charset "ascii";@charset "ascii";': xml.dom.HierarchyRequestErr,            u'/*c*/@charset "ascii";': xml.dom.HierarchyRequestErr,
             u'@import "x"; @charset "ascii";': xml.dom.HierarchyRequestErr,
             u'@namespace a "x"; @charset "ascii";': xml.dom.HierarchyRequestErr,
             u'@media all {} @charset "ascii";': xml.dom.HierarchyRequestErr,
@@ -111,34 +107,35 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";',
             u'@namespace a "x";\n@x;': None,
             u'@namespace a "x";\na {}': None,
-            # HTML comment test, delimiters are simply filtered
-            u'''body { color: red }
-<!-- comment -->
-body { color: blue }
-body { color: pink }
-<!-- comment -->
-body { color: green }''': 
-                u'''body {
-    color: red
-    }
-comment  body {
-    color: blue
-    }
-body {
-    color: pink
-    }
-comment  body {
-    color: green
-    }'''
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
+
+
 
         s = cssutils.css.CSSStyleSheet()
         s.cssText = u'''@charset "ascii";@import "x";@namespace a "x";
         @media all {/*1*/}@page {margin: 0}a {}@unknown;/*comment*/'''
         for r in s.cssRules:
             self.assertEqual(s, r.parentStyleSheet)
+
+    def test_HTMLComments(self):
+        "CSSStyleSheet CDO CDC"
+        css = u'''body { color: red }
+<!-- comment -->
+body { color: blue }
+body { color: pink }
+<!-- comment -->
+body { color: green }
+'''
+        exp = u'''body {
+    color: red
+    }
+body {
+    color: pink
+    }'''
+        sheet = cssutils.parseString(css)
+        self.assertEqual(sheet.cssText, exp)
 
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule()"
@@ -178,10 +175,10 @@ comment  body {
         self.ir = cssutils.css.CSSImportRule('x')
         self.nr = cssutils.css.CSSNamespaceRule('uri')
         self.mr = cssutils.css.CSSMediaRule()
+        self.mr.cssText = u'@media all { m {} }'
         self.pr = cssutils.css.CSSPageRule()
         self.pr.style = u'margin: 0;'
         self.sr = cssutils.css.CSSStyleRule('a')
-        self.mr.cssText = u'@media all { m {} }'
 
         s = cssutils.css.CSSStyleSheet()
         s.insertRule(self.cr) # 0
@@ -313,7 +310,6 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
         self.assert_(isinstance(s2, s.__class__))
         self.assert_(href == s2.href)
         self.assert_(title == s2.title)
-
 
 
 if __name__ == '__main__':
