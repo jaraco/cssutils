@@ -24,9 +24,9 @@ css = """
 """
 
 if 0:
-    css = 'url("x;'
+    css = '''"\\" "'''
     t = cssutils.tokenize2.Tokenizer()
-    gen = t.tokenize(css, fullsheet=True)
+    gen = t.tokenize(css, fullsheet=0)
     for tk in gen:
         print tk
     sys.exit(0)
@@ -41,29 +41,34 @@ if 0:
     print impl.hasFeature('css', '2.0')
     sys.exit(0)
 
-if 0:
-    css = u'min-width: 10px'
-    v = cssutils.css.Property()
-    v.cssText = css
-    print v
-    print v.cssText
+if 1:
+    css = '''p {
+                    col\or: blue;
+                    font-family: 'Courier New Times
+                    color: red;
+                    color: green;
+                  }'''
+    css = '''@import /*1*/ "a
+        " /*2*/ tv, print;'''
+    s = cssutils.parseString(css)
+    print s.cssText
     sys.exit(0)
-
-if 0:
-    b = cssutils.util.Base()
-    seq = b._newseq()
-    seq.append(1)
-    seq.append('/*2*/', 'COMMENT')
-    print seq
-    print repr(seq)
+    
+if 0:    
+    css = ur'''@namespace x "u";'''
+    s = cssutils.css.CSSNamespaceRule()
+    s.cssText = css
+    print s
+    print s.cssText
+    print s.namespaceURI
     sys.exit(0)
 
 if 1:
-    s = cssutils.css.Selector()
-    s.selectorText = ':a x ::b y'
-    print s
+    s = cssutils.css.SelectorList()
+    s.selectorText = 'a,'
     print repr(s.seq)
-    #sys.exit(0)
+    print s
+    sys.exit(0)
 
     print 'combinator'
     s.selectorText = 'a + b ~ c > d   \n\r e'
@@ -85,24 +90,28 @@ if 1:
     s.selectorText = '.a a.b *.c .d'
     print s
 
-    s.selectorText = 'a[x=1] a[1][2]' # TODO
+    print 'attrib'
+    s.selectorText = 'a[a|href][x="1"][y=a][x*=a][x|=a]'#':a x ::b y'
     print s
 
+    print 'pseudo'
     s.selectorText = '::a x::b a:first-letter b:first-line c:before d:after'
     print s
-    s.selectorText = ':a x:a:b :c::d'
+    s.selectorText = ':a(+) :b(-) :c(1em) :d(1) :lang("1" 1) :e(a)'
     print s
-    s.selectorText = ':x() :lang(de):y()'
+    s.selectorText = ':a x:a x:a:b'
+    print s
+    s.selectorText = '::a x::a' # only 1
     print s
     print '\nnot(: type_selector | universal | HASH | class | attrib | pseudo)'
-    s.selectorText = 'not(a) not(*|*) not(*) not(#a) not(.b) not([]) not(:d)'
+    s.selectorText = 'not(a) not(*|*) not(*) not(#a) not(.b) not([a]) not(:d)'
     print s
 
 
-    #s.selectorText = '*|* * a|b+|c~a|e#1 #a a.a'#'a *~x+b>c'#:not(*)'
-    #s.selectorText = 'not(*) not(#a) not(.a)'
-    #print s
-    #print s.prefixes
+    s.selectorText = '*|* * a|b+|c~a|e#1 #a a.a'#'a *~x+b>c'#:not(*)'
+    s.selectorText = 'not(*) not(#a) not(.a)'
+    print s
+    print s.prefixes
     sys.exit(0)
 
 if 1:
