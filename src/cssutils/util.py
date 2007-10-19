@@ -9,9 +9,7 @@ __version__ = '$LastChangedRevision$'
 import types
 import xml.dom
 import cssutils
-from tokenize2 import Tokenizer as Tokenizer2
-# OLD
-from tokenize import Tokenizer
+from tokenize2 import Tokenizer
 
 class Seq(object):
     """
@@ -94,11 +92,52 @@ class Base(object):
     """
     _log = cssutils.log
 
-    __tokenizer2 = Tokenizer2()
+    __tokenizer2 = Tokenizer()
     _prods = cssutils.tokenize2.CSSProductions
+
+    @staticmethod
+    def _normalize(x):
+        """
+        normalizes x namely:
+
+        - lowercase
+        - removes any \ (TODO: check for escapes like \65)
+          so for x=="c\olor\" return "color"
+          
+        """
+        # TODO: more normalizing stuff
+        if x:
+            return x.replace(u'\\', u'').lower()
+        else:
+            return x
+
+    def _checkReadonly(self):
+        "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
+        if hasattr(self, '_readonly') and self._readonly:
+            raise xml.dom.NoModificationAllowedErr(
+                u'%s is readonly.' % self.__class__)
+            return True
+        return False
 
     def _newseq(self):
         return Seq()
+
+    def _valuestr(self, t):
+        """
+        returns string value of t (t may be a string, a list of token tuples
+        or a single tuple in format (type, value, line, col) or a
+        tokenlist[old])
+        """
+        if not t:
+            return u''
+        elif isinstance(t, basestring):
+            return t
+        elif isinstance(t, list) and isinstance(t[0], tuple):
+            return u''.join([x[1] for x in t])
+        elif isinstance(t, tuple): # needed?
+            return self._tokenvalue(t)
+        else: # old
+            return u''.join([x.value for x in t])
 
     def _tokenize2(self, textortokens, aslist=False, fullsheet=False):
         """
@@ -125,11 +164,11 @@ class Base(object):
             return (x for x in textortokens)
 
     def _type(self, token):
-        "type of Tokenizer2 token"
+        "type of Tokenizer token"
         return token[0]
 
     def _tokenvalue(self, token, normalize=False):
-        "value of Tokenizer2 token"
+        "value of Tokenizer token"
         if normalize:
             return Base._normalize(token[1])
         else:
@@ -144,7 +183,7 @@ class Base(object):
 
     def _tokensupto2(self,
                      tokenizer,
-                     starttoken=None, # not needed anymore?
+                     starttoken=None,
                      blockstartonly=False,
                      blockendonly=False,
                      mediaendonly=False,
@@ -184,7 +223,7 @@ class Base(object):
             ends = u';'
         elif selectorattendonly: # ]
             ends = u']'
-            if self._tokenvalue(starttoken) == u'[':
+            if starttoken and self._tokenvalue(starttoken) == u'[':
                 bracket = 1
         elif funcendonly: # )
             ends = u')'
@@ -291,126 +330,27 @@ class Base(object):
 
         return valid, expected
 
-    # --- OLD ---
-    __tokenizer = Tokenizer()
-    _ttypes = __tokenizer.ttypes
 
-    def _tokenize(self, textortokens, _fullSheet=False):
-        """
-        returns tokens of textortokens which may already be tokens in which
-        case simply returns input
-        """
-        if isinstance(textortokens, list) and\
-           isinstance(textortokens[0], tuple):
-            # todo: convert tokenizer 2 list to tokenizer 1 list
-            return textortokens # already tokenized
+class Deprecated(object):
+    """This is a decorator which can be used to mark functions
+    as deprecated. It will result in a warning being emitted
+    when the function is used.
 
+    It accepts a single paramter ``msg`` which is shown with the warning.
+    It should contain information which function or method to use instead.
+    """
+    def __init__(self, msg):
+        self.msg = msg
 
-        elif isinstance(textortokens, list):
-            return textortokens # already tokenized
-        elif isinstance(textortokens, cssutils.token.Token):
-            return [textortokens] # comment is a single token
-        elif isinstance(textortokens, basestring): # already string
-            return self.__tokenizer.tokenize(textortokens, _fullSheet)
-        else:
-            if textortokens is not None:
-                textortokens = unicode(textortokens)
-            return self.__tokenizer.tokenize(textortokens, _fullSheet)
-
-    @staticmethod
-    def _normalize(x):
-        """
-        normalizes x namely:
-
-        - lowercase
-        - removes any \ (TODO: check for escapes like \65)
-          so for x=="c\olor\" return "color"
-        """
-        if x:
-            return x.replace(u'\\', u'').lower()
-        else:
-            return x
-
-    def _checkReadonly(self):
-        "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
-        if hasattr(self, '_readonly') and self._readonly:
-            raise xml.dom.NoModificationAllowedErr(
-                u'%s is readonly.' % self.__class__)
-            return True
-        return False
-
-    def _tokensupto(self, tokens,
-                    blockstartonly=False,
-                    blockendonly=False,
-                    propertynameendonly=False,
-                    propertyvalueendonly=False,
-                    propertypriorityendonly=False,
-                    selectorattendonly=False,
-                    funcendonly=False):
-        """
-        returns tokens upto end of atrule and end index
-        end is defined by parameters, might be ; } ) or other
-
-        default looks for ending "}" and ";"
-        """
-        ends = u';}'
-
-        if blockstartonly: # {
-            ends = u'{'
-        if blockendonly: # }
-            ends = u'}'
-        elif propertynameendonly: # : and ; in case of an error
-            ends = u':;'
-        elif propertyvalueendonly: # ; or !important
-            ends = (u';', u'!important')
-        elif propertypriorityendonly: # ;
-            ends = u';'
-        elif selectorattendonly: # ]
-            ends = u']'
-        elif funcendonly: # )
-            ends = u')'
-
-        brace = bracket = parant = 0 # {}, [], ()
-        if blockstartonly:
-            brace = -1 # set to 0 with first {
-        resulttokens = []
-        i, imax = 0, len(tokens)
-        while i < imax:
-            t = tokens[i]
-
-            if u'{' == t.value: brace += 1
-            elif u'}' == t.value: brace -= 1
-            if u'[' == t.value: bracket += 1
-            elif u']' == t.value: bracket -= 1
-            # function( or single (
-            if u'(' == t.value or \
-               Base._ttypes.FUNCTION == t.type: parant += 1
-            elif u')' == t.value: parant -= 1
-
-            resulttokens.append(t)
-
-            if t.value in ends and (brace == bracket == parant == 0):
-                break
-
-            i += 1
-
-        return resulttokens, i
-
-    def _valuestr(self, t):
-        """
-        returns string value of t (t may be a string, a list of token tuples
-        or a single tuple in format (type, value, line, col) or a
-        tokenlist[old])
-        """
-        if not t:
-            return u''
-        elif isinstance(t, basestring):
-            return t
-        elif isinstance(t, list) and isinstance(t[0], tuple):
-            return u''.join([x[1] for x in t])
-        elif isinstance(t, tuple): # needed?
-            return self._tokenvalue(t)
-        else: # old
-            return u''.join([x.value for x in t])
-
-
+    def __call__(self, func):
+        def newFunc(*args, **kwargs):
+            import warnings
+            warnings.warn("Call to deprecated method %r. %s" %
+                            (func.__name__, self.msg),
+                            category=DeprecationWarning,
+                            stacklevel=2)
+            return func(*args, **kwargs)
+        newFunc.__name__ = func.__name__
+        newFunc.__doc__ = func.__doc__
+        newFunc.__dict__.update(func.__dict__)
+        return newFunc
