@@ -20,7 +20,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSNamespaceRule.__init__()"
         super(CSSNamespaceRuleTestCase, self).test_init()
 
-        self.assertEqual(None, self.r.uri)
+        self.assertEqual(None, self.r.namespaceURI)
         self.assertEqual(u'', self.r.prefix)
         self.assertEqual(u'', self.r.cssText)
 
@@ -40,25 +40,27 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_raise_r(tests) # set cssText
 
     def test_initparameter(self):
-        "CSSNamespaceRule.__init__(uri=None, prefix=u'')"
+        "CSSNamespaceRule.__init__(namespaceURI=None, prefix=u'')"
         r = cssutils.css.CSSNamespaceRule(u'uri', u'prefix')
-        self.assertEqual(u'uri', r.uri)
+        self.assertEqual(u'uri', r.namespaceURI)
         self.assertEqual(u'prefix', r.prefix)
         self.assertEqual(u'@namespace prefix "uri";', r.cssText)
 
         r = cssutils.css.CSSNamespaceRule(u'uri')
-        self.assertEqual(u'uri', r.uri)
+        self.assertEqual(u'uri', r.namespaceURI)
         self.assertEqual(u'', r.prefix)
         self.assertEqual(u'@namespace "uri";', r.cssText)
 
-    def test_uri(self):
-        "CSSNamespaceRule.uri"
+    def test_namespaceURI(self):
+        "CSSNamespaceRule.namespaceURI"
         # set
-        self.r.uri = 'x'
-        self.assertEqual('x' , self.r.uri)
+        self.r.namespaceURI = 'x'
+        self.assertEqual('x' , self.r.namespaceURI)
         self.assertEqual(u'@namespace "x";', self.r.cssText)
+        # deprecated:
+        self.assertEqual('x' , self.r.uri)
 
-        self.r.uri = '"' # weird but legal
+        self.r.namespaceURI = '"' # weird but legal
         self.assertEqual(u'@namespace "\\"";', self.r.cssText)
 
     def test_prefix(self):
@@ -68,7 +70,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         r.prefix = 'p'
         self.assertEqual('p' , r.prefix)
         self.assertEqual(u'', r.cssText)
-        r.uri = 'u'
+        r.namespaceURI = 'u'
         self.assertEqual('p' , r.prefix)
         self.assertEqual(u'@namespace p "u";', r.cssText)
 
@@ -98,7 +100,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         tests = {
             u'@namespace;': xml.dom.SyntaxErr, # nothing
-            u'@namespace p;': xml.dom.SyntaxErr, # no uri
+            u'@namespace p;': xml.dom.SyntaxErr, # no namespaceURI
             u'@namespace "u" p;': xml.dom.SyntaxErr, # order
             }
         self.do_raise_p(tests) # parse
@@ -110,17 +112,17 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_reprANDstr(self):
         "CSSNamespaceRule.__repr__(), .__str__()"
-        uri=u'http://example.com'
+        namespaceURI=u'http://example.com'
         prefix=u'ex'
 
-        s = cssutils.css.CSSNamespaceRule(uri=uri, prefix=prefix)
+        s = cssutils.css.CSSNamespaceRule(namespaceURI=namespaceURI, prefix=prefix)
 
-        self.assert_(uri in str(s))
+        self.assert_(namespaceURI in str(s))
         self.assert_(prefix in str(s))
 
         s2 = eval(repr(s))
         self.assert_(isinstance(s2, s.__class__))
-        self.assert_(uri == s2.uri)
+        self.assert_(namespaceURI == s2.namespaceURI)
         self.assert_(prefix == s2.prefix)
 
 
