@@ -371,7 +371,6 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                     self.assertEqual(pv.getFloatValue(initialType), exp)
                     self.assertEqual(pv._value, msg)
 
-
     def test_getString(self):
         "CSSPrimitiveValue.getStringValue()"
         v = cssutils.css.CSSPrimitiveValue(u'1px')
@@ -388,8 +387,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                          u"http://example.com"),
             pv.CSS_URI: ('url("http://example.com")',
                          u'http://example.com'),
-#            pv.CSS_URI: ('url("http://example.com?)")',
-#                         u'http://example.com?)'),
+            pv.CSS_URI: ('url("http://example.com?)")',
+                         u'http://example.com?)'),
             pv.CSS_IDENT: ('red', None),
             pv.CSS_ATTR: ('attr(att-name)',
                          u'att-name'), # the name of the attrr
@@ -402,7 +401,6 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             v = cssutils.css.CSSPrimitiveValue(val)
             self.assertEqual(v.primitiveType, t)
             self.assertEqual(v.getStringValue(), exp)
-
 
     def test_setString(self):
         "CSSPrimitiveValue.setStringValue()"
@@ -508,7 +506,6 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             u"CSSPrimitiveValue: stringType CSS_PX is not a string type",
             v.setStringValue, *(v.CSS_PX, 'brown'))
 
-#
 #    def test_typeRGBColor(self):
 #        v = cssutils.cssprimitivevalue.PrimitiveValue('RGB(1, 5, 10)')
 #        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)

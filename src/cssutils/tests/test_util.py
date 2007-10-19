@@ -32,7 +32,6 @@ class UtilTestCase(basetest.BaseTestCase):
         # tests nested blocks of {} [] or ()
         b = Base()
 
-        # tokenstring, callid, exp
         tests = [
             ('default', u'a[{1}]({2}) { } NOT', u'a[{1}]({2}) { }', False),
             ('default', u'a[{1}]({2}) { } NOT', u'a[{1}]func({2}) { }', True),
