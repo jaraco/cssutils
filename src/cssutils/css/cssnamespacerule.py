@@ -14,6 +14,7 @@ __version__ = '$LastChangedRevision$'
 import xml.dom
 import cssrule
 import cssutils
+from cssutils.util import Deprecated
 
 class CSSNamespaceRule(cssrule.CSSRule):
     """
@@ -55,17 +56,17 @@ class CSSNamespaceRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.NAMESPACE_RULE
 
-    def __init__(self, uri=None, prefix=u'', readonly=False):
+    def __init__(self, namespaceURI=None, prefix=u'', readonly=False):
         """
         if readonly allows setting of properties in constructor only
 
         Do not use as positional but as keyword attributes only!
 
-        uri
+        namespaceURI
             The namespace URI (a simple string!) which is bound to the
             given prefix. If no prefix is set
             (``CSSNamespaceRule.prefix==''``) the namespace defined by
-            uri is set as the default namespace
+            namespaceURI is set as the default namespace
         prefix
             The prefix used in the stylesheet for the given
             ``CSSNamespaceRule.uri``.
@@ -78,24 +79,20 @@ class CSSNamespaceRule(cssrule.CSSRule):
         super(CSSNamespaceRule, self).__init__()
 
         self.atkeyword = u'@namespace'
-        self.uri = uri
+        self.namespaceURI = namespaceURI
         self.prefix = prefix
-        self.seq = [self.prefix, self.uri]
+        self.seq = [self.prefix, self.namespaceURI]
 
         self._readonly = readonly
 
-
-    def _getURI(self):
+    def _getNamespaceURI(self):
         """ returns uri as a string """
-        return self._uri
+        return self._namespaceURI
 
-    def _setURI(self, uri):
+    def _setNamespaceURI(self, namespaceURI):
         """
         DOMException on setting
 
-        - SYNTAX_ERR: (not checked here)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
           Raised if this rule is readonly.
         """
@@ -103,16 +100,27 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
         # update seq
         for i, x in enumerate(self.seq):
-            if x == self._uri:
-                self.seq[i] = uri
+            if x == self._namespaceURI:
+                self.seq[i] = namespaceURI
                 break
         else:
-            self.seq = [uri]
+            self.seq = [namespaceURI]
         # set new uri
-        self._uri = uri
+        self._namespaceURI = namespaceURI
+
+    namespaceURI = property(_getNamespaceURI, _setNamespaceURI,
+        doc="URI (string!) of the defined namespace.")
+
+    @Deprecated(u'Use property namespaceURI instead.')
+    def _getURI(self):
+        return self.namespaceURI
+    
+    @Deprecated(u'Use property namespaceURI instead.')
+    def _setURI(self, uri):
+        self._setNamespaceURI(uri)
 
     uri = property(_getURI, _setURI,
-        doc="URI (string!) of the defined namespace.")
+        doc="DEPRECATED: Use property namespaceURI instead.")
 
 
     def _getPrefix(self):
@@ -280,16 +288,16 @@ class CSSNamespaceRule(cssrule.CSSRule):
             if valid:
                 self.atkeyword = new['keyword']
                 self.prefix = new['prefix']
-                self.uri = new['uri']
+                self.namespaceURI = new['uri']
                 self.seq = newseq
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
 
     def __repr__(self):
-        return "cssutils.css.%s(uri=%r, prefix=%r)" % (
-                self.__class__.__name__, self.uri, self.prefix)
+        return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
+                self.__class__.__name__, self.namespaceURI, self.prefix)
 
     def __str__(self):
-        return "<cssutils.css.%s object uri=%r prefix=%r at 0x%x>" % (
-                self.__class__.__name__, self.uri, self.prefix, id(self))
+        return "<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
+                self.__class__.__name__, self.namespaceURI, self.prefix, id(self))
