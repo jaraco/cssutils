@@ -7,12 +7,15 @@ CSS Cascading Style Sheets library for Python
 :Author: $LastChangedBy$
 :Copyright: 2004-2007 Christof Hoeke
 :Date: $LastChangedDate$
-:Version: 0.9.3a2 (rev $LastChangedRevision$)
+:Version: 0.9.4a1 (rev $LastChangedRevision$)
 
 A Python package to parse and build CSS Cascading Style Sheets.
 
-Partly implements the DOM Level 2 Style `Stylesheets  <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_ and `CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ interfaces. An implementation of the `WD CSS Module: Namespaces <http://www.w3.org/TR/css3-namespace/>`_ which has no official DOM yet is included since v0.9.1. An implementation of `MediaQuery <http://www.w3.org/TR/css3-mediaqueries/>`_ which form ``stylesheets.MediaList`` is included since 0.9.4.
+Partly implements the DOM Level 2 Style `Stylesheets  <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_ and `CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ interfaces.
 
+An implementation of the `WD CSS Module: Namespaces <http://www.w3.org/TR/css3-namespace/>`_ is included since v0.9.1 and has been adapted to the DOM defined in `CSSOM <http://dev.w3.org/csswg/cssom/>`_ in 0.9.4.
+
+An implementation of `MediaQuery <http://www.w3.org/TR/css3-mediaqueries/>`_ which form ``stylesheets.MediaList`` is included since 0.9.4.
 
 Published under the LGPL, see http://cthedot.de/cssutils/license.html
 
@@ -62,13 +65,8 @@ Version 0.9x
 
 HEAD
     *INWORK*
-        - New Tokenizer which probably breaks almost everything for now
-        - rethink handling of ``<!--`` and ``-->`` in parser
-        - uses CSS3Syntax Module
-
-        - Tantek hack (using ``voice-family``) is mangled so does not work after reserializing. This is as property order is changed and the hack needs a specific order. Other CSS hacks do work though (e.g. ``color: red; c\olor: green;``. **???**
-
         - escapes of CSS special characters does not really work but is very uncommon (e.g \@a without being an atkeyword or .\1 being a classname selector)
+
 
     - **Documentation**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
 
@@ -82,6 +80,10 @@ HEAD
 
     - FEATURE: cssutils is registered to xml.dom.DOMImplementation claiming to implement CSS 1.0, CSS 2.0, StyleSheets 1.0 and StyleSheets 2.0. This is probably not absolutely correct as cssutils currently is not a fully compliant implementation but I guess this is used very rarely anyway.
 
+    + **API CHANGE**: ``CSSNamespacerule.uri`` is renamed to ``CSSNamespaceRule.namespaceURI`` which is defined is CSSOM. ``uri`` is deprecated and still available but the constructor parameter is names ``namespaceURI`` now.
+
+    + **API CHANGE**: As ``stylesheets.MediaQuery`` is implemented now all classes using an instance of ``stylesheets.MediaList`` are presented slightly different. Until now a simple list of string was given, now the list contains MediaQuery objects.
+
     + **API CHANGE**: ``_Property`` has been renamed to ``css.Property`` and is used in context of ``CSSStyleDeclaration`` and ``MediaQuery``. Attribute ``Property.value`` has been *de-deprecated* and may be used normally now (again). The Property constructor has only optional parameters now.
 
     + **API CHANGE**: Removed experimental class ``SameNamePropertyList`` which was used in ``CSSStyleDeclaration`` and also method ``CSSStyleDeclaration.getSameNamePropertyList``. A new method ``CSSStyleDeclaration.getProperties`` has been added which is simpler and more useful
@@ -91,6 +93,9 @@ HEAD
     - API CHANGE (internal): renamed ``Serializer.do_css_Property`` to ``Serializer.do_Property`` as it is ``Property`` is not in the official DOM, may not stay in package ``css`` and is used by MediaQuery too
 
     - API CHANGE (internal): renamed ``Serializer.do_CSSvalue`` to ``Serializer.do_CSSValue``
+
+    + BUGFIX: Tantek hack (using ``voice-family``) should work now as SameNamePropertyList is removed and properties are kept in order
+
 
 0.9.3a1 - 070905
     - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList.
