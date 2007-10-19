@@ -255,14 +255,14 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if not rule.uri or self._noinvalids(rule):
+        if not rule.namespaceURI or self._noinvalids(rule):
             return u''
 
         out = [u'%s' % self._getatkeyword(rule, u'@namespace')]
         for part in rule.seq:
             if rule.prefix == part and part != u'':
                 out.append(u' %s' % part)
-            elif rule.uri == part:
+            elif rule.namespaceURI == part:
                 out.append(u' "%s"' % self._escapestring(part))
             elif hasattr(part, 'cssText'): # comments
                 out.append(part.cssText)
