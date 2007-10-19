@@ -72,18 +72,13 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaises(xml.dom.InvalidModificationErr,
                           self.r._setCssText, '@ ;')
         self.assertRaises(xml.dom.InvalidModificationErr,
-                          self.r._setCssText, '@ {}')
+                          self.r._setCssText, '@ {}'),
         # rule end
-##        self.assertRaises(xml.dom.SyntaxErr,
-##                          self.r._setCssText, '@x }  ')
-##        self.assertRaises(xml.dom.SyntaxErr,
-##                          self.r._setCssText, '@x }  ;')
-##        self.assertRaises(xml.dom.SyntaxErr,
-##                          self.r._setCssText, '@x {  ')
-##        self.assertRaises(xml.dom.SyntaxErr,
-##                          self.r._setCssText, '@x {  ;')
-##        self.assertRaises(xml.dom.SyntaxErr,
-##                          self.r._setCssText, '@x ')
+#        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x }  '),
+#        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x }  ;'),
+#        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x {  '),
+#        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x {  ;'),
+#        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x ')
 
     def test_reprANDstr(self):
         "CSSUnknownRule.__repr__(), .__str__()"        

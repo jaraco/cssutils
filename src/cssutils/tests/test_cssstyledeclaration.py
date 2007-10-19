@@ -44,7 +44,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             u'color:green; color:': u'color: green',
             u'color:red;   color:; color:green': u'color: green',
             u'color:green; color{;color:maroon}': u'color: green',
-            # TODO!!!
+            # TODO:
 #                u'color:red;   color{;color:maroon}; color:green':
 #                u'color: green',
             # tantek hack

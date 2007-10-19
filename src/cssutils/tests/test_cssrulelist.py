@@ -3,13 +3,10 @@ testcases for cssutils.css.CSSRuleList
 """
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
-
+__version__ = '$LastChangedRevision$'
 
 import basetest
-
 import cssutils
-
 
 class CSSRuleListTestCase(basetest.BaseTestCase):
 
