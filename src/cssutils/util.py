@@ -77,18 +77,9 @@ class Base(object):
     """
     Base class for most CSS and StyleSheets classes
 
-    contains helper objects
-        * _log
-        * _ttypes
-
-    and functions
-        * staticmethod: _normalize(x)
-        * _checkReadonly()
-        * _tokenize()
-        * _tokensupto()
-        * _valuestr()
-
-    for inheriting classes helping parsing
+    Contains helper methods for inheriting classes helping parsing
+    
+    ``_normalize`` is static as used be Preferences.
     """
     _log = cssutils.log
 
@@ -120,6 +111,7 @@ class Base(object):
         return False
 
     def _newseq(self):
+        # used by Selector but should be used by most classes?
         return Seq()
 
     def _valuestr(self, t):
@@ -163,6 +155,13 @@ class Base(object):
             # already tokenized but return generator
             return (x for x in textortokens)
 
+    def _nexttoken(self, tokenizer, default=None):
+        "returns next token in generator tokenizer or the default value"
+        try:
+            return tokenizer.next()
+        except (StopIteration, AttributeError):
+            return default
+
     def _type(self, token):
         "type of Tokenizer token"
         return token[0]
@@ -173,13 +172,6 @@ class Base(object):
             return Base._normalize(token[1])
         else:
             return token[1]
-
-    def _nexttoken(self, tokenizer, default=None):
-        "returns next token in generator tokenizer or the default value"
-        try:
-            return tokenizer.next()
-        except (StopIteration, AttributeError):
-            return default
 
     def _tokensupto2(self,
                      tokenizer,
