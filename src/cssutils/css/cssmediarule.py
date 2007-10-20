@@ -121,7 +121,7 @@ class CSSMediaRule(cssrule.CSSRule):
                     # TODO: get complete rule!
                     tokens = self._tokensupto2(tokenizer, token)
                     atval = self._tokenvalue(token)
-                    if atval in ('@charset', '@import', '@namespace', '@page', 
+                    if atval in ('@charset ', '@import', '@namespace', '@page', 
                                  '@media'):
                         self._log.error(
                             u'CSSMediaRule: This rule is not allowed in CSSMediaRule - ignored: %s.'
