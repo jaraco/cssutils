@@ -128,4 +128,4 @@ class CSSProductions(object):
 
 
 for i, t in enumerate(PRODUCTIONS):
-    setattr(CSSProductions, t[0], t[0])
+    setattr(CSSProductions, t[0].replace('-', '_'), t[0])
