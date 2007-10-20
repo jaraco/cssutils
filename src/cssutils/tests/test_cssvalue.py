@@ -105,7 +105,8 @@ class CSSValueTestCase(basetest.BaseTestCase):
             ]
         for n, v, exp in tests:
             v = cssutils.css.CSSValue(cssText=v, _propertyName=n)
-            self.assert_(v.valid is exp)
+            self.assertEqual(v.valid, exp)
+            self.assert_(v.wellformed, True)
 
     def test_cssValueType(self):
         "CSSValue.cssValueType .cssValueTypeString"
