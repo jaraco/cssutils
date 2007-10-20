@@ -56,7 +56,7 @@ class UtilTestCase(basetest.BaseTestCase):
         for typ, values, exp, paransasfunc in tests:
 
             def maketokens(valuelist):
-                # returns list of Token objects
+                # returns list of tuples
                 return [('TYPE', v, 0, 0) for v in valuelist]
 
             tokens = maketokens(list(values))
