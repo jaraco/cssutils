@@ -172,21 +172,6 @@ class CSSImportRule(cssrule.CSSRule):
                         u'CSSImportRule: Unexpected string.', token)
                     return expected
 
-            def _invalid(expected=None, seq=None, token=None, tokenizer=None):
-                # complete rule is invalid and ignored if not EOF is found!
-                eof = self._nexttoken(tokenizer, None)
-                if eof and 'EOF' == self._type(eof) and 'href' == expected:
-                    # incomplete stylesheet so rule if ok
-                    new['hreftype'] = 'string'
-                    new['href'] = self._tokenvalue(token)[1:].strip() # "uri or 'uri
-                    seq.append(new['href'])
-                    return 'EOF'
-                else:
-                    new['wellformed'] = False
-                    self._log.error(
-                        u'CSSImportRule: Unexpected INVALID.', token)
-                    return expected
-
             def _uri(expected, seq, token, tokenizer=None):
                 # href
                 if 'href' == expected:
@@ -204,26 +189,27 @@ class CSSImportRule(cssrule.CSSRule):
                         u'CSSImportRule: Unexpected URI.', token)
                     return expected
 
-            def _function(expected, seq, token, tokenizer=None):
-                # FUNCTION must be an incomplete URI, else an error
-                eof = self._nexttoken(tokenizer, None) # should end here
-                val = self._tokenvalue(token, normalize=True)
-                if eof and eof == 'EOF' and 'href' == expected and\
-                   val.startswith(u'url('):
-                    new['hreftype'] = 'uri'
-                    uri = self._tokenvalue(token)[4:].strip() # url(uri INCOMPLETE!
-                    if uri and (
-                       uri[0] == uri[-1] == '"' or
-                       uri[0] == uri[-1] == "'"):
-                        uri = uri[1:-1]
-                    new['href'] = uri
-                    seq.append(new['href'])
-                    return 'EOF'
-                else:
-                    new['wellformed'] = False
-                    self._log.error(
-                        u'CSSImportRule: Unexpected FUNCTION.', token)
-                    return expected
+#            def _function(expected, seq, token, tokenizer=None):
+#                # FUNCTION may be an incomplete URI, else an error
+#                val = self._tokenvalue(token, normalize=True)
+#                if 'href' == expected and val.startswith(u'url('):
+#                    new['hreftype'] = 'uri'
+#                    # TODO
+#                    uri = 'TODO'
+#                    
+##                    uri = self._tokenvalue(token)[4:].strip() # url(uri INCOMPLETE!
+##                    if uri and (
+##                       uri[0] == uri[-1] == '"' or
+##                       uri[0] == uri[-1] == "'"):
+##                        uri = uri[1:-1]
+#                    new['href'] = uri
+#                    seq.append(new['href'])
+#                    return 'EOF'
+#                else:
+#                    new['wellformed'] = False
+#                    self._log.error(
+#                        u'CSSImportRule: Unexpected FUNCTION.', token)
+#                    return expected
 
             def _ident(expected, seq, token, tokenizer=None):
                 # medialist ending with ; which is checked upon too
@@ -272,9 +258,8 @@ class CSSImportRule(cssrule.CSSRule):
             wellformed, expected = self._parse(expected='href',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'STRING': _string,
-                             'INVALID': _invalid,
                              'URI': _uri,
-                             'FUNCTION': _function,
+                             #'FUNCTION': _function,
                              'IDENT': _ident,
                              'CHAR': _char})
 
