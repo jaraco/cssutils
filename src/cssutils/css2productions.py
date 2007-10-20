@@ -71,7 +71,7 @@ PRODUCTIONS = [
     ('FONT_FACE_SYM', r'@{F}{O}{N}{T}\-{F}{A}{C}{E}'), #"@font-face"        {return FONT_FACE_SYM;}
 
     # CHANGED TO SPEC: only @charset
-    ('CHARSET_SYM', r'@charset'), #"@charset"        {return CHARSET_SYM;}
+    ('CHARSET_SYM', r'@charset '), #"@charset "        {return CHARSET_SYM;}
 
     ('NAMESPACE_SYM', r'@{N}{A}{M}{E}{S}{P}{A}{C}{E}'), #"@namespace"        {return NAMESPACE_SYM;}
 
