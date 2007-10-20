@@ -13,6 +13,7 @@ __version__ = '$LastChangedRevision$'
 
 import re
 import cssutils
+import util
 
 class Preferences(object):
     """
@@ -44,8 +45,20 @@ class Preferences(object):
         of CSSStyleDeclarations usable in HTML style attribute.
     omitLastSemicolon = True
         If ``True`` omits ; after last property of CSSStyleDeclaration
-    removeInvalid = True
+               
+    **INWORK**
+        validOnly = False
+            if True only valid (Properties or Rules) are kept
+            A Property is valid if it is a known Property with a valid value.
+            Currently CSS 2.1 values as defined in cssproperties.py would be
+            valid.
+            
+        wellformedOnly= True
+            only wellformed properties and rules are kept
+
+    **DEPRECATED**: removeInvalid = True
         Omits invalid rules, MAY CHANGE!
+
     """
     def __init__(self, indent=u'    ', lineSeparator=u'\n'):
         """
@@ -60,6 +73,11 @@ class Preferences(object):
         self.keepComments = True
         self.omitLastSemicolon = True
         self.lineNumbers = False
+               
+        self.validOnly = False
+        self.wellformedOnly = True
+
+        # DEPRECATED
         self.removeInvalid = True
 
 class CSSSerializer(object):
@@ -92,17 +110,28 @@ class CSSSerializer(object):
         return text
 
     def _noinvalids(self, x):
-        """
-        returns
-            True if x.valid or prefs.removeInvalid == False
-            else False
-        """
+        # DEPRECATED: REMOVE!
         if self.prefs.removeInvalid and \
            hasattr(x, 'valid') and not x.valid:
             return True
         else:
             return False
 
+    def _valid(self, x):
+        """
+        checks if valid items only and if yes it item is valid
+        """
+        return not self.prefs.validOnly or (self.prefs.validOnly and
+                                            hasattr(x, 'valid') and
+                                            x.valid)
+
+    def _wellformed(self, x):
+        """
+        checks if wellformed items only and if yes it item is wellformed
+        """
+        return self.prefs.wellformedOnly and hasattr(x, 'wellformed') and\
+               x.wellformed
+    
     def _escapestring(self, s, delim=u'"'):
         """
         escapes delim charaters in string s with \delim
@@ -477,13 +506,12 @@ class CSSSerializer(object):
         """
         Style declaration of CSSStyleRule
 
-        Property has a seqs attribute which contains seq lists for
+        Property has a seqs attribute which contains seq lists for             
         name, a CSSvalue and a seq list for priority
         """
-        if not property.seqs[0] or self._noinvalids(property):
-            return u''
-        else:
-            out = []
+        out = []
+        if property.seqs[0] and self._wellformed(property) and\
+                                self._valid(property):
             nameseq, cssvalue, priorityseq = property.seqs
 
             #name
