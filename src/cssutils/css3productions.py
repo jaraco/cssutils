@@ -43,7 +43,7 @@ PRODUCTIONS = [
     ('DIMENSION', r'{num}{ident}'),
     ('NUMBER', r'{num}'),
     #???
-    ('UNICODE-RANGE', r'[0-9A-F?]{1,6}(\-[0-9A-F]{1,6})?'),
+    ('UNICODE-RANGE', ur'[0-9A-F?]{1,6}(\-[0-9A-F]{1,6})?'),
     ('CDO', r'\<\!\-\-'),
     ('CDC', r'\-\-\>'),
     ('S', r'{wc}+'),
@@ -61,4 +61,4 @@ class CSSProductions(object):
     pass
 
 for i, t in enumerate(PRODUCTIONS):
-    setattr(CSSProductions, t[0], t[0])
+    setattr(CSSProductions, t[0].replace('-', '_'), t[0])
