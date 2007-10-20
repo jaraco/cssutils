@@ -83,6 +83,17 @@ class CSSValueTestCase(basetest.BaseTestCase):
                          v.cssText)
         self.assert_(False is v.valid)
 
+    def test_incomplete(self):
+        "CSSValue (incomplete)"
+        tests = {
+            u'url("a': u'url("a")',
+            u'url(a': u'url(a)'
+        }
+        for v, exp in tests.items():
+            s = cssutils.parseString('a { background: %s' % v)
+            v = s.cssRules[0].style.background
+            self.assertEqual(v, exp)
+
     def test_valid(self):
         "CSSValue.valid"
         # context property must be set
