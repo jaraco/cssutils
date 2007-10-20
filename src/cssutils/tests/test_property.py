@@ -113,15 +113,24 @@ class PropertyTestCase(basetest.BaseTestCase):
             }
         self.do_raise_r(tests, att='_setName')
 
-#    def test_validate(self):
-#        "Property.name Validating (TEST NOT COMPLETE!)"
-#        p = cssutils.css.property.Property('left', '1px')
-#
-#        # expects message
-#        p.name = 'notcss2'
-#
-#        p.name = 'left'
-#        p.value = 'red'
+    def test_validate(self):
+        "Property.valid"
+        p = cssutils.css.property.Property('left', '1px', '')
+
+        self.assertEqual(p.valid, True)
+        self.assertEqual(p.cssValue.valid, True)
+       
+        p.name = 'color'
+        self.assertEqual(p.valid, False)
+        self.assertEqual(p.cssValue.valid, False)
+
+        p.name = 'top'
+        self.assertEqual(p.valid, True)
+        self.assertEqual(p.cssValue.valid, True)
+
+        p.value = 'red'
+        self.assertEqual(p.valid, False)
+        self.assertEqual(p.cssValue.valid,False)
 
     def test_cssValue(self):
         "Property.cssValue"
