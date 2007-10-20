@@ -42,7 +42,7 @@ Based upon and partly implements the following specifications (DOM only, not any
     Rules and properties are defined here
 `CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`_
     A few erratas, mainly the definition of CHARSET_SYM tokens
-`MediaQuery <http://www.w3.org/TR/css3-mediaqueries/>`_
+`MediaQueries <http://www.w3.org/TR/css3-mediaqueries/>`_
     MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
 `Namespaces <http://www.w3.org/TR/css3-namespace/>`_
     Added in v0.9.1 and updated to definition in CSSOM in v0.9.4
