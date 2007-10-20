@@ -20,9 +20,11 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual('1px', p.value)
         self.assertEqual('1px', p.cssValue.cssText)
         self.assertEqual(u'', p.priority)
-
+        self.assertEqual(True, p.valid)
+        self.assertEqual(True, p.wellformed)
+        
         self.assertEqual([u'top'], p.seqs[0])
-        self.assertEqual(type(cssutils.css.CSSPrimitiveValue(cssText="1")), type(p.seqs[1]))
+        self.assertEqual(type(cssutils.css.CSSPrimitiveValue(cssText="2px")), type(p.seqs[1]))
         self.assertEqual([], p.seqs[2])
 
         self.assertEqual(True, p.valid)
