@@ -13,6 +13,8 @@ print mylog.getvalue()
 
 # OUTPUTS:
 #--- customlog content  ---
-#INFO:mylog:Property: No CSS2 Property: "x". [1:5: x]
+#INFO:mylog:Property: No CSS2 Property: "x".
+#INFO:mylog:CSSValue: Unable to validate as no or unknown property context set for
+# this value: u'1'
 #ERROR:mylog:CSSStylesheet: CSSImportRule not allowed here. [1:13: @import]
 
