@@ -5,7 +5,7 @@ def show(style):
     print "style.item(0) ==", style.item(0)
     print "style.item(1) ==", style.item(1)
     print "style.getSameNamePropertyList('color') == ["
-    for x in style.getSameNamePropertyList('color'):
+    for x in style.getProperties('color', all=True):
         print "\t", x
     print "\t]"
     print "style.getPropertyValue('color') ==", style.getPropertyValue('color'), '\n'
@@ -42,11 +42,11 @@ show(style)
 print "------------"
 
 # overwrite in any case, even !important
-print "style.setProperty('color', 'green', '!important', overwrite=False)"
-style.setProperty('color', 'green', '!important', overwrite=False)
+print "style.setProperty('color', 'green', '!important')"
+style.setProperty('color', 'green', '!important')
 show(style)
 
 # overwrite in any case, even !important
-print "style.setProperty('color', 'blue', overwrite=False)"
-style.setProperty('color', 'blue', overwrite=False)
+print "style.setProperty('color', 'blue')"
+style.setProperty('color', 'blue')
 show(style)
