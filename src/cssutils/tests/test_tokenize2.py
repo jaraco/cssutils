@@ -15,7 +15,6 @@ __version__ = '$LastChangedRevision: 302 $'
 import xml.dom
 import basetest
 from cssutils.tokenize2 import *
-from cssutils.token import Token
 
 class TokenizerTestCase(basetest.BaseTestCase):
 
@@ -300,12 +299,15 @@ class TokenizerTestCase(basetest.BaseTestCase):
         ur'@\66\6f\6e\74\-\66\61\63\65': [('FONT_FACE_SYM',
             ur'@\66\6f\6e\74\-\66\61\63\65', 1, 1)],
 
-        # CHARSET_SYM only if "@charset"!
-        u' @charset ': [('S', u' ', 1, 1),
-                 ('CHARSET_SYM', u'@charset', 1, 2),
-                 ('S', u' ', 1, 10)],
-        u'@CHARSET': [('ATKEYWORD', u'@CHARSET', 1, 1)],
-        u'@cha\\rset': [('ATKEYWORD', u'@cha\\rset', 1, 1)],
+        # CHARSET_SYM only if "@charset "!
+        u' @charset  ': [('S', u' ', 1, 1),
+                 ('CHARSET_SYM', u'@charset ', 1, 2),
+                 ('S', u' ', 1, 11)],
+        u'@charset': [('ATKEYWORD', u'@charset', 1, 1)], # no ending S
+        u'@CHARSET ': [('ATKEYWORD', u'@CHARSET', 1, 1),# uppercase
+                       ('S', u' ', 1, 9)],
+        u'@cha\\rset ': [('ATKEYWORD', u'@cha\\rset', 1, 1), # not literal
+                         ('S', u' ', 1, 10)],
 
         # NAMESPACE_SYM
         u' @namespace ': [('S', u' ', 1, 1),
@@ -406,16 +408,11 @@ class TokenizerTestCase(basetest.BaseTestCase):
         ur'"\" "': [('STRING', ur'"\" "', 1, 1)],
         u"""'\\''""": [('STRING', u"""'\\''""", 1, 1)],
         u'''"\\""''': [('STRING', u'''"\\""''', 1, 1)],
-
-        # INVALID (STRING)
-        u' " ': [('S', u' ', 1, 1),
-                 ('INVALID', u'" ', 1, 2)],
-        u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
-                 ('INVALID', u"'abc\"with quote\" in it", 1, 2)],
         u' "\na': [('S', u' ', 1, 1),
                    ('INVALID', u'"', 1, 2),
                    ('S', u'\n', 1, 3),
                    ('IDENT', u'a', 1, 4)],
+
         # strings with linebreak in it
         u' "\\na\na': [('S', u' ', 1, 1),
                    ('INVALID', u'"\\na', 1, 2),
@@ -426,12 +423,20 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('S', u'\n', 1, 16),
                    ('IDENT', u'a', 1, 17)],
         }
+
     # tests if fullsheet=False is set on tokenizer
     testsfullsheetfalse = {
         # COMMENT incomplete
         u'/*': [('CHAR', u'/', 1, 1),
                 ('CHAR', u'*', 1, 2)],
-        # COMMENT incomplete
+
+        # INVALID incomplete
+        u' " ': [('S', u' ', 1, 1),
+                 ('INVALID', u'" ', 1, 2)],
+        u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
+                 ('INVALID', u"'abc\"with quote\" in it", 1, 2)],
+
+        # URI incomplete
         u'url(a': [('FUNCTION', u'url(', 1, 1),
                    ('IDENT', u'a', 1, 5)],
         u'url("a': [('FUNCTION', u'url(', 1, 1),
@@ -445,10 +450,20 @@ class TokenizerTestCase(basetest.BaseTestCase):
         # COMMENT incomplete
         u'/*': [('COMMENT', u'/**/', 1, 1)],
 
-        # URI incomplete
+        # INVALID incomplete => STRING 
+        u' " ': [('S', u' ', 1, 1),
+                 ('STRING', u'" "', 1, 2)],
+        u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
+                 ('STRING', u"'abc\"with quote\" in it'", 1, 2)],
+
+        # URI incomplete FUNC => URI
         u'url(a': [('URI', u'url(a)', 1, 1)],
+        u'url( a': [('URI', u'url( a)', 1, 1)],
         u'url("a': [('URI', u'url("a")', 1, 1)],
+        u'url( "a ': [('URI', u'url( "a ")', 1, 1)],
         u"url('a": [('URI', u"url('a')", 1, 1)],
+        u'url("a"': [('URI', u'url("a")', 1, 1)],
+        u"url('a'": [('URI', u"url('a')", 1, 1)],
 
         }
 
@@ -546,7 +561,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
     def __old(self):
 
-        tt = Token
         testsOLD = {
             u'x x1 -x .-x #_x -': [(1, 1, tt.IDENT, u'x'),
                (1, 2, 'S', u' '),
