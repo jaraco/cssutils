@@ -51,7 +51,11 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             ur'''color: red;
 voice-family: "\"}\"";
 voice-family:inherit;
-color: green;''': 'voice-family: inherit;\ncolor: green'
+color: green;''': 'voice-family: inherit;\ncolor: green',
+            ur'''col\or: blue;
+                font-family: 'Courier New Times
+                color: red;
+                color: green;''': u'color: green'
             }
         for test, exp in tests.items():
             sh = cssutils.parseString('a { %s }' % test)
