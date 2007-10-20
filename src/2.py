@@ -23,44 +23,51 @@ css = """
 -->
 """
 
-if 0:
-    css = '''"\\" "'''
+if 1:
+    css = ur'\1 { \2: \3 }'
     t = cssutils.tokenize2.Tokenizer()
-    gen = t.tokenize(css, fullsheet=0)
+    gen = t.tokenize(css, fullsheet=1)
     for tk in gen:
         print tk
     sys.exit(0)
 
 if 0:
-    productions = cssutils.tokenize2.CSS2_1_Productions
-    print productions.CLASS
+    css = '''color:red;   
+                    color{;color:maroon}; 
+                    color:green
+             '''
 
-if 0:
-    import xml.dom
-    impl = xml.dom.getDOMImplementation()
-    print impl.hasFeature('css', '2.0')
+    s = cssutils.css.CSSStyleDeclaration()
+    s.cssText = css
+    print s.cssText
     sys.exit(0)
 
 if 1:
-    css = '''p {
-                    col\or: blue;
-                    font-family: 'Courier New Times
-                    color: red;
-                    color: green;
+    css = '''p {    color:red;   
+                    color{;color:maroon}; 
+                    color:green
                   }'''
-    css = '''@import /*1*/ "a
-        " /*2*/ tv, print;'''
-    s = cssutils.parseString(css)
+    css = r'\1 { \2: \3}'
+    cssutils.ser.prefs.keepAllProperties = True
+    p = cssutils.CSSParser(raiseExceptions=False)
+    s = p.parseString(css)
     print s.cssText
+    r = s.cssRules[0].style
+    for p in r:
+        print p, 'v:', p.valid, 'w:', p.wellformed
+        
     sys.exit(0)
     
-if 0:    
-    css = ur'''@namespace x "u";'''
-    s = cssutils.css.CSSNamespaceRule()
-    s.cssText = css
-    print s
-    print s.cssText
-    print s.namespaceURI
+if 1:    
+    p = cssutils.css.property.Property('top', '1px')
+    #print p, p.valid
+    v = p.cssValue
+    print v
+    p.name = 'color'
+    #print p, p.valid
+    v = p.cssValue
+    print v
+    
     sys.exit(0)
 
 if 1:
@@ -162,3 +169,9 @@ if 1:
     #r = cssutils.css.CSSNamespaceRule()
     #r.cssText = css
     #print r.cssText
+
+if 0:
+    import xml.dom
+    impl = xml.dom.getDOMImplementation()
+    print impl.hasFeature('css', '2.0')
+    sys.exit(0)
