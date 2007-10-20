@@ -30,6 +30,7 @@ import re
 import string
 import xml.dom
 import cssutils
+import util
 from cssproductions import *
 
 class Tokenizer(object):
@@ -97,7 +98,7 @@ class Tokenizer(object):
                 if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
                     # after all tokens except CHAR have been tested
                     # test for incomplete comment
-                    possiblecomment = '%s*/' % text
+                    possiblecomment = u'%s*/' % text
                     match = self.commentmatcher(possiblecomment)
                     if match:
                         yield ('COMMENT', possiblecomment, line, col)
@@ -110,22 +111,25 @@ class Tokenizer(object):
                     found = match.group(0)
 
                     if fullsheet:
-                        if 'FUNCTION' == name:
-                            f = found.replace('\\', '')
-                            if f.startswith(u'url('):
-                                # "url(" is literaland my not be URL( but u\\rl(
-                                # FUNCTION url( is fixed to URI
-                                # FUNCTION production MUST BE after URI production!
-                                for end in (u"')", u'")', u')'):
-                                    possibleuri = '%s%s' % (text, end)
-                                    match = self.urimatcher(possibleuri)
-                                    if match:
-                                        name = 'URI'
-                                        found = match.group(0)
-                                        break
+                        # check if tokens may be completed
+                        if 'INVALID' == name and text == found:
+                            # complete INVALID to STRING
+                            name = 'STRING'
+                            found = '%s%s' % (found, found[0])
+                        
+                        elif 'FUNCTION' == name and\
+                             u'url(' == util.Base._normalize(found):
+                            # FUNCTION url( is fixed to URI if fullsheet
+                            # FUNCTION production MUST BE after URI production!
+                            for end in (u"')", u'")', u')'):
+                                possibleuri = '%s%s' % (text, end)
+                                match = self.urimatcher(possibleuri)
+                                if match:
+                                    name = 'URI'
+                                    found = match.group(0)
+                                    break
 
                     yield (name, found, line, col)
-
                     text = text[len(found):]
                     nls = found.count(linesep)
                     line += nls
