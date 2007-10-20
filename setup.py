@@ -7,7 +7,7 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.3a2'
+__version__ = '0.9.4a1'
 
 #import ez_setup
 #ez_setup.use_setuptools()
@@ -27,15 +27,27 @@ setup(
         ]
     },
     description='A CSS Cascading Style Sheets library for Python',
-    long_description='''A Python package to parse and build CSS Cascading
-Style Sheets. Partly implements the `DOM Level 2
-Style <http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/>`_
-`Stylesheets
-<http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/stylesheets.html>`_
-and `CSS <http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/css.html>`_
-interfaces. An implementation of the WD `CSS Module: Namespaces
-<http://www.w3.org/TR/2006/WD-css3-namespace-20060828/>`_ which has no
-official DOM yet is included from v0.9.1.''',
+    long_description='''A Python package to parse and build CSS Cascading Style Sheets.
+
+Based upon and partly implements the following specifications (DOM only, not any rendering facilities):
+
+`DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_
+    DOM for package css
+`DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_
+    DOM for package stylesheets
+`CSSOM <http://dev.w3.org/csswg/cssom/>`_
+    A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change in the future
+
+`CSS 2.1 <http://www.w3.org/TR/CSS21/>`_
+    Rules and properties are defined here
+`CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`_
+    A few erratas, mainly the definition of CHARSET_SYM tokens
+`MediaQuery <http://www.w3.org/TR/css3-mediaqueries/>`_
+    MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
+`Namespaces <http://www.w3.org/TR/css3-namespace/>`_
+    Added in v0.9.1 and updated to definition in CSSOM in v0.9.4
+`Selectors <http://www.w3.org/TR/css3-selectors/>`_
+    The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )''',
     author='Christof Hoeke',
     author_email='c@cthedot.de',
     url='http://cthedot.de/cssutils/',
@@ -44,7 +56,7 @@ official DOM yet is included from v0.9.1.''',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
     platforms='Python 2.4 and later.',
     classifiers=[
-        #'Development Status :: 4 - Beta',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
