@@ -48,7 +48,8 @@ class Preferences(object):
                
     **INWORK**
         validOnly = False
-            if True only valid (Properties or Rules) are kept
+            if True only valid (Properties or Rules) are kept^
+            
             A Property is valid if it is a known Property with a valid value.
             Currently CSS 2.1 values as defined in cssproperties.py would be
             valid.
@@ -57,7 +58,7 @@ class Preferences(object):
             only wellformed properties and rules are kept
 
     **DEPRECATED**: removeInvalid = True
-        Omits invalid rules, MAY CHANGE!
+        Omits invalid rules
 
     """
     def __init__(self, indent=u'    ', lineSeparator=u'\n'):
