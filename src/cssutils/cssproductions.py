@@ -9,7 +9,6 @@ open issues
     - HASH: #aaa is, #000 is not anymore,
             CSS2.1: 'nmchar': r'[_a-z0-9-]|{nonascii}|{escape}',
             CSS3: 'nmchar': r'[_a-z-]|{nonascii}|{escape}',
-        ???
 """
 __all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
 __docformat__ = 'restructuredtext'

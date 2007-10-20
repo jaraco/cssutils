@@ -37,21 +37,24 @@ class MediaQuery(cssutils.util.Base):
 
     Format
     ======
-    media_query: [[only | not]? <media_type> [ and <expression> ]*]
-      | <expression> [ and <expression> ]*
-    expression: ( <media_feature> [: <value>]? )
-    media_type: all | aural | braille | handheld | print |
-      projection | screen | tty | tv | embossed
-    media_feature: width | min-width | max-width
-      | height | min-height | max-height
-      | device-width | min-device-width | max-device-width
-      | device-height | min-device-height | max-device-height
-      | device-aspect-ratio | min-device-aspect-ratio | max-device-aspect-ratio
-      | color | min-color | max-color
-      | color-index | min-color-index | max-color-index
-      | monochrome | min-monochrome | max-monochrome
-      | resolution | min-resolution | max-resolution
-      | scan | grid
+    ::
+    
+        media_query: [[only | not]? <media_type> [ and <expression> ]*]
+          | <expression> [ and <expression> ]*
+        expression: ( <media_feature> [: <value>]? )
+        media_type: all | aural | braille | handheld | print |
+          projection | screen | tty | tv | embossed
+        media_feature: width | min-width | max-width
+          | height | min-height | max-height
+          | device-width | min-device-width | max-device-width
+          | device-height | min-device-height | max-device-height
+          | device-aspect-ratio | min-device-aspect-ratio | max-device-aspect-ratio
+          | color | min-color | max-color
+          | color-index | min-color-index | max-color-index
+          | monochrome | min-monochrome | max-monochrome
+          | resolution | min-resolution | max-resolution
+          | scan | grid
+          
     """
     MEDIA_TYPES = [u'all', u'aural', u'braille', u'embossed', u'handheld',
         u'print', u'projection', u'screen', u'tty', u'tv']

@@ -33,16 +33,16 @@ class Preferences(object):
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
     keepAllProperties = False
-        If ``True`` all properties set in the original CSSStylesheet
+        If ``True`` all properties set in the original CSSStylesheet 
         are kept meaning even properties set twice with the exact same
         same name are kept!
     keepComments = True
         If ``False`` removes all CSSComments
     lineNumbers = False
         Only used if a complete CSSStyleSheet is serialized.
-    lineSeparator = u'\n'
-        How to end a line. This may be set to e.g. u'' for serializing
-        of CSSStyleDeclarations usable in HTML style attribute.
+    lineSeparator = u'\\n'
+        How to end a line. This may be set to e.g. u'' for serializing of 
+        CSSStyleDeclarations usable in HTML style attribute.
     omitLastSemicolon = True
         If ``True`` omits ; after last property of CSSStyleDeclaration
                
