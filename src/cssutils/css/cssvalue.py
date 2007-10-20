@@ -115,6 +115,7 @@ class CSSValue(cssutils.util.Base):
         Format
         ======
         ::
+        
             unary_operator
               : '-' | '+'
               ;
@@ -806,9 +807,11 @@ class CSSPrimitiveValue(CSSValue):
 
         raises
             DOMException
-            - INVALID_ACCESS_ERR: Raised if the CSS value doesn't contain a
-                string value or if the string value can't be converted into
-                the specified unit.
+            
+            - INVALID_ACCESS_ERR: Raised if the CSS value doesn't contain a 
+              string value or if the string value can't be converted into
+              the specified unit.
+              
             - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
         """
         self._checkReadonly()

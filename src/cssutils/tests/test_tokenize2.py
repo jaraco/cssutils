@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """testcases for new cssutils.tokenize.Tokenizer
 
-TODO:
+TODO::
+
     - escape ends with explicit space but \r\n as single space
     - ur'"\""': [('STRING', ur'"\""', 1, 1)],
     - font-face with escaped "-"
 
-    + old tests as new ones are **not complete**!
++ old tests as new ones are **not complete**!
 """
 __author__ = '$LastChangedBy: cthedot $'
 __date__ = '$LastChangedDate: 2007-09-01 15:56:36 +0200 (Sa, 01 Sep 2007) $'
