@@ -101,23 +101,27 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         self.p = cssutils.CSSParser(raiseExceptions=True)
 
-
-    def do_equal_p(self, tests, att='cssText', debug=False):
+    def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
+        """
+        if raising self.p is used for parsing, else self.pf
+        """
+        p = cssutils.CSSParser(raiseExceptions=raising)
         # parses with self.p and checks att of result
         for test, expected in tests.items():
             if debug:
                 print '"%s"' % test
-            s = self.p.parseString(test)
+            s = p.parseString(test)
             if expected is None:
                 expected = test
             self.assertEqual(expected, s.__getattribute__(att))
 
-    def do_raise_p(self, tests, debug=False):
+    def do_raise_p(self, tests, debug=False, raising=True):
         # parses with self.p and expects raise
+        p = cssutils.CSSParser(raiseExceptions=raising)
         for test, expected in tests.items():
             if debug:
                 print '"%s"' % test
-            self.assertRaises(expected, self.p.parseString, test)
+            self.assertRaises(expected, p.parseString, test)
 
 
     def do_equal_r(self, tests, att='cssText', debug=False):
