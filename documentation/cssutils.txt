@@ -17,7 +17,7 @@ Implemented is also the interface `DOMImplementationCSS <http://www.w3.org/TR/DO
 :CSSParser: A CSS parser
 :CSSSerializer: A configurable CSS serializer
 :log: A configurable ``cssutils.errorhandler.ErrorHandler()`` logger
-:DOMImplementationCSS: Registers cssutils by standard package ``xml.com``
+:DOMImplementationCSS: Registers cssutils at standard package ``xml.dom``
 
 
 parsing CSS
@@ -29,14 +29,7 @@ Options to parse a given stylesheet:
   - ``cssutils.parse(filename, encoding)``
   - ``cssutils.parseString(cssText, href=None, media=None)``
 
-* or get an instance of cssutils.CSSParser and use the provided parse methods which are the same as the helper functions. The parser is reusable.
-
-
-serializing CSS
-===============
-There is only one global serializer used throughout the library. You may configure it or even replace it with your own.
-
-For more details see `Serializing <serialize.txt>`_
+* or get an instance of ``cssutils.CSSParser`` and use the provided ``parse`` methods which are the same as the helper functions. The parser is reusable.
 
 
 logging
@@ -50,3 +43,10 @@ The default logger is available as ``cssutils.log``. It has the following method
 
     import logging
     cssutils.log.setloglevel(logging.FATAL)
+
+
+serializing CSS
+===============
+There is only one global serializer used throughout the library. You may configure it or even replace it with your own.
+
+For more details see `Serializing <serialize.txt>`_
