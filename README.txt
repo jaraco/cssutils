@@ -9,20 +9,53 @@ CSS Cascading Style Sheets library for Python
 :Date: $LastChangedDate$
 :Version: 0.9.4a1 (rev $LastChangedRevision$)
 
+.. contents::
+
+Overview
+========
+
 A Python package to parse and build CSS Cascading Style Sheets.
 
-Partly implements the DOM Level 2 Style `Stylesheets  <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_ and `CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ interfaces.
+Based upon and partly implements the following specifications (DOM only, not any rendering facilities):
 
-An implementation of the `WD CSS Module: Namespaces <http://www.w3.org/TR/css3-namespace/>`_ is included since v0.9.1 and has been adapted to the DOM defined in `CSSOM <http://dev.w3.org/csswg/cssom/>`_ in 0.9.4.
+`DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_
+    DOM for package css
+`DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_
+    DOM for package stylesheets
+`CSSOM <http://dev.w3.org/csswg/cssom/>`_
+    A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change in the future
 
-An implementation of `MediaQuery <http://www.w3.org/TR/css3-mediaqueries/>`_ which form ``stylesheets.MediaList`` is included since 0.9.4.
+`CSS 2.1 <http://www.w3.org/TR/CSS21/>`_
+    Rules and properties are defined here
+`CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`_
+    A few erratas, mainly the definition of CHARSET_SYM tokens
+`MediaQuery <http://www.w3.org/TR/css3-mediaqueries/>`_
+    MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
+`Namespaces <http://www.w3.org/TR/css3-namespace/>`_
+    Added in v0.9.1 and updated to definition in CSSOM in v0.9.4
+`Selectors <http://www.w3.org/TR/css3-selectors/>`_
+    The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
 
 Published under the LGPL, see http://cthedot.de/cssutils/license.html
 
 Please visit http://cthedot.de/cssutils/ for full details and updates.
 
+known issues
+============
+- ``Preferences.removeInvalid``, ``.validOnly`` and ``.wellformedOnly`` are in experimental stage, the first option will probably removed (maybe even in the final  0.9.4 release), so use sparingly. If you need these functionality or have suggestions what you like the lib to behave contact me.
 
-.. contents::
+- ``css.FontFaceRule`` is not implemented yet (it was removed in CSS 2.1 but still looks useful)
+
+- ``css.UnknownRule`` are not handled properly in cases, tests are spotty there too. They also seem to be removed in CSSOM but seem useful (currently @font-face is handled by this rule)
+
+- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not yet implemented. As CSSOM defines a completely different DOM for Property values they may never been implemented as in DOM Level 2.
+
+- ``@charset`` not implemented according to spec (plan: 0.9.5)
+
+- CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.5 but again as CSSOM defined something else this may change))
+
+- Properties are not bound to any CSS Version, so all properties are handled so
+  *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 2.1 or 3)
 
 installation
 ============
@@ -41,21 +74,6 @@ Alternatively download the provided source distribution. Expand the file and fro
 Before using EasyInstall the first time or using the sdist please remove any old version which should be installed at PYTHONDIR/Lib/site-packages/cssutils.
 
 
-known issues
-============
-- Some methods of css.CSSPrimitiveValue, Rect, Counter and RGBColor are not yet implemented. They may be implemented in one of the next releases (0.9.4?)
-
-- @charset not implemented according to spec (plan: 0.9.5)
-
-- CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.5?)
-
-- unknown @-rules are not handled properly in cases, tests are spotty there too
-
-- Properties are not bound to any CSS Version, so all properties are handled so
-  *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 1.0 or 2.1)
-
-- A Properties CSSValue is only checked for valid CSS2 properties, so will accept more than allowed. In case of an error a WARNING is issued only
-
 
 changes
 =======
@@ -64,29 +82,25 @@ Version 0.9x
 ------------
 
 HEAD
-    *INWORK*
-        - escapes of CSS special characters does not really work but is very uncommon (e.g \@a without being an atkeyword or .\1 being a classname selector)
 
-
-    - **Documentation**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
-
+0.9.4a1 (new parser [again])
     - **FEATURE**: Added a new module ``cssutils.codec`` that registers a codec that can be used for encoding and decoding CSS. (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
 
     - **FEATURE**: Added implementation of ``stylesheets.MediaQuery`` which are part of  stylesheets.MediaList. See the complete spec at http://www.w3.org/TR/css3-mediaqueries/ for details.
 
       **Not complete yet**: Properties are not validated for now and maybe some details are missing
 
-    - FEATURE: Implemented cssutils.DOMImplementationCSS. This way it is possible to create a new StyleSheet by calling ``DOMImplementationCSS.createCSSStyleSheet(title, media)``. For most cases it is probably easier to make a new StyleSheet by getting an instance of ``cssutils.css.CSSStyleSheet`` though.
+    - FEATURE: Implemented ``cssutils.DOMImplementationCSS``. This way it is possible to create a new StyleSheet by calling ``DOMImplementationCSS.createCSSStyleSheet(title, media)``. For most cases it is probably easier to make a new StyleSheet by getting an instance of ``cssutils.css.CSSStyleSheet`` though.
 
-    - FEATURE: cssutils is registered to xml.dom.DOMImplementation claiming to implement CSS 1.0, CSS 2.0, StyleSheets 1.0 and StyleSheets 2.0. This is probably not absolutely correct as cssutils currently is not a fully compliant implementation but I guess this is used very rarely anyway.
+    - FEATURE: cssutils is registered to ``xml.dom.DOMImplementation`` claiming to implement CSS 1.0, CSS 2.0, StyleSheets 1.0 and StyleSheets 2.0. This is probably not absolutely correct as cssutils currently is not a fully compliant implementation but I guess this is used very rarely anyway.
 
-    + **API CHANGE**: ``CSSNamespacerule.uri`` is renamed to ``CSSNamespaceRule.namespaceURI`` which is defined is CSSOM. ``uri`` is deprecated and still available but the constructor parameter is names ``namespaceURI`` now.
+    + **API CHANGE**: ``CSSNamespacerule.uri`` is renamed to ``CSSNamespaceRule.namespaceURI`` which is defined is CSSOM. ``uri`` is deprecated and still available but the constructor parameter is named ``namespaceURI`` in any case now.
 
     + **API CHANGE**: As ``stylesheets.MediaQuery`` is implemented now all classes using an instance of ``stylesheets.MediaList`` are presented slightly different. Until now a simple list of string was given, now the list contains MediaQuery objects.
 
     + **API CHANGE**: ``_Property`` has been renamed to ``css.Property`` and is used in context of ``CSSStyleDeclaration`` and ``MediaQuery``. Attribute ``Property.value`` has been *de-deprecated* and may be used normally now (again). The Property constructor has only optional parameters now.
 
-    + **API CHANGE**: Removed experimental class ``SameNamePropertyList`` which was used in ``CSSStyleDeclaration`` and also method ``CSSStyleDeclaration.getSameNamePropertyList``. A new method ``CSSStyleDeclaration.getProperties`` has been added which is simpler and more useful
+    + **API CHANGE**: Removed experimental class ``SameNamePropertyList`` which was used in ``CSSStyleDeclaration`` and also method ``CSSStyleDeclaration.getSameNamePropertyList``. A new method ``CSSStyleDeclaration.getProperties()`` has been added which is simpler and more useful
 
     + **API CHANGE**: renamed attribute ``namespaces`` of CSSStyleSheet and Selector to ``prefixes`` as they really are the prefixes of declared namespaces
 
@@ -95,6 +109,12 @@ HEAD
     - API CHANGE (internal): renamed ``Serializer.do_CSSvalue`` to ``Serializer.do_CSSValue``
 
     + BUGFIX: Tantek hack (using ``voice-family``) should work now as SameNamePropertyList is removed and properties are kept in order
+
+    + BUGFIX: Token CHARSET_SYM is now as defined in the CSS 2.1 Errata as literal "@charset " including the ending space.
+
+    - **CHANGE**: A completely new tokenizer and mostly also the parser has been implemented in this release. Generally it should be much more robust and more compliant now. It will have new errors and also some slight details in parsing are changed.
+
+    + **Documentation**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
 
 
 0.9.3a1 - 070905
