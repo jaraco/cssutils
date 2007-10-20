@@ -268,20 +268,20 @@ color: green;''': 'voice-family: inherit;\ncolor: green'
         s.setProperty('top', '0', '!important')
         self.assertEqual('0', s.getPropertyValue('top'))
         self.assertEqual('!important', s.getPropertyPriority('top'))
-        s.setProperty('top', '1')
-        self.assertEqual('1', s.getPropertyValue('top'))
+        s.setProperty('top', '1px')
+        self.assertEqual('1px', s.getPropertyValue('top'))
         self.assertEqual('', s.getPropertyPriority('top'))
 
-        s.setProperty('top', '2')
-        self.assertEqual('2', s.getPropertyValue('top'))
+        s.setProperty('top', '2px')
+        self.assertEqual('2px', s.getPropertyValue('top'))
 
-        s.setProperty('\\top', '3')
-        self.assertEqual('3', s.getPropertyValue('top'))
+        s.setProperty('\\top', '3px')
+        self.assertEqual('3px', s.getPropertyValue('top'))
 
-        s.setProperty('\\top', '4', normalize=False)
-        self.assertEqual('4', s.getPropertyValue('top'))
-        self.assertEqual('4', s.getPropertyValue('\\top', False))
-        self.assertEqual('3', s.getPropertyValue('top', False))
+        s.setProperty('\\top', '4px', normalize=False)
+        self.assertEqual('4px', s.getPropertyValue('top'))
+        self.assertEqual('4px', s.getPropertyValue('\\top', False))
+        self.assertEqual('3px', s.getPropertyValue('top', False))
 
 
         # case insensitive
@@ -332,9 +332,9 @@ color: green;''': 'voice-family: inherit;\ncolor: green'
         s = cssutils.css.CSSStyleDeclaration()
         s.setProperty('top', '0', '!important')
         self.assertEqual(1, s.length)
-        s.setProperty('top', '1')
+        s.setProperty('top', '1px')
         self.assertEqual(1, s.length)
-        s.setProperty('left', '1')
+        s.setProperty('left', '1px')
 
     def test_nameParameter(self):
         "CSSStyleDeclaration.XXX(name)"
