@@ -112,7 +112,7 @@ HEAD
 
     + BUGFIX: Token CHARSET_SYM is now as defined in the CSS 2.1 Errata as literal "@charset " including the ending space.
 
-    - **CHANGE**: A completely new tokenizer and mostly also the parser has been implemented in this release. Generally it should be much more robust and more compliant now. It will have new errors and also some slight details in parsing are changed.
+    - **CHANGE**: A completely new tokenizer and mostly also the parser have been reimplemented in this release. Generally it should be much more robust and more compliant now. It will have new errors and also some slight details in parsing are changed.
 
     + **Documentation**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
 
