@@ -11,7 +11,6 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import codecs
-import re
 import xml.dom
 import cssrule
 import cssutils
@@ -51,7 +50,6 @@ class CSSCharsetRule(cssrule.CSSRule):
         @charset "ENCODING";
     """
     type = cssrule.CSSRule.CHARSET_RULE
-    __syntax = re.compile(u'^@charset "(.+?)";$', re.DOTALL | re.UNICODE)
 
     def __init__(self, encoding=None, readonly=False):
         """
@@ -133,36 +131,36 @@ class CSSCharsetRule(cssrule.CSSRule):
           Raised if the rule is readonly.
         """
         super(CSSCharsetRule, self)._setCssText(cssText)
-        tokenizer = self._tokenize2(cssText)
-        if tokenizer:
-            text = u''.join([self._tokenvalue(t) for t in tokenizer])
-        else:
-            text = u''
 
         valid = True
-        # check if right token
-        if not text.lower().startswith(u'@charset'):
+        tokenizer = self._tokenize2(cssText)
+        
+        atkeyword = self._tokenvalue(self._nexttoken(tokenizer))        
+        if u'@charset ' != atkeyword: 
             valid = False
-            self._log.error(u'No valid CSSCharsetRule: %s' % text,
+            self._log.error(u'CSSCharsetRule must start with "@charset "',
                             error=xml.dom.InvalidModificationErr)
+        
+        encodingtoken = self._nexttoken(tokenizer)
+        encodingtype, encoding = self._type(encodingtoken), self._tokenvalue(
+                                                            encodingtoken)
+        if 'STRING' != encodingtype or len(encoding) < 3:
+            valid = False
+            self._log.error(u'CSSCharsetRule: no encoding found.')
         else:
-            encoding = CSSCharsetRule.__syntax.match(text)
-            if not encoding:
-                valid = False
-                self._log.error(u'CSSCharsetRule: Syntax Error: "%s".'
-                                % text)
-            else:
-                encoding = encoding.group(1)
-                if not encoding:
-                    valid = False
-                    self._log.error(u'CSSCharsetRule: No Encoding found: "%s".'
-                                    % text)
-                else:
-                    self.encoding = encoding
-                    valid = self.valid # gets set by encoding!
-
+            encoding = encoding[1:-1] # remove "..." or '...'
+            
+        semicolon = self._tokenvalue(self._nexttoken(tokenizer))
+        EOFtype = self._type(self._nexttoken(tokenizer))
+        if u';' != semicolon or (EOFtype and 'EOF' != EOFtype):
+            valid = False
+            self._log.error(u'CSSCharsetRule: Syntax Error: %r.' % 
+                            self._valuestr(cssText))
+        
         self.valid = valid
-
+        if valid:
+            self.encoding = encoding
+            
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
 
