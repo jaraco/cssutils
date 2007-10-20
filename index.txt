@@ -6,7 +6,7 @@ CSS Cascading Style Sheets library for Python
 ---------------------------------------------
 :author: $LastChangedBy$
 :date: $LastChangedDate$
-:version: 0.9.3a2 (rev $LastChangedRevision$)
+:version: 0.9.4a1 (rev $LastChangedRevision$)
 
 available documentation
 =======================
