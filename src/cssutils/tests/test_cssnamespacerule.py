@@ -31,11 +31,23 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_incomplete(self):
         "CSSNamespaceRule (incomplete)"
         tests = {
-            u'@namespace "uri': u'@namespace "uri";'
+            u'@namespace "uri': u'@namespace "uri";',
+            u"@namespace url(x": u'@namespace "x";',
+            u"@namespace url('x": u'@namespace "x";',
+            u'@namespace url("x;': u'@namespace "x;";',
+            u'@namespace url( "x;': u'@namespace "x;";',
+            u'@namespace url("x ': u'@namespace "x ";',
+            u'@namespace url(x ': u'@namespace "x";',
         }
         self.do_equal_p(tests) # parse
         tests = {
-            u'@namespace "uri': xml.dom.SyntaxErr
+            u'@namespace "uri': xml.dom.SyntaxErr,
+            u"@namespace url(x": xml.dom.SyntaxErr,
+            u"@namespace url('x": xml.dom.SyntaxErr,
+            u'@namespace url("x;': xml.dom.SyntaxErr,
+            u'@namespace url( "x;': xml.dom.SyntaxErr,
+            u'@namespace url("x ': xml.dom.SyntaxErr,
+            u'@namespace url(x ': xml.dom.SyntaxErr           
             }
         self.do_raise_r(tests) # set cssText
 

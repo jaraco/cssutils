@@ -97,13 +97,18 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
             u'@import "x.css': u'@import "x.css";',
             u"@import 'x": u'@import "x";',
+            # TODO:
             u"@import url(x": u'@import url(x);',
             u"@import url('x": u'@import url(x);',
             u'@import url("x;': u'@import url("x;");',
+            u'@import url( "x;': u'@import url("x;");',
             u'@import url("x ': u'@import url("x ");',
             u'@import url(x ': u'@import url(x);',
+            u'''@import "a
+                @import "b";
+                @import "c";''': u'@import "c";'
         }
-        self.do_equal_p(tests) # parse
+        self.do_equal_p(tests, raising=False) # parse
 
     def test_initparameter(self):
         "CSSImportRule.__init__(href, media, hreftype)"
