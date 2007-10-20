@@ -85,7 +85,7 @@ PRODUCTIONS = [
     ('PAGE_SYM', r'@{P}{A}{G}{E}'),
     ('MEDIA_SYM', r'@{M}{E}{D}{I}{A}'),
     ('FONT_FACE_SYM', r'@{F}{O}{N}{T}\\?\-{F}{A}{C}{E}'),
-    ('CHARSET_SYM', r'@charset'), # CHANGED TO SPEC: only @charset
+    ('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
     ('NAMESPACE_SYM', r'@{N}{A}{M}{E}{S}{P}{A}{C}{E}'),
     # from CSS3
     ('ATKEYWORD', r'@{ident}'),
