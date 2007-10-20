@@ -117,6 +117,22 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";',
             u'@namespace a "x";\n@x;': None,
             u'@namespace a "x";\na {}': None,
+#            ur'\1 { \2: \3 }': ur'''\1 {
+#    \2: \3
+#    }''',
+#            ur'''
+#            \@ { \@: \@ }
+#            \1 { \2: \3 }
+#            \{{\::\;;}
+#            ''': ur'''\@ {
+#    \@: \@
+#    }
+#\1 {
+#    \2: \3
+#    }
+#\{
+#    {\:: \;
+#    }'''
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
