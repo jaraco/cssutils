@@ -70,9 +70,8 @@ class CSSValue(cssutils.util.Base):
             the parsable cssText of the value
         readonly
             defaults to False
-        _propertyName
+        property
             used to validate this value in the context of a property
-            the name must be normalized: lowercase with no escapes
         """
         super(CSSValue, self).__init__()
 
@@ -81,7 +80,7 @@ class CSSValue(cssutils.util.Base):
         self.wellformed = False
         self._valueValue = u''
         self._linetoken = None # used for line report only
-        self._propertyName = self._normalize(_propertyName)
+        self._propertyName = _propertyName
 
         if cssText is not None: # may be 0
             if type(cssText) in (int, float):
@@ -327,20 +326,8 @@ class CSSValue(cssutils.util.Base):
                 self._linetoken = linetoken # used for line report
                 self.seq = newseq
                 self.valid = False
-                # validate if known
-                if self._propertyName and\
-                   self._propertyName in cssproperties.cssvalues:
-                    if cssproperties.cssvalues[self._propertyName](self._value):
-                        self.valid = True
-                    else:
-                        self._log.warn(
-                            u'CSSValue: Invalid value for CSS2 property %s: %s' %
-                            (self._propertyName, self._value),
-                            self._linetoken, neverraise=True)
-                else:
-                    self._log.info(
-                        u'CSSValue: Unable to validate as no property context set or unknown property for value: %r'
-                        % self._value, neverraise=True)
+
+                self._validate()
 
                 if len(new['values']) == 1 and new['values'][0] == u'inherit':
                     self._value = u'inherit'
@@ -383,6 +370,34 @@ class CSSValue(cssutils.util.Base):
 
     cssValueTypeString = property(_getCssValueTypeString,
         doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
+
+    def _validate(self):
+        """
+        validates value against _propertyName context if given
+        """
+        if self._value:
+            if        self._propertyName in cssproperties.cssvalues:
+                if cssproperties.cssvalues[self._propertyName](self._value):
+                    self.valid = True
+                else:
+                    self.valid = False
+                    self._log.warn(
+                        u'CSSValue: Invalid value for CSS2 property %r: %s' %
+                        (self._propertyName, self._value), neverraise=True)
+            else:
+                self._log.info(
+                    u'CSSValue: Unable to validate as no or unknown property context set for this value: %r'
+                    % self._value, neverraise=True)
+
+    def _get_propertyName(self):
+        return self.__propertyName
+
+    def _set_propertyName(self, _propertyName):
+        self.__propertyName = _propertyName
+        self._validate()
+    
+    _propertyName = property(_get_propertyName, _set_propertyName,
+        doc="cssutils: Property this values is validated against") 
 
     def __repr__(self):
         return "cssutils.css.%s(%r, _propertyName=%r)" % (
