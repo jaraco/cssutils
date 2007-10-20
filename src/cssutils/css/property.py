@@ -223,6 +223,11 @@ class Property(cssutils.util.Base):
                          new['name'], neverraise=True)
             else:
                 self.valid = True
+                if self.cssValue:
+                    self.cssValue._propertyName = self.normalname
+                    self.valid = self.cssValue.valid
+            
+                
         else:
             self.wellformed = False
 
@@ -248,14 +253,17 @@ class Property(cssutils.util.Base):
         if self._mediaQuery and not cssText:
             self.seqs[1] = CSSValue()
         else:
-            cssvalue = CSSValue(cssText=cssText, _propertyName=self.name)
+            if not self.seqs[1]:
+                self.seqs[1] = CSSValue()
+            
+            cssvalue = self.seqs[1]
+            cssvalue._propertyName = self.name
+            cssvalue.cssText = cssText
             if cssvalue._value and cssvalue.wellformed:
-                self.wellformed = self.wellformed and cssvalue.wellformed
                 self.seqs[1] = cssvalue
-                self.valid = self.valid and cssvalue.valid
-            else:
-                self.wellformed = cssvalue.wellformed
-
+            self.valid = self.valid and cssvalue.valid
+            self.wellformed = self.wellformed and cssvalue.wellformed
+                
     cssValue = property(_getCSSValue, _setCSSValue,
         doc="(cssutils) CSSValue object of this property")
 
@@ -265,6 +273,8 @@ class Property(cssutils.util.Base):
 
     def _setValue(self, value):
         self.cssValue.cssText = value
+        self.valid = self.valid and self.cssValue.valid
+        self.wellformed = self.wellformed and self.cssValue.wellformed
 
     value = property(_getValue, _setValue,
                      doc="The textual value of this Properties cssValue.")
