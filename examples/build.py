@@ -1,38 +1,42 @@
 """
 simple examples how to use cssutils to build a new stylesheet
 """
-import cssutils
-from cssutils import css
-from cssutils import stylesheets
+from cssutils import css, stylesheets
+sheet = css.CSSStyleSheet()
+sheet.cssText = u'@import url(example.css) tv;'
+print sheet.cssText
+print
 
-c = css.CSSStyleSheet()
+# OUTPUT:
+# @import url(example.css) tv;
 
-stylerule = css.CSSStyleRule(selectorText=u'body')
+style = css.CSSStyleDeclaration()
+style.setProperty(u'color', u'red')
+stylerule = css.CSSStyleRule(selectorText=u'body', style=style)
 
-# until 0.8: stylerule.addSelector(u'b')
-stylerule.selectorList.appendSelector(u'b')
+#sheet.insertRule(stylerule, 0) # try before @import
 
-styledecl = css.CSSStyleDeclaration()
-styledecl.setProperty(u'color', u'red')
-stylerule.style = styledecl
+# OUTPUT
+# xml.dom.HierarchyRequestErr: CSSStylesheet: Found @charset, @import or @namespace
+#  before index 0.
 
-# until 0.8: c.addRule(stylerule)
-c.insertRule(stylerule)
+sheet.insertRule(stylerule) # at end of rules, returns index
+1
+print sheet.cssText
+print
 
-ir = css.CSSImportRule(href=u'example.css')
+#@import url(example.css) tv;
+#body {
+#    color: red
+#    }
 
-# until 0.8 (now deprecated):
-ml = stylesheets.MediaList(mediaText=u'print')
-try:
-    ir.media = ml
-except AttributeError:
-    pass
-# from 0.9 use:
-ir.media.mediaText = u'tv'
+sheet.cssRules[0].media.appendMedium('print')
+# True
+sheet.cssRules[1].selectorList.appendSelector('a')
+#<cssutils.css.selector.Selector object at 0x00BC87D0>
+print sheet.cssText
 
-
-c.insertRule(ir, 0)
-# until 0.8: c.pprint(indent=2)
-# to set indent set Preferences of Serializer with indentation string
-cssutils.ser.prefs.indent = 2 * u' '
-print c.cssText
+#@import url(example.css) tv, print;
+#body, a {
+#    color: red
+#    }
