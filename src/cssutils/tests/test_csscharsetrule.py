@@ -77,21 +77,21 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         """
         tests = {
             u'@charset "utf-8";': None,
+            u"@charset 'utf-8';": u'@charset "utf-8";',
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests) # also parse
 
         tests = {
-            u'@CHARSET "UTF-8";': xml.dom.SyntaxErr,
-            u'''@charset 'utf-8';''': xml.dom.SyntaxErr,
+            u'@charset;"': xml.dom.InvalidModificationErr,
+            u'@CHARSET "UTF-8";': xml.dom.InvalidModificationErr,
             u'''@charset /*1*/"utf-8"/*2*/;''': xml.dom.SyntaxErr,
             u'''@charset /*1*/"utf-8";''': xml.dom.SyntaxErr,
             u'''@charset "utf-8"/*2*/;''': xml.dom.SyntaxErr,
             u'@charset { utf-8 }': xml.dom.SyntaxErr,
-            u'@charset;"': xml.dom.SyntaxErr,
             u'@charset "utf-8"': xml.dom.SyntaxErr,
             u'@charset a;': xml.dom.SyntaxErr,
-            u'@charset /**/;': xml.dom.SyntaxErr,
+            u'@charset /**/;': xml.dom.SyntaxErr
             }
         self.do_raise_r(tests)
 
