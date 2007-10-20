@@ -164,11 +164,16 @@ class Base(object):
 
     def _type(self, token):
         "type of Tokenizer token"
-        return token[0]
+        if not token:
+            return None
+        else:
+            return token[0]
 
     def _tokenvalue(self, token, normalize=False):
         "value of Tokenizer token"
-        if normalize:
+        if not token:
+            return None
+        elif normalize:
             return Base._normalize(token[1])
         else:
             return token[1]
@@ -262,17 +267,17 @@ class Base(object):
         some have no expectation like S or COMMENT, so simply return
         the current value of self.__expected
         """
+        def ATKEYWORD(expected, seq, token, tokenizer=None):
+            "TODO: add default impl for unexpected @rule"
+            return expected
+
         def COMMENT(expected, seq, token, tokenizer=None):
-            "default implementation for comment token"
+            "default implementation for COMMENT token"
             seq.append(cssutils.css.CSSComment([token]))
             return expected
 
         def S(expected, seq, token, tokenizer=None):
             "default implementation for S token"
-            return expected
-
-        def ATKEYWORD(expected, seq, token, tokenizer=None):
-            "TODO: add default impl for unexpected @rule"
             return expected
 
         def EOF(expected=None, seq=None, token=None, tokenizer=None):
@@ -303,12 +308,12 @@ class Base(object):
         default
             default callback if tokentype not in productions
 
-        returns (valid, expected) which the last prod might have set
+        returns (wellformed, expected) which the last prod might have set
         """
-        valid = True
+        wellformed = True
 
         if not tokenizer:
-            return valid, expected
+            return wellformed, expected
 
         prods = self._getProductions(productions)
         for token in tokenizer:
@@ -317,10 +322,10 @@ class Base(object):
             if p:
                 expected = p(expected, seq, token, tokenizer)
             else:
-                valid = False
+                wellformed = False
                 self._log.error(u'Unexpected token (%s, %s, %s, %s)' % token)
 
-        return valid, expected
+        return wellformed, expected
 
 
 class Deprecated(object):
