@@ -32,6 +32,8 @@ class CSSValue(cssutils.util.Base):
         All parts of this style declaration including CSSComments
     valid: boolean
         if the value is valid at all, False for e.g. color: #1
+    wellformed
+        if this Property is syntactically ok
 
     _value (INTERNAL!)
         value without any comments, used to validate
@@ -76,6 +78,7 @@ class CSSValue(cssutils.util.Base):
 
         self.seq = []
         self.valid = False
+        self.wellformed = False
         self._valueValue = u''
         self._linetoken = None # used for line report only
         self._propertyName = self._normalize(_propertyName)
@@ -154,7 +157,10 @@ class CSSValue(cssutils.util.Base):
         self._checkReadonly()
 
         # for closures: must be a mutable
-        new = {'values': [], 'commas': 0, 'valid': True}
+        new = {'values': [], 
+               'commas': 0, 
+               'valid': True,
+               'wellformed': True }
 
         def _S(expected, seq, token, tokenizer=None):
             val = self._tokenvalue(token)
@@ -219,7 +225,7 @@ class CSSValue(cssutils.util.Base):
                 new['values'].append(val)
                 return 'number percentage dimension'
             else:
-                new['valid'] = False
+                new['wellformed'] = False
                 self._log.error(u'CSSValue: Unexpected char.', token)
                 return expected
 
@@ -239,7 +245,7 @@ class CSSValue(cssutils.util.Base):
                 seq[-1] += self._tokenvalue(token)
                 return expected
             else:
-                new['valid'] = False
+                new['wellformed'] = False
                 self._log.error(u'CSSValue: Unexpected token.', token)
                 return expected
 
@@ -256,23 +262,8 @@ class CSSValue(cssutils.util.Base):
                 seq[-1] += self._tokenvalue(token)
                 return expected
             else:
-                new['valid'] = False
+                new['wellformed'] = False
                 self._log.error(u'CSSValue: Unexpected token.', token)
-                return expected
-
-        def _invalid(expected, seq, token, tokenizer=None):
-            # complete value is invalid and ignored if not EOF is found!
-            eof = self._nexttoken(tokenizer, None)
-            if eof and 'EOF' == self._type(eof) and expected.startswith('term'):
-                val = self._tokenvalue(token)
-                val += val[0]
-                new['values'].append(val)
-                seq.append(val)
-                return 'EOF'
-            else:
-                self._log.error(
-                    u'CSSValue: Unknown value syntax (invalid token): %r.' %
-                    self._valuestr(cssText))
                 return expected
 
         def _function(expected, seq, token, tokenizer=None):
@@ -286,7 +277,7 @@ class CSSValue(cssutils.util.Base):
                 seq[-1] += self._tokenvalue(token)
                 return expected
             else:
-                new['valid'] = False
+                new['wellformed'] = False
                 self._log.error(u'CSSValue: Unexpected token.', token)
                 return expected
 
@@ -300,7 +291,7 @@ class CSSValue(cssutils.util.Base):
             # TODO: not very efficient tokenizing twice!
             tokenizer = self._tokenize2(cssText)
             newseq = []
-            valid, expected = self._parse(expected='term',
+            wellformed, expected = self._parse(expected='term',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'S': _S,
                              'CHAR': _char,
@@ -310,7 +301,6 @@ class CSSValue(cssutils.util.Base):
                              'DIMENSION': _number_percentage_dimension,
 
                              'STRING': _string_ident_uri_hexcolor,
-                             'INVALID': _invalid,
                              'IDENT': _string_ident_uri_hexcolor,
                              'URI': _string_ident_uri_hexcolor,
                              'HASH': _string_ident_uri_hexcolor,
@@ -319,15 +309,17 @@ class CSSValue(cssutils.util.Base):
                              'FUNCTION': _function
                               })
 
-            valid = valid and new['valid']
+            wellformed = wellformed and new['wellformed']
 
             # post conditions
             if expected.startswith('term') and newseq and newseq[-1] != u' '  or (
                expected in ('funcend', ')', ']', '}')):
+                wellformed = False
                 self._log.error(u'CSSValue: Incomplete value: %r.' %
                 self._valuestr(cssText))
 
             if not new['values']:
+                wellformed = False
                 self._log.error(u'CSSValue: Unknown syntax or no value: %r.' %
                 self._valuestr(cssText))
 
@@ -347,7 +339,7 @@ class CSSValue(cssutils.util.Base):
                             self._linetoken, neverraise=True)
                 else:
                     self._log.info(
-                        u'CSSValue: Unable to validate as no property context set or unknown property: %r'
+                        u'CSSValue: Unable to validate as no property context set or unknown property for value: %r'
                         % self._value, neverraise=True)
 
                 if len(new['values']) == 1 and new['values'][0] == u'inherit':
@@ -369,6 +361,8 @@ class CSSValue(cssutils.util.Base):
                 else:
                     self._cssValueType = CSSValue.CSS_CUSTOM
                     self.__class__ = CSSValue # reset
+                    
+            self.wellformed = wellformed
 
     cssText = property(_getCssText, _setCssText,
         doc="A string representation of the current value.")

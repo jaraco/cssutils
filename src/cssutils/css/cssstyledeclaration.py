@@ -258,10 +258,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 tokens.pop()
             property = Property()
             property.cssText = tokens
-            if property.valid:
+            if property.wellformed:
                 seq.append(property)
             else:
-                self._log.error(u'CSSStyleDeclaration: Invalid Property: %s'
+                self._log.error(u'CSSStyleDeclaration: Syntax Error in Property: %s'
                                 % self._valuestr(tokens))
             return expected
 
@@ -476,7 +476,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         self.seq = newseq
         return r
 
-    def setProperty(self, name, value, priority=None, normalize=True):
+    def setProperty(self, name, value, priority=u'', normalize=True):
         """
         (DOM)
         Used to set a property value and priority within this declaration
@@ -507,9 +507,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         self._checkReadonly()
 
         newp = Property(name, value, priority)
-        if not newp.valid:
-            self._log.error(u'Invalid value for this Property: %s: %s %s'
-                                    % name, value, priority)
+        if not newp.wellformed:
+            self._log.warn(u'Invalid Property: %s: %s %s'
+                    % (name, value, priority))
         else:
             nname = self._normalize(name)
             properties = self.getProperties(name, all=(not normalize))

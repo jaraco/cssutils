@@ -36,6 +36,8 @@ class Property(cssutils.util.Base):
         a list for seq of  priority (empty or [!important] currently)
     valid
         if this Property is valid
+    wellformed
+        if this Property is syntactically ok
 
     Format
     ======
@@ -87,18 +89,21 @@ class Property(cssutils.util.Base):
         super(Property, self).__init__()
 
         self.seqs = [[], None, []]
-        self.valid = True
+        self.valid = False
+        self.wellformed = False
         self._mediaQuery = _mediaQuery
 
         if name:
-            self.name = name
+            self.name = name 
         else:
             self._name = u''
             self.normalname = u''
+            
         if value:
             self.cssValue = value
         else:
             self.seqs[1] = CSSValue()
+            
         self.priority = priority
 
     def _getCssText(self):
@@ -118,15 +123,14 @@ class Property(cssutils.util.Base):
           is unparsable.
         """
         # check and prepare tokenlists for setting
-        valid = True
-
         tokenizer = self._tokenize2(cssText)
         nametokens = self._tokensupto2(tokenizer, propertynameendonly=True)
         valuetokens = self._tokensupto2(tokenizer, propertyvalueendonly=True)
         prioritytokens = self._tokensupto2(tokenizer, propertypriorityendonly=True)
 
+        wellformed = True
         if nametokens:
-
+            
             if self._mediaQuery and not valuetokens:
                 # MediaQuery may consist of name only
                 self.name = nametokens
@@ -137,11 +141,11 @@ class Property(cssutils.util.Base):
             # remove colon from nametokens
             colontoken = nametokens.pop()
             if self._tokenvalue(colontoken) != u':':
-                valid = False
+                wellformed = False
                 self._log.error(u'Property: No ":" after name found: %r' %
                                 self._valuestr(cssText), colontoken)
             elif not nametokens:
-                valid = False
+                wellformed = False
                 self._log.error(u'Property: No property name found: %r.' %
                             self._valuestr(cssText), colontoken)
 
@@ -150,23 +154,19 @@ class Property(cssutils.util.Base):
                     # priority given, move "!" to prioritytokens
                     prioritytokens.insert(0, valuetokens.pop(-1))
             else:
-                valid = False
+                wellformed = False
                 self._log.error(u'Property: No property value found: %r.' %
                                 self._valuestr(cssText), colontoken)
+
+            if wellformed:
+                self.wellformed = True
+                self.name = nametokens
+                self.cssValue = valuetokens
+                self.priority = prioritytokens
+
         else:
-            valid = False
             self._log.error(u'Property: No property name found: %r.' %
                             self._valuestr(cssText))
-
-        if valid:
-            self.name = nametokens
-            self.cssValue = valuetokens
-            self.priority = prioritytokens
-
-            if not self.cssValue._value:
-                valid = False
-
-        self.valid = valid # set in any case
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="A parsable textual representation.")
@@ -183,7 +183,8 @@ class Property(cssutils.util.Base):
           unparsable.
         """
         # for closures: must be a mutable
-        new = {'name': None, 'valid': True}
+        new = {'name': None, 
+               'wellformed': True}
 
         def _ident(expected, seq, token, tokenizer=None):
             # name
@@ -192,32 +193,38 @@ class Property(cssutils.util.Base):
                 seq.append(new['name'])
                 return 'EOF'
             else:
-                new['valid'] = False
+                new['wellformed'] = False
                 self._log.error(u'Property: Unexpected ident.', token)
                 return expected
 
         newseq = []
-        valid, expected = self._parse(expected='name',
-            seq=newseq, tokenizer=self._tokenize2(name),
-            productions={'IDENT': _ident})
-        valid = valid and new['valid']
+        wellformed, expected = self._parse(expected='name',
+                                           seq=newseq, 
+                                           tokenizer=self._tokenize2(name),
+                                           productions={'IDENT': _ident})
+        wellformed = wellformed and new['wellformed']
 
         # post conditions
         if not new['name']:
-            valid = False
+            wellformed = False
             self._log.error(u'Property: No name found: %s' %
                 self._valuestr(name))
 
-        # OK
-        else:
+        if wellformed:
+            self.wellformed = True
             self._name = new['name']
             self.normalname = self._normalize(self._name)
             self.seqs[0] = newseq
 
             # validate
             if self.normalname not in cssproperties.cssvalues:
+                self.valid = False
                 self._log.info(u'Property: No CSS2 Property: "%s".' %
                          new['name'], neverraise=True)
+            else:
+                self.valid = True
+        else:
+            self.wellformed = False
 
     name = property(_getName, _setName,
         doc="(cssutils) Name of this property")
@@ -242,8 +249,12 @@ class Property(cssutils.util.Base):
             self.seqs[1] = CSSValue()
         else:
             cssvalue = CSSValue(cssText=cssText, _propertyName=self.name)
-            if cssvalue._value:
+            if cssvalue._value and cssvalue.wellformed:
+                self.wellformed = self.wellformed and cssvalue.wellformed
                 self.seqs[1] = cssvalue
+                self.valid = self.valid and cssvalue.valid
+            else:
+                self.wellformed = cssvalue.wellformed
 
     cssValue = property(_getCSSValue, _setCSSValue,
         doc="(cssutils) CSSValue object of this property")
@@ -283,8 +294,15 @@ class Property(cssutils.util.Base):
           unparsable.
           In this case a priority not equal to None, "" or "!{w}important".
         """
+        if self._mediaQuery:
+            self._priority = u''
+            if priority:
+                self._log.error(u'Property: No priority in a MediaQuery - ignored.')
+            return
+
         # for closures: must be a mutable
-        new = {'priority': u'', 'valid': True}
+        new = {'priority': u'', 
+               'wellformed': True}
 
         def _char(expected, seq, token, tokenizer=None):
             # "!"
@@ -293,7 +311,7 @@ class Property(cssutils.util.Base):
                 seq.append(val)
                 return 'important'
             else:
-                new['valid'] = False
+                new['wellformed'] = False
                 self._log.error(u'Property: Unexpected char.', token)
                 return expected
 
@@ -306,28 +324,36 @@ class Property(cssutils.util.Base):
                 seq.append(val)
                 return 'EOF'
             else:
-                new['valid'] = False
+                new['wellformed'] = False
                 self._log.error(u'Property: Unexpected ident.', token)
                 return expected
 
         newseq = []
-        valid, expected = self._parse(expected='!',
-            seq=newseq, tokenizer=self._tokenize2(priority),
-            productions={'CHAR': _char, 'IDENT': _ident})
-
-        valid = valid and new['valid']
+        wellformed, expected = self._parse(expected='!',
+                                           seq=newseq, 
+                                           tokenizer=self._tokenize2(priority),
+                                           productions={'CHAR': _char, 
+                                                        'IDENT': _ident})
+        wellformed = wellformed and new['wellformed']
 
         # post conditions
         if priority and not new['priority']:
-            valid = False
+            wellformed = False
             self._log.info(u'Property: Invalid priority: %r.' %
                     self._valuestr(priority))
 
-        if valid:
+        if wellformed:
+            self.wellformed = self.wellformed and wellformed
             self._priority = new['priority']
             self._normalpriority = self._normalize(self._priority)
             self.seqs[2] = newseq
-
+            
+            # validate
+            if self._normalpriority not in (u'', u'important'):
+                self.valid = False
+                self._log.info(u'Property: No CSS2 priority value: %r.' %
+                    self._normalpriority, neverraise=True)
+        
     priority = property(_getPriority, _setPriority,
         doc="(cssutils) Priority of this property")
 
