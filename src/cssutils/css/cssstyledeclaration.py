@@ -354,22 +354,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         for more on shorthand properties see
             http://www.dustindiaz.com/css-shorthand/
         """
-        SHORTHAND = [
-            u'background',
-            u'border',
-            u'border-left', u'border-right',
-            u'border-top', u'border-bottom',
-            u'border-color', u'border-style', u'border-width',
-            u'cue',
-            u'font',
-            u'list-style',
-            u'margin',
-            u'outline',
-            u'padding',
-            u'pause']
-
         nname = self._normalize(name)
-        if nname in SHORTHAND:
+        if nname in self._SHORTHANDPROPERTIES:
             self._log.debug(
                 u'CSSValue for shorthand property "%s" should be None, this may be implemented later.' %
                 nname, neverraise=True)
