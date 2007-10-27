@@ -189,7 +189,7 @@ class Property(cssutils.util.Base):
         def _ident(expected, seq, token, tokenizer=None):
             # name
             if 'name' == expected:
-                new['name'] = self._tokenvalue(token)
+                new['name'] = self._tokenvalue(token).lower()
                 seq.append(new['name'])
                 return 'EOF'
             else:
