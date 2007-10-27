@@ -7,7 +7,7 @@ CSS Cascading Style Sheets library for Python
 :Author: $LastChangedBy$
 :Copyright: 2004-2007 Christof Hoeke
 :Date: $LastChangedDate$
-:Version: 0.9.4a1 (rev $LastChangedRevision$)
+:Version: 0.9.4a2 (rev $LastChangedRevision$)
 
 .. contents::
 
@@ -83,7 +83,14 @@ Version 0.9x
 
 HEAD
 
-0.9.4a1 (new parser [again])
+0.9.4a2 071027
+    - **FEATURE**: added ``Preferences.useMinified()`` which sets preferences that a stylesheet will be serialized as compact as possible. Added ``Preferences.useDefaults()`` which resets the serializer preferences. There a few new preferences have been added as well (see the documentation for details as most are hardly useful for normal usage of the library)
+
+    + **BUGFIX**: Fixed parsing of ``font`` value which uses "font-size/line-height" syntax.
+
+    - CHANGE: ``Preferences.keepAllProperties`` defaults to ``True`` now (hardly used but safer if different values have been set which are used by different UAs for example.)
+
+0.9.4a1 071021 (new parser [again])
     - **FEATURE**: Added a new module ``cssutils.codec`` that registers a codec that can be used for encoding and decoding CSS. (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
 
     - **FEATURE**: Added implementation of ``stylesheets.MediaQuery`` which are part of  stylesheets.MediaList. See the complete spec at http://www.w3.org/TR/css3-mediaqueries/ for details.
@@ -115,7 +122,6 @@ HEAD
     - **CHANGE**: A completely new tokenizer and mostly also the parser have been reimplemented in this release. Generally it should be much more robust and more compliant now. It will have new errors and also some slight details in parsing are changed.
 
     + **Documentation**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
-
 
 0.9.3a1 - 070905
     - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList.
