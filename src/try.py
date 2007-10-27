@@ -2,6 +2,11 @@ from pprint import pprint as pp
 import cssutils
 import sys
 
+def save(name, string):
+    f = open(name, 'w')
+    f.write(string)
+    f.close()
+
 css = '''
 "\\""
 '''
@@ -23,7 +28,7 @@ css = """
 -->
 """
 
-if 1:
+if 0:
     css = ur'\1 { \2: \3 }'
     t = cssutils.tokenize2.Tokenizer()
     gen = t.tokenize(css, fullsheet=1)
@@ -31,31 +36,48 @@ if 1:
         print tk
     sys.exit(0)
 
-if 0:
-    css = '''color:red;   
-                    color{;color:maroon}; 
-                    color:green
+if 1:
+    css = '''font: normal 1em/1.5 'arial', serif; 
              '''
-
     s = cssutils.css.CSSStyleDeclaration()
     s.cssText = css
     print s.cssText
     sys.exit(0)
 
 if 1:
-    css = '''p {    color:red;   
-                    color{;color:maroon}; 
-                    color:green
-                  }'''
-    css = r'\1 { \2: \3}'
-    cssutils.ser.prefs.keepAllProperties = True
-    p = cssutils.CSSParser(raiseExceptions=False)
-    s = p.parseString(css)
-    print s.cssText
-    r = s.cssRules[0].style
-    for p in r:
-        print p, 'v:', p.valid, 'w:', p.wellformed
-        
+    css = u'''
+    /*1*/
+    @import url(x) tv , print;
+    @media all {}
+    @media all {
+        a {}
+    }
+    @media all {
+        a { color: red; }
+    }
+    @page {}
+    a {}
+    a , b { top : 1px ; 
+        font-family : arial ,  'some' 
+        }
+    '''
+    s = cssutils.parse('../sheets/cthedot_default.css')
+    cssutils.ser.prefs.keepComments = False
+    
+    max = s.cssText
+    save('max.css', max)
+    
+    cssutils.ser.prefs.useMinified()
+    min = s.cssText
+    
+    s = cssutils.parseString(min)
+    cssutils.ser.prefs.useDefaults()
+    
+    minmax = s.cssText
+    save('minmax.css', minmax)
+    
+    
+    print len(minmax), len(max)
     sys.exit(0)
     
 if 1:    
