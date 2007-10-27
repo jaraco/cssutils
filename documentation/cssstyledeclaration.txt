@@ -1,3 +1,5 @@
+`Index </index.txt>`_
+
 ====================
 CSSStyleDeclaration
 ====================
@@ -5,7 +7,6 @@ CSSStyleDeclaration
 :date: $LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $
 :version: $LastChangedRevision: 206 $
 
-`Index <../index.txt>`_
 
 .. contents::
 
