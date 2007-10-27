@@ -101,7 +101,8 @@ class CSSValueTestCase(basetest.BaseTestCase):
             ('color', '1', False),
             ('color', 'red', True),
             ('left', '1', False),
-            ('left', '1px', True)
+            ('left', '1px', True),
+            ('font', 'normal 1em/1.5 serif', True)
             ]
         for n, v, exp in tests:
             v = cssutils.css.CSSValue(cssText=v, _propertyName=n)
