@@ -90,7 +90,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         "CSSStyleRule (incomplete)"
         tests = {
             u'@import "a': u'@import "a";', # no }
-            u'a {': u'a {}', # no }
+            u'a { x: 1': u'a {\n    x: 1\n    }', # no }
             u'a { font-family: "arial sans': # no "
                 u'a {\n    font-family: "arial sans"\n    }',
         }
@@ -104,19 +104,19 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             u'@charset "ascii";\n@import "x";': None,
             u'@charset "ascii";\n@media all {}': u'@charset "ascii";',
             u'@charset "ascii";\n@x;': None,
-            u'@charset "ascii";\na {}': None,
+            u'@charset "ascii";\na {\n    x: 1\n    }': None,
             # @import
             u'@x;\n@import "x";': None,
             u'@import "x";\n@import "y";': None,
             u'@import "x";\n@media all {}': u'@import "x";',
             u'@import "x";\n@x;': None,
-            u'@import "x";\na {}': None,
+            u'@import "x";\na {\n    x: 1\n    }': None,
             # @namespace
             u'@x;\n@namespace a "x";': None,
             u'@namespace a "x";\n@namespace b "y";': None,
             u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";',
             u'@namespace a "x";\n@x;': None,
-            u'@namespace a "x";\na {}': None,
+            u'@namespace a "x";\na {\n    x: 1\n    }': None,
 #            ur'\1 { \2: \3 }': ur'''\1 {
 #    \2: \3
 #    }''',
@@ -139,7 +139,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
         s = cssutils.css.CSSStyleSheet()
         s.cssText = u'''@charset "ascii";@import "x";@namespace a "x";
-        @media all {/*1*/}@page {margin: 0}a {}@unknown;/*comment*/'''
+        @media all {/*1*/}@page {margin: 0}a {\n    x: 1\n    }@unknown;/*comment*/'''
         for r in s.cssRules:
             self.assertEqual(s, r.parentStyleSheet)
 
@@ -163,7 +163,7 @@ body {
 
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule()"
-        self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {}@y;'
+        self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {\n    x: 1\n    }@y;'
         self.assertEqual(5, self.s.cssRules.length)
 
         self.assertRaises(xml.dom.IndexSizeErr, self.s.deleteRule, 5)
@@ -177,15 +177,15 @@ body {
 
         self.assertEqual(4, self.s.cssRules.length)
         self.assertEqual(
-            u'@charset "ascii";\n@import "x";\n@x;\na {}', self.s.cssText)
+            u'@charset "ascii";\n@import "x";\n@x;\na {\n    x: 1\n    }', self.s.cssText)
         # beginning
         self.s.deleteRule(0)
         self.assertEqual(3, self.s.cssRules.length)
-        self.assertEqual(u'@import "x";\n@x;\na {}', self.s.cssText)
+        self.assertEqual(u'@import "x";\n@x;\na {\n    x: 1\n    }', self.s.cssText)
         # middle
         self.s.deleteRule(1)
         self.assertEqual(2, self.s.cssRules.length)
-        self.assertEqual(u'@import "x";\na {}', self.s.cssText)
+        self.assertEqual(u'@import "x";\na {\n    x: 1\n    }', self.s.cssText)
         # end
         self.s.deleteRule(1)
         self.assertEqual(1, self.s.cssRules.length)
@@ -199,10 +199,11 @@ body {
         self.ir = cssutils.css.CSSImportRule('x')
         self.nr = cssutils.css.CSSNamespaceRule('uri')
         self.mr = cssutils.css.CSSMediaRule()
-        self.mr.cssText = u'@media all { m {} }'
+        self.mr.cssText = u'@media all { @m; }'
         self.pr = cssutils.css.CSSPageRule()
         self.pr.style = u'margin: 0;'
-        self.sr = cssutils.css.CSSStyleRule('a')
+        self.sr = cssutils.css.CSSStyleRule()
+        self.sr.cssText = 'a {\n    x: 1\n    }'
 
         s = cssutils.css.CSSStyleSheet()
         s.insertRule(self.cr) # 0
@@ -213,7 +214,7 @@ body {
         s.insertRule(self.mr) # 5
         s.insertRule(self.pr) # 6
         s.insertRule(self.sr) # 7
-        self.assertEqual(u'@charset "ascii";\n@import url(x);\n@namespace "uri";\n@media all {\n    m {}\n    }\na {}\n@media all {\n    m {}\n    }\n@page {\n    margin: 0\n    }\na {}', s.cssText)
+        self.assertEqual(u'@charset "ascii";\n@import url(x);\n@namespace "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }', s.cssText)
         return s, s.cssRules.length
 
     def test_insertRule(self):
