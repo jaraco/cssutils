@@ -81,10 +81,34 @@ class Base(object):
     
     ``_normalize`` is static as used be Preferences.
     """
-    _log = cssutils.log
-
     __tokenizer2 = Tokenizer()
+    _log = cssutils.log
     _prods = cssutils.tokenize2.CSSProductions
+
+    # for more on shorthand properties see 
+    # http://www.dustindiaz.com/css-shorthand/
+    # format: shorthand: [(propname, mandatorycheck?)*]
+    _SHORTHANDPROPERTIES = {
+            u'background': [],
+            u'border': [],
+            u'border-left': [], 
+            u'border-right': [],
+            u'border-top': [], 
+            u'border-bottom': [],
+            u'border-color': [], 
+            u'border-style': [], 
+            u'border-width': [],
+            u'cue': [],
+            u'font': [('font-weight', True), 
+                      ('font-size', True),
+                      ('line-height', False), 
+                      ('font-family', True)],
+            u'list-style': [],
+            u'margin': [],
+            u'outline': [],
+            u'padding': [],
+            u'pause': []
+            }
 
     @staticmethod
     def _normalize(x):
