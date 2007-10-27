@@ -33,15 +33,25 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_incomplete(self):
         "CSSStyleRule (incomplete)"
+        cssutils.ser.prefs.keepEmptyRules = True
         tests = {
             u'a {': u'a {}', # no }
             u'a { font-family: "arial sans': # no "
                 u'a {\n    font-family: "arial sans"\n    }',
         }
         self.do_equal_p(tests) # parse
+        cssutils.ser.prefs.useDefaults()
 
     def test_cssText(self):
         "CSSStyleRule.cssText"
+        tests = {
+            u'* {}': u'',
+            u'a {}': u'',
+            }
+        self.do_equal_p(tests) # parse
+        #self.do_equal_r(tests) # set cssText # TODO: WHY?
+        
+        cssutils.ser.prefs.keepEmptyRules = True
         tests = {
             u'''a\n{color: #000}''': 'a {\n    color: #000\n    }', # issue 4
             u'''a\n{color: #000000}''': 'a {\n    color: #000000\n    }', # issue 4
@@ -49,7 +59,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'''a\n{color: #abcdef}''': 'a {\n    color: #abcdef\n    }', # issue 4
             u'''a\n{color: #00a}''': 'a {\n    color: #00a\n    }', # issue 4
             u'''a\n{color: #1a1a1a}''': 'a {\n    color: #1a1a1a\n    }', # issue 4
-            u'''#id\n{}''': '#id {}', # issue 3
+            u'''#id\n{ color: red }''': '#id {\n    color: red\n    }', # issue 3
             u'''* {}''': None,
             u'a {}': None,
             u'b { a: 1; }': u'b {\n    a: 1\n    }',
@@ -74,6 +84,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'''a {''': xml.dom.SyntaxErr, 
             })
         self.do_raise_r(tests) # set cssText
+        cssutils.ser.prefs.useDefaults()
 
     def test_selectorList(self):
         "CSSStyleRule.selectorList"

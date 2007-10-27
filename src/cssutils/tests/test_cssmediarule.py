@@ -20,7 +20,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         # for tests
         self.stylerule = cssutils.css.CSSStyleRule()
         self.stylerule.cssText = u'a {}'
-
+        
     def test_init(self):
         "CSSMediaRule.__init__()"
         super(CSSMediaRuleTestCase, self).test_init()
@@ -44,8 +44,8 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
             u'@media all { @unknown;': # no }
                 u'@media all {\n    @unknown;\n    }',
-            u'@media all { a {}': # no }
-                u'@media all {\n    a {}\n    }',
+            u'@media all { a {x:1}': # no }
+                u'@media all {\n    a {\n        x: 1\n        }\n    }',
         }
         self.do_equal_p(tests) # parse
 
@@ -65,9 +65,9 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'''@media/*x*/all{}''': u'',
             # TODO:
             #u'@media all { @x{': u'@media all {\n    @x{}\n    }',
-            u'''@media all { a{} }''': u'''@media all {\n    a {}\n    }''',
-            u'''@MEDIA all { a{} }''': u'''@media all {\n    a {}\n    }''',
-            u'''@\\media all { a{} }''': u'''@media all {\n    a {}\n    }''',
+            u'''@media all { a{ x: 1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
+            u'''@MEDIA all { a{x:1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
+            u'''@\\media all { a{x:1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
             u'''@media all {@x some;a{color: red;}b{color: green;}}''':
                 u'''@media all {
     @x some;
@@ -109,16 +109,18 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         for r in m.cssRules:
             self.assertEqual(m, r.parentRule)
 
+        cssutils.ser.prefs.useDefaults()
+
     def test_deleteRule(self):
         "CSSMediaRule.deleteRule"
         # see CSSStyleSheet.deleteRule
         m = cssutils.css.CSSMediaRule()
         m.cssText = u'''@media all {
-            a {}
+            @a;
             /* x */
-            b {}
-            c {}
-            d {}
+            @b;
+            @c;
+            @d;
         }'''
         self.assertEqual(5, m.cssRules.length)
         self.assertRaises(xml.dom.IndexSizeErr, m.deleteRule, 5)
@@ -132,15 +134,15 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         self.assertEqual(4, m.cssRules.length)
         self.assertEqual(
-            u'@media all {\n    a {}\n    /* x */\n    b {}\n    c {}\n    }', m.cssText)
+            u'@media all {\n    @a;\n    /* x */\n    @b;\n    @c;\n    }', m.cssText)
         # beginning
         m.deleteRule(0)
         self.assertEqual(3, m.cssRules.length)
-        self.assertEqual(u'@media all {\n    /* x */\n    b {}\n    c {}\n    }', m.cssText)
+        self.assertEqual(u'@media all {\n    /* x */\n    @b;\n    @c;\n    }', m.cssText)
         # middle
         m.deleteRule(1)
         self.assertEqual(2, m.cssRules.length)
-        self.assertEqual(u'@media all {\n    /* x */\n    c {}\n    }', m.cssText)
+        self.assertEqual(u'@media all {\n    /* x */\n    @c;\n    }', m.cssText)
         # end
         m.deleteRule(1)
         self.assertEqual(1, m.cssRules.length)
@@ -157,6 +159,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         mediarule = cssutils.css.CSSMediaRule()
         unknownrule = cssutils.css.CSSUnknownRule('@x;')
         stylerule = cssutils.css.CSSStyleRule('a')
+        stylerule.cssText = u'a { x: 1}'
         comment1 = cssutils.css.CSSComment(u'/*1*/')
         comment2 = cssutils.css.CSSComment(u'/*2*/')
 
@@ -185,7 +188,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         r.insertRule(comment2)
         self.assertEqual(r, comment2.parentRule)
         self.assertEqual(
-            '@media all {\n    /*1*/\n    a {}\n    @x;\n    /*2*/\n    }',
+            '@media all {\n    /*1*/\n    a {\n        x: 1\n        }\n    @x;\n    /*2*/\n    }',
             r.cssText)
 
         # index
@@ -207,7 +210,10 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         # set mediaText instead
         self.r.media.mediaText = 'print'
         self.r.insertRule(self.stylerule)
+        self.assertEqual(u'', self.r.cssText)
+        cssutils.ser.prefs.keepEmptyRules = True
         self.assertEqual(u'@media print {\n    a {}\n    }', self.r.cssText)
+        cssutils.ser.prefs.useDefaults()
 
     def test_reprANDstr(self):
         "CSSMediaRule.__repr__(), .__str__()"

@@ -57,6 +57,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
                 color: red;
                 color: green;''': u'color: green'
             }
+        cssutils.ser.prefs.keepAllProperties = False
         for test, exp in tests.items():
             sh = cssutils.parseString('a { %s }' % test)
             if exp is None:
@@ -64,6 +65,8 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             elif exp != u'':
                 exp = u'%s' % exp
             self.assertEqual(exp, sh.cssRules[0].style.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_cssText(self):
         "CSSStyleDeclaration.cssText"

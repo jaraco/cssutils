@@ -33,7 +33,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         css = u'''a { font-family: "Courier
                 ; }'''
         s = cssutils.parseString(css)
-        self.assertEqual(u'a {}', s.cssText)
+        self.assertEqual(u'', s.cssText)
 
     def test_attributes(self):
         "cssutils.parseString(href, media)"
