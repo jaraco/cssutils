@@ -1,0 +1,13 @@
+to generate static docs:
+
+* copy
+
+  - /index.txt,
+  - /README.txt
+  - /LICENSE.txt
+  - /documentation
+
+  to folder "rst"
+
+* run generate.bat (you need lxml)
+* generated HTML is in cssutils_documentation then
