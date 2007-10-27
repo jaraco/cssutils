@@ -32,54 +32,96 @@ class Preferences(object):
         Uses hreftype if ``None`` or explicit ``'string'`` or ``'uri'``
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
-    keepAllProperties = False
+    keepAllProperties = True
         If ``True`` all properties set in the original CSSStylesheet 
         are kept meaning even properties set twice with the exact same
         same name are kept!
     keepComments = True
         If ``False`` removes all CSSComments
+    keepEmptyRules = False
+        defines if empty rules like e.g. ``a {}`` are kept in the resulting
+        serialized sheet
     lineNumbers = False
         Only used if a complete CSSStyleSheet is serialized.
     lineSeparator = u'\\n'
         How to end a line. This may be set to e.g. u'' for serializing of 
         CSSStyleDeclarations usable in HTML style attribute.
+    listItemSpacer = u' '
+        string which is used in ``css.SelectorList``, ``css.CSSValue`` and
+        ``stylesheets.MediaList`` after the comma
     omitLastSemicolon = True
         If ``True`` omits ; after last property of CSSStyleDeclaration
-               
-    **INWORK**
-        validOnly = False
-            if True only valid (Properties or Rules) are kept^
-            
-            A Property is valid if it is a known Property with a valid value.
-            Currently CSS 2.1 values as defined in cssproperties.py would be
-            valid.
-            
-        wellformedOnly= True
-            only wellformed properties and rules are kept
+    paranthesisSpacer = u' '
+        string which is used before an opening paranthesis like in a 
+        ``css.CSSMediaRule`` or ``css.CSSStyleRule``
+    propertyNameSpacer = u' '
+        string which is used after a Property name colon
+
+    validOnly = False (**not anywhere used yet**)
+        if True only valid (Properties or Rules) are kept
+        
+        A Property is valid if it is a known Property with a valid value.
+        Currently CSS 2.1 values as defined in cssproperties.py would be
+        valid.
+        
+    wellformedOnly = True (**not anywhere used yet**)
+        only wellformed properties and rules are kept
 
     **DEPRECATED**: removeInvalid = True
-        Omits invalid rules
+        Omits invalid rules, replaced by ``validOnly`` which will be used
+        more cases 
 
     """
-    def __init__(self, indent=u'    ', lineSeparator=u'\n'):
+    def __init__(self, indent=None, lineSeparator=None):
         """
         Always use named instead of positional parameters
         """
+        self.useDefaults()
+        if indent:
+            self.indent = indent
+        if lineSeparator:
+            self.lineSeparator = lineSeparator
+
+    def useDefaults(self):
+        "reset all preference options to a default value"
         self.defaultAtKeyword = True
         self.defaultPropertyName = True
-        self.indent = indent
-        self.lineSeparator = lineSeparator
         self.importHrefFormat = None
-        self.keepAllProperties = False
+        self.indent = 4 * u' '
+        self.keepAllProperties = True
         self.keepComments = True
-        self.omitLastSemicolon = True
+        self.keepEmptyRules = False
         self.lineNumbers = False
-               
+        self.lineSeparator = u'\n'
+        self.listItemSpacer = u' '
+        self.omitLastSemicolon = True
+        self.paranthesisSpacer = u' '
+        self.propertyNameSpacer = u' '
+        self.validOnly = False
+        self.wellformedOnly = True
+        # DEPRECATED
+        self.removeInvalid = True
+        
+    def useMinified(self):
+        """
+        sets options to achive a minified stylesheet
+        
+        you may want to set preferences with this convinience method
+        and set settings you want adjusted afterwards
+        """
+        self.importHrefFormat = 'string'
+        self.indent = u''
+        self.keepComments = False
+        self.keepEmptyRules = False
+        self.lineNumbers = False
+        self.lineSeparator = u''
+        self.listItemSpacer = u''
+        self.omitLastSemicolon = True
+        self.paranthesisSpacer = u''
+        self.propertyNameSpacer = u''
         self.validOnly = False
         self.wellformedOnly = True
 
-        # DEPRECATED
-        self.removeInvalid = True
 
 class CSSSerializer(object):
     """
@@ -209,7 +251,9 @@ class CSSSerializer(object):
         if len(medialist) == 0:
             return u'all'
         else:
-            return u', '.join((mq.mediaText for mq in medialist))
+            sep = u',%s' % self.prefs.listItemSpacer
+            return sep.join(
+                        (mq.mediaText for mq in medialist))
 
     def do_CSSStyleSheet(self, stylesheet):
         out = []
@@ -304,18 +348,29 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if not rule.cssRules or self._noinvalids(rule.media):
-            return u''
-        mediaText = self.do_stylesheets_medialist(rule.media).strip()
-        out = [u'%s %s {%s' % (self._getatkeyword(rule, u'@media'),
-                               mediaText, self.prefs.lineSeparator)]
+        rulesout = []
         for r in rule.cssRules:
             rtext = r.cssText
             if rtext:
                 # indent each line of cssText
-                out.append(self._indentblock(rtext, self._level + 1))
-                out.append(self.prefs.lineSeparator)
-        return u'%s%s}' % (u''.join(out), (self._level + 1) * self.prefs.indent)
+                rulesout.append(self._indentblock(rtext, self._level + 1))
+                rulesout.append(self.prefs.lineSeparator)
+
+        if not self.prefs.keepEmptyRules and not u''.join(rulesout).strip() or\
+           self._noinvalids(rule.media):
+            return u''
+
+#        if len(rule.cssRules) == 0 and not self.prefs.keepEmptyRules or\
+#           self._noinvalids(rule.media):
+#            return u''
+        mediaText = self.do_stylesheets_medialist(rule.media).strip()
+        out = [u'%s %s%s{%s' % (self._getatkeyword(rule, u'@media'),
+                               mediaText,
+                               self.prefs.paranthesisSpacer,
+                               self.prefs.lineSeparator)]
+        out.extend(rulesout)
+        return u'%s%s}' % (u''.join(out), 
+                           (self._level + 1) * self.prefs.indent)
 
     def do_CSSPageRule(self, rule):
         """
@@ -399,19 +454,18 @@ class CSSSerializer(object):
             styleText = self.do_css_CSSStyleDeclaration(rule.style)
         finally:
             self._level -= 1
-
         if not styleText:
-            return u'%s {}' % (
-                selectorText,
-                )
+                if self.prefs.keepEmptyRules:
+                    return u'%s%s{}' % (selectorText,
+                                        self.prefs.paranthesisSpacer)
         else:
-            return u'%s {%s%s%s%s}' % (
+            return u'%s%s{%s%s%s%s}' % (
                 selectorText,
+                self.prefs.paranthesisSpacer,
                 self.prefs.lineSeparator,
                 self._indentblock(styleText, self._level + 1),
                 self.prefs.lineSeparator,
-                (self._level + 1) * self.prefs.indent,
-                )
+                (self._level + 1) * self.prefs.indent)
 
     def do_css_SelectorList(self, selectorlist):
         """
@@ -421,16 +475,17 @@ class CSSSerializer(object):
             return u''
         else:
             out = []
+            sep = u',%s' % self.prefs.listItemSpacer
             for part in selectorlist.seq:
                 if hasattr(part, 'cssText'):
                     out.append(part.cssText)
-                elif u',' == part:
-                    out.append(u', ')
+#                elif u',' == part:
+#                    out.append(sep)
                 elif isinstance(part, cssutils.css.Selector):
                     out.append(self.do_css_Selector(part).strip())
                 else:
                     out.append(part) # ?
-            return u', '.join(out)
+            return sep.join(out)
 
     def do_css_Selector(self, selector):
         """
@@ -527,7 +582,8 @@ class CSSSerializer(object):
             if out and (not property._mediaQuery or
                         property._mediaQuery and cssvalue.cssText):
                 # MediaQuery may consist of name only
-                out.append(u': ')
+                out.append(u':')
+                out.append(self.prefs.propertyNameSpacer)
 
             # value
             out.append(cssvalue.cssText)
@@ -564,13 +620,14 @@ class CSSSerializer(object):
         if not cssvalue:
             return u''
         else:
+            sep = u',%s' % self.prefs.listItemSpacer
             out = []
             for part in cssvalue.seq:
                 if hasattr(part, 'cssText'):
                     # comments or CSSValue if a CSSValueList
                     out.append(part.cssText)
                 elif isinstance(part, basestring) and part == u',':
-                    out.append(', ')
+                    out.append(sep)
                 else:
                     out.append(part)
             return (u''.join(out)).strip()
