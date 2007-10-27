@@ -12,11 +12,11 @@ pause
 python setup.py test
 pause
 
-epydoc.py -o doc --name cssutils --url http://cthedot.de/cssutils/ src/cssutils --show-imports
+python epydoc -o doc --name cssutils --url http://cthedot.de/cssutils/ src/cssutils --show-imports
 pause
 
 rem python setup.py sdist bdist_egg
-python setup.py register sdist bdist_egg 
+python setup.py register sdist bdist_egg
 rem upload
 
 @echo on
