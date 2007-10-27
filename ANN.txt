@@ -2,30 +2,15 @@ what is it
 ----------
 A Python package to parse and build CSS Cascading Style Sheets.
 
-main changes since 0.9.3
----------------------
-for full details see the relevant README file http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a1/README.txt
+main changes since 0.9.4a1
+--------------------------
+for full details see the relevant README file http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a2/README.txt
 
-main changes
-   - **FEATURE**: Added a new module ``cssutils.codec`` that registers a codec that can be used for encoding and decoding CSS. (http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23)
+ - **FEATURE**: added ``Preferences.useMinified()`` which sets preferences that a stylesheet will be serialized as compact as possible. Added ``Preferences.useDefaults()`` which resets the serializer preferences. There a few new preferences have been added as well (see the documentation for details as most are hardly useful for normal usage of the library)
 
-    - **FEATURE**: Added implementation of ``stylesheets.MediaQuery`` which are part of  stylesheets.MediaList. See the complete spec at http://www.w3.org/TR/css3-mediaqueries/ for details.
+    + **BUGFIX**: Fixed parsing of ``font`` value which uses "font-size/line-height" syntax.
 
-    + **API CHANGE**: ``CSSNamespacerule.uri`` is renamed to ``CSSNamespaceRule.namespaceURI`` which is defined is CSSOM. ``uri`` is deprecated and still available but the constructor parameter is named ``namespaceURI`` in any case now.
-
-    + **API CHANGE**: As ``stylesheets.MediaQuery`` is implemented now all classes using an instance of ``stylesheets.MediaList`` are presented slightly different. Until now a simple list of string was given, now the list contains MediaQuery objects.
-
-    + **API CHANGE**: ``_Property`` has been renamed to ``css.Property`` and is used in context of ``CSSStyleDeclaration`` and ``MediaQuery``. Attribute ``Property.value`` has been *de-deprecated* and may be used normally now (again). The Property constructor has only optional parameters now.
-
-    + **API CHANGE**: Removed experimental class ``SameNamePropertyList`` which was used in ``CSSStyleDeclaration`` and also method ``CSSStyleDeclaration.getSameNamePropertyList``. A new method ``CSSStyleDeclaration.getProperties()`` has been added which is simpler and more useful
-
-    + **API CHANGE**: renamed attribute ``namespaces`` of CSSStyleSheet and Selector to ``prefixes`` as they really are the prefixes of declared namespaces
-
-    + BUGFIX: Tantek hack (using ``voice-family``) should work now as SameNamePropertyList is removed and properties are kept in order
-
-    - **CHANGE**: A completely new tokenizer and mostly also the parser have been reimplemented in this release. Generally it should be much more robust and more compliant now. It will have new errors and also some slight details in parsing are changed.
-
-    + **Documentation**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
+    - CHANGE: ``Preferences.keepAllProperties`` defaults to ``True`` now (hardly used but safer if different values have been set which are used by different UAs for example.)
 
 license
 -------
@@ -33,7 +18,7 @@ cssutils is published under the LGPL.
 
 download
 --------
-for download options for cssutils 0.9.4a1 - 071020 see http://cthedot.de/cssutils/
+for download options for cssutils 0.9.4a2 - 071027 see http://cthedot.de/cssutils/
 
 cssutils needs
 * Python 2.4 or higher (tested with Python 2.5 on Vista only)
