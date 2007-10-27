@@ -53,6 +53,8 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a: 1 !IMPORTANT': None,
             u'a: 1 !impor\\tant': None,
             # TODO: important with unicode escapes!
+            u'font: normal 1em/1.5 serif': None,
+            u'font: normal 1em/serif': None
             }
         self.do_equal_r(tests)
 
