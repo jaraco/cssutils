@@ -18,7 +18,7 @@ __all__ = ['CSSCapture']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.2a1, $LastChangedRevision$'
+__version__ = '$LastChangedRevision$'
 
 import errno
 import HTMLParser
@@ -40,7 +40,6 @@ except ImportError:
         import cssutils.encutils as encutils
     except ImportError:
         sys.exit("You need encutils from http://cthedot.de/encutils/")
-
 
 class CSSCaptureHTMLParser(HTMLParser.HTMLParser):
     """ parses given data for link and style elements """
@@ -80,7 +79,6 @@ class CSSCaptureHTMLParser(HTMLParser.HTMLParser):
         # close as style cannot contain any elements
         self.curtag = u''
 
-
 class CSSCapture(object):
     """
     Retrieve all CSS stylesheets including embedded for a given URL.
@@ -89,7 +87,6 @@ class CSSCapture(object):
 
     raises urllib2.HTTPError
     """
-
     def __init__(self, ua=None, log=None, defaultloglevel=logging.INFO):
         """
         initialize a new Capture object
@@ -111,12 +108,11 @@ class CSSCapture(object):
         else:
             self._log = logging.getLogger('CSSCapture')
             hdlr = logging.StreamHandler(sys.stderr)
-            formatter = logging.Formatter('%(levelname)s\t%(message)s')
+            formatter = logging.Formatter('%(message)s')
             hdlr.setFormatter(formatter)
             self._log.addHandler(hdlr)
             self._log.setLevel(defaultloglevel)
             self._log.debug(u'(C) Using default log')
-
 
     def _doRequest(self, url):
         """
@@ -126,26 +122,25 @@ class CSSCapture(object):
 
         url might have been changed by server due to redirects etc
         """
-        self._log.debug(u'(C) _doRequest URL: %s' % url)
+        self._log.debug(u'    CSSCapture_doRequest URL: %s' % url)
 
         req = urllib2.Request(url)
         if self._ua:
             req.add_header('User-agent', self._ua)
-            self._log.info('(C) Using User-Agent: %s', self._ua)
+            self._log.info('        Using User-Agent: %s', self._ua)
         try:
             res = urllib2.urlopen(req)
         except urllib2.HTTPError, e:
-            self._log.critical('(C) %s\n%s %s\n%s' % (
+            self._log.critical('    %s\n%s %s\n%s' % (
                 e.geturl(), e.code, e.msg, e.headers))
             return None, None
 
         # get real url
         if url != res.geturl():
             url = res.geturl()
-            self._log.info('(C) URL retrieved: %s', url)
+            self._log.info('        URL retrieved: %s', url)
 
         return res, url
-
 
     def _doImports(self, parentStyleSheet, baseurl=None):
         """
@@ -169,18 +164,17 @@ class CSSCapture(object):
                 self.stylesheetlist.append(sheet)
 
                 self._log.info(
-                    '(C) - FOUND @import in: %s' % parentStyleSheet)
-                self._log.info('(C)   * stylesheet : %s' % sheet)
-                self._log.info('(C)   * full href  : %s', href)
-                self._log.info('(C)   * media      : %s', media.mediaText)
-                self._log.debug('(C)   * cssText    :\n%s', cssText)
+                    '\n--- FOUND @import in: %s ---' % parentStyleSheet)
+                self._log.info('    * full href  : %s', href)
+                self._log.info('    * media      : %s', media.mediaText)
+                self._log.info('    * stylesheet : %s\n' % sheet)
+                self._log.debug('    * cssText    :\n%s\n', cssText)
 
                 try:
                     sheet.cssText = cssText
                 except xml.dom.DOMException, e:
-                    self._log.warn('(C)   * CSSParser message:\n%s' % e)
+                    self._log.warn('CSSParser message:\n%s\n' % e)
                 self._doImports(sheet, baseurl=href)
-
 
     def _findStyleSheets(self, docurl, doctext):
         """
@@ -211,16 +205,16 @@ class CSSCapture(object):
                 )
             self.stylesheetlist.append(sheet)
 
-            self._log.info('(C) - FOUND <link>: %s', link)
-            self._log.info('(C)   * stylesheet: %s' % sheet)
-            self._log.info('(C)   * full href : %s', href)
-            self._log.info('(C)   * media     : %s', media.mediaText)
-            self._log.debug('(C)   * cssText    :\n%s', cssText)
+            self._log.info('\n--- FOUND <link>: %s ---', link)
+            self._log.info('     * full href : %s', href)
+            self._log.info('     * media     : %s', media.mediaText)
+            self._log.info('     * stylesheet: %s\n' % sheet)
+            self._log.debug('     * cssText    :\n%s\n', cssText)
 
             try:
                 sheet.cssText = cssText
             except xml.dom.DOMException, e:
-                self._log.warn('(C)   * CSSParser message:\n%s' % e)
+                self._log.warn('CSSParser message:\n%s\n' % e)
             self._doImports(sheet, baseurl=docurl)
 
         # internal <style>sheets
@@ -237,17 +231,16 @@ class CSSCapture(object):
                 )
             self.stylesheetlist.append(sheet)
 
-            self._log.info('(C) - FOUND <style>: %s', stylemeta)
-            self._log.info('(C)   * stylesheet : %s' % sheet)
-            self._log.info('(C)   * media      : %s', media.mediaText)
-            self._log.debug('(C)   * cssText    :\n%s', cssText)
+            self._log.info('\n--- FOUND <style>: %s ---', stylemeta)
+            self._log.info('     stylesheet : %s' % sheet)
+            self._log.info('     media      : %s\n', media.mediaText)
+            self._log.debug('    cssText    :\n%s\n', cssText)
 
             try:
                 sheet.cssText = cssText
             except xml.dom.DOMException, e:
-                self._log.warn('(C)   * CSSParser message:\n%s' % e)
+                self._log.warn('CSSParser message:\n%s\n' % e)
             self._doImports(sheet, baseurl=docurl)
-
 
     def capture(self, url, ua=None):
         """
@@ -270,8 +263,7 @@ class CSSCapture(object):
 
         self.stylesheetlist = stylesheets.StyleSheetList()
 
-        self._log.debug('(C) CSSCapture.capture(%s)' % url)
-        self._log.info('(C) URL supplied: %s', url)
+        self._log.info('\nCapturing CSS from URL: %s\n', url)
 
         # get url content
         res, url = self._doRequest(url)
@@ -281,7 +273,7 @@ class CSSCapture(object):
 
         encoding = encutils.getEncodingInfo(
             res, rawdoc, log=self._log).encoding
-        self._log.info('(C) Using Encoding: %s', encoding)
+        self._log.info('\nUsing Encoding: %s\n', encoding)
 
         doctext = unicode(rawdoc, encoding)
 
@@ -289,7 +281,6 @@ class CSSCapture(object):
         self._findStyleSheets(url, doctext)
 
         return self.stylesheetlist
-
 
     def saveto(self, dir, saveparsed=False):
         """
@@ -335,11 +326,10 @@ class CSSCapture(object):
             except OSError, e:
                 if e.errno != errno.EEXIST:
                     raise e
-                self._log.debug('(C) Path "%s" already exists.', savepath)
+                self._log.debug('Path "%s" already exists.', savepath)
 
             open(savefn, 'w').write(cssText)
-            self._log.info('(C) Saving "%s"', savefn)
-
+            self._log.info('Saving "%s"', savefn)
 
 def main(args=None):
     import optparse
