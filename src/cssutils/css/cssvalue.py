@@ -219,8 +219,13 @@ class CSSValue(cssutils.util.Base):
                 # start of { any* } block
                 seq.append(val)
                 return '}'
-            elif expected.startswith('term') and '-' == val or '+' == 'val':
+            elif expected.startswith('term') and u'-' == val or u'+' == 'val':
                 # unary operator
+                seq.append(val)
+                new['values'].append(val)
+                return 'number percentage dimension'
+            elif expected.startswith('term') and u'/' == val:
+                # font-size/line-height separator
                 seq.append(val)
                 new['values'].append(val)
                 return 'number percentage dimension'
@@ -377,7 +382,7 @@ class CSSValue(cssutils.util.Base):
         validates value against _propertyName context if given
         """
         if self._value:
-            if        self._propertyName in cssproperties.cssvalues:
+            if self._propertyName in cssproperties.cssvalues:
                 if cssproperties.cssvalues[self._propertyName](self._value):
                     self.valid = True
                 else:
@@ -916,7 +921,6 @@ class CSSValueList(CSSValue):
     starting from 0.
     """
     cssValueType = CSSValue.CSS_VALUE_LIST
-    __ws = re.compile(ur'^\s*$')
 
     def __init__(self, cssText=None, readonly=False, _propertyName=None):
         """
@@ -929,12 +933,29 @@ class CSSValueList(CSSValue):
 
     def _init(self):
         "called by CSSValue if newly identified as CSSValueList"
+        # defines which values
+        ivalueseq, valueseq = 0, self._SHORTHANDPROPERTIES.get(
+                                                    self._propertyName, [])
         self._items = []
         newseq = []
         i, max = 0, len(self.seq)
-        while i < max:
+        while i < max:            
             v = self.seq[i]
-            if isinstance(v, basestring) and not self.__ws.match(v):
+            if isinstance(v, basestring) and not v.strip() == u'' and\
+               not u'/' == v:
+
+                # TODO: complete
+                # if shorthand get new propname
+                if ivalueseq < len(valueseq):
+                    propname, mandatory = valueseq[ivalueseq]
+                    if mandatory:
+                        ivalueseq += 1
+                    else:
+                        propname = None
+                        ivalueseq = len(valueseq) # end
+                else:
+                    propname = self._propertyName                
+                
                 if i+1 < max and self.seq[i+1] == u',':
                     # a comma separated list of values as ONE value
                     # e.g. font-family: a,b
@@ -969,10 +990,10 @@ class CSSValueList(CSSValue):
                     # for compound props like font!
                     i += len(fullvalue) - 1
                     o = CSSValue(cssText=u''.join(fullvalue),
-                             _propertyName=self._propertyName)
+                             _propertyName=propname)
                 else:
                     # a single value, u' ' or nothing should be following
-                    o = CSSValue(cssText=v, _propertyName=self._propertyName)
+                    o = CSSValue(cssText=v, _propertyName=propname)
 
                 self._items.append(o)
                 newseq.append(o)
