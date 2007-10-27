@@ -50,34 +50,41 @@ importHrefFormat = None
     Uses hreftype if ``None`` or explicit ``'string'`` or ``'uri'``
 indent = 4 * ' '
     Indentation of e.g Properties inside a CSSStyleDeclaration
-keepAllProperties = False
+keepAllProperties = True
     If ``True`` all properties set in the original CSSStylesheet
     are kept meaning even properties set twice with the exact same
     same name are kept!
 keepComments = True
     If ``False`` removes all CSSComments
+keepEmptyRules = False
+    defines if empty rules like e.g. ``a {}`` are kept in the resulting
+    serialized sheet
 lineNumbers = False
     Only used if a complete CSSStyleSheet is serialized.
 lineSeparator = u'\\n'
-    How to end a line. This may be set to e.g. u'' for serializing
-    of CSSStyleDeclarations usable in HTML style attribute.
+    How to end a line. This may be set to e.g. u'' for serializing of
+    CSSStyleDeclarations usable in HTML style attribute.
+listItemSpacer = u' '
+    string which is used in ``css.SelectorList``, ``css.CSSValue`` and
+    ``stylesheets.MediaList`` after the comma
 omitLastSemicolon = True
     If ``True`` omits ; after last property of CSSStyleDeclaration
+paranthesisSpacer = u' '
+    string which is used before an opening paranthesis like in a
+    ``css.CSSMediaRule`` or ``css.CSSStyleRule``
+propertyNameSpacer = u' '
+    string which is used after a Property name colon
 
-**INWORK**
-    validOnly = False
-        if True only valid (Properties or Rules) are kept
+validOnly = False (**not anywhere used yet**)
+    if True only valid (Properties or Rules) are kept
 
-        A Property is valid if it is a known Property with a valid value.
-        Currently CSS 2.1 values as defined in cssproperties.py would be
-        valid.
+    A Property is valid if it is a known Property with a valid value.
+    Currently CSS 2.1 values as defined in cssproperties.py would be
+    valid.
 
-    wellformedOnly= True
-        only wellformed properties and rules are kept
+wellformedOnly = True (**not anywhere used yet**)
+    only wellformed properties and rules are kept
 
-    **DEPRECATED**: removeInvalid = True
-        Omits invalid rules
-
-removeInvalid = True
-    Omits invalid rules, MAY CHANGE!
-
+**DEPRECATED**: removeInvalid = True
+    Omits invalid rules, replaced by ``validOnly`` which will be used
+    more cases
