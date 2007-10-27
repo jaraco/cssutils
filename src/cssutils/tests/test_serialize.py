@@ -11,41 +11,91 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
     """
     testcases for cssutils.CSSSerializer
     """
-##    def test_init(self):
-##        "CSSSerializer.__init__()"
+#    def test_init(self):
+#        "CSSSerializer.__init__()"
 
-    def _resetprefs(self):
-        cssutils.ser.prefs = cssutils.serialize.Preferences()
-
-    def test_preferences(self):
-        "Preferences"
-        self._resetprefs()
+    def test_useDefaults(self):
+        "Preferences.useDefaults()"
+        cssutils.ser.prefs.useDefaults()
         self.assertEqual(cssutils.ser.prefs.defaultAtKeyword, True)
         self.assertEqual(cssutils.ser.prefs.defaultPropertyName, True)
         self.assertEqual(cssutils.ser.prefs.importHrefFormat, None)
         self.assertEqual(cssutils.ser.prefs.indent, 4 * u' ')
-        self.assertEqual(cssutils.ser.prefs.keepAllProperties, False)
+        self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, True)
+        self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
         self.assertEqual(cssutils.ser.prefs.lineSeparator, u'\n')
+        self.assertEqual(cssutils.ser.prefs.listItemSpacer, u' ')
         self.assertEqual(cssutils.ser.prefs.omitLastSemicolon, True)
+        self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, u' ')
+        self.assertEqual(cssutils.ser.prefs.propertyNameSpacer, u' ')
+        self.assertEqual(cssutils.ser.prefs.validOnly, False)
+        self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
+        # DEPRECATED
         self.assertEqual(cssutils.ser.prefs.removeInvalid, True)
 
+    def test_useMinified(self):
+        "Preferences.useMinified()"
+        cssutils.ser.prefs.useDefaults()
+        cssutils.ser.prefs.useMinified()
+        self.assertEqual(cssutils.ser.prefs.defaultAtKeyword, True)
+        self.assertEqual(cssutils.ser.prefs.defaultPropertyName, True)
+        self.assertEqual(cssutils.ser.prefs.importHrefFormat, 'string')
+        self.assertEqual(cssutils.ser.prefs.indent, u'')
+        self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
+        self.assertEqual(cssutils.ser.prefs.keepComments, False)
+        self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
+        self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
+        self.assertEqual(cssutils.ser.prefs.lineSeparator, u'')
+        self.assertEqual(cssutils.ser.prefs.listItemSpacer, u'')
+        self.assertEqual(cssutils.ser.prefs.omitLastSemicolon, True)
+        self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, u'')
+        self.assertEqual(cssutils.ser.prefs.propertyNameSpacer, u'')
+        self.assertEqual(cssutils.ser.prefs.validOnly, False)
+        self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
+        # DEPRECATED
+        self.assertEqual(cssutils.ser.prefs.removeInvalid, True)
+        
+        css = u'''
+    /*1*/
+    @import url(x) tv , print;
+    @media all {}
+    @media all {
+        a {}
+    }
+    @media all {
+        a { color: red; }
+    }
+    @page {}
+    a {}
+    a , b { top : 1px ; 
+        font-family : arial ,  'some' 
+        }
+    '''
+        s = cssutils.parseString(css)
+        self.assertEqual(s.cssText, 
+            u'''@import "x" tv,print;@media all{a{color:red}}a,b{top:1px;font-family:arial,'some'}''' 
+            )
+
     def test_defaultAtKeyword(self):
-        "CSSSerializer Preferences.defaultAtKeyword"
-        s = cssutils.parseString(u'@im\port "x";')
+        "Preferences.defaultAtKeyword"
+        cssutils.ser.prefs.useDefaults()
+        
+        s = cssutils.parseString(u'@im\\port "x";')
         self.assertEqual(u'@import "x";', s.cssText)
         cssutils.ser.prefs.defaultAtKeyword = True
         self.assertEqual(u'@import "x";', s.cssText)
         cssutils.ser.prefs.defaultAtKeyword = False
         self.assertEqual(u'@im\\port "x";', s.cssText)
 
-        self._resetprefs()
-
     def test_defaultPropertyName(self):
-        "CSSSerializer Preferences.defaultPropertyName"
-        # does not actually work as once the name is set it is used also if used with
-        # a backslash in it later...
+        "Preferences.defaultPropertyName"
+        cssutils.ser.prefs.useDefaults()
+        cssutils.ser.prefs.keepAllProperties = False
+
+        # does not actually work as once the name is set it is used also 
+        # if used with a backslash in it later...
 
         s = cssutils.parseString(u'a { c\olor: green; }')
         self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
@@ -61,10 +111,10 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         cssutils.ser.prefs.defaultPropertyName = True
         self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
 
-        self._resetprefs()
-
     def test_importHrefFormat(self):
-        "CSSSerializer Preferences.importHrefFormat"
+        "Preferences.importHrefFormat"
+        cssutils.ser.prefs.useDefaults()
+
         r0 = cssutils.css.CSSImportRule(u'not')
         r1 = cssutils.css.CSSImportRule(u'str', hreftype="string")
         r2 = cssutils.css.CSSImportRule(u'uri', hreftype="uri")
@@ -87,10 +137,10 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(u'@import "str";', r1.cssText)
         self.assertEqual(u'@import url(uri);', r2.cssText)
 
-        self._resetprefs()
-
     def test_indent(self):
-        "CSSSerializer Preferences.ident"
+        "Preferences.ident"
+        cssutils.ser.prefs.useDefaults()
+
         s = cssutils.parseString(u'a { left: 0 }')
         exp4 = u'''a {
     left: 0
@@ -98,16 +148,108 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         exp1 = u'''a {
  left: 0
  }'''
-        self.assertEqual(exp4, s.cssText)
         cssutils.ser.prefs.indent = ' '
         self.assertEqual(exp1, s.cssText)
-        cssutils.ser.prefs.indent = '    '
+        cssutils.ser.prefs.indent = 4* ' '
         self.assertEqual(exp4, s.cssText)
 
-        self._resetprefs()
+    def test_keepAllProperties(self):
+        "Preferences.keepAllProperties"
+        cssutils.ser.prefs.useDefaults()
+
+        css = '''a {
+            color: pink;
+            color: red;
+            c\olor: blue;
+            c\olor: green;
+            }'''
+        s = cssutils.parseString(css)
+        # keep only last
+        cssutils.ser.prefs.keepAllProperties = False
+        self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
+        # keep all
+        cssutils.ser.prefs.keepAllProperties = True
+        self.assertEqual(u'a {\n    color: pink;\n    color: red;\n    c\olor: blue;\n    c\olor: green\n    }', s.cssText)
+
+    def test_keepComments(self):
+        "Preferences.keepComments"
+        cssutils.ser.prefs.useDefaults()
+
+        s = cssutils.parseString('/*1*/ a { /*2*/ }')
+        cssutils.ser.prefs.keepComments = False
+        self.assertEqual('', s.cssText)
+        cssutils.ser.prefs.keepEmptyRules = True
+        self.assertEqual('a {}', s.cssText)
+
+    def test_keepEmptyRules(self):
+        "Preferences.keepEmptyRules"
+        # CSSStyleRule
+        css = u'''a {}
+a {
+    /*1*/
+    }
+a {
+    color: red
+    }'''
+        s = cssutils.parseString(css)
+        cssutils.ser.prefs.useDefaults()
+        cssutils.ser.prefs.keepEmptyRules = True
+        self.assertEqual(css, s.cssText)
+        cssutils.ser.prefs.keepEmptyRules = False
+        self.assertEqual(u'a {\n    /*1*/\n    }\na {\n    color: red\n    }', 
+                         s.cssText)
+        cssutils.ser.prefs.keepComments = False
+        self.assertEqual(u'a {\n    color: red\n    }', 
+                         s.cssText)
+
+        # CSSMediaRule
+        css = u'''@media tv {
+    }
+@media all {
+    /*1*/
+    }
+@media print {
+    a {}
+    }
+@media print {
+    a {
+        /*1*/
+        }
+    }
+@media all {
+    a {
+        color: red
+        }
+    }'''
+        s = cssutils.parseString(css)
+        cssutils.ser.prefs.useDefaults()
+        cssutils.ser.prefs.keepEmptyRules = True
+   #     self.assertEqual(css, s.cssText)
+        cssutils.ser.prefs.keepEmptyRules = False
+        self.assertEqual('''@media all {
+    /*1*/
+    }
+@media print {
+    a {
+        /*1*/
+        }
+    }
+@media all {
+    a {
+        color: red
+        }
+    }''', s.cssText)
+        cssutils.ser.prefs.keepComments = False
+        self.assertEqual('''@media all {
+    a {
+        color: red
+        }
+    }''', s.cssText)
 
     def test_lineNumbers(self):
-        "CSSSerializer Preferences.lineNumbers"
+        "Preferences.lineNumbers"
+        cssutils.ser.prefs.useDefaults()
+
         s = cssutils.parseString('a {top: 1; left: 2}')
         exp0 = '''a {
     top: 1;
@@ -123,10 +265,10 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(True, cssutils.ser.prefs.lineNumbers)
         self.assertEqual(exp1, s.cssText)
 
-        self._resetprefs()
-
     def test_lineSeparator(self):
-        "CSSSerializer Preferences.lineSeparator"
+        "Preferences.lineSeparator"
+        cssutils.ser.prefs.useDefaults()
+
         s = cssutils.parseString('a { x:1;y:2}')
         self.assertEqual('a {\n    x: 1;\n    y: 2\n    }', s.cssText)
         # cannot be indented as no split possible
@@ -136,35 +278,52 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         cssutils.ser.prefs.lineSeparator = u'XXX'
         self.assertEqual('a {XXX    x: 1;XXX    y: 2XXX    }', s.cssText)
 
-        self._resetprefs()
-
-    def test_keepComments(self):
-        "CSSSerializer Preferences.keepComments"
-        s = cssutils.parseString('/*1*/ a { /*2*/ }')
-        cssutils.ser.prefs.keepComments = False
-        self.assertEqual('a {}', s.cssText)
-
-        self._resetprefs()
-
-    def test_keepAllProperties(self):
-        "CSSSerializer Preferences.keepAllProperties"
-        css = '''a {
-            color: pink;
-            color: red;
-            c\olor: blue;
-            c\olor: green;
-            }'''
+    def test_listItemSpacer(self):
+        "Preferences.listItemSpacer"
+        cssutils.ser.prefs.useDefaults()
+        cssutils.ser.prefs.keepEmptyRules = True
+        
+        css = '''
+        @import "x" print, tv;
+a, b {}'''
         s = cssutils.parseString(css)
-        # keep only last
-        self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
-        # keep all
-        cssutils.ser.prefs.keepAllProperties = True
-        self.assertEqual(u'a {\n    color: pink;\n    color: red;\n    c\olor: blue;\n    c\olor: green\n    }', s.cssText)
+        self.assertEqual(u'@import "x" print, tv;\na, b {}', s.cssText)
+        cssutils.ser.prefs.listItemSpacer = u''
+        self.assertEqual(u'@import "x" print,tv;\na,b {}', s.cssText)
 
-        self._resetprefs()
+    def test_omitLastSemicolon(self):
+        "Preferences.omitLastSemicolon"
+        cssutils.ser.prefs.useDefaults()
+        
+        css = 'a { x: 1; y: 2 }'
+        s = cssutils.parseString(css)
+        self.assertEqual(u'a {\n    x: 1;\n    y: 2\n    }', s.cssText)
+        cssutils.ser.prefs.omitLastSemicolon = False
+        self.assertEqual(u'a {\n    x: 1;\n    y: 2;\n    }', s.cssText)
 
+    def test_paranthesisSpacer(self):
+        "Preferences.paranthesisSpacer"
+        cssutils.ser.prefs.useDefaults()
+        css = 'a { x: 1; y: 2 }'
+        s = cssutils.parseString(css)
+        self.assertEqual(u'a {\n    x: 1;\n    y: 2\n    }', s.cssText)
+        cssutils.ser.prefs.paranthesisSpacer = u''
+        self.assertEqual(u'a{\n    x: 1;\n    y: 2\n    }', s.cssText)
+        
+    def test_propertyNameSpacer(self):
+        "Preferences.propertyNameSpacer"
+        cssutils.ser.prefs.useDefaults()
+        css = 'a { x: 1; y: 2 }'
+        s = cssutils.parseString(css)
+        self.assertEqual(u'a {\n    x: 1;\n    y: 2\n    }', s.cssText)
+        cssutils.ser.prefs.propertyNameSpacer = u''
+        self.assertEqual(u'a {\n    x:1;\n    y:2\n    }', s.cssText)
+
+        
     def test_Property(self):
         "CSSSerializer.do_Property"
+        cssutils.ser.prefs.useDefaults()
+
         name="color"
         value="red"
         priority="!important"
