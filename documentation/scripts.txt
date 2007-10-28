@@ -1,0 +1,32 @@
+`Index </index.txt>`_
+
+====================
+``cssutils`` scripts
+====================
+:author: $LastChangedBy: cthedot $
+:date: $LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $
+:version: $LastChangedRevision: 206 $
+
+.. contents::
+
+CSSCapture
+==========
+csscapture.py which is part of the main cssutils package but also installed as a standalone script does include class CSSCapture which downloads all referenced CSS stylesheets of a given URL and saves them to a given target directory.
+
+The complete options of csscapture.py are:
+
+usage: csscapture.py [options] URL
+
+Options:
+  -h, --help            show this help message and exit
+  -d, --debug           show debug messages during capturing
+  -n, --notsave         if given files are NOT saved, only log is written
+  -r, --saveraw         if given saves raw css otherwise cssutils' parsed
+                        files
+  -s SAVETO, --saveto=SAVETO
+                        saving retrieved files to "saveto", defaults to
+                        "_CSSCapture_SAVED"
+  -u UA, --useragent=UA
+                        useragent to use for request of URL, default is
+                        urllib2s default
+

@@ -10,14 +10,72 @@ backlog
 .. contents::
 
 
-
-
 improvements
 ============
 
+conformance
+-----------
+:prio: 1
+
+http://www.w3.org/TR/CSS21/syndata.html#ignore
+
+- escape sequences?
+    - Token.normalvalue for simple escapes only
+    - unknownrule tests
+    - escaped keywords and function names?
+
+
+CSS2Properties
+--------------
+:prio: 1
+
+needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
+
+@unknown
+--------
+:prio: 2
+
+needs to be parsed properly, check for open blocks () [] {}, etc
+
+@font-face
+----------
+:prio: 2
+
+needs to be implemented
+
+@charset
+--------
+:prio: 2
+
+@charset and parse() properly, use @charset for parsing, currently ignored
+
+http://www.w3.org/TR/CSS21/syndata.html#q23
+
+@charset must be written literally, i.e., the 10 characters '@charset "' (lowercase, no backslash escapes), followed by the encoding name, followed by '";'.
+
+Only one @charset rule may appear in an external style sheet and it must appear at the very start of the document. It must not be preceded by any characters, not even comments.
+
+1. An HTTP "charset" parameter in a "Content-Type" field (or similar parameters in other protocols)
+2. BOM and/or @charset (see below)
+3. <link charset=""> or other metadata from the linking mechanism (if any)
+4. charset of referring style sheet or document (if any)
+5. Assume UTF-8
+
+@namespace
+----------
+:prio: 3
+
+- stylesheet:
+    - tests for undeclared prefixes in stylerules, mediarule
+    - use parentRule or parentStyleSheet to look for @namespace!
+    - remove from stylesheet!
+- CSSRule.nsvalid ?
+
 CSSValue
 --------
-:prio: 1
+:prio: 3
+
+**this feature may be implemented later as CSSOM defines the complete thing differently**
 
 implement RGBColor, Rect and Counter
 
@@ -44,68 +102,7 @@ serializer
     ser.prefs.NAMED_COLORS
         e.g. white for #fff or rgb(100%, 100%, 100%)
 
-
 - **refactor**: all preferences values should be constansts like above
-
-
-CSS2Properties
---------------
-:prio: 1
-
-needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
-
-@charset
---------
-:prio: 2
-
-@charset and parse() properly, use @charset for parsing, currently ignored
-
-http://www.w3.org/TR/CSS21/syndata.html#q23
-
-@charset must be written literally, i.e., the 10 characters '@charset "' (lowercase, no backslash escapes), followed by the encoding name, followed by '";'.
-
-Only one @charset rule may appear in an external style sheet and it must appear at the very start of the document. It must not be preceded by any characters, not even comments.
-
-1. An HTTP "charset" parameter in a "Content-Type" field (or similar parameters in other protocols)
-2. BOM and/or @charset (see below)
-3. <link charset=""> or other metadata from the linking mechanism (if any)
-4. charset of referring style sheet or document (if any)
-5. Assume UTF-8
-
-@import
--------
-:prio: 3
-
-parse href properly
-
-@namespace
-----------
-:prio: 3
-
-- stylesheet:
-    - tests for undeclared prefixes in stylerules, mediarule
-    - use parentRule or parentStyleSheet to look for @namespace!
-    - remove from stylesheet!
-- CSSRule.nsvalid ?
-
-@unknown
---------
-:prio: 3
-
-needs to be parsed properly, check for open blocks () [] {}
-
-
-conformance
------------
-:prio: 3
-
-http://www.w3.org/TR/CSS21/syndata.html#ignore
-
-- escape sequences?
-    - Token.normalvalue for simple escapes only
-    - unknownrule tests
-    - escaped keywords and function names?
-
 
 performance
 -----------
@@ -151,28 +148,32 @@ test improvements
 - CSSStyleSheet.setSerializer()
 - CSSStyleSheet.setSerializerPref()
 
-refactoring
------------
-:prio: 3
 
-- add __repr__ for all remaining classes
-- check if setuptools not installed, try, except
-
-csscapture
-----------
-:prio: 3
-
-- cssText = sheet.literalCssText, not anymore, save in csscapture itself!
-- tests!
-
-
---------------------
 
 new features
 ============
+
+serializer
+----------
+:prio: 2
+
+- output escapes depending on charset?
+- prettyprint convinience serializer?
+- XML serializer to be able to handle CSS with XSLT, schemas etc?
+- different coding styles?
+
+
+Selector
+--------
+:prio: 2
+
+- CSS2XPath converter? -> lxml.cssselector!
+- optimize selector parsing
+
+
 rbga()
 ------
-:prio: 1
+:prio: 2
 
 implement rgba
 
@@ -194,29 +195,6 @@ implement rgba
 - "currentColor"
 - System Colors are DEPRECATED!
 - "flavor"?
-
-
-serializer
-----------
-:prio: 2
-
-- speed/size optimized? (suggestion by Paulo)
-
-  **minimized**: remove empty styledeclarations, comments etc
-
-- output escapes depending on charset?
-- prettyprint convinience serializer?
-- XML serializer to be able to handle CSS with XSLT, schemas etc?
-
-- different coding styles?
-
-
-Selector
---------
-:prio: 2
-
-- CSS2XPath converter? -> lxml.cssselector!
-- optimize selector parsing
 
 
 Properties
