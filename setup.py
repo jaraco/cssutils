@@ -8,12 +8,13 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.4a2'
+__version__ = '0.9.4a3'
 
-#import ez_setup
-#ez_setup.use_setuptools()
-
-from setuptools import setup, find_packages
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    import sys
+    sys.exit('You need setuptools from http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions')
 
 setup(
     name='cssutils',
