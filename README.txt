@@ -74,7 +74,6 @@ Alternatively download the provided source distribution. Expand the file and fro
 Before using EasyInstall the first time or using the sdist please remove any old version which should be installed at PYTHONDIR/Lib/site-packages/cssutils.
 
 
-
 changes
 =======
 
@@ -82,6 +81,13 @@ Version 0.9x
 ------------
 
 HEAD
+    - **BUGFIX**: CSSCapture now uses the ``cssutils.parseString`` method so invalid sheets should be saved too. Until now in case of an error the sheet was not saved at all.
+    - **BUGFIX**: option '-p' of csscapture is removed as it was not used anyway. A new option ``-r, --saveraw`` has been added which defaults to ``False``. If given saves raw css otherwise cssutils' parsed files.
+
+    + IMPROVEMENT: "setup.py" catches exception if setuptools is not installed and emits message
+
+    - DOCS: Added more documentation and also a standalone HTML documentation which is generated from the SVN RST docs.
+
 
 0.9.4a2 071027
     - **FEATURE**: added ``Preferences.useMinified()`` which sets preferences that a stylesheet will be serialized as compact as possible. Added ``Preferences.useDefaults()`` which resets the serializer preferences. There a few new preferences have been added as well (see the documentation for details as most are hardly useful for normal usage of the library)
@@ -121,7 +127,7 @@ HEAD
 
     - **CHANGE**: A completely new tokenizer and mostly also the parser have been reimplemented in this release. Generally it should be much more robust and more compliant now. It will have new errors and also some slight details in parsing are changed.
 
-    + **Documentation**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
+    + **DOCS**: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.
 
 0.9.3a1 - 070905
     - FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList.
