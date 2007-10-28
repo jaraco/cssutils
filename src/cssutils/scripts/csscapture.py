@@ -112,7 +112,7 @@ class CSSCapture(object):
             hdlr.setFormatter(formatter)
             self._log.addHandler(hdlr)
             self._log.setLevel(defaultloglevel)
-            self._log.debug(u'(C) Using default log')
+            self._log.debug(u'Using default log')
 
     def _doRequest(self, url):
         """
@@ -122,12 +122,12 @@ class CSSCapture(object):
 
         url might have been changed by server due to redirects etc
         """
-        self._log.debug(u'    CSSCapture_doRequest URL: %s' % url)
+        self._log.debug(u'    CSSCapture._doRequest\n        * URL: %s' % url)
 
         req = urllib2.Request(url)
         if self._ua:
             req.add_header('User-agent', self._ua)
-            self._log.info('        Using User-Agent: %s', self._ua)
+            self._log.info('        * Using User-Agent: %s', self._ua)
         try:
             res = urllib2.urlopen(req)
         except urllib2.HTTPError, e:
@@ -142,39 +142,54 @@ class CSSCapture(object):
 
         return res, url
 
+    def _createStyleSheet(self, href=None, 
+                          media=None, 
+                          parentStyleSheet=None, 
+                          title=u'',
+                          cssText=None):
+        """
+        returns CSSStyleSheet read from href or if cssText is given use that
+        """
+        if not cssText:
+            res, href = self._doRequest(href)
+            if res:
+                cssText = res.read()
+            else: 
+                self._log.info(u'    Unknown error reading sheet')
+                return None
+                      
+        sheet = cssutils.parseString(cssText)
+        sheet.href = href
+        sheet.media = media
+        sheet.parentStyleSheet = parentStyleSheet
+        sheet.title = title
+        self._log.debug(u'    * title: %s', title)
+        self._log.debug(u'    * full href: %s', href)
+        self._log.info(u'    * media: %s', media.mediaText)
+        self._log.info(u'    * sheet: %s\n' % sheet)
+        self._log.debug(u'    * cssText:\n%s\n', cssText)
+        
+        self._nonparsed[sheet] = cssText
+
+        return sheet
+
     def _doImports(self, parentStyleSheet, baseurl=None):
         """
         handle all @import CSS stylesheet recusively
         found CSS stylesheets are appended to stylesheetlist
         """
         for rule in parentStyleSheet.cssRules:
-            if rule.type == css.CSSRule.IMPORT_RULE:
-
-                href = urlparse.urljoin(baseurl, rule.href)
-                media = rule.media
-                res, href = self._doRequest(href)
-                if not res:
-                    continue
-                cssText = res.read()
-                sheet = css.CSSStyleSheet(
+            if rule.type == rule.IMPORT_RULE:
+                self._log.info(u'\n@import FOUND -----')
+                self._log.debug(u'    IN: %s\n' % parentStyleSheet)
+                href = urlparse.urljoin(baseurl, rule.href)                
+                sheet = self._createStyleSheet(
                     href=href,
-                    media=media,
-                    parentStyleSheet=parentStyleSheet
-                    )
-                self.stylesheetlist.append(sheet)
-
-                self._log.info(
-                    '\n--- FOUND @import in: %s ---' % parentStyleSheet)
-                self._log.info('    * full href  : %s', href)
-                self._log.info('    * media      : %s', media.mediaText)
-                self._log.info('    * stylesheet : %s\n' % sheet)
-                self._log.debug('    * cssText    :\n%s\n', cssText)
-
-                try:
-                    sheet.cssText = cssText
-                except xml.dom.DOMException, e:
-                    self._log.warn('CSSParser message:\n%s\n' % e)
-                self._doImports(sheet, baseurl=href)
+                    media=rule.media,
+                    parentStyleSheet=parentStyleSheet)
+                if sheet:
+                    self.stylesheetlist.append(sheet)
+                    self._doImports(sheet, baseurl=href)
 
     def _findStyleSheets(self, docurl, doctext):
         """
@@ -187,60 +202,33 @@ class CSSCapture(object):
             to parse
         """
         self._parser.feed(doctext)
-
-        # <link>ed stylesheets
-        #   ownerNode should be set to the <link> node
+        # <link>ed stylesheets, ownerNode should be set to the <link> node
         for link in self._parser.links:
-
+            self._log.info(u'\n<link> FOUND -----')
+            self._log.debug(u'    %s\n' % link)
             href = urlparse.urljoin(docurl, link.get(u'href', u''))
-            media = stylesheets.MediaList(link.get(u'media', u''))
-            res, href = self._doRequest(href)
-            if not res:
-                continue
-            cssText = res.read()
-            sheet = css.CSSStyleSheet(
+            sheet = self._createStyleSheet(
                 href=href,
-                media=media,
-                title=link.get(u'title', u''),
-                )
-            self.stylesheetlist.append(sheet)
-
-            self._log.info('\n--- FOUND <link>: %s ---', link)
-            self._log.info('     * full href : %s', href)
-            self._log.info('     * media     : %s', media.mediaText)
-            self._log.info('     * stylesheet: %s\n' % sheet)
-            self._log.debug('     * cssText    :\n%s\n', cssText)
-
-            try:
-                sheet.cssText = cssText
-            except xml.dom.DOMException, e:
-                self._log.warn('CSSParser message:\n%s\n' % e)
-            self._doImports(sheet, baseurl=docurl)
-
-        # internal <style>sheets
-        #   href is None for internal stylesheets
-        #   ownerNode should be set to the <style> node
+                media=stylesheets.MediaList(link.get(u'media', u'')),
+                title=link.get(u'title', u''))
+            if sheet:
+                self.stylesheetlist.append(sheet)
+                self._doImports(sheet, baseurl=href)
+            
+        # internal <style> sheets
+        #  href is None for internal stylesheets
+        #  ownerNode should be set to the <style> node
         for style in self._parser.styles:
-
             stylemeta, cssText = style
-            media = stylesheets.MediaList(stylemeta.get(u'media', u''))
-            sheet = css.CSSStyleSheet(
-                href=None,
-                media=media,
-                title=stylemeta.get(u'title', u''),
-                )
-            self.stylesheetlist.append(sheet)
-
-            self._log.info('\n--- FOUND <style>: %s ---', stylemeta)
-            self._log.info('     stylesheet : %s' % sheet)
-            self._log.info('     media      : %s\n', media.mediaText)
-            self._log.debug('    cssText    :\n%s\n', cssText)
-
-            try:
-                sheet.cssText = cssText
-            except xml.dom.DOMException, e:
-                self._log.warn('CSSParser message:\n%s\n' % e)
-            self._doImports(sheet, baseurl=docurl)
+            self._log.info(u'\n<style> FOUND -----' )
+            self._log.debug(u'    %s\n' % stylemeta)
+            sheet = self._createStyleSheet(
+                media=stylesheets.MediaList(stylemeta.get(u'media', u'')),
+                title=link.get(u'title', u''),
+                cssText = cssText)            
+            if sheet:
+                self.stylesheetlist.append(sheet)
+                self._doImports(sheet, baseurl=href)
 
     def capture(self, url, ua=None):
         """
@@ -254,16 +242,14 @@ class CSSCapture(object):
 
         Returns StyleSheetList.
         """
+        self._log.info(u'\nCapturing CSS from URL: %s\n', url)
+        self.stylesheetlist = stylesheets.StyleSheetList()
         if ua is not None:
             self._ua = ua
-
+            
         # used to save inline styles
         scheme, loc, path, query, fragment = urlparse.urlsplit(url)
         self._filename = os.path.basename(path)
-
-        self.stylesheetlist = stylesheets.StyleSheetList()
-
-        self._log.info('\nCapturing CSS from URL: %s\n', url)
 
         # get url content
         res, url = self._doRequest(url)
@@ -273,16 +259,17 @@ class CSSCapture(object):
 
         encoding = encutils.getEncodingInfo(
             res, rawdoc, log=self._log).encoding
-        self._log.info('\nUsing Encoding: %s\n', encoding)
+        self._log.info(u'\nUsing Encoding: %s\n', encoding)
 
         doctext = unicode(rawdoc, encoding)
 
-        # fill list of stylesheets
+        # fill list of stylesheets and list of raw css
+        self._nonparsed = {}
         self._findStyleSheets(url, doctext)
 
         return self.stylesheetlist
 
-    def saveto(self, dir, saveparsed=False):
+    def saveto(self, dir, saveraw=False):
         """
         saves css in "dir" in the same layout as on the server
         internal stylesheets are saved as "dir/__INLINE_STYLE__.html.css"
@@ -295,21 +282,16 @@ class CSSCapture(object):
             you may want to use the server version until CSSParser is more
             stable or if you want to keep the stylesheet exactly as is
         """
+        cssutils.ser.prefs.useDefaults()
+        
         inlines = 0
         for sheet in self.stylesheetlist:
-
             url = sheet.href
             if not url:
+                inlines += 1
                 url = '%s_INLINE_%s.css' % (
                     self._filename, inlines)
-                inlines += 1
-
-            #if saveparsed:
-            cssutils.ser.prefs.keepAllProperties=True
-            cssText = sheet.cssText
-            #else:
-            #    cssText = sheet.literalCssText
-
+                
             # build savepath
             scheme, loc, path, query, fragment = urlparse.urlsplit(url)
             # no absolute path
@@ -317,35 +299,38 @@ class CSSCapture(object):
                 path = path[1:]
             path = os.path.normpath(path)
             path, fn = os.path.split(path)
-
             savepath = os.path.join(dir, loc, path)
             savefn = os.path.join(savepath, fn)
-
             try:
                 os.makedirs(savepath)
             except OSError, e:
                 if e.errno != errno.EEXIST:
                     raise e
-                self._log.debug('Path "%s" already exists.', savepath)
+                self._log.debug(u'Path "%s" already exists.', savepath)
+
+            if saveraw:
+                cssText = self._nonparsed[sheet]
+            else:
+                cssText = sheet.cssText
 
             open(savefn, 'w').write(cssText)
-            self._log.info('Saving "%s"', savefn)
+            self._log.info(u'Saving "%s"', savefn)
 
 def main(args=None):
     import optparse
 
     usage = "usage: %prog [options] URL"
     parser = optparse.OptionParser(usage=usage)
-    parser.add_option('-u', '--useragent', action='store', dest='ua',
-        help='useragent to use for request of URL, default is urllib2s default')
-    parser.add_option('-s', '--saveto', action='store', dest='saveto',
-        help='saving retrieved files to "saveto", default to "_CSSCapture_SAVED"')
-    parser.add_option('-p', '--saveparsed', action='store_true', dest='saveparsed',
-        help='if given saves cssutils\' parsed files, otherwise original retrieved files')
-    parser.add_option('-n', '--notsave', action='store_true', dest='notsave',
-        help='if given files are NOT saved, only log is written')
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
         help='show debug messages during capturing')
+    parser.add_option('-n', '--notsave', action='store_true', dest='notsave',
+        help='if given files are NOT saved, only log is written')
+    parser.add_option('-r', '--saveraw', action='store_true', dest='saveraw',
+        help='if given saves raw css otherwise cssutils\' parsed files')
+    parser.add_option('-s', '--saveto', action='store', dest='saveto',
+        help='saving retrieved files to "saveto", defaults to "_CSSCapture_SAVED"')
+    parser.add_option('-u', '--useragent', action='store', dest='ua',
+        help='useragent to use for request of URL, default is urllib2s default')
     options, url = parser.parse_args()
 
     if not url:
@@ -368,10 +353,10 @@ def main(args=None):
             saveto = options.saveto
         else:
             saveto = '_CSSCapture_SAVED'
-        c.saveto(saveto, saveparsed=options.saveparsed)
+        c.saveto(saveto, saveraw=options.saveraw)
     else:
         for i, s in enumerate(stylesheetlist):
-            print i+1, '\tTitle: "%s", \n\thref: "%s"\n' % (s.title, s.href)
+            print i+1, u'\ttitle: "%s", \n\thref : "%s"\n' % (s.title, s.href)
 
 
 if __name__ == "__main__":
