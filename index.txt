@@ -11,9 +11,10 @@ CSS Cascading Style Sheets library for Python
 available documentation
 =======================
 API
-    * package `cssutils <documentation/cssutils.txt>`_
-    * package `cssutils.css <documentation/css.txt>`_
-    * package `cssutils.stylesheets <documentation/stylesheets.txt>`_
+    * `cssutils <documentation/cssutils.txt>`_ package
+    * `cssutils.css <documentation/css.txt>`_ package
+    * `cssutils.stylesheets <documentation/stylesheets.txt>`_ package
+    * `cssutils scripts <documentation/scripts.txt>`_
 
     `backlog <documentation/backlog.txt>`_
 
