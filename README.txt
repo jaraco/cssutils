@@ -81,6 +81,14 @@ Version 0.9x
 ------------
 
 HEAD
+    - **TODO**
+        + CSSCapture:
+            - use cssutils.codec to write final CSS, somehow this does not always work (Walter?)
+            - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
+
+
+    + **FEATURE**: Added option ``-m, --minified`` to CSSCapture which saves the retrieved CSS files with the cssutils serializer setting ``Preferences.useMinified()``.
+
     - **BUGFIX**: CSSCapture now uses the ``cssutils.parseString`` method so invalid sheets should be saved too. Until now in case of an error the sheet was not saved at all.
     - **BUGFIX**: option '-p' of csscapture is removed as it was not used anyway. A new option ``-r, --saveraw`` has been added which defaults to ``False``. If given saves raw css otherwise cssutils' parsed files.
 
