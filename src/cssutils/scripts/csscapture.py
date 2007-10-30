@@ -1,18 +1,11 @@
 #!/usr/bin/env python
-"""
-Retrieve all CSS stylesheets including embedded for a given URL.
-Retrieve as StyleSheetList or save to disk.
+"""Retrieve all CSS stylesheets including embedded for a given URL.
+Retrieve as StyleSheetList or save to disk - raw, parsed or minified version.
 
 TODO:
-    @import
-    save all
-
-    maybe use DOM 3 load/save?
-
-    logger class which handles all cases when no log is given...
-
-    saveto:
-        why does urllib2 hang?
+- maybe use DOM 3 load/save?
+- logger class which handles all cases when no log is given...
+- saveto: why does urllib2 hang?
 """
 __all__ = ['CSSCapture']
 __docformat__ = 'restructuredtext'
@@ -20,19 +13,16 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+import codecs
 import errno
 import HTMLParser
 import logging
 import os
 import sys
-import urllib
 import urllib2
 import urlparse
-import xml.dom
 
 import cssutils
-from cssutils import css, stylesheets
-
 try:
     import encutils
 except ImportError:
@@ -153,7 +143,8 @@ class CSSCapture(object):
         if not cssText:
             res, href = self._doRequest(href)
             if res:
-                cssText = res.read()
+                # read with css codec!
+                cssText = codecs.getreader('css')(res).read()
             else: 
                 self._log.info(u'    Unknown error reading sheet')
                 return None
@@ -170,7 +161,6 @@ class CSSCapture(object):
         self._log.debug(u'    * cssText:\n%s\n', cssText)
         
         self._nonparsed[sheet] = cssText
-
         return sheet
 
     def _doImports(self, parentStyleSheet, baseurl=None):
@@ -209,7 +199,8 @@ class CSSCapture(object):
             href = urlparse.urljoin(docurl, link.get(u'href', u''))
             sheet = self._createStyleSheet(
                 href=href,
-                media=stylesheets.MediaList(link.get(u'media', u'')),
+                media=cssutils.stylesheets.MediaList(
+                                            link.get(u'media', u'')),
                 title=link.get(u'title', u''))
             if sheet:
                 self.stylesheetlist.append(sheet)
@@ -223,12 +214,13 @@ class CSSCapture(object):
             self._log.info(u'\n<style> FOUND -----' )
             self._log.debug(u'    %s\n' % stylemeta)
             sheet = self._createStyleSheet(
-                media=stylesheets.MediaList(stylemeta.get(u'media', u'')),
-                title=link.get(u'title', u''),
-                cssText = cssText)            
+                media=cssutils.stylesheets.MediaList(
+                                            stylemeta.get(u'media', u'')),
+                title=stylemeta.get(u'title', u''),
+                cssText=cssText)            
             if sheet:
                 self.stylesheetlist.append(sheet)
-                self._doImports(sheet, baseurl=href)
+                self._doImports(sheet, baseurl=docurl)
 
     def capture(self, url, ua=None):
         """
@@ -242,10 +234,11 @@ class CSSCapture(object):
 
         Returns StyleSheetList.
         """
-        self._log.info(u'\nCapturing CSS from URL: %s\n', url)
-        self.stylesheetlist = stylesheets.StyleSheetList()
         if ua is not None:
             self._ua = ua
+
+        self._log.info(u'\nCapturing CSS from URL: %s\n', url)
+        self.stylesheetlist = cssutils.stylesheets.StyleSheetList()
             
         # used to save inline styles
         scheme, loc, path, query, fragment = urlparse.urlsplit(url)
@@ -257,11 +250,11 @@ class CSSCapture(object):
             sys.exit(1)
         rawdoc = res.read()
 
-        encoding = encutils.getEncodingInfo(
+        self.docencoding = encutils.getEncodingInfo(
             res, rawdoc, log=self._log).encoding
-        self._log.info(u'\nUsing Encoding: %s\n', encoding)
+        self._log.info(u'\nUsing Encoding: %s\n', self.docencoding)
 
-        doctext = unicode(rawdoc, encoding)
+        doctext = unicode(rawdoc, self.docencoding)
 
         # fill list of stylesheets and list of raw css
         self._nonparsed = {}
@@ -269,7 +262,7 @@ class CSSCapture(object):
 
         return self.stylesheetlist
 
-    def saveto(self, dir, saveraw=False):
+    def saveto(self, dir, saveraw=False, minified=False):
         """
         saves css in "dir" in the same layout as on the server
         internal stylesheets are saved as "dir/__INLINE_STYLE__.html.css"
@@ -277,12 +270,21 @@ class CSSCapture(object):
         dir
             directory to save files to
         saveparsed
-            use literal CSS from server or use the parsed version
-
-            you may want to use the server version until CSSParser is more
-            stable or if you want to keep the stylesheet exactly as is
+            save literal CSS from server or save the parsed CSS
+        minified
+            save minified CSS
+            
+        Both parsed and minified (which is also parsed of course) will
+        loose information which cssutils is unable to understand or where
+        it is simple buggy. You might to first save the raw version before
+        parsing of even minifying it.
         """
-        cssutils.ser.prefs.useDefaults()
+        msg = 'parsed'
+        if saveraw:
+            msg = 'raw'
+        if minified:
+            cssutils.ser.prefs.useMinified()
+            msg = 'minified'
         
         inlines = 0
         for sheet in self.stylesheetlist:
@@ -313,8 +315,9 @@ class CSSCapture(object):
             else:
                 cssText = sheet.cssText
 
-            open(savefn, 'w').write(cssText)
-            self._log.info(u'Saving "%s"', savefn)
+            self._log.info(u'Saving %s "%s"' % (msg, savefn))
+            # TODO: save with 'css' codec instead of simple utf-8!
+            codecs.open(savefn, 'w', 'utf-8').write(cssText)
 
 def main(args=None):
     import optparse
@@ -323,6 +326,8 @@ def main(args=None):
     parser = optparse.OptionParser(usage=usage)
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
         help='show debug messages during capturing')
+    parser.add_option('-m', '--minified', action='store_true', dest='minified',
+        help='saves minified version of captured files')
     parser.add_option('-n', '--notsave', action='store_true', dest='notsave',
         help='if given files are NOT saved, only log is written')
     parser.add_option('-r', '--saveraw', action='store_true', dest='saveraw',
@@ -353,7 +358,7 @@ def main(args=None):
             saveto = options.saveto
         else:
             saveto = '_CSSCapture_SAVED'
-        c.saveto(saveto, saveraw=options.saveraw)
+        c.saveto(saveto, saveraw=options.saveraw, minified=options.minified)
     else:
         for i, s in enumerate(stylesheetlist):
             print i+1, u'\ttitle: "%s", \n\thref : "%s"\n' % (s.title, s.href)
