@@ -144,9 +144,14 @@ class CSSCapture(object):
             res, href = self._doRequest(href)
             if res:
                 # read with css codec!
-                cssText = codecs.getreader('css')(res).read()
+                try:
+                    cssText = codecs.getreader('css')(res).read()
+                except UnicodeDecodeError, e:
+                    self._log.error(u'    Error retrieving CSS, probably encoding mismatch:\n\t%s\n\t%s'
+                                     % (href, e))
+                    return None
             else: 
-                self._log.info(u'    Unknown error reading sheet')
+                self._log.error(u'    ERROR accessing CSS\n\t' % href)
                 return None
                       
         sheet = cssutils.parseString(cssText)
