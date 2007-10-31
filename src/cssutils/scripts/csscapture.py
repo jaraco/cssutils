@@ -321,8 +321,10 @@ class CSSCapture(object):
                 cssText = sheet.cssText
 
             self._log.info(u'Saving %s "%s"' % (msg, savefn))
-            # TODO: save with 'css' codec instead of simple utf-8!
-            codecs.open(savefn, 'w', 'utf-8').write(cssText)
+            sf = open(savefn, 'wb')
+            uf = codecs.getwriter('css')(sf)
+            uf.write(cssText)
+            sf.close()
 
 def main(args=None):
     import optparse
