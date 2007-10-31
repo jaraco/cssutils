@@ -162,9 +162,9 @@ def _detectencoding_unicode(input, final=False):
         pos = input.find(u'"', len(prefix))
         if pos >= 0:
             return input[len(prefix):pos]
-    # if this is the last call, and we haven't determined an encoding yet,
-    # we default to UTF-8
-    if final:
+    elif final or not prefix.startswith(input):
+        # if this is the last call, and we haven't determined an encoding yet,
+        # (or the string definitely doesn't start with prefix) we default to UTF-8
         return "utf-8"
     return None # don't know yet
 
