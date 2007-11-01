@@ -590,7 +590,7 @@ class CSSPrimitiveValue(CSSValue):
         fontstring = 0 # should be at leayst 2
         expected = 'ident or string'
         for x in tokenizer:
-            val, typ = self._tokenvalue(x), self._type(x)
+            val, typ = self._tokenvalue(x, normalize=True), self._type(x)
             if expected == 'ident or string' and typ in (
                         self._prods.IDENT, self._prods.STRING):
                 expected = 'comma'
@@ -612,7 +612,7 @@ class CSSPrimitiveValue(CSSValue):
             primitiveType = CSSPrimitiveValue.CSS_RGBCOLOR
         else:
             for i, (name, tokentype, search) in enumerate(self._unitinfos):
-                val, typ = self._tokenvalue(t), self._type(t)
+                val, typ = self._tokenvalue(t, normalize=True), self._type(t)
                 if typ == tokentype:
                     if typ == self._prods.DIMENSION:
                         if not search:
