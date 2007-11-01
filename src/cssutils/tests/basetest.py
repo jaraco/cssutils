@@ -113,7 +113,7 @@ class BaseTestCase(unittest.TestCase):
             s = p.parseString(test)
             if expected is None:
                 expected = test
-            self.assertEqual(expected, s.__getattribute__(att))
+            self.assertEqual(expected, unicode(s.__getattribute__(att), 'utf-8'))
 
     def do_raise_p(self, tests, debug=False, raising=True):
         # parses with self.p and expects raise
