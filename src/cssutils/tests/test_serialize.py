@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """testcases for cssutils.CSSSerializer
 """
 __author__ = '$LastChangedBy$'
@@ -319,7 +320,22 @@ a, b {}'''
         cssutils.ser.prefs.propertyNameSpacer = u''
         self.assertEqual(u'a {\n    x:1;\n    y:2\n    }', s.cssText)
 
+    def test_CSSStyleSheet(self):
+        "CSSSerializer.do_CSSStyleSheet"
+        css = u'/* κουρος */'
+        sheet = cssutils.parseString(css)
+        self.assertEqual(css, unicode(sheet.cssText, 'utf-8'))
         
+        css = u'@charset "utf-8";\n/* κουρος */'
+        sheet = cssutils.parseString(css)
+        self.assertEqual(css, unicode(sheet.cssText, 'utf-8'))
+        sheet.cssRules[0].encoding = 'ascii'
+        self.assertEqual('@charset "ascii";\n/* \\0003BA\\0003BF\\0003C5\\0003C1\\0003BF\\0003C2 */', 
+                         sheet.cssText)
+
+
+
+
     def test_Property(self):
         "CSSSerializer.do_Property"
         cssutils.ser.prefs.useDefaults()
