@@ -34,6 +34,16 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'\\1\rb': [('IDENT', u'\\1\rb', 1, 1)],
         u'\\1\fb': [('IDENT', u'\\1\fb', 1, 1)],
 
+        ur'\1': [('IDENT', u'\\1', 1, 1)],
+        ur'\\': [('IDENT', ur'\\', 1, 1)],
+        ur'\{': [('IDENT', ur'\{', 1, 1)],
+        ur'\"': [('IDENT', ur'\"', 1, 1)],
+        ur'\(': [('IDENT', ur'\(', 1, 1)],
+        ur'\1 \22 \333 \4444 \55555 \666666 \777777 7 \7777777': [
+                ('IDENT', '\\1 \\22 \\333 \\4444 \\55555 \\666666 \\777777 7', 1, 1),
+                ('S', ' ', 1, 43),
+                ('IDENT', '\\7777777', 1, 44)],
+
 
         u'\\1 b': [('IDENT', u'\\1 b', 1, 1)],
         u'\\12 b': [('IDENT', u'\\12 b', 1, 1)],
@@ -71,6 +81,11 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' #a ': [('S', u' ', 1, 1),
                  ('HASH', u'#a', 1, 2),
                  ('S', u' ', 1, 4)],
+
+        u'#ccc': [('HASH', u'#ccc', 1, 1)],
+        u'#111': [('HASH', u'#111', 1, 1)],
+        u'#a1a1a1': [('HASH', u'#a1a1a1', 1, 1)],
+        u'#1a1a1a': [('HASH', u'#1a1a1a', 1, 1)],
 
         # NUMBER, for plus see CSS3
         u' 0 ': [('S', u' ', 1, 1),
@@ -190,7 +205,13 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
         }
 
-    tests3 = {                      
+    tests3 = {  
+        # specials
+        u'c\\olor': [('IDENT', u'c\\olor', 1, 1)],
+        u'-1': [('CHAR', u'-', 1, 1), ('NUMBER', u'1', 1, 2)],
+        u'-1px': [('CHAR', u'-', 1, 1), ('DIMENSION', u'1px', 1, 2)],
+              
+                                  
         # ATKEYWORD
         u' @x ': [('S', u' ', 1, 1),
                   ('ATKEYWORD', u'@x', 1, 2),
@@ -209,6 +230,8 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('DIMENSION', u'1s', 1, 2),
                  ('S', u' ', 1, 4)],
         u'0.2EM': [('DIMENSION', u'0.2EM', 1, 1)],
+        u'1p\\x': [('DIMENSION', u'1p\\x', 1, 1)],
+        u'1PX': [('DIMENSION', u'1PX', 1, 1)],
 
         # NUMBER
         u' - 0 ': [('S', u' ', 1, 1),
@@ -332,11 +355,11 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' "\\na"\na': [('S', u' ', 1, 1),
                    ('STRING', u'"\\na"', 1, 2),
                    ('S', u'\n', 1, 7),
-                   ('IDENT', u'a', 1, 8)],
+                   ('IDENT', u'a', 2, 1)],
         u" '\\na'\na": [('S', u' ', 1, 1),
                    ('STRING', u"'\\na'", 1, 2),
                    ('S', u'\n', 1, 7),
-                   ('IDENT', u'a', 1, 8)],
+                   ('IDENT', u'a', 2, 1)],
         u' "\\r\\n\\t\\f\\n\\ra"a': [('S', u' ', 1, 1),
                    ('STRING', u'"\\r\\n\\t\\f\\n\\ra"', 1, 2),
                    ('IDENT', u'a', 1, 17)],
@@ -358,7 +381,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                          ('IDENT', u'important', 1, 3)],
         u'!\n\timportant': [('CHAR', u'!', 1, 1),
                             ('S', u'\n\t', 1, 2),
-                            ('IDENT', u'important', 1, 4)],
+                            ('IDENT', u'important', 2, 2)],
         u'!IMPORTANT': [('CHAR', u'!', 1, 1),
                         ('IDENT', u'IMPORTANT', 1, 2)],
         ur'!\i\m\p\o\r\ta\n\t': [('CHAR', u'!', 1, 1),
@@ -412,17 +435,17 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' "\na': [('S', u' ', 1, 1),
                    ('INVALID', u'"', 1, 2),
                    ('S', u'\n', 1, 3),
-                   ('IDENT', u'a', 1, 4)],
+                   ('IDENT', u'a', 2, 1)],
 
         # strings with linebreak in it
         u' "\\na\na': [('S', u' ', 1, 1),
                    ('INVALID', u'"\\na', 1, 2),
                    ('S', u'\n', 1, 6),
-                   ('IDENT', u'a', 1, 7)],
+                   ('IDENT', u'a', 2, 1)],
         u' "\\r\\n\\t\\f\\n\\ra\na': [('S', u' ', 1, 1),
                    ('INVALID', u'"\\r\\n\\t\\f\\n\\ra', 1, 2),
                    ('S', u'\n', 1, 16),
-                   ('IDENT', u'a', 1, 17)],
+                   ('IDENT', u'a', 2, 1)],
         }
 
     # tests if fullsheet=False is set on tokenizer
