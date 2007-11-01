@@ -18,6 +18,26 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assert_(None is  v.cssValueType)
         self.assert_(None == v.cssValueTypeString)
 
+    def test_escapes(self):
+        "CSSValue Escapes"
+        v = cssutils.css.CSSValue()
+        v.cssText = u'1px'
+        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
+        self.assert_(v.CSS_PX == v.primitiveType)
+        self.assert_(u'1px' == v.cssText)
+
+        v.cssText = u'1PX'
+        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
+        self.assert_(v.CSS_PX == v.primitiveType)
+        # TODO: maybe normalize?
+        self.assert_(u'1PX' == v.cssText)
+        
+        v.cssText = u'1p\\x'
+        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
+        self.assert_(v.CSS_PX == v.primitiveType)
+        # TODO: maybe normalize?
+        self.assert_(u'1p\\x' == v.cssText)
+
     def test_cssText(self):
         "CSSValue.cssText"
         v = cssutils.css.CSSValue()
