@@ -83,14 +83,19 @@ Version 0.9x
 HEAD
     - **TODO**
         + CSSCapture:
-            - use cssutils.codec to write final CSS, somehow this does not always work (Walter?)
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
-
+            - save inline styles in same folder as all other sheets!!!
 
     + **FEATURE**: Added option ``-m, --minified`` to CSSCapture which saves the retrieved CSS files with the cssutils serializer setting ``Preferences.useMinified()``.
 
+    - **BUGFIX**: Serializer should serialize a CSSStyleSheet properly escaped to the relevant encoding defined in an @charset rule of defaulting to UTF-8. Characters not allowed in the current encoding are escaped the CSS way with a backslash followed by a uppercase 6 digit hex code point (**always 6 digits** to make it easier not to have check if no hexdigit char is following).
+
+      This *feature* was not present in any older version of cssutils.
+
     - **BUGFIX**: CSSCapture now uses the ``cssutils.parseString`` method so invalid sheets should be saved too. Until now in case of an error the sheet was not saved at all.
     - **BUGFIX**: option '-p' of csscapture is removed as it was not used anyway. A new option ``-r, --saveraw`` has been added which defaults to ``False``. If given saves raw css otherwise cssutils' parsed files.
+    - **BUGFIX**: ``CSSPrimitiveValue.primitiveValue`` was not recognized properly if e.g. a CSS_PX was given as '1PX' instead of '1px'.
+    - **BUGFIX/CHANGE**: Reporting of line numbers should have improved as ``\\n`` is now used instead of ``os.linesep``.
 
     + IMPROVEMENT: "setup.py" catches exception if setuptools is not installed and emits message
 
