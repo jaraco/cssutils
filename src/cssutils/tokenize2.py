@@ -1,23 +1,5 @@
 #!/usr/bin/env python
 """New CSS Tokenizer (a generator)
-
-TODO: check selectors module tokenizer
-
-
-test:
-    - r'\" \('
-    - r'\1 \22 \333 \4444 \55555 \666666 \777777 7 \7777777'
-    - r'#abc #123'
-
-    - longer tokens before shorter
-        1px -> 1
-
-    - escapes
-        c\olor is one token?
-        1p\\x = 1PX = 1px?
-
-    - num: -0 are two tokens?
-
 """
 __all__ = ['Tokenizer', 'CSSProductions']
 __docformat__ = 'restructuredtext'
@@ -38,8 +20,8 @@ class Tokenizer(object):
     generates a list of Token tuples:
         (Tokenname, value, startline, startcolumn)
     """
-    nl = os.linesep
-
+    _linesep = u'\n'
+    
     def __init__(self, macros=None, productions=None):
         """
         inits tokenizer with given macros and productions which default to
@@ -74,21 +56,17 @@ class Tokenizer(object):
             compiled.append((key, re.compile('^(?:%s)' % value, re.U).match))
         return compiled
 
-    def tokenize(self, text, linesep=None, fullsheet=False):
+    def tokenize(self, text, fullsheet=False):
         """
         generator: tokenizes text and yiels tokens, each token is a tuple of
             (tokenname, tokenvalue, line, col)
 
         text
             to be tokenized
-        linesep
-            used to detect the linenumber, defaults to os.linesep
         fullsheet
             if ``True`` appends EOF token as last one and completes incomplete
             COMMENT tokens
         """
-        if not linesep:
-            linesep = os.linesep
         line = col = 1
 
         tokens = []
@@ -131,10 +109,10 @@ class Tokenizer(object):
 
                     yield (name, found, line, col)
                     text = text[len(found):]
-                    nls = found.count(linesep)
+                    nls = found.count(self._linesep)
                     line += nls
                     if nls:
-                        col = len(found[found.rfind(linesep):])
+                        col = len(found[found.rfind(self._linesep):])
                     else:
                         col += len(found)
                     break
