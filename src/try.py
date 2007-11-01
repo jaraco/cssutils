@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 from pprint import pprint as pp
+import codecs
 import cssutils
 import sys
 
@@ -28,21 +30,68 @@ css = """
 -->
 """
 
+def escapecss(e):
+    """
+    Escapes characters not allowed in the current encoding the CSS way
+    with a backslash followed by a uppercase 6 digit hex code point (always
+    6 digits to make it easier not to have check if no hexdigit char is 
+    following). 
+    E.g. the german umlaut 'ä' is escaped as \0000E4
+    """
+    s = e.args[1][e.start:e.end]
+    return u''.join([ur'\%s' % str(hex(ord(x)))[2:] # remove 0x from hex
+                     .zfill(6).upper() for x in s]), e.end
+
+codecs.register_error('escapecss', escapecss)
+
+
 if 0:
-    css = ur'\1 { \2: \3 }'
+    print u'1€2'.encode('ascii', 'escapecss')
+
+    sys.exit(0)
+
+if 0:
+    css = r"'"
+    css = codecs.open('../sheets/1.css', encoding='css').read()
     t = cssutils.tokenize2.Tokenizer()
-    gen = t.tokenize(css, fullsheet=1)
+    gen = t.tokenize(css, fullsheet=0)
     for tk in gen:
         print tk
     sys.exit(0)
 
-if 1:
-    css = '''font: normal 1em/1.5 'arial', serif; 
-             '''
-    s = cssutils.css.CSSStyleDeclaration()
-    s.cssText = css
-    print s.cssText
+if 0:
+    v = cssutils.css.CSSValue(_propertyName='top')
+    v.cssText = u'1PX'
+    print v.CSS_PRIMITIVE_VALUE, v.cssValueType    
+    print v.CSS_PX, v.primitiveTypeString
+    print v.cssText#self.assert_(u'1px' == v.cssText)
     sys.exit(0)
+
+if 0:
+    css = u'/* ä */'
+    sheet = cssutils.parseString(css)
+    print unicode(sheet.cssText, 'utf-8')
+    print css == unicode(sheet.cssText, 'utf-8')
+    sys.exit(0)
+
+if 1:
+    text = codecs.open('../sheets/1.css', encoding='css').read()
+    print '1.css\n', text.encode('utf-8')
+    
+    sheet = cssutils.parseString(text)
+    sheet.cssRules[0].encoding = 'ascii'
+    print '\nPARSED:\n', sheet.cssText
+    codecs.open('../sheets/2.css', 'w', encoding='css').write(sheet.cssText)
+
+    text = codecs.open('../sheets/2.css', encoding='css').read()
+    print '\n2.css\n', text
+    sheet = cssutils.parseString(text)
+    sheet.cssRules[0].encoding = 'utf-8'
+    print '\nPARSED:\n', sheet.cssText
+
+    
+    sys.exit(0)
+
 
 if 1:
     css = u'''
@@ -61,23 +110,10 @@ if 1:
         font-family : arial ,  'some' 
         }
     '''
-    s = cssutils.parse('../sheets/cthedot_default.css')
-    cssutils.ser.prefs.keepComments = False
+    s = cssutils.parse('../sheets/1.css', encoding='ISO-8859-1')
+    cssutils.ser.prefs.keepComments = True
+    print s.cssText
     
-    max = s.cssText
-    save('max.css', max)
-    
-    cssutils.ser.prefs.useMinified()
-    min = s.cssText
-    
-    s = cssutils.parseString(min)
-    cssutils.ser.prefs.useDefaults()
-    
-    minmax = s.cssText
-    save('minmax.css', minmax)
-    
-    
-    print len(minmax), len(max)
     sys.exit(0)
     
 if 1:    
