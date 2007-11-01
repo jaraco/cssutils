@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """serializer classes for CSS classes
 
 TODO:
@@ -11,9 +12,25 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+import codecs
 import re
 import cssutils
 import util
+
+def _escapecss(e):
+    """
+    Escapes characters not allowed in the current encoding the CSS way
+    with a backslash followed by a uppercase 6 digit hex code point (always
+    6 digits to make it easier not to have check if no hexdigit char is 
+    following). 
+    E.g. the german umlaut 'ä' is escaped as \0000E4
+    """
+    s = e.args[1][e.start:e.end]
+    return u''.join([ur'\%s' % str(hex(ord(x)))[2:] # remove 0x from hex
+                     .zfill(6).upper() for x in s]), e.end
+
+codecs.register_error('escapecss', _escapecss)               
+
 
 class Preferences(object):
     """
@@ -261,7 +278,15 @@ class CSSSerializer(object):
             cssText = rule.cssText
             if cssText:
                 out.append(cssText)
-        return self._serialize(self.prefs.lineSeparator.join(out))
+        text = self._serialize(self.prefs.lineSeparator.join(out))
+        
+        # get encoding of sheet, defaults to UTF-8
+        try:
+            encoding = stylesheet.cssRules[0].encoding
+        except (IndexError, AttributeError):
+            encoding = 'UTF-8'
+        
+        return text.encode(encoding, 'escapecss')
 
     def do_CSSComment(self, rule):
         """
