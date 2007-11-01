@@ -30,7 +30,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
     def test_csstext(self):
         "CSSComment.cssText"
         tests = {
-            u'/*öäüß€€ÖÄÜ*/': None,
+            u'/*öäüß€ÖÄÜ*/': u'/*\xf6\xe4\xfc\xdf\u20ac\xd6\xc4\xdc*/',
 
             u'/*x*/': None,
             u'/* x */': None,
