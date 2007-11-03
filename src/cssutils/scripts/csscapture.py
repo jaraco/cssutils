@@ -160,9 +160,10 @@ class CSSCapture(object):
         sheet.parentStyleSheet = parentStyleSheet
         sheet.title = title
         self._log.debug(u'    * title: %s', title)
-        self._log.debug(u'    * full href: %s', href)
+        if href:
+            self._log.info(u'    * href : %s', href)
         self._log.info(u'    * media: %s', media.mediaText)
-        self._log.info(u'    * sheet: %s\n' % sheet)
+        self._log.info(u'    %s\n' % sheet)
         self._log.debug(u'    * cssText:\n%s\n', cssText)
         
         self._nonparsed[sheet] = cssText
