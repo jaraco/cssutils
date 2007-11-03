@@ -593,17 +593,20 @@ class CSSValueListTestCase(basetest.BaseTestCase):
     def test_numbers(self):
         "CSSValueList.cssText"
         tests = {
-            u'-1 2': None,
-            u'-1px red "x"': None,
-            u'-1cm, 2 3': None
+            u'1 2 3 4': (None, 4),
+            u'-1 -2 -3 -4': (None, 4),
+            u'-1 2': (None, 2),
+            u'-1px red "x"': (None, 3),
+            u'-1cm, 2 3': (None, 2)
             }
         for test in tests:
-            exp = tests[test]
+            exp, num = tests[test]
             if not exp:
                 exp = test
             v = cssutils.css.CSSValue(cssText=test)
             self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
             self.assertEqual(exp, v._value)
+            self.assertEqual(num, v.length)
         self.assertEqual(exp, v.cssText)
 
     def test_reprANDstr(self):
