@@ -1,4 +1,11 @@
-"""Testcases for cssutils.css.selector.Selector."""
+"""Testcases for cssutils.css.selector.Selector.
+
+what should happen here?
+    - star 7 hack::
+        x*
+        does not validate but works in IE>5 and FF...
+
+"""
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
@@ -125,6 +132,10 @@ class SelectorTestCase(basetest.BaseTestCase):
 
             u'''x:lang(de) y''': None,
             u'''x:nth-child(odd) y''': None,
+            
+            u':not(y)': None,
+            u'x:not(y)': None,
+            u'.x:not(y)': None,
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
@@ -164,8 +175,9 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a ++ b': xml.dom.SyntaxErr,
             u'a + > b': xml.dom.SyntaxErr,
 
-
             u'*:lang(': xml.dom.SyntaxErr,
+
+            u'not(x)': xml.dom.SyntaxErr, # no valid function
 
             # only one selector!
             u',': xml.dom.InvalidModificationErr,
