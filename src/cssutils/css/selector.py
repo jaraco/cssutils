@@ -189,8 +189,9 @@ class Selector(cssutils.util.Base):
                         t = 'pseudo-class'
                     tokens[-1] = (t, self._tokenvalue(tokens[-1])+val, lin, col)
 
-                elif typ == 'FUNCTION' and val == u'not(':
-                    tokens.append(('negation', val, lin, col))
+                elif typ == 'FUNCTION' and val == u'not(' and tokens and \
+                     u':' == self._tokenvalue(tokens[-1]):
+                    tokens[-1] = ('negation', u':' + val, lin, tokens[-1][3])
                 elif typ == 'FUNCTION' and tokens\
                      and self._tokenvalue(tokens[-1]).startswith(u':'):
                     # pseudo-X: combine to :FUNCTION( or ::FUNCTION(
