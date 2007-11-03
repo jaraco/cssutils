@@ -391,7 +391,7 @@ class CSSValue(cssutils.util.Base):
                         u'CSSValue: Invalid value for CSS2 property %r: %s' %
                         (self._propertyName, self._value), neverraise=True)
             else:
-                self._log.info(
+                self._log.debug(
                     u'CSSValue: Unable to validate as no or unknown property context set for this value: %r'
                     % self._value, neverraise=True)
 
@@ -939,11 +939,23 @@ class CSSValueList(CSSValue):
         self._items = []
         newseq = []
         i, max = 0, len(self.seq)
+        minus = None
         while i < max:            
             v = self.seq[i]
-            if isinstance(v, basestring) and not v.strip() == u'' and\
-               not u'/' == v:
 
+            if u'-' == v:
+                if minus: # 2 "-" after another
+                    self._log.error(
+                        u'CSSValueList: Unknown syntax: "%s".'
+                            % u''.join(self.seq))
+                else:
+                    minus = v
+                    
+            elif isinstance(v, basestring) and not v.strip() == u'' and\
+               not u'/' == v:
+                if minus:
+                    v = minus + v
+                    minus = None
                 # TODO: complete
                 # if shorthand get new propname
                 if ivalueseq < len(valueseq):
@@ -954,7 +966,11 @@ class CSSValueList(CSSValue):
                         propname = None
                         ivalueseq = len(valueseq) # end
                 else:
-                    propname = self._propertyName                
+                    propname = self._propertyName
+                
+                # TODO: more (do not check individual values for these props)
+                if propname in ('background', 'background-position',):
+                    propname = None
                 
                 if i+1 < max and self.seq[i+1] == u',':
                     # a comma separated list of values as ONE value
