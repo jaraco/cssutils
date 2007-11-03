@@ -536,9 +536,8 @@ class CSSSerializer(object):
         """
         Style declaration of CSSStyleRule
         """
-        if len(style.seq) == 0 or self._noinvalids(style):
-            return u''
-        else:
+        if len(style.seq) > 0 and self._wellformed(style) and\
+                                self._valid(style):
             if separator is None:
                 separator = self.prefs.lineSeparator
 
@@ -582,6 +581,9 @@ class CSSSerializer(object):
                 del out[-1]
 
             return u''.join(out)
+
+        else:
+            return u''
 
     def do_Property(self, property):
         """
