@@ -7,7 +7,7 @@ CSS Cascading Style Sheets library for Python
 :Author: $LastChangedBy$
 :Copyright: 2004-2007 Christof Hoeke
 :Date: $LastChangedDate$
-:Version: 0.9.4a2 (rev $LastChangedRevision$)
+:Version: 0.9.4a3 (rev $LastChangedRevision$)
 
 .. contents::
 
@@ -42,6 +42,8 @@ Please visit http://cthedot.de/cssutils/ for full details and updates.
 
 known issues
 ============
+- ``@charset`` not implemented according to spec (plan: 0.9.5)
+
 - ``Preferences.removeInvalid``, ``.validOnly`` and ``.wellformedOnly`` are in experimental stage, the first option will probably removed (maybe even in the final  0.9.4 release), so use sparingly. If you need these functionality or have suggestions what you like the lib to behave contact me.
 
 - ``css.FontFaceRule`` is not implemented yet (it was removed in CSS 2.1 but still looks useful)
@@ -50,12 +52,19 @@ known issues
 
 - Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not yet implemented. As CSSOM defines a completely different DOM for Property values they may never been implemented as in DOM Level 2.
 
-- ``@charset`` not implemented according to spec (plan: 0.9.5)
-
 - CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.5 but again as CSSOM defined something else this may change))
 
 - Properties are not bound to any CSS Version, so all properties are handled so
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 2.1 or 3)
+
+- although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to not (yet) be preserved:
+
+  star hack
+    ``*html`` without any whitespace
+  star7 hack
+    ``html*#test-span`` (IMHO invalidated by the missing WS between html and "*")
+
+  The main problem is that some stylesheets in the wild are not possible to parse without loosing some information, a pretty print for these sheets is simply not possible with cssutils.
 
 installation
 ============
@@ -86,21 +95,31 @@ HEAD
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
             - save inline styles in same folder as all other sheets!!!
 
-    + **FEATURE**: Added option ``-m, --minified`` to CSSCapture which saves the retrieved CSS files with the cssutils serializer setting ``Preferences.useMinified()``.
+    + CSSCapture:
+        + **FEATURE**: Added option ``-m, --minified`` to CSSCapture which saves the retrieved CSS files with the cssutils serializer setting ``Preferences.useMinified()``.
 
-    - **BUGFIX**: Serializer should serialize a CSSStyleSheet properly escaped to the relevant encoding defined in an @charset rule of defaulting to UTF-8. Characters not allowed in the current encoding are escaped the CSS way with a backslash followed by a uppercase 6 digit hex code point (**always 6 digits** to make it easier not to have check if no hexdigit char is following).
+        - **BUGFIX**: option '-p' of csscapture is removed as it was not used anyway. A new option ``-r, --saveraw`` has been added which defaults to ``False``. If given saves raw css otherwise cssutils' parsed files.
+        - **BUGFIX**: CSSCapture now uses the ``cssutils.parseString`` method so invalid sheets should be saved too. Until now in case of an error the sheet was not saved at all.
+
+    - **BUGFIX**: Serializer should serialize a CSSStyleSheet properly escaped according to the relevant encoding defined in an @charset rule of defaulting to UTF-8. Characters not allowed in the current encoding are escaped the CSS way with a backslash followed by a uppercase 6 digit hex code point (**always 6 digits** to make it easier not to have to check if no hexdigit char is following).
 
       This *feature* was not present in any older version of cssutils.
 
-    - **BUGFIX**: CSSCapture now uses the ``cssutils.parseString`` method so invalid sheets should be saved too. Until now in case of an error the sheet was not saved at all.
-    - **BUGFIX**: option '-p' of csscapture is removed as it was not used anyway. A new option ``-r, --saveraw`` has been added which defaults to ``False``. If given saves raw css otherwise cssutils' parsed files.
+    - **BUGFIX**: Selector did fail to parse negation ``:not(`` correctly
+    - **BUGFIX**: CSSValueList treated a value like ``-1px`` as 2 entries, now they are correctly 1.
+    - **BUGFIX**: Validation of values for ``background-position`` was wrong.
     - **BUGFIX**: ``CSSPrimitiveValue.primitiveValue`` was not recognized properly if e.g. a CSS_PX was given as '1PX' instead of '1px'.
-    - **BUGFIX/CHANGE**: Reporting of line numbers should have improved as ``\\n`` is now used instead of ``os.linesep``.
+    - **BUGFIX/CHANGE**: Reporting of line numbers should have improved as ``\n`` is now used instead of ``os.linesep``.
+
+    + **CHANGE**: Invalid Properties like ``$top`` which some UAs like Internet Explorer still are use are preserved. This makes the containing Property and CSSStyleDeclaration invalid (but still *wellformed* although they technically are not) so if the serializer is set to only output valid stuff they get stripped anyway.
+
+      **This may change and also simply may be put in a cssutils wide "compatibility mode" feature.*+
+
+    + **CHANGE**: If a CSSValue cannot be validated (no property context is set) the message describing this is set to DEBUG level now (was INFO).
 
     + IMPROVEMENT: "setup.py" catches exception if setuptools is not installed and emits message
 
     - DOCS: Added more documentation and also a standalone HTML documentation which is generated from the SVN RST docs.
-
 
 0.9.4a2 071027
     - **FEATURE**: added ``Preferences.useMinified()`` which sets preferences that a stylesheet will be serialized as compact as possible. Added ``Preferences.useDefaults()`` which resets the serializer preferences. There a few new preferences have been added as well (see the documentation for details as most are hardly useful for normal usage of the library)
