@@ -19,3 +19,31 @@ random notes about values
 
 - SyntaxError in case of invalid value for a known property is not raised yet!
 
+validation
+==========
+Quite a few values in real life stylesheets are to be expected. Most are driven by the fact the modern browsers are much more forgiving than the actual specification. But the way cssutils works it emits also quite a few warnings which may simply be ignored.
+
+expected WARNING messages
+-------------------------
+listed by property
+
+font
+    Example::
+
+        font: normal 80%/1.1 sans-serif
+
+        WARNING CSSValue: Invalid value for CSS2 property u'font': sans-serif
+
+    The optional line-height confuses cssutils that it emits this false WARNING
+
+background
+    Example::
+
+        background: #000 url(x.gif) top 0
+
+        WARNING CSSValue: Invalid value for CSS2 property u'background': #000 url(x.gif) top 0
+
+    Again this WARNING is as the spec defines that keyword and length values of background-position values are not to be mixed. IMHO there are a few UAs which ignore these values indeed so you might want to rewrite your CSS in these cases.
+
+
+
