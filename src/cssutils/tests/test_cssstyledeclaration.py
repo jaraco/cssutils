@@ -55,7 +55,11 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             ur'''col\or: blue;
                 font-family: 'Courier New Times
                 color: red;
-                color: green;''': u'color: green'
+                color: green;''': u'color: green',
+                
+            # special IE hacks are preserved for now
+            ur'$top: 0': None,
+            ur'$: 0': u'' # really invalid!
             }
         cssutils.ser.prefs.keepAllProperties = False
         for test, exp in tests.items():
