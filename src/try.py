@@ -59,19 +59,31 @@ if 0:
         print tk
     sys.exit(0)
 
-if 0:
-    v = cssutils.css.CSSValue(_propertyName='top')
-    v.cssText = u'1PX'
-    print v.CSS_PRIMITIVE_VALUE, v.cssValueType    
-    print v.CSS_PX, v.primitiveTypeString
-    print v.cssText#self.assert_(u'1px' == v.cssText)
+if 1:
+    css = u'a {background: url(x) center 0 }'
+    sheet = cssutils.parseString(css)
+    print sheet.cssText
+    #print sheet.cssRules[0].style.valid
+    sys.exit(0)
+
+if 1:
+    # WAITS CSS LIST
+    css = u'a {x:1}} b{y:2} c{z:3}'
+    sheet = cssutils.parseString(css)
+    print sheet.cssText
+    #print sheet.cssRules[0].style.valid
     sys.exit(0)
 
 if 0:
-    css = u'/* ä */'
-    sheet = cssutils.parseString(css)
-    print unicode(sheet.cssText, 'utf-8')
-    print css == unicode(sheet.cssText, 'utf-8')
+    v = cssutils.css.CSSValue(_propertyName='margin')
+    v.cssText = '-20px'
+    print v
+    sys.exit(0)
+
+if 0:
+    s = cssutils.css.Selector()
+    s.selectorText = 'x * '
+    print s
     sys.exit(0)
 
 if 1:
