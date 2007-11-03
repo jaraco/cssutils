@@ -94,6 +94,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         CSSStyleDeclaration is not attached to a CSSRule.
     seq: a list (cssutils)
         All parts of this style declaration including CSSComments
+    valid
+        if this declaration is valid, currently to CSS 2.1 (?)
+    wellformed
+        if this declaration is syntactically ok
 
     $css2propertyname
         All properties defined in the CSS2Properties class are available
@@ -122,7 +126,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             defaults to False
         """
         super(CSSStyleDeclaration, self).__init__()
-        self.valid = True
+        self.valid = False
+        self.wellformed = False
         self.seq = []
         self.parentRule = parentRule
         self.cssText = cssText
@@ -138,7 +143,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             implementation of known is not really nice, any alternative?
         """
         known = ['_tokenizer', '_log', '_ttypes',
-                 'valid', 'seq', 'parentRule', '_parentRule', 'cssText',
+                 'valid', 'wellformed', 
+                 'seq', 'parentRule', '_parentRule', 'cssText',
                  '_readonly']
         known.extend(CSS2Properties._properties)
         if n in known:
@@ -250,8 +256,18 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         self._checkReadonly()
         tokenizer = self._tokenize2(cssText)
 
-        def _ident(expected, seq, token, tokenizer=None):
+        # for closures: must be a mutable
+        new = {'valid': True,
+               'wellformed': True,
+               'char': None
+        }                    
+        def ident(expected, seq, token, tokenizer=None):
             # a property
+            if new['char']:
+                # maybe an IE hack?
+                token = (token[0], u'%s%s' % (new['char'], token[1]), 
+                         token[2], token[3])
+
             tokens = self._tokensupto2(tokenizer, starttoken=token,
                                        semicolon=True)
             if self._tokenvalue(tokens[-1]) == u';':
@@ -263,18 +279,37 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             else:
                 self._log.error(u'CSSStyleDeclaration: Syntax Error in Property: %s'
                                 % self._valuestr(tokens))
+
+            new['char'] = None
             return expected
+
+        def char(expected, seq, token, tokenizer=None):
+            # maybe an IE hack?
+            new['valid'] = False # wellformed is set later
+            self._log.error(u'CSSStyleDeclaration: Unexpected CHAR.', token)
+            c = self._tokenvalue(token)
+            if c in u'$':
+                self._log.info(u'Trying to use (invalid) CHAR %r in Property name' %
+                                  c)
+                new['char'] = c
 
         # [Property: Value;]* Property: Value?
         newseq = []
-        valid, expected = self._parse(expected=None,
+        wellformed, expected = self._parse(expected=None,
             seq=newseq, tokenizer=tokenizer,
-            productions={'IDENT': _ident})
+            productions={'IDENT': ident, 'CHAR': char})
+        valid = new['valid']
 
-        # valid set by parse
-        # no post conditions
-        if valid:
+        # wellformed set by parse
+        # post conditions
+        if new['char']:
+            valid =wellformed = False
+            self._log.error(u'Could not use unexpected CHAR %r' % new['char'])            
+        
+        if wellformed:
             self.seq = newseq
+            self.wellformed = wellformed
+            self.valid = valid
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) A parsable textual representation of the declaration\
