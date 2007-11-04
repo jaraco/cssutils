@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+ï»¿# -*- coding: utf-8 -*-
 """
 testcases for cssutils.util
 """
@@ -11,16 +11,20 @@ import xml.dom
 import basetest
 from cssutils.util import Base
 
-
 class UtilTestCase(basetest.BaseTestCase):
 
     def test_normalize(self):
         "Base._normalize()"
         b = Base()
-
-        tests = {u'aöäüß': u'aöäüß',
-                 u'AbC-DeÖÄÜß': u'abc-deöäüß',
-                 ur'\x': u'x'}
+        tests = {u'abcdefg ABCDEFG Ã¤Ã¶Ã¼ÃŸâ‚¬ AÃ–Ãœ': u'abcdefg abcdefg Ã¤Ã¶Ã¼ÃŸâ‚¬ aÃ¶Ã¼',
+                 ur'\ga\Ga\\\ ': ur'gaga\ ',
+                 ur'0123456789': u'0123456789',
+                 ur'\61\062\0063\00064\000065\0000667': 'abcdef7',
+                 ur'\41\042\0043\00044\000045\0000467': 'abcdef7',
+                 ur'\61 \062 \0063 \00064 \000065 \000066 7': 'abcdef7',
+                 ur'\e4 \e4\e4': u'Ã¤Ã¤Ã¤',
+                 ur'1\e4 1': u'1Ã¤1',
+                 }
         for test, exp in tests.items():
             self.assertEqual(b._normalize(test), exp)
             # static too
