@@ -105,6 +105,8 @@ HEAD
 
       This *feature* was not present in any older version of cssutils.
 
+    - **BUGFIX**: Names (of properties or values) which are normalized should be properly normalized now so simple escapes like ``c\olor`` but also unicode escapes like ``\43olor`` should result in the property name ``color`` now
+
     - **BUGFIX**: Selector did fail to parse negation ``:not(`` correctly
     - **BUGFIX**: CSSValueList treated a value like ``-1px`` as 2 entries, now they are correctly 1.
     - **BUGFIX**: Validation of values for ``background-position`` was wrong.
