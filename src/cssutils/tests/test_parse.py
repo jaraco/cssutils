@@ -35,6 +35,25 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         s = cssutils.parseString(css)
         self.assertEqual(u'', s.cssText)
 
+    def test_invalid(self):
+        "cssutils.parseString(INVALID_CSS)"
+        tests = {
+            u'a {color: blue}} a{color: red} a{color: green}':
+                u'''a {
+    color: blue
+    }
+a {
+    color: green
+    }'''
+            }
+
+        for css in tests:
+            exp = tests[css] 
+            if exp == None:
+                exp = css
+            s = cssutils.parseString(css)
+            self.assertEqual(exp, s.cssText)
+
     def test_attributes(self):
         "cssutils.parseString(href, media)"
         s = cssutils.parseString("a{}", href="file:foo.css", media="screen, projection, tv")
