@@ -6,6 +6,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+import re
 import types
 import xml.dom
 import cssutils
@@ -109,20 +110,33 @@ class Base(object):
             u'padding': [],
             u'pause': []
             }
+    
+    # simple escapes, all non unicodes
+    __escapes = re.compile(ur'(\\[^0-9a-fA-F])').sub
+    # all unicode (see cssproductions "unicode")
+    __unicodes = re.compile(ur'\\[0-9a-fA-F]{1,6}[\t|\r|\n|\f|\x20]?').sub
 
     @staticmethod
     def _normalize(x):
         """
-        normalizes x namely:
+        normalizes x, namely:
 
+        - remove any \ before non unicode sequences (0-9a-zA-Z) so for 
+          x=="c\olor\" return "color"
+        - replace unicode sequences with actual characters so 
+          for x=="\41" return "a"
         - lowercase
-        - removes any \ (TODO: check for escapes like \65)
-          so for x=="c\olor\" return "color"
-          
         """
-        # TODO: more normalizing stuff
         if x:
-            return x.replace(u'\\', u'').lower()
+            def removeescape(matchobj):
+                return matchobj.group(0)[1:]
+            def tochar(matchobj):
+                num = matchobj.group(0)[1:]
+                return unichr(int(num, 16))
+            x = Base.__escapes(removeescape, x)
+            x = Base.__unicodes(tochar, x)
+            return x.lower()
+        
         else:
             return x
 
