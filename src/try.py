@@ -45,8 +45,9 @@ def escapecss(e):
 codecs.register_error('escapecss', escapecss)
 
 
-if 0:
-    print u'1€2'.encode('ascii', 'escapecss')
+if 1:
+    b = cssutils.util.Base()
+    print b._normalize(ur'\41\0041\000061').encode('utf-8')
 
     sys.exit(0)
 
@@ -59,7 +60,7 @@ if 0:
         print tk
     sys.exit(0)
 
-if 1:
+if 0:
     css = u'a {background: url(x) center 0 }'
     sheet = cssutils.parseString(css)
     print sheet.cssText
@@ -67,8 +68,7 @@ if 1:
     sys.exit(0)
 
 if 1:
-    # WAITS CSS LIST
-    css = u'a {x:1}} b{y:2} c{z:3}'
+    css = u'a {color: blue}} a{color: red} a{color: green}'
     sheet = cssutils.parseString(css)
     print sheet.cssText
     #print sheet.cssRules[0].style.valid
