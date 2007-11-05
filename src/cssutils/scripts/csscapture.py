@@ -136,16 +136,24 @@ class CSSCapture(object):
                           media=None, 
                           parentStyleSheet=None, 
                           title=u'',
-                          cssText=None):
+                          cssText=None,
+                          encoding=None):
         """
         returns CSSStyleSheet read from href or if cssText is given use that
+        
+        encoding
+            used if inline style found, same as self.docencoding
         """
         if not cssText:
             res, href = self._doRequest(href)
             if res:
+                if not encoding:
+                    IGNORED_media_type, encoding = encutils.getHTTPInfo(res)
+                
                 # read with css codec!
                 try:
-                    cssText = codecs.getreader('css')(res).read()
+                    cssText = codecs.getreader('css')(res, 
+                                                      encoding=encoding).read()
                 except UnicodeDecodeError, e:
                     self._log.error(u'    Error retrieving CSS, probably encoding mismatch:\n\t%s\n\t%s'
                                      % (href, e))
@@ -223,7 +231,8 @@ class CSSCapture(object):
                 media=cssutils.stylesheets.MediaList(
                                             stylemeta.get(u'media', u'')),
                 title=stylemeta.get(u'title', u''),
-                cssText=cssText)            
+                cssText=cssText,
+                encoding=self.docencoding)            
             if sheet:
                 self.stylesheetlist.append(sheet)
                 self._doImports(sheet, baseurl=docurl)
