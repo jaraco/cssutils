@@ -148,9 +148,10 @@ class CSSCapture(object):
             res, href = self._doRequest(href)
             if res:
                 if not encoding:
-                    IGNORED_media_type, encoding = encutils.getHTTPInfo(res)
-                
-                # read with css codec!
+                    media_type, encoding = encutils.getHTTPInfo(res)
+                    if media_type != u'text/css':
+                        self._log.warn(u'    WARNING: HTTP media type is different than expected "text/css": %r' % 
+                                       media_type)
                 try:
                     cssText = codecs.getreader('css')(res, 
                                                       encoding=encoding).read()
