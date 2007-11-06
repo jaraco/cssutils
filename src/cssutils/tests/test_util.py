@@ -19,11 +19,8 @@ class UtilTestCase(basetest.BaseTestCase):
         tests = {u'abcdefg ABCDEFG äöüß€ AÖÜ': u'abcdefg abcdefg äöüß€ aöü',
                  ur'\ga\Ga\\\ ': ur'gaga\ ',
                  ur'0123456789': u'0123456789',
-                 ur'\61\062\0063\00064\000065\0000667': 'abcdef7',
-                 ur'\41\042\0043\00044\000045\0000467': 'abcdef7',
-                 ur'\61 \062 \0063 \00064 \000065 \000066 7': 'abcdef7',
-                 ur'\e4 \e4\e4': u'äää',
-                 ur'1\e4 1': u'1ä1',
+                 # unicode escape seqs should have been done by
+                 # the tokenizer...
                  }
         for test, exp in tests.items():
             self.assertEqual(b._normalize(test), exp)
