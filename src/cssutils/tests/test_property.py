@@ -98,8 +98,8 @@ class PropertyTestCase(basetest.BaseTestCase):
             u' top /*x*/': u'top',
             u'/*x*/top/*x*/': u'top',
             u'\\x': None,
-            u'a\\010': None,
-            u'a\\01': None
+            u'a\\010': u'a\x10',
+            u'a\\01': u'a\x01'
             }
         self.do_equal_r(tests, att='name')
 

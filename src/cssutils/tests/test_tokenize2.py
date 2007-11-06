@@ -30,25 +30,36 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'aA-_\200\377': [('IDENT', u'aA-_\200\377', 1, 1)],
         u'a1': [('IDENT', u'a1', 1, 1)],
         # escapes must end with S or max 6 digits:
-        u'\\1\nb': [('IDENT', u'\\1\nb', 1, 1)],
-        u'\\1\rb': [('IDENT', u'\\1\rb', 1, 1)],
-        u'\\1\fb': [('IDENT', u'\\1\fb', 1, 1)],
+        u'\\44\nb': [('IDENT', u'Db', 1, 1)],
+        u'\\44\rb': [('IDENT', u'Db', 1, 1)],
+        u'\\44\fb': [('IDENT', u'Db', 1, 1)],
+        u'\\44\n*': [('IDENT', u'D', 1, 1),
+                    ('CHAR', u'*', 2, 1)],
+        u'\\44  a': [('IDENT', u'D', 1, 1),
+                    ('S', u' ', 1, 5),
+                    ('IDENT', u'a', 1, 6)],
+        # TODO:
+        # Note that this means that a "real" space after the escape sequence 
+        # must itself either be escaped or doubled:
+        u'\\44\ x': [('IDENT', u'D\\ x', 1, 1)],
+        u'\\44  ': [('IDENT', u'D', 1, 1),
+                     ('S', u' ', 1, 5)],
 
-        ur'\1': [('IDENT', u'\\1', 1, 1)],
+        ur'\44': [('IDENT', u'D', 1, 1)],
         ur'\\': [('IDENT', ur'\\', 1, 1)],
         ur'\{': [('IDENT', ur'\{', 1, 1)],
         ur'\"': [('IDENT', ur'\"', 1, 1)],
         ur'\(': [('IDENT', ur'\(', 1, 1)],
         ur'\1 \22 \333 \4444 \55555 \666666 \777777 7 \7777777': [
-                ('IDENT', '\\1 \\22 \\333 \\4444 \\55555 \\666666 \\777777 7', 1, 1),
+                ('IDENT', u'\x01"\u0333\u4444\\55555 \\666666 \\777777 7', 1, 1),
                 ('S', ' ', 1, 43),
                 ('IDENT', '\\7777777', 1, 44)],
 
 
-        u'\\1 b': [('IDENT', u'\\1 b', 1, 1)],
-        u'\\12 b': [('IDENT', u'\\12 b', 1, 1)],
-        u'\\123 b': [('IDENT', u'\\123 b', 1, 1)],
-        u'\\1234 b': [('IDENT', u'\\1234 b', 1, 1)],
+        u'\\1 b': [('IDENT', u'\x01b', 1, 1)],
+        u'\\44 b': [('IDENT', u'Db', 1, 1)],
+        u'\\123 b': [('IDENT', u'\u0123b', 1, 1)],
+        u'\\1234 b': [('IDENT', u'\u1234b', 1, 1)],
         u'\\12345 b': [('IDENT', u'\\12345 b', 1, 1)],
         u'\\123456 b': [('IDENT', u'\\123456 b', 1, 1)],
         u'\\1234567 b': [('IDENT', u'\\1234567', 1, 1),
@@ -210,8 +221,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'c\\olor': [('IDENT', u'c\\olor', 1, 1)],
         u'-1': [('CHAR', u'-', 1, 1), ('NUMBER', u'1', 1, 2)],
         u'-1px': [('CHAR', u'-', 1, 1), ('DIMENSION', u'1px', 1, 2)],
-              
-                                  
+
         # ATKEYWORD
         u' @x ': [('S', u' ', 1, 1),
                   ('ATKEYWORD', u'@x', 1, 2),
@@ -360,9 +370,9 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('STRING', u"'\\na'", 1, 2),
                    ('S', u'\n', 1, 7),
                    ('IDENT', u'a', 2, 1)],
-        u' "\\r\\n\\t\\f\\n\\ra"a': [('S', u' ', 1, 1),
-                   ('STRING', u'"\\r\\n\\t\\f\\n\\ra"', 1, 2),
-                   ('IDENT', u'a', 1, 17)],
+        u' "\\r\\n\\t\\n\\ra"a': [('S', u' ', 1, 1),
+                   ('STRING', u'"\\r\\n\\t\\n\\ra"', 1, 2),
+                   ('IDENT', u'a', 1, 15)],
 
         # IMPORTANT_SYM is not IDENT!!!
         u' !important ': [('S', u' ', 1, 1),
@@ -392,11 +402,11 @@ class TokenizerTestCase(basetest.BaseTestCase):
                                   ur'\I\M\P\O\R\Ta\N\T', 1, 2)],
         ur'!\49\4d\50\4f\52\54\41\4e\54': [('CHAR', u'!', 1, 1),
                                            ('IDENT',
-                                            ur'\49\4d\50\4f\52\54\41\4e\54',
+                                            ur'IMPORTANT',
                                             1, 2)],
         ur'!\69\6d\70\6f\72\74\61\6e\74': [('CHAR', u'!', 1, 1),
                                            ('IDENT',
-                                            ur'\69\6d\70\6f\72\74\61\6e\74',
+                                            ur'important',
                                             1, 2)],
         }
 
@@ -442,9 +452,9 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('INVALID', u'"\\na', 1, 2),
                    ('S', u'\n', 1, 6),
                    ('IDENT', u'a', 2, 1)],
-        u' "\\r\\n\\t\\f\\n\\ra\na': [('S', u' ', 1, 1),
-                   ('INVALID', u'"\\r\\n\\t\\f\\n\\ra', 1, 2),
-                   ('S', u'\n', 1, 16),
+        u' "\\r\\n\\t\\n\\ra\na': [('S', u' ', 1, 1),
+                   ('INVALID', u'"\\r\\n\\t\\n\\ra', 1, 2),
+                   ('S', u'\n', 1, 14),
                    ('IDENT', u'a', 2, 1)],
         }
 
