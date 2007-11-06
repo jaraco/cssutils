@@ -122,21 +122,15 @@ class Base(object):
         normalizes x, namely:
 
         - remove any \ before non unicode sequences (0-9a-zA-Z) so for 
-          x=="c\olor\" return "color"
-        - replace unicode sequences with actual characters so 
-          for x=="\41" return "a"
+          x=="c\olor\" return "color" (unicode escape sequences should have
+          been resolved by the tokenizer already)
         - lowercase
         """
         if x:
             def removeescape(matchobj):
                 return matchobj.group(0)[1:]
-            def tochar(matchobj):
-                num = matchobj.group(0)[1:]
-                return unichr(int(num, 16))
             x = Base.__escapes(removeescape, x)
-            x = Base.__unicodes(tochar, x)
-            return x.lower()
-        
+            return x.lower()        
         else:
             return x
 
