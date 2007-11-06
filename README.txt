@@ -23,12 +23,14 @@ Based upon and partly implements the following specifications (DOM only, not any
 `DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`__
     DOM for package stylesheets
 `CSSOM <http://dev.w3.org/csswg/cssom/>`__
-    A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change in the future
+    A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...
 
 `CSS 2.1 <http://www.w3.org/TR/CSS21/>`__
     Rules and properties are defined here
 `CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`__
     A few erratas, mainly the definition of CHARSET_SYM tokens
+`CSS3 module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
+    Used in parts since cssutils 0.9.4 which basically tries to use the features from CSS 2.1 and CSS 3.
 `MediaQueries <http://www.w3.org/TR/css3-mediaqueries/>`__
     MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
 `Namespaces <http://www.w3.org/TR/css3-namespace/>`__
@@ -42,8 +44,6 @@ Please visit http://cthedot.de/cssutils/ for full details and updates.
 
 known issues
 ============
-- ``@charset`` not implemented according to spec (plan: 0.9.5)
-
 - ``Preferences.removeInvalid``, ``.validOnly`` and ``.wellformedOnly`` are in experimental stage, the first option will probably removed (maybe even in the final  0.9.4 release), so use sparingly. If you need these functionality or have suggestions what you like the lib to behave contact me.
 
 - ``css.FontFaceRule`` is not implemented yet (it was removed in CSS 2.1 but still looks useful)
@@ -93,17 +93,22 @@ HEAD
     - **TODO**
         + CSSCapture:
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
-            - save inline styles in same folder as all other sheets!!!
+            - save inline styles in same folder as all other sheets
 
+0.9.4a3 071106
     + CSSCapture:
         + **FEATURE**: Added option ``-m, --minified`` to CSSCapture which saves the retrieved CSS files with the cssutils serializer setting ``Preferences.useMinified()``.
 
         - **BUGFIX**: option '-p' of csscapture is removed as it was not used anyway. A new option ``-r, --saveraw`` has been added which defaults to ``False``. If given saves raw css otherwise cssutils' parsed files.
         - **BUGFIX**: CSSCapture now uses the ``cssutils.parseString`` method so invalid sheets should be saved too. Until now in case of an error the sheet was not saved at all.
 
-    - **BUGFIX**: Serializer should serialize a CSSStyleSheet properly escaped according to the relevant encoding defined in an @charset rule of defaulting to UTF-8. Characters not allowed in the current encoding are escaped the CSS way with a backslash followed by a uppercase 6 digit hex code point (**always 6 digits** to make it easier not to have to check if no hexdigit char is following).
+    - **BUGFIX/FEATURE**: Handling of unicode escapes should now work propertly.
 
-      This *feature* was not present in any older version of cssutils.
+      The tokenizer resolves any unicodes escape sequences now so cssutils internally simple unicode strings are used.
+
+      The serializer should serialize a CSSStyleSheet properly escaped according to the relevant encoding defined in an @charset rule or defaulting to UTF-8. Characters not allowed in the current encoding are escaped the CSS way with a backslash followed by a uppercase 6 digit hex code point (**always 6 digits** to make it easier not to have to check if no hexdigit char is following).
+
+      This *FEATURE* was not present in any older version of cssutils.
 
     - **BUGFIX**: Names (of properties or values) which are normalized should be properly normalized now so simple escapes like ``c\olor`` but also unicode escapes like ``\43olor`` should result in the property name ``color`` now
 
@@ -115,7 +120,7 @@ HEAD
 
     + **CHANGE**: Invalid Properties like ``$top`` which some UAs like Internet Explorer still are use are preserved. This makes the containing Property and CSSStyleDeclaration invalid (but still *wellformed* although they technically are not) so if the serializer is set to only output valid stuff they get stripped anyway.
 
-      **This may change and also simply may be put in a cssutils wide "compatibility mode" feature.*+
+      **This may change and also simply may be put in a cssutils wide "compatibility mode" feature.**
 
     + **CHANGE**: If a CSSValue cannot be validated (no property context is set) the message describing this is set to DEBUG level now (was INFO).
 
