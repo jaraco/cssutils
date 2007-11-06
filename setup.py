@@ -38,12 +38,14 @@ Based upon and partly implements the following specifications (DOM only, not any
 `DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`__
     DOM for package stylesheets
 `CSSOM <http://dev.w3.org/csswg/cssom/>`__
-    A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change in the future
+    A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...
 
 `CSS 2.1 <http://www.w3.org/TR/CSS21/>`__
     Rules and properties are defined here
 `CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`__
     A few erratas, mainly the definition of CHARSET_SYM tokens
+`CSS3 module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
+    Used in parts since cssutils 0.9.4 which basically tries to use the features from CSS 2.1 and CSS 3.
 `MediaQueries <http://www.w3.org/TR/css3-mediaqueries/>`__
     MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
 `Namespaces <http://www.w3.org/TR/css3-namespace/>`__
