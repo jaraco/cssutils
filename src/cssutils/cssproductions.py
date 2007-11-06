@@ -10,11 +10,13 @@ open issues
             CSS2.1: 'nmchar': r'[_a-z0-9-]|{nonascii}|{escape}',
             CSS3: 'nmchar': r'[_a-z-]|{nonascii}|{escape}',
 """
-__all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
+__all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS', 'RE_UNICODE']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy: cthedot $'
 __date__ = '$LastChangedDate: 2007-09-01 15:55:42 +0200 (Sa, 01 Sep 2007) $'
 __version__ = '$LastChangedRevision: 300 $'
+
+RE_UNICODE = r'\\[0-9a-fA-F]{1,6}[\t|\r|\n|\f|\x20]?'
 
 # a complete list of css3 macros
 MACROS = {
