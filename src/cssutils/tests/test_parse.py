@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """tests for parsing which does not raise Exceptions normally
 """
 __author__ = '$LastChangedBy$'
@@ -9,6 +10,20 @@ import basetest
 import cssutils
 
 class CSSStyleSheetTestCase(basetest.BaseTestCase):
+
+    def test_roundtrip(self):
+        "cssutils encodings"
+        css1 = ur'''@charset "utf-8";
+/* ä */'''
+        s = cssutils.parseString(css1)
+        css2 = unicode(s.cssText, 'utf-8')
+        self.assertEqual(css1, css2)
+
+        s = cssutils.parseString(css2)
+        s.cssRules[0].encoding='ascii'
+        css3 = ur'''@charset "ascii";
+/* \0000E4 */'''
+        self.assertEqual(css3, unicode(s.cssText, 'utf-8'))
 
     def test_invalidstring(self):
         "cssutils.parseString(INVALID_STRING)"
