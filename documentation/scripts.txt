@@ -20,6 +20,7 @@ usage: csscapture.py [options] URL
 Options:
   -h, --help            show this help message and exit
   -d, --debug           show debug messages during capturing
+  -m, --minified        saves minified version of captured files
   -n, --notsave         if given files are NOT saved, only log is written
   -r, --saveraw         if given saves raw css otherwise cssutils' parsed
                         files
@@ -29,4 +30,3 @@ Options:
   -u UA, --useragent=UA
                         useragent to use for request of URL, default is
                         urllib2s default
-
