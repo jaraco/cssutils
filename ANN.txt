@@ -2,15 +2,13 @@ what is it
 ----------
 A Python package to parse and build CSS Cascading Style Sheets.
 
-main changes since 0.9.4a1
+main changes since 0.9.4a2
 --------------------------
-for full details see the relevant README file http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a2/README.txt
+for full details see the relevant README file http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a3/README.txt
 
- - **FEATURE**: added ``Preferences.useMinified()`` which sets preferences that a stylesheet will be serialized as compact as possible. Added ``Preferences.useDefaults()`` which resets the serializer preferences. There a few new preferences have been added as well (see the documentation for details as most are hardly useful for normal usage of the library)
-
-    + **BUGFIX**: Fixed parsing of ``font`` value which uses "font-size/line-height" syntax.
-
-    - CHANGE: ``Preferences.keepAllProperties`` defaults to ``True`` now (hardly used but safer if different values have been set which are used by different UAs for example.)
+ - reworked CSSCapture script (new option -m --minified, -r --saveraw and lots of bugfixes)
+ - reworked handling of unicode escapes. These should be resolved during tokenizing and properly added during serializing dependant the stylesheets encoding
+ - more tests and quite a few bugfixes
 
 license
 -------
@@ -18,7 +16,7 @@ cssutils is published under the LGPL.
 
 download
 --------
-for download options for cssutils 0.9.4a2 - 071027 see http://cthedot.de/cssutils/
+for download options for cssutils 0.9.4a3 - 071106 see http://cthedot.de/cssutils/
 
 cssutils needs
 * Python 2.4 or higher (tested with Python 2.5 on Vista only)
