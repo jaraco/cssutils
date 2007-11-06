@@ -2,6 +2,7 @@
 from pprint import pprint as pp
 import codecs
 import cssutils
+import re
 import sys
 
 def save(name, string):
@@ -45,7 +46,7 @@ def escapecss(e):
 codecs.register_error('escapecss', escapecss)
 
 
-if 1:
+if 0:
     b = cssutils.util.Base()
     print b._normalize(ur'\41\0041\000061').encode('utf-8')
 
@@ -61,13 +62,23 @@ if 0:
     sys.exit(0)
 
 if 0:
-    css = u'a {background: url(x) center 0 }'
-    sheet = cssutils.parseString(css)
-    print sheet.cssText
-    #print sheet.cssRules[0].style.valid
+    css = u'\\12345 b'
+    for x in cssutils.tokenize2.Tokenizer().tokenize(css, 0):
+        print x, len(x[1]) 
     sys.exit(0)
 
-if 1:
+if 0:
+    unicode = r'(\\[0-9a-f]{1,6}[\t|\r|\n|\f|\x20]?)'
+    unisub = re.compile(unicode).sub
+    def r(m):    
+        print '"'+m.group(0)[1:]+'"'
+        return unichr(int(m.group(0)[1:], 16))
+    r = unisub(r, ur'''\e4 :''')
+    print r
+    sys.exit(0)
+    
+    
+if 0:
     css = u'a {color: blue}} a{color: red} a{color: green}'
     sheet = cssutils.parseString(css)
     print sheet.cssText
