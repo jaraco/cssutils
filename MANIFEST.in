@@ -2,10 +2,13 @@ include ez_setup.py
 include doc/*.*
 include examples/*.py
 include src/csscapture.py
+exclude ANN.txt
 exclude PLAN.txt
 exclude MANIFEST.in
 exclude *.bat
 exclude dist/*.*
+exclude restserver/*.*
+exclude src/try.py
 exclude src/_old/*.*
 exclude src/*/_old/*.*
 exclude src/_todo/*.*
