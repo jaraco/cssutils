@@ -62,7 +62,7 @@ __all__ = ['css', 'stylesheets',
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.4a3 $LastChangedRevision$'
+__version__ = '0.9.4a4 $LastChangedRevision$'
 
 # order of imports is important (maybe as it is partly circular)
 import xml.dom
