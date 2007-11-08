@@ -18,8 +18,8 @@ General
     * `generated API docs (Epydoc) <doc/index.html>`_ (if you checked out the docs only)
 
     see also
-    * `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
-    * `cssutils at cthedot <http://cthedot.de/cssutils/>`_
+        * `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
+        * `cssutils at cthedot <http://cthedot.de/cssutils/>`_
 
 API
     * `cssutils <documentation/cssutils.txt>`_ package
