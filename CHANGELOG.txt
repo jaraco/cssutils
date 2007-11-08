@@ -37,9 +37,15 @@ known issues
 
 HEAD
     - **TODO**
+        + CSSParse
+            use codec!!!
+
         + CSSCapture:
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
             - save inline styles in same folder as all other sheets
+
+    - Improvement: Setup has been adapted to suggestions at http://jimmyg.org/2007/11/08/creating-a-python-package-using-eggs-and-subversion/
+    - Documentation: Slight overhaul of docs.
 
 0.9.4a3 071106
     + CSSCapture:
