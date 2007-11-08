@@ -30,3 +30,7 @@ Options:
   -u UA, --useragent=UA
                         useragent to use for request of URL, default is
                         urllib2s default
+
+CSSParse
+========
+Script version of ``cssutils.parse()``.
