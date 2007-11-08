@@ -14,10 +14,23 @@ overview
 Main tokenizer, parser and helper classes used by subpackages ``css`` and ``stylesheets``.
 Implemented is also the interface `DOMImplementationCSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-DOMImplementationCSS>`_.
 
+:codec: A CSS codec registered at standard module ``codecs``
 :CSSParser: A CSS parser
 :CSSSerializer: A configurable CSS serializer
 :log: A configurable ``cssutils.errorhandler.ErrorHandler()`` logger
 :DOMImplementationCSS: Registers cssutils at standard package ``xml.dom``
+
+CSS codec
+=========
+You may use the provided CSS codec to read or write a CSS stylesheet. Handling is similar to other codecs. The codec handles the text encoding of the file automatically (regarding BOM or @charset rules in the stylesheet).
+
+Example::
+
+    import codecs
+    import cssutils
+
+    cssText = codecs.open('sheets/test-unicode.css', encoding='css').read()
+    sheet = cssutils.parseString(cssText)
 
 
 parsing CSS
@@ -31,6 +44,12 @@ Options to parse a given stylesheet:
 
 * or get an instance of ``cssutils.CSSParser`` and use the provided ``parse`` methods which are the same as the helper functions. The parser is reusable.
 
+* parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. Setting explicit properties (e.g. ``CSSStyleSheet.cssText`` with a syntactically incorrect sheet raises the relevant exeptions.
+
+serializing CSS
+===============
+For details see `serializing <serialize.txt>`_
+
 
 logging
 =======
@@ -38,15 +57,10 @@ A global logger is used throughout the library. You may configure it or even rep
 
 The default logger is available as ``cssutils.log``. It has the following methods:
 
-* ``log.setlog``: To redirect logging output, the default output is sent to ``stderr``
-* ``log.setloglevel``: To change the log level. This should be a level defined by the ``logging`` module, e.g.::
+* ``log.setlog(newlog)``: To redirect logging output, the default output is sent to ``stderr``
+* ``log.setloglevel(level)``: To change the log level. This should be a level defined by the ``logging`` module, e.g.::
 
     import logging
     cssutils.log.setloglevel(logging.FATAL)
 
 
-serializing CSS
-===============
-There is only one global serializer used throughout the library. You may configure it or even replace it with your own.
-
-For more details see `Serializing <serialize.txt>`_

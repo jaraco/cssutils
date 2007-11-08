@@ -39,12 +39,21 @@ h1, h2, h3, dt {
 	h1, h2.subtitle {
 		font-size: 1.6em;
 		}
-	h2 {
+	h2, h3 {
 		font-size: 1.3em;
 		}
 	h1, h2.subtitle, h2 {
 		padding: 0.1em 7px;
 		background-color: #fff;
+		}
+	h2, h3 {
+		margin-top: 2em;
+		margin-bottom: 1em;
+		}
+	h3 {
+		padding-left: 7px;
+		border-right: 1.4em solid #fff;
+		border-bottom: 2px dotted #fff;
 		}
 p, ul, ol, dl, pre, table {	
 	margin-bottom: 0.9em;

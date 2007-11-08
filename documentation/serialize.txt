@@ -10,9 +10,10 @@ Serializing
 
 .. contents::
 
-
 Serializer
 ==========
+There is only one global serializer used throughout the library. You may configure it or even replace it with your own.
+
 A custom serializer must implement all methods the default one implements. Easiest would be to subclass ``cssutils.serialize.Serializer``.
 
 To set a new serializer, use::
@@ -23,8 +24,8 @@ To set a new serializer, use::
 You may also set ``cssutils.ser`` directly but the above method is the preferred one.
 
 
-Serializer Preferences
-======================
+Preferences
+===========
 Quite a few preferences of the cssutils serializer may be tweaked.
 
 To set a preference use::
@@ -36,6 +37,18 @@ You may also set ``cssutils.ser.prefs.pref`` directly but the above method is th
 
 Preferences are always used *globally*, so for all stylesheets until preferences are set again.
 
+group settings
+--------------
+Two methods are available to use a predefined set of setting:
+
+useDefaults()
+    reset all preference options to the default value
+useMinified()
+    sets options to achive a minified stylesheet
+
+
+indidivual settings
+-------------------
 The following preferences are currently available
 
 defaultAtKeyword = True
