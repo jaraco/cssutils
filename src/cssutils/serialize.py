@@ -100,7 +100,7 @@ class Preferences(object):
             self.lineSeparator = lineSeparator
 
     def useDefaults(self):
-        "reset all preference options to a default value"
+        "reset all preference options to the default value"
         self.defaultAtKeyword = True
         self.defaultPropertyName = True
         self.importHrefFormat = None
