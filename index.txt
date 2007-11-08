@@ -10,22 +10,22 @@ CSS Cascading Style Sheets library for Python
 
 available documentation
 =======================
+General
+    * `readme <README.txt>`_
+    * `license <LICENSE.txt>`_
+    * `changelog <CHANGELOG.txt>`_
+    * `backlog <documentation/backlog.txt>`_
+    * `generated API docs (Epydoc) <doc/index.html>`_ (if you checked out the docs only)
+
+    see also
+    * `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
+    * `cssutils at cthedot <http://cthedot.de/cssutils/>`_
+
 API
     * `cssutils <documentation/cssutils.txt>`_ package
     * `cssutils.css <documentation/css.txt>`_ package
     * `cssutils.stylesheets <documentation/stylesheets.txt>`_ package
     * `cssutils scripts <documentation/scripts.txt>`_
-
-    `backlog <documentation/backlog.txt>`_
-
-General
-	* `README <README.txt>`_
-	* `generated API docs (Epydoc) <doc/index.html>`_ (if you checked out the docs only)
-	* `license <LICENSE.txt>`_
-
-    see also
-	* `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
-	* `cssutils at cthedot <http://cthedot.de/cssutils/>`_
 
 
 status of the tokenizer
