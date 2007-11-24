@@ -2,8 +2,8 @@
 MediaList implements DOM Level 2 Style Sheets MediaList.
 
 TODO:
-    delete: maybe if deleting from all, replace *all* with all others?
-    is unknown media an exception?
+    - delete: maybe if deleting from all, replace *all* with all others?
+    - is unknown media an exception?
 """
 __all__ = ['MediaList']
 __docformat__ = 'restructuredtext'
@@ -16,7 +16,7 @@ import cssutils
 from cssutils.css import csscomment
 from mediaquery import MediaQuery
 
-class MediaList(cssutils.util.Base, list):
+class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
     """
     Provides the abstraction of an ordered collection of media,
     without defining or constraining how this collection is
@@ -157,13 +157,12 @@ class MediaList(cssutils.util.Base, list):
             newMedium = MediaQuery(newMedium)
 
         if newMedium.valid:
-
             mts = [self._normalize(mq.mediaType) for mq in self]
             newmt = self._normalize(newMedium.mediaType)
 
             if newmt in mts:
                 self.deleteMedium(newmt)
-                self.append(newMedium)
+                self.seq.append(newMedium)
             elif u'all' == newmt:
                 # remove all except handheld (Opera)
                 h = None
@@ -171,20 +170,24 @@ class MediaList(cssutils.util.Base, list):
                     if mq.mediaType == u'handheld':
                         h = mq
                 del self[:]
-                self.append(newMedium)
+                self.seq.append(newMedium)
                 if h:
                     self.append(h)
             elif u'all' in mts:
                 if u'handheld' == newmt:
-                    self.append(newMedium)
+                    self.seq.append(newMedium)
             else:
-                self.append(newMedium)
+                self.seq.append(newMedium)
 
             return True
 
         else:
             return False
 
+    def append(self, newMedium):
+        "overwrites ListSeq.append"
+        self.appendMedium(newMedium)
+    
     def deleteMedium(self, oldMedium):
         """
         (DOM)
