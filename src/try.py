@@ -76,10 +76,17 @@ if 0:
     r = unisub(r, ur'''\e4 :''')
     print r
     sys.exit(0)
-    
-    
+
 if 0:
-    css = u'a {color: blue}} a{color: red} a{color: green}'
+    sl = cssutils.css.SelectorList()
+    sheet = cssutils.parseString(css)
+    print sheet.cssText
+    #print sheet.cssRules[0].style.valid
+    sys.exit(0)
+    
+    
+if 1:
+    css = ur'@import "x" \ ;'
     sheet = cssutils.parseString(css)
     print sheet.cssText
     #print sheet.cssRules[0].style.valid
