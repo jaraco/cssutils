@@ -50,7 +50,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a: 1': None,
             u'a: 1px 2px': None,
             u'a: 1 !important': None,
-            u'a: 1 !IMPORTANT': None,
+            u'a: 1 !IMPORTANT': u'a: 1 !important',
             u'a: 1 !impor\\tant': None,
             # TODO: important with unicode escapes!
             u'font: normal 1em/1.5 serif': None,
@@ -76,7 +76,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a: 1!importantX': (xml.dom.SyntaxErr,
                    u'''Property: Unexpected ident. [1:6: importantX]'''),
             u'a:!important': (xml.dom.SyntaxErr,
-                   u'''CSSValue: Unknown syntax or no value: "".'''),
+                   u'''CSSValue: Unknown syntax or no value: u''.'''),
             }
         for test in tests:
             ecp, msg = tests[test]
