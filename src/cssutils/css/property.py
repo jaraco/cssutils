@@ -207,7 +207,7 @@ class Property(cssutils.util.Base):
         # post conditions
         if not new['name']:
             wellformed = False
-            self._log.error(u'Property: No name found: %s' %
+            self._log.error(u'Property: No name found: %r' %
                 self._valuestr(name))
 
         if wellformed:
@@ -219,7 +219,7 @@ class Property(cssutils.util.Base):
             # validate
             if self.normalname not in cssproperties.cssvalues:
                 self.valid = False
-                self._log.info(u'Property: No CSS2 Property: "%s".' %
+                self._log.info(u'Property: No CSS2 Property: %r.' %
                          new['name'], neverraise=True)
             else:
                 self.valid = True
@@ -330,8 +330,8 @@ class Property(cssutils.util.Base):
             val = self._tokenvalue(token)
             normalval = self._tokenvalue(token, normalize=True)
             if 'important' == expected == normalval:
-                new['priority'] = val
-                seq.append(val)
+                new['priority'] = val.lower()
+                seq.append(val.lower())
                 return 'EOF'
             else:
                 new['wellformed'] = False
