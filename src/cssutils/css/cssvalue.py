@@ -98,7 +98,10 @@ class CSSValue(cssutils.util.Base):
                 v.append(x)
             else: # maybe CSSPrimitiveValue
                 v.append(x.cssText)
-        return u''.join(v).strip()
+        if v and u'' == v[-1].strip():
+            # simple strip of joined string does not work for escaped spaces
+            del v[-1]
+        return u''.join(v)
 
     def _setValue(self, value):
         "overwritten by CSSValueList!"
@@ -290,7 +293,7 @@ class CSSValue(cssutils.util.Base):
 
         linetoken = self._nexttoken(tokenizer)
         if not linetoken:
-            self._log.error(u'CSSValue: Unknown syntax or no value: "%s".' %
+            self._log.error(u'CSSValue: Unknown syntax or no value: %r.' %
                 self._valuestr(cssText))
         else:
             # TODO: not very efficient tokenizing twice!
@@ -388,7 +391,7 @@ class CSSValue(cssutils.util.Base):
                 else:
                     self.valid = False
                     self._log.warn(
-                        u'CSSValue: Invalid value for CSS2 property %r: %s' %
+                        u'CSSValue: Invalid value for CSS2 property %r: %r' %
                         (self._propertyName, self._value), neverraise=True)
             else:
                 self._log.debug(
@@ -669,7 +672,7 @@ class CSSPrimitiveValue(CSSValue):
             val = float(val)
         except ValueError:
             raise xml.dom.InvalidAccessErr(
-                u'CSSPrimitiveValue: No float value %s'
+                u'CSSPrimitiveValue: No float value %r'
                 % (self._value))
 
         return val, dim
@@ -703,7 +706,7 @@ class CSSPrimitiveValue(CSSValue):
                 val = self._converter[self.primitiveType, unitType](val)
             except KeyError:
                 raise xml.dom.InvalidAccessErr(
-                u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s'
+                u'CSSPrimitiveValue: Cannot coerce primitiveType %r to %r'
                 % (self.primitiveTypeString,
                    self._getCSSPrimitiveTypeString(unitType)))
 
@@ -736,13 +739,13 @@ class CSSPrimitiveValue(CSSValue):
         self._checkReadonly()
         if unitType not in self._floattypes:
             raise xml.dom.InvalidAccessErr(
-               u'CSSPrimitiveValue: unitType %s is not a float type' %
+               u'CSSPrimitiveValue: unitType %r is not a float type' %
                self._getCSSPrimitiveTypeString(unitType))
         try:
             val = float(floatValue)
         except ValueError, e:
             raise xml.dom.InvalidAccessErr(
-               u'CSSPrimitiveValue: floatValue "%s" is not a float' %
+               u'CSSPrimitiveValue: floatValue %r is not a float' %
                floatValue)
 
         oldval, dim = self.__getValDim()
@@ -754,7 +757,7 @@ class CSSPrimitiveValue(CSSValue):
                     unitType, self.primitiveType](val)
             except KeyError:
                 raise xml.dom.InvalidAccessErr(
-                u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s'
+                u'CSSPrimitiveValue: Cannot coerce primitiveType %r to %r'
                 % (self.primitiveTypeString,
                    self._getCSSPrimitiveTypeString(unitType)))
 
@@ -776,7 +779,7 @@ class CSSPrimitiveValue(CSSValue):
         """
         if self.primitiveType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(
-                u'CSSPrimitiveValue %s is not a string type'
+                u'CSSPrimitiveValue %r is not a string type'
                 % self.primitiveTypeString)
 
         if CSSPrimitiveValue.CSS_STRING == self.primitiveType:
@@ -823,7 +826,7 @@ class CSSPrimitiveValue(CSSValue):
         # self not stringType
         if self.primitiveType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(
-                u'CSSPrimitiveValue %s is not a string type'
+                u'CSSPrimitiveValue %r is not a string type'
                 % self.primitiveTypeString)
         # given stringType is no StringType
         if stringType not in self._stringtypes:
@@ -833,7 +836,7 @@ class CSSPrimitiveValue(CSSValue):
 
         if self._primitiveType != stringType:
             raise xml.dom.InvalidAccessErr(
-                u'CSSPrimitiveValue: Cannot coerce primitiveType %s to %s'
+                u'CSSPrimitiveValue: Cannot coerce primitiveType %r to %r'
                 % (self.primitiveTypeString,
                    self._getCSSPrimitiveTypeString(stringType)))
 
@@ -946,7 +949,7 @@ class CSSValueList(CSSValue):
             if u'-' == v:
                 if minus: # 2 "-" after another
                     self._log.error(
-                        u'CSSValueList: Unknown syntax: "%s".'
+                        u'CSSValueList: Unknown syntax: %r.'
                             % u''.join(self.seq))
                 else:
                     minus = v
@@ -994,12 +997,12 @@ class CSSValueList(CSSValue):
                             expected = 'comma'
                         else:
                             self._log.error(
-                                u'CSSValueList: Unknown syntax: "%s".'
+                                u'CSSValueList: Unknown syntax: %r.'
                                 % testv)
                             return
                     if expected == 'value':
                         self._log.error(
-                            u'CSSValueList: Unknown syntax: "%s".'
+                            u'CSSValueList: Unknown syntax: %r.'
                             % u''.join(self.seq))
                         return
                     # setting _propertyName this way does not work
