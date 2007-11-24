@@ -36,6 +36,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     --------
     cssText: string
         a textual representation of the stylesheet
+    encoding
+        reflects the encoding of an @charset rule or 'utf-8' (default)
+        if set to ``None``
     prefixes: set
         A set of declared prefixes via @namespace rules. Each
         CSSStyleRule is checked if it uses additional prefixes which are
@@ -196,6 +199,34 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
+
+    def _setEncoding(self, encoding):
+        """
+        sets encoding of charset rule if present or inserts new charsetrule
+        with given encoding. If encoding if None removes charsetrule if 
+        present.
+        """ 
+        try:
+            rule = self.cssRules[0]
+        except IndexError:
+            rule = None
+        if rule and rule.CHARSET_RULE == rule.type:
+            if encoding:
+                rule.encoding = encoding
+            else: 
+                self.deleteRule(0)
+        elif encoding:
+            self.insertRule(cssutils.css.CSSCharsetRule(encoding=encoding), 0)            
+    
+    def _getEncoding(self):
+        "return encoding if @charset rule if given or default of 'utf-8'"
+        try:
+            return self.cssRules[0].encoding
+        except (IndexError, AttributeError):
+            return 'utf-8'
+
+    encoding = property(_getEncoding, _setEncoding,
+            "(cssutils) reflects the encoding of an @charset rule or 'UTF-8' (default) if set to ``None``")
 
     def deleteRule(self, index):
         """
@@ -450,5 +481,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self.__class__.__name__, self.href, self.title)
 
     def __str__(self):
-        return "<cssutils.css.%s object title=%r href=%r at 0x%x>" % (
-                self.__class__.__name__, self.title, self.href, id(self))
+        return "<cssutils.css.%s object title=%r href=%r encoding=%r at 0x%x>" % (
+                self.__class__.__name__, self.title, self.href, self.encoding,
+                id(self))
