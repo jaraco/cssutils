@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 """serializer classes for CSS classes
 
-TODO:
-- indent subrules if selector is subselector
-
 """
 __all__ = ['CSSSerializer']
 __docformat__ = 'restructuredtext'
@@ -336,7 +333,7 @@ class CSSSerializer(object):
                     out.append(u'url(%s)' % self._uri(part))
             elif isinstance(
                   part, cssutils.stylesheets.medialist.MediaList):
-                mediaText = self.do_stylesheets_medialist(part).strip()
+                mediaText = self.do_stylesheets_medialist(part)#.strip()
                 if mediaText and not mediaText == u'all':
                     out.append(u' %s' % mediaText)
             elif hasattr(part, 'cssText'): # comments
@@ -388,7 +385,7 @@ class CSSSerializer(object):
 #        if len(rule.cssRules) == 0 and not self.prefs.keepEmptyRules or\
 #           self._noinvalids(rule.media):
 #            return u''
-        mediaText = self.do_stylesheets_medialist(rule.media).strip()
+        mediaText = self.do_stylesheets_medialist(rule.media)#.strip()
         out = [u'%s %s%s{%s' % (self._getatkeyword(rule, u'@media'),
                                mediaText,
                                self.prefs.paranthesisSpacer,
@@ -507,7 +504,7 @@ class CSSSerializer(object):
 #                elif u',' == part:
 #                    out.append(sep)
                 elif isinstance(part, cssutils.css.Selector):
-                    out.append(self.do_css_Selector(part).strip())
+                    out.append(self.do_css_Selector(part))
                 else:
                     out.append(part) # ?
             return sep.join(out)
