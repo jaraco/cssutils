@@ -23,7 +23,7 @@ import xml.dom
 import cssutils
 from selector import Selector
 
-class SelectorList(cssutils.util.Base, list):
+class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     """
     (cssutils) a list of Selectors of a CSSStyleRule
 
@@ -44,7 +44,6 @@ class SelectorList(cssutils.util.Base, list):
         """
         super(SelectorList, self).__init__()
 
-        self.seq = []
         if selectorText:
             self.selectorText = selectorText
         self._readonly = readonly
@@ -52,7 +51,7 @@ class SelectorList(cssutils.util.Base, list):
     def appendSelector(self, newSelector):
         """
         append a new Selector made from newSelector
-        returns new Selector
+        returns new Selector or None if newSelector is invalid
 
         DOMException on setting
 
@@ -74,12 +73,20 @@ class SelectorList(cssutils.util.Base, list):
                     newseq.append(s)
             newseq.append(newSelector)
             self.seq = newseq
-            return True
+            return newSelector
         else:
-            return False
+            return None
+
+    def append(self, newSelector):
+        "overwrites ListSeq.append"
+        self.appendSelector(newSelector)
+
+    #def __setitem__(self, index, newSelector):
+    #    "overwrites ListSeq.__setitem__"
+    # TODO: Refactor appendSelector and use that function!
 
     def _getLength(self):
-        return len(self.seq)
+        return len(self)
 
     length = property(_getLength,
         doc="The number of Selector elements in the list.")
@@ -87,7 +94,6 @@ class SelectorList(cssutils.util.Base, list):
     def _getSelectorText(self):
         """ returns serialized format """
         return cssutils.ser.do_css_SelectorList(self)
-
 
     def _setSelectorText(self, selectorText):
         """
