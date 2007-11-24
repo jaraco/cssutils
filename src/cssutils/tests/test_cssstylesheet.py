@@ -162,6 +162,29 @@ body {
         sheet = cssutils.parseString(css)
         self.assertEqual(sheet.cssText, exp)
 
+    def test_encoding(self):
+        "CSSStyleSheet.encoding"
+        self.s.cssText=''
+        self.assertEqual('utf-8', self.s.encoding)
+        
+        self.s.encoding = 'ascii'
+        self.assertEqual('ascii', self.s.encoding)
+        self.assertEqual(1, self.s.cssRules.length)
+        self.assertEqual('ascii', self.s.cssRules[0].encoding)
+
+        self.s.encoding = None
+        self.assertEqual('utf-8', self.s.encoding)
+        self.assertEqual(0, self.s.cssRules.length)
+
+        self.s.encoding = 'UTF-8'
+        self.assertEqual('utf-8', self.s.encoding)
+        self.assertEqual(1, self.s.cssRules.length)
+
+        self.assertRaises(xml.dom.SyntaxErr, self.s._setEncoding, 
+                          'INVALID ENCODING')
+        self.assertEqual('utf-8', self.s.encoding)
+        self.assertEqual(1, self.s.cssRules.length)
+    
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule()"
         self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {\n    x: 1\n    }@y;'
