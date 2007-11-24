@@ -333,30 +333,30 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                 (V.CSS_MM, 2, xml.dom.InvalidAccessErr, None),
 
                 (V.CSS_NUMBER, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: floatValue "x" is not a float'),
+                 "CSSPrimitiveValue: floatValue 'x' is not a float"),
                 (V.CSS_NUMBER, '1x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: floatValue "1x" is not a float'),
+                 "CSSPrimitiveValue: floatValue '1x' is not a float"),
 
                 (V.CSS_STRING, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: unitType CSS_STRING is not a float type'),
+                 "CSSPrimitiveValue: unitType 'CSS_STRING' is not a float type"),
                 (V.CSS_URI, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: unitType CSS_URI is not a float type'),
+                 "CSSPrimitiveValue: unitType 'CSS_URI' is not a float type"),
                 (V.CSS_ATTR, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: unitType CSS_ATTR is not a float type'),
+                 "CSSPrimitiveValue: unitType 'CSS_ATTR' is not a float type"),
                 (V.CSS_IDENT, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: unitType CSS_IDENT is not a float type'),
+                 "CSSPrimitiveValue: unitType 'CSS_IDENT' is not a float type"),
                 (V.CSS_RGBCOLOR, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: unitType CSS_RGBCOLOR is not a float type'),
+                 "CSSPrimitiveValue: unitType 'CSS_RGBCOLOR' is not a float type"),
                 (V.CSS_RGBACOLOR, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: unitType CSS_RGBACOLOR is not a float type'),
+                 "CSSPrimitiveValue: unitType 'CSS_RGBACOLOR' is not a float type"),
                 (V.CSS_RECT, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: unitType CSS_RECT is not a float type'),
+                 "CSSPrimitiveValue: unitType 'CSS_RECT' is not a float type"),
                 (V.CSS_COUNTER, 'x', xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: unitType CSS_COUNTER is not a float type'),
+                 "CSSPrimitiveValue: unitType 'CSS_COUNTER' is not a float type"),
                 (V.CSS_EMS, 1, xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: Cannot coerce primitiveType CSS_NUMBER to CSS_EMS'),
+                 "CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_NUMBER' to 'CSS_EMS'"),
                 (V.CSS_EXS, 1, xml.dom.InvalidAccessErr,
-                 'CSSPrimitiveValue: Cannot coerce primitiveType CSS_NUMBER to CSS_EXS')
+                 "CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_NUMBER' to 'CSS_EXS'")
             ],
             (V.CSS_MM, '1mm'): [
                 (V.CSS_MM, 2, 2, '2mm'),
@@ -444,13 +444,13 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assert_('"b"' == v._value)
         self.assert_('b' == v.getStringValue())
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_STRING to CSS_URI',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_STRING' to 'CSS_URI'",
             v.setStringValue, *(v.CSS_URI, 'x'))
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_STRING to CSS_IDENT',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_STRING' to 'CSS_IDENT'",
             v.setStringValue, *(v.CSS_IDENT, 'x'))
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_STRING to CSS_ATTR',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_STRING' to 'CSS_ATTR'",
             v.setStringValue, *(v.CSS_ATTR, 'x'))
 
         # CSS_IDENT
@@ -460,13 +460,13 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assert_('ident' == v._value)
         self.assert_('ident' == v.getStringValue())
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_IDENT to CSS_URI',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_IDENT' to 'CSS_URI'",
             v.setStringValue, *(v.CSS_URI, 'x'))
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_IDENT to CSS_STRING',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_IDENT' to 'CSS_STRING'",
             v.setStringValue, *(v.CSS_STRING, '"x"'))
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_IDENT to CSS_ATTR',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_IDENT' to 'CSS_ATTR'",
             v.setStringValue, *(v.CSS_ATTR, 'x'))
 
         # CSS_URI
@@ -501,13 +501,13 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assert_('url(a)' == v._value)
         self.assert_('a' == v.getStringValue())
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_URI to CSS_IDENT',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_URI' to 'CSS_IDENT'",
             v.setStringValue, *(v.CSS_IDENT, 'x'))
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_URI to CSS_STRING',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_URI' to 'CSS_STRING'",
             v.setStringValue, *(v.CSS_STRING, '"x"'))
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_URI to CSS_ATTR',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_URI' to 'CSS_ATTR'",
             v.setStringValue, *(v.CSS_ATTR, 'x'))
 
         # CSS_ATTR
@@ -517,13 +517,13 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assert_('attr(a)' == v._value)
         self.assert_('a' == v.getStringValue())
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_ATTR to CSS_IDENT',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_IDENT'",
             v.setStringValue, *(v.CSS_IDENT, 'x'))
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_ATTR to CSS_STRING',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_STRING'",
             v.setStringValue, *(v.CSS_STRING, '"x"'))
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-            u'CSSPrimitiveValue: Cannot coerce primitiveType CSS_ATTR to CSS_URI',
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_URI'",
             v.setStringValue, *(v.CSS_URI, 'x'))
 
         # TypeError as 'x' is no valid type
