@@ -610,6 +610,9 @@ class Selector(cssutils.util.Base):
                 self._log.error(u'Selector: Cannot end with combinator: %s' %
                     self._valuestr(selectorText))
 
+            if newseq and hasattr(newseq[-1], 'strip') and newseq[-1].strip() == u'':
+                del newseq[-1]
+
             # set
             if valid:
                 self.valid = True
