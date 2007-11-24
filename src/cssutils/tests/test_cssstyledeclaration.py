@@ -294,13 +294,10 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         self.assertEqual('4px', s.getPropertyValue('\\top', False))
         self.assertEqual('3px', s.getPropertyValue('top', False))
 
-
         # case insensitive
         s.setProperty('TOP', '0', '!IMPORTANT')
         self.assertEqual('0', s.getPropertyValue('top'))
-        self.assertEqual('!IMPORTANT', s.getPropertyPriority('top'))
-        self.assertEqual('0', s.getPropertyValue('top'))
-        self.assertEqual('!IMPORTANT', s.getPropertyPriority('top'))
+        self.assertEqual('!important', s.getPropertyPriority('top'))
 
         tests = {
             (u'left', u'0px', u''): u'left: 0px',
