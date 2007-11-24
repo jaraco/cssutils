@@ -15,7 +15,8 @@ from tokenize2 import Tokenizer
 class Seq(object):
     """
     (EXPERIMENTAL)
-    a list like sequence of (value, type) used in almost all cssutils classes
+    a list like sequence of (value, type) used in some cssutils classes
+    as property ``seq``
 
     behaves almost like a list but keeps extra attribute "type" for
     each value in the list
@@ -29,6 +30,9 @@ class Seq(object):
 
     def __contains__(self, item):
         return item in self.values
+
+    def __delitem__(self, index):
+        del self.values[index]
 
     def __getitem__(self, index):
         return self.values[index]
@@ -72,6 +76,49 @@ class Seq(object):
         """
         self.values.append(value) # str(value)??? does not work if value is e.g. comment
         self.types.append(type)
+
+
+class ListSeq(object):
+    """
+    (EXPERIMENTAL)
+    A base class used for list classes like css.SelectorList or 
+    stylesheets.MediaList
+
+    adds list like behaviour running on inhering class' property ``seq``
+    
+    - item in x => bool
+    - len(x) => integer
+    - get, set and del x[i]
+    - for item in x
+    - append(item)
+    
+    some methods must be overwritten in inheriting class
+    """
+    def __init__(self):
+        self.seq = []
+
+    def __contains__(self, item):
+        return item in self.seq
+
+    def __delitem__(self, index):
+        del self.seq[index]
+
+    def __getitem__(self, index):
+        return self.seq[index]
+
+    def __iter__(self):
+        return iter(self.seq)
+
+    def __len__(self):
+        return len(self.seq)
+
+    def __setitem__(self, index, item):
+        "must be overwritten"
+        raise NotImplementedError
+
+    def append(self, item):
+        "must be overwritten"
+        raise NotImplementedError
 
 
 class Base(object):
