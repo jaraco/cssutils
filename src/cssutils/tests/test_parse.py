@@ -25,6 +25,21 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
 /* \0000E4 */'''
         self.assertEqual(css3, unicode(s.cssText, 'utf-8'))
 
+    def test_escapes(self):
+        "cssutils escapes"
+        css = ur'\43\x { \43\x: \43\x !import\41nt }'
+        sheet = cssutils.parseString(css)
+        self.assertEqual(sheet.cssText, ur'''C\x {
+    c\x: C\x !important
+    }''')
+
+        css = ur'\ x{\ x :\ x ;y:1} '
+        sheet = cssutils.parseString(css)
+        self.assertEqual(sheet.cssText, ur'''\ x {
+    \ x: \ x;
+    y: 1
+    }''')
+
     def test_invalidstring(self):
         "cssutils.parseString(INVALID_STRING)"
         validfromhere = '@namespace "x";'
