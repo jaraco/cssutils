@@ -45,31 +45,32 @@ HEAD
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
             - save inline styles in same folder as all other sheets
 
-    - **FEATURE**: Added ``css.CSSStyleSheet.encoding`` which reflects the encoding of an explicit @charset rule and defaults to 'utf-8'. Setting the property to ``None`` removes an @charset rule if present and sets the encoding to the default value.
+    - **FEATURE**: Added ``css.CSSStyleSheet.encoding`` which reflects the encoding of an explicit @charset rule. Setting the property to ``None`` removes an @charset rule if present and sets the encoding to the default value 'utf-8'.
 
-    + **BUGFIX/IMPROVEMENT**: ``css.SelectorList`` and ``stylesheets.MediaList`` have (Python) list like behaviour but are not lists directly anymore (which did not work properly!). The following list like possibilities are implemented for now:
+      Effectively this removes the need to use ``css.CSSCharsetRule`` directly as using this new property is easier and simpler.
 
-      - item in x => bool
-      - len(x) => integer
-      - get, set and del x[i]
-      - for item in x
-      - append(item)
+      (A suggestion in the `CSSOM <http://dev.w3.org/csswg/cssom/#the-csscharsetrule>`_ but not yet resolved. IMHO it does make sense so it is present in cssutils. ``css.CSSCharsetRule`` remains though if you really *want* to use it).
 
-      The DOM additional methods or properties like ``length`` or ``item()`` are still present (and also will be in the future) but the standard Python idioms are probably easier to use.
+    + **BUGFIX/IMPROVEMENT**: ``css.SelectorList`` and ``stylesheets.MediaList`` have (Python) list like behaviour but are *directly not lists anymore* (which did not work properly anyway...). The following list like possibilities are implemented for now:
+
+      - ``item in x`` => bool
+      - ``len(x)`` => integer
+      - get, ``del`` and set ``x[i]``
+      - ``for item in x``
+      - ``x.append(item)``
+
+      The DOM additional methods and properties like ``length`` or ``item()`` are still present (and also will be in the future) but the standard Python idioms are probably easier to use.
 
       ``stylesheets.StyleSheetList`` and ``css.CSSRuleList`` are the only direct list for now. This may change in the future so it is safer to also use the above possibilities only for now.
 
-    + BUGFIX: Fixed handling of selectors like ``\ `` (an escaped space)
+    + BUGFIX: Fixed handling of "\\ " (an escaped space) in selectors and values.
 
-    + BUGFIX: ``!important`` will be normalized (lowercase) now
-
-    - CHANGE: Some error messages have been changed slightly, mostly values are given with their Python representation and not the actual values.
-
-
-      Effectively this removes the need to use ``css.CSSCharsetRule`` directly as using this new property is easier and simpler to use.
+    + BUGFIX: ``!important`` is normalized (lowercase) now
 
     - IMPROVEMENT: Setup has been adapted to suggestions at http://jimmyg.org/2007/11/08/creating-a-python-package-using-eggs-and-subversion/
-    - Documentation: Slight overhaul of docs.
+    - IMPROVEMENT: Some error messages have been changed slightly, mostly values are given with their Python representation and not the actual values.
+
+    + Documentation: Slight overhaul of docs.
 
 0.9.4a3 071106
     + CSSCapture:
