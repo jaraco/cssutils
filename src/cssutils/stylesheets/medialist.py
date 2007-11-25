@@ -132,6 +132,27 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         doc="""(DOM) The parsable textual representation of the media list.
             This is a comma-separated list of media.""")
 
+    def __prepareset(self, newMedium):
+        # used by appendSelector and __setitem__
+        self._checkReadonly()
+        
+        if not isinstance(newMedium, MediaQuery):
+            newMedium = MediaQuery(newMedium)
+
+        if newMedium.valid:
+            return newMedium
+        
+    def __setitem__(self, index, newMedium):
+        """
+        overwrites ListSeq.__setitem__
+        
+        Any duplicate items are **not** removed.
+        """
+        newMedium = self.__prepareset(newMedium)
+        if newMedium:
+            self.seq[index] = newMedium
+        # TODO: remove duplicates?   
+    
     def appendMedium(self, newMedium):
         """
         (DOM)
@@ -151,12 +172,9 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this list is readonly.
         """
-        self._checkReadonly()
+        newMedium = self.__prepareset(newMedium)
 
-        if not isinstance(newMedium, MediaQuery):
-            newMedium = MediaQuery(newMedium)
-
-        if newMedium.valid:
+        if newMedium:
             mts = [self._normalize(mq.mediaType) for mq in self]
             newmt = self._normalize(newMedium.mediaType)
 
