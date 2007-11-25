@@ -37,6 +37,26 @@ class SelectorListTestCase(basetest.BaseTestCase):
 
         self.assertEqual(u'a', s.selectorText)
 
+        s.append('b')
+        self.assertEqual(2, s.length)
+        self.assertEqual(u'a, b', s.selectorText)
+
+        s.append('a')
+        self.assertEqual(2, s.length)
+        self.assertEqual(u'b, a', s.selectorText)
+        
+        # __setitem__    
+        self.assertRaises(IndexError, s.__setitem__, 4, 'x')
+        s[1] = 'c'
+        self.assertEqual(2, s.length)
+        self.assertEqual(u'b, c', s.selectorText)
+        # TODO: remove duplicates?
+#        s[0] = 'c'
+#        self.assertEqual(1, s.length)
+#        self.assertEqual(u'c', s.selectorText)
+
+
+
     def test_selectorText(self):
         "SelectorList.selectorText"
         s = SelectorList()

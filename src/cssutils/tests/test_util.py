@@ -9,9 +9,40 @@ __version__ = '$LastChangedRevision: 56 $'
 import sys
 import xml.dom
 import basetest
-from cssutils.util import Base
+from cssutils.util import Base, ListSeq
 
-class UtilTestCase(basetest.BaseTestCase):
+class ListSeqTestCase(basetest.BaseTestCase):
+    
+    def test_all(self):
+        "ListSeq"
+        ls = ListSeq()
+        self.assertEqual(0, len(ls))
+        # append()
+        self.assertRaises(NotImplementedError, ls.append, 1)
+        # set
+        self.assertRaises(NotImplementedError, ls.__setitem__, 0, 1)
+
+        # hack:
+        ls.seq.append(1)
+        ls.seq.append(2)
+        
+        # len
+        self.assertEqual(2, len(ls))
+        # __contains__
+        self.assertEqual(True, 1 in ls)
+        # get
+        self.assertEqual(1, ls[0])
+        self.assertEqual(2, ls[1])
+        # del
+        del ls[0]
+        self.assertEqual(1, len(ls))
+        self.assertEqual(False, 1 in ls)
+        # for in 
+        for x in ls:
+            self.assertEqual(2, x)
+    
+
+class BaseTestCase(basetest.BaseTestCase):
 
     def test_normalize(self):
         "Base._normalize()"
