@@ -110,7 +110,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 if rule.valid:
                     seq.append(rule)
             return 1
-
+        
         def importrule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSImportRule()
             rule.cssText = self._tokensupto2(tokenizer, token)
@@ -135,6 +135,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     seq.append(rule)
                     new['prefixes'].add(rule.prefix)
             return 2
+
+        def fontfacerule(expected, seq, token, tokenizer):
+            rule = cssutils.css.CSSFontFaceRule()
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            if rule.valid:
+                seq.append(rule)
+            return 3
 
         def pagerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSPageRule()
@@ -184,6 +191,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
              'CDO': lambda *ignored: None,
              'CDC': lambda *ignored: None,
              'CHARSET_SYM': charsetrule,
+             'FONT_FACE_SYM': fontfacerule,
              'IMPORT_SYM': importrule,
              'NAMESPACE_SYM': namespacerule,
              'PAGE_SYM': pagerule,
