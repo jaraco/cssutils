@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from cssutils import CSSParser
 import xml.dom
 
