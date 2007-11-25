@@ -86,10 +86,15 @@ if 0:
     
     
 if 1:
-    css = ur'@import "x" \ ;'
+    css = u'/* a comment with umlaut ä */ a { color:red; }'
     sheet = cssutils.parseString(css)
+    
+    for rule in sheet.cssRules:
+        if rule.type == rule.STYLE_RULE:
+            rule.style.setProperty('color', 'blue')
+
+    sheet.encoding = 'ascii'
     print sheet.cssText
-    #print sheet.cssRules[0].style.valid
     sys.exit(0)
 
 if 0:
