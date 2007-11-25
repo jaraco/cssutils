@@ -306,6 +306,47 @@ class CSSSerializer(object):
             return u''
         return u'@charset "%s";' % self._escapestring(rule.encoding)
 
+    def do_CSSFontFaceRule(self, rule):
+        """
+        serializes CSSFontFaceRule
+
+        style
+            CSSStyleDeclaration
+
+        + CSSComments
+        """
+        self._level += 1
+        try:
+            styleText = self.do_css_CSSStyleDeclaration(rule.style)
+        finally:
+            self._level -= 1
+
+        if not styleText or self._noinvalids(rule):
+            return u''
+        
+        before = []
+        for x in rule.seq:
+            if hasattr(x, 'cssText'):
+                before.append(x.cssText)
+            else:
+                # TODO: resolve
+                raise SyntaxErr('serializing CSSFontFaceRule: unexpected %r' % x)
+        if before:
+            before = u' '.join(before).strip()
+            if before:
+                before = u' %s' % before
+        else:
+            before = u''
+
+        return u'%s%s {%s%s%s%s}' % (
+            self._getatkeyword(rule, u'@font-face'),
+            before,
+            self.prefs.lineSeparator,
+            self._indentblock(styleText, self._level + 1),
+            self.prefs.lineSeparator,
+            (self._level + 1) * self.prefs.indent
+            )
+
     def do_CSSImportRule(self, rule):
         """
         serializes CSSImportRule
