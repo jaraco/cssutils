@@ -68,7 +68,7 @@ class Seq(object):
                 if self.types[i] != 'COMMENT':
                     items.append(value)
             items.append(value)
-        return u''.join(items)
+        return u''.join(str(items))
 
     def append(self, value, type=None):
         """
@@ -95,7 +95,7 @@ class ListSeq(object):
     some methods must be overwritten in inheriting class
     """
     def __init__(self):
-        self.seq = []
+        self.seq = [] # does not need to use ``Seq`` as simple list only
 
     def __contains__(self, item):
         return item in self.seq
@@ -190,7 +190,7 @@ class Base(object):
         return False
 
     def _newseq(self):
-        # used by Selector but should be used by most classes?
+        # used by Selector but should be used by most classes
         return Seq()
 
     def _valuestr(self, t):
