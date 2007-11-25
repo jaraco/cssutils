@@ -121,8 +121,8 @@ class CSSMediaRule(cssrule.CSSRule):
                     # TODO: get complete rule!
                     tokens = self._tokensupto2(tokenizer, token)
                     atval = self._tokenvalue(token)
-                    if atval in ('@charset ', '@import', '@namespace', '@page', 
-                                 '@media'):
+                    if atval in ('@charset ', '@font-face', '@import', '@namespace', 
+                                 '@page', '@media'):
                         self._log.error(
                             u'CSSMediaRule: This rule is not allowed in CSSMediaRule - ignored: %s.'
                                 % self._valuestr(tokens), 
@@ -136,6 +136,7 @@ class CSSMediaRule(cssrule.CSSRule):
                 tokenizer = (t for t in cssrulestokens) # TODO: not elegant!
                 valid, expected = self._parse('}', newcssrules, tokenizer, {
                      'CHARSET_SYM': atrule,
+                     'FONT_FACE_SYM': atrule,
                      'IMPORT_SYM': atrule,
                      'NAMESPACE_SYM': atrule,
                      'PAGE_SYM': atrule,
@@ -262,6 +263,7 @@ class CSSMediaRule(cssrule.CSSRule):
         # CHECK HIERARCHY
         # @charset @import @page @namespace @media
         if isinstance(rule, cssutils.css.CSSCharsetRule) or \
+           isinstance(rule, cssutils.css.CSSFontFaceRule) or \
            isinstance(rule, cssutils.css.CSSImportRule) or \
            isinstance(rule, cssutils.css.CSSNamespaceRule) or \
            isinstance(rule, cssutils.css.CSSPageRule) or \

@@ -55,7 +55,7 @@ class CSSRule(cssutils.util.Base):
     CHARSET_RULE = 2
     IMPORT_RULE = 3
     MEDIA_RULE = 4
-    FONT_FACE_RULE = 5 # currently not implemented
+    FONT_FACE_RULE = 5
     PAGE_RULE = 6
     NAMESPACE_RULE = 7 # cssutils only, WD, may be different later
 
