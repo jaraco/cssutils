@@ -8,6 +8,7 @@ currently implemented
     - CSSRule
     - CSSComment (cssutils addon)
     - CSSCharsetRule
+    - CSSFontFaceRule
     - CSSImportRule
     - CSSMediaRule
     - CSSNamespaceRule (WD)
@@ -29,6 +30,7 @@ __all__ = [
     'CSSRule',
     'CSSComment',
     'CSSCharsetRule',
+    'CSSFontFaceRule'
     'CSSImportRule',
     'CSSMediaRule',
     'CSSNamespaceRule',
@@ -48,6 +50,7 @@ from cssrulelist import *
 from cssrule import *
 from csscomment import *
 from csscharsetrule import *
+from cssfontfacerule import *
 from cssimportrule import *
 from cssmediarule import *
 from cssnamespacerule import *
