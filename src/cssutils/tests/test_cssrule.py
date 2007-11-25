@@ -65,6 +65,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         tests = (u'',
                  u'/* comment */',
                  u'@charset "utf-8";',
+                 u'@font-face {}',
                  u'@import url(x);',
                  u'@media all {}',
                  u'@namespace "x";'
