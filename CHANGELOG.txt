@@ -11,9 +11,9 @@ known issues
 ------------
 - ``Preferences.removeInvalid``, ``.validOnly`` and ``.wellformedOnly`` are in experimental stage, the first option will probably removed (maybe even in the final  0.9.4 release), so use sparingly. If you need these functionality or have suggestions what you like the lib to behave contact me.
 
-- ``css.UnknownRule`` are not handled properly in cases, tests are spotty there too. They also seem to be removed in CSSOM but seem useful (currently @font-face is handled by this rule)
+- ``css.UnknownRule`` are not handled properly in cases, tests are spotty there too. They also seem to be removed in CSSOM but seem useful
 
-- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not yet implemented. As CSSOM defines a completely different DOM for Property values they may never been implemented as in DOM Level 2.
+- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not yet implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2.
 
 - CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.5 but again as CSSOM defined something else this may change))
 
