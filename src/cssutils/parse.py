@@ -71,7 +71,7 @@ class CSSParser(object):
         filename
             name of the CSS file to parse
         encoding
-            of the CSS file
+            of the CSS file, defaults to 'css' codec encoding
         href
             The href attribute to assign to the generated stylesheet
         media
@@ -94,11 +94,11 @@ class CSSParser(object):
         5. Assume UTF-8
         """
         if not encoding:
-            encoding = 'utf-8'
+            encoding = 'css'
         cssText = codecs.open(filename, 'r', encoding).read()
 
         # utf-8 BOM
-        if cssText.startswith(u'\ufeff'):
-            cssText = cssText[1:]
+        #if cssText.startswith(u'\ufeff'):
+        #    cssText = cssText[1:]
 
         return self.parseString(cssText, href=href, media=media)
