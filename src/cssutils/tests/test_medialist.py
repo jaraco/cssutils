@@ -34,8 +34,8 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.InvalidCharacterErr,
                           ml.appendMedium, u'test')
 
-    def test_append(self):
-        "MediaList.append() 1"
+    def test_appendMedium(self):
+        "MediaList.appendMedium() 1"
         ml = cssutils.stylesheets.MediaList()
 
         ml.appendMedium(u'print')
@@ -61,6 +61,19 @@ class MediaListTestCase(basetest.BaseTestCase):
         ml.appendMedium(mq)
         self.assertEqual(2, ml.length)
         self.assertEqual(u'print, SCREEN', ml.mediaText)
+        
+        # append()
+        mq = cssutils.stylesheets.MediaQuery('tv')
+        ml.append(mq)
+        self.assertEqual(3, ml.length)
+        self.assertEqual(u'print, SCREEN, tv', ml.mediaText)
+
+        # __setitem__
+        self.assertRaises(IndexError, ml.__setitem__, 10, 'all')
+        ml[0] = 'handheld'
+        self.assertEqual(3, ml.length)
+        self.assertEqual(u'handheld, SCREEN, tv', ml.mediaText)
+
 
     def test_appendAll(self):
         "MediaList.append() 2"
