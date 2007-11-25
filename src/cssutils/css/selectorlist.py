@@ -48,10 +48,35 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self.selectorText = selectorText
         self._readonly = readonly
 
+
+    def __prepareset(self, newSelector):
+        # used by appendSelector and __setitem__
+        self._checkReadonly()
+        
+        if not isinstance(newSelector, Selector):
+            newSelector = Selector(newSelector)
+
+        if newSelector.valid:
+            return newSelector
+
+    def __setitem__(self, index, newSelector):
+        """
+        overwrites ListSeq.__setitem__
+        
+        Any duplicate Selectors are **not** removed.
+        """
+        newSelector = self.__prepareset(newSelector)
+        if newSelector:
+            self.seq[index] = newSelector
+        # TODO: remove duplicates?    
+               
     def appendSelector(self, newSelector):
         """
-        append a new Selector made from newSelector
-        returns new Selector or None if newSelector is invalid
+        Append newSelector (is a string will be converted to a new
+        Selector. A duplicate Selector is removed.
+        
+        Returns new Selector or None if newSelector is no valid 
+        Selector.
 
         DOMException on setting
 
@@ -61,29 +86,19 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this rule is readonly.
         """
-        self._checkReadonly()
-        
-        if not isinstance(newSelector, Selector):
-            newSelector = Selector(newSelector)
-
-        if newSelector.valid:
-            newseq = []
-            for s in self.seq:
+        newSelector = self.__prepareset(newSelector)
+        if newSelector:
+            seq = self.seq[:]
+            del self.seq[:]
+            for s in seq:
                 if s.selectorText != newSelector.selectorText:
-                    newseq.append(s)
-            newseq.append(newSelector)
-            self.seq = newseq
+                    self.seq.append(s)
+            self.seq.append(newSelector)
             return newSelector
-        else:
-            return None
 
     def append(self, newSelector):
         "overwrites ListSeq.append"
         self.appendSelector(newSelector)
-
-    #def __setitem__(self, index, newSelector):
-    #    "overwrites ListSeq.__setitem__"
-    # TODO: Refactor appendSelector and use that function!
 
     def _getLength(self):
         return len(self)
