@@ -61,7 +61,7 @@ HEAD
 
       The DOM additional methods and properties like ``length`` or ``item()`` are still present (and also will be in the future) but the standard Python idioms are probably easier to use.
 
-      ``stylesheets.StyleSheetList`` and ``css.CSSRuleList`` are the only direct list for now. This may change in the future so it is safer to also use the above possibilities only for now.
+      ``stylesheets.StyleSheetList`` and ``css.CSSRuleList`` are the only direct lists for now. This may change in the future so it is safer to also use the above possibilities only for now.
 
     + BUGFIX: Fixed handling of "\\ " (an escaped space) in selectors and values.
 
