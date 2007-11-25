@@ -21,7 +21,7 @@ Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/cs
 :CSSPage: @page rule
 :CSSMedia: @media rule
 :CSSNamespace: @namespace rule
-:CSSFontfaceRule: @font-face rule **NOT IMPLEMENTED**
+:CSSFontfaceRule: @font-face rule (from v0.9.5a4)
 :CSSStyleRule: Main Rule with Selectors and ``CSSStyleDeclaration``
 :`CSSStyleDeclaration <cssstyledeclaration.txt>`_: Containing a list of Properties
 :Property: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
