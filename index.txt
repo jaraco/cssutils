@@ -13,9 +13,10 @@ available documentation
 General
     * `readme <README.txt>`_
     * `license <LICENSE.txt>`_
-    * `changelog <CHANGELOG.txt>`_
-    * `backlog <documentation/backlog.txt>`_
-    * `generated API docs (Epydoc) <doc/index.html>`_ (if you checked out the docs only)
+
+    + `changelog <CHANGELOG.txt>`_
+    + `backlog <documentation/backlog.txt>`_
+
 
     see also
         * `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
@@ -26,6 +27,7 @@ API
     * `cssutils.css <documentation/css.txt>`_ package
     * `cssutils.stylesheets <documentation/stylesheets.txt>`_ package
     * `cssutils scripts <documentation/scripts.txt>`_
+    * `generated API docs (Epydoc) <doc/index.html>`_
 
 
 status of the tokenizer
