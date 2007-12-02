@@ -9,13 +9,15 @@ changelog
 
 known issues
 ------------
-- ``Preferences.removeInvalid``, ``.validOnly`` and ``.wellformedOnly`` are in experimental stage, the first option will probably removed (maybe even in the final  0.9.4 release), so use sparingly. If you need these functionality or have suggestions what you like the lib to behave contact me.
+- ``cssparse`` script does not work correctly in version 0.9.4 yet.
 
-- ``css.UnknownRule`` are not handled properly in cases, tests are spotty there too. They also seem to be removed in CSSOM but seem useful
+- ``css.UnknownRule`` is not handled properly in cases, tests are spotty there too. it also seems to have been removed in CSSOM but seems useful so is still present
 
 - Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not yet implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2.
 
 - CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.5 but again as CSSOM defined something else this may change))
+
+- ``Preferences.removeInvalid``, ``.validOnly`` and ``.wellformedOnly`` are in experimental stage, the first option will probably removed (maybe even in the final  0.9.4 release), so use sparingly. If you need these functionality or have suggestions what you like the lib to behave contact me.
 
 - Properties are not bound to any CSS Version, so all properties are handled so
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 2.1 or 3)
@@ -27,7 +29,7 @@ known issues
   star7 hack
     ``html*#test-span`` (IMHO invalidated by the missing WS between html and "*")
 
-  The main problem is that some stylesheets in the wild are not possible to parse without loosing some information, a pretty print for these sheets is simply not possible with cssutils.
+  The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils.
 
 
 0.9.x
@@ -37,7 +39,7 @@ HEAD
     - **TODO**
 
         + CSSParse
-            use codec!!!
+            - use codec
 
         + CSSCapture:
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
@@ -45,13 +47,13 @@ HEAD
 
     - **FEATURE**: Implemented ``css.CSSFontFaceRule``.
 
-    - **FEATURE**: Added ``css.CSSStyleSheet.encoding`` which reflects the encoding of an explicit @charset rule. Setting the property to ``None`` removes an @charset rule if present and sets the encoding to the default value 'utf-8'.
+    - **FEATURE**: Added ``css.CSSStyleSheet.encoding`` which reflects the encoding of an explicit @charset rule. Setting the property to ``None`` removes an @charset rule if present and sets the encoding to the default value 'utf-8'. Setting a value of ``utf-8`` sets the encoding to the default value too but the @charset rule is explicitly added.
 
       Effectively this removes the need to use ``css.CSSCharsetRule`` directly as using this new property is easier and simpler.
 
       (A suggestion in the `CSSOM <http://dev.w3.org/csswg/cssom/#the-csscharsetrule>`_ but not yet resolved. IMHO it does make sense so it is present in cssutils. ``css.CSSCharsetRule`` remains though if you really *want* to use it).
 
-    + **BUGFIX/IMPROVEMENT**: ``css.SelectorList`` and ``stylesheets.MediaList`` have (Python) list like behaviour but are *directly not lists anymore* (which did not work properly anyway...). The following list like possibilities are implemented for now:
+    + **BUGFIX/IMPROVEMENT**: ``css.SelectorList`` and ``stylesheets.MediaList`` have (Python) list like behaviour partly but are *directly not lists anymore* (which did not work properly anyway...). The following list like possibilities are implemented for now:
 
       - ``item in x`` => bool
       - ``len(x)`` => integer
@@ -67,10 +69,10 @@ HEAD
 
     + BUGFIX: ``!important`` is normalized (lowercase) now
 
-    - IMPROVEMENT: Setup has been adapted to suggestions at http://jimmyg.org/2007/11/08/creating-a-python-package-using-eggs-and-subversion/
     - IMPROVEMENT: Some error messages have been changed slightly, mostly values are given with their Python representation and not the actual values.
+    - IMPROVEMENT: The setup process of cssutils has been adapted to suggestions at http://jimmyg.org/2007/11/08/creating-a-python-package-using-eggs-and-subversion/
 
-    + Documentation: Slight overhaul of docs.
+    + DOCS: Slight overhaul of docs.
 
 0.9.4a3 071106
     + CSSCapture:
@@ -117,7 +119,7 @@ HEAD
 
     - **FEATURE**: Added implementation of ``stylesheets.MediaQuery`` which are part of  stylesheets.MediaList. See the complete spec at http://www.w3.org/TR/css3-mediaqueries/ for details.
 
-      **Not complete yet**: Properties are not validated for now and maybe some details are missing
+      Not complete yet: Properties of MediaQueries are not validated for now and maybe some details are missing
 
     - FEATURE: Implemented ``cssutils.DOMImplementationCSS``. This way it is possible to create a new StyleSheet by calling ``DOMImplementationCSS.createCSSStyleSheet(title, media)``. For most cases it is probably easier to make a new StyleSheet by getting an instance of ``cssutils.css.CSSStyleSheet`` though.
 
