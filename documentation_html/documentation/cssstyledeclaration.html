@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="../documentation/default.css&#10;&#9;&#9;&#9;&#9;&#9;#/documentation/default.css1" type="text/css" />
+</head>
+<body>
+<div class="document">
+
+
+<p><a class="reference external" href="../index.html&#10;&#9;&#9;&#9;&#9;&#9;#/index.html1">Index</a></p>
+<div class="section" id="cssstyledeclaration">
+<h1><a class="toc-backref" href="#id2">CSSStyleDeclaration</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">author:</th><td class="field-body">$LastChangedBy: cthedot $</td>
+</tr>
+<tr class="field"><th class="field-name">date:</th><td class="field-body">$LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $</td>
+</tr>
+<tr class="field"><th class="field-name">version:</th><td class="field-body">$LastChangedRevision: 206 $</td>
+</tr>
+</tbody>
+</table>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#cssstyledeclaration" id="id2">CSSStyleDeclaration</a><ul>
+<li><a class="reference internal" href="#id1" id="id3">CSSStyleDeclaration</a><ul>
+<li><a class="reference internal" href="#attributes" id="id4">attributes</a></li>
+<li><a class="reference internal" href="#methods" id="id5">methods</a></li>
+<li><a class="reference internal" href="#random-notes" id="id6">random notes</a><ul>
+<li><a class="reference internal" href="#css2properties" id="id7">CSS2Properties</a></li>
+<li><a class="reference internal" href="#iterable" id="id8">iterable</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#property" id="id9">Property</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id3">CSSStyleDeclaration</a></h2>
+<p>A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule.</p>
+<p>Example:</p>
+<pre class="literal-block">
+/* a comment */
+color: red;
+/* properties might be set more than once for different UAs */
+c\\olor: green;
+background-color: #fff
+</pre>
+<div class="section" id="attributes">
+<h3><a class="toc-backref" href="#id4">attributes</a></h3>
+<dl class="docutils">
+<dt>cssText</dt>
+<dd><p class="first">a parsable textual representation of the declaration. See also:</p>
+<dl class="last docutils">
+<dt>getCssText(separator=None)</dt>
+<dd>returns serialized property cssText, each property separated by
+given <tt class="docutils literal"><span class="pre">separator</span></tt> which may e.g. be u'' to be able to use
+cssText directly in an HTML style attribute. ";" is always part of
+each property (except the last one) and can <strong>not</strong> be set with
+separator!</dd>
+</dl>
+</dd>
+<dt>length</dt>
+<dd>The number of distince properties that have been explicitly
+in this declaration These are properties with the same <tt class="docutils literal"><span class="pre">normalname</span></tt>
+only. <tt class="docutils literal"><span class="pre">item()</span></tt> and <tt class="docutils literal"><span class="pre">length</span></tt> work on the same set here.</dd>
+<dt>parentRule</dt>
+<dd>The CSS rule that contains this declaration block or
+None if this CSSStyleDeclaration is not attached to a CSSRule.</dd>
+</dl>
+</div>
+<div class="section" id="methods">
+<h3><a class="toc-backref" href="#id5">methods</a></h3>
+<dl class="docutils">
+<dt>getProperties(name=None, all=False):</dt>
+<dd>returns a list of Property objects set in this declaration in order
+they have been set e.g. in the original stylesheet</dd>
+</dl>
+<p>The following methods all have a parameter <tt class="docutils literal"><span class="pre">normalize</span></tt> which if set to <tt class="docutils literal"><span class="pre">False</span></tt> results in handling of <tt class="docutils literal"><span class="pre">name</span></tt> not being normalized. Default behaviour is to always access the effective property in this rule (the last set). An <em>un</em>-normalized name like <tt class="docutils literal"><span class="pre">c\\olor</span></tt> gives access to the property with this actual name. To work on all properties it is probably easiest to iterate directly over all properties or to use <tt class="docutils literal"><span class="pre">getProperties()</span></tt>.</p>
+<dl class="docutils">
+<dt>getPropertyCSSValue(self, name, normalize=True)</dt>
+<dd>returns a CSSValue object</dd>
+<dt>getPropertyValue(self, name, normalize=True)</dt>
+<dd>returns the string value</dd>
+<dt>getPropertyPriority(self, name, normalize=True)</dt>
+<dd>returns the priority</dd>
+<dt>removeProperty(self, name, normalize=True)</dt>
+<dd>removes the property. Even if <tt class="docutils literal"><span class="pre">normlize=True</span></tt> only removes the last property with this name - not all.</dd>
+<dt>setProperty(self, name, value, priority=None, normalize=True)</dt>
+<dd>sets value and priority</dd>
+<dt>item(index)</dt>
+<dd>returns property at index. Same as <tt class="docutils literal"><span class="pre">length</span></tt> item works on
+effective properties only and not on the complete set!</dd>
+</dl>
+</div>
+<div class="section" id="random-notes">
+<h3><a class="toc-backref" href="#id6">random notes</a></h3>
+<div class="section" id="css2properties">
+<h4><a class="toc-backref" href="#id7">CSS2Properties</a></h4>
+<p>CSSStyleDeclaration implements CSS2Properties so most CSS 2 properties may be used like:</p>
+<pre class="literal-block">
+declaration.color = 'red'
+declaration.backgroundColor = '#000'
+</pre>
+<p>As some properties contain a "-" character these have to be used in camelcase instead!</p>
+<p>cssutils implements only a subset of CSS2Properties so setting e.g. <tt class="docutils literal"><span class="pre">declaration.border</span> <span class="pre">=</span> <span class="pre">'1px</span> <span class="pre">solid</span> <span class="pre">red'</span></tt> does only set border but <strong>not</strong> <tt class="docutils literal"><span class="pre">border-style</span></tt>, <tt class="docutils literal"><span class="pre">border-color</span></tt> etc which it should. This may be implemented later.</p>
+</div>
+<div class="section" id="iterable">
+<h4><a class="toc-backref" href="#id8">iterable</a></h4>
+<p>CSSStyleDeclaration is iterable (<strong>experimental</strong>). The iterator returns  <em>all</em> properties set in this style as objects with properties <tt class="docutils literal"><span class="pre">name</span></tt>, <tt class="docutils literal"><span class="pre">cssValue</span></tt> and <tt class="docutils literal"><span class="pre">priority</span></tt>. Calling CSSStyleDeclaration.item(index) on the other hand simply returns a property name and also only the normalized name (once). Example:</p>
+<pre class="literal-block">
+sheet = cssutils.parseString('a { color: red; c\olor: blue; left: 0 !important }')
+for rule in sheet.cssRules:
+    style = rule.style
+    for property in style:
+        name = property.name
+        cssValue = property.cssValue
+        priority = property.priority
+        print name, '=', cssValue.cssText, priority
+
+    # prints:
+    # color = red
+    # c\olor = blue
+    # left = 0 !important
+
+    for i in range(0, style.length):
+        name = style.item(i)
+        cssValue = style.getPropertyCSSValue(name)
+        priority = style.getPropertyPriority(name)
+        print name, '=', cssValue.cssText , priority
+
+    # prints:
+    # color = blue
+    # left = 0 !important
+</pre>
+</div>
+</div>
+</div>
+<div class="section" id="property">
+<h2><a class="toc-backref" href="#id9">Property</a></h2>
+<p>A Property is used in a <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> but also in a <a class="reference external" href="stylesheets.html">MediaQuery</a> object. Only in the latter case a value is optional and a priority not used at all. As MediaQuery is not a finished spec so some details may still change.</p>
+<p>A property has the following attributes:</p>
+<dl class="docutils">
+<dt>cssText</dt>
+<dd>a parsable textual representation of this property</dd>
+<dt>name</dt>
+<dd>of the property</dd>
+<dt>normalname</dt>
+<dd>normalized name of the property, e.g. "color" when name is "color"</dd>
+<dt>cssValue</dt>
+<dd>the relevant CSSValue instance for this property</dd>
+<dt>value</dt>
+<dd>the string value of the property, same as cssValue.cssText</dd>
+<dt>priority</dt>
+<dd>of the property (currently only <tt class="docutils literal"><span class="pre">!important</span></tt> or None)</dd>
+</dl>
+</div>
+</div>
+</div>
+</body>
+</html>
