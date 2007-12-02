@@ -29,10 +29,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
     ==========
     cssText: of type DOMString
         The parsable textual representation of this rule
-    uri: of type DOMString
+    namespaceURI: of type DOMString
         The namespace URI (a simple string!) which is bound to the given
         prefix. If no prefix is set (``CSSNamespaceRule.prefix==''``)
-        the namespace defined by uri is set as the default namespace.
+        the namespace defined by ``namespaceURI`` is set as the default 
+        namespace.
     prefix: of type DOMString
         The prefix used in the stylesheet for the given
         ``CSSNamespaceRule.nsuri``. If prefix is empty uri sets the default
