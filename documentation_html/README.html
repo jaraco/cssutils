@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>cssutils</title>
+<meta name="author" content="cthedot" />
+<meta name="copyright" content="2004-2007 Christof Hoeke" />
+<meta name="date" content="2007-11-08 14:42:49 +0100 (Do, 08 Nov 2007)" />
+<link rel="stylesheet" href="documentation/default.css&#10;&#9;&#9;&#9;&#9;&#9;#/documentation/default.css0" type="text/css" />
+</head>
+<body>
+<div class="document" id="cssutils">
+<h1 class="title">cssutils</h1>
+<h2 class="subtitle" id="css-cascading-style-sheets-library-for-python">CSS Cascading Style Sheets library for Python</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>cthedot</td></tr>
+<tr><th class="docinfo-name">Copyright:</th>
+<td>2004-2007 Christof Hoeke</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>2007-11-08 14:42:49 +0100 (Do, 08 Nov 2007)</td></tr>
+<tr><th class="docinfo-name">Version:</th>
+<td>(rev 662)</td></tr>
+</tbody>
+</table>
+<div class="section" id="overview">
+<h1>Overview</h1>
+<p>A Python package to parse and build CSS Cascading Style Sheets.</p>
+<p>Based upon and partly implements the following specifications (DOM only, not any rendering facilities):</p>
+<dl class="docutils">
+<dt><a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 Style CSS</a></dt>
+<dd>DOM for package css</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html">DOM Level 2 Style Stylesheets</a></dt>
+<dd>DOM for package stylesheets</dd>
+<dt><a class="reference external" href="http://dev.w3.org/csswg/cssom/index.html">CSSOM</a></dt>
+<dd>A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/CSS21/index.html">CSS 2.1</a></dt>
+<dd>Rules and properties are defined here</dd>
+<dt><a class="reference external" href="http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html">CSS 2.1 Errata</a></dt>
+<dd>A few erratas, mainly the definition of CHARSET_SYM tokens</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/css3-syntax/index.html">CSS3 module: Syntax</a></dt>
+<dd>Used in parts since cssutils 0.9.4 which basically tries to use the features from CSS 2.1 and CSS 3.</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/css3-mediaqueries/index.html">MediaQueries</a></dt>
+<dd>MediaQueries are part of <tt class="docutils literal"><span class="pre">stylesheets.MediaList</span></tt> since v0.9.4, used in @import and @media rules.</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/css3-namespace/index.html">Namespaces</a></dt>
+<dd>Added in v0.9.1 and updated to definition in CSSOM in v0.9.4</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/css3-selectors/index.html">Selectors</a></dt>
+<dd>The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (<em>should</em> mind though ;) )</dd>
+</dl>
+<p>Please visit <a class="reference external" href="http://cthedot.de/cssutils/index.html">http://cthedot.de/cssutils/</a> for full details.</p>
+</div>
+<div class="section" id="license">
+<h1>license</h1>
+<p>Published under the LGPL, see <a class="reference external" href="http://cthedot.de/cssutils/license.html">http://cthedot.de/cssutils/license.html</a></p>
+</div>
+<div class="section" id="installation">
+<h1>installation</h1>
+<p>From 0.9 cssutils uses EasyInstall. Please find installation instructions and more information about EasyInstall from <a class="reference external" href="http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions">http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions</a>.</p>
+<p>After installing EasyInstall simple use:</p>
+<pre class="literal-block">
+&gt; easy_install cssutils
+</pre>
+<p>to install the latest version of cssutils.</p>
+<p>Alternatively download the provided source distribution. Expand the file and from a command line install with:</p>
+<pre class="literal-block">
+&gt; python setup.py install
+</pre>
+<p>Before using EasyInstall the first time or using the sdist please remove any old version which should be installed at PYTHONDIR/Lib/site-packages/cssutils.</p>
+</div>
+</div>
+</body>
+</html>
