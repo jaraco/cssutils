@@ -244,13 +244,13 @@ HEAD
         - MediaList shows the mediaText
 
 0.9.2b3 070804
-    - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)
+    - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Doerwald)
 
     - BUGFIX: Fixed Issue #7: typo gave AssertionError for selectors like ``tr:nth-child(odd) td{}``
     - BUGFIX: Fixed Issue #5: false warning for certain values for ``background-position`` removed
     - BUGFIX: Report of line/col for any node was not correct if a node contained line breaks itself
 
-    - Quite a few internal optimizations (thanks to Walter D�rwald)
+    - Quite a few internal optimizations (thanks to Walter Doerwald)
     - Added tests for issues #3 and #4 to tokenizer too
 
 0.9.2b2 070728

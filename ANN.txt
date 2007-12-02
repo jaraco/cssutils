@@ -4,7 +4,7 @@ A Python package to parse and build CSS Cascading Style Sheets.
 
 main changes since 0.9.4a3
 --------------------------
-for full details for 0.9.4a4 see the relevant README file http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a4/README.txt
+for full details for 0.9.4a4 see the relevant README file http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a4/README.txt and http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a4/CHANGELOG.txt
 
 - **FEATURE**: Implemented ``css.CSSFontFaceRule``.
 
