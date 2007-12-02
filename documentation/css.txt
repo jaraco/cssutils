@@ -15,14 +15,14 @@ overview
 ========
 Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ and `CSS Module: Namespaces (W3C Working Draft 28 August 2006) <http://www.w3.org/TR/css3-namespace/>`_
 
-:`CSSStyleSheet`_: Implements ``stylesheets.StyleSheet`` and is the *root* of a stylesheet.
-:CSSCharsetRule: @charset rule
-:CSSFontFaceRule: @font-face rule (from v0.9.5a4)
-:CSSImportRule: @import rule
-:CSSMediaRule: @media rule
-:CSSNamespaceRule: @namespace rule
-:CSSPageRule: @page rule
-:CSSStyleRule: Main Rule with Selectors and ``CSSStyleDeclaration``
+:CSSStyleSheet_: Implements ``stylesheets.StyleSheet`` and is the *root* of a stylesheet.
+:CSSCharsetRule_: @charset rule
+:CSSFontFaceRule_: @font-face rule (from v0.9.5a4)
+:CSSImportRule_: @import rule
+:CSSMediaRule_: @media rule
+:CSSNamespaceRule_: @namespace rule
+:CSSPageRule_: @page rule
+:CSSStyleRule_: Main Rule with Selectors and ``CSSStyleDeclaration``
 :`CSSStyleDeclaration <cssstyledeclaration.txt>`_: Containing a list of Properties
 :Property: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
 :`CSSValue <values.txt>`_: A CSS value which might also be a CSSPrimitiveValue or CSSValueList.
