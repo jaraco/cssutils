@@ -1,3 +1,4 @@
+@charset "utf-8";
 /*
 $LastChangedRevision$
 $LastChangedBy$LastChangedBy: doerwalter $
@@ -23,7 +24,7 @@ body {
 	.section>h1, .section>h2, .section>h3 {
 		margin-left: 0
 		}
-h1, h2, h3, dt {
+h1, h2, h3, h4, dt {
 	color: #a00;
 	font-weight: normal;
 	margin: 1em 0 0.2em;
@@ -39,14 +40,14 @@ h1, h2, h3, dt {
 	h1, h2.subtitle {
 		font-size: 1.6em;
 		}
-	h2, h3 {
+	h2, h3, h4 {
 		font-size: 1.3em;
 		}
 	h1, h2.subtitle, h2 {
 		padding: 0.1em 7px;
 		background-color: #fff;
 		}
-	h2, h3 {
+	h2, h3, h4 {
 		margin-top: 2em;
 		margin-bottom: 1em;
 		}
@@ -55,6 +56,10 @@ h1, h2, h3, dt {
 		border-right: 1.4em solid #fff;
 		border-bottom: 2px dotted #fff;
 		}
+	h4 {
+		text-indent: -7px;
+		}
+
 p, ul, ol, dl, pre, table {	
 	margin-bottom: 0.9em;
 	}
@@ -107,7 +112,13 @@ pre {
 	padding: 5px;
 	}
 a {	
+	color: #711;
+	}
+a[href^="http"].external {
 	color: #a00;
+	}
+a[href^="http"].external:before {
+	content: "□ ";
 	}
 a[href] {
 	text-decoration: none;
