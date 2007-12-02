@@ -45,6 +45,7 @@ HEAD
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
             - save inline styles in same folder as all other sheets
 
+0.9.4a4 071202
     - **FEATURE**: Implemented ``css.CSSFontFaceRule``.
 
     - **FEATURE**: Added ``css.CSSStyleSheet.encoding`` which reflects the encoding of an explicit @charset rule. Setting the property to ``None`` removes an @charset rule if present and sets the encoding to the default value 'utf-8'. Setting a value of ``utf-8`` sets the encoding to the default value too but the @charset rule is explicitly added.
