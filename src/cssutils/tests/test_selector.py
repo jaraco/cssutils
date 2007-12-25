@@ -37,6 +37,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''* ::first-line''': None,
             u'''*[lang=fr]''': None,
             u'''[lang=fr]''': None,
+            u'a * b': None,
 
             u'''a''': None,
             u'''h1''': None,
@@ -136,6 +137,18 @@ class SelectorTestCase(basetest.BaseTestCase):
             u':not(y)': None,
             u'x:not(y)': None,
             u'.x:not(y)': None,
+            
+            # escapes
+            ur'\74\72 td': 'trtd',
+            ur'\74\72  td': 'tr td',
+            ur'\74\000072 td': 'trtd',
+            ur'\74\000072  td': 'tr td',
+            
+            u'a/**/ b': None,
+            u'a /**/b': None,
+            u'a /**/ b': None,
+            u'a  /**/ b': u'a /**/ b',
+            u'a /**/  b': u'a /**/ b'
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
@@ -143,6 +156,10 @@ class SelectorTestCase(basetest.BaseTestCase):
         tests = {
             u'': xml.dom.SyntaxErr,
             u'1': xml.dom.SyntaxErr,
+            u'a*b': xml.dom.SyntaxErr,
+            u'a *b': xml.dom.SyntaxErr,
+            u'a* b': xml.dom.SyntaxErr,
+            u'a/**/b': xml.dom.SyntaxErr,
 
             u'#': xml.dom.SyntaxErr,
             u'|': xml.dom.SyntaxErr,
