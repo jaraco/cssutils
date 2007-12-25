@@ -45,6 +45,17 @@ HEAD
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
             - save inline styles in same folder as all other sheets
 
+
+    - **BUGFIX**: Serializing escape sequences add a single SPACE after each escape. This was not present until now so a sequence like "\74 a" did come out as "\000074a" which was not as intended. Also as a SPACE is inserted in any case all escapes are not padded to 6 digits anymore but are only as long as needed.
+
+    - **BUGFIX**: Handling of illegal selectors is now same as the W3C CSS validator (and according the selector spec - I hope ;). Illegal selectors result in dropping the complete rule. Fixed are the following (edge) cases:
+
+      ``a/**/b``
+        Meant was probably a space between a and b (plus maybe the comment). IE and Safari nevertheless seem to parse this invalid rule as ``a b``
+      ``a*b``
+        Again spaces around the UNIVERSAL ``*`` were probably meant by the author. And again IE and Safari seem to parse this invalid selector as ``a b``.
+
+
 0.9.4a4 071202
     - **FEATURE**: Implemented ``css.CSSFontFaceRule``.
 
