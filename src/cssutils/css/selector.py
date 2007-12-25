@@ -41,6 +41,9 @@ class Selector(cssutils.util.Base):
         a set which prefixes have been used in this selector
     seq
         sequence of Selector parts including comments
+        
+    wellformed
+        if this selector is wellformed regarding the Selector spec
 
     Format
     ======
@@ -133,7 +136,8 @@ class Selector(cssutils.util.Base):
         """
         super(Selector, self).__init__()
 
-        self.valid = False
+        #self.valid = False # not used anymore
+        self.wellformed = False
         self.seq = self._newseq()
         self.prefixes = set()
         if selectorText:
@@ -228,7 +232,7 @@ class Selector(cssutils.util.Base):
             tokenizer = (t for t in tokens) 
 
             # for closures: must be a mutable
-            new = {'valid': True,
+            new = {'wellformed': True,
                    'context': ['ROOT'], # stack of: 'attrib', 'negation', 'pseudo'
                    'prefixes': set()
                    }
@@ -296,6 +300,7 @@ class Selector(cssutils.util.Base):
                         return simple_selector_sequence2 + combinator
 
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected universal.', token=token)
                     return expected
@@ -324,6 +329,7 @@ class Selector(cssutils.util.Base):
                         
                     return element_name
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected namespace prefix.', token=token)
                     return expected
@@ -357,6 +363,7 @@ class Selector(cssutils.util.Base):
                         return simple_selector_sequence2 + combinator
 
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected start of pseudo.', token=token)
                     return expected
@@ -369,6 +376,7 @@ class Selector(cssutils.util.Base):
                     append(seq, val, typ)
                     return expression
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected %s.' % typ, token=token)
                     return expected
@@ -384,6 +392,7 @@ class Selector(cssutils.util.Base):
                     append(seq, val)
                     return attvalue
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected %s.' % typ, token=token)
                     return expected
@@ -406,6 +415,7 @@ class Selector(cssutils.util.Base):
                     return expression
 
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected STRING.', token=token)
                     return expected
@@ -444,8 +454,10 @@ class Selector(cssutils.util.Base):
                     return simple_selector_sequence2 + combinator
 
                 else:
+                    new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected IDENT.', token=token)
+                        u'Selector: Unexpected IDENT.', 
+                        token=token)
                     return expected
 
             def _class(expected, seq, token, tokenizer=None):
@@ -461,6 +473,7 @@ class Selector(cssutils.util.Base):
                         return simple_selector_sequence2 + combinator
 
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected class.', token=token)
                     return expected
@@ -478,6 +491,7 @@ class Selector(cssutils.util.Base):
                         return simple_selector_sequence2 + combinator
 
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected HASH.', token=token)
                     return expected
@@ -544,12 +558,14 @@ class Selector(cssutils.util.Base):
 
                 elif u',' == val:
                     # not a selectorlist
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Single selector only.', 
                         error=xml.dom.InvalidModificationErr, 
                         token=token)
 
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected CHAR.', token=token)
                     return expected
@@ -562,13 +578,14 @@ class Selector(cssutils.util.Base):
                     append(seq, val, 'negation')
                     return negation_arg
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'Selector: Unexpected negation.', token=token)
                     return expected
 
             # expected: only|not or mediatype, mediatype, feature, and
             newseq = self._newseq()
-            valid, expected = self._parse(expected=simple_selector_sequence,
+            wellformed, expected = self._parse(expected=simple_selector_sequence,
                 seq=newseq, tokenizer=tokenizer,
                 productions={'CHAR': _char,
                              'class': _class,
@@ -592,21 +609,21 @@ class Selector(cssutils.util.Base):
                              
                              'S': _S,
                              'COMMENT': _COMMENT})
-            valid = valid and new['valid']
+            wellformed = wellformed and new['wellformed']
 
             # post condition
             if len(new['context']) > 1:
-                valid = False
+                wellformed = False
                 self._log.error(u'Selector: Incomplete selector: %s' %
                     self._valuestr(selectorText))
             
             if expected == 'element_name':
-                valid = False
+                wellformed = False
                 self._log.error(u'Selector: No element name found: %s' %
                     self._valuestr(selectorText))
 
             if expected == simple_selector_sequence:
-                valid = False
+                wellformed = False
                 self._log.error(u'Selector: Cannot end with combinator: %s' %
                     self._valuestr(selectorText))
 
@@ -614,8 +631,8 @@ class Selector(cssutils.util.Base):
                 del newseq[-1]
 
             # set
-            if valid:
-                self.valid = True
+            if wellformed:
+                self.wellformed = True
                 self.seq = newseq
                 self.prefixes = new['prefixes']
 
