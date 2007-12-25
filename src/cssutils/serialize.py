@@ -17,14 +17,13 @@ import util
 def _escapecss(e):
     """
     Escapes characters not allowed in the current encoding the CSS way
-    with a backslash followed by a uppercase 6 digit hex code point (always
-    6 digits to make it easier not to have check if no hexdigit char is 
-    following). 
-    E.g. the german umlaut 'ä' is escaped as \0000E4
+    with a backslash followed by a uppercase hex code point
+    
+    E.g. the german umlaut 'ä' is escaped as \E4
     """
     s = e.args[1][e.start:e.end]
-    return u''.join([ur'\%s' % str(hex(ord(x)))[2:] # remove 0x from hex
-                     .zfill(6).upper() for x in s]), e.end
+    return u''.join([ur'\%s ' % str(hex(ord(x)))[2:] # remove 0x from hex
+                     .upper() for x in s]), e.end
 
 codecs.register_error('escapecss', _escapecss)               
 
@@ -534,9 +533,8 @@ class CSSSerializer(object):
         """
         comma-separated list of Selectors
         """
-        if len(selectorlist.seq) == 0 or self._noinvalids(selectorlist):
-            return u''
-        else:
+        if selectorlist.seq and self._wellformed(selectorlist) and\
+                                self._valid(selectorlist):
             out = []
             sep = u',%s' % self.prefs.listItemSpacer
             for part in selectorlist.seq:
@@ -549,6 +547,9 @@ class CSSSerializer(object):
                 else:
                     out.append(part) # ?
             return sep.join(out)
+        else:
+            return u''
+            
 
     def do_css_Selector(self, selector):
         """
@@ -556,9 +557,8 @@ class CSSSerializer(object):
 
         TODO: style combinators like + >
         """
-        if len(selector.seq) == 0 or self._noinvalids(selector):
-            return u''
-        else:
+        if selector.seq and self._wellformed(selector) and\
+                                self._valid(selector):
             out = []
             for part in selector.seq:
                 if hasattr(part, 'cssText'):
@@ -569,6 +569,8 @@ class CSSSerializer(object):
                     else:
                         out.append(part)
             return u''.join(out)
+        else: 
+            return u''
 
     def do_css_CSSStyleDeclaration(self, style, separator=None):
         """
