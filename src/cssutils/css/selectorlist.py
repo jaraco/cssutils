@@ -37,6 +37,8 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         parsing the selector.
     seq:
         A list of interwoven Selector objects and u','
+    wellformed
+        if this selectorlist is wellformed regarding the Selector spec
     """
     def __init__(self, selectorText=None, readonly=False):
         """
@@ -44,6 +46,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         """
         super(SelectorList, self).__init__()
 
+        self.wellformed = False
         if selectorText:
             self.selectorText = selectorText
         self._readonly = readonly
@@ -56,7 +59,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         if not isinstance(newSelector, Selector):
             newSelector = Selector(newSelector)
 
-        if newSelector.valid:
+        if newSelector.wellformed:
             return newSelector
 
     def __setitem__(self, index, newSelector):
@@ -75,7 +78,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         Append newSelector (is a string will be converted to a new
         Selector. A duplicate Selector is removed.
         
-        Returns new Selector or None if newSelector is no valid 
+        Returns new Selector or None if newSelector is no wellformed 
         Selector.
 
         DOMException on setting
@@ -88,6 +91,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         """
         newSelector = self.__prepareset(newSelector)
         if newSelector:
+            self.wellformed = True
             seq = self.seq[:]
             del self.seq[:]
             for s in seq:
@@ -124,7 +128,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
           Raised if this rule is readonly.
         """
         self._checkReadonly()
-        valid = True
+        wellformed = True
         tokenizer = self._tokenize2(selectorText)
         newseq = []
 
@@ -139,10 +143,10 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                     expected = None
 
                 selector = Selector(selectortokens)
-                if selector.valid:
+                if selector.wellformed:
                     newseq.append(selector)
                 else:
-                    valid = False
+                    wellformed = False
                     self._log.error(u'SelectorList: Invalid Selector: %s' %
                                     self._valuestr(selectortokens))
             else:
@@ -150,15 +154,15 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
 
         # post condition
         if u',' == expected:
-            valid = False
+            wellformed = False
             self._log.error(u'SelectorList: Cannot end with ",": %r' %
                             self._valuestr(selectorText))
         elif expected:
-            valid = False
+            wellformed = False
             self._log.error(u'SelectorList: Unknown Syntax: %r' %
                             self._valuestr(selectorText))
-
-        if valid:
+        if wellformed:
+            self.wellformed = wellformed
             self.seq = newseq
             #for selector in newseq:
             #    self.appendSelector(selector)
