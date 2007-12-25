@@ -330,11 +330,8 @@ a, b {}'''
         sheet = cssutils.parseString(css)
         self.assertEqual(css, unicode(sheet.cssText, 'utf-8'))
         sheet.cssRules[0].encoding = 'ascii'
-        self.assertEqual('@charset "ascii";\n/* \\0003BA\\0003BF\\0003C5\\0003C1\\0003BF\\0003C2 */', 
+        self.assertEqual('@charset "ascii";\n/* \\3BA \\3BF \\3C5 \\3C1 \\3BF \\3C2  */', 
                          sheet.cssText)
-
-
-
 
     def test_Property(self):
         "CSSSerializer.do_Property"
