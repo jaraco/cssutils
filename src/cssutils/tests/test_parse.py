@@ -22,7 +22,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         s = cssutils.parseString(css2)
         s.cssRules[0].encoding='ascii'
         css3 = ur'''@charset "ascii";
-/* \0000E4 */'''
+/* \E4  */'''
         self.assertEqual(css3, unicode(s.cssText, 'utf-8'))
 
     def test_escapes(self):
