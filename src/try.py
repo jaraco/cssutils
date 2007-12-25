@@ -35,20 +35,20 @@ def escapecss(e):
     """
     Escapes characters not allowed in the current encoding the CSS way
     with a backslash followed by a uppercase 6 digit hex code point (always
-    6 digits to make it easier not to have check if no hexdigit char is 
-    following). 
+    6 digits to make it easier not to have check if no hexdigit char is
+    following).
     E.g. the german umlaut 'ä' is escaped as \0000E4
     """
     s = e.args[1][e.start:e.end]
-    return u''.join([ur'\%s' % str(hex(ord(x)))[2:] # remove 0x from hex
-                     .zfill(6).upper() for x in s]), e.end
+    return u''.join([ur'\%s ' % str(hex(ord(x)))[2:] # remove 0x from hex
+                     .upper() for x in s]), e.end
 
 codecs.register_error('escapecss', escapecss)
 
 
 if 0:
     b = cssutils.util.Base()
-    print b._normalize(ur'\41\0041\000061').encode('utf-8')
+    print b._normalize(ur'\72\0074\000061').encode('utf-8')
 
     sys.exit(0)
 
@@ -64,13 +64,13 @@ if 0:
 if 0:
     css = u'\\12345 b'
     for x in cssutils.tokenize2.Tokenizer().tokenize(css, 0):
-        print x, len(x[1]) 
+        print x, len(x[1])
     sys.exit(0)
 
 if 0:
     unicode = r'(\\[0-9a-f]{1,6}[\t|\r|\n|\f|\x20]?)'
     unisub = re.compile(unicode).sub
-    def r(m):    
+    def r(m):
         print '"'+m.group(0)[1:]+'"'
         return unichr(int(m.group(0)[1:], 16))
     r = unisub(r, ur'''\e4 :''')
@@ -83,17 +83,15 @@ if 0:
     print sheet.cssText
     #print sheet.cssRules[0].style.valid
     sys.exit(0)
-    
-    
-if 1:
-    css = u'/* a comment with umlaut ä */ a { color:red; }'
-    sheet = cssutils.parseString(css)
-    
-    for rule in sheet.cssRules:
-        if rule.type == rule.STYLE_RULE:
-            rule.style.setProperty('color', 'blue')
 
-    sheet.encoding = 'ascii'
+
+if 1:
+    css = u'''
+    a/**/b { color: red}
+    a*b { color: red}
+    '''
+    sheet = cssutils.parseString(css)
+    sheet.setSerializerPref('keepComments', False)
     print sheet.cssText
     sys.exit(0)
 
@@ -112,7 +110,7 @@ if 0:
 if 1:
     text = codecs.open('../sheets/1.css', encoding='css').read()
     print '1.css\n', text.encode('utf-8')
-    
+
     sheet = cssutils.parseString(text)
     sheet.cssRules[0].encoding = 'ascii'
     print '\nPARSED:\n', sheet.cssText
@@ -124,7 +122,7 @@ if 1:
     sheet.cssRules[0].encoding = 'utf-8'
     print '\nPARSED:\n', sheet.cssText
 
-    
+
     sys.exit(0)
 
 
@@ -141,17 +139,17 @@ if 1:
     }
     @page {}
     a {}
-    a , b { top : 1px ; 
-        font-family : arial ,  'some' 
+    a , b { top : 1px ;
+        font-family : arial ,  'some'
         }
     '''
     s = cssutils.parse('../sheets/1.css', encoding='ISO-8859-1')
     cssutils.ser.prefs.keepComments = True
     print s.cssText
-    
+
     sys.exit(0)
-    
-if 1:    
+
+if 1:
     p = cssutils.css.property.Property('top', '1px')
     #print p, p.valid
     v = p.cssValue
@@ -160,7 +158,7 @@ if 1:
     #print p, p.valid
     v = p.cssValue
     print v
-    
+
     sys.exit(0)
 
 if 1:
