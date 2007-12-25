@@ -10,6 +10,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '0.9.4a4'
 
+import codecs
 import os
 
 try:
@@ -20,9 +21,10 @@ except ImportError:
     from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return codecs.open(os.path.join(os.path.dirname(__file__), *rnames), 
+                       encoding='utf-8').read()
 
-long_description = "\n" + read('README.txt') + '\n' + read('CHANGELOG.txt')
+long_description = u'\n' + read('README.txt') + u'\n'# + read('CHANGELOG.txt')
 
 setup(
     name='cssutils',
