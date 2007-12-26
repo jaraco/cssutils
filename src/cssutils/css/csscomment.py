@@ -34,10 +34,9 @@ class CSSComment(cssrule.CSSRule):
     def __init__(self, cssText=None, readonly=False):
         super(CSSComment, self).__init__()
 
+        self._cssText = None
         if cssText:
             self._setCssText(cssText)
-        else:
-            self._cssText = None
 
         self._readonly = readonly
 
