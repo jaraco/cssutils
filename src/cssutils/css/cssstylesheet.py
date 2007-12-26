@@ -272,7 +272,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         Rule may be a string or a valid CSSRule.
 
         rule
-            a parsable DOMString (cssutils: or CSSRule object)
+            a parsable DOMString 
+            
+            in cssutils also a CSSRule or a CSSRuleList
+            
         index
             of the rule before the new rule will be inserted.
             If the specified index is equal to the length of the
@@ -316,6 +319,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self._log.error(u'CSSStyleSheet: Invalid Rule: %s' % rule)
                 return
             rule = tempsheet.cssRules[0]
+        elif isinstance(rule, cssutils.css.CSSRuleList):
+            for i, r in enumerate(rule):
+                self.insertRule(r, index + i)
+            return index
         elif not isinstance(rule, cssutils.css.CSSRule):
             self._log.error(u'CSSStyleSheet: Not a CSSRule: %s' % rule)
             return
@@ -362,7 +369,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                    isinstance(r, cssutils.css.CSSPageRule) or \
                    isinstance(r, cssutils.css.CSSStyleRule):
                     self._log.error(
-                        u'CSSStylesheet: Found @namespace, @media, @page or StyleRule before index %s.' %
+                        u'CSSStylesheet: Cannot insert @import here, found @namespace, @media, @page or CSSStyleRule before index %s.' %
                         index,
                         error=xml.dom.HierarchyRequestErr)
                     return
@@ -376,7 +383,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 if isinstance(r, cssutils.css.CSSCharsetRule) or \
                    isinstance(r, cssutils.css.CSSImportRule):
                     self._log.error(
-                        u'CSSStylesheet: Found @charset or @import after index %s.' %
+                        u'CSSStylesheet: Cannot insert @namespace here, found @charset or @import after index %s.' %
                         index,
                         error=xml.dom.HierarchyRequestErr)
                     return
@@ -386,7 +393,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     isinstance(r, cssutils.css.CSSPageRule) or \
                     isinstance(r, cssutils.css.CSSStyleRule):
                     self._log.error(
-                        u'CSSStylesheet: Found @media, @page or StyleRule before index %s.' %
+                        u'CSSStylesheet: Cannot insert @namespace here, found @media, @page or CSSStyleRule before index %s.' %
                         index,
                         error=xml.dom.HierarchyRequestErr)
                     return
@@ -401,7 +408,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                    isinstance(r, cssutils.css.CSSImportRule) or \
                    isinstance(r, cssutils.css.CSSNamespaceRule):
                     self._log.error(
-                        u'CSSStylesheet: Found @charset, @import or @namespace before index %s.' %
+                        u'CSSStylesheet: Cannot insert rule here, found @charset, @import or @namespace before index %s.' %
                         index,
                         error=xml.dom.HierarchyRequestErr)
                     return
