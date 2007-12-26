@@ -45,6 +45,7 @@ HEAD
             - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
             - save inline styles in same folder as all other sheets
 
+    - FEATURE: ``css.CSSStyleSheet.insertRule(rule, index)`` accepts now a ``css.CSSRuleList`` in addition to a ``css.CSSRule`` object or a CSS string. Useful if you like a combine a complete sheet into an exiting one.
 
     - **BUGFIX**: Serializing escape sequences add a single SPACE after each escape. This was not present until now so a sequence like "\74 a" did come out as "\000074a" which was not as intended. Also as a SPACE is inserted in any case all escapes are not padded to 6 digits anymore but are only as long as needed.
 
