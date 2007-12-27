@@ -274,7 +274,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         Used to insert a new rule into the style sheet. The new rule now
         becomes part of the cascade.
 
-        Rule may be a string or a valid CSSRule.
+        Rule may be a string or a valid CSSRule or a CSSRuleList.
 
         rule
             a parsable DOMString 
@@ -442,8 +442,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         **EXPERIMENTAL**
 
-        Utility method to replace all url(urlstring) values in
-        CSSImportRules and CSSStyleDeclaration objects (properties).
+        Utility method to replace all ``url(urlstring)`` values in 
+        ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
 
         ``replacer`` must be a function which is called with a single
         argument ``urlstring`` which is the current value of url()
@@ -481,7 +481,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
     def setSerializer(self, cssserializer):
         """
-        Sets Serializer used for output of this stylesheet
+        Sets the global Serializer used for output of all stylesheet
+        output.
         """
         if isinstance(cssserializer, cssutils.CSSSerializer):
             cssutils.ser = cssserializer
