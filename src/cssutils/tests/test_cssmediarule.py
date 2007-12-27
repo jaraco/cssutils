@@ -53,9 +53,11 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSMediaRule.cssRules"
         r = cssutils.css.CSSMediaRule()
         self.assertEqual([], r.cssRules)
+        sr = cssutils.css.CSSStyleRule()
+        r.cssRules.append(sr)
+        self.assertEqual([sr], r.cssRules)
         ir = cssutils.css.CSSImportRule()
-        r.cssRules.append(ir)
-        self.assertEqual([ir], r.cssRules)
+        self.assertRaises(xml.dom.HierarchyRequestErr, r.cssRules.append, ir)
 
     def test_cssText(self):
         "CSSMediaRule.cssText"
