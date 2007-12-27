@@ -39,7 +39,6 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_incomplete(self):
         "CSSFontFaceRule (incomplete)"
         tests = {
-            # TODO: with no { this should work too???
             u'@font-face{':
                 u'', # no } and no content
             u'@font-face { ':
