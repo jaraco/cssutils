@@ -30,6 +30,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'aA-_\200\377': [('IDENT', u'aA-_\200\377', 1, 1)],
         u'a1': [('IDENT', u'a1', 1, 1)],
         # escapes must end with S or max 6 digits:
+        u'\\44 b': [('IDENT', u'Db', 1, 1)],
+        u'\\44  b': [('IDENT', u'D', 1, 1),
+                     ('S', u' ', 1, 5),
+                     ('IDENT', u'b', 1, 6)],
         u'\\44\nb': [('IDENT', u'Db', 1, 1)],
         u'\\44\rb': [('IDENT', u'Db', 1, 1)],
         u'\\44\fb': [('IDENT', u'Db', 1, 1)],
