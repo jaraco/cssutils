@@ -64,6 +64,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 ownerNode, parentStyleSheet)
 
         self.cssRules = cssutils.css.CSSRuleList()
+        self.cssRules.append = self.insertRule
+        self.cssRules.extend = self.insertRule
+        
         self.prefixes = set()
         self._readonly = readonly
 
@@ -88,7 +91,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         # stylesheet  : [ CDO | CDC | S | statement ]*;
         self._checkReadonly()
         tokenizer = self._tokenize2(cssText)
-        newseq = cssutils.css.CSSRuleList()
+        newseq = [] #cssutils.css.CSSRuleList()
         # for closures: must be a mutable
         new = { 'prefixes': set() }
 
@@ -200,7 +203,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
              }, 
              default=ruleset)
 
-        self.cssRules = newseq
+        del self.cssRules[:]
+        for r in newseq:
+            self.cssRules.append(r)
         self.prefixes = new['prefixes']
         for r in self.cssRules:
             r.parentStyleSheet = self
