@@ -31,6 +31,28 @@ Options:
                         useragent to use for request of URL, default is
                         urllib2s default
 
+
+CSSCombine
+==========
+csscombine.py may be used to combine several sheets loaded from a main sheet via @import rules. No nested @imports are resolved yet and @namespace rules do not work yet!
+
+The resulting combined sheet (optionally minified) is send to stdout, info and error messages are send to stderr.
+
+CSSCombine may also be used to change the encoding of the stylesheet if the target encoding is given.
+
+Usage: csscombine.py [options] URL
+
+Options:
+  -h, --help            show this help message and exit
+  -s SRCENC, --srcenc=SRCENC
+                        encoding of input, defaulting to "css". If given
+                        overwrites other encoding information like @charset
+                        declarations
+  -t TARENC, --tarenc=TARENC
+                        encoding of output, defaulting to "UTF-8"
+  -m, --minified        saves minified version of combined files, defaults to
+                        False
+
 CSSParse
 ========
 Script version of ``cssutils.parse()``.
