@@ -15,13 +15,10 @@ class CSSRuleListTestCase(basetest.BaseTestCase):
         r = cssutils.css.CSSRuleList()
         self.assertEqual(0, r.length)
         self.assertEqual(None, r.item(2))
-
-        # subclasses list!
-        r.append(0)
-        r.append(1)
-        self.assertEqual(2, r.length)
-        self.assertEqual(1, r.item(1))
-        self.assertEqual(None, r.item(2))
+        
+        # subclasses list but all setting options like append, extend etc
+        # need to be added to an instance of this class by a using class!
+        self.assertRaises(NotImplementedError, r.append, 1)
 
 
 if __name__ == '__main__':
