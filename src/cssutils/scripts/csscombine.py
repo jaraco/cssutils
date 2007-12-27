@@ -1,12 +1,11 @@
 """resolves imports in a given CSS proxy sheet
 
 issues
-- URL or file hrefs? URI should be default and therefor baseURI is needed
-- no nested @imports are resolved yet
-- namespace rules are not working yet!
-    - @namespace must be resolved (all should be moved to top of main sheet?
-      but how are different prefixes resolved???)
-
+    - URL or file hrefs? URI should be default and therefor baseURI is needed
+    - no nested @imports are resolved yet
+    - namespace rules are not working yet!
+        - @namespace must be resolved (all should be moved to top of main sheet?
+          but how are different prefixes resolved???)
 """
 import os
 import sys
@@ -15,9 +14,8 @@ import cssutils
 def combine(proxy, srcenc='css', tarenc='utf-8', minified=True):
     """
     TODO:
-    
-    - encoding
-    - read conf
+        - encoding
+        - read conf
     """
     src = cssutils.parse(proxy, encoding=srcenc)
     sys.stderr.write('COMBINING %s\n' % proxy)
