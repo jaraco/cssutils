@@ -1,0 +1,36 @@
+what is it
+----------
+A Python package to parse and build CSS Cascading Style Sheets.
+
+main changes since 0.9.4a3
+--------------------------
+for full details for 0.9.4a4 see the relevant README file http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a4/README.txt and http://cssutils.googlecode.com/svn/tags/TAG_0.9.4a4/CHANGELOG.txt
+
+- **FEATURE**: Implemented ``css.CSSFontFaceRule``.
+
+- **FEATURE**: Added ``css.CSSStyleSheet.encoding`` which reflects the encoding of an explicit @charset rule. Setting the property to ``None`` removes an @charset rule if present and sets the encoding to the default value 'utf-8'. Setting a value of ``utf-8`` sets the encoding to the default value too but the @charset rule is explicitly added.
+
+      Effectively this removes the need to use ``css.CSSCharsetRule`` directly as using this new property is easier and simpler.
+
+      (A suggestion in the `CSSOM <http://dev.w3.org/csswg/cssom/#the-csscharsetrule>`_ but not yet resolved. IMHO it does make sense so it is present in cssutils. ``css.CSSCharsetRule`` remains though if you really *want* to use it).
+
+- **BUGFIX/IMPROVEMENT**: ``css.SelectorList`` and ``stylesheets.MediaList`` have (Python) list like behaviour partly but are *directly not lists anymore* (which did not work properly anyway...).
+
+- bugfixes and small improvements, added to docs
+
+
+license
+-------
+cssutils is published under the LGPL.
+
+download
+--------
+for download options for see http://cthedot.de/cssutils/
+
+cssutils needs
+* Python 2.4 or higher (tested with Python 2.5 on Vista only)
+
+
+bug reports, comments, etc are very much appreciated!
+thanks
+Christof
