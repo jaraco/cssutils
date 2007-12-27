@@ -59,8 +59,7 @@
         <xsl:attribute name="{local-name()}">
 			<xsl:choose>
 				<xsl:when test="starts-with($abshref, '/') or starts-with($abshref, '../')">
-		            <xsl:value-of select="py:rel(string($abshref), $level)"/>
-					#<xsl:value-of select="$abshref"/> <xsl:value-of select="$level"/>
+		            <xsl:value-of select="py:rel(string($abshref), $level)"/>#<xsl:value-of select="$abshref"/> <xsl:value-of select="$level"/>
 				</xsl:when>
 				<xsl:otherwise>
 		            <xsl:value-of select="$abshref"/>

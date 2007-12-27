@@ -2,6 +2,7 @@
 convert files in txt to html with adjusted links and img/@src (all absolute)
 """
 from docutils.core import publish_file
+import codecs
 import fnmatch
 from lxml import etree
 import os
@@ -65,7 +66,17 @@ def adjusthtml():
             print '\t\t+', filename
 
             f = os.path.join(dir, filename)
-            result = transform(etree.parse(open(f)), level='%i' % dir.count('\\'))
+
+            x = codecs.open(f, encoding='utf-8').read()
+            x = x.replace('&nbsp;', '&#160;')
+            xf = codecs.open(f, 'w', encoding='utf-8')
+            xf.write(x)
+            xf.close()
+            try:
+                result = transform(etree.parse(open(f)), level='%i' % dir.count('\\'))
+            except Exception, e:
+                print e, f
+                result = x
 
             # save
             target = open(f, 'w')
@@ -95,7 +106,7 @@ if __name__ == '__main__':
     convert2html()
     adjusthtml()
     shutil.copy2('rst/documentation/default.css',
-                 'cssutils_documentation/documentation/default.css')
+                 '../documentation_html/documentation/default.css')
 
     print "\nFINAL HTML docs are complete in ./%s/" % TARGETDIR
 
