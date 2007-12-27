@@ -61,11 +61,14 @@ if 0:
         print tk
     sys.exit(0)
 
-if 0:
-    css = u'\\12345 b'
-    for x in cssutils.tokenize2.Tokenizer().tokenize(css, 0):
-        print x, len(x[1])
+if 1:
+    sheet = cssutils.css.CSSStyleSheet('a {}')
+    rl = sheet.cssRules
+    print rl
+    rl.append(1)
+    print rl
     sys.exit(0)
+
 
 if 0:
     unicode = r'(\\[0-9a-f]{1,6}[\t|\r|\n|\f|\x20]?)'
@@ -86,9 +89,11 @@ if 0:
 
 
 if 1:
-    css = u'''
-    a/**/b { color: red}
-    a*b { color: red}
+    css=r'''
+    p { color: green; }
+    p ( { color: red; } p { background: blue; } ) 
+    i { color: red}
+    b { color: green}
     '''
     sheet = cssutils.parseString(css)
     sheet.setSerializerPref('keepComments', False)
@@ -107,7 +112,7 @@ if 0:
     print s
     sys.exit(0)
 
-if 1:
+if 0:
     text = codecs.open('../sheets/1.css', encoding='css').read()
     print '1.css\n', text.encode('utf-8')
 
@@ -143,6 +148,7 @@ if 1:
         font-family : arial ,  'some'
         }
     '''
+    
     s = cssutils.parse('../sheets/1.css', encoding='ISO-8859-1')
     cssutils.ser.prefs.keepComments = True
     print s.cssText
