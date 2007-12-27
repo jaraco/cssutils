@@ -16,6 +16,8 @@ overview
 Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ and `CSS Module: Namespaces (W3C Working Draft 28 August 2006) <http://www.w3.org/TR/css3-namespace/>`_
 
 :CSSStyleSheet_: Implements ``stylesheets.StyleSheet`` and is the *root* of a stylesheet.
+:CSSRuleList: A list of CSSRule objects used in CSSStyleSheet_ and CSSMediaRule_
+:CSSRule: Base class of all CSS rules, hardly useful itself
 :CSSCharsetRule_: @charset rule
 :CSSFontFaceRule_: @font-face rule (from v0.9.5a4)
 :CSSImportRule_: @import rule
@@ -24,7 +26,7 @@ Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/cs
 :CSSPageRule_: @page rule
 :CSSStyleRule_: Main Rule with Selectors and ``CSSStyleDeclaration``
 :`CSSStyleDeclaration <cssstyledeclaration.txt>`_: Containing a list of Properties
-:Property: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
+:`Property <cssstyledeclaration.txt#property>`_: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
 :`CSSValue <values.txt>`_: A CSS value which might also be a CSSPrimitiveValue or CSSValueList.
 :CSSComment: A comment anywhere in the stylesheet. Not in any official spec.
 
@@ -48,7 +50,11 @@ Also inherits properties from stylesheet.StyleSheet.
 .. _cssRules:
 
 cssRules
-    of type CSSRuleList, (DOM readonly)
+    A css::CSSRuleList of all CSS rules contained within the
+    stylesheet.
+
+.. _ownerRule:
+
 ownerRule
     of type CSSRule, readonly (NOT IMPLEMENTED YET)
 
@@ -56,7 +62,7 @@ ownerRule
 
 encoding (cssutils and CSSOM only)
     reflects the encoding of an @charset rule or 'utf-8' (default)
-    if set to ``None``.
+    if set to ``None``. If an explicit encoding of 'utf-8' is set an @charset rule is serialized, if encoding is ``None`` (and therefor also effectively 'utf-8') no @charset rule is serialized.
 
     Effectively using CSSCharsetRule directly is not needed anymore.
 
@@ -66,6 +72,46 @@ prefixes: set  (cssutils only)
     A set of declared prefixes via @namespace rules. Each
     CSSStyleRule is checked if it uses additional prefixes which are
     not declared. If they do they are "invalidated".
+
+Methods
+-------
+
+.. _deleteRule:
+
+deleteRule(self, index)
+    Used to delete a rule from the style sheet.
+
+.. _insertRule:
+
+insertRule(rule, index=None)
+    Used to insert a new rule into the style sheet. The new rule now
+    becomes part of the cascade.
+
+    Rule may be a string or a valid ``CSSRule`` or ``CSSRuleList``
+
+.. _replaceUrls:
+
+replaceUrls(replacer)
+    Utility method to replace all ``url(urlstring)`` values in ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
+
+    ``replacer`` must be a function which is called with a single
+    argument ``urlstring`` which is the current value of url()
+    excluding ``url(`` and ``)``. It still may have surrounding
+    single or double quotes though.
+
+.. _setSerializer:
+
+setSerializer(self, cssserializer)
+    Sets the global Serializer used for output of all stylesheet
+    output.
+
+.. _setSerializerPref:
+
+setSerializerPref(pref, value)
+    Sets Preference of CSSSerializer used for output of this
+    stylesheet. See cssutils.serialize.Preferences for possible
+    preferences to be set.
+
 
 CSSCharsetRule
 ==============
@@ -96,18 +142,42 @@ stylesheet
 
 CSSMediaRule
 ============
-tbd
+Rules (mainly ``CSSStyleRule`` s) which are to be used for the given ``media`` only.
+
+media
+    A list of media types for this rule of type MediaList.
+cssRules
+    A css::CSSRuleList of all CSS rules contained within the
+    media block.
 
 CSSFontFaceRule
 ===============
-tbd
+Holds font related definitions. Hardly used in any CSS implementation, I only know PrinceXML which uses it to defined fonts.
+
+style
+    The declaration-block of this rule
 
 CSSPageRule
 ===========
+Holds page related definitions. Mainly useful for print sheets, used extensively in page defining applications like PrinceXML.
+
+selectorText
+    The parsable textual representation of the page selector for the rule.
+style
+    The declaration-block of this rule
 
 CSSStyleRule
 ============
-tbd
+The CSSStyleRule object represents a ruleset specified (if any) in a CSS
+style sheet. It provides access to a declaration block as well as to the
+associated group of selectors.
+
+selectorText
+    The textual representation of the selector for the rule set.
+selectorList: of type SelectorList (cssutils only)
+    A list of all Selectors for the rule set.
+style
+    The declaration-block of this rule
 
 
 .. _MediaList: stylesheets.txt
