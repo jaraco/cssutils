@@ -49,7 +49,10 @@ class CSSMediaRule(cssrule.CSSRule):
             mediaText, readonly=readonly)
         if not self.media.valid:
             self._media = cssutils.stylesheets.MediaList()
-        self._cssRules = cssutils.css.cssrulelist.CSSRuleList()
+            
+        self.cssRules = cssutils.css.cssrulelist.CSSRuleList()
+        self.cssRules.append = self.insertRule
+        self.cssRules.extend = self.insertRule
 
         self._readonly = readonly
 
@@ -97,7 +100,7 @@ class CSSMediaRule(cssrule.CSSRule):
             
             # cssRules
             cssrulestokens = self._tokensupto2(tokenizer, mediaendonly=True)
-            newcssrules = cssutils.css.CSSRuleList()
+            newcssrules = [] #cssutils.css.CSSRuleList()
             if len(cssrulestokens) < 1 or (
                u'}' != self._tokenvalue(cssrulestokens[-1]) and
                'EOF' != self._type(cssrulestokens[-1])):
@@ -149,12 +152,12 @@ class CSSMediaRule(cssrule.CSSRule):
                     
             if newmedia.valid and valid:
                 self._media = newmedia
-                self._cssRules = newcssrules
+                del self.cssRules[:]# = newcssrules
+                for r in newcssrules:
+                    self.cssRules.append(r)
                 for r in self.cssRules:
                     r.parentRule = self # for CSSComment possible only here
         
-        
-
     cssText = property(_getCssText, _setCssText,
         doc="(DOM attribute) The parsable textual representation.")
 
@@ -165,13 +168,6 @@ class CSSMediaRule(cssrule.CSSRule):
     media = property(_getMedia,
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
-
-    def _getCssRules(self):
-        return self._cssRules
-
-    cssRules = property(_getCssRules,
-        doc="(DOM readonly) A css::CSSRuleList of all CSS rules contained\
-            within the media block.")
 
     def deleteRule(self, index):
         """
@@ -191,8 +187,8 @@ class CSSMediaRule(cssrule.CSSRule):
         self._checkReadonly()
 
         try:
-            self._cssRules[index].parentRule = None # detach
-            del self._cssRules[index] # remove from @media
+            self.cssRules[index].parentRule = None # detach
+            del self.cssRules[index] # remove from @media
         except IndexError:
             raise xml.dom.IndexSizeErr(
                 u'CSSMediaRule: %s is not a valid index in the rulelist of length %i' % (
