@@ -252,6 +252,19 @@ body {
                   s.insertRule, self.sr, s.cssRules.length + 1)
         #   check if rule is really not in
         self.assertEqual(L, s.cssRules.length)
+        
+        # insert string
+        s.insertRule('a {}')
+        self.assertEqual(L+1, s.cssRules.length)
+        # insert rule
+        s.insertRule(self.sr)
+        self.assertEqual(L+2, s.cssRules.length)
+        # insert rulelist
+        s2, L2 = self._gets()
+        rulelist = s2.cssRules
+        del rulelist[:-2]
+        s.insertRule(rulelist)
+        self.assertEqual(L+2 + 2, s.cssRules.length)
 
     def _insertRule(self, rules, notbefore, notafter, anywhere):
         """
