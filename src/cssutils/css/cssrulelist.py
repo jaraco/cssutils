@@ -17,8 +17,12 @@ class CSSRuleList(list):
     The items in the CSSRuleList are accessible via an integral index,
     starting from 0.
 
-    Subclasses a standard Python list so all standard list methods are
-    available.
+    Subclasses a standard Python list so theoretically all standard list
+    methods are available. Setting methods like ``__init__``, ``append``,
+    ``extend`` or ``__setslice__`` are added later on instances of this
+    class if so desired.
+    E.g. CSSStyleSheet adds ``append`` which is not available in a simple
+    instance of this class! 
 
     Properties
     ==========
@@ -26,6 +30,17 @@ class CSSRuleList(list):
         The number of CSSRules in the list. The range of valid child rule
         indices is 0 to length-1 inclusive.
     """
+    def __init__(self, *ignored):
+        "nothing is set as this must also be defined later"
+        pass
+    
+    def __notimplemented(self, *ignored):
+        "no direct setting possible"
+        raise NotImplementedError(
+            'Must be implemented by class using an instance of this class.')
+    
+    append = extend =  __setitem__ = __setslice__ = __notimplemented
+    
     def _getLength(self):
         return len(self)
 
@@ -47,3 +62,4 @@ class CSSRuleList(list):
             return self[index]
         except IndexError:
             return None
+
