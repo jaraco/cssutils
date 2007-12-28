@@ -36,31 +36,28 @@ known issues
 
 0.9.x
 -----
-
 HEAD
-    - **TODO**
 
-        + CSSParse
-            - use codec
-
-        + CSSCapture:
-            - for all stuff, use order of specific things (HTTP  Header, @charset , ... )
-            - save inline styles in same folder as all other sheets
+0.9.4b1 071228
 
     - **FEATURE**: Added ``csscombine`` script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!
 
     - FEATURE: ``css.CSSStyleSheet.insertRule(rule, index)`` accepts now a ``css.CSSRuleList`` in addition to a ``css.CSSRule`` object or a CSS string. Useful if you like a combine a complete sheet into an existing one.
 
-    - **BUGFIX**: Serializing escape sequences add a single SPACE after each escape. This was not present until now so a sequence like "\\74 a" did come out as "\\000074a" which was not as intended. Also as a SPACE is inserted in any case all escapes are not padded to 6 digits anymore but are only as long as needed.
+    + **BUGFIX**: Serializing escape sequences add a single SPACE after each escape. This was not present until now so a sequence like "\\74 a" did come out as "\\000074a" which was not as intended. Also as a SPACE is inserted in any case all escapes are not padded to 6 digits anymore but are only as long as needed.
 
-    - **BUGFIX**: Handling of illegal selectors is now same as the W3C CSS validator (and according the selector spec - I hope ;). Illegal selectors result the complete rule being dropped. Fixed are the following (edge) cases:
+    + **BUGFIX**: Handling of illegal selectors is now same as the W3C CSS validator (and according the selector spec - I hope ;). Illegal selectors result the complete rule being dropped. Fixed are the following (edge) cases:
 
       ``a/**/b``
         Meant was probably a space between a and b (plus maybe the comment) but it MUST be inserted. IE and Safari nevertheless seem to parse this rule as ``a b`` so as if a space would be present. cssutils now parses this selector as intented by the spec as ``ab``.
       ``a*b``
         Again spaces around the UNIVERSAL ``*`` were probably meant by the author. IE and Safari seem to parse this **invalid** selector as ``a b``. cssutils ignores this rule completely!
 
-    - BUGFIX: ``css.CSSRuleList`` is still a Python list but setting methods like ``__init__``, ``append``,     ``extend`` or ``__setslice__`` are added later on instances of this class if so desired. E.g. CSSStyleSheet adds ``append`` which is not available in a simple instance of this class! This has been changed as no validation is possible in CSSRuleList itself.
+    + BUGFIX: ``css.CSSRuleList`` is still a Python list but setting methods like ``__init__``, ``append``,     ``extend`` or ``__setslice__`` are added later on instances of this class if so desired. E.g. CSSStyleSheet adds ``append`` which is not available in a simple instance of this class! This has been changed as no validation is possible in CSSRuleList itself.
+
+    - CHANGE: Unknown media type in a MediaQuery (e.g. ``@media tv, radio``) does emit WARNING instead of ERROR now.
+
+    + IMPROVEMENT: Added position information to some error reportings (Property, CSSMediaRule
 
 
 0.9.4a4 071202
