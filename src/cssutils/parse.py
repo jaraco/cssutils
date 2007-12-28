@@ -1,13 +1,5 @@
 #!/usr/bin/env python
 """a validating CSSParser
-
-Usage::
-
-    parser = CSSParser()
-    stylesheet = p.parse('test1.css', 'ascii')
-
-    print stylesheet.cssText
-
 """
 __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
@@ -15,18 +7,21 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
-import codec
 import codecs
 import cssutils
-import cssutils.tokenize2
-from cssutils import stylesheets
 
 class CSSParser(object):
     """
     parses a CSS StyleSheet string or file and
     returns a DOM Level 2 CSS StyleSheet object
-    """
 
+    Usage::
+
+        parser = CSSParser()
+        stylesheet = p.parse('test1.css', 'ascii')
+    
+        print stylesheet.cssText
+    """
     def __init__(self, log=None, loglevel=None, raiseExceptions=False):
         """
         log
@@ -34,7 +29,7 @@ class CSSParser(object):
         loglevel
             logging loglevel
         raiseExceptions
-            if log should log (default) or raise
+            if log should simple log (default) or raise errors
         """
         if log is not None:
             cssutils.log.setlog(log)
@@ -42,6 +37,7 @@ class CSSParser(object):
             cssutils.log.setloglevel(loglevel)
 
         cssutils.log.raiseExceptions = raiseExceptions
+        self.__tokenizer = cssutils.tokenize2.Tokenizer()
 
     def parseString(self, cssText, href=None, media=None):
         """
@@ -56,12 +52,11 @@ class CSSParser(object):
             The media attribute to assign to the generated stylesheet
             (may be a MediaList, list or a string)
         """
-        tokenizer = cssutils.tokenize2.Tokenizer().tokenize(cssText, fullsheet=True)
-        stylesheet = cssutils.css.CSSStyleSheet()
-        stylesheet.cssText = tokenizer
-        stylesheet.href = href
-        stylesheet.media = stylesheets.MediaList(media)
-        return stylesheet
+        sheet = cssutils.css.CSSStyleSheet()
+        sheet.cssText = self.__tokenizer.tokenize(cssText, fullsheet=True)
+        sheet.href = href
+        sheet.media = cssutils.stylesheets.MediaList(media)
+        return sheet
 
     def parse(self, filename, encoding=None, href=None, media=None):
         """
@@ -77,28 +72,8 @@ class CSSParser(object):
         media
             The media attribute to assign to the generated stylesheet
             (may be a MediaList or a string)
-
-        TODO:
-            - parse encoding from CSS file? (@charset if given)
-
-        When a style sheet resides in a separate file, user agents must
-        observe the following priorities when determining a style sheet's
-        character encoding (from highest priority to lowest):
-
-        1. An HTTP "charset" parameter in a "Content-Type" field
-           (or similar parameters in other protocols)
-        2. BOM and/or @charset (see below)
-        3. <link charset=""> or other metadata from the linking mechanism
-           (if any)
-        4. charset of referring style sheet or document (if any)
-        5. Assume UTF-8
         """
         if not encoding:
             encoding = 'css'
-        cssText = codecs.open(filename, 'r', encoding).read()
-
-        # utf-8 BOM
-        #if cssText.startswith(u'\ufeff'):
-        #    cssText = cssText[1:]
-
-        return self.parseString(cssText, href=href, media=media)
+        return self.parseString(codecs.open(filename, 'r', encoding).read(),
+                                href=href, media=media)
