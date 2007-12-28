@@ -181,7 +181,7 @@ class Property(cssutils.util.Base):
         - SYNTAX_ERR: (self)
           Raised if the specified name has a syntax error and is
           unparsable.
-        """
+        """            
         # for closures: must be a mutable
         new = {'name': None, 
                'wellformed': True}
@@ -205,10 +205,16 @@ class Property(cssutils.util.Base):
         wellformed = wellformed and new['wellformed']
 
         # post conditions
+        # define a token for error logging 
+        if isinstance(name, list):
+            token = name[0]
+        else:
+            token = None
+        
         if not new['name']:
             wellformed = False
             self._log.error(u'Property: No name found: %r' %
-                self._valuestr(name))
+                self._valuestr(name), token=token)
 
         if wellformed:
             self.wellformed = True
@@ -219,8 +225,9 @@ class Property(cssutils.util.Base):
             # validate
             if self.normalname not in cssproperties.cssvalues:
                 self.valid = False
+                tokenizer=self._tokenize2(name)
                 self._log.info(u'Property: No CSS2 Property: %r.' %
-                         new['name'], neverraise=True)
+                         new['name'], token=token, neverraise=True)
             else:
                 self.valid = True
                 if self.cssValue:

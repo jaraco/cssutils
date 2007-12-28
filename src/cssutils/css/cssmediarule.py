@@ -128,7 +128,8 @@ class CSSMediaRule(cssrule.CSSRule):
                                  '@page', '@media'):
                         self._log.error(
                             u'CSSMediaRule: This rule is not allowed in CSSMediaRule - ignored: %s.'
-                                % self._valuestr(tokens), 
+                                % self._valuestr(tokens),
+                                token = token, 
                                 error=xml.dom.HierarchyRequestErr)
                     else:
                         rule = cssutils.css.CSSUnknownRule()
