@@ -64,6 +64,8 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '0.9.4b1 $LastChangedRevision$'
 
+import codec
+
 # order of imports is important (maybe as it is partly circular)
 import xml.dom
 
