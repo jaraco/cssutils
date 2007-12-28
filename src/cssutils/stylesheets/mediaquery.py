@@ -204,7 +204,7 @@ class MediaQuery(cssutils.util.Base):
                 error=xml.dom.SyntaxErr)
         else:
             if nmediaType not in MediaQuery.MEDIA_TYPES:
-                self._log.error(
+                self._log.warn(
                     u'MediaQuery: Unknown media type "%s".' % mediaType,
                     error=xml.dom.InvalidCharacterErr)
 
