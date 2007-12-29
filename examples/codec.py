@@ -3,6 +3,7 @@
 import codecs
 import cssutils
 
-cssText = codecs.open('sheets/test-unicode.css', encoding='css').read()
+cssText = codecs.open('sheets/cases.css', encoding='css').read()
 sheet = cssutils.parseString(cssText)
 print sheet
+print sheet.cssText

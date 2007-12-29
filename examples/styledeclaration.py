@@ -4,9 +4,9 @@ def show(style):
     print "style.length ==", style.length
     print "style.item(0) ==", style.item(0)
     print "style.item(1) ==", style.item(1)
-    print "style.getSameNamePropertyList('color') == ["
+    print "style.getProperties('color', all=True) == ["
     for x in style.getProperties('color', all=True):
-        print "\t", x
+        print "\t", x.cssText
     print "\t]"
     print "style.getPropertyValue('color') ==", style.getPropertyValue('color'), '\n'
 
