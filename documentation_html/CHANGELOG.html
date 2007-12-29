@@ -7,7 +7,7 @@
 <meta name="author" content="cthedot" />
 <meta name="copyright" content="2004-2007 Christof Hoeke" />
 <meta name="date" content="2007-11-06 22:22:15 +0100 (Di, 06 Nov 2007)" />
-<link rel="stylesheet" href="documentation/default.css&#10;&#9;&#9;&#9;&#9;&#9;#/documentation/default.css0" type="text/css" />
+<link rel="stylesheet" href="documentation/default.css#/documentation/default.css0" type="text/css" />
 </head>
 <body>
 <div class="document" id="changelog">
@@ -30,20 +30,33 @@
 <p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#known-issues" id="id8">known issues</a></li>
-<li><a class="reference internal" href="#x" id="id9">0.9.x</a></li>
-<li><a class="reference internal" href="#id1" id="id10">0.8.x</a></li>
-<li><a class="reference internal" href="#id2" id="id11">0.6.x</a></li>
-<li><a class="reference internal" href="#id3" id="id12">0.5.x</a></li>
-<li><a class="reference internal" href="#id4" id="id13">0.4.x</a></li>
-<li><a class="reference internal" href="#id5" id="id14">0.3.x</a></li>
-<li><a class="reference internal" href="#id6" id="id15">0.2.x</a></li>
-<li><a class="reference internal" href="#id7" id="id16">0.1.x</a></li>
+<li><a class="reference internal" href="#head" id="id9">HEAD</a></li>
+<li><a class="reference internal" href="#x" id="id10">0.9.x</a></li>
+<li><a class="reference internal" href="#id1" id="id11">0.8.x</a></li>
+<li><a class="reference internal" href="#id2" id="id12">0.6.x</a></li>
+<li><a class="reference internal" href="#id3" id="id13">0.5.x</a></li>
+<li><a class="reference internal" href="#id4" id="id14">0.4.x</a></li>
+<li><a class="reference internal" href="#id5" id="id15">0.3.x</a></li>
+<li><a class="reference internal" href="#id6" id="id16">0.2.x</a></li>
+<li><a class="reference internal" href="#id7" id="id17">0.1.x</a></li>
 </ul>
 </div>
 <div class="section" id="known-issues">
 <h1><a class="toc-backref" href="#id8">known issues</a></h1>
 <ul>
 <li><p class="first"><tt class="docutils literal"><span class="pre">cssparse</span></tt> script does not work correctly in version 0.9.4 yet.</p>
+</li>
+<li><p class="first">although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to not be preserved:</p>
+<dl class="docutils">
+<dt>star hack</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">*html</span></tt> without any whitespace</p>
+</dd>
+<dt>star7 hack</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">html*#test-span</span></tt> (IMHO invalidated by the missing WS between html and "*")</p>
+</dd>
+</dl>
+<p>The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils.</p>
+<p>Generally syntactically valid stylesheets should be preserved completely (otherwise a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above <tt class="docutils literal"><span class="pre">*html</span></tt> hack. Most of these hacks may be rewritten while still be usable, e.g. <tt class="docutils literal"><span class="pre">*</span> <span class="pre">html</span></tt> should work same to <tt class="docutils literal"><span class="pre">*html</span></tt>. Currenty the invalid CSS hack using <tt class="docutils literal"><span class="pre">$propertyname</span></tt> is actually preserved but still usage is discouraged. In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">css.UnknownRule</span></tt> is not handled properly in cases, tests are spotty there too. it also seems to have been removed in CSSOM but seems useful so is still present</p>
 </li>
@@ -56,47 +69,42 @@
 <li><p class="first">Properties are not bound to any CSS Version, so all properties are handled so
 <em>NOT</em> as described in <a class="reference external" href="http://www.w3.org/TR/CSS21/syndata.html#parsing-errors">http://www.w3.org/TR/CSS21/syndata.html#parsing-errors</a> "Illegal values". (A future version might be customizable to a specific CSS version like 2.1 or 3)</p>
 </li>
-<li><p class="first">although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to not (yet) be preserved:</p>
-<dl class="docutils">
-<dt>star hack</dt>
-<dd><p class="first last"><tt class="docutils literal"><span class="pre">*html</span></tt> without any whitespace</p>
-</dd>
-<dt>star7 hack</dt>
-<dd><p class="first last"><tt class="docutils literal"><span class="pre">html*#test-span</span></tt> (IMHO invalidated by the missing WS between html and "*")</p>
-</dd>
-</dl>
-<p>The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils.</p>
-</li>
 </ul>
 </div>
+<div class="section" id="head">
+<h1><a class="toc-backref" href="#id9">HEAD</a></h1>
+<p>todo</p>
+</div>
 <div class="section" id="x">
-<h1><a class="toc-backref" href="#id9">0.9.x</a></h1>
+<h1><a class="toc-backref" href="#id10">0.9.x</a></h1>
 <dl class="docutils">
-<dt>HEAD</dt>
-<dd><ul class="first last">
-<li><p class="first"><strong>TODO</strong></p>
-<blockquote>
+<dt>0.9.4b1 071229</dt>
+<dd><ul class="first simple">
+<li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">csscombine</span></tt> script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!</li>
+<li>FEATURE: <tt class="docutils literal"><span class="pre">css.CSSStyleSheet.insertRule(rule,</span> <span class="pre">index)</span></tt> accepts now a <tt class="docutils literal"><span class="pre">css.CSSRuleList</span></tt> in addition to a <tt class="docutils literal"><span class="pre">css.CSSRule</span></tt> object or a CSS string. Useful if you like a combine a complete sheet into an existing one.</li>
+</ul>
 <ul>
-<li><dl class="first docutils">
-<dt>CSSParse</dt>
-<dd><ul class="first last simple">
-<li>use codec</li>
-</ul>
+<li><p class="first"><strong>BUGFIX</strong>: Serializing escape sequences add a single SPACE after each escape. This was not present until now so a sequence like "\74 a" did come out as "\000074a" which was not as intended. Also as a SPACE is inserted in any case all escapes are not padded to 6 digits anymore but are only as long as needed.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Handling of illegal selectors is now same as the W3C CSS validator (and according the selector spec - I hope ;). Illegal selectors result the complete rule being dropped. Fixed are the following (edge) cases:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">a/**/b</span></tt></dt>
+<dd><p class="first last">Meant was probably a space between a and b (plus maybe the comment) but it MUST be inserted. IE and Safari nevertheless seem to parse this rule as <tt class="docutils literal"><span class="pre">a</span> <span class="pre">b</span></tt> so as if a space would be present. cssutils now parses this selector as intented by the spec as <tt class="docutils literal"><span class="pre">ab</span></tt>.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">a*b</span></tt></dt>
+<dd><p class="first last">Again spaces around the UNIVERSAL <tt class="docutils literal"><span class="pre">*</span></tt> were probably meant by the author. IE and Safari seem to parse this <strong>invalid</strong> selector as <tt class="docutils literal"><span class="pre">a</span> <span class="pre">b</span></tt>. cssutils ignores this rule completely!</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>CSSCapture:</dt>
-<dd><ul class="first last simple">
-<li>for all stuff, use order of specific things (HTTP  Header, @charset , ... )</li>
-<li>save inline styles in same folder as all other sheets</li>
-</ul>
-</dd>
-</dl>
+<li><p class="first">BUGFIX: <tt class="docutils literal"><span class="pre">css.CSSRuleList</span></tt> is still a Python list but setting methods like <tt class="docutils literal"><span class="pre">__init__</span></tt>, <tt class="docutils literal"><span class="pre">append</span></tt>,     <tt class="docutils literal"><span class="pre">extend</span></tt> or <tt class="docutils literal"><span class="pre">__setslice__</span></tt> are added later on instances of this class if so desired. E.g. CSSStyleSheet adds <tt class="docutils literal"><span class="pre">append</span></tt> which is not available in a simple instance of this class! This has been changed as no validation is possible in CSSRuleList itself.</p>
 </li>
 </ul>
-</blockquote>
-</li>
+<ul class="simple">
+<li>CHANGE: Unknown media type in a MediaQuery (e.g. <tt class="docutils literal"><span class="pre">@media</span> <span class="pre">tv,</span> <span class="pre">radio</span></tt>) does emit WARNING instead of ERROR now.</li>
+</ul>
+<ul class="last simple">
+<li>IMPROVEMENT: Added better <tt class="docutils literal"><span class="pre">str</span></tt> and <tt class="docutils literal"><span class="pre">repr</span></tt> to cssutils.serializer.Preferences</li>
+<li>IMPROVEMENT: Added position information to some error reportings (Property, CSSMediaRule</li>
 </ul>
 </dd>
 <dt>0.9.4a4 071202</dt>
@@ -344,11 +352,11 @@ for rule in sheet.cssRules:
 </dd>
 <dt>0.9.2b3 070804</dt>
 <dd><ul class="first last simple">
-<li>FEATURE: Script <tt class="docutils literal"><span class="pre">cssparse</span></tt> handles more than one file at a time now (patch from Issue #6 by Walter Dörwald)</li>
+<li>FEATURE: Script <tt class="docutils literal"><span class="pre">cssparse</span></tt> handles more than one file at a time now (patch from Issue #6 by Walter Doerwald)</li>
 <li>BUGFIX: Fixed Issue #7: typo gave AssertionError for selectors like <tt class="docutils literal"><span class="pre">tr:nth-child(odd)</span> <span class="pre">td{}</span></tt></li>
 <li>BUGFIX: Fixed Issue #5: false warning for certain values for <tt class="docutils literal"><span class="pre">background-position</span></tt> removed</li>
 <li>BUGFIX: Report of line/col for any node was not correct if a node contained line breaks itself</li>
-<li>Quite a few internal optimizations (thanks to Walter D�rwald)</li>
+<li>Quite a few internal optimizations (thanks to Walter Doerwald)</li>
 <li>Added tests for issues #3 and #4 to tokenizer too</li>
 </ul>
 </dd>
@@ -821,7 +829,7 @@ cssutils.setCSSSerializer(newserializer)</p>
 </dl>
 </div>
 <div class="section" id="id1">
-<h1><a class="toc-backref" href="#id10">0.8.x</a></h1>
+<h1><a class="toc-backref" href="#id11">0.8.x</a></h1>
 <dl class="docutils">
 <dt>0.8a6 - 050827</dt>
 <dd><ul class="first last simple">
@@ -941,7 +949,7 @@ Should not be used directly anyway</li>
 </dl>
 </div>
 <div class="section" id="id2">
-<h1><a class="toc-backref" href="#id11">0.6.x</a></h1>
+<h1><a class="toc-backref" href="#id12">0.6.x</a></h1>
 <dl class="docutils">
 <dt>0.61 - 050604</dt>
 <dd><dl class="first last docutils">
@@ -959,7 +967,7 @@ thanks to Kevin D. Smith</p>
 </dl>
 </div>
 <div class="section" id="id3">
-<h1><a class="toc-backref" href="#id12">0.5.x</a></h1>
+<h1><a class="toc-backref" href="#id13">0.5.x</a></h1>
 <dl class="docutils">
 <dt>0.55_52 - 040517 bugfix bugfix release</dt>
 <dd>should do test first ;)
@@ -1081,7 +1089,7 @@ xml.dom.DOMExceptions when finding an error</p>
 </dl>
 </div>
 <div class="section" id="id4">
-<h1><a class="toc-backref" href="#id13">0.4.x</a></h1>
+<h1><a class="toc-backref" href="#id14">0.4.x</a></h1>
 <dl class="docutils">
 <dt>0.41 - 040328</dt>
 <dd><p class="first">!cssnormalizer does not work in this version - on hold for 1.0</p>
@@ -1109,7 +1117,7 @@ MediaList class</p>
 </dl>
 </div>
 <div class="section" id="id5">
-<h1><a class="toc-backref" href="#id14">0.3.x</a></h1>
+<h1><a class="toc-backref" href="#id15">0.3.x</a></h1>
 <dl class="docutils">
 <dt>0.31 - 040320</dt>
 <dd><p class="first">!cssnormalizer does not work in this version</p>
@@ -1153,7 +1161,7 @@ renamed some classes to (almost) DOM names, the CSS prefix of DOM names is ommit
 </dl>
 </div>
 <div class="section" id="id6">
-<h1><a class="toc-backref" href="#id15">0.2.x</a></h1>
+<h1><a class="toc-backref" href="#id16">0.2.x</a></h1>
 <dl class="docutils">
 <dt>0.24_1 - 040214</dt>
 <dd>legal stuff: added licensing information
@@ -1206,7 +1214,7 @@ support build of a selector list in a rule</dd>
 </dl>
 </div>
 <div class="section" id="id7">
-<h1><a class="toc-backref" href="#id16">0.1.x</a></h1>
+<h1><a class="toc-backref" href="#id17">0.1.x</a></h1>
 <blockquote>
 <p>0.10 - 031221
 first version to try if i can bring it to work at all</p>
