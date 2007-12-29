@@ -21,8 +21,8 @@ class Seq(object):
     behaves almost like a list but keeps extra attribute "type" for
     each value in the list
 
-    types are tokens types like e.g. "COMMENT" (value='/*...*/', all uppercase)
-    or productions like e.g. "universal" (value='*', all lowercase)
+    types are token types like e.g. "COMMENT" (all uppercase, value='/*...*/')
+    or productions like e.g. "universal" (all lowercase, value='*')
     """
     def __init__(self):
         self.values = []
@@ -49,7 +49,7 @@ class Seq(object):
         self.types[index] = typ
 
     def __iter__(self):
-        "returns an iterator of values only "
+        "returns an iterator for values"
         return iter(self.values)
 
     def __len__(self):
@@ -61,13 +61,13 @@ class Seq(object):
         return u'[%s]' % u',\n '.join([u'(%r, %r)' % (value, self.types[i])
                                     for i, value in enumerate(self.values)])
     def __str__(self):
-        "returns a concanated string of all values"
+        "returns a concatated string of all values"
         items = []
         for i, value in enumerate(self.values):
             if self.types[i]:
                 if self.types[i] != 'COMMENT':
                     items.append(value)
-            items.append(value)
+            # items.append(value)
         return u''.join(str(items))
 
     def append(self, value, type=None):
@@ -76,6 +76,13 @@ class Seq(object):
         """
         self.values.append(value) # str(value)??? does not work if value is e.g. comment
         self.types.append(type)
+
+    # TODO: should this be the default and the list the special case???
+    def _get_values_types(self):
+        return ((self.values[i], self.types[i]) for i in range(0, len(self)))
+    
+    _items = property(_get_values_types, 
+        doc="EXPERIMENTAL: returns an iterator for (value, type) tuples")
 
 
 class ListSeq(object):
