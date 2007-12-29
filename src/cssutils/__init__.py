@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """cssutils - CSS Cascading Style Sheets library for Python
 
-    Copyright (C) 2004-2007 Christof Hoeke
+    Copyright (C) 2004-2008 Christof Hoeke
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
