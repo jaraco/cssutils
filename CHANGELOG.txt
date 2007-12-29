@@ -1,7 +1,7 @@
 changelog
 =========
 :Author: $LastChangedBy: cthedot $
-:Copyright: 2004-2007 Christof Hoeke
+:Copyright: 2004-2008 Christof Hoeke
 :Date: $LastChangedDate: 2007-11-06 22:22:15 +0100 (Di, 06 Nov 2007) $
 :Version: (rev $LastChangedRevision: 649 $)
 
