@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from pprint import pprint as pp
 import codecs
+
+
 import cssutils
 import re
 import sys
@@ -53,8 +55,8 @@ if 0:
     sys.exit(0)
 
 if 0:
-    css = r"'"
-    css = codecs.open('../sheets/1.css', encoding='css').read()
+    css = r"@import url('a'); foo(url(aaa)a"
+    #css = codecs.open('../sheets/1.css', encoding='css').read()
     t = cssutils.tokenize2.Tokenizer()
     gen = t.tokenize(css, fullsheet=0)
     for tk in gen:
@@ -62,11 +64,21 @@ if 0:
     sys.exit(0)
 
 if 1:
-    sheet = cssutils.css.CSSStyleSheet('a {}')
-    rl = sheet.cssRules
-    print rl
-    rl.append(1)
-    print rl
+    from lxml.cssselect import CSSSelector
+    
+    css = '''@namespace p 'test';
+    p|a[att~='1'], b>b, c+c, d d { color: red }'''
+    sheet = cssutils.parseString(css)
+    for s in sheet.cssRules[1].selectorList:
+        print s
+        print '.prefixes\t', s.prefixes
+        print '.selectorText\t', s.selectorText
+        # new in beta1: needs to be resolved
+        print '._items\t\t', list(s.seq._items) 
+        sel = CSSSelector(s.selectorText)
+        print 'XPath\t\t', sel.path
+        print 
+    
     sys.exit(0)
 
 
