@@ -45,15 +45,35 @@ class Preferences(object):
         Uses hreftype if ``None`` or explicit ``'string'`` or ``'uri'``
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
+        
     keepAllProperties = True
         If ``True`` all properties set in the original CSSStylesheet 
         are kept meaning even properties set twice with the exact same
         same name are kept!
+        
+    defaultAtKeyword=%r,
+    defaultPropertyName=%r,
+    importHrefFormat=%r,
+    indent=%r,
+    keepAllProperties=%r,
+    keepComments=%r,
+    keepEmptyRules=%r,
+    lineNumbers=%r,
+    lineSeparator=%r,
+    listItemSpacer=%r,
+    omitLastSemicolon=%r,
+    paranthesisSpacer=%r,
+    propertyNameSpacer=%r,
+    validOnly=%r,
+    wellformedOnly=%r,
+        
+        
     keepComments = True
         If ``False`` removes all CSSComments
     keepEmptyRules = False
         defines if empty rules like e.g. ``a {}`` are kept in the resulting
         serialized sheet
+        
     lineNumbers = False
         Only used if a complete CSSStyleSheet is serialized.
     lineSeparator = u'\\n'
@@ -85,15 +105,15 @@ class Preferences(object):
         more cases 
 
     """
-    def __init__(self, indent=None, lineSeparator=None):
+    def __init__(self, **initials):
         """
         Always use named instead of positional parameters
         """
         self.useDefaults()
-        if indent:
-            self.indent = indent
-        if lineSeparator:
-            self.lineSeparator = lineSeparator
+        
+        for key, value in initials.items():
+            if value:
+                self.__setattr__(key, value)
 
     def useDefaults(self):
         "reset all preference options to the default value"
@@ -134,6 +154,17 @@ class Preferences(object):
         self.propertyNameSpacer = u''
         self.validOnly = False
         self.wellformedOnly = True
+
+    def __repr__(self):
+        return u"cssutils.css.%s(%s)" % (self.__class__.__name__, 
+            u', '.join(['\n    %s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]
+                ))
+
+    def __str__(self):
+        return u"<cssutils.css.%s object %s at 0x%x" % (self.__class__.__name__, 
+            u' '.join(['%s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]
+                ),
+                id(self))
 
 
 class CSSSerializer(object):
