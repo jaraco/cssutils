@@ -34,12 +34,13 @@ known issues
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 2.1 or 3)
 
 
+HEAD
+----
+todo
+
 0.9.x
 -----
-HEAD
-
-0.9.4b1 071228
-
+0.9.4b1 071229
     - **FEATURE**: Added ``csscombine`` script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!
 
     - FEATURE: ``css.CSSStyleSheet.insertRule(rule, index)`` accepts now a ``css.CSSRuleList`` in addition to a ``css.CSSRule`` object or a CSS string. Useful if you like a combine a complete sheet into an existing one.
@@ -57,8 +58,9 @@ HEAD
 
     - CHANGE: Unknown media type in a MediaQuery (e.g. ``@media tv, radio``) does emit WARNING instead of ERROR now.
 
-    + IMPROVEMENT: Added position information to some error reportings (Property, CSSMediaRule
+    + IMPROVEMENT: Added better ``str`` and ``repr`` to cssutils.serializer.Preferences
 
+    + IMPROVEMENT: Added position information to some error reportings (Property, CSSMediaRule
 
 0.9.4a4 071202
     - **FEATURE**: Implemented ``css.CSSFontFaceRule``.
