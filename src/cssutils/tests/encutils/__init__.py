@@ -30,6 +30,7 @@ class AutoEncodingTestCase(unittest.TestCase):
         return FakeRes(content)
 
     def test_getTextTypeByMediaType(self):
+        "encutils._getTextTypeByMediaType"
         tests = {
             'application/xml': encutils._XML_APPLICATION_TYPE,
             'application/xml-dtd': encutils._XML_APPLICATION_TYPE,
@@ -49,6 +50,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                 exp, encutils._getTextTypeByMediaType(test, log=log))
 
     def test_getTextType(self):
+        "encutils._getTextType"
         tests = {
             u'\x00\x00\xFE\xFF<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
             u'\xFF\xFE\x00\x00<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
@@ -69,6 +71,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                 exp, encutils._getTextType(test, log=log))        
 
     def test_encodingByMediaType(self):
+        "encutils.encodingByMediaType"
         tests = {
             'application/xml': 'utf-8',
             'application/xml-dtd': 'utf-8',
@@ -88,6 +91,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                              encutils.encodingByMediaType(test, log=log))
    
     def test_getMetaInfo(self):
+        "encutils.getMetaInfo"
         tests = {
             """<meta tp-equiv='Content-Type' content='text/html; charset=ascii'>""":
                 (None, None),
@@ -129,6 +133,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             self.assertEqual(exp, encutils.getMetaInfo(test, log=log))
 
     def test_detectXMLEncoding(self):
+        "encutils.detectXMLEncoding"
         tests = {
             # BOM
             ('utf_32_be'): u'\x00\x00\xFE\xFFanything',
@@ -148,6 +153,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             self.assertEqual(exp, encutils.detectXMLEncoding(test, log=log))        
 
     def test_tryEncodings(self):
+        "encutils.tryEncodings"
         try:
             import chardet            
             tests = [
@@ -276,6 +282,7 @@ class AutoEncodingTestCase(unittest.TestCase):
         }
 
     def test_getEncodingInfo(self):
+        "encutils.getEncodingInfo"
         for exp, test in self.fulltests.items():
             header, text = test
             if header:
