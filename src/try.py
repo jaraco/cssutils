@@ -49,9 +49,18 @@ codecs.register_error('escapecss', escapecss)
 
 
 if 0:
-    b = cssutils.util.Base()
-    print b._normalize(ur'\72\0074\000061').encode('utf-8')
+    css = u'''
+    /* a comment with umlaut äöä€ */
+    a { color:red; }
 
+    '''
+    sheet = cssutils.parseString(css)
+    for rule in sheet.cssRules:
+        if rule.type == rule.STYLE_RULE:
+            rule.style.setProperty('color', 'blue')
+
+    sheet.encoding = 'iso-8859-1' # added in 0.9.4a4
+    print sheet.cssText
     sys.exit(0)
 
 if 0:
@@ -64,8 +73,20 @@ if 0:
     sys.exit(0)
 
 if 1:
+    # SELECTOR
+    sl = cssutils.css.SelectorList(selectorText='''
+        a[x~=x]
+        ''')
+    print 
+    for s in sl:
+        print '%r\t%s' % (s.specitivity, s.selectorText)
+        s.seq.append(1)
+        print s.seq
+    sys.exit(0)
+
+if 1:
     from lxml.cssselect import CSSSelector
-    
+
     css = '''@namespace p 'test';
     p|a[att~='1'], b>b, c+c, d d { color: red }'''
     sheet = cssutils.parseString(css)
@@ -74,11 +95,11 @@ if 1:
         print '.prefixes\t', s.prefixes
         print '.selectorText\t', s.selectorText
         # new in beta1: needs to be resolved
-        print '._items\t\t', list(s.seq._items) 
+        print '._items\t\t', list(s.seq._items)
         sel = CSSSelector(s.selectorText)
         print 'XPath\t\t', sel.path
-        print 
-    
+        print
+
     sys.exit(0)
 
 
@@ -103,7 +124,7 @@ if 0:
 if 1:
     css=r'''
     p { color: green; }
-    p ( { color: red; } p { background: blue; } ) 
+    p ( { color: red; } p { background: blue; } )
     i { color: red}
     b { color: green}
     '''
@@ -160,7 +181,7 @@ if 1:
         font-family : arial ,  'some'
         }
     '''
-    
+
     s = cssutils.parse('../sheets/1.css', encoding='ISO-8859-1')
     cssutils.ser.prefs.keepComments = True
     print s.cssText
