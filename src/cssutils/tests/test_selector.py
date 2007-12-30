@@ -200,9 +200,60 @@ class SelectorTestCase(basetest.BaseTestCase):
             u',': xml.dom.InvalidModificationErr,
             u',a': xml.dom.InvalidModificationErr,
             u'a,': xml.dom.InvalidModificationErr,
+
+            # TODO: u'#a#b': xml.dom.SyntaxErr,
+           
             }
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
+
+    def test_specitivity(self):
+        "Selector.specitivity"
+        selector = cssutils.css.Selector()
+        tests = {
+            u'*': (0,0,0,0),
+            u'li': (0,0,0,1),
+            u'li:first-line': (0,0,0,2),
+            u'ul li': (0,0,0,2),
+            u'ul ol+li': (0,0,0,3),
+            u'h1 + *[rel=up]': (0,0,1,1),
+            u'ul ol li.red': (0,0,1,3),
+            u'li.red.level': (0,0,2,1),
+            u'#x34y': (0,1,0,0),
+            
+            u'UL OL LI.red': (0,0,1,3),
+            u'LI.red.level': (0,0,2,1),
+            u'#s12:not(FOO)': (0,1,0,1),
+            u'button:not([DISABLED])': (0,0,1,1), #?
+            u'*:not(FOO)': (0,0,0,1),
+            
+            # elements
+            u'a:hover': (0,0,0,1),
+
+            u'a:first-line': (0,0,0,2),
+            u'a:first-letter': (0,0,0,2),
+            u'a:before': (0,0,0,2),
+            u'a:after': (0,0,0,2),
+            
+            u'a b': (0,0,0,2),
+            u'a+b': (0,0,0,2),
+            u'a>b': (0,0,0,2),
+
+            # classes
+            u'.a': (0,0,1,0),
+            u'.a.a': (0,0,2,0), # TODO: should be (0,0,1,0)
+            u'.a.b': (0,0,2,0),
+            u'.a .a': (0,0,2,0),
+            
+            # ids
+            u'#a': (0,1,0,0),
+            u'#a #a': (0,2,0,0),
+
+            }
+        for text in tests:
+            selector.selectorText = text
+            self.assertEqual(tests[text], selector.specitivity)
+            
 
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
