@@ -22,6 +22,21 @@ class SelectorTestCase(basetest.BaseTestCase):
     def test_init(self):
         "Selector.__init__()"
         s = cssutils.css.Selector('*')
+        self.assertEqual(set(), s.prefixes)
+        self.assertEqual('*', s.selectorText)
+        self.assertEqual((0,0,0,0), s.specitivity)
+
+        s = cssutils.css.Selector('a|b')
+        self.assertEqual(set('a'), s.prefixes)
+        self.assertEqual('a|b', s.selectorText)
+        self.assertEqual((0,0,0,1), s.specitivity)
+
+    def test_prefixes(self):
+        "Selector.prefixes"
+        sel=u'a|x1 a|x2 |y *|z [b|x] [a|x="1"]'
+        s = cssutils.css.Selector(selectorText=sel)
+        
+        self.assertEqual(set('ab'), s.prefixes)
 
     def test_selectorText(self):
         "Selector.selectorText"
@@ -107,6 +122,10 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''#1''': None, # valid to grammar but not for HTML
             u'''a#b''': None,
             u'''a #b''': None,
+            u'''a#b.c''': None,
+            u'''a.c#b''': None,
+            u'''a #b.c''': None,
+            u'''a .c#b''': None,
 
             u'''a>b''': None,
             u'''a> b''': 'a>b',
@@ -239,26 +258,41 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a+b': (0,0,0,2),
             u'a>b': (0,0,0,2),
 
-            # classes
+            # classes and attributes
             u'.a': (0,0,1,0),
+            u'*.a': (0,0,1,0),
             u'.a.a': (0,0,2,0), # TODO: should be (0,0,1,0)
             u'.a.b': (0,0,2,0),
             u'.a .a': (0,0,2,0),
+            u'*[x]': (0,0,1,0),
+            u'*[x]': (0,0,1,0),
+            u'*[x]': (0,0,1,0),
+            u'*[x=a]': (0,0,1,0),
+            u'*[x~=a]': (0,0,1,0),
+            u'*[x|=a]': (0,0,1,0),
+            u'*[x^=a]': (0,0,1,0),
+            u'*[x*=a]': (0,0,1,0),
+            u'*[x$=a]': (0,0,1,0),
+            u'*[x][y]': (0,0,2,0),
             
             # ids
             u'#a': (0,1,0,0),
-            u'#a #a': (0,2,0,0),
-
+            u'*#a': (0,1,0,0),
+            u'x#a': (0,1,0,1),
+            u'.x#a': (0,1,1,0),
+            u'a.x#a': (0,1,1,1),
+            u'#a #a': (0,2,0,0), # should not happen as id is id ;)
+            u'#a#b': (0,2,0,0), # should not happen?
+            u'#a #b': (0,2,0,0),
             }
         for text in tests:
             selector.selectorText = text
             self.assertEqual(tests[text], selector.specitivity)
             
-
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
         sel=u'a+b'
-
+        
         s = cssutils.css.Selector(selectorText=sel)
 
         self.assert_(sel in str(s))
@@ -267,12 +301,6 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assert_(isinstance(s2, s.__class__))
         self.assert_(sel == s2.selectorText)
 
-    def test_prefixes(self):
-        "Selector.prefixes"
-        sel=u'a|x1 a|x2 |y *|z [b|x] [a|x="1"]'
-        s = cssutils.css.Selector(selectorText=sel)
-        
-        self.assertEqual(set('ab'), s.prefixes)
 
 if __name__ == '__main__':
     import unittest
