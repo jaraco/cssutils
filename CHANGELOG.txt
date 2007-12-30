@@ -34,12 +34,14 @@ known issues
   *NOT* as described in http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 2.1 or 3)
 
 
-HEAD
-----
-todo
-
 0.9.x
 -----
+HEAD
+    - **FEATURE**: ``css.Selector`` has an property ``specitivity`` now which is calculated like described at http://www.w3.org/TR/css3-selectors/#specificity
+
+      **ATTENTION**: changing the Selector by changing its property ``seq`` does **not** update the specitivity yet!
+
+
 0.9.4b1 071229
     - **FEATURE**: Added ``csscombine`` script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!
 
