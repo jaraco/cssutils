@@ -41,28 +41,89 @@ class SelectorTestCase(basetest.BaseTestCase):
     def test_selectorText(self):
         "Selector.selectorText"
         tests = {
-            u'''*''': None,
-            u'''*/*x*/''': None,
-            u'''* /*x*/''': None,
-            u'''*:hover''': None,
-            u'''* :hover''': None,
-            u'''*:lang(fr)''': None,
-            u'''* :lang(fr)''': None,
-            u'''*::first-line''': None,
-            u'''* ::first-line''': None,
-            u'''*[lang=fr]''': None,
-            u'''[lang=fr]''': None,
+            # combinators
+            u'a+b>c~e f': None,
+            u'a+b': None,
+            u'a  +  b': 'a+b',
+            u'a\n  +\t  b': 'a+b',
+            u'a~b': None,
+            u'a b': None,
+            u'a   b': 'a b',
+            u'a\nb': 'a b',
+            u'a\tb': 'a b',
+            u'a   #b': 'a #b',
+            u'a   .b': 'a .b',
             u'a * b': None,
+            # >
+            u'a>b': None,
+            u'a> b': 'a>b',
+            u'a >b': 'a>b',
+            u'a > b': 'a>b',
+            # +
+            u'a+b': None,
+            u'a+ b': 'a+b',
+            u'a +b': 'a+b',
+            u'a + b': 'a+b',
+            # ~
+            u'a~b': None,
+            u'a~ b': 'a~b',
+            u'a ~b': 'a~b',
+            u'a ~ b': 'a~b',
 
-            u'''a''': None,
-            u'''h1''': None,
-            u'''.a a''': None,
+            # type selector
+            u'a': None,
+            u'h1-a_x__--': None,
+            u'a-a': None,
+            u'a_a': None,
+            u'-a': None,
+            u'_': None,
+            u'-_': None,
+            ur'-\72': u'-r',
+            #ur'\25': u'%', # TODO: should be escaped!
+            u'.a a': None,
+            u'a1': None,
+            u'a1-1': None,
+            u'.a1-1': None,
+            u'|e': None,
+            u'*|e': None,
+            u'*|*': None,
+            u'n|*': None,
+            u'n|e': None,
+            u'-a_x12|e': None,
+            u'*|b[x|a]': None,
 
-            u'''a1''': None,
-            u'''a1-1''': None,
-            u'''.a1-1''': None,
-            u'''.a1._1''': None,
+            # universal
+            u'*': None,
+            u'*/*x*/': None,
+            u'* /*x*/': None,
+            u'*:hover': None,
+            u'* :hover': None,
+            u'*:lang(fr)': None,
+            u'* :lang(fr)': None,
+            u'*::first-line': None,
+            u'* ::first-line': None,
+            u'*[lang=fr]': None,
+            u'[lang=fr]': None,
 
+            # HASH
+            u'''#a''': None,
+            u'''#a1''': None,
+            u'''#1a''': None, # valid to grammar but not for HTML
+            u'''#1''': None, # valid to grammar but not for HTML
+            u'''a#b''': None,
+            u'''a #b''': None,
+            u'''a#b.c''': None,
+            u'''a.c#b''': None,
+            u'''a #b.c''': None,
+            u'''a .c#b''': None,
+
+            # class
+            u'ab': 'ab',
+            u'a.b': None,
+            u'a.b.c': None,
+            u'.a1._1': None,
+
+            # attrib
             u'''[x]''': None,
             u'''*[x]''': None,
             u'''a[x]''': None,
@@ -107,55 +168,36 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''a[/*1*/x/*2*/=/*3*/a/*4*/]''': None,
             u'''a[/*1*/x/*2*/~=/*3*/a/*4*/]''': None,
             u'''a[/*1*/x/*2*/|=/*3*/a/*4*/]''': None,
-
-            u'''a b''': None,
-            u'''a   b''': 'a b',
-            u'''a   #b''': 'a #b',
-            u'''a   .b''': 'a .b',
-            u'''ab''': 'ab',
-            u'''a.b''': None,
-            u'''a.b.c''': None,
-
-            u'''#a''': None,
-            u'''#a1''': None,
-            u'''#1a''': None, # valid to grammar but not for HTML
-            u'''#1''': None, # valid to grammar but not for HTML
-            u'''a#b''': None,
-            u'''a #b''': None,
-            u'''a#b.c''': None,
-            u'''a.c#b''': None,
-            u'''a #b.c''': None,
-            u'''a .c#b''': None,
-
-            u'''a>b''': None,
-            u'''a> b''': 'a>b',
-            u'''a >b''': 'a>b',
-            u'''a > b''': 'a>b',
-            # CSS2 combinator +
-            u'''a+b''': None,
-            u'''a+ b''': 'a+b',
-            u'''a +b''': 'a+b',
-            u'''a + b''': 'a+b',
-            # CSS3 combinator ~
-            u'''a~b''': None,
-            u'''a~ b''': 'a~b',
-            u'''a ~b''': 'a~b',
-            u'''a ~ b''': 'a~b',
-
-            u'''a+ b c''': 'a+b c',
-            # namespaceprefixes
-            u'''|e''': None,
-            u'''*|e''': None,
-            u'''n|e''': None,
-            u'''n|*''': None,
-            u'''*|b[x|a]''': None,
-
-            u'''x:lang(de) y''': None,
-            u'''x:nth-child(odd) y''': None,
             
+            # pseudo-elements
+            u'a x:first-line': None,
+            u'a x:first-letter': None,
+            u'a x:before': None,
+            u'a x:after': None,
+            u'a x::selection': None,
+            
+            u'x:lang(de) y': None,
+            u'x:nth-child(odd) y': None,
+            # functional pseudo
+            u'x:func(+-2px22.3"s"i)': None,
+            u'x:func(+)': None,
+            u'x:func(1px)': None,
+            u'x:func(23.4)': None,
+            u'x:func("s")': None,
+            u'x:func(i)': None,
+            
+            # negation
             u':not(y)': None,
+            u':not(   y  \t\n)': u':not(y)',
+            u'*:not(y)': None,
             u'x:not(y)': None,
             u'.x:not(y)': None,
+            u':not(*)': None,
+            u':not(#a)': None,
+            u':not(.a)': None,
+            u':not([a])': None,
+            u':not(:first-letter)': None,
+            u':not(::first-letter)': None,
             
             # escapes
             ur'\74\72 td': 'trtd',
@@ -163,6 +205,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             ur'\74\000072 td': 'trtd',
             ur'\74\000072  td': 'tr td',
             
+            # comments
             u'a/**/ b': None,
             u'a /**/b': None,
             u'a /**/ b': None,
@@ -175,6 +218,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         tests = {
             u'': xml.dom.SyntaxErr,
             u'1': xml.dom.SyntaxErr,
+            u'-1': xml.dom.SyntaxErr,
             u'a*b': xml.dom.SyntaxErr,
             u'a *b': xml.dom.SyntaxErr,
             u'a* b': xml.dom.SyntaxErr,
@@ -211,9 +255,16 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a ++ b': xml.dom.SyntaxErr,
             u'a + > b': xml.dom.SyntaxErr,
 
+            # functional pseudo
             u'*:lang(': xml.dom.SyntaxErr,
+            u'*:lang()': xml.dom.SyntaxErr, # no arg
 
+            # negation
             u'not(x)': xml.dom.SyntaxErr, # no valid function
+            u':not()': xml.dom.SyntaxErr, # no arg
+            u':not(x': xml.dom.SyntaxErr, # no )
+            u':not(-': xml.dom.SyntaxErr, # not allowed
+            u':not(+': xml.dom.SyntaxErr, # not allowed
 
             # only one selector!
             u',': xml.dom.InvalidModificationErr,
@@ -247,6 +298,13 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'*:not(FOO)': (0,0,0,1),
             
             # elements
+            u'a+b': (0,0,0,2),
+            u'a>b': (0,0,0,2),
+            u'a b': (0,0,0,2),
+            u'* a': (0,0,0,1),
+            u'a *': (0,0,0,1),
+            u'a * b': (0,0,0,2),
+
             u'a:hover': (0,0,0,1),
 
             u'a:first-line': (0,0,0,2),
@@ -254,15 +312,14 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a:before': (0,0,0,2),
             u'a:after': (0,0,0,2),
             
-            u'a b': (0,0,0,2),
-            u'a+b': (0,0,0,2),
-            u'a>b': (0,0,0,2),
-
             # classes and attributes
             u'.a': (0,0,1,0),
             u'*.a': (0,0,1,0),
-            u'.a.a': (0,0,2,0), # TODO: should be (0,0,1,0)
+            u'a.a': (0,0,1,1),
+            u'.a.a': (0,0,2,0), # IE<7 False (0,0,1,0) 
+            u'a.a.a': (0,0,2,1), 
             u'.a.b': (0,0,2,0),
+            u'a.a.b': (0,0,2,1),
             u'.a .a': (0,0,2,0),
             u'*[x]': (0,0,1,0),
             u'*[x]': (0,0,1,0),
@@ -281,8 +338,8 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'x#a': (0,1,0,1),
             u'.x#a': (0,1,1,0),
             u'a.x#a': (0,1,1,1),
-            u'#a #a': (0,2,0,0), # should not happen as id is id ;)
-            u'#a#b': (0,2,0,0), # should not happen?
+            u'#a#a': (0,2,0,0), # e.g. html:id + xml:id
+            u'#a#b': (0,2,0,0), 
             u'#a #b': (0,2,0,0),
             }
         for text in tests:
