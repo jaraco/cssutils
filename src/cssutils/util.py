@@ -70,7 +70,7 @@ class Seq(object):
             # items.append(value)
         return u''.join(str(items))
 
-    def append(self, value, type=None):
+    def _append(self, value, type=None):
         """
         same as list.append but not a simple value but a SeqItem is appended
         """
