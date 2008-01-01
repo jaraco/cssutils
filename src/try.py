@@ -73,15 +73,31 @@ if 0:
     sys.exit(0)
 
 if 1:
+    sheet = cssutils.parseString('''
+        a,b  { color: red }
+        a:hover {color: blue}
+        b a { left: 0 }
+        c a { color: blue}
+        @media all {
+            a { color: red;}
+            b a { color: blue}
+            a:hover { color: blue}
+        }
+        ''')
+    cssutils.ser.prefs.indentSpecitivities = True
+    print sheet.cssText
+    sys.exit(0)
+
+if 1:
     # SELECTOR
     sl = cssutils.css.SelectorList(selectorText='''
-        *|*, *|e, |e, e, p|*, p|e
-        ''')
+        |b[a|x], a''')
+        #*|*, *|e, |e, e, p|*, p|e   ''')
     print 
     for s in sl:
-        print '%r\t%s' % (s.specitivity, s.selectorText)
-        print s._element
-        print 'SEQ', s.seq
+        print 'Selector.seq:', s.seq
+        print '\t%s\t%r' % (s.selectorText, s.specitivity)
+        print '\t', s._element
         print 
     print s
     sys.exit(0)
