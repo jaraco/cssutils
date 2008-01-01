@@ -552,7 +552,6 @@ class CSSSerializer(object):
         # TODO: sort selectors!
         if self.prefs.indentSpecitivities:
             # subselectorlist?
-            print self._selectors
             elements = set([s.element for s in rule.selectorList])
             specitivities = [s.specitivity for s in rule.selectorList]
             for last in self._selectors:
@@ -560,9 +559,6 @@ class CSSSerializer(object):
                 if elements.issubset(lastelements):
                     # higher specitivity?
                     lastspecitivities = [s.specitivity for s in last]
-                    print lastspecitivities, last
-                    print specitivities, rule.selectorList
-                    print 
                     if specitivities > lastspecitivities:
                         self._selectorlevel += 1
                         break
