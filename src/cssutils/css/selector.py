@@ -148,10 +148,11 @@ class Selector(cssutils.util.Base):
         super(Selector, self).__init__()
 
         #self.valid = False # not used anymore
-        self.wellformed = False
-        self.seq = self._newseq()
+        self._element = None
         self.prefixes = set()
+        self.seq = self._newseq()
         self._specitivity = (0, 0, 0, 0)
+        self.wellformed = False
         if selectorText:
             self.selectorText = selectorText
         self._readonly = readonly
@@ -244,7 +245,8 @@ class Selector(cssutils.util.Base):
 
             # for closures: must be a mutable
             new = {'context': [''], # stack of: 'attrib', 'negation', 'pseudo'
-                   'element': [],
+                   'element': None,
+                   '_prefix-last': None,
                    'prefixes': set(), 
                    'specitivity': [0, 0, 0, 0], # mutable, finally a tuple!
                    'wellformed': True
@@ -254,11 +256,30 @@ class Selector(cssutils.util.Base):
 
             def append(seq, val, typ=None, context=None):
                 """
-                appends to seq, may be expanded later
+                appends to seq
                 
-                specitivity (style, id, class, type)
+                namespace_prefix, IDENT will be combined to a tuple 
+                (prefix, name) where prefix might be None, the empty string
+                or a prefix. 
+
+                Saved are also:
+                    - specitivity definition: style, id, class, type
+                    - element: the element this Selector is for
                 """
-                #print context, typ, val
+                if typ == 'namespace_prefix':
+                    # save prefix for combination with next
+                    new['_prefix-last'] = val[:-1]
+                    return
+                
+                if new['_prefix-last'] is not None:
+                    prefix, new['_prefix-last'] = new['_prefix-last'], None
+                else:
+                    prefix = None
+                
+                if typ in ('IDENT', 'universal'):
+                    # val is (namespaceprefix, name) tuple
+                    val = (prefix, val)
+
                 if not context or context == 'negation':   
                     # define specitivity
                     if 'HASH' == typ:
@@ -267,13 +288,11 @@ class Selector(cssutils.util.Base):
                         new['specitivity'][2] += 1
                     elif typ in ('IDENT', 'pseudo-element'):
                         new['specitivity'][3] += 1
-                if not context:
+                if not context and typ in ('IDENT', 'universal'):
                     # define element
-                    if typ in ('IDENT', 'universal'):
-                        if seq and seq.types[-1] == 'namespace_prefix':
-                            new['element'] = (seq.values[-1][:-1], val)
-                        else:
-                            new['element'] = (None, val)
+                    new['element'] = val
+                    
+                    
                 seq._append(val, typ)
 
             # expected constants
@@ -671,6 +690,9 @@ class Selector(cssutils.util.Base):
                 self.seq = newseq
                 self._specitivity = tuple(new['specitivity'])
                 self.wellformed = True
+
+    element = property(lambda self: self._element, 
+                           doc="Element of this selector (READONLY).")
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="(DOM) The parsable textual representation of the selector.")
