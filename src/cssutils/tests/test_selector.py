@@ -3,7 +3,7 @@
 what should happen here?
     - star 7 hack::
         x*
-        does not validate but works in IE>5 and FF...
+        does not validate but works in IE>5 and FF, does it???
 
 """
 __author__ = '$LastChangedBy$'
@@ -270,9 +270,6 @@ class SelectorTestCase(basetest.BaseTestCase):
             u',': xml.dom.InvalidModificationErr,
             u',a': xml.dom.InvalidModificationErr,
             u'a,': xml.dom.InvalidModificationErr,
-
-            # TODO: u'#a#b': xml.dom.SyntaxErr,
-           
             }
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
@@ -280,6 +277,11 @@ class SelectorTestCase(basetest.BaseTestCase):
     def test_specitivity(self):
         "Selector.specitivity"
         selector = cssutils.css.Selector()
+        
+        # readonly
+        def _set(): selector.specitivity = 1
+        self.assertRaisesMsg(AttributeError, "can't set attribute", _set)
+        
         tests = {
             u'*': (0,0,0,0),
             u'li': (0,0,0,1),
@@ -345,7 +347,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         for text in tests:
             selector.selectorText = text
             self.assertEqual(tests[text], selector.specitivity)
-            
+                    
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
         sel=u'a+b'
