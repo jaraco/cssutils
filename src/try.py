@@ -72,7 +72,9 @@ if 0:
         print tk
     sys.exit(0)
 
-if 1:
+
+if 0:
+    # RESOLVE INDENTATION!!!
     sheet = cssutils.parseString('''
         a,b  { color: red }
         a:hover {color: blue}
@@ -88,7 +90,7 @@ if 1:
     print sheet.cssText
     sys.exit(0)
 
-if 1:
+if 0:
     # SELECTOR
     sl = cssutils.css.SelectorList(selectorText='''
         |b[a|x], a''')
@@ -105,12 +107,13 @@ if 1:
 if 1:
     css = '''
         body a { color: green }
-        a { color: red }
+        a { color: red; left: 0 }
         b { color: blue }
     '''
     html = '''<html>
         <body>
-            <a href="#">link</a>
+            <a href="#1">link</a>
+            <p><a href="#2">coming: <b>b</b>link</a></p>
         </body>
     </html>'''
     
@@ -120,26 +123,32 @@ if 1:
     doc = etree.HTML(html)
     css = cssutils.parseString(css)
     
-    view = {}
+    view = []
     
+    # TODO: filter rules simpler?
     for rule in css.cssRules:
         if rule.type == rule.STYLE_RULE:
-            sel = CSSSelector(rule.selectorText)
-            res = sel.evaluate(doc)
-            if res:
-                for e in res:
-                    if not e in view:
-                        # new class which has 
-                        # - specitivity
-                        # !important
-                        view[e] = cssutils.css.CSSStyleDeclaration()
-                    for p in rule.style:
-                        view[e].setProperty(p.name, p.value)
+            
+            for sel in rule.selectorList:
+                csssel = CSSSelector(sel.selectorText)
+                res = csssel.evaluate(doc)
+                if res:
+                    sp = sel.specitivity
+                    for e in res:
+                        if not e in view:
+                            # new class which has 
+                            # - specitivity
+                            # !important
+                            pass
+                            #view[e] = (sp, [])
+                        for p in rule.style:
+                            view.append((sp, p))
 
     print
     print view
     for e in view:
-        print e, view[e].cssText 
+        print e
+        print 
 
             
     
