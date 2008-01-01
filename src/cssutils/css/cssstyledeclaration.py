@@ -603,8 +603,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         only. ``item()`` and ``length`` work on the same set here.")
 
     def __repr__(self):
-        return "cssutils.css.%s()" % (
-                self.__class__.__name__)
+        return "cssutils.css.%s(cssText=%r)" % (
+                self.__class__.__name__, self.getCssText(separator=u' '))
 
     def __str__(self):
         return "<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
