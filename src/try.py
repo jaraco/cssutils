@@ -75,14 +75,60 @@ if 0:
 if 1:
     # SELECTOR
     sl = cssutils.css.SelectorList(selectorText='''
-        a[x~=x]
+        *|*, *|e, |e, e, p|*, p|e
         ''')
     print 
     for s in sl:
         print '%r\t%s' % (s.specitivity, s.selectorText)
-        s.seq.append(1)
-        print s.seq
+        print s._element
+        print 'SEQ', s.seq
+        print 
+    print s
     sys.exit(0)
+
+if 1:
+    css = '''
+        body a { color: green }
+        a { color: red }
+        b { color: blue }
+    '''
+    html = '''<html>
+        <body>
+            <a href="#">link</a>
+        </body>
+    </html>'''
+    
+    from lxml import etree
+    from lxml.cssselect import CSSSelector
+    
+    doc = etree.HTML(html)
+    css = cssutils.parseString(css)
+    
+    view = {}
+    
+    for rule in css.cssRules:
+        if rule.type == rule.STYLE_RULE:
+            sel = CSSSelector(rule.selectorText)
+            res = sel.evaluate(doc)
+            if res:
+                for e in res:
+                    if not e in view:
+                        # new class which has 
+                        # - specitivity
+                        # !important
+                        view[e] = cssutils.css.CSSStyleDeclaration()
+                    for p in rule.style:
+                        view[e].setProperty(p.name, p.value)
+
+    print
+    print view
+    for e in view:
+        print e, view[e].cssText 
+
+            
+    
+    sys.exit(0)
+
 
 if 1:
     from lxml.cssselect import CSSSelector
