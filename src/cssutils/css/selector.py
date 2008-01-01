@@ -41,7 +41,7 @@ class Selector(cssutils.util.Base):
         a set which prefixes have been used in this selector
     seq
         sequence of Selector parts including comments
-    specitivity
+    specitivity (READONLY)
         tuple of (a, b, c, d) where:
         
         a
@@ -151,11 +151,10 @@ class Selector(cssutils.util.Base):
         self.wellformed = False
         self.seq = self._newseq()
         self.prefixes = set()
-        self.specitivity = (0, 0, 0, 0)
+        self._specitivity = (0, 0, 0, 0)
         if selectorText:
             self.selectorText = selectorText
         self._readonly = readonly
-
 
     def _getSelectorText(self):
         """
@@ -266,7 +265,7 @@ class Selector(cssutils.util.Base):
                         new['specitivity'][2] += 1
                     elif typ in ('IDENT', 'pseudo-element'):
                         new['specitivity'][3] += 1
-                seq.append(val, typ)
+                seq._append(val, typ)
 
             # expected constants
             simple_selector_sequence = 'type_selector universal HASH class attrib pseudo negation '
@@ -661,10 +660,13 @@ class Selector(cssutils.util.Base):
                 self.wellformed = True
                 self.seq = newseq
                 self.prefixes = new['prefixes']
-                self.specitivity = tuple(new['specitivity'])
+                self._specitivity = tuple(new['specitivity'])
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="(DOM) The parsable textual representation of the selector.")
+
+    specitivity = property(lambda self: self._specitivity, 
+                           doc="Specitivity of this selector (READONLY).")
 
     def __repr__(self):
         return "cssutils.css.%s(selectorText=%r)" % (
