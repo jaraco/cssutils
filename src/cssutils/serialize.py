@@ -45,6 +45,8 @@ class Preferences(object):
         Uses hreftype if ``None`` or explicit ``'string'`` or ``'uri'``
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
+    indentSpecitivities = False
+        Indent rules with subset of Selectors and higher Specitivity
         
     keepAllProperties = True
         If ``True`` all properties set in the original CSSStylesheet 
@@ -121,6 +123,7 @@ class Preferences(object):
         self.defaultPropertyName = True
         self.importHrefFormat = None
         self.indent = 4 * u' '
+        self.indentSpecitivities = False
         self.keepAllProperties = True
         self.keepComments = True
         self.keepEmptyRules = False
@@ -186,6 +189,9 @@ class CSSSerializer(object):
             prefs = Preferences()
         self.prefs = prefs
         self._level = 0 # current nesting level
+        
+        self._selectors = [] # holds SelectorList
+        self._selectorlevel = 0 # current specitivity nesting level
 
     def _serialize(self, text):
         if self.prefs.lineNumbers:
@@ -441,6 +447,10 @@ class CSSSerializer(object):
 
         + CSSComments
         """
+        # reset selectorindent
+        self._selectors = [] 
+        self._selectorlevel = 0
+        
         rulesout = []
         for r in rule.cssRules:
             rtext = r.cssText
@@ -538,6 +548,33 @@ class CSSSerializer(object):
 
         + CSSComments
         """
+        # prepare for element nested rules
+        # TODO: sort selectors!
+        if self.prefs.indentSpecitivities:
+            # subselectorlist?
+            print self._selectors
+            elements = set([s.element for s in rule.selectorList])
+            specitivities = [s.specitivity for s in rule.selectorList]
+            for last in self._selectors:
+                lastelements = set([s.element for s in last])
+                if elements.issubset(lastelements):
+                    # higher specitivity?
+                    lastspecitivities = [s.specitivity for s in last]
+                    print lastspecitivities, last
+                    print specitivities, rule.selectorList
+                    print 
+                    if specitivities > lastspecitivities:
+                        self._selectorlevel += 1
+                        break
+                elif self._selectorlevel > 0:
+                    self._selectorlevel -= 1
+            else:
+                # save new reference                
+                self._selectors.append(rule.selectorList)
+                self._selectorlevel = 0
+        
+        # TODO ^ RESOLVE!!!!
+        
         selectorText = self.do_css_SelectorList(rule.selectorList)
         if not selectorText or self._noinvalids(rule):
             return u''
@@ -552,13 +589,15 @@ class CSSSerializer(object):
                     return u'%s%s{}' % (selectorText,
                                         self.prefs.paranthesisSpacer)
         else:
-            return u'%s%s{%s%s%s%s}' % (
-                selectorText,
-                self.prefs.paranthesisSpacer,
-                self.prefs.lineSeparator,
-                self._indentblock(styleText, self._level + 1),
-                self.prefs.lineSeparator,
-                (self._level + 1) * self.prefs.indent)
+            return self._indentblock(
+                u'%s%s{%s%s%s%s}' % (
+                    selectorText,
+                    self.prefs.paranthesisSpacer,
+                    self.prefs.lineSeparator,
+                    self._indentblock(styleText, self._level + 1),
+                    self.prefs.lineSeparator,
+                    (self._level + 1) * self.prefs.indent),
+                self._selectorlevel)
 
     def do_css_SelectorList(self, selectorlist):
         """
@@ -584,21 +623,27 @@ class CSSSerializer(object):
 
     def do_css_Selector(self, selector):
         """
-        a single selector including comments
-
-        TODO: style combinators like + >
+        a single Selector including comments
         """
         if selector.seq and self._wellformed(selector) and\
                                 self._valid(selector):
             out = []
             for part in selector.seq:
                 if hasattr(part, 'cssText'):
+                    # e.g. comment
                     out.append(part.cssText)
-                else:
-                    if type(part) == dict:
-                        out.append(part['value'])
+                elif type(part) == tuple:
+                    # nsprefix | name (name or att)
+                    if part[0] is not None:
+                        # nsprefix may be None
+                        out.append(u'%s|%s' % part)
                     else:
-                        out.append(part)
+                        # nsprefix max be a string or the empty string!
+                        out.append(u'%s' % part[1])
+                elif type(part) == dict:
+                    out.append(part['value'])
+                else:
+                    out.append(part)
             return u''.join(out)
         else: 
             return u''
