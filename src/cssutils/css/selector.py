@@ -243,10 +243,11 @@ class Selector(cssutils.util.Base):
             tokenizer = (t for t in tokens) 
 
             # for closures: must be a mutable
-            new = {'wellformed': True,
-                   'context': [''], # stack of: 'attrib', 'negation', 'pseudo'
-                   'prefixes': set(),
-                   'specitivity': [0, 0, 0, 0]
+            new = {'context': [''], # stack of: 'attrib', 'negation', 'pseudo'
+                   'element': [],
+                   'prefixes': set(), 
+                   'specitivity': [0, 0, 0, 0], # mutable, finally a tuple!
+                   'wellformed': True
                    }
             # used for equality checks and setting of a space combinator
             S = u' '
@@ -259,12 +260,20 @@ class Selector(cssutils.util.Base):
                 """
                 #print context, typ, val
                 if not context or context == 'negation':   
+                    # define specitivity
                     if 'HASH' == typ:
                         new['specitivity'][1] += 1
                     elif 'class' == typ or '[' == val:
                         new['specitivity'][2] += 1
                     elif typ in ('IDENT', 'pseudo-element'):
                         new['specitivity'][3] += 1
+                if not context:
+                    # define element
+                    if typ in ('IDENT', 'universal'):
+                        if seq and seq.types[-1] == 'namespace_prefix':
+                            new['element'] = (seq.values[-1][:-1], val)
+                        else:
+                            new['element'] = (None, val)
                 seq._append(val, typ)
 
             # expected constants
@@ -657,10 +666,11 @@ class Selector(cssutils.util.Base):
 
             # set
             if wellformed:
-                self.wellformed = True
-                self.seq = newseq
+                self._element = new['element']
                 self.prefixes = new['prefixes']
+                self.seq = newseq
                 self._specitivity = tuple(new['specitivity'])
+                self.wellformed = True
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="(DOM) The parsable textual representation of the selector.")
