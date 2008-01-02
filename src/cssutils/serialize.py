@@ -191,7 +191,7 @@ class CSSSerializer(object):
         self._level = 0 # current nesting level
         
         self._selectors = [] # holds SelectorList
-        self._selectorlevel = 0 # current specitivity nesting level
+        self._selectorlevel = 0 # current specificity nesting level
 
     def _serialize(self, text):
         if self.prefs.lineNumbers:
@@ -553,12 +553,12 @@ class CSSSerializer(object):
         if self.prefs.indentSpecitivities:
             # subselectorlist?
             elements = set([s.element for s in rule.selectorList])
-            specitivities = [s.specitivity for s in rule.selectorList]
+            specitivities = [s.specificity for s in rule.selectorList]
             for last in self._selectors:
                 lastelements = set([s.element for s in last])
                 if elements.issubset(lastelements):
-                    # higher specitivity?
-                    lastspecitivities = [s.specitivity for s in last]
+                    # higher specificity?
+                    lastspecitivities = [s.specificity for s in last]
                     if specitivities > lastspecitivities:
                         self._selectorlevel += 1
                         break
