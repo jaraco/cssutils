@@ -471,7 +471,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             return styles
 
         for style in styleDeclarations(self):
-            for p in style:
+            for p in style.getProperties(all=True):
                 v = p.cssValue
                 if v.CSS_VALUE_LIST == v.cssValueType:
                     for item in v:
