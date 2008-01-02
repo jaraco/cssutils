@@ -37,11 +37,14 @@ class Selector(cssutils.util.Base):
     ==========
     selectorText
         textual representation of this Selector
+    parentRule: of type CSSRule, readonly
+        The CSS rule that contains this declaration block or None if this
+        CSSStyleDeclaration is not attached to a CSSRule.
     prefixes
         a set which prefixes have been used in this selector
     seq
         sequence of Selector parts including comments
-    specitivity (READONLY)
+    specificity (READONLY)
         tuple of (a, b, c, d) where:
         
         a
@@ -138,7 +141,7 @@ class Selector(cssutils.util.Base):
           ;
 
     """
-    def __init__(self, selectorText=None, readonly=False):
+    def __init__(self, selectorText=None, parentRule=None, readonly=False):
         """
         selectorText
             initial value of this selector
@@ -149,9 +152,10 @@ class Selector(cssutils.util.Base):
 
         #self.valid = False # not used anymore
         self._element = None
+        self.parentRule = parentRule        
         self.prefixes = set()
         self.seq = self._newseq()
-        self._specitivity = (0, 0, 0, 0)
+        self._specificity = (0, 0, 0, 0)
         self.wellformed = False
         if selectorText:
             self.selectorText = selectorText
@@ -248,7 +252,7 @@ class Selector(cssutils.util.Base):
                    'element': None,
                    '_prefix-last': None,
                    'prefixes': set(), 
-                   'specitivity': [0, 0, 0, 0], # mutable, finally a tuple!
+                   'specificity': [0, 0, 0, 0], # mutable, finally a tuple!
                    'wellformed': True
                    }
             # used for equality checks and setting of a space combinator
@@ -263,7 +267,7 @@ class Selector(cssutils.util.Base):
                 or a prefix. 
 
                 Saved are also:
-                    - specitivity definition: style, id, class, type
+                    - specificity definition: style, id, class, type
                     - element: the element this Selector is for
                 """
                 if typ == 'namespace_prefix':
@@ -281,13 +285,13 @@ class Selector(cssutils.util.Base):
                     val = (prefix, val)
 
                 if not context or context == 'negation':   
-                    # define specitivity
+                    # define specificity
                     if 'HASH' == typ:
-                        new['specitivity'][1] += 1
+                        new['specificity'][1] += 1
                     elif 'class' == typ or '[' == val:
-                        new['specitivity'][2] += 1
+                        new['specificity'][2] += 1
                     elif typ in ('IDENT', 'pseudo-element'):
-                        new['specitivity'][3] += 1
+                        new['specificity'][3] += 1
                 if not context and typ in ('IDENT', 'universal'):
                     # define element
                     new['element'] = val
@@ -688,23 +692,33 @@ class Selector(cssutils.util.Base):
                 self._element = new['element']
                 self.prefixes = new['prefixes']
                 self.seq = newseq
-                self._specitivity = tuple(new['specitivity'])
+                self._specificity = tuple(new['specificity'])
                 self.wellformed = True
 
     element = property(lambda self: self._element, 
                            doc="Element of this selector (READONLY).")
 
+    def _getParentRule(self):
+        return self._parentRule
+
+    def _setParentRule(self, parentRule):
+        self._parentRule = parentRule
+
+    parentRule = property(_getParentRule, _setParentRule,
+        doc="(DOM) The CSS rule that contains this Selector or\
+        None if this Selector is not attached to a CSSRule.")
+    
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="(DOM) The parsable textual representation of the selector.")
 
-    specitivity = property(lambda self: self._specitivity, 
-                           doc="Specitivity of this selector (READONLY).")
+    specificity = property(lambda self: self._specificity, 
+                           doc="specificity of this selector (READONLY).")
 
     def __repr__(self):
         return "cssutils.css.%s(selectorText=%r)" % (
                 self.__class__.__name__, self.selectorText)
 
     def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r specitivity=%r at 0x%x>" % (
+        return "<cssutils.css.%s object selectorText=%r specificity=%r at 0x%x>" % (
                 self.__class__.__name__, self.selectorText, 
-                self.specitivity, id(self))
+                self.specificity, id(self))

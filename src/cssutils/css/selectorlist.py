@@ -31,6 +31,9 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     ==========
     length: of type unsigned long, readonly
         The number of Selector elements in the list.
+    parentRule: of type CSSRule, readonly
+        The CSS rule that contains this declaration block or None if this
+        CSSStyleDeclaration is not attached to a CSSRule.
     selectorText: of type DOMString
         The textual representation of the selector for the rule set. The
         implementation may have stripped out insignificant whitespace while
@@ -40,17 +43,17 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     wellformed
         if this selectorlist is wellformed regarding the Selector spec
     """
-    def __init__(self, selectorText=None, readonly=False):
+    def __init__(self, selectorText=None, parentRule=None, readonly=False):
         """
         initializes SelectorList with optional selectorText
         """
         super(SelectorList, self).__init__()
-
+        
         self.wellformed = False
+        self.parentRule = parentRule  
         if selectorText:
             self.selectorText = selectorText
         self._readonly = readonly
-
 
     def __prepareset(self, newSelector):
         # used by appendSelector and __setitem__
@@ -60,6 +63,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             newSelector = Selector(newSelector)
 
         if newSelector.wellformed:
+            newSelector.parentRule = self
             return newSelector
 
     def __setitem__(self, index, newSelector):
@@ -111,7 +115,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         doc="The number of Selector elements in the list.")
 
     def _getSelectorText(self):
-        """ returns serialized format """
+        "returns serialized format"
         return cssutils.ser.do_css_SelectorList(self)
 
     def _setSelectorText(self, selectorText):
@@ -144,6 +148,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
 
                 selector = Selector(selectortokens)
                 if selector.wellformed:
+                    selector.parentRule = self.parentRule
                     newseq.append(selector)
                 else:
                     wellformed = False
@@ -164,9 +169,21 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         if wellformed:
             self.wellformed = wellformed
             self.seq = newseq
-            #for selector in newseq:
-            #    self.appendSelector(selector)
+#            for selector in newseq:
+#                 self.appendSelector(selector)
 
+    def _getParentRule(self):
+        return self._parentRule
+
+    def _setParentRule(self, parentRule):
+        self._parentRule = parentRule
+        for sel in self.seq:
+            sel.parentRule = parentRule
+
+    parentRule = property(_getParentRule, _setParentRule,
+        doc="(DOM) The CSS rule that contains this SelectorList or\
+        None if this SelectorList is not attached to a CSSRule.")
+    
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(cssutils) The textual representation of the selector for
             a rule set.""")
