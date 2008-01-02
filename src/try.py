@@ -73,7 +73,7 @@ if 0:
     sys.exit(0)
 
 
-if 0:
+if 1:
     # RESOLVE INDENTATION!!!
     sheet = cssutils.parseString('''
         a,b  { color: red }
@@ -86,11 +86,30 @@ if 0:
             a:hover { color: blue}
         }
         ''')
-    cssutils.ser.prefs.indentSpecitivities = True
-    print sheet.cssText
-    sys.exit(0)
+    s = cssutils.css.CSSStyleDeclaration(cssText='''
+        $color: red''')
+    for r in sheet.cssRules:
+        try:
+            L = r.selectorList
+        except AttributeError:
+            continue
+        print L
+        print 1, L.parentRule
+        for sel in L:
+            print 2, sel.parentRule
+        print 
+    #pp(s.getProperties('x', all=True))
+    
+    
+#    print s.getProperty('x')
+#    print s.getProperty('\\x', False)
+#    for p in s:
+#        print 1111, p
 
-if 0:
+        
+    sys.exit(0)
+    
+if 1:
     # SELECTOR
     sl = cssutils.css.SelectorList(selectorText='''
         |b[a|x], a''')
@@ -98,17 +117,35 @@ if 0:
     print 
     for s in sl:
         print 'Selector.seq:', s.seq
-        print '\t%s\t%r' % (s.selectorText, s.specitivity)
+        print '\t%s\t%r' % (s.selectorText, s.specificity)
         print '\t', s._element
         print 
     print s
     sys.exit(0)
 
 if 1:
+    defaultsheet = cssutils.parse('sheets/default_html4.css')
+    
     css = '''
-        body a { color: green }
-        a { color: red; left: 0 }
-        b { color: blue }
+        a { a: green; /* only here */
+            b: red; 
+            c: green !important; /* important */ 
+            d: red !important;  
+            e: red !important;  
+            x: red;
+            x: green; /* later */
+            }
+        body a { 
+            b: green; /* specificity */
+            c: red;
+            d: red;
+            e: green !important; /* important */ 
+            }
+        a { b: green; /* later */
+            c: red;
+            d: green !important; /* important */
+            e: red; 
+            }
     '''
     html = '''<html>
         <body>
@@ -122,8 +159,26 @@ if 1:
     
     doc = etree.HTML(html)
     css = cssutils.parseString(css)
+
     
-    view = []
+    """
+    {
+    element: { 
+        property: (CSSValue, priority, specificity)
+        } 
+    }
+    """
+    view = {} 
+    """
+    should be: (to remove unneeded conversion to declaration!
+    {
+    element: {
+        (CSSStyleDeclaration, { property: specificity }) 
+        }
+    }
+    """
+    specitivities = {}
+    
     
     # TODO: filter rules simpler?
     for rule in css.cssRules:
@@ -133,24 +188,38 @@ if 1:
                 csssel = CSSSelector(sel.selectorText)
                 res = csssel.evaluate(doc)
                 if res:
-                    sp = sel.specitivity
-                    for e in res:
-                        if not e in view:
-                            # new class which has 
-                            # - specitivity
-                            # !important
-                            pass
-                            #view[e] = (sp, [])
-                        for p in rule.style:
-                            view.append((sp, p))
-
-    print
-    print view
+                    sp = sel.specificity
+                    for element in res:
+                        props = view.setdefault(element, {})
+                        # **CHANGE rule iterator!**
+                        for p in rule.style.getProperties():
+                            
+                            # check each property
+                            if p.name not in props:
+                                # not set yet
+                                props[p.name] = (p.value, p.priority, sp)
+                            else:
+                                # later, more specific or higher prio 
+                                sameprio = p.priority == props[p.name][1]
+                                
+                                if not sameprio and bool(p.priority):
+                                    # higher priority
+                                    props[p.name] = (p.value, p.priority, sp)
+                                    
+                                if sameprio and sp >= props[p.name][2]:
+                                    # later, higher specificity or later
+                                    props[p.name] = (p.value, p.priority, sp)
+                                  
+    pp(view)
+    print 
+    
+    # convert back to CSSStyleDeclaration
     for e in view:
-        print e
-        print 
-
-            
+        viewstyle = cssutils.css.CSSStyleDeclaration()
+        for p in view[e]:
+            viewstyle.setProperty(p, view[e][p][0], view[e][p][1]) 
+        view[e] = viewstyle
+    pp(view)
     
     sys.exit(0)
 
