@@ -126,10 +126,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             defaults to False
         """
         super(CSSStyleDeclaration, self).__init__()
+        self.parentRule = parentRule
+        self.seq = []
         self.valid = False
         self.wellformed = False
-        self.seq = []
-        self.parentRule = parentRule
         self.cssText = cssText
         self._readonly = readonly
 
@@ -158,16 +158,22 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         "CSSStyleDeclaration is iterable, see __items()"
         return CSSStyleDeclaration.__items(self)
 
+    def __nnames(self):
+        names = list(set(
+            [x.normalname for x in self.seq if isinstance(x, Property)]
+            ))
+        names.sort()
+        return names
+
     def __items(self):
         """
         the iterator
 
-        returns in contrast to calling item(index) all property objects so
-        effectively the same as ``getProperties(all=True)``
+        Returns in contrast to calling item(index) all Property objects. 
+        The order should be the same as they are ordered by normalname.``
         """
-        properties = self.getProperties(all=True)
-        for property in properties:
-            yield property
+        for name in self.__nnames():
+            yield self.getProperty(name)
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
@@ -209,14 +215,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         """
         self.setProperty(CSSName, value)
-        # TODO:
-#        if 'background-image' == CSSName:
-#            for p in self._properties():
-#                if p.name == 'background':
-#                    print p
-#            self.setProperty(CSSName, value)
-#        else:
-#            self.setProperty(CSSName, value)
+        # TODO: Shorthand ones
 
     def _delP(self, CSSName):
         """
@@ -257,9 +256,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         tokenizer = self._tokenize2(cssText)
 
         # for closures: must be a mutable
-        new = {'valid': True,
-               'wellformed': True,
-               'char': None
+        new = {'char': None, # for IE hack
+               'valid': True,
+               'wellformed': True
         }                    
         def ident(expected, seq, token, tokenizer=None):
             # a property
@@ -284,12 +283,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             return expected
 
         def char(expected, seq, token, tokenizer=None):
-            # maybe an IE hack?
+            # maybe an IE hack like "$color"
             new['valid'] = False # wellformed is set later
             self._log.error(u'CSSStyleDeclaration: Unexpected CHAR.', token)
             c = self._tokenvalue(token)
             if c in u'$':
-                self._log.info(u'Trying to use (invalid) CHAR %r in Property name' %
+                self._log.warn(u'Trying to use (invalid) CHAR %r in Property name' %
                                   c)
                 new['char'] = c
 
@@ -337,121 +336,158 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
     def getProperties(self, name=None, all=False):
         """
-        returns a list of Property objects set in this declaration in order
-        they have been set e.g. in the original stylesheet
+        Returns a list of Property objects set in this declaration.
 
         name
             optional name of properties which are requested (a filter).
-            Only properties with this (normalized) name are returned.
+            Only properties with this **always normalized** name are returned.
         all=False
             if False (DEFAULT) only the effective properties (the ones set
-            last) are returned. So if a name is given only one property
+            last) are returned. If name is given a list with only one property
             is returned.
 
             if True all properties including properties set multiple times with
             different values or priorities for different UAs are returned.
+            The order of the properties is fully kept as in the original 
+            stylesheet.
+        """
+        if name and not all:
+            # single prop but list
+            p = self.getProperty(name, normalize=True)
+            if p:
+                return [p]
+            else: 
+                return []
+        elif not all:
+            # effective Properties in name order
+            return [self.getProperty(name)for name in self.__nnames()]
+        else:    
+            # order is maintained!    
+            nname = self._normalize(name)
+            properties = []
+            done = set()
+            for x in reversed(self.seq):
+                if isinstance(x, Property):
+                    isname = (bool(nname) == False) or (x.normalname == nname)
+                    stilltodo = x.normalname not in done
+                    if isname and stilltodo:
+                        properties.append(x)
+                        if not all:
+                            done.add(x.normalname)
+    
+            properties.reverse()
+            return properties
+
+    def getProperty(self, name, normalize=True):
+        """
+        Returns the effective Property object.
+        
+
+        name
+            of the CSS property, always lowercase (even if not normalized)
+        normalize
+            if True (DEFAULT) name will be normalized (lowercase, no simple
+            escapes) so "color", "COLOR" or "C\olor" will all be equivalent
+
+            If False may return **NOT** the effective value but the effective
+            for the unnormalized name.
         """
         nname = self._normalize(name)
-        properties = []
-        done = set()
+        found = None
         for x in reversed(self.seq):
             if isinstance(x, Property):
-                isname = (bool(nname) == False) or (x.normalname == nname)
-                stilltodo = x.normalname not in done
-                if isname and stilltodo:
-                    properties.append(x)
-                    if not all:
-                        done.add(x.normalname)
-
-        properties.reverse()
-        return properties
+                if (normalize and nname == x.normalname) or name == x.name:
+                    if x.priority:
+                        return x 
+                    elif not found:
+                        found = x
+        return found
 
     def getPropertyCSSValue(self, name, normalize=True):
         """
+        Returns CSSValue, the value of the effective property if it has been
+        explicitly set for this declaration block. 
+
+        name
+            of the CSS property, always lowercase (even if not normalized)
+        normalize
+            if True (DEFAULT) name will be normalized (lowercase, no simple
+            escapes) so "color", "COLOR" or "C\olor" will all be equivalent
+
+            If False may return **NOT** the effective value but the effective
+            for the unnormalized name.
+
         (DOM)
         Used to retrieve the object representation of the value of a CSS
         property if it has been explicitly set within this declaration
-        block. This method returns None if the property is a shorthand
+        block. Returns None if the property has not been set.
+                
+        (This method returns None if the property is a shorthand
         property. Shorthand property values can only be accessed and
         modified as strings, using the getPropertyValue and setProperty
-        methods.
+        methods.)
 
-        name
-            of the CSS property
-
-            The name will be normalized (lowercase, no simple escapes) so
-            "color", "COLOR" or "C\olor" are all equivalent
-
-        returns CSSValue, the value of the property if it has been
-        explicitly set for this declaration block. Returns None if the
-        property has not been set.
+        **cssutils currently always returns a CSSValue if the property is 
+        set.**
 
         for more on shorthand properties see
             http://www.dustindiaz.com/css-shorthand/
         """
         nname = self._normalize(name)
         if nname in self._SHORTHANDPROPERTIES:
-            self._log.debug(
+            self._log.info(
                 u'CSSValue for shorthand property "%s" should be None, this may be implemented later.' %
                 nname, neverraise=True)
 
-        properties = self.getProperties(name, all=(not normalize))
-        for property in reversed(properties):
-            if normalize and property.normalname == nname:
-                return property.cssValue
-            elif property.name == name:
-                return property.cssValue
-        return None
-
+        p = self.getProperty(name, normalize)
+        if p:
+            return p.cssValue
+        else:
+            return None
+        
     def getPropertyValue(self, name, normalize=True):
         """
-        (DOM)
-        Used to retrieve the value of a CSS property if it has been
-        explicitly set within this declaration block.
+        Returns the value of the effective property if it has been explicitly
+        set for this declaration block. Returns the empty string if the
+        property has not been set.
 
         name
-            of the CSS property
+            of the CSS property, always lowercase (even if not normalized)
+        normalize
+            if True (DEFAULT) name will be normalized (lowercase, no simple
+            escapes) so "color", "COLOR" or "C\olor" will all be equivalent
 
-            The name will be normalized (lowercase, no simple escapes) so
-            "color", "COLOR" or "C\olor" are all equivalent
-
-        returns the value of the property if it has been explicitly set
-        for this declaration block. Returns the empty string if the
-        property has not been set.
+            If False may return **NOT** the effective value but the effective
+            for the unnormalized name.
         """
-        nname = self._normalize(name)
-        properties = self.getProperties(name, all=(not normalize))
-        for property in reversed(properties):
-            if normalize and property.normalname == nname:
-                return property.value
-            elif property.name == name:
-                return property.value
-        return u''
-
+        p = self.getProperty(name, normalize)
+        if p:
+            return p.value
+        else:
+            return u''
+        
     def getPropertyPriority(self, name, normalize=True):
         """
-        (DOM)
-        Used to retrieve the priority of a CSS property (e.g. the
+        Returns the priority of the effective CSS property (e.g. the
         "important" qualifier) if the property has been explicitly set in
-        this declaration block.
+        this declaration block. The empty string if none exists.
+        
+        **cssutils returns "!important" if present.**
 
         name
-            of the CSS property
+            of the CSS property, always lowercase (even if not normalized)
+        normalize
+            if True (DEFAULT) name will be normalized (lowercase, no simple
+            escapes) so "color", "COLOR" or "C\olor" will all be equivalent
 
-            The name will be normalized (lowercase, no simple escapes) so
-            "color", "COLOR" or "C\olor" are all equivalent
-
-        returns a string representing the priority (e.g. "important") if
-        one exists. The empty string if none exists.
+            If False may return **NOT** the effective value but the effective
+            for the unnormalized name.        
         """
-        nname = self._normalize(name)
-        properties = self.getProperties(name, all=(not normalize))
-        for property in reversed(properties):
-            if normalize and property.normalname == nname:
-                return property.priority
-            elif property.name == name:
-                return property.priority
-        return u''
+        p = self.getProperty(name, normalize)
+        if p:
+            return p.priority
+        else:
+            return u''
 
     def removeProperty(self, name, normalize=True):
         """
@@ -460,10 +496,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         this declaration block.
 
         name
-            of the CSS property to remove
+            of the CSS property
+        normalize
+            if True (DEFAULT) name will be normalized (lowercase, no simple
+            escapes) so "color", "COLOR" or "C\olor" will all be equivalent
 
-            The name will be normalized (lowercase, no simple escapes) so
-            "color", "COLOR" or "C\olor" are all equivalent
+            If False may return **NOT** the effective value but the effective
+            for the unnormalized name.
 
         returns the value of the property if it has been explicitly set for
         this declaration block. Returns the empty string if the property
@@ -505,16 +544,17 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         name
             of the CSS property to set (in W3C DOM the parameter is called
-            "propertyName")
+            "propertyName"), always lowercase (even if not normalized)
 
             If a property with this name is present it will be reset
-
-            The name is normalized if normalize=True
-
+        
         value
             the new value of the property
         priority
             the optional priority of the property (e.g. "important")
+        normalize
+            if True (DEFAULT) name will be normalized (lowercase, no simple
+            escapes) so "color", "COLOR" or "C\olor" will all be equivalent
 
         DOMException on setting
 
@@ -546,19 +586,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             else:
                 self.seq.append(newp)
 
-    def __nnames(self):
-        nnames = set()
-        for x in self.seq:
-            if isinstance(x, Property):
-                nnames.add(x.normalname)
-        return nnames
-
     def item(self, index):
         """
-        **NOTE**:
-        Compare to ``for property in declaration`` which works on **all**
-        properties set in this declaration and not just the effecitve ones.
-
         (DOM)
         Used to retrieve the properties that have been explicitly set in
         this declaration block. The order of the properties retrieved using
@@ -576,20 +605,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         ATTENTION:
         Only properties with a different normalname are counted. If two
         properties with the same normalname are present in this declaration
-        only the last set (and effectively *in style*) is used.
+        only the effective one is included.
 
         ``item()`` and ``length`` work on the same set here.
         """
-        nnames = self.__nnames()
-        orderednnames = []
-        for x in reversed(self.seq):
-            nname = x.normalname
-            if isinstance(x, Property) and nname in nnames:
-                nnames.remove(nname)
-                orderednnames.append(nname)
-        orderednnames.reverse()
         try:
-            return orderednnames[index]
+            return self.__nnames()[index]
         except IndexError:
             return u''
 
