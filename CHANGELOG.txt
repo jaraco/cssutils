@@ -11,6 +11,8 @@ known issues
 ------------
 - ``cssparse`` script does not work correctly in version 0.9.4 yet.
 
+- namespaces in Selectors do parse correctly but will not work correctly if the selector is changed later as the connection between namespace prefixes and declared namespaces on the stylesheet is not present yet. This will be fixed in a later release (probably 0.9.5 or 6)
+
 - although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to not be preserved:
 
   star hack
@@ -37,9 +39,17 @@ known issues
 0.9.x
 -----
 HEAD
-    - **FEATURE**: ``css.Selector`` has an property ``specitivity`` now which is calculated like described at http://www.w3.org/TR/css3-selectors/#specificity
+    + **API CHANGE**: iterating on ``css.CSSStyleDelcaration`` yields now only effective properties and not *all* properties set on the declaration. E.g. from ``color: red; c\olor: green`` only one Property is returned which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``. Reason for this change is that for most cases the new default makes more sense.
 
-      **ATTENTION**: changing the Selector by changing its property ``seq`` does **not** update the specitivity yet!
+    - **FEATURE**: ``css.Selector`` has a **readonly** property ``specitivity`` now which is calculated like described at http://www.w3.org/TR/css3-selectors/#specificity
+
+    **ATTENTION**: changing the Selector by changing its property ``seq`` does **not** update the specitivity yet! ``Selector.seq.append`` has been made private therefor and should **not** be used by custom code!
+
+    - **FEATURE**: Added ``css.SelectorList.parentRule`` and ``css.Selector.parentRule`` which reference the same (CSSStyleRule)
+
+    - **FEATURE**: Added ``css.CSSStyleDeclaration.getProperty(name, normalize=True)`` which returns the effective Property object for ``name``.
+
+    + **BUGFIX**: Priority of Properties is acknowledged by all methods of ``css.CSSStylesDeclaration`` now.
 
 
 0.9.4b1 071229
@@ -205,6 +215,8 @@ HEAD
                 # prints:
                 # color = blue
                 # left = 0 !important
+
+      **ATTENTION**: This has been changed in 0.9.5, see details there!
 
     - FEATURE (**experimental**): added ``CSSStyleSheet.replaceUrls(replacer)`` which may be used to adjust all "url()" values in a style sheet (currently in CSSStyleDeclaration and CSSImportRules).
 
