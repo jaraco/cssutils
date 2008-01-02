@@ -24,12 +24,12 @@ class SelectorTestCase(basetest.BaseTestCase):
         s = cssutils.css.Selector('*')
         self.assertEqual(set(), s.prefixes)
         self.assertEqual('*', s.selectorText)
-        self.assertEqual((0,0,0,0), s.specitivity)
+        self.assertEqual((0,0,0,0), s.specificity)
 
         s = cssutils.css.Selector('a|b')
         self.assertEqual(set('a'), s.prefixes)
         self.assertEqual('a|b', s.selectorText)
-        self.assertEqual((0,0,0,1), s.specitivity)
+        self.assertEqual((0,0,0,1), s.specificity)
 
     def test_prefixes(self):
         "Selector.prefixes"
@@ -274,12 +274,12 @@ class SelectorTestCase(basetest.BaseTestCase):
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
 
-    def test_specitivity(self):
-        "Selector.specitivity"
+    def test_specificity(self):
+        "Selector.specificity"
         selector = cssutils.css.Selector()
         
         # readonly
-        def _set(): selector.specitivity = 1
+        def _set(): selector.specificity = 1
         self.assertRaisesMsg(AttributeError, "can't set attribute", _set)
         
         tests = {
@@ -346,7 +346,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             }
         for text in tests:
             selector.selectorText = text
-            self.assertEqual(tests[text], selector.specitivity)
+            self.assertEqual(tests[text], selector.specificity)
                     
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
