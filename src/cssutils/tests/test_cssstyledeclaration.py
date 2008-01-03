@@ -199,14 +199,14 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
     def test_getProperties(self):
         "CSSStyleDeclaration.getProperties()"
         s = cssutils.css.CSSStyleDeclaration(cssText=
-                                             u'y:1;x:a !important; \\x:b;')
-
+                                             u'y:0;x:a !important;y:1; \\x:b;')
         tests = {
             # name, all
             (None, False): [(u'y', u'1', u''), 
                             (u'x', u'a', u'!important')],
-            (None, True): [(u'y', u'1', u''), 
+            (None, True): [(u'y', u'0', u''),
                            (u'x', u'a', u'!important'),
+                           (u'y', u'1', u''), 
                            (u'\\x', u'b', u'')
                            ],
             ('x', False): [(u'x', u'a', u'!important')],
@@ -224,6 +224,11 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             for i, ex in enumerate(expected):
                 a = actual[i]
                 self.assertEqual(ex, (a.name, a.value, a.priority))
+        
+        # order is be effective properties set
+        s = cssutils.css.CSSStyleDeclaration(cssText=
+                                             u'a:0;b:1;a:1')
+        self.assertEqual(u'ba', u''.join([p.name for p in s]))
                 
     def test_getPropertyCSSValue(self):
         "CSSStyleDeclaration.getPropertyCSSValue()"
