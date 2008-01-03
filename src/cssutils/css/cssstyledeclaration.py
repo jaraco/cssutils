@@ -1,5 +1,5 @@
 """CSSStyleDeclaration implements DOM Level 2 CSS CSSStyleDeclaration and
-inherits CSS2Properties
+extends CSS2Properties
 
 see
     http://www.w3.org/TR/1998/REC-CSS2-19980512/syndata.html#parsing-errors
@@ -15,8 +15,8 @@ the user agent will treat this as if the style sheet had been::
 
     H1 { color: red }
 
-Cssutils gives a WARNING about an unknown CSS2 Property "rotation" but
-keeps any property (if syntactical correct).
+Cssutils gives a message about any unknown properties but
+keeps any property (if syntactically correct).
 
 Illegal values
 --------------
@@ -35,7 +35,8 @@ style sheet had been::
     IMG { }
     IMG { }
 
-Cssutils again will issue WARNING about invalid CSS2 property values.
+Cssutils again will issue a message (WARNING in this case) about invalid 
+CSS2 property values.
 
 TODO:
     This interface is also used to provide a read-only access to the
@@ -79,7 +80,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
     Properties
     ==========
-    cssText: of type DOMString
+    cssText
         The parsable textual representation of the declaration block
         (excluding the surrounding curly braces). Setting this attribute
         will result in the parsing of the new value and resetting of the
@@ -115,13 +116,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
     Format
     ======
-    [Property: Value;]* Property: Value?
+    [Property: Value Priority?;]* [Property: Value Priority?]?
     """
     def __init__(self, parentRule=None, cssText=u'', readonly=False):
         """
         parentRule
             The CSS rule that contains this declaration block or
             None if this CSSStyleDeclaration is not attached to a CSSRule.
+        cssText
+            Shortcut, sets CSSStyleDeclaration.cssText
         readonly
             defaults to False
         """
@@ -133,6 +136,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         self.cssText = cssText
         self._readonly = readonly
 
+    def __iter__(self):
+        """
+        iterator of set Property objects with different normalnames.
+        """
+        def properties():
+            for name in self.__nnames():
+                yield self.getProperty(name)
+        return properties()
+
     def __setattr__(self, n, v):
         """
         Prevent setting of unknown properties on CSSStyleDeclaration
@@ -143,37 +155,24 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             implementation of known is not really nice, any alternative?
         """
         known = ['_tokenizer', '_log', '_ttypes',
-                 'valid', 'wellformed', 
                  'seq', 'parentRule', '_parentRule', 'cssText',
+                 'valid', 'wellformed', 
                  '_readonly']
         known.extend(CSS2Properties._properties)
         if n in known:
             super(CSSStyleDeclaration, self).__setattr__(n, v)
         else:
             raise AttributeError(
-                'Unknown CSS Property, ``CSSStyleDeclaration.setProperty("%s")`` MUST be used.'
+                'Unknown CSS Property, ``CSSStyleDeclaration.setProperty("%s", ...)`` MUST be used.'
                 % n)
 
-    def __iter__(self):
-        "CSSStyleDeclaration is iterable, see __items()"
-        return CSSStyleDeclaration.__items(self)
-
     def __nnames(self):
-        names = list(set(
-            [x.normalname for x in self.seq if isinstance(x, Property)]
-            ))
-        names.sort()
-        return names
-
-    def __items(self):
-        """
-        the iterator
-
-        Returns in contrast to calling item(index) all Property objects. 
-        The order should be the same as they are ordered by normalname.``
-        """
-        for name in self.__nnames():
-            yield self.getProperty(name)
+        "returns all different names in order as set"
+        names = []
+        for x in self.seq:
+            if isinstance(x, Property) and not x.normalname in names:
+                names.append(x.normalname)
+        return names    
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
@@ -189,7 +188,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             >>> style = CSSStyleDeclaration(cssText='font-style:italic;')
             >>> print style.fontStyle
             italic
-
         """
         return self.getPropertyValue(CSSName)
 
@@ -212,7 +210,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             >>> style.fontStyle = 'italic'
             >>> # or
             >>> style.setProperty('font-style', 'italic', '!important')
-
         """
         self.setProperty(CSSName, value)
         # TODO: Shorthand ones
@@ -353,7 +350,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         if name and not all:
             # single prop but list
-            p = self.getProperty(name, normalize=True)
+            p = self.getProperty(name)
             if p:
                 return [p]
             else: 
@@ -362,27 +359,19 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             # effective Properties in name order
             return [self.getProperty(name)for name in self.__nnames()]
         else:    
-            # order is maintained!    
+            # all properties or all with this name    
             nname = self._normalize(name)
             properties = []
-            done = set()
-            for x in reversed(self.seq):
-                if isinstance(x, Property):
-                    isname = (bool(nname) == False) or (x.normalname == nname)
-                    stilltodo = x.normalname not in done
-                    if isname and stilltodo:
-                        properties.append(x)
-                        if not all:
-                            done.add(x.normalname)
-    
-            properties.reverse()
+            for x in self.seq:
+                if isinstance(x, Property) and \
+                   (bool(nname) == False) or (x.normalname == nname):
+                    properties.append(x)
             return properties
 
     def getProperty(self, name, normalize=True):
         """
         Returns the effective Property object.
         
-
         name
             of the CSS property, always lowercase (even if not normalized)
         normalize
@@ -609,15 +598,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         ``item()`` and ``length`` work on the same set here.
         """
+        names = self.__nnames()
         try:
-            return self.__nnames()[index]
+            return names[index]
         except IndexError:
             return u''
 
-    def _getLength(self):
-        return len(self.__nnames())
-
-    length = property(_getLength,
+    length = property(lambda self: len(self.__nnames()),
         doc="(DOM) The number of distince properties that have been explicitly\
         in this declaration block. The range of valid indices is 0 to\
         length-1 inclusive. These are properties with the same ``normalname``\
