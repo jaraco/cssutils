@@ -351,7 +351,34 @@ a, b {}'''
         self.assertEqual(u'color: red',
                     cssutils.ser.do_Property(s))
 
-
+    def test_escapeSTRINGtype(self):
+        "CSSSerializer._escapeSTRINGtype"
+        css = ur'''@import url("ABC\a");
+@import "ABC\a";
+@import 'ABC\a';
+a[href='"\a\22\27"'] {
+    a: "\a";
+    b: "\n";
+    c: "\"";
+    d: "\22";
+    e: '\'';
+    content: '\27';
+    }'''
+        exp = ur'''@import url("ABC\n");
+@import "ABC\n";
+@import "ABC\n";
+a[href='"\n"\'"'] {
+    a: "\n";
+    b: "\n";
+    c: "\"";
+    d: "\"";
+    e: '\'';
+    content: '\''
+    }'''
+        sheet = cssutils.parseString(css)
+        self.assertEqual(sheet.cssText, exp)
+    
+    
 if __name__ == '__main__':
     import unittest
     unittest.main()
