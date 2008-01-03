@@ -167,12 +167,16 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 % n)
 
     def __nnames(self):
-        "returns all different names in order as set"
+        """
+        returns iterator for all different names in order as set, 
+        effective properties are used for this order only 
+        """
         names = []
-        for x in self.seq:
+        # double reversed to get effective names
+        for x in reversed(self.seq): 
             if isinstance(x, Property) and not x.normalname in names:
                 names.append(x.normalname)
-        return names    
+        return reversed(names)    
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
@@ -598,7 +602,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         ``item()`` and ``length`` work on the same set here.
         """
-        names = self.__nnames()
+        names = list(self.__nnames())
         try:
             return names[index]
         except IndexError:
