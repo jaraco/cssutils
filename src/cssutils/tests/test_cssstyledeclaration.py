@@ -45,7 +45,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             u'color:red;   color:; color:green': u'color: green',
             u'color:green; color{;color:maroon}': u'color: green',
             # TODO:
-#                u'color:red;   color{;color:maroon}; color:green':
+#                u'color:red; color{;color:maroon}; color:green':
 #                u'color: green',
             # tantek hack
             ur'''color: red;
@@ -169,17 +169,17 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         # __iter__
         ps = []
         for p in s:
-            ps.append((p.name, p.value))
+            ps.append((p.name, p.value, p.priority))
         self.assertEqual(len(ps), 3)
-        self.assertEqual(ps[0], (ur'border', '0'))
-        self.assertEqual(ps[1], (ur'co\lor', 'green'))
-        self.assertEqual(ps[2], (ur'left', '1px'))
+        self.assertEqual(ps[0], (ur'co\lor', 'green', ''))
+        self.assertEqual(ps[1], (ur'left', '1px', '!important'))
+        self.assertEqual(ps[2], (ur'border', '0', ''))
                 
         # item 
         self.assertEqual(s.length, 3)
-        self.assertEqual(s.item(0), u'border')
-        self.assertEqual(s.item(1), u'color')
-        self.assertEqual(s.item(2), u'left')
+        self.assertEqual(s.item(0), u'color')
+        self.assertEqual(s.item(1), u'left')
+        self.assertEqual(s.item(2), u'border')
         self.assertEqual(s.item(10), u'')
             
     def test_getProperty(self):
@@ -203,14 +203,14 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
 
         tests = {
             # name, all
-            (None, False): [(u'x', u'a', u'!important'),
-                            (u'y', u'1', u'')],
-            ('x', False): [(u'x', u'a', u'!important')],
-            ('\\x', False): [(u'x', u'a', u'!important')],
+            (None, False): [(u'y', u'1', u''), 
+                            (u'x', u'a', u'!important')],
             (None, True): [(u'y', u'1', u''), 
                            (u'x', u'a', u'!important'),
                            (u'\\x', u'b', u'')
                            ],
+            ('x', False): [(u'x', u'a', u'!important')],
+            ('\\x', False): [(u'x', u'a', u'!important')],
             ('x', True): [(u'x', u'a', u'!important'),
                            (u'\\x', u'b', u'')],
             ('\\x', True): [(u'x', u'a', u'!important'),
@@ -225,7 +225,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
                 a = actual[i]
                 self.assertEqual(ex, (a.name, a.value, a.priority))
                 
-
     def test_getPropertyCSSValue(self):
         "CSSStyleDeclaration.getPropertyCSSValue()"
         s = cssutils.css.CSSStyleDeclaration(cssText='color: red;c\\olor: green')
