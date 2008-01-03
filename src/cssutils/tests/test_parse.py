@@ -84,6 +84,22 @@ a {
             s = cssutils.parseString(css)
             self.assertEqual(exp, s.cssText)
 
+    def test_specialcases(self):
+        "cssutils.parseString(special_case)"
+        tests = {
+            u'''
+    a[title="a not s\
+o very long title"] {/*...*/}''': u'''a[title="a not so very long title"] {
+    /*...*/
+    }'''
+        }
+        for css in tests:
+            exp = tests[css] 
+            if exp == None:
+                exp = css
+            s = cssutils.parseString(css)
+            self.assertEqual(exp, s.cssText)
+
     def test_attributes(self):
         "cssutils.parseString(href, media)"
         s = cssutils.parseString("a{}", href="file:foo.css", media="screen, projection, tv")
