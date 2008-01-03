@@ -64,14 +64,7 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 
         self._readonly = readonly
 
-    def _getLength(self):
-        """
-        returns count of media in this list which is not the same as
-        len(MediaListInstance) which also contains CSSComments
-        """
-        return len(self)
-
-    length = property(_getLength,
+    length = property(lambda self: len(self),
         doc="(DOM readonly) The number of media in the list.")
 
     def _getMediaText(self):
