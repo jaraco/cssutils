@@ -228,8 +228,25 @@ class CSSSerializer(object):
     def _escapestring(self, s, delim=u'"'):
         """
         escapes delim charaters in string s with \delim
+        s might not have " or ' around it!
         """
+        s = s.replace(u'\n', u'\\n')
         return s.replace(delim, u'\\%s' % delim)
+
+    def _escapeSTRINGtype(self, s):
+        """
+        escapes unescaped ", ' or \n in s if not escaped already
+        s always has  "..." or '...' around
+        """
+        r = s[0]
+        out = [r]
+        for c in s[1:-1]:
+            if c == r and out[-1] != u'\\':
+                out.append(u'\\')
+            out.append(c)
+        out.append(r)
+        s = u''.join(out)
+        return s.replace(u'\n', u'\\n')
 
     def _getatkeyword(self, rule, default):
         """
@@ -269,7 +286,7 @@ class CSSSerializer(object):
         returns uri enclosed in " if necessary
         """
         if CSSSerializer.__notinurimatcher(uri):
-            return '"%s"' % uri
+            return '"%s"' % self._escapestring(uri, '"')
         else:
             return uri
 
@@ -616,7 +633,6 @@ class CSSSerializer(object):
         else:
             return u''
             
-
     def do_css_Selector(self, selector):
         """
         a single Selector including comments
@@ -624,7 +640,7 @@ class CSSSerializer(object):
         if selector.seq and self._wellformed(selector) and\
                                 self._valid(selector):
             out = []
-            for part in selector.seq:
+            for (part, typ) in selector.seq._items:
                 if hasattr(part, 'cssText'):
                     # e.g. comment
                     out.append(part.cssText)
@@ -639,6 +655,8 @@ class CSSSerializer(object):
                 elif type(part) == dict:
                     out.append(part['value'])
                 else:
+                    if typ == 'STRING':
+                        part = self._escapeSTRINGtype(part)
                     out.append(part)
             return u''.join(out)
         else: 
@@ -768,5 +786,8 @@ class CSSSerializer(object):
                 elif isinstance(part, basestring) and part == u',':
                     out.append(sep)
                 else:
+                    # TODO: escape func parameter if STRING!
+                    if part and part[0] == part[-1] and part[0] in '\'"':
+                        part = self._escapeSTRINGtype(part)
                     out.append(part)
             return (u''.join(out)).strip()
