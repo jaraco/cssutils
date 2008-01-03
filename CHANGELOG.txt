@@ -51,6 +51,8 @@ HEAD
 
     + **BUGFIX**: Priority of Properties is acknowledged by all methods of ``css.CSSStylesDeclaration`` now.
 
+    + **BUGFIX**: Fixed serializing of strings like "\\a", "\\22" and '\\27' in @import urls, selectors and values. **func("string") is not yet fixed!!!**
+
     - IMPROVEMENT: ``CSSStyleDeclaration`` and some minor other parts refactored
 
 0.9.4b1 071229
