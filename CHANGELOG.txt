@@ -9,9 +9,15 @@ changelog
 
 known issues
 ------------
-- ``cssparse`` script does not work correctly in version 0.9.4 yet.
+- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as not normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
 
-- namespaces in Selectors do parse correctly but will not work correctly if the selector is changed later as the connection between namespace prefixes and declared namespaces on the stylesheet is not present yet. This will be fixed in a later release (probably 0.9.5 or 6)
+- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
+
+- namespaces in ``Selector``\ s do parse correctly but will not work correctly if the selector is changed later as the connection between namespace prefixes and declared namespaces on the stylesheet is not present yet. This will be fixed in a later release (probably 0.9.5 or 6)
+
+- ``css.UnknownRule`` is not handled properly in cases, tests are spotty there too. it also seems to have been removed in CSSOM but seems useful so is still present
+
+- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not yet implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2.
 
 - although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to not be preserved:
 
@@ -24,12 +30,6 @@ known issues
 
   Generally syntactically valid stylesheets should be preserved completely (otherwise a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above ``*html`` hack. Most of these hacks may be rewritten while still be usable, e.g. ``* html`` should work same to ``*html``. Currenty the invalid CSS hack using ``$propertyname`` is actually preserved but still usage is discouraged. In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
-- ``css.UnknownRule`` is not handled properly in cases, tests are spotty there too. it also seems to have been removed in CSSOM but seems useful so is still present
-
-- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not yet implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2.
-
-- CSS2Properties not implemented completely (setting a property does not set related properties like setting margin does not set margin-left etc) (0.9.5 but again as CSSOM defined something else this may change))
-
 - ``Preferences.removeInvalid``, ``.validOnly`` and ``.wellformedOnly`` are in experimental stage, the first option will probably removed (maybe even in the final  0.9.4 release), so use sparingly. If you need these functionality or have suggestions what you like the lib to behave contact me.
 
 - Properties are not bound to any CSS Version, so all properties are handled so
@@ -39,18 +39,19 @@ known issues
 0.9.x
 -----
 HEAD
-    + **API CHANGE**: iterating on ``css.CSSStyleDelcaration`` yields now only effective properties and not *all* properties set on the declaration. E.g. from ``color: red; c\olor: green`` only one Property is returned which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``. Reason for this change is that for most cases the new default makes more sense.
+    + **API CHANGE**: iterating on ``css.CSSStyleDelcaration`` yields now *effective* properties only and not *all* properties set in the declaration. E.g. from ``color: red; c\olor: green`` only one Property is returned which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``. Reason for this change is that for most cases the new default makes more sense.
 
-    - **FEATURE**: ``css.Selector`` has a **readonly** property ``specitivity`` now which is calculated like described at http://www.w3.org/TR/css3-selectors/#specificity
+    - **FEATURE**: ``css.Selector`` has a **readonly** property ``specitivity`` now which is calculated as described at http://www.w3.org/TR/css3-selectors/#specificity
 
-    **ATTENTION**: changing the Selector by changing its property ``seq`` does **not** update the specitivity yet! ``Selector.seq.append`` has been made private therefor and should **not** be used by custom code!
-
-    - **FEATURE**: Added ``css.SelectorList.parentRule`` and ``css.Selector.parentRule`` which reference the same (CSSStyleRule)
+      **ATTENTION**: changing the Selector by changing its property ``seq`` does **not** update the specificity! ``Selector.seq.append`` has been made private therefor and writing to ``seq`` **not** be used at all!
 
     - **FEATURE**: Added ``css.CSSStyleDeclaration.getProperty(name, normalize=True)`` which returns the effective Property object for ``name``.
 
+    - FEATURE: Added ``css.SelectorList.parentRule`` and ``css.Selector.parentRule`` which reference the same ``CSSStyleRule``
+
     + **BUGFIX**: Priority of Properties is acknowledged by all methods of ``css.CSSStylesDeclaration`` now.
 
+    - IMPROVEMENT: ``CSSStyleDeclaration`` and some minor other parts refactored
 
 0.9.4b1 071229
     - **FEATURE**: Added ``csscombine`` script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!
