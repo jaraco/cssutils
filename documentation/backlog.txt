@@ -20,7 +20,7 @@ Selector
 - CSS2XPath converter? -> use lxml.cssselector
 - optimize selector parsing?
 - **add query functionality**
-    + specitivity DONE
+    + specificity DONE
     + cascade
 
 
