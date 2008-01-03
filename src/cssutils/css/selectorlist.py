@@ -108,10 +108,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         "overwrites ListSeq.append"
         self.appendSelector(newSelector)
 
-    def _getLength(self):
-        return len(self)
-
-    length = property(_getLength,
+    length = property(lambda self: len(self),
         doc="The number of Selector elements in the list.")
 
     def _getSelectorText(self):
