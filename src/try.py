@@ -48,23 +48,32 @@ def escapecss(e):
 codecs.register_error('escapecss', escapecss)
 
 
-if 0:
-    css = u'''
-    /* a comment with umlaut äöä€ */
-    a { color:red; }
-
+if 1:
+    css = ur'''
+    @import "ABC\a";
+@import 'ABC\a';
+a[href='\a\27'] {
+    a: "\a";
+    b: "\n";
+    c: "\"";
+    d: "\22";
+    e: '\'';
+    content: '\27';
+    font: arial, "\22";
+    x: a("\22")
     '''
     sheet = cssutils.parseString(css)
-    for rule in sheet.cssRules:
-        if rule.type == rule.STYLE_RULE:
-            rule.style.setProperty('color', 'blue')
-
-    sheet.encoding = 'iso-8859-1' # added in 0.9.4a4
     print sheet.cssText
     sys.exit(0)
 
+if 0:    
+    sheet = cssutils.parse('sheets/default_html4.css')
+    print sheet.cssText
+    sys.exit(0)
+
+
 if 1:
-    css = ur"\a"
+    css = ur"\0000a"
     #css = codecs.open('../sheets/1.css', encoding='css').read()
     t = cssutils.tokenize2.Tokenizer()
     gen = t.tokenize(css, fullsheet=0)
