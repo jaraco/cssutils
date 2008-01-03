@@ -63,8 +63,8 @@ if 0:
     print sheet.cssText
     sys.exit(0)
 
-if 0:
-    css = r"@import url('a'); foo(url(aaa)a"
+if 1:
+    css = ur"\a"
     #css = codecs.open('../sheets/1.css', encoding='css').read()
     t = cssutils.tokenize2.Tokenizer()
     gen = t.tokenize(css, fullsheet=0)
@@ -86,27 +86,12 @@ if 1:
             a:hover { color: blue}
         }
         ''')
-    s = cssutils.css.CSSStyleDeclaration(cssText='''
-        $color: red''')
-    for r in sheet.cssRules:
-        try:
-            L = r.selectorList
-        except AttributeError:
-            continue
-        print L
-        print 1, L.parentRule
-        for sel in L:
-            print 2, sel.parentRule
-        print 
-    #pp(s.getProperties('x', all=True))
-    
-    
-#    print s.getProperty('x')
-#    print s.getProperty('\\x', False)
-#    for p in s:
-#        print 1111, p
+    s = cssutils.css.CSSStyleDeclaration(cssText=r'''
+        content: '\A'
+        ''')
+    print s
+    print s.cssText
 
-        
     sys.exit(0)
     
 if 1:
