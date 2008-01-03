@@ -1025,10 +1025,7 @@ class CSSValueList(CSSValue):
 
         self.seq = newseq
 
-    def _getLength(self):
-        return len(self._items)
-
-    length = property(_getLength,
+    length = property(lambda self: len(self._items),
                 doc="(DOM attribute) The number of CSSValues in the list.")
 
     def item(self, index):

@@ -41,12 +41,6 @@ class CSSRuleList(list):
     
     append = extend =  __setitem__ = __setslice__ = __notimplemented
     
-    def _getLength(self):
-        return len(self)
-
-    length = property(_getLength,
-        doc="(DOM) The number of CSSRules in the list.")
-
     def item(self, index):
         """
         (DOM)
@@ -62,4 +56,7 @@ class CSSRuleList(list):
             return self[index]
         except IndexError:
             return None
+
+    length = property(lambda self: len(self),
+        doc="(DOM) The number of CSSRules in the list.")
 
