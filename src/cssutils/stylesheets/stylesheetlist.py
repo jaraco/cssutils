@@ -20,13 +20,6 @@ class StyleSheetList(list):
     This Python implementation is based on a standard Python list so e.g.
     allows ``examplelist[index]`` usage.
     """
-    def _getLength(self):
-        return len(self)
-
-    length = property(_getLength,
-        doc="""The number of StyleSheets in the list. The range of valid
-        child stylesheet indices is 0 to length-1 inclusive.""")
-
     def item(self, index):
         """
         Used to retrieve a style sheet by ordinal index. If index is
@@ -37,3 +30,8 @@ class StyleSheetList(list):
             return self[index]
         except IndexError:
             return None
+
+    length = property(lambda self: len(self),
+        doc="""The number of StyleSheets in the list. The range of valid
+        child stylesheet indices is 0 to length-1 inclusive.""")
+
