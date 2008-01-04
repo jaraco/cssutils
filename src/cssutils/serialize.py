@@ -229,8 +229,13 @@ class CSSSerializer(object):
         """
         escapes delim charaters in string s with \delim
         s might not have " or ' around it!
+        
+        escape line breaks \n \r and \f
         """
-        s = s.replace(u'\n', u'\\n')
+        # \n = 0xa, \r = 0xd, \f = 0xc
+        s = s.replace('\n', '\\a ').replace(
+                      '\r', '\\d ').replace(
+                      '\f', '\\c ')
         return s.replace(delim, u'\\%s' % delim)
 
     def _escapeSTRINGtype(self, s):
@@ -241,12 +246,21 @@ class CSSSerializer(object):
         r = s[0]
         out = [r]
         for c in s[1:-1]:
-            if c == r and out[-1] != u'\\':
-                out.append(u'\\')
+            if c == '\n': # = 0xa
+                out.append(u'\\a ')
+                continue
+            elif c == '\r': # = 0xd
+                out.append(u'\\d ')
+                continue
+            elif c == '\f': # = 0xc
+                out.append(u'\\c ')
+                continue
+            elif c == r and out[-1] != u'\\':
+                out.append(u'\\') # + c
             out.append(c)
         out.append(r)
         s = u''.join(out)
-        return s.replace(u'\n', u'\\n')
+        return s
 
     def _getatkeyword(self, rule, default):
         """
