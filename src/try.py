@@ -50,17 +50,19 @@ codecs.register_error('escapecss', escapecss)
 
 if 1:
     css = ur'''
-    @import "ABC\a";
+    @import "ABC\a\d\c";
 @import 'ABC\a';
 a[href='\a\27'] {
-    a: "\a";
-    b: "\n";
+    a: "\a \d \c ";
+    b: "\a\d\c";
     c: "\"";
     d: "\22";
     e: '\'';
     content: '\27';
     font: arial, "\22";
-    x: a("\22")
+    x: a("\22", 1);
+    background: url("\"");
+    background: url("\22");
     '''
     sheet = cssutils.parseString(css)
     print sheet.cssText
@@ -72,8 +74,13 @@ if 0:
     sys.exit(0)
 
 
-if 1:
-    css = ur"\0000a"
+if 0:
+    css = ur'''
+        x: a("\22", 1);
+    background: url("\"")
+    background: url("\22");
+
+    '''
     #css = codecs.open('../sheets/1.css', encoding='css').read()
     t = cssutils.tokenize2.Tokenizer()
     gen = t.tokenize(css, fullsheet=0)
@@ -96,10 +103,12 @@ if 1:
         }
         ''')
     s = cssutils.css.CSSStyleDeclaration(cssText=r'''
-        content: '\A'
+        color: red;
+        left: 0;
+        color: green;
         ''')
-    print s
-    print s.cssText
+    for p in s:
+        print p.name
 
     sys.exit(0)
     
