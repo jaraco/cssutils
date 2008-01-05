@@ -570,35 +570,30 @@ class CSSPrimitiveValue(CSSValue):
         """
         primitiveType = self.CSS_UNKNOWN
         _floatType = False # if unary expect NUMBER DIMENSION or PERCENTAGE
-        tokenizer = self._tokenize2(self._value, aslist=True)
-        try:
-            t = tokenizer[0] #self._nexttoken(tokenizer)
-        except IndexError:
+        tokenizer = self._tokenize2(self._value)
+        t = self._nexttoken(tokenizer)
+        if not t:
             self._log.error(u'CSSPrimitiveValue: No value.')
 
         # unary operator:
         if self._tokenvalue(t) in (u'-', u'+'):
-            try:
-                t = tokenizer[1] #self._nexttoken(tokenizer)
-            except IndexError:
+            t = self._nexttoken(tokenizer)
+            if not t:
                 self._log.error(u'CSSPrimitiveValue: No value.')
 
             _floatType = True
 
-
-        #if self.valid == False:
-        #    primitiveType = CSSPrimitiveValue.CSS_UNKNOWN
-
-        # check for font1, "font2" etc which is treated a ONE string
+        # check for font1, "font2" etc which is treated as ONE string
         fontstring = 0 # should be at leayst 2
         expected = 'ident or string'
-        for x in tokenizer:
-            val, typ = self._tokenvalue(x, normalize=True), self._type(x)
+        tokenizer = self._tokenize2(self._value) # add used tokens again
+        for token in tokenizer:
+            val, typ = self._tokenvalue(token, normalize=True), self._type(token)
             if expected == 'ident or string' and typ in (
                         self._prods.IDENT, self._prods.STRING):
                 expected = 'comma'
                 fontstring += 1
-            elif expected == 'comma' and typ == self._prods.CHAR and val == ',':
+            elif expected == 'comma' and val == ',':
                 expected = 'ident or string'
                 fontstring += 1
             elif typ in (self._prods.S, self._prods.COMMENT):
