@@ -48,7 +48,7 @@ def escapecss(e):
 codecs.register_error('escapecss', escapecss)
 
 
-if 1:
+if 0:
     css = ur'''
     @import "ABC\a\d\c";
 @import 'ABC\a';
@@ -68,9 +68,12 @@ a[href='\a\27'] {
     print sheet.cssText
     sys.exit(0)
 
-if 0:    
-    sheet = cssutils.parse('sheets/default_html4.css')
-    print sheet.cssText
+if 1:   
+    v = cssutils.css.CSSValue(_propertyName="font-family")
+    v.cssText = u'a  ,b,  c  ,"d or d", "e, " '
+    print v 
+    #sheet = cssutils.parse('sheets/default_html4.css')
+    #print sheet.cssText
     sys.exit(0)
 
 
