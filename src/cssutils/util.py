@@ -165,6 +165,11 @@ class Base(object):
             u'pause': []
             }
     
+    def _newseq(self):
+        # TODO: replace with data [{type, value}]
+        # used by Selector but should be used by most classes
+        return Seq()
+
     # simple escapes, all non unicodes
     __escapes = re.compile(ur'(\\[^0-9a-fA-F])').sub
     # all unicode (see cssproductions "unicode")
@@ -196,27 +201,20 @@ class Base(object):
             return True
         return False
 
-    def _newseq(self):
-        # used by Selector but should be used by most classes
-        return Seq()
-
-    def _tokenize2(self, textortokens, aslist=False, fullsheet=False):
+    def _tokenize2(self, textortokens):
         """
         returns tokens of textortokens which may already be tokens in which
         case simply returns input
         """
         if not textortokens:
             return None
-        elif types.GeneratorType == type(textortokens) and not aslist:
+        elif isinstance(textortokens, basestring):
+            # needs to be tokenized
+            return self.__tokenizer2.tokenize(
+                 textortokens)
+        elif types.GeneratorType == type(textortokens):
             # already tokenized
             return textortokens
-        elif isinstance(textortokens, basestring):
-            if aslist:
-                return [t for t in self.__tokenizer2.tokenize(
-                     textortokens, fullsheet=fullsheet)]
-            else:
-                return self.__tokenizer2.tokenize(
-                     textortokens, fullsheet=fullsheet)
         elif isinstance(textortokens, tuple):
             # a single token (like a comment)
             return [textortokens]
