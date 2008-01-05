@@ -200,23 +200,6 @@ class Base(object):
         # used by Selector but should be used by most classes
         return Seq()
 
-    def _valuestr(self, t):
-        """
-        returns string value of t (t may be a string, a list of token tuples
-        or a single tuple in format (type, value, line, col) or a
-        tokenlist[old])
-        """
-        if not t:
-            return u''
-        elif isinstance(t, basestring):
-            return t
-        elif isinstance(t, list) and isinstance(t[0], tuple):
-            return u''.join([x[1] for x in t])
-        elif isinstance(t, tuple): # needed?
-            return self._tokenvalue(t)
-        else: # old
-            return u''.join([x.value for x in t])
-
     def _tokenize2(self, textortokens, aslist=False, fullsheet=False):
         """
         returns tokens of textortokens which may already be tokens in which
@@ -224,10 +207,10 @@ class Base(object):
         """
         if not textortokens:
             return None
-        if types.GeneratorType == type(textortokens) and not aslist:
+        elif types.GeneratorType == type(textortokens) and not aslist:
             # already tokenized
             return textortokens
-        if isinstance(textortokens, basestring):
+        elif isinstance(textortokens, basestring):
             if aslist:
                 return [t for t in self.__tokenizer2.tokenize(
                      textortokens, fullsheet=fullsheet)]
@@ -249,20 +232,20 @@ class Base(object):
             return default
 
     def _type(self, token):
-        "type of Tokenizer token"
-        if not token:
-            return None
-        else:
+        "returns type of Tokenizer token"
+        if token:
             return token[0]
+        else:
+            return None
 
     def _tokenvalue(self, token, normalize=False):
-        "value of Tokenizer token"
-        if not token:
-            return None
-        elif normalize:
+        "returns value of Tokenizer token"
+        if token and normalize:
             return Base._normalize(token[1])
-        else:
+        elif token:
             return token[1]
+        else:
+            return None
 
     def _tokensupto2(self,
                      tokenizer,
@@ -315,28 +298,30 @@ class Base(object):
             ends = u','
 
         resulttokens = []
-
-        # NEEDED?
         if starttoken:
             resulttokens.append(starttoken)
-
-        if not tokenizer:
-            return resulttokens
-        else:
+        if tokenizer:
             for token in tokenizer:
-                if self._type(token) == 'EOF':
+                typ, val, line, col = token
+                if 'EOF' == typ:
                     if keepEOF and keepEnd:
                         resulttokens.append(token)
                     break
-                val = self._tokenvalue(token)
-                if u'{' == val: brace += 1
-                elif u'}' == val: brace -= 1
-                elif u'[' == val: bracket += 1
-                elif u']' == val: bracket -= 1
+                if u'{' == val: 
+                    brace += 1
+                elif u'}' == val: 
+                    brace -= 1
+                elif u'[' == val: 
+                    bracket += 1
+                elif u']' == val: 
+                    bracket -= 1
                 # function( or single (
                 elif u'(' == val or \
-                   Base._prods.FUNCTION == self._type(token): parant += 1
-                elif u')' == val: parant -= 1
+                     Base._prods.FUNCTION == typ: 
+                    parant += 1
+                elif u')' == val: 
+                    parant -= 1
+                    
                 if val in ends and (brace == bracket == parant == 0):
                     if keepEnd:
                         resulttokens.append(token)
@@ -344,35 +329,51 @@ class Base(object):
                 else:
                     resulttokens.append(token)
 
-            return resulttokens
+        return resulttokens
 
-    def _getProductions(self, productions):
+    def _valuestr(self, t):
         """
+        returns string value of t (t may be a string, a list of token tuples
+        or a single tuple in format (type, value, line, col).
+        Mainly used to get a string value of t for error messages.
+        """
+        if not t:
+            return u''
+        elif isinstance(t, basestring):
+            return t
+        else:
+            return u''.join([x[1] for x in t])
+
+    def __adddefaultproductions(self, productions):
+        """
+        adds default productions if not already present, used by 
+        _parse only
+        
         each production should return the next expected token
         normaly a name like "uri" or "EOF"
         some have no expectation like S or COMMENT, so simply return
         the current value of self.__expected
         """
         def ATKEYWORD(expected, seq, token, tokenizer=None):
-            "TODO: add default impl for unexpected @rule"
+            "TODO: add default impl for unexpected @rule?"
             return expected
 
         def COMMENT(expected, seq, token, tokenizer=None):
-            "default implementation for COMMENT token"
+            "default implementation for COMMENT token adds CSSCommentRule"
             seq.append(cssutils.css.CSSComment([token]))
             return expected
 
         def S(expected, seq, token, tokenizer=None):
-            "default implementation for S token"
+            "default implementation for S token, does nothing"
             return expected
 
         def EOF(expected=None, seq=None, token=None, tokenizer=None):
             "default implementation for EOF token"
             return 'EOF'
 
-        p = {'COMMENT': COMMENT,
+        p = {'ATKEYWORD': ATKEYWORD,
+             'COMMENT': COMMENT,
              'S': S,
-             'ATKEYWORD': ATKEYWORD,
              'EOF': EOF # only available if fullsheet
              }
         p.update(productions)
@@ -397,20 +398,16 @@ class Base(object):
         returns (wellformed, expected) which the last prod might have set
         """
         wellformed = True
-
-        if not tokenizer:
-            return wellformed, expected
-
-        prods = self._getProductions(productions)
-        for token in tokenizer:
-            typ, val, lin, col = token
-            p = prods.get(typ, default)
-            if p:
-                expected = p(expected, seq, token, tokenizer)
-            else:
-                wellformed = False
-                self._log.error(u'Unexpected token (%s, %s, %s, %s)' % token)
-
+        if tokenizer:
+            prods = self.__adddefaultproductions(productions)
+            for token in tokenizer:
+                p = prods.get(token[0], default)
+                if p:
+                    expected = p(expected, seq, token, tokenizer)
+                else:
+                    wellformed = False
+                    self._log.error(u'Unexpected token (%s, %s, %s, %s)' % token)
+                    
         return wellformed, expected
 
 
