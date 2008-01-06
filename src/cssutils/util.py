@@ -12,79 +12,6 @@ import xml.dom
 import cssutils
 from tokenize2 import Tokenizer
 
-class Seq(object):
-    """
-    (EXPERIMENTAL)
-    a list like sequence of (value, type) used in some cssutils classes
-    as property ``seq``
-
-    behaves almost like a list but keeps extra attribute "type" for
-    each value in the list
-
-    types are token types like e.g. "COMMENT" (all uppercase, value='/*...*/')
-    or productions like e.g. "universal" (all lowercase, value='*')
-    """
-    def __init__(self):
-        self.values = []
-        self.types = []
-
-    def __contains__(self, item):
-        return item in self.values
-
-    def __delitem__(self, index):
-        del self.values[index]
-
-    def __getitem__(self, index):
-        return self.values[index]
-
-    def __setitem__(self, index, value_type):
-        "might be set with tuple (value, type) or a single value"
-        if type(value_type) == tuple:
-            val = value_type[0]
-            typ = value_type[1]
-        else:
-            val = value_type
-            typ = None
-        self.values[index] = val
-        self.types[index] = typ
-
-    def __iter__(self):
-        "returns an iterator for values"
-        return iter(self.values)
-
-    def __len__(self):
-        "same as len(list)"
-        return len(self.values)
-
-    def __repr__(self):
-        "returns a repr same as a list of tuples of (value, type)"
-        return u'[%s]' % u',\n '.join([u'(%r, %r)' % (value, self.types[i])
-                                    for i, value in enumerate(self.values)])
-    def __str__(self):
-        "returns a concatated string of all values"
-        items = []
-        for i, value in enumerate(self.values):
-            if self.types[i]:
-                if self.types[i] != 'COMMENT':
-                    items.append(value)
-            # items.append(value)
-        return u''.join(str(items))
-
-    def _append(self, value, type=None):
-        """
-        same as list.append but not a simple value but a SeqItem is appended
-        """
-        self.values.append(value) # str(value)??? does not work if value is e.g. comment
-        self.types.append(type)
-
-    # TODO: should this be the default and the list the special case???
-    def _get_values_types(self):
-        return ((self.values[i], self.types[i]) for i in range(0, len(self)))
-    
-    _items = property(_get_values_types, 
-        doc="EXPERIMENTAL: returns an iterator for (value, type) tuples")
-
-
 class ListSeq(object):
     """
     (EXPERIMENTAL)
@@ -131,10 +58,13 @@ class ListSeq(object):
 class Base(object):
     """
     Base class for most CSS and StyleSheets classes
+    
+    **Superceded by Base2 which is used for new seq handling class.** 
+    See cssutils.util.Base2
 
     Contains helper methods for inheriting classes helping parsing
     
-    ``_normalize`` is static as used be Preferences.
+    ``_normalize`` is static as used by Preferences.
     """
     __tokenizer2 = Tokenizer()
     _log = cssutils.log
@@ -164,11 +94,6 @@ class Base(object):
             u'padding': [],
             u'pause': []
             }
-    
-    def _newseq(self):
-        # TODO: replace with data [{type, value}]
-        # used by Selector but should be used by most classes
-        return Seq()
 
     # simple escapes, all non unicodes
     __escapes = re.compile(ur'(\\[^0-9a-fA-F])').sub
@@ -408,6 +333,109 @@ class Base(object):
                     
         return wellformed, expected
 
+
+class Seq(object):
+    """
+    property seq of Base2 inheriting classes, holds a list of Item objects.
+    
+    used only by Selector for now
+    
+    is normally readonly, only writable during parsing
+    """
+    def __init__(self, readonly=True):
+        """
+        only way to write to a Seq is to initialize it with new items
+        each itemtuple has (value, type, line) where line is optional
+        """
+        self.__seq = []
+        self._readonly = readonly
+        
+    def __delitem__(self, i):
+        del self.__seq[i]
+
+    def __getitem__(self, i):
+        return self.__seq[i]
+
+    def __iter__(self):
+        return iter(self.__seq)
+
+    def __len__(self):
+        return len(self.__seq)
+        
+    def append(self, val, typ, line=None):
+        "if not readonly add new Item()"
+        if self._readonly:
+            raise AttributeError('Seq is readonly.')
+        else:
+            self.__seq.append(Item(val, typ, line))
+
+    def replace(self, index=-1, val=None, typ=None, line=None):
+        """
+        if not readonly replace Item at index with new Item or
+        simply replace value or type
+        """
+        if self._readonly:
+            raise AttributeError('Seq is readonly.')
+        else:
+            self.__seq[index] = Item(val, typ, line)
+
+    def __repr__(self):
+        "returns a repr same as a list of tuples of (value, type)"
+        return u'cssutils.%s.%s([\n    %s])' % (self.__module__, 
+                                          self.__class__.__name__, 
+            u',\n    '.join([u'(%r, %r)' % (item.type, item.value)
+                          for item in self.__seq]
+            ))
+    def __str__(self):
+        return "<cssutils.%s.%s object length=%r at 0x%x>" % (
+                self.__module__, self.__class__.__name__, len(self), id(self))
+
+class Item(object):
+    """
+    an item in the seq list of classes (successor to tuple items in old seq)
+    
+    each item has attributes:
+    
+    type
+        a sematic type like "element", "attribute"
+    value
+        the actual value which may be a string, number etc or an instance
+        of e.g. a CSSComment
+    *line*
+        **NOT IMPLEMENTED YET, may contain the line in the source later**
+    """
+    def __init__(self, val, typ, line=None):
+        self.__value = val
+        self.__type = typ
+        self.__line = line
+
+    type = property(lambda self: self.__type)
+    value = property(lambda self: self.__value)
+    line = property(lambda self: self.__line)
+
+
+class Base2(Base):
+    """
+    Base class for new seq handling, used by Selector for now only
+    """
+    def __init__(self):
+        self._seq = Seq()
+
+    def _setSeq(self, newseq):
+        """
+        sets newseq and makes it readonly
+        """
+        newseq._readonly = True
+        self._seq = newseq
+
+    seq = property(fget=lambda self: self._seq, 
+                   fset=_setSeq, 
+                   doc="seq for most classes")
+    
+    def _tempSeq(self, readonly=False):
+        "get a writeable Seq() which is added later"  
+        return Seq(readonly=readonly)
+    
 
 class Deprecated(object):
     """This is a decorator which can be used to mark functions
