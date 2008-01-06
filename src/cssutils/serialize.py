@@ -45,7 +45,7 @@ class Preferences(object):
         Uses hreftype if ``None`` or explicit ``'string'`` or ``'uri'``
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
-    indentSpecitivities = False
+    indentSpecificities = False
         Indent rules with subset of Selectors and higher Specitivity
         
     keepAllProperties = True
@@ -123,7 +123,7 @@ class Preferences(object):
         self.defaultPropertyName = True
         self.importHrefFormat = None
         self.indent = 4 * u' '
-        self.indentSpecitivities = False
+        self.indentSpecificities = False
         self.keepAllProperties = True
         self.keepComments = True
         self.keepEmptyRules = False
@@ -581,15 +581,15 @@ class CSSSerializer(object):
         """
         # prepare for element nested rules
         # TODO: sort selectors!
-        if self.prefs.indentSpecitivities:
+        if self.prefs.indentSpecificities:
             # subselectorlist?
             elements = set([s.element for s in rule.selectorList])
             specitivities = [s.specificity for s in rule.selectorList]
-            for last in self._selectors:
-                lastelements = set([s.element for s in last])
+            for selector in self._selectors:
+                lastelements = set([s.element for s in selector])
                 if elements.issubset(lastelements):
                     # higher specificity?
-                    lastspecitivities = [s.specificity for s in last]
+                    lastspecitivities = [s.specificity for s in selector]
                     if specitivities > lastspecitivities:
                         self._selectorlevel += 1
                         break
