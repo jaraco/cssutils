@@ -68,7 +68,7 @@ a[href='\a\27'] {
     print sheet.cssText
     sys.exit(0)
 
-if 1:   
+if 0:   
     v = cssutils.css.CSSValue(_propertyName="font-family")
     v.cssText = u'a  ,b,  c  ,"d or d", "e, " '
     print v 
@@ -92,7 +92,7 @@ if 0:
     sys.exit(0)
 
 
-if 1:
+if 0:
     # RESOLVE INDENTATION!!!
     sheet = cssutils.parseString('''
         a,b  { color: red }
@@ -115,18 +115,32 @@ if 1:
 
     sys.exit(0)
     
-if 1:
+if 0:
     # SELECTOR
-    sl = cssutils.css.SelectorList(selectorText='''
-        |b[a|x], a''')
-        #*|*, *|e, |e, e, p|*, p|e   ''')
-    print 
-    for s in sl:
-        print 'Selector.seq:', s.seq
-        print '\t%s\t%r' % (s.selectorText, s.specificity)
-        print '\t', s._element
+    from lxml.cssselect import CSSSelector
+#    sl = cssutils.css.SelectorList(selectorText='''
+#        :not(a|x) *|* a|* * /*x*/* b>c|c+d[a]~e[a=v].a,
+#        a:not(x) p|a[p|a=a],
+#        [a="x"][a|=dash][a~=incl][a^=pref][a$=suff][a*=suff]''')
+#        
+#        #*|*, *|e, |e, e, p|*, p|e   ''')
+    s = cssutils.css.Selector('*|* |* * *|a |a a')
+    print s.selectorText
+    ns = [
+           {'p': 'URI'},
+           {'': 'EMPTY','p': 'URI'},
+           ]
+    for n in ns:
+        sl = cssutils.css.SelectorList(selectorText='*|* |* * *|a |a a p|* p|a', 
+                                       namespaces=n)
         print 
-    print s
+        for s in sl:
+            print 'ns', n
+            print 'Selector.seq:', repr(s.seq)
+            print '\t', s.selectorText
+            #print  CSSSelector(s.selectorText).path
+            print
+         
     sys.exit(0)
 
 if 1:
@@ -153,6 +167,12 @@ if 1:
             e: red; 
             }
     '''
+    css = '''
+        a {
+            c\olor: red;
+            font-size: 2em;
+        }
+    '''
     html = '''<html>
         <body>
             <a href="#1">link</a>
@@ -161,72 +181,54 @@ if 1:
     </html>'''
     
     from lxml import etree
+    from lxml.builder import E
     from lxml.cssselect import CSSSelector
     
-    doc = etree.HTML(html)
-    css = cssutils.parseString(css)
-
+    document = etree.HTML(html)
+    sheet = cssutils.parseString(css)
     
-    """
-    {
-    element: { 
-        property: (CSSValue, priority, specificity)
-        } 
-    }
-    """
-    view = {} 
-    """
-    should be: (to remove unneeded conversion to declaration!
-    {
-    element: {
-        (CSSStyleDeclaration, { property: specificity }) 
-        }
-    }
-    """
-    specitivities = {}
+    view = {}
+    specificities = {} # temporarily needed 
+    # TODO: filter rules simpler?, add @media
+    rules = (rule for rule in sheet.cssRules if rule.type == rule.STYLE_RULE)
     
+    for rule in rules:
+        for selector in rule.selectorList:
+            cssselector = CSSSelector(selector.selectorText)
+            elements = cssselector.evaluate(document)
+            for element in elements:
+                # add styles for all matching DOM elements
+                if element not in view:
+                    # add initial
+                    view[element] = cssutils.css.CSSStyleDeclaration()
+                    specificities[element] = {}
+                 
+                for p in rule.style:
+                    # update styles
+                    if p not in view[element]:
+                        view[element].setProperty(p)
+                        specificities[element][p.normalname] = selector.specificity
+                    else: 
+                        sameprio = (p.priority == 
+                                    view[element].getPropertyPriority(p.name))
+                        if not sameprio and bool(p.priority) or (
+                           sameprio and selector.specificity >= 
+                                        specificities[element][p.normalname]):
+                            # later, more specific or higher prio 
+                            view[element].setProperty(p)                    
+    #pp(view)
     
-    # TODO: filter rules simpler?
-    for rule in css.cssRules:
-        if rule.type == rule.STYLE_RULE:
-            
-            for sel in rule.selectorList:
-                csssel = CSSSelector(sel.selectorText)
-                res = csssel.evaluate(doc)
-                if res:
-                    sp = sel.specificity
-                    for element in res:
-                        props = view.setdefault(element, {})
-                        # **CHANGE rule iterator!**
-                        for p in rule.style.getProperties():
-                            
-                            # check each property
-                            if p.name not in props:
-                                # not set yet
-                                props[p.name] = (p.value, p.priority, sp)
-                            else:
-                                # later, more specific or higher prio 
-                                sameprio = p.priority == props[p.name][1]
-                                
-                                if not sameprio and bool(p.priority):
-                                    # higher priority
-                                    props[p.name] = (p.value, p.priority, sp)
-                                    
-                                if sameprio and sp >= props[p.name][2]:
-                                    # later, higher specificity or later
-                                    props[p.name] = (p.value, p.priority, sp)
-                                  
-    pp(view)
-    print 
-    
-    # convert back to CSSStyleDeclaration
-    for e in view:
-        viewstyle = cssutils.css.CSSStyleDeclaration()
-        for p in view[e]:
-            viewstyle.setProperty(p, view[e][p][0], view[e][p][1]) 
-        view[e] = viewstyle
-    pp(view)
-    
+    # render somewhat (add @style and text with how it should look
+    for element, style in view.items():
+        inline = []
+        for property in style:
+            inline.append(u'%s: %s;' % (property.name, property.value))
+            element.append(element.makeelement('br'))
+            element.append(E.SPAN(inline[-1]))
+        element.set('style', style.getCssText(separator=u''))
+        
+    print etree.tostring(document, pretty_print=True)
+       
     sys.exit(0)
 
 
