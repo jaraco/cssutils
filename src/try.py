@@ -79,9 +79,8 @@ if 0:
 
 if 0:
     css = ur'''
-        x: a("\22", 1);
-    background: url("\"")
-    background: url("\22");
+    color: green;
+    $color: red;
 
     '''
     #css = codecs.open('../sheets/1.css', encoding='css').read()
@@ -92,6 +91,12 @@ if 0:
     sys.exit(0)
 
 
+if 0:
+    p = cssutils.css.property.Property('c\\olor', 'red')
+    print p.normalname
+    
+    sys.exit(0)
+    
 if 0:
     # RESOLVE INDENTATION!!!
     sheet = cssutils.parseString('''
@@ -105,13 +110,8 @@ if 0:
             a:hover { color: blue}
         }
         ''')
-    s = cssutils.css.CSSStyleDeclaration(cssText=r'''
-        color: red;
-        left: 0;
-        color: green;
-        ''')
-    for p in s:
-        print p.name
+    sheet.setSerializerPref('indentSpecificities', True)
+    print sheet.cssText
 
     sys.exit(0)
     
@@ -168,14 +168,23 @@ if 1:
             }
     '''
     css = '''
+        body {
+            font: normal 100% sans-serif;
+        }
         a {
+            font-family: serif;
             c\olor: red;
             font-size: 2em;
+        }
+        .cssutils {
+            font: 1em "Lucida Console", monospace;
+            border: 1px solid;
+            padding: 0 10px;
         }
     '''
     html = '''<html>
         <body>
-            <a href="#1">link</a>
+            <a href="#1" style="color: green;">link</a>
             <p><a href="#2">coming: <b>b</b>link</a></p>
         </body>
     </html>'''
@@ -185,6 +194,10 @@ if 1:
     from lxml.cssselect import CSSSelector
     
     document = etree.HTML(html)
+    e = etree.Element('pre', {'class': 'cssutils'})
+    e.text = css
+    document.find('body').append(e)
+    
     sheet = cssutils.parseString(css)
     
     view = {}
@@ -220,14 +233,14 @@ if 1:
     
     # render somewhat (add @style and text with how it should look
     for element, style in view.items():
-        inline = []
-        for property in style:
-            inline.append(u'%s: %s;' % (property.name, property.value))
-            element.append(element.makeelement('br'))
-            element.append(E.SPAN(inline[-1]))
-        element.set('style', style.getCssText(separator=u''))
-        
-    print etree.tostring(document, pretty_print=True)
+        v = style.getCssText(separator=u'')
+        element.set('style', v)
+        element.set('title', v)
+
+    
+    f = open('c.html', 'w')
+    f.write(etree.tostring(document, pretty_print=True))
+    f.close()
        
     sys.exit(0)
 
