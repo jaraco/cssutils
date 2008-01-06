@@ -136,6 +136,19 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         self.cssText = cssText
         self._readonly = readonly
 
+    def __contains__(self, nameOrProperty):
+        """
+        checks if a property (or a property with given name is in style
+        
+        name
+            a string or Property
+        """
+        if isinstance(nameOrProperty, Property):
+            name = nameOrProperty.normalname
+        else:
+            name = self._normalize(nameOrProperty)
+        return name in self.__nnames()
+    
     def __iter__(self):
         """
         iterator of set Property objects with different normalnames.
@@ -144,7 +157,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             for name in self.__nnames():
                 yield self.getProperty(name)
         return properties()
-
+    
     def __setattr__(self, n, v):
         """
         Prevent setting of unknown properties on CSSStyleDeclaration
@@ -529,7 +542,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         self.seq = newseq
         return r
 
-    def setProperty(self, name, value, priority=u'', normalize=True):
+    def setProperty(self, name, value=None, priority=u'', normalize=True):
         """
         (DOM)
         Used to set a property value and priority within this declaration
@@ -540,9 +553,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             "propertyName"), always lowercase (even if not normalized)
 
             If a property with this name is present it will be reset
+            
+            cssutils also allowed name to be a Property object, all other
+            parameter are ignored in this case
         
         value
-            the new value of the property
+            the new value of the property, omit if name is already a Property
         priority
             the optional priority of the property (e.g. "important")
         normalize
@@ -559,8 +575,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
           readonly.
         """
         self._checkReadonly()
-
-        newp = Property(name, value, priority)
+        
+        if isinstance(name, Property):
+            newp = name
+            name = newp.name
+        else:
+            newp = Property(name, value, priority)
         if not newp.wellformed:
             self._log.warn(u'Invalid Property: %s: %s %s'
                     % (name, value, priority))
