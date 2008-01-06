@@ -270,10 +270,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         tokenizer = self._tokenize2(cssText)
 
         # for closures: must be a mutable
-        new = {'char': None, # for IE hack
-               'valid': True,
-               'wellformed': True
-        }                    
+        new = {'valid': True,
+               'wellformed': True,
+               'char': None} # for IE hack
         def ident(expected, seq, token, tokenizer=None):
             # a property
             if new['char']:
@@ -305,6 +304,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 self._log.warn(u'Trying to use (invalid) CHAR %r in Property name' %
                                   c)
                 new['char'] = c
+            return expected
 
         # [Property: Value;]* Property: Value?
         newseq = []
@@ -316,7 +316,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         # wellformed set by parse
         # post conditions
         if new['char']:
-            valid =wellformed = False
+            valid = wellformed = False
             self._log.error(u'Could not use unexpected CHAR %r' % new['char'])            
         
         if wellformed:
