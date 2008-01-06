@@ -170,14 +170,14 @@ def main():
     view = getView(document, css, styleCallback=styleattribute)
     render2style(document, view)
     text = etree.tostring(document, pretty_print=True)
-    show(text, 'inline.html')
+    show(text, '__tempinline.html')
 
     # replaces elements content with style
     document = getDocument(html)
     view = getView(document, css, styleCallback=styleattribute)
     render2content(document, view, css)    
     text = etree.tostring(document, pretty_print=True)
-    show(text, 'browser.html')
+    show(text, '__tempbrowser.html')
 
     
 if __name__ == '__main__':
