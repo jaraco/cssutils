@@ -9,11 +9,15 @@ changelog
 
 known issues
 ------------
-- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as not normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
-
 - The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
 
+   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
+
+- namespace rendering in Selector is probably broken ``*|* |* * *|a |a a`` will not come out as it is should
+
 - namespaces in ``Selector``\ s do parse correctly but will not work correctly if the selector is changed later as the connection between namespace prefixes and declared namespaces on the stylesheet is not present yet. This will be fixed in a later release (probably 0.9.5 or 6)
+
+- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as not normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
 
 - ``css.UnknownRule`` is not handled properly in cases, tests are spotty there too. it also seems to have been removed in CSSOM but seems useful so is still present
 
@@ -41,7 +45,9 @@ known issues
 HEAD
     + **API CHANGE**: iterating on ``css.CSSStyleDelcaration`` yields now *effective* properties only and not *all* properties set in the declaration. E.g. from ``color: red; c\olor: green`` only one Property is returned which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``. Reason for this change is that for most cases the new default makes more sense.
 
-    - **FEATURE**: ``css.Selector`` has a **readonly** property ``specitivity`` now which is calculated as described at http://www.w3.org/TR/css3-selectors/#specificity
+    - **FEATURE**: ``css.CSSStyleDelcaration`` supports ``in`` now. Expected is a Property or a name of a property which is checked if already in the style declaration
+
+    - **FEATURE**: ``css.Selector`` has a **readonly** property ``specificity`` now which is calculated as described at http://www.w3.org/TR/css3-selectors/#specificity
 
       **ATTENTION**: changing the Selector by changing its property ``seq`` does **not** update the specificity! ``Selector.seq.append`` has been made private therefor and writing to ``seq`` **not** be used at all!
 
