@@ -39,6 +39,12 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     encoding
         reflects the encoding of an @charset rule or 'utf-8' (default)
         if set to ``None``
+    namespaces
+        **TODO:**
+        a dict of {prefix: namespaceURI} mapping, may also be a
+        CSSStyleSheet in which case the namespaces defined there
+        are used. If None cssutils tries to get the namespaces as
+        defined in a possible parent CSSStyleSheet.     
     prefixes: set
         A set of declared prefixes via @namespace rules. Each
         CSSStyleRule is checked if it uses additional prefixes which are
