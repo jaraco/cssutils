@@ -17,26 +17,38 @@ import cssutils
 class SelectorTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        self.r = cssutils.css.Selector('*')
+        self.r = cssutils.css.Selector('*', namespaces={'p': 'URI',
+                                                        '-a_x12': 'URI2'})
 
     def test_init(self):
         "Selector.__init__()"
         s = cssutils.css.Selector('*')
+        self.assertEqual(('', '*'), s.element)
+        self.assertEqual({}, s.namespaces)
+        self.assertEqual(None, s.parentRule)
         self.assertEqual(set(), s.prefixes)
         self.assertEqual('*', s.selectorText)
         self.assertEqual((0,0,0,0), s.specificity)
+        self.assertEqual(True, s.wellformed)
 
-        s = cssutils.css.Selector('a|b')
-        self.assertEqual(set('a'), s.prefixes)
-        self.assertEqual('a|b', s.selectorText)
+        self.assertRaisesEx(xml.dom.NamespaceErr, cssutils.css.Selector, 'p|b')
+
+        s = cssutils.css.Selector('p|b', namespaces={'p': 'URI'} )
+        self.assertEqual(('URI', 'b'), s.element)
+        self.assertEqual({'p': 'URI'}, s.namespaces)
+        self.assertEqual(None, s.parentRule)
+        self.assertEqual(set('p'), s.prefixes)
+        self.assertEqual('p|b', s.selectorText)
         self.assertEqual((0,0,0,1), s.specificity)
+        self.assertEqual(True, s.wellformed)
 
     def test_prefixes(self):
         "Selector.prefixes"
-        sel=u'a|x1 a|x2 |y *|z [b|x] [a|x="1"]'
-        s = cssutils.css.Selector(selectorText=sel)
-        
-        self.assertEqual(set('ab'), s.prefixes)
+        sel=u'p|x1 p|x2 |y *|z [p2|x] [p|x="1"]'
+        s = cssutils.css.Selector(selectorText=sel, namespaces={'p': 'URI',
+                                                        'p2': 'URI2'})
+        self.assertEqual(set([u'p2', u'p']), s.prefixes)
+        self.assertEqual({'p': 'URI', 'p2': 'URI2'}, s.namespaces)
 
     def test_selectorText(self):
         "Selector.selectorText"
@@ -84,13 +96,13 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a1': None,
             u'a1-1': None,
             u'.a1-1': None,
-            u'|e': None,
+            u'|e': u'e',
             u'*|e': None,
             u'*|*': None,
-            u'n|*': None,
-            u'n|e': None,
+            u'p|*': None,
+            u'p|e': None,
             u'-a_x12|e': None,
-            u'*|b[x|a]': None,
+            u'*|b[p|a]': None,
 
             # universal
             u'*': None,
