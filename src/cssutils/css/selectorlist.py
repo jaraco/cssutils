@@ -31,6 +31,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     ==========
     length: of type unsigned long, readonly
         The number of Selector elements in the list.
+    namespaces
+        **TODO:**
+        a dict of {prefix: namespaceURI} mapping, may also be a
+        CSSStyleSheet in which case the namespaces defined there
+        are used. If None cssutils tries to get the namespaces as
+        defined in a possible parent CSSStyleSheet.     
     parentRule: of type CSSRule, readonly
         The CSS rule that contains this declaration block or None if this
         CSSStyleDeclaration is not attached to a CSSRule.
@@ -43,13 +49,17 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     wellformed
         if this selectorlist is wellformed regarding the Selector spec
     """
-    def __init__(self, selectorText=None, parentRule=None, readonly=False):
+    def __init__(self, selectorText=None, namespaces=None,
+                 parentRule=None, readonly=False):
         """
         initializes SelectorList with optional selectorText
         """
         super(SelectorList, self).__init__()
         
         self.wellformed = False
+        if not namespaces:
+            namespaces = {}
+        self.namespaces = namespaces
         self.parentRule = parentRule  
         if selectorText:
             self.selectorText = selectorText
@@ -60,7 +70,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         self._checkReadonly()
         
         if not isinstance(newSelector, Selector):
-            newSelector = Selector(newSelector)
+            newSelector = Selector(newSelector, namespaces=self.namespaces)
 
         if newSelector.wellformed:
             newSelector.parentRule = self
@@ -143,7 +153,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 else:
                     expected = None
 
-                selector = Selector(selectortokens)
+                selector = Selector(selectortokens, namespaces=self.namespaces)
                 if selector.wellformed:
                     selector.parentRule = self.parentRule
                     newseq.append(selector)
