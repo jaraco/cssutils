@@ -646,7 +646,19 @@ class CSSSerializer(object):
             return sep.join(out)
         else:
             return u''
-            
+        
+    def _getprefix(self, namespaces, namespaceURI):
+        """
+        returns prefix of given nsuri as defined in given
+        dict (prefix: uri} or TODO: from CSSNamespaceRules?
+        """
+        if namespaceURI is None:
+            return u'*'
+        for prefix, uri in namespaces.items():
+            if uri == namespaceURI:
+                return prefix
+        return u'' # should not happen!
+           
     def do_css_Selector(self, selector):
         """
         a single Selector including comments
@@ -654,24 +666,28 @@ class CSSSerializer(object):
         if selector.seq and self._wellformed(selector) and\
                                 self._valid(selector):
             out = []
-            for (part, typ) in selector.seq._items:
-                if hasattr(part, 'cssText'):
+            for item in selector.seq:
+                typ, val = item.type, item.value
+                if hasattr(val, 'cssText'):
                     # e.g. comment
-                    out.append(part.cssText)
-                elif type(part) == tuple:
-                    # nsprefix | name (name or att)
-                    if part[0] is not None:
-                        # nsprefix may be None
-                        out.append(u'%s|%s' % part)
+                    out.append(val.cssText)
+                elif type(val) == tuple:
+                    # TODO: CHECK IF THIS IS REALLY OK!
+                    namespaceURI, name = val
+                    # namespaceURI | name (name or att)
+                    if namespaceURI != u'':
+                        # namespace may be None
+                        out.append(u'%s|%s' % (self._getprefix(selector.namespaces,
+                                                               namespaceURI),
+                                               name))
                     else:
-                        # nsprefix max be a string or the empty string!
-                        out.append(u'%s' % part[1])
-                elif type(part) == dict:
-                    out.append(part['value'])
+                        out.append(u'%s' % name)
+                elif type(val) == dict: # OLD???
+                    out.append(val['value'])
                 else:
-                    if typ == 'STRING':
-                        part = self._escapeSTRINGtype(part)
-                    out.append(part)
+                    if typ == 'string':
+                        val = self._escapeSTRINGtype(val)
+                    out.append(val)
             return u''.join(out)
         else: 
             return u''
