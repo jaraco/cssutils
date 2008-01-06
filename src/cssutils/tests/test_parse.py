@@ -100,6 +100,24 @@ o very long title"] {/*...*/}''': u'''a[title="a not so very long title"] {
             s = cssutils.parseString(css)
             self.assertEqual(exp, s.cssText)
 
+    def test_iehack(self):
+        "IEhack: $property"
+        # $color is not color!
+        css = 'a { color: green; $color: red; }'
+        s = cssutils.parseString(css)
+
+        p1 = s.cssRules[0].style.getProperty('color')
+        self.assertEqual('color', p1.name)
+        self.assertEqual('color', p1.normalname)
+        self.assertEqual('red', s.cssRules[0].style.getPropertyValue('$color'))
+
+        p2 = s.cssRules[0].style.getProperty('$color')
+        self.assertEqual('$color', p2.name)
+        self.assertEqual('$color', p2.normalname)
+        self.assertEqual('green', s.cssRules[0].style.getPropertyValue('color'))
+        self.assertEqual('green', s.cssRules[0].style.color)
+
+
     def test_attributes(self):
         "cssutils.parseString(href, media)"
         s = cssutils.parseString("a{}", href="file:foo.css", media="screen, projection, tv")
