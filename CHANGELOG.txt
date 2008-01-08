@@ -13,7 +13,7 @@ known issues
 
    **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
 
-- namespace rendering in Selector is probably broken ``*|* |* * *|a |a a`` will not come out as it is should
+- namespace rendering in Selector is probably broken ``*|* |* * *|a |a a`` will not come out as it should
 
 - namespaces in ``Selector``\ s do parse correctly but will not work correctly if the selector is changed later as the connection between namespace prefixes and declared namespaces on the stylesheet is not present yet. This will be fixed in a later release (probably 0.9.5 or 6)
 
