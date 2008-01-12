@@ -139,7 +139,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' url( a ) ': [('S', u' ', 1, 1),
                  ('URI', u'url( a )', 1, 2),
                  ('S', u' ', 1, 10)],
-        u'ur\\l(': [('FUNCTION', u'ur\\l(', 1, 1)],
 
         # UNICODE-RANGE
 
@@ -174,9 +173,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' x( ': [('S', u' ', 1, 1),
                   ('FUNCTION', u'x(', 1, 2),
                   ('S', u' ', 1, 4)],
-        # only url( is a valid URI so this must be a function
-        u'URL(': [('FUNCTION', u'URL(', 1, 1)],
-        u'uRl(': [('FUNCTION', u'uRl(', 1, 1)],
 
         # INCLUDES
         u' ~= ': [('S', u' ', 1, 1),
@@ -460,6 +456,11 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('INVALID', u'"\\r\\n\\t\\n\\ra', 1, 2),
                    ('S', u'\n', 1, 14),
                    ('IDENT', u'a', 2, 1)],
+        # URI
+        u'ur\\l(a)': [('URI', u'ur\\l(a)', 1, 1)],
+        u'url(a)': [('URI', u'url(a)', 1, 1)],
+        u'\\55r\\4c(a)': [('URI', u'UrL(a)', 1, 1)],
+        u'\\75r\\6c(a)': [('URI', u'url(a)', 1, 1)],
         }
 
     # tests if fullsheet=False is set on tokenizer
@@ -481,6 +482,8 @@ class TokenizerTestCase(basetest.BaseTestCase):
                    ('INVALID', u'"a', 1, 5)],
         u"url('a": [('FUNCTION', u'url(', 1, 1),
                    ('INVALID', u"'a", 1, 5)],
+        u"UR\\l('a": [('FUNCTION', u'UR\\l(', 1, 1),
+                   ('INVALID', u"'a", 1, 6)],
         }
 
     # tests if fullsheet=True is set on tokenizer
