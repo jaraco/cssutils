@@ -75,6 +75,8 @@ HEAD
 
     - **FEATURE**: Added ``css.CSSStyleDeclaration.getProperty(name, normalize=True)`` which returns the effective Property object for ``name``.
 
+    - FEATURE: Implemented http://csswg.inkedblade.net/spec/css2.1#issue-23, URI may be ``URL(...)`` or ``u\r\6c(...)`` now
+
     + **BUGFIX**: ``CSSStyleDeclaration.removeProperty(name, normalize=True)`` removes all properties with given ``name`` now and returns the effective value. If ``normalize==False`` removes only properties with ``name=Property.literalname`` and also only returns the effective value of the unnormalized name.
 
     + **BUGFIX**: Priority of Properties is acknowledged by all methods of ``css.CSSStylesDeclaration`` now.
