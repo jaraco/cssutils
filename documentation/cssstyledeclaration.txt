@@ -12,23 +12,24 @@ CSSStyleDeclaration
 
 CSSStyleDeclaration
 ===================
-A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule. It is iterable which yield all *effective* properties.
+A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule. It is iterable which yield all *effective* properties. It also supports ``in``.
 
 Example::
 
-    css = r'''
+    >>> css = r'''
         color: red;
         /* properties might be set more than once for different UAs */
         c\olor: green;
         background-color: #fff
-    '''
-    s = cssutils.css.CSSStyleDeclaration(cssText=css)
-    for p in s:
-        print repr(p)
-
-    # PRINTS:
+        '''
+    >>> s = cssutils.css.CSSStyleDeclaration(cssText=css)
+    >>> for p in s:
+    ...     print repr(p)
     cssutils.css.Property(name='c\\olor', value=u'green', priority=u'')
     cssutils.css.Property(name='background-color', value=u'#fff', priority=u'')
+
+    >>> 'color' in s
+    True
 
 
 attributes
@@ -83,11 +84,8 @@ item(index)
     returns property at index. Same as ``length`` item works on
     effective properties only and not on the complete set!
 
-random notes
-------------
-
 CSS2Properties
-~~~~~~~~~~~~~~
+--------------
 CSSStyleDeclaration implements CSS2Properties so most CSS 2 properties may be used like::
 
     declaration.color = 'red'
@@ -96,34 +94,6 @@ CSSStyleDeclaration implements CSS2Properties so most CSS 2 properties may be us
 As some properties contain a "-" character these have to be used in camelcase instead!
 
 cssutils implements only a subset of CSS2Properties so setting e.g. ``declaration.border = '1px solid red'`` does only set border but **not** ``border-style``, ``border-color`` etc which it should. This may be implemented later.
-
-iterable
-~~~~~~~~
-CSSStyleDeclaration is iterable (**experimental**). The iterator returns  *all* properties set in this style as objects with properties ``name``, ``cssValue`` and ``priority``. Calling CSSStyleDeclaration.item(index) on the other hand simply returns a property name and also only the normalized name (once). Example::
-
-    sheet = cssutils.parseString('a { color: red; c\olor: blue; left: 0 !important }')
-    for rule in sheet.cssRules:
-        style = rule.style
-        for property in style:
-            name = property.name
-            cssValue = property.cssValue
-            priority = property.priority
-            print name, '=', cssValue.cssText, priority
-
-        # prints:
-        # color = red
-        # c\olor = blue
-        # left = 0 !important
-
-        for i in range(0, style.length):
-            name = style.item(i)
-            cssValue = style.getPropertyCSSValue(name)
-            priority = style.getPropertyPriority(name)
-            print name, '=', cssValue.cssText , priority
-
-        # prints:
-        # color = blue
-        # left = 0 !important
 
 
 Property
