@@ -144,14 +144,14 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             a string or Property
         """
         if isinstance(nameOrProperty, Property):
-            name = nameOrProperty.normalname
+            name = nameOrProperty.literalname
         else:
             name = self._normalize(nameOrProperty)
         return name in self.__nnames()
     
     def __iter__(self):
         """
-        iterator of set Property objects with different normalnames.
+        iterator of set Property objects with different normalized names.
         """
         def properties():
             for name in self.__nnames():
@@ -187,8 +187,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         names = []
         # double reversed to get effective names
         for x in reversed(self.seq): 
-            if isinstance(x, Property) and not x.normalname in names:
-                names.append(x.normalname)
+            if isinstance(x, Property) and not x.name in names:
+                names.append(x.name)
         return reversed(names)    
 
     # overwritten accessor functions for CSS2Properties' properties
@@ -381,7 +381,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             properties = []
             for x in self.seq:
                 if isinstance(x, Property) and \
-                   (bool(nname) == False) or (x.normalname == nname):
+                   (bool(nname) == False) or (x.name == nname):
                     properties.append(x)
             return properties
 
@@ -402,7 +402,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         found = None
         for x in reversed(self.seq):
             if isinstance(x, Property):
-                if (normalize and nname == x.normalname) or name == x.name:
+                if (normalize and nname == x.name) or name == x.literalname:
                     if x.priority:
                         return x 
                     elif not found:
@@ -528,10 +528,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         isdone = False
         for x in reversed(self.seq):
             if isinstance(x, Property):
-                if not isdone and normalize and x.normalname == nname:
+                if not isdone and normalize and x.name == nname:
                     r = x.cssValue.cssText
                     isdone = True
-                elif not isdone and x.name == name:
+                elif not isdone and x.literalname == name:
                     r = x.cssValue.cssText
                     isdone = True
                 else:
@@ -578,7 +578,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         
         if isinstance(name, Property):
             newp = name
-            name = newp.name
+            name = newp.literalname
         else:
             newp = Property(name, value, priority)
         if not newp.wellformed:
@@ -588,11 +588,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             nname = self._normalize(name)
             properties = self.getProperties(name, all=(not normalize))
             for property in reversed(properties):
-                if normalize and property.normalname == nname:
+                if normalize and property.name == nname:
                     property.cssValue = newp.cssValue.cssText
                     property.priority = newp.priority
                     break
-                elif property.name == name:
+                elif property.literalname == name:
                     property.cssValue = newp.cssValue.cssText
                     property.priority = newp.priority
                     break
@@ -616,8 +616,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         empty string if no property exists at this position.
 
         ATTENTION:
-        Only properties with a different normalname are counted. If two
-        properties with the same normalname are present in this declaration
+        Only properties with a different name are counted. If two
+        properties with the same name are present in this declaration
         only the effective one is included.
 
         ``item()`` and ``length`` work on the same set here.
@@ -631,7 +631,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
     length = property(lambda self: len(self.__nnames()),
         doc="(DOM) The number of distince properties that have been explicitly\
         in this declaration block. The range of valid indices is 0 to\
-        length-1 inclusive. These are properties with the same ``normalname``\
+        length-1 inclusive. These are properties with the same ``name``\
         only. ``item()`` and ``length`` work on the same set here.")
 
     def __repr__(self):

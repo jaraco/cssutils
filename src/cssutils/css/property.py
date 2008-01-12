@@ -12,6 +12,7 @@ import xml.dom
 import cssutils
 import cssproperties
 from cssvalue import CSSValue
+from cssutils.util import Deprecated
 
 class Property(cssutils.util.Base):
     """
@@ -21,10 +22,12 @@ class Property(cssutils.util.Base):
     ==========
     cssText
         a parsable textual representation of this property
-    name
-        of the property
-    normalname
-        normalized name of the property, e.g. "color" when name is "c\olor"
+    name 
+        normalized name of the property, e.g. "color" when name is "c\olor" 
+        (since 0.9.5)
+    literalname (since 0.9.5)
+        original name of the property in the source CSS which is not normalized
+        e.g. "c\olor"
     cssValue
         the relevant CSSValue instance for this property
     value
@@ -38,6 +41,9 @@ class Property(cssutils.util.Base):
         if this Property is valid
     wellformed
         if this Property is syntactically ok
+
+    DEPRECATED normalname (since 0.9.5)
+        normalized name of the property, e.g. "color" when name is "c\olor"
 
     Format
     ======
@@ -78,7 +84,7 @@ class Property(cssutils.util.Base):
         inits property
 
         name
-            a property name string
+            a property name string (will be normalized)
         value
             a property value string
         priority
@@ -97,7 +103,8 @@ class Property(cssutils.util.Base):
             self.name = name 
         else:
             self._name = u''
-            self.normalname = u''
+            self._literalname = u''
+            self.__normalname = u'' # DEPRECATED
             
         if value:
             self.cssValue = value
@@ -130,7 +137,6 @@ class Property(cssutils.util.Base):
 
         wellformed = True
         if nametokens:
-            
             if self._mediaQuery and not valuetokens:
                 # MediaQuery may consist of name only
                 self.name = nametokens
@@ -171,9 +177,6 @@ class Property(cssutils.util.Base):
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="A parsable textual representation.")
 
-    def _getName(self):
-        return self._name
-
     def _setName(self, name):
         """
         DOMException on setting
@@ -183,14 +186,14 @@ class Property(cssutils.util.Base):
           unparsable.
         """            
         # for closures: must be a mutable
-        new = {'name': None, 
+        new = {'literalname': None, 
                'wellformed': True}
 
         def _ident(expected, seq, token, tokenizer=None):
             # name
             if 'name' == expected:
-                new['name'] = self._tokenvalue(token).lower()
-                seq.append(new['name'])
+                new['literalname'] = self._tokenvalue(token).lower()
+                seq.append(new['literalname'])
                 return 'EOF'
             else:
                 new['wellformed'] = False
@@ -211,35 +214,37 @@ class Property(cssutils.util.Base):
         else:
             token = None
         
-        if not new['name']:
+        if not new['literalname']:
             wellformed = False
             self._log.error(u'Property: No name found: %r' %
                 self._valuestr(name), token=token)
 
         if wellformed:
             self.wellformed = True
-            self._name = new['name']
-            self.normalname = self._normalize(self._name)
+            self._literalname = new['literalname']
+            self._name = self._normalize(self._literalname)
+            self.__normalname = self._name # DEPRECATED
             self.seqs[0] = newseq
 
             # validate
-            if self.normalname not in cssproperties.cssvalues:
+            if self._name not in cssproperties.cssvalues:
                 self.valid = False
                 tokenizer=self._tokenize2(name)
                 self._log.info(u'Property: No CSS2 Property: %r.' %
-                         new['name'], token=token, neverraise=True)
+                         new['literalname'], token=token, neverraise=True)
             else:
                 self.valid = True
                 if self.cssValue:
-                    self.cssValue._propertyName = self.normalname
-                    self.valid = self.cssValue.valid
-            
-                
+                    self.cssValue._propertyName = self._name
+                    self.valid = self.cssValue.valid          
         else:
             self.wellformed = False
 
-    name = property(_getName, _setName,
-        doc="(cssutils) Name of this property")
+    name = property(lambda self: self._name, _setName,
+        doc="Name of this property")
+
+    literalname = property(lambda self: self._literalname,
+        doc="Readonly literal (not normalized) name of this property")
 
     def _getCSSValue(self):
         return self.seqs[1]
@@ -275,8 +280,10 @@ class Property(cssutils.util.Base):
         doc="(cssutils) CSSValue object of this property")
 
     def _getValue(self):
-        if self.cssValue: return self.cssValue._value
-        else: return u''
+        if self.cssValue: 
+            return self.cssValue._value
+        else: 
+            return u''
 
     def _setValue(self, value):
         self.cssValue.cssText = value
@@ -377,9 +384,15 @@ class Property(cssutils.util.Base):
     def __repr__(self):
         return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
                 self.__class__.__name__,
-                self.name, self.cssValue.cssText, self.priority)
+                self.literalname, self.cssValue.cssText, self.priority)
 
     def __str__(self):
         return "<%s.%s object name=%r value=%r priority=%r at 0x%x>" % (
                 self.__class__.__module__, self.__class__.__name__,
-                self.name, self.cssValue.cssText, self.priority, id(self))
+                self.literalname, self.cssValue.cssText, self.priority, id(self))
+
+    @Deprecated(u'Use property ``name`` instead (since cssutils 0.9.5).')
+    def _getNormalname(self):
+        return self.__normalname
+    normalname = property(_getNormalname, 
+                          doc="DEPRECATED since 0.9.5, use name instead")

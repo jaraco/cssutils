@@ -279,7 +279,7 @@ class CSSSerializer(object):
         """
         if self.prefs.defaultPropertyName and \
            not self.prefs.keepAllProperties:
-            return property.normalname
+            return property.name
         else:
             return actual
 
@@ -708,14 +708,14 @@ class CSSSerializer(object):
                 nnames = set()
                 for x in style.seq:
                     if isinstance(x, cssutils.css.Property):
-                        nnames.add(x.normalname)
+                        nnames.add(x.name)
                 # filter list
                 parts = []
                 for x in reversed(style.seq):
                     if isinstance(x, cssutils.css.Property):
-                        if x.normalname in nnames:
+                        if x.name in nnames:
                             parts.append(x)
-                            nnames.remove(x.normalname)
+                            nnames.remove(x.name)
                     else:
                         parts.append(x)
                 parts.reverse()
@@ -761,7 +761,7 @@ class CSSSerializer(object):
             for part in nameseq:
                 if hasattr(part, 'cssText'):
                     out.append(part.cssText)
-                elif property.name == part:
+                elif property.literalname == part:
                     out.append(self._getpropertyname(property, part))
                 else:
                     out.append(part)

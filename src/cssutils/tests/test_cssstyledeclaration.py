@@ -169,7 +169,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         # __iter__
         ps = []
         for p in s:
-            ps.append((p.name, p.value, p.priority))
+            ps.append((p.literalname, p.value, p.priority))
         self.assertEqual(len(ps), 3)
         self.assertEqual(ps[0], (ur'co\lor', 'green', ''))
         self.assertEqual(ps[1], (ur'left', '1px', '!important'))
@@ -223,7 +223,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             self.assertEqual(len(expected), len(actual))
             for i, ex in enumerate(expected):
                 a = actual[i]
-                self.assertEqual(ex, (a.name, a.value, a.priority))
+                self.assertEqual(ex, (a.literalname, a.value, a.priority))
         
         # order is be effective properties set
         s = cssutils.css.CSSStyleDeclaration(cssText=

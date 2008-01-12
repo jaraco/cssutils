@@ -16,6 +16,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         "Property.__init__()"
         p = cssutils.css.property.Property('top', '1px')
         self.assertEqual('top: 1px', p.cssText)
+        self.assertEqual('top', p.literalname)
         self.assertEqual('top', p.name)
         self.assertEqual('1px', p.value)
         self.assertEqual('1px', p.cssValue.cssText)
@@ -32,6 +33,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         # Prop of MediaQuery
         p = cssutils.css.property.Property('top', _mediaQuery=True)
         self.assertEqual('top', p.cssText)
+        self.assertEqual('top', p.literalname)
         self.assertEqual('top', p.name)
         self.assertEqual('', p.value)
         self.assertEqual('', p.cssValue.cssText)
@@ -82,7 +84,6 @@ class PropertyTestCase(basetest.BaseTestCase):
             ecp, msg = tests[test]
             self.assertRaisesMsg(ecp, msg, p._setCssText, test)
 
-
     def test_name(self):
         "Property.name"
         p = cssutils.css.property.Property('top', '1px')
@@ -97,7 +98,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'/*x*/ top ': u'top',
             u' top /*x*/': u'top',
             u'/*x*/top/*x*/': u'top',
-            u'\\x': None,
+            u'\\x': u'x',
             u'a\\010': u'a\x10',
             u'a\\01': u'a\x01'
             }
@@ -114,6 +115,18 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'top;': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests, att='_setName')
+
+        p = cssutils.css.property.Property(r'c\olor', 'red')
+        self.assertEqual(r'c\olor', p.literalname)
+        self.assertEqual('color', p.name)
+        self.assertEqual('color', p.normalname) # DEPRECATED
+
+    def test_literalname(self):
+        "Property.literalname"
+        p = cssutils.css.property.Property(r'c\olor', 'red')
+        self.assertEqual(r'c\olor', p.literalname)
+        self.assertRaisesMsg(AttributeError, "can't set attribute", p.__setattr__, 
+                             'literalname', 'color')
 
     def test_validate(self):
         "Property.valid"
