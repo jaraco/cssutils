@@ -108,12 +108,14 @@ o very long title"] {/*...*/}''': u'''a[title="a not so very long title"] {
 
         p1 = s.cssRules[0].style.getProperty('color')
         self.assertEqual('color', p1.name)
-        self.assertEqual('color', p1.normalname)
+        self.assertEqual('color', p1.literalname)
+        self.assertEqual('color', p1.normalname) # DEPRECATED
         self.assertEqual('red', s.cssRules[0].style.getPropertyValue('$color'))
 
         p2 = s.cssRules[0].style.getProperty('$color')
         self.assertEqual('$color', p2.name)
-        self.assertEqual('$color', p2.normalname)
+        self.assertEqual('$color', p2.literalname)
+        self.assertEqual('$color', p2.normalname) # DEPRECATED
         self.assertEqual('green', s.cssRules[0].style.getPropertyValue('color'))
         self.assertEqual('green', s.cssRules[0].style.color)
 
