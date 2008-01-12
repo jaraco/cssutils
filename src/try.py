@@ -90,10 +90,35 @@ if 0:
         print tk
     sys.exit(0)
 
+if 1:
+    css = '''
+        color: green !important;
+        c\\olor: red;
+        c\\olor: orange;
+        color: blue;
+        '''
+    s = cssutils.css.CSSStyleDeclaration(cssText=css)
+    print s.getProperty('color')
+    s.removeProperty('color', all=False)
+    print s.getProperty('color')
+    s.removeProperty('color', all=False)
+    print s.getProperty('color')
+
+    print 
+    s = cssutils.css.CSSStyleDeclaration(cssText=css)
+    print s.getProperty('color')
+    s.removeProperty('c\\olor', normalize=False, all=False)
+    print s.getProperty('color')
+    s.removeProperty('color', all=False)
+    print s.getProperty('color')
+
+    sys.exit(0)
 
 if 0:
     p = cssutils.css.property.Property('c\\olor', 'red')
-    print p.normalname
+    print p.cssText
+    cssutils.ser.prefs.keepAllProperties = False
+    print p.cssText
     
     sys.exit(0)
     
@@ -220,13 +245,13 @@ if 1:
                     # update styles
                     if p not in view[element]:
                         view[element].setProperty(p)
-                        specificities[element][p.normalname] = selector.specificity
+                        specificities[element][p.name] = selector.specificity
                     else: 
                         sameprio = (p.priority == 
                                     view[element].getPropertyPriority(p.name))
                         if not sameprio and bool(p.priority) or (
                            sameprio and selector.specificity >= 
-                                        specificities[element][p.normalname]):
+                                        specificities[element][p.name]):
                             # later, more specific or higher prio 
                             view[element].setProperty(p)                    
     #pp(view)
