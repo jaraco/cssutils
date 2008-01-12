@@ -300,34 +300,26 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
 
     def test_removeProperty(self):
         "CSSStyleDeclaration.removeProperty()"
-        s = cssutils.css.CSSStyleDeclaration(cssText='top: 0 !important')
-        self.assertEqual('0', s.removeProperty('top'))
-        self.assertEqual(0, s.length)
-        self.assertEqual('', s.removeProperty('top'))
-        self.assertEqual(0, s.length)
+        s = cssutils.css.CSSStyleDeclaration()
+        css = ur'\x:0 !important; x:1; \x:2; x:3'
 
-        # normalize
-        s.cssText = 'x: 1 !important;\\x: 2;x: 3 !important;\\x: 4'
-        self.assertEqual(4, len(s.getProperties(all=True)))
-        # y not in at all
-        self.assertEqual('', s.removeProperty('y', False))
-        self.assertEqual('', s.removeProperty('y', True))
-        # not normalized
-        self.assertEqual('', s.removeProperty('X', False))
-        # normalized
-        self.assertEqual('4', s.removeProperty('X', True))
-        # not normaliued
-        self.assertEqual('2', s.removeProperty('\\x', False))
-        self.assertEqual('3', s.removeProperty('x', False))
-        self.assertEqual(1, len(s.getProperties(all=True)))
+        # normalize=True DEFAULT
+        s.cssText = css
+        self.assertEqual(u'0', s.removeProperty('x'))        
+        self.assertEqual(u'', s.cssText)        
 
-        # TODO: param "all"
-        s.cssText = 'x:1;\\x:2;x:3;\\x:4'
-        self.assertEqual('3', s.removeProperty('x', normalize=False))
-        self.assertEqual(3, len(s.getProperties(all=True)))
-        # TODO: param "all"
-        #s.cssText = 'x: 1 !important;\\x: 2;x: 3 !important;\\x: 4'
-        #self.assertEqual('2', s.removeProperty('x', normalize=False, all=True))
+        # normalize=False
+        s.cssText = css
+        self.assertEqual(u'3', s.removeProperty('x', normalize=False))        
+        self.assertEqual(ur'\x: 0 !important;\x: 2', s.getCssText(separator=u''))        
+        self.assertEqual(u'0', s.removeProperty(r'\x', normalize=False))        
+        self.assertEqual(u'', s.cssText)        
+
+        s.cssText = css
+        self.assertEqual(u'0', s.removeProperty(r'\x', normalize=False))        
+        self.assertEqual(ur'x: 1;x: 3', s.getCssText(separator=u''))        
+        self.assertEqual(u'3', s.removeProperty('x', normalize=False))        
+        self.assertEqual(u'', s.cssText)        
 
     def test_setProperty(self):
         "CSSStyleDeclaration.setProperty()"
