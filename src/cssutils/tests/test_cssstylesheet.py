@@ -338,6 +338,7 @@ body {
                          notbefore, notafter, anywhere)
 
     def test_replaceUrls(self):
+        "CSSStyleSheet.replaceUrls()"
         cssutils.ser.prefs.keepAllProperties = True
 
         css='''
