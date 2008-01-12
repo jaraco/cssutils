@@ -44,6 +44,7 @@ class Queue(object):
 class CodecTestCase(unittest.TestCase):
 
     def test_detectencoding_str(self):
+        "codec._detectencoding_str()"
         self.assert_(codec._detectencoding_str('') is None)
         self.assert_(codec._detectencoding_str('\xef') is None)
         self.assertEqual(codec._detectencoding_str('\xef\x33'), "utf-8")
@@ -90,12 +91,14 @@ class CodecTestCase(unittest.TestCase):
         self.assertEqual(codec._detectencoding_str("@c", True), "utf-8")
 
     def test_detectencoding_unicode(self):
+        "codec._detectencoding_unicode()"
         # Unicode version (only parses the header)
         self.assert_(codec._detectencoding_unicode(u'@charset "x') is None)
         self.assertEqual(codec._detectencoding_unicode(u'@charset "x', True), None)
         self.assertEqual(codec._detectencoding_unicode(u'@charset "x"'), "x")
 
     def test_fixencoding(self):
+        "codec._fixencoding()"
         s = u'@charset "'
         self.assert_(codec._fixencoding(s, u"utf-8") is None)
 
@@ -112,6 +115,7 @@ class CodecTestCase(unittest.TestCase):
         self.assertEqual(codec._fixencoding(s, u"utf-8"), s.replace('"x"', '"utf-8"'))
 
     def test_decoder(self):
+        "codecs.decoder"
         def checkauto(encoding, input=u'@charset "x";g\xfcrk\u20ac{}'):
             outputencoding = encoding
             if outputencoding == "utf-8-sig":
@@ -209,6 +213,7 @@ class CodecTestCase(unittest.TestCase):
         self.assertRaises(ValueError, '@charset "css";div{}'.decode, "css")
 
     def test_encoder(self):
+        "codec.encoder"
         def check(encoding, input=u'@charset "x";g\xfcrk\u20ac{}'):
             outputencoding = encoding
             if outputencoding == "utf-8-sig":
