@@ -42,8 +42,25 @@ known issues
 
 0.9.x
 -----
-HEAD
-    + **API CHANGE**: iterating on ``css.CSSStyleDelcaration`` yields now *effective* properties only and not *all* properties set in the declaration. E.g. from ``color: red; c\olor: green`` only one Property is returned which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``. Reason for this change is that for most cases the new default makes more sense.
+0.9.5a1
+    + **API CHANGE**: ``Property.name`` is now the same as ``Property.normalname`` which is DEPRECATED now. To access the literal name or a property which was available in ``name`` until now use ``Property.literalname``. For the most cases where a property name is used the new behaviour makes more sense, therefor the change.
+
+        **Do not use ``normalname`` anymore, it will probably be removed for release 1.0.**
+
+        NEW since 0.9.5::
+
+            p = Property(ur'c\olor', 'red')
+            p.name == ur'color'
+            p.literalname = ur'c\olor'
+            # DEPRECATED: p.normalname == ur'color'
+
+        OLD until 0.9.5::
+
+            p = Property(ur'c\olor', 'red')
+            p.name == ur'c\olor'
+            p.normalname == ur'color'
+
+    + **API CHANGE**: iterating over ``css.CSSStyleDelcaration`` yields now *effective* properties only and not *all* properties set in the declaration. E.g. from ``color: red; c\olor: green`` only one Property is returned which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``. Reason for this change is that for most cases the new default makes more sense.
 
     - **FEATURE**: ``css.CSSStyleDelcaration`` supports ``in`` now. Expected is a Property or a name of a property which is checked if already in the style declaration
 
