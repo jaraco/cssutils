@@ -12,31 +12,33 @@ CSSStyleDeclaration
 
 CSSStyleDeclaration
 ===================
-A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule.
+A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule. It is iterable which yield all *effective* properties.
 
 Example::
 
-    /* a comment */
-    color: red;
-    /* properties might be set more than once for different UAs */
-    c\\olor: green;
-    background-color: #fff
+    css = r'''
+        color: red;
+        /* properties might be set more than once for different UAs */
+        c\olor: green;
+        background-color: #fff
+    '''
+    s = cssutils.css.CSSStyleDeclaration(cssText=css)
+    for p in s:
+        print repr(p)
+
+    # PRINTS:
+    cssutils.css.Property(name='c\\olor', value=u'green', priority=u'')
+    cssutils.css.Property(name='background-color', value=u'#fff', priority=u'')
+
 
 attributes
 ----------
 cssText
-    a parsable textual representation of the declaration. See also:
-
-    getCssText(separator=None)
-        returns serialized property cssText, each property separated by
-        given ``separator`` which may e.g. be u'' to be able to use
-        cssText directly in an HTML style attribute. ";" is always part of
-        each property (except the last one) and can **not** be set with
-        separator!
+    a parsable textual representation of the declaration. See also getCssText_
 
 length
-    The number of distince properties that have been explicitly
-    in this declaration These are properties with the same ``normalname``
+    The number of distinct properties that have been explicitly set
+    in this declaration. These are properties with a different ``name``
     only. ``item()`` and ``length`` work on the same set here.
 parentRule
     The CSS rule that contains this declaration block or
@@ -44,24 +46,39 @@ parentRule
 
 methods
 -------
+.. _getCssText:
+
+getCssText(separator=None)
+    returns serialized property cssText, each property separated by
+    given ``separator`` which may e.g. be ``u''`` to use
+    cssText directly in an HTML style attribute. ";" is always part of
+    each property (except the last one) and can **not** be changed by giving
+    separator!
 
 getProperties(name=None, all=False):
     returns a list of Property objects set in this declaration in order
     they have been set e.g. in the original stylesheet
 
-The following methods all have a parameter ``normalize`` which if set to ``False`` results in handling of ``name`` not being normalized. Default behaviour is to always access the effective property in this rule (the last set). An *un*\-normalized name like ``c\\olor`` gives access to the property with this actual name. To work on all properties it is probably easiest to iterate directly over all properties or to use ``getProperties()``.
+The following methods all have a parameter ``normalize`` which if set to ``False`` results in handling of ``name`` not being normalized. Default behaviour is to always access the effective property in this rule (the last set or the one with the highest priority). An *un*\-normalized name like ``c\\olor`` gives access to the property with this actual name. To work on all properties it is probably easiest to iterate directly over all properties or to use ``getProperties(all=True)``.
 
-getPropertyCSSValue(self, name, normalize=True)
+getProperty(name, normalize=True):
+    returns the effective Property object.
+setProperty(name, value, priority=None, normalize=True)
+    sets/overwriters a property
+removeProperty(name, normalize=True)
+    removes the property with given ``name``.
+
+    If ``normalize==True`` (DEFAULT) ``name`` will be normalized (lowercase, no simple escapes) so "color", "COLOR" or "C\olor" will all be equivalent. The effective Property value is returned and *all* Properties with ``Property.name == name`` are removed.
+
+    If ``normalize==False`` may return **NOT** the effective value but the effective for the unnormalized ``name`` only. Also only the Properties with the literal name ``name`` are removed!
+
+getPropertyCSSValue(name, normalize=True)
     returns a CSSValue object
-getPropertyValue(self, name, normalize=True)
+getPropertyValue(name, normalize=True)
     returns the string value
-getPropertyPriority(self, name, normalize=True)
+getPropertyPriority(name, normalize=True)
     returns the priority
-removeProperty(self, name, normalize=True)
-    removes the property. Even if ``normlize=True`` only removes the last property with this name - not all.
 
-setProperty(self, name, value, priority=None, normalize=True)
-    sets value and priority
 item(index)
     returns property at index. Same as ``length`` item works on
     effective properties only and not on the complete set!

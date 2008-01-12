@@ -42,8 +42,13 @@ known issues
 
 0.9.x
 -----
+HEAD
+    - FEATURE: Added ``css.SelectorList.parentRule`` and ``css.Selector.parentRule`` which reference the same ``CSSStyleRule``
+
+        **MAY CHANGE AGAIN**
+
 0.9.5a1
-    + **API CHANGE**: ``Property.name`` is now the same as ``Property.normalname`` which is DEPRECATED now. To access the literal name or a property which was available in ``name`` until now use ``Property.literalname``. For the most cases where a property name is used the new behaviour makes more sense, therefor the change.
+    + **API CHANGE**: ``Property.name`` is now the same as ``Property.normalname`` which is DEPRECATED now. To access the literal name (the value which was available in ``name`` until now) use ``Property.literalname``. For most cases where a property name is used the new behaviour makes more sense, therefor the change.
 
         **Do not use ``normalname`` anymore, it will probably be removed for release 1.0.**
 
@@ -51,7 +56,7 @@ known issues
 
             p = Property(ur'c\olor', 'red')
             p.name == ur'color'
-            p.literalname = ur'c\olor'
+            p.literalname == ur'c\olor'
             # DEPRECATED: p.normalname == ur'color'
 
         OLD until 0.9.5::
@@ -70,11 +75,13 @@ known issues
 
     - **FEATURE**: Added ``css.CSSStyleDeclaration.getProperty(name, normalize=True)`` which returns the effective Property object for ``name``.
 
-    - FEATURE: Added ``css.SelectorList.parentRule`` and ``css.Selector.parentRule`` which reference the same ``CSSStyleRule``
+    + **BUGFIX**: ``CSSStyleDeclaration.removeProperty(name, normalize=True)`` removes all properties with given ``name`` now and returns the effective value. If ``normalize==False`` removes only properties with ``name=Property.literalname`` and also only returns the effective value of the unnormalized name.
 
     + **BUGFIX**: Priority of Properties is acknowledged by all methods of ``css.CSSStylesDeclaration`` now.
 
     + **BUGFIX**: Fixed serializing of strings like "\\a", "\\22" and '\\27' in @import urls, selectors and values. **func("string") is not yet fixed!!!**
+
+    - CHANGE: ``CSSValueList`` does not emit warnings for shorthand properties anymore. Nevertheless these may be invalid!
 
     - IMPROVEMENT: ``CSSStyleDeclaration`` and some minor other parts refactored
 

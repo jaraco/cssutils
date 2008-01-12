@@ -16,7 +16,17 @@ cssutils 0.9.5 introduced two minor incompatible API changes. Reason for both ch
 
 iterating over ``CSSStyleDeclaration``
 --------------------------------------
-Iterating over ``css.CSSStyleDelcaration`` now yields *effective* properties only and not *all* properties set in the declaration. E.g. iterating over ``color: red; c\olor: green`` yields one Property only which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``.
+Iterating over ``css.CSSStyleDelcaration`` now yields *effective* properties only and not *all* properties set in the declaration. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``.
+
+example
+~~~~~~~
+iterating over a CSSStyleDeclaration with ``cssText='color: red; c\olor: green'``
+
+NEW since 0.9.5:
+    yields one Property only which has the value ``green``.
+OLD until 0.9.5:
+    yielded two Property with the values ``red`` and ``green``.
+
 
 ``Property.name`` attribute
 ---------------------------
@@ -25,15 +35,17 @@ Iterating over ``css.CSSStyleDelcaration`` now yields *effective* properties onl
 example
 ~~~~~~~
 
-NEW since 0.9.5::
+NEW since 0.9.5
+    ::
 
-    p = Property(ur'c\olor', 'red')
-    p.name == ur'color'
-    p.literalname = ur'c\olor'
-    # DEPRECATED: p.normalname == ur'color'
+        p = Property(ur'c\olor', 'red')
+        p.name == ur'color'
+        p.literalname = ur'c\olor'
+        # DEPRECATED: p.normalname == ur'color'
 
-OLD until 0.9.5::
+OLD until 0.9.5
+    ::
 
-    p = Property(ur'c\olor', 'red')
-    p.name == ur'c\olor'
-    p.normalname == ur'color'
+        p = Property(ur'c\olor', 'red')
+        p.name == ur'c\olor'
+        p.normalname == ur'color'
