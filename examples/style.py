@@ -82,19 +82,19 @@ def getView(document, css, media='all', name=None,
                         for p in inlinestyle:
                             view[element].setProperty(p)
                             # set inline style specificity
-                            specificities[element][p.normalname] = (1,0,0,0)
+                            specificities[element][p.name] = (1,0,0,0)
                  
                 for p in rule.style:
                     # update styles
                     if p not in view[element]:
                         view[element].setProperty(p)
-                        specificities[element][p.normalname] = selector.specificity
+                        specificities[element][p.name] = selector.specificity
                     else: 
                         sameprio = (p.priority == 
                                     view[element].getPropertyPriority(p.name))
                         if not sameprio and bool(p.priority) or (
                            sameprio and selector.specificity >= 
-                                        specificities[element][p.normalname]):
+                                        specificities[element][p.name]):
                             # later, more specific or higher prio 
                             view[element].setProperty(p)              
     return view                        
