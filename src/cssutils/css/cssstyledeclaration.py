@@ -501,19 +501,22 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         Used to remove a CSS property if it has been explicitly set within
         this declaration block.
 
+        Returns the value of the property if it has been explicitly set for
+        this declaration block. Returns the empty string if the property
+        has not been set or the property name does not correspond to a
+        known CSS property
+
         name
             of the CSS property
         normalize
             if True (DEFAULT) name will be normalized (lowercase, no simple
-            escapes) so "color", "COLOR" or "C\olor" will all be equivalent
+            escapes) so "color", "COLOR" or "C\olor" will all be equivalent.
+            The effective Property value is returned and *all* Properties
+            with ``Property.name == name`` are removed.
 
             If False may return **NOT** the effective value but the effective
-            for the unnormalized name.
-
-        returns the value of the property if it has been explicitly set for
-        this declaration block. Returns the empty string if the property
-        has not been set or the property name does not correspond to a
-        known CSS property
+            for the unnormalized ``name`` only. Also only the Properties with
+            the literal name ``name`` are removed.
 
         raises DOMException
 
@@ -522,23 +525,16 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
           readonly.
         """
         self._checkReadonly()
-        nname = self._normalize(name)
-        newseq = []
-        r = u''
-        isdone = False
-        for x in reversed(self.seq):
-            if isinstance(x, Property):
-                if not isdone and normalize and x.name == nname:
-                    r = x.cssValue.cssText
-                    isdone = True
-                elif not isdone and x.literalname == name:
-                    r = x.cssValue.cssText
-                    isdone = True
-                else:
-                    newseq.append(x)
-            else:
-                newseq.append(x)
-        newseq.reverse()
+        r = self.getPropertyValue(name, normalize=normalize)
+        if normalize:
+            # remove all properties with name == nname
+            nname = self._normalize(name)
+            newseq = [x for x in self.seq 
+                      if not(isinstance(x, Property) and x.name == nname)]
+        else:
+            # remove all properties with literalname == name
+            newseq = [x for x in self.seq 
+                      if not(isinstance(x, Property) and x.literalname == name)]
         self.seq = newseq
         return r
 
@@ -629,9 +625,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             return u''
 
     length = property(lambda self: len(self.__nnames()),
-        doc="(DOM) The number of distince properties that have been explicitly\
+        doc="(DOM) The number of distinct properties that have been explicitly\
         in this declaration block. The range of valid indices is 0 to\
-        length-1 inclusive. These are properties with the same ``name``\
+        length-1 inclusive. These are properties with a different ``name``\
         only. ``item()`` and ``length`` work on the same set here.")
 
     def __repr__(self):
