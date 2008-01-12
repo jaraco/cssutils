@@ -177,7 +177,7 @@ selectorText
 selectorList: of type SelectorList (cssutils only)
     A list of all Selectors for the rule set.
 style
-    The declaration-block of this rule
+    The declaration-block of this rule (see `CSSStyleDeclaration <cssstyledeclaration.txt>`_)
 
 
 .. _MediaList: stylesheets.txt
