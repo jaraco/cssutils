@@ -16,6 +16,7 @@ General
     * `license <LICENSE.txt>`_
 
     + `changelog <CHANGELOG.txt>`_
+    + `version migration <documentation/migrate.txt>`_ (to >= 0.9.5)
     + `backlog <documentation/backlog.txt>`_
 
 
