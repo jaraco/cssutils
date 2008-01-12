@@ -967,7 +967,7 @@ class CSSValueList(CSSValue):
                     propname = self._propertyName
                 
                 # TODO: more (do not check individual values for these props)
-                if propname in ('background', 'background-position',):
+                if propname in self._SHORTHANDPROPERTIES:
                     propname = None
                 
                 if i+1 < max and self.seq[i+1] == u',':
