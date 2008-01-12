@@ -115,15 +115,17 @@ A Property is used in a ``CSSStyleDeclaration`` but also in a `MediaQuery <style
 
 A property has the following attributes:
 
-cssText
-    a parsable textual representation of this property
 name
-    of the property
-normalname
-    normalized name of the property, e.g. "color" when name is "c\olor"
+    normalized name of the property, e.g. "color" when name is "c\olor" (since 0.9.5)
+literalname (since 0.9.5)
+    original name of the property in the source CSS which is not normalized
+    e.g. "c\olor"
 cssValue
     the relevant CSSValue instance for this property
 value
     the string value of the property, same as cssValue.cssText
 priority
-    of the property (currently only ``!important`` or None)
+    of the property (currently only "!important" or None)
+
+DEPRECATED normalname (since 0.9.5)
+    normalized name of the property, e.g. "color" when name is "c\olor"

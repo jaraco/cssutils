@@ -1,0 +1,39 @@
+`Index </index.txt>`_
+
+=================
+version migration
+=================
+:author: $LastChangedBy: cthedot $
+:date: $LastChangedDate: 2008-01-03 21:46:44 +0100 (Do, 03 Jan 2008) $
+:version: $LastChangedRevision: 796 $
+
+.. contents::
+
+
+0.9.5 incompatible changes
+==========================
+cssutils 0.9.5 introduced two minor incompatible API changes. Reason for both changes is that for most cases the new default behaviour makes more sense.
+
+iterating over ``CSSStyleDeclaration``
+--------------------------------------
+Iterating over ``css.CSSStyleDelcaration`` now yields *effective* properties only and not *all* properties set in the declaration. E.g. iterating over ``color: red; c\olor: green`` yields one Property only which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``.
+
+``Property.name`` attribute
+---------------------------
+``Property.name`` until now hold the *literal* value (e.g. ``c\olor`` of a properties name. Now it holds the *normalized* name. ``Property.normalname`` is therefor deprecated. To access the unnormalized (literal) name use the new readonly property ``Property.literalname``.
+
+example
+~~~~~~~
+
+NEW since 0.9.5::
+
+    p = Property(ur'c\olor', 'red')
+    p.name == ur'color'
+    p.literalname = ur'c\olor'
+    # DEPRECATED: p.normalname == ur'color'
+
+OLD until 0.9.5::
+
+    p = Property(ur'c\olor', 'red')
+    p.name == ur'c\olor'
+    p.normalname == ur'color'
