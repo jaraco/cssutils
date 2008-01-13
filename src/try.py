@@ -77,10 +77,11 @@ if 0:
     sys.exit(0)
 
 
-if 0:
+if 1:
     css = ur'''
-    color: green;
-    $color: red;
+    url()
+    URL()
+    uR\l()
 
     '''
     #css = codecs.open('../sheets/1.css', encoding='css').read()
