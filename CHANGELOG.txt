@@ -47,7 +47,7 @@ HEAD
 
         **MAY CHANGE AGAIN**
 
-0.9.5a1
+0.9.5a1 080113
     + **API CHANGE**: ``Property.name`` is now the same as ``Property.normalname`` which is DEPRECATED now. To access the literal name (the value which was available in ``name`` until now) use ``Property.literalname``. For most cases where a property name is used the new behaviour makes more sense, therefor the change.
 
         **Do not use ``normalname`` anymore, it will probably be removed for release 1.0.**
