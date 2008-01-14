@@ -2,10 +2,10 @@ import cssutils
 
 css = '''@import "example.css"; 
 a {
-    color: pink;
-    color: red;
+    color: blue !important;
     c\olor: green !important;
-    c\olor: blue;
+    c\olor: pink;
+    color: red;
     }'''
 
 sheet = cssutils.parseString(css)
