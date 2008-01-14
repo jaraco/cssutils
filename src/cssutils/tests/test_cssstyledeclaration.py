@@ -199,7 +199,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
     def test_getProperties(self):
         "CSSStyleDeclaration.getProperties()"
         s = cssutils.css.CSSStyleDeclaration(cssText=
-                                             u'y:0;x:a !important;y:1; \\x:b;')
+                                             u'/*1*/y:0;x:a !important;y:1; \\x:b;')
         tests = {
             # name, all
             (None, False): [(u'y', u'1', u''), 
