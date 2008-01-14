@@ -71,6 +71,22 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             self.assertEqual(exp, sh.cssRules[0].style.cssText)
         
         cssutils.ser.prefs.useDefaults()
+        
+    def test_serialize(self):
+        "CSSStyleDeclaration serialize"
+        s = cssutils.css.CSSStyleDeclaration()
+        tests = {
+            u'a:1 !important; a:2;b:1': (u'a: 1 !important;\nb: 1',
+                                         u'a: 1 !important;\na: 2;\nb: 1')
+        }
+        for test, exp in tests.items():
+            s.cssText = test
+            cssutils.ser.prefs.keepAllProperties = False
+            self.assertEqual(exp[0], s.cssText)
+            cssutils.ser.prefs.keepAllProperties = True
+            self.assertEqual(exp[1], s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_cssText(self):
         "CSSStyleDeclaration.cssText"
