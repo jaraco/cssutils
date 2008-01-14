@@ -77,7 +77,7 @@ if 0:
     sys.exit(0)
 
 
-if 1:
+if 0:
     css = ur'''
     url()
     URL()
@@ -93,25 +93,17 @@ if 1:
 
 if 1:
     css = '''
+        /* a*/
         color: green !important;
         c\\olor: red;
         c\\olor: orange;
         color: blue;
         '''
     s = cssutils.css.CSSStyleDeclaration(cssText=css)
-    print s.getProperty('color')
-    s.removeProperty('color', all=False)
-    print s.getProperty('color')
-    s.removeProperty('color', all=False)
-    print s.getProperty('color')
-
-    print 
-    s = cssutils.css.CSSStyleDeclaration(cssText=css)
-    print s.getProperty('color')
-    s.removeProperty('c\\olor', normalize=False, all=False)
-    print s.getProperty('color')
-    s.removeProperty('color', all=False)
-    print s.getProperty('color')
+    print s.cssText
+    cssutils.ser.prefs.keepAllProperties = False
+    print repr(cssutils.ser.prefs)
+    print s.cssText
 
     sys.exit(0)
 
