@@ -702,26 +702,18 @@ class CSSSerializer(object):
                 separator = self.prefs.lineSeparator
 
             if self.prefs.keepAllProperties:
+                # all
                 parts = style.seq
             else:
-                # find distinct names
-                nnames = set()
-                for x in style.seq:
-                    if isinstance(x, cssutils.css.Property):
-                        nnames.add(x.name)
-                # filter list
-                parts = []
-                for x in reversed(style.seq):
-                    if isinstance(x, cssutils.css.Property):
-                        if x.name in nnames:
-                            parts.append(x)
-                            nnames.remove(x.name)
-                    else:
-                        parts.append(x)
-                parts.reverse()
+                # only effective ones
+                _effective = style.getProperties()
+                parts = [x for x in style.seq 
+                         if (isinstance(x, cssutils.css.Property) 
+                             and x in _effective)
+                         or not isinstance(x, cssutils.css.Property)]
 
             out = []
-            for (i, part) in enumerate(parts):
+            for i, part in enumerate(parts):
                 if isinstance(part, cssutils.css.CSSComment):
                     # CSSComment
                     if self.prefs.keepComments:
