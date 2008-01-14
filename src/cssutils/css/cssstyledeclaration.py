@@ -380,8 +380,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             nname = self._normalize(name)
             properties = []
             for x in self.seq:
-                if isinstance(x, Property) and \
-                   (bool(nname) == False) or (x.name == nname):
+                if isinstance(x, Property) and (
+                   (bool(nname) == False) or (x.name == nname)):
                     properties.append(x)
             return properties
 
