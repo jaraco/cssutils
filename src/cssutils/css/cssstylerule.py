@@ -100,6 +100,12 @@ class CSSStyleRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
         styletokens = self._tokensupto2(tokenizer, blockendonly=True)
+
+        trail = self._nexttoken(tokenizer)
+        if trail:
+            self._log.error(u'CSSStyleRule: Trailing content: %s',
+                            token=trail,
+                            error=xml.dom.SyntaxErr)
         
         if not selectortokens or self._tokenvalue(
                                         selectortokens[0]).startswith(u'@'):
