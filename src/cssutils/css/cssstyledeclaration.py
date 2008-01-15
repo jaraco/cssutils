@@ -181,11 +181,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
     def __nnames(self):
         """
-        returns iterator for all different names in order as set, 
-        effective properties are used for this order only 
+        returns iterator for all different names in order as set
+        if names are set twice the last one is used (double reverse!) 
         """
         names = []
-        # double reversed to get effective names
         for x in reversed(self.seq): 
             if isinstance(x, Property) and not x.name in names:
                 names.append(x.name)
@@ -279,7 +278,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                 # maybe an IE hack?
                 token = (token[0], u'%s%s' % (new['char'], token[1]), 
                          token[2], token[3])
-
+            
             tokens = self._tokensupto2(tokenizer, starttoken=token,
                                        semicolon=True)
             if self._tokenvalue(tokens[-1]) == u';':
