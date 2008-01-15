@@ -2,8 +2,8 @@ import cssutils
 from cssutils import css, stylesheets
 
 examplecss = u"""@charset "ascii";
-    A { color: red }
-    SOME > WeIrD + selector ~ used here {}
+    A { color: green }
+    SOME > WeIrD + selector ~ used here {color: green}
 """
 ##
 ##

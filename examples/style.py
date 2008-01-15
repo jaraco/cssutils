@@ -162,7 +162,6 @@ def main():
     # adds style to @style
     document = getDocument(html, css)
     view = getView(document, css, styleCallback=styleattribute)
-    print view
     render2style(document, view)
     text = etree.tostring(document, pretty_print=True)
     show(text, '__tempinline.html')
