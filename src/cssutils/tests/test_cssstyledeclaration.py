@@ -27,6 +27,39 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         s = cssutils.css.CSSStyleDeclaration(sheet)
         self.assertEqual(sheet, s.parentRule)
 
+    def test__contains__(self):
+        "CSSStyleDeclaration.__contains__(nameOrProperty)"
+        s = cssutils.css.CSSStyleDeclaration(cssText=r'x: 1;\y: 2')
+        for test in ('x', r'x', 'y', r'y'):
+            self.assert_(test in s)
+            self.assert_(cssutils.css.Property(test, '1') in s)
+        self.assert_('z' not in s)
+        self.assert_(cssutils.css.Property('z', '1') not in s)
+
+    def test__iter__item(self):
+        "CSSStyleDeclaration.__iter__ and .item"
+        s = cssutils.css.CSSStyleDeclaration()
+        s.cssText = ur'''
+            color: red; c\olor: blue; CO\lor: green;
+            left: 1px !important; left: 0;
+            border: 0;
+        '''
+        # __iter__
+        ps = []
+        for p in s:
+            ps.append((p.literalname, p.value, p.priority))
+        self.assertEqual(len(ps), 3)
+        self.assertEqual(ps[0], (ur'co\lor', 'green', ''))
+        self.assertEqual(ps[1], (ur'left', '1px', '!important'))
+        self.assertEqual(ps[2], (ur'border', '0', ''))
+                
+        # item 
+        self.assertEqual(s.length, 3)
+        self.assertEqual(s.item(0), u'color')
+        self.assertEqual(s.item(1), u'left')
+        self.assertEqual(s.item(2), u'border')
+        self.assertEqual(s.item(10), u'')
+            
     def test_parse(self):
         "CSSStyleDeclaration parse"
         # error but parse
@@ -44,9 +77,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             u'color:green; color:': u'color: green',
             u'color:red;   color:; color:green': u'color: green',
             u'color:green; color{;color:maroon}': u'color: green',
-            # TODO:
-#                u'color:red; color{;color:maroon}; color:green':
-#                u'color: green',
+            u'color:red; color{;color:maroon}; color:green': u'color: green',
             # tantek hack
             ur'''color: red;
 voice-family: "\"}\"";
@@ -174,30 +205,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         d = s.style
         self.assertEqual(s, d.parentRule)
 
-    def test__iter__item(self):
-        "CSSStyleDeclaration.__iter__ and .item"
-        s = cssutils.css.CSSStyleDeclaration()
-        s.cssText = ur'''
-            color: red; c\olor: blue; CO\lor: green;
-            left: 1px !important; left: 0;
-            border: 0;
-        '''
-        # __iter__
-        ps = []
-        for p in s:
-            ps.append((p.literalname, p.value, p.priority))
-        self.assertEqual(len(ps), 3)
-        self.assertEqual(ps[0], (ur'co\lor', 'green', ''))
-        self.assertEqual(ps[1], (ur'left', '1px', '!important'))
-        self.assertEqual(ps[2], (ur'border', '0', ''))
-                
-        # item 
-        self.assertEqual(s.length, 3)
-        self.assertEqual(s.item(0), u'color')
-        self.assertEqual(s.item(1), u'left')
-        self.assertEqual(s.item(2), u'border')
-        self.assertEqual(s.item(10), u'')
-            
     def test_getProperty(self):
         "CSSStyleDeclaration.getProperty"
         s = cssutils.css.CSSStyleDeclaration()
