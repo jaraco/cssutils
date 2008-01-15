@@ -49,7 +49,12 @@ HEAD
 
         **MAY CHANGE AGAIN**
 
+0.9.5a2 080115
     + **BUGFIX**: Serializing a ``CSSStyleDeclaration`` did not include the effective properties but the last property if set multiple times in a single declaration and preferences ``keepAllProperties == False``.
+
+    + BUGFIX: Fixed parsing of last remaining example in CSS spec ``color:red; color{;color:maroon}; color:green`` which now correctly parses ``color: green``
+
+    + BUGFIX: ``CSSStyleDeclaration.__contains__(property)```uses not the literal but the normalized name (``Property.name``) to check if a property is set in this declaration now
 
     + BUGFIX: ``CSSStyleDeclaration.getProperties(all=True)`` failed if comments were present
 
