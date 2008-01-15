@@ -57,39 +57,36 @@ def getView(document, css, media='all', name=None,
     sheet = cssutils.parseString(css)
     
     view = {}
-    specificities = {} # temporarily needed 
+    specificities = {} # needed temporarily 
 
     # TODO: filter rules simpler?, add @media
-    rules = (rule for rule in sheet.cssRules if rule.type == rule.STYLE_RULE)
-    
+    rules = (rule for rule in sheet.cssRules if rule.type == rule.STYLE_RULE)    
     for rule in rules:
         for selector in rule.selectorList:
             
             # TODO: make this a callback to be able to use other stuff than lxml
             cssselector = CSSSelector(selector.selectorText)
-            elements = cssselector.evaluate(document)
-            
-            for element in elements:
+            matching = cssselector.evaluate(document)
+            for element in matching:
                 # add styles for all matching DOM elements
                 if element not in view:
                     # add initial
                     view[element] = cssutils.css.CSSStyleDeclaration()
-                    specificities[element] = {}
-                    
-                    # get inline styles if available
+                    specificities[element] = {}                    
+                    # add inline styles if present
                     inlinestyle = styleCallback(element)
                     if inlinestyle:
                         for p in inlinestyle:
-                            view[element].setProperty(p)
                             # set inline style specificity
+                            view[element].setProperty(p)
                             specificities[element][p.name] = (1,0,0,0)
-                 
+                                                        
                 for p in rule.style:
                     # update styles
                     if p not in view[element]:
                         view[element].setProperty(p)
                         specificities[element][p.name] = selector.specificity
-                    else: 
+                    else:
                         sameprio = (p.priority == 
                                     view[element].getPropertyPriority(p.name))
                         if not sameprio and bool(p.priority) or (
@@ -97,6 +94,7 @@ def getView(document, css, media='all', name=None,
                                         specificities[element][p.name]):
                             # later, more specific or higher prio 
                             view[element].setProperty(p)              
+
     return view                        
 
 def render2style(document, view):
@@ -132,18 +130,14 @@ def show(text, name, encoding='utf-8'):
     webbrowser.open(name)
 
 def main():
-    html = '''<html>
-        <head>
-            <title>Style test</title>
-        </head>
-        <body>
+    tpl = '''<html><head><title>style test</title></head><body>%s</body></html>'''
+    html = tpl % '''
             <h1>Style example 1</h1>
-            <p>simple p</p>            
-            <p style="color: red;">p with inline style: "color: red"</b>
+            <p>simple p</p>
+            <p style="color: red;">p with inline style: "color: red"</p>
             <p id="x" style="color: red;">p#x with inline style: "color: red"
                 but see a#x!</p>
-        </body>
-    </html>'''
+        '''
     css = '''
         body {
             color: blue !important;
@@ -168,6 +162,7 @@ def main():
     # adds style to @style
     document = getDocument(html, css)
     view = getView(document, css, styleCallback=styleattribute)
+    print view
     render2style(document, view)
     text = etree.tostring(document, pretty_print=True)
     show(text, '__tempinline.html')
