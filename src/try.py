@@ -68,7 +68,16 @@ a[href='\a\27'] {
     print sheet.cssText
     sys.exit(0)
 
-if 0:   
+if 1:
+    css= u'a {color:red; color{;color:maroon}; color:green;left: 0 }'
+    css= u'a {y:1}x'
+    #sheet = cssutils.parseString(css)
+    s = cssutils.css.CSSStyleRule()
+    s.cssText = css
+    print s
+       
+    sys.exit(0)
+
     v = cssutils.css.CSSValue(_propertyName="font-family")
     v.cssText = u'a  ,b,  c  ,"d or d", "e, " '
     print v 
@@ -99,6 +108,7 @@ if 1:
         c\\olor: orange;
         color: blue;
         '''
+    css = '''background: url(a) no-repeat fixed'''
     s = cssutils.css.CSSStyleDeclaration(cssText=css)
     print s.cssText
     cssutils.ser.prefs.keepAllProperties = False
