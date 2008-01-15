@@ -200,6 +200,7 @@ class Base(object):
             brace = -1 # set to 0 with first {
         elif blockendonly: # }
             ends = u'}'
+            brace = 1
         elif mediaendonly: # }
             ends = u'}'
             brace = 1 # rules } and mediarules }
