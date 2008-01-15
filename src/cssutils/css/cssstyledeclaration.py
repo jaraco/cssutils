@@ -141,10 +141,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         checks if a property (or a property with given name is in style
         
         name
-            a string or Property
+            a string or Property, uses normalized name and not literalname
         """
         if isinstance(nameOrProperty, Property):
-            name = nameOrProperty.literalname
+            name = nameOrProperty.name
         else:
             name = self._normalize(nameOrProperty)
         return name in self.__nnames()
