@@ -26,7 +26,6 @@ __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
 import xml.dom
-
 import cssutils
 
 class Selector(cssutils.util.Base2):
@@ -317,11 +316,12 @@ class Selector(cssutils.util.Base2):
                     else:
                         try:
                             namespaceURI = self.namespaces[prefix]
-                        except (KeyError,):# TypeError):
+                        except (KeyError,):
                             new['wellformed'] = False
                             self._log.error(u'No namespaceURI found for prefix %r' %
                                             prefix, token=(typ, val, line, col),
                                             error=xml.dom.NamespaceErr)
+                            return
                     val = (namespaceURI, val)
 
                 if not context or context == 'negation':   
