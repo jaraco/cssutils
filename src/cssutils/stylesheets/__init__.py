@@ -18,7 +18,3 @@ from medialist import *
 from mediaquery import *
 from stylesheet import *
 from stylesheetlist import *
-
-if __name__ == '__main__':
-    for x in __all__:
-        print x, eval(x)()
