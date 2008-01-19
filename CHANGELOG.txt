@@ -49,12 +49,21 @@ HEAD
 
         **MAY CHANGE AGAIN**
 
+
+    - BUGFIX: ``*.parentStyleSheet`` where * is any CSSRule is set now
+
+    - BUGFIX: Changed serialization of combinators in ``Selector`` according to http://dev.w3.org/csswg/cssom/#selectors, e.g. ``a>b+c~d e`` serializes as ``a > b + c ~ d e`` now (single spaces around +, > and ~). A new serializer preference ``selectorCombinatorSpacer = u' '`` has been added to overwrite this behaviour (which is set to ``u''`` when using the CSS minifier settings)
+
+    - BUGFIX: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
+
+        (``Property._normalpriority`` has been removed, the normalized value that was available here is now in ``Property.priority``. The literal priority value is available in ``Property._literalproperty`` now. All these values should not be used by client code anyway and are marked private therefor ('_').)
+
 0.9.5a2 080115
     + **BUGFIX**: Serializing a ``CSSStyleDeclaration`` did not include the effective properties but the last property if set multiple times in a single declaration and preferences ``keepAllProperties == False``.
 
     + BUGFIX: Fixed parsing of last remaining example in CSS spec ``color:red; color{;color:maroon}; color:green`` which now correctly parses ``color: green``
 
-    + BUGFIX: ``CSSStyleDeclaration.__contains__(property)```uses not the literal but the normalized name (``Property.name``) to check if a property is set in this declaration now
+    + BUGFIX: ``CSSStyleDeclaration.__contains__(property)`` uses not the literal but the normalized name (``Property.name``) to check if a property is set in this declaration now
 
     + BUGFIX: ``CSSStyleDeclaration.getProperties(all=True)`` failed if comments were present
 
@@ -78,7 +87,7 @@ HEAD
 
     + **API CHANGE**: iterating over ``css.CSSStyleDelcaration`` yields now *effective* properties only and not *all* properties set in the declaration. E.g. from ``color: red; c\olor: green`` only one Property is returned which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``. Reason for this change is that for most cases the new default makes more sense.
 
-    - **FEATURE**: ``css.CSSStyleDeclaration`` supports ``in`` now. Expected is a Property or a name of a property which is checked if already in the style declaration
+    - **FEATURE**: ``css.CSSStyleDelcaration`` supports ``in`` now. Expected is a Property or a name of a property which is checked if already in the style declaration
 
     - **FEATURE**: ``css.Selector`` has a **readonly** property ``specificity`` now which is calculated as described at http://www.w3.org/TR/css3-selectors/#specificity
 
