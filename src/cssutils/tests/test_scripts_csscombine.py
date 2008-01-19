@@ -30,7 +30,8 @@ class CSSCombine(basetest.BaseTestCase):
     def tearDown(self):
         # needs to be re-enabled here for other tests
         cssutils.log.raiseExceptions = True
-        cssutils.ser.prefs.useDefaults() 
+        # no needed as csscombine uses own serializer
+        # cssutils.ser.prefs.useDefaults() 
 
 
 if __name__ == '__main__':
