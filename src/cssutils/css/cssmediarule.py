@@ -158,6 +158,7 @@ class CSSMediaRule(cssrule.CSSRule):
                     self.cssRules.append(r)
                 for r in self.cssRules:
                     r.parentRule = self # for CSSComment possible only here
+                    r.parentStyleSheet = self.parentStyleSheet
         
     cssText = property(_getCssText, _setCssText,
         doc="(DOM attribute) The parsable textual representation.")
@@ -272,6 +273,7 @@ class CSSMediaRule(cssrule.CSSRule):
 
         self.cssRules.insert(index, rule)
         rule.parentRule = self
+        rule.parentStyleSheet = self.parentStyleSheet
         return index
 
     def __repr__(self):
