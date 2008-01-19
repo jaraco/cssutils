@@ -33,7 +33,10 @@ class Property(cssutils.util.Base):
     value
         the string value of the property, same as cssValue.cssText
     priority
-        of the property (currently only "!important" or None)
+        of the property (currently only u"important" or None)
+    literalpriority
+        original priority of the property in the source CSS which is not 
+        normalized e.g. "IM\portant"
     seqs
         combination of a list for seq of name, a CSSValue object, and
         a list for seq of  priority (empty or [!important] currently)
@@ -79,7 +82,7 @@ class Property(cssutils.util.Base):
           ;
 
     """
-    def __init__(self, name=None, value=None, priority=None, _mediaQuery=False):
+    def __init__(self, name=None, value=None, priority=u'', _mediaQuery=False):
         """
         inits property
 
@@ -88,7 +91,8 @@ class Property(cssutils.util.Base):
         value
             a property value string
         priority
-            an optional priority string
+            an optional priority string which currently must be u'',
+            u'!important' or u'important'
         _mediaQuery boolean
             if True value is optional as used by MediaQuery objects
         """
@@ -110,8 +114,12 @@ class Property(cssutils.util.Base):
             self.cssValue = value
         else:
             self.seqs[1] = CSSValue()
-            
-        self.priority = priority
+        
+        if priority:
+            self.priority = priority
+        else:
+            self._priority = u''
+            self._literalpriority = u''
 
     def _getCssText(self):
         """
@@ -293,13 +301,10 @@ class Property(cssutils.util.Base):
     value = property(_getValue, _setValue,
                      doc="The textual value of this Properties cssValue.")
 
-    def _getPriority(self):
-        return cssutils.ser.do_Property_priority(self.seqs[2])
-
     def _setPriority(self, priority):
         """
         priority
-            a string
+            a string, currently either u'', u'!important' or u'important' 
 
         Format
         ======
@@ -317,15 +322,22 @@ class Property(cssutils.util.Base):
           Raised if the specified priority has a syntax error and is
           unparsable.
           In this case a priority not equal to None, "" or "!{w}important".
+          As CSSOM defines CSSStyleDeclaration.getPropertyPriority resulting in
+          u'important' this value is also allowed to set a Properties priority
         """
         if self._mediaQuery:
             self._priority = u''
+            self._literalpriority = u''
             if priority:
                 self._log.error(u'Property: No priority in a MediaQuery - ignored.')
             return
 
+        if isinstance(priority, basestring) and\
+           u'important' == self._normalize(priority):
+            priority = u'!%s' % priority
+            
         # for closures: must be a mutable
-        new = {'priority': u'', 
+        new = {'literalpriority': u'', 
                'wellformed': True}
 
         def _char(expected, seq, token, tokenizer=None):
@@ -344,8 +356,8 @@ class Property(cssutils.util.Base):
             val = self._tokenvalue(token)
             normalval = self._tokenvalue(token, normalize=True)
             if 'important' == expected == normalval:
-                new['priority'] = val.lower()
-                seq.append(val.lower())
+                new['literalpriority'] = val
+                seq.append(val)
                 return 'EOF'
             else:
                 new['wellformed'] = False
@@ -361,25 +373,28 @@ class Property(cssutils.util.Base):
         wellformed = wellformed and new['wellformed']
 
         # post conditions
-        if priority and not new['priority']:
+        if priority and not new['literalpriority']:
             wellformed = False
             self._log.info(u'Property: Invalid priority: %r.' %
                     self._valuestr(priority))
 
         if wellformed:
             self.wellformed = self.wellformed and wellformed
-            self._priority = new['priority']
-            self._normalpriority = self._normalize(self._priority)
+            self._literalpriority = new['literalpriority']
+            self._priority = self._normalize(self.literalpriority)
             self.seqs[2] = newseq
             
             # validate
-            if self._normalpriority not in (u'', u'important'):
+            if self._priority not in (u'', u'important'):
                 self.valid = False
                 self._log.info(u'Property: No CSS2 priority value: %r.' %
-                    self._normalpriority, neverraise=True)
+                    self._priority, neverraise=True)
         
-    priority = property(_getPriority, _setPriority,
+    priority = property(lambda self: self._priority, _setPriority,
         doc="(cssutils) Priority of this property")
+
+    literalpriority = property(lambda self: self._literalpriority,
+        doc="Readonly literal (not normalized) priority of this property")
 
     def __repr__(self):
         return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
