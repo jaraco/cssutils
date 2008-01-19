@@ -24,6 +24,8 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         super(CSSCharsetRuleTestCase, self).test_init()
         self.assertEqual(None, self.r.encoding)
         self.assertEqual(u'', self.r.cssText)
+        
+        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setCssText, u'xxx')
 
     def test_InvalidModificationErr(self):
         "CSSCharsetRule InvalidModificationErr"
