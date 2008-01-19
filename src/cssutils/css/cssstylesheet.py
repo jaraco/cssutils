@@ -110,6 +110,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def charsetrule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSCharsetRule()
+            rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 0 or len(seq) > 0:
                 self._log.error(
@@ -122,6 +123,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         
         def importrule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSImportRule()
+            rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 1:
                 self._log.error(
@@ -134,6 +136,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def namespacerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSNamespaceRule()
+            rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 2:
                 self._log.error(
@@ -147,6 +150,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def fontfacerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSFontFaceRule()
+            rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
@@ -154,6 +158,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def pagerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSPageRule()
+            rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
@@ -161,6 +166,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def mediarule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSMediaRule()
+            rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
@@ -168,6 +174,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def unknownrule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSUnknownRule()
+            rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
@@ -175,6 +182,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def ruleset(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSStyleRule()
+            rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             
             # check namespaces
@@ -214,7 +222,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             self.cssRules.append(r)
         self.prefixes = new['prefixes']
         for r in self.cssRules:
-            r.parentStyleSheet = self
+            # set for CSSComment, for others is set before
+            r.parentStyleSheet = self  
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
