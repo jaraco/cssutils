@@ -15,6 +15,7 @@ currently implemented
     - CSSPageRule
     - CSSStyleRule
     - CSSUnkownRule
+    - Selector and SelectorList
     - CSSStyleDeclaration
     - CSS2Properties
     - CSSValue
@@ -37,8 +38,9 @@ __all__ = [
     'CSSPageRule',
     'CSSStyleRule',
     'CSSUnknownRule',
+    'Selector', 'SelectorList',
     'CSSStyleDeclaration', 'Property',
-    'CSSValue', 'CSSPrimitiveValue', 'CSSValueList',
+    'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
     ]
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
@@ -57,12 +59,7 @@ from cssnamespacerule import *
 from csspagerule import *
 from cssstylerule import *
 from cssunknownrule import *
+from selector import *
+from selectorlist import *
 from cssstyledeclaration import *
 from cssvalue import *
-from selectorlist import *
-from selector import *
-
-
-if __name__ == '__main__':
-    for x in __all__:
-        print x
