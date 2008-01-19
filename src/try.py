@@ -47,6 +47,12 @@ def escapecss(e):
 
 codecs.register_error('escapecss', escapecss)
 
+if 1:
+    from cssutils.scripts import csscombine
+    x = csscombine('sheets/csscombine-proxy.css', sourceencoding='css', minify=True)
+    print x
+    
+    sys.exit(0)
 
 if 0:
     css = ur'''
@@ -64,12 +70,17 @@ a[href='\a\27'] {
     background: url("\"");
     background: url("\22");
     '''
+    css = '''@media all {
+        a {color: red !important}
+    }
+    '''
     sheet = cssutils.parseString(css)
-    print sheet.cssText
+    for r in sheet.cssRules[0].cssRules:
+        print r.type, r.parentStyleSheet
     sys.exit(0)
 
-if 1:
-    css= u'a {color:red; color{;color:maroon}; color:green;left: 0 }'
+if 0:
+    css= u'a {color:red; color{;color:maroon}; color:green;left: 0 !important }'
     css= u'a {y:1}x'
     #sheet = cssutils.parseString(css)
     s = cssutils.css.CSSStyleRule()
@@ -100,7 +111,7 @@ if 0:
         print tk
     sys.exit(0)
 
-if 1:
+if 0:
     css = '''
         /* a*/
         color: green !important;
@@ -117,11 +128,20 @@ if 1:
 
     sys.exit(0)
 
+if 1:
+    s = cssutils.css.CSSStyleDeclaration(cssText='color: red !important')
+    p = s.getProperty('color')
+    p.priority = 'Impo\\Rtant'
+    print p
+    
+    print s.getPropertyPriority('color')
+    print s.cssText
+    
+    sys.exit(0)
+
 if 0:
-    p = cssutils.css.property.Property('c\\olor', 'red')
-    print p.cssText
-    cssutils.ser.prefs.keepAllProperties = False
-    print p.cssText
+    s = cssutils.css.SelectorList('a>b+c~d:hOver    \ne, x')
+    print s.selectorText
     
     sys.exit(0)
     
