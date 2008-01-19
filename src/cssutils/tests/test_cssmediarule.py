@@ -110,6 +110,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         m.cssText = u'''@media all {@x; /*1*/a{color: red;}}'''
         for r in m.cssRules:
             self.assertEqual(m, r.parentRule)
+            self.assertEqual(m.parentStyleSheet, r.parentStyleSheet)
 
         cssutils.ser.prefs.useDefaults()
 
@@ -180,15 +181,19 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         # start insert
         r.insertRule(stylerule, 0)
         self.assertEqual(r, stylerule.parentRule)
+        self.assertEqual(r.parentStyleSheet, stylerule.parentStyleSheet)
         # before
         r.insertRule(comment1, 0)
         self.assertEqual(r, comment1.parentRule)
+        self.assertEqual(r.parentStyleSheet, stylerule.parentStyleSheet)
         # end explicit
         r.insertRule(unknownrule, 2)
         self.assertEqual(r, unknownrule.parentRule)
+        self.assertEqual(r.parentStyleSheet, stylerule.parentStyleSheet)
         # end implicit
         r.insertRule(comment2)
         self.assertEqual(r, comment2.parentRule)
+        self.assertEqual(r.parentStyleSheet, stylerule.parentStyleSheet)
         self.assertEqual(
             '@media all {\n    /*1*/\n    a {\n        x: 1\n        }\n    @x;\n    /*2*/\n    }',
             r.cssText)
