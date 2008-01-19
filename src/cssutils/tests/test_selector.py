@@ -31,8 +31,6 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertEqual((0,0,0,0), s.specificity)
         self.assertEqual(True, s.wellformed)
 
-        self.assertRaisesEx(xml.dom.NamespaceErr, cssutils.css.Selector, 'p|b')
-
         s = cssutils.css.Selector('p|b', namespaces={'p': 'URI'} )
         self.assertEqual(('URI', 'b'), s.element)
         self.assertEqual({'p': 'URI'}, s.namespaces)
@@ -41,6 +39,8 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertEqual('p|b', s.selectorText)
         self.assertEqual((0,0,0,1), s.specificity)
         self.assertEqual(True, s.wellformed)
+
+        self.assertRaisesEx(xml.dom.NamespaceErr, cssutils.css.Selector, 'p|b')
 
     def test_prefixes(self):
         "Selector.prefixes"
