@@ -112,7 +112,7 @@ cssValue
 value
     the string value of the property, same as cssValue.cssText
 priority
-    of the property (currently only "!important" or None)
+    of the property (currently only u"important" (until 0.9.5 this was "!important") or None)
 
 DEPRECATED normalname (since 0.9.5)
     normalized name of the property, e.g. "color" when name is "c\olor"

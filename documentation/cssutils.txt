@@ -99,6 +99,9 @@ defaultPropertyName = True
 
     Only used if ``keepAllProperties==False``.
 
+defaultPropertyPriority = True
+    Should the normalized or literal priority be used, e.g. '!important'
+    or u'!Im\portant'
 importHrefFormat = None
     Uses hreftype if ``None`` or explicit ``'string'`` or ``'uri'``
 indent = 4 * ' '
@@ -127,6 +130,11 @@ paranthesisSpacer = u' '
     ``css.CSSMediaRule`` or ``css.CSSStyleRule``, minifier sets this to the empty string.
 propertyNameSpacer = u' '
     String which is used after a Property name colon, minifier sets this to the empty string.
+selectorCombinatorSpacer = u' '
+    String which is used before and after a Selector combinator like +, > or ~.
+    CSSOM defines a single space for this which is also the default in cssutils.
+
+
 
 validOnly = False (**not used anywhere yet**)
     If ``True`` only valid (Properties or Rules) are kept.
