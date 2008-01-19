@@ -50,7 +50,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             ps.append((p.literalname, p.value, p.priority))
         self.assertEqual(len(ps), 3)
         self.assertEqual(ps[0], (ur'co\lor', 'green', ''))
-        self.assertEqual(ps[1], (ur'left', '1px', '!important'))
+        self.assertEqual(ps[1], (ur'left', '1px', 'important'))
         self.assertEqual(ps[2], (ur'border', '0', ''))
                 
         # item 
@@ -226,17 +226,17 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         tests = {
             # name, all
             (None, False): [(u'y', u'1', u''), 
-                            (u'x', u'a', u'!important')],
+                            (u'x', u'a', u'important')],
             (None, True): [(u'y', u'0', u''),
-                           (u'x', u'a', u'!important'),
+                           (u'x', u'a', u'important'),
                            (u'y', u'1', u''), 
                            (u'\\x', u'b', u'')
                            ],
-            ('x', False): [(u'x', u'a', u'!important')],
-            ('\\x', False): [(u'x', u'a', u'!important')],
-            ('x', True): [(u'x', u'a', u'!important'),
+            ('x', False): [(u'x', u'a', u'important')],
+            ('\\x', False): [(u'x', u'a', u'important')],
+            ('x', True): [(u'x', u'a', u'important'),
                            (u'\\x', u'b', u'')],
-            ('\\x', True): [(u'x', u'a', u'!important'),
+            ('\\x', True): [(u'x', u'a', u'important'),
                            (u'\\x', u'b', u'')],
             }
         for test in tests:
@@ -312,13 +312,13 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         self.assertEqual(u'', s.getPropertyPriority('unset'))
 
         s.setProperty(u'left', u'0', u'!important')
-        self.assertEqual(u'!important', s.getPropertyPriority('left'))
+        self.assertEqual(u'important', s.getPropertyPriority('left'))
 
         s = cssutils.css.CSSStyleDeclaration(cssText=
             'x: 1 !important;\\x: 2;x: 3 !important;\\x: 4')
-        self.assertEqual(u'!important', s.getPropertyPriority('x'))
-        self.assertEqual(u'!important', s.getPropertyPriority('\\x'))
-        self.assertEqual(u'!important', s.getPropertyPriority('x', True))
+        self.assertEqual(u'important', s.getPropertyPriority('x'))
+        self.assertEqual(u'important', s.getPropertyPriority('\\x'))
+        self.assertEqual(u'important', s.getPropertyPriority('x', True))
         self.assertEqual(u'', s.getPropertyPriority('\\x', False))
 
     def test_removeProperty(self):
@@ -349,7 +349,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         s = cssutils.css.CSSStyleDeclaration()
         s.setProperty('top', '0', '!important')
         self.assertEqual('0', s.getPropertyValue('top'))
-        self.assertEqual('!important', s.getPropertyPriority('top'))
+        self.assertEqual('important', s.getPropertyPriority('top'))
         s.setProperty('top', '1px')
         self.assertEqual('1px', s.getPropertyValue('top'))
         self.assertEqual('', s.getPropertyPriority('top'))
@@ -368,13 +368,13 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         # case insensitive
         s.setProperty('TOP', '0', '!IMPORTANT')
         self.assertEqual('0', s.getPropertyValue('top'))
-        self.assertEqual('!important', s.getPropertyPriority('top'))
+        self.assertEqual('important', s.getPropertyPriority('top'))
 
         tests = {
             (u'left', u'0px', u''): u'left: 0px',
-            (u'left', u'0px', u'!important'): u'left: 0px !important',
-            (u'LEFT', u'0px', u'!important'): u'left: 0px !important',
-            (u'left', u'0px', u'!important'): u'left: 0px !important',
+            (u'left', u'0px', u'important'): u'left: 0px !important',
+            (u'LEFT', u'0px', u'important'): u'left: 0px !important',
+            (u'left', u'0px', u'important'): u'left: 0px !important',
             }
         for test, exp in tests.items():
             s = cssutils.css.CSSStyleDeclaration()
@@ -413,9 +413,9 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         self.assertEqual('1px', s.getPropertyValue('TOP'))
         self.assertEqual('1px', s.getPropertyValue('T\op'))
 
-        self.assertEqual('!important', s.getPropertyPriority('top'))
-        self.assertEqual('!important', s.getPropertyPriority('TOP'))
-        self.assertEqual('!important', s.getPropertyPriority('T\op'))
+        self.assertEqual('important', s.getPropertyPriority('top'))
+        self.assertEqual('important', s.getPropertyPriority('TOP'))
+        self.assertEqual('important', s.getPropertyPriority('T\op'))
 
         s.setProperty('top', '2px', '!important')
         self.assertEqual('2px', s.removeProperty('top'))
