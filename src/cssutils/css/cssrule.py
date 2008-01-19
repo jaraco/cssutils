@@ -57,7 +57,7 @@ class CSSRule(cssutils.util.Base):
     MEDIA_RULE = 4
     FONT_FACE_RULE = 5
     PAGE_RULE = 6
-    NAMESPACE_RULE = 7 # cssutils only, WD, may be different later
+    NAMESPACE_RULE = 7 # CSSOM
 
     _typestrings = ['UNKNOWN_RULE', 'STYLE_RULE', 'CHARSET_RULE', 'IMPORT_RULE',
                      'MEDIA_RULE', 'FONT_FACE_RULE', 'PAGE_RULE', 'NAMESPACE_RULE',
