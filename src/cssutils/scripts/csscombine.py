@@ -53,6 +53,8 @@ issues
 import os
 import sys
 import cssutils
+from cssutils.serialize import CSSSerializer
+
 
 def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',  
                minify=True):
@@ -101,11 +103,16 @@ def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',
     sys.stderr.write('SETTING TARGET ENCODING: %s\n' % targetencoding)
     r.encoding = targetencoding
     if minify:
-        #oldser = cssutils.ser
+        # save old setting and use own serializer
+        oldser = cssutils.ser
+        cssutils.setSerializer(CSSSerializer())
         cssutils.ser.prefs.useMinified()
-    return r.cssText     
+        cssText = r.cssText
+        cssutils.setSerializer(oldser)
+    else:
+        cssText = r.cssText
+    return cssText     
     
-
 def main(args=None):
     import optparse
 
