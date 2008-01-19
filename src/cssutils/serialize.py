@@ -40,6 +40,10 @@ class Preferences(object):
         the src file, e.g. if ``True``: ``color`` else: ``c\olor``
 
         Only used if ``keepAllProperties==False``.
+        
+    defaultPropertyPriority = True
+        Should the normalized or literal priority be used, e.g. '!important'
+        or u'!Im\portant'
 
     importHrefFormat = None
         Uses hreftype if ``None`` or explicit ``'string'`` or ``'uri'``
@@ -52,24 +56,6 @@ class Preferences(object):
         If ``True`` all properties set in the original CSSStylesheet 
         are kept meaning even properties set twice with the exact same
         same name are kept!
-        
-    defaultAtKeyword=%r,
-    defaultPropertyName=%r,
-    importHrefFormat=%r,
-    indent=%r,
-    keepAllProperties=%r,
-    keepComments=%r,
-    keepEmptyRules=%r,
-    lineNumbers=%r,
-    lineSeparator=%r,
-    listItemSpacer=%r,
-    omitLastSemicolon=%r,
-    paranthesisSpacer=%r,
-    propertyNameSpacer=%r,
-    validOnly=%r,
-    wellformedOnly=%r,
-        
-        
     keepComments = True
         If ``False`` removes all CSSComments
     keepEmptyRules = False
@@ -91,6 +77,9 @@ class Preferences(object):
         ``css.CSSMediaRule`` or ``css.CSSStyleRule``
     propertyNameSpacer = u' '
         string which is used after a Property name colon
+    selectorCombinatorSpacer = u' '
+        string which is used before and after a Selector combinator like +, > or ~.
+        CSSOM defines a single space for this which is also the default in cssutils.
 
     validOnly = False (**not anywhere used yet**)
         if True only valid (Properties or Rules) are kept
@@ -121,6 +110,7 @@ class Preferences(object):
         "reset all preference options to the default value"
         self.defaultAtKeyword = True
         self.defaultPropertyName = True
+        self.defaultPropertyPriority = True
         self.importHrefFormat = None
         self.indent = 4 * u' '
         self.indentSpecificities = False
@@ -133,6 +123,7 @@ class Preferences(object):
         self.omitLastSemicolon = True
         self.paranthesisSpacer = u' '
         self.propertyNameSpacer = u' '
+        self.selectorCombinatorSpacer = u' '
         self.validOnly = False
         self.wellformedOnly = True
         # DEPRECATED
@@ -155,6 +146,7 @@ class Preferences(object):
         self.omitLastSemicolon = True
         self.paranthesisSpacer = u''
         self.propertyNameSpacer = u''
+        self.selectorCombinatorSpacer = u''
         self.validOnly = False
         self.wellformedOnly = True
 
@@ -687,6 +679,11 @@ class CSSSerializer(object):
                 else:
                     if typ == 'string':
                         val = self._escapeSTRINGtype(val)
+                    elif typ in ('child', 'adjacent-sibling', 'following-sibling'):
+                        # CSSOM adds spaces around > + and ~
+                        val = u'%s%s%s' % (self.prefs.selectorCombinatorSpacer, 
+                                           val,
+                                           self.prefs.selectorCombinatorSpacer)
                     out.append(val)
             return u''.join(out)
         else: 
@@ -774,7 +771,11 @@ class CSSSerializer(object):
                     if hasattr(part, 'cssText'): # comments
                         out.append(part.cssText)
                     else:
-                        out.append(part)
+                        if part == property.literalpriority and\
+                           self.prefs.defaultPropertyPriority:
+                            out.append(property.priority)
+                        else:
+                            out.append(part)
 
         return u''.join(out)
 
