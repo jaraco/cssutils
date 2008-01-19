@@ -477,8 +477,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         "important" qualifier) if the property has been explicitly set in
         this declaration block. The empty string if none exists.
         
-        **cssutils returns "!important" if present.**
-
         name
             of the CSS property, always lowercase (even if not normalized)
         normalize
