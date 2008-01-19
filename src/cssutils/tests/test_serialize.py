@@ -17,9 +17,11 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 
     def test_useDefaults(self):
         "Preferences.useDefaults()"
+        cssutils.ser.prefs.useMinified()
         cssutils.ser.prefs.useDefaults()
         self.assertEqual(cssutils.ser.prefs.defaultAtKeyword, True)
         self.assertEqual(cssutils.ser.prefs.defaultPropertyName, True)
+        self.assertEqual(cssutils.ser.prefs.defaultPropertyPriority, True)
         self.assertEqual(cssutils.ser.prefs.importHrefFormat, None)
         self.assertEqual(cssutils.ser.prefs.indent, 4 * u' ')
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
@@ -31,10 +33,43 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.omitLastSemicolon, True)
         self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, u' ')
         self.assertEqual(cssutils.ser.prefs.propertyNameSpacer, u' ')
+        self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, u' ')
         self.assertEqual(cssutils.ser.prefs.validOnly, False)
         self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
         # DEPRECATED
         self.assertEqual(cssutils.ser.prefs.removeInvalid, True)
+        css = u'''
+    /*1*/
+    @import url(x) tv , print;
+    @media all {}
+    @media all {
+        a {}
+    }
+    @media   all  {
+    a { color: red; }
+        }
+    @page     { left: 0; }
+    a {}
+    a + b > c ~ d , b { top : 1px ; 
+        font-family : arial ,'some' 
+        }
+    '''
+        parsedcss = u'''/*1*/
+@import url(x) tv, print;
+@media all {
+    a {
+        color: red
+        }
+    }
+@page {
+    left: 0
+    }
+a + b > c ~ d, b {
+    top: 1px;
+    font-family: arial, 'some'
+    }'''
+        s = cssutils.parseString(css)
+        self.assertEqual(s.cssText, parsedcss)
 
     def test_useMinified(self):
         "Preferences.useMinified()"
@@ -53,6 +88,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.omitLastSemicolon, True)
         self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, u'')
         self.assertEqual(cssutils.ser.prefs.propertyNameSpacer, u'')
+        self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, u'')
         self.assertEqual(cssutils.ser.prefs.validOnly, False)
         self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
         # DEPRECATED
@@ -70,13 +106,13 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
     }
     @page {}
     a {}
-    a , b { top : 1px ; 
+    a + b > c ~ d , b { top : 1px ; 
         font-family : arial ,  'some' 
         }
     '''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, 
-            u'''@import "x" tv,print;@media all{a{color:red}}a,b{top:1px;font-family:arial,'some'}''' 
+            u'''@import "x" tv,print;@media all{a{color:red}}a+b>c~d,b{top:1px;font-family:arial,'some'}''' 
             )
 
     def test_defaultAtKeyword(self):
@@ -111,6 +147,16 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(u'a {\n    c\\olor: green\n    }', s.cssText)
         cssutils.ser.prefs.defaultPropertyName = True
         self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
+
+    def test_defaultPropertyPriority(self):
+        "Preferences.defaultPropertyPriority"
+        cssutils.ser.prefs.useDefaults()
+        css = u'''a {\n    color: green !IM\\portant\n    }'''
+        s = cssutils.parseString(css)
+        self.assertEqual(s.cssText,
+                         u'''a {\n    color: green !important\n    }''')
+        cssutils.ser.prefs.defaultPropertyPriority = False
+        self.assertEqual(s.cssText, css)
 
     def test_importHrefFormat(self):
         "Preferences.importHrefFormat"
@@ -319,6 +365,14 @@ a, b {}'''
         self.assertEqual(u'a {\n    x: 1;\n    y: 2\n    }', s.cssText)
         cssutils.ser.prefs.propertyNameSpacer = u''
         self.assertEqual(u'a {\n    x:1;\n    y:2\n    }', s.cssText)
+
+    def test_selectorCombinatorSpacer(self):
+        "Preferences.selectorCombinatorSpacer"
+        cssutils.ser.prefs.useDefaults()
+        s = cssutils.css.Selector(selectorText='a+b>c~d  e')
+        self.assertEqual(u'a + b > c ~ d e', s.selectorText)
+        cssutils.ser.prefs.selectorCombinatorSpacer = u''
+        self.assertEqual(u'a+b>c~d e', s.selectorText)
 
     def test_CSSStyleSheet(self):
         "CSSSerializer.do_CSSStyleSheet"

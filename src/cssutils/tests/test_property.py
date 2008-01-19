@@ -10,7 +10,7 @@ import cssutils
 class PropertyTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        self.r = cssutils.css.property.Property('top', '1px')
+        self.r = cssutils.css.property.Property('top', '1px')#, 'important')
 
     def test_init(self):
         "Property.__init__()"
@@ -53,7 +53,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a: 1px 2px': None,
             u'a: 1 !important': None,
             u'a: 1 !IMPORTANT': u'a: 1 !important',
-            u'a: 1 !impor\\tant': None,
+            u'a: 1 !impor\\tant': u'a: 1 !important',
             # TODO: important with unicode escapes!
             u'font: normal 1em/1.5 serif': None,
             u'font: normal 1em/serif': None
@@ -154,27 +154,35 @@ class PropertyTestCase(basetest.BaseTestCase):
 
     def test_priority(self):
         "Property.priority"
-        p = cssutils.css.property.Property('top', '1px', '!important')
+        p = cssutils.css.property.Property('top', '1px', 'important')
 
-        p.priority = ''
-        self.assertEqual('', p.priority)
+        for prio in (None, u''):           
+            p.priority = prio
+            self.assertEqual(u'', p.priority)
+            self.assertEqual(u'', p.literalpriority)
 
-        p.priority = '!important'
-        self.assertEqual('!important', p.priority)
-
-        p.priority = None
-        self.assertEqual('', p.priority)
-
-        p.priority = '!   important'
-        self.assertEqual('!important', p.priority)
-
-        p.priority = '!/*1*/important'
-        self.assertEqual('! /*1*/ important', p.priority)
+        for prio in (u'!important',
+                     u'! important',
+                     u'!/* x */ important',
+                     u'!/* x */ important /**/',
+                     u'important',
+                     u'IMPORTANT',
+                     ur'im\portant' 
+                     ):           
+            p.priority = prio
+            self.assertEqual(u'important', p.priority)
+            if prio.startswith('!'):
+                prio = prio[1:].strip()
+            if u'/*' in prio:
+                check = 'important'
+            else: 
+                check = prio
+            self.assertEqual(check, p.literalpriority)
 
         tests = {
             u' ': xml.dom.SyntaxErr,
             u'"\n': xml.dom.SyntaxErr,
-            u'important': xml.dom.SyntaxErr,
+            #u'important': xml.dom.SyntaxErr,
             u';': xml.dom.SyntaxErr,
             u'!important !important': xml.dom.SyntaxErr
             }
@@ -214,7 +222,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         "Property.__repr__(), .__str__()"
         name="color"
         value="red"
-        priority="!important"
+        priority="important"
 
         s = cssutils.css.property.Property(name=name, value=value, priority=priority)
 

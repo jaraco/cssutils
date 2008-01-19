@@ -125,7 +125,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_reprANDstr(self):
         "CSSStyleRule.__repr__(), .__str__()"
-        sel=u'a>b+c'
+        sel=u'a > b + c'
         
         s = cssutils.css.CSSStyleRule(selectorText=sel)
         

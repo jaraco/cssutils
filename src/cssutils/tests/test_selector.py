@@ -54,11 +54,11 @@ class SelectorTestCase(basetest.BaseTestCase):
         "Selector.selectorText"
         tests = {
             # combinators
-            u'a+b>c~e f': None,
-            u'a+b': None,
-            u'a  +  b': 'a+b',
-            u'a\n  +\t  b': 'a+b',
-            u'a~b': None,
+            u'a+b>c~e f': u'a + b > c ~ e f',
+            u'a+b': u'a + b',
+            u'a  +  b': 'a + b',
+            u'a\n  +\t  b': 'a + b',
+            u'a~b': u'a ~ b',
             u'a b': None,
             u'a   b': 'a b',
             u'a\nb': 'a b',
@@ -67,20 +67,20 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a   .b': 'a .b',
             u'a * b': None,
             # >
-            u'a>b': None,
-            u'a> b': 'a>b',
-            u'a >b': 'a>b',
-            u'a > b': 'a>b',
+            u'a>b': u'a > b',
+            u'a> b': 'a > b',
+            u'a >b': 'a > b',
+            u'a > b': 'a > b',
             # +
-            u'a+b': None,
-            u'a+ b': 'a+b',
-            u'a +b': 'a+b',
-            u'a + b': 'a+b',
+            u'a+b': u'a + b',
+            u'a+ b': 'a + b',
+            u'a +b': 'a + b',
+            u'a + b': 'a + b',
             # ~
-            u'a~b': None,
-            u'a~ b': 'a~b',
-            u'a ~b': 'a~b',
-            u'a ~ b': 'a~b',
+            u'a~b': u'a ~ b',
+            u'a~ b': 'a ~ b',
+            u'a ~b': 'a ~ b',
+            u'a ~ b': 'a ~ b',
 
             # type selector
             u'a': None,
@@ -362,7 +362,7 @@ class SelectorTestCase(basetest.BaseTestCase):
                     
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
-        sel=u'a+b'
+        sel=u'a + b'
         
         s = cssutils.css.Selector(selectorText=sel)
 
