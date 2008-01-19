@@ -57,8 +57,7 @@ Usage may be::
     >>> print sheet.cssText
 
 """
-__all__ = ['css', 'stylesheets',
-           'CSSParser', 'CSSSerializer']
+__all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
