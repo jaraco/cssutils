@@ -108,7 +108,6 @@ class _ErrorHandler(object):
 
 class ErrorHandler(_ErrorHandler):
     "Singleton, see _ErrorHandler"
-
     instance = None
 
     def __init__(self,
