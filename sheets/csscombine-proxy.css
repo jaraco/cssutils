@@ -1,0 +1,4 @@
+@charset "utf-8";
+/* proxy sheet which imports sheets which should be combined öäü */
+@import "csscombine-1.css";
+@import url(csscombine-2.css);
