@@ -49,6 +49,7 @@ HEAD
 
         **MAY CHANGE AGAIN**
 
+    + IMPROVEMENT: csscombine is now available via ``from cssutils.scripts import csscombine`` now (not directly in cssutils though!). Some optimizations and comments added.
 
     - BUGFIX: ``*.parentStyleSheet`` where * is any CSSRule is set now
 
