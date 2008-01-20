@@ -79,6 +79,9 @@ from parse import CSSParser
 from serialize import CSSSerializer
 ser = CSSSerializer()
 
+# used by Selector defining namespace prefix '*' 
+_ANYNS = -1
+
 class DOMImplementationCSS(object):
     """
     This interface allows the DOM user to create a CSSStyleSheet
