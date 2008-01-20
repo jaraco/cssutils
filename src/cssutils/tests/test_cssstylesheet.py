@@ -30,6 +30,58 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(None, self.s.parentStyleSheet)
         self.assertEqual(u'', self.s.title)
 
+    def test_encoding(self):
+        "CSSStyleSheet.encoding"
+        self.s.cssText=''
+        self.assertEqual('utf-8', self.s.encoding)
+        
+        self.s.encoding = 'ascii'
+        self.assertEqual('ascii', self.s.encoding)
+        self.assertEqual(1, self.s.cssRules.length)
+        self.assertEqual('ascii', self.s.cssRules[0].encoding)
+
+        self.s.encoding = None
+        self.assertEqual('utf-8', self.s.encoding)
+        self.assertEqual(0, self.s.cssRules.length)
+
+        self.s.encoding = 'UTF-8'
+        self.assertEqual('utf-8', self.s.encoding)
+        self.assertEqual(1, self.s.cssRules.length)
+
+        self.assertRaises(xml.dom.SyntaxErr, self.s._setEncoding, 
+                          'INVALID ENCODING')
+        self.assertEqual('utf-8', self.s.encoding)
+        self.assertEqual(1, self.s.cssRules.length)
+    
+    def test_namespace(self):
+        "CSSStyleSheet.namespaces"
+        s = cssutils.css.CSSStyleSheet()
+        self.assertEqual({}, s.namespaces)
+        css = u'@namespace "default";\n@namespace ex "example";'
+        s.cssText = css
+        self.assertEqual(s.cssText, css)
+        self.assertEqual({ u'': u'default', u'ex': u'example'}, 
+                         s.namespaces)
+        s.insertRule('@namespace n "new";')
+        self.assertEqual({ u'': u'default', u'n': 'new', u'ex': u'example'}, 
+                         s.namespaces)
+        css = '''@namespace "default";\n@namespace ex "example";
+@namespace n "new";'''
+        self.assertEqual(s.cssText, css)
+        
+        # TODO
+#        s.namespaces['s'] = 'set'
+#        self.assertEqual({ u'': u'default', u'n': 'new', u'ex': u'example',
+#                          u's': 'set'}, 
+#                         s.namespaces)
+#        css = '''@namespace "default";\n@namespace ex "example";
+#@namespace n "new";
+#@namespace s "set";'''
+#        self.assertEqual(s.cssText, css)
+        
+        
+
+
     def test_NoModificationAllowedErr(self):
         "CSSStyleSheet NoModificationAllowedErr"
         css = cssutils.css.CSSStyleSheet(readonly=True)
@@ -162,29 +214,6 @@ body {
         sheet = cssutils.parseString(css)
         self.assertEqual(sheet.cssText, exp)
 
-    def test_encoding(self):
-        "CSSStyleSheet.encoding"
-        self.s.cssText=''
-        self.assertEqual('utf-8', self.s.encoding)
-        
-        self.s.encoding = 'ascii'
-        self.assertEqual('ascii', self.s.encoding)
-        self.assertEqual(1, self.s.cssRules.length)
-        self.assertEqual('ascii', self.s.cssRules[0].encoding)
-
-        self.s.encoding = None
-        self.assertEqual('utf-8', self.s.encoding)
-        self.assertEqual(0, self.s.cssRules.length)
-
-        self.s.encoding = 'UTF-8'
-        self.assertEqual('utf-8', self.s.encoding)
-        self.assertEqual(1, self.s.cssRules.length)
-
-        self.assertRaises(xml.dom.SyntaxErr, self.s._setEncoding, 
-                          'INVALID ENCODING')
-        self.assertEqual('utf-8', self.s.encoding)
-        self.assertEqual(1, self.s.cssRules.length)
-    
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule()"
         self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {\n    x: 1\n    }@y;'

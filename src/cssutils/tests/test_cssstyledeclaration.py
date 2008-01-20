@@ -24,7 +24,12 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual('0', s.getPropertyValue('left'))
 
         sheet = cssutils.css.CSSStyleRule()
-        s = cssutils.css.CSSStyleDeclaration(sheet)
+        s = cssutils.css.CSSStyleDeclaration(parentRule=sheet)
+        self.assertEqual(sheet, s.parentRule)
+
+        # should not be used but ordered paramter test 
+        s = cssutils.css.CSSStyleDeclaration('top: 0', sheet)
+        self.assertEqual(u'top: 0', s.cssText)
         self.assertEqual(sheet, s.parentRule)
 
     def test__contains__(self):

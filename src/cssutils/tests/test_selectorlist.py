@@ -5,6 +5,7 @@ __version__ = '$LastChangedRevision$'
 
 import xml.dom
 import basetest
+import cssutils
 from cssutils.css.selectorlist import SelectorList
 
 class SelectorListTestCase(basetest.BaseTestCase):
@@ -25,6 +26,28 @@ class SelectorListTestCase(basetest.BaseTestCase):
         self.assertEqual(1, s.length)
         self.assertEqual(u'a', s.selectorText)
 
+    def test_parentRule(self):
+        "Selector.parentRule"
+        def check(style):
+            self.assertEqual(style, style.selectorList.parentRule)
+            for sel in style.selectorList:
+                self.assertEqual(style.selectorList, sel.parentList)
+        
+        style = cssutils.css.CSSStyleRule('a, b')
+        check(style)
+
+        # add new selector
+        style.selectorList.append(cssutils.css.Selector('x'))
+        check(style)
+
+        # replace selectorList
+        style.selectorList = cssutils.css.SelectorList('x')
+        check(style)
+
+        # replace selectorText
+        style.selectorText = ('x, y')
+        check(style)
+            
     def test_appendSelector(self):
         "SelectorList.appendSelector() and .length"
         s = SelectorList()
@@ -54,8 +77,6 @@ class SelectorListTestCase(basetest.BaseTestCase):
 #        s[0] = 'c'
 #        self.assertEqual(1, s.length)
 #        self.assertEqual(u'c', s.selectorText)
-
-
 
     def test_selectorText(self):
         "SelectorList.selectorText"
