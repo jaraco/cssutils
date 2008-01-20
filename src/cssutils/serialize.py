@@ -659,11 +659,10 @@ class CSSSerializer(object):
                     # e.g. comment
                     out.append(val.cssText)
                 elif type(val) == tuple:
-                    # TODO: CHECK IF THIS IS REALLY OK!
+                    # namespaceURI|name (element or attribute)
                     namespaceURI, name = val
-                    # namespaceURI | name (name or att)
                     if namespaceURI is None:
-                        out.append(u'%s' % name)
+                        out.append(name)
                     else:
                         if namespaceURI == cssutils._ANYNS:
                             prefix = u'*'
@@ -680,8 +679,9 @@ class CSSSerializer(object):
                         else: 
                             out.append(u'%s|%s' % (prefix, name))
                         
-                elif type(val) == dict: # OLD???
-                    out.append(val['value'])
+                # OLD???
+                #elif type(val) == dict: 
+                #    out.append(val['value'])
                 else:
                     if typ == 'string':
                         val = self._escapeSTRINGtype(val)
