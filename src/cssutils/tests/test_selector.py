@@ -23,7 +23,7 @@ class SelectorTestCase(basetest.BaseTestCase):
     def test_init(self):
         "Selector.__init__()"
         s = cssutils.css.Selector('*')
-        self.assertEqual(('', '*'), s.element)
+        self.assertEqual((None, '*'), s.element)
         self.assertEqual({}, s.namespaces)
         self.assertEqual(None, s.parentList)
         self.assertEqual('*', s.selectorText)
@@ -43,28 +43,28 @@ class SelectorTestCase(basetest.BaseTestCase):
     def test_element(self):
         "Selector.element (TODO: RESOLVE)"
         tests = {
-            '*': (u'', '*'),
-            'x': (u'', 'x'),
-            '\\x': (u'', '\\x'),
+            '*': (None, '*'),
+            'x': (None, 'x'),
+            '\\x': (None, '\\x'),
             '|x': (u'', 'x'),
-            #'*|x': (u'', 'x'),
+            '*|x': (cssutils._ANYNS, 'x'),
             'ex|x': (u'example', 'x'),
-            'a x': (u'', 'x'),
-            'a+x': (u'', 'x'),
-            'a>x': (u'', 'x'),
-            'a~x': (u'', 'x'),
-            'a+b~c x': (u'', 'x'),
-            'x[href]': (u'', 'x'),
-            'x[href="123"]': (u'', 'x'),
-            'x:hover': (u'', 'x'),
-            'x:first-letter': (u'', 'x'), # TODO: Really?
-            'x::first-line': (u'', 'x'), # TODO: Really?
-            'x:not(href)': (u'', 'x'), # TODO: Really?
+            'a x': (None, 'x'),
+            'a+x': (None, 'x'),
+            'a>x': (None, 'x'),
+            'a~x': (None, 'x'),
+            'a+b~c x': (None, 'x'),
+            'x[href]': (None, 'x'),
+            'x[href="123"]': (None, 'x'),
+            'x:hover': (None, 'x'),
+            'x:first-letter': (None, 'x'), # TODO: Really?
+            'x::first-line': (None, 'x'), # TODO: Really?
+            'x:not(href)': (None, 'x'), # TODO: Really?
 
             '#id': None,
             '.c': None,
-            'x#id': (u'', 'x'),
-            'x.c': (u'', 'x')
+            'x#id': (None, 'x'),
+            'x.c': (None, 'x')
         }
         for test, ele in tests.items():
             s = cssutils.css.Selector(test, namespaces={'ex': 'example'})
@@ -72,10 +72,30 @@ class SelectorTestCase(basetest.BaseTestCase):
 
     def test_namespaces(self):
         "Selector.namespaces"
-        sel=u'p|x1 p|x2 |y *|z [p2|x] [p|x="1"]'
-        s = cssutils.css.Selector(selectorText=sel, namespaces={'p': 'URI',
-                                                        'p2': 'URI2'})
-        self.assertEqual({'p': 'URI', 'p2': 'URI2'}, s.namespaces)
+        namespaces = [
+            {'p': 'other'}, # no default
+            {'': 'default', 'p': 'other'}, # with default
+            {'': 'default', 'p': 'default' } # same default
+            ]
+        tests = {
+            # selector: with default, no default, same default 
+            '*': ('*', '*', '*'),
+            'x': ('x', 'x', 'x'),
+            '|*': ('|*', '|*', '|*'),
+            '|x': ('|x', '|x', '|x'),
+            '*|*': ('*', '*|*', '*|*'),
+            '*|x': ('x', '*|x', '*|x'),
+            'p|*': ('p|*', 'p|*', '|*'),
+            'p|x': ('p|x', 'p|x', '|x'),
+            'x[a][|a][*|a][p|a]': ('x[a][|a][a][p|a]', 
+                                   'x[a][|a][*|a][p|a]', 
+                                   'x[a][|a][*|a][|a]')
+        }
+        for sel, exp in tests.items():
+            for i, result in enumerate(exp):
+                s = cssutils.css.Selector(selectorText=sel, 
+                                          namespaces=namespaces[i])  
+                self.assertEqual(result, s.selectorText)
 
     def test_parentList(self):
         "Selector.parentList"
@@ -137,13 +157,13 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a1': None,
             u'a1-1': None,
             u'.a1-1': None,
-            u'|e': u'e',
-            u'*|e': None,
-            u'*|*': None,
+            u'|e': None,
+            u'*|e': 'e',
+            u'*|*': u'*',
             u'p|*': None,
             u'p|e': None,
             u'-a_x12|e': None,
-            u'*|b[p|a]': None,
+            u'*|b[p|a]': 'b[p|a]',
 
             # universal
             u'*': None,
