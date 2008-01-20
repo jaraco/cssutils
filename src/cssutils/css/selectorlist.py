@@ -76,7 +76,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         if newSelector:
             self.seq[index] = newSelector
         # TODO: remove duplicates?    
-               
+        
     def appendSelector(self, newSelector):
         """
         Append newSelector (is a string will be converted to a new
@@ -186,3 +186,15 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     def __str__(self):
         return "<cssutils.css.%s object selectorText=%r at 0x%x>" % (
                 self.__class__.__name__, self.selectorText, id(self))
+
+    def __getusedprefixes(self):
+        """
+        used internally to check is namespaces in CSSStyleSheet are
+        changing
+        """
+        prefixes = set()
+        for s in self:
+            prefixes.update(s._usedprefixes)
+        return prefixes
+    
+    _usedprefixes = property(__getusedprefixes, doc='INTERNAL USE')
