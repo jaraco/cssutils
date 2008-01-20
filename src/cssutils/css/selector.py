@@ -294,22 +294,26 @@ class Selector(cssutils.util.Base2):
                 
                 if new['_PREFIX'] is not None:
                     # as saved from before
-                    prefix, new['_PREFIX'] = new['_PREFIX'], None
+                    prefix = new['_PREFIX'] 
+                    new['_PREFIX'] = None # reset
                 elif typ == 'universal' and '|' in val:
                     # val == *|* or prefix|*
                     prefix, val = val.split('|')
                 else:
-                    prefix = ''#None
+                    prefix = None
                 
                 # TODO: CHECK IF THIS IS REALLY OK!
                 if typ.endswith('-selector') or typ == 'universal':
                     # val is (namespaceprefix, name) tuple
                     if prefix == u'*':
+                        # *|name
+                        namespaceURI = cssutils._ANYNS
+                    elif prefix is None:
+                        # name
                         namespaceURI = None
-                    #elif prefix is None:
-                    #    namespaceURI = None
                     elif prefix == u'':
-                        namespaceURI = self.namespaces.get(prefix, '')#None)
+                        # |name or |*
+                        namespaceURI = self.namespaces.get(prefix, u'')
                     else:
                         try:
                             namespaceURI = self.namespaces[prefix]
@@ -319,7 +323,9 @@ class Selector(cssutils.util.Base2):
                                             prefix, token=(typ, val, line, col),
                                             error=xml.dom.NamespaceErr)
                             return
+                        
                     val = (namespaceURI, val)
+                    new['usedprefixes'].add(prefix)
 
                 if not context or context == 'negation':   
                     # define specificity
@@ -335,6 +341,7 @@ class Selector(cssutils.util.Base2):
                     new['element'] = val
 
                 seq.append(val, typ)
+                new['usedprefixes'].add(prefix)
 
             # expected constants
             simple_selector_sequence = 'type_selector universal HASH class attrib pseudo negation '
@@ -721,6 +728,7 @@ class Selector(cssutils.util.Base2):
                 self._element = new['element']
                 self.seq = newseq
                 self._specificity = tuple(new['specificity'])
+                self._usedprefixes = new['usedprefixes']
                 self.wellformed = True
 
     selectorText = property(_getSelectorText, _setSelectorText,
