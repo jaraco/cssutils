@@ -36,8 +36,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
         namespace.
     prefix: of type DOMString
         The prefix used in the stylesheet for the given
-        ``CSSNamespaceRule.nsuri``. If prefix is empty uri sets the default
-        namespace for the stylesheet.
+        ``CSSNamespaceRule.nsuri``. If prefix is empty namespaceURI sets a 
+        default namespace for the stylesheet.
 
     cssutils only
     -------------
@@ -57,7 +57,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.NAMESPACE_RULE
 
-    def __init__(self, namespaceURI=None, prefix=u'', readonly=False):
+    def __init__(self, namespaceURI=None, prefix=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
 
@@ -81,14 +81,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
         self.atkeyword = u'@namespace'
         self.namespaceURI = namespaceURI
+        self._prefix = u''
         self.prefix = prefix
         self.seq = [self.prefix, self.namespaceURI]
 
         self._readonly = readonly
-
-    def _getNamespaceURI(self):
-        """ returns uri as a string """
-        return self._namespaceURI
 
     def _setNamespaceURI(self, namespaceURI):
         """
@@ -98,7 +95,6 @@ class CSSNamespaceRule(cssrule.CSSRule):
           Raised if this rule is readonly.
         """
         self._checkReadonly()
-
         # update seq
         for i, x in enumerate(self.seq):
             if x == self._namespaceURI:
@@ -109,26 +105,10 @@ class CSSNamespaceRule(cssrule.CSSRule):
         # set new uri
         self._namespaceURI = namespaceURI
 
-    namespaceURI = property(_getNamespaceURI, _setNamespaceURI,
+    namespaceURI = property(lambda self: self._namespaceURI, _setNamespaceURI,
         doc="URI (string!) of the defined namespace.")
 
-    @Deprecated(u'Use property namespaceURI instead.')
-    def _getURI(self):
-        return self.namespaceURI
-    
-    @Deprecated(u'Use property namespaceURI instead.')
-    def _setURI(self, uri):
-        self._setNamespaceURI(uri)
-
-    uri = property(_getURI, _setURI,
-        doc="DEPRECATED: Use property namespaceURI instead.")
-
-
-    def _getPrefix(self):
-        """ returns prefix """
-        return self._prefix
-
-    def _setPrefix(self, prefix=u''):
+    def _setPrefix(self, prefix=None):
         """
         DOMException on setting
 
@@ -139,20 +119,20 @@ class CSSNamespaceRule(cssrule.CSSRule):
           Raised if this rule is readonly.
         """
         self._checkReadonly()
-
-        # set new uri
-        self._prefix = prefix
-
+        if not prefix:
+            prefix = u''
+        # update seg
         for i, x in enumerate(self.seq):
             if x == self._prefix:
                 self.seq[i] = prefix
                 break
         else:
             self.seq[0] = prefix # put prefix at the beginning!
+        # set new prefix
+        self._prefix = prefix
 
-    prefix = property(_getPrefix, _setPrefix,
+    prefix = property(lambda self: self._prefix, _setPrefix,
         doc="Prefix used for the defined namespace.")
-
 
     def _getCssText(self):
         """
@@ -187,7 +167,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             # for closures: must be a mutable
             new = {
                    'keyword': self._tokenvalue(attoken),
-                   'prefix': None,
+                   'prefix': u'',
                    'uri': None,
                    'valid': True
                    }
