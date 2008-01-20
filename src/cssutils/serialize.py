@@ -638,22 +638,17 @@ class CSSSerializer(object):
             return sep.join(out)
         else:
             return u''
-        
-    def _getprefix(self, namespaces, namespaceURI):
-        """
-        returns prefix of given nsuri as defined in given
-        dict (prefix: uri} or TODO: from CSSNamespaceRules?
-        """
-        if namespaceURI is None:
-            return u'*'
-        for prefix, uri in namespaces.items():
-            if uri == namespaceURI:
-                return prefix
-        return u'' # should not happen!
-           
+                  
     def do_css_Selector(self, selector):
         """
         a single Selector including comments
+        
+        an element has syntax (namespaceURI, name) where namespaceURI may be:
+        - cssutils._ANYNS => '*|name'
+        - None => 'name'
+        - u'' => '|name'
+        - any other value: => 'prefix|name'
+        
         """
         if selector.seq and self._wellformed(selector) and\
                                 self._valid(selector):
@@ -667,13 +662,24 @@ class CSSSerializer(object):
                     # TODO: CHECK IF THIS IS REALLY OK!
                     namespaceURI, name = val
                     # namespaceURI | name (name or att)
-                    if namespaceURI != u'':
-                        # namespace may be None
-                        out.append(u'%s|%s' % (self._getprefix(selector.namespaces,
-                                                               namespaceURI),
-                                               name))
-                    else:
+                    if namespaceURI is None:
                         out.append(u'%s' % name)
+                    else:
+                        if namespaceURI == cssutils._ANYNS:
+                            prefix = u'*'
+                        else:
+                            for pre, uri in selector.namespaces.items():
+                                if uri == namespaceURI:
+                                    prefix = pre
+                                    break
+                            else:
+                                prefix = u''
+                        
+                        if prefix == u'*' and u'' not in selector.namespaces:
+                            out.append(name)
+                        else: 
+                            out.append(u'%s|%s' % (prefix, name))
+                        
                 elif type(val) == dict: # OLD???
                     out.append(val['value'])
                 else:
