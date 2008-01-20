@@ -40,15 +40,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         reflects the encoding of an @charset rule or 'utf-8' (default)
         if set to ``None``
     namespaces
-        **TODO:**
-        a dict of {prefix: namespaceURI} mapping, may also be a
-        CSSStyleSheet in which case the namespaces defined there
-        are used. If None cssutils tries to get the namespaces as
-        defined in a possible parent CSSStyleSheet.     
-    prefixes: set
-        A set of declared prefixes via @namespace rules. Each
-        CSSStyleRule is checked if it uses additional prefixes which are
-        not declared. If they do they are "invalidated".
+        a dict of {prefix: namespaceURI} mapping
 
     Format
     ======
@@ -73,9 +65,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.cssRules.append = self.insertRule
         self.cssRules.extend = self.insertRule
         
-        self.prefixes = set()
+        self._namespaces = {}  
         self._readonly = readonly
 
+    def __iter__(self):
+        """
+        generator which iterates over cssRules.
+        """
+        for rule in self.cssRules:
+            yield rule
+    
     def _getCssText(self):
         return cssutils.ser.do_CSSStyleSheet(self)
 
@@ -96,10 +95,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         # stylesheet  : [ CDO | CDC | S | statement ]*;
         self._checkReadonly()
+        
+        # save namespaces as these may be reset during setting of cssText
+        CURRENTNAMESPACES = self._namespaces
+        # used during setting (CSSStyleRule and CSSMediaRule)
+        self._namespaces = {}
+        
         tokenizer = self._tokenize2(cssText)
         newseq = [] #cssutils.css.CSSRuleList()
         # for closures: must be a mutable
-        new = { 'prefixes': set() }
+        new = {}
 
         def S(expected, seq, token, tokenizer=None):
             # @charset must be at absolute beginning of style sheet
@@ -145,7 +150,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             else:
                 if rule.valid:
                     seq.append(rule)
-                    new['prefixes'].add(rule.prefix)
+                    # special case, normally would use new['namespaces']
+                    self._namespaces[rule.prefix] = rule.namespaceURI
             return 2
 
         def fontfacerule(expected, seq, token, tokenizer):
@@ -185,18 +191,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             
-            # check namespaces
-            notdeclared = set()           
-            for selector in rule.selectorList.seq:
-                for prefix in selector.prefixes:
-                    if not prefix in new['prefixes']:
-                        notdeclared.add(prefix)
-            if notdeclared:
-                rule.valid = False
-                self._log.error(
-                    u'CSSStylesheet: CSSStyleRule uses undeclared namespace prefixes: %s.' %
-                    u', '.join(notdeclared), error=xml.dom.NamespaceErr)
-
             if rule.valid:
                 seq.append(rule)
             return 3
@@ -217,13 +211,18 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
              }, 
              default=ruleset)
 
-        del self.cssRules[:]
-        for r in newseq:
-            self.cssRules.append(r)
-        self.prefixes = new['prefixes']
-        for r in self.cssRules:
-            # set for CSSComment, for others is set before
-            r.parentStyleSheet = self  
+        if valid:
+            del self.cssRules[:]
+            for r in newseq:
+                self.cssRules.append(r)
+            # normally: self._namespaces = new['namespaces']
+            # but this is set before!
+            for r in self.cssRules:
+                # set for CSSComment, for others this is set before
+                r.parentStyleSheet = self
+        else:
+            # reset namespaces
+            self._namespaces = CURRENTNAMESPACES
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
@@ -256,6 +255,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     encoding = property(_getEncoding, _setEncoding,
             "(cssutils) reflects the encoding of an @charset rule or 'UTF-8' (default) if set to ``None``")
 
+    namespaces = property(lambda self: self._namespaces, 
+                          doc="Namespaces used in this CSSStyleSheet (READONLY)")
+
     def deleteRule(self, index):
         """
         Used to delete a rule from the style sheet.
@@ -273,16 +275,26 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
           the style sheet's rule list.
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this style sheet is readonly.
+        - NAMESPACE_ERR: (TODO)
+          Raised if removing this rule would result in an invalid StyleSheet
         """
         self._checkReadonly()
-
+            
         try:
-            self.cssRules[index].parentStyleSheet = None # detach
-            del self.cssRules[index] # delete from StyleSheet
+            r = self.cssRules[index] 
         except IndexError:
             raise xml.dom.IndexSizeErr(
                 u'CSSStyleSheet: %s is not a valid index in the rulelist of length %i' % (
                 index, self.cssRules.length))
+        else:
+            if r.type == r.NAMESPACE_RULE:
+                # check if namespacerule and check if needed
+                "TODO"
+                #raise xml.dom.NamespaceErr(
+                #    u'CSSStyleSheet: Namespace defined in this rule is needed, cannot remove.')
+                
+            r.parentStyleSheet = None # detach
+            del self.cssRules[index] # delete from StyleSheet
 
     def insertRule(self, rule, index=None):
         """
@@ -419,7 +431,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     return
             self.cssRules.insert(index, rule)
             rule.parentStyleSheet = self
-            self.prefixes.add(rule.prefix)
+            self._namespaces[rule.prefix] = rule.namespaceURI
 
         # all other
         else:
