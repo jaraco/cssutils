@@ -81,11 +81,25 @@ a[href='\a\27'] {
 
 if 1:
     s = cssutils.css.CSSStyleSheet()
-    s.cssText = u'''@namespace "default"; @namespace ex "example";
-    ex|a {color: red}
-    '''
-    print s.namespaces
-    s.deleteRule(1)
+    css = u'''@namespace "default"; 
+@namespace p "example";
+@namespace n "new";
+a[n|att], |a  {color: red}
+@media all { p|a {color: red}}
+'''
+    s.cssText = css
+    print css
+    sl = s.cssRules[3].selectorList
+    #print sl._usedprefixes
+    for sel in sl:
+        ""
+        #print sel.namespaces
+        #print sel.element
+#        print repr(sel.seq)
+        #print
+#    s.deleteRule(2)
+    s.cssRules[2].namespaceURI = '123'
+    s.cssRules[2].prefix = '123'
     print s.cssText
     
     sys.exit(0)
