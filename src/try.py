@@ -47,7 +47,7 @@ def escapecss(e):
 
 codecs.register_error('escapecss', escapecss)
 
-if 1:
+if 0:
     from cssutils.scripts import csscombine
     x = csscombine('sheets/csscombine-proxy.css', sourceencoding='css', minify=True)
     print x
@@ -79,21 +79,39 @@ a[href='\a\27'] {
         print r.type, r.parentStyleSheet
     sys.exit(0)
 
-if 0:
-    css= u'a {color:red; color{;color:maroon}; color:green;left: 0 !important }'
-    css= u'a {y:1}x'
-    #sheet = cssutils.parseString(css)
-    s = cssutils.css.CSSStyleRule()
-    s.cssText = css
-    print s
-       
+if 1:
+    s = cssutils.css.CSSStyleSheet()
+    s.cssText = u'''@namespace "default"; @namespace ex "example";
+    ex|a {color: red}
+    '''
+    print s.namespaces
+    s.deleteRule(1)
+    print s.cssText
+    
     sys.exit(0)
-
-    v = cssutils.css.CSSValue(_propertyName="font-family")
-    v.cssText = u'a  ,b,  c  ,"d or d", "e, " '
-    print v 
-    #sheet = cssutils.parse('sheets/default_html4.css')
-    #print sheet.cssText
+    
+    s = cssutils.css.SelectorList()
+    s.append(cssutils.css.Selector('a'))
+    print s[0].parentList
+    sys.exit(0)
+    #r = cssutils.css.CSSNamespaceRule(namespaceURI='example', prefix='p')
+    #print r.namespaceURI
+    
+    css= u'''@charset "ascii";
+    @namespace 'default';
+    @namespace e 'example';
+    x, e|x {color: red}
+    '''
+    sheet = cssutils.parseString(css)
+    print sheet
+    print 'PREFIXES', sheet.prefixes
+    print 'NAMESPACES', sheet.namespaces
+    print 
+    s = cssutils.css.CSSStyleRule()
+    for r in sheet:
+        print r
+    print sheet.cssText
+       
     sys.exit(0)
 
 
@@ -128,22 +146,6 @@ if 0:
 
     sys.exit(0)
 
-if 1:
-    s = cssutils.css.CSSStyleDeclaration(cssText='color: red !important')
-    p = s.getProperty('color')
-    p.priority = 'Impo\\Rtant'
-    print p
-    
-    print s.getPropertyPriority('color')
-    print s.cssText
-    
-    sys.exit(0)
-
-if 0:
-    s = cssutils.css.SelectorList('a>b+c~d:hOver    \ne, x')
-    print s.selectorText
-    
-    sys.exit(0)
     
 if 0:
     # RESOLVE INDENTATION!!!
