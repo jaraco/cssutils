@@ -25,8 +25,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         s = cssutils.css.Selector('*')
         self.assertEqual(('', '*'), s.element)
         self.assertEqual({}, s.namespaces)
-        self.assertEqual(None, s.parentRule)
-        self.assertEqual(set(), s.prefixes)
+        self.assertEqual(None, s.parentList)
         self.assertEqual('*', s.selectorText)
         self.assertEqual((0,0,0,0), s.specificity)
         self.assertEqual(True, s.wellformed)
@@ -34,21 +33,63 @@ class SelectorTestCase(basetest.BaseTestCase):
         s = cssutils.css.Selector('p|b', namespaces={'p': 'URI'} )
         self.assertEqual(('URI', 'b'), s.element)
         self.assertEqual({'p': 'URI'}, s.namespaces)
-        self.assertEqual(None, s.parentRule)
-        self.assertEqual(set('p'), s.prefixes)
+        self.assertEqual(None, s.parentList)
         self.assertEqual('p|b', s.selectorText)
         self.assertEqual((0,0,0,1), s.specificity)
         self.assertEqual(True, s.wellformed)
 
         self.assertRaisesEx(xml.dom.NamespaceErr, cssutils.css.Selector, 'p|b')
 
-    def test_prefixes(self):
-        "Selector.prefixes"
+    def test_element(self):
+        "Selector.element (TODO: RESOLVE)"
+        tests = {
+            '*': (u'', '*'),
+            'x': (u'', 'x'),
+            '\\x': (u'', '\\x'),
+            '|x': (u'', 'x'),
+            #'*|x': (u'', 'x'),
+            'ex|x': (u'example', 'x'),
+            'a x': (u'', 'x'),
+            'a+x': (u'', 'x'),
+            'a>x': (u'', 'x'),
+            'a~x': (u'', 'x'),
+            'a+b~c x': (u'', 'x'),
+            'x[href]': (u'', 'x'),
+            'x[href="123"]': (u'', 'x'),
+            'x:hover': (u'', 'x'),
+            'x:first-letter': (u'', 'x'), # TODO: Really?
+            'x::first-line': (u'', 'x'), # TODO: Really?
+            'x:not(href)': (u'', 'x'), # TODO: Really?
+
+            '#id': None,
+            '.c': None,
+            'x#id': (u'', 'x'),
+            'x.c': (u'', 'x')
+        }
+        for test, ele in tests.items():
+            s = cssutils.css.Selector(test, namespaces={'ex': 'example'})
+            self.assertEqual(ele, s.element)
+
+    def test_namespaces(self):
+        "Selector.namespaces"
         sel=u'p|x1 p|x2 |y *|z [p2|x] [p|x="1"]'
         s = cssutils.css.Selector(selectorText=sel, namespaces={'p': 'URI',
                                                         'p2': 'URI2'})
-        self.assertEqual(set([u'p2', u'p']), s.prefixes)
         self.assertEqual({'p': 'URI', 'p2': 'URI2'}, s.namespaces)
+
+    def test_parentList(self):
+        "Selector.parentList"
+        sl = cssutils.css.SelectorList('a, b')
+        for sel in sl:
+            self.assertEqual(sl, sel.parentList)
+            
+        newsel = cssutils.css.Selector('x')
+        sl.append(newsel)
+        self.assertEqual(sl, newsel.parentList)
+
+        newsel = cssutils.css.Selector('y')
+        sl.appendSelector(newsel)
+        self.assertEqual(sl, newsel.parentList)
 
     def test_selectorText(self):
         "Selector.selectorText"
