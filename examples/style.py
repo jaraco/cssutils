@@ -60,7 +60,7 @@ def getView(document, css, media='all', name=None,
     specificities = {} # needed temporarily 
 
     # TODO: filter rules simpler?, add @media
-    rules = (rule for rule in sheet.cssRules if rule.type == rule.STYLE_RULE)    
+    rules = (rule for rule in sheet if rule.type == rule.STYLE_RULE)    
     for rule in rules:
         for selector in rule.selectorList:
             
