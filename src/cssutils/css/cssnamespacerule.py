@@ -112,7 +112,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
         """
         DOMException on setting
 
-        - SYNTAX_ERR: (not checked here)
+        - SYNTAX_ERR: (TODO)
           Raised if the specified CSS string value has a syntax error and
           is unparsable.
         - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
@@ -129,7 +129,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
         else:
             self.seq[0] = prefix # put prefix at the beginning!
         # set new prefix
+        oldprefix = self._prefix
         self._prefix = prefix
+        # update prefixes in all rules using this rule
+        if self.parentStyleSheet:
+            self.parentStyleSheet._resetPrefixes(oldprefix, prefix)
 
     prefix = property(lambda self: self._prefix, _setPrefix,
         doc="Prefix used for the defined namespace.")
