@@ -273,10 +273,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         - INDEX_SIZE_ERR: (self)
           Raised if the specified index does not correspond to a rule in
           the style sheet's rule list.
+        - NAMESPACE_ERR: (self)
+          Raised if removing this rule would result in an invalid StyleSheet
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this style sheet is readonly.
-        - NAMESPACE_ERR: (TODO)
-          Raised if removing this rule would result in an invalid StyleSheet
         """
         self._checkReadonly()
             
@@ -289,17 +289,17 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         else:
             if rule.type == rule.NAMESPACE_RULE:
                 # check all namespacerule if used
-                _usedprefixes = set()
+                _useduris = set()
                 for r in self:
                     if r.type == r.STYLE_RULE:
-                        _usedprefixes.update(r.selectorList._usedprefixes)  
+                        _useduris.update(r.selectorList._useduris)  
                     elif r.type == r.MEDIA_RULE:
                         for x in r:
                             if x.type == x.STYLE_RULE:
-                                _usedprefixes.update(x.selectorList._usedprefixes)  
-                if rule.prefix in _usedprefixes:
+                                _useduris.update(x.selectorList._useduris)  
+                if rule.namespaceURI in _useduris:
                     raise xml.dom.NamespaceErr(
-                        u'CSSStyleSheet: Namespace defined in this rule is used, cannot remove.')
+                        u'CSSStyleSheet: NamespaceURI defined in this rule is used, cannot remove.')
                 
             rule.parentStyleSheet = None # detach
             del self.cssRules[index] # delete from StyleSheet
@@ -514,6 +514,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
                     setProperty(v)
 
+    def _resetPrefixes(self, oldprefix, newprefix):
+        for r in self:
+            if r.type == r.STYLE_RULE or r.type == r.MEDIA_RULE:
+                pass
+                # TODO!!!
+            
+            
     def setSerializer(self, cssserializer):
         """
         Sets the global Serializer used for output of all stylesheet
