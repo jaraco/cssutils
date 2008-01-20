@@ -187,14 +187,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         return "<cssutils.css.%s object selectorText=%r at 0x%x>" % (
                 self.__class__.__name__, self.selectorText, id(self))
 
-    def __getusedprefixes(self):
-        """
-        used internally to check is namespaces in CSSStyleSheet are
-        changing
-        """
-        prefixes = set()
+    def __getuseduris(self):
+        # used internally to check if namespaces in CSSStyleSheet are needed
+        uris = set()
         for s in self:
-            prefixes.update(s._usedprefixes)
-        return prefixes
-    
-    _usedprefixes = property(__getusedprefixes, doc='INTERNAL USE')
+            uris.update(s._useduris)
+        return uris
+
+    _useduris = property(__getuseduris, doc='INTERNAL USE')
+
