@@ -197,7 +197,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         # expected:
         # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
-        valid, expected = self._parse(0, newseq, tokenizer,
+        wellformed, expected = self._parse(0, newseq, tokenizer,
             {'S': S,
              'CDO': lambda *ignored: None,
              'CDC': lambda *ignored: None,
@@ -211,7 +211,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
              }, 
              default=ruleset)
 
-        if valid:
+        if wellformed:
             del self.cssRules[:]
             for r in newseq:
                 self.cssRules.append(r)
@@ -281,19 +281,27 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._checkReadonly()
             
         try:
-            r = self.cssRules[index] 
+            rule = self.cssRules[index] 
         except IndexError:
             raise xml.dom.IndexSizeErr(
                 u'CSSStyleSheet: %s is not a valid index in the rulelist of length %i' % (
                 index, self.cssRules.length))
         else:
-            if r.type == r.NAMESPACE_RULE:
-                # check if namespacerule and check if needed
-                "TODO"
-                #raise xml.dom.NamespaceErr(
-                #    u'CSSStyleSheet: Namespace defined in this rule is needed, cannot remove.')
+            if rule.type == rule.NAMESPACE_RULE:
+                # check all namespacerule if used
+                _usedprefixes = set()
+                for r in self:
+                    if r.type == r.STYLE_RULE:
+                        _usedprefixes.update(r.selectorList._usedprefixes)  
+                    elif r.type == r.MEDIA_RULE:
+                        for x in r:
+                            if x.type == x.STYLE_RULE:
+                                _usedprefixes.update(x.selectorList._usedprefixes)  
+                if rule.prefix in _usedprefixes:
+                    raise xml.dom.NamespaceErr(
+                        u'CSSStyleSheet: Namespace defined in this rule is used, cannot remove.')
                 
-            r.parentStyleSheet = None # detach
+            rule.parentStyleSheet = None # detach
             del self.cssRules[index] # delete from StyleSheet
 
     def insertRule(self, rule, index=None):
