@@ -31,12 +31,6 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     ==========
     length: of type unsigned long, readonly
         The number of Selector elements in the list.
-    namespaces
-        **TODO:**
-        a dict of {prefix: namespaceURI} mapping, may also be a
-        CSSStyleSheet in which case the namespaces defined there
-        are used. If None cssutils tries to get the namespaces as
-        defined in a possible parent CSSStyleSheet.     
     parentRule: of type CSSRule, readonly
         The CSS rule that contains this declaration block or None if this
         CSSStyleDeclaration is not attached to a CSSRule.
@@ -49,18 +43,14 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     wellformed
         if this selectorlist is wellformed regarding the Selector spec
     """
-    def __init__(self, selectorText=None, namespaces=None,
-                 parentRule=None, readonly=False):
+    def __init__(self, selectorText=None, parentRule=None, readonly=False):
         """
         initializes SelectorList with optional selectorText
         """
         super(SelectorList, self).__init__()
         
         self.wellformed = False
-        if not namespaces:
-            namespaces = {}
-        self.namespaces = namespaces
-        self.parentRule = parentRule  
+        self.parentRule = parentRule
         if selectorText:
             self.selectorText = selectorText
         self._readonly = readonly
@@ -70,10 +60,10 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         self._checkReadonly()
         
         if not isinstance(newSelector, Selector):
-            newSelector = Selector(newSelector, namespaces=self.namespaces)
+            newSelector = Selector(newSelector, parentList=self)
 
         if newSelector.wellformed:
-            newSelector.parentRule = self
+            newSelector.parentList = self
             return newSelector
 
     def __setitem__(self, index, newSelector):
@@ -153,9 +143,8 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 else:
                     expected = None
 
-                selector = Selector(selectortokens, namespaces=self.namespaces)
+                selector = Selector(selectortokens, parentList=self)
                 if selector.wellformed:
-                    selector.parentRule = self.parentRule
                     newseq.append(selector)
                 else:
                     wellformed = False
@@ -179,15 +168,10 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
 #            for selector in newseq:
 #                 self.appendSelector(selector)
 
-    def _getParentRule(self):
-        return self._parentRule
-
     def _setParentRule(self, parentRule):
         self._parentRule = parentRule
-        for sel in self.seq:
-            sel.parentRule = parentRule
 
-    parentRule = property(_getParentRule, _setParentRule,
+    parentRule = property(lambda self: self._parentRule, _setParentRule,
         doc="(DOM) The CSS rule that contains this SelectorList or\
         None if this SelectorList is not attached to a CSSRule.")
     
