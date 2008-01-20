@@ -325,7 +325,6 @@ class Selector(cssutils.util.Base2):
                             return
                         
                     val = (namespaceURI, val)
-                    new['usedprefixes'].add(prefix)
 
                 if not context or context == 'negation':   
                     # define specificity
@@ -341,7 +340,8 @@ class Selector(cssutils.util.Base2):
                     new['element'] = val
 
                 seq.append(val, typ)
-                new['usedprefixes'].add(prefix)
+                if prefix not in (None, u'*'):
+                    new['usedprefixes'].add(prefix)
 
             # expected constants
             simple_selector_sequence = 'type_selector universal HASH class attrib pseudo negation '
