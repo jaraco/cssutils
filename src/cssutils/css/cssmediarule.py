@@ -56,6 +56,13 @@ class CSSMediaRule(cssrule.CSSRule):
 
         self._readonly = readonly
 
+    def __iter__(self):
+        """
+        generator which iterates over cssRules.
+        """
+        for rule in self.cssRules:
+            yield rule
+            
     def _getCssText(self):
         """
         returns serialized property cssText
@@ -115,6 +122,8 @@ class CSSMediaRule(cssrule.CSSRule):
                 
                 def ruleset(expected, seq, token, tokenizer):
                     rule = cssutils.css.CSSStyleRule()
+                    rule.parentRule = self # must be done for selectors to work
+                    rule.parentStyleSheet = self.parentStyleSheet
                     rule.cssText = self._tokensupto2(tokenizer, token)
                     if new['valid']:
                         seq.append(rule)
@@ -133,6 +142,8 @@ class CSSMediaRule(cssrule.CSSRule):
                                 error=xml.dom.HierarchyRequestErr)
                     else:
                         rule = cssutils.css.CSSUnknownRule()
+                        rule.parentRule = self
+                        rule.parentStyleSheet = self.parentStyleSheet
                         rule.cssText = tokens
                         seq.append(rule)
                     return expected
