@@ -160,7 +160,6 @@ class Selector(cssutils.util.Base2):
         if not namespaces:
             namespaces = {}
         self._namespaces = namespaces
-        self._usedprefixes = set()
         self._parent = parentList
         self._specificity = (0, 0, 0, 0)
         self.wellformed = False
@@ -268,7 +267,6 @@ class Selector(cssutils.util.Base2):
             new = {'context': [''], # stack of: 'attrib', 'negation', 'pseudo'
                    'element': None,
                    '_PREFIX': None,
-                   'usedprefixes': set(),
                    'specificity': [0, 0, 0, 0], # mutable, finally a tuple!
                    'wellformed': True
                    }
@@ -340,8 +338,6 @@ class Selector(cssutils.util.Base2):
                     new['element'] = val
 
                 seq.append(val, typ)
-                if prefix not in (None, u'*'):
-                    new['usedprefixes'].add(prefix)
 
             # expected constants
             simple_selector_sequence = 'type_selector universal HASH class attrib pseudo negation '
@@ -728,7 +724,6 @@ class Selector(cssutils.util.Base2):
                 self._element = new['element']
                 self.seq = newseq
                 self._specificity = tuple(new['specificity'])
-                self._usedprefixes = new['usedprefixes']
                 self.wellformed = True
 
     selectorText = property(_getSelectorText, _setSelectorText,
@@ -757,3 +752,16 @@ class Selector(cssutils.util.Base2):
         return "<cssutils.css.%s object selectorText=%r specificity=%r at 0x%x>" % (
                 self.__class__.__name__, self.selectorText, 
                 self.specificity, id(self))
+        
+    def __getuseduris(self):
+        # used internally to check if namespaces in CSSStyleSheet are needed
+        uris = set()
+        for item in self.seq:
+            typ, val = item.type, item.value
+            if typ.endswith(u'-selector') and \
+               type(val) == tuple and val[0] not in (None, u'*'):
+                uris.add(val[0])
+        return uris
+    
+    _useduris = property(__getuseduris, doc='INTERNAL USE')
+
