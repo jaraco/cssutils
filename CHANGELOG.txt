@@ -45,19 +45,28 @@ known issues
 0.9.x
 -----
 HEAD
-    - FEATURE: Added ``css.SelectorList.parentRule`` and ``css.Selector.parentRule`` which reference the same ``CSSStyleRule``
 
-        **MAY CHANGE AGAIN**
+    - **API CHANGE: Refactored namespace handling**
+        **Do not change attribute ``namespaces`` of ``CSSStyleDeclaration`` or ``Selector`` as this may result in an invalid stylesheet. This may be checked later but for now beware!**
 
-    + IMPROVEMENT: csscombine is now available via ``from cssutils.scripts import csscombine`` now (not directly in cssutils though!). Some optimizations and comments added.
+        - removed ``CSSStyleSheet.prefixes``
+        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains all namespaces as defined in @namespace rules
+        - removed ``Selector.prefixes``
+        - added ``Selector.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains namespaces defined in a parent CSSStyleSheet or while Selector is "standalone" namespaces as given in constructor parameter ``namespaces``.
+        - renamed ``Selector.parentRule`` to ``Selector.parentList`` which contains a reference to the containing ``SelectorList``
 
-    - BUGFIX: ``*.parentStyleSheet`` where * is any CSSRule is set now
+    - **API CHANGE**: Changed order of constructor parameters for ``CSSStyleDeclaration``. Named parameters SHOULD be used anyway but be careful if you used ordered ones here!
 
-    - BUGFIX: Changed serialization of combinators in ``Selector`` according to http://dev.w3.org/csswg/cssom/#selectors, e.g. ``a>b+c~d e`` serializes as ``a > b + c ~ d e`` now (single spaces around +, > and ~). A new serializer preference ``selectorCombinatorSpacer = u' '`` has been added to overwrite this behaviour (which is set to ``u''`` when using the CSS minifier settings)
+    + **BUGFIX**: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
 
-    - BUGFIX: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
+        (``Property._normalpriority`` has been removed, the normalized value that was available here is now in ``Property.priority``. The literal priority value is available in ``Property.literalproperty`` now (analog to ``Property.literalname``). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)
 
-        (``Property._normalpriority`` has been removed, the normalized value that was available here is now in ``Property.priority``. The literal priority value is available in ``Property._literalproperty`` now. All these values should not be used by client code anyway and are marked private therefor ('_').)
+    + BUGFIX: ``*.parentStyleSheet`` where * is any CSSRule is set now
+
+    + BUGFIX: Changed serialization of combinators in ``Selector`` according to http://dev.w3.org/csswg/cssom/#selectors, e.g. ``a>b+c~d e`` serializes as ``a > b + c ~ d e`` now (single spaces around +, > and ~). A new serializer preference ``selectorCombinatorSpacer = u' '`` has been added to overwrite this behaviour (which is set to ``u''`` when using the CSS minifier settings)
+
+    - IMPROVEMENT: csscombine is available via ``from cssutils.scripts import csscombine`` now (not directly in cssutils though!). Some optimizations and comments added.
+
 
 0.9.5a2 080115
     + **BUGFIX**: Serializing a ``CSSStyleDeclaration`` did not include the effective properties but the last property if set multiple times in a single declaration and preferences ``keepAllProperties == False``.
