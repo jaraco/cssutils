@@ -63,8 +63,7 @@ class CSSStyleRule(cssrule.CSSRule):
             self.selectorText = selectorText
             self.seq.append(self.selectorText)
         else:
-            self._selectorList = SelectorList()
-            self._selectorList.parentRule = self
+            self._selectorList = SelectorList(parentRule=self)
         if style:
             self.style = style
             self.seq.append(self.style)
@@ -126,7 +125,8 @@ class CSSStyleRule(cssrule.CSSRule):
                 self._log.error(u'CSSStyleRule: No selector found: %r.' %
                             self._valuestr(cssText), bracetoken)
                 
-            newselectorlist = SelectorList(selectorText=selectortokens)
+            newselectorlist = SelectorList(selectorText=selectortokens,
+                                           parentRule=self)
 
             newstyle = CSSStyleDeclaration()
             if not styletokens:
@@ -207,8 +207,7 @@ class CSSStyleRule(cssrule.CSSRule):
           Raised if this rule is readonly.
         """
         self._checkReadonly()
-        self._selectorList = SelectorList(selectorText)
-        self._selectorList.parentRule = self
+        self._selectorList = SelectorList(selectorText, parentRule=self)
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(DOM) The textual representation of the selector for the
