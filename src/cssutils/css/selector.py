@@ -42,11 +42,9 @@ class Selector(cssutils.util.Base2):
         CSSStyleSheet in which case the namespaces defined there
         are used. If None cssutils tries to get the namespaces as
         defined in a possible parent CSSStyleSheet.     
-    parentRule: of type CSSRule, readonly
-        The CSS rule that contains this declaration block or None if this
-        CSSStyleDeclaration is not attached to a CSSRule.
-    prefixes
-        a set which prefixes have been used in this selector
+    parentList: of type SelectorList, readonly
+        The SelectorList that contains this selector or None if this
+        Selector is not attached to a SelectorList.
     seq
         sequence of Selector parts including comments
     specificity (READONLY)
@@ -147,12 +145,12 @@ class Selector(cssutils.util.Base2):
 
     """
     def __init__(self, selectorText=None, namespaces=None, 
-                 parentRule=None, readonly=False):
+                 parentList=None, readonly=False):
         """
         selectorText
             initial value of this selector
-        parentRule
-            a CSSStyleRule
+        parentList
+            a SelectorList
         readonly
             default to False
         """
@@ -161,9 +159,9 @@ class Selector(cssutils.util.Base2):
         self._element = None
         if not namespaces:
             namespaces = {}
-        self.namespaces = namespaces
-        self.parentRule = parentRule
-        self.prefixes = set()
+        self._namespaces = namespaces
+        self._usedprefixes = set()
+        self._parent = parentList
         self._specificity = (0, 0, 0, 0)
         self.wellformed = False
         if selectorText:
@@ -173,15 +171,12 @@ class Selector(cssutils.util.Base2):
     element = property(lambda self: self._element, 
                            doc="Element of this selector (READONLY).")
 
-    def _getParentRule(self):
-        return self._parentRule
+    def _setParent(self, parent):
+        self._parent = parent
 
-    def _setParentRule(self, parentRule):
-        self._parentRule = parentRule
-
-    parentRule = property(_getParentRule, _setParentRule,
-        doc="(DOM) The CSS rule that contains this Selector or\
-        None if this Selector is not attached to a CSSRule.")
+    parentList = property(lambda self: self._parent, _setParent,
+        doc="(DOM) The SelectorList that contains this Selector or\
+        None if this Selector is not attached to a SelectorList.")
     
     def _getSelectorText(self):
         """
@@ -273,7 +268,7 @@ class Selector(cssutils.util.Base2):
             new = {'context': [''], # stack of: 'attrib', 'negation', 'pseudo'
                    'element': None,
                    '_PREFIX': None,
-                   'prefixes': set(), 
+                   'usedprefixes': set(),
                    'specificity': [0, 0, 0, 0], # mutable, finally a tuple!
                    'wellformed': True
                    }
@@ -304,21 +299,23 @@ class Selector(cssutils.util.Base2):
                     # val == *|* or prefix|*
                     prefix, val = val.split('|')
                 else:
-                    prefix = u''
+                    prefix = ''#None
                 
                 # TODO: CHECK IF THIS IS REALLY OK!
                 if typ.endswith('-selector') or typ == 'universal':
                     # val is (namespaceprefix, name) tuple
                     if prefix == u'*':
                         namespaceURI = None
+                    #elif prefix is None:
+                    #    namespaceURI = None
                     elif prefix == u'':
-                        namespaceURI = self.namespaces.get(prefix, u'')
+                        namespaceURI = self.namespaces.get(prefix, '')#None)
                     else:
                         try:
                             namespaceURI = self.namespaces[prefix]
-                        except (KeyError,):
+                        except KeyError:
                             new['wellformed'] = False
-                            self._log.error(u'No namespaceURI found for prefix %r' %
+                            self._log.error(u'Selector: No namespaceURI found for prefix %r' %
                                             prefix, token=(typ, val, line, col),
                                             error=xml.dom.NamespaceErr)
                             return
@@ -385,11 +382,7 @@ class Selector(cssutils.util.Base2):
                 val, typ = self._tokenvalue(token), self._type(token)
                 if 'universal' in expected:
                     append(seq, val, 'universal', context=context)
-                    
-                    newprefix = val.split(u'|')[0]
-                    if newprefix and newprefix != u'*':
-                        new['prefixes'].add(newprefix)
-                    
+
                     if 'negation' == context:
                         return negationend
                     else:
@@ -409,20 +402,10 @@ class Selector(cssutils.util.Base2):
                 if 'attrib' == context and 'prefix' in expected:
                     # [PREFIX|att]
                     append(seq, val, '_PREFIX', context=context)
-                    
-                    newprefix = val.split(u'|')[0]
-                    if newprefix and newprefix != u'*':
-                        new['prefixes'].add(newprefix)
-                        
                     return attname2
                 elif 'type_selector' in expected:
                     # PREFIX|*
                     append(seq, val, '_PREFIX', context=context)
-                    
-                    newprefix = val.split(u'|')[0]
-                    if newprefix and newprefix != u'*':
-                        new['prefixes'].add(newprefix)
-                        
                     return element_name
                 else:
                     new['wellformed'] = False
@@ -736,7 +719,6 @@ class Selector(cssutils.util.Base2):
             # set
             if wellformed:
                 self._element = new['element']
-                self.prefixes = new['prefixes']
                 self.seq = newseq
                 self._specificity = tuple(new['specificity'])
                 self.wellformed = True
@@ -745,7 +727,19 @@ class Selector(cssutils.util.Base2):
         doc="(DOM) The parsable textual representation of the selector.")
 
     specificity = property(lambda self: self._specificity, 
-                           doc="specificity of this selector (READONLY).")
+                           doc="Specificity of this selector (READONLY).")
+
+    def _getNamespaces(self):
+        try:
+            parentnamespace = self._parent.parentRule.parentStyleSheet.namespaces
+        except AttributeError:
+            pass
+        else:
+            self._namespaces.update(parentnamespace)
+        return self._namespaces
+
+    namespaces = property(_getNamespaces, 
+                          doc="Namespaces used in this Selector (READONLY)")
 
     def __repr__(self):
         return "cssutils.css.%s(selectorText=%r)" % (
