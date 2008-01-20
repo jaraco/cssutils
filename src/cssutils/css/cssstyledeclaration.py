@@ -118,13 +118,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
     ======
     [Property: Value Priority?;]* [Property: Value Priority?]?
     """
-    def __init__(self, parentRule=None, cssText=u'', readonly=False):
+    def __init__(self, cssText=u'', parentRule=None, readonly=False):
         """
+        cssText
+            Shortcut, sets CSSStyleDeclaration.cssText
         parentRule
             The CSS rule that contains this declaration block or
             None if this CSSStyleDeclaration is not attached to a CSSRule.
-        cssText
-            Shortcut, sets CSSStyleDeclaration.cssText
         readonly
             defaults to False
         """
