@@ -45,7 +45,9 @@ known issues
 HEAD
 
     - **API CHANGE: Refactored namespace handling**
-        **Do not change attribute ``namespaces`` of ``CSSStyleDeclaration`` or ``Selector`` as this may result in an invalid stylesheet. This may be checked later but for now beware!**
+        **Do not change attribute ``namespaces`` of ``CSSStyleSheet``as this may result in an invalid stylesheet. This may be checked later but for now beware!**
+
+        **Do not use ``Selector.namespaces`` directly, it will probably change again**
 
         - removed ``CSSStyleSheet.prefixes``
         - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains all namespaces as defined in @namespace rules
@@ -54,6 +56,8 @@ HEAD
         - renamed ``Selector.parentRule`` to ``Selector.parentList`` which contains a reference to the containing ``SelectorList``
 
     - **API CHANGE**: Changed order of constructor parameters for ``CSSStyleDeclaration``. Named parameters SHOULD be used anyway but be careful if you used ordered ones here!
+
+    * FEATURE: ``CSSStyleDeclaration`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``.
 
     + **BUGFIX**: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
 
