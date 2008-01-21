@@ -140,9 +140,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             return 1
 
         def namespacerule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSNamespaceRule()
-            rule.parentStyleSheet = self
-            rule.cssText = self._tokensupto2(tokenizer, token)
+            rule = cssutils.css.CSSNamespaceRule(
+                                cssText=self._tokensupto2(tokenizer, token),
+                                parentStyleSheet=self)
             if expected > 2:
                 self._log.error(
                     u'CSSStylesheet: CSSNamespaceRule not allowed here.',
@@ -513,13 +513,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         setProperty(item)
                 elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
                     setProperty(v)
-
-    def _resetPrefixes(self, oldprefix, newprefix):
-        for r in self:
-            if r.type == r.STYLE_RULE or r.type == r.MEDIA_RULE:
-                pass
-                # TODO!!!
-            
             
     def setSerializer(self, cssserializer):
         """
