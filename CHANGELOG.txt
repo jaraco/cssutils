@@ -49,6 +49,7 @@ HEAD
 
         **Do not use ``Selector.namespaces`` directly, it will probably change again**
 
+        - ``CSSNamespaceRule.namespaceURI`` is readonly now, it can only be set in the constructor (needed to prevent an invalid sheet when changing this uri)
         - removed ``CSSStyleSheet.prefixes``
         - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains all namespaces as defined in @namespace rules
         - removed ``Selector.prefixes``
