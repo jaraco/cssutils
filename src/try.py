@@ -81,6 +81,11 @@ a[href='\a\27'] {
 
 if 1:
     s = cssutils.css.CSSStyleSheet()
+    r = cssutils.css.CSSNamespaceRule()
+    sys.exit(0)
+
+    
+    
     css = u'''@namespace "default"; 
 @namespace p "example";
 @namespace n "new";
@@ -98,9 +103,10 @@ a[n|att], |a  {color: red}
 #        print repr(sel.seq)
         #print
 #    s.deleteRule(2)
-    s.cssRules[2].namespaceURI = '123'
-    s.cssRules[2].prefix = '123'
+    #s.cssRules[2].namespaceURI = '123'
+    s.cssRules[2].prefix = 'p123'
     print s.cssText
+    print s.namespaces
     
     sys.exit(0)
     
