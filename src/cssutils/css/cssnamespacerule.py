@@ -57,12 +57,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.NAMESPACE_RULE
 
-    def __init__(self, namespaceURI=None, prefix=None, readonly=False):
+    def __init__(self, namespaceURI=None, prefix=None, 
+                 cssText=None, parentStyleSheet=None, readonly=False):
         """
-        if readonly allows setting of properties in constructor only
-
-        Do not use as positional but as keyword attributes only!
-
         namespaceURI
             The namespace URI (a simple string!) which is bound to the
             given prefix. If no prefix is set
@@ -71,6 +68,15 @@ class CSSNamespaceRule(cssrule.CSSRule):
         prefix
             The prefix used in the stylesheet for the given
             ``CSSNamespaceRule.uri``.
+        cssText
+            if no namespaceURI is given cssText must be given to set
+            a namespaceURI as this is readonly later on
+        parentStyleSheet
+            sheet where this rule belongs to
+
+        If readonly allows setting of properties in constructor only
+
+        Do not use as positional but as keyword parameters only!
 
         format namespace::
 
@@ -78,12 +84,20 @@ class CSSNamespaceRule(cssrule.CSSRule):
             ;
         """
         super(CSSNamespaceRule, self).__init__()
-
-        self.atkeyword = u'@namespace'
-        self.namespaceURI = namespaceURI
+        
         self._prefix = u''
-        self.prefix = prefix
-        self.seq = [self.prefix, self.namespaceURI]
+        self._namespaceURI = None
+        self.atkeyword = u'@namespace'
+        self.parentStyleSheet = parentStyleSheet
+        if namespaceURI:
+            self.namespaceURI = namespaceURI
+            self.prefix = prefix
+            self.seq = [self.prefix, self.namespaceURI]
+        elif cssText:
+            self.cssText = cssText
+#        else:
+#            self._log.error(u'CSSNamespaceRule: Either parameter namespaceURI or cssText must be given.',
+#                      error=xml.dom.SyntaxErr)
 
         self._readonly = readonly
 
@@ -95,15 +109,13 @@ class CSSNamespaceRule(cssrule.CSSRule):
           Raised if this rule is readonly.
         """
         self._checkReadonly()
-        # update seq
-        for i, x in enumerate(self.seq):
-            if x == self._namespaceURI:
-                self.seq[i] = namespaceURI
-                break
-        else:
+        if not self._namespaceURI:
+            # initial setting
+            self._namespaceURI = namespaceURI
             self.seq = [namespaceURI]
-        # set new uri
-        self._namespaceURI = namespaceURI
+        else:
+            self._log.error(u'CSSNamespaceRule: namespaceURI is readonly.',
+                            error=xml.dom.NoModificationAllowedErr)
 
     namespaceURI = property(lambda self: self._namespaceURI, _setNamespaceURI,
         doc="URI (string!) of the defined namespace.")
@@ -121,6 +133,16 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._checkReadonly()
         if not prefix:
             prefix = u''
+        else:        
+            tokenizer = self._tokenize2(prefix)
+            prefixtoken = self._nexttoken(tokenizer, None)
+            if not prefixtoken or self._type(prefixtoken) != self._prods.IDENT:
+                self._log.error(u'CSSNamespaceRule: No valid prefix "%s".' %
+                    self._valuestr(prefix),
+                    error=xml.dom.SyntaxErr)
+                return
+            else:
+                prefix = self._tokenvalue(prefixtoken)
         # update seg
         for i, x in enumerate(self.seq):
             if x == self._prefix:
@@ -131,9 +153,15 @@ class CSSNamespaceRule(cssrule.CSSRule):
         # set new prefix
         oldprefix = self._prefix
         self._prefix = prefix
-        # update prefixes in all rules using this rule
+        
+        # update prefixes in stylesheet
         if self.parentStyleSheet:
-            self.parentStyleSheet._resetPrefixes(oldprefix, prefix)
+            try:
+                self.parentStyleSheet.namespaces[prefix] = \
+                    self.parentStyleSheet.namespaces[oldprefix]
+                del self.parentStyleSheet.namespaces[oldprefix]
+            except KeyError:
+                self.parentStyleSheet.namespaces[prefix] = self._namespaceURI
 
     prefix = property(lambda self: self._prefix, _setPrefix,
         doc="Prefix used for the defined namespace.")
@@ -258,7 +286,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             self.valid = valid
             if valid:
                 self.atkeyword = new['keyword']
-                self.prefix = new['prefix']
+                self._prefix = new['prefix']
                 self.namespaceURI = new['uri']
                 self.seq = newseq
 
