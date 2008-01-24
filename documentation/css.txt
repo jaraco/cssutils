@@ -68,13 +68,19 @@ encoding (cssutils and CSSOM only)
 
 .. _prefixes:
 
-prefixes: set  (cssutils only)
-    A set of declared prefixes via @namespace rules. Each
-    CSSStyleRule is checked if it uses additional prefixes which are
-    not declared. If they do they are "invalidated".
+namespace: a simplified dict like object (cssutils only)
+    reflects set @namespace rules of this rule.
+    A dict of {prefix: namespaceURI} mapping.
+
+    Using CSSNamespaceRule directly is not really needed anymore (except if you want to add comments in these rules).
 
 Methods
 -------
+
+.. _append:
+
+append(self, rule)
+    Appends a rule to the proper hierarchical position in the style sheet. Same as ``insertRule(rule, inOrder=True)`` but simpler.
 
 .. _deleteRule:
 
@@ -83,7 +89,7 @@ deleteRule(self, index)
 
 .. _insertRule:
 
-insertRule(rule, index=None)
+insertRule(rule, index=None, inorder=False)
     Used to insert a new rule into the style sheet. The new rule now
     becomes part of the cascade.
 
