@@ -207,6 +207,12 @@ class CSSMediaRule(cssrule.CSSRule):
                 u'CSSMediaRule: %s is not a valid index in the rulelist of length %i' % (
                 index, self.cssRules.length))
 
+    def append(self, rule):
+        """
+        Appends rule to this mediarule. Same as ``.insertRule(rule)``. 
+        """
+        self.insertRule(rule, index=None)
+            
     def insertRule(self, rule, index=None):
         """
         rule
