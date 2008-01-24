@@ -60,60 +60,64 @@ class CSSNamespaceRule(cssrule.CSSRule):
     def __init__(self, namespaceURI=None, prefix=None, 
                  cssText=None, parentStyleSheet=None, readonly=False):
         """
-        namespaceURI
-            The namespace URI (a simple string!) which is bound to the
-            given prefix. If no prefix is set
-            (``CSSNamespaceRule.prefix==''``) the namespace defined by
-            namespaceURI is set as the default namespace
-        prefix
-            The prefix used in the stylesheet for the given
-            ``CSSNamespaceRule.uri``.
-        cssText
-            if no namespaceURI is given cssText must be given to set
-            a namespaceURI as this is readonly later on
-        parentStyleSheet
-            sheet where this rule belongs to
-
-        If readonly allows setting of properties in constructor only
+        :Parameters:
+            namespaceURI
+                The namespace URI (a simple string!) which is bound to the
+                given prefix. If no prefix is set
+                (``CSSNamespaceRule.prefix==''``) the namespace defined by
+                namespaceURI is set as the default namespace
+            prefix
+                The prefix used in the stylesheet for the given
+                ``CSSNamespaceRule.uri``.
+            cssText
+                if no namespaceURI is given cssText must be given to set
+                a namespaceURI as this is readonly later on
+            parentStyleSheet
+                sheet where this rule belongs to
 
         Do not use as positional but as keyword parameters only!
+
+        If readonly allows setting of properties in constructor only
 
         format namespace::
 
             : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
             ;
         """
-        super(CSSNamespaceRule, self).__init__()
-        
         self._prefix = u''
         self._namespaceURI = None
         self.atkeyword = u'@namespace'
-        self.parentStyleSheet = parentStyleSheet
+
+        super(CSSNamespaceRule, self).__init__()
+        
         if namespaceURI:
             self.namespaceURI = namespaceURI
             self.prefix = prefix
             self.seq = [self.prefix, self.namespaceURI]
         elif cssText:
             self.cssText = cssText
-#        else:
-#            self._log.error(u'CSSNamespaceRule: Either parameter namespaceURI or cssText must be given.',
-#                      error=xml.dom.SyntaxErr)
+
+        if parentStyleSheet:
+            self._parentStyleSheet = parentStyleSheet
 
         self._readonly = readonly
 
     def _setNamespaceURI(self, namespaceURI):
         """
         DOMException on setting
-
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if this rule is readonly.
+    
+        :param namespaceURI: the initial value for this rules namespaceURI
+        :Exceptions:
+            - `NO_MODIFICATION_ALLOWED_ERR`: 
+              (CSSRule) Raised if this rule is readonly or a namespaceURI is 
+              already set in this rule.
         """
         self._checkReadonly()
         if not self._namespaceURI:
             # initial setting
             self._namespaceURI = namespaceURI
             self.seq = [namespaceURI]
-        else:
+        elif self._namespaceURI != namespaceURI:
             self._log.error(u'CSSNamespaceRule: namespaceURI is readonly.',
                             error=xml.dom.NoModificationAllowedErr)
 
@@ -123,12 +127,14 @@ class CSSNamespaceRule(cssrule.CSSRule):
     def _setPrefix(self, prefix=None):
         """
         DOMException on setting
-
-        - SYNTAX_ERR: (TODO)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if this rule is readonly.
+        
+        :param prefix: the new prefix 
+        :Exceptions:
+            - `SYNTAX_ERR`: (TODO)
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - `NO_MODIFICATION_ALLOWED_ERR`: CSSRule)
+              Raised if this rule is readonly.
         """
         self._checkReadonly()
         if not prefix:
@@ -158,13 +164,22 @@ class CSSNamespaceRule(cssrule.CSSRule):
         if self.parentStyleSheet:
             try:
                 self.parentStyleSheet.namespaces[prefix] = \
-                    self.parentStyleSheet.namespaces[oldprefix]
+                        self.parentStyleSheet.namespaces[oldprefix]
                 del self.parentStyleSheet.namespaces[oldprefix]
             except KeyError:
                 self.parentStyleSheet.namespaces[prefix] = self._namespaceURI
 
     prefix = property(lambda self: self._prefix, _setPrefix,
         doc="Prefix used for the defined namespace.")
+
+    def _setParentStyleSheet(self, parentStyleSheet):
+        self._parentStyleSheet = parentStyleSheet
+        if parentStyleSheet and self._namespaceURI is not None:
+            self.parentStyleSheet.namespaces[self.prefix] = self._namespaceURI
+
+    parentStyleSheet = property(lambda self: self._parentStyleSheet, 
+                                _setParentStyleSheet,
+                                doc=u"Containing CSSStyleSheet.")
 
     def _getCssText(self):
         """
@@ -176,17 +191,19 @@ class CSSNamespaceRule(cssrule.CSSRule):
         """
         DOMException on setting
 
-        - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
-          Raised if the rule cannot be inserted at this point in the
-          style sheet.
-        - INVALID_MODIFICATION_ERR: (self)
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if the rule is readonly.
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
+        :param cssText: initial value for this rules cssText which is parsed
+        :Exceptions:
+            - `HIERARCHY_REQUEST_ERR`: (CSSStylesheet)
+              Raised if the rule cannot be inserted at this point in the
+              style sheet.
+            - `INVALID_MODIFICATION_ERR`: (self)
+              Raised if the specified CSS string value represents a different
+              type of rule than the current one.
+            - `NO_MODIFICATION_ALLOWED_ERR`: (CSSRule)
+              Raised if the rule is readonly.
+            - `SYNTAX_ERR`: (self)
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
         """
         super(CSSNamespaceRule, self)._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
