@@ -70,8 +70,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         
         def __delitem__(self, key):
             "deleted namespace rule with prefix == key"
-            self.deleteRule(self.__findRule(key))
-            del self._namespaces[key]
+            rule = self.__findrule(key)
+            if rule:
+                for i, r in enumerate(self.sheet):
+                    if r == rule:
+                        break
+                self.sheet.deleteRule(i)
+                del self._namespaces[key]
+            else: 
+                raise IndexError('Prefix "%s" not used in style sheet.' % key)
     
         def __getitem__(self, key):
             return self._namespaces[key]
