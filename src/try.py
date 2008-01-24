@@ -47,6 +47,18 @@ def escapecss(e):
 
 codecs.register_error('escapecss', escapecss)
 
+if 1:
+    sheet = cssutils.css.CSSStyleSheet()
+    sheet.cssText = '@namespace p "u"; p|x { color: green }'
+    try:
+        sheet.cssRules[1].selectorList.append('y|x $', {'y': 'yyy'})
+    except:
+        pass
+    print sheet.cssText
+
+    
+    sys.exit(0)
+
 if 0:
     from cssutils.scripts import csscombine
     x = csscombine('sheets/csscombine-proxy.css', sourceencoding='css', minify=True)
