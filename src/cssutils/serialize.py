@@ -219,10 +219,10 @@ class CSSSerializer(object):
     
     def _escapestring(self, s, delim=u'"'):
         """
-        escapes delim charaters in string s with \delim
+        escapes delim charaters in string s with delim
         s might not have " or ' around it!
         
-        escape line breaks \n \r and \f
+        escape line breaks \\n \\r and \\f
         """
         # \n = 0xa, \r = 0xd, \f = 0xc
         s = s.replace('\n', '\\a ').replace(
@@ -232,7 +232,7 @@ class CSSSerializer(object):
 
     def _escapeSTRINGtype(self, s):
         """
-        escapes unescaped ", ' or \n in s if not escaped already
+        escapes unescaped ", ' or \\n in s if not escaped already
         s always has  "..." or '...' around
         """
         r = s[0]
@@ -644,11 +644,11 @@ class CSSSerializer(object):
         a single Selector including comments
         
         an element has syntax (namespaceURI, name) where namespaceURI may be:
-        - cssutils._ANYNS => '*|name'
-        - None => 'name'
-        - u'' => '|name'
-        - any other value: => 'prefix|name'
         
+        - cssutils._ANYNS => ``*|name``
+        - None => ``name``
+        - u'' => ``|name``
+        - any other value: => ``prefix|name``
         """
         if selector.seq and self._wellformed(selector) and\
                                 self._valid(selector):
