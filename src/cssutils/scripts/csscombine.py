@@ -59,15 +59,17 @@ from cssutils.serialize import CSSSerializer
 def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',  
                minify=True):
     """
-    proxypath
-        url or path to a CSSStyleSheet which imports other sheets which
-        are then combined into one sheet
-    sourceencoding = 'css'
-        encoding of the source sheets including the proxy sheet
-    targetencoding = 'utf-8'
-        encoding of the combined stylesheet
-    minify = True
-        defines if the combined sheet should be minified
+    :Properties:
+        proxypath
+            url or path to a CSSStyleSheet which imports other sheets which
+            are then combined into one sheet
+        sourceencoding = 'css'
+            encoding of the source sheets including the proxy sheet
+            
+        targetencoding = 'utf-8'
+            encoding of the combined stylesheet
+        minify = True
+            defines if the combined sheet should be minified
     """
     sys.stderr.write('COMBINING %s\n' % proxypath)
     if sourceencoding != 'css':
