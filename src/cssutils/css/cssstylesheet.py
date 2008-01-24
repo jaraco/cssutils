@@ -78,7 +78,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self.sheet.deleteRule(i)
                 del self._namespaces[key]
             else: 
-                raise IndexError('Prefix "%s" not used in style sheet.' % key)
+                raise IndexError('Prefix "%s" not present in style sheet.' % key)
     
         def __getitem__(self, key):
             return self._namespaces[key]
@@ -108,6 +108,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     
         def __str__(self):
             return str(self._namespaces)
+    
+        def items(self):
+            return self._namespaces.items()
     
         def keys(self):
             return self._namespaces.keys()
@@ -348,17 +351,20 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         else:
             if rule.type == rule.NAMESPACE_RULE:
                 # check all namespacerule if used
-                _useduris = set()
+                uris = [r.namespaceURI for r in self if r.type == r.NAMESPACE_RULE]
+                useduris = set()
                 for r in self:
                     if r.type == r.STYLE_RULE:
-                        _useduris.update(r.selectorList._useduris)  
+                        useduris.update(r.selectorList._useduris)  
                     elif r.type == r.MEDIA_RULE:
                         for x in r:
                             if x.type == x.STYLE_RULE:
-                                _useduris.update(x.selectorList._useduris)  
-                if rule.namespaceURI in _useduris:
+                                useduris.update(x.selectorList._useduris)  
+                if rule.namespaceURI in useduris and\
+                   uris.count(rule.namespaceURI) == 1: 
                     raise xml.dom.NamespaceErr(
                         u'CSSStyleSheet: NamespaceURI defined in this rule is used, cannot remove.')
+                    return
                 
             rule.parentStyleSheet = None # detach
             del self.cssRules[index] # delete from StyleSheet

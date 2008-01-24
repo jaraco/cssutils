@@ -734,11 +734,11 @@ class Selector(cssutils.util.Base2):
 
     def _getNamespaces(self):
         try:
-            parentnamespace = self._parent.parentRule.parentStyleSheet.namespaces
+            parentnamespaces = self._parent.parentRule.parentStyleSheet.namespaces
         except AttributeError:
             pass
         else:
-            self._namespaces.update(parentnamespace)
+            self._namespaces = parentnamespaces
         return self._namespaces
 
     namespaces = property(_getNamespaces, 
