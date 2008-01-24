@@ -96,6 +96,13 @@ class SelectorTestCase(basetest.BaseTestCase):
                 s = cssutils.css.Selector(selectorText=sel, 
                                           namespaces=namespaces[i])  
                 self.assertEqual(result, s.selectorText)
+        
+        # add to CSSStyleSheet        
+        sheet = cssutils.css.CSSStyleSheet()
+        sheet.cssText = '@namespace p "u"; p|x { color: green }'
+        
+        
+        
 
     def test_parentList(self):
         "Selector.parentList"
