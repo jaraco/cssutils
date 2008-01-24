@@ -44,13 +44,13 @@ Usage: csscombine.py [options] URL
 
 Options:
   -h, --help            show this help message and exit
-  -s SRCENC, --srcenc=SRCENC
+  -s SOURCEENCODING, --sourceencoding=SOURCEENCODING
                         encoding of input, defaulting to "css". If given
                         overwrites other encoding information like @charset
                         declarations
-  -t TARENC, --tarenc=TARENC
+  -t TARGETENCODING, --targetencoding=TARGETENCODING
                         encoding of output, defaulting to "UTF-8"
-  -m, --minified        saves minified version of combined files, defaults to
+  -m, --minify          saves minified version of combined files, defaults to
                         False
 
 CSSParse

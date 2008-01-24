@@ -13,8 +13,6 @@ known issues
 
    **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
 
-- ``CSStyleSheet.namespaces`` should **NOT** be changed as it may corrupt the resulting stylesheet. This will be fixed in a later release (probably 0.9.5 or 6)
-
 - not all Comments reply to preference ``keepComments``, some will probably survive if set to ``False``
 
 - ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as not normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
@@ -45,20 +43,27 @@ known issues
 HEAD
 
     - **API CHANGE: Refactored namespace handling**
-        **Do not change attribute ``namespaces`` of ``CSSStyleSheet``as this may result in an invalid stylesheet. This may be checked later but for now beware!**
 
-        **Do not use ``Selector.namespaces`` directly, it will probably change again**
 
         - ``CSSNamespaceRule.namespaceURI`` is readonly now, it can only be set in the constructor (needed to prevent an invalid sheet when changing this uri)
         - removed ``CSSStyleSheet.prefixes``
         - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains all namespaces as defined in @namespace rules
         - removed ``Selector.prefixes``
         - added ``Selector.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains namespaces defined in a parent CSSStyleSheet or while Selector is "standalone" namespaces as given in constructor parameter ``namespaces``.
+
+            **Do not use ``Selector.namespaces`` directly, it will probably change again**
+
         - renamed ``Selector.parentRule`` to ``Selector.parentList`` which contains a reference to the containing ``SelectorList``
 
     - **API CHANGE**: Changed order of constructor parameters for ``CSSStyleDeclaration``. Named parameters SHOULD be used anyway but be careful if you used ordered ones here!
 
-    * FEATURE: ``CSSStyleDeclaration`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``.
+    * **FEATURE**: ``CSSStyleSheet`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``.
+
+    * FEATURE: added parameter ``inOrder=False`` to method ``CSSStyleSheet.insertRule`` which inserts a given rule to its proper hierarchy. Parameter ``index`` is ignored in this case but the resulting index is properly returned.
+
+    * **FEATURE**: added convinience method ``CSSStyleSheet.append(rule)``  which behaves exactly like ``.insertRule(rule, inOrder=True)``.
+
+    * FEATURE: added convinience method ``CSSMediaRule.append(rule)`` which behaves exactly like ``.insertRule(rule)`` (insertTrue is not needed here).
 
     + **BUGFIX**: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
 
