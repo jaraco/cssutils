@@ -20,9 +20,9 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
     def test_init(self):
         "CSSStyleSheet.__init__()"
+        self.assertEqual('text/css', self.s.type)
         self.assertEqual(False, self.s._readonly)
         self.assertEqual([], self.s.cssRules)
-        self.assertEqual('text/css', self.s.type)
         self.assertEqual(False, self.s.disabled)
         self.assertEqual(None, self.s.href)
         self.assertEqual(None, self.s.media)
@@ -78,6 +78,32 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.NoModificationAllowedErr, _do)
 
         self.assertEqual(s.cssText, css)
+
+        
+        s.cssText = '@namespace p "u"; p|x {a:1}'
+
+        # len, __iter__ and keys
+        self.assert_(1, len(s.namespaces))
+        self.assert_(['p'], s.namespaces.keys())
+        keys = [k for k in s.namespaces] 
+        self.assert_(['p'], keys)
+
+        # getitem
+        self.assert_('u', s.namespaces['p'])
+        self.assertRaises(KeyError, s.namespaces.__getitem__, 'x')
+
+        # prefix in namespaces 
+        self.assertTrue('p' in s.namespaces)
+        self.assertFalse('no' in s.namespaces)
+        
+        # del namespaces[prefix]
+        self.assertRaises(IndexError, 
+                          s.namespaces.__delitem__, 'x')
+        self.assertRaises(xml.dom.NamespaceErr, 
+                          s.namespaces.__delitem__, 'p')
+        s.cssRules[1].selectorText = 'x'
+        del s.namespaces['p']
+        self.assertEqual(s.cssText, 'x {\n    a: 1\n    }')
         
 
 
