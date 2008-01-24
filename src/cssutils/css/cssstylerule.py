@@ -59,11 +59,11 @@ class CSSStyleRule(cssrule.CSSRule):
         """
         super(CSSStyleRule, self).__init__()
 
+        self._selectorList = SelectorList(parentRule=self)
         if selectorText:
             self.selectorText = selectorText
             self.seq.append(self.selectorText)
-        else:
-            self._selectorList = SelectorList(parentRule=self)
+            
         if style:
             self.style = style
             self.seq.append(self.style)
@@ -207,7 +207,7 @@ class CSSStyleRule(cssrule.CSSRule):
           Raised if this rule is readonly.
         """
         self._checkReadonly()
-        self._selectorList = SelectorList(selectorText, parentRule=self)
+        self._selectorList.selectorText = selectorText
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(DOM) The textual representation of the selector for the
