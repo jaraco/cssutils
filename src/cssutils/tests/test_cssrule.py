@@ -28,6 +28,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         relf.r_type the type as defined in CSSRule
         """
         super(CSSRuleTestCase, self).setUp()
+        self.sheet = cssutils.css.CSSStyleSheet()
         self.r = cssutils.css.CSSRule()
         self.rRO = cssutils.css.CSSRule()
         self.rRO._readonly = True # must be set here!
