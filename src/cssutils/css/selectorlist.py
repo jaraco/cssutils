@@ -55,13 +55,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self.selectorText = selectorText
         self._readonly = readonly
 
-    def __prepareset(self, newSelector):
+    def __prepareset(self, newSelector, namespaces={}):
         # used by appendSelector and __setitem__
         self._checkReadonly()
-        
         if not isinstance(newSelector, Selector):
-            newSelector = Selector(newSelector, parentList=self)
-
+            newSelector = Selector(newSelector, namespaces=namespaces,
+                                   parentList=self)
         if newSelector.wellformed:
             newSelector.parentList = self
             return newSelector
@@ -77,7 +76,20 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self.seq[index] = newSelector
         # TODO: remove duplicates?    
         
-    def appendSelector(self, newSelector):
+    def _updateParentNamespaces(self, namespaces):
+        """
+        updates parent StyleSheet with new namespaces in given
+        selector
+        """
+        try:
+            parentsheet = self.parentRule.parentStyleSheet
+        except AttributeError:
+            pass
+        else:
+            for p, u in namespaces.items():
+                parentsheet.namespaces[p] = u
+        
+    def appendSelector(self, newSelector, namespaces={}):
         """
         Append newSelector (is a string will be converted to a new
         Selector. A duplicate Selector is removed.
@@ -93,7 +105,8 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this rule is readonly.
         """
-        newSelector = self.__prepareset(newSelector)
+        self._updateParentNamespaces(namespaces)
+        newSelector = self.__prepareset(newSelector, namespaces)
         if newSelector:
             self.wellformed = True
             seq = self.seq[:]
@@ -104,9 +117,9 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self.seq.append(newSelector)
             return newSelector
 
-    def append(self, newSelector):
+    def append(self, newSelector, namespaces={}):
         "overwrites ListSeq.append"
-        self.appendSelector(newSelector)
+        self.appendSelector(newSelector, namespaces)
 
     length = property(lambda self: len(self),
         doc="The number of Selector elements in the list.")

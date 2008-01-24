@@ -156,9 +156,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 break
         else:
             self.seq[0] = prefix # put prefix at the beginning!
-        # set new prefix
+
+        # save old to remove in parentStyleSheet
         oldprefix = self._prefix
-        self._prefix = prefix
         
         # update prefixes in stylesheet
         if self.parentStyleSheet:
@@ -168,6 +168,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 del self.parentStyleSheet.namespaces[oldprefix]
             except KeyError:
                 self.parentStyleSheet.namespaces[prefix] = self._namespaceURI
+
+        # set new prefix
+        self._prefix = prefix
 
     prefix = property(lambda self: self._prefix, _setPrefix,
         doc="Prefix used for the defined namespace.")
