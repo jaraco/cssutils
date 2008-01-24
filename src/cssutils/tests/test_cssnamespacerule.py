@@ -20,8 +20,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_init(self):
         "CSSNamespaceRule.__init__()"
         # cannot use here as self.r and self rRO and not useful
-        #super(CSSNamespaceRuleTestCase, self).test_init()
-        
+        #super(CSSNamespaceRuleTestCase, self).test_init()       
         tests = [
                  (None, None),
                  ('', ''),
@@ -34,6 +33,10 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual(None, r.namespaceURI)
             self.assertEqual(u'', r.prefix)
             self.assertEqual(u'', r.cssText)
+            self.assertEqual(None, r.parentStyleSheet)
+            self.sheet.append(r)
+            self.assertEqual(self.sheet, r.parentStyleSheet)
+            self.assertEqual(None, r.parentRule)
         
         r = cssutils.css.CSSNamespaceRule(namespaceURI='example')
         self.assertEqual('example', r.namespaceURI)
@@ -44,46 +47,10 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('example', r.namespaceURI)
         self.assertEqual(u'p', r.prefix)
         self.assertEqual(u'@namespace p "example";', r.cssText)
-
-    def test_InvalidModificationErr(self):
-        "CSSNamespaceRule.cssText InvalidModificationErr"
-        tests = (u'/* comment */',
-                 u'@charset "utf-8";',
-                 u'@font-face {}',
-                 u'@import url(x);',
-                 u'@media all {}',
-                 u'@page {}',
-                 u'@unknown;',
-                 u'a style rule {}'
-                 # TODO: u''
-                 )
-        def _do(test):
-            r = cssutils.css.CSSNamespaceRule(cssText=test)
-        for test in tests:
-            self.assertRaises(xml.dom.InvalidModificationErr, _do, test)
-
-    def test_incomplete(self):
-        "CSSNamespaceRule (incomplete)"
-        tests = {
-            u'@namespace "uri': u'@namespace "uri";',
-            u"@namespace url(x": u'@namespace "x";',
-            u"@namespace url('x": u'@namespace "x";',
-            u'@namespace url("x;': u'@namespace "x;";',
-            u'@namespace url( "x;': u'@namespace "x;";',
-            u'@namespace url("x ': u'@namespace "x ";',
-            u'@namespace url(x ': u'@namespace "x";',
-        }
-        self.do_equal_p(tests) # parse
-        tests = {
-            u'@namespace "uri': xml.dom.SyntaxErr,
-            u"@namespace url(x": xml.dom.SyntaxErr,
-            u"@namespace url('x": xml.dom.SyntaxErr,
-            u'@namespace url("x;': xml.dom.SyntaxErr,
-            u'@namespace url( "x;': xml.dom.SyntaxErr,
-            u'@namespace url("x ': xml.dom.SyntaxErr,
-            u'@namespace url(x ': xml.dom.SyntaxErr           
-            }
-        self.do_raise_r(tests) # set cssText
+        
+        css = u'@namespace p "u";'
+        r = cssutils.css.CSSNamespaceRule(cssText=css)
+        self.assertEqual(r.cssText, css)       
 
     def test_namespaceURI(self):
         "CSSNamespaceRule.namespaceURI"
@@ -131,6 +98,14 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_cssText(self):
         "CSSNamespaceRule.cssText"
+        # cssText may only be set initalially
+        r = cssutils.css.CSSNamespaceRule()
+        css = u'@namespace p "u";'
+        r.cssText = css
+        self.assertEqual(r.cssText, css)
+        self.assertRaises(xml.dom.NoModificationAllowedErr, r._setCssText, 
+                          u'@namespace p "OTHER";')
+        
         tests = {
             u'@namespace p "u";': None,
             u"@namespace p 'u';": u'@namespace p "u";',
@@ -173,6 +148,46 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             r = cssutils.css.CSSNamespaceRule(cssText=test)
         for test, expected in tests.items():
             self.assertRaises(expected, _do, test)
+
+    def test_InvalidModificationErr(self):
+        "CSSNamespaceRule.cssText InvalidModificationErr"
+        tests = (u'/* comment */',
+                 u'@charset "utf-8";',
+                 u'@font-face {}',
+                 u'@import url(x);',
+                 u'@media all {}',
+                 u'@page {}',
+                 u'@unknown;',
+                 u'a style rule {}'
+                 # TODO: u''
+                 )
+        def _do(test):
+            r = cssutils.css.CSSNamespaceRule(cssText=test)
+        for test in tests:
+            self.assertRaises(xml.dom.InvalidModificationErr, _do, test)
+
+    def test_incomplete(self):
+        "CSSNamespaceRule (incomplete)"
+        tests = {
+            u'@namespace "uri': u'@namespace "uri";',
+            u"@namespace url(x": u'@namespace "x";',
+            u"@namespace url('x": u'@namespace "x";',
+            u'@namespace url("x;': u'@namespace "x;";',
+            u'@namespace url( "x;': u'@namespace "x;";',
+            u'@namespace url("x ': u'@namespace "x ";',
+            u'@namespace url(x ': u'@namespace "x";',
+        }
+        self.do_equal_p(tests) # parse
+        tests = {
+            u'@namespace "uri': xml.dom.SyntaxErr,
+            u"@namespace url(x": xml.dom.SyntaxErr,
+            u"@namespace url('x": xml.dom.SyntaxErr,
+            u'@namespace url("x;': xml.dom.SyntaxErr,
+            u'@namespace url( "x;': xml.dom.SyntaxErr,
+            u'@namespace url("x ': xml.dom.SyntaxErr,
+            u'@namespace url(x ': xml.dom.SyntaxErr           
+            }
+        self.do_raise_r(tests) # set cssText
 
     def test_reprANDstr(self):
         "CSSNamespaceRule.__repr__(), .__str__()"

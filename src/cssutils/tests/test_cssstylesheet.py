@@ -53,32 +53,31 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual('utf-8', self.s.encoding)
         self.assertEqual(1, self.s.cssRules.length)
     
-    def test_namespace(self):
+    def test_namespaces(self):
         "CSSStyleSheet.namespaces"
         s = cssutils.css.CSSStyleSheet()
-        self.assertEqual({}, s.namespaces)
+        self.assertEqual(0, len(s.namespaces))
         css = u'@namespace "default";\n@namespace ex "example";'
         s.cssText = css
         self.assertEqual(s.cssText, css)
         self.assertEqual({ u'': u'default', u'ex': u'example'}, 
-                         s.namespaces)
+                         s.namespaces._namespaces)
         s.insertRule('@namespace n "new";')
         self.assertEqual({ u'': u'default', u'n': 'new', u'ex': u'example'}, 
-                         s.namespaces)
+                         s.namespaces._namespaces)
         css = '''@namespace "default";\n@namespace ex "example";
 @namespace n "new";'''
         self.assertEqual(s.cssText, css)
         
-        # TODO
-#        s.namespaces['s'] = 'set'
-#        self.assertEqual({ u'': u'default', u'n': 'new', u'ex': u'example',
-#                          u's': 'set'}, 
-#                         s.namespaces)
-#        css = '''@namespace "default";\n@namespace ex "example";
-#@namespace n "new";
-#@namespace s "set";'''
-#        self.assertEqual(s.cssText, css)
-        
+        def _do():
+            s.namespaces['ex'] = 'OTHER'
+        self.assertEqual(set([u'', u'ex', u'n']), 
+                         set(s.namespaces.keys()))
+        def do(self):
+            s.namespaces['n'] = 'OTHER'
+        self.assertRaises(xml.dom.NoModificationAllowedErr, _do)
+
+        self.assertEqual(s.cssText, css)
         
 
 
@@ -166,10 +165,10 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             u'@import "x";\na {\n    x: 1\n    }': None,
             # @namespace
             u'@x;\n@namespace a "x";': None,
-            u'@namespace a "x";\n@namespace b "y";': None,
-            u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";',
-            u'@namespace a "x";\n@x;': None,
-            u'@namespace a "x";\na {\n    x: 1\n    }': None,
+#            u'@namespace a "x";\n@namespace b "y";': None,
+#            u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";',
+#            u'@namespace a "x";\n@x;': None,
+#            u'@namespace a "x";\na {\n    x: 1\n    }': None,
 #            ur'\1 { \2: \3 }': ur'''\1 {
 #    \2: \3
 #    }''',
@@ -295,6 +294,54 @@ body {
         s.insertRule(rulelist)
         self.assertEqual(L+2 + 2, s.cssRules.length)
 
+    def test_append(self):
+        "CSSStyleSheet.append()"
+        full = cssutils.css.CSSStyleSheet()
+        sheet = cssutils.css.CSSStyleSheet()
+        css = ['@charset "ascii";',
+               '@import "x";',
+               '@namespace p "u";',
+               '@page {\n    left: 0\n    }',
+               '@font-face {\n    color: red\n    }',
+               '@media all {\n    a {\n        color: red\n        }\n    }',
+               'a {\n    color: green\n    }',
+               '/*comment*/',
+               '@x;'
+               ]
+        fullcss = u'\n'.join(css)
+        full.cssText = fullcss
+        self.assertEqual(full.cssText, fullcss)
+        for i, line in enumerate(css):
+            # sheet with no same rule
+            before = css[:i]
+            after = css[i+1:]
+            sheet.cssText = u''.join(before + after)
+            index = sheet.append(line)
+            if i < 3:
+                self.assertEqual(fullcss, sheet.cssText)
+                self.assertEqual(i, index) # no same rule present
+            else: 
+                expected = before
+                expected.extend(after)
+                expected.append(line)
+                self.assertEqual(u'\n'.join(expected), sheet.cssText)
+                self.assertEqual(8, index) # no same rule present
+
+            # sheet with one same rule
+            if i == 1: line = '@import "x2";'
+            if i == 2: line = '@namespace p2 "u2";'
+            full.cssText = fullcss
+            index = full.append(line)
+            if i < 1:
+                self.assertEqual(fullcss, sheet.cssText)
+                self.assertEqual(i, index) # no same rule present
+            else: 
+                expected = css[:i+1] # including same rule
+                expected.append(line)
+                expected.extend(css[i+1:])
+                self.assertEqual(u'\n'.join(expected), full.cssText)
+                self.assertEqual(i+1, index) # no same rule present
+
     def _insertRule(self, rules, notbefore, notafter, anywhere):
         """
         helper
@@ -307,11 +354,19 @@ body {
                 s.insertRule(r)
                 self.assertRaises(xml.dom.HierarchyRequestErr,
                                   s.insertRule, rule, 0)
+                s = cssutils.css.CSSStyleSheet()
+                s.append(r)
+                self.assertRaises(xml.dom.HierarchyRequestErr,
+                                  s.insertRule, rule, 0)
             for r in notafter:
                 s = cssutils.css.CSSStyleSheet()
                 s.insertRule(r)
                 self.assertRaises(xml.dom.HierarchyRequestErr,
                                   s.insertRule, rule, 1)
+                s = cssutils.css.CSSStyleSheet()
+                s.append(r)
+                s.append(rule) # never raises
+
             for r in anywhere:
                 s = cssutils.css.CSSStyleSheet()
                 s.insertRule(r)
