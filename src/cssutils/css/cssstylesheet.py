@@ -55,7 +55,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         "similar to a dict used for namespace rule wrapper"
         
         def __init__(self, sheet, *p):
-            "no initial values are set"
+            "no initial values are set, only the relevant sheet is"
             self.sheet = sheet
             self._namespaces = {}
             
@@ -115,11 +115,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         def keys(self):
             return self._namespaces.keys()
     
+    
     type = 'text/css'
 
     def __init__(self, href=None, media=None, title=u'', disabled=None,
                  ownerNode=None, parentStyleSheet=None, readonly=False):
-
+        """
+        init parameters are the same as for stylesheets.StyleSheet
+        """
         super(CSSStyleSheet, self).__init__(
                 self.type, href, media, title, disabled,
                 ownerNode, parentStyleSheet)
@@ -131,11 +134,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._readonly = readonly
 
     def __iter__(self):
-        """
-        generator which iterates over cssRules.
-        """
+        "generator which iterates over cssRules."
         for rule in self.cssRules:
             yield rule
+    
     
     def _getCssText(self):
         return cssutils.ser.do_CSSStyleSheet(self)
@@ -145,24 +147,18 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         (cssutils)
         Parses ``cssText`` and overwrites the whole stylesheet.
 
-        DOMException on setting
-
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if the rule is readonly.
-        - SYNTAX_ERR:
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
-        - NAMESPACE_ERR:
-          If a namespace prefix is found which is not declared.
+        :param cssText: parsable string
+        :Exceptions:
+            - `NAMESPACE_ERR`:
+              If a namespace prefix is found which is not declared.
+            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+              Raised if the rule is readonly.
+            - `SYNTAX_ERR`:
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
         """
-        # stylesheet  : [ CDO | CDC | S | statement ]*;
         self._checkReadonly()
-        
-        # save namespaces as these may be reset during setting of cssText
-        CURRENTNAMESPACES = self._namespaces
-        # used during setting (CSSStyleRule and CSSMediaRule)
-        self._namespaces = CSSStyleSheet.__Namespaces(sheet=self)
-        
+                
         tokenizer = self._tokenize2(cssText)
         newseq = [] #cssutils.css.CSSRuleList()
         # for closures: must be a mutable
@@ -224,16 +220,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 seq.append(rule)
             return 3
 
-        def pagerule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSPageRule()
+        def mediarule(expected, seq, token, tokenizer):
+            rule = cssutils.css.CSSMediaRule()
             rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
             return 3
 
-        def mediarule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSMediaRule()
+        def pagerule(expected, seq, token, tokenizer):
+            rule = cssutils.css.CSSPageRule()
             rule.parentStyleSheet = self
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
@@ -282,12 +278,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             for r in self:
                 # set for CSSComment, for others this is set before
                 r.parentStyleSheet = self
-        else:
-            # reset namespaces
-            self._namespaces = CURRENTNAMESPACES
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
+
 
     def _setEncoding(self, encoding):
         """
@@ -320,25 +314,29 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     namespaces = property(lambda self: self._namespaces, 
                           doc="Namespaces used in this CSSStyleSheet (READONLY)")
 
+    def append(self, rule):
+        """
+        Appends rule to stylesheet. Same as ``sheet.insertRule(rule, inOrder=True)``. 
+        """
+        return self.insertRule(rule, index=None, inOrder=True)
+
     def deleteRule(self, index):
         """
         Used to delete a rule from the style sheet.
 
-        index
+        :param index:
             of the rule to remove in the StyleSheet's rule list. For an
             index < 0 **no** INDEX_SIZE_ERR is raised but rules for
             normal Python lists are used. E.g. ``deleteRule(-1)`` removes
             the last rule in cssRules.
-
-        DOMException
-
-        - INDEX_SIZE_ERR: (self)
-          Raised if the specified index does not correspond to a rule in
-          the style sheet's rule list.
-        - NAMESPACE_ERR: (self)
-          Raised if removing this rule would result in an invalid StyleSheet
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this style sheet is readonly.
+        :Exceptions:
+            - `INDEX_SIZE_ERR`: (self)
+              Raised if the specified index does not correspond to a rule in
+              the style sheet's rule list.
+            - `NAMESPACE_ERR`: (self)
+              Raised if removing this rule would result in an invalid StyleSheet
+            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+              Raised if this style sheet is readonly.
         """
         self._checkReadonly()
             
@@ -369,25 +367,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule.parentStyleSheet = None # detach
             del self.cssRules[index] # delete from StyleSheet
 
-    def append(self, rule):
-        """
-        Appends rule to stylesheet. Same as ``sheet.insertRule(rule, inOrder=True)``. 
-        """
-        return self.insertRule(rule, index=None, inOrder=True)
-
     def insertRule(self, rule, index=None, inOrder=False):
         """
         Used to insert a new rule into the style sheet. The new rule now
         becomes part of the cascade.
 
-        Rule may be a string or a valid CSSRule or a CSSRuleList.
-
         :Parameters:
             rule
-                a parsable DOMString 
-                
-                in cssutils also a CSSRule or a CSSRuleList
-                
+                a parsable DOMString, in cssutils also a CSSRule or a 
+                CSSRuleList
             index
                 of the rule before the new rule will be inserted.
                 If the specified index is equal to the length of the
@@ -398,8 +386,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             inOrder
                 if True the rule will be put to a proper location while 
                 ignoring index but without raising HIERARCHY_REQUEST_ERR.
-                The resulting index is returned nevertheless
-                
+                The resulting index is returned nevertheless                
         :returns: the index within the stylesheet's rule collection
         :Exceptions:
             - `HIERARCHY_REQUEST_ERR`: (self)
