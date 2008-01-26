@@ -152,6 +152,7 @@ class Selector(cssutils.util.Base2):
 
         self._readonly = readonly
 
+
     def __getNamespaces(self):
         "uses own namespaces if not attached to a sheet, else the sheet's ones"
         try:
@@ -163,9 +164,11 @@ class Selector(cssutils.util.Base2):
         to a CSSStyleSheet the namespaces of that sheet are mirrored here.
         While the Selector (or parent SelectorList or parentRule(s) of that are
         not attached a own dict of {prefix: namespaceURI} is used.""")
+
     
     element = property(lambda self: self._element, 
                        doc=u"Effective element target of this selector.")
+
 
     def _setParent(self, parentList):
         self._parent = parentList
@@ -173,6 +176,7 @@ class Selector(cssutils.util.Base2):
     parentList = property(lambda self: self._parent, _setParent,
         doc="(DOM) The SelectorList that contains this Selector or\
         None if this Selector is not attached to a SelectorList.")
+    
     
     def _getSelectorText(self):
         """
@@ -748,6 +752,7 @@ class Selector(cssutils.util.Base2):
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="(DOM) The parsable textual representation of the selector.")
 
+
     specificity = property(lambda self: self._specificity, 
                            doc="Specificity of this selector (READONLY).")
 
@@ -782,4 +787,3 @@ class Selector(cssutils.util.Base2):
             if uri in useduris:
                 namespaces[p] = uri
         return namespaces
-
