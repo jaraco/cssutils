@@ -42,34 +42,33 @@ known issues
 -----
 HEAD
 
-    - **API CHANGE: Refactored namespace handling**
-
+    - **API CHANGE: Refactored and fixed namespace handling**
+        Aim was to prevent building invalid style sheets. Therefor namespaces must be checked e.g. when adding a new ``Selector`` etc. This probably is not fixed for all cases but much better now than before.
 
         - ``CSSNamespaceRule.namespaceURI`` is readonly now, it can only be set in the constructor (needed to prevent an invalid sheet when changing this uri)
         - removed ``CSSStyleSheet.prefixes``
-        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains all namespaces as defined in @namespace rules
         - removed ``Selector.prefixes``
-        - added ``Selector.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains namespaces defined in a parent CSSStyleSheet or while Selector is "standalone" namespaces as given in constructor parameter ``namespaces``.
+        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains all namespaces as defined in @namespace rules
 
-            **Do not use ``Selector.namespaces`` directly, it will probably change again**
-
-        - renamed ``Selector.parentRule`` to ``Selector.parentList`` which contains a reference to the containing ``SelectorList``
+          Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which contains the necessaty CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector with in yet unknown namespace, set the namespace in the style sheet first simple by setting e.g. ``sheet[prefix] = namespaceURI``
 
     - **API CHANGE**: Changed order of constructor parameters for ``CSSStyleDeclaration``. Named parameters SHOULD be used anyway but be careful if you used ordered ones here!
 
     * **FEATURE**: ``CSSStyleSheet`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``.
 
-    * FEATURE: added parameter ``inOrder=False`` to method ``CSSStyleSheet.insertRule`` which inserts a given rule to its proper hierarchy. Parameter ``index`` is ignored in this case but the resulting index is properly returned.
+    * **FEATURE**: added parameter ``inOrder=False`` to method ``CSSStyleSheet.insertRule`` which inserts a given rule to its proper hierarchy. Parameter ``index`` is ignored in this case but the resulting index is properly returned.
 
     * **FEATURE**: added convinience method ``CSSStyleSheet.append(rule)``  which behaves exactly like ``.insertRule(rule, inOrder=True)``.
 
-    * FEATURE: added convinience method ``CSSMediaRule.append(rule)`` which behaves exactly like ``.insertRule(rule)`` (insertTrue is not needed here).
+    * FEATURE: added convinience method ``CSSMediaRule.append(rule)`` which behaves exactly like ``.insertRule(rule)`` (there is no parameter "inOrder" here as no invalid order may be build in CSS 2.1 or 3).
+
+    * FEATURE: Added ``Selector.parentList`` which contains a reference to the containing ``SelectorList``. Needed (at least) to process namespaces properly.
+
+    + **BUGFIX**: ``*.parentStyleSheet`` where * is any CSSRule is properly set now
 
     + **BUGFIX**: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
 
         (``Property._normalpriority`` has been removed, the normalized value that was available here is now in ``Property.priority``. The literal priority value is available in ``Property.literalproperty`` now (analog to ``Property.literalname``). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)
-
-    + BUGFIX: ``*.parentStyleSheet`` where * is any CSSRule is set now
 
     + BUGFIX: Changed serialization of combinators in ``Selector`` according to http://dev.w3.org/csswg/cssom/#selectors, e.g. ``a>b+c~d e`` serializes as ``a > b + c ~ d e`` now (single spaces around +, > and ~). A new serializer preference ``selectorCombinatorSpacer = u' '`` has been added to overwrite this behaviour (which is set to ``u''`` when using the CSS minifier settings)
 
