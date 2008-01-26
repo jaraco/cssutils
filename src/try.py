@@ -47,16 +47,52 @@ def escapecss(e):
 
 codecs.register_error('escapecss', escapecss)
 
-if 1:
-    sheet = cssutils.css.CSSStyleSheet()
-    sheet.cssText = '@namespace p "u"; p|x { color: green }'
-    try:
-        sheet.cssRules[1].selectorList.append('y|x $', {'y': 'yyy'})
-    except:
-        pass
-    print sheet.cssText
+if 0:
+    css = '@namespace p "u"; p|x { color: green }'
+        
+    print "----- parse -----"
+    s = cssutils.parseString(css)
+    print s.cssText
+    sys.exit(0)
 
+if 1:    
+#    s = cssutils.css.Selector(('p|a', {'p': 'u'}))
+#    print s
+#    print repr(s)
+    #s.selectorText = (u'p|*', (('p', 'uri'),))
+    #print repr(s)
+#    sys.exit(0)
+
+#    s = cssutils.css.SelectorList(('[p|a], a[x|t]', 
+#                                  {'p': 'uri', 'x': 'x', 'u': 'u'}))
+#    #s.append('p|aaaa')
+#    #.selectorText = 'aaaa'
+#    for sel in s:
+#        print repr(sel)
+#    print repr(s)
+#    sys.exit(0)
     
+#    print "----- set cssText -----"
+#    s = cssutils.css.CSSStyleRule()
+#    s.cssText = ('p|a {left: 0}', {'p': 'uri'})
+#    try:
+#        s.selectorList.appendSelector('p|x $')
+#    except Exception, e:
+#        print e
+#    print s.cssText
+#    print repr(s)
+#    sys.exit(0)
+#    
+    s = cssutils.css.CSSStyleSheet()
+    s.cssText = '@namespace p "uri";a, p|a {left: 0}'
+    s.namespaces['y1'] = 'yyy'#'@namespace y "yyy";')
+    s.cssRules[2].selectorList.append('y1|x')
+    try:
+        s.cssRules[2].selectorList.append('p|x $')
+    except Exception, e:
+        print e
+    print s.cssText
+
     sys.exit(0)
 
 if 0:
