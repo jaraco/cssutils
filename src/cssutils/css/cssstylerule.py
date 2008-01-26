@@ -200,7 +200,7 @@ class CSSStyleRule(cssrule.CSSRule):
         """
         wrapper for cssutils SelectorList object
 
-        :param selector: of type string, might also be a comma separated list
+        :param selectorText: of type string, might also be a comma separated list
             of selectors
         :Exceptions:
             - `NAMESPACE_ERR`: (Selector)
