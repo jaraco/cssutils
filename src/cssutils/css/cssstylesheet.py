@@ -355,11 +355,11 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 useduris = set()
                 for r in self:
                     if r.type == r.STYLE_RULE:
-                        useduris.update(r.selectorList._useduris)  
+                        useduris.update(r.selectorList._getUsedUris())  
                     elif r.type == r.MEDIA_RULE:
                         for x in r:
                             if x.type == x.STYLE_RULE:
-                                useduris.update(x.selectorList._useduris)  
+                                useduris.update(x.selectorList._getUsedUris())  
                 if rule.namespaceURI in useduris and\
                    uris.count(rule.namespaceURI) == 1: 
                     raise xml.dom.NamespaceErr(

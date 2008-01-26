@@ -52,10 +52,11 @@ class CSSStyleRule(cssrule.CSSRule):
         """
         if readonly allows setting of properties in constructor only
 
-        selectorText
-            type string
-        style
-            CSSStyleDeclaration for this CSSStyleRule
+        :Parameters:
+            selectorText
+                string parsed into selectorList
+            style
+                CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSStyleRule, self).__init__()
 
@@ -81,21 +82,35 @@ class CSSStyleRule(cssrule.CSSRule):
     def _setCssText(self, cssText):
         """
         DOMException on setting
-
-        - SYNTAX_ERR: (self, StyleDeclaration, etc)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
-        - INVALID_MODIFICATION_ERR: (self)
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
-          Raised if the rule cannot be inserted at this point in the
-          style sheet.
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if the rule is readonly.
+        
+        :param cssText:
+            a parseable string or a tuple of (cssText, dict-of-namespaces)
+        :Exceptions:
+            - `NAMESPACE_ERR`: (Selector)
+              Raised if the specified selector uses an unknown namespace
+              prefix.
+            - `SYNTAX_ERR`: (self, StyleDeclaration, etc)
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - `INVALID_MODIFICATION_ERR`: (self)
+              Raised if the specified CSS string value represents a different
+              type of rule than the current one.
+            - `HIERARCHY_REQUEST_ERR`: (CSSStylesheet)
+              Raised if the rule cannot be inserted at this point in the
+              style sheet.
+            - `NO_MODIFICATION_ALLOWED_ERR`: (CSSRule)
+              Raised if the rule is readonly.
         """
         super(CSSStyleRule, self)._setCssText(cssText)
         
+        # might be (cssText, namespaces)
+        cssText, namespaces = self._splitNamespacesOff(cssText)
+        try:
+            namespaces = self.parentStyleSheet.namespaces
+        except AttributeError:
+            # use given if available
+            pass
+
         tokenizer = self._tokenize2(cssText)
         selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
         styletokens = self._tokensupto2(tokenizer, blockendonly=True)
@@ -125,7 +140,8 @@ class CSSStyleRule(cssrule.CSSRule):
                 self._log.error(u'CSSStyleRule: No selector found: %r.' %
                             self._valuestr(cssText), bracetoken)
                 
-            newselectorlist = SelectorList(selectorText=selectortokens,
+            newselectorlist = SelectorList(selectorText=(selectortokens, 
+                                                         namespaces),
                                            parentRule=self)
 
             newstyle = CSSStyleDeclaration()
@@ -155,6 +171,18 @@ class CSSStyleRule(cssrule.CSSRule):
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")
+
+    def __getNamespaces(self):
+        "uses children namespaces if not attached to a sheet, else the sheet's ones"
+        try:
+            return self.parentStyleSheet.namespaces
+        except AttributeError:
+            return self.selectorList._namespaces
+            
+    _namespaces = property(__getNamespaces, doc="""if this SelectorList is 
+        attached to a CSSStyleSheet the namespaces of that sheet are mirrored
+        here. While the SelectorList (or parentRule(s) are
+        not attached the namespaces of all children Selectors are used.""")
 
     def _setSelectorList(self, selectorList):
         """
@@ -232,10 +260,14 @@ class CSSStyleRule(cssrule.CSSRule):
         doc="(DOM) The declaration-block of this rule set.")
 
     def __repr__(self):
+        if self._namespaces:
+            st = (self.selectorText, self._namespaces)
+        else:
+            st = self.selectorText 
         return "cssutils.css.%s(selectorText=%r, style=%r)" % (
-                self.__class__.__name__, self.selectorText, self.style.cssText)
+                self.__class__.__name__, st, self.style.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object selector=%r style=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, self.style.cssText, 
-                id(self))
+        return "<cssutils.css.%s object selector=%r style=%r _namespaces=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self.style.cssText,
+                self._namespaces, id(self))
