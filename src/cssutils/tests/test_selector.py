@@ -17,22 +17,21 @@ import cssutils
 class SelectorTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        self.r = cssutils.css.Selector('*', namespaces={'p': 'URI',
-                                                        '-a_x12': 'URI2'})
+        self.r = cssutils.css.Selector('*')
 
     def test_init(self):
         "Selector.__init__()"
         s = cssutils.css.Selector('*')
         self.assertEqual((None, '*'), s.element)
-        self.assertEqual({}, s.namespaces)
+        self.assertEqual({}, s._namespaces)
         self.assertEqual(None, s.parentList)
         self.assertEqual('*', s.selectorText)
         self.assertEqual((0,0,0,0), s.specificity)
         self.assertEqual(True, s.wellformed)
 
-        s = cssutils.css.Selector('p|b', namespaces={'p': 'URI'} )
+        s = cssutils.css.Selector(('p|b', {'p': 'URI'}) )
         self.assertEqual(('URI', 'b'), s.element)
-        self.assertEqual({'p': 'URI'}, s.namespaces)
+        self.assertEqual({'p': 'URI'}, s._namespaces)
         self.assertEqual(None, s.parentList)
         self.assertEqual('p|b', s.selectorText)
         self.assertEqual((0,0,0,1), s.specificity)
@@ -67,7 +66,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             'x.c': (None, 'x')
         }
         for test, ele in tests.items():
-            s = cssutils.css.Selector(test, namespaces={'ex': 'example'})
+            s = cssutils.css.Selector((test,{'ex': 'example'}))
             self.assertEqual(ele, s.element)
 
     def test_namespaces(self):
@@ -83,8 +82,8 @@ class SelectorTestCase(basetest.BaseTestCase):
             'x': ('x', 'x', 'x'),
             '|*': ('|*', '|*', '|*'),
             '|x': ('|x', '|x', '|x'),
-            '*|*': ('*', '*|*', '*|*'),
-            '*|x': ('x', '*|x', '*|x'),
+            '*|*': ('*', '*', '*'),#('*', '*|*', '*|*'),
+            '*|x': ('x', 'x', 'x'),#('x', '*|x', '*|x'),
             'p|*': ('p|*', 'p|*', '|*'),
             'p|x': ('p|x', 'p|x', '|x'),
             'x[a][|a][*|a][p|a]': ('x[a][|a][a][p|a]', 
@@ -93,17 +92,13 @@ class SelectorTestCase(basetest.BaseTestCase):
         }
         for sel, exp in tests.items():
             for i, result in enumerate(exp):
-                s = cssutils.css.Selector(selectorText=sel, 
-                                          namespaces=namespaces[i])  
+                s = cssutils.css.Selector((sel, namespaces[i]))  
                 self.assertEqual(result, s.selectorText)
         
         # add to CSSStyleSheet        
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = '@namespace p "u"; p|x { color: green }'
         
-        
-        
-
     def test_parentList(self):
         "Selector.parentList"
         sl = cssutils.css.SelectorList('a, b')
@@ -164,14 +159,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a1': None,
             u'a1-1': None,
             u'.a1-1': None,
-            u'|e': None,
-            u'*|e': 'e',
-            u'*|*': u'*',
-            u'p|*': None,
-            u'p|e': None,
-            u'-a_x12|e': None,
-            u'*|b[p|a]': 'b[p|a]',
-
+            
             # universal
             u'*': None,
             u'*/*x*/': None,
@@ -290,12 +278,24 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a /**/b': None,
             u'a /**/ b': None,
             u'a  /**/ b': u'a /**/ b',
-            u'a /**/  b': u'a /**/ b'
+            u'a /**/  b': u'a /**/ b',
+            
+            # namespaces
+            u'|e': u'|e',
+            u'*|e': 'e',
+            u'*|*': u'*',
+            (u'p|*', (('p', 'uri'),)): u'p|*',
+            (u'p|e', (('p', 'uri'),)): u'p|e',
+            (u'-a_x12|e', (('-a_x12', 'uri'),)): u'-a_x12|e',
+            (u'*|b[p|a]', (('p', 'uri'),)): 'b[p|a]'
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
-
+        
         tests = {
+            u'x|a': xml.dom.NamespaceErr,
+            (u'p|*', (('x', 'uri'),)): xml.dom.NamespaceErr,
+
             u'': xml.dom.SyntaxErr,
             u'1': xml.dom.SyntaxErr,
             u'-1': xml.dom.SyntaxErr,

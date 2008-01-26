@@ -26,6 +26,14 @@ class SelectorListTestCase(basetest.BaseTestCase):
         self.assertEqual(1, s.length)
         self.assertEqual(u'a', s.selectorText)
 
+        s = SelectorList(selectorText=('p|a', {'p': 'uri'})) # n-dict
+        self.assertEqual(1, s.length)
+        self.assertEqual(u'p|a', s.selectorText)
+
+        s = SelectorList(selectorText=('p|a', (('p', 'uri'),))) # n-tuples
+        self.assertEqual(1, s.length)
+        self.assertEqual(u'p|a', s.selectorText)
+
     def test_parentRule(self):
         "Selector.parentRule"
         def check(style):
@@ -78,6 +86,17 @@ class SelectorListTestCase(basetest.BaseTestCase):
 #        self.assertEqual(1, s.length)
 #        self.assertEqual(u'c', s.selectorText)
 
+        s = SelectorList()
+        s.appendSelector(('p|a', {'p': 'uri', 'x': 'xxx'}))
+        self.assertEqual(u'p|a', s.selectorText)
+        # x gets lost as not used
+        self.assertRaises(xml.dom.NamespaceErr, s.append, 'x|a')
+        # not set at all
+        self.assertRaises(xml.dom.NamespaceErr, s.append, 'y|a')
+        # but p is retained
+        s.append('p|b')
+        self.assertEqual(u'p|a, p|b', s.selectorText)
+
     def test_selectorText(self):
         "SelectorList.selectorText"
         s = SelectorList()
@@ -96,11 +115,13 @@ class SelectorListTestCase(basetest.BaseTestCase):
             u'a , b': u'a, b',
             u'a, b, c': u'a, b, c',
             u'#a, x#a, .b, x.b': u'#a, x#a, .b, x.b',
+            (u'[p|a], p|*', (('p', 'uri'),)): u'[p|a], p|*',
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
 
         tests = {
+            u'x|*': xml.dom.NamespaceErr,
             u'': xml.dom.SyntaxErr,
             u' ': xml.dom.SyntaxErr,
             u',': xml.dom.SyntaxErr,
@@ -110,6 +131,18 @@ class SelectorListTestCase(basetest.BaseTestCase):
             }
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
+
+    def test_reprANDstr(self):
+        "SelectorList.__repr__(), .__str__()"
+        sel=(u'a, p|b', { 'p': 'uri'})
+        
+        s = cssutils.css.SelectorList(selectorText=sel)
+
+        self.assert_(sel[0] in str(s))
+
+        s2 = eval(repr(s))
+        self.assert_(isinstance(s2, s.__class__))
+        self.assertEqual(sel[0], s2.selectorText)
 
 
 if __name__ == '__main__':
