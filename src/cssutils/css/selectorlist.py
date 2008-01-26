@@ -1,6 +1,8 @@
 """SelectorList is a list of CSS Selector objects.
 
 TODO
+    - duplicate Selector is removed.
+
     - ??? CSS2 gives a special meaning to the comma (,) in selectors.
         However, since it is not known if the comma may acquire other
         meanings in future versions of CSS, the whole statement should be
@@ -39,30 +41,39 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         implementation may have stripped out insignificant whitespace while
         parsing the selector.
     seq:
-        A list of interwoven Selector objects and u','
+        A list of Selector objects
     wellformed
         if this selectorlist is wellformed regarding the Selector spec
     """
-    def __init__(self, selectorText=None, parentRule=None, readonly=False):
+    def __init__(self, selectorText=None, parentRule=None, 
+                 readonly=False):
         """
         initializes SelectorList with optional selectorText
+        
+        :Parameters:
+            selectorText
+                parsable list of Selectors
+            parentRule
+                the parent CSSRule if available
         """
         super(SelectorList, self).__init__()
         
-        self.wellformed = False
         self.parentRule = parentRule
+        self.wellformed = False
+        
         if selectorText:
             self.selectorText = selectorText
+            
         self._readonly = readonly
 
     def __prepareset(self, newSelector, namespaces={}):
-        # used by appendSelector and __setitem__
+        "used by appendSelector and __setitem__"
         self._checkReadonly()
         if not isinstance(newSelector, Selector):
-            newSelector = Selector(newSelector, namespaces=namespaces,
+            newSelector = Selector((newSelector, namespaces),
                                    parentList=self)
         if newSelector.wellformed:
-            newSelector.parentList = self
+            newSelector.parentList = self # maybe set twice but must be!
             return newSelector
 
     def __setitem__(self, index, newSelector):
@@ -76,72 +87,72 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self.seq[index] = newSelector
         # TODO: remove duplicates?    
         
-    def _updateParentNamespaces(self, namespaces):
-        """
-        updates parent StyleSheet with new namespaces in given
-        selector
-        """
-        try:
-            parentsheet = self.parentRule.parentStyleSheet
-        except AttributeError:
-            pass
-        else:
-            for p, u in namespaces.items():
-                parentsheet.namespaces[p] = u
-        
-    def appendSelector(self, newSelector, namespaces={}):
-        """
-        Append newSelector (is a string will be converted to a new
-        Selector. A duplicate Selector is removed.
-        
-        Returns new Selector or None if newSelector is no wellformed 
-        Selector.
-
-        DOMException on setting
-
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error
-          and is unparsable.
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this rule is readonly.
-        """
-        self._updateParentNamespaces(namespaces)
-        newSelector = self.__prepareset(newSelector, namespaces)
-        if newSelector:
-            self.wellformed = True
-            seq = self.seq[:]
-            del self.seq[:]
-            for s in seq:
-                if s.selectorText != newSelector.selectorText:
-                    self.seq.append(s)
-            self.seq.append(newSelector)
-            return newSelector
-
-    def append(self, newSelector, namespaces={}):
+    def append(self, newSelector):
         "overwrites ListSeq.append"
-        self.appendSelector(newSelector, namespaces)
+        self.appendSelector(newSelector)
 
     length = property(lambda self: len(self),
         doc="The number of Selector elements in the list.")
 
+    def __getParentNamespaces(self):
+        "returns namespaces used parent sheet"
+        return self.parentRule.parentStyleSheet.namespaces
+
+    def __getChildrenNamespaces(self):
+        "returns namespaces used in all children Selector objects"
+        namespaces = {}
+        for selector in self.seq:
+            namespaces.update(selector._namespaces)
+        return namespaces
+
+    def __getNamespaces(self):
+        "uses children namespaces if not attached to a sheet, else the sheet's ones"
+        try:
+            return self.__getParentNamespaces()
+        except AttributeError:
+            return self.__getChildrenNamespaces()
+            
+    _namespaces = property(__getNamespaces, doc="""if this SelectorList is 
+        attached to a CSSStyleSheet the namespaces of that sheet are mirrored
+        here. While the SelectorList (or parentRule(s) are
+        not attached the namespaces of all children Selectors are used.""")
+
+    def _setParentRule(self, parentRule):
+        self._parentRule = parentRule
+
+    parentRule = property(lambda self: self._parentRule, _setParentRule,
+        doc="(DOM) The CSS rule that contains this SelectorList or\
+        None if this SelectorList is not attached to a CSSRule.")
+    
     def _getSelectorText(self):
         "returns serialized format"
         return cssutils.ser.do_css_SelectorList(self)
 
     def _setSelectorText(self, selectorText):
         """
-        selectortext
-            comma-separated list of selectors
-
-        DOMException on setting
-
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error
-          and is unparsable.
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this rule is readonly.
+        :param selectorText:
+            comma-separated list of selectors or a tuple of 
+            (selectorText, dict-of-namespaces)
+        :Exceptions:
+            - `NAMESPACE_ERR`: (Selector)
+              Raised if the specified selector uses an unknown namespace
+              prefix.
+            - `SYNTAX_ERR`: (self)
+              Raised if the specified CSS string value has a syntax error
+              and is unparsable.
+            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+              Raised if this rule is readonly.
         """
         self._checkReadonly()
+        
+        # might be (selectorText, namespaces)
+        selectorText, namespaces = self._splitNamespacesOff(selectorText)
+        try:
+            # use parent's only if available
+            namespaces = self.parentRule.parentStyleSheet.namespaces
+        except AttributeError:
+            pass
+        
         wellformed = True
         tokenizer = self._tokenize2(selectorText)
         newseq = []
@@ -156,7 +167,8 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 else:
                     expected = None
 
-                selector = Selector(selectortokens, parentList=self)
+                selector = Selector((selectortokens, namespaces),
+                                    parentList=self)
                 if selector.wellformed:
                     newseq.append(selector)
                 else:
@@ -176,36 +188,74 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self._log.error(u'SelectorList: Unknown Syntax: %r' %
                             self._valuestr(selectorText))
         if wellformed:
-            self.wellformed = wellformed
             self.seq = newseq
+            self.wellformed = wellformed
 #            for selector in newseq:
 #                 self.appendSelector(selector)
 
-    def _setParentRule(self, parentRule):
-        self._parentRule = parentRule
-
-    parentRule = property(lambda self: self._parentRule, _setParentRule,
-        doc="(DOM) The CSS rule that contains this SelectorList or\
-        None if this SelectorList is not attached to a CSSRule.")
-    
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(cssutils) The textual representation of the selector for
             a rule set.""")
     
+    def appendSelector(self, newSelector):
+        """
+        Append newSelector (a string will be converted to a new
+        Selector). 
+                
+        :param newSelector: 
+            comma-separated list of selectors or a tuple of 
+            (selectorText, dict-of-namespaces)
+        :returns: New Selector or None if newSelector is not wellformed. 
+        :Exceptions:
+            - `NAMESPACE_ERR`: (self)
+              Raised if the specified selector uses an unknown namespace
+              prefix.
+            - `SYNTAX_ERR`: (self)
+              Raised if the specified CSS string value has a syntax error
+              and is unparsable.
+            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+              Raised if this rule is readonly.
+        """
+        self._checkReadonly()
+        
+        # might be (selectorText, namespaces)
+        newSelector, namespaces = self._splitNamespacesOff(newSelector)
+        try:
+            # use parent's only if available
+            namespaces = self.parentRule.parentStyleSheet.namespaces
+        except AttributeError:
+            # use already present namespaces plus new given ones
+            _namespaces = self._namespaces
+            _namespaces.update(namespaces)
+            namespaces = _namespaces
+                
+        newSelector = self.__prepareset(newSelector, namespaces)
+        if newSelector:
+            self.wellformed = True
+            seq = self.seq[:]
+            del self.seq[:]
+            for s in seq:
+                if s.selectorText != newSelector.selectorText:
+                    self.seq.append(s)
+            self.seq.append(newSelector)
+            return newSelector
+
     def __repr__(self):
+        if self._namespaces:
+            st = (self.selectorText, self._namespaces)
+        else:
+            st = self.selectorText 
         return "cssutils.css.%s(selectorText=%r)" % (
-                self.__class__.__name__, self.selectorText)
+                self.__class__.__name__, st)
 
     def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, id(self))
+        return "<cssutils.css.%s object selectorText=%r _namespaces=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self._namespaces,
+                id(self))
 
-    def __getuseduris(self):
-        # used internally to check if namespaces in CSSStyleSheet are needed
+    def _getUsedUris(self):
+        "used by CSSStyleSheet to check if @namespace rules are needed"
         uris = set()
         for s in self:
-            uris.update(s._useduris)
+            uris.update(s._getUsedUris())
         return uris
-
-    _useduris = property(__getuseduris, doc='INTERNAL USE')
-

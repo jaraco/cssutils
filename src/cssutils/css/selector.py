@@ -6,18 +6,6 @@ Partly implements
 TODO
     - .contains(selector)
     - .isSubselector(selector)
-
-    - ??? CSS2 gives a special meaning to the comma (,) in selectors.
-        However, since it is not known if the comma may acquire other
-        meanings in future versions of CSS, the whole statement should be
-        ignored if there is an error anywhere in the selector, even though
-        the rest of the selector may look reasonable in CSS2.
-
-        Illegal example(s):
-
-        For example, since the "&" is not a valid token in a CSS2 selector,
-        a CSS2 user agent must ignore the whole second line, and not set
-        the color of H3 to red:
 """
 __all__ = ['Selector']
 __docformat__ = 'restructuredtext'
@@ -34,30 +22,26 @@ class Selector(cssutils.util.Base2):
 
     Properties
     ==========
-    selectorText
-        textual representation of this Selector
-    namespaces
-        **TODO:**
-        a dict of {prefix: namespaceURI} mapping, may also be a
-        CSSStyleSheet in which case the namespaces defined there
-        are used. If None cssutils tries to get the namespaces as
-        defined in a possible parent CSSStyleSheet.     
+    element
+        Effective element target of this selector
     parentList: of type SelectorList, readonly
         The SelectorList that contains this selector or None if this
         Selector is not attached to a SelectorList.
+    selectorText
+        textual representation of this Selector
     seq
         sequence of Selector parts including comments
     specificity (READONLY)
         tuple of (a, b, c, d) where:
         
         a
-            presence of style in document, currently always 0
+            presence of style in document, always 0 if not used on a document
         b
-            # of ID selectors
+            number of ID selectors
         c 
-            # of .class selectors
+            number of .class selectors
         d 
-            # of Element (type) selectors
+            number of Element (type) selectors
         
     wellformed
         if this selector is wellformed regarding the Selector spec
@@ -144,34 +128,47 @@ class Selector(cssutils.util.Base2):
           ;
 
     """
-    def __init__(self, selectorText=None, namespaces=None, 
-                 parentList=None, readonly=False):
+    def __init__(self, selectorText=None, parentList=None,
+                 readonly=False):
         """
-        selectorText
-            initial value of this selector
-        parentList
-            a SelectorList
-        readonly
-            default to False
+        :Parameters:
+            selectorText
+                initial value of this selector
+            parentList
+                a SelectorList
+            readonly
+                default to False
         """
         super(Selector, self).__init__()
 
+        self.__namespaces = {}
         self._element = None
-        if not namespaces:
-            namespaces = {}
-        self._namespaces = namespaces
         self._parent = parentList
         self._specificity = (0, 0, 0, 0)
         self.wellformed = False
+        
         if selectorText:
             self.selectorText = selectorText
+
         self._readonly = readonly
 
-    element = property(lambda self: self._element, 
-                           doc="Element of this selector (READONLY).")
+    def __getNamespaces(self):
+        "uses own namespaces if not attached to a sheet, else the sheet's ones"
+        try:
+            return self._parent.parentRule.parentStyleSheet.namespaces
+        except AttributeError:
+            return self.__namespaces
 
-    def _setParent(self, parent):
-        self._parent = parent
+    _namespaces = property(__getNamespaces, doc="""if this Selector is attached
+        to a CSSStyleSheet the namespaces of that sheet are mirrored here.
+        While the Selector (or parent SelectorList or parentRule(s) of that are
+        not attached a own dict of {prefix: namespaceURI} is used.""")
+    
+    element = property(lambda self: self._element, 
+                       doc=u"Effective element target of this selector.")
+
+    def _setParent(self, parentList):
+        self._parent = parentList
 
     parentList = property(lambda self: self._parent, _setParent,
         doc="(DOM) The SelectorList that contains this Selector or\
@@ -185,12 +182,31 @@ class Selector(cssutils.util.Base2):
 
     def _setSelectorText(self, selectorText):
         """
-        sets this selectorText
+        :param selectorText:
+            parsable string or a tuple of (selectorText, dict-of-namespaces).
+            Given namespaces are ignored if this object is attached to a 
+            CSSStyleSheet!
         
-        TODO:
-        raises xml.dom.Exception
+        :Exceptions:
+            - `NAMESPACE_ERR`: (self)
+              Raised if the specified selector uses an unknown namespace
+              prefix.
+            - `SYNTAX_ERR`: (self)
+              Raised if the specified CSS string value has a syntax error
+              and is unparsable.
+            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+              Raised if this rule is readonly.
         """
         self._checkReadonly()
+        
+        # might be (selectorText, namespaces)
+        selectorText, namespaces = self._splitNamespacesOff(selectorText)
+        try:
+            # uses parent stylesheets namespaces if available, otherwise given ones
+            namespace = self.parentList.parentRule.parentStyleSheet.namespaces
+        except AttributeError:
+            pass
+                    
         tokenizer = self._tokenize2(selectorText)
         if not tokenizer:
             self._log.error(u'Selector: No selectorText given.')
@@ -311,10 +327,10 @@ class Selector(cssutils.util.Base2):
                         namespaceURI = None
                     elif prefix == u'':
                         # |name or |*
-                        namespaceURI = self.namespaces.get(prefix, u'')
+                        namespaceURI = namespaces.get(prefix, u'')
                     else:
                         try:
-                            namespaceURI = self.namespaces[prefix]
+                            namespaceURI = namespaces[prefix]
                         except KeyError:
                             new['wellformed'] = False
                             self._log.error(u'Selector: No namespaceURI found for prefix %r' %
@@ -721,10 +737,13 @@ class Selector(cssutils.util.Base2):
 
             # set
             if wellformed:
+                self.__namespaces = namespaces
                 self._element = new['element']
-                self.seq = newseq
                 self._specificity = tuple(new['specificity'])
+                self.seq = newseq
                 self.wellformed = True
+                # filter that only used ones are kept
+                self.__namespaces = self._getUsedNamespaces()
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="(DOM) The parsable textual representation of the selector.")
@@ -732,36 +751,35 @@ class Selector(cssutils.util.Base2):
     specificity = property(lambda self: self._specificity, 
                            doc="Specificity of this selector (READONLY).")
 
-    def _getNamespaces(self):
-        try:
-            parentnamespaces = self._parent.parentRule.parentStyleSheet.namespaces
-        except AttributeError:
-            pass
-        else:
-            self._namespaces = parentnamespaces
-        return self._namespaces
-
-    namespaces = property(_getNamespaces, 
-                          doc="Namespaces used in this Selector (READONLY)")
-
     def __repr__(self):
-        return "cssutils.css.%s(selectorText=%r)" % (
-                self.__class__.__name__, self.selectorText)
+        if self.__getNamespaces():
+            st = (self.selectorText, self._getUsedNamespaces())
+        else:
+            st = self.selectorText
+        return u"cssutils.css.%s(selectorText=%r)" % (
+                self.__class__.__name__, st)
 
     def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r specificity=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, 
-                self.specificity, id(self))
-        
-    def __getuseduris(self):
-        # used internally to check if namespaces in CSSStyleSheet are needed
+        return u"<cssutils.css.%s object selectorText=%r specificity=%r _namespaces=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self.specificity, 
+                self._getUsedNamespaces(), id(self))
+
+    def _getUsedUris(self):
+        "returns list of actually used URIs in this Selector"
         uris = set()
         for item in self.seq:
-            typ, val = item.type, item.value
-            if typ.endswith(u'-selector') and \
+            type_, val = item.type, item.value
+            if type_.endswith(u'-selector') or type_ == u'universal' and \
                type(val) == tuple and val[0] not in (None, u'*'):
                 uris.add(val[0])
         return uris
-    
-    _useduris = property(__getuseduris, doc='INTERNAL USE')
+
+    def _getUsedNamespaces(self):
+        "returns actually used namespaces only"
+        useduris = self._getUsedUris()
+        namespaces = {}
+        for p, uri in self._namespaces.items():
+            if uri in useduris:
+                namespaces[p] = uri
+        return namespaces
 
