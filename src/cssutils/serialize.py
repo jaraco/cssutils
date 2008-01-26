@@ -629,8 +629,6 @@ class CSSSerializer(object):
             for part in selectorlist.seq:
                 if hasattr(part, 'cssText'):
                     out.append(part.cssText)
-#                elif u',' == part:
-#                    out.append(sep)
                 elif isinstance(part, cssutils.css.Selector):
                     out.append(self.do_css_Selector(part))
                 else:
@@ -667,21 +665,18 @@ class CSSSerializer(object):
                         if namespaceURI == cssutils._ANYNS:
                             prefix = u'*'
                         else:
-                            for pre, uri in selector.namespaces.items():
+                            for pre, uri in selector._namespaces.items():
                                 if uri == namespaceURI:
                                     prefix = pre
                                     break
                             else:
                                 prefix = u''
                         
-                        if prefix == u'*' and u'' not in selector.namespaces:
+                        if prefix == u'*' and u'' not in selector._namespaces:
                             out.append(name)
                         else: 
                             out.append(u'%s|%s' % (prefix, name))
                         
-                # OLD???
-                #elif type(val) == dict: 
-                #    out.append(val['value'])
                 else:
                     if typ == 'string':
                         val = self._escapeSTRINGtype(val)
