@@ -20,7 +20,7 @@ stylerule = css.CSSStyleRule(selectorText=u'body', style=style)
 # xml.dom.HierarchyRequestErr: CSSStylesheet: Found @charset, @import or @namespace
 #  before index 0.
 
-sheet.insertRule(stylerule) # at end of rules, returns index
+sheet.append(stylerule) # at end of rules, returns index
 1
 print sheet.cssText
 print
