@@ -127,6 +127,19 @@ class Base(object):
             return True
         return False
 
+    def _splitNamespacesOff(self, text_namespaces_tuple):
+        """
+        returns tuple (text, dict-of-namespaces) or if no namespaces are 
+        in cssText returns (cssText, {})
+        
+        used in Selector, SelectorList, CSSStyleRule, CSSMediaRule and
+        CSSStyleSheet
+        """
+        if isinstance(text_namespaces_tuple, tuple):
+            return text_namespaces_tuple[0], dict(text_namespaces_tuple[1])
+        else:
+            return text_namespaces_tuple, {}
+
     def _tokenize2(self, textortokens):
         """
         returns tokens of textortokens which may already be tokens in which
@@ -406,15 +419,19 @@ class Item(object):
     *line*
         **NOT IMPLEMENTED YET, may contain the line in the source later**
     """
-    def __init__(self, val, typ, line=None):
-        self.__value = val
-        self.__type = typ
+    def __init__(self, value, type, line=None):
+        self.__value = value
+        self.__type = type
         self.__line = line
 
     type = property(lambda self: self.__type)
     value = property(lambda self: self.__value)
     line = property(lambda self: self.__line)
-
+    
+    def __repr__(self):
+        return "cssutils.%s.%s(value=%r, type=%r, line=%r)" % (
+                self.__module__, self.__class__.__name__, 
+                self.__value, self.__type, self.__line)
 
 class Base2(Base):
     """
