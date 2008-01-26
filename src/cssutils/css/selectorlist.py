@@ -1,7 +1,7 @@
 """SelectorList is a list of CSS Selector objects.
 
 TODO
-    - duplicate Selector is removed.
+    - remove duplicate Selectors. -> CSSOM canonicalize
 
     - ??? CSS2 gives a special meaning to the comma (,) in selectors.
         However, since it is not known if the comma may acquire other
@@ -40,7 +40,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         The textual representation of the selector for the rule set. The
         implementation may have stripped out insignificant whitespace while
         parsing the selector.
-    seq:
+    seq: (internal use!)
         A list of Selector objects
     wellformed
         if this selectorlist is wellformed regarding the Selector spec
@@ -85,7 +85,6 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         newSelector = self.__prepareset(newSelector)
         if newSelector:
             self.seq[index] = newSelector
-        # TODO: remove duplicates?    
         
     def append(self, newSelector):
         "overwrites ListSeq.append"
@@ -94,28 +93,22 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     length = property(lambda self: len(self),
         doc="The number of Selector elements in the list.")
 
-    def __getParentNamespaces(self):
-        "returns namespaces used parent sheet"
-        return self.parentRule.parentStyleSheet.namespaces
-
-    def __getChildrenNamespaces(self):
-        "returns namespaces used in all children Selector objects"
-        namespaces = {}
-        for selector in self.seq:
-            namespaces.update(selector._namespaces)
-        return namespaces
 
     def __getNamespaces(self):
         "uses children namespaces if not attached to a sheet, else the sheet's ones"
         try:
-            return self.__getParentNamespaces()
+            return self.parentRule.parentStyleSheet.namespaces
         except AttributeError:
-            return self.__getChildrenNamespaces()
+            namespaces = {}
+            for selector in self.seq:
+                namespaces.update(selector._namespaces)
+            return namespaces
             
     _namespaces = property(__getNamespaces, doc="""if this SelectorList is 
         attached to a CSSStyleSheet the namespaces of that sheet are mirrored
         here. While the SelectorList (or parentRule(s) are
         not attached the namespaces of all children Selectors are used.""")
+
 
     def _setParentRule(self, parentRule):
         self._parentRule = parentRule
@@ -123,6 +116,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     parentRule = property(lambda self: self._parentRule, _setParentRule,
         doc="(DOM) The CSS rule that contains this SelectorList or\
         None if this SelectorList is not attached to a CSSRule.")
+    
     
     def _getSelectorText(self):
         "returns serialized format"
@@ -196,6 +190,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(cssutils) The textual representation of the selector for
             a rule set.""")
+    
     
     def appendSelector(self, newSelector):
         """
