@@ -34,8 +34,8 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     length: of type unsigned long, readonly
         The number of Selector elements in the list.
     parentRule: of type CSSRule, readonly
-        The CSS rule that contains this declaration block or None if this
-        CSSStyleDeclaration is not attached to a CSSRule.
+        The CSS rule that contains this selector list or None if this
+        list is not attached to a CSSRule.
     selectorText: of type DOMString
         The textual representation of the selector for the rule set. The
         implementation may have stripped out insignificant whitespace while

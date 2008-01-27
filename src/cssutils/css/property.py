@@ -27,7 +27,7 @@ class Property(cssutils.util.Base):
         (since 0.9.5)
     literalname (since 0.9.5)
         original name of the property in the source CSS which is not normalized
-        e.g. "c\olor"
+        e.g. "C\\OLor"
     cssValue
         the relevant CSSValue instance for this property
     value

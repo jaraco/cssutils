@@ -27,6 +27,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     -----
     cssRules
         of type CSSRuleList, (DOM readonly)
+    encoding
+        reflects the encoding of an @charset rule or 'utf-8' (default)
+        if set to ``None``
     ownerRule
         of type CSSRule, readonly (NOT IMPLEMENTED YET)
 
@@ -36,9 +39,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     --------
     cssText: string
         a textual representation of the stylesheet
-    encoding
-        reflects the encoding of an @charset rule or 'utf-8' (default)
-        if set to ``None``
     namespaces
         reflects set @namespace rules of this rule.
         A dict of {prefix: namespaceURI} mapping.
@@ -310,7 +310,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             "(cssutils) reflects the encoding of an @charset rule or 'UTF-8' (default) if set to ``None``")
 
     namespaces = property(lambda self: self._namespaces, 
-                          doc="Namespaces used in this CSSStyleSheet (READONLY)")
+                          doc="Namespaces used in this CSSStyleSheet.")
 
     def add(self, rule):
         """
