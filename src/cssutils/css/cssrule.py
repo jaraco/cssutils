@@ -50,13 +50,13 @@ class CSSRule(cssutils.util.Base):
     An integer indicating which type of rule this is.
     """
     COMMENT = -1 # cssutils only
-    UNKNOWN_RULE = 0
-    STYLE_RULE = 1
-    CHARSET_RULE = 2
-    IMPORT_RULE = 3
-    MEDIA_RULE = 4
-    FONT_FACE_RULE = 5
-    PAGE_RULE = 6
+    UNKNOWN_RULE = 0 #u
+    STYLE_RULE = 1 #s
+    CHARSET_RULE = 2 #c
+    IMPORT_RULE = 3 #i
+    MEDIA_RULE = 4 #m
+    FONT_FACE_RULE = 5 #f
+    PAGE_RULE = 6 #p
     NAMESPACE_RULE = 7 # CSSOM
 
     _typestrings = ['UNKNOWN_RULE', 'STYLE_RULE', 'CHARSET_RULE', 'IMPORT_RULE',
