@@ -50,17 +50,19 @@ HEAD
         - removed ``Selector.prefixes``
         - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains all namespaces as defined in @namespace rules
 
-          Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which contains the necessaty CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector with in yet unknown namespace, set the namespace in the style sheet first simple by setting e.g. ``sheet[prefix] = namespaceURI``
+          Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which contains the necessaty CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of-namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector within yet undefined namespace, set the namespace in the style sheet first simply by setting e.g. ``sheet[prefix] = namespaceURI``
+
+    - **API CHANGE**: ``parentRule`` and ``parentStyleSheet`` of all CSS rules are now readonly to prevent building illegal style sheets.
 
     - **API CHANGE**: Changed order of constructor parameters for ``CSSStyleDeclaration``. Named parameters SHOULD be used anyway but be careful if you used ordered ones here!
 
-    * **FEATURE**: ``CSSStyleSheet`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``.
+    * **FEATURE**: ``CSSStyleSheet`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``. (Internally generators are used.)
 
     * **FEATURE**: added parameter ``inOrder=False`` to method ``CSSStyleSheet.insertRule`` which inserts a given rule to its proper hierarchy. Parameter ``index`` is ignored in this case but the resulting index is properly returned.
 
-    * **FEATURE**: added convinience method ``CSSStyleSheet.append(rule)``  which behaves exactly like ``.insertRule(rule, inOrder=True)``.
+    * **FEATURE**: added convinience method ``CSSStyleSheet.add(rule)``  which behaves exactly like ``.insertRule(rule, inOrder=True)``. So rules are added to the approprite position in a style sheet. E.g a namespace rule if put after any @import but before other rules like style or font-face rules.
 
-    * FEATURE: added convinience method ``CSSMediaRule.append(rule)`` which behaves exactly like ``.insertRule(rule)`` (there is no parameter "inOrder" here as no invalid order may be build in CSS 2.1 or 3).
+    * FEATURE: added convinience method ``CSSMediaRule.add(rule)`` which behaves exactly like ``.insertRule(rule)`` (there is no parameter "inOrder" here as no invalid order may be build in CSS 2.1 or 3).
 
     * FEATURE: Added ``Selector.parentList`` which contains a reference to the containing ``SelectorList``. Needed (at least) to process namespaces properly.
 
@@ -71,6 +73,8 @@ HEAD
         (``Property._normalpriority`` has been removed, the normalized value that was available here is now in ``Property.priority``. The literal priority value is available in ``Property.literalproperty`` now (analog to ``Property.literalname``). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)
 
     + BUGFIX: Changed serialization of combinators in ``Selector`` according to http://dev.w3.org/csswg/cssom/#selectors, e.g. ``a>b+c~d e`` serializes as ``a > b + c ~ d e`` now (single spaces around +, > and ~). A new serializer preference ``selectorCombinatorSpacer = u' '`` has been added to overwrite this behaviour (which is set to ``u''`` when using the CSS minifier settings)
+
+    + BUGFIX: Some minor fixes including some reference improvements
 
     - IMPROVEMENT: csscombine is available via ``from cssutils.scripts import csscombine`` now (not directly in cssutils though!). Some optimizations and comments added.
 
