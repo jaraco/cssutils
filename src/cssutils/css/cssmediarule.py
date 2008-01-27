@@ -38,11 +38,13 @@ class CSSMediaRule(cssrule.CSSRule):
     # CONSTANT
     type = cssrule.CSSRule.MEDIA_RULE
 
-    def __init__(self, mediaText='all', readonly=False):
+    def __init__(self, mediaText='all', parentRule=None, 
+                 parentStyleSheet=None, readonly=False):
         """
         constructor
         """
-        super(CSSMediaRule, self).__init__()
+        super(CSSMediaRule, self).__init__(parentRule=parentRule, 
+                                           parentStyleSheet=parentStyleSheet)
 
         self.atkeyword = u'@media'
         self._media = cssutils.stylesheets.MediaList(
@@ -120,10 +122,16 @@ class CSSMediaRule(cssrule.CSSRule):
                 # for closures: must be a mutable
                 new = {'valid': True }
                 
+                def COMMENT(expected, seq, token, tokenizer=None):
+                    "special: sets parent*"
+                    comment = cssutils.css.CSSComment([token], parentRule=self, 
+                                        parentStyleSheet=self.parentStyleSheet)
+                    seq.append(comment)
+                    return expected
+                
                 def ruleset(expected, seq, token, tokenizer):
-                    rule = cssutils.css.CSSStyleRule()
-                    rule.parentRule = self # must be done for selectors to work
-                    rule.parentStyleSheet = self.parentStyleSheet
+                    rule = cssutils.css.CSSStyleRule(parentRule=self, 
+                                           parentStyleSheet=self.parentStyleSheet)
                     rule.cssText = self._tokensupto2(tokenizer, token)
                     if new['valid']:
                         seq.append(rule)
@@ -141,15 +149,15 @@ class CSSMediaRule(cssrule.CSSRule):
                                 token = token, 
                                 error=xml.dom.HierarchyRequestErr)
                     else:
-                        rule = cssutils.css.CSSUnknownRule()
-                        rule.parentRule = self
-                        rule.parentStyleSheet = self.parentStyleSheet
+                        rule = cssutils.css.CSSUnknownRule(parentRule=self, 
+                                           parentStyleSheet=self.parentStyleSheet)
                         rule.cssText = tokens
                         seq.append(rule)
                     return expected
                 
                 tokenizer = (t for t in cssrulestokens) # TODO: not elegant!
                 valid, expected = self._parse('}', newcssrules, tokenizer, {
+                     'COMMENT': COMMENT,
                      'CHARSET_SYM': atrule,
                      'FONT_FACE_SYM': atrule,
                      'IMPORT_SYM': atrule,
@@ -167,9 +175,6 @@ class CSSMediaRule(cssrule.CSSRule):
                 del self.cssRules[:]# = newcssrules
                 for r in newcssrules:
                     self.cssRules.append(r)
-                for r in self.cssRules:
-                    r.parentRule = self # for CSSComment possible only here
-                    r.parentStyleSheet = self.parentStyleSheet
         
     cssText = property(_getCssText, _setCssText,
         doc="(DOM attribute) The parsable textual representation.")
@@ -200,16 +205,16 @@ class CSSMediaRule(cssrule.CSSRule):
         self._checkReadonly()
 
         try:
-            self.cssRules[index].parentRule = None # detach
+            self.cssRules[index]._parentRule = None # detach
             del self.cssRules[index] # remove from @media
         except IndexError:
             raise xml.dom.IndexSizeErr(
                 u'CSSMediaRule: %s is not a valid index in the rulelist of length %i' % (
                 index, self.cssRules.length))
 
-    def append(self, rule):
+    def add(self, rule):
         """
-        Appends rule to this mediarule. Same as ``.insertRule(rule)``. 
+        Adds rule to end of this mediarule. Same as ``.insertRule(rule)``. 
         """
         self.insertRule(rule, index=None)
             
@@ -289,8 +294,8 @@ class CSSMediaRule(cssrule.CSSRule):
             return
 
         self.cssRules.insert(index, rule)
-        rule.parentRule = self
-        rule.parentStyleSheet = self.parentStyleSheet
+        rule._parentRule = self
+        rule._parentStyleSheet = self.parentStyleSheet
         return index
 
     def __repr__(self):

@@ -41,7 +41,10 @@ class ListSeq(object):
         return self.seq[index]
 
     def __iter__(self):
-        return iter(self.seq)
+        def gen():
+            for x in self.seq:
+                yield x
+        return gen()
 
     def __len__(self):
         return len(self.seq)

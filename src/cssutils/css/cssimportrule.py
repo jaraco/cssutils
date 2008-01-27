@@ -54,8 +54,8 @@ class CSSImportRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.IMPORT_RULE
 
-    def __init__(self, href=None, mediaText=u'all', hreftype=None,
-                 readonly=False):
+    def __init__(self, href=None, mediaText=u'all', hreftype=None, 
+                 parentRule=None, parentStyleSheet=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
 
@@ -69,7 +69,8 @@ class CSSImportRule(cssrule.CSSRule):
         hreftype
             'uri' (default) or 'string'
         """
-        super(CSSImportRule, self).__init__()
+        super(CSSImportRule, self).__init__(parentRule=parentRule, 
+                                            parentStyleSheet=parentStyleSheet)
 
         self.atkeyword = u'@import'
         self.href = href
@@ -84,7 +85,6 @@ class CSSImportRule(cssrule.CSSRule):
         self._styleSheet = None
 
         self._readonly = readonly
-
 
     def _getHref(self):
         return self._href

@@ -134,7 +134,7 @@ a + b > c ~ d, b {
         # does not actually work as once the name is set it is used also 
         # if used with a backslash in it later...
 
-        s = cssutils.parseString(u'a { c\olor: green; }')
+        s = cssutils.parseString(ur'a { c\olor: green; }')
         self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
         cssutils.ser.prefs.defaultPropertyName = True
         self.assertEqual(u'a {\n    color: green\n    }', s.cssText)

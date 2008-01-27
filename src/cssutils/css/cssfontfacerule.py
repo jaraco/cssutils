@@ -42,14 +42,16 @@ class CSSFontFaceRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.FONT_FACE_RULE
 
-    def __init__(self, style=None, readonly=False):
+    def __init__(self, style=None, parentRule=None, 
+                 parentStyleSheet=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
 
         style
             CSSStyleDeclaration for this CSSStyleRule
         """
-        super(CSSFontFaceRule, self).__init__()
+        super(CSSFontFaceRule, self).__init__(parentRule=parentRule, 
+                                              parentStyleSheet=parentStyleSheet)
 
         self.atkeyword = u'@font-face'
         

@@ -320,8 +320,8 @@ body {
         s.insertRule(rulelist)
         self.assertEqual(L+2 + 2, s.cssRules.length)
 
-    def test_append(self):
-        "CSSStyleSheet.append()"
+    def test_add(self):
+        "CSSStyleSheet.add()"
         full = cssutils.css.CSSStyleSheet()
         sheet = cssutils.css.CSSStyleSheet()
         css = ['@charset "ascii";',
@@ -342,7 +342,7 @@ body {
             before = css[:i]
             after = css[i+1:]
             sheet.cssText = u''.join(before + after)
-            index = sheet.append(line)
+            index = sheet.add(line)
             if i < 3:
                 self.assertEqual(fullcss, sheet.cssText)
                 self.assertEqual(i, index) # no same rule present
@@ -357,7 +357,7 @@ body {
             if i == 1: line = '@import "x2";'
             if i == 2: line = '@namespace p2 "u2";'
             full.cssText = fullcss
-            index = full.append(line)
+            index = full.add(line)
             if i < 1:
                 self.assertEqual(fullcss, sheet.cssText)
                 self.assertEqual(i, index) # no same rule present
@@ -381,7 +381,7 @@ body {
                 self.assertRaises(xml.dom.HierarchyRequestErr,
                                   s.insertRule, rule, 0)
                 s = cssutils.css.CSSStyleSheet()
-                s.append(r)
+                s.add(r)
                 self.assertRaises(xml.dom.HierarchyRequestErr,
                                   s.insertRule, rule, 0)
             for r in notafter:
@@ -390,8 +390,8 @@ body {
                 self.assertRaises(xml.dom.HierarchyRequestErr,
                                   s.insertRule, rule, 1)
                 s = cssutils.css.CSSStyleSheet()
-                s.append(r)
-                s.append(rule) # never raises
+                s.add(r)
+                s.add(rule) # never raises
 
             for r in anywhere:
                 s = cssutils.css.CSSStyleSheet()

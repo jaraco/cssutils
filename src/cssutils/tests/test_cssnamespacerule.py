@@ -34,7 +34,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual(u'', r.prefix)
             self.assertEqual(u'', r.cssText)
             self.assertEqual(None, r.parentStyleSheet)
-            self.sheet.append(r)
+            self.sheet.add(r)
             self.assertEqual(self.sheet, r.parentStyleSheet)
             self.assertEqual(None, r.parentRule)
         

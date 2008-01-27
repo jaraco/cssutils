@@ -51,7 +51,8 @@ class CSSCharsetRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.CHARSET_RULE
 
-    def __init__(self, encoding=None, readonly=False):
+    def __init__(self, encoding=None, parentRule=None, 
+                 parentStyleSheet=None, readonly=False):
         """
         encoding:
             a valid character encoding
@@ -60,8 +61,8 @@ class CSSCharsetRule(cssrule.CSSRule):
 
         if readonly allows setting of properties in constructor only
         """
-        super(CSSCharsetRule, self).__init__()
-
+        super(CSSCharsetRule, self).__init__(parentRule=parentRule, 
+                                             parentStyleSheet=parentStyleSheet)
         self._encoding = None
         if encoding:
             self.encoding = encoding

@@ -267,10 +267,10 @@ class CSSSerializer(object):
     def _getpropertyname(self, property, actual):
         """
         used by all styledeclarations to get the propertyname used
-        dependent on prefs setting defaultPropertyName
+        dependent on prefs setting defaultPropertyName and
+        keepAllProperties
         """
-        if self.prefs.defaultPropertyName and \
-           not self.prefs.keepAllProperties:
+        if self.prefs.defaultPropertyName and not self.prefs.keepAllProperties:
             return property.name
         else:
             return actual

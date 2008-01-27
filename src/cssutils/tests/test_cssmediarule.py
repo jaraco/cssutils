@@ -151,14 +151,14 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(1, m.cssRules.length)
         self.assertEqual(u'@media all {\n    /* x */\n    }', m.cssText)
 
-    def test_append(self):
-        "CSSMediaRule.append()"
-        # see CSSStyleSheet.append
+    def test_add(self):
+        "CSSMediaRule.add()"
+        # see CSSStyleSheet.add
         r = cssutils.css.CSSMediaRule()
         stylerule1 = cssutils.css.CSSStyleRule()
         stylerule2 = cssutils.css.CSSStyleRule()
-        r.append(stylerule1)
-        r.append(stylerule2)
+        r.add(stylerule1)
+        r.add(stylerule2)
         self.assertEqual(r.cssRules[0], stylerule1)
         self.assertEqual(r.cssRules[1], stylerule2)
 

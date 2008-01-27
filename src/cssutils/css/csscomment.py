@@ -31,8 +31,10 @@ class CSSComment(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.COMMENT # value = -1
 
-    def __init__(self, cssText=None, readonly=False):
-        super(CSSComment, self).__init__()
+    def __init__(self, cssText=None, parentRule=None, 
+                 parentStyleSheet=None, readonly=False):
+        super(CSSComment, self).__init__(parentRule=parentRule, 
+                                         parentStyleSheet=parentStyleSheet)
 
         self._cssText = None
         if cssText:
