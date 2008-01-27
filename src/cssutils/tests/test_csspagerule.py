@@ -115,8 +115,8 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSPageRule.style"
         d = cssutils.css.CSSStyleDeclaration()
         self.r.style = d
-        self.assertEqual(d, self.r.style)
-        self.assertEqual(self.r, d.parentRule)
+        self.assertEqual(d.cssText, self.r.style.cssText)
+        self.assertEqual(None, d.parentRule)
 
     def test_properties(self):
         "CSSPageRule.style properties"

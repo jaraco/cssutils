@@ -129,7 +129,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             defaults to False
         """
         super(CSSStyleDeclaration, self).__init__()
-        self.parentRule = parentRule
+        self._parentRule = parentRule
         self.seq = []
         self.valid = False
         self.wellformed = False
