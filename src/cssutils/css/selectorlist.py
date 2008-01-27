@@ -58,7 +58,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         """
         super(SelectorList, self).__init__()
         
-        self.parentRule = parentRule
+        self._parentRule = parentRule
         self.wellformed = False
         
         if selectorText:
@@ -73,7 +73,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             newSelector = Selector((newSelector, namespaces),
                                    parentList=self)
         if newSelector.wellformed:
-            newSelector.parentList = self # maybe set twice but must be!
+            newSelector._parent = self # maybe set twice but must be!
             return newSelector
 
     def __setitem__(self, index, newSelector):
@@ -109,15 +109,10 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         here. While the SelectorList (or parentRule(s) are
         not attached the namespaces of all children Selectors are used.""")
 
-
-    def _setParentRule(self, parentRule):
-        self._parentRule = parentRule
-
-    parentRule = property(lambda self: self._parentRule, _setParentRule,
+    parentRule = property(lambda self: self._parentRule,
         doc="(DOM) The CSS rule that contains this SelectorList or\
         None if this SelectorList is not attached to a CSSRule.")
-    
-    
+        
     def _getSelectorText(self):
         "returns serialized format"
         return cssutils.ser.do_css_SelectorList(self)

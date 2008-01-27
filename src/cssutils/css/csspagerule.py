@@ -253,6 +253,7 @@ class CSSPageRule(cssrule.CSSRule):
         doc="""(DOM) The parsable textual representation of the page selector for the rule.""")
 
     def _getStyle(self):
+        
         return self._style
 
     def _setStyle(self, style):
@@ -261,11 +262,13 @@ class CSSPageRule(cssrule.CSSRule):
             StyleDeclaration or string
         """
         self._checkReadonly()
+        
         if isinstance(style, basestring):
-            self._style = CSSStyleDeclaration(parentRule=self, cssText=style)
+            self._style.cssText = style
         else:
-            self._style = style
-            style.parentRule = self
+            # cssText would be serialized with optional preferences
+            # so use seq!
+            self._style.seq = style.seq 
 
     style = property(_getStyle, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")

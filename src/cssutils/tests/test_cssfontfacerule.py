@@ -74,8 +74,8 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSFontFaceRule.style"
         d = cssutils.css.CSSStyleDeclaration()
         self.r.style = d
-        self.assertEqual(d, self.r.style)
-        self.assertEqual(self.r, d.parentRule)
+        self.assertEqual(d.cssText, self.r.style.cssText)
+        self.assertEqual(None, d.parentRule)
 
     def test_properties(self):
         "CSSFontFaceRule.style properties"

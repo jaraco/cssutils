@@ -169,15 +169,10 @@ class Selector(cssutils.util.Base2):
     element = property(lambda self: self._element, 
                        doc=u"Effective element target of this selector.")
 
-
-    def _setParent(self, parentList):
-        self._parent = parentList
-
-    parentList = property(lambda self: self._parent, _setParent,
+    parentList = property(lambda self: self._parent,
         doc="(DOM) The SelectorList that contains this Selector or\
         None if this Selector is not attached to a SelectorList.")
-    
-    
+        
     def _getSelectorText(self):
         """
         returns serialized format
