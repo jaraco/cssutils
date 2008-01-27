@@ -3,7 +3,7 @@
 """serializer classes for CSS classes
 
 """
-__all__ = ['CSSSerializer']
+__all__ = ['CSSSerializer', 'Preferences']
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
