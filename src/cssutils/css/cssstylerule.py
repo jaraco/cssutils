@@ -46,7 +46,8 @@ class CSSStyleRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.STYLE_RULE
 
-    def __init__(self, selectorText=None, style=None, readonly=False):
+    def __init__(self, selectorText=None, style=None, parentRule=None, 
+                 parentStyleSheet=None, readonly=False):
         """
         :Parameters:
             selectorText
@@ -56,7 +57,8 @@ class CSSStyleRule(cssrule.CSSRule):
             readonly
                 if True allows setting of properties in constructor only
         """
-        super(CSSStyleRule, self).__init__()
+        super(CSSStyleRule, self).__init__(parentRule=parentRule, 
+                                           parentStyleSheet=parentStyleSheet)
 
         self._selectorList = SelectorList(parentRule=self)
         self._style = CSSStyleDeclaration(parentRule=self)
@@ -159,7 +161,7 @@ class CSSStyleRule(cssrule.CSSRule):
 
             if valid:
                 self.valid = True
-                self.selectorList = newselectorlist
+                self._selectorList = newselectorlist
                 self.style = newstyle
 
     cssText = property(_getCssText, _setCssText,
@@ -178,29 +180,22 @@ class CSSStyleRule(cssrule.CSSRule):
         here. While the Rule is not attached the namespaces of selectorList
         are used.""")
 
-
     def _setSelectorList(self, selectorList):
         """
-        replaces the SelectorList of this rule
-
-        :param selectorList: instance of SelectorList
-        :Exceptions:
-            - `NO_MODIFICATION_ALLOWED_ERR`:
-              Raised if this rule is readonly.
+        :param selectorList: selectorList, only content is used, not the actual
+            object
         """
         self._checkReadonly()
-        self._selectorList = selectorList
-        self._selectorList.parentRule = self
-
+        self.selectorText = selectorList.selectorText
+            
     selectorList = property(lambda self: self._selectorList, _setSelectorList,
         doc="The SelectorList of this rule.")
-
 
     def _setSelectorText(self, selectorText):
         """
         wrapper for cssutils SelectorList object
 
-        :param selectorText: of type string, might also be a comma separated list
+        :param selector: of type string, might also be a comma separated list
             of selectors
         :Exceptions:
             - `NAMESPACE_ERR`: (Selector)
@@ -220,21 +215,21 @@ class CSSStyleRule(cssrule.CSSRule):
         doc="""(DOM) The textual representation of the selector for the
             rule set.""")
 
-
     def _setStyle(self, style):
         """
-        :param style: StyleDeclaration or string
+        :param style: CSSStyleDeclaration or string, only the cssText of a 
+            declaration is used, not the actual object
         """
         self._checkReadonly()
         if isinstance(style, basestring):
-            self._style.cssText = cssText
+            self._style.cssText = style
         else:
-            self._style = style
-            style.parentRule = self
+            # cssText would be serialized with optional preferences
+            # so use seq!
+            self._style.seq = style.seq 
 
     style = property(lambda self: self._style, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")
-
 
     def __repr__(self):
         if self._namespaces:
