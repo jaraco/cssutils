@@ -34,13 +34,14 @@ class CSSUnknownRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.UNKNOWN_RULE
 
-    def __init__(self, cssText=u'', readonly=False):
+    def __init__(self, cssText=u'', parentRule=None, 
+                 parentStyleSheet=None, readonly=False):
         """
         cssText
             of type string
         """
-        super(CSSUnknownRule, self).__init__()
-
+        super(CSSUnknownRule, self).__init__(parentRule=parentRule, 
+                                             parentStyleSheet=parentStyleSheet)
         self.valid = True # always as unknown...
         if cssText:
             self.cssText = cssText

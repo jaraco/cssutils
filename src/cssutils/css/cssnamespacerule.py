@@ -57,8 +57,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.NAMESPACE_RULE
 
-    def __init__(self, namespaceURI=None, prefix=None, 
-                 cssText=None, parentStyleSheet=None, readonly=False):
+    def __init__(self, namespaceURI=None, prefix=None, cssText=None, 
+                 parentRule=None, parentStyleSheet=None, readonly=False):
         """
         :Parameters:
             namespaceURI
@@ -88,7 +88,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._namespaceURI = None
         self.atkeyword = u'@namespace'
 
-        super(CSSNamespaceRule, self).__init__()
+        super(CSSNamespaceRule, self).__init__(parentRule=parentRule, 
+                                               parentStyleSheet=parentStyleSheet)
         
         if namespaceURI:
             self.namespaceURI = namespaceURI

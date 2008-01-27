@@ -171,9 +171,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             else: 
                 return expected
 
+        def COMMENT(expected, seq, token, tokenizer=None):
+            "special: sets parent*"
+            comment = cssutils.css.CSSComment([token], parentRule=self, 
+                                parentStyleSheet=self.parentStyleSheet)
+            seq.append(comment)
+            return expected
+        
         def charsetrule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSCharsetRule()
-            rule.parentStyleSheet = self
+            rule = cssutils.css.CSSCharsetRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 0 or len(seq) > 0:
                 self._log.error(
@@ -185,8 +191,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             return 1
         
         def importrule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSImportRule()
-            rule.parentStyleSheet = self
+            rule = cssutils.css.CSSImportRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 1:
                 self._log.error(
@@ -213,40 +218,35 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             return 2
 
         def fontfacerule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSFontFaceRule()
-            rule.parentStyleSheet = self
+            rule = cssutils.css.CSSFontFaceRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
             return 3
 
         def mediarule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSMediaRule()
-            rule.parentStyleSheet = self
+            rule = cssutils.css.CSSMediaRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
             return 3
 
         def pagerule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSPageRule()
-            rule.parentStyleSheet = self
+            rule = cssutils.css.CSSPageRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
             return 3
 
         def unknownrule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSUnknownRule()
-            rule.parentStyleSheet = self
+            rule = cssutils.css.CSSUnknownRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.valid:
                 seq.append(rule)
             return expected
 
         def ruleset(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSStyleRule()
-            rule.parentStyleSheet = self
+            rule = cssutils.css.CSSStyleRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             
             if rule.valid:
@@ -257,6 +257,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
         wellformed, expected = self._parse(0, newseq, tokenizer,
             {'S': S,
+             'COMMENT': COMMENT,
              'CDO': lambda *ignored: None,
              'CDC': lambda *ignored: None,
              'CHARSET_SYM': charsetrule,
@@ -275,9 +276,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self.cssRules.append(r)
             # normally: self._namespaces = new['namespaces']
             # but this is set before!
-            for r in self:
-                # set for CSSComment, for others this is set before
-                r.parentStyleSheet = self
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
@@ -314,9 +312,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     namespaces = property(lambda self: self._namespaces, 
                           doc="Namespaces used in this CSSStyleSheet (READONLY)")
 
-    def append(self, rule):
+    def add(self, rule):
         """
-        Appends rule to stylesheet. Same as ``sheet.insertRule(rule, inOrder=True)``. 
+        Adds rule to stylesheet at appropriate position. 
+        Same as ``sheet.insertRule(rule, inOrder=True)``. 
         """
         return self.insertRule(rule, index=None, inOrder=True)
 
@@ -364,7 +363,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         u'CSSStyleSheet: NamespaceURI defined in this rule is used, cannot remove.')
                     return
                 
-            rule.parentStyleSheet = None # detach
+            rule._parentStyleSheet = None # detach
             del self.cssRules[index] # delete from StyleSheet
 
     def insertRule(self, rule, index=None, inOrder=False):
@@ -410,6 +409,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             raise xml.dom.IndexSizeErr(
                 u'CSSStyleSheet: Invalid index %s for CSSRuleList with a length of %s.' % (
                     index, self.cssRules.length))
+            return
 
         # parse
         if isinstance(rule, basestring):
@@ -428,6 +428,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             self._log.error(u'CSSStyleSheet: Not a CSSRule: %s' % rule)
             return
 
+        if not rule.valid:
+            raise xml.dom.SyntaxErr(u'CSSStyleSheet: Invalid rules cannot be added.')
+            return
+
         # CHECK HIERARCHY
         # @charset
         if rule.type == rule.CHARSET_RULE:
@@ -438,7 +442,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     self.cssRules[0].encoding = rule.encoding
                 else:
                     self.cssRules.insert(0, rule)
-                    rule.parentStyleSheet = self
+                    rule._parentStyleSheet = self
             elif index != 0 or (self.cssRules and 
                               self.cssRules[0].type == rule.CHARSET_RULE):
                 self._log.error(
@@ -447,7 +451,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 return
             else:
                 self.cssRules.insert(index, rule)
-                rule.parentStyleSheet = self
+                rule._parentStyleSheet = self
 
         # @unknown or comment
         elif rule.type in (rule.UNKNOWN_RULE, rule.COMMENT) and not inOrder:
@@ -459,7 +463,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 return
             else:
                 self.cssRules.insert(index, rule)
-                rule.parentStyleSheet = self
+                rule._parentStyleSheet = self
 
         # @import
         elif rule.type == rule.IMPORT_RULE:
@@ -496,7 +500,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                             error=xml.dom.HierarchyRequestErr)
                         return
             self.cssRules.insert(index, rule)
-            rule.parentStyleSheet = self
+            rule._parentStyleSheet = self
 
         # @namespace
         elif rule.type == rule.NAMESPACE_RULE:
@@ -533,7 +537,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                             error=xml.dom.HierarchyRequestErr)
                         return
             self.cssRules.insert(index, rule)
-            rule.parentStyleSheet = self
+            rule._parentStyleSheet = self
+            self.namespaces[rule.prefix] = rule.namespaceURI
 
         # all other
         else:
@@ -558,7 +563,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         return
                 self.cssRules.insert(index, rule)
             
-            rule.parentStyleSheet = self
+            rule._parentStyleSheet = self
 
         return index
 

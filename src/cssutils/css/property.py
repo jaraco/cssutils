@@ -398,13 +398,13 @@ class Property(cssutils.util.Base):
 
     def __repr__(self):
         return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
-                self.__class__.__name__,
+                self.__class__.__name__, 
                 self.literalname, self.cssValue.cssText, self.priority)
 
     def __str__(self):
         return "<%s.%s object name=%r value=%r priority=%r at 0x%x>" % (
                 self.__class__.__module__, self.__class__.__name__,
-                self.literalname, self.cssValue.cssText, self.priority, id(self))
+                self.name, self.cssValue.cssText, self.priority, id(self))
 
     @Deprecated(u'Use property ``name`` instead (since cssutils 0.9.5).')
     def _getNormalname(self):

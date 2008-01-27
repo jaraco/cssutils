@@ -50,7 +50,8 @@ class CSSPageRule(cssrule.CSSRule):
     """
     type = cssrule.CSSRule.PAGE_RULE
 
-    def __init__(self, selectorText=None, style=None, readonly=False):
+    def __init__(self, selectorText=None, style=None, parentRule=None, 
+                 parentStyleSheet=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
 
@@ -59,7 +60,8 @@ class CSSPageRule(cssrule.CSSRule):
         style
             CSSStyleDeclaration for this CSSStyleRule
         """
-        super(CSSPageRule, self).__init__()
+        super(CSSPageRule, self).__init__(parentRule=parentRule, 
+                                          parentStyleSheet=parentStyleSheet)
 
         self.atkeyword = u'@page'
         

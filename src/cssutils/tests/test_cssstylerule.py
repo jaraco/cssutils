@@ -118,10 +118,10 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSStyleRule.style"
         d = cssutils.css.CSSStyleDeclaration()
         self.r.style = d
-        self.assertEqual(d, self.r.style)
+        self.assertEqual(d.cssText, self.r.style.cssText)
 
-        # check if parentRule of sd set
-        self.assertEqual(self.r, d.parentRule)
+        # check if parentRule of d is set -> SHOULD NOT!
+        self.assertEqual(None, d.parentRule)
 
     def test_reprANDstr(self):
         "CSSStyleRule.__repr__(), .__str__()"

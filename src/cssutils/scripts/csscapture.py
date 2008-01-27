@@ -166,7 +166,7 @@ class CSSCapture(object):
         sheet = cssutils.parseString(cssText)
         sheet.href = href
         sheet.media = media
-        sheet.parentStyleSheet = parentStyleSheet
+        sheet._parentStyleSheet = parentStyleSheet
         sheet.title = title
         self._log.debug(u'    * title: %s', title)
         if href:

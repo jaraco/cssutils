@@ -93,4 +93,6 @@ class StyleSheet(cssutils.util.Base):
         else:
             self.disabled = False
         self.ownerNode = ownerNode
-        self.parentStyleSheet = parentStyleSheet
+        self._parentStyleSheet = parentStyleSheet 
+        
+    parentStyleSheet = property(lambda self: self._parentStyleSheet)

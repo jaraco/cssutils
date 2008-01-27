@@ -74,10 +74,10 @@ class CSSRule(cssutils.util.Base):
     (Casting not for this Python implementation I guess...)
     """
 
-    def __init__(self, readonly=False):
+    def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):
         super(CSSRule, self).__init__()
-        self.parentRule = None
-        self.parentStyleSheet = None
+        self._parentRule = parentRule
+        self._parentStyleSheet = parentStyleSheet
         self.seq = []
         self.valid = True
         # must be set after initialization of #inheriting rule is done
@@ -110,6 +110,12 @@ class CSSRule(cssutils.util.Base):
         The initial value is saved, but this may be removed in a future
         version!
         MUST BE OVERWRITTEN IN SUBCLASS TO WORK!""")
+
+    parentRule = property(lambda self: self._parentRule,
+                          doc=u"READONLY")
+
+    parentStyleSheet = property(lambda self: self._parentStyleSheet,
+                                doc=u"READONLY")
 
     def _getTypeString(self):
         return CSSRule._typestrings[self.type]
