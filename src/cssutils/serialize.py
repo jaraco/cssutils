@@ -21,7 +21,7 @@ def _escapecss(e):
     
     E.g. the german umlaut 'ä' is escaped as \E4
     """
-    s = e.args[1][e.start:e.end]
+    s = e.object[e.start:e.end]
     return u''.join([ur'\%s ' % str(hex(ord(x)))[2:] # remove 0x from hex
                      .upper() for x in s]), e.end
 
