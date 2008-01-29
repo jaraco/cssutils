@@ -66,8 +66,10 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             
         self._readonly = readonly
 
-    def __prepareset(self, newSelector, namespaces={}):
+    def __prepareset(self, newSelector, namespaces=None):
         "used by appendSelector and __setitem__"
+        if not namespaces:
+            namespaces = {}
         self._checkReadonly()
         if not isinstance(newSelector, Selector):
             newSelector = Selector((newSelector, namespaces),
