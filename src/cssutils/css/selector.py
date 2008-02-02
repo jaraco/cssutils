@@ -15,6 +15,7 @@ __version__ = '$LastChangedRevision$'
 
 import xml.dom
 import cssutils
+from cssutils.util import _SimpleNamespaces
 
 class Selector(cssutils.util.Base2):
     """
@@ -141,7 +142,7 @@ class Selector(cssutils.util.Base2):
         """
         super(Selector, self).__init__()
 
-        self.__namespaces = {}
+        self.__namespaces = _SimpleNamespaces()
         self._element = None
         self._parent = parentList
         self._specificity = (0, 0, 0, 0)
@@ -151,7 +152,6 @@ class Selector(cssutils.util.Base2):
             self.selectorText = selectorText
 
         self._readonly = readonly
-
 
     def __getNamespaces(self):
         "uses own namespaces if not attached to a sheet, else the sheet's ones"
@@ -202,10 +202,9 @@ class Selector(cssutils.util.Base2):
         selectorText, namespaces = self._splitNamespacesOff(selectorText)
         try:
             # uses parent stylesheets namespaces if available, otherwise given ones
-            namespace = self.parentList.parentRule.parentStyleSheet.namespaces
+            namespaces = self.parentList.parentRule.parentStyleSheet.namespaces
         except AttributeError:
             pass
-                    
         tokenizer = self._tokenize2(selectorText)
         if not tokenizer:
             self._log.error(u'Selector: No selectorText given.')
@@ -777,7 +776,7 @@ class Selector(cssutils.util.Base2):
     def _getUsedNamespaces(self):
         "returns actually used namespaces only"
         useduris = self._getUsedUris()
-        namespaces = {}
+        namespaces = _SimpleNamespaces()
         for p, uri in self._namespaces.items():
             if uri in useduris:
                 namespaces[p] = uri
