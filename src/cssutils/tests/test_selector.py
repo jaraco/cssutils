@@ -23,7 +23,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         "Selector.__init__()"
         s = cssutils.css.Selector('*')
         self.assertEqual((None, '*'), s.element)
-        self.assertEqual({}, s._namespaces)
+        self.assertEqual({}, s._namespaces.namespaces)
         self.assertEqual(None, s.parentList)
         self.assertEqual('*', s.selectorText)
         self.assertEqual((0,0,0,0), s.specificity)
@@ -31,7 +31,7 @@ class SelectorTestCase(basetest.BaseTestCase):
 
         s = cssutils.css.Selector(('p|b', {'p': 'URI'}) )
         self.assertEqual(('URI', 'b'), s.element)
-        self.assertEqual({'p': 'URI'}, s._namespaces)
+        self.assertEqual({'p': 'URI'}, s._namespaces.namespaces)
         self.assertEqual(None, s.parentList)
         self.assertEqual('p|b', s.selectorText)
         self.assertEqual((0,0,0,1), s.specificity)
