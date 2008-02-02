@@ -367,27 +367,27 @@ class Seq(object):
         only way to write to a Seq is to initialize it with new items
         each itemtuple has (value, type, line) where line is optional
         """
-        self.__seq = []
+        self._seq = []
         self._readonly = readonly
         
     def __delitem__(self, i):
-        del self.__seq[i]
+        del self._seq[i]
 
     def __getitem__(self, i):
-        return self.__seq[i]
+        return self._seq[i]
 
     def __iter__(self):
-        return iter(self.__seq)
+        return iter(self._seq)
 
     def __len__(self):
-        return len(self.__seq)
+        return len(self._seq)
         
     def append(self, val, typ, line=None):
         "if not readonly add new Item()"
         if self._readonly:
             raise AttributeError('Seq is readonly.')
         else:
-            self.__seq.append(Item(val, typ, line))
+            self._seq.append(Item(val, typ, line))
 
     def replace(self, index=-1, val=None, typ=None, line=None):
         """
@@ -397,14 +397,14 @@ class Seq(object):
         if self._readonly:
             raise AttributeError('Seq is readonly.')
         else:
-            self.__seq[index] = Item(val, typ, line)
+            self._seq[index] = Item(val, typ, line)
 
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"
         return u'cssutils.%s.%s([\n    %s])' % (self.__module__, 
                                           self.__class__.__name__, 
             u',\n    '.join([u'(%r, %r)' % (item.type, item.value)
-                          for item in self.__seq]
+                          for item in self._seq]
             ))
     def __str__(self):
         return "<cssutils.%s.%s object length=%r at 0x%x>" % (
