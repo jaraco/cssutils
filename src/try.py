@@ -47,15 +47,53 @@ def escapecss(e):
 
 codecs.register_error('escapecss', escapecss)
 
-if 0:
-    css = '@namespace p "u"; p|x { color: green }'
-        
-    print "----- parse -----"
+if 1:       
+    css = '''
+    @namespace p1 "u"; 
+    @namespace p2 "u";
+    p1|x, p2|y { color: green }
+    '''    
+    css = '@namespace p2 "u";'
     s = cssutils.parseString(css)
     print s.cssText
+    
+    s.add('@media all { p2|a { color: green} }')
+    #mr = cssutils.css.CSSMediaRule()
+    #s.add(mr)
+    #mr.cssText = '@media all { p2|a { color: green} }'
+    
+    #s.add('p2|a { color: green}')
+    #sr = s.cssRules[2]
+    #sr.selectorText = 'p2|xxx2'
+    smr = s.cssRules[1].cssRules[0]
+    print 0, id(s), s.cssText[:10]
+    print 1, id(s.cssRules[1].parentStyleSheet), s.cssText[:10]
+    print 2, id(smr.parentStyleSheet), smr.parentStyleSheet.cssText[:10]
+    smr.selectorText = 'p2|xxxmedia'
+    print s.cssText
+    sys.exit(1)
+    
+    print s.namespaces
+    s.namespaces[''] = 'u'
+    s.namespaces['p3'] = 'u'
+    s.add('@namespace p4 "u";')
+    print s.namespaces.effective
+    print s.namespaces.prefixForNamespaceURI('u')
+    print s.cssText
+    
     sys.exit(0)
 
-if 1:    
+if 1:
+    cssutils.ser.prefs.defaultPropertyName = False
+    s = cssutils.parseString(ur'a { c\olor: green !IMportant; }')
+    #s = cssutils.css.CSSStyleDeclaration(cssText='c\\olor: red !IMportant')
+    print s.cssRules[0].style.getProperty('color').seqs
+    cssutils.ser.prefs.defaultPropertyName = True
+    print s.cssText
+    cssutils.ser.prefs.defaultPropertyName = False
+    print s.cssText
+    sys.exit(0)
+     
 #    s = cssutils.css.Selector(('p|a', {'p': 'u'}))
 #    print s
 #    print repr(s)
