@@ -329,6 +329,7 @@ class CSSSerializer(object):
                         (mq.mediaText for mq in medialist))
 
     def do_CSSStyleSheet(self, stylesheet):
+        """serializes a complete CSSStyleSheet"""
         out = []
         for rule in stylesheet.cssRules:
             cssText = rule.cssText
@@ -451,18 +452,22 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if not rule.namespaceURI or self._noinvalids(rule):
+        if (rule.namespaceURI and not self._noinvalids(rule)) and (
+            not rule.parentStyleSheet or (
+                rule.parentStyleSheet and 
+                rule.prefix in rule.parentStyleSheet.namespaces)
+            ):
+            out = [u'%s' % self._getatkeyword(rule, u'@namespace')]
+            for part in rule.seq:
+                if rule.prefix == part and part != u'':
+                    out.append(u' %s' % part)
+                elif rule.namespaceURI == part:
+                    out.append(u' "%s"' % self._escapestring(part))
+                elif hasattr(part, 'cssText'): # comments
+                    out.append(part.cssText)
+            return u'%s;' % u''.join(out)
+        else:
             return u''
-
-        out = [u'%s' % self._getatkeyword(rule, u'@namespace')]
-        for part in rule.seq:
-            if rule.prefix == part and part != u'':
-                out.append(u' %s' % part)
-            elif rule.namespaceURI == part:
-                out.append(u' "%s"' % self._escapestring(part))
-            elif hasattr(part, 'cssText'): # comments
-                out.append(part.cssText)
-        return u'%s;' % u''.join(out)
 
     def do_CSSMediaRule(self, rule):
         """
@@ -665,11 +670,10 @@ class CSSSerializer(object):
                         if namespaceURI == cssutils._ANYNS:
                             prefix = u'*'
                         else:
-                            for pre, uri in selector._namespaces.items():
-                                if uri == namespaceURI:
-                                    prefix = pre
-                                    break
-                            else:
+                            try:
+                                prefix = selector._namespaces.prefixForNamespaceURI(
+                                                    namespaceURI)
+                            except IndexError:
                                 prefix = u''
                         
                         if prefix == u'*' and u'' not in selector._namespaces:
