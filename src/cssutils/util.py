@@ -6,6 +6,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+from itertools import ifilter
 import re
 import types
 import xml.dom
@@ -139,9 +140,10 @@ class Base(object):
         CSSStyleSheet
         """
         if isinstance(text_namespaces_tuple, tuple):
-            return text_namespaces_tuple[0], dict(text_namespaces_tuple[1])
+            return text_namespaces_tuple[0], _SimpleNamespaces(
+                                                    text_namespaces_tuple[1])
         else:
-            return text_namespaces_tuple, {}
+            return text_namespaces_tuple, _SimpleNamespaces()
 
     def _tokenize2(self, textortokens):
         """
@@ -482,3 +484,151 @@ class Deprecated(object):
         newFunc.__doc__ = func.__doc__
         newFunc.__dict__.update(func.__dict__)
         return newFunc
+    
+class _Namespaces(object):
+    """
+    A dictionary like wrapper for @namespace rules used in a CSSStyleSheet.
+    Works on effective namespaces, so e.g. if::
+    
+        @namespace p1 "uri";
+        @namespace p2 "uri";
+    
+    only the second rule is effective and kept.
+    
+    namespaces
+        a dictionary {prefix: namespaceURI} containing the effective namespaces 
+        only. These are the latest set in the CSSStyleSheet.
+    parentStyleSheet
+        the parent CSSStyleSheet
+    """
+    def __init__(self, parentStyleSheet, *args):
+        "no initial values are set, only the relevant sheet is"
+        self.parentStyleSheet = parentStyleSheet
+    
+    def __contains__(self, prefix):
+        return prefix in self.namespaces
+    
+    def __delitem__(self, prefix):
+        "deletes CSSNamespaceRule(s) with rule.prefix == prefix"
+        delrule = self.__findrule(prefix)
+        for i, rule in enumerate(ifilter(lambda r: r.type == r.NAMESPACE_RULE, 
+                            self.parentStyleSheet.cssRules)):
+            if rule == delrule:
+                self.parentStyleSheet.deleteRule(i)
+                return
+
+        raise xml.dom.NamespaceErr('Prefix %r not found.' % prefix)
+            
+    def __getitem__(self, prefix):
+        try:
+            return self.namespaces[prefix]
+        except KeyError, e:
+            raise xml.dom.NamespaceErr('Prefix %r not found.' % prefix)
+    
+    def __iter__(self):
+        return self.namespaces.__iter__()
+    
+    def __len__(self):
+        return len(self.namespaces)
+
+    def __setitem__(self, prefix, namespaceURI):
+        "replaces prefix or sets new rule, may raise NoModificationAllowedErr"
+        rule = self.__findrule(prefix)
+        if not rule:
+            self.parentStyleSheet.insertRule(cssutils.css.CSSNamespaceRule(
+                                                    prefix=prefix,
+                                                    namespaceURI=namespaceURI),
+                                  inOrder=True)
+        else:
+            if prefix in self.namespaces:
+                rule.namespaceURI = namespaceURI # raises NoModificationAllowedErr
+            if namespaceURI in self.namespaces.values():
+                rule.prefix = prefix
+
+    def __findrule(self, prefix):
+        # returns namespace rule where prefix == key
+        for rule in ifilter(lambda r: r.type == r.NAMESPACE_RULE, 
+                            reversed(self.parentStyleSheet.cssRules)):
+            if rule.prefix == prefix:
+                return rule
+
+    def __getNamespaces(self):
+        namespaces = {}
+        for rule in ifilter(lambda r: r.type == r.NAMESPACE_RULE, 
+                            reversed(self.parentStyleSheet.cssRules)):
+            if rule.namespaceURI not in namespaces.values():
+                namespaces[rule.prefix] = rule.namespaceURI
+        return namespaces
+        
+    namespaces = property(__getNamespaces, 
+        doc=u'Holds only effetive @namespace rules in self.parentStyleSheets'
+             '@namespace rules.')
+    
+#    def deleteByNamespaceURI(self, namespaceURI):
+#        """
+#        Deletes CSSNamespaceRule(s) with rule.namespaceURI == namespaceURI        
+#        
+#        Raises xml.dom.NamespaceErr if the namespace is in use but all 
+#        namespacerules which have been set with the same uri are boiled down to
+#        the effective one
+#        """
+#        deleted = False
+#        i = 0
+#        rules = self.parentStyleSheet.cssRules
+#        while i < len(rules):
+#            if rules[i].type == rules[i].NAMESPACE_RULE and \
+#               rules[i].namespaceURI == namespaceURI:
+#                self.parentStyleSheet.deleteRule(i)
+#                deleted = True
+#            else:
+#                i += 1
+#                
+#        if not deleted:
+#            raise KeyError('Namespace URI "%s" not present in style sheet.' % 
+#                           namespaceURI)
+                
+    def get(self, prefix, default):
+        return self.namespaces.get(prefix, default)
+
+    def items(self):
+        return self.namespaces.items()
+
+    def keys(self):
+        return self.namespaces.keys()
+
+    def values(self):
+        return self.namespaces.values()
+    
+    def prefixForNamespaceURI(self, namespaceURI):
+        """
+        returns effective prefix for given namespaceURI or raises IndexError 
+        if this cannot be found"""
+        for prefix, uri in self.namespaces.items():
+            if uri == namespaceURI:
+                return prefix
+        raise IndexError(u'NamespaceURI %r not found.' % namespaceURI)
+
+    def __str__(self):
+        return u"<cssutils.util.%s object parentStyleSheet=%r namespaces=%r "\
+               u"at 0x%x>" % (
+                self.__class__.__name__, str(self.parentStyleSheet), 
+                self.namespaces, id(self))
+
+  
+class _SimpleNamespaces(_Namespaces):
+    """
+    namespaces used in objects like Selector as long as they are not connected
+    to a CSSStyleSheet
+    """
+    def __init__(self, *args):
+        self.__namespaces = dict(*args)   
+    
+    def __setitem__(self, prefix, namespaceURI):
+        self.__namespaces[prefix] = namespaceURI
+            
+    namespaces = property(lambda self: self.__namespaces, 
+                          doc=u'Dict Wrapper for self.sheets @namespace rules.')
+           
+    def __str__(self):
+        return u"<cssutils.util.%s object namespaces=%r at 0x%x>" % (
+                self.__class__.__name__, self.namespaces, id(self))
