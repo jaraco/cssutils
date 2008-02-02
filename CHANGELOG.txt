@@ -52,10 +52,9 @@ HEAD
         - ``CSSNamespaceRule.namespaceURI`` is readonly now, it can only be set in the constructor (needed to prevent an invalid sheet when changing this uri)
         - removed ``CSSStyleSheet.prefixes``
         - removed ``Selector.prefixes``
-        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and contains all namespaces as defined in @namespace rules
-        - from more than one ``CSSNamespaceRule`` with the same ``namespaceURI`` only the last one will be kept when serializing the resulting ``CSSStyleSheet``.
-
-          Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which contains the necessaty CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of-namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector within yet undefined namespace, set the namespace in the style sheet first simply by setting e.g. ``sheet[prefix] = namespaceURI``
+        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and mirrors all namespaces as defined in @namespace rules
+        - if more than one ``CSSNamespaceRule`` with the same ``namespaceURI`` is set only the last one will be kept. The ``prefix`` of that rule is used.
+        - Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which would contain the necessary CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of-namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector within a yet undefined namespace, set the namespace in the style sheet first simply by setting e.g. ``sheet[prefix] = namespaceURI``
 
     - **API CHANGE**: ``parentRule`` and ``parentStyleSheet`` of all CSS rules are now readonly to prevent building illegal style sheets.
 
