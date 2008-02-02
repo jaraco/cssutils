@@ -45,7 +45,6 @@ class CSSMediaRule(cssrule.CSSRule):
         """
         super(CSSMediaRule, self).__init__(parentRule=parentRule, 
                                            parentStyleSheet=parentStyleSheet)
-
         self.atkeyword = u'@media'
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)
@@ -55,6 +54,7 @@ class CSSMediaRule(cssrule.CSSRule):
         self.cssRules = cssutils.css.cssrulelist.CSSRuleList()
         self.cssRules.append = self.insertRule
         self.cssRules.extend = self.insertRule
+        self.cssRules.__delitem__ == self.deleteRule
 
         self._readonly = readonly
 
@@ -73,21 +73,33 @@ class CSSMediaRule(cssrule.CSSRule):
 
     def _setCssText(self, cssText):
         """
-        DOMException on setting
-
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if the rule is readonly.
-        - INVALID_MODIFICATION_ERR: (self)
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - HIERARCHY_REQUEST_ERR: (self)
-          Raised if the rule cannot be inserted at this point in the
-          style sheet.
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
+        :param cssText:
+            a parseable string or a tuple of (cssText, dict-of-namespaces)
+        :Exceptions:
+            - `NAMESPACE_ERR`: (Selector)
+              Raised if a specified selector uses an unknown namespace
+              prefix.
+            - `SYNTAX_ERR`: (self, StyleDeclaration, etc)
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - `INVALID_MODIFICATION_ERR`: (self)
+              Raised if the specified CSS string value represents a different
+              type of rule than the current one.
+            - `HIERARCHY_REQUEST_ERR`: (CSSStylesheet)
+              Raised if the rule cannot be inserted at this point in the
+              style sheet.
+            - `NO_MODIFICATION_ALLOWED_ERR`: (CSSRule)
+              Raised if the rule is readonly.
         """
         super(CSSMediaRule, self)._setCssText(cssText)
+        
+        # might be (cssText, namespaces)
+        cssText, namespaces = self._splitNamespacesOff(cssText)
+        try:
+            # use parent style sheet ones if available
+            namespaces = self.parentStyleSheet.namespaces
+        except AttributeError:
+            pass
         
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
@@ -130,10 +142,11 @@ class CSSMediaRule(cssrule.CSSRule):
                     return expected
                 
                 def ruleset(expected, seq, token, tokenizer):
-                    rule = cssutils.css.CSSStyleRule(parentRule=self, 
-                                           parentStyleSheet=self.parentStyleSheet)
-                    rule.cssText = self._tokensupto2(tokenizer, token)
-                    if new['valid']:
+                    rule = cssutils.css.CSSStyleRule(parentRule=self)
+                    rule.cssText = (self._tokensupto2(tokenizer, token), 
+                                    namespaces)
+                    if rule.valid:
+                        rule._parentStyleSheet=self.parentStyleSheet
                         seq.append(rule)
                     return expected
         
@@ -152,7 +165,8 @@ class CSSMediaRule(cssrule.CSSRule):
                         rule = cssutils.css.CSSUnknownRule(parentRule=self, 
                                            parentStyleSheet=self.parentStyleSheet)
                         rule.cssText = tokens
-                        seq.append(rule)
+                        if rule.valid:
+                            seq.append(rule)
                     return expected
                 
                 tokenizer = (t for t in cssrulestokens) # TODO: not elegant!
