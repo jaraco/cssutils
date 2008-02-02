@@ -17,7 +17,7 @@ Selector
 --------
 :prio: 1
 
-- CSS2XPath converter? -> use lxml.cssselector
+- CSS2XPath converter -> use lxml.cssselector
 - optimize selector parsing?
 - **add query functionality**
     + specificity DONE
@@ -60,16 +60,6 @@ CSS2Properties
 needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
 
 
-@namespace
-----------
-:prio: 3
-
-- stylesheet:
-    - tests for undeclared prefixes in stylerules, mediarule
-    - use parentRule or parentStyleSheet to look for @namespace!
-    - remove from stylesheet!
-- CSSRule.nsvalid ?
-
 CSSValue
 --------
 :prio: 3
@@ -107,13 +97,7 @@ performance
 -----------
 :prio: 3
 
-- Use of the XIST CSS-tokenizer
-    TODO:
-
-    + renaming of tokens
-    + add of line and column information
-
-- other bottlenecks
+- profile.py
 
 
 new features
