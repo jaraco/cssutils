@@ -41,7 +41,7 @@ atkeyword
 
 CSSStyleSheet
 =============
-The CSSStyleSheet contains all rules. It consists of the different rules defined above like CSSImportRule_ CSSStyleRule_ etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an CSSCharsetRule_ rules or simpler with the encoding_ attribute. The serialized sheet may be obtained from cssText_. All rules are present in cssRules_. Namespace prefixes are available in prefixes_, the actual namespace URIs in the CSSNamespaceRule_ objects (do not rely on prefixes though, see http://www.w3.org/TR/REC-xml-names/ how these work.
+The CSSStyleSheet contains all rules. It consists of the different rules defined above like CSSImportRule_ CSSStyleRule_ etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an CSSCharsetRule_ rules or simpler with the encoding_ attribute. The serialized sheet may be obtained from cssText_. All rules are present in cssRules_, a stylesheet iterates on its rules so this might be easier. Namespaces are available via namespaces_, the actual namespace rules in the CSSNamespaceRule_ objects (do not rely on prefixes, see http://www.w3.org/TR/REC-xml-names/ how these work).
 
 Attributes
 ----------
@@ -66,7 +66,7 @@ encoding (cssutils and CSSOM only)
 
     Effectively using CSSCharsetRule directly is not needed anymore.
 
-.. _prefixes:
+.. _namespaces:
 
 namespace: a simplified dict like object (cssutils only)
     reflects set @namespace rules of this rule.
@@ -79,8 +79,8 @@ Methods
 
 .. _append:
 
-append(self, rule)
-    Appends a rule to the proper hierarchical position in the style sheet. Same as ``insertRule(rule, inOrder=True)`` but simpler.
+add(self, rule)
+    Adds a rule to the proper hierarchical position in the style sheet. Same as ``insertRule(rule, inOrder=True)`` but simpler.
 
 .. _deleteRule:
 
@@ -125,10 +125,10 @@ This rule is not really needed anymore as using  encoding_ of CSSStyleSheet_ is 
 
 CSSNamespaceRule
 ================
-CSSNamespaceRule currently implements http://www.w3.org/TR/2006/WD-css3-namespace-20060828/
+CSSNamespaceRule currently implements http://www.w3.org/TR/2006/WD-css3-namespace-20060828/. Dealing with these rules directly is not needed anymore, easier is the use of CSSStyleSheet namespaces_.
 
 namespaceURI
-    The namespace URI (a simple string!) which is bound to the given prefix. If no prefix is set (CSSNamespaceRule.prefix=='') the namespace defined by ``namespaceURI`` is set as the default namespace.
+    The namespace URI (a simple string!) which is bound to the given prefix. If no prefix is set (CSSNamespaceRule.prefix=='') the namespace defined by ``namespaceURI`` is set as the default namespace. This property is readonly to prevent making stylesheets invalid.
 prefix
     The prefix used in the stylesheet for the given CSSNamespaceRule.nsuri. If prefix is empty uri sets the default namespace for the stylesheet.
 

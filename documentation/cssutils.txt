@@ -115,6 +115,8 @@ keepComments = True
 keepEmptyRules = False
     defines if empty rules like e.g. ``a {}`` are kept in the resulting
     serialized sheet
+keepUsedNamespaceRulesOnly = False
+    if True only namespace rules which are actually used are kept
 lineNumbers = False
     Only used for serializing CSSStyleSheet, not individual rules or properties etc.
 lineSeparator = u'\\n'
