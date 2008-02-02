@@ -109,7 +109,6 @@ class CSSStyleRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
         styletokens = self._tokensupto2(tokenizer, blockendonly=True)
-
         trail = self._nexttoken(tokenizer)
         if trail:
             self._log.error(u'CSSStyleRule: Trailing content: %s',
@@ -134,7 +133,6 @@ class CSSStyleRule(cssrule.CSSRule):
                 valid = False
                 self._log.error(u'CSSStyleRule: No selector found: %r.' %
                             self._valuestr(cssText), bracetoken)
-                
             newselectorlist = SelectorList(selectorText=(selectortokens, 
                                                          namespaces),
                                            parentRule=self)

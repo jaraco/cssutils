@@ -84,12 +84,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
             : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
             ;
         """
-        self._prefix = u''
-        self._namespaceURI = None
-        self.atkeyword = u'@namespace'
-
         super(CSSNamespaceRule, self).__init__(parentRule=parentRule, 
                                                parentStyleSheet=parentStyleSheet)
+        self.atkeyword = u'@namespace'
+        self._prefix = u''
+        self._namespaceURI = None
         
         if namespaceURI:
             self.namespaceURI = namespaceURI
@@ -158,18 +157,6 @@ class CSSNamespaceRule(cssrule.CSSRule):
         else:
             self.seq[0] = prefix # put prefix at the beginning!
 
-        # save old to remove in parentStyleSheet
-        oldprefix = self._prefix
-        
-        # update prefixes in stylesheet
-        if self.parentStyleSheet:
-            try:
-                self.parentStyleSheet.namespaces[prefix] = \
-                        self.parentStyleSheet.namespaces[oldprefix]
-                del self.parentStyleSheet.namespaces[oldprefix]
-            except KeyError:
-                self.parentStyleSheet.namespaces[prefix] = self._namespaceURI
-
         # set new prefix
         self._prefix = prefix
 
@@ -178,8 +165,6 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
     def _setParentStyleSheet(self, parentStyleSheet):
         self._parentStyleSheet = parentStyleSheet
-        if parentStyleSheet and self._namespaceURI is not None:
-            self.parentStyleSheet.namespaces[self.prefix] = self._namespaceURI
 
     parentStyleSheet = property(lambda self: self._parentStyleSheet, 
                                 _setParentStyleSheet,
