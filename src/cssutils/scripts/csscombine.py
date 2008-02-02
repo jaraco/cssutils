@@ -1,20 +1,20 @@
 """combines sheets referred to by @import rules in a given CSS proxy sheet
-into a single new sheet. 
+into a single new sheet.
 
 - proxy currently is a path (no URI)
-- in @import rules only relative paths do work for now but should be used 
+- in @import rules only relative paths do work for now but should be used
   anyway
 - currently no nested @imports are resolved
 - messages are send to stderr
-- output to stdout. 
+- output to stdout.
 
 Example::
-    
-    csscombine sheets\csscombine-proxy.css -m -t ascii -s utf-8 
+
+    csscombine sheets\csscombine-proxy.css -m -t ascii -s utf-8
         1>combined.css 2>log.txt
 
 results in log.txt::
-    
+
     COMBINING sheets\csscombine-proxy.css
     USING SOURCE ENCODING: utf-8
     * PROCESSING @import sheets\csscombine-1.css
@@ -42,13 +42,15 @@ or without option -m::
         }
 
 issues
-    - URL or file hrefs? URI should be default and therefor baseURI is needed
-    - no nested @imports are resolved yet
-    - namespace rules are not working yet!
-        - @namespace must be resolved (all should be moved to top of main sheet?
-          but how are different prefixes resolved???)
-    - maybe add a config file which is used?
-    
+
+- URL or file hrefs? URI should be default and therefor baseURI is needed
+- no nested @imports are resolved yet
+- namespace rules are not working yet!
+    - @namespace must be resolved (all should be moved to top of main sheet?
+      but how are different prefixes resolved???)
+
+- maybe add a config file which is used?
+
 """
 import os
 import sys
@@ -56,19 +58,20 @@ import cssutils
 from cssutils.serialize import CSSSerializer
 
 
-def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',  
+def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',
                minify=True):
     """
-    :Properties:
-        proxypath
+    :returns: combined cssText
+    :Parameters:
+        `proxypath`:
             url or path to a CSSStyleSheet which imports other sheets which
             are then combined into one sheet
-        sourceencoding = 'css'
+        `sourceencoding` = 'css':
             encoding of the source sheets including the proxy sheet
-            
-        targetencoding = 'utf-8'
+
+        `targetencoding` = 'utf-8':
             encoding of the combined stylesheet
-        minify = True
+        `minify` = True:
             defines if the combined sheet should be minified
     """
     sys.stderr.write('COMBINING %s\n' % proxypath)
@@ -83,7 +86,7 @@ def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',
             sys.stderr.write('* PROCESSING @import %s\n' % fn)
             importsheet = cssutils.parse(fn, encoding=sourceencoding)
             importsheet.encoding = None # remove @charset
-            r.insertRule(cssutils.css.CSSComment(cssText=u'/* %s */' % 
+            r.insertRule(cssutils.css.CSSComment(cssText=u'/* %s */' %
                                                  rule.cssText))
             for x in importsheet.cssRules:
                 if x.type == x.IMPORT_RULE:
@@ -91,17 +94,17 @@ def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',
                 # TODO: too simple if prefixes different in sheets!
 #                elif x.type == x.NAMESPACE_RULE:
 #                    print 'INFO\tMoved to begin of sheet', x.cssText
-#                    r.insertRule(x, 0)   
+#                    r.insertRule(x, 0)
                 else:
-                    r.insertRule(x)   
+                    r.insertRule(x)
             #r.insertRule(importsheet.cssRules)
-            
+
 #        elif rule.type == rule.NAMESPACE_RULE:
 #            print 'INFO\tMoved to begin of sheet', rule.cssText
-#            r.insertRule(rule, 0)   
+#            r.insertRule(rule, 0)
         else:
             r.insertRule(rule)
-            
+
     sys.stderr.write('SETTING TARGET ENCODING: %s\n' % targetencoding)
     r.encoding = targetencoding
     if minify:
@@ -113,30 +116,30 @@ def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',
         cssutils.setSerializer(oldser)
     else:
         cssText = r.cssText
-    return cssText     
-    
+    return cssText
+
 def main(args=None):
     import optparse
 
     usage = "usage: %prog [options] path"
     parser = optparse.OptionParser(usage=usage)
-    parser.add_option('-s', '--sourceencoding', action='store', 
+    parser.add_option('-s', '--sourceencoding', action='store',
                       dest='sourceencoding', default='css',
         help='encoding of input, defaulting to "css". If given overwrites other encoding information like @charset declarations')
-    parser.add_option('-t', '--targetencoding', action='store', 
+    parser.add_option('-t', '--targetencoding', action='store',
                       dest='targetencoding',
         help='encoding of output, defaulting to "UTF-8"', default='utf-8')
     parser.add_option('-m', '--minify', action='store_true', dest='minify',
                       default=False,
         help='saves minified version of combined files, defaults to False')
     options, path = parser.parse_args()
-    
+
     if not path:
         parser.error('no path given')
     else:
         path = path[0]
-       
-    print csscombine(path, options.sourceencoding, options.targetencoding, 
+
+    print csscombine(path, options.sourceencoding, options.targetencoding,
                      options.minify)
 
 
