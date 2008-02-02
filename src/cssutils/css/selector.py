@@ -321,8 +321,8 @@ class Selector(cssutils.util.Base2):
                         # *|name
                         namespaceURI = cssutils._ANYNS
                     elif prefix is None:
-                        # name
-                        namespaceURI = None
+                        # name which has effectively namespace u'' (?)
+                        namespaceURI = namespaces.get(u'', None)
                     elif prefix == u'':
                         # |name or |*
                         namespaceURI = namespaces.get(prefix, u'')
