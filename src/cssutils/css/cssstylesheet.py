@@ -75,8 +75,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         for rule in self.cssRules:
             yield rule
     
-    def __cleanNamespaces(self):
-        "removed all namespaces with same namespaceURI except last set"
+    def _cleanNamespaces(self):
+        "removes all namespace rules with same namespaceURI but last one set"
         rules = self.cssRules
         namespaceitems = self.namespaces.items()
         i = 0
@@ -87,6 +87,18 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self.deleteRule(i)
             else:
                 i += 1       
+
+    def _getUsedURIs(self):
+        "returns set of URIs used in the sheet"
+        useduris = set()
+        for r1 in self:
+            if r1.STYLE_RULE == r1.type:
+                useduris.update(r1.selectorList._getUsedUris())  
+            elif r1.MEDIA_RULE == r1.type:
+                for r2 in r1:
+                    if r2.type == r2.STYLE_RULE:
+                        useduris.update(r2.selectorList._getUsedUris())
+        return useduris
     
     def _getCssText(self):
         return cssutils.ser.do_CSSStyleSheet(self)
@@ -234,7 +246,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             del self.cssRules[:]
             for rule in newseq:
                 self.insertRule(rule, _clean=False)
-            self.__cleanNamespaces()
+            self._cleanNamespaces()
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
@@ -307,15 +319,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             if rule.type == rule.NAMESPACE_RULE:
                 # check all namespacerules if used
                 uris = [r.namespaceURI for r in self if r.type == r.NAMESPACE_RULE]
-                useduris = set()
-                for r1 in self:
-                    if r1.STYLE_RULE == r1.type:
-                        useduris.update(r1.selectorList._getUsedUris())  
-                    elif r1.MEDIA_RULE == r1.type:
-                        for r2 in rule:
-                            if r2.type == r2.STYLE_RULE:
-                                useduris.update(r2.selectorList._getUsedUris())
-                                
+                useduris = self._getUsedURIs()
                 if rule.namespaceURI in useduris and\
                    uris.count(rule.namespaceURI) == 1: 
                     raise xml.dom.NoModificationAllowedErr(
@@ -387,11 +391,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self.insertRule(r, index + i)
             return index
 
-#        elif not isinstance(rule, cssutils.css.CSSRule):
-#            # check if a CSSRule
-#            self._log.error(u'CSSStyleSheet: Not a CSSRule: %s' % rule)
-#            return
-        
         if not rule.valid:
             self._log.error(u'CSSStyleSheet: Invalid rules cannot be added.')
             return
@@ -496,9 +495,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                             index,
                             error=xml.dom.HierarchyRequestErr)
                         return
-            self.cssRules.insert(index, rule)
-#            if _clean:
-#                self.__cleanNamespaces()
+            
+            if not (rule.prefix in self.namespaces and
+               self.namespaces[rule.prefix] == rule.namespaceURI):
+                # no doublettes
+                self.cssRules.insert(index, rule)
+                if _clean:
+                    self._cleanNamespaces()
 
         # all other
         else:
