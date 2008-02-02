@@ -61,6 +61,8 @@ class Preferences(object):
     keepEmptyRules = False
         defines if empty rules like e.g. ``a {}`` are kept in the resulting
         serialized sheet
+    keepUsedNamespaceRulesOnly = False
+        if True only namespace rules which are actually used are kept
         
     lineNumbers = False
         Only used if a complete CSSStyleSheet is serialized.
@@ -117,6 +119,7 @@ class Preferences(object):
         self.keepAllProperties = True
         self.keepComments = True
         self.keepEmptyRules = False
+        self.keepUsedNamespaceRulesOnly = False
         self.lineNumbers = False
         self.lineSeparator = u'\n'
         self.listItemSpacer = u' '
@@ -140,6 +143,7 @@ class Preferences(object):
         self.indent = u''
         self.keepComments = False
         self.keepEmptyRules = False
+        self.keepUsedNamespaceRulesOnly = True
         self.lineNumbers = False
         self.lineSeparator = u''
         self.listItemSpacer = u''
@@ -330,8 +334,15 @@ class CSSSerializer(object):
 
     def do_CSSStyleSheet(self, stylesheet):
         """serializes a complete CSSStyleSheet"""
+        useduris = stylesheet._getUsedURIs()
         out = []
         for rule in stylesheet.cssRules:
+            if self.prefs.keepUsedNamespaceRulesOnly and\
+               rule.NAMESPACE_RULE == rule.type and\
+               rule.namespaceURI not in useduris and (
+                    rule.prefix or None not in useduris):
+                continue 
+
             cssText = rule.cssText
             if cssText:
                 out.append(cssText)
@@ -458,9 +469,11 @@ class CSSSerializer(object):
                 rule.prefix in rule.parentStyleSheet.namespaces)
             ):
             out = [u'%s' % self._getatkeyword(rule, u'@namespace')]
+            prefixdone = False
             for part in rule.seq:
-                if rule.prefix == part and part != u'':
+                if not prefixdone and rule.prefix == part and part != u'':
                     out.append(u' %s' % part)
+                    prefixdone = True
                 elif rule.namespaceURI == part:
                     out.append(u' "%s"' % self._escapestring(part))
                 elif hasattr(part, 'cssText'): # comments
