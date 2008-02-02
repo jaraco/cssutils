@@ -55,6 +55,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
     def test_namespaces1(self):
         "CSSStyleSheet.namespaces.namespaces"
+        # tests for namespaces internal methods
         s = cssutils.css.CSSStyleSheet()
         self.assertEqual(0, len(s.namespaces))
         
@@ -110,11 +111,14 @@ ex2|x {
         self.assertEqual('x', s.namespaces.get('UNKNOWN', 'x'))
         self.assertEqual('example', s.namespaces.get('ex2', 'not used defa'))
         
-    def test_namespaces(self):
+    def test_namespaces2(self):
         "CSSStyleSheet.namespaces"
+        # tests using CSSStyleSheet.namespaces
+        
         s = cssutils.css.CSSStyleSheet()
         css = '@namespace n "new";'
-        s.insertRule(css)
+        # doubles will be removed
+        s.insertRule(css + css)
         self.assertEqual(css, s.cssText)
         r = cssutils.css.CSSNamespaceRule(prefix='ex2', namespaceURI='example')
         s.insertRule(r)
@@ -190,8 +194,9 @@ ex2|SEL4, a, ex2|SELSR {
     top: 0
     }''')
 
-    def test_namespaces2(self):
-        "CSSStyleSheet.namespaces 2"
+    def test_namespaces3(self):
+        "CSSStyleSheet.namespaces 3"
+        # tests setting namespaces with new {}
         s = cssutils.css.CSSStyleSheet()
         css = u'h|a { top: 0 }'
         self.assertRaises(xml.dom.NamespaceErr, s.add, css)
@@ -201,10 +206,9 @@ ex2|SEL4, a, ex2|SELSR {
 
         r = cssutils.css.CSSStyleRule()
         r.cssText = ((css, {'h': 'html'}))
-        s.add(r)
+        s.add(r) # uses x as set before! h is temporary only
         self.assertEqual(s.cssText, '@namespace x "html";\nx|a {\n    top: 0\n    }')
 
-        # check: s.add(('y|a {}, {'y': 'html'}))
         # prefix is now "x"!
         self.assertRaises(xml.dom.NamespaceErr, r.selectorList.append, 'h|b')
         self.assertRaises(xml.dom.NamespaceErr, r.selectorList.append, 'y|b')
@@ -213,12 +217,20 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertEqual(s.cssText,
             u'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }')
 
-        del s.namespaces['y']
+        self.assertRaises(xml.dom.NoModificationAllowedErr, 
+                          s.namespaces.__delitem__, 'y')
         self.assertEqual(s.cssText,
-            u'@namespace x "html";\nx|a, x|b {\n    top: 0\n    }')
+            u'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }')
+        
+        s.cssRules[0].prefix = ''
+        self.assertEqual(s.cssText,
+            u'@namespace "html";\n|a, |b {\n    top: 0\n    }')
 
-        # check removal of extra namespace!!!
-
+        # remove need of namespace
+        s.cssRules[0].prefix = 'x'
+        s.cssRules[1].selectorText = 'a, b'
+        self.assertEqual(s.cssText,
+            u'@namespace x "html";\na, b {\n    top: 0\n    }')
 
     def test_NoModificationAllowedErr(self):
         "CSSStyleSheet NoModificationAllowedErr"
@@ -304,12 +316,13 @@ ex2|SEL4, a, ex2|SELSR {
             u'@import "x";\na {\n    x: 1\n    }': None,
             # @namespace
             u'@x;\n@namespace a "x";': None,
-#            u'@namespace a "x";\n@namespace b "y";': None,
-#            u'@import "x";\n@namespace a "x";\n@media all {}': u'@import "x";\n@namespace a "x";',
-#            u'@namespace a "x";\n@x;': None,
-#            u'@namespace a "x";\na {\n    x: 1\n    }': None,
-#            ur'\1 { \2: \3 }': ur'''\1 {
-#    \2: \3
+            u'@namespace a "x";\n@namespace b "y";': None,
+            u'@import "x";\n@namespace a "x";\n@media all {}': 
+                u'@import "x";\n@namespace a "x";',
+            u'@namespace a "x";\n@x;': None,
+            u'@namespace a "x";\na {\n    x: 1\n    }': None,
+#            ur'\1 { \2: \3 }': ur'''\x01 {
+#    \x02: \x03
 #    }''',
 #            ur'''
 #            \@ { \@: \@ }
@@ -481,7 +494,8 @@ body {
                 self.assertEqual(u'\n'.join(expected), full.cssText)
                 self.assertEqual(i+1, index) # no same rule present
 
-    def _insertRule(self, rules, notbefore, notafter, anywhere):
+    def _insertRule(self, rules, notbefore, notafter, anywhere, 
+                    checkdoubles=True):
         """
         helper
         test if any rule in rules cannot be inserted before rules in before
@@ -511,7 +525,8 @@ body {
                 s.insertRule(r)
                 s.insertRule(rule, 0) # before
                 s.insertRule(rule) # after
-                self.assertEqual(s.cssRules.length, 3)
+                if checkdoubles:
+                    self.assertEqual(s.cssRules.length, 3)
                 self.assertEqual(s, r.parentStyleSheet)
 
     def test_insertRule_charset(self):
@@ -539,7 +554,8 @@ body {
         notbefore = (self.cr, self.ir)
         notafter = (self.pr, self.mr, self.sr)
         anywhere = (self.c, self.ur, self.nr)
-        self._insertRule((self.nr,), notbefore, notafter, anywhere)
+        self._insertRule((self.nr,), notbefore, notafter, anywhere, 
+                         checkdoubles=False)
 
     def test_insertRule_media_page_style(self):
         "CSSStyleSheet.insertRule(@media, @page, stylerule)"

@@ -78,17 +78,17 @@ class SelectorTestCase(basetest.BaseTestCase):
             ]
         tests = {
             # selector: with default, no default, same default 
-            '*': ('*', '*', '*'),
-            'x': ('x', 'x', 'x'),
+            '*': ('*', '|*', '|*'),
+            'x': ('x', '|x', '|x'),
             '|*': ('|*', '|*', '|*'),
             '|x': ('|x', '|x', '|x'),
-            '*|*': ('*', '*', '*'),#('*', '*|*', '*|*'),
-            '*|x': ('x', 'x', 'x'),#('x', '*|x', '*|x'),
+            '*|*': ('*', '*', '*'),
+            '*|x': ('x', 'x', 'x'),
             'p|*': ('p|*', 'p|*', '|*'),
             'p|x': ('p|x', 'p|x', '|x'),
             'x[a][|a][*|a][p|a]': ('x[a][|a][a][p|a]', 
-                                   'x[a][|a][*|a][p|a]', 
-                                   'x[a][|a][*|a][|a]')
+                                   '|x[|a][|a][*|a][p|a]', 
+                                   '|x[|a][|a][*|a][|a]')
         }
         for sel, exp in tests.items():
             for i, result in enumerate(exp):

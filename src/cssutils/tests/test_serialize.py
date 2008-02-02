@@ -27,6 +27,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, True)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
+        self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, False)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
         self.assertEqual(cssutils.ser.prefs.lineSeparator, u'\n')
         self.assertEqual(cssutils.ser.prefs.listItemSpacer, u' ')
@@ -41,6 +42,8 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         css = u'''
     /*1*/
     @import url(x) tv , print;
+    @namespace prefix "uri";
+    @namespace unused "unused";
     @media all {}
     @media all {
         a {}
@@ -50,12 +53,14 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         }
     @page     { left: 0; }
     a {}
-    a + b > c ~ d , b { top : 1px ; 
+    prefix|x, a + b > c ~ d , b { top : 1px ; 
         font-family : arial ,'some' 
         }
     '''
         parsedcss = u'''/*1*/
 @import url(x) tv, print;
+@namespace prefix "uri";
+@namespace unused "unused";
 @media all {
     a {
         color: red
@@ -64,7 +69,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 @page {
     left: 0
     }
-a + b > c ~ d, b {
+prefix|x, a + b > c ~ d, b {
     top: 1px;
     font-family: arial, 'some'
     }'''
@@ -82,6 +87,7 @@ a + b > c ~ d, b {
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, False)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
+        self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, True)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
         self.assertEqual(cssutils.ser.prefs.lineSeparator, u'')
         self.assertEqual(cssutils.ser.prefs.listItemSpacer, u'')
@@ -97,6 +103,8 @@ a + b > c ~ d, b {
         css = u'''
     /*1*/
     @import url(x) tv , print;
+    @namespace prefix "uri";
+    @namespace unused "unused";
     @media all {}
     @media all {
         a {}
@@ -106,13 +114,13 @@ a + b > c ~ d, b {
     }
     @page {}
     a {}
-    a + b > c ~ d , b { top : 1px ; 
+    prefix|x, a + b > c ~ d , b { top : 1px ; 
         font-family : arial ,  'some' 
         }
     '''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, 
-            u'''@import "x" tv,print;@media all{a{color:red}}a+b>c~d,b{top:1px;font-family:arial,'some'}''' 
+            u'''@import "x" tv,print;@namespace prefix "uri";@media all{a{color:red}}prefix|x,a+b>c~d,b{top:1px;font-family:arial,'some'}''' 
             )
 
     def test_defaultAtKeyword(self):
@@ -292,6 +300,43 @@ a {
         color: red
         }
     }''', s.cssText)
+
+    def test_keepUsedNamespaceRulesOnly(self):
+        "Preferences.keepUsedNamespaceRulesOnly"
+        cssutils.ser.prefs.useDefaults()
+        tests = {
+            # default == prefix => both are combined
+            '@namespace p "u"; @namespace "u"; p|a, a {top: 0}':
+                ('@namespace "u";\n|a, |a {\n    top: 0\n    }', 
+                 '@namespace "u";\n|a, |a {\n    top: 0\n    }'),
+            '@namespace "u"; @namespace p "u"; p|a, a {top: 0}':
+                ('@namespace p "u";\np|a, p|a {\n    top: 0\n    }', 
+                 '@namespace p "u";\np|a, p|a {\n    top: 0\n    }'),
+            # default and prefix
+            '@namespace p "u"; @namespace "d"; p|a, a {top: 0}':
+                ('@namespace p "u";\n@namespace "d";\np|a, |a {\n    top: 0\n    }', 
+                 '@namespace p "u";\n@namespace "d";\np|a, |a {\n    top: 0\n    }'),
+            # prefix only
+            '@namespace p "u"; @namespace "d"; p|a {top: 0}':
+                ('@namespace p "u";\n@namespace "d";\np|a {\n    top: 0\n    }', 
+                 '@namespace p "u";\np|a {\n    top: 0\n    }'),
+            # default only
+            '@namespace p "u"; @namespace "d"; a {top: 0}':
+                ('@namespace p "u";\n@namespace "d";\n|a {\n    top: 0\n    }', 
+                 '@namespace "d";\n|a {\n    top: 0\n    }'),
+            # prefix-ns only
+            '@namespace p "u"; @namespace d "d"; p|a {top: 0}':
+                ('@namespace p "u";\n@namespace d "d";\np|a {\n    top: 0\n    }', 
+                 '@namespace p "u";\np|a {\n    top: 0\n    }'),
+        }
+        for test in tests:
+            s = cssutils.parseString(test)
+            expwith, expwithout = tests[test]
+            cssutils.ser.prefs.keepUsedNamespaceRulesOnly = False
+            self.assertEqual(s.cssText, expwith)
+            cssutils.ser.prefs.keepUsedNamespaceRulesOnly = True
+            self.assertEqual(s.cssText, expwithout)
+        
 
     def test_lineNumbers(self):
         "Preferences.lineNumbers"
