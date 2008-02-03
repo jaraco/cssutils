@@ -37,6 +37,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         s = cssutils.css.CSSStyleDeclaration(cssText=r'x: 1;\y: 2')
         for test in ('x', r'x', 'y', r'y'):
             self.assert_(test in s)
+            self.assert_(test.upper() in s)
             self.assert_(cssutils.css.Property(test, '1') in s)
         self.assert_('z' not in s)
         self.assert_(cssutils.css.Property('z', '1') not in s)
