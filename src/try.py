@@ -47,7 +47,7 @@ def escapecss(e):
 
 codecs.register_error('escapecss', escapecss)
 
-if 1:  
+if 1:
     INFO = """
     green in Safari and Opera (not FireFox):
    @1; div { color:green; }
