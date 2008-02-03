@@ -283,7 +283,7 @@ class CSSMediaRule(cssrule.CSSRule):
 
         # parse
         if isinstance(rule, basestring):
-            tempsheet = CSSStyleSheet()
+            tempsheet = cssutils.css.CSSStyleSheet()
             tempsheet.cssText = rule
             if len(tempsheet.cssRules) != 1 or (tempsheet.cssRules and
              not isinstance(tempsheet.cssRules[0], cssutils.css.CSSRule)):
