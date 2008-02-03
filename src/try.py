@@ -47,17 +47,58 @@ def escapecss(e):
 
 codecs.register_error('escapecss', escapecss)
 
-if 1:       
-    css = '''
-    @namespace p1 "u"; 
-    @namespace p2 "u";
-    p1|x, p2|y { color: green }
-    '''    
-    css = '@namespace p2 "u";'
-    s = cssutils.parseString(css)
-    print s.cssText
+if 1:  
+    INFO = """
+    green in Safari and Opera (not FireFox):
+   @1; div { color:green; }
+or:
+   @1 []; div { color:green; }
+
+green in Opera only:
+   @1 [{}]; div { color:green; }
+
+green in Opera only (with ALL subsequent rules seemingly ignored in Safari and FireFox):
+@media all {
+   @
+} 
+div { color:green; }
+
+green in Opera and Safari (with ALL subsequent rules seemingly ignored in FireFox):
+   @1 { [ }
+   div { color:green;}
+
+on this last one, adding a "]" or ";"  anywhere after the first "}" does not seem to help FireFox recover.
+"""     
+    css = ['''/* green in Safari and Opera (not FireFox): */
+        @1;
+        DIV { color: green; }''',
+        '''/* green in Safari and Opera (not FireFox): */
+        @1 []; 
+        div { color:green; }''',
+        
+        '''/* green in Opera only: */
+        @1 [{}];
+        div { color:green; }'''
+        '''@media all {
+   @
+} 
+div { color:green; }''',
+
+        '''@1 { [ }
+   div { color:green;}''',    
+        '''@1 { [ } ]
+            div { color:red;}
+                div  { color: green; } /* The last rule eaten was the first div selector above, while I am safe */ '''    
+    ]
+    for t in css:
+        s = cssutils.parseString(t)
+        print t
+        print '----'
+        print s.cssText
+        print '=======================\n'
+    sys.exit(1)
     
-    s.add('@media all { p2|a { color: green} }')
+    s.add()
     #mr = cssutils.css.CSSMediaRule()
     #s.add(mr)
     #mr.cssText = '@media all { p2|a { color: green} }'
