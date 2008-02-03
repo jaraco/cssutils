@@ -140,7 +140,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def COMMENT(expected, seq, token, tokenizer=None):
             "special: sets parent*"
-            comment = cssutils.css.CSSComment([token], parentRule=self, 
+            comment = cssutils.css.CSSComment([token], 
                                 parentStyleSheet=self.parentStyleSheet)
             seq.append(comment)
             return expected
