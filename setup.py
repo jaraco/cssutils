@@ -8,7 +8,7 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
-__version__ = '0.9.5a2'
+__version__ = '0.9.5a3'
 
 import codecs
 import os
