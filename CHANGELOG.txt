@@ -70,6 +70,8 @@ HEAD
 
     * FEATURE: Added ``Selector.parentList`` which contains a reference to the containing ``SelectorList``. Needed (at least) to process namespaces properly.
 
+    + **BUGFIX**: ``CSSMediaRule.insertRule`` setting with a rule string fixed
+
     + **BUGFIX**: ``*.parentStyleSheet`` where * is any CSSRule is properly set now
 
     + **BUGFIX**: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
