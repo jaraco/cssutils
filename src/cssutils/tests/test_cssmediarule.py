@@ -35,6 +35,18 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         # until any rules
         self.assertEqual(u'', r.cssText)
 
+    def test_iter(self):
+        "CSSMediaRule.__iter__()"
+        m = cssutils.css.CSSMediaRule()
+        m.cssText = '''@media all { /*1*/a { left: 0} b{ top:0} }'''
+        types = [cssutils.css.CSSRule.COMMENT,
+                 cssutils.css.CSSRule.STYLE_RULE,
+                 cssutils.css.CSSRule.STYLE_RULE]
+        for i, rule in enumerate(m):
+            self.assertEqual(rule, m.cssRules[i])
+            self.assertEqual(rule.type, types[i])
+            self.assertEqual(rule.parentRule, m)
+            
     def test_InvalidModificationErr(self):
         "CSSMediaRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@media')
