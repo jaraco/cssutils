@@ -9,9 +9,9 @@ changelog
 
 known issues
 ------------
-- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not yet implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` will probably be completely refactored with suggestions in CSSOM
+- ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` and the relevant methods/properties ``Property.cssValue`` and ``CSSStyleDeclaration.getPropertyCSSValue`` are more or less *DEPRECATED* and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings. As the aforementioned classes are not hardly that useful this should not be a big problem but please beware if you use or have used them. If you think this a bad idea please let me know!
 
-   **THEREFORE:** Do no rely on ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` and the relevant properties ``Property.cssvalue`` and ``CSSStyleDeclaration.getPropertyCSSValue`` but use the properties and functions that use simple strings for values of CSS properties. As the aforementioned DEPRECATED classes are not hardly that useful this should not be a big problem but please beware. If you find it otherwise please let me know!
+   Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` will probably be completely replaced/refactored with suggestions from CSSOM.
 
 - ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as not normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
 
@@ -23,14 +23,14 @@ known issues
 
 - ``css.UnknownRule`` is not handled properly in cases, tests are spotty there too. it also seems to have been removed in CSSOM but seems useful so is still present
 
-- although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to not be preserved:
+- although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to **not** be preserved:
 
   star hack
     ``*html`` without any whitespace
   star7 hack
     ``html*#test-span`` (IMHO invalidated by the missing WS between html and "*")
 
-  The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils.
+  The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils (actually with hardly any css parser...).
 
   Generally syntactically valid stylesheets should be preserved completely (otherwise a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above ``*html`` hack. Most of these hacks may be rewritten while still be usable, e.g. ``* html`` should work same to ``*html``. Currenty the invalid CSS hack using ``$propertyname`` is actually preserved but still usage is discouraged. In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
@@ -44,17 +44,16 @@ known issues
 HEAD
 
 
-0.9.5a3 0802??
-
+0.9.5a3 080203
     - **API CHANGE: Refactored and fixed namespace handling**
         Aim was to prevent building invalid style sheets. Therefor namespaces must be checked e.g. when adding a new ``Selector`` etc. This probably is not fixed for all cases but much better now than before.
 
+        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and mirrors all namespaces as defined in @namespace rules. New Namespaces may also be set here as well as prefixes changed.
+        - if more than one ``CSSNamespaceRule`` with the same ``namespaceURI`` is set only the last one will be kept. The ``prefix`` of that rule is used.
         - ``CSSNamespaceRule.namespaceURI`` is readonly now, it can only be set in the constructor (needed to prevent an invalid sheet when changing this uri)
+        - Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which would contain the necessary CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of-namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector within a yet undefined namespace, set the namespace in the style sheet first simply by setting e.g. ``sheet[prefix] = namespaceURI``
         - removed ``CSSStyleSheet.prefixes``
         - removed ``Selector.prefixes``
-        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and mirrors all namespaces as defined in @namespace rules
-        - if more than one ``CSSNamespaceRule`` with the same ``namespaceURI`` is set only the last one will be kept. The ``prefix`` of that rule is used.
-        - Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which would contain the necessary CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of-namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector within a yet undefined namespace, set the namespace in the style sheet first simply by setting e.g. ``sheet[prefix] = namespaceURI``
 
     - **API CHANGE**: ``parentRule`` and ``parentStyleSheet`` of all CSS rules are now readonly to prevent building illegal style sheets.
 
@@ -62,9 +61,9 @@ HEAD
 
     * **FEATURE**: ``CSSStyleSheet`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``. (Internally generators are used.)
 
-    * **FEATURE**: added parameter ``inOrder=False`` to method ``CSSStyleSheet.insertRule`` which inserts a given rule to its proper hierarchy. Parameter ``index`` is ignored in this case but the resulting index is properly returned.
-
     * **FEATURE**: added convinience method ``CSSStyleSheet.add(rule)``  which behaves exactly like ``.insertRule(rule, inOrder=True)``. So rules are added to the approprite position in a style sheet. E.g a namespace rule if put after any @import but before other rules like style or font-face rules.
+
+    * **FEATURE**: added parameter ``inOrder=False`` to method ``CSSStyleSheet.insertRule`` which inserts a given rule to its proper hierarchy. Parameter ``index`` is ignored in this case but the resulting index is properly returned.
 
     * FEATURE: added convinience method ``CSSMediaRule.add(rule)`` which behaves exactly like ``.insertRule(rule)`` (there is no parameter "inOrder" here as no invalid order may be build in CSS 2.1 or 3).
 
@@ -72,7 +71,7 @@ HEAD
 
     + **BUGFIX**: ``CSSMediaRule.insertRule`` setting with a rule string fixed
 
-    + **BUGFIX**: ``*.parentStyleSheet`` where * is any CSSRule is properly set now
+    + **BUGFIX**: ``*.parentStyleSheet`` and ``*.parentRule`` where * is any CSSRule is properly set now
 
     + **BUGFIX**: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
 

@@ -12,7 +12,7 @@ version migration
 
 0.9.5 incompatible changes
 ==========================
-cssutils 0.9.5 introduced two minor incompatible API changes. Reason for both changes is that for most cases the new default behaviour makes more sense.
+cssutils 0.9.5 introduced some minor incompatible API changes. Reason for most changes is that for most cases the new default behaviour makes more sense.
 
 iterating over ``CSSStyleDeclaration``
 --------------------------------------
@@ -49,3 +49,23 @@ OLD until 0.9.5
         p = Property(ur'c\olor', 'red')
         p.name == ur'c\olor'
         p.normalname == ur'color'
+
+``Property.priority`` attribute
+-------------------------------
+The value of ``Property.priority`` (or ``CSSStyleDeclatation.getPropertyPriority(p)``) is now ``important`` without a leading ``!`` as defined in the CSS specs.
+
+(``Property._normalpriority`` has been removed, the normalized value that was available here is now in ``Property.priority``. The literal priority value is available in ``Property.literalproperty`` now (analog to ``Property.literalname``). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)
+
+NEW since 0.9.5
+    ::
+
+        p = Property(ur'color', 'red', '!IMPOR\\TANT')
+        p.priority == u'important'
+        p.literalname = u'IMPOR\\TANT'
+
+OLD until 0.9.5
+    ::
+
+        p = Property(ur'color', 'red', '!IMPOR\\TANT')
+        p.priority == u'!IMPOR\\TANT'
+        p._normalpriority = u'!important'
