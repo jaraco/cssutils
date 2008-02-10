@@ -301,7 +301,11 @@ class SelectorTestCase(basetest.BaseTestCase):
             (u'p|*', (('p', 'uri'),)): u'p|*',
             (u'p|e', (('p', 'uri'),)): u'p|e',
             (u'-a_x12|e', (('-a_x12', 'uri'),)): u'-a_x12|e',
-            (u'*|b[p|a]', (('p', 'uri'),)): 'b[p|a]'
+            (u'*|b[p|a]', (('p', 'uri'),)): 'b[p|a]',
+        
+            # case 
+            u'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE': 
+                u'elemenT.clasS#iD[atT="valuE"]:not(x)::first-line'
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
