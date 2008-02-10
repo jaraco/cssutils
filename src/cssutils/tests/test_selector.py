@@ -86,9 +86,9 @@ class SelectorTestCase(basetest.BaseTestCase):
             '*|x': ('x', 'x', 'x'),
             'p|*': ('p|*', 'p|*', '|*'),
             'p|x': ('p|x', 'p|x', '|x'),
-            'x[a][|a][*|a][p|a]': ('x[a][|a][a][p|a]', 
-                                   '|x[|a][|a][*|a][p|a]', 
-                                   '|x[|a][|a][*|a][|a]')
+            'x[a][|a][*|a][p|a]': ('x[a][a][a][p|a]', 
+                                   '|x[a][a][*|a][p|a]', 
+                                   '|x[a][a][*|a][|a]')
         }
         for sel, exp in tests.items():
             for i, result in enumerate(exp):
@@ -99,6 +99,20 @@ class SelectorTestCase(basetest.BaseTestCase):
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = '@namespace p "u"; p|x { color: green }'
         
+    def test_default_namespace(self):
+        "Selector.namespaces default"
+        css = '''@namespace "default";
+                a[att] { color:green; }
+        '''
+        sheet = cssutils.css.CSSStyleSheet()
+        sheet.cssText = css
+        self.assertEqual(sheet.cssText, 
+                         u'@namespace "default";\n|a[att] {\n    color: green\n    }')
+        # use a prefix for default namespace, does not goes for atts!
+        sheet.namespaces['p'] = 'default' 
+        self.assertEqual(sheet.cssText, 
+                         u'@namespace p "default";\np|a[att] {\n    color: green\n    }')
+    
     def test_parentList(self):
         "Selector.parentList"
         sl = cssutils.css.SelectorList('a, b')
