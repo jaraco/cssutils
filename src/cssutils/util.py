@@ -434,7 +434,7 @@ class Item(object):
     line = property(lambda self: self.__line)
     
     def __repr__(self):
-        return "cssutils.%s.%s(value=%r, type=%r, line=%r)" % (
+        return "%s.%s(value=%r, type=%r, line=%r)" % (
                 self.__module__, self.__class__.__name__, 
                 self.__value, self.__type, self.__line)
 
