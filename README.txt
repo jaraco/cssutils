@@ -30,8 +30,8 @@ Based upon and partly implements the following specifications (DOM only, not any
     Used in parts since cssutils 0.9.4 which basically tries to use the features from CSS 2.1 and CSS 3.
 `MediaQueries <http://www.w3.org/TR/css3-mediaqueries/>`__
     MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
-`Namespaces <http://www.w3.org/TR/css3-namespace/>`__
-    Added in v0.9.1 and updated to definition in CSSOM in v0.9.4
+`Namespaces <http://dev.w3.org/csswg/css3-namespace/>`__
+    Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version
 `Selectors <http://www.w3.org/TR/css3-selectors/>`__
     The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
 
