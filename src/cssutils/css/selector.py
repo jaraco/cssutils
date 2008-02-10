@@ -314,8 +314,9 @@ class Selector(cssutils.util.Base2):
                 else:
                     prefix = None
                 
-                # TODO: CHECK IF THIS IS REALLY OK!
-                if typ.endswith('-selector') or typ == 'universal':
+                if (typ.endswith('-selector') or typ == 'universal') and not (
+                    'attribute-selector' == typ and not prefix):
+                    # att **IS NOT** in default ns
                     # val is (namespaceprefix, name) tuple
                     if prefix == u'*':
                         # *|name
@@ -335,7 +336,7 @@ class Selector(cssutils.util.Base2):
                                             prefix, token=(typ, val, line, col),
                                             error=xml.dom.NamespaceErr)
                             return
-                        
+                    
                     val = (namespaceURI, val)
 
                 if not context or context == 'negation':   
