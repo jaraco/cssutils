@@ -1,9 +1,7 @@
 """CSSNamespaceRule currently implements
-http://www.w3.org/TR/2006/WD-css3-namespace-20060828/
+http://dev.w3.org/csswg/css3-namespace/
 
-The following changes have been done:
-    1. the url() syntax is not implemented as it may (?) be deprecated
-    anyway
+(until 0.9.5a2: http://www.w3.org/TR/2006/WD-css3-namespace-20060828/)
 """
 __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
@@ -81,8 +79,12 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
         format namespace::
 
-            : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
-            ;
+            namespace
+              : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
+              ;
+            namespace_prefix
+              : IDENT
+              ;
         """
         super(CSSNamespaceRule, self).__init__(parentRule=parentRule, 
                                                parentStyleSheet=parentStyleSheet)
@@ -242,9 +244,6 @@ class CSSNamespaceRule(cssrule.CSSRule):
                     if uri[0] == uri[-1] == '"' or\
                        uri[0] == uri[-1] == "'":
                         uri = uri[1:-1]
-                    self._log.warn(
-                        u'CSSNamespaceRule: Found namespace definition with url(uri), this may be deprecated in the future, use string format "uri" instead.',
-                        token, error = None, neverraise=True)
                     new['uri'] = uri
                     seq.append(new['uri'])
                     return ';'
