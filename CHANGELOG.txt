@@ -42,6 +42,9 @@ known issues
 0.9.x
 -----
 HEAD
+    - **BUGFIX**: Default namespace is no longer used for attribute selectors.
+
+    - CHANGE: ``CSSNamespaceRule`` implements http://dev.w3.org/csswg/css3-namespace/ now. Giving the namespaceURI as an URI token (``url("uri")``) is no longer deprecated so no more warning is emitted.
 
 
 0.9.5a3 080203
