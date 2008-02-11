@@ -424,34 +424,41 @@ class CSSSerializer(object):
 
         href
             string
-        hreftype
-            'uri' or 'string'
         media
-            cssutils.stylesheets.medialist.MediaList
+            optional cssutils.stylesheets.medialist.MediaList
+        name
+            optional string 
 
         + CSSComments
         """
         if not rule.href or self._noinvalids(rule):
             return u''
         out = [u'%s ' % self._getatkeyword(rule, u'@import')]
-        for part in rule.seq:
-            if rule.href == part:
+        for item in rule.seq:
+            typ, val = item.type, item.value
+            
+            if 'href' == typ:
+                # "href" or url(href)
                 if self.prefs.importHrefFormat == 'uri':
-                    out.append(u'url(%s)' % self._uri(part))
+                    out.append(u'url(%s)' % self._uri(val))
                 elif self.prefs.importHrefFormat == 'string' or \
                    rule.hreftype == 'string':
-                    out.append(u'"%s"' % self._escapestring(part))
+                    out.append(u'"%s"' % self._escapestring(val))
                 else:
-                    out.append(u'url(%s)' % self._uri(part))
-            elif isinstance(
-                  part, cssutils.stylesheets.medialist.MediaList):
-                mediaText = self.do_stylesheets_medialist(part)#.strip()
-                if mediaText and not mediaText == u'all':
-                    out.append(u' %s' % mediaText)
-            elif part and rule.name == part:
-                out.append(' "%s"' % part)
-            elif hasattr(part, 'cssText'): # comments
-                out.append(part.cssText)
+                    out.append(u'url(%s)' % self._uri(val))
+            elif 'media' == typ:
+                # media
+                mediaText = self.do_stylesheets_medialist(val)
+                if mediaText and mediaText != u'all':
+                    out.append(u' %s' % mediaText)                
+            elif 'name' == typ and val:
+                # "name" optional
+                out.append(u' "%s"' % self._escapestring(val))
+            
+            elif 'COMMENT' == typ:
+                # TODO: outfactor this and maybe add spaces around?
+                out.append(self.do_CSSComment(val))
+            
         return u'%s;' % u''.join(out)
 
     def do_CSSNamespaceRule(self, rule):
