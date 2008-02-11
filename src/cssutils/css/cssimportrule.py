@@ -77,9 +77,10 @@ class CSSImportRule(cssrule.CSSRule):
         self.hreftype = hreftype
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)
+        self._name = None
         if not self.media.valid:
             self._media = cssutils.stylesheets.MediaList()
-        self.seq = [self.href, self.media]
+        self.seq = [self.href, self.media, self.name]
 
         # TODO: load stylesheet from href automatically?
         self._styleSheet = None
@@ -103,13 +104,15 @@ class CSSImportRule(cssrule.CSSRule):
     href = property(_getHref, _setHref,
         doc="Location of the style sheet to be imported.")
 
-    def _getMedia(self):
-        "returns MediaList"
-        return self._media
-
-    media = property(_getMedia,
+    media = property(lambda self: self._media,
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
+
+    def _setName(self, name):
+        self._name = name
+
+    name = property(lambda self: self._name, _setName,
+        doc=u"An optional name for the imported sheet")
 
     def _getStyleSheet(self):
         """
@@ -156,16 +159,26 @@ class CSSImportRule(cssrule.CSSRule):
                    'href': None,
                    'hreftype': None,
                    'media': cssutils.stylesheets.MediaList(),
+                   'name': None,
                    'wellformed': True
                    }
 
+            def __doname(seq, token):
+                # called by _string or _ident
+                new['name'] = self._tokenvalue(token)[1:-1]
+                seq.append(new['name'])
+                return ';'
+
             def _string(expected, seq, token, tokenizer=None):
-                # href
                 if 'href' == expected:
+                    # href
                     new['hreftype'] = 'string'
                     new['href'] = self._tokenvalue(token)[1:-1] # "uri" or 'uri'
                     seq.append(new['href'])
-                    return 'media or ;'
+                    return 'media name ;'
+                elif 'name' in expected:
+                    # name
+                    return __doname(seq, token)
                 else:
                     new['wellformed'] = False
                     self._log.error(
@@ -182,45 +195,23 @@ class CSSImportRule(cssrule.CSSRule):
                         uri = uri[1:-1]
                     new['href'] = uri
                     seq.append(new['href'])
-                    return 'media or ;'
+                    return 'media name ;'
                 else:
                     new['wellformed'] = False
                     self._log.error(
                         u'CSSImportRule: Unexpected URI.', token)
                     return expected
 
-#            def _function(expected, seq, token, tokenizer=None):
-#                # FUNCTION may be an incomplete URI, else an error
-#                val = self._tokenvalue(token, normalize=True)
-#                if 'href' == expected and val.startswith(u'url('):
-#                    new['hreftype'] = 'uri'
-#                    # TODO
-#                    uri = 'TODO'
-#                    
-##                    uri = self._tokenvalue(token)[4:].strip() # url(uri INCOMPLETE!
-##                    if uri and (
-##                       uri[0] == uri[-1] == '"' or
-##                       uri[0] == uri[-1] == "'"):
-##                        uri = uri[1:-1]
-#                    new['href'] = uri
-#                    seq.append(new['href'])
-#                    return 'EOF'
-#                else:
-#                    new['wellformed'] = False
-#                    self._log.error(
-#                        u'CSSImportRule: Unexpected FUNCTION.', token)
-#                    return expected
-
             def _ident(expected, seq, token, tokenizer=None):
                 # medialist ending with ; which is checked upon too
                 if expected.startswith('media'):
                     mediatokens = self._tokensupto2(
-                        tokenizer, semicolon=True, keepEnd=True)
+                        tokenizer, mediaqueryendonly=True, keepEnd=True)
                     mediatokens.insert(0, token) # push found token
 
-                    semicolonOrEOF = mediatokens.pop() # retrieve ;
-                    if self._tokenvalue(semicolonOrEOF) != u';' and\
-                       self._type(semicolonOrEOF) != 'EOF':
+                    last = mediatokens.pop() # retrieve ;
+                    lastval, lasttyp = self._tokenvalue(last), self._type(last)
+                    if lastval != u';' and lasttyp not in ('EOF', 'STRING'):
                         new['wellformed'] = False
                         self._log.error(u'CSSImportRule: No ";" found: %s' %
                                         self._valuestr(cssText), token=token)
@@ -234,7 +225,12 @@ class CSSImportRule(cssrule.CSSRule):
                         new['wellformed'] = False
                         self._log.error(u'CSSImportRule: Invalid MediaList: %s' %
                                         self._valuestr(cssText), token=token)
-                    return 'EOF' # ';' is found already
+                        
+                    if lasttyp == 'STRING':
+                        # name
+                        return __doname(seq, last)
+                    else:
+                        return 'EOF' # ';' is token "last"
                 else:
                     new['wellformed'] = False
                     self._log.error(
@@ -253,7 +249,9 @@ class CSSImportRule(cssrule.CSSRule):
                     return expected
 
             # import : IMPORT_SYM S* [STRING|URI]
-            #            S* [ medium [ ',' S* medium]* ]? ';' S*  ;
+            #            S* [ medium [ ',' S* medium]* ]? ';' S* 
+            #         STRING? # see http://www.w3.org/TR/css3-cascade/#cascading
+            #        ;
             newseq = []
             wellformed, expected = self._parse(expected='href',
                 seq=newseq, tokenizer=tokenizer,
@@ -284,6 +282,7 @@ class CSSImportRule(cssrule.CSSRule):
                 self.href = new['href']
                 self.hreftype = new['hreftype']
                 self._media = new['media']
+                self.name = new['name']
                 self.seq = newseq
 
     cssText = property(fget=_getCssText, fset=_setCssText,
