@@ -21,8 +21,6 @@ known issues
 
 - not all Comments reply to preference ``keepComments``, some will probably survive if set to ``False``
 
-- ``css.UnknownRule`` is not handled properly in cases, tests are spotty there too. it also seems to have been removed in CSSOM but seems useful so is still present
-
 - although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to **not** be preserved:
 
   star hack
@@ -42,10 +40,13 @@ known issues
 0.9.x
 -----
 HEAD
+    - **FEATURE**: ``css.UnknownRule`` is now parsed properly and checked for INVALID tokens or if nested {}, [] or () are closed properly. It is removed from CSSOM but in cssutils is used for @rules of programs using extensions, e.g. PrinceXML CSS. It is not very usable yet as no actual properties except ``seq`` and ``cssText`` are present but at least is syntactically checked properly.
+
     - **BUGFIX**: Default namespace is no longer used for attribute selectors.
 
     - CHANGE: ``CSSNamespaceRule`` implements http://dev.w3.org/csswg/css3-namespace/ now. Giving the namespaceURI as an URI token (``url("uri")``) is no longer deprecated so no more warning is emitted.
 
+    - IMPROVEMENT: Added simple testtool for functional tests in /examples
 
 0.9.5a3 080203
     - **API CHANGE: Refactored and fixed namespace handling**
