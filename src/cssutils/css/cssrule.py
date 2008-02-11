@@ -74,11 +74,14 @@ class CSSRule(cssutils.util.Base):
     (Casting not for this Python implementation I guess...)
     """
 
-    def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):
+    def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False,
+                 _Base2=False):
         super(CSSRule, self).__init__()
         self._parentRule = parentRule
         self._parentStyleSheet = parentStyleSheet
-        self.seq = []
+        # True for CSSUnknownRule only for now
+        if not _Base2:
+            self.seq = []
         self.valid = True
         # must be set after initialization of #inheriting rule is done
         self._readonly = False
