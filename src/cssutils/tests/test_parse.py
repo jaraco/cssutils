@@ -84,6 +84,23 @@ a {
             s = cssutils.parseString(css)
             self.assertEqual(exp, s.cssText)
 
+    def test_nesting(self):
+        "cssutils.parseString nesting"
+        # examples from csslist 27.11.2007
+        tests = {
+            '@1; div{color:green}': u'div {\n    color: green\n    }', 
+            '@1 []; div{color:green}': u'div {\n    color: green\n    }', 
+            '@1 [{}]; div { color:green; }': u'div {\n    color: green\n    }', 
+            '@media all { @ } div{color:green}': 
+                u'div {\n    color: green\n    }',
+            # should this be u''? 
+            '@1 { [ } div{color:green}': u'',
+            # red was eaten:
+            '@1 { [ } ] div{color:red}div{color:green}': u'div {\n    color: green\n    }', 
+             }
+        for css, exp in tests.items():
+            self.assertEqual(exp, cssutils.parseString(css).cssText)
+
     def test_specialcases(self):
         "cssutils.parseString(special_case)"
         tests = {
@@ -118,7 +135,6 @@ o very long title"] {/*...*/}''': u'''a[title="a not so very long title"] {
         self.assertEqual('$color', p2.normalname) # DEPRECATED
         self.assertEqual('green', s.cssRules[0].style.getPropertyValue('color'))
         self.assertEqual('green', s.cssRules[0].style.color)
-
 
     def test_attributes(self):
         "cssutils.parseString(href, media)"
