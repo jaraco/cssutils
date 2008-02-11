@@ -448,6 +448,8 @@ class CSSSerializer(object):
                 mediaText = self.do_stylesheets_medialist(part)#.strip()
                 if mediaText and not mediaText == u'all':
                     out.append(u' %s' % mediaText)
+            elif part and rule.name == part:
+                out.append(' "%s"' % part)
             elif hasattr(part, 'cssText'): # comments
                 out.append(part.cssText)
         return u'%s;' % u''.join(out)
