@@ -27,7 +27,6 @@ class _ErrorHandler(object):
     """
     handles all errors and log messages
     """
-
     def __init__(self, log,
                  defaultloglevel=logging.DEBUG, raiseExceptions=False):
         """
@@ -56,7 +55,6 @@ class _ErrorHandler(object):
 
         self.raiseExceptions = raiseExceptions
 
-
     def __getattr__(self, name):
         # here if new log has been set
         _logcalls = {
@@ -75,16 +73,13 @@ class _ErrorHandler(object):
             raise AttributeError(
                 '(errorhandler) No Attribute "%s" found' % name)
 
-
     def setlog(self, log):
         """set log of errorhandler's log"""
         self._log = log
 
-
     def setloglevel(self, level):
         """set level of errorhandler's log"""
         self._log.setLevel(level)
-
 
     def __handle(self, msg=u'', token=None, error=xml.dom.SyntaxErr,
                  neverraise=False):
