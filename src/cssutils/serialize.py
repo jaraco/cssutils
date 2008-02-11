@@ -568,14 +568,50 @@ class CSSSerializer(object):
         """
         if rule.atkeyword and not self._noinvalids(rule):
             out = [u'%s' % rule.atkeyword]
-            for part in rule.seq:
-                if isinstance(part, cssutils.css.csscomment.CSSComment):
-                    if self.prefs.keepComments:
-                        out.append(part.cssText)
-                else:
-                    out.append(part)
-            if not (out[-1].endswith(u';') or out[-1].endswith(u'}')):
+            
+            if len(rule.seq) <= 1:
                 out.append(u';')
+            else:
+                out.append(u' ')
+                ignore_next_space = True
+                stack = []
+                for item in rule.seq:
+                    typ, val = item.type, item.value
+                    
+                    # pre handling
+                    if 'COMMENT' == typ:
+                        if self.prefs.keepComments:
+                            val = val.cssText
+                        else:
+                            continue
+                    elif cssutils.css.CSSRule.UNKNOWN_RULE == typ:
+                            val = val.cssText
+                    elif u'S' == typ and ignore_next_space:
+                        # ignore at least first space after ATKEYWORD
+                        ignore_next_space = False
+                        continue
+                    elif u'S' == typ and u'\n' in val:
+                        # remove indents
+                        val = u'\n'
+                    elif u'}' == val:
+                        # close last open item on stack
+                        stackblock = u''.join(stack.pop()).strip()
+                        if stackblock:
+                            val = self.prefs.lineSeparator + self._indentblock(
+                                   stackblock + self.prefs.lineSeparator + val, 
+                                   min(1, len(stack)+1))
+
+                    # append
+                    if stack:
+                        stack[-1].append(val)
+                    else:
+                        out.append(val)
+                    
+                    # post handling
+                    if u'{' == val:
+                        # new stack level
+                        stack.append([])
+                        
             return u''.join(out)
         else:
             return u''
