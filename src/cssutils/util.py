@@ -195,13 +195,14 @@ class Base(object):
                      blockstartonly=False,
                      blockendonly=False,
                      mediaendonly=False,
+                     mediaqueryendonly=False,
                      semicolon=False,
                      propertynameendonly=False,
                      propertyvalueendonly=False,
                      propertypriorityendonly=False,
                      selectorattendonly=False,
                      funcendonly=False,
-                     listseponly=False, # ,
+                     listseponly=False,
                      keepEnd=True,
                      keepEOF=True):
         """
@@ -211,6 +212,7 @@ class Base(object):
         default looks for ending "}" and ";"
         """
         ends = u';}'
+        endtypes = ()
         brace = bracket = parant = 0 # {}, [], ()
 
         if blockstartonly: # {
@@ -222,6 +224,10 @@ class Base(object):
         elif mediaendonly: # }
             ends = u'}'
             brace = 1 # rules } and mediarules }
+        elif mediaqueryendonly:
+            # end of mediaquery which may be ; { or STRING
+            ends = u';'
+            endtypes = ('STRING',)
         elif semicolon:
             ends = u';'
         elif propertynameendonly: # : and ; in case of an error
@@ -265,7 +271,8 @@ class Base(object):
                 elif u')' == val: 
                     parant -= 1
                     
-                if val in ends and (brace == bracket == parant == 0):
+                if (brace == bracket == parant == 0) and (val in ends or 
+                                                          typ in endtypes):
                     if keepEnd:
                         resulttokens.append(token)
                     break
