@@ -111,15 +111,15 @@ class CSSStyleRule(cssrule.CSSRule):
         styletokens = self._tokensupto2(tokenizer, blockendonly=True)
         trail = self._nexttoken(tokenizer)
         if trail:
-            self._log.error(u'CSSStyleRule: Trailing content: %s',
-                            token=trail,
-                            error=xml.dom.SyntaxErr)
-        
-        if not selectortokens or self._tokenvalue(
-                                        selectortokens[0]).startswith(u'@'):
-            self._log.error(u'CSSStyleRule: No content or no style rule.',
-                    error=xml.dom.InvalidModificationErr)
-
+            self._log.error(u'CSSStyleRule: Trailing content: %s' % 
+                            self._valuestr(cssText), token=trail)
+        elif not selectortokens:
+            self._log.error(u'CSSStyleRule: No selector found: %r' % 
+                            self._valuestr(cssText))
+        elif self._tokenvalue(selectortokens[0]).startswith(u'@'):
+            self._log.error(u'CSSStyleRule: No style rule: %r' %
+                            self._valuestr(cssText),
+                            error=xml.dom.InvalidModificationErr)
         else:
             valid = True
             
