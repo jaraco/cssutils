@@ -287,7 +287,7 @@ class Base(object):
         else:
             return u''.join([x[1] for x in t])
 
-    def __adddefaultproductions(self, productions):
+    def _adddefaultproductions(self, productions):
         """
         adds default productions if not already present, used by 
         _parse only
@@ -342,7 +342,7 @@ class Base(object):
         """
         wellformed = True
         if tokenizer:
-            prods = self.__adddefaultproductions(productions)
+            prods = self._adddefaultproductions(productions)
             for token in tokenizer:
                 p = prods.get(token[0], default)
                 if p:
@@ -382,14 +382,14 @@ class Seq(object):
     def __len__(self):
         return len(self._seq)
         
-    def append(self, val, typ, line=None):
+    def append(self, val, typ, line=None, col=None):
         "if not readonly add new Item()"
         if self._readonly:
             raise AttributeError('Seq is readonly.')
         else:
-            self._seq.append(Item(val, typ, line))
+            self._seq.append(Item(val, typ, line, col))
 
-    def replace(self, index=-1, val=None, typ=None, line=None):
+    def replace(self, index=-1, val=None, typ=None, line=None, col=None):
         """
         if not readonly replace Item at index with new Item or
         simply replace value or type
@@ -397,7 +397,7 @@ class Seq(object):
         if self._readonly:
             raise AttributeError('Seq is readonly.')
         else:
-            self._seq[index] = Item(val, typ, line)
+            self._seq[index] = Item(val, typ, line, col)
 
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"
@@ -424,19 +424,21 @@ class Item(object):
     *line*
         **NOT IMPLEMENTED YET, may contain the line in the source later**
     """
-    def __init__(self, value, type, line=None):
+    def __init__(self, value, type, line=None, col=None):
         self.__value = value
         self.__type = type
         self.__line = line
+        self.__col = col
 
     type = property(lambda self: self.__type)
     value = property(lambda self: self.__value)
     line = property(lambda self: self.__line)
+    col = property(lambda self: self.__col)
     
     def __repr__(self):
-        return "%s.%s(value=%r, type=%r, line=%r)" % (
+        return "%s.%s(value=%r, type=%r, line=%r, col=%r)" % (
                 self.__module__, self.__class__.__name__, 
-                self.__value, self.__type, self.__line)
+                self.__value, self.__type, self.__line, self.__col)
 
 class Base2(Base):
     """
@@ -459,7 +461,65 @@ class Base2(Base):
     def _tempSeq(self, readonly=False):
         "get a writeable Seq() which is added later"  
         return Seq(readonly=readonly)
-    
+
+    def _adddefaultproductions(self, productions):
+        """
+        adds default productions if not already present, used by 
+        _parse only
+        
+        each production should return the next expected token
+        normaly a name like "uri" or "EOF"
+        some have no expectation like S or COMMENT, so simply return
+        the current value of self.__expected
+        """
+        def ATKEYWORD(expected, seq, token, tokenizer=None):
+            "default impl for unexpected @rule"
+            if expected != 'EOF':
+                # TODO: parentStyleSheet=self
+                rule = cssutils.css.CSSUnknownRule()
+                rule.cssText = self._tokensupto2(tokenizer, token)
+                if rule.valid:
+                    seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE, 
+                               line=token[2], col=token[3])
+                return expected
+            else:
+                new['wellformed'] = False
+                self._log.error(u'Expected EOF.',
+                    token=token)
+                return expected
+
+        def COMMENT(expected, seq, token, tokenizer=None):
+            "default implementation for COMMENT token adds CSSCommentRule"
+            if expected != 'EOF':
+                seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
+                return expected
+            else:
+                new['wellformed'] = False
+                self._log.error(u'Expected EOF.',
+                    token=token)
+                return expected
+
+        def S(expected, seq, token, tokenizer=None):
+            "default implementation for S token, does nothing"
+            if expected != 'EOF':
+                return expected
+            else:
+                new['wellformed'] = False
+                self._log.error(u'Expected EOF.',
+                    token=token)
+                return expected
+
+        def EOF(expected=None, seq=None, token=None, tokenizer=None):
+            "default implementation for EOF token"
+            return 'EOF'
+
+        p = {'ATKEYWORD': ATKEYWORD,
+             'COMMENT': COMMENT,
+             'S': S,
+             'EOF': EOF # only available if fullsheet
+             }
+        p.update(productions)
+        return p    
 
 class Deprecated(object):
     """This is a decorator which can be used to mark functions
