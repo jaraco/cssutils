@@ -1,5 +1,9 @@
 """CSSImportRule implements DOM Level 2 CSS CSSImportRule.
 
+plus: 
+    name
+        http://www.w3.org/TR/css3-cascade/#cascading
+
 TODO:
     - stylesheet: read and parse linked stylesheet
 """
@@ -13,20 +17,27 @@ import xml.dom
 import cssrule
 import cssutils
 
-class CSSImportRule(cssrule.CSSRule):
+class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
     """
     Represents an @import rule within a CSS style sheet.  The @import rule
     is used to import style rules from other style sheets.
 
     Properties
     ==========
+    atkeyword: (cssutils only)
+        the literal keyword used
     cssText: of type DOMString
         The parsable textual representation of this rule
     href: of type DOMString, (DOM readonly, cssutils also writable)
         The location of the style sheet to be imported. The attribute will
         not contain the url(...) specifier around the URI.
+    hreftype: 'uri' (serializer default) or 'string' (cssutils only)
+        The original usage of href, not really relevant as it may be
+        configured in the serializer too
     media: of type stylesheets::MediaList (DOM readonly)
         A list of media types for this rule of type MediaList.
+    name: 
+        An optional name used for cascading
     stylesheet: of type CSSStyleSheet (DOM readonly)
         The style sheet referred to by this rule. The value of this
         attribute is None if the style sheet has not yet been loaded or if
@@ -35,26 +46,18 @@ class CSSImportRule(cssrule.CSSRule):
 
         Currently always None
 
-    cssutils only
-    -------------
-    atkeyword:
-        the literal keyword used
-    hreftype: 'uri' (serializer default) or 'string'
-        The original usage of href, not really relevant as it may be
-        configured in the serializer too
-
     Inherits properties from CSSRule
 
     Format
     ======
     import
       : IMPORT_SYM S*
-      [STRING|URI] S* [ medium [ COMMA S* medium]* ]? ';' S*
+      [STRING|URI] S* [ medium [ COMMA S* medium]* ]? S* STRING? S* ';' S*
       ;
     """
     type = cssrule.CSSRule.IMPORT_RULE
 
-    def __init__(self, href=None, mediaText=u'all', hreftype=None, 
+    def __init__(self, href=None, mediaText=u'all', hreftype=None, name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
@@ -70,58 +73,29 @@ class CSSImportRule(cssrule.CSSRule):
             'uri' (default) or 'string'
         """
         super(CSSImportRule, self).__init__(parentRule=parentRule, 
-                                            parentStyleSheet=parentStyleSheet)
+                                            parentStyleSheet=parentStyleSheet,
+                                            _Base2=True)
 
         self.atkeyword = u'@import'
+        self._href = None
         self.href = href
         self.hreftype = hreftype
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)
-        self._name = None
+        self._name = name
         if not self.media.valid:
             self._media = cssutils.stylesheets.MediaList()
-        self.seq = [self.href, self.media, self.name]
+            
+        seq = self._tempSeq()
+        seq.append(self.href, 'href')
+        seq.append(self.media, 'media')
+        seq.append(self.name, 'name')
+        self._seq = seq
 
         # TODO: load stylesheet from href automatically?
         self._styleSheet = None
 
         self._readonly = readonly
-
-    def _getHref(self):
-        return self._href
-
-    def _setHref(self, href):
-        # update seq
-        for i, x in enumerate(self.seq):
-            if x == self._href:
-                self.seq[i] = href
-                break
-        else:
-            self.seq = [href]
-        # set new href
-        self._href = href
-
-    href = property(_getHref, _setHref,
-        doc="Location of the style sheet to be imported.")
-
-    media = property(lambda self: self._media,
-        doc=u"(DOM readonly) A list of media types for this rule of type\
-            MediaList")
-
-    def _setName(self, name):
-        self._name = name
-
-    name = property(lambda self: self._name, _setName,
-        doc=u"An optional name for the imported sheet")
-
-    def _getStyleSheet(self):
-        """
-        returns a CSSStyleSheet or None
-        """
-        return self._styleSheet
-
-    styleSheet = property(_getStyleSheet,
-        doc="(readonly) The style sheet referred to by this rule.")
 
     def _getCssText(self):
         """
@@ -154,8 +128,7 @@ class CSSImportRule(cssrule.CSSRule):
                 error=xml.dom.InvalidModificationErr)
         else:
             # for closures: must be a mutable
-            new = {
-                   'keyword': self._tokenvalue(attoken),
+            new = {'keyword': self._tokenvalue(attoken),
                    'href': None,
                    'hreftype': None,
                    'media': cssutils.stylesheets.MediaList(),
@@ -166,7 +139,7 @@ class CSSImportRule(cssrule.CSSRule):
             def __doname(seq, token):
                 # called by _string or _ident
                 new['name'] = self._tokenvalue(token)[1:-1]
-                seq.append(new['name'])
+                seq.append(new['name'], 'name')
                 return ';'
 
             def _string(expected, seq, token, tokenizer=None):
@@ -174,7 +147,7 @@ class CSSImportRule(cssrule.CSSRule):
                     # href
                     new['hreftype'] = 'string'
                     new['href'] = self._tokenvalue(token)[1:-1] # "uri" or 'uri'
-                    seq.append(new['href'])
+                    seq.append(new['href'], 'href')
                     return 'media name ;'
                 elif 'name' in expected:
                     # name
@@ -194,7 +167,7 @@ class CSSImportRule(cssrule.CSSRule):
                        uri[0] == uri[-1] == "'":
                         uri = uri[1:-1]
                     new['href'] = uri
-                    seq.append(new['href'])
+                    seq.append(new['href'], 'href')
                     return 'media name ;'
                 else:
                     new['wellformed'] = False
@@ -220,7 +193,7 @@ class CSSImportRule(cssrule.CSSRule):
                     media.mediaText = mediatokens
                     if media.valid:
                         new['media'] = media
-                        seq.append(media)
+                        seq.append(media, 'media')
                     else:
                         new['wellformed'] = False
                         self._log.error(u'CSSImportRule: Invalid MediaList: %s' %
@@ -252,7 +225,7 @@ class CSSImportRule(cssrule.CSSRule):
             #            S* [ medium [ ',' S* medium]* ]? ';' S* 
             #         STRING? # see http://www.w3.org/TR/css3-cascade/#cascading
             #        ;
-            newseq = []
+            newseq = self._tempSeq()
             wellformed, expected = self._parse(expected='href',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'STRING': _string,
@@ -287,6 +260,36 @@ class CSSImportRule(cssrule.CSSRule):
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
+
+    def _setHref(self, href):
+        # update seq
+        for i, item in enumerate(self.seq):
+            val, typ = item.value, item.type
+            if 'href' == typ:
+                self._seq[i] = (href, typ, item.line, item.col)
+                break
+        else:
+            seq = self._tempSeq()
+            seq.append(self.href, 'href')
+            self._seq = seq
+        # set new href
+        self._href = href
+
+    href = property(lambda self: self._href, _setHref,
+                    doc="Location of the style sheet to be imported.")
+
+    media = property(lambda self: self._media,
+                     doc=u"(DOM readonly) A list of media types for this rule"
+                     " of type MediaList")
+
+    def _setName(self, name):
+        self._name = name
+
+    name = property(lambda self: self._name, _setName,
+                    doc=u"An optional name for the imported sheet")
+
+    styleSheet = property(lambda self: self._styleSheet,
+                          doc="(readonly) The style sheet referred to by this rule.")
 
     def __repr__(self):
         return "cssutils.css.%s(href=%r, mediaText=%r)" % (
