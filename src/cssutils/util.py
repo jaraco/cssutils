@@ -383,6 +383,9 @@ class Seq(object):
     def __getitem__(self, i):
         return self._seq[i]
 
+    def __setitem__(self, i, (val, typ, line, col)):
+        self._seq[i] = Item(val, typ, line, col)
+
     def __iter__(self):
         return iter(self._seq)
 
