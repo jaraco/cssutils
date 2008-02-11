@@ -2,29 +2,48 @@ what is it
 ----------
 A Python package to parse and build CSS Cascading Style Sheets.
 
-main changes since 0.9.4b1
+main changes since 0.9.5a2
 --------------------------
-for full details for 0.9.5a1 see the relevant CHANGELOG:  http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a1/CHANGELOG.txt
+for full details for 0.9.5a3 see the relevant CHANGELOG:  http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a3/CHANGELOG.txt
 
-A few (minor) non-backwards compatible changes have been made, please see http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a1/documentation/migrate.txt for migration help.
+A few (minor) non-backwards compatible changes have been made, please see http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a3/documentation/migrate.txt for migration help.
 
-0.9.5a1
-    + **API CHANGE**: ``Property.name`` is now the same as ``Property.normalname`` which is DEPRECATED now. To access the literal name (the value which was available in ``name`` until now) use ``Property.literalname``. For most cases where a property name is used the new behaviour makes more sense, therefor the change.
 
-        **Do not use ``normalname`` anymore, it will probably be removed for release 1.0.**
+0.9.5a3
+    - **API CHANGE: Refactored and fixed namespace handling**
+        Aim was to prevent building invalid style sheets. Therefor namespaces must be checked e.g. when adding a new ``Selector`` etc. This is probably not fixed for all cases but much better now than before.
 
-    + **API CHANGE**: iterating over ``css.CSSStyleDelcaration`` yields now *effective* properties only and not *all* properties set in the declaration. E.g. from ``color: red; c\olor: green`` only one Property is returned which has the value ``green``. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``. Reason for this change is that for most cases the new default makes more sense.
+        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and mirrors all namespaces as defined in @namespace rules. New Namespaces may also be set here as well as prefixes changed.
+        - if more than one ``CSSNamespaceRule`` with the same ``namespaceURI`` is set only the last one will be kept. The ``prefix`` of that rule is used.
+        - ``CSSNamespaceRule.namespaceURI`` is readonly now, it can only be set in the constructor (needed to prevent an invalid sheet when changing this uri)
+        - Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which would contain the necessary CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of-namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector within a yet undefined namespace, set the namespace in the style sheet first simply by setting e.g. ``sheet[prefix] = namespaceURI``
+        - removed ``CSSStyleSheet.prefixes``
+        - removed ``Selector.prefixes``
 
-    - **FEATURE**: ``css.CSSStyleDelcaration`` supports ``in`` now. Expected is a Property or a name of a property which is checked if already in the style declaration
+    - **API CHANGE**: ``parentRule`` and ``parentStyleSheet`` of all CSS rules are now readonly to prevent building illegal style sheets.
 
-    - **FEATURE**: ``css.Selector`` has a **readonly** property ``specificity`` now which is calculated as described at http://www.w3.org/TR/css3-selectors/#specificity
+    - **API CHANGE**: Changed order of constructor parameters for ``CSSStyleDeclaration``. Named parameters SHOULD be used anyway but be careful if you used ordered ones here!
 
-    - **FEATURE**: Added ``css.CSSStyleDeclaration.getProperty(name, normalize=True)`` which returns the effective Property object for ``name``.
+    * **FEATURE**: ``CSSStyleSheet`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``.
 
-    - FEATURE: Implemented http://csswg.inkedblade.net/spec/css2.1#issue-23, URI may be ``URL(...)`` or ``u\r\6c(...)`` now
+    * **FEATURE**: added convinience method ``CSSStyleSheet.add(rule)``  which behaves exactly like ``.insertRule(rule, inOrder=True)``. So rules are added to the approprite position in a style sheet. E.g a namespace rule if put after any @import but before other rules like style or font-face rules.
 
-    + **BUGFIX**: Priority of Properties is acknowledged by all methods of ``css.CSSStylesDeclaration`` now.
+    * **FEATURE**: added parameter ``inOrder=False`` to method ``CSSStyleSheet.insertRule`` which inserts a given rule to its proper hierarchy. Parameter ``index`` is ignored in this case but the resulting index is properly returned.
 
+    + **BUGFIX**: ``CSSMediaRule.insertRule`` setting with a rule string fixed
+
+    + **BUGFIX**: ``*.parentStyleSheet`` and ``*.parentRule`` where * is any CSSRule is properly set now
+
+    + **BUGFIX**: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
+
+        (``Property._normalpriority`` has been removed, the normalized value that was available here is now in ``Property.priority``. The literal priority value is available in ``Property.literalproperty`` now (analog to ``Property.literalname``). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)
+
+
+
+Note:
+    CSSValue, CSSValueList, and CSSPrimitiveValue and the relevant methods/properties Property.cssValue and CSSStyleDeclaration.getPropertyCSSValue are more or less DEPRECATED and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings, e.g. ``Property.value``. As the aforementioned classes are not hardly that useful anyway this should not be a big problem but please beware if you use or have used them.
+
+    If you think this a bad idea please let me know!
 
 
 license
@@ -38,6 +57,6 @@ for download options for see http://cthedot.de/cssutils/
 cssutils needs Python 2.4 or higher (tested with Python 2.5 on Vista only)
 
 
-bug reports, comments, etc are very much appreciated!
+bug reports (via Google code), comments, etc are very much appreciated!
 
 thanks, Christof
