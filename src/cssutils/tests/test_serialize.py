@@ -37,8 +37,6 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, u' ')
         self.assertEqual(cssutils.ser.prefs.validOnly, False)
         self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
-        # DEPRECATED
-        self.assertEqual(cssutils.ser.prefs.removeInvalid, True)
         css = u'''
     /*1*/
     @import url(x) tv , print;
@@ -97,8 +95,6 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, u'')
         self.assertEqual(cssutils.ser.prefs.validOnly, False)
         self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
-        # DEPRECATED
-        self.assertEqual(cssutils.ser.prefs.removeInvalid, True)
         
         css = u'''
     /*1*/
