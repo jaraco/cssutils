@@ -201,7 +201,7 @@ class CSSUnknownRule(cssrule.CSSRule, cssutils.util.Base2):
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
     
-    wellformed = property(lambda self: bool(self.atkeyword))
+    valid = property(lambda self: bool(self.atkeyword))
     
     def __repr__(self):
         return "cssutils.css.%s(cssText=%r)" % (

@@ -158,7 +158,6 @@ class CSSStyleRule(cssrule.CSSRule):
                     newstyle.cssText = styletokens
 
             if valid:
-                self.valid = True
                 self._selectorList = newselectorlist
                 self.style = newstyle
 
@@ -228,6 +227,8 @@ class CSSStyleRule(cssrule.CSSRule):
 
     style = property(lambda self: self._style, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")
+
+    valid = property(lambda self: True)
 
     def __repr__(self):
         if self._namespaces:

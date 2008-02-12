@@ -42,7 +42,7 @@ class CSSRule(cssutils.util.Base):
         A string name of the type of this rule, e.g. 'STYLE_RULE'. Mainly
         useful for debugging
     valid:
-        if this rule is valid
+        if a rule is valid (wellformed)
     """
 
     """
@@ -82,7 +82,6 @@ class CSSRule(cssutils.util.Base):
         # True for CSSUnknownRule only for now
         if not _Base2:
             self.seq = []
-        self.valid = True
         # must be set after initialization of #inheriting rule is done
         self._readonly = False
 
