@@ -128,6 +128,30 @@ class CSSUnknownRule(cssrule.CSSRule, cssutils.util.Base2):
                 new['wellformed'] = False
                 return expected
 
+            def STRING(expected, seq, token, tokenizer=None):
+                type_, val, line, col = token
+                val = self._stringtokenvalue(token)
+                if expected != 'EOF':
+                    seq.append(val, type_, line=line, col=col)
+                    return expected
+                else:
+                    new['wellformed'] = False
+                    self._log.error(u'CSSUnknownRule: Expected end of rule.',
+                        token=token)
+                    return expected                
+
+            def URI(expected, seq, token, tokenizer=None):
+                type_, val, line, col = token
+                val = self._uritokenvalue(token)
+                if expected != 'EOF':
+                    seq.append(val, type_, line=line, col=col)
+                    return expected
+                else:
+                    new['wellformed'] = False
+                    self._log.error(u'CSSUnknownRule: Expected end of rule.',
+                        token=token)
+                    return expected                
+
             def default(expected, seq, token, tokenizer=None):
                 type_, val, line, col = token
                 if expected != 'EOF':
@@ -146,6 +170,8 @@ class CSSUnknownRule(cssrule.CSSRule, cssutils.util.Base2):
                 productions={'CHAR': CHAR,
                              'EOF': EOF,
                              'INVALID': INVALID,
+                             'STRING': STRING,
+                             'URI': URI,
                              'S': default # overwrite default default!
                             }, 
                             default=default)
