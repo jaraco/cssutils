@@ -135,7 +135,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
             ([u'inherit'], 'CSS_INHERIT'),
             (['1', '1%', '1em', '1ex', '1px', '1cm', '1mm', '1in', '1pt', '1pc',
               '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
-               '"string"', "'str ing'", 'url(x)', 'red',
+               '"string"', "'string'", 'url(x)', 'red',
                'attr(a)', 'counter()', 'rect(1px,2px,3px,4px)',
                'rgb(0,0,0)', '#000', '#000000', 'rgba(0,0,0,0)'],
              'CSS_PRIMITIVE_VALUE'),
@@ -145,6 +145,9 @@ class CSSValueTestCase(basetest.BaseTestCase):
         for values, name in tests:
             for value in values:
                 v = cssutils.css.CSSValue(cssText=value)
+                if value == "'string'":
+                    # will be changed to " always
+                    value = '"string"'
                 self.assertEqual(value, v.cssText)
                 self.assertEqual(name, v.cssValueTypeString)
                 self.assertEqual(getattr(v, name), v.cssValueType)
@@ -481,7 +484,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assertEqual(u'url(")")', v._value)
 
         v.setStringValue(v.CSS_URI, '""')
-        self.assertEqual(ur'\"\"', v.getStringValue())
+        self.assertEqual(ur'""', v.getStringValue())
         self.assertEqual(ur'url("\"\"")', v._value)
 
         v.setStringValue(v.CSS_URI, ',')
