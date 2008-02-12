@@ -37,6 +37,7 @@ class CSSComment(cssrule.CSSRule):
                                          parentStyleSheet=parentStyleSheet)
 
         self._cssText = None
+        self.valid = True
         if cssText:
             self._setCssText(cssText)
 
