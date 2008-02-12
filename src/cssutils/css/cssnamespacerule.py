@@ -205,8 +205,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 error=xml.dom.InvalidModificationErr)
         else:
             # for closures: must be a mutable
-            new = {
-                   'keyword': self._tokenvalue(attoken),
+            new = {'keyword': self._tokenvalue(attoken),
                    'prefix': u'',
                    'uri': None,
                    'valid': True
@@ -227,7 +226,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             def _string(expected, seq, token, tokenizer=None):
                 # the namespace URI as a STRING
                 if expected.endswith('uri'):
-                    new['uri'] = self._tokenvalue(token)[1:-1] # "uri" or 'uri'
+                    new['uri'] = self._stringtokenvalue(token)
                     seq.append(new['uri'])
                     return ';'
 
@@ -240,10 +239,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             def _uri(expected, seq, token, tokenizer=None):
                 # the namespace URI as URI which is DEPRECATED
                 if expected.endswith('uri'):
-                    uri = self._tokenvalue(token)[4:-1].strip() # url(uri)
-                    if uri[0] == uri[-1] == '"' or\
-                       uri[0] == uri[-1] == "'":
-                        uri = uri[1:-1]
+                    uri = self._uritokenvalue(token)
                     new['uri'] = uri
                     seq.append(new['uri'])
                     return ';'
