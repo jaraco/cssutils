@@ -53,7 +53,11 @@ HEAD
 
     + CHANGE: ``CSSNamespaceRule`` implements http://dev.w3.org/csswg/css3-namespace/ now. Giving the namespaceURI as an URI token (``url("uri")``) is no longer deprecated so no more warning is emitted.
 
+    + CHANGE: removed ``Preferences.removeInvalid`` which was deprecated for some time now and made not really sense anyway.
+
     - IMPROVEMENT: Added simple testtool for functional tests in /examples
+
+    - plus some smaller improvements and bugfixes
 
 0.9.5a3 080203
     - **API CHANGE: Refactored and fixed namespace handling**
