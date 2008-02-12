@@ -130,9 +130,11 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
                 u'''@import "str" tv "name";''',
 
             # comments
-            u'''@import /*1*/"str"/*2*/;''': None,
-            u'''@import/*1*/ "str" /*2*/ ;''':
-            u'''@import /*1*/"str"/*2*/;''',
+            u'''@import /*1*/ "str" /*2*/;''': None,
+            u'''@import/*1*/"str"/*2*/;''':
+                    u'''@import /*1*/ "str" /*2*/;''',
+            u'''@import   \n  /*1*/ \n  "str" \n  /*2*/  \n   ;''':
+                    u'''@import /*1*/ "str" /*2*/;''',
             }
         self.do_equal_r(tests) # set cssText
         tests.update({
@@ -201,17 +203,17 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         self.r.cssText = '@import /*1*/url(org) /*2*/;'
         self.assertEqual('uri', self.r.hreftype)
-        self.assertEqual(u'@import /*1*/url(org)/*2*/;', self.r.cssText)
+        self.assertEqual(u'@import /*1*/ url(org) /*2*/;', self.r.cssText)
 
         self.r.cssText = '@import /*1*/"org" /*2*/;'
         self.assertEqual('string', self.r.hreftype)
-        self.assertEqual(u'@import /*1*/"org"/*2*/;', self.r.cssText)
+        self.assertEqual(u'@import /*1*/ "org" /*2*/;', self.r.cssText)
 
         self.r.href = 'new'
-        self.assertEqual(u'@import /*1*/"new"/*2*/;', self.r.cssText)
+        self.assertEqual(u'@import /*1*/ "new" /*2*/;', self.r.cssText)
 
         self.r.hreftype='uri'
-        self.assertEqual(u'@import /*1*/url(new)/*2*/;', self.r.cssText)
+        self.assertEqual(u'@import /*1*/ url(new) /*2*/;', self.r.cssText)
 
     def test_media(self):
         "CSSImportRule.media"

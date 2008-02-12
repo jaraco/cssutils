@@ -82,7 +82,8 @@ class Preferences(object):
     selectorCombinatorSpacer = u' '
         string which is used before and after a Selector combinator like +, > or ~.
         CSSOM defines a single space for this which is also the default in cssutils.
-
+    spacer = u' '
+        general spacer, used e.g. by CSSUnknownRule
     validOnly = False (**not anywhere used yet**)
         if True only valid (Properties or Rules) are kept
         
@@ -123,6 +124,7 @@ class Preferences(object):
         self.paranthesisSpacer = u' '
         self.propertyNameSpacer = u' '
         self.selectorCombinatorSpacer = u' '
+        self.spacer = u' '
         self.validOnly = False
         self.wellformedOnly = True
         
@@ -145,6 +147,7 @@ class Preferences(object):
         self.paranthesisSpacer = u''
         self.propertyNameSpacer = u''
         self.selectorCombinatorSpacer = u''
+        self.spacer = u''
         self.validOnly = False
         self.wellformedOnly = True
 
@@ -159,6 +162,87 @@ class Preferences(object):
                 ),
                 id(self))
 
+
+class Out(object):
+    """
+    a simple class which makes appended items available as a combined string
+    
+    TODO
+        handles preferences like comments, etc 
+    """
+    def __init__(self, ser):
+        self.ser = ser
+        self.clear()
+    
+    def _remove_last_if_S(self):
+        if self.out and not self.out[-1].strip():
+            # remove trailing S
+            del self.out[-1]
+    
+    def append(self, val, typ=None):
+        """
+        Appends val. Adds a single S after each token except as follows:
+        
+        - typ COMMENT
+            uses cssText depending on self.ser.prefs.keepComments
+        - typ cssutils.css.CSSRule.UNKNOWN_RULE
+            uses cssText
+        - typ STRING
+            escapes ser._string
+        - typ URI
+            calls ser_uri
+        - val {
+            adds \n after
+        - val ;
+            removes S before and adds \n after
+        - val , :
+            removes S before
+        
+        """
+        if val:
+            # PRE
+            if 'COMMENT' == typ:
+                if self.ser.prefs.keepComments:
+                    val = val.cssText
+                else: 
+                    return
+            elif cssutils.css.CSSRule.UNKNOWN_RULE == typ:
+                val = val.cssText
+            elif 'S' == typ:
+                return
+            elif 'STRING' == typ:
+                val = self.ser._string(val)                
+            elif 'URI' == typ:
+                val = self.ser._uri(val)
+            elif val in u':,;{':
+                self._remove_last_if_S()
+                
+            # APPEND
+            self.out.append(val)
+
+            # POST
+            if val in u'+>~': # selector
+                self.out.append(self.ser.prefs.selectorCombinatorSpacer)
+            elif u',' == val: # list
+                self.out.append(self.ser.prefs.listItemSpacer)
+            elif u':' == val: # prop
+                self.out.append(self.ser.prefs.propertyNameSpacer)
+            elif u'{' == val: # block start
+                self.out.insert(-1, self.ser.prefs.paranthesisSpacer)
+                self.out.append(self.ser.prefs.lineSeparator)
+            elif u';' == val: # end or prop or block
+                self.out.append(self.ser.prefs.lineSeparator)
+            elif val not in u'}[]()':
+                self.out.append(self.ser.prefs.spacer)
+        
+    def clear(self):
+        self.out = []
+        
+    def value(self, delim=u''):
+        "returns all items joined by delim"
+        self._remove_last_if_S()
+        return delim.join(self.out)
+    
 
 class CSSSerializer(object):
     """
@@ -280,7 +364,7 @@ class CSSSerializer(object):
         """
         serializes CSSComment which consists only of commentText
         """
-        if self.prefs.keepComments and rule._cssText:
+        if rule._cssText and self.prefs.keepComments:
             return rule._cssText
         else:
             return u''
@@ -351,35 +435,35 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if not rule.href or not self._valid(rule):
-            return u''
-        out = [u'%s ' % self._atkeyword(rule, u'@import')]
-        for item in rule.seq:
-            typ, val = item.type, item.value
+        if self._wellformed(rule):
+            out = Out(self)
+            out.append(self._atkeyword(rule, u'@import'))
             
-            if 'href' == typ:
-                # "href" or url(href)
-                if self.prefs.importHrefFormat == 'uri':
-                    out.append(self._uri(val))
-                elif self.prefs.importHrefFormat == 'string' or \
-                   rule.hreftype == 'string':
-                    out.append(self._string(val))
+            for item in rule.seq:
+                typ, val = item.type, item.value
+                
+                if 'href' == typ:
+                    # "href" or url(href)
+                    if self.prefs.importHrefFormat == 'string' or (
+                             self.prefs.importHrefFormat != 'uri' and
+                             rule.hreftype == 'string'):
+                        out.append(val, 'STRING')
+                    else:
+                        out.append(val, 'URI')
+                elif 'media' == typ:
+                    # media
+                    mediaText = self.do_stylesheets_medialist(val)
+                    if mediaText and mediaText != u'all':
+                        out.append(mediaText)                
+                elif 'name' == typ:
+                    out.append(val, 'STRING')
                 else:
-                    out.append(self._uri(val))
-            elif 'media' == typ:
-                # media
-                mediaText = self.do_stylesheets_medialist(val)
-                if mediaText and mediaText != u'all':
-                    out.append(u' %s' % mediaText)                
-            elif 'name' == typ and val:
-                # "name" optional
-                out.append(u' %s' % self._string(val))
-            
-            elif 'COMMENT' == typ:
-                # TODO: outfactor this and maybe add spaces around?
-                out.append(self.do_CSSComment(val))
-            
-        return u'%s;' % u''.join(out)
+                    out.append(val, typ)
+
+            out.append(u';')
+            return out.value()
+        else:
+            return u''
 
     def do_CSSNamespaceRule(self, rule):
         """
@@ -392,7 +476,7 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if (rule.namespaceURI and not not self._valid(rule)) and (
+        if (rule.namespaceURI and self._valid(rule)) and (
             not rule.parentStyleSheet or (
                 rule.parentStyleSheet and 
                 rule.prefix in rule.parentStyleSheet.namespaces)
@@ -495,59 +579,33 @@ class CSSSerializer(object):
         anything until ";" or "{...}"
         + CSSComments
         """
-        if rule.atkeyword and not not self._valid(rule):
-            out = [u'%s' % rule.atkeyword]
+        if self._wellformed(rule):
+            out = Out(self)
+            out.append(rule.atkeyword)           
+            stacks = []
+            for item in rule.seq:
+                typ, val = item.type, item.value
+                
+                # PRE
+                if u'}' == val:
+                    # close last open item on stack
+                    stackblock = stacks.pop().value()
+                    if stackblock:
+                        val = self._indentblock(
+                               stackblock + self.prefs.lineSeparator + val, 
+                               min(1, len(stacks)+1))
+                # APPEND
+                if stacks:
+                    stacks[-1].append(val, typ)
+                else:
+                    out.append(val, typ)
+                    
+                # POST
+                if u'{' == val:
+                    # new stack level
+                    stacks.append(Out(self))
             
-            if len(rule.seq) <= 1:
-                out.append(u';')
-            else:
-                out.append(u' ')
-                ignore_next_space = True
-                stack = []
-                for item in rule.seq:
-                    typ, val = item.type, item.value
-                    
-                    # pre handling
-                    if 'COMMENT' == typ:
-                        if self.prefs.keepComments:
-                            val = val.cssText
-                        else:
-                            continue
-                    elif cssutils.css.CSSRule.UNKNOWN_RULE == typ:
-                            val = val.cssText
-                    elif u'S' == typ and ignore_next_space:
-                        # ignore at least first space after ATKEYWORD
-                        ignore_next_space = False
-                        continue
-                    elif u'S' == typ and u'\n' in val:
-                        # remove indents
-                        val = u'\n'
-                    elif u'STRING' == typ:
-                        # remove indents
-                        val = self._string(val)
-                    elif u'URI' == typ:
-                        # remove indents
-                        val = self._uri(val)
-                    elif u'}' == val:
-                        # close last open item on stack
-                        stackblock = u''.join(stack.pop()).strip()
-                        if stackblock:
-                            val = self.prefs.lineSeparator + self._indentblock(
-                                   stackblock + self.prefs.lineSeparator + val, 
-                                   min(1, len(stack)+1))
-
-                    # append
-                    if stack:
-                        stack[-1].append(val)
-                    else:
-                        out.append(val)
-                    
-                    # post handling
-                    if u'{' == val:
-                        # new stack level
-                        stack.append([])
-                        
-            return u''.join(out)
+            return out.value()
         else:
             return u''
 

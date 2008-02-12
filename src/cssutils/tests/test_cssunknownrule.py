@@ -20,28 +20,42 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSUnknownRule.type and init"
         super(CSSUnknownRuleTestCase, self).test_init()
 
+        self.assertFalse(self.r.wellformed)
+
         # only name
         r = cssutils.css.CSSUnknownRule(cssText=u'@init;')
+        self.assertEqual(u'@init', r.atkeyword)
         self.assertEqual(u'@init;', r.cssText)
+        self.assertTrue(r.wellformed)
 
         # @-... not allowed?
         r = cssutils.css.CSSUnknownRule(cssText=u'@-init;')
         self.assertEqual(u'@-init;', r.cssText)
+        self.assertEqual(u'@-init', r.atkeyword)
+        self.assertTrue(r.wellformed)
 
         r = cssutils.css.CSSUnknownRule(cssText=u'@_w-h-a-012;')
         self.assertEqual(u'@_w-h-a-012;', r.cssText)
+        self.assertEqual(u'@_w-h-a-012', r.atkeyword)
+        self.assertTrue(r.wellformed)
 
         # name and content
         r = cssutils.css.CSSUnknownRule(cssText=u'@init xxx;')
+        self.assertEqual(u'@init', r.atkeyword)
         self.assertEqual(u'@init xxx;', r.cssText)
+        self.assertTrue(r.wellformed)
 
         # name and block
         r = cssutils.css.CSSUnknownRule(cssText=u'@init { xxx }')
+        self.assertEqual(u'@init', r.atkeyword)
         self.assertEqual(u'@init {\n    xxx\n    }', r.cssText)
+        self.assertTrue(r.wellformed)
 
         # name and content and block
         r = cssutils.css.CSSUnknownRule(cssText=u'@init xxx { yyy }')
+        self.assertEqual(u'@init', r.atkeyword)
         self.assertEqual(u'@init xxx {\n    yyy\n    }', r.cssText)
+        self.assertTrue(r.wellformed)
 
     def test_InvalidModificationErr(self):
         "CSSUnknownRule.cssText InvalidModificationErr"
@@ -51,9 +65,9 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSUnknownRule.cssText"
         tests = {
             '@x;': None,
-            '@x {}': None,
-            '@x {\n    [()]([{}]){}\n    }': None,
-            '@x{ \n \t \f\r}': u'@x {}',
+            '@x {}': u'@x {\n}',
+            '@x{ \n \t \f\r}': u'@x {\n}',
+            '@x {\n    [()]([ {\n    }]) {\n    }\n    }': None,
             '@a {\n    @b;\n    }': None,
             '''@a {
     @b {
@@ -62,8 +76,7 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         }
     }''': None,
             '@x "string" url(x);': None,
-            "@x'string'url('x');": '@x "string"url(x);',
-
+            "@x'string'url('x');": '@x "string" url(x);',
         }
         self.do_equal_p(tests)
         self.do_equal_r(tests)

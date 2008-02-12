@@ -22,10 +22,13 @@ class CSSUnknownRule(cssrule.CSSRule, cssutils.util.Base2):
 
     cssutils only
     -------------
-    atkeyword:
+    atkeyword
         the literal keyword used
-    seq: a list (cssutils)
+    seq
         All parts of this rule excluding @KEYWORD but including CSSComments
+    wellformed
+        if this Rule is wellformed, for Unknown rules if an atkeyword is set
+        at all
 
     Format
     ======
@@ -43,7 +46,6 @@ class CSSUnknownRule(cssrule.CSSRule, cssutils.util.Base2):
         super(CSSUnknownRule, self).__init__(parentRule=parentRule, 
                                              parentStyleSheet=parentStyleSheet,
                                              _Base2=True)
-        self.valid = False
         self.seq = self._tempSeq()
         if cssText:
             self.cssText = cssText
@@ -193,12 +195,13 @@ class CSSUnknownRule(cssrule.CSSRule, cssutils.util.Base2):
 
             # set all
             if wellformed:
-                self.valid = True
                 self.atkeyword = self._tokenvalue(attoken)
                 self.seq = newseq
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
+    
+    wellformed = property(lambda self: bool(self.atkeyword))
     
     def __repr__(self):
         return "cssutils.css.%s(cssText=%r)" % (
