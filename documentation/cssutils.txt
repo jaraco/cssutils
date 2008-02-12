@@ -138,15 +138,12 @@ selectorCombinatorSpacer = u' '
 spacer = u' '
     general spacer, used e.g. by CSSUnknownRule
 
-validOnly = False (**not used anywhere yet**)
-    If ``True`` only valid (Properties or Rules) are kept.
+validOnly = False
+    If ``True`` only valid (currently Properties) are kept.
 
     A Property is valid if it is a known Property with a valid value.
     Currently CSS 2.1 values as defined in cssproperties.py would be
     valid.
-
-wellformedOnly = True (**not used everywhere yet**)
-    Only wellformed properties and rules are kept.
 
 
 logging
