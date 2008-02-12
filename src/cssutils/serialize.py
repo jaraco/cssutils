@@ -224,7 +224,7 @@ class CSSSerializer(object):
     def _escapestring(self, s, delim=u'"'):
         """
         escapes delim charaters in string s with delim
-        s might not have " or ' around it!
+        s probably has no "..." or '...' around
         
         escape line breaks \\n \\r and \\f
         """
@@ -234,29 +234,29 @@ class CSSSerializer(object):
                       '\f', '\\c ')
         return s.replace(delim, u'\\%s' % delim)
 
-    def _escapeSTRINGtype(self, s):
-        """
-        escapes unescaped ", ' or \\n in s if not escaped already
-        s always has  "..." or '...' around
-        """
-        r = s[0]
-        out = [r]
-        for c in s[1:-1]:
-            if c == '\n': # = 0xa
-                out.append(u'\\a ')
-                continue
-            elif c == '\r': # = 0xd
-                out.append(u'\\d ')
-                continue
-            elif c == '\f': # = 0xc
-                out.append(u'\\c ')
-                continue
-            elif c == r and out[-1] != u'\\':
-                out.append(u'\\') # + c
-            out.append(c)
-        out.append(r)
-        s = u''.join(out)
-        return s
+#    def _escapeSTRINGtype(self, s):
+#        """
+#        escapes unescaped ", ' or \\n in s if not escaped already
+#        s always has  "..." or '...' around
+#        """
+#        r = s[0]
+#        out = [r]
+#        for c in s[1:-1]:
+#            if c == '\n': # = 0xa
+#                out.append(u'\\a ')
+#                continue
+#            elif c == '\r': # = 0xd
+#                out.append(u'\\d ')
+#                continue
+#            elif c == '\f': # = 0xc
+#                out.append(u'\\c ')
+#                continue
+#            elif c == r and out[-1] != u'\\':
+#                out.append(u'\\') # + c
+#            out.append(c)
+#        out.append(r)
+#        s = u''.join(out)
+#        return s
 
     def _getatkeyword(self, rule, default):
         """
@@ -741,7 +741,7 @@ class CSSSerializer(object):
                         
                 else:
                     if typ == 'string':
-                        val = self._escapeSTRINGtype(val)
+                        val = u'"%s"' % self._escapestring(val)
                     elif typ in ('child', 'adjacent-sibling', 'following-sibling'):
                         # CSSOM adds spaces around > + and ~
                         val = u'%s%s%s' % (self.prefs.selectorCombinatorSpacer, 
@@ -874,6 +874,6 @@ class CSSSerializer(object):
                 else:
                     # TODO: escape func parameter if STRING!
                     if part and part[0] == part[-1] and part[0] in '\'"':
-                        part = self._escapeSTRINGtype(part)
+                        part = u'"%s"' % self._escapestring(part[1:-1])
                     out.append(part)
             return (u''.join(out)).strip()
