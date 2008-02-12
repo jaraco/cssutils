@@ -34,14 +34,14 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual(u'', r.prefix)
             self.assertEqual(u'', r.cssText)
             self.assertEqual(None, r.parentStyleSheet)
-            self.sheet.add(r)
-            self.assertEqual(self.sheet, r.parentStyleSheet)
             self.assertEqual(None, r.parentRule)
         
         r = cssutils.css.CSSNamespaceRule(namespaceURI='example')
         self.assertEqual('example', r.namespaceURI)
         self.assertEqual(u'', r.prefix)
         self.assertEqual(u'@namespace "example";', r.cssText)
+        self.sheet.add(r)
+        self.assertEqual(self.sheet, r.parentStyleSheet)
 
         r = cssutils.css.CSSNamespaceRule(namespaceURI='example', prefix='p')
         self.assertEqual('example', r.namespaceURI)

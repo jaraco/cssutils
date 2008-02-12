@@ -181,6 +181,8 @@ class CSSRuleTestCase(basetest.BaseTestCase):
 
     def test_readonly(self):
         "CSSRule readonly"
+        self.rRO = cssutils.css.CSSRule()
+        self.rRO._readonly = True
         self.assertEqual(True, self.rRO._readonly)
         self.assertEqual(u'', self.rRO.cssText)
         self.assertRaises(xml.dom.NoModificationAllowedErr,

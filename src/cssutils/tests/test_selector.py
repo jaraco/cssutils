@@ -132,6 +132,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         tests = {
             # combinators
             u'a+b>c~e f': u'a + b > c ~ e f',
+            u'a  +  b  >  c  ~  e   f': u'a + b > c ~ e f',
             u'a+b': u'a + b',
             u'a  +  b': 'a + b',
             u'a\n  +\t  b': 'a + b',
@@ -257,12 +258,26 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a x:before': None,
             u'a x:after': None,
             u'a x::selection': None,
-            
+            u'a:hover+b:hover>c:hover~e:hover f:hover': 
+                u'a:hover + b:hover > c:hover ~ e:hover f:hover',
+            u'a:hover  +  b:hover  >  c:hover  ~  e:hover   f:hover':
+                u'a:hover + b:hover > c:hover ~ e:hover f:hover',
+            u'a::selection+b::selection>c::selection~e::selection f::selection': 
+                u'a::selection + b::selection > c::selection ~ e::selection f::selection',
+            u'a::selection  +  b::selection  >  c::selection  ~  e::selection   f::selection':
+                u'a::selection + b::selection > c::selection ~ e::selection f::selection',
+
             u'x:lang(de) y': None,
             u'x:nth-child(odd) y': None,
             # functional pseudo
-            u'x:func(+-2px22.3"s"i)': None,
-            u'x:func(+)': None,
+            u'x:func(a + b-2px22.3"s"i)': None,
+            u'x:func(1 + 1)': None,
+            u'x:func(1+1)': u'x:func(1 + 1)',
+            u'x:func(1   +   1)': u'x:func(1 + 1)',
+            u'x:func(1-1)': u'x:func(1-1)',
+            u'x:func(1  -  1)': u'x:func(1 -1)',
+            u'x:func(a-1)': u'x:func(a-1)',
+            u'x:func(a -1px)': u'x:func(a -1px)',
             u'x:func(1px)': None,
             u'x:func(23.4)': None,
             u'x:func("s")': None,
