@@ -60,7 +60,10 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         x: 1x;
         y: 2y;
         }
-    }''': None
+    }''': None,
+            '@x "string" url(x);': None,
+            "@x'string'url('x');": '@x "string"url(x);',
+
         }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
