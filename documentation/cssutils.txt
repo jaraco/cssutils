@@ -136,8 +136,6 @@ selectorCombinatorSpacer = u' '
     String which is used before and after a Selector combinator like +, > or ~.
     CSSOM defines a single space for this which is also the default in cssutils.
 
-
-
 validOnly = False (**not used anywhere yet**)
     If ``True`` only valid (Properties or Rules) are kept.
 
@@ -147,10 +145,6 @@ validOnly = False (**not used anywhere yet**)
 
 wellformedOnly = True (**not used everywhere yet**)
     Only wellformed properties and rules are kept.
-
-**DEPRECATED**: removeInvalid = True
-    Omits invalid rules, replaced by ``validOnly`` which will be used
-    more cases
 
 
 logging
