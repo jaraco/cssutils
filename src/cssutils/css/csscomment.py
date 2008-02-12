@@ -30,6 +30,8 @@ class CSSComment(cssrule.CSSRule):
         /*...*/
     """
     type = cssrule.CSSRule.COMMENT # value = -1
+    # constant but needed:
+    wellformed = True 
 
     def __init__(self, cssText=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
@@ -37,7 +39,6 @@ class CSSComment(cssrule.CSSRule):
                                          parentStyleSheet=parentStyleSheet)
 
         self._cssText = None
-        self.valid = True
         if cssText:
             self._setCssText(cssText)
 

@@ -153,7 +153,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     u'CSSStylesheet: CSSCharsetRule only allowed at beginning of stylesheet.',
                     token, xml.dom.HierarchyRequestErr)
             else:
-                if rule.valid:
+                if rule.wellformed:
                     seq.append(rule)
             return 1
         
@@ -165,7 +165,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     u'CSSStylesheet: CSSImportRule not allowed here.',
                     token, xml.dom.HierarchyRequestErr)
             else:
-                if rule.valid:
+                if rule.wellformed:
                     seq.append(rule)
             return 1
 
@@ -178,7 +178,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     u'CSSStylesheet: CSSNamespaceRule not allowed here.',
                     token, xml.dom.HierarchyRequestErr)
             else:
-                if rule.valid:
+                if rule.wellformed:
                     seq.append(rule)
                     # temporary namespaces given to CSSStyleRule and @media
                     new['namespaces'][rule.prefix] = rule.namespaceURI
@@ -187,7 +187,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         def fontfacerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSFontFaceRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
-            if rule.valid:
+            if rule.wellformed:
                 seq.append(rule)
             return 3
 
@@ -195,7 +195,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule = cssutils.css.CSSMediaRule()
             rule.cssText = (self._tokensupto2(tokenizer, token), 
                             new['namespaces'])
-            if rule.valid:
+            if rule.wellformed:
                 rule._parentStyleSheet=self
                 for r in rule:
                     r._parentStyleSheet=self
@@ -205,14 +205,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         def pagerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSPageRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
-            if rule.valid:
+            if rule.wellformed:
                 seq.append(rule)
             return 3
 
         def unknownrule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSUnknownRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
-            if rule.valid:
+            if rule.wellformed:
                 seq.append(rule)
             return expected
 
@@ -220,7 +220,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule = cssutils.css.CSSStyleRule()
             rule.cssText = (self._tokensupto2(tokenizer, token), 
                             new['namespaces'])
-            if rule.valid:
+            if rule.wellformed:
                 rule._parentStyleSheet=self
                 seq.append(rule)
             return 3
@@ -391,7 +391,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self.insertRule(r, index + i)
             return index
 
-        if not rule.valid:
+        if not rule.wellformed:
             self._log.error(u'CSSStyleSheet: Invalid rules cannot be added.')
             return
 

@@ -49,6 +49,8 @@ class CSSPageRule(cssrule.CSSRule):
 
     """
     type = cssrule.CSSRule.PAGE_RULE
+    # constant but needed:
+    wellformed = True 
 
     def __init__(self, selectorText=None, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
@@ -86,7 +88,7 @@ class CSSPageRule(cssrule.CSSRule):
         see _setSelectorText for details
         """
         # for closures: must be a mutable
-        new = {'selector': None, 'valid': True}
+        new = {'selector': None, 'wellformed': True}
 
         def _char(expected, seq, token, tokenizer=None):
             # name
@@ -109,16 +111,16 @@ class CSSPageRule(cssrule.CSSRule):
                         return 'EOF'
                 return expected
             else:
-                new['valid'] = False
+                new['wellformed'] = False
                 self._log.error(
                     u'CSSPageRule selectorText: Unexpected CHAR: %r' % val, token)
                 return expected
 
         newseq = []
-        valid, expected = self._parse(expected=':',
+        wellformed, expected = self._parse(expected=':',
             seq=newseq, tokenizer=self._tokenize2(selectorText),
             productions={'CHAR': _char})
-        valid = valid and new['valid']
+        wellformed = wellformed and new['wellformed']
         newselector = new['selector']
         
         # post conditions
@@ -165,7 +167,7 @@ class CSSPageRule(cssrule.CSSRule):
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
-            valid = True
+            wellformed = True
             selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
             styletokens = self._tokensupto2(tokenizer, blockendonly=True)
             
@@ -174,7 +176,7 @@ class CSSPageRule(cssrule.CSSRule):
             except IndexError:
                 bracetoken = None
             if self._tokenvalue(bracetoken) != u'{':
-                valid = False
+                wellformed = False
                 self._log.error(
                     u'CSSPageRule: No start { of style declaration found: %r' %
                     self._valuestr(cssText), bracetoken)
@@ -183,7 +185,7 @@ class CSSPageRule(cssrule.CSSRule):
 
             newstyle = CSSStyleDeclaration()
             if not styletokens:
-                valid = False
+                wellformed = False
                 self._log.error(
                     u'CSSPageRule: No style declaration or "}" found: %r' %
                     self._valuestr(cssText))            
@@ -191,7 +193,7 @@ class CSSPageRule(cssrule.CSSRule):
             braceorEOFtoken = styletokens.pop()
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
-                valid = False
+                wellformed = False
                 self._log.error(
                     u'CSSPageRule: No "}" after style declaration found: %r' %
                     self._valuestr(cssText))
@@ -201,7 +203,7 @@ class CSSPageRule(cssrule.CSSRule):
                     styletokens.append(braceorEOFtoken)
                 newstyle.cssText = styletokens
 
-            if valid:
+            if wellformed:
                 self._selectorText = newselector # already parsed
                 self.style = newstyle
                 self.seq = newselectorseq # contains upto style only
@@ -271,8 +273,6 @@ class CSSPageRule(cssrule.CSSRule):
 
     style = property(_getStyle, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")
-
-    valid = property(lambda self: True)
 
     def __repr__(self):
         return "cssutils.css.%s(selectorText=%r, style=%r)" % (

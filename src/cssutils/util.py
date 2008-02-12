@@ -517,7 +517,7 @@ class Base2(Base):
                 # TODO: parentStyleSheet=self
                 rule = cssutils.css.CSSUnknownRule()
                 rule.cssText = self._tokensupto2(tokenizer, token)
-                if rule.valid:
+                if rule.wellformed:
                     seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE, 
                                line=token[2], col=token[3])
                 return expected

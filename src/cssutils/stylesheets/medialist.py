@@ -34,8 +34,8 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         The parsable textual representation of this MediaList
     self: a list (cssutils)
         All MediaQueries in this MediaList
-    valid:
-        if this list is valid
+    wellformed:
+        if this list is wellformed
 
     Format
     ======
@@ -54,7 +54,6 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
             or a list of media
         """
         super(MediaList, self).__init__()
-        self.valid = True
 
         if isinstance(mediaText, list):
             mediaText = u','.join(mediaText)
@@ -87,7 +86,7 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
           Raised if this media list is readonly.
         """
         self._checkReadonly()
-        valid = True
+        wellformed = True
         tokenizer = self._tokenize2(mediaText)
         newseq = []
 
@@ -102,10 +101,10 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
                     expected = None
 
                 mq = MediaQuery(mqtokens)
-                if mq.valid:
+                if mq.wellformed:
                     newseq.append(mq)
                 else:
-                    valid = False
+                    wellformed = False
                     self._log.error(u'MediaList: Invalid MediaQuery: %s' %
                                     self._valuestr(mqtokens))
             else:
@@ -113,10 +112,10 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 
         # post condition
         if expected:
-            valid = False
+            wellformed = False
             self._log.error(u'MediaList: Cannot end with ",".')
 
-        if valid:
+        if wellformed:
             del self[:]
             for mq in newseq:
                 self.appendMedium(mq)
@@ -125,6 +124,8 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         doc="""(DOM) The parsable textual representation of the media list.
             This is a comma-separated list of media.""")
 
+    wellformed = property(lambda self: True)
+
     def __prepareset(self, newMedium):
         # used by appendSelector and __setitem__
         self._checkReadonly()
@@ -132,7 +133,7 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         if not isinstance(newMedium, MediaQuery):
             newMedium = MediaQuery(newMedium)
 
-        if newMedium.valid:
+        if newMedium.wellformed:
             return newMedium
         
     def __setitem__(self, index, newMedium):
@@ -155,7 +156,7 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         newMedium
             a string or a MediaQuery object
 
-        returns if newMedium is valid
+        returns if newMedium is wellformed
 
         DOMException
 
