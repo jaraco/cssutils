@@ -40,6 +40,10 @@ known issues
 0.9.x
 -----
 HEAD
+    - API CHANGE: ``.wellformed`` replaces ``.valid`` for most classes. This is more an internal value so should be used carefully anyway. Some classes still have both, notably ``Property`` and ``CSSValue``.
+
+    - API CHANGE: Removed ``cssutils.ser.prefs.wellformedOnly`` which made no sense at all. It probably was not used in client code anyway.
+
     + **FEATURE**: ``css.UnknownRule`` is now parsed properly and checked for INVALID tokens or if nested {}, [] or () are closed properly. It is removed from CSSOM but in cssutils is used for @rules of programs using extensions, e.g. PrinceXML CSS. It is not very usable yet as no actual properties except ``seq`` and ``cssText`` are present but at least is syntactically checked properly.
 
     + **FEATURE**: Added property ``css.CSSImportRule.name`` as decribed in http://www.w3.org/TR/css3-cascade/#cascading. It is parsed, serialized and available in this new property now.
