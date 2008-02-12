@@ -35,6 +35,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, u' ')
         self.assertEqual(cssutils.ser.prefs.propertyNameSpacer, u' ')
         self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, u' ')
+        self.assertEqual(cssutils.ser.prefs.spacer, u' ')
         self.assertEqual(cssutils.ser.prefs.validOnly, False)
         self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
         css = u'''
@@ -51,7 +52,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         }
     @page     { left: 0; }
     a {}
-    prefix|x, a + b > c ~ d , b { top : 1px ; 
+    prefix|x, a  +  b  >  c  ~  d  ,  b { top : 1px ; 
         font-family : arial ,'some' 
         }
     '''
@@ -93,6 +94,7 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, u'')
         self.assertEqual(cssutils.ser.prefs.propertyNameSpacer, u'')
         self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, u'')
+        self.assertEqual(cssutils.ser.prefs.spacer, u'')
         self.assertEqual(cssutils.ser.prefs.validOnly, False)
         self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
         
@@ -116,7 +118,7 @@ prefix|x, a + b > c ~ d, b {
     '''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, 
-            u'''@import "x" tv,print;@namespace prefix "uri";@media all{a{color:red}}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
+            u'''@import"x"tv,print;@namespace prefix "uri";@media all{a{color:red}}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
             )
 
     def test_defaultAtKeyword(self):

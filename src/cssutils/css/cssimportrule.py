@@ -247,7 +247,6 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
 
             # set all
             if wellformed:
-                self.valid = True
                 self.atkeyword = new['keyword']
                 self.href = new['href']
                 self.hreftype = new['hreftype']
@@ -301,6 +300,8 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
 
     styleSheet = property(lambda self: self._styleSheet,
                           doc="(readonly) The style sheet referred to by this rule.")
+
+    wellformed = property(lambda self: self.href and self.media.valid)
 
     def __repr__(self):
         return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
