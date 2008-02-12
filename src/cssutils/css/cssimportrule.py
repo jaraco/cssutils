@@ -57,7 +57,7 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
     """
     type = cssrule.CSSRule.IMPORT_RULE
 
-    def __init__(self, href=None, mediaText=u'all', hreftype=None, name=None,
+    def __init__(self, href=None, mediaText=u'all', name=None, hreftype=None, 
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
@@ -138,15 +138,15 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
 
             def __doname(seq, token):
                 # called by _string or _ident
-                new['name'] = self._tokenvalue(token)[1:-1]
+                new['name'] = self._stringtokenvalue(token)
                 seq.append(new['name'], 'name')
                 return ';'
 
             def _string(expected, seq, token, tokenizer=None):
                 if 'href' == expected:
                     # href
+                    new['href'] = self._stringtokenvalue(token)
                     new['hreftype'] = 'string'
-                    new['href'] = self._tokenvalue(token)[1:-1] # "uri" or 'uri'
                     seq.append(new['href'], 'href')
                     return 'media name ;'
                 elif 'name' in expected:
@@ -161,11 +161,8 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
             def _uri(expected, seq, token, tokenizer=None):
                 # href
                 if 'href' == expected:
+                    uri = self._uritokenvalue(token)
                     new['hreftype'] = 'uri'
-                    uri = self._tokenvalue(token)[4:-1].strip() # url(uri)
-                    if uri[0] == uri[-1] == '"' or\
-                       uri[0] == uri[-1] == "'":
-                        uri = uri[1:-1]
                     new['href'] = uri
                     seq.append(new['href'], 'href')
                     return 'media name ;'
@@ -283,6 +280,20 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
                      " of type MediaList")
 
     def _setName(self, name):
+        # update seq
+        for i, item in enumerate(self.seq):
+            val, typ = item.value, item.type
+            if 'name' == typ:
+                self._seq[i] = (name, typ, item.line, item.col)
+                break
+        else:
+            # append
+            seq = self._tempSeq()
+            for item in self.seq:
+                # copy current seq
+                seq.append(item.value, item.type, item.line, item.col)
+            seq.append(self.href, 'href')
+            self._seq = seq
         self._name = name
 
     name = property(lambda self: self._name, _setName,
@@ -292,8 +303,9 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
                           doc="(readonly) The style sheet referred to by this rule.")
 
     def __repr__(self):
-        return "cssutils.css.%s(href=%r, mediaText=%r)" % (
-                self.__class__.__name__, self.href, self.media.mediaText)
+        return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
+                self.__class__.__name__, 
+                self.href, self.media.mediaText, self.name)
 
     def __str__(self):
         return "<cssutils.css.%s object href=%r at 0x%x>" % (
