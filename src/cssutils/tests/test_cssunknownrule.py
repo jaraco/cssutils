@@ -20,42 +20,42 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSUnknownRule.type and init"
         super(CSSUnknownRuleTestCase, self).test_init()
 
-        self.assertFalse(self.r.wellformed)
+        self.assertFalse(self.r.valid)
 
         # only name
         r = cssutils.css.CSSUnknownRule(cssText=u'@init;')
         self.assertEqual(u'@init', r.atkeyword)
         self.assertEqual(u'@init;', r.cssText)
-        self.assertTrue(r.wellformed)
+        self.assertTrue(r.valid)
 
         # @-... not allowed?
         r = cssutils.css.CSSUnknownRule(cssText=u'@-init;')
         self.assertEqual(u'@-init;', r.cssText)
         self.assertEqual(u'@-init', r.atkeyword)
-        self.assertTrue(r.wellformed)
+        self.assertTrue(r.valid)
 
         r = cssutils.css.CSSUnknownRule(cssText=u'@_w-h-a-012;')
         self.assertEqual(u'@_w-h-a-012;', r.cssText)
         self.assertEqual(u'@_w-h-a-012', r.atkeyword)
-        self.assertTrue(r.wellformed)
+        self.assertTrue(r.valid)
 
         # name and content
         r = cssutils.css.CSSUnknownRule(cssText=u'@init xxx;')
         self.assertEqual(u'@init', r.atkeyword)
         self.assertEqual(u'@init xxx;', r.cssText)
-        self.assertTrue(r.wellformed)
+        self.assertTrue(r.valid)
 
         # name and block
         r = cssutils.css.CSSUnknownRule(cssText=u'@init { xxx }')
         self.assertEqual(u'@init', r.atkeyword)
         self.assertEqual(u'@init {\n    xxx\n    }', r.cssText)
-        self.assertTrue(r.wellformed)
+        self.assertTrue(r.valid)
 
         # name and content and block
         r = cssutils.css.CSSUnknownRule(cssText=u'@init xxx { yyy }')
         self.assertEqual(u'@init', r.atkeyword)
         self.assertEqual(u'@init xxx {\n    yyy\n    }', r.cssText)
-        self.assertTrue(r.wellformed)
+        self.assertTrue(r.valid)
 
     def test_InvalidModificationErr(self):
         "CSSUnknownRule.cssText InvalidModificationErr"
