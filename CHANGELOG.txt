@@ -55,6 +55,8 @@ HEAD
 
     + CHANGE: removed ``Preferences.removeInvalid`` which was deprecated for some time now and made not really sense anyway.
 
+    - IMPROVEMENT: Started refactoring rules to have ``wellformed`` property and serializing included comments better. For now ``CSSImportRule`` has been adapted.
+
     - IMPROVEMENT: Added simple testtool for functional tests in /examples
 
     - plus some smaller improvements and bugfixes
