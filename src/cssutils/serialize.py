@@ -86,15 +86,12 @@ class Preferences(object):
         general spacer, used e.g. by CSSUnknownRule
     
     validOnly = False **DO NOT CHANGE YET**
-        if True only valid (Properties or Rules) are kept
+        if True only valid (currently Properties) are kept
         
         A Property is valid if it is a known Property with a valid value.
         Currently CSS 2.1 values as defined in cssproperties.py would be
         valid.
         
-    wellformedOnly = True
-        only wellformed properties and rules are kept
-
     """
     def __init__(self, **initials):
         """
@@ -127,7 +124,6 @@ class Preferences(object):
         self.selectorCombinatorSpacer = u' '
         self.spacer = u' '
         self.validOnly = False # should not be changed currently!!!
-        self.wellformedOnly = True
         
     def useMinified(self):
         """
@@ -150,7 +146,6 @@ class Preferences(object):
         self.selectorCombinatorSpacer = u''
         self.spacer = u''
         self.validOnly = False
-        self.wellformedOnly = True
 
     def __repr__(self):
         return u"cssutils.css.%s(%s)" % (self.__class__.__name__, 
@@ -167,13 +162,10 @@ class Preferences(object):
 class Out(object):
     """
     a simple class which makes appended items available as a combined string
-    
-    TODO
-        handles preferences like comments, etc 
     """
     def __init__(self, ser):
         self.ser = ser
-        self.clear()
+        self.out = []
     
     def _remove_last_if_S(self):
         if self.out and not self.out[-1].strip():
@@ -190,6 +182,8 @@ class Out(object):
             uses cssText
         - typ STRING
             escapes ser._string
+        - typ S
+            ignored except ``keepS=True``
         - typ URI
             calls ser_uri
         - val {
@@ -198,10 +192,12 @@ class Out(object):
             removes S before and adds \n after
         - val , :
             removes S before
-        
+        - val + > ~
+            encloses in prefs.selectorCombinatorSpacer
+        - some other vals
+            add *spacer except ``space=False``
         """
         if val:
-            #print typ, val
             # PRE
             if 'COMMENT' == typ:
                 if self.ser.prefs.keepComments:
@@ -237,9 +233,6 @@ class Out(object):
                 self.out.append(self.ser.prefs.lineSeparator)
             elif val not in u'}[]()' and space:
                 self.out.append(self.ser.prefs.spacer)
-        
-    def clear(self):
-        self.out = []
         
     def value(self, delim=u''):
         "returns all items joined by delim"
@@ -329,14 +322,9 @@ class CSSSerializer(object):
             return 'url(%s)' % uri
 
     def _valid(self, x):
-        "checks items with valid property"
+        "checks items valid property and prefs.validOnly"
         return not self.prefs.validOnly or (self.prefs.validOnly and 
                                             x.valid)
-    
-    def _wellformed(self, x):
-        "checks items with wellformed property"
-        return not self.prefs.wellformedOnly or (self.prefs.wellformedOnly and 
-                                                 x.wellformed)
     
     def do_CSSStyleSheet(self, stylesheet):
         """serializes a complete CSSStyleSheet"""
@@ -366,6 +354,7 @@ class CSSSerializer(object):
         """
         serializes CSSComment which consists only of commentText
         """
+        # no need to use Out() as too simple
         if rule._cssText and self.prefs.keepComments:
             return rule._cssText
         else:
@@ -379,9 +368,11 @@ class CSSSerializer(object):
         always @charset "encoding";
         no comments or other things allowed!
         """
-        if not rule.encoding or not self._valid(rule):
+        # no need to use Out() as too simple
+        if rule.wellformed:
+            return u'@charset %s;' % self._string(rule.encoding)
+        else:
             return u''
-        return u'@charset %s;' % self._string(rule.encoding)
 
     def do_CSSFontFaceRule(self, rule):
         """
@@ -392,13 +383,14 @@ class CSSSerializer(object):
 
         + CSSComments
         """
+        # TODO: use Out()
         self._level += 1
         try:
             styleText = self.do_css_CSSStyleDeclaration(rule.style)
         finally:
             self._level -= 1
 
-        if not styleText or not self._valid(rule):
+        if not styleText or not rule.wellformed:
             return u''
         
         before = []
@@ -437,7 +429,7 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if rule.href and self._valid(rule):
+        if rule.wellformed:
             out = Out(self)
             out.append(self._atkeyword(rule, u'@import'))
             
@@ -478,7 +470,8 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if (rule.namespaceURI and self._valid(rule)) and (not rule.parentStyleSheet or (
+        # TODO: use Out()
+        if rule.wellformed and (not rule.parentStyleSheet or (
                 rule.parentStyleSheet and 
                 rule.prefix in rule.parentStyleSheet.namespaces)
             ):
@@ -502,6 +495,8 @@ class CSSSerializer(object):
 
         + CSSComments
         """
+        # TODO: use Out()
+
         # reset selectorindent
         self._selectors = [] 
         self._selectorlevel = 0
@@ -515,12 +510,9 @@ class CSSSerializer(object):
                 rulesout.append(self.prefs.lineSeparator)
 
         if not self.prefs.keepEmptyRules and not u''.join(rulesout).strip() or\
-           not self._valid(rule.media):
+           not rule.media.wellformed:
             return u''
 
-#        if len(rule.cssRules) == 0 and not self.prefs.keepEmptyRules or\
-#           not self._valid(rule.media):
-#            return u''
         mediaText = self.do_stylesheets_medialist(rule.media)#.strip()
         out = [u'%s %s%s{%s' % (self._atkeyword(rule, u'@media'),
                                mediaText,
@@ -541,13 +533,15 @@ class CSSSerializer(object):
 
         + CSSComments
         """
+        # TODO: use Out()
+
         self._level += 1
         try:
             styleText = self.do_css_CSSStyleDeclaration(rule.style)
         finally:
             self._level -= 1
 
-        if not styleText or not self._valid(rule):
+        if not styleText or not rule.wellformed:
             return u''
 
         return u'%s%s {%s%s%s%s}' % (
@@ -563,9 +557,7 @@ class CSSSerializer(object):
         """
         a selector of a CSSPageRule including comments
         """
-        if len(seq) == 0 or not self._valid(seq):
-            return u''
-        else:
+        if len(seq):
             out = []
             for part in seq:
                 if hasattr(part, 'cssText'):
@@ -573,14 +565,16 @@ class CSSSerializer(object):
                 else:
                     out.append(part)
             return u' %s' % u''.join(out)
-
+        else:
+            return u''
+        
     def do_CSSUnknownRule(self, rule):
         """
         serializes CSSUnknownRule
         anything until ";" or "{...}"
         + CSSComments
         """
-        if self._valid(rule):
+        if rule.wellformed:
             out = Out(self)
             out.append(rule.atkeyword)           
             stacks = []
@@ -619,6 +613,8 @@ class CSSSerializer(object):
 
         + CSSComments
         """
+        # TODO: use Out()
+
         # prepare for element nested rules
         # TODO: sort selectors!
         if self.prefs.indentSpecificities:
@@ -643,7 +639,7 @@ class CSSSerializer(object):
         # TODO ^ RESOLVE!!!!
         
         selectorText = self.do_css_SelectorList(rule.selectorList)
-        if not selectorText or not self._valid(rule):
+        if not selectorText or not rule.wellformed:
             return u''
         self._level += 1
         styleText = u''
@@ -668,8 +664,8 @@ class CSSSerializer(object):
 
     def do_css_SelectorList(self, selectorlist):
         "comma-separated list of Selectors"
-        if self._wellformed(selectorlist):
-            # does not need Out as it is too simple
+        # does not need Out() as it is too simple
+        if selectorlist.wellformed:
             out = [] 
             for part in selectorlist.seq:
                 if isinstance(part, cssutils.css.Selector):
@@ -692,7 +688,7 @@ class CSSSerializer(object):
         - u'' => ``|name``
         - any other value: => ``prefix|name``
         """
-        if self._wellformed(selector):
+        if selector.wellformed:
             out = Out(self)
             for item in selector.seq:
                 typ, val = item.type, item.value
@@ -726,8 +722,10 @@ class CSSSerializer(object):
         """
         Style declaration of CSSStyleRule
         """
-        if len(style.seq) > 0 and self._wellformed(style) and\
-                                self._valid(style):
+        # TODO: use Out()
+        
+        # may be comments only
+        if len(style.seq) > 0:
             if separator is None:
                 separator = self.prefs.lineSeparator
 
@@ -774,9 +772,10 @@ class CSSSerializer(object):
         Property has a seqs attribute which contains seq lists for             
         name, a CSSvalue and a seq list for priority
         """
+        # TODO: use Out()
+        
         out = []
-        if property.seqs[0] and self._wellformed(property) and\
-                                self._valid(property):
+        if property.seqs[0] and property.wellformed and self._valid(property):
             nameseq, cssvalue, priorityseq = property.seqs
 
             #name
@@ -816,6 +815,8 @@ class CSSSerializer(object):
         """
         a Properties priority "!" S* "important"
         """
+        # TODO: use Out()
+        
         out = []
         for part in priorityseq:
             if hasattr(part, 'cssText'): # comments
@@ -830,6 +831,9 @@ class CSSSerializer(object):
         """
         serializes a CSSValue
         """
+        # TODO: use Out()
+        # TODO: use self._valid(cssvalue)?
+        
         if not cssvalue:
             return u''
         else:
@@ -849,24 +853,6 @@ class CSSSerializer(object):
                     out.append(part)
             return (u''.join(out)).strip()
 
-    def do_stylesheets_mediaquery(self, mediaquery):
-        """
-        a single media used in medialist
-        """
-        if len(mediaquery.seq) == 0:
-            return u''
-        else:
-            out = []
-            for part in mediaquery.seq:
-                if isinstance(part, cssutils.css.Property): # Property
-                    out.append(u'(%s)' % part.cssText)
-                elif hasattr(part, 'cssText'): # comments
-                    out.append(part.cssText)
-                else:
-                    # TODO: media queries!
-                    out.append(part)
-            return u' '.join(out)
-
     def do_stylesheets_medialist(self, medialist):
         """
         comma-separated list of media, default is 'all'
@@ -881,3 +867,20 @@ class CSSSerializer(object):
             return sep.join(
                         (mq.mediaText for mq in medialist))
 
+    def do_stylesheets_mediaquery(self, mediaquery):
+        """
+        a single media used in medialist
+        """
+        if mediaquery.wellformed:
+            out = []
+            for part in mediaquery.seq:
+                if isinstance(part, cssutils.css.Property): # Property
+                    out.append(u'(%s)' % part.cssText)
+                elif hasattr(part, 'cssText'): # comments
+                    out.append(part.cssText)
+                else:
+                    # TODO: media queries!
+                    out.append(part)
+            return u' '.join(out)
+        else:
+            return u''
