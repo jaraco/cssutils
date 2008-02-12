@@ -135,6 +135,8 @@ propertyNameSpacer = u' '
 selectorCombinatorSpacer = u' '
     String which is used before and after a Selector combinator like +, > or ~.
     CSSOM defines a single space for this which is also the default in cssutils.
+spacer = u' '
+    general spacer, used e.g. by CSSUnknownRule
 
 validOnly = False (**not used anywhere yet**)
     If ``True`` only valid (Properties or Rules) are kept.
