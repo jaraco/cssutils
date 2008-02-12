@@ -189,6 +189,35 @@ class Base(object):
         else:
             return None
 
+    def _stringtokenvalue(self, token): 
+        """
+        for STRING returns the actual content without surrounding "" or ''
+        and without respective escapes, e.g.::
+            
+             "with \" char" => with " char 
+        """
+        if token:
+            value = token[1]
+            return value.replace('\\'+value[0], value[0])[1:-1]
+        else:
+            return None
+
+    def _uritokenvalue(self, token): 
+        """
+        for URI returns the actual content without surrounding url()
+        or url(""), url('') and without respective escapes, e.g.::
+            
+             url("\"") => " 
+        """
+        if token:
+            value = token[1][4:-1].strip()
+            if (value[0] in '\'"') and (value[0] == value[-1]):
+                # a string "..." or '...'
+                value = value.replace('\\'+value[0], value[0])[1:-1]            
+            return value
+        else:
+            return None
+
     def _tokensupto2(self,
                      tokenizer,
                      starttoken=None,
