@@ -123,6 +123,7 @@ CSSCharsetRule
 ==============
 This rule is not really needed anymore as using  encoding_ of CSSStyleSheet_ is much easier.
 
+
 CSSNamespaceRule
 ================
 CSSNamespaceRule currently implements http://www.w3.org/TR/2006/WD-css3-namespace-20060828/. Dealing with these rules directly is not needed anymore, easier is the use of CSSStyleSheet namespaces_.
@@ -131,6 +132,7 @@ namespaceURI
     The namespace URI (a simple string!) which is bound to the given prefix. If no prefix is set (CSSNamespaceRule.prefix=='') the namespace defined by ``namespaceURI`` is set as the default namespace. This property is readonly to prevent making stylesheets invalid.
 prefix
     The prefix used in the stylesheet for the given ``namespaceURI``. If prefix is empty ``namespaceURI`` sets the default namespace for the stylesheet.
+
 
 CSSImportRule
 =============
@@ -142,6 +144,8 @@ href
     The URI where the referenced sheet may be found. May be a string or ``url()`` value.
 media
     The media information where the referenced style sheet should be used. See MediaList_ for more details.
+name
+    A name like a HTML named Stylesheet. (Not very useful yet.)
 stylesheet
     The referenced CSSStyleSheet_. Currently always ``None`` as it is **not implemented**.
 
