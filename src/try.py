@@ -1,37 +1,14 @@
 # -*- coding: utf-8 -*-
-from pprint import pprint as pp
 import codecs
-
-
-import cssutils
+from pprint import pprint as pp
 import re
 import sys
+import cssutils
 
 def save(name, string):
     f = open(name, 'w')
     f.write(string)
     f.close()
-
-css = '''
-"\\""
-'''
-css = '''<!--
-@name\\space /*1*/ ns1 "URI";
-/* xxx */
-a { color: red }
--->
-'''
-css = """
-<!--
-@charset "utf-8";
-@charset "utf-8";
-@namespace;
-@import /*x*/ "2" tv, print;
-@namespace "1";
-@namespace a "2";
-@import "INVALID";
--->
-"""
 
 def escapecss(e):
     """
@@ -44,135 +21,38 @@ def escapecss(e):
     s = e.object[e.start:e.end]
     return u''.join([ur'\%s ' % str(hex(ord(x)))[2:] # remove 0x from hex
                      .upper() for x in s]), e.end
-
 codecs.register_error('escapecss', escapecss)
 
-if 1:
-    INFO = """
-    green in Safari and Opera (not FireFox):
-   @1; div { color:green; }
-or:
-   @1 []; div { color:green; }
+if 0:
+    css = ur'''
+    url()
+    URL()
+    uR\l()
 
-green in Opera only:
-   @1 [{}]; div { color:green; }
-
-green in Opera only (with ALL subsequent rules seemingly ignored in Safari and FireFox):
-@media all {
-   @
-} 
-div { color:green; }
-
-green in Opera and Safari (with ALL subsequent rules seemingly ignored in FireFox):
-   @1 { [ }
-   div { color:green;}
-
-on this last one, adding a "]" or ";"  anywhere after the first "}" does not seem to help FireFox recover.
-"""     
-    css = ['''/* green in Safari and Opera (not FireFox): */
-        @1;
-        DIV { color: green; }''',
-        '''/* green in Safari and Opera (not FireFox): */
-        @1 []; 
-        div { color:green; }''',
-        
-        '''/* green in Opera only: */
-        @1 [{}];
-        div { color:green; }'''
-        '''@media all {
-   @
-} 
-div { color:green; }''',
-
-        '''@1 { [ }
-   div { color:green;}''',    
-        '''@1 { [ } ]
-            div { color:red;}
-                div  { color: green; } /* The last rule eaten was the first div selector above, while I am safe */ '''    
-    ]
-    for t in css:
-        s = cssutils.parseString(t)
-        print t
-        print '----'
-        print s.cssText
-        print '=======================\n'
-    sys.exit(1)
-    
-    s.add()
-    #mr = cssutils.css.CSSMediaRule()
-    #s.add(mr)
-    #mr.cssText = '@media all { p2|a { color: green} }'
-    
-    #s.add('p2|a { color: green}')
-    #sr = s.cssRules[2]
-    #sr.selectorText = 'p2|xxx2'
-    smr = s.cssRules[1].cssRules[0]
-    print 0, id(s), s.cssText[:10]
-    print 1, id(s.cssRules[1].parentStyleSheet), s.cssText[:10]
-    print 2, id(smr.parentStyleSheet), smr.parentStyleSheet.cssText[:10]
-    smr.selectorText = 'p2|xxxmedia'
-    print s.cssText
-    sys.exit(1)
-    
-    print s.namespaces
-    s.namespaces[''] = 'u'
-    s.namespaces['p3'] = 'u'
-    s.add('@namespace p4 "u";')
-    print s.namespaces.effective
-    print s.namespaces.prefixForNamespaceURI('u')
-    print s.cssText
-    
+    '''
+    #css = codecs.open('../sheets/1.css', encoding='css').read()
+    t = cssutils.tokenize2.Tokenizer()
+    gen = t.tokenize(css, fullsheet=0)
+    for tk in gen:
+        print tk
     sys.exit(0)
 
 if 1:
-    cssutils.ser.prefs.defaultPropertyName = False
-    s = cssutils.parseString(ur'a { c\olor: green !IMportant; }')
-    #s = cssutils.css.CSSStyleDeclaration(cssText='c\\olor: red !IMportant')
-    print s.cssRules[0].style.getProperty('color').seqs
-    cssutils.ser.prefs.defaultPropertyName = True
-    print s.cssText
-    cssutils.ser.prefs.defaultPropertyName = False
-    print s.cssText
-    sys.exit(0)
-     
-#    s = cssutils.css.Selector(('p|a', {'p': 'u'}))
-#    print s
-#    print repr(s)
-    #s.selectorText = (u'p|*', (('p', 'uri'),))
-    #print repr(s)
-#    sys.exit(0)
+    r = cssutils.css.CSSImportRule()
+    print r.cssText
+    print r.valid
+    #s = cssutils.parseString(css)
+    #print s.cssText
+    sys.exit(1)
 
-#    s = cssutils.css.SelectorList(('[p|a], a[x|t]', 
-#                                  {'p': 'uri', 'x': 'x', 'u': 'u'}))
-#    #s.append('p|aaaa')
-#    #.selectorText = 'aaaa'
-#    for sel in s:
-#        print repr(sel)
-#    print repr(s)
-#    sys.exit(0)
-    
-#    print "----- set cssText -----"
-#    s = cssutils.css.CSSStyleRule()
-#    s.cssText = ('p|a {left: 0}', {'p': 'uri'})
-#    try:
-#        s.selectorList.appendSelector('p|x $')
-#    except Exception, e:
-#        print e
-#    print s.cssText
-#    print repr(s)
-#    sys.exit(0)
-#    
-    s = cssutils.css.CSSStyleSheet()
-    s.cssText = '@namespace p "uri";a, p|a {left: 0}'
-    s.namespaces['y1'] = 'yyy'#'@namespace y "yyy";')
-    s.cssRules[2].selectorList.append('y1|x')
-    try:
-        s.cssRules[2].selectorList.append('p|x $')
-    except Exception, e:
-        print e
-    print s.cssText
-
-    sys.exit(0)
+if 1:
+    css = '@import "new"/*1*/;'
+    print '\n------source-------\n', css, '\n-----processed-----'
+    sheet = cssutils.parseString(css)
+    print sheet.cssText 
+    sheet.cssRules[0].href = '123'
+    print sheet.cssText 
+    sys.exit(1)
 
 if 0:
     from cssutils.scripts import csscombine
@@ -206,14 +86,11 @@ a[href='\a\27'] {
         print r.type, r.parentStyleSheet
     sys.exit(0)
 
-if 1:
+if 0:
     s = cssutils.css.CSSStyleSheet()
     r = cssutils.css.CSSNamespaceRule()
-    sys.exit(0)
-
     
-    
-    css = u'''@namespace "default"; 
+    css = u'''@namespace xxxx "default"; 
 @namespace p "example";
 @namespace n "new";
 a[n|att], |a  {color: red}
@@ -223,14 +100,6 @@ a[n|att], |a  {color: red}
     print css
     sl = s.cssRules[3].selectorList
     #print sl._usedprefixes
-    for sel in sl:
-        ""
-        #print sel.namespaces
-        #print sel.element
-#        print repr(sel.seq)
-        #print
-#    s.deleteRule(2)
-    #s.cssRules[2].namespaceURI = '123'
     s.cssRules[2].prefix = 'p123'
     print s.cssText
     print s.namespaces
@@ -261,20 +130,6 @@ a[n|att], |a  {color: red}
        
     sys.exit(0)
 
-
-if 0:
-    css = ur'''
-    url()
-    URL()
-    uR\l()
-
-    '''
-    #css = codecs.open('../sheets/1.css', encoding='css').read()
-    t = cssutils.tokenize2.Tokenizer()
-    gen = t.tokenize(css, fullsheet=0)
-    for tk in gen:
-        print tk
-    sys.exit(0)
 
 if 0:
     css = '''
