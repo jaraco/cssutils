@@ -41,8 +41,8 @@ class CSSRule(cssutils.util.Base):
     typeString: string
         A string name of the type of this rule, e.g. 'STYLE_RULE'. Mainly
         useful for debugging
-    valid:
-        if a rule is valid (wellformed)
+    wellformed:
+        if a rule is valid 
     """
 
     """
@@ -118,6 +118,8 @@ class CSSRule(cssutils.util.Base):
 
     parentStyleSheet = property(lambda self: self._parentStyleSheet,
                                 doc=u"READONLY")
+
+    wellformed = property(lambda self: False, doc=u"READONLY")
 
     def _getTypeString(self):
         return CSSRule._typestrings[self.type]

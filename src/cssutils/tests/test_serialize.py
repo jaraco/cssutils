@@ -37,7 +37,6 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, u' ')
         self.assertEqual(cssutils.ser.prefs.spacer, u' ')
         self.assertEqual(cssutils.ser.prefs.validOnly, False)
-        self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
         css = u'''
     /*1*/
     @import url(x) tv , print;
@@ -96,7 +95,6 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, u'')
         self.assertEqual(cssutils.ser.prefs.spacer, u'')
         self.assertEqual(cssutils.ser.prefs.validOnly, False)
-        self.assertEqual(cssutils.ser.prefs.wellformedOnly, True)
         
         css = u'''
     /*1*/
@@ -417,6 +415,28 @@ a, b {}'''
         cssutils.ser.prefs.selectorCombinatorSpacer = u''
         self.assertEqual(u'a+b>c~d e', s.selectorText)
 
+    def test_validOnly(self):
+        "Preferences.validOnly"
+        # check pref
+        cssutils.ser.prefs.useDefaults()
+        
+        # Property
+        p = cssutils.css.Property('color', '1px')
+        self.assertEqual(p.cssText, 'color: 1px')
+        p.value = '1px'
+        cssutils.ser.prefs.validOnly = True
+        self.assertEqual(p.cssText, '')
+        cssutils.ser.prefs.validOnly = False
+        self.assertEqual(p.cssText, 'color: 1px')
+        
+        # CSSStyleDeclaration has no actual property valid 
+        # but is empty if containing invalid Properties only
+        s = cssutils.css.CSSStyleDeclaration()
+        s.setProperty(p)
+        self.assertEqual(s.cssText, 'color: 1px')
+        cssutils.ser.prefs.validOnly = True
+        self.assertEqual(s.cssText, '')
+        
     def test_CSSStyleSheet(self):
         "CSSSerializer.do_CSSStyleSheet"
         css = u'/* κουρος */'

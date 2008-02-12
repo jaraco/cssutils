@@ -91,12 +91,12 @@ class CSSCharsetRule(cssrule.CSSRule):
         """
         super(CSSCharsetRule, self)._setCssText(cssText)
 
-        valid = True
+        wellformed = True
         tokenizer = self._tokenize2(cssText)
         
         atkeyword = self._tokenvalue(self._nexttoken(tokenizer))        
         if u'@charset ' != atkeyword: 
-            valid = False
+            wellformed = False
             self._log.error(u'CSSCharsetRule must start with "@charset "',
                             error=xml.dom.InvalidModificationErr)
         
@@ -104,7 +104,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         encodingtype, encoding = self._type(encodingtoken), self._tokenvalue(
                                                             encodingtoken)
         if 'STRING' != encodingtype or len(encoding) < 3:
-            valid = False
+            wellformed = False
             self._log.error(u'CSSCharsetRule: no encoding found.')
         else:
             encoding = encoding[1:-1] # remove "..." or '...'
@@ -112,11 +112,11 @@ class CSSCharsetRule(cssrule.CSSRule):
         semicolon = self._tokenvalue(self._nexttoken(tokenizer))
         EOFtype = self._type(self._nexttoken(tokenizer))
         if u';' != semicolon or (EOFtype and 'EOF' != EOFtype):
-            valid = False
+            wellformed = False
             self._log.error(u'CSSCharsetRule: Syntax Error: %r.' % 
                             self._valuestr(cssText))
         
-        if valid:
+        if wellformed:
             self.encoding = encoding
             
     cssText = property(fget=_getCssText, fset=_setCssText,
@@ -158,7 +158,7 @@ class CSSCharsetRule(cssrule.CSSRule):
     encoding = property(lambda self: self._encoding, _setEncoding,
         doc="(DOM)The encoding information used in this @charset rule.")
 
-    valid = property(lambda self: bool(self.encoding))
+    wellformed = property(lambda self: bool(self.encoding))
 
     def __repr__(self):
         return "cssutils.css.%s(encoding=%r)" % (

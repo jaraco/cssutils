@@ -95,10 +95,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         CSSStyleDeclaration is not attached to a CSSRule.
     seq: a list (cssutils)
         All parts of this style declaration including CSSComments
-    valid
-        if this declaration is valid, currently to CSS 2.1 (?)
-    wellformed
-        if this declaration is syntactically ok
 
     $css2propertyname
         All properties defined in the CSS2Properties class are available
@@ -131,8 +127,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         super(CSSStyleDeclaration, self).__init__()
         self._parentRule = parentRule
         self.seq = []
-        self.valid = False
-        self.wellformed = False
         self.cssText = cssText
         self._readonly = readonly
 
@@ -169,7 +163,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         known = ['_tokenizer', '_log', '_ttypes',
                  'seq', 'parentRule', '_parentRule', 'cssText',
-                 'valid', 'wellformed', 
+                 'valid', 'wellformed',
                  '_readonly']
         known.extend(CSS2Properties._properties)
         if n in known:
@@ -320,8 +314,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         
         if wellformed:
             self.seq = newseq
-            self.wellformed = wellformed
-            self.valid = valid
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) A parsable textual representation of the declaration\

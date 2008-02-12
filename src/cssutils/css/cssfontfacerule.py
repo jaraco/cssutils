@@ -41,6 +41,8 @@ class CSSFontFaceRule(cssrule.CSSRule):
           ;
     """
     type = cssrule.CSSRule.FONT_FACE_RULE
+    # constant but needed:
+    wellformed = True
 
     def __init__(self, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
@@ -54,7 +56,6 @@ class CSSFontFaceRule(cssrule.CSSRule):
                                               parentStyleSheet=parentStyleSheet)
 
         self.atkeyword = u'@font-face'
-        
         if style:
             self.style = style
             self.seq.append(self.style)
@@ -95,30 +96,30 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
-            valid = True
+            wellformed = True
             beforetokens = self._tokensupto2(tokenizer, blockstartonly=True)            
             try:
                 bracetoken = beforetokens.pop()
             except IndexError:
                 bracetoken = None
             if self._tokenvalue(bracetoken) != u'{':
-                valid = False
+                wellformed = False
                 self._log.error(
                     u'CSSFontFaceRule: No start { of style declaration found: %r' %
                     self._valuestr(cssText), bracetoken)
             
             # parse stuff before { which should be comments and S only
-            new = {'valid': True}
+            new = {'wellformed': True}
             newseq = []
-            beforevalid, expected = self._parse(expected=':',
+            beforewellformed, expected = self._parse(expected=':',
                 seq=newseq, tokenizer=self._tokenize2(beforetokens),
                 productions={})
-            valid = valid and beforevalid and new['valid']
+            wellformed = wellformed and beforewellformed and new['wellformed']
     
             styletokens = self._tokensupto2(tokenizer, blockendonly=True)
             newstyle = CSSStyleDeclaration()
             if not styletokens:
-                valid = False
+                wellformed = False
                 self._log.error(
                     u'CSSFontFaceRule: No style declaration or "}" found: %r' %
                     self._valuestr(cssText))            
@@ -126,7 +127,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             braceorEOFtoken = styletokens.pop()
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
-                valid = False
+                wellformed = False
                 self._log.error(
                     u'CSSFontFaceRule: No "}" after style declaration found: %r' %
                     self._valuestr(cssText))
@@ -136,8 +137,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
                     styletokens.append(braceorEOFtoken)
                 newstyle.cssText = styletokens
 
-            if valid:
-                self.valid = True
+            if wellformed:
                 self.style = newstyle
                 self.seq = newseq # contains upto { only
 

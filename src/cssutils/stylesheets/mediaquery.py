@@ -32,8 +32,8 @@ class MediaQuery(cssutils.util.Base):
         one of MEDIA_TYPES like e.g. 'print'
     seq: a list (cssutils)
         All parts of this MediaQuery including CSSComments
-    valid:
-        if this query is valid
+    wellformed:
+        if this query is wellformed
 
     Format
     ======
@@ -72,7 +72,6 @@ class MediaQuery(cssutils.util.Base):
         """
         super(MediaQuery, self).__init__()
 
-        self.valid = False
         self.seq = []
         self._mediaType = u''
         if mediaText:
@@ -108,7 +107,7 @@ class MediaQuery(cssutils.util.Base):
         else:
             # for closures: must be a mutable
             new = {'mediatype': None,
-                   'valid': True }
+                   'wellformed': True }
 
             def _ident_or_dim(expected, seq, token, tokenizer=None):
                 # only|not or mediatype or and
@@ -151,24 +150,23 @@ class MediaQuery(cssutils.util.Base):
 
             # expected: only|not or mediatype, mediatype, feature, and
             newseq = []
-            valid, expected = self._parse(expected='only|not or mediatype',
+            wellformed, expected = self._parse(expected='only|not or mediatype',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'IDENT': _ident_or_dim, # e.g. "print"
                              'DIMENSION': _ident_or_dim, # e.g. "3d"
                              'CHAR': _char})
-            valid = valid and new['valid']
+            wellformed = wellformed and new['wellformed']
 
             # post conditions
             if not new['mediatype']:
-                valid = False
+                wellformed = False
                 self._log.error(u'MediaQuery: No mediatype found: %s' %
                     self._valuestr(mediaText))
 
-            if valid:
+            if wellformed:
                 # set
                 self.mediaType = new['mediatype']
                 self.seq = newseq
-                self.valid = valid
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="""(DOM) The parsable textual representation of the media list.
@@ -224,6 +222,8 @@ class MediaQuery(cssutils.util.Base):
 
     mediaType = property(_getMediaType, _setMediaType,
         doc="""(DOM) media type (one of MediaQuery.MEDIA_TYPES) of this MediaQuery.""")
+
+    wellformed = property(lambda self: bool(len(self.seq)))
 
     def __repr__(self):
         return "cssutils.stylesheets.%s(mediaText=%r)" % (

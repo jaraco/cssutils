@@ -121,16 +121,16 @@ class CSSStyleRule(cssrule.CSSRule):
                             self._valuestr(cssText),
                             error=xml.dom.InvalidModificationErr)
         else:
-            valid = True
+            wellformed = True
             
             bracetoken = selectortokens.pop()
             if self._tokenvalue(bracetoken) != u'{':
-                valid = False
+                wellformed = False
                 self._log.error(
                     u'CSSStyleRule: No start { of style declaration found: %r' %
                     self._valuestr(cssText), bracetoken)
             elif not selectortokens:
-                valid = False
+                wellformed = False
                 self._log.error(u'CSSStyleRule: No selector found: %r.' %
                             self._valuestr(cssText), bracetoken)
             newselectorlist = SelectorList(selectorText=(selectortokens, 
@@ -139,7 +139,7 @@ class CSSStyleRule(cssrule.CSSRule):
 
             newstyle = CSSStyleDeclaration()
             if not styletokens:
-                valid = False
+                wellformed = False
                 self._log.error(
                     u'CSSStyleRule: No style declaration or "}" found: %r' %
                     self._valuestr(cssText))
@@ -147,7 +147,7 @@ class CSSStyleRule(cssrule.CSSRule):
                 braceorEOFtoken = styletokens.pop()
                 val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
                 if val != u'}' and typ != 'EOF':
-                    valid = False
+                    wellformed = False
                     self._log.error(
                         u'CSSStyleRule: No "}" after style declaration found: %r' %
                         self._valuestr(cssText))
@@ -157,7 +157,7 @@ class CSSStyleRule(cssrule.CSSRule):
                         styletokens.append(braceorEOFtoken)
                     newstyle.cssText = styletokens
 
-            if valid:
+            if wellformed:
                 self._selectorList = newselectorlist
                 self.style = newstyle
 
@@ -228,7 +228,7 @@ class CSSStyleRule(cssrule.CSSRule):
     style = property(lambda self: self._style, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")
 
-    valid = property(lambda self: True)
+    wellformed = property(lambda self: self.selectorList.wellformed)
 
     def __repr__(self):
         if self._namespaces:

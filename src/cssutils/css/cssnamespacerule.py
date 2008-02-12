@@ -140,7 +140,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             new = {'keyword': self._tokenvalue(attoken),
                    'prefix': u'',
                    'uri': None,
-                   'valid': True
+                   'wellformed': True
                    }
 
             def _ident(expected, seq, token, tokenizer=None):
@@ -150,7 +150,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                     seq.append(new['prefix'])
                     return 'uri'
                 else:
-                    new['valid'] = False
+                    new['wellformed'] = False
                     self._log.error(
                         u'CSSNamespaceRule: Unexpected ident.', token)
                     return expected
@@ -163,7 +163,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                     return ';'
 
                 else:
-                    new['valid'] = False
+                    new['wellformed'] = False
                     self._log.error(
                         u'CSSNamespaceRule: Unexpected string.', token)
                     return expected
@@ -176,7 +176,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                     seq.append(new['uri'])
                     return ';'
                 else:
-                    new['valid'] = False
+                    new['wellformed'] = False
                     self._log.error(
                         u'CSSNamespaceRule: Unexpected URI.', token)
                     return expected
@@ -187,36 +187,36 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 if ';' == expected and u';' == val:
                     return 'EOF'
                 else:
-                    new['valid'] = False
+                    new['wellformed'] = False
                     self._log.error(
                         u'CSSNamespaceRule: Unexpected char.', token)
                     return expected
 
             # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
             newseq = []
-            valid, expected = self._parse(expected='prefix or uri',
+            wellformed, expected = self._parse(expected='prefix or uri',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'IDENT': _ident,
                              'STRING': _string,
                              'URI': _uri,
                              'CHAR': _char})
 
-            # valid set by parse
-            valid = valid and new['valid']
+            # wellformed set by parse
+            wellformed = wellformed and new['wellformed']
 
             # post conditions
             if not new['uri']:
-                valid = False
+                wellformed = False
                 self._log.error(u'CSSNamespaceRule: No namespace URI found: %s' %
                     self._valuestr(cssText))
 
             if expected != 'EOF':
-                valid = False
+                wellformed = False
                 self._log.error(u'CSSNamespaceRule: No ";" found: %s' %
                     self._valuestr(cssText))
 
             # set all
-            if valid:
+            if wellformed:
                 self.atkeyword = new['keyword']
                 self._prefix = new['prefix']
                 self.namespaceURI = new['uri']
@@ -293,7 +293,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                                 _setParentStyleSheet,
                                 doc=u"Containing CSSStyleSheet.")
 
-    valid = property(lambda self: bool(self.namespaceURI))
+    wellformed = property(lambda self: bool(self.namespaceURI))
 
     def __repr__(self):
         return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (

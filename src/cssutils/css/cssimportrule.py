@@ -83,7 +83,7 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)
         self._name = name
-        if not self.media.valid:
+        if not self.media.wellformed:
             self._media = cssutils.stylesheets.MediaList()
             
         seq = self._tempSeq()
@@ -188,7 +188,7 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
 
                     media = cssutils.stylesheets.MediaList()
                     media.mediaText = mediatokens
-                    if media.valid:
+                    if media.wellformed:
                         new['media'] = media
                         seq.append(media, 'media')
                     else:
@@ -301,7 +301,7 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
     styleSheet = property(lambda self: self._styleSheet,
                           doc="(readonly) The style sheet referred to by this rule.")
 
-    valid = property(lambda self: bool(self.href and self.media.valid))
+    wellformed = property(lambda self: bool(self.href and self.media.wellformed))
 
     def __repr__(self):
         return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (

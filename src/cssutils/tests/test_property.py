@@ -146,7 +146,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         p.value = 'red'
         self.assertEqual(p.valid, False)
         self.assertEqual(p.cssValue.valid,False)
-
+        
     def test_cssValue(self):
         "Property.cssValue"
         pass
