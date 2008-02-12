@@ -69,48 +69,6 @@ class CSSCharsetRule(cssrule.CSSRule):
 
         self._readonly = readonly
 
-    def _getEncoding(self):
-        """ returns encoding as a string """
-        return self._encoding
-
-    def _setEncoding(self, encoding):
-        """
-        DOMException on setting
-
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if this encoding rule is readonly.
-        - SYNTAX_ERR: (self)
-          Raised if the specified encoding value has a syntax error and
-          is unparsable.
-          Currently only valid Python encodings are allowed.
-        """
-        self._checkReadonly()
-        tokenizer = self._tokenize2(encoding)
-        encodingtoken = self._nexttoken(tokenizer)
-        unexpected = self._nexttoken(tokenizer)
-
-        valid = True
-        if not encodingtoken or unexpected or\
-           self._prods.IDENT != self._type(encodingtoken):
-            valid = False
-            self._log.error(
-                'CSSCharsetRule: Syntax Error in encoding value %r.' %
-                      encoding)
-        else:
-            try:
-                codecs.lookup(encoding)
-            except LookupError:
-                valid = False
-                self._log.error('CSSCharsetRule: Unknown (Python) encoding %r.' %
-                          encoding)
-            else:
-                self._encoding = encoding.lower()
-        self.valid = valid
-
-    encoding = property(_getEncoding, _setEncoding,
-        doc="(DOM)The encoding information used in this @charset rule.")
-
-
     def _getCssText(self):
         """returns serialized property cssText"""
         return cssutils.ser.do_CSSCharsetRule(self)
@@ -158,12 +116,49 @@ class CSSCharsetRule(cssrule.CSSRule):
             self._log.error(u'CSSCharsetRule: Syntax Error: %r.' % 
                             self._valuestr(cssText))
         
-        self.valid = valid
         if valid:
             self.encoding = encoding
             
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
+
+    def _setEncoding(self, encoding):
+        """
+        DOMException on setting
+
+        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
+          Raised if this encoding rule is readonly.
+        - SYNTAX_ERR: (self)
+          Raised if the specified encoding value has a syntax error and
+          is unparsable.
+          Currently only valid Python encodings are allowed.
+        """
+        self._checkReadonly()
+        tokenizer = self._tokenize2(encoding)
+        encodingtoken = self._nexttoken(tokenizer)
+        unexpected = self._nexttoken(tokenizer)
+
+        valid = True
+        if not encodingtoken or unexpected or\
+           self._prods.IDENT != self._type(encodingtoken):
+            valid = False
+            self._log.error(
+                'CSSCharsetRule: Syntax Error in encoding value %r.' %
+                      encoding)
+        else:
+            try:
+                codecs.lookup(encoding)
+            except LookupError:
+                valid = False
+                self._log.error('CSSCharsetRule: Unknown (Python) encoding %r.' %
+                          encoding)
+            else:
+                self._encoding = encoding.lower()
+
+    encoding = property(lambda self: self._encoding, _setEncoding,
+        doc="(DOM)The encoding information used in this @charset rule.")
+
+    valid = property(lambda self: bool(self.encoding))
 
     def __repr__(self):
         return "cssutils.css.%s(encoding=%r)" % (
