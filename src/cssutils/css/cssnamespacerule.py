@@ -96,7 +96,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             self.namespaceURI = namespaceURI
             self.prefix = prefix
             self.seq = [self.prefix, self.namespaceURI]
-        elif cssText:
+        elif cssText is not None:
             self.cssText = cssText
 
         if parentStyleSheet:
