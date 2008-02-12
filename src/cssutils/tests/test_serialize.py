@@ -71,7 +71,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
     }
 prefix|x, a + b > c ~ d, b {
     top: 1px;
-    font-family: arial, 'some'
+    font-family: arial, "some"
     }'''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, parsedcss)
@@ -120,7 +120,7 @@ prefix|x, a + b > c ~ d, b {
     '''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, 
-            u'''@import "x" tv,print;@namespace prefix "uri";@media all{a{color:red}}prefix|x,a+b>c~d,b{top:1px;font-family:arial,'some'}''' 
+            u'''@import "x" tv,print;@namespace prefix "uri";@media all{a{color:red}}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
             )
 
     def test_defaultAtKeyword(self):
@@ -450,8 +450,9 @@ a, b {}'''
         self.assertEqual(u'color: red',
                     cssutils.ser.do_Property(s))
 
-    def test_escapeSTRINGtype(self):
-        "CSSSerializer._escapeSTRINGtype"
+    def test_escapestring(self):
+        "CSSSerializer._escapestring"
+        #'"\a\22\27"'  
         css = ur'''@import url("ABC\a");
 @import "ABC\a";
 @import 'ABC\a';
@@ -466,13 +467,13 @@ a[href='"\a\22\27"'] {
         exp = ur'''@import url("ABC\a ");
 @import "ABC\a ";
 @import "ABC\a ";
-a[href='"\a "\'"'] {
+a[href="\"\a \"'\""] {
     a: "\a \d \c ";
     b: "\a \d \c ";
     c: "\"";
     d: "\"";
-    e: '\'';
-    content: '\''
+    e: "'";
+    content: "'"
     }'''
         sheet = cssutils.parseString(css)
         self.assertEqual(sheet.cssText, exp)
