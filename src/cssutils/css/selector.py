@@ -505,7 +505,7 @@ class Selector(cssutils.util.Base2):
             def _string(expected, seq, token, tokenizer=None):
                 # identifier
                 context = new['context'][-1]
-                val = self._tokenvalue(token)
+                val = self._stringtokenvalue(token)
                 
                 # context: attrib
                 if 'attrib' == context and 'value' in expected:

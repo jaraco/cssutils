@@ -261,7 +261,16 @@ class CSSValue(cssutils.util.Base):
             # STRING IDENT URI HASH
             if expected.startswith('term'):
                 # normal value
-                val = self._tokenvalue(token)
+                
+                # TODO: use actual values, probably needs Base2 for this                
+                typ = self._type(token)
+                if 'STRING' == typ:
+                    val = u'"%s"' % self._stringtokenvalue(token)
+#                elif 'URI' == typ:
+#                    val = u'url(%s)' % self._uritokenvalue(token)
+                else:
+                    val = self._tokenvalue(token)
+                
                 new['values'].append(val)
                 seq.append(val)
                 return 'operator'
@@ -778,13 +787,11 @@ class CSSPrimitiveValue(CSSValue):
                 % self.primitiveTypeString)
 
         if CSSPrimitiveValue.CSS_STRING == self.primitiveType:
-            return self._value[1:-1]
+            # _stringtokenvalue expects tuple with at least 2
+            return self._stringtokenvalue((None,self._value))
         elif CSSPrimitiveValue.CSS_URI == self.primitiveType:
-            url = self._value[4:-1]
-            if url and url[0] in ('"', "'") and url[0] == url[-1]:
-                return url[1:-1]
-            else:
-                return url
+            # _uritokenvalue expects tuple with at least 2
+            return self._uritokenvalue((None, self._value)) 
         elif CSSPrimitiveValue.CSS_ATTR == self.primitiveType:
             return self._value[5:-1]
         else:
