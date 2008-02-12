@@ -104,74 +104,6 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
         self._readonly = readonly
 
-    def _setNamespaceURI(self, namespaceURI):
-        """
-        DOMException on setting
-    
-        :param namespaceURI: the initial value for this rules namespaceURI
-        :Exceptions:
-            - `NO_MODIFICATION_ALLOWED_ERR`: 
-              (CSSRule) Raised if this rule is readonly or a namespaceURI is 
-              already set in this rule.
-        """
-        self._checkReadonly()
-        if not self._namespaceURI:
-            # initial setting
-            self._namespaceURI = namespaceURI
-            self.seq = [namespaceURI]
-        elif self._namespaceURI != namespaceURI:
-            self._log.error(u'CSSNamespaceRule: namespaceURI is readonly.',
-                            error=xml.dom.NoModificationAllowedErr)
-
-    namespaceURI = property(lambda self: self._namespaceURI, _setNamespaceURI,
-        doc="URI (string!) of the defined namespace.")
-
-    def _setPrefix(self, prefix=None):
-        """
-        DOMException on setting
-        
-        :param prefix: the new prefix 
-        :Exceptions:
-            - `SYNTAX_ERR`: (TODO)
-              Raised if the specified CSS string value has a syntax error and
-              is unparsable.
-            - `NO_MODIFICATION_ALLOWED_ERR`: CSSRule)
-              Raised if this rule is readonly.
-        """
-        self._checkReadonly()
-        if not prefix:
-            prefix = u''
-        else:        
-            tokenizer = self._tokenize2(prefix)
-            prefixtoken = self._nexttoken(tokenizer, None)
-            if not prefixtoken or self._type(prefixtoken) != self._prods.IDENT:
-                self._log.error(u'CSSNamespaceRule: No valid prefix "%s".' %
-                    self._valuestr(prefix),
-                    error=xml.dom.SyntaxErr)
-                return
-            else:
-                prefix = self._tokenvalue(prefixtoken)
-        # update seg
-        for i, x in enumerate(self.seq):
-            if x == self._prefix:
-                self.seq[i] = prefix
-                break
-        else:
-            self.seq[0] = prefix # put prefix at the beginning!
-
-        # set new prefix
-        self._prefix = prefix
-
-    prefix = property(lambda self: self._prefix, _setPrefix,
-        doc="Prefix used for the defined namespace.")
-
-    def _setParentStyleSheet(self, parentStyleSheet):
-        self._parentStyleSheet = parentStyleSheet
-
-    parentStyleSheet = property(lambda self: self._parentStyleSheet, 
-                                _setParentStyleSheet,
-                                doc=u"Containing CSSStyleSheet.")
-
     def _getCssText(self):
         """
         returns serialized property cssText
@@ -284,7 +216,6 @@ class CSSNamespaceRule(cssrule.CSSRule):
                     self._valuestr(cssText))
 
             # set all
-            self.valid = valid
             if valid:
                 self.atkeyword = new['keyword']
                 self._prefix = new['prefix']
@@ -293,6 +224,76 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
+
+    def _setNamespaceURI(self, namespaceURI):
+        """
+        DOMException on setting
+    
+        :param namespaceURI: the initial value for this rules namespaceURI
+        :Exceptions:
+            - `NO_MODIFICATION_ALLOWED_ERR`: 
+              (CSSRule) Raised if this rule is readonly or a namespaceURI is 
+              already set in this rule.
+        """
+        self._checkReadonly()
+        if not self._namespaceURI:
+            # initial setting
+            self._namespaceURI = namespaceURI
+            self.seq = [namespaceURI]
+        elif self._namespaceURI != namespaceURI:
+            self._log.error(u'CSSNamespaceRule: namespaceURI is readonly.',
+                            error=xml.dom.NoModificationAllowedErr)
+
+    namespaceURI = property(lambda self: self._namespaceURI, _setNamespaceURI,
+        doc="URI (string!) of the defined namespace.")
+
+    def _setPrefix(self, prefix=None):
+        """
+        DOMException on setting
+        
+        :param prefix: the new prefix 
+        :Exceptions:
+            - `SYNTAX_ERR`: (TODO)
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - `NO_MODIFICATION_ALLOWED_ERR`: CSSRule)
+              Raised if this rule is readonly.
+        """
+        self._checkReadonly()
+        if not prefix:
+            prefix = u''
+        else:        
+            tokenizer = self._tokenize2(prefix)
+            prefixtoken = self._nexttoken(tokenizer, None)
+            if not prefixtoken or self._type(prefixtoken) != self._prods.IDENT:
+                self._log.error(u'CSSNamespaceRule: No valid prefix "%s".' %
+                    self._valuestr(prefix),
+                    error=xml.dom.SyntaxErr)
+                return
+            else:
+                prefix = self._tokenvalue(prefixtoken)
+        # update seg
+        for i, x in enumerate(self.seq):
+            if x == self._prefix:
+                self.seq[i] = prefix
+                break
+        else:
+            self.seq[0] = prefix # put prefix at the beginning!
+
+        # set new prefix
+        self._prefix = prefix
+
+    prefix = property(lambda self: self._prefix, _setPrefix,
+        doc="Prefix used for the defined namespace.")
+
+    def _setParentStyleSheet(self, parentStyleSheet):
+        self._parentStyleSheet = parentStyleSheet
+
+    parentStyleSheet = property(lambda self: self._parentStyleSheet, 
+                                _setParentStyleSheet,
+                                doc=u"Containing CSSStyleSheet.")
+
+    valid = property(lambda self: bool(self.namespaceURI))
 
     def __repr__(self):
         return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (

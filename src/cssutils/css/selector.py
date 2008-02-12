@@ -146,7 +146,6 @@ class Selector(cssutils.util.Base2):
         self._element = None
         self._parent = parentList
         self._specificity = (0, 0, 0, 0)
-        self.wellformed = False
         
         if selectorText:
             self.selectorText = selectorText
@@ -384,7 +383,7 @@ class Selector(cssutils.util.Base2):
 
             def _COMMENT(expected, seq, token, tokenizer=None):
                 "special implementation for comment token"
-                append(seq, cssutils.css.CSSComment([token]), 'comment', 
+                append(seq, cssutils.css.CSSComment([token]), 'COMMENT', 
                        token=token)
                 return expected
 
@@ -392,7 +391,9 @@ class Selector(cssutils.util.Base2):
                 # S
                 context = new['context'][-1]
                 if context.startswith('pseudo-'):
-                    append(seq, S, 'descendant', token=token)
+                    if seq and seq[-1].value not in u'+-':
+                        # e.g. x:func(a + b)
+                        append(seq, S, 'S', token=token)
                     return expected
                 
                 elif context != 'attrib' and 'combinator' in expected:
@@ -505,18 +506,18 @@ class Selector(cssutils.util.Base2):
             def _string(expected, seq, token, tokenizer=None):
                 # identifier
                 context = new['context'][-1]
-                val = self._stringtokenvalue(token)
+                typ, val = self._type(token), self._stringtokenvalue(token)
                 
                 # context: attrib
                 if 'attrib' == context and 'value' in expected:
                     # attrib: [...=VALUE]
-                    append(seq, val, 'string', token=token)
+                    append(seq, val, typ, token=token)
                     return attend
 
                 # context: pseudo
                 elif context.startswith('pseudo-'):
                     # :func(...)
-                    append(seq, val, 'string', token=token)
+                    append(seq, val, typ, token=token)
                     return expression
 
                 else:
@@ -633,7 +634,12 @@ class Selector(cssutils.util.Base2):
                 # context: pseudo (at least one expression)
                 elif val in u'+-' and context.startswith('pseudo-'):
                     # :func(+ -)"
-                    append(seq, val, {'+': 'plus', '-': 'minus'}[val], token=token)
+                    _names = {'+': 'plus', '-': 'minus'}
+                    if val == u'+' and seq and seq[-1].value == S:
+                        seq.replace(-1, val, _names[val])
+                    else:
+                        append(seq, val, _names[val], 
+                               token=token)
                     return expression                
 
                 elif u')' == val and context.startswith('pseudo-') and\
@@ -748,7 +754,6 @@ class Selector(cssutils.util.Base2):
                 self._element = new['element']
                 self._specificity = tuple(new['specificity'])
                 self.seq = newseq
-                self.wellformed = True
                 # filter that only used ones are kept
                 self.__namespaces = self._getUsedNamespaces()
 
@@ -758,6 +763,8 @@ class Selector(cssutils.util.Base2):
 
     specificity = property(lambda self: self._specificity, 
                            doc="Specificity of this selector (READONLY).")
+
+    wellformed = property(lambda self: bool(len(self.seq)))
 
     def __repr__(self):
         if self.__getNamespaces():

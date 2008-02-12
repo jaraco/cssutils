@@ -202,7 +202,6 @@ class CSSPageRule(cssrule.CSSRule):
                 newstyle.cssText = styletokens
 
             if valid:
-                self.valid = True
                 self._selectorText = newselector # already parsed
                 self.style = newstyle
                 self.seq = newselectorseq # contains upto style only
@@ -272,6 +271,8 @@ class CSSPageRule(cssrule.CSSRule):
 
     style = property(_getStyle, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")
+
+    valid = property(lambda self: True)
 
     def __repr__(self):
         return "cssutils.css.%s(selectorText=%r, style=%r)" % (

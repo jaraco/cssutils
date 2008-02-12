@@ -59,7 +59,6 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         super(SelectorList, self).__init__()
         
         self._parentRule = parentRule
-        self.wellformed = False
         
         if selectorText:
             self.selectorText = selectorText
@@ -180,7 +179,6 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                             self._valuestr(selectorText))
         if wellformed:
             self.seq = newseq
-            self.wellformed = wellformed
 #            for selector in newseq:
 #                 self.appendSelector(selector)
 
@@ -188,6 +186,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         doc="""(cssutils) The textual representation of the selector for
             a rule set.""")
     
+    wellformed = property(lambda self: bool(len(self.seq)))
     
     def appendSelector(self, newSelector):
         """
@@ -223,7 +222,6 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 
         newSelector = self.__prepareset(newSelector, namespaces)
         if newSelector:
-            self.wellformed = True
             seq = self.seq[:]
             del self.seq[:]
             for s in seq:
