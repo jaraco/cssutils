@@ -121,7 +121,6 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
             u'@namespace/*1*/p/*2*/"u"/*3*/;': u'@namespace/*1*/ p/*2*/ "u"/*3*/;',
 
-            # deprecated
             u'@namespace p url(u);': u'@namespace p "u";',
             u'@namespace p url(\'u\');': u'@namespace p "u";',
             u'@namespace p url(\"u\");': u'@namespace p "u";',
@@ -153,20 +152,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_InvalidModificationErr(self):
         "CSSNamespaceRule.cssText InvalidModificationErr"
-        tests = (u'/* comment */',
-                 u'@charset "utf-8";',
-                 u'@font-face {}',
-                 u'@import url(x);',
-                 u'@media all {}',
-                 u'@page {}',
-                 u'@unknown;',
-                 u'a style rule {}'
-                 # TODO: u''
-                 )
-        def _do(test):
-            r = cssutils.css.CSSNamespaceRule(cssText=test)
-        for test in tests:
-            self.assertRaises(xml.dom.InvalidModificationErr, _do, test)
+        self._test_InvalidModificationErr(u'@namespace')
 
     def test_incomplete(self):
         "CSSNamespaceRule (incomplete)"
