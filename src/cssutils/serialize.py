@@ -93,10 +93,6 @@ class Preferences(object):
     wellformedOnly = True (**not anywhere used yet**)
         only wellformed properties and rules are kept
 
-    **DEPRECATED**: removeInvalid = True
-        Omits invalid rules, replaced by ``validOnly`` which will be used
-        more cases 
-
     """
     def __init__(self, **initials):
         """
@@ -129,8 +125,6 @@ class Preferences(object):
         self.selectorCombinatorSpacer = u' '
         self.validOnly = False
         self.wellformedOnly = True
-        # DEPRECATED
-        self.removeInvalid = True
         
     def useMinified(self):
         """
@@ -173,8 +167,8 @@ class CSSSerializer(object):
     To use your own serializing method the easiest is to subclass CSS
     Serializer and overwrite the methods you like to customize.
     """
-    __notinurimatcher = re.compile(ur'''.*?[\)\s\;]''', re.U).match
     # chars not in URI without quotes around
+    __forbidden_in_uri_matcher = re.compile(ur'''.*?[\)\s\;]''', re.U).match
 
     def __init__(self, prefs=None):
         """
@@ -186,98 +180,16 @@ class CSSSerializer(object):
         self.prefs = prefs
         self._level = 0 # current nesting level
         
+        # TODO:
         self._selectors = [] # holds SelectorList
         self._selectorlevel = 0 # current specificity nesting level
 
-    def _serialize(self, text):
-        if self.prefs.lineNumbers:
-            pad = len(str(text.count(self.prefs.lineSeparator)+1))
-            out = []
-            for i, line in enumerate(text.split(self.prefs.lineSeparator)):
-                out.append((u'%*i: %s') % (pad, i+1, line))
-            text = self.prefs.lineSeparator.join(out)
-        return text
-
-    def _noinvalids(self, x):
-        # DEPRECATED: REMOVE!
-        if self.prefs.removeInvalid and \
-           hasattr(x, 'valid') and not x.valid:
-            return True
-        else:
-            return False
-
-    def _valid(self, x):
-        """
-        checks if valid items only and if yes it item is valid
-        """
-        return not self.prefs.validOnly or (self.prefs.validOnly and
-                                            hasattr(x, 'valid') and
-                                            x.valid)
-
-    def _wellformed(self, x):
-        """
-        checks if wellformed items only and if yes it item is wellformed
-        """
-        return self.prefs.wellformedOnly and hasattr(x, 'wellformed') and\
-               x.wellformed
-    
-    def _escapestring(self, s, delim=u'"'):
-        """
-        escapes delim charaters in string s with delim
-        s probably has no "..." or '...' around
-        
-        escape line breaks \\n \\r and \\f
-        """
-        # \n = 0xa, \r = 0xd, \f = 0xc
-        s = s.replace('\n', '\\a ').replace(
-                      '\r', '\\d ').replace(
-                      '\f', '\\c ')
-        return s.replace(delim, u'\\%s' % delim)
-
-#    def _escapeSTRINGtype(self, s):
-#        """
-#        escapes unescaped ", ' or \\n in s if not escaped already
-#        s always has  "..." or '...' around
-#        """
-#        r = s[0]
-#        out = [r]
-#        for c in s[1:-1]:
-#            if c == '\n': # = 0xa
-#                out.append(u'\\a ')
-#                continue
-#            elif c == '\r': # = 0xd
-#                out.append(u'\\d ')
-#                continue
-#            elif c == '\f': # = 0xc
-#                out.append(u'\\c ')
-#                continue
-#            elif c == r and out[-1] != u'\\':
-#                out.append(u'\\') # + c
-#            out.append(c)
-#        out.append(r)
-#        s = u''.join(out)
-#        return s
-
-    def _getatkeyword(self, rule, default):
-        """
-        used by all @rules to get the keyword used
-        dependent on prefs setting defaultAtKeyword
-        """
+    def _atkeyword(self, rule, default):
+        "returns default or source atkeyword depending on prefs"
         if self.prefs.defaultAtKeyword:
             return default
         else:
             return rule.atkeyword
-
-    def _getpropertyname(self, property, actual):
-        """
-        used by all styledeclarations to get the propertyname used
-        dependent on prefs setting defaultPropertyName and
-        keepAllProperties
-        """
-        if self.prefs.defaultPropertyName and not self.prefs.keepAllProperties:
-            return property.name
-        else:
-            return actual
 
     def _indentblock(self, text, level):
         """
@@ -291,46 +203,54 @@ class CSSSerializer(object):
                 for line in text.split(self.prefs.lineSeparator)]
         )
 
-    def _uri(self, uri):
+    def _propertyname(self, property, actual):
         """
-        returns uri enclosed in " if necessary
+        used by all styledeclarations to get the propertyname used
+        dependent on prefs setting defaultPropertyName and
+        keepAllProperties
         """
-        if CSSSerializer.__notinurimatcher(uri):
-            return '"%s"' % self._escapestring(uri, '"')
+        if self.prefs.defaultPropertyName and not self.prefs.keepAllProperties:
+            return property.name
         else:
-            return uri
+            return actual
 
-    def do_stylesheets_mediaquery(self, mediaquery):
-        """
-        a single media used in medialist
-        """
-        if len(mediaquery.seq) == 0:
-            return u''
-        else:
+    def _linenumnbers(self, text):
+        if self.prefs.lineNumbers:
+            pad = len(str(text.count(self.prefs.lineSeparator)+1))
             out = []
-            for part in mediaquery.seq:
-                if isinstance(part, cssutils.css.Property): # Property
-                    out.append(u'(%s)' % part.cssText)
-                elif hasattr(part, 'cssText'): # comments
-                    out.append(part.cssText)
-                else:
-                    # TODO: media queries!
-                    out.append(part)
-            return u' '.join(out)
+            for i, line in enumerate(text.split(self.prefs.lineSeparator)):
+                out.append((u'%*i: %s') % (pad, i+1, line))
+            text = self.prefs.lineSeparator.join(out)
+        return text
 
-    def do_stylesheets_medialist(self, medialist):
+    def _string(self, s):
         """
-        comma-separated list of media, default is 'all'
+        returns s encloded between "..." and escaped delim charater ", 
+        escape line breaks \\n \\r and \\f
+        """
+        # \n = 0xa, \r = 0xd, \f = 0xc
+        s = s.replace('\n', '\\a ').replace(
+                      '\r', '\\d ').replace(
+                      '\f', '\\c ')
+        return u'"%s"' % s.replace('"', u'\\"')
 
-        If "all" is in the list, every other media *except* "handheld" will
-        be stripped. This is because how Opera handles CSS for PDAs.
-        """
-        if len(medialist) == 0:
-            return u'all'
+    def _uri(self, uri):
+        """returns uri enclosed in url() and "..." if necessary"""
+        if CSSSerializer.__forbidden_in_uri_matcher(uri):
+            return 'url(%s)' % self._string(uri)
         else:
-            sep = u',%s' % self.prefs.listItemSpacer
-            return sep.join(
-                        (mq.mediaText for mq in medialist))
+            return 'url(%s)' % uri
+
+    def _valid(self, x):
+        "checks items with valid property"
+        return not self.prefs.validOnly or (self.prefs.validOnly and
+                                            hasattr(x, 'valid') and
+                                            x.valid)
+    def _wellformed(self, x):
+        "checks items with wellformed property"
+        return self.prefs.wellformedOnly and hasattr(x, 'wellformed') and\
+               x.wellformed
+    
 
     def do_CSSStyleSheet(self, stylesheet):
         """serializes a complete CSSStyleSheet"""
@@ -346,7 +266,7 @@ class CSSSerializer(object):
             cssText = rule.cssText
             if cssText:
                 out.append(cssText)
-        text = self._serialize(self.prefs.lineSeparator.join(out))
+        text = self._linenumnbers(self.prefs.lineSeparator.join(out))
         
         # get encoding of sheet, defaults to UTF-8
         try:
@@ -373,9 +293,9 @@ class CSSSerializer(object):
         always @charset "encoding";
         no comments or other things allowed!
         """
-        if not rule.encoding or self._noinvalids(rule):
+        if not rule.encoding or not self._valid(rule):
             return u''
-        return u'@charset "%s";' % self._escapestring(rule.encoding)
+        return u'@charset %s;' % self._string(rule.encoding)
 
     def do_CSSFontFaceRule(self, rule):
         """
@@ -392,7 +312,7 @@ class CSSSerializer(object):
         finally:
             self._level -= 1
 
-        if not styleText or self._noinvalids(rule):
+        if not styleText or not self._valid(rule):
             return u''
         
         before = []
@@ -410,7 +330,7 @@ class CSSSerializer(object):
             before = u''
 
         return u'%s%s {%s%s%s%s}' % (
-            self._getatkeyword(rule, u'@font-face'),
+            self._atkeyword(rule, u'@font-face'),
             before,
             self.prefs.lineSeparator,
             self._indentblock(styleText, self._level + 1),
@@ -431,21 +351,21 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if not rule.href or self._noinvalids(rule):
+        if not rule.href or not self._valid(rule):
             return u''
-        out = [u'%s ' % self._getatkeyword(rule, u'@import')]
+        out = [u'%s ' % self._atkeyword(rule, u'@import')]
         for item in rule.seq:
             typ, val = item.type, item.value
             
             if 'href' == typ:
                 # "href" or url(href)
                 if self.prefs.importHrefFormat == 'uri':
-                    out.append(u'url(%s)' % self._uri(val))
+                    out.append(self._uri(val))
                 elif self.prefs.importHrefFormat == 'string' or \
                    rule.hreftype == 'string':
-                    out.append(u'"%s"' % self._escapestring(val))
+                    out.append(self._string(val))
                 else:
-                    out.append(u'url(%s)' % self._uri(val))
+                    out.append(self._uri(val))
             elif 'media' == typ:
                 # media
                 mediaText = self.do_stylesheets_medialist(val)
@@ -453,7 +373,7 @@ class CSSSerializer(object):
                     out.append(u' %s' % mediaText)                
             elif 'name' == typ and val:
                 # "name" optional
-                out.append(u' "%s"' % self._escapestring(val))
+                out.append(u' %s' % self._string(val))
             
             elif 'COMMENT' == typ:
                 # TODO: outfactor this and maybe add spaces around?
@@ -472,19 +392,19 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if (rule.namespaceURI and not self._noinvalids(rule)) and (
+        if (rule.namespaceURI and not not self._valid(rule)) and (
             not rule.parentStyleSheet or (
                 rule.parentStyleSheet and 
                 rule.prefix in rule.parentStyleSheet.namespaces)
             ):
-            out = [u'%s' % self._getatkeyword(rule, u'@namespace')]
+            out = [u'%s' % self._atkeyword(rule, u'@namespace')]
             prefixdone = False
             for part in rule.seq:
                 if not prefixdone and rule.prefix == part and part != u'':
                     out.append(u' %s' % part)
                     prefixdone = True
                 elif rule.namespaceURI == part:
-                    out.append(u' "%s"' % self._escapestring(part))
+                    out.append(u' %s' % self._string(part))
                 elif hasattr(part, 'cssText'): # comments
                     out.append(part.cssText)
             return u'%s;' % u''.join(out)
@@ -510,14 +430,14 @@ class CSSSerializer(object):
                 rulesout.append(self.prefs.lineSeparator)
 
         if not self.prefs.keepEmptyRules and not u''.join(rulesout).strip() or\
-           self._noinvalids(rule.media):
+           not self._valid(rule.media):
             return u''
 
 #        if len(rule.cssRules) == 0 and not self.prefs.keepEmptyRules or\
-#           self._noinvalids(rule.media):
+#           not self._valid(rule.media):
 #            return u''
         mediaText = self.do_stylesheets_medialist(rule.media)#.strip()
-        out = [u'%s %s%s{%s' % (self._getatkeyword(rule, u'@media'),
+        out = [u'%s %s%s{%s' % (self._atkeyword(rule, u'@media'),
                                mediaText,
                                self.prefs.paranthesisSpacer,
                                self.prefs.lineSeparator)]
@@ -542,11 +462,11 @@ class CSSSerializer(object):
         finally:
             self._level -= 1
 
-        if not styleText or self._noinvalids(rule):
+        if not styleText or not self._valid(rule):
             return u''
 
         return u'%s%s {%s%s%s%s}' % (
-            self._getatkeyword(rule, u'@page'),
+            self._atkeyword(rule, u'@page'),
             self.do_pageselector(rule.seq),
             self.prefs.lineSeparator,
             self._indentblock(styleText, self._level + 1),
@@ -558,7 +478,7 @@ class CSSSerializer(object):
         """
         a selector of a CSSPageRule including comments
         """
-        if len(seq) == 0 or self._noinvalids(seq):
+        if len(seq) == 0 or not self._valid(seq):
             return u''
         else:
             out = []
@@ -575,7 +495,7 @@ class CSSSerializer(object):
         anything until ";" or "{...}"
         + CSSComments
         """
-        if rule.atkeyword and not self._noinvalids(rule):
+        if rule.atkeyword and not not self._valid(rule):
             out = [u'%s' % rule.atkeyword]
             
             if len(rule.seq) <= 1:
@@ -602,6 +522,12 @@ class CSSSerializer(object):
                     elif u'S' == typ and u'\n' in val:
                         # remove indents
                         val = u'\n'
+                    elif u'STRING' == typ:
+                        # remove indents
+                        val = self._string(val)
+                    elif u'URI' == typ:
+                        # remove indents
+                        val = self._uri(val)
                     elif u'}' == val:
                         # close last open item on stack
                         stackblock = u''.join(stack.pop()).strip()
@@ -658,7 +584,7 @@ class CSSSerializer(object):
         # TODO ^ RESOLVE!!!!
         
         selectorText = self.do_css_SelectorList(rule.selectorList)
-        if not selectorText or self._noinvalids(rule):
+        if not selectorText or not self._valid(rule):
             return u''
         self._level += 1
         styleText = u''
@@ -741,7 +667,7 @@ class CSSSerializer(object):
                         
                 else:
                     if typ == 'string':
-                        val = u'"%s"' % self._escapestring(val)
+                        val = self._string(val)
                     elif typ in ('child', 'adjacent-sibling', 'following-sibling'):
                         # CSSOM adds spaces around > + and ~
                         val = u'%s%s%s' % (self.prefs.selectorCombinatorSpacer, 
@@ -814,7 +740,7 @@ class CSSSerializer(object):
                 if hasattr(part, 'cssText'):
                     out.append(part.cssText)
                 elif property.literalname == part:
-                    out.append(self._getpropertyname(property, part))
+                    out.append(self._propertyname(property, part))
                 else:
                     out.append(part)
 
@@ -874,6 +800,40 @@ class CSSSerializer(object):
                 else:
                     # TODO: escape func parameter if STRING!
                     if part and part[0] == part[-1] and part[0] in '\'"':
-                        part = u'"%s"' % self._escapestring(part[1:-1])
+                        # string has " " around it in CSSValue!
+                        part = self._string(part[1:-1])
                     out.append(part)
             return (u''.join(out)).strip()
+
+    def do_stylesheets_mediaquery(self, mediaquery):
+        """
+        a single media used in medialist
+        """
+        if len(mediaquery.seq) == 0:
+            return u''
+        else:
+            out = []
+            for part in mediaquery.seq:
+                if isinstance(part, cssutils.css.Property): # Property
+                    out.append(u'(%s)' % part.cssText)
+                elif hasattr(part, 'cssText'): # comments
+                    out.append(part.cssText)
+                else:
+                    # TODO: media queries!
+                    out.append(part)
+            return u' '.join(out)
+
+    def do_stylesheets_medialist(self, medialist):
+        """
+        comma-separated list of media, default is 'all'
+
+        If "all" is in the list, every other media *except* "handheld" will
+        be stripped. This is because how Opera handles CSS for PDAs.
+        """
+        if len(medialist) == 0:
+            return u'all'
+        else:
+            sep = u',%s' % self.prefs.listItemSpacer
+            return sep.join(
+                        (mq.mediaText for mq in medialist))
+
