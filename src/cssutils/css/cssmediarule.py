@@ -201,6 +201,8 @@ class CSSMediaRule(cssrule.CSSRule):
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
 
+    valid = property(lambda self: True)#self.media.valid)
+
     def deleteRule(self, index):
         """
         index
