@@ -84,14 +84,15 @@ class Preferences(object):
         CSSOM defines a single space for this which is also the default in cssutils.
     spacer = u' '
         general spacer, used e.g. by CSSUnknownRule
-    validOnly = False (**not anywhere used yet**)
+    
+    validOnly = False **DO NOT CHANGE YET**
         if True only valid (Properties or Rules) are kept
         
         A Property is valid if it is a known Property with a valid value.
         Currently CSS 2.1 values as defined in cssproperties.py would be
         valid.
         
-    wellformedOnly = True (**not anywhere used yet**)
+    wellformedOnly = True
         only wellformed properties and rules are kept
 
     """
@@ -125,7 +126,7 @@ class Preferences(object):
         self.propertyNameSpacer = u' '
         self.selectorCombinatorSpacer = u' '
         self.spacer = u' '
-        self.validOnly = False
+        self.validOnly = False # should not be changed currently!!!
         self.wellformedOnly = True
         
     def useMinified(self):
@@ -179,7 +180,7 @@ class Out(object):
             # remove trailing S
             del self.out[-1]
     
-    def append(self, val, typ=None):
+    def append(self, val, typ=None, space=True, keepS=False):
         """
         Appends val. Adds a single S after each token except as follows:
         
@@ -200,6 +201,7 @@ class Out(object):
         
         """
         if val:
+            #print typ, val
             # PRE
             if 'COMMENT' == typ:
                 if self.ser.prefs.keepComments:
@@ -208,20 +210,21 @@ class Out(object):
                     return
             elif cssutils.css.CSSRule.UNKNOWN_RULE == typ:
                 val = val.cssText
-            elif 'S' == typ:
+            elif 'S' == typ and not keepS:
                 return
             elif 'STRING' == typ:
                 val = self.ser._string(val)                
             elif 'URI' == typ:
                 val = self.ser._uri(val)
-            elif val in u':,;{':
+            elif val in u'+>~,:{;)]':
                 self._remove_last_if_S()
                 
             # APPEND
             self.out.append(val)
 
             # POST
-            if val in u'+>~': # selector
+            if val in u'+>~': # enclose selector combinator
+                self.out.insert(-1, self.ser.prefs.selectorCombinatorSpacer)
                 self.out.append(self.ser.prefs.selectorCombinatorSpacer)
             elif u',' == val: # list
                 self.out.append(self.ser.prefs.listItemSpacer)
@@ -232,7 +235,7 @@ class Out(object):
                 self.out.append(self.ser.prefs.lineSeparator)
             elif u';' == val: # end or prop or block
                 self.out.append(self.ser.prefs.lineSeparator)
-            elif val not in u'}[]()':
+            elif val not in u'}[]()' and space:
                 self.out.append(self.ser.prefs.spacer)
         
     def clear(self):
@@ -327,15 +330,14 @@ class CSSSerializer(object):
 
     def _valid(self, x):
         "checks items with valid property"
-        return not self.prefs.validOnly or (self.prefs.validOnly and
-                                            hasattr(x, 'valid') and
+        return not self.prefs.validOnly or (self.prefs.validOnly and 
                                             x.valid)
+    
     def _wellformed(self, x):
         "checks items with wellformed property"
-        return self.prefs.wellformedOnly and hasattr(x, 'wellformed') and\
-               x.wellformed
+        return not self.prefs.wellformedOnly or (self.prefs.wellformedOnly and 
+                                                 x.wellformed)
     
-
     def do_CSSStyleSheet(self, stylesheet):
         """serializes a complete CSSStyleSheet"""
         useduris = stylesheet._getUsedURIs()
@@ -435,7 +437,7 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if self._wellformed(rule):
+        if rule.href and self._valid(rule):
             out = Out(self)
             out.append(self._atkeyword(rule, u'@import'))
             
@@ -476,8 +478,7 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        if (rule.namespaceURI and self._valid(rule)) and (
-            not rule.parentStyleSheet or (
+        if (rule.namespaceURI and self._valid(rule)) and (not rule.parentStyleSheet or (
                 rule.parentStyleSheet and 
                 rule.prefix in rule.parentStyleSheet.namespaces)
             ):
@@ -579,7 +580,7 @@ class CSSSerializer(object):
         anything until ";" or "{...}"
         + CSSComments
         """
-        if self._wellformed(rule):
+        if self._valid(rule):
             out = Out(self)
             out.append(rule.atkeyword)           
             stacks = []
@@ -666,20 +667,16 @@ class CSSSerializer(object):
                 self._selectorlevel)
 
     def do_css_SelectorList(self, selectorlist):
-        """
-        comma-separated list of Selectors
-        """
-        if selectorlist.seq and self._wellformed(selectorlist) and\
-                                self._valid(selectorlist):
-            out = []
-            sep = u',%s' % self.prefs.listItemSpacer
+        "comma-separated list of Selectors"
+        if self._wellformed(selectorlist):
+            # does not need Out as it is too simple
+            out = [] 
             for part in selectorlist.seq:
-                if hasattr(part, 'cssText'):
-                    out.append(part.cssText)
-                elif isinstance(part, cssutils.css.Selector):
-                    out.append(self.do_css_Selector(part))
+                if isinstance(part, cssutils.css.Selector):
+                    out.append(part.selectorText)
                 else:
-                    out.append(part) # ?
+                    out.append(part) # should not happen
+            sep = u',%s' % self.prefs.listItemSpacer
             return sep.join(out)
         else:
             return u''
@@ -695,19 +692,15 @@ class CSSSerializer(object):
         - u'' => ``|name``
         - any other value: => ``prefix|name``
         """
-        if selector.seq and self._wellformed(selector) and\
-                                self._valid(selector):
-            out = []
+        if self._wellformed(selector):
+            out = Out(self)
             for item in selector.seq:
                 typ, val = item.type, item.value
-                if hasattr(val, 'cssText'):
-                    # e.g. comment
-                    out.append(val.cssText)
-                elif type(val) == tuple:
+                if type(val) == tuple:
                     # namespaceURI|name (element or attribute)
                     namespaceURI, name = val
                     if namespaceURI is None:
-                        out.append(name)
+                        out.append(name, typ, space=False)
                     else:
                         if namespaceURI == cssutils._ANYNS:
                             prefix = u'*'
@@ -719,20 +712,13 @@ class CSSSerializer(object):
                                 prefix = u''
                         
                         if prefix == u'*' and u'' not in selector._namespaces:
-                            out.append(name)
+                            out.append(name, typ, space=False)
                         else: 
-                            out.append(u'%s|%s' % (prefix, name))
-                        
+                            out.append(u'%s|%s' % (prefix, name), typ, space=False)  
                 else:
-                    if typ == 'string':
-                        val = self._string(val)
-                    elif typ in ('child', 'adjacent-sibling', 'following-sibling'):
-                        # CSSOM adds spaces around > + and ~
-                        val = u'%s%s%s' % (self.prefs.selectorCombinatorSpacer, 
-                                           val,
-                                           self.prefs.selectorCombinatorSpacer)
-                    out.append(val)
-            return u''.join(out)
+                    out.append(val, typ, space=False, keepS=True)
+            
+            return out.value()
         else: 
             return u''
 
