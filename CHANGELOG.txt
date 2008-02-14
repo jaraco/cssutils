@@ -9,18 +9,6 @@ changelog
 
 known issues
 ------------
-- ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` and the relevant methods/properties ``Property.cssValue`` and ``CSSStyleDeclaration.getPropertyCSSValue`` are more or less *DEPRECATED* and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings. As the aforementioned classes are not hardly that useful this should not be a big problem but please beware if you use or have used them. If you think this a bad idea please let me know!
-
-   Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` will probably be completely replaced/refactored with suggestions from CSSOM.
-
-- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as not normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
-
-- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
-
-   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
-
-- not all Comments reply to preference ``keepComments``, some will probably survive if set to ``False``
-
 - although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to **not** be preserved:
 
   star hack
@@ -30,40 +18,52 @@ known issues
 
   The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils (actually with hardly any css parser...).
 
-  Generally syntactically valid stylesheets should be preserved completely (otherwise a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above ``*html`` hack. Most of these hacks may be rewritten while still be usable, e.g. ``* html`` should work same to ``*html``. Currenty the invalid CSS hack using ``$propertyname`` is actually preserved but still usage is discouraged. In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
+  Generally syntactically valid stylesheets should be preserved completely (otherwise it will be a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above ``*html`` hack. Most of these hacks may be rewritten while still be working, e.g. ``* html`` should work same to ``*html``. Currently the invalid IE-specific CSS hack using ``$propertyname`` is actually preserved but its usage is discouraged (and if e.g. specifying ``color`` and ``$color`` these properties are **not the same** for cssutils (but are for IE...). In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
-- ``Preferences.removeInvalid``, ``.validOnly`` and ``.wellformedOnly`` are in experimental stage, the first option will probably removed (maybe even in the final  0.9.4 release), so use sparingly. If you need these functionality or have suggestions what you like the lib to behave contact me.
+- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
 
-- Properties are not bound to any CSS Version, so all properties are handled, so effectively *NOT* as described in  http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values". (A future version might be customizable to a specific CSS version like 2.1 or 3)
+   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
+
+- Properties are not bound to any CSS Version, so all properties are generally handled and kept. So effectively properties are *NOT* as described in  http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values".
+
+    There is the option ``cssutils.ser.prefs.validOnly`` which is used to keep valid (based on CSS 2 valid) properties only. Problem is that current stylesheets use quite a few properties (like e.g. ``opacity``) or property values (like ``display: inline-block``) which are more or less standard but not yet *official*. There is currently no option to specify a version for which properties with which valid values should be used in cssutils. At the moment warnings will be emitted which unfortunately also go for the aforementioned *newer* properties or values.
+
+    There is the plan to *register* custom properties or values but this is just a plan for now...
+
+- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
+
+- ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` and the relevant methods/properties ``Property.cssValue`` and ``CSSStyleDeclaration.getPropertyCSSValue`` are more or less *DEPRECATED* and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings. As the aforementioned classes are not hardly that useful this should not be a big problem but please beware if you use or have used them. If you think this a bad idea please let me know!
+
+   Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` will probably be completely replaced/refactored with suggestions from CSSOM.
+
+- not all Comments reply to preference ``keepComments``, some will probably survive if set to ``False``
 
 
 0.9.x
 -----
 HEAD
-    - API CHANGE: ``.wellformed`` replaces ``.valid`` for most classes. This is more an internal value so should be used carefully anyway. Some classes still have both, notably ``Property`` and ``CSSValue``.
+    - **API CHANGE**: ``.wellformed`` replaces ``.valid`` for most classes. This is more an internal value so should be used carefully anyway. Some classes still have both, notably ``Property`` and ``CSSValue``. Also removed ``Preferences.removeInvalid`` which was deprecated for some time now and made not really sense anyway.
 
-    - API CHANGE: Removed ``cssutils.ser.prefs.wellformedOnly`` which made no sense at all. It probably was not used in client code anyway.
+    - API CHANGE: Removed ``cssutils.ser.prefs.wellformedOnly`` which made no sense at all. It probably was not used in client code anyway. cssutils serializes wellformed (not necessarily valid) stylesheets only (hopefully ;).
 
-    + **FEATURE**: ``css.UnknownRule`` is now parsed properly and checked for INVALID tokens or if nested {}, [] or () are closed properly. It is removed from CSSOM but in cssutils is used for @rules of programs using extensions, e.g. PrinceXML CSS. It is not very usable yet as no actual properties except ``seq`` and ``cssText`` are present but at least is syntactically checked properly.
+    - API CHANGE: Removed constructor parameter ``css.CSSImportRule(hreftype=...)`` which made no sense really. The type of href is still retained if ``css.CSSImportRule.cssText`` is set (e.g. for ``@import "a-str";`` it is "string" and for ``@import url(an-uri);`` it is "uri". How it is serialized is defined in the serializer anyway (``cssutils.ser.prefs.importHrefFormat`` "string", "uri" or None which then uses the one in each @import rule or defaults to "uri") so it made no sense to have it hear too. It still may be used but generally should not.
 
     + **FEATURE**: Added property ``css.CSSImportRule.name`` as decribed in http://www.w3.org/TR/css3-cascade/#cascading. It is parsed, serialized and available in this new property now.
 
         **TODO: For @media rules as well!**
 
 
-    - **BUGFIX**: Default namespace is no longer used for attribute selectors.
+    + **FEATURE**: ``css.UnknownRule`` is now parsed properly and checked for INVALID tokens or if {}, [] or () are not nested or paired properly. CSSUnknownRule is removed from CSSOM but in cssutils it is and will be used for @rules of programs using extensions, e.g. PrinceXML CSS. It is not very usable yet as no actual properties except ``atkeyword``, ``cssText`` and ``seq`` are present but at least it is syntactically checked properly and I hope serialized similar to other rules. This has been completely rewritten so may contain a few bugs so check your serialized sheets if you use non-standard @rules.
 
-    - **BUGFIX**: Improved escaping. Fixed cases where e.g. an URI is given as ``url("\"")``. Also escapes of delimiters in STRINGs is improved. This is used by ``CSSImportRule`` or ``CSSNamespaceRule`` among others. All STRING values are serialized with ``"..."`` now. This should not be a problem but please note that e.g. a ``CSSValue`` may be slightly different now (but be as valid as before).
+    - **BUGFIX**: Improved escaping. Fixed cases where e.g. an URI is given as ``url("\"")``. Also escapes of delimiters in STRINGs is improved. This is used by ``CSSImportRule`` or ``CSSNamespaceRule`` among others. All STRING values are serialized with ``"..."`` (double quotes) now. This should not be a problem but please note that e.g. a ``CSSValue`` may be slightly different now (but be as valid as before).
 
-    + CHANGE: ``CSSNamespaceRule`` implements http://dev.w3.org/csswg/css3-namespace/ now. Giving the namespaceURI as an URI token (``url("uri")``) is no longer deprecated so no more warning is emitted.
+    - **BUGFIX**: Default namespace is no longer used by attribute selectors.
 
-    + CHANGE: removed ``Preferences.removeInvalid`` which was deprecated for some time now and made not really sense anyway.
+    + CHANGE: ``CSSNamespaceRule`` implements http://dev.w3.org/csswg/css3-namespace/ now. Giving the namespaceURI as an URI token (``url("uri")``) is no longer deprecated so no warning is emitted any longer.
 
-    - IMPROVEMENT: Started refactoring rules to have ``wellformed`` property and serializing included comments better. For now ``CSSImportRule`` has been adapted.
+    - IMPROVEMENT: Started refactoring rules to have ``wellformed`` property and serializing included comments better.
 
-    - IMPROVEMENT: Added simple testtool for functional tests in /examples
-
-    - plus some smaller improvements and bugfixes
+    - IMPROVEMENT: Added simple testtool for functional tests in /examples plus lots of smaller bugfixes, improvements and refactorings
 
 0.9.5a3 080203
     - **API CHANGE: Refactored and fixed namespace handling**
