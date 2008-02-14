@@ -32,8 +32,8 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
         The location of the style sheet to be imported. The attribute will
         not contain the url(...) specifier around the URI.
     hreftype: 'uri' (serializer default) or 'string' (cssutils only)
-        The original usage of href, not really relevant as it may be
-        configured in the serializer too
+        The original type of href, not really relevant as it may be
+        reconfigured in the serializer but it is kept anyway
     media: of type stylesheets::MediaList (DOM readonly)
         A list of media types for this rule of type MediaList.
     name: 
@@ -57,7 +57,7 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
     """
     type = cssrule.CSSRule.IMPORT_RULE
 
-    def __init__(self, href=None, mediaText=u'all', name=None, hreftype=None, 
+    def __init__(self, href=None, mediaText=u'all', name=None, 
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
@@ -69,17 +69,16 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
         mediaText
             A list of media types for which this style sheet may be used
             as a string
-        hreftype
-            'uri' (default) or 'string'
         """
         super(CSSImportRule, self).__init__(parentRule=parentRule, 
                                             parentStyleSheet=parentStyleSheet,
                                             _Base2=True)
-
         self.atkeyword = u'@import'
+        self.hreftype = None
+
         self._href = None
         self.href = href
-        self.hreftype = hreftype
+        
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)
         self._name = name
