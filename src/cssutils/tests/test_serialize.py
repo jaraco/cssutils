@@ -166,27 +166,24 @@ prefix|x, a + b > c ~ d, b {
         "Preferences.importHrefFormat"
         cssutils.ser.prefs.useDefaults()
 
-        r0 = cssutils.css.CSSImportRule(u'not')
-        r1 = cssutils.css.CSSImportRule(u'str', hreftype="string")
-        r2 = cssutils.css.CSSImportRule(u'uri', hreftype="uri")
+        r0 = cssutils.css.CSSImportRule()
+        r0.cssText=u'@import url("not");'
+        r1 = cssutils.css.CSSImportRule()
+        r1.cssText=u'@import "str";'
         self.assertEqual(u'@import url(not);', r0.cssText)
         self.assertEqual(u'@import "str";', r1.cssText)
-        self.assertEqual(u'@import url(uri);', r2.cssText)
 
         cssutils.ser.prefs.importHrefFormat = 'string'
         self.assertEqual(u'@import "not";', r0.cssText)
         self.assertEqual(u'@import "str";', r1.cssText)
-        self.assertEqual(u'@import "uri";', r2.cssText)
 
         cssutils.ser.prefs.importHrefFormat = 'uri'
         self.assertEqual(u'@import url(not);', r0.cssText)
         self.assertEqual(u'@import url(str);', r1.cssText)
-        self.assertEqual(u'@import url(uri);', r2.cssText)
 
         cssutils.ser.prefs.importHrefFormat = 'not defined'
         self.assertEqual(u'@import url(not);', r0.cssText)
         self.assertEqual(u'@import "str";', r1.cssText)
-        self.assertEqual(u'@import url(uri);', r2.cssText)
 
     def test_indent(self):
         "Preferences.ident"
