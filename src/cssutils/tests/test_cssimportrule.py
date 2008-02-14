@@ -48,14 +48,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSImportRule(u'x')
         self.assertEqual(u'@import url(x);', r.cssText)
         self.assertEqual('x', r.href)
-        # href + hreftype string
-        r = cssutils.css.CSSImportRule(u'x', hreftype='string')
-        self.assertEqual(u'@import "x";', r.cssText)
-        self.assertEqual('string', r.hreftype)
-        # href + hreftype url
-        r = cssutils.css.CSSImportRule(u'x', hreftype='url')
-        self.assertEqual(u'@import url(x);', r.cssText)
-        self.assertEqual('url', r.hreftype)
+        self.assertEqual(None, r.hreftype)
 
         # href + mediaText
         r = cssutils.css.CSSImportRule(u'x', u'print')
@@ -195,6 +188,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         # url escaping?
         self.r.href = ')'
+        self.assertEqual(u'@import url(")");', self.r.cssText)
+
+        self.r.hreftype = 'NOT VALID' # using default
         self.assertEqual(u'@import url(")");', self.r.cssText)
 
     def test_hreftype(self):
