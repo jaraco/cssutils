@@ -18,28 +18,31 @@ class CSSMediaRule(cssrule.CSSRule):
 
     Properties
     ==========
+    atkeyword: (cssutils only)    
+        the literal keyword used    
     cssRules: A css::CSSRuleList of all CSS rules contained within the
         media block.
+    cssText: of type DOMString
+        The parsable textual representation of this rule
     media: of type stylesheets::MediaList, (DOM readonly)
         A list of media types for this rule of type MediaList.
-    inherited from CSSRule
-        cssText
-
-    cssutils only
-    -------------
-    atkeyword:
-        the literal keyword used
+    name: 
+        An optional name used for cascading
 
     Format
     ======
     media
-      : MEDIA_SYM S* medium [ COMMA S* medium ]* LBRACE S* ruleset* '}' S*;
+      : MEDIA_SYM S* medium [ COMMA S* medium ]* 
+      
+          STRING? # the name
+      
+      LBRACE S* ruleset* '}' S*;
     """
     # CONSTANT
     type = cssrule.CSSRule.MEDIA_RULE
 
-    def __init__(self, mediaText='all', parentRule=None, 
-                 parentStyleSheet=None, readonly=False):
+    def __init__(self, mediaText='all', name=None,
+                 parentRule=None, parentStyleSheet=None, readonly=False):
         """
         constructor
         """
@@ -50,6 +53,7 @@ class CSSMediaRule(cssrule.CSSRule):
             mediaText, readonly=readonly)
         if not self.media.wellformed:
             self._media = cssutils.stylesheets.MediaList()
+        self.name = name
             
         self.cssRules = cssutils.css.cssrulelist.CSSRuleList()
         self.cssRules.append = self.insertRule
@@ -109,15 +113,31 @@ class CSSMediaRule(cssrule.CSSRule):
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
+            # media "name"? { cssRules }
+            
             # media
             wellformed = True
-            mediatokens = self._tokensupto2(tokenizer, blockstartonly=True)        
-            if len(mediatokens) < 1 or\
-               u'{' != self._tokenvalue(mediatokens[-1]):
-                self._log.error(u'CSSMediaRule: No "{" found.')
-            else:
+            mediatokens, end = self._tokensupto2(tokenizer, 
+                                            mediaqueryendonly=True,
+                                            separateEnd=True)        
+            if u'{' == self._tokenvalue(end) or 'STRING' == self._type(end):
                 newmedia = cssutils.stylesheets.MediaList()
-                newmedia.mediaText = mediatokens[:-1] # omit {
+                newmedia.mediaText = mediatokens
+            
+            # name (optional)
+            name = None
+            if 'STRING' == self._type(end):
+                name = self._stringtokenvalue(end)
+                # TODO: for now comments are lost after name
+                nametokens, end = self._tokensupto2(tokenizer, 
+                                                blockstartonly=True,
+                                                separateEnd=True)
+
+            # check for {
+            if u'{' != self._tokenvalue(end):
+                self._log.error(u'CSSMediaRule: No "{" found: %s' % 
+                                self._valuestr(cssText))
+                return
             
             # cssRules
             cssrulestokens = self._tokensupto2(tokenizer, mediaendonly=True)
@@ -186,6 +206,7 @@ class CSSMediaRule(cssrule.CSSRule):
                     
             if newmedia.wellformed and wellformed:
                 self._media = newmedia
+                self.name = name
                 del self.cssRules[:]# = newcssrules
                 for r in newcssrules:
                     self.cssRules.append(r)
@@ -193,11 +214,13 @@ class CSSMediaRule(cssrule.CSSRule):
     cssText = property(_getCssText, _setCssText,
         doc="(DOM attribute) The parsable textual representation.")
 
-    def _getMedia(self):
-        "returns MediaList"
-        return self._media
+    def _setName(self, name):
+        self._name = name
 
-    media = property(_getMedia,
+    name = property(lambda self: self._name, _setName,
+                    doc=u"An optional name for the media rules")
+    
+    media = property(lambda self: self._media,
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
 
