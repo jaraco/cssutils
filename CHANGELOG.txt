@@ -48,10 +48,7 @@ HEAD
 
     - API CHANGE: Removed constructor parameter ``css.CSSImportRule(hreftype=...)`` which made no sense really. The type of href is still retained if ``css.CSSImportRule.cssText`` is set (e.g. for ``@import "a-str";`` it is "string" and for ``@import url(an-uri);`` it is "uri". How it is serialized is defined in the serializer anyway (``cssutils.ser.prefs.importHrefFormat`` "string", "uri" or None which then uses the one in each @import rule or defaults to "uri") so it made no sense to have it hear too. It still may be used but generally should not.
 
-    + **FEATURE**: Added property ``css.CSSImportRule.name`` as decribed in http://www.w3.org/TR/css3-cascade/#cascading. It is parsed, serialized and available in this new property now.
-
-        **TODO: For @media rules as well!**
-
+    + **FEATURE**: Added property ``css.CSSImportRule.name`` and ``css.CSSMediaRule.name`` as decribed in http://www.w3.org/TR/css3-cascade/#cascading. It is parsed, serialized and available in this new property now. Property ``name`` is a constructor parameter now too.
 
     + **FEATURE**: ``css.UnknownRule`` is now parsed properly and checked for INVALID tokens or if {}, [] or () are not nested or paired properly. CSSUnknownRule is removed from CSSOM but in cssutils it is and will be used for @rules of programs using extensions, e.g. PrinceXML CSS. It is not very usable yet as no actual properties except ``atkeyword``, ``cssText`` and ``seq`` are present but at least it is syntactically checked properly and I hope serialized similar to other rules. This has been completely rewritten so may contain a few bugs so check your serialized sheets if you use non-standard @rules.
 
