@@ -175,7 +175,7 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
                 # medialist ending with ; which is checked upon too
                 if expected.startswith('media'):
                     mediatokens = self._tokensupto2(
-                        tokenizer, mediaqueryendonly=True, keepEnd=True)
+                        tokenizer, importmediaqueryendonly=True)
                     mediatokens.insert(0, token) # push found token
 
                     last = mediatokens.pop() # retrieve ;
