@@ -28,12 +28,18 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSMediaRule()
         self.assertEqual(cssutils.css.CSSRuleList, type(r.cssRules))
         self.assertEqual([], r.cssRules)
-
+        self.assertEqual(u'', r.cssText)
         self.assertEqual(cssutils.stylesheets.MediaList, type(r.media))
         self.assertEqual('all', r.media.mediaText)
+        self.assertEqual(None, r.name)
 
-        # until any rules
+        r = cssutils.css.CSSMediaRule(mediaText='print', name='name')
+        self.assertEqual(cssutils.css.CSSRuleList, type(r.cssRules))
+        self.assertEqual([], r.cssRules)
         self.assertEqual(u'', r.cssText)
+        self.assertEqual(cssutils.stylesheets.MediaList, type(r.media))
+        self.assertEqual('print', r.media.mediaText)
+        self.assertEqual('name', r.name)
 
     def test_iter(self):
         "CSSMediaRule.__iter__()"
@@ -47,20 +53,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual(rule.type, types[i])
             self.assertEqual(rule.parentRule, m)
             
-    def test_InvalidModificationErr(self):
-        "CSSMediaRule.cssText InvalidModificationErr"
-        self._test_InvalidModificationErr(u'@media')
-
-    def test_incomplete(self):
-        "CSSMediaRule (incomplete)"
-        tests = {
-            u'@media all { @unknown;': # no }
-                u'@media all {\n    @unknown;\n    }',
-            u'@media all { a {x:1}': # no }
-                u'@media all {\n    a {\n        x: 1\n        }\n    }',
-        }
-        self.do_equal_p(tests) # parse
-
     def test_cssRules(self):
         "CSSMediaRule.cssRules"
         r = cssutils.css.CSSMediaRule()
@@ -74,12 +66,13 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_cssText(self):
         "CSSMediaRule.cssText"
         tests = {
+            u'''@mediaall"name"{}''': u'',
+            u'''@media all "name"{}''': u'',
             u'''@media all {}''': u'',
-            u'''@media all{}''': u'',
+            u'''@mediaall{}''': u'',
             u'''@media/*x*/all{}''': u'',
-            # TODO:
-            #u'@media all { @x{': u'@media all {\n    @x{}\n    }',
             u'''@media all { a{ x: 1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
+            u'''@media all "name" { a{ x: 1} }''': u'''@media all "name" {\n    a {\n        x: 1\n        }\n    }''',
             u'''@MEDIA all { a{x:1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
             u'''@\\media all { a{x:1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
             u'''@media all {@x some;a{color: red;}b{color: green;}}''':
@@ -92,28 +85,31 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         color: green
         }
     }''',
+            u'@media all { @x{}}': u'@media all {\n    @x {\n    }\n    }'
             }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
 
         tests = {
-            u'@media;': xml.dom.SyntaxErr,
-            u'@media all;': xml.dom.SyntaxErr,
-            u'@media all; @x{}': xml.dom.SyntaxErr,
-            # no medialist
             u'@media {}': xml.dom.SyntaxErr,
+            u'@media;': xml.dom.SyntaxErr,
             u'@media/*only comment*/{}': xml.dom.SyntaxErr,
-
+            u'@media all;': xml.dom.SyntaxErr,
+            u'@media all "n";': xml.dom.SyntaxErr,
+            u'@media all; @x{}': xml.dom.SyntaxErr,
+            u'@media { a{ x: 1} }': xml.dom.SyntaxErr,
+            u'@media "name" { a{ x: 1} }': xml.dom.SyntaxErr,
+            u'@media "name" all { a{ x: 1} }': xml.dom.SyntaxErr,
             u'@media all { @charset "x"; a{}}': xml.dom.HierarchyRequestErr,
             u'@media all { @import "x"; a{}}': xml.dom.HierarchyRequestErr,
             u'@media all { @media all {} }': xml.dom.HierarchyRequestErr,
+            u'@media all { , }': xml.dom.SyntaxErr,
             }
         self.do_raise_p(tests)
         self.do_raise_r(tests)
 
         tests = {
             # extra stuff
-            u'@media all { , }': xml.dom.SyntaxErr,
             u'@media all { x{} } a{}': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests)
@@ -125,6 +121,49 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual(m.parentStyleSheet, r.parentStyleSheet)
 
         cssutils.ser.prefs.useDefaults()
+
+    def test_media(self):
+        "CSSMediaRule.media"
+        # see CSSImportRule.media
+
+        # setting not allowed
+        self.assertRaises(AttributeError,
+                          self.r.__setattr__, 'media', None)
+        self.assertRaises(AttributeError,
+                          self.r.__setattr__, 'media', 0)
+
+        # set mediaText instead
+        self.r.media.mediaText = 'print'
+        self.r.insertRule(self.stylerule)
+        self.assertEqual(u'', self.r.cssText)
+        cssutils.ser.prefs.keepEmptyRules = True
+        self.assertEqual(u'@media print {\n    a {}\n    }', self.r.cssText)
+        cssutils.ser.prefs.useDefaults()
+
+    def test_name(self):
+        "CSSMediaRule.name"
+        r = cssutils.css.CSSMediaRule()
+        r.cssText = '@media all "\\n\\"ame" {a{left: 0}}'
+
+        self.assertEqual('\\n"ame', r.name)
+        r.name = "n"
+        self.assertEqual('n', r.name)
+        self.assertEqual(u'@media all "n" {\n    a {\n        left: 0\n        }\n    }', 
+                         r.cssText)
+        r.name = '"'
+        self.assertEqual('"', r.name)
+        self.assertEqual(u'@media all "\\"" {\n    a {\n        left: 0\n        }\n    }',
+                         r.cssText)
+
+        r.name = ''
+        self.assertEqual('', r.name)
+        self.assertEqual(u'@media all {\n    a {\n        left: 0\n        }\n    }',
+                         r.cssText)
+
+        r.name = None
+        self.assertEqual(None, r.name)
+        self.assertEqual(u'@media all {\n    a {\n        left: 0\n        }\n    }',
+                         r.cssText)
 
     def test_deleteRule(self):
         "CSSMediaRule.deleteRule"
@@ -227,23 +266,19 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaises(xml.dom.IndexSizeErr,
                   r.insertRule, stylerule, r.cssRules.length + 1)
 
-    def test_media(self):
-        "CSSMediaRule.media"
-        # see CSSImportRule.media
+    def test_InvalidModificationErr(self):
+        "CSSMediaRule.cssText InvalidModificationErr"
+        self._test_InvalidModificationErr(u'@media')
 
-        # setting not allowed
-        self.assertRaises(AttributeError,
-                          self.r.__setattr__, 'media', None)
-        self.assertRaises(AttributeError,
-                          self.r.__setattr__, 'media', 0)
-
-        # set mediaText instead
-        self.r.media.mediaText = 'print'
-        self.r.insertRule(self.stylerule)
-        self.assertEqual(u'', self.r.cssText)
-        cssutils.ser.prefs.keepEmptyRules = True
-        self.assertEqual(u'@media print {\n    a {}\n    }', self.r.cssText)
-        cssutils.ser.prefs.useDefaults()
+    def test_incomplete(self):
+        "CSSMediaRule (incomplete)"
+        tests = {
+            u'@media all { @unknown;': # no }
+                u'@media all {\n    @unknown;\n    }',
+            u'@media all { a {x:1}': # no }
+                u'@media all {\n    a {\n        x: 1\n        }\n    }',
+        }
+        self.do_equal_p(tests) # parse
 
     def test_reprANDstr(self):
         "CSSMediaRule.__repr__(), .__str__()"
