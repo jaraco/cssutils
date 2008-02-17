@@ -495,12 +495,28 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        # TODO: use Out()
+        # TODO: use Out()?
 
-        # reset selectorindent
-        self._selectors = [] 
-        self._selectorlevel = 0
+        # @media
+        out = [self._atkeyword(rule, u'@media')]
+        out.append(self.prefs.spacer) # might be empty
         
+        # mediaquery
+        if not rule.media.wellformed:
+            return u''
+        out.append(self.do_stylesheets_medialist(rule.media))
+        
+        # name
+        if rule.name:
+            out.append(self.prefs.spacer)
+            out.append(self._string(rule.name))
+            
+        #  {
+        out.append(self.prefs.paranthesisSpacer)
+        out.append(u'{')                      
+        out.append(self.prefs.lineSeparator)
+        
+        # rules
         rulesout = []
         for r in rule.cssRules:
             rtext = r.cssText
@@ -508,19 +524,14 @@ class CSSSerializer(object):
                 # indent each line of cssText
                 rulesout.append(self._indentblock(rtext, self._level + 1))
                 rulesout.append(self.prefs.lineSeparator)
-
-        if not self.prefs.keepEmptyRules and not u''.join(rulesout).strip() or\
-           not rule.media.wellformed:
-            return u''
-
-        mediaText = self.do_stylesheets_medialist(rule.media)#.strip()
-        out = [u'%s %s%s{%s' % (self._atkeyword(rule, u'@media'),
-                               mediaText,
-                               self.prefs.paranthesisSpacer,
-                               self.prefs.lineSeparator)]
+        if not self.prefs.keepEmptyRules and not u''.join(rulesout).strip():
+            return u''           
         out.extend(rulesout)
-        return u'%s%s}' % (u''.join(out), 
-                           (self._level + 1) * self.prefs.indent)
+        
+        #     }
+        out.append(u'%s}' % ((self._level + 1) * self.prefs.indent))
+        
+        return u''.join(out)
 
     def do_CSSPageRule(self, rule):
         """
