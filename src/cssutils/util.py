@@ -221,19 +221,20 @@ class Base(object):
     def _tokensupto2(self,
                      tokenizer,
                      starttoken=None,
-                     blockstartonly=False,
-                     blockendonly=False,
+                     blockstartonly=False, # {
+                     blockendonly=False, # }
                      mediaendonly=False,
-                     mediaqueryendonly=False,
-                     semicolon=False,
-                     propertynameendonly=False,
-                     propertyvalueendonly=False,
-                     propertypriorityendonly=False,
-                     selectorattendonly=False,
-                     funcendonly=False,
-                     listseponly=False,
-                     keepEnd=True,
-                     keepEOF=True):
+                     importmediaqueryendonly=False, # ; or STRING
+                     mediaqueryendonly=False, # { or STRING
+                     semicolon=False, # ;
+                     propertynameendonly=False, # :
+                     propertyvalueendonly=False, # ! ; }
+                     propertypriorityendonly=False, # ; }
+                     selectorattendonly=False, # ]
+                     funcendonly=False, # )
+                     listseponly=False, # ,
+                     separateEnd=False # returns (resulttokens, endtoken)
+                     ):
         """
         returns tokens upto end of atrule and end index
         end is defined by parameters, might be ; } ) or other
@@ -253,16 +254,22 @@ class Base(object):
         elif mediaendonly: # }
             ends = u'}'
             brace = 1 # rules } and mediarules }
-        elif mediaqueryendonly:
-            # end of mediaquery which may be ; { or STRING
+        elif importmediaqueryendonly:
+            # end of mediaquery which may be ; or STRING
             ends = u';'
+            endtypes = ('STRING',)
+        elif mediaqueryendonly:
+            # end of mediaquery which may be { or STRING
+            # special case, see below
+            ends = u'{'
+            brace = -1 # set to 0 with first {
             endtypes = ('STRING',)
         elif semicolon:
             ends = u';'
         elif propertynameendonly: # : and ; in case of an error
             ends = u':;'
         elif propertyvalueendonly: # ; or !important
-            ends = (u';', u'!')
+            ends = u';!'
         elif propertypriorityendonly: # ;
             ends = u';'
         elif selectorattendonly: # ]
@@ -282,8 +289,7 @@ class Base(object):
             for token in tokenizer:
                 typ, val, line, col = token
                 if 'EOF' == typ:
-                    if keepEOF and keepEnd:
-                        resulttokens.append(token)
+                    resulttokens.append(token)
                     break
                 if u'{' == val: 
                     brace += 1
@@ -300,15 +306,21 @@ class Base(object):
                 elif u')' == val: 
                     parant -= 1
                     
-                if (brace == bracket == parant == 0) and (val in ends or 
-                                                          typ in endtypes):
-                    if keepEnd:
-                        resulttokens.append(token)
+                resulttokens.append(token)
+                
+                if (brace == bracket == parant == 0) and (
+                    val in ends or typ in endtypes):
                     break
-                else:
-                    resulttokens.append(token)
+                elif mediaqueryendonly and brace == -1 and (
+                     bracket == parant == 0) and typ in endtypes:
+                     # mediaqueryendonly with STRING
+                    break
 
-        return resulttokens
+        if separateEnd:
+            # TODO: use this method as generator, then this makes sense
+            return resulttokens[:-1], resulttokens[-1]
+        else:
+            return resulttokens
 
     def _valuestr(self, t):
         """
