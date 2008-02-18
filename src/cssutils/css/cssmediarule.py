@@ -107,8 +107,7 @@ class CSSMediaRule(cssrule.CSSRule):
         
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
-        if not attoken or u'@media' != self._tokenvalue(
-                                                    attoken, normalize=True):
+        if self._type(attoken) != self._prods.MEDIA_SYM:
             self._log.error(u'CSSMediaRule: No CSSMediaRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
