@@ -51,6 +51,9 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSPageRule.cssText"
         EXP = u'@page :%s {\n    margin: 0\n    }'
         tests = {
+            u'@page {}': u'',
+            u'@page:left{}': u'',
+            u'@page :right {}': u'',
             u'@page {margin:0;}': u'@page {\n    margin: 0\n    }',
 
             u'@page:left{margin:0;}': EXP % u'left',
@@ -63,7 +66,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@\\page:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
 
             u'@page/*1*/:left/*2*/{margin:0;}':
-                u'@page /*1*/:left/*2*/ {\n    margin: 0\n    }',
+                u'@page /*1*/ :left /*2*/ {\n    margin: 0\n    }',
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)

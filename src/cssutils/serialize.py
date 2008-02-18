@@ -523,25 +523,22 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        # TODO: use Out()
+        styleText = self.do_css_CSSStyleDeclaration(rule.style)
 
-        self._level += 1
-        try:
-            styleText = self.do_css_CSSStyleDeclaration(rule.style)
-        finally:
-            self._level -= 1
-
-        if not styleText or not rule.wellformed:
+        if styleText and rule.wellformed:
+            out = Out(self)
+            out.append(self._atkeyword(rule, u'@page'))
+                        
+            for item in rule.seq:
+                out.append(item.value, item.type)
+                            
+            out.append(u'{')            
+            out.append(self._indentblock(u'%s%s}' % (styleText, 
+                                                     self.prefs.lineSeparator), 
+                                         self._level+1))
+            return out.value()            
+        else:
             return u''
-
-        return u'%s%s {%s%s%s%s}' % (
-            self._atkeyword(rule, u'@page'),
-            self.do_pageselector(rule.seq),
-            self.prefs.lineSeparator,
-            self._indentblock(styleText, self._level + 1),
-            self.prefs.lineSeparator,
-            (self._level + 1) * self.prefs.indent
-            )
 
     def do_pageselector(self, seq):
         """
