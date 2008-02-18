@@ -94,8 +94,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         wellformed = True
         tokenizer = self._tokenize2(cssText)
         
-        atkeyword = self._tokenvalue(self._nexttoken(tokenizer))        
-        if u'@charset ' != atkeyword: 
+        if self._type(self._nexttoken(tokenizer)) != self._prods.CHARSET_SYM: 
             wellformed = False
             self._log.error(u'CSSCharsetRule must start with "@charset "',
                             error=xml.dom.InvalidModificationErr)

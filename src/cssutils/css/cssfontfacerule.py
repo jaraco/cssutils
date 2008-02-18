@@ -89,8 +89,7 @@ class CSSFontFaceRule(cssrule.CSSRule, cssutils.util.Base2):
         
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
-        if not attoken or u'@font-face' != self._tokenvalue(
-                                                attoken, normalize=True):
+        if self._type(attoken) != self._prods.FONT_FACE_SYM:
             self._log.error(u'CSSFontFaceRule: No CSSFontFaceRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)

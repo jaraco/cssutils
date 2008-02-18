@@ -121,7 +121,7 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
         super(CSSImportRule, self)._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
-        if not attoken or self._type(attoken) != self._prods.IMPORT_SYM:
+        if self._type(attoken) != self._prods.IMPORT_SYM:
             self._log.error(u'CSSImportRule: No CSSImportRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)

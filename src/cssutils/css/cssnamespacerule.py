@@ -131,7 +131,7 @@ class CSSNamespaceRule(cssrule.CSSRule, cssutils.util.Base2):
         super(CSSNamespaceRule, self)._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
-        if not attoken or self._type(attoken) != self._prods.NAMESPACE_SYM:
+        if self._type(attoken) != self._prods.NAMESPACE_SYM:
             self._log.error(u'CSSNamespaceRule: No CSSNamespaceRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
