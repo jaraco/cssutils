@@ -11,7 +11,7 @@ import cssrule
 import cssutils
 from cssstyledeclaration import CSSStyleDeclaration
 
-class CSSFontFaceRule(cssrule.CSSRule):
+class CSSFontFaceRule(cssrule.CSSRule, cssutils.util.Base2):
     """
     The CSSFontFaceRule interface represents a @font-face rule in a CSS
     style sheet. The @font-face rule is used to hold a set of font 
@@ -19,15 +19,12 @@ class CSSFontFaceRule(cssrule.CSSRule):
 
     Properties
     ==========
+    atkeyword (cssutils only)
+        the literal keyword used
     cssText: of type DOMString
         The parsable textual representation of this rule
     style: of type CSSStyleDeclaration
         The declaration-block of this rule.
-
-    cssutils only
-    -------------
-    atkeyword:
-        the literal keyword used
 
     Inherits properties from CSSRule
 
@@ -53,14 +50,16 @@ class CSSFontFaceRule(cssrule.CSSRule):
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSFontFaceRule, self).__init__(parentRule=parentRule, 
-                                              parentStyleSheet=parentStyleSheet)
+                                              parentStyleSheet=parentStyleSheet,
+                                              _Base2=True)
 
         self.atkeyword = u'@font-face'
         if style:
             self.style = style
-            self.seq.append(self.style)
+            #self.seq.append(self.style)
         else:
             self._style = CSSStyleDeclaration(parentRule=self)
+            self.seq = self._tempSeq()
         
         self._readonly = readonly
 
@@ -97,49 +96,44 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 error=xml.dom.InvalidModificationErr)
         else:
             wellformed = True
-            beforetokens = self._tokensupto2(tokenizer, blockstartonly=True)            
-            try:
-                bracetoken = beforetokens.pop()
-            except IndexError:
-                bracetoken = None
-            if self._tokenvalue(bracetoken) != u'{':
+            beforetokens, brace = self._tokensupto2(tokenizer, 
+                                                    blockstartonly=True,
+                                                    separateEnd=True)            
+            if self._tokenvalue(brace) != u'{':
                 wellformed = False
                 self._log.error(
                     u'CSSFontFaceRule: No start { of style declaration found: %r' %
-                    self._valuestr(cssText), bracetoken)
+                    self._valuestr(cssText), brace)
             
             # parse stuff before { which should be comments and S only
             new = {'wellformed': True}
-            newseq = []
+            newseq = self._tempSeq()#[]
+            
             beforewellformed, expected = self._parse(expected=':',
                 seq=newseq, tokenizer=self._tokenize2(beforetokens),
                 productions={})
             wellformed = wellformed and beforewellformed and new['wellformed']
     
-            styletokens = self._tokensupto2(tokenizer, blockendonly=True)
-            newstyle = CSSStyleDeclaration()
-            if not styletokens:
-                wellformed = False
-                self._log.error(
-                    u'CSSFontFaceRule: No style declaration or "}" found: %r' %
-                    self._valuestr(cssText))            
+            styletokens, braceorEOFtoken = self._tokensupto2(tokenizer, 
+                                                             blockendonly=True,
+                                                             separateEnd=True)
 
-            braceorEOFtoken = styletokens.pop()
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
                 wellformed = False
                 self._log.error(
                     u'CSSFontFaceRule: No "}" after style declaration found: %r' %
                     self._valuestr(cssText))
-            else:
-                if 'EOF' == typ:
-                    # add again as style needs it
-                    styletokens.append(braceorEOFtoken)
-                newstyle.cssText = styletokens
+
+            newstyle = CSSStyleDeclaration()
+            if 'EOF' == typ:
+                # add again as style needs it
+                styletokens.append(braceorEOFtoken)
+            newstyle.cssText = styletokens
 
             if wellformed:
                 self.style = newstyle
-                self.seq = newseq # contains upto { only
+                self.seq = newseq # contains (probably comments) upto { only
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")
