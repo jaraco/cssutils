@@ -108,7 +108,9 @@ prefix|x, a + b > c ~ d, b {
     @media all "name" {
         a { color: red; }
     }
-    @page {}
+    @page:left {
+    left: 0
+    }
     a {}
     prefix|x, a + b > c ~ d , b { top : 1px ; 
         font-family : arial ,  'some' 
@@ -116,7 +118,7 @@ prefix|x, a + b > c ~ d, b {
     '''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, 
-            u'''@import"x"tv,print;@namespaceprefix"uri";@mediaall"name"{a{color:red}}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
+            u'''@import"x"tv,print;@namespaceprefix"uri";@mediaall"name"{a{color:red}}@page:left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
             )
 
     def test_defaultAtKeyword(self):

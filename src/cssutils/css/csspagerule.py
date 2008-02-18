@@ -13,7 +13,7 @@ from selectorlist import SelectorList
 from cssstyledeclaration import CSSStyleDeclaration
 #from selector import Selector
 
-class CSSPageRule(cssrule.CSSRule):
+class CSSPageRule(cssrule.CSSRule, cssutils.util.Base2):
     """
     The CSSPageRule interface represents a @page rule within a CSS style
     sheet. The @page rule is used to specify the dimensions, orientation,
@@ -21,17 +21,14 @@ class CSSPageRule(cssrule.CSSRule):
 
     Properties
     ==========
+    atkeyword (cssutils only)
+        the literal keyword used
     cssText: of type DOMString
         The parsable textual representation of this rule
     selectorText: of type DOMString
         The parsable textual representation of the page selector for the rule.
     style: of type CSSStyleDeclaration
         The declaration-block of this rule.
-
-    cssutils only
-    -------------
-    atkeyword:
-        the literal keyword used
 
     Inherits properties from CSSRule
 
@@ -63,18 +60,20 @@ class CSSPageRule(cssrule.CSSRule):
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSPageRule, self).__init__(parentRule=parentRule, 
-                                          parentStyleSheet=parentStyleSheet)
+                                          parentStyleSheet=parentStyleSheet,
+                                          _Base2=True)
 
         self.atkeyword = u'@page'
         
+        self._seq = self._tempSeq()
         if selectorText:
             self.selectorText = selectorText
-            self.seq.append(self.selectorText)
+            self._seq.append(self.selectorText, 'selectorText')
         else:
             self._selectorText = u''
         if style:
             self.style = style
-            self.seq.append(self.style)
+            self._seq.append(self.style, 'style')
         else:
             self._style = CSSStyleDeclaration(parentRule=self)
         
@@ -91,7 +90,7 @@ class CSSPageRule(cssrule.CSSRule):
         new = {'selector': None, 'wellformed': True}
 
         def _char(expected, seq, token, tokenizer=None):
-            # name
+            # pseudo_page, :left, :right or :first
             val = self._tokenvalue(token)
             if ':' == expected and u':' == val:
                 try:
@@ -107,7 +106,7 @@ class CSSPageRule(cssrule.CSSRule):
                             ival, token)
                     else:
                         new['selector'] = val + ival
-                        seq.append(new['selector'])
+                        seq.append(new['selector'], 'selector')
                         return 'EOF'
                 return expected
             else:
@@ -116,10 +115,11 @@ class CSSPageRule(cssrule.CSSRule):
                     u'CSSPageRule selectorText: Unexpected CHAR: %r' % val, token)
                 return expected
 
-        newseq = []
+        newseq = self._tempSeq()
         wellformed, expected = self._parse(expected=':',
             seq=newseq, tokenizer=self._tokenize2(selectorText),
-            productions={'CHAR': _char})
+            productions={'CHAR': _char}, 
+            new=new)
         wellformed = wellformed and new['wellformed']
         newselector = new['selector']
         
@@ -160,37 +160,28 @@ class CSSPageRule(cssrule.CSSRule):
         super(CSSPageRule, self)._setCssText(cssText)
         
         tokenizer = self._tokenize2(cssText)
-        attoken = self._nexttoken(tokenizer, None)
-        if not attoken or u'@page' != self._tokenvalue(
-                                                attoken, normalize=True):
+        if self._type(self._nexttoken(tokenizer)) != self._prods.PAGE_SYM:
             self._log.error(u'CSSPageRule: No CSSPageRule found: %s' %
-                self._valuestr(cssText),
-                error=xml.dom.InvalidModificationErr)
+                            self._valuestr(cssText), 
+                            error=xml.dom.InvalidModificationErr)
         else:
             wellformed = True
-            selectortokens = self._tokensupto2(tokenizer, blockstartonly=True)
-            styletokens = self._tokensupto2(tokenizer, blockendonly=True)
+            selectortokens, startbrace = self._tokensupto2(tokenizer, 
+                                                           blockstartonly=True,
+                                                           separateEnd=True)
+            styletokens, braceorEOFtoken = self._tokensupto2(tokenizer, 
+                                                        blockendonly=True,
+                                                        separateEnd=True)
             
-            try:
-                bracetoken = selectortokens.pop()
-            except IndexError:
-                bracetoken = None
-            if self._tokenvalue(bracetoken) != u'{':
+            if self._tokenvalue(startbrace) != u'{':
                 wellformed = False
                 self._log.error(
                     u'CSSPageRule: No start { of style declaration found: %r' %
-                    self._valuestr(cssText), bracetoken)
+                    self._valuestr(cssText), startbrace)
                 
             newselector, newselectorseq = self.__parseSelectorText(selectortokens)
 
             newstyle = CSSStyleDeclaration()
-            if not styletokens:
-                wellformed = False
-                self._log.error(
-                    u'CSSPageRule: No style declaration or "}" found: %r' %
-                    self._valuestr(cssText))            
-
-            braceorEOFtoken = styletokens.pop()
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
                 wellformed = False
@@ -206,7 +197,7 @@ class CSSPageRule(cssrule.CSSRule):
             if wellformed:
                 self._selectorText = newselector # already parsed
                 self.style = newstyle
-                self.seq = newselectorseq # contains upto style only
+                self._seq = newselectorseq # contains upto style only
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")
