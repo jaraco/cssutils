@@ -153,13 +153,6 @@ class CSSMediaRule(cssrule.CSSRule):
                 # for closures: must be a mutable
                 new = {'wellformed': True }
                 
-                def COMMENT(expected, seq, token, tokenizer=None):
-                    "special: sets parent*"
-                    comment = cssutils.css.CSSComment([token], parentRule=self, 
-                                        parentStyleSheet=self.parentStyleSheet)
-                    seq.append(comment)
-                    return expected
-                
                 def ruleset(expected, seq, token, tokenizer):
                     rule = cssutils.css.CSSStyleRule(parentRule=self)
                     rule.cssText = (self._tokensupto2(tokenizer, token), 
@@ -190,7 +183,6 @@ class CSSMediaRule(cssrule.CSSRule):
                 
                 tokenizer = (t for t in cssrulestokens) # TODO: not elegant!
                 wellformed, expected = self._parse('}', newcssrules, tokenizer, {
-                     'COMMENT': COMMENT,
                      'CHARSET_SYM': atrule,
                      'FONT_FACE_SYM': atrule,
                      'IMPORT_SYM': atrule,
