@@ -338,7 +338,7 @@ class Base(object):
         else:
             return u''.join([x[1] for x in t])
 
-    def _adddefaultproductions(self, productions):
+    def _adddefaultproductions(self, productions, new=None):
         """
         adds default productions if not already present, used by 
         _parse only
@@ -373,7 +373,8 @@ class Base(object):
         p.update(productions)
         return p
 
-    def _parse(self, expected, seq, tokenizer, productions, default=None):
+    def _parse(self, expected, seq, tokenizer, productions, default=None,
+               new=None):
         """
         puts parsed tokens in seq by calling a production with
             (seq, tokenizer, token)
@@ -388,12 +389,14 @@ class Base(object):
             callbacks {tokentype: callback}
         default
             default callback if tokentype not in productions
+        new
+            used to init default productions
 
         returns (wellformed, expected) which the last prod might have set
         """
         wellformed = True
         if tokenizer:
-            prods = self._adddefaultproductions(productions)
+            prods = self._adddefaultproductions(productions, new)
             for token in tokenizer:
                 p = prods.get(token[0], default)
                 if p:
@@ -516,7 +519,7 @@ class Base2(Base):
         "get a writeable Seq() which is added later"  
         return Seq(readonly=readonly)
 
-    def _adddefaultproductions(self, productions):
+    def _adddefaultproductions(self, productions, new=None):
         """
         adds default productions if not already present, used by 
         _parse only
@@ -544,24 +547,12 @@ class Base2(Base):
 
         def COMMENT(expected, seq, token, tokenizer=None):
             "default implementation for COMMENT token adds CSSCommentRule"
-            if expected != 'EOF':
-                seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
-                return expected
-            else:
-                new['wellformed'] = False
-                self._log.error(u'Expected EOF.',
-                    token=token)
-                return expected
+            seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
+            return expected 
 
         def S(expected, seq, token, tokenizer=None):
             "default implementation for S token, does nothing"
-            if expected != 'EOF':
-                return expected
-            else:
-                new['wellformed'] = False
-                self._log.error(u'Expected EOF.',
-                    token=token)
-                return expected
+            return expected 
 
         def EOF(expected=None, seq=None, token=None, tokenizer=None):
             "default implementation for EOF token"
