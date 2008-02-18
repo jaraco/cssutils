@@ -234,9 +234,11 @@ class Out(object):
             elif val not in u'}[]()' and space:
                 self.out.append(self.ser.prefs.spacer)
         
-    def value(self, delim=u''):
+    def value(self, delim=u'', end=None):
         "returns all items joined by delim"
         self._remove_last_if_S()
+        if end:
+            self.out.append(end)
         return delim.join(self.out)
     
 
@@ -418,7 +420,6 @@ class CSSSerializer(object):
             
             for item in rule.seq:
                 typ, val = item.type, item.value
-                
                 if 'href' == typ:
                     # "href" or url(href)
                     if self.prefs.importHrefFormat == 'string' or (
@@ -437,8 +438,7 @@ class CSSSerializer(object):
                 else:
                     out.append(val, typ)
 
-            out.append(u';')
-            return out.value()
+            return out.value(end=u';')
         else:
             return u''
 
@@ -453,25 +453,21 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        # TODO: use Out()
-        if rule.wellformed and (not rule.parentStyleSheet or (
-                rule.parentStyleSheet and 
-                rule.prefix in rule.parentStyleSheet.namespaces)
-            ):
-            out = [u'%s' % self._atkeyword(rule, u'@namespace')]
-            prefixdone = False
-            for part in rule.seq:
-                if not prefixdone and rule.prefix == part and part != u'':
-                    out.append(u' %s' % part)
-                    prefixdone = True
-                elif rule.namespaceURI == part:
-                    out.append(u' %s' % self._string(part))
-                elif hasattr(part, 'cssText'): # comments
-                    out.append(part.cssText)
-            return u'%s;' % u''.join(out)
+        if rule.wellformed:
+            out = Out(self)
+            out.append(self._atkeyword(rule, u'@namespace'))
+            
+            for item in rule.seq:
+                typ, val = item.type, item.value
+                if 'namespaceURI' == typ:
+                    out.append(val, 'STRING')
+                else:
+                    out.append(val, typ)
+                    
+            return out.value(end=u';')
         else:
             return u''
-
+        
     def do_CSSMediaRule(self, rule):
         """
         serializes CSSMediaRule

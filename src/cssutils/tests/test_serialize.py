@@ -116,7 +116,7 @@ prefix|x, a + b > c ~ d, b {
     '''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, 
-            u'''@import"x"tv,print;@namespace prefix "uri";@mediaall"name"{a{color:red}}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
+            u'''@import"x"tv,print;@namespaceprefix"uri";@mediaall"name"{a{color:red}}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
             )
 
     def test_defaultAtKeyword(self):

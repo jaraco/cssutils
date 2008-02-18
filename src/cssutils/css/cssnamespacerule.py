@@ -14,7 +14,7 @@ import cssrule
 import cssutils
 from cssutils.util import Deprecated
 
-class CSSNamespaceRule(cssrule.CSSRule):
+class CSSNamespaceRule(cssrule.CSSRule, cssutils.util.Base2):
     """
     Represents an @namespace rule within a CSS style sheet.
 
@@ -25,6 +25,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
     Properties
     ==========
+    atkeyword (cssutils only)
+        the literal keyword used
     cssText: of type DOMString
         The parsable textual representation of this rule
     namespaceURI: of type DOMString
@@ -36,11 +38,6 @@ class CSSNamespaceRule(cssrule.CSSRule):
         The prefix used in the stylesheet for the given
         ``CSSNamespaceRule.nsuri``. If prefix is empty namespaceURI sets a 
         default namespace for the stylesheet.
-
-    cssutils only
-    -------------
-    atkeyword:
-        the literal keyword used
 
     Inherits properties from CSSRule
 
@@ -87,7 +84,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
               ;
         """
         super(CSSNamespaceRule, self).__init__(parentRule=parentRule, 
-                                               parentStyleSheet=parentStyleSheet)
+                                               parentStyleSheet=parentStyleSheet,
+                                               _Base2=True)
         self.atkeyword = u'@namespace'
         self._prefix = u''
         self._namespaceURI = None
@@ -95,7 +93,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
         if namespaceURI:
             self.namespaceURI = namespaceURI
             self.prefix = prefix
-            self.seq = [self.prefix, self.namespaceURI]
+            self._seq = self._tempSeq()
+            self._seq.append(self.prefix, 'prefix')
+            self._seq.append(self.namespaceURI, 'namespaceURI')
         elif cssText is not None:
             self.cssText = cssText
 
@@ -147,7 +147,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 # the namespace prefix, optional
                 if 'prefix or uri' == expected:
                     new['prefix'] = self._tokenvalue(token)
-                    seq.append(new['prefix'])
+                    seq.append(new['prefix'], 'prefix')
                     return 'uri'
                 else:
                     new['wellformed'] = False
@@ -159,7 +159,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 # the namespace URI as a STRING
                 if expected.endswith('uri'):
                     new['uri'] = self._stringtokenvalue(token)
-                    seq.append(new['uri'])
+                    seq.append(new['uri'], 'namespaceURI')
                     return ';'
 
                 else:
@@ -173,7 +173,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 if expected.endswith('uri'):
                     uri = self._uritokenvalue(token)
                     new['uri'] = uri
-                    seq.append(new['uri'])
+                    seq.append(new['uri'], 'namespaceURI')
                     return ';'
                 else:
                     new['wellformed'] = False
@@ -193,7 +193,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                     return expected
 
             # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
-            newseq = []
+            newseq = self._tempSeq()
             wellformed, expected = self._parse(expected='prefix or uri',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'IDENT': _ident,
@@ -220,7 +220,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 self.atkeyword = new['keyword']
                 self._prefix = new['prefix']
                 self.namespaceURI = new['uri']
-                self.seq = newseq
+                self._seq = newseq
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
@@ -239,7 +239,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
         if not self._namespaceURI:
             # initial setting
             self._namespaceURI = namespaceURI
-            self.seq = [namespaceURI]
+            self._seq = self._tempSeq()
+            self._seq.append(namespaceURI, 'namespaceURI')
         elif self._namespaceURI != namespaceURI:
             self._log.error(u'CSSNamespaceRule: namespaceURI is readonly.',
                             error=xml.dom.NoModificationAllowedErr)
@@ -273,12 +274,13 @@ class CSSNamespaceRule(cssrule.CSSRule):
             else:
                 prefix = self._tokenvalue(prefixtoken)
         # update seg
-        for i, x in enumerate(self.seq):
+        for i, x in enumerate(self._seq):
             if x == self._prefix:
-                self.seq[i] = prefix
+                self._seq[i] = (prefix, 'prefix', None, None)
                 break
         else:
-            self.seq[0] = prefix # put prefix at the beginning!
+            # put prefix at the beginning!
+            self._seq[0] = (prefix, 'prefix', None, None) 
 
         # set new prefix
         self._prefix = prefix
