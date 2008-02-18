@@ -318,7 +318,10 @@ class Base(object):
 
         if separateEnd:
             # TODO: use this method as generator, then this makes sense
-            return resulttokens[:-1], resulttokens[-1]
+            if resulttokens:
+                return resulttokens[:-1], resulttokens[-1]
+            else:
+                return resulttokens, None
         else:
             return resulttokens
 

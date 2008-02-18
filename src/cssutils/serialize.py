@@ -383,38 +383,21 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        # TODO: use Out()
-        self._level += 1
-        try:
-            styleText = self.do_css_CSSStyleDeclaration(rule.style)
-        finally:
-            self._level -= 1
+        styleText = self.do_css_CSSStyleDeclaration(rule.style)
 
-        if not styleText or not rule.wellformed:
-            return u''
-        
-        before = []
-        for x in rule.seq:
-            if hasattr(x, 'cssText'):
-                before.append(x.cssText)
-            else:
-                # TODO: resolve
-                raise SyntaxErr('serializing CSSFontFaceRule: unexpected %r' % x)
-        if before:
-            before = u' '.join(before).strip()
-            if before:
-                before = u' %s' % before
+        if styleText and rule.wellformed:
+            out = Out(self)
+            out.append(self._atkeyword(rule, u'@font-face'))            
+            for item in rule.seq:
+                # assume comments {
+                out.append(item.value, item.type)            
+            out.append(u'{')            
+            out.append(self._indentblock(u'%s%s}' % (styleText, 
+                                                     self.prefs.lineSeparator), 
+                                         self._level+1))
+            return out.value()            
         else:
-            before = u''
-
-        return u'%s%s {%s%s%s%s}' % (
-            self._atkeyword(rule, u'@font-face'),
-            before,
-            self.prefs.lineSeparator,
-            self._indentblock(styleText, self._level + 1),
-            self.prefs.lineSeparator,
-            (self._level + 1) * self.prefs.indent
-            )
+            return u''
 
     def do_CSSImportRule(self, rule):
         """
