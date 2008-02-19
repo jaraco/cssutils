@@ -38,15 +38,16 @@ if 0:
     sys.exit(0)
 
 if 1:
-    r = cssutils.css.CSSImportRule()
+    css = '@page :left /**/ {color: red}'
+    r = cssutils.css.CSSPageRule()
+    r.cssText = css
     print r.cssText
-    print r.valid
     #s = cssutils.parseString(css)
     #print s.cssText
     sys.exit(1)
 
 if 1:
-    css = '@import "new"/*1*/;'
+    css = 'a {color: red}'
     print '\n------source-------\n', css, '\n-----processed-----'
     sheet = cssutils.parseString(css)
     print sheet.cssText 
