@@ -61,16 +61,18 @@ class CSSPageRule(cssrule.CSSRule):
         super(CSSPageRule, self).__init__(parentRule=parentRule, 
                                           parentStyleSheet=parentStyleSheet)
         self.atkeyword = u'@page'
+        tempseq = self._tempSeq()
         if selectorText:
             self.selectorText = selectorText
-            self._seq.append(self.selectorText, 'selectorText')
+            tempseq.append(self.selectorText, 'selectorText')
         else:
             self._selectorText = u''
         if style:
             self.style = style
-            self._seq.append(self.style, 'style')
+            tempseq.append(self.style, 'style')
         else:
             self._style = CSSStyleDeclaration(parentRule=self)
+        self._setSeq(tempseq)
         
         self._readonly = readonly
 
@@ -95,7 +97,7 @@ class CSSPageRule(cssrule.CSSRule):
                         u'CSSPageRule selectorText: No IDENT found.', token)
                 else:
                     ival, ityp = self._tokenvalue(identtoken), self._type(identtoken)
-                    if 'IDENT' != ityp:
+                    if self._prods.IDENT != ityp:
                         self._log.error(
                             u'CSSPageRule selectorText: Expected IDENT but found: %r' % 
                             ival, token)
@@ -192,7 +194,7 @@ class CSSPageRule(cssrule.CSSRule):
             if wellformed:
                 self._selectorText = newselector # already parsed
                 self.style = newstyle
-                self._seq = newselectorseq # contains upto style only
+                self._setSeq(newselectorseq) # contains upto style only
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")

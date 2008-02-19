@@ -140,11 +140,14 @@ class Property(cssutils.util.Base):
         # check and prepare tokenlists for setting
         tokenizer = self._tokenize2(cssText)
         nametokens = self._tokensupto2(tokenizer, propertynameendonly=True)
-        valuetokens = self._tokensupto2(tokenizer, propertyvalueendonly=True)
-        prioritytokens = self._tokensupto2(tokenizer, propertypriorityendonly=True)
-
-        wellformed = True
         if nametokens:
+            wellformed = True
+
+            valuetokens = self._tokensupto2(tokenizer, 
+                                            propertyvalueendonly=True)
+            prioritytokens = self._tokensupto2(tokenizer, 
+                                               propertypriorityendonly=True)
+    
             if self._mediaQuery and not valuetokens:
                 # MediaQuery may consist of name only
                 self.name = nametokens

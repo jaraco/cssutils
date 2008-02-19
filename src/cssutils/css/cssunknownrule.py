@@ -194,7 +194,7 @@ class CSSUnknownRule(cssrule.CSSRule):
             # set all
             if wellformed:
                 self.atkeyword = self._tokenvalue(attoken)
-                self.seq = newseq
+                self._setSeq(newseq)
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")

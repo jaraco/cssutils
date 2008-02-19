@@ -544,23 +544,6 @@ class CSSSerializer(object):
             return out.value()            
         else:
             return u''
-
-    def do_pageselector(self, seq):
-        """
-        a selector of a CSSPageRule including comments
-        """
-        # TODO: use Out()
-        
-        if len(seq):
-            out = []
-            for part in seq:
-                if hasattr(part, 'cssText'):
-                    out.append(part.cssText)
-                else:
-                    out.append(part)
-            return u' %s' % u''.join(out)
-        else:
-            return u''
         
     def do_CSSUnknownRule(self, rule):
         """
@@ -858,8 +841,7 @@ class CSSSerializer(object):
             return u'all'
         else:
             sep = u',%s' % self.prefs.listItemSpacer
-            return sep.join(
-                        (mq.mediaText for mq in medialist))
+            return sep.join((mq.mediaText for mq in medialist))
 
     def do_stylesheets_mediaquery(self, mediaquery):
         """

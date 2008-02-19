@@ -92,9 +92,10 @@ class CSSNamespaceRule(cssrule.CSSRule):
         if namespaceURI:
             self.namespaceURI = namespaceURI
             self.prefix = prefix
-            self._seq = self._tempSeq()
-            self._seq.append(self.prefix, 'prefix')
-            self._seq.append(self.namespaceURI, 'namespaceURI')
+            tempseq = self._tempSeq()
+            tempseq.append(self.prefix, 'prefix')
+            tempseq.append(self.namespaceURI, 'namespaceURI')
+            self._setSeq(tempseq)
         elif cssText is not None:
             self.cssText = cssText
 
@@ -219,7 +220,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 self.atkeyword = new['keyword']
                 self._prefix = new['prefix']
                 self.namespaceURI = new['uri']
-                self._seq = newseq
+                self._setSeq(newseq)
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
@@ -238,8 +239,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
         if not self._namespaceURI:
             # initial setting
             self._namespaceURI = namespaceURI
-            self._seq = self._tempSeq()
-            self._seq.append(namespaceURI, 'namespaceURI')
+            tempseq = self._tempSeq()
+            tempseq.append(namespaceURI, 'namespaceURI')
+            self._setSeq(tempseq) # makes seq readonly!
         elif self._namespaceURI != namespaceURI:
             self._log.error(u'CSSNamespaceRule: namespaceURI is readonly.',
                             error=xml.dom.NoModificationAllowedErr)

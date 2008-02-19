@@ -119,14 +119,14 @@ class CSSMediaRule(cssrule.CSSRule):
             mediatokens, end = self._tokensupto2(tokenizer, 
                                             mediaqueryendonly=True,
                                             separateEnd=True)        
-            if u'{' == self._tokenvalue(end) or 'STRING' == self._type(end):
+            if u'{' == self._tokenvalue(end) or self._prods.STRING == self._type(end):
                 newmedia = cssutils.stylesheets.MediaList()
                 newmedia.mediaText = mediatokens
             
             # name (optional)
             name = None
             nameseq = self._tempSeq()
-            if 'STRING' == self._type(end):
+            if self._prods.STRING == self._type(end):
                 name = self._stringtokenvalue(end)
                 # TODO: for now comments are lost after name
                 nametokens, end = self._tokensupto2(tokenizer, 
@@ -213,7 +213,7 @@ class CSSMediaRule(cssrule.CSSRule):
                 if newmedia.wellformed and wellformed:
                     self._media = newmedia                
                     self.name = name
-                    self._seq = nameseq
+                    self._setSeq(nameseq)
                     del self.cssRules[:]
                     for r in newcssrules:
                         self.cssRules.append(r)

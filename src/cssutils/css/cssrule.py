@@ -81,7 +81,7 @@ class CSSRule(cssutils.util.Base2):
         super(CSSRule, self).__init__()
         self._parentRule = parentRule
         self._parentStyleSheet = parentStyleSheet
-        self._seq = self._tempSeq()
+        self._setSeq(self._tempSeq())
         # must be set after initialization of #inheriting rule is done
         self._readonly = False
 

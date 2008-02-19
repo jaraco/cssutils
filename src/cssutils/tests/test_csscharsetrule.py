@@ -85,8 +85,10 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_equal_p(tests) # also parse
 
         tests = {
+            # token is "@charset " with space!
             u'@charset;"': xml.dom.InvalidModificationErr,
             u'@CHARSET "UTF-8";': xml.dom.InvalidModificationErr,
+            u'@charset "";': xml.dom.SyntaxErr,
             u'''@charset /*1*/"utf-8"/*2*/;''': xml.dom.SyntaxErr,
             u'''@charset /*1*/"utf-8";''': xml.dom.SyntaxErr,
             u'''@charset "utf-8"/*2*/;''': xml.dom.SyntaxErr,
