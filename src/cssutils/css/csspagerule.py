@@ -11,9 +11,8 @@ import cssrule
 import cssutils
 from selectorlist import SelectorList
 from cssstyledeclaration import CSSStyleDeclaration
-#from selector import Selector
 
-class CSSPageRule(cssrule.CSSRule, cssutils.util.Base2):
+class CSSPageRule(cssrule.CSSRule):
     """
     The CSSPageRule interface represents a @page rule within a CSS style
     sheet. The @page rule is used to specify the dimensions, orientation,
@@ -60,12 +59,8 @@ class CSSPageRule(cssrule.CSSRule, cssutils.util.Base2):
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSPageRule, self).__init__(parentRule=parentRule, 
-                                          parentStyleSheet=parentStyleSheet,
-                                          _Base2=True)
-
+                                          parentStyleSheet=parentStyleSheet)
         self.atkeyword = u'@page'
-        
-        self._seq = self._tempSeq()
         if selectorText:
             self.selectorText = selectorText
             self._seq.append(self.selectorText, 'selectorText')

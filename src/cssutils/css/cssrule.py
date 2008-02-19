@@ -8,7 +8,7 @@ __version__ = '$LastChangedRevision$'
 import xml.dom
 import cssutils
 
-class CSSRule(cssutils.util.Base):
+class CSSRule(cssutils.util.Base2):
     """
     Abstract base interface for any type of CSS statement. This includes
     both rule sets and at-rules. An implementation is expected to preserve
@@ -35,7 +35,7 @@ class CSSRule(cssutils.util.Base):
 
     cssutils only
     -------------
-    seq:
+    seq (READONLY):
         contains sequence of parts of the rule including comments but
         excluding @KEYWORD and braces
     typeString: string
@@ -74,19 +74,16 @@ class CSSRule(cssutils.util.Base):
     (Casting not for this Python implementation I guess...)
     """
 
-    def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False,
-                 _Base2=False):
+    def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):
+        """
+        set common attributes for all rules
+        """
         super(CSSRule, self).__init__()
         self._parentRule = parentRule
         self._parentStyleSheet = parentStyleSheet
-        # True for CSSUnknownRule only for now
-        if not _Base2:
-            self.seq = []
+        self._seq = self._tempSeq()
         # must be set after initialization of #inheriting rule is done
         self._readonly = False
-
-    def _getCssText(self):
-        return u''
 
     def _setCssText(self, cssText):
         """
@@ -106,7 +103,7 @@ class CSSRule(cssutils.util.Base):
         """
         self._checkReadonly()
 
-    cssText = property(fget=_getCssText, fset=_setCssText,
+    cssText = property(lambda self: u'', _setCssText,
         doc="""(DOM) The parsable textual representation of the rule. This
         reflects the current state of the rule and not its initial value.
         The initial value is saved, but this may be removed in a future
@@ -119,9 +116,8 @@ class CSSRule(cssutils.util.Base):
     parentStyleSheet = property(lambda self: self._parentStyleSheet,
                                 doc=u"READONLY")
 
-    wellformed = property(lambda self: False, doc=u"READONLY")
+    wellformed = property(lambda self: False, 
+                          doc=u"READONLY")
 
-    def _getTypeString(self):
-        return CSSRule._typestrings[self.type]
-
-    typeString = property(_getTypeString, doc="Name of this rules type.")
+    typeString = property(lambda self: CSSRule._typestrings[self.type], 
+                          doc="Name of this rules type.")

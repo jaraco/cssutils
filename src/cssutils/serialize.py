@@ -172,7 +172,7 @@ class Out(object):
             # remove trailing S
             del self.out[-1]
     
-    def append(self, val, typ=None, space=True, keepS=False):
+    def append(self, val, typ=None, space=True, keepS=False, indent=False):
         """
         Appends val. Adds a single S after each token except as follows:
         
@@ -216,7 +216,10 @@ class Out(object):
                 self._remove_last_if_S()
                 
             # APPEND
-            self.out.append(val)
+            if indent:
+                self.out.append(self.ser._indentblock(val, self.ser._level+1))
+            else:
+                self.out.append(val)
 
             # POST
             if val in u'+>~': # enclose selector combinator
@@ -393,10 +396,9 @@ class CSSSerializer(object):
             for item in rule.seq:
                 # assume comments {
                 out.append(item.value, item.type)            
-            out.append(u'{')            
-            out.append(self._indentblock(u'%s%s}' % (styleText, 
-                                                     self.prefs.lineSeparator), 
-                                         self._level+1))
+            out.append(u'{')
+            out.append(u'%s%s}' % (styleText, self.prefs.lineSeparator),
+                       indent=1)            
             return out.value()            
         else:
             return u''
@@ -537,9 +539,8 @@ class CSSSerializer(object):
                 out.append(item.value, item.type)
                             
             out.append(u'{')            
-            out.append(self._indentblock(u'%s%s}' % (styleText, 
-                                                     self.prefs.lineSeparator), 
-                                         self._level+1))
+            out.append(u'%s%s}' % (styleText, self.prefs.lineSeparator),
+                       indent=1)
             return out.value()            
         else:
             return u''
@@ -548,6 +549,8 @@ class CSSSerializer(object):
         """
         a selector of a CSSPageRule including comments
         """
+        # TODO: use Out()
+        
         if len(seq):
             out = []
             for part in seq:

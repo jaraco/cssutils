@@ -17,7 +17,7 @@ import xml.dom
 import cssrule
 import cssutils
 
-class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
+class CSSImportRule(cssrule.CSSRule):
     """
     Represents an @import rule within a CSS style sheet.  The @import rule
     is used to import style rules from other style sheets.
@@ -71,8 +71,7 @@ class CSSImportRule(cssrule.CSSRule, cssutils.util.Base2):
             as a string
         """
         super(CSSImportRule, self).__init__(parentRule=parentRule, 
-                                            parentStyleSheet=parentStyleSheet,
-                                            _Base2=True)
+                                            parentStyleSheet=parentStyleSheet)
         self.atkeyword = u'@import'
         self.hreftype = None
 
