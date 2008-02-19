@@ -10,7 +10,7 @@ import xml.dom
 import cssrule
 import cssutils
 
-class CSSMediaRule(cssrule.CSSRule, cssutils.util.Base2):
+class CSSMediaRule(cssrule.CSSRule):
     """
     Objects implementing the CSSMediaRule interface can be identified by the
     MEDIA_RULE constant. On these objects the type attribute must return the
@@ -47,8 +47,7 @@ class CSSMediaRule(cssrule.CSSRule, cssutils.util.Base2):
         constructor
         """
         super(CSSMediaRule, self).__init__(parentRule=parentRule, 
-                                           parentStyleSheet=parentStyleSheet,
-                                           _Base2=True)
+                                           parentStyleSheet=parentStyleSheet)
         self.atkeyword = u'@media'
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)

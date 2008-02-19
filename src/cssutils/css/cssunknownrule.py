@@ -10,7 +10,7 @@ import xml.dom
 import cssrule
 import cssutils
 
-class CSSUnknownRule(cssrule.CSSRule, cssutils.util.Base2):
+class CSSUnknownRule(cssrule.CSSRule):
     """
     represents an at-rule not supported by this user agent.
 
@@ -44,9 +44,7 @@ class CSSUnknownRule(cssrule.CSSRule, cssutils.util.Base2):
             of type string
         """
         super(CSSUnknownRule, self).__init__(parentRule=parentRule, 
-                                             parentStyleSheet=parentStyleSheet,
-                                             _Base2=True)
-        self.seq = self._tempSeq()
+                                             parentStyleSheet=parentStyleSheet)
         if cssText:
             self.cssText = cssText
         else:

@@ -14,7 +14,7 @@ import cssrule
 import cssutils
 from cssutils.util import Deprecated
 
-class CSSNamespaceRule(cssrule.CSSRule, cssutils.util.Base2):
+class CSSNamespaceRule(cssrule.CSSRule):
     """
     Represents an @namespace rule within a CSS style sheet.
 
@@ -84,8 +84,7 @@ class CSSNamespaceRule(cssrule.CSSRule, cssutils.util.Base2):
               ;
         """
         super(CSSNamespaceRule, self).__init__(parentRule=parentRule, 
-                                               parentStyleSheet=parentStyleSheet,
-                                               _Base2=True)
+                                               parentStyleSheet=parentStyleSheet)
         self.atkeyword = u'@namespace'
         self._prefix = u''
         self._namespaceURI = None

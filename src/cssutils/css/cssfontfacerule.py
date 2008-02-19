@@ -11,7 +11,7 @@ import cssrule
 import cssutils
 from cssstyledeclaration import CSSStyleDeclaration
 
-class CSSFontFaceRule(cssrule.CSSRule, cssutils.util.Base2):
+class CSSFontFaceRule(cssrule.CSSRule):
     """
     The CSSFontFaceRule interface represents a @font-face rule in a CSS
     style sheet. The @font-face rule is used to hold a set of font 
@@ -50,16 +50,12 @@ class CSSFontFaceRule(cssrule.CSSRule, cssutils.util.Base2):
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSFontFaceRule, self).__init__(parentRule=parentRule, 
-                                              parentStyleSheet=parentStyleSheet,
-                                              _Base2=True)
-
+                                              parentStyleSheet=parentStyleSheet)
         self.atkeyword = u'@font-face'
         if style:
             self.style = style
-            #self.seq.append(self.style)
         else:
             self._style = CSSStyleDeclaration(parentRule=self)
-            self.seq = self._tempSeq()
         
         self._readonly = readonly
 
