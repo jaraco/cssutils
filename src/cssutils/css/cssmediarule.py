@@ -10,7 +10,7 @@ import xml.dom
 import cssrule
 import cssutils
 
-class CSSMediaRule(cssrule.CSSRule):
+class CSSMediaRule(cssrule.CSSRule, cssutils.util.Base2):
     """
     Objects implementing the CSSMediaRule interface can be identified by the
     MEDIA_RULE constant. On these objects the type attribute must return the
@@ -47,7 +47,8 @@ class CSSMediaRule(cssrule.CSSRule):
         constructor
         """
         super(CSSMediaRule, self).__init__(parentRule=parentRule, 
-                                           parentStyleSheet=parentStyleSheet)
+                                           parentStyleSheet=parentStyleSheet,
+                                           _Base2=True)
         self.atkeyword = u'@media'
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)
@@ -125,12 +126,18 @@ class CSSMediaRule(cssrule.CSSRule):
             
             # name (optional)
             name = None
+            nameseq = self._tempSeq()
             if 'STRING' == self._type(end):
                 name = self._stringtokenvalue(end)
                 # TODO: for now comments are lost after name
                 nametokens, end = self._tokensupto2(tokenizer, 
                                                 blockstartonly=True,
                                                 separateEnd=True)
+                wellformed, expected = self._parse(None, nameseq, nametokens, {})
+                if not wellformed:
+                    self._log.error(u'CSSMediaRule: Syntax Error: %s' % 
+                                    self._valuestr(cssText))
+                    
 
             # check for {
             if u'{' != self._tokenvalue(end):
@@ -139,18 +146,20 @@ class CSSMediaRule(cssrule.CSSRule):
                 return
             
             # cssRules
-            cssrulestokens = self._tokensupto2(tokenizer, mediaendonly=True)
-            newcssrules = [] #cssutils.css.CSSRuleList()
-            if len(cssrulestokens) < 1 or (
-               u'}' != self._tokenvalue(cssrulestokens[-1]) and
-               'EOF' != self._type(cssrulestokens[-1])):
-                self._log.error(u'CSSMediaRule: No "}" found.')
-            elif self._nexttoken(tokenizer, None):
-                self._log.error(u'CSSMediaRule: Content after "}" found.')
-            else:
-                brace = cssrulestokens.pop()
-                
+            cssrulestokens, braceOrEOF = self._tokensupto2(tokenizer, 
+                                               mediaendonly=True,
+                                               separateEnd=True)
+            nonetoken = self._nexttoken(tokenizer, None)
+            if (u'}' != self._tokenvalue(braceOrEOF) and 
+               'EOF' != self._type(braceOrEOF)):
+                self._log.error(u'CSSMediaRule: No "}" found.', 
+                                token=braceOrEOF)
+            elif nonetoken:
+                self._log.error(u'CSSMediaRule: Content after "}" found.',
+                                token=nonetoken)
+            else:                
                 # for closures: must be a mutable
+                newcssrules = [] #cssutils.css.CSSRuleList()
                 new = {'wellformed': True }
                 
                 def ruleset(expected, seq, token, tokenizer):
@@ -181,26 +190,34 @@ class CSSMediaRule(cssrule.CSSRule):
                             seq.append(rule)
                     return expected
                 
+                def COMMENT(expected, seq, token, tokenizer=None):
+                    seq.append(cssutils.css.CSSComment([token]))
+                    return expected
+                
                 tokenizer = (t for t in cssrulestokens) # TODO: not elegant!
-                wellformed, expected = self._parse('}', newcssrules, tokenizer, {
-                     'CHARSET_SYM': atrule,
-                     'FONT_FACE_SYM': atrule,
-                     'IMPORT_SYM': atrule,
-                     'NAMESPACE_SYM': atrule,
-                     'PAGE_SYM': atrule,
-                     'MEDIA_SYM': atrule,
-                     'ATKEYWORD': atrule
-                     }, 
-                     default=ruleset)
+                wellformed, expected = self._parse(braceOrEOF, 
+                                                   newcssrules, 
+                                                   tokenizer, {
+                                                     'COMMENT': COMMENT,
+                                                     'CHARSET_SYM': atrule,
+                                                     'FONT_FACE_SYM': atrule,
+                                                     'IMPORT_SYM': atrule,
+                                                     'NAMESPACE_SYM': atrule,
+                                                     'PAGE_SYM': atrule,
+                                                     'MEDIA_SYM': atrule,
+                                                     'ATKEYWORD': atrule
+                                                   }, 
+                                                   default=ruleset)
                 
                 # no post condition
                     
-            if newmedia.wellformed and wellformed:
-                self._media = newmedia
-                self.name = name
-                del self.cssRules[:]# = newcssrules
-                for r in newcssrules:
-                    self.cssRules.append(r)
+                if newmedia.wellformed and wellformed:
+                    self._media = newmedia                
+                    self.name = name
+                    self._seq = nameseq
+                    del self.cssRules[:]
+                    for r in newcssrules:
+                        self.cssRules.append(r)
         
     cssText = property(_getCssText, _setCssText,
         doc="(DOM attribute) The parsable textual representation.")

@@ -85,7 +85,11 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         color: green
         }
     }''',
-            u'@media all { @x{}}': u'@media all {\n    @x {\n    }\n    }'
+            u'@media all { @x{}}': u'@media all {\n    @x {\n    }\n    }',
+            u'@media all "n" /**/ { @x{}}': 
+                u'@media all "n" /**/ {\n    @x {\n    }\n    }',
+            u'@mediaall"n"/**/{@x{}}': 
+                u'@media all "n" /**/ {\n    @x {\n    }\n    }'
             }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
@@ -104,6 +108,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@media all { @import "x"; a{}}': xml.dom.HierarchyRequestErr,
             u'@media all { @media all {} }': xml.dom.HierarchyRequestErr,
             u'@media all { , }': xml.dom.SyntaxErr,
+            u'@media all {}EXTRA': xml.dom.SyntaxErr,
             }
         self.do_raise_p(tests)
         self.do_raise_r(tests)
