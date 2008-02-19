@@ -485,10 +485,14 @@ class CSSSerializer(object):
             return u''
         out.append(self.do_stylesheets_medialist(rule.media))
         
-        # name
+        # name, seq contains content after name only (Comments)
         if rule.name:
             out.append(self.prefs.spacer)
-            out.append(self._string(rule.name))
+            nameout = Out(self)
+            nameout.append(self._string(rule.name))
+            for item in rule.seq:
+                nameout.append(item.value, item.type)
+            out.append(nameout.value())
             
         #  {
         out.append(self.prefs.paranthesisSpacer)
