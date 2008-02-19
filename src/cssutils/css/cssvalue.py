@@ -264,7 +264,7 @@ class CSSValue(cssutils.util.Base):
                 
                 # TODO: use actual values, probably needs Base2 for this                
                 typ = self._type(token)
-                if 'STRING' == typ:
+                if self._prods.STRING == typ:
                     val = u'"%s"' % self._stringtokenvalue(token)
 #                elif 'URI' == typ:
 #                    val = u'url(%s)' % self._uritokenvalue(token)

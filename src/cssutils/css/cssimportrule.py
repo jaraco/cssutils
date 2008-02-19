@@ -88,7 +88,7 @@ class CSSImportRule(cssrule.CSSRule):
         seq.append(self.href, 'href')
         seq.append(self.media, 'media')
         seq.append(self.name, 'name')
-        self._seq = seq
+        self._setSeq(seq)
 
         # TODO: load stylesheet from href automatically?
         self._styleSheet = None
@@ -179,7 +179,7 @@ class CSSImportRule(cssrule.CSSRule):
 
                     last = mediatokens.pop() # retrieve ;
                     lastval, lasttyp = self._tokenvalue(last), self._type(last)
-                    if lastval != u';' and lasttyp not in ('EOF', 'STRING'):
+                    if lastval != u';' and lasttyp not in ('EOF', self._prods.STRING):
                         new['wellformed'] = False
                         self._log.error(u'CSSImportRule: No ";" found: %s' %
                                         self._valuestr(cssText), token=token)
@@ -194,7 +194,7 @@ class CSSImportRule(cssrule.CSSRule):
                         self._log.error(u'CSSImportRule: Invalid MediaList: %s' %
                                         self._valuestr(cssText), token=token)
                         
-                    if lasttyp == 'STRING':
+                    if lasttyp == self._prods.STRING:
                         # name
                         return __doname(seq, last)
                     else:
@@ -250,7 +250,7 @@ class CSSImportRule(cssrule.CSSRule):
                 self.hreftype = new['hreftype']
                 self._media = new['media']
                 self.name = new['name']
-                self.seq = newseq
+                self._setSeq(newseq)
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
@@ -265,7 +265,7 @@ class CSSImportRule(cssrule.CSSRule):
         else:
             seq = self._tempSeq()
             seq.append(self.href, 'href')
-            self._seq = seq
+            self._setSeq(seq)
         # set new href
         self._href = href
 
@@ -290,7 +290,7 @@ class CSSImportRule(cssrule.CSSRule):
                 # copy current seq
                 seq.append(item.value, item.type, item.line, item.col)
             seq.append(self.href, 'href')
-            self._seq = seq
+            self._setSeq(seq)
         self._name = name
 
     name = property(lambda self: self._name, _setName,

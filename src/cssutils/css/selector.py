@@ -261,7 +261,7 @@ class Selector(cssutils.util.Base2):
                     tokens.append(('universal', val, lin, col))
 
                 elif val == u'|' and tokens and\
-                     self._type(tokens[-1]) in ('IDENT', 'universal') and\
+                     self._type(tokens[-1]) in (self._prods.IDENT, 'universal') and\
                      self._tokenvalue(tokens[-1]).find(u'|') == -1:
                     # namespace_prefix: "IDENT|" or "*|"
                     tokens[-1] = ('namespace_prefix', 
@@ -753,7 +753,7 @@ class Selector(cssutils.util.Base2):
                 self.__namespaces = namespaces
                 self._element = new['element']
                 self._specificity = tuple(new['specificity'])
-                self.seq = newseq
+                self._setSeq(newseq)
                 # filter that only used ones are kept
                 self.__namespaces = self._getUsedNamespaces()
 

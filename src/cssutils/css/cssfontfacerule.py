@@ -128,7 +128,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
 
             if wellformed:
                 self.style = newstyle
-                self.seq = newseq # contains (probably comments) upto { only
+                self._setSeq(newseq) # contains (probably comments) upto { only
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of the rule.")

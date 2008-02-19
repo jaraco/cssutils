@@ -129,6 +129,5 @@ class CSSProductions(object):
     """
     EOF = True
 
-
 for i, t in enumerate(PRODUCTIONS):
     setattr(CSSProductions, t[0].replace('-', '_'), t[0])

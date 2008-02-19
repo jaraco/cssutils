@@ -13,52 +13,6 @@ import xml.dom
 import cssutils
 from tokenize2 import Tokenizer
 
-class ListSeq(object):
-    """
-    (EXPERIMENTAL)
-    A base class used for list classes like css.SelectorList or 
-    stylesheets.MediaList
-
-    adds list like behaviour running on inhering class' property ``seq``
-    
-    - item in x => bool
-    - len(x) => integer
-    - get, set and del x[i]
-    - for item in x
-    - append(item)
-    
-    some methods must be overwritten in inheriting class
-    """
-    def __init__(self):
-        self.seq = [] # does not need to use ``Seq`` as simple list only
-
-    def __contains__(self, item):
-        return item in self.seq
-
-    def __delitem__(self, index):
-        del self.seq[index]
-
-    def __getitem__(self, index):
-        return self.seq[index]
-
-    def __iter__(self):
-        def gen():
-            for x in self.seq:
-                yield x
-        return gen()
-
-    def __len__(self):
-        return len(self.seq)
-
-    def __setitem__(self, index, item):
-        "must be overwritten"
-        raise NotImplementedError
-
-    def append(self, item):
-        "must be overwritten"
-        raise NotImplementedError
-
-
 class Base(object):
     """
     Base class for most CSS and StyleSheets classes
@@ -71,6 +25,7 @@ class Base(object):
     ``_normalize`` is static as used by Preferences.
     """
     __tokenizer2 = Tokenizer()
+    
     _log = cssutils.log
     _prods = cssutils.tokenize2.CSSProductions
 
@@ -408,6 +363,74 @@ class Base(object):
         return wellformed, expected
 
 
+class Base2(Base):
+    """
+    Base class for new seq handling, used by Selector for now only
+    """
+    def __init__(self):
+        self._seq = Seq()
+
+    def _setSeq(self, newseq):
+        """
+        sets newseq and makes it readonly
+        """
+        newseq._readonly = True
+        self._seq = newseq
+
+    seq = property(lambda self: self._seq, doc="seq for most classes")
+    
+    def _tempSeq(self, readonly=False):
+        "get a writeable Seq() which is added later"  
+        return Seq(readonly=readonly)
+
+    def _adddefaultproductions(self, productions, new=None):
+        """
+        adds default productions if not already present, used by 
+        _parse only
+        
+        each production should return the next expected token
+        normaly a name like "uri" or "EOF"
+        some have no expectation like S or COMMENT, so simply return
+        the current value of self.__expected
+        """
+        def ATKEYWORD(expected, seq, token, tokenizer=None):
+            "default impl for unexpected @rule"
+            if expected != 'EOF':
+                # TODO: parentStyleSheet=self
+                rule = cssutils.css.CSSUnknownRule()
+                rule.cssText = self._tokensupto2(tokenizer, token)
+                if rule.wellformed:
+                    seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE, 
+                               line=token[2], col=token[3])
+                return expected
+            else:
+                new['wellformed'] = False
+                self._log.error(u'Expected EOF.',
+                    token=token)
+                return expected
+
+        def COMMENT(expected, seq, token, tokenizer=None):
+            "default implementation for COMMENT token adds CSSCommentRule"
+            seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
+            return expected 
+
+        def S(expected, seq, token, tokenizer=None):
+            "default implementation for S token, does nothing"
+            return expected 
+
+        def EOF(expected=None, seq=None, token=None, tokenizer=None):
+            "default implementation for EOF token"
+            return 'EOF'
+
+        defaultproductions = {'ATKEYWORD': ATKEYWORD,
+             'COMMENT': COMMENT,
+             'S': S,
+             'EOF': EOF # only available if fullsheet
+             }
+        defaultproductions.update(productions)
+        return defaultproductions
+
+
 class Seq(object):
     """
     property seq of Base2 inheriting classes, holds a list of Item objects.
@@ -497,74 +520,52 @@ class Item(object):
                 self.__module__, self.__class__.__name__, 
                 self.__value, self.__type, self.__line, self.__col)
 
-class Base2(Base):
+
+class ListSeq(object):
     """
-    Base class for new seq handling, used by Selector for now only
+    (EXPERIMENTAL)
+    A base class used for list classes like css.SelectorList or 
+    stylesheets.MediaList
+
+    adds list like behaviour running on inhering class' property ``seq``
+    
+    - item in x => bool
+    - len(x) => integer
+    - get, set and del x[i]
+    - for item in x
+    - append(item)
+    
+    some methods must be overwritten in inheriting class
     """
     def __init__(self):
-        self._seq = Seq()
+        self.seq = [] # does not need to use ``Seq`` as simple list only
 
-    def _setSeq(self, newseq):
-        """
-        sets newseq and makes it readonly
-        """
-        newseq._readonly = True
-        self._seq = newseq
+    def __contains__(self, item):
+        return item in self.seq
 
-    seq = property(fget=lambda self: self._seq, 
-                   fset=_setSeq, 
-                   doc="seq for most classes")
-    
-    def _tempSeq(self, readonly=False):
-        "get a writeable Seq() which is added later"  
-        return Seq(readonly=readonly)
+    def __delitem__(self, index):
+        del self.seq[index]
 
-    def _adddefaultproductions(self, productions, new=None):
-        """
-        adds default productions if not already present, used by 
-        _parse only
-        
-        each production should return the next expected token
-        normaly a name like "uri" or "EOF"
-        some have no expectation like S or COMMENT, so simply return
-        the current value of self.__expected
-        """
-        def ATKEYWORD(expected, seq, token, tokenizer=None):
-            "default impl for unexpected @rule"
-            if expected != 'EOF':
-                # TODO: parentStyleSheet=self
-                rule = cssutils.css.CSSUnknownRule()
-                rule.cssText = self._tokensupto2(tokenizer, token)
-                if rule.wellformed:
-                    seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE, 
-                               line=token[2], col=token[3])
-                return expected
-            else:
-                new['wellformed'] = False
-                self._log.error(u'Expected EOF.',
-                    token=token)
-                return expected
+    def __getitem__(self, index):
+        return self.seq[index]
 
-        def COMMENT(expected, seq, token, tokenizer=None):
-            "default implementation for COMMENT token adds CSSCommentRule"
-            seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
-            return expected 
+    def __iter__(self):
+        def gen():
+            for x in self.seq:
+                yield x
+        return gen()
 
-        def S(expected, seq, token, tokenizer=None):
-            "default implementation for S token, does nothing"
-            return expected 
+    def __len__(self):
+        return len(self.seq)
 
-        def EOF(expected=None, seq=None, token=None, tokenizer=None):
-            "default implementation for EOF token"
-            return 'EOF'
+    def __setitem__(self, index, item):
+        "must be overwritten"
+        raise NotImplementedError
 
-        p = {'ATKEYWORD': ATKEYWORD,
-             'COMMENT': COMMENT,
-             'S': S,
-             'EOF': EOF # only available if fullsheet
-             }
-        p.update(productions)
-        return p    
+    def append(self, item):
+        "must be overwritten"
+        raise NotImplementedError
+
 
 class Deprecated(object):
     """This is a decorator which can be used to mark functions
@@ -589,6 +590,7 @@ class Deprecated(object):
         newFunc.__doc__ = func.__doc__
         newFunc.__dict__.update(func.__dict__)
         return newFunc
+    
     
 class _Namespaces(object):
     """
@@ -669,29 +671,6 @@ class _Namespaces(object):
         doc=u'Holds only effetive @namespace rules in self.parentStyleSheets'
              '@namespace rules.')
     
-#    def deleteByNamespaceURI(self, namespaceURI):
-#        """
-#        Deletes CSSNamespaceRule(s) with rule.namespaceURI == namespaceURI        
-#        
-#        Raises xml.dom.NamespaceErr if the namespace is in use but all 
-#        namespacerules which have been set with the same uri are boiled down to
-#        the effective one
-#        """
-#        deleted = False
-#        i = 0
-#        rules = self.parentStyleSheet.cssRules
-#        while i < len(rules):
-#            if rules[i].type == rules[i].NAMESPACE_RULE and \
-#               rules[i].namespaceURI == namespaceURI:
-#                self.parentStyleSheet.deleteRule(i)
-#                deleted = True
-#            else:
-#                i += 1
-#                
-#        if not deleted:
-#            raise KeyError('Namespace URI "%s" not present in style sheet.' % 
-#                           namespaceURI)
-                
     def get(self, prefix, default):
         return self.namespaces.get(prefix, default)
 

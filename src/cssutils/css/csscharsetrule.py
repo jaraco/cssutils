@@ -1,7 +1,6 @@
 """CSSCharsetRule implements DOM Level 2 CSS CSSCharsetRule.
 
 TODO:
-    - check specific allowed syntaxes
     - check encoding syntax and not codecs.lookup?
 """
 __all__ = ['CSSCharsetRule']
@@ -100,17 +99,16 @@ class CSSCharsetRule(cssrule.CSSRule):
                             error=xml.dom.InvalidModificationErr)
         
         encodingtoken = self._nexttoken(tokenizer)
-        encodingtype, encoding = self._type(encodingtoken), self._tokenvalue(
-                                                            encodingtoken)
-        if 'STRING' != encodingtype or len(encoding) < 3:
+        encodingtype = self._type(encodingtoken)
+        encoding = self._stringtokenvalue(encodingtoken)
+        if self._prods.STRING != encodingtype or not encoding:
             wellformed = False
-            self._log.error(u'CSSCharsetRule: no encoding found.')
-        else:
-            encoding = encoding[1:-1] # remove "..." or '...'
+            self._log.error(u'CSSCharsetRule: no encoding found; %r.' % 
+                            self._valuestr(cssText))
             
         semicolon = self._tokenvalue(self._nexttoken(tokenizer))
         EOFtype = self._type(self._nexttoken(tokenizer))
-        if u';' != semicolon or (EOFtype and 'EOF' != EOFtype):
+        if u';' != semicolon or EOFtype not in ('EOF', None):
             wellformed = False
             self._log.error(u'CSSCharsetRule: Syntax Error: %r.' % 
                             self._valuestr(cssText))
@@ -143,7 +141,7 @@ class CSSCharsetRule(cssrule.CSSRule):
             valid = False
             self._log.error(
                 'CSSCharsetRule: Syntax Error in encoding value %r.' %
-                      encoding)
+                encoding)
         else:
             try:
                 codecs.lookup(encoding)
