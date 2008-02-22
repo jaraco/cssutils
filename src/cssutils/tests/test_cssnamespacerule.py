@@ -65,6 +65,9 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
             u'@namespace "u";': None,
             u'@namespace p "u";': None,
+            u'@namespace empty "";': None,
+            u'@namespacep"u";': u'@namespace p "u";',
+            u'@namespaceempty"";': u'@namespace empty "";',
             u'@namespacep"u"   ;': u'@namespace p "u";',
             u'@namespace p "p";': None,
             u"@namespace p 'u';": u'@namespace p "u";',
@@ -76,6 +79,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace p"u";': u'@namespace p "u";',
             u'@namespace p "u";': u'@namespace p "u";',
 
+            u'@namespace/*1*/"u"/*2*/;': u'@namespace /*1*/ "u" /*2*/;',
             u'@namespace/*1*/p/*2*/"u"/*3*/;': u'@namespace /*1*/ p /*2*/ "u" /*3*/;',
 
             u'@namespace p url(u);': u'@namespace p "u";',
@@ -95,6 +99,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace;': xml.dom.SyntaxErr, # nothing
             u'@namespace p;': xml.dom.SyntaxErr, # no namespaceURI
             u'@namespace "u" p;': xml.dom.SyntaxErr, # order
+            u'@namespace p "u";EXTRA': xml.dom.SyntaxErr, # order
             }
         self.do_raise_p(tests) # parse
         tests.update({

@@ -324,14 +324,14 @@ class Selector(cssutils.util.Base2):
                     'attribute-selector' == typ and not prefix):
                     # att **IS NOT** in default ns
                     if prefix == u'*':
-                        # *|name
+                        # *|name: in ANY_NS
                         namespaceURI = cssutils._ANYNS
                     elif prefix is None:
-                        # default namespace e.g. name or *
+                        # e or *: default namespace with prefix u'' or local-name()
                         namespaceURI = namespaces.get(u'', None)
                     elif prefix == u'':
-                        # default namespace but |name or |*
-                        namespaceURI = namespaces.get(prefix, u'')
+                        # |name or |*: in no (or the empty) namespace
+                        namespaceURI = u''
                     else:
                         # explicit namespace prefix
                         try:

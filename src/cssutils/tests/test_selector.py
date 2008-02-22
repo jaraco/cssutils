@@ -78,17 +78,17 @@ class SelectorTestCase(basetest.BaseTestCase):
             ]
         tests = {
             # selector: with default, no default, same default 
-            '*': ('*', '|*', '|*'),
-            'x': ('x', '|x', '|x'),
+            '*': ('*', '*', '*'),
+            'x': ('x', 'x', 'x'),
             '|*': ('|*', '|*', '|*'),
             '|x': ('|x', '|x', '|x'),
-            '*|*': ('*', '*', '*'),
-            '*|x': ('x', 'x', 'x'),
-            'p|*': ('p|*', 'p|*', '|*'),
-            'p|x': ('p|x', 'p|x', '|x'),
-            'x[a][|a][*|a][p|a]': ('x[a][a][a][p|a]', 
-                                   '|x[a][a][*|a][p|a]', 
-                                   '|x[a][a][*|a][|a]')
+            '*|*': ('*|*', '*|*', '*|*'),
+            '*|x': ('*|x', '*|x', '*|x'),
+            'p|*': ('p|*', 'p|*', '*'),
+            'p|x': ('p|x', 'p|x', 'x'),
+            'x[a][|a][*|a][p|a]': ('x[a][a][*|a][p|a]', 
+                                   'x[a][a][*|a][p|a]', 
+                                   'x[a][a][*|a][a]')
         }
         for sel, exp in tests.items():
             for i, result in enumerate(exp):
@@ -97,7 +97,23 @@ class SelectorTestCase(basetest.BaseTestCase):
         
         # add to CSSStyleSheet        
         sheet = cssutils.css.CSSStyleSheet()
-        sheet.cssText = '@namespace p "u"; p|x { color: green }'
+        sheet.cssText = '@namespace p "u"; a { color: green }'
+        
+        r = sheet.cssRules[1]
+        
+        self.assertEqual(r.selectorText, u'a')
+        
+        # add default namespace
+        sheet.namespaces[''] = 'a';
+        self.assertEqual(r.selectorText, u'|a')
+        
+        del sheet.namespaces[''];
+        self.assertEqual(r.selectorText, u'a')
+        
+#        r.selectorList.append('a')
+#        self.assertEqual(r.selectorText, u'|a, a')
+#        r.selectorList.append('*|a')
+#        self.assertEqual(r.selectorText, u'|a, a, *|a')
         
     def test_default_namespace(self):
         "Selector.namespaces default"
@@ -107,7 +123,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = css
         self.assertEqual(sheet.cssText, 
-                         u'@namespace "default";\n|a[att] {\n    color: green\n    }')
+                         u'@namespace "default";\na[att] {\n    color: green\n    }')
         # use a prefix for default namespace, does not goes for atts!
         sheet.namespaces['p'] = 'default' 
         self.assertEqual(sheet.cssText, 
@@ -310,13 +326,13 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a /**/  b': u'a /**/ b',
             
             # namespaces
-            u'|e': u'|e',
-            u'*|e': 'e',
-            u'*|*': u'*',
+            u'|e': None,
+            u'*|e': None,
+            u'*|*': None,
             (u'p|*', (('p', 'uri'),)): u'p|*',
             (u'p|e', (('p', 'uri'),)): u'p|e',
             (u'-a_x12|e', (('-a_x12', 'uri'),)): u'-a_x12|e',
-            (u'*|b[p|a]', (('p', 'uri'),)): 'b[p|a]',
+            (u'*|b[p|a]', (('p', 'uri'),)): '*|b[p|a]',
         
             # case 
             u'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE': 

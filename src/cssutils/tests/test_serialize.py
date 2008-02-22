@@ -302,23 +302,23 @@ a {
         tests = {
             # default == prefix => both are combined
             '@namespace p "u"; @namespace "u"; p|a, a {top: 0}':
-                ('@namespace "u";\n|a, |a {\n    top: 0\n    }', 
-                 '@namespace "u";\n|a, |a {\n    top: 0\n    }'),
+                ('@namespace "u";\na, a {\n    top: 0\n    }', 
+                 '@namespace "u";\na, a {\n    top: 0\n    }'),
             '@namespace "u"; @namespace p "u"; p|a, a {top: 0}':
                 ('@namespace p "u";\np|a, p|a {\n    top: 0\n    }', 
                  '@namespace p "u";\np|a, p|a {\n    top: 0\n    }'),
             # default and prefix
             '@namespace p "u"; @namespace "d"; p|a, a {top: 0}':
-                ('@namespace p "u";\n@namespace "d";\np|a, |a {\n    top: 0\n    }', 
-                 '@namespace p "u";\n@namespace "d";\np|a, |a {\n    top: 0\n    }'),
+                ('@namespace p "u";\n@namespace "d";\np|a, a {\n    top: 0\n    }', 
+                 '@namespace p "u";\n@namespace "d";\np|a, a {\n    top: 0\n    }'),
             # prefix only
             '@namespace p "u"; @namespace "d"; p|a {top: 0}':
                 ('@namespace p "u";\n@namespace "d";\np|a {\n    top: 0\n    }', 
                  '@namespace p "u";\np|a {\n    top: 0\n    }'),
             # default only
             '@namespace p "u"; @namespace "d"; a {top: 0}':
-                ('@namespace p "u";\n@namespace "d";\n|a {\n    top: 0\n    }', 
-                 '@namespace "d";\n|a {\n    top: 0\n    }'),
+                ('@namespace p "u";\n@namespace "d";\na {\n    top: 0\n    }', 
+                 '@namespace "d";\na {\n    top: 0\n    }'),
             # prefix-ns only
             '@namespace p "u"; @namespace d "d"; p|a {top: 0}':
                 ('@namespace p "u";\n@namespace d "d";\np|a {\n    top: 0\n    }', 
@@ -332,7 +332,6 @@ a {
             cssutils.ser.prefs.keepUsedNamespaceRulesOnly = True
             self.assertEqual(s.cssText, expwithout)
         
-
     def test_lineNumbers(self):
         "Preferences.lineNumbers"
         cssutils.ser.prefs.useDefaults()

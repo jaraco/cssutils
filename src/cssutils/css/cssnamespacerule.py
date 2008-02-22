@@ -205,7 +205,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             wellformed = wellformed and new['wellformed']
 
             # post conditions
-            if not new['uri']:
+            if new['uri'] is None:
                 wellformed = False
                 self._log.error(u'CSSNamespaceRule: No namespace URI found: %s' %
                     self._valuestr(cssText))
@@ -296,7 +296,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                                 _setParentStyleSheet,
                                 doc=u"Containing CSSStyleSheet.")
 
-    wellformed = property(lambda self: bool(self.namespaceURI))
+    wellformed = property(lambda self: self.namespaceURI is not None)
 
     def __repr__(self):
         return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (

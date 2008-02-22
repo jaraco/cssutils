@@ -197,7 +197,7 @@ class Out(object):
         - some other vals
             add *spacer except ``space=False``
         """
-        if val:
+        if val or 'STRING' == typ:
             # PRE
             if 'COMMENT' == typ:
                 if self.ser.prefs.keepComments:
@@ -209,6 +209,9 @@ class Out(object):
             elif 'S' == typ and not keepS:
                 return
             elif 'STRING' == typ:
+                # may be empty but MUST not be None
+                if val is None: 
+                    return
                 val = self.ser._string(val)                
             elif 'URI' == typ:
                 val = self.ser._uri(val)
@@ -667,12 +670,15 @@ class CSSSerializer(object):
         """
         if selector.wellformed:
             out = Out(self)
+            
+            DEFAULTURI = selector._namespaces.get('', None)           
             for item in selector.seq:
                 typ, val = item.type, item.value
                 if type(val) == tuple:
                     # namespaceURI|name (element or attribute)
                     namespaceURI, name = val
-                    if namespaceURI is None:
+                    if DEFAULTURI == namespaceURI or (not DEFAULTURI and 
+                                                      namespaceURI is None):
                         out.append(name, typ, space=False)
                     else:
                         if namespaceURI == cssutils._ANYNS:
@@ -684,10 +690,7 @@ class CSSSerializer(object):
                             except IndexError:
                                 prefix = u''
                         
-                        if prefix == u'*' and u'' not in selector._namespaces:
-                            out.append(name, typ, space=False)
-                        else: 
-                            out.append(u'%s|%s' % (prefix, name), typ, space=False)  
+                        out.append(u'%s|%s' % (prefix, name), typ, space=False)
                 else:
                     out.append(val, typ, space=False, keepS=True)
             
