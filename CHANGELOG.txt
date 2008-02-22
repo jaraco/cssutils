@@ -48,11 +48,34 @@ HEAD
 
     - API CHANGE: Removed constructor parameter ``css.CSSImportRule(hreftype=...)`` which made no sense really. The type of href is still retained if ``css.CSSImportRule.cssText`` is set (e.g. for ``@import "a-str";`` it is "string" and for ``@import url(an-uri);`` it is "uri". How it is serialized is defined in the serializer anyway (``cssutils.ser.prefs.importHrefFormat`` "string", "uri" or None which then uses the one in each @import rule or defaults to "uri") so it made no sense to have it hear too. It still may be used but generally should not.
 
+    + **FEATURE**: Defining a namespace with a prefix but an empty namespaceURI is not allowed in XML 1.0 (but in XML 1.1). It is allowed in CSS and therefor also in cssutils.
+
+      **ATTENTION**: CSS differs from XML 1.0 here!
+
     + **FEATURE**: Added property ``css.CSSImportRule.name`` and ``css.CSSMediaRule.name`` as decribed in http://www.w3.org/TR/css3-cascade/#cascading. It is parsed, serialized and available in this new property now. Property ``name`` is a constructor parameter now too.
 
     + **FEATURE**: ``css.UnknownRule`` is now parsed properly and checked for INVALID tokens or if {}, [] or () are not nested or paired properly. CSSUnknownRule is removed from CSSOM but in cssutils it is and will be used for @rules of programs using extensions, e.g. PrinceXML CSS. It is not very usable yet as no actual properties except ``atkeyword``, ``cssText`` and ``seq`` are present but at least it is syntactically checked properly and I hope serialized similar to other rules. This has been completely rewritten so may contain a few bugs so check your serialized sheets if you use non-standard @rules.
 
     - **BUGFIX**: Improved escaping. Fixed cases where e.g. an URI is given as ``url("\"")``. Also escapes of delimiters in STRINGs is improved. This is used by ``CSSImportRule`` or ``CSSNamespaceRule`` among others. All STRING values are serialized with ``"..."`` (double quotes) now. This should not be a problem but please note that e.g. a ``CSSValue`` may be slightly different now (but be as valid as before).
+
+    - **BUGFIX**: Fixed serialization of namespaces in Selector objects. Actually all possible namespaced selectors should be preserved now:
+
+        ``*``
+            any element or if a default namespace is given any element in that namespace
+        ``a``
+            all "a" elements or if a default namespace is given "a" elements in that namespace
+        ``|*``
+            any element in the no namespace (the *empty namespace*)
+        ``|a``
+            "a" elements in the no namespace (the *empty namespace*)
+        ``*|*``
+            any element in any namespace including the no namespace
+        ``*|a``
+            "a" elements in any namespace including the no namespace
+        ``p|*``
+            any element in the namespace defined for prefix p
+        ``p|a``
+            "a" elements in the namespace defined for prefix p
 
     - **BUGFIX**: Default namespace is no longer used by attribute selectors.
 
