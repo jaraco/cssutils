@@ -63,6 +63,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
                           u'@namespace p "OTHER";')
         
         tests = {
+            u'@namespace "";': None,
             u'@namespace "u";': None,
             u'@namespace p "u";': None,
             u'@namespace empty "";': None,
