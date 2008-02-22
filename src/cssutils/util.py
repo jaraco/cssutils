@@ -616,7 +616,12 @@ class _Namespaces(object):
         return prefix in self.namespaces
     
     def __delitem__(self, prefix):
-        "deletes CSSNamespaceRule(s) with rule.prefix == prefix"
+        """deletes CSSNamespaceRule(s) with rule.prefix == prefix
+        
+        prefix '' and None are handled the same
+        """
+        if not prefix:
+            prefix = u''
         delrule = self.__findrule(prefix)
         for i, rule in enumerate(ifilter(lambda r: r.type == r.NAMESPACE_RULE, 
                             self.parentStyleSheet.cssRules)):
@@ -640,6 +645,8 @@ class _Namespaces(object):
 
     def __setitem__(self, prefix, namespaceURI):
         "replaces prefix or sets new rule, may raise NoModificationAllowedErr"
+        if not prefix:
+            prefix = u'' # None or ''
         rule = self.__findrule(prefix)
         if not rule:
             self.parentStyleSheet.insertRule(cssutils.css.CSSNamespaceRule(
@@ -668,7 +675,7 @@ class _Namespaces(object):
         return namespaces
         
     namespaces = property(__getNamespaces, 
-        doc=u'Holds only effetive @namespace rules in self.parentStyleSheets'
+        doc=u'Holds only effective @namespace rules in self.parentStyleSheets'
              '@namespace rules.')
     
     def get(self, prefix, default):

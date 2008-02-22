@@ -325,7 +325,7 @@ ex2|SEL4, a, ex2|SELSR {
         
         s.cssRules[0].prefix = ''
         self.assertEqual(s.cssText,
-            u'@namespace "html";\n|a, |b {\n    top: 0\n    }')
+            u'@namespace "html";\na, b {\n    top: 0\n    }')
 
         # remove need of namespace
         s.cssRules[0].prefix = 'x'
@@ -333,6 +333,33 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertEqual(s.cssText,
             u'@namespace x "html";\na, b {\n    top: 0\n    }')
 
+
+    def test_namespaces4(self):
+        "CSSStyleSheet.namespaces 4"
+        # tests setting namespaces with new {}
+        s = cssutils.css.CSSStyleSheet()
+        self.assertEqual({}, s.namespaces.namespaces)
+
+        s.namespaces.namespaces['a'] = 'no setting possible'
+        self.assertEqual({}, s.namespaces.namespaces)
+         
+        s.namespaces[None] = 'default'
+        self.assertEqual({u'': 'default'}, s.namespaces.namespaces)
+
+        del s.namespaces['']
+        self.assertEqual({}, s.namespaces.namespaces)
+
+        s.namespaces[''] = 'default'
+        self.assertEqual({u'': 'default'}, s.namespaces.namespaces)
+
+        del s.namespaces[None]
+        self.assertEqual({}, s.namespaces.namespaces)
+
+        s.namespaces['p'] = 'uri'
+        # cannot use namespaces.namespaces
+        del s.namespaces.namespaces['p'] 
+        self.assertEqual({u'p': 'uri'}, s.namespaces.namespaces)
+        
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule()"
         self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {\n    x: 1\n    }@y;'
@@ -369,7 +396,7 @@ ex2|SEL4, a, ex2|SELSR {
         self.c = cssutils.css.CSSComment(u'/*c*/')
         self.ur = cssutils.css.CSSUnknownRule('@x;')
         self.ir = cssutils.css.CSSImportRule('x')
-        self.nr = cssutils.css.CSSNamespaceRule('uri')
+        self.nr = cssutils.css.CSSNamespaceRule('uri', 'p')
         self.mr = cssutils.css.CSSMediaRule()
         self.mr.cssText = u'@media all { @m; }'
         self.pr = cssutils.css.CSSPageRule()
@@ -386,7 +413,7 @@ ex2|SEL4, a, ex2|SELSR {
         s.insertRule(self.mr) # 5
         s.insertRule(self.pr) # 6
         s.insertRule(self.sr) # 7
-        self.assertEqual(u'@charset "ascii";\n@import url(x);\n@namespace "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }', s.cssText)
+        self.assertEqual(u'@charset "ascii";\n@import url(x);\n@namespace p "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }', s.cssText)
         return s, s.cssRules.length
 
     def test_add(self):
