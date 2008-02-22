@@ -46,12 +46,6 @@ test improvements
 - CSSStyleSheet.setSerializer()
 - CSSStyleSheet.setSerializerPref()
 
-@unknown
---------
-:prio: 2
-
-needs to be parsed properly, check for open blocks () [] {}, etc
-
 
 CSS2Properties
 --------------
