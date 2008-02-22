@@ -2,42 +2,27 @@ what is it
 ----------
 A Python package to parse and build CSS Cascading Style Sheets.
 
-main changes since 0.9.5a2
---------------------------
-for full details for 0.9.5a3 see the relevant CHANGELOG:  http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a3/CHANGELOG.txt
+main changes
+------------
+0.9.5a4
+    + **FEATURE**: Defining a namespace with a prefix but an empty namespaceURI is not allowed in XML 1.0 (but in XML 1.1). It is allowed in CSS and therefor also in cssutils.
 
-A few (minor) non-backwards compatible changes have been made, please see http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a3/documentation/migrate.txt for migration help.
+    + **FEATURE**: Added property ``css.CSSImportRule.name`` and ``css.CSSMediaRule.name`` as decribed in http://www.w3.org/TR/css3-cascade/#cascading. It is parsed, serialized and available in this new property now. Property ``name`` is a constructor parameter now too.
+
+    + **FEATURE**: ``css.UnknownRule`` is now parsed properly ...
+
+    - **BUGFIX**: Improved escaping ...
+
+    - **BUGFIX**: Fixed serialization of namespaces in Selector objects. Actually all possible namespaced selectors should be preserved now ...
+
+    - **BUGFIX**: Default namespace is no longer used by attribute selectors.
+
+    - IMPROVEMENT: Added simple testtool for functional tests in /examples plus lots of smaller bugfixes, improvements and refactorings
 
 
-0.9.5a3
-    - **API CHANGE: Refactored and fixed namespace handling**
-        Aim was to prevent building invalid style sheets. Therefor namespaces must be checked e.g. when adding a new ``Selector`` etc. This is probably not fixed for all cases but much better now than before.
+For full details for 0.9.5a4 see the relevant CHANGELOG:  http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a4/CHANGELOG.txt
 
-        - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and mirrors all namespaces as defined in @namespace rules. New Namespaces may also be set here as well as prefixes changed.
-        - if more than one ``CSSNamespaceRule`` with the same ``namespaceURI`` is set only the last one will be kept. The ``prefix`` of that rule is used.
-        - ``CSSNamespaceRule.namespaceURI`` is readonly now, it can only be set in the constructor (needed to prevent an invalid sheet when changing this uri)
-        - Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which would contain the necessary CSSNamespaceRules) are kept internally. All these classes accept for parameter ``selectorText`` (or ``cssText`` for CSSStyleRule) a tuple of ``(string-to-parse, dict-of-namespaces)`` now while not attached to a style sheet. If attached ``dict-of-namespaces`` is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector within a yet undefined namespace, set the namespace in the style sheet first simply by setting e.g. ``sheet[prefix] = namespaceURI``
-        - removed ``CSSStyleSheet.prefixes``
-        - removed ``Selector.prefixes``
-
-    - **API CHANGE**: ``parentRule`` and ``parentStyleSheet`` of all CSS rules are now readonly to prevent building illegal style sheets.
-
-    - **API CHANGE**: Changed order of constructor parameters for ``CSSStyleDeclaration``. Named parameters SHOULD be used anyway but be careful if you used ordered ones here!
-
-    * **FEATURE**: ``CSSStyleSheet`` and ``CSSMediaRule`` are iterable now. Both iterate on their ``cssRules``.
-
-    * **FEATURE**: added convinience method ``CSSStyleSheet.add(rule)``  which behaves exactly like ``.insertRule(rule, inOrder=True)``. So rules are added to the approprite position in a style sheet. E.g a namespace rule if put after any @import but before other rules like style or font-face rules.
-
-    * **FEATURE**: added parameter ``inOrder=False`` to method ``CSSStyleSheet.insertRule`` which inserts a given rule to its proper hierarchy. Parameter ``index`` is ignored in this case but the resulting index is properly returned.
-
-    + **BUGFIX**: ``CSSMediaRule.insertRule`` setting with a rule string fixed
-
-    + **BUGFIX**: ``*.parentStyleSheet`` and ``*.parentRule`` where * is any CSSRule is properly set now
-
-    + **BUGFIX**: ``CSSStyleDeclatation.getPropertyPriority(p)`` returns ``important`` (without the ``"!"``!) or the empty string now (see http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration). Same goes for ``Property.priority`` which is not in CSSOM but cssutils only.
-
-        (``Property._normalpriority`` has been removed, the normalized value that was available here is now in ``Property.priority``. The literal priority value is available in ``Property.literalproperty`` now (analog to ``Property.literalname``). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)
-
+A few (minor) non-backwards compatible changes have been made, please see http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a4/documentation/migrate.txt for migration help.
 
 
 Note:
@@ -52,11 +37,11 @@ cssutils is published under the LGPL.
 
 download
 --------
-for download options for see http://cthedot.de/cssutils/
+For download options for see http://cthedot.de/cssutils/
 
-cssutils needs Python 2.4 or higher (tested with Python 2.5 on Vista only)
+cssutils needs Python 2.4 or higher (tested with Python 2.5.1 on Vista only)
 
 
-bug reports (via Google code), comments, etc are very much appreciated!
+Bug reports (via Google code), comments, etc are very much appreciated! Thanks.
 
-thanks, Christof
+Christof

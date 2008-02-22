@@ -38,8 +38,8 @@ if 0:
     sys.exit(0)
 
 if 1:
-    css = '@page :left /**/ {color: red}'
-    r = cssutils.css.CSSPageRule()
+    css = '@namespace empty "";'
+    r = cssutils.css.CSSNamespaceRule()
     r.cssText = css
     print r.cssText
     #s = cssutils.parseString(css)
@@ -47,11 +47,21 @@ if 1:
     sys.exit(1)
 
 if 1:
-    css = 'a {color: red}'
-    print '\n------source-------\n', css, '\n-----processed-----'
+    """
+    a
+        (None, a): local-name()
+        a    no
+        a    with
+        
+    |a
+        (u'', a): in default ns which is empty
+        |a    no
+        |a    with
+    """
+    css = ('@namespace p "p";\n'
+    +'@namespace empty "";\n')
+    print '\n------source-------\n', css, '\n\n-----processed-----'
     sheet = cssutils.parseString(css)
-    print sheet.cssText 
-    sheet.cssRules[0].href = '123'
     print sheet.cssText 
     sys.exit(1)
 

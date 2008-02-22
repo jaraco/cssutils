@@ -42,6 +42,8 @@ known issues
 0.9.x
 -----
 HEAD
+
+0.9.5a4 080222
     - **API CHANGE**: ``.wellformed`` replaces ``.valid`` for most classes. This is more an internal value so should be used carefully anyway. Some classes still have both, notably ``Property`` and ``CSSValue``. Also removed ``Preferences.removeInvalid`` which was deprecated for some time now and made not really sense anyway.
 
     - API CHANGE: Removed ``cssutils.ser.prefs.wellformedOnly`` which made no sense at all. It probably was not used in client code anyway. cssutils serializes wellformed (not necessarily valid) stylesheets only (hopefully ;).
