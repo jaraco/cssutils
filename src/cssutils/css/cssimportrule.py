@@ -13,6 +13,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+import urlparse
 import xml.dom
 import cssrule
 import cssutils
@@ -74,6 +75,7 @@ class CSSImportRule(cssrule.CSSRule):
                                             parentStyleSheet=parentStyleSheet)
         self.atkeyword = u'@import'
         self.hreftype = None
+        self._styleSheet = None
 
         self._href = None
         self.href = href
@@ -89,9 +91,6 @@ class CSSImportRule(cssrule.CSSRule):
         seq.append(self.media, 'media')
         seq.append(self.name, 'name')
         self._setSeq(seq)
-
-        # TODO: load stylesheet from href automatically?
-        self._styleSheet = None
 
         self._readonly = readonly
 
@@ -268,7 +267,11 @@ class CSSImportRule(cssrule.CSSRule):
             self._setSeq(seq)
         # set new href
         self._href = href
-
+        
+        if not self.styleSheet:
+            # set only if not set before
+            self.__setStyleSheet()
+            
     href = property(lambda self: self._href, _setHref,
                     doc="Location of the style sheet to be imported.")
 
@@ -296,6 +299,27 @@ class CSSImportRule(cssrule.CSSRule):
     name = property(lambda self: self._name, _setName,
                     doc=u"An optional name for the imported sheet")
 
+    def __setStyleSheet(self):
+        """Read new CSSStyleSheet cssText from href using parentStyleSheet.baseURL
+        
+        indirectly called if setting ``href``
+        """
+        # should simply fail so all errors are catched!
+        if self.parentStyleSheet and self.href:
+            url = urlparse.urljoin(self.parentStyleSheet.baseURL, self.href)
+            try:
+                sheet = cssutils.css.CSSStyleSheet(href=self.href,
+                                                   ownerRule=self,
+                                                   baseURL=self.parentStyleSheet.baseURL,
+                                                   title=self.name
+                                                   )
+                sheet.cssText = cssutils.util._readURL(url)
+            except Exception, e:
+                self._log.warn(u'CSSImportRule: Error processing imported style sheet: href=%r url=%r: %r'
+                               % (self.href, url, e), neverraise=True)
+            else:
+                self._styleSheet = sheet 
+                
     styleSheet = property(lambda self: self._styleSheet,
                           doc="(readonly) The style sheet referred to by this rule.")
 
