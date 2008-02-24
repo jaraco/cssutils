@@ -42,6 +42,14 @@ known issues
 0.9.x
 -----
 HEAD
+    - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have new parameters ``title`` and ``baseURL`` (used to dereference e.g. href in @import rules).
+
+       Also the representation of ``CSSStyleSheet`` has been improved.
+
+    + **FEATURE**: References style sheet in @import rule is read now if possible.
+
+    + **FEATURE**: Added ``cssutils.parseURL(url, encoding=None, ...)
+
 
 0.9.5a4 080222
     - **API CHANGE**: ``.wellformed`` replaces ``.valid`` for most classes. This is more an internal value so should be used carefully anyway. Some classes still have both, notably ``Property`` and ``CSSValue``. Also removed ``Preferences.removeInvalid`` which was deprecated for some time now and made not really sense anyway.
