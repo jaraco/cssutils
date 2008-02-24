@@ -133,19 +133,18 @@ class DOMImplementationCSS(object):
 xml.dom.registerDOMImplementation('cssutils', DOMImplementationCSS)
 
 
-# parser helper functions
-def parse(filename, encoding=None, href=None, media=None):
-    """
-    reads file with given filename in given encoding (if given)
-    and returns CSSStyleSheet object
-    """
-    return CSSParser().parse(filename, encoding)
+def parseString(*a, **k):
+    return CSSParser().parseString(*a, **k)
+parseString.__doc__ = CSSParser.parseString.__doc__
 
-def parseString(cssText, href=None, media=None):
-    """
-    parses given string and returns CSSStyleSheet object
-    """
-    return CSSParser().parseString(cssText, href=href, media=media)
+def parse(*a, **k):
+    return CSSParser().parse(*a, **k)
+parse.__doc__ = CSSParser.parse.__doc__
+
+def parseURL(*a, **k):
+    return CSSParser().parseURL(*a, **k)
+parseURL.__doc__ = CSSParser.parseURL.__doc__
+
 
 # set "ser", default serializer
 def setSerializer(serializer):

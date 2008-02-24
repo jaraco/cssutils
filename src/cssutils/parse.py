@@ -18,9 +18,9 @@ class CSSParser(object):
     Usage::
 
         parser = CSSParser()
-        stylesheet = p.parse('test1.css', 'ascii')
+        sheet = p.parse('test1.css', 'ascii')
     
-        print stylesheet.cssText
+        print sheet.cssText
     """
     def __init__(self, log=None, loglevel=None, raiseExceptions=False):
         """
@@ -39,41 +39,61 @@ class CSSParser(object):
         cssutils.log.raiseExceptions = raiseExceptions
         self.__tokenizer = cssutils.tokenize2.Tokenizer()
 
-    def parseString(self, cssText, href=None, media=None):
-        """
-        parse a CSSStyleSheet string
-        returns the parsed CSS as a CSSStyleSheet object
+    def parseString(self, cssText, href=None, media=None, title=None,
+                    baseURL=None):
+        """Return parsed CSSStyleSheet from given string cssText.
 
         cssText
             CSS string to parse
         href
-            The href attribute to assign to the generated stylesheet
+            The href attribute to assign to the parsed style sheet
         media
-            The media attribute to assign to the generated stylesheet
+            The media attribute to assign to the parsed style sheet
             (may be a MediaList, list or a string)
+        title
+            The title attribute to assign to the parsed style sheet
+        baseURL
+            Used to resolve other urls in the parsed sheet like @import hrefs
         """
         sheet = cssutils.css.CSSStyleSheet()
-        sheet.cssText = self.__tokenizer.tokenize(cssText, fullsheet=True)
-        sheet.href = href
+        # does close open constructs and adds EOF
+        sheet._href = href
         sheet.media = cssutils.stylesheets.MediaList(media)
+        sheet.title = title
+        sheet.baseURL = baseURL
+        sheet.cssText = self.__tokenizer.tokenize(cssText, fullsheet=True)
         return sheet
 
-    def parse(self, filename, encoding=None, href=None, media=None):
-        """
-        parse a CSSStyleSheet file
-        returns the parsed CSS as a CSSStyleSheet object
+    def parse(self, filename, encoding=None, href=None, media=None, title=None,
+              baseURL=None):
+        """Retrieve and return a CSSStyleSheet from given filename.
 
         filename
-            name of the CSS file to parse
+            of the CSS file to parse
         encoding
             of the CSS file, defaults to 'css' codec encoding
-        href
-            The href attribute to assign to the generated stylesheet
-        media
-            The media attribute to assign to the generated stylesheet
-            (may be a MediaList or a string)
+            
+        for other parameters see ``parseString``
         """
         if not encoding:
             encoding = 'css'
         return self.parseString(codecs.open(filename, 'r', encoding).read(),
-                                href=href, media=media)
+                                href=href, media=media, title=title, 
+                                baseURL=baseURL)
+        
+    def parseURL(self, url, encoding=None, href=None, media=None, title=None,
+                 baseURL=None):
+        """Retrieve and return a CSSStyleSheet from given url.
+
+        url
+            url of the CSS file to parse
+        encoding
+            if given overrides detected HTTP encoding
+
+        for other parameters see ``parseString``
+        """
+        return self.parseString(cssutils.util._readURL(url, encoding), 
+                                href=href, media=media, 
+                                title=title, baseURL=baseURL)
+
+    
