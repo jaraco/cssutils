@@ -180,7 +180,7 @@ class CSSCapture(object):
 
     def _doImports(self, parentStyleSheet, baseurl=None):
         """
-        handle all @import CSS stylesheet recusively
+        handle all @import CSS stylesheet recursively
         found CSS stylesheets are appended to stylesheetlist
         """
         for rule in parentStyleSheet.cssRules:
