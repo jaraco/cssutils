@@ -7,6 +7,7 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+import urlparse
 import cssutils
 
 class StyleSheet(cssutils.util.Base):
@@ -29,7 +30,8 @@ class StyleSheet(cssutils.util.Base):
                  title=u'',
                  disabled=None,
                  ownerNode=None,
-                 parentStyleSheet=None):
+                 parentStyleSheet=None,
+                 baseURL=None):
         """
         type: readonly
             This specifies the style sheet language for this
@@ -81,18 +83,30 @@ class StyleSheet(cssutils.util.Base):
             sheet is a top-level style sheet, or the style sheet
             language does not support inclusion, the value of this
             attribute is None.
+            
+        baseURL
+            used to resolve e.g. href
         """
         super(StyleSheet, self).__init__()
+        
+        self._href = href
+        self._ownerNode = ownerNode
+        self._parentStyleSheet = parentStyleSheet 
+        self._type = type
 
-        self.type = type
-        self.href = href
+        self.disabled = bool(disabled)
         self.media = media
         self.title = title
-        if disabled:
-            self.disabled = True
-        else:
-            self.disabled = False
-        self.ownerNode = ownerNode
-        self._parentStyleSheet = parentStyleSheet 
-        
+        self.baseURL = baseURL
+    
+    def _getURL(self):
+        """Return full URL using baseURL and href"""
+        return urlparse.urljoin(self.baseURL, self.href)
+     
+    href = property(lambda self: self._href)
+
+    ownerNode = property(lambda self: self._ownerNode)
+    
     parentStyleSheet = property(lambda self: self._parentStyleSheet)
+
+    type = property(lambda self: self._type, doc=u'Default: "ext/css"')
