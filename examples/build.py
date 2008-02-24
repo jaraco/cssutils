@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import cssutils
 
-EXPOUT = '''@charset "ascii";
+EXPOUT = u'''@charset "ascii";
 @import "some-other.css";
 /* a comment with umlaut \\E4  */
 @namespace xhtml "http://www.w3.org/1999/xhtml";
@@ -13,7 +13,8 @@ atom|title {
     color: #000 !important
     }
 '''
-EXPERR = ''   
+EXPERR = u'''Error opening url='some-other.css': ValueError('unknown url type: some-other.css',)
+'''   
 
 def main():
     css = u'''/* a comment with umlaut ä */
