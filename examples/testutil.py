@@ -35,8 +35,10 @@ class TestUtil(object):
 
         ok = (out == expo and err == expe)
         if not ok:
-            print '### out:\n%s\n### != expout:\n%s\n' % (out, expo)
-            print '### err:\n%s\n### != experr:\n%s' % (err, expe)
+            if out != expo:
+                print '### out:\n%r\n### != expout:\n%r\n' % (out, expo)
+            else:
+                print '### err:\n%r\n### != experr:\n%r\n' % (err, expe)
         return ok
 
 modules = 0
