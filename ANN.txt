@@ -39,7 +39,7 @@ download
 --------
 For download options for see http://cthedot.de/cssutils/
 
-cssutils needs Python 2.4 or higher (tested with Python 2.5.1 on Vista only)
+cssutils needs Python 2.4 or higher (tested with Python 2.5.2 on Vista only)
 
 
 Bug reports (via Google code), comments, etc are very much appreciated! Thanks.
