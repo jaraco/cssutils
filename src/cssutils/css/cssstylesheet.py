@@ -56,20 +56,22 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     type = 'text/css'
 
     def __init__(self, href=None, media=None, title=u'', disabled=None,
-                 ownerNode=None, parentStyleSheet=None, readonly=False):
+                 ownerNode=None, parentStyleSheet=None, readonly=False,
+				 ownerRule=None, baseURL=None):
         """
         init parameters are the same as for stylesheets.StyleSheet
         """
         super(CSSStyleSheet, self).__init__(
                 self.type, href, media, title, disabled,
-                ownerNode, parentStyleSheet)
+                ownerNode, parentStyleSheet, baseURL=baseURL)
 
+        self._ownerRule = ownerRule
         self.cssRules = cssutils.css.CSSRuleList()
         self.cssRules.append = self.insertRule
         self.cssRules.extend = self.insertRule
         self._namespaces = _Namespaces(parentStyleSheet=self)  
         self._readonly = readonly
-
+        
     def __iter__(self):
         "generator which iterates over cssRules."
         for rule in self.cssRules:
@@ -532,20 +534,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 r._parentStyleSheet = self
         return index
 
-    def _getsetOwnerRuleDummy(self):
-        """
-        NOT IMPLEMENTED YET
-
-        CSSOM
-        -----
-        The ownerRule  attribute, on getting, must return the CSSImportRule
-        that caused this style sheet to be imported (if any). Otherwise, if
-        no CSSImportRule caused it to be imported the attribute must return
-        null.
-        """
-        raise NotImplementedError()
-
-    ownerRule = property(_getsetOwnerRuleDummy, _getsetOwnerRuleDummy,
+    ownerRule = property(lambda self: self._ownerRule,
                          doc="(DOM attribute) NOT IMPLEMENTED YET")
 
     def replaceUrls(self, replacer):
@@ -611,8 +600,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self.__class__.__name__, self.href, self.title)
 
     def __str__(self):
-        return "<cssutils.css.%s object title=%r href=%r encoding=%r "\
-               "namespaces=%r at 0x%x>" % (
-                self.__class__.__name__, self.title, self.href, self.encoding,
-                self.namespaces.namespaces, id(self))
+        return "<cssutils.css.%s object encoding=%r baseURL=%r href=%r "\
+               "namespaces=%r title=%r at 0x%x>" % (
+                self.__class__.__name__, self.encoding, self.baseURL, self.href, 
+                self.namespaces.namespaces, self.title, id(self))
     
