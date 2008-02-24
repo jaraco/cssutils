@@ -6,10 +6,13 @@ __author__ = '$LastChangedBy$'
 __date__ = '$LastChangedDate$'
 __version__ = '$LastChangedRevision$'
 
+import codecs
 from itertools import ifilter
 import re
 import types
+import urllib2
 import xml.dom
+import encutils
 import cssutils
 from tokenize2 import Tokenizer
 
@@ -723,3 +726,33 @@ class _SimpleNamespaces(_Namespaces):
     def __str__(self):
         return u"<cssutils.util.%s object namespaces=%r at 0x%x>" % (
                 self.__class__.__name__, self.namespaces, id(self))
+
+
+def _readURL(url, encoding=None):
+    """Retrieve text from url using explicit or detected encoding via encutils
+    """
+    req = urllib2.Request(url)
+    try:
+        res = urllib2.urlopen(req)
+    except urllib2.HTTPError, e:
+        cssutils.log.warn(u'Error opening url=%r: %s %s\n%s' % (e.geturl(), 
+                                                                e.code, 
+                                                                e.msg))
+    except ValueError, e:
+        cssutils.log.warn(u'Error opening url=%r: %r' % (url, e),
+                          error=ValueError)
+    else:
+        # get real URL, may have been redirected
+        url = res.geturl()
+        if res:
+            if not encoding:
+                media_type, encoding = encutils.getHTTPInfo(res)
+                if media_type != u'text/css':
+                    self._log.warn(u'Error opening url=%r: Media type %e != "text/css"' % 
+                                   (url, media_type))                    
+            try:
+                return codecs.getreader('css')(res, encoding=encoding).read()
+            except UnicodeDecodeError, e:
+                cssutils.log.warn(u'Error reading url=%r: %r' % (url, e))
+            except Exception, e:
+                cssutils.log.warn(u'Error reading url=%r: %r' % (url, e))
