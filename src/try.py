@@ -3,6 +3,7 @@ import codecs
 from pprint import pprint as pp
 import re
 import sys
+import xml
 import cssutils
 
 def save(name, string):
@@ -37,32 +38,107 @@ if 0:
         print tk
     sys.exit(0)
 
-if 1:
-    css = '@namespace empty "";'
-    r = cssutils.css.CSSNamespaceRule()
-    r.cssText = css
-    print r.cssText
-    #s = cssutils.parseString(css)
-    #print s.cssText
-    sys.exit(1)
+if 0:
+    # copy to test_util
+            from email import message_from_string, message_from_file
+            import StringIO
+            from minimock import mock, restore
+            from cssutils.util import _readURL
+            
+            class Response(object):
+                """urllib2.Reponse mock"""
+                def __init__(self, url, text=u'', error=None):
+                    self.url = url
+                    self.text = text
+                    self.error = error
+                    
+                    if error=='HTTPError':
+                        # TODO
+                        raise urllib2.HTTPError(StringIO.StringIO('1'),
+                                                StringIO.StringIO('2'),
+                                                StringIO.StringIO('3'),   
+                                                StringIO.StringIO('4'),
+                                                StringIO.StringIO('5')
+                                                )
+                    if error=='ValueError':
+                        raise ValueError(error)
+                
+                def geturl(self):
+                    return self.url
+                
+                def info(self):
+                    
+                    class Info(object):
+                        def gettype(self):
+                            return 'text/css'
+                        def getparam(self, name):
+                            return 'UTF-8'
+                    
+                    return Info()
+                
+                def read(self):
+                    if self.error:
+                        raise Exception(self.error)
+                    else:
+                        return self.text
+                        
+            def urlopen(url, text=None, error=None):
+                # return an mock which returns parameterized Response
+                def x(*ignored):
+                    return Response(url, text=text, error=error)
+                return x
+
+            import urllib2
+                            
+            tests = [
+                ('1', 'utf-8', u'/*äöü*/', 'utf-8', u'/*äöü*/'),
+                ('2', 'utf-8', u'/*äöü*/', None, u'/*äöü*/'),
+                ('3', 'utf-8', u'/*äöü*/', 'css', u'/*äöü*/'),
+                #('4', 'HTTPError', None, None, urllib2.HTTPError),
+                ('5', 'ValueError', None, None, ValueError),
+                ('6', '404', None, None, xml.dom.SyntaxErr),
+            ]
+            for url, textencoding, text, encoding, exp in tests:
+                if text:
+                    mock_obj = urlopen(url, text=text.encode(textencoding))
+                else:
+                    mock_obj = urlopen(url, error=textencoding)
+                
+                mock("urllib2.urlopen", mock_obj=mock_obj)           
+                
+                if isinstance(exp, basestring):
+                    print url, exp == _readURL(url, encoding), exp, _readURL(url, encoding)
+                else:
+                    # exception
+                    try:
+                        _readURL(url)
+                    except Exception, e:
+                        print url, e                
+            
+            sys.exit(0)
+
 
 if 1:
-    """
-    a
-        (None, a): local-name()
-        a    no
-        a    with
-        
-    |a
-        (u'', a): in default ns which is empty
-        |a    no
-        |a    with
-    """
-    css = ('@namespace p "p";\n'
-    +'@namespace empty "";\n')
-    print '\n------source-------\n', css, '\n\n-----processed-----'
-    sheet = cssutils.parseString(css)
-    print sheet.cssText 
+    css = '@import "../sheets/1.css" tv;'
+    s = cssutils.parseString(css)
+    print s.cssText
+    
+    #r = cssutils.css.CSSImportRule()
+    #r.cssText = css
+    #print r.cssText
+    sys.exit(1)
+    
+if 0:
+    sheet = cssutils.parseString(css, title="example", href='example.css',
+                                 baseURL='file:///I:/dev-workspace/cssutils/src/')
+    print sheet
+    print
+    print sheet.cssText
+    print 
+    ir = sheet.cssRules[0]
+    print ir.styleSheet
+    print ir.styleSheet.cssText
+    print "ownerRule:", ir.styleSheet.ownerRule 
     sys.exit(1)
 
 if 0:
