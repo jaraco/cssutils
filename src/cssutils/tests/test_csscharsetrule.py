@@ -95,7 +95,14 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@charset { utf-8 }': xml.dom.SyntaxErr,
             u'@charset "utf-8"': xml.dom.SyntaxErr,
             u'@charset a;': xml.dom.SyntaxErr,
-            u'@charset /**/;': xml.dom.SyntaxErr
+            u'@charset /**/;': xml.dom.SyntaxErr,
+            # trailing content
+            u'@charset "utf-8";s': xml.dom.SyntaxErr,
+            u'@charset "utf-8";/**/': xml.dom.SyntaxErr,
+            u'@charset "utf-8"; ': xml.dom.SyntaxErr,
+            
+            # comments do not work in this rule!
+            u'@charset "utf-8"/*1*//*2*/;': xml.dom.SyntaxErr
             }
         self.do_raise_r(tests)
 

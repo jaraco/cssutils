@@ -57,10 +57,6 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(u'@init xxx {\n    yyy\n    }', r.cssText)
         self.assertTrue(r.wellformed)
 
-    def test_InvalidModificationErr(self):
-        "CSSUnknownRule.cssText InvalidModificationErr"
-        self._test_InvalidModificationErr(u'@unknown')
-
     def test_cssText(self):
         "CSSUnknownRule.cssText"
         tests = {
@@ -76,37 +72,52 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         }
     }''': None,
             '@x "string" url(x);': None,
-            "@x'string'url('x');": '@x "string" url(x);',
+            
+            # comments
+            '@x/*1*//*2*/"str"/*3*//*4*/url("x");': 
+                '@x /*1*/ /*2*/ "str" /*3*/ /*4*/ url(x);',
+            # WS
+            '@x"string"url("x");': '@x "string" url(x);',
+            '@x\n\r\t\f "string"\n\r\t\f url(\n\r\t\f "x"\n\r\t\f )\n\r\t\f ;': 
+                '@x "string" url(x);',
         }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
 
-    def test_SyntaxErr(self):
-        "CSSUnknownRule.cssText"
-        # at keyword 
-        self.assertRaises(xml.dom.InvalidModificationErr,
-                          self.r._setCssText, '@;')
-        self.assertRaises(xml.dom.InvalidModificationErr,
-                          self.r._setCssText, '@{}')
-        self.assertRaises(xml.dom.InvalidModificationErr,
-                          self.r._setCssText, '@ ;')
-        self.assertRaises(xml.dom.InvalidModificationErr,
-                          self.r._setCssText, '@ {}')
-        # rule end
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x {}{}')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x {};')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x ;{}')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x ;;')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x }  ')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x }  ;')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x {  ')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x {  ;')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x ')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x (;')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x );')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x [;')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x ];')
-        self.assertRaises(xml.dom.SyntaxErr, self.r._setCssText, '@x {[(]()}')
+        tests = {
+                 u'@;': xml.dom.InvalidModificationErr,
+                 u'@{}': xml.dom.InvalidModificationErr,
+                 u'@ ;': xml.dom.InvalidModificationErr,
+                 u'@ {};': xml.dom.InvalidModificationErr,
+                 
+                 u'@x ;{}': xml.dom.SyntaxErr,
+                 u'@x ;;': xml.dom.SyntaxErr,
+                 u'@x }  ': xml.dom.SyntaxErr,
+                 u'@x }  ;': xml.dom.SyntaxErr,
+                 u'@x {  ': xml.dom.SyntaxErr,
+                 u'@x {  ;': xml.dom.SyntaxErr,
+                 u'@x ': xml.dom.SyntaxErr,
+                 u'@x (;': xml.dom.SyntaxErr,
+                 u'@x );': xml.dom.SyntaxErr,
+                 u'@x [;': xml.dom.SyntaxErr,
+                 u'@x ];': xml.dom.SyntaxErr,
+                 u'@x {[(]()}': xml.dom.SyntaxErr,
+                 # trailing
+                 u'@x{}{}': xml.dom.SyntaxErr,
+                 u'@x{};': xml.dom.SyntaxErr,
+                 u'@x{}1': xml.dom.SyntaxErr,
+                 u'@x{} ': xml.dom.SyntaxErr,
+                 u'@x{}/**/': xml.dom.SyntaxErr,
+                 u'@x;1': xml.dom.SyntaxErr,
+                 u'@x; ': xml.dom.SyntaxErr,
+                 u'@x;/**/': xml.dom.SyntaxErr,
+
+                 }
+        self.do_raise_r(tests)
+
+    def test_InvalidModificationErr(self):
+        "CSSUnknownRule.cssText InvalidModificationErr"
+        self._test_InvalidModificationErr(u'@unknown')
 
     def test_reprANDstr(self):
         "CSSUnknownRule.__repr__(), .__str__()"        

@@ -154,7 +154,7 @@ class CSSMediaRule(cssrule.CSSRule):
                 self._log.error(u'CSSMediaRule: No "}" found.', 
                                 token=braceOrEOF)
             elif nonetoken:
-                self._log.error(u'CSSMediaRule: Content after "}" found.',
+                self._log.error(u'CSSMediaRule: Trailing content found.',
                                 token=nonetoken)
             else:                
                 # for closures: must be a mutable
@@ -206,7 +206,8 @@ class CSSMediaRule(cssrule.CSSRule):
                                                      'MEDIA_SYM': atrule,
                                                      'ATKEYWORD': atrule
                                                    }, 
-                                                   default=ruleset)
+                                                   default=ruleset,
+                                                   new=new)
                 
                 # no post condition
                     

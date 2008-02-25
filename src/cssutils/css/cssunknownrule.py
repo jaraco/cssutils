@@ -174,7 +174,8 @@ class CSSUnknownRule(cssrule.CSSRule):
                              'URI': URI,
                              'S': default # overwrite default default!
                             }, 
-                            default=default)
+                            default=default,
+                            new=new)
 
             # wellformed set by parse
             wellformed = wellformed and new['wellformed']

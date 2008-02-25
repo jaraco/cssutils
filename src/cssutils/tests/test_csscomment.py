@@ -23,10 +23,6 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         "CSSComment.type and init"
         super(CSSCommentTestCase, self).test_init()
 
-    def test_InvalidModificationErr(self):
-        "CSSComment.cssText InvalidModificationErr"
-        self._test_InvalidModificationErr(u'/* comment */')
-
     def test_csstext(self):
         "CSSComment.cssText"
         tests = {
@@ -50,6 +46,9 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         self.do_equal_p(tests) # parse
 
         tests = {
+            u'/* */ ': xml.dom.InvalidModificationErr,
+            u'/* *//**/': xml.dom.InvalidModificationErr,
+            u'/* */1': xml.dom.InvalidModificationErr,
             u'/* */ */': xml.dom.InvalidModificationErr,
             u'  */ /* ': xml.dom.InvalidModificationErr,
             u'*/': xml.dom.InvalidModificationErr,
@@ -58,6 +57,10 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         self.do_raise_r(tests) # set cssText
         # no raising of error possible?
         # self.do_raise_p(tests) # parse
+
+    def test_InvalidModificationErr(self):
+        "CSSComment.cssText InvalidModificationErr"
+        self._test_InvalidModificationErr(u'/* comment */')
 
     def test_reprANDstr(self):
         "CSSComment.__repr__(), .__str__()"

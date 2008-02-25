@@ -70,6 +70,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespacep"u";': u'@namespace p "u";',
             u'@namespaceempty"";': u'@namespace empty "";',
             u'@namespacep"u"   ;': u'@namespace p "u";',
+            
             u'@namespace p "p";': None,
             u"@namespace p 'u';": u'@namespace p "u";',
 
@@ -87,6 +88,27 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace p url(\'u\');': u'@namespace p "u";',
             u'@namespace p url(\"u\");': u'@namespace p "u";',
             u'@namespace p url( \"u\" );': u'@namespace p "u";',
+            
+            # comments
+            u'@namespace/*1*//*2*/p/*3*//*4*/url(u)/*5*//*6*/;': 
+                u'@namespace /*1*/ /*2*/ p /*3*/ /*4*/ "u" /*5*/ /*6*/;',
+            u'@namespace/*1*//*2*/p/*3*//*4*/"u"/*5*//*6*/;': 
+                u'@namespace /*1*/ /*2*/ p /*3*/ /*4*/ "u" /*5*/ /*6*/;',
+            u'@namespace/*1*//*2*/p/*3*//*4*/url("u")/*5*//*6*/;': 
+                u'@namespace /*1*/ /*2*/ p /*3*/ /*4*/ "u" /*5*/ /*6*/;',
+
+            u'@namespace/*1*//*2*/url(u)/*5*//*6*/;': 
+                u'@namespace /*1*/ /*2*/ "u" /*5*/ /*6*/;',
+            
+            # WS
+            u'@namespace\n\r\t\f p\n\r\t\f url(\n\r\t\f u\n\r\t\f )\n\r\t\f ;': 
+                u'@namespace p "u";',
+            u'@namespace\n\r\t\f p\n\r\t\f url(\n\r\t\f "u"\n\r\t\f )\n\r\t\f ;': 
+                u'@namespace p "u";',
+            u'@namespace\n\r\t\f p\n\r\t\f "str"\n\r\t\f ;': 
+                u'@namespace p "str";',
+            u'@namespace\n\r\t\f "str"\n\r\t\f ;': 
+                u'@namespace "str";',
             }
         self.do_equal_p(tests)
         #self.do_equal_r(tests) # cannot use here as always new r is needed
@@ -100,14 +122,19 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace;': xml.dom.SyntaxErr, # nothing
             u'@namespace p;': xml.dom.SyntaxErr, # no namespaceURI
             u'@namespace "u" p;': xml.dom.SyntaxErr, # order
-            u'@namespace p "u";EXTRA': xml.dom.SyntaxErr, # order
+            u'@namespace "u";EXTRA': xml.dom.SyntaxErr,
+            u'@namespace p "u";EXTRA': xml.dom.SyntaxErr,
             }
         self.do_raise_p(tests) # parse
         tests.update({
             u'@namespace p url(x)': xml.dom.SyntaxErr, # missing ;
             u'@namespace p "u"': xml.dom.SyntaxErr, # missing ;
+            # trailing
+            u'@namespace "u"; ': xml.dom.SyntaxErr,
+            u'@namespace "u";/**/': xml.dom.SyntaxErr,
+            u'@namespace p "u"; ': xml.dom.SyntaxErr,
+            u'@namespace p "u";/**/': xml.dom.SyntaxErr,
             })
-        #self.do_raise_r(tests) # cannot use here as always new r is needed
         def _do(test):
             r = cssutils.css.CSSNamespaceRule(cssText=test)
         for test, expected in tests.items():

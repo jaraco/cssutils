@@ -9,6 +9,7 @@ import xml.dom
 import test_cssrule
 import cssutils
 
+
 class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
@@ -101,6 +102,8 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'''@import url('\\'');''': u'''@import url(');''',
 
             # href + media
+            # all is removed
+            u'''@import "str" all;''': u'''@import "str";''',
             u'''@import "str" tv, print;''': None,
             u'''@import"str"tv,print;''': u'''@import "str" tv, print;''',
             u'''@import "str" tv, print, all;''': u'''@import "str";''',
@@ -124,10 +127,21 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
             # comments
             u'''@import /*1*/ "str" /*2*/;''': None,
-            u'''@import/*1*/"str"/*2*/;''':
-                    u'''@import /*1*/ "str" /*2*/;''',
-            u'''@import   \n  /*1*/ \n  "str" \n  /*2*/  \n   ;''':
-                    u'''@import /*1*/ "str" /*2*/;''',
+            u'@import/*1*//*2*/"str"/*3*//*4*/all/*5*//*6*/"name"/*7*//*8*/ ;': 
+                u'@import /*1*/ /*2*/ "str" /*3*/ /*4*/ all /*5*/ /*6*/ "name" /*7*/ /*8*/;',
+            u'@import/*1*//*2*/url(u)/*3*//*4*/all/*5*//*6*/"name"/*7*//*8*/ ;': 
+                u'@import /*1*/ /*2*/ url(u) /*3*/ /*4*/ all /*5*/ /*6*/ "name" /*7*/ /*8*/;',
+            u'@import/*1*//*2*/url("u")/*3*//*4*/all/*5*//*6*/"name"/*7*//*8*/ ;': 
+                u'@import /*1*/ /*2*/ url(u) /*3*/ /*4*/ all /*5*/ /*6*/ "name" /*7*/ /*8*/;',
+            # WS
+            u'@import\n\t\f "str"\n\t\f tv\n\t\f "name"\n\t\f ;': 
+                u'@import "str" tv "name";',
+            u'@import\n\t\f url(\n\t\f u\n\t\f )\n\t\f tv\n\t\f "name"\n\t\f ;': 
+                u'@import url(u) tv "name";',
+            u'@import\n\t\f url("u")\n\t\f tv\n\t\f "name"\n\t\f ;': 
+                u'@import url(u) tv "name";',
+            u'@import\n\t\f url(\n\t\f "u"\n\t\f )\n\t\f tv\n\t\f "name"\n\t\f ;': 
+                u'@import url(u) tv "name";',
             }
         self.do_equal_r(tests) # set cssText
         tests.update({
@@ -158,6 +172,11 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@import "x.css" tv': xml.dom.SyntaxErr,
             u'@import "x;': xml.dom.SyntaxErr,
             u'''@import url("x);''': xml.dom.SyntaxErr,
+            # trailing
+            u'''@import "x";"a"''': xml.dom.SyntaxErr,
+            # trailing S or COMMENT
+            u'''@import "x";/**/''': xml.dom.SyntaxErr,
+            u'''@import "x"; ''': xml.dom.SyntaxErr,
             })
         self.do_raise_r(tests) # set cssText
 
