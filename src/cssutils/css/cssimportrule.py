@@ -224,9 +224,9 @@ class CSSImportRule(cssrule.CSSRule):
                 seq=newseq, tokenizer=tokenizer,
                 productions={'STRING': _string,
                              'URI': _uri,
-                             #'FUNCTION': _function,
                              'IDENT': _ident,
-                             'CHAR': _char})
+                             'CHAR': _char},
+                new=new)
 
             # wellformed set by parse
             wellformed = wellformed and new['wellformed']
@@ -241,7 +241,7 @@ class CSSImportRule(cssrule.CSSRule):
                 wellformed = False
                 self._log.error(u'CSSImportRule: No ";" found: %s' %
                     self._valuestr(cssText))
-
+            
             # set all
             if wellformed:
                 self.atkeyword = new['keyword']
