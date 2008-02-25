@@ -56,7 +56,6 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@page :right {}': u'',
             u'@page {margin:0;}': u'@page {\n    margin: 0\n    }',
 
-            u'@page:left{margin:0;}': EXP % u'left',
             u'@page :left { margin: 0 }': EXP % u'left',
             u'@page :right { margin: 0 }': EXP % u'right',
             u'@page :first { margin: 0 }': EXP % u'first',
@@ -65,8 +64,14 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@PAGE:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
             u'@\\page:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
 
-            u'@page/*1*/:left/*2*/{margin:0;}':
-                u'@page /*1*/ :left /*2*/ {\n    margin: 0\n    }',
+            # comments
+            u'@page/*1*//*2*/:left/*3*//*4*/{margin:0;}':
+                u'@page /*1*/ /*2*/ :left /*3*/ /*4*/ {\n    margin: 0\n    }',
+            # WS
+            u'@page:left{margin:0;}':
+                u'@page :left {\n    margin: 0\n    }',
+            u'@page\n\r\f\t :left\n\r\f\t {margin:0;}':
+                u'@page :left {\n    margin: 0\n    }',
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
@@ -84,6 +89,10 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_raise_p(tests) # parse
         tests.update({
             u'@page :left {': xml.dom.SyntaxErr, # no }
+            # trailing
+            u'@page :left {}1': xml.dom.SyntaxErr, # no }
+            u'@page :left {}/**/': xml.dom.SyntaxErr, # no }
+            u'@page :left {} ': xml.dom.SyntaxErr, # no }
             })
         self.do_raise_r(tests) # set cssText
 

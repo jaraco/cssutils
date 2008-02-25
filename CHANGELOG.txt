@@ -50,6 +50,10 @@ HEAD
 
     + **FEATURE**: Added ``cssutils.parseURL(url, encoding=None, ...)
 
+    + IMPROVEMENT: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
+
+        **TODO**: check selector of CSSStyleRule
+
 
 0.9.5a4 080222
     - **API CHANGE**: ``.wellformed`` replaces ``.valid`` for most classes. This is more an internal value so should be used carefully anyway. Some classes still have both, notably ``Property`` and ``CSSValue``. Also removed ``Preferences.removeInvalid`` which was deprecated for some time now and made not really sense anyway.

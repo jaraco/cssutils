@@ -65,6 +65,9 @@ class PropertyTestCase(basetest.BaseTestCase):
                    u'''Property: No property name found: u''.'''),
             u':': (xml.dom.SyntaxErr,
                    u'''Property: No property name found: u':'. [1:1: :]'''),
+            # TODO: check
+            u'/**/a': (xml.dom.SyntaxErr,
+                   u'''Property: No ":" after name found: u'/**/a' [1:5: a]'''),
             u'a': (xml.dom.SyntaxErr,
                    u'''Property: No ":" after name found: u'a' [1:1: a]'''),
             u'a !': (xml.dom.SyntaxErr,
@@ -79,6 +82,8 @@ class PropertyTestCase(basetest.BaseTestCase):
                    u'''Property: Unexpected ident. [1:6: importantX]'''),
             u'a:!important': (xml.dom.SyntaxErr,
                    u'''CSSValue: Unknown syntax or no value: u''.'''),
+            u'a: 1;': (xml.dom.SyntaxErr,
+                   u'''CSSValue: Unexpected char. [1:5: ;]'''),
             }
         for test in tests:
             ecp, msg = tests[test]

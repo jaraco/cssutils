@@ -28,34 +28,18 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         # until any properties
         self.assertEqual(u'', r.cssText)
 
-    def test_InvalidModificationErr(self):
-        "CSSFontFaceRule.cssText InvalidModificationErr"
-        self._test_InvalidModificationErr(u'@font-face')
-        tests = {
-            u'@font-fac {}': xml.dom.InvalidModificationErr,
-            }
-        self.do_raise_r(tests)
-
-    def test_incomplete(self):
-        "CSSFontFaceRule (incomplete)"
-        tests = {
-            u'@font-face{':
-                u'', # no } and no content
-            u'@font-face { ':
-                u'', # no } and no content
-            u'@font-face { color: red':
-                u'@font-face {\n    color: red\n    }', # no }
-        }
-        self.do_equal_p(tests) # parse
-
     def test_cssText(self):
         "CSSFontFaceRule.cssText"
         tests = {
-            u'@font-face {margin:0;}': u'@font-face {\n    margin: 0\n    }',
             u'@font-face{margin:0;}': u'@font-face {\n    margin: 0\n    }',
+            u'@font-face  {  margin:0;  }': u'@font-face {\n    margin: 0\n    }',
             u'@f\\ont\\-face{margin:0;}': u'@font-face {\n    margin: 0\n    }',
+            # comments
             u'@font-face/*1*//*2*/{margin:0;}':
                 u'@font-face /*1*/ /*2*/ {\n    margin: 0\n    }',
+            # WS
+            u'@font-face\n\t\f {\n\t\f margin:0;\n\t\f }': 
+                u'@font-face {\n    margin: 0\n    }',
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
@@ -67,6 +51,10 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_raise_p(tests) # parse
         tests.update({
             u'@font-face {': xml.dom.SyntaxErr, # no }
+            # trailing
+            u'@font-face {}1': xml.dom.SyntaxErr, 
+            u'@font-face {}/**/': xml.dom.SyntaxErr, 
+            u'@font-face {} ': xml.dom.SyntaxErr, 
             })
         self.do_raise_r(tests) # set cssText
 
@@ -87,6 +75,26 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     src: url(x)
     }'''
         self.assertEqual(exp, r.cssText)
+
+    def test_incomplete(self):
+        "CSSFontFaceRule (incomplete)"
+        tests = {
+            u'@font-face{':
+                u'', # no } and no content
+            u'@font-face { ':
+                u'', # no } and no content
+            u'@font-face { color: red':
+                u'@font-face {\n    color: red\n    }', # no }
+        }
+        self.do_equal_p(tests) # parse
+
+    def test_InvalidModificationErr(self):
+        "CSSFontFaceRule.cssText InvalidModificationErr"
+        self._test_InvalidModificationErr(u'@font-face')
+        tests = {
+            u'@font-fac {}': xml.dom.InvalidModificationErr,
+            }
+        self.do_raise_r(tests)
 
     def test_reprANDstr(self):
         "CSSFontFaceRule.__repr__(), .__str__()"

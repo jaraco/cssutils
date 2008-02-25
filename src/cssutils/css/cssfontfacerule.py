@@ -119,6 +119,12 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self._log.error(
                     u'CSSFontFaceRule: No "}" after style declaration found: %r' %
                     self._valuestr(cssText))
+                
+            nonetoken = self._nexttoken(tokenizer)
+            if nonetoken:
+                wellformed = False
+                self._log.error(u'CSSFontFaceRule: Trailing content found.',
+                                token=nonetoken)
 
             newstyle = CSSStyleDeclaration()
             if 'EOF' == typ:

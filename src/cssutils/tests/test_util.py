@@ -9,7 +9,13 @@ __version__ = '$LastChangedRevision: 56 $'
 import sys
 import xml.dom
 import basetest
-from cssutils.util import Base, ListSeq
+try:
+    from minimock import mock, restore
+except ImportError:
+    mock = None 
+    print "install minimock with ``easy_install minimock``"
+    
+from cssutils.util import Base, ListSeq, _readURL
 
 class ListSeqTestCase(basetest.BaseTestCase):
     
@@ -117,7 +123,44 @@ class BaseTestCase(basetest.BaseTestCase):
 
             res = u''.join([t[1] for t in restokens])
             self.assertEqual(exp, res)
+        
+class _readURL_TestCase(basetest.BaseTestCase):
+    """needs minimock install with easy_install minimock""" 
 
+    def test_readURL(self):
+        """util._readURL()"""
+        if mock:
+            
+            class Response(object):
+                """urllib2.Reponse mock"""
+                def __init__(self, url, text, textencoding):
+                    self.url = url
+                    self.text = text.encode(textencoding)
+                    
+                def geturl(self):
+                    return self.url
+                
+                def read(self):
+                    return self.text
+                        
+            def urlopen(url, text, textencoding):
+                # return an mock which returns parameterized Response
+                def x(*ignored):
+                    return Response(url, text, textencoding)
+                return x
+                
+            import urllib2
+            
+            tests = [
+                ('1', 'utf-8', u'/*äöü*/', 'utf-8', u'/*äöü*/'),
+                ('2', 'utf-8', u'/*äöü*/', None, u'/*äöü*/')
+            ]
+            for url, text, textencoding, encoding, exp in tests:    
+                mock("urllib2.urlopen", 
+                     mock_obj=urlopen(url, text, textencoding))           
+                self.assertEqual(exp, 
+                                 _readURL(url, encoding))
+        
 
 if __name__ == '__main__':
     import unittest

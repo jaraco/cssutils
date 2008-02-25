@@ -199,7 +199,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 productions={'IDENT': _ident,
                              'STRING': _string,
                              'URI': _uri,
-                             'CHAR': _char})
+                             'CHAR': _char},
+                new=new)
 
             # wellformed set by parse
             wellformed = wellformed and new['wellformed']

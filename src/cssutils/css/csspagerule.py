@@ -112,10 +112,21 @@ class CSSPageRule(cssrule.CSSRule):
                     u'CSSPageRule selectorText: Unexpected CHAR: %r' % val, token)
                 return expected
 
+        def S(expected, seq, token, tokenizer=None):
+            "Does not raise if EOF is found."
+            return expected
+
+        def COMMENT(expected, seq, token, tokenizer=None):
+            "Does not raise if EOF is found."
+            seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
+            return expected 
+
         newseq = self._tempSeq()
         wellformed, expected = self._parse(expected=':',
             seq=newseq, tokenizer=self._tokenize2(selectorText),
-            productions={'CHAR': _char}, 
+            productions={'CHAR': _char,
+                         'COMMENT': COMMENT, 
+                         'S': S}, 
             new=new)
         wellformed = wellformed and new['wellformed']
         newselector = new['selector']
@@ -169,12 +180,17 @@ class CSSPageRule(cssrule.CSSRule):
             styletokens, braceorEOFtoken = self._tokensupto2(tokenizer, 
                                                         blockendonly=True,
                                                         separateEnd=True)
-            
+            nonetoken = self._nexttoken(tokenizer)
             if self._tokenvalue(startbrace) != u'{':
                 wellformed = False
                 self._log.error(
                     u'CSSPageRule: No start { of style declaration found: %r' %
                     self._valuestr(cssText), startbrace)
+            elif nonetoken:
+                wellformed = False
+                self._log.error(
+                    u'CSSPageRule: Trailing content found.', token=nonetoken)
+                
                 
             newselector, newselectorseq = self.__parseSelectorText(selectortokens)
 

@@ -27,21 +27,6 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
                          type(self.r.style))
         self.assertEqual(self.r, self.r.style.parentRule)
 
-# TODO:   def test_InvalidModificationErr(self):
-#        "CSSStyleRule.cssText InvalidModificationErr"
-#        self._test_InvalidModificationErr(u'@a a {}')
-
-    def test_incomplete(self):
-        "CSSStyleRule (incomplete)"
-        cssutils.ser.prefs.keepEmptyRules = True
-        tests = {
-            u'a {': u'a {}', # no }
-            u'a { font-family: "arial sans': # no "
-                u'a {\n    font-family: "arial sans"\n    }',
-        }
-        self.do_equal_p(tests) # parse
-        cssutils.ser.prefs.useDefaults()
-
     def test_cssText(self):
         "CSSStyleRule.cssText"
         tests = {
@@ -67,7 +52,14 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'c1 {/*1*/a:1;}': u'c1 {\n    /*1*/\n    a: 1\n    }',
             u'c2 {a:1;/*2*/}': u'c2 {\n    a: 1;\n    /*2*/\n    }',
             u'd1 {/*0*/}': u'd1 {\n    /*0*/\n    }',
-            u'd2 {/*0*//*1*/}': u'd2 {\n    /*0*/\n    /*1*/\n    }'
+            u'd2 {/*0*//*1*/}': u'd2 {\n    /*0*/\n    /*1*/\n    }',
+            # comments
+            # TODO: spaces?
+            u'''a/*1*//*2*/,/*3*//*4*/b/*5*//*6*/{color: #000}''': 
+                u'a/*1*//*2*/, /*3*//*4*/b/*5*//*6*/ {\n    color: #000\n    }',
+                
+            u'''a,b{color: #000}''': 'a, b {\n    color: #000\n    }', # issue 4
+            u'''a\n\r\t\f ,\n\r\t\f b\n\r\t\f {color: #000}''': 'a, b {\n    color: #000\n    }', # issue 4
             }
         self.do_equal_p(tests) # parse
         self.do_equal_r(tests) # set cssText
@@ -79,9 +71,12 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             }
         self.do_raise_p(tests) # parse
         tests.update({
-            u'''a {}x''': xml.dom.SyntaxErr, # trailing
             u'''/*x*/''': xml.dom.SyntaxErr,
-            u'''a {''': xml.dom.SyntaxErr, 
+            u'''a {''': xml.dom.SyntaxErr,
+            # trailing
+            u'''a {}x''': xml.dom.SyntaxErr, 
+            u'''a {/**/''': xml.dom.SyntaxErr, 
+            u'''a {} ''': xml.dom.SyntaxErr, 
             })
         self.do_raise_r(tests) # set cssText
         cssutils.ser.prefs.useDefaults()
@@ -122,6 +117,21 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # check if parentRule of d is set -> SHOULD NOT!
         self.assertEqual(None, d.parentRule)
+
+    def test_incomplete(self):
+        "CSSStyleRule (incomplete)"
+        cssutils.ser.prefs.keepEmptyRules = True
+        tests = {
+            u'a {': u'a {}', # no }
+            u'a { font-family: "arial sans': # no "
+                u'a {\n    font-family: "arial sans"\n    }',
+        }
+        self.do_equal_p(tests) # parse
+        cssutils.ser.prefs.useDefaults()
+
+# TODO:   def test_InvalidModificationErr(self):
+#        "CSSStyleRule.cssText InvalidModificationErr"
+#        self._test_InvalidModificationErr(u'@a a {}')
 
     def test_reprANDstr(self):
         "CSSStyleRule.__repr__(), .__str__()"

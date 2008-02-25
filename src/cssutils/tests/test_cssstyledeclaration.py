@@ -150,11 +150,19 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             u'left: 0 !important ': u'left: 0 !important',
             u'left:0!important': u'left: 0 !important',
             u'left: 0; top: 1': u'left: 0;\ntop: 1',
+            # comments
+            # TODO: spaces?
+            u'/*1*//*2*/left/*3*//*4*/:/*5*//*6*/0/*7*//*8*/!/*9*//*a*/important/*b*//*c*/;': 
+                u'/*1*/\n/*2*/\nleft/*3*//*4*/: /*5*//*6*/0/*7*//*8*/ !/*9*//*a*/important/*b*//*c*/',
             u'/*1*/left: 0;/*2*/ top: 1/*3*/':
                 u'/*1*/\nleft: 0;\n/*2*/\ntop: 1/*3*/',
             u'left:0; top:1;': u'left: 0;\ntop: 1',
             u'/*1*/left: 0;/*2*/ top: 1;/*3*/':
                 u'/*1*/\nleft: 0;\n/*2*/\ntop: 1;\n/*3*/',
+            # WS
+            u'left:0!important;margin:1px 2px 3px 4px!important;': u'left: 0 !important;\nmargin: 1px 2px 3px 4px !important',
+            u'\n\r\f\t left\n\r\f\t :\n\r\f\t 0\n\r\f\t !\n\r\f\t important\n\r\f\t ;\n\r\f\t margin\n\r\f\t :\n\r\f\t 1px\n\r\f\t 2px\n\r\f\t 3px\n\r\f\t 4px;': 
+            u'left: 0 !important;\nmargin: 1px 2px 3px 4px',
             }
         for test, exp in tests.items():
             s.cssText = test
