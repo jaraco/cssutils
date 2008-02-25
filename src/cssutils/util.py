@@ -12,7 +12,7 @@ import re
 import types
 import urllib2
 import xml.dom
-import encutils
+# import encutils
 import cssutils
 from tokenize2 import Tokenizer
 
@@ -362,7 +362,6 @@ class Base(object):
                 else:
                     wellformed = False
                     self._log.error(u'Unexpected token (%s, %s, %s, %s)' % token)
-                    
         return wellformed, expected
 
 
@@ -408,18 +407,23 @@ class Base2(Base):
                 return expected
             else:
                 new['wellformed'] = False
-                self._log.error(u'Expected EOF.',
-                    token=token)
+                self._log.error(u'Expected EOF.', token=token)
                 return expected
 
         def COMMENT(expected, seq, token, tokenizer=None):
-            "default implementation for COMMENT token adds CSSCommentRule"
+            "default impl, adds CSSCommentRule if not token == EOF"
+            if expected == 'EOF':
+                new['wellformed'] = False
+                self._log.error(u'Expected EOF but found comment.', token=token)
             seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
             return expected 
 
         def S(expected, seq, token, tokenizer=None):
-            "default implementation for S token, does nothing"
-            return expected 
+            "default impl, does nothing if not token == EOF"
+            if expected == 'EOF':
+                new['wellformed'] = False
+                self._log.error(u'Expected EOF but found whitespace.', token=token)
+            return expected
 
         def EOF(expected=None, seq=None, token=None, tokenizer=None):
             "default implementation for EOF token"
@@ -730,7 +734,7 @@ class _SimpleNamespaces(_Namespaces):
 
 def _readURL(url, encoding=None):
     """Retrieve text from url using explicit or detected encoding via encutils
-    """
+    """      
     req = urllib2.Request(url)
     try:
         res = urllib2.urlopen(req)
@@ -746,12 +750,13 @@ def _readURL(url, encoding=None):
         url = res.geturl()
         if res:
             if not encoding:
+                import encutils
                 media_type, encoding = encutils.getHTTPInfo(res)
                 if media_type != u'text/css':
                     self._log.warn(u'Error opening url=%r: Media type %e != "text/css"' % 
                                    (url, media_type))                    
             try:
-                return codecs.getreader('css')(res, encoding=encoding).read()
+                return codecs.getreader(encoding)(res).read()
             except UnicodeDecodeError, e:
                 cssutils.log.warn(u'Error reading url=%r: %r' % (url, e))
             except Exception, e:
