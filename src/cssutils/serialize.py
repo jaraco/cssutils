@@ -129,7 +129,7 @@ class Preferences(object):
         """
         sets options to achive a minified stylesheet
         
-        you may want to set preferences with this convinience method
+        you may want to set preferences with this convenience method
         and set settings you want adjusted afterwards
         """
         self.importHrefFormat = 'string'
