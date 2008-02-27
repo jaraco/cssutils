@@ -62,7 +62,7 @@ HEAD
 
     - API CHANGE: Removed constructor parameter ``css.CSSImportRule(hreftype=...)`` which made no sense really. The type of href is still retained if ``css.CSSImportRule.cssText`` is set (e.g. for ``@import "a-str";`` it is "string" and for ``@import url(an-uri);`` it is "uri". How it is serialized is defined in the serializer anyway (``cssutils.ser.prefs.importHrefFormat`` "string", "uri" or None which then uses the one in each @import rule or defaults to "uri") so it made no sense to have it hear too. It still may be used but generally should not.
 
-    + **FEATURE**: Defining a namespace with a prefix but an empty namespaceURI is not allowed in XML 1.0 (but in XML 1.1). It is allowed in CSS and therefor also in cssutils.
+    + **FEATURE**: Defining a namespace with a prefix but an empty namespaceURI is not allowed in XML 1.0 (but in XML 1.1). It is allowed in CSS and therefore also in cssutils.
 
       **ATTENTION**: CSS differs from XML 1.0 here!
 
