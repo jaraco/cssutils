@@ -559,7 +559,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                                      replacer(v.getStringValue()))
 
         def styleDeclarations(base):
-            "recurive function to find all CSSStyleDeclarations"
+            "recursive function to find all CSSStyleDeclarations"
             styles = []
             if hasattr(base, 'cssRules'):
                 for rule in base.cssRules:
