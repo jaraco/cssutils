@@ -101,7 +101,7 @@ HEAD
 
 0.9.5a3 080203
     - **API CHANGE: Refactored and fixed namespace handling**
-        Aim was to prevent building invalid style sheets. Therefor namespaces must be checked e.g. when adding a new ``Selector`` etc. This probably is not fixed for all cases but much better now than before.
+        Aim was to prevent building invalid style sheets. Therefore namespaces must be checked e.g. when adding a new ``Selector`` etc. This probably is not fixed for all cases but much better now than before.
 
         - added ``CSSStyleSheet.namespaces`` which is a mapping of ``prefix: namespaceURI`` and mirrors all namespaces as defined in @namespace rules. New Namespaces may also be set here as well as prefixes changed.
         - if more than one ``CSSNamespaceRule`` with the same ``namespaceURI`` is set only the last one will be kept. The ``prefix`` of that rule is used.
@@ -149,7 +149,7 @@ HEAD
     + BUGFIX: ``CSSStyleDeclaration.getProperties(all=True)`` failed if comments were present
 
 0.9.5a1 080113
-    + **API CHANGE**: ``Property.name`` is now the same as ``Property.normalname`` which is DEPRECATED now. To access the literal name (the value which was available in ``name`` until now) use ``Property.literalname``. For most cases where a property name is used the new behaviour makes more sense, therefor the change.
+    + **API CHANGE**: ``Property.name`` is now the same as ``Property.normalname`` which is DEPRECATED now. To access the literal name (the value which was available in ``name`` until now) use ``Property.literalname``. For most cases where a property name is used the new behaviour makes more sense, therefore the change.
 
         **Do not use ``normalname`` anymore, it will probably be removed for release 1.0.**
 
@@ -172,7 +172,7 @@ HEAD
 
     - **FEATURE**: ``css.Selector`` has a **readonly** property ``specificity`` now which is calculated as described at http://www.w3.org/TR/css3-selectors/#specificity
 
-      **ATTENTION**: changing the Selector by changing its property ``seq`` does **not** update the specificity! ``Selector.seq.append`` has been made private therefor and writing to ``seq`` **not** be used at all!
+      **ATTENTION**: changing the Selector by changing its property ``seq`` does **not** update the specificity! ``Selector.seq.append`` has been made private therefore and writing to ``seq`` **not** be used at all!
 
     - **FEATURE**: Added ``css.CSSStyleDeclaration.getProperty(name, normalize=True)`` which returns the effective Property object for ``name``.
 
@@ -497,7 +497,7 @@ HEAD
             background: url(1.gif) fixed;
             background: url(2.gif) scroll;
 
-        Certain UAs may not know fixed and will therefor ignore property 1 but
+        Certain UAs may not know fixed and will therefore ignore property 1 but
         an application might simply like to prettyprint the stylesheet without
         loosing any information.
 
@@ -782,7 +782,7 @@ HEAD
     NEW API **INCOMPATIBLE API CHANGES**
         * new package cssutils.css which contains CSS interface implementations (css.CSSStyleSheet, css.CSSRuleList etc)
         * new package cssutils.stylesheets which contains Stylesheets interface implementations are in (stylesheets.StyleSheet, stylesheets.MediaList etc)
-        * module cssutils.cssbuilder has therefor been removed and is replaced by packages cssutils.css and cssutils.stylesheets.
+        * module cssutils.cssbuilder has therefore been removed and is replaced by packages cssutils.css and cssutils.stylesheets.
           (You may like to define your own cssbuilder module which imports all new classes with their old name if you do not want to change all your code at this time. Usage of the new names is recommended however and there are more subtle changes.)
         * CSS interfaces use W3 DOM names normally starting with CSS... now (e.g. CSSStyleSheet)
         * CSSStyleSheet now uses superclass stylesheets.StyleSheet
