@@ -13,7 +13,7 @@ try:
     from minimock import mock, restore
 except ImportError:
     mock = None 
-    print "install minimock with ``easy_install minimock``"
+    print "install minimock with ``easy_install minimock`` to run all tests"
     
 from cssutils.util import Base, ListSeq, _readURL
 
