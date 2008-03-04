@@ -19,7 +19,7 @@ class CSSParser(object):
 
         parser = CSSParser()
         sheet = p.parse('test1.css', 'ascii')
-    
+
         print sheet.cssText
     """
     def __init__(self, log=None, loglevel=None, raiseExceptions=False):
@@ -39,12 +39,16 @@ class CSSParser(object):
         cssutils.log.raiseExceptions = raiseExceptions
         self.__tokenizer = cssutils.tokenize2.Tokenizer()
 
-    def parseString(self, cssText, href=None, media=None, title=None,
-                    baseURL=None):
+    def parseString(self, cssText, encoding=None, href=None, media=None, 
+                    title=None, baseURL=None):
         """Return parsed CSSStyleSheet from given string cssText.
 
         cssText
             CSS string to parse
+        encoding
+            encoding of the CSS string. if ``None`` the encoding will be read
+            from a @charset rule. If there is none, the parser will fall back
+            to UTF-8. If cssText is a unicode string encoding will be ignored.
         href
             The href attribute to assign to the parsed style sheet
         media
@@ -55,6 +59,11 @@ class CSSParser(object):
         baseURL
             Used to resolve other urls in the parsed sheet like @import hrefs
         """
+        if isinstance(cssText, str): 
+            # cssutils always needs unicode strings
+            if not encoding:
+                encoding = 'css'
+            cssText = cssText.decode(encoding)
         sheet = cssutils.css.CSSStyleSheet()
         # does close open constructs and adds EOF
         sheet._href = href
@@ -72,15 +81,15 @@ class CSSParser(object):
             of the CSS file to parse
         encoding
             of the CSS file, defaults to 'css' codec encoding
-            
+
         for other parameters see ``parseString``
         """
         if not encoding:
             encoding = 'css'
-        return self.parseString(codecs.open(filename, 'r', encoding).read(),
-                                href=href, media=media, title=title, 
+        return self.parseString(open(filename, 'rb').read(), encoding=encoding,
+                                href=href, media=media, title=title,
                                 baseURL=baseURL)
-        
+
     def parseURL(self, url, encoding=None, href=None, media=None, title=None,
                  baseURL=None):
         """Retrieve and return a CSSStyleSheet from given url.
@@ -92,8 +101,6 @@ class CSSParser(object):
 
         for other parameters see ``parseString``
         """
-        return self.parseString(cssutils.util._readURL(url, encoding), 
-                                href=href, media=media, 
+        return self.parseString(cssutils.util._readURL(url, encoding),
+                                href=href, media=media,
                                 title=title, baseURL=baseURL)
-
-    
