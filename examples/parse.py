@@ -3,7 +3,7 @@ import cssutils
 import xml.dom
 
 EXPOUT = u'''\n--- source CSS ---\n/* This is a comment */\n    body {\n        background: white;\n        top: red;\n        x: 1;\n        }\n    a { y }\n            \n\n--- simple parsing ---\n/* This is a comment */\nbody {\n    background: white;\n    top: red;\n    x: 1\n    }\n\n--- CSSParser(raiseExceptions=True) ---\n:::RAISED::: Property: No ":" after name found: u\'y \' [7:10:  ]\n'''
-EXPERR = u'''CSSValue: Invalid value for CSS2 property \'top\': u\'red\'\nProperty: No CSS2 Property: \'x\'. [5:9: x]\nProperty: No ":" after name found: u\'y \' [7:10:  ]\nProperty: No property value found: u\'y \'. [7:10:  ]\nCSSStyleDeclaration: Syntax Error in Property: y \nCSSValue: Invalid value for CSS2 property \'top\': u\'red\'\nProperty: No CSS2 Property: \'x\'. [5:9: x]\n'''   
+EXPERR = u'''CSSValue: Invalid value for CSS2 property u\'top\': u\'red\'\nProperty: No CSS2 Property: u\'x\'. [5:9: x]\nProperty: No ":" after name found: u\'y \' [7:10:  ]\nProperty: No property value found: u\'y \'. [7:10:  ]\nCSSStyleDeclaration: Syntax Error in Property: y \nCSSValue: Invalid value for CSS2 property u\'top\': u\'red\'\nProperty: No CSS2 Property: u\'x\'. [5:9: x]\n'''   
 
 def main():
     
