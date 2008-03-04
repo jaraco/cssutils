@@ -34,11 +34,11 @@ MACROS = {
     # seems an error in CSS 3 but is allowed in CSS 2.1
     'stringesc1' : r"\\'",
     'stringesc2' : r'\\"',
-    
+
     'stringchar':  r'{urlchar}| |\\{nl}',
 
     # urlchar  ::= [#x9#x21#x23-#x26#x27-#x7E] | nonascii | escape
-    # 0x27 is "'" which should not be in here...
+    # 0x27 is "'" which should not be in here..., should ) be in here???
     'urlchar':  r'[\x09\x21\x23-\x26\x28-\x7E]|{nonascii}|{escape}',
 
     # from CSS2.1
