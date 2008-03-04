@@ -31,7 +31,7 @@ class StyleSheet(cssutils.util.Base):
                  disabled=None,
                  ownerNode=None,
                  parentStyleSheet=None,
-                 baseURL=None):
+                 base=None):
         """
         type: readonly
             This specifies the style sheet language for this
@@ -84,7 +84,7 @@ class StyleSheet(cssutils.util.Base):
             language does not support inclusion, the value of this
             attribute is None.
             
-        baseURL
+        base
             used to resolve e.g. href
         """
         super(StyleSheet, self).__init__()
@@ -97,11 +97,11 @@ class StyleSheet(cssutils.util.Base):
         self.disabled = bool(disabled)
         self.media = media
         self.title = title
-        self.baseURL = baseURL
+        self.base = base
     
     def _getURL(self):
-        """Return full URL using baseURL and href"""
-        return urlparse.urljoin(self.baseURL, self.href)
+        """Return full URL using base and href"""
+        return urlparse.urljoin(self.base, self.href)
      
     href = property(lambda self: self._href)
 

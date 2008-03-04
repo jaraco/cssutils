@@ -40,7 +40,7 @@ class CSSParser(object):
         self.__tokenizer = cssutils.tokenize2.Tokenizer()
 
     def parseString(self, cssText, encoding=None, href=None, media=None, 
-                    title=None, baseURL=None):
+                    title=None, base=None):
         """Return parsed CSSStyleSheet from given string cssText.
 
         cssText
@@ -56,7 +56,7 @@ class CSSParser(object):
             (may be a MediaList, list or a string)
         title
             The title attribute to assign to the parsed style sheet
-        baseURL
+        base
             Used to resolve other urls in the parsed sheet like @import hrefs
         """
         if isinstance(cssText, str): 
@@ -69,12 +69,12 @@ class CSSParser(object):
         sheet._href = href
         sheet.media = cssutils.stylesheets.MediaList(media)
         sheet.title = title
-        sheet.baseURL = baseURL
+        sheet.base = base
         sheet.cssText = self.__tokenizer.tokenize(cssText, fullsheet=True)
         return sheet
 
     def parse(self, filename, encoding=None, href=None, media=None, title=None,
-              baseURL=None):
+              base=None):
         """Retrieve and return a CSSStyleSheet from given filename.
 
         filename
@@ -88,10 +88,10 @@ class CSSParser(object):
             encoding = 'css'
         return self.parseString(open(filename, 'rb').read(), encoding=encoding,
                                 href=href, media=media, title=title,
-                                baseURL=baseURL)
+                                base=base)
 
     def parseURL(self, url, encoding=None, href=None, media=None, title=None,
-                 baseURL=None):
+                 base=None):
         """Retrieve and return a CSSStyleSheet from given url.
 
         url
@@ -103,4 +103,4 @@ class CSSParser(object):
         """
         return self.parseString(cssutils.util._readURL(url, encoding),
                                 href=href, media=media,
-                                title=title, baseURL=baseURL)
+                                title=title, base=base)
