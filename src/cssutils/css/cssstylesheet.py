@@ -57,13 +57,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
     def __init__(self, href=None, media=None, title=u'', disabled=None,
                  ownerNode=None, parentStyleSheet=None, readonly=False,
-				 ownerRule=None, baseURL=None):
+				 ownerRule=None, base=None):
         """
         init parameters are the same as for stylesheets.StyleSheet
         """
         super(CSSStyleSheet, self).__init__(
                 self.type, href, media, title, disabled,
-                ownerNode, parentStyleSheet, baseURL=baseURL)
+                ownerNode, parentStyleSheet, base=base)
 
         self._ownerRule = ownerRule
         self.cssRules = cssutils.css.CSSRuleList()
@@ -600,8 +600,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self.__class__.__name__, self.href, self.title)
 
     def __str__(self):
-        return "<cssutils.css.%s object encoding=%r baseURL=%r href=%r "\
+        return "<cssutils.css.%s object encoding=%r base=%r href=%r "\
                "namespaces=%r title=%r at 0x%x>" % (
-                self.__class__.__name__, self.encoding, self.baseURL, self.href, 
+                self.__class__.__name__, self.encoding, self.base, self.href, 
                 self.namespaces.namespaces, self.title, id(self))
     

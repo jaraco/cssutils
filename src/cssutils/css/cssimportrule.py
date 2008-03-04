@@ -300,17 +300,17 @@ class CSSImportRule(cssrule.CSSRule):
                     doc=u"An optional name for the imported sheet")
 
     def __setStyleSheet(self):
-        """Read new CSSStyleSheet cssText from href using parentStyleSheet.baseURL
+        """Read new CSSStyleSheet cssText from href using parentStyleSheet.base
         
         indirectly called if setting ``href``
         """
         # should simply fail so all errors are catched!
         if self.parentStyleSheet and self.href:
-            url = urlparse.urljoin(self.parentStyleSheet.baseURL, self.href)
+            url = urlparse.urljoin(self.parentStyleSheet.base, self.href)
             try:
                 sheet = cssutils.css.CSSStyleSheet(href=self.href,
                                                    ownerRule=self,
-                                                   baseURL=self.parentStyleSheet.baseURL,
+                                                   base=self.parentStyleSheet.base,
                                                    title=self.name
                                                    )
                 sheet.cssText = cssutils.util._readURL(url)
