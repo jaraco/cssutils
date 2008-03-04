@@ -143,7 +143,7 @@ if 1:
 
 if 0:
     sheet = cssutils.parseString(css, title="example", href='example.css',
-                                 baseURL='file:///I:/dev-workspace/cssutils/src/')
+                                 base='file:///I:/dev-workspace/cssutils/src/')
     print sheet
     print
     print sheet.cssText
