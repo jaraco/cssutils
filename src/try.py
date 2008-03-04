@@ -24,9 +24,21 @@ def escapecss(e):
                      .upper() for x in s]), e.end
 codecs.register_error('escapecss', escapecss)
 
-if 0:
+
+if 1:
+    css = "\xc3\xa4 { left: 0}"
+    css = open('sheets/csscombine-proxy.css', mode="rb").read()
+    print 1, css.decode('css')
+    print 2, unicode(css, 'css')
+    
+    #sheet = cssutils.parse('src/t.css', encoding=None)
+    #print sheet
+    #print type(sheet.cssText)
+    sys.exit()
+
+if 1:
     css = ur'''
-    url()
+    fake(url())
     URL()
     uR\l()
 
@@ -44,44 +56,44 @@ if 0:
             import StringIO
             from minimock import mock, restore
             from cssutils.util import _readURL
-            
+
             class Response(object):
                 """urllib2.Reponse mock"""
                 def __init__(self, url, text=u'', error=None):
                     self.url = url
                     self.text = text
                     self.error = error
-                    
+
                     if error=='HTTPError':
                         # TODO
                         raise urllib2.HTTPError(StringIO.StringIO('1'),
                                                 StringIO.StringIO('2'),
-                                                StringIO.StringIO('3'),   
+                                                StringIO.StringIO('3'),
                                                 StringIO.StringIO('4'),
                                                 StringIO.StringIO('5')
                                                 )
                     if error=='ValueError':
                         raise ValueError(error)
-                
+
                 def geturl(self):
                     return self.url
-                
+
                 def info(self):
-                    
+
                     class Info(object):
                         def gettype(self):
                             return 'text/css'
                         def getparam(self, name):
                             return 'UTF-8'
-                    
+
                     return Info()
-                
+
                 def read(self):
                     if self.error:
                         raise Exception(self.error)
                     else:
                         return self.text
-                        
+
             def urlopen(url, text=None, error=None):
                 # return an mock which returns parameterized Response
                 def x(*ignored):
@@ -89,7 +101,7 @@ if 0:
                 return x
 
             import urllib2
-                            
+
             tests = [
                 ('1', 'utf-8', u'/*äöü*/', 'utf-8', u'/*äöü*/'),
                 ('2', 'utf-8', u'/*äöü*/', None, u'/*äöü*/'),
@@ -103,9 +115,9 @@ if 0:
                     mock_obj = urlopen(url, text=text.encode(textencoding))
                 else:
                     mock_obj = urlopen(url, error=textencoding)
-                
-                mock("urllib2.urlopen", mock_obj=mock_obj)           
-                
+
+                mock("urllib2.urlopen", mock_obj=mock_obj)
+
                 if isinstance(exp, basestring):
                     print url, exp == _readURL(url, encoding), exp, _readURL(url, encoding)
                 else:
@@ -113,39 +125,40 @@ if 0:
                     try:
                         _readURL(url)
                     except Exception, e:
-                        print url, e                
-            
+                        print url, e
+
             sys.exit(0)
 
 
 if 1:
-    css = '@import "../sheets/1.css" tv;'
+    css = 'a { x: url(a b)}'
     s = cssutils.parseString(css)
+    print s.cssRules[0].style.getPropertyCSSValue('x')
     print s.cssText
-    
+
     #r = cssutils.css.CSSImportRule()
     #r.cssText = css
     #print r.cssText
     sys.exit(1)
-    
+
 if 0:
     sheet = cssutils.parseString(css, title="example", href='example.css',
                                  baseURL='file:///I:/dev-workspace/cssutils/src/')
     print sheet
     print
     print sheet.cssText
-    print 
+    print
     ir = sheet.cssRules[0]
     print ir.styleSheet
     print ir.styleSheet.cssText
-    print "ownerRule:", ir.styleSheet.ownerRule 
+    print "ownerRule:", ir.styleSheet.ownerRule
     sys.exit(1)
 
 if 0:
     from cssutils.scripts import csscombine
     x = csscombine('sheets/csscombine-proxy.css', sourceencoding='css', minify=True)
     print x
-    
+
     sys.exit(0)
 
 if 0:
@@ -176,8 +189,8 @@ a[href='\a\27'] {
 if 0:
     s = cssutils.css.CSSStyleSheet()
     r = cssutils.css.CSSNamespaceRule()
-    
-    css = u'''@namespace xxxx "default"; 
+
+    css = u'''@namespace xxxx "default";
 @namespace p "example";
 @namespace n "new";
 a[n|att], |a  {color: red}
@@ -190,16 +203,16 @@ a[n|att], |a  {color: red}
     s.cssRules[2].prefix = 'p123'
     print s.cssText
     print s.namespaces
-    
+
     sys.exit(0)
-    
+
     s = cssutils.css.SelectorList()
     s.append(cssutils.css.Selector('a'))
     print s[0].parentList
     sys.exit(0)
     #r = cssutils.css.CSSNamespaceRule(namespaceURI='example', prefix='p')
     #print r.namespaceURI
-    
+
     css= u'''@charset "ascii";
     @namespace 'default';
     @namespace e 'example';
@@ -209,12 +222,12 @@ a[n|att], |a  {color: red}
     print sheet
     print 'PREFIXES', sheet.prefixes
     print 'NAMESPACES', sheet.namespaces
-    print 
+    print
     s = cssutils.css.CSSStyleRule()
     for r in sheet:
         print r
     print sheet.cssText
-       
+
     sys.exit(0)
 
 
@@ -235,7 +248,7 @@ if 0:
 
     sys.exit(0)
 
-    
+
 if 0:
     # RESOLVE INDENTATION!!!
     sheet = cssutils.parseString('''
@@ -253,7 +266,7 @@ if 0:
     print sheet.cssText
 
     sys.exit(0)
-    
+
 if 0:
     # SELECTOR
     from lxml.cssselect import CSSSelector
@@ -261,7 +274,7 @@ if 0:
 #        :not(a|x) *|* a|* * /*x*/* b>c|c+d[a]~e[a=v].a,
 #        a:not(x) p|a[p|a=a],
 #        [a="x"][a|=dash][a~=incl][a^=pref][a$=suff][a*=suff]''')
-#        
+#
 #        #*|*, *|e, |e, e, p|*, p|e   ''')
     s = cssutils.css.Selector('*|* |* * *|a |a a')
     print s.selectorText
@@ -270,40 +283,40 @@ if 0:
            {'': 'EMPTY','p': 'URI'},
            ]
     for n in ns:
-        sl = cssutils.css.SelectorList(selectorText='*|* |* * *|a |a a p|* p|a', 
+        sl = cssutils.css.SelectorList(selectorText='*|* |* * *|a |a a p|* p|a',
                                        namespaces=n)
-        print 
+        print
         for s in sl:
             print 'ns', n
             print 'Selector.seq:', repr(s.seq)
             print '\t', s.selectorText
             #print  CSSSelector(s.selectorText).path
             print
-         
+
     sys.exit(0)
 
 if 1:
     defaultsheet = cssutils.parse('sheets/default_html4.css')
-    
+
     css = '''
         a { a: green; /* only here */
-            b: red; 
-            c: green !important; /* important */ 
-            d: red !important;  
-            e: red !important;  
+            b: red;
+            c: green !important; /* important */
+            d: red !important;
+            e: red !important;
             x: red;
             x: green; /* later */
             }
-        body a { 
+        body a {
             b: green; /* specificity */
             c: red;
             d: red;
-            e: green !important; /* important */ 
+            e: green !important; /* important */
             }
         a { b: green; /* later */
             c: red;
             d: green !important; /* important */
-            e: red; 
+            e: red;
             }
     '''
     css = '''
@@ -327,23 +340,23 @@ if 1:
             <p><a href="#2">coming: <b>b</b>link</a></p>
         </body>
     </html>'''
-    
+
     from lxml import etree
     from lxml.builder import E
     from lxml.cssselect import CSSSelector
-    
+
     document = etree.HTML(html)
     e = etree.Element('pre', {'class': 'cssutils'})
     e.text = css
     document.find('body').append(e)
-    
+
     sheet = cssutils.parseString(css)
-    
+
     view = {}
-    specificities = {} # temporarily needed 
+    specificities = {} # temporarily needed
     # TODO: filter rules simpler?, add @media
     rules = (rule for rule in sheet.cssRules if rule.type == rule.STYLE_RULE)
-    
+
     for rule in rules:
         for selector in rule.selectorList:
             cssselector = CSSSelector(selector.selectorText)
@@ -354,33 +367,33 @@ if 1:
                     # add initial
                     view[element] = cssutils.css.CSSStyleDeclaration()
                     specificities[element] = {}
-                 
+
                 for p in rule.style:
                     # update styles
                     if p not in view[element]:
                         view[element].setProperty(p)
                         specificities[element][p.name] = selector.specificity
-                    else: 
-                        sameprio = (p.priority == 
+                    else:
+                        sameprio = (p.priority ==
                                     view[element].getPropertyPriority(p.name))
                         if not sameprio and bool(p.priority) or (
-                           sameprio and selector.specificity >= 
+                           sameprio and selector.specificity >=
                                         specificities[element][p.name]):
-                            # later, more specific or higher prio 
-                            view[element].setProperty(p)                    
+                            # later, more specific or higher prio
+                            view[element].setProperty(p)
     #pp(view)
-    
+
     # render somewhat (add @style and text with how it should look
     for element, style in view.items():
         v = style.getCssText(separator=u'')
         element.set('style', v)
         element.set('title', v)
 
-    
+
     f = open('c.html', 'w')
     f.write(etree.tostring(document, pretty_print=True))
     f.close()
-       
+
     sys.exit(0)
 
 
