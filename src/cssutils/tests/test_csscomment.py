@@ -27,7 +27,6 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         "CSSComment.cssText"
         tests = {
             u'/*öäüß€ÖÄÜ*/': u'/*\xf6\xe4\xfc\xdf\u20ac\xd6\xc4\xdc*/',
-
             u'/*x*/': None,
             u'/* x */': None,
             u'/*\t12\n*/': None,
