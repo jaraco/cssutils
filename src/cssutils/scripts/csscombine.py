@@ -58,7 +58,7 @@ import cssutils
 from cssutils.serialize import CSSSerializer
 
 
-def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',
+def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
                minify=True):
     """
     :returns: combined cssText
@@ -66,7 +66,7 @@ def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',
         `proxypath`:
             url or path to a CSSStyleSheet which imports other sheets which
             are then combined into one sheet
-        `sourceencoding` = 'css':
+        `sourceencoding`:
             encoding of the source sheets including the proxy sheet
 
         `targetencoding` = 'utf-8':
@@ -75,7 +75,7 @@ def csscombine(proxypath, sourceencoding='css', targetencoding='utf-8',
             defines if the combined sheet should be minified
     """
     sys.stderr.write('COMBINING %s\n' % proxypath)
-    if sourceencoding != 'css':
+    if sourceencoding is not None:
         sys.stderr.write('USING SOURCE ENCODING: %s\n' % sourceencoding)
     src = cssutils.parse(proxypath, encoding=sourceencoding)
     srcpath = os.path.dirname(proxypath)
