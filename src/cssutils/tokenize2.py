@@ -80,7 +80,6 @@ class Tokenizer(object):
         tokens = []
         while text:
             for name, matcher in self.tokenmatches:
-
                 if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
                     # after all tokens except CHAR have been tested
                     # test for incomplete comment
