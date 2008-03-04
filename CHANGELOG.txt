@@ -45,7 +45,7 @@ HEAD
 
     **Tests need ``minimock`` now!**
 
-    - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have new parameters ``title`` and ``baseURL`` (used to dereference e.g. href in @import rules).
+    - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have new parameters ``title`` and ``base`` (used to dereference e.g. href in @import rules).
 
        Also the representation of ``CSSStyleSheet`` has been improved.
 
