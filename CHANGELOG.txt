@@ -42,6 +42,9 @@ known issues
 0.9.x
 -----
 HEAD
+
+    **Tests need ``minimock`` now!**
+
     - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have new parameters ``title`` and ``baseURL`` (used to dereference e.g. href in @import rules).
 
        Also the representation of ``CSSStyleSheet`` has been improved.
@@ -49,6 +52,8 @@ HEAD
     + **FEATURE**: References style sheet in @import rule is read now if possible.
 
     + **FEATURE**: Added ``cssutils.parseURL(url, encoding=None, ...)
+
+    + FEATURE: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
 
     + IMPROVEMENT: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
