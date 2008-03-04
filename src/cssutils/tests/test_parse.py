@@ -11,6 +11,23 @@ import cssutils
 
 class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
+    def test_parseString(self):
+        tests = {
+            # for unicode encoding is ignored
+            (u'@namespace "a";', 'BOGUS'): u'@namespace "a";',  
+            ('@namespace "a";', None): u'@namespace "a";',
+            ('@namespace "a";', 'ascii'): u'@namespace "a";',
+            # automatic convertion  
+            ('@namespace "b";', 'ascii'): '@namespace "b";',
+            # result is str not unicode
+            ('@namespace "\xc3\xa4";', None): '@namespace "\xc3\xa4";',  
+            ('@namespace "\xc3\xa4";', 'utf-8'): '@namespace "\xc3\xa4";'  
+        }
+        for test in tests:
+            css, encoding = test
+            sheet = cssutils.parseString(css, encoding=encoding)
+            self.assertEqual(tests[test], sheet.cssText)
+
     def test_roundtrip(self):
         "cssutils encodings"
         css1 = ur'''@charset "utf-8";
