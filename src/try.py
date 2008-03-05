@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-__date__ = '$Date:: 2006-03-15 02:33:03 -0500$:'
+__date__ = '$Date::                          $:'
+
 
 import codecs
 from pprint import pprint as pp
