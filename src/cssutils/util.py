@@ -3,7 +3,7 @@
 __all__ = []
 __docformat__ = 'restructuredtext'
 __author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
+__date__ = '$Id$'
 __version__ = '$LastChangedRevision$'
 
 import codecs
