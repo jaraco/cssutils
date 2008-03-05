@@ -135,7 +135,7 @@ def _detectencoding_str(input, final=False):
             return "utf-32-be"
         elif candidates == CANDIDATE_CHARSET and li >= 4:
             prefix = '@charset "'
-            if input.startswith(prefix):
+            if input[:len(prefix)] == prefix:
                 pos = input.find('"', len(prefix))
                 if pos >= 0:
                     return input[len(prefix):pos]
