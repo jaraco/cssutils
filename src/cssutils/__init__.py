@@ -59,9 +59,9 @@ Usage may be::
 """
 __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '0.9.5a4 $LastChangedRevision$'
+__author__ = 'Christof Hoeke with contributions by Walter Doerwald'
+__date__ = '$LastChangedDate::                            $:'
+__version__ = '0.9.5a5 $Id$'
 
 import codec
 
