@@ -3,9 +3,7 @@
 ====================
 package ``cssutils``
 ====================
-:author: $LastChangedBy$
-:date: $LastChangedDate$
-:version: $LastChangedRevision$
+:version: $Id$
 
 .. contents::
 

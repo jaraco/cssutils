@@ -1,9 +1,9 @@
 changelog
 =========
-:Author: $LastChangedBy$
+:Author: Christof Hoeke with contributions by Walter Doerwald
 :Copyright: 2004-2008 Christof Hoeke
-:Date: $LastChangedDate$
-:Version: (rev $LastChangedRevision$)
+:Date: $LastChangedDate::                            $:
+:Version: $Id$
 
 .. contents::
 

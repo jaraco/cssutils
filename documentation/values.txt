@@ -3,9 +3,7 @@
 ==========
 CSS Values
 ==========
-:author: $LastChangedBy$
-:date: $LastChangedDate$
-:version: $LastChangedRevision$
+:version: $Id$
 
 .. contents::
 

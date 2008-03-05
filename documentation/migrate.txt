@@ -3,9 +3,7 @@
 =================
 version migration
 =================
-:author: $LastChangedBy$
-:date: $LastChangedDate$
-:version: $LastChangedRevision$
+:version: $Id$
 
 .. contents::
 
