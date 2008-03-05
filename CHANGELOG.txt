@@ -44,7 +44,7 @@ HEAD
 
        Also the representation of ``CSSStyleSheet`` has been improved.
 
-    + **FEATURE**: References style sheet in @import rule is read and parsed now if possible.
+    + **FEATURE**: Referenced stylesheet in an @import rule is read and parsed now if possible. Therefor a ``baseURL`` may be given to the stylesheet which contains the @import rule or directly to the ``parse*`` functions.
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
