@@ -55,7 +55,7 @@ HEAD
 
     + FEATURE: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used which also includes simple but sufficient date information.
 
     + IMPROVEMENT: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
