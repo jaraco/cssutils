@@ -1,9 +1,5 @@
-"""
-base class for all tests
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Base class for all tests"""
+__version__ = '$Id$'
 
 import logging
 import unittest

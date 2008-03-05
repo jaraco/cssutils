@@ -52,11 +52,14 @@ issues
 - maybe add a config file which is used?
 
 """
+__all__ = ['csscombine']
+__docformat__ = 'restructuredtext'
+__version__ = '$Id$'
+
 import os
 import sys
 import cssutils
 from cssutils.serialize import CSSSerializer
-
 
 def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
                minify=True):

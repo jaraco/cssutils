@@ -16,9 +16,7 @@ log
 """
 __all__ = ['ErrorHandler']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import logging
 import xml.dom

@@ -8,9 +8,7 @@ http://www.w3.org/TR/css3-syntax/#grammar0
 """
 __all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-09-01 15:55:42 +0200 (Sa, 01 Sep 2007) $'
-__version__ = '$LastChangedRevision: 300 $'
+__version__ = '$Id$'
 
 # option case-insensitive
 MACROS = {

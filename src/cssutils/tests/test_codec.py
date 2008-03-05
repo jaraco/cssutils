@@ -1,9 +1,5 @@
-"""
-testcases for cssutils.codec
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcases for cssutils.codec"""
+__version__ = '$Id$'
 
 import unittest
 

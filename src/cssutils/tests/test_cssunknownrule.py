@@ -1,7 +1,5 @@
 """testcases for cssutils.css.CSSUnkownRule"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import xml.dom
 import test_cssrule

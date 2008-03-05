@@ -1,9 +1,5 @@
-"""
-testcases for cssutils.css.DOMImplementation
-"""
-__author__ = '$LastChangedBy: doerwalter $'
-__date__ = '$LastChangedDate: 2007-08-02 22:58:23 +0200 (Do, 02 Aug 2007) $'
-__version__ = '$LastChangedRevision: 160 $'
+"""Testcases for cssutils.css.DOMImplementation"""
+__version__ = '$Id$'
 
 import xml.dom
 import unittest

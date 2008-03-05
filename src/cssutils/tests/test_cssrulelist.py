@@ -1,9 +1,5 @@
-"""
-testcases for cssutils.css.CSSRuleList
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcases for cssutils.css.CSSRuleList"""
+__version__ = '$Id$'
 
 import basetest
 import cssutils

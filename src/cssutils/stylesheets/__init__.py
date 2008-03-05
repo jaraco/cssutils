@@ -10,9 +10,7 @@ currently implemented:
 """
 __all__ = ['MediaList', 'MediaQuery', 'StyleSheet', 'StyleSheetList']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 from medialist import *
 from mediaquery import *

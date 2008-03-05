@@ -6,9 +6,7 @@ what should happen here?
         does not validate but works in IE>5 and FF, does it???
 
 """
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import xml.dom
 import basetest

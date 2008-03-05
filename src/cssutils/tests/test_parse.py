@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-"""tests for parsing which does not raise Exceptions normally
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Tests for parsing which does not raise Exceptions normally"""
+__version__ = '$Id$'
 
 import xml.dom
 import basetest

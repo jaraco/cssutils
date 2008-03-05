@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""testcases for new cssutils.tokenize.Tokenizer
+"""Testcases for new cssutils.tokenize.Tokenizer
 
 TODO::
 
@@ -9,9 +9,7 @@ TODO::
 
 + old tests as new ones are **not complete**!
 """
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-09-01 15:56:36 +0200 (Sa, 01 Sep 2007) $'
-__version__ = '$LastChangedRevision: 302 $'
+__version__ = '$Id$'
 
 import xml.dom
 import basetest

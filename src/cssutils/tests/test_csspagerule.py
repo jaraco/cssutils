@@ -1,8 +1,5 @@
-"""testcases for cssutils.css.CSSPageRule
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcases for cssutils.css.CSSPageRule"""
+__version__ = '$Id$'
 
 import xml.dom
 import test_cssrule

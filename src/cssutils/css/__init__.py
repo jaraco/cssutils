@@ -43,9 +43,7 @@ __all__ = [
     'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
     ]
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 from cssstylesheet import *
 from cssrulelist import *

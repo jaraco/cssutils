@@ -3,9 +3,9 @@
 =================
 version migration
 =================
-:author: $LastChangedBy: cthedot $
-:date: $LastChangedDate: 2008-01-03 21:46:44 +0100 (Do, 03 Jan 2008) $
-:version: $LastChangedRevision: 796 $
+:author: $LastChangedBy$
+:date: $LastChangedDate$
+:version: $LastChangedRevision$
 
 .. contents::
 

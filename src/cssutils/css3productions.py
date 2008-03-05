@@ -4,9 +4,7 @@ CSS3_MACROS and CSS3_PRODUCTIONS are from http://www.w3.org/TR/css3-syntax
 """
 __all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-09-01 15:55:42 +0200 (Sa, 01 Sep 2007) $'
-__version__ = '$LastChangedRevision: 300 $'
+__version__ = '$Id$'
 
 # a complete list of css3 macros
 MACROS = {

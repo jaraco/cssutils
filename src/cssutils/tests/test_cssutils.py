@@ -1,11 +1,6 @@
 # -*- coding: iso-8859-1 -*-
-"""
-testcases for cssutils.css.CSSCharsetRule
-"""
-__all__ = ['CSSutilsTestCase']
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcases for cssutils.css.CSSCharsetRule"""
+__version__ = '$Id$'
 
 import os
 import xml.dom

@@ -2,9 +2,7 @@
 """
 __all__ = []
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$Id$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import codecs
 from itertools import ifilter

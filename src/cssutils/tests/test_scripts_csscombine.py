@@ -1,9 +1,5 @@
-"""
-testcases for cssutils.scripts.csscombine
-"""
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2008-01-12 21:28:54 +0100 (Sa, 12 Jan 2008) $'
-__version__ = '$LastChangedRevision: 831 $'
+"""Testcases for cssutils.scripts.csscombine"""
+__version__ = '$Id$'
 
 import os
 import basetest

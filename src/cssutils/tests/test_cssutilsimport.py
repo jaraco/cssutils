@@ -1,9 +1,5 @@
-"""testcase for cssutils imports
-"""
-__all__ = ['CSSutilsImportTestCase']
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcase for cssutils imports"""
+__version__ = '$Id$'
 
 before = len(locals()) # to check is only exp amount is imported
 from cssutils import *
