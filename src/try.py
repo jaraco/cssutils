@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-__date__ = '$Date::                          $:'
+__date__ = '$LastChangedDate::                          $:'
 
 
 import codecs
