@@ -4,9 +4,7 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:author: $LastChangedBy$
-:date: $LastChangedDate$
-:version: (rev $LastChangedRevision$)
+:version: 0.9.5a5 $Id$
 
 
 available documentation

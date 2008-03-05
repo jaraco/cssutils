@@ -4,10 +4,8 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:Author: $LastChangedBy$
 :Copyright: 2004-2008 Christof Hoeke
-:Date: $LastChangedDate$
-:Version: (rev $LastChangedRevision$)
+:Version: $Id$
 
 Overview
 ========
