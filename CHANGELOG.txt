@@ -1,8 +1,5 @@
 changelog
 =========
-:Author: Christof Hoeke with contributions by Walter Doerwald
-:Copyright: 2004-2008 Christof Hoeke
-:Date: $LastChangedDate::                            $:
 :Version: $Id$
 
 .. contents::
@@ -43,15 +40,13 @@ known issues
 -----
 HEAD
 
-    **Tests need ``minimock`` now!**
-
     - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have new parameters ``title`` and ``base`` (used to dereference e.g. href in @import rules).
 
        Also the representation of ``CSSStyleSheet`` has been improved.
 
-    + **FEATURE**: References style sheet in @import rule is read now if possible.
+    + **FEATURE**: References style sheet in @import rule is read and parsed now if possible.
 
-    + **FEATURE**: Added ``cssutils.parseURL(url, encoding=None, ...)
+    + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
     + FEATURE: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
 
@@ -60,6 +55,8 @@ HEAD
     + IMPROVEMENT: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
         **TODO**: check selector of CSSStyleRule
+
+    - TESTS: **Tests need ``minimock`` now!** Install with ``easy_install minimock``
 
 
 0.9.5a4 080222
