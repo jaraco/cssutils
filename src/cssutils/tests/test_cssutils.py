@@ -1,8 +1,9 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 """Testcases for cssutils.css.CSSCharsetRule"""
 __version__ = '$Id$'
 
 import os
+import tempfile
 import xml.dom
 import basetest
 import cssutils
@@ -12,31 +13,39 @@ class CSSutilsTestCase(basetest.BaseTestCase):
 
     def test_parse(self):
         "cssutils.parse()"
-        # temp css for tests
-        name = '__cssutils_temptestfile__.css'
-        css = u'a:after { content: "äu\u2020" }'
+        css = u'a:after { content: "ç¾Šè¹„â‚¬\u2020" }'
 
-        if os.path.exists(name):
-            raise IOError('skipping test as file "%s" exists' % name)
-
-        css = u'a:after { content: "äu\u2020" }'
-        t = codecs.open(name, 'w', encoding='utf-8')
-        t.write(css)
+        fd, name = tempfile.mkstemp('_cssutilstest.css')
+        t = os.fdopen(fd, 'wb')
+        t.write(css.encode('utf-8'))
         t.close()
+        
         self.assertRaises(
             UnicodeDecodeError, cssutils.parse, name, 'ascii')
-        s = cssutils.parse(name, 'iso-8859-1') #???
-        s = cssutils.parse(name, 'utf-8')
+        
+        # ???
+        s = cssutils.parse(name, encoding='iso-8859-1')
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
+        self.assertEqual(s.cssRules[0].selectorText, 'a:after')
+        
+        s = cssutils.parse(name, encoding='utf-8')
+        self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
+        self.assertEqual(s.cssRules[0].selectorText, 'a:after')
 
-        css = u'a:after { content: "ä" }'
+        css = u'@charset "iso-8859-1"; a:after { content: "Ã¤" }'
         t = codecs.open(name, 'w', 'iso-8859-1')
         t.write(css)
         t.close()
+        
         self.assertRaises(
             UnicodeDecodeError, cssutils.parse, name, 'ascii')
-        s = cssutils.parse(name, 'iso-8859-1')
+        
+        s = cssutils.parse(name, encoding='iso-8859-1')
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
+        self.assertEqual(s.cssRules[1].selectorText, 'a:after')
+
+        self.assertRaises(
+            UnicodeDecodeError, cssutils.parse, name, 'utf-8')
 
         # clean up
         os.remove(name)
