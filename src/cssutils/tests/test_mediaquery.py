@@ -1,10 +1,6 @@
 # -*- coding: iso-8859-1 -*-
-"""
-testcases for cssutils.stylesheets.MediaList
-"""
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-09-16 00:00:46 +0200 (So, 16 Sep 2007) $'
-__version__ = '$LastChangedRevision: 359 $'
+"""Testcases for cssutils.stylesheets.MediaList"""
+__version__ = '$Id$'
 
 import xml.dom
 import basetest

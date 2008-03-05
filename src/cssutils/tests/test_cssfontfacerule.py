@@ -1,8 +1,5 @@
-"""testcases for cssutils.css.CSSFontFaceRule
-"""
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-10-18 19:38:15 +0200 (Do, 18 Okt 2007) $'
-__version__ = '$LastChangedRevision: 500 $'
+"""Testcases for cssutils.css.CSSFontFaceRule"""
+__version__ = '$Id$'
 
 import xml.dom
 import test_cssrule

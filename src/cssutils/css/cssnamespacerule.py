@@ -5,9 +5,7 @@ http://dev.w3.org/csswg/css3-namespace/
 """
 __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import xml.dom
 import cssrule

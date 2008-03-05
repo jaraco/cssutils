@@ -1,7 +1,7 @@
 """
 tests for encutils.py
 """
-__version__ = '0.8'
+__version__ = '$Id$'
 
 import httplib
 from StringIO import StringIO

@@ -3,9 +3,7 @@ StyleSheet implements DOM Level 2 Style Sheets StyleSheet.
 """
 __all__ = ['StyleSheet']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import urlparse
 import cssutils

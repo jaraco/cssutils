@@ -7,9 +7,7 @@ TODO:
 """
 __all__ = ['MediaList']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import xml.dom
 import cssutils

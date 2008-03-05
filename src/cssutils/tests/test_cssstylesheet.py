@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-tests for css.CSSStyleSheet
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Tests for css.CSSStyleSheet"""
+__version__ = '$Id$'
 
 import xml.dom
 import basetest

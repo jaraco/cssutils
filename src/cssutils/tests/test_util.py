@@ -1,10 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
-"""
-testcases for cssutils.util
-"""
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-06-13 20:38:01 +0200 (Mi, 13 Jun 2007) $'
-__version__ = '$LastChangedRevision: 56 $'
+"""Testcases for cssutils.util"""
+__version__ = '$Id$'
 
 import sys
 import xml.dom

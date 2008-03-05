@@ -1,6 +1,2 @@
-"""
-cssutils unittests
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""cssutils unittests"""
+__version__ = '$Id$'

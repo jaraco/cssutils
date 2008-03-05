@@ -4,9 +4,9 @@
 package ``cssutils.css``
 ========================
 
-:author: $LastChangedBy: cthedot $
-:date: $LastChangedDate: 2007-08-08 16:14:03 +0200 (Mi, 08 Aug 2007) $
-:version: $LastChangedRevision: 206 $
+:author: $LastChangedBy$
+:date: $LastChangedDate$
+:version: $LastChangedRevision$
 
 .. contents::
 

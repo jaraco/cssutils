@@ -61,9 +61,7 @@ simply called like functions.)
 """
 __all__ = ['CSS2Properties', 'cssvalues']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import re
 

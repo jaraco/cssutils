@@ -1,9 +1,9 @@
 changelog
 =========
-:Author: $LastChangedBy: cthedot $
+:Author: $LastChangedBy$
 :Copyright: 2004-2008 Christof Hoeke
-:Date: $LastChangedDate: 2007-11-06 22:22:15 +0100 (Di, 06 Nov 2007) $
-:Version: (rev $LastChangedRevision: 649 $)
+:Date: $LastChangedDate$
+:Version: (rev $LastChangedRevision$)
 
 .. contents::
 
@@ -54,6 +54,8 @@ HEAD
     + **FEATURE**: Added ``cssutils.parseURL(url, encoding=None, ...)
 
     + FEATURE: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
+
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used.
 
     + IMPROVEMENT: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 

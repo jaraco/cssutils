@@ -1,7 +1,5 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 # from decimal import Decimal # maybe for later tests?
 import xml.dom

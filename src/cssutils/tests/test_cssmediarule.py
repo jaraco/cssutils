@@ -1,9 +1,5 @@
-"""
-testcases for cssutils.css.CSSMediaRule
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcases for cssutils.css.CSSMediaRule"""
+__version__ = '$Id$'
 
 import xml.dom
 import test_cssrule

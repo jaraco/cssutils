@@ -1,5 +1,5 @@
 """reads config for restserver and converter from docutils.conf
-$Id: config.py 24 2007-09-04 13:29:30Z christofh $ 
+$Id$ 
 """
 from ConfigParser import ConfigParser
 

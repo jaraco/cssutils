@@ -51,9 +51,7 @@ TODO:
 """
 __all__ = ['CSSStyleDeclaration', 'Property']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import xml.dom
 import cssutils

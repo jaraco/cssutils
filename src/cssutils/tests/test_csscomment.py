@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-testcases for cssutils.css.CSSComment
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcases for cssutils.css.CSSComment"""
+__version__ = '$Id$'
 
 import xml
 import test_cssrule

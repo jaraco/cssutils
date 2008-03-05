@@ -2,9 +2,7 @@
 """
 __all__ = ['CSSFontFaceRule']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-10-18 22:44:54 +0200 (Do, 18 Okt 2007) $'
-__version__ = '$LastChangedRevision: 507 $'
+__version__ = '$Id$'
 
 import xml.dom
 import cssrule

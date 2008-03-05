@@ -11,9 +11,7 @@ see stylesheets.MediaList
 """
 __all__ = ['MediaQuery']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy: cthedot $'
-__date__ = '$LastChangedDate: 2007-09-16 00:00:19 +0200 (So, 16 Sep 2007) $'
-__version__ = '$LastChangedRevision: 357 $'
+__version__ = '$Id$'
 
 import re
 import xml.dom

@@ -3,9 +3,7 @@
 utility scripts installed as Python scripts
 """
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy: doerwalter $'
-__date__ = '$LastChangedDate: 2007-08-07 12:33:59 +0200 (Di, 07 Aug 2007) $'
-__version__ = '0.9.2b3 $LastChangedRevision: 185 $'
+__version__ = '$Id$'
 
 import cssutils
 import logging

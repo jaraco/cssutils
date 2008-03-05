@@ -1,9 +1,5 @@
-"""
-testcases for cssutils.css.CSSCharsetRule
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcases for cssutils.css.CSSCharsetRule"""
+__version__ = '$Id$'
 
 import re
 import xml.dom

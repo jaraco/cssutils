@@ -1,9 +1,7 @@
 """CSSRule implements DOM Level 2 CSS CSSRule."""
 __all__ = ['CSSRule']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import xml.dom
 import cssutils

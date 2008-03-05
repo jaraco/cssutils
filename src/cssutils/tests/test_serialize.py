@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-"""testcases for cssutils.CSSSerializer
-"""
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+"""Testcases for cssutils.CSSSerializer"""
+__version__ = '$Id$'
 
 import basetest
 import cssutils

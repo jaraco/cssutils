@@ -3,9 +3,7 @@
 """
 __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
-__author__ = '$LastChangedBy$'
-__date__ = '$LastChangedDate$'
-__version__ = '$LastChangedRevision$'
+__version__ = '$Id$'
 
 import codecs
 import cssutils

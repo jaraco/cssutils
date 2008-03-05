@@ -76,7 +76,8 @@ __all__ = ['buildlog',
            'tryEncodings',
            'EncodingInfo']
 __docformat__ = 'restructuredtext'
-__version__ = '0.8.1'
+__author__ = 'Christof Hoeke'
+__version__ = '0.8.1 $Id$'
 
 import cgi
 import httplib
@@ -85,7 +86,6 @@ import StringIO
 import sys
 import types
 import urllib
-
 
 # application/xml, application/xml-dtd, application/xml-external-parsed-entity, or a subtype like application/rss+xml.
 _XML_APPLICATION_TYPE = 0
@@ -101,7 +101,6 @@ _TEXT_TYPE = 3
 
 # types not fitting in above types
 _OTHER_TYPE = 4
-
 
 class EncodingInfo(object):
     """
