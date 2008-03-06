@@ -59,9 +59,7 @@ class CSSParser(object):
         """
         if isinstance(cssText, str): 
             # cssutils always needs unicode strings
-            if not encoding:
-                encoding = 'css'
-            cssText = cssText.decode(encoding)
+            cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
         sheet = cssutils.css.CSSStyleSheet()
         # does close open constructs and adds EOF
         sheet._href = href
@@ -78,12 +76,11 @@ class CSSParser(object):
         filename
             of the CSS file to parse
         encoding
-            of the CSS file, defaults to 'css' codec encoding
+            of the CSS file, ``None`` defaults to encoding detection from
+            a @charset rule
 
         for other parameters see ``parseString``
         """
-        if not encoding:
-            encoding = 'css'
         return self.parseString(open(filename, 'rb').read(), encoding=encoding,
                                 href=href, media=media, title=title,
                                 base=base)
