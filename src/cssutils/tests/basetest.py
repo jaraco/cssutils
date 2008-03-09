@@ -4,7 +4,12 @@ __version__ = '$Id$'
 import logging
 import unittest
 import sys
+import StringIO
+import urllib2
+from email import message_from_string, message_from_file
+
 import cssutils
+from minimock import mock, restore
 
 cssutils.log.setloglevel(logging.FATAL)
 
@@ -138,27 +143,41 @@ class BaseTestCase(unittest.TestCase):
             self.assertRaises(expected, self.r.__getattribute__(att), test)
 
 
-class MockHttp(object):
-    """
-    A mock for httplib2.Http that takes its
-    response headers and bodies from files on disk
-    """
-    def __init__(self, cache=None, timeout=None):
-        pass
+    # methods to test HTTP traffic
+    def _urlopen(self, url, text=None, error=None):
+        # return an mock which returns parameterized Response
+        def x(*ignored):
+            return _Response(url, text=text, error=error)
+        return x
+    
+    def init_urlopen_mock(self, url, text, encoding='utf-8'):
+        mock("urllib2.urlopen", 
+             mock_obj=self._urlopen(url, text=text.encode(encoding))) 
 
-    def request(self, uri, method="GET", body=None, headers=None, redirections=5):
-        path = urlparse.urlparse(uri)[2]
-        fname = os.path.join(HTTP_SRC_DIR, method, path[1:])
-        if os.path.exists(fname):
-            f = file(fname, "r")
-            response = message_from_file(f)
-            f.close()
-            body = response.get_payload()
-            headers = httplib2.Response(response)
-            return (headers, body)
+class _Response(object):
+    """urllib2.Reponse mock"""
+    def __init__(self, url, text=u'', error=None):
+        self.url = url
+        self.text = text
+        self.error = error
+
+    def geturl(self):
+        return self.url
+
+    def info(self):
+        class Info(object):
+            def gettype(self):
+                return 'text/css'
+            def getparam(self, name):
+                return 'UTF-8'
+
+        return Info()
+
+    def read(self):
+        if self.error:
+            raise Exception(self.error)
         else:
-            return (httplib2.Response({"status": "404"}), "")
+            return self.text
 
-    def add_credentials(self, name, password):
-        pass
+
 
