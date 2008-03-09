@@ -27,18 +27,7 @@ def escapecss(e):
 codecs.register_error('escapecss', escapecss)
 
 
-if 1:
-    css = "\xc3\xa4 { left: 0}"
-    css = open('sheets/csscombine-proxy.css', mode="rb").read()
-    print 1, css.decode('css')
-    print 2, unicode(css, 'css')
-    
-    #sheet = cssutils.parse('src/t.css', encoding=None)
-    #print sheet
-    #print type(sheet.cssText)
-    sys.exit()
-
-if 1:
+if 0:
     css = ur'''
     fake(url())
     URL()
@@ -52,7 +41,7 @@ if 1:
         print tk
     sys.exit(0)
 
-if 0:
+if 1:
     # copy to test_util
             from email import message_from_string, message_from_file
             import StringIO
@@ -105,14 +94,14 @@ if 0:
             import urllib2
 
             tests = [
-                ('1', 'utf-8', u'/*äöü*/', 'utf-8', u'/*äöü*/'),
-                ('2', 'utf-8', u'/*äöü*/', None, u'/*äöü*/'),
-                ('3', 'utf-8', u'/*äöü*/', 'css', u'/*äöü*/'),
+                ('1', u'ä', 'utf-8', u'ä', 'utf-8'),
+                ('2', u'ä', 'utf-8', u'ä', None),
+                ('3', u'ä', 'utf-8', u'ä', 'css'),
                 #('4', 'HTTPError', None, None, urllib2.HTTPError),
-                ('5', 'ValueError', None, None, ValueError),
-                ('6', '404', None, None, xml.dom.SyntaxErr),
+                #('5', 'ValueError', None, None, ValueError),
+                #('6', '404', None, None, xml.dom.SyntaxErr),
             ]
-            for url, textencoding, text, encoding, exp in tests:
+            for url, text, textencoding, exp, encoding in tests:
                 if text:
                     mock_obj = urlopen(url, text=text.encode(textencoding))
                 else:
@@ -133,10 +122,12 @@ if 0:
 
 
 if 1:
-    css = 'a { x: url(a b)}'
-    s = cssutils.parseString(css)
-    print s.cssRules[0].style.getPropertyCSSValue('x')
+    css = '@import "t.css" "title";'
+    s = cssutils.parseString(css, base=r'I:\dev-workspace\cssutils\src')
+    print s    
     print s.cssText
+    ir = s.cssRules[0]
+    print ir.styleSheet
 
     #r = cssutils.css.CSSImportRule()
     #r.cssText = css
