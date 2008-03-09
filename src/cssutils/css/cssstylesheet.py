@@ -30,7 +30,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         reflects the encoding of an @charset rule or 'utf-8' (default)
         if set to ``None``
     ownerRule
-        of type CSSRule, readonly (NOT IMPLEMENTED YET)
+        of type CSSRule, readonly. If this sheet is imported this is a ref
+        to the @import rule that imports it.
 
     Inherits properties from stylesheet.StyleSheet
 
