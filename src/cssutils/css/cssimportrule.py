@@ -321,7 +321,7 @@ class CSSImportRule(cssrule.CSSRule):
                                                    )
                 cssText = cssutils.util._readURL(url)
                 if not cssText:
-                    raise xml.dom.DOMException('problem reading - IGNORED')
+                    raise IOError()
                 sheet.cssText = cssText 
             except Exception, e:
                 self._log.warn(u'CSSImportRule: Error processing imported style sheet: href=%r url=%r: %r'
