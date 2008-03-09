@@ -2,9 +2,9 @@
 __version__ = '$Id$'
 
 import xml.dom
+from minimock import mock, restore
 import test_cssrule
 import cssutils
-
 
 class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
@@ -28,6 +28,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(None, self.r.name)
         self.assertEqual(None, self.r.styleSheet)
         self.assertEqual(u'', self.r.cssText)
+        self.assertEqual(None, self.r.styleSheet)
 
         # all
         r = cssutils.css.CSSImportRule(href='href', mediaText='tv', name='name')
@@ -40,6 +41,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('name', r.name)
         self.assertEqual(None, r.parentRule) # see CSSRule
         self.assertEqual(None, r.parentStyleSheet) # see CSSRule
+        self.assertEqual(None, r.styleSheet)
         
         # href
         r = cssutils.css.CSSImportRule(u'x')
@@ -247,6 +249,29 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         r.name = '"'
         self.assertEqual('"', r.name)
         self.assertEqual(u'@import url(x) "\\"";', r.cssText)
+
+    def test_styleSheet(self):
+        "CSSImportRule.styleSheet"
+        def m(*p, **kw):
+            return 'a { color: red}'
+        mock('cssutils.util._readURL', mock_obj=m)
+        sheet = cssutils.parseString('@import "anything.css" tv "title";', 
+                                     base='test')
+        restore()
+        
+        ir = sheet.cssRules[0]
+        self.assertEqual(ir.href, 'anything.css')
+        self.assertEqual(ir.styleSheet.cssText, 'a {\n    color: red\n    }')
+        self.assertEqual(ir.styleSheet.href, 'anything.css')
+        self.assertEqual(ir.styleSheet.media.mediaText, 'tv')
+        self.assertEqual(ir.styleSheet.ownerRule, ir)
+        self.assertEqual(ir.styleSheet.parentStyleSheet, sheet)
+        self.assertEqual(ir.styleSheet.title, 'title')
+
+        sheet = cssutils.parseString('@import "CANNOT-FIND.css";')
+        ir = sheet.cssRules[0]
+        self.assertEqual(ir.href, "CANNOT-FIND.css")
+        self.assertEqual(ir.styleSheet, None)
 
     def test_incomplete(self):
         "CSSImportRule (incomplete)"
