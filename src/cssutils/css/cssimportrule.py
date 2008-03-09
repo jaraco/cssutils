@@ -1,11 +1,10 @@
 """CSSImportRule implements DOM Level 2 CSS CSSImportRule.
 
 plus: 
-    name
-        http://www.w3.org/TR/css3-cascade/#cascading
 
-TODO:
-    - stylesheet: read and parse linked stylesheet
+``name`` property
+    http://www.w3.org/TR/css3-cascade/#cascading
+
 """
 __all__ = ['CSSImportRule']
 __docformat__ = 'restructuredtext'
@@ -37,13 +36,11 @@ class CSSImportRule(cssrule.CSSRule):
         A list of media types for this rule of type MediaList.
     name: 
         An optional name used for cascading
-    stylesheet: of type CSSStyleSheet (DOM readonly)
+    styleSheet: of type CSSStyleSheet (DOM readonly)
         The style sheet referred to by this rule. The value of this
         attribute is None if the style sheet has not yet been loaded or if
         it will not be loaded (e.g. if the stylesheet is for a media type
         not supported by the user agent).
-
-        Currently always None
 
     Inherits properties from CSSRule
 
@@ -243,11 +240,17 @@ class CSSImportRule(cssrule.CSSRule):
             # set all
             if wellformed:
                 self.atkeyword = new['keyword']
-                self.href = new['href']
                 self.hreftype = new['hreftype']
                 self._media = new['media']
                 self.name = new['name']
                 self._setSeq(newseq)
+
+                self.href = new['href']
+                
+                if self.styleSheet:
+                    # title is set by href
+                    self.styleSheet._href = self.href
+                    self.styleSheet._parentStyleSheet = self.parentStyleSheet
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM attribute) The parsable textual representation.")
@@ -293,6 +296,9 @@ class CSSImportRule(cssrule.CSSRule):
             seq.append(self.href, 'href')
             self._setSeq(seq)
         self._name = name
+        # set title of referred sheet
+        if self.styleSheet:
+            self.styleSheet.title = name
 
     name = property(lambda self: self._name, _setName,
                     doc=u"An optional name for the imported sheet")
@@ -306,17 +312,22 @@ class CSSImportRule(cssrule.CSSRule):
         if self.parentStyleSheet and self.href:
             url = urlparse.urljoin(self.parentStyleSheet.base, self.href)
             try:
+                # all possible exceptions are ignored and styleSheet is None
                 sheet = cssutils.css.CSSStyleSheet(href=self.href,
+                                                   media=self.media,
                                                    ownerRule=self,
-                                                   base=self.parentStyleSheet.base,
-                                                   title=self.name
+                                                   title=self.name,
+                                                   base=self.parentStyleSheet.base
                                                    )
-                sheet.cssText = cssutils.util._readURL(url)
+                cssText = cssutils.util._readURL(url)
+                if not cssText:
+                    raise xml.dom.DOMException('problem reading - IGNORED')
+                sheet.cssText = cssText 
             except Exception, e:
                 self._log.warn(u'CSSImportRule: Error processing imported style sheet: href=%r url=%r: %r'
                                % (self.href, url, e), neverraise=True)
             else:
-                self._styleSheet = sheet 
+                self._styleSheet = sheet
                 
     styleSheet = property(lambda self: self._styleSheet,
                           doc="(readonly) The style sheet referred to by this rule.")
