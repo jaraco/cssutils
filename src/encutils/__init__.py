@@ -4,9 +4,12 @@
 encutils
 ========
 :Author: Christof Hoeke
-:License: This work is licensed under a
-    Creative Commons License http://creativecommons.org/licenses/by/3.0/
+:License: encutils has a dual-license, please choose whatever you prefer:
 
+    * encutils is licensed under the `LGPL <http://cthedot.de/encutils/license/>`__ or
+    * This work is licensed under a 
+      `Creative Commons License <http://creativecommons.org/licenses/by/3.0/>`__.
+ 
 Website: http://cthedot.de/encutils/
 
 A collection of helper functions to detect encodings of text files (like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP, file or string.
@@ -77,7 +80,7 @@ __all__ = ['buildlog',
            'EncodingInfo']
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke'
-__version__ = '0.8.1 $Id$'
+__version__ = '0.8.2 $Id$'
 
 import cgi
 import httplib
