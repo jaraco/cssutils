@@ -33,7 +33,7 @@ Note:
 
 license
 -------
-cssutils is published under the LGPL.
+cssutils is published under the LGPL, see http://cthedot.de/cssutils/license/
 
 download
 --------
