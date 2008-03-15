@@ -157,10 +157,11 @@ def setSerializer(serializer):
 
 def getUrls(sheet):
     """
-    Utility method to get all ``url(urlstring)`` values in 
-    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
+    Utility function to get all ``url(urlstring)`` values in 
+    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
+    of given CSSStyleSheet ``sheet``.
 
-    This method is a generator. The url values exclude ``url(`` and ``)``,
+    This function is a generator. The url values exclude ``url(`` and ``)``
     and surrounding single or double quotes.
     """
     for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
@@ -195,8 +196,9 @@ def getUrls(sheet):
         
 def replaceUrls(sheet, replacer):
     """
-    Utility method to replace all ``url(urlstring)`` values in 
-    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
+    Utility function to replace all ``url(urlstring)`` values in 
+    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
+    of given CSSStyleSheet ``sheet``.
 
     ``replacer`` must be a function which is called with a single
     argument ``urlstring`` which is the current value of url()

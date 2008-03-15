@@ -12,11 +12,14 @@ overview
 Contains tokenizer, parser and helper classes used by subpackages ``css`` and ``stylesheets``.
 Implemented is also the interface `DOMImplementationCSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-DOMImplementationCSS>`_.
 
-:codec: A CSS codec registered at standard module ``codecs``
-:CSSParser: A CSS parser
-:CSSSerializer: A configurable CSS serializer
-:log: A configurable ``cssutils.errorhandler.ErrorHandler()`` logger
+:codec_: A CSS codec registered at standard module ``codecs``
+:CSSParser_: A CSS parser
+:CSSSerializer_: A configurable CSS serializer
+:functions_: Utility functions ``getUrls`` and ``replaceUrls`` for now
+:log_: A configurable ``cssutils.errorhandler.ErrorHandler()`` logger
 :DOMImplementationCSS: Registers cssutils at standard package ``xml.dom``
+
+.. _codec:
 
 CSS codec
 =========
@@ -31,6 +34,8 @@ Example::
     sheet = cssutils.parseString(cssText)
 
 
+.. _CSSParser:
+
 parsing CSS
 ===========
 Options to parse a given stylesheet:
@@ -43,6 +48,9 @@ Options to parse a given stylesheet:
 * or get an instance of ``cssutils.CSSParser`` and use the provided ``parse`` methods which are the same as the helper functions. The parser is reusable.
 
 * parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. Setting explicit properties (e.g. ``CSSStyleSheet.cssText`` with a syntactically incorrect sheet raises the relevant exeptions.
+
+
+.. _CSSSerializer:
 
 serializing CSS
 ===============
@@ -143,6 +151,32 @@ validOnly = False
     Currently CSS 2.1 values as defined in cssproperties.py would be
     valid.
 
+.. _functions:
+
+functions
+=========
+
+.. _getUrls:
+
+def getUrls(sheet):
+    Utility function to get all ``url(urlstring)`` values in
+    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
+    of given CSSStyleSheet ``sheet``.
+
+    This function is a generator. The url values exclude ``url(`` and ``)`` and surrounding single or double quotes.
+
+.. _replaceUrls:
+
+replaceUrls(sheet, replacer)
+    Utility function to replace all ``url(urlstring)`` values in
+    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
+    of given CSSStyleSheet ``sheet``.
+
+    ``replacer`` must be a function which is called with a single
+    argument ``urlstring`` which is the current value of url()
+    excluding ``url(`` and ``)`` and surrounding single or double quotes.
+
+.. _log:
 
 logging
 =======

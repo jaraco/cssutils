@@ -92,16 +92,6 @@ insertRule(rule, index=None, inorder=False)
 
     Rule may be a string or a valid ``CSSRule`` or ``CSSRuleList``
 
-.. _replaceUrls:
-
-replaceUrls(replacer)
-    Utility method to replace all ``url(urlstring)`` values in ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
-
-    ``replacer`` must be a function which is called with a single
-    argument ``urlstring`` which is the current value of url()
-    excluding ``url(`` and ``)``. It still may have surrounding
-    single or double quotes though.
-
 .. _setSerializer:
 
 setSerializer(self, cssserializer)
@@ -115,6 +105,7 @@ setSerializerPref(pref, value)
     stylesheet. See cssutils.serialize.Preferences for possible
     preferences to be set.
 
+``replaceUrls(replacer)`` has been *DEPRECATED* since 0.9.5. Use ``cssutils.replaceUrls(sheet, replacer)`` instead.
 
 CSSCharsetRule
 ==============
