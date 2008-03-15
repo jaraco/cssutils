@@ -61,7 +61,7 @@ __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
-__version__ = '0.9.5a5 $Id$'
+__version__ = '0.9.5b1 $Id$'
 
 import codec
 
@@ -153,6 +153,81 @@ def setSerializer(serializer):
     """
     global ser
     ser = serializer
+
+
+def getUrls(sheet):
+    """
+    Utility method to get all ``url(urlstring)`` values in 
+    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
+
+    This method is a generator. The url values exclude ``url(`` and ``)``,
+    and surrounding single or double quotes.
+    """
+    for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
+        yield importrule.href
+
+    def getUrl(v):
+        if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
+           v.CSS_URI == v.primitiveType:
+                return v.getStringValue()
+
+    def styleDeclarations(base):
+        "recursive generator to find all CSSStyleDeclarations"
+        if hasattr(base, 'cssRules'):
+            for rule in base.cssRules:
+                for s in styleDeclarations(rule):
+                    yield s
+        elif hasattr(base, 'style'):
+            yield base.style
+
+    for style in styleDeclarations(sheet):
+        for p in style.getProperties(all=True):
+            v = p.cssValue
+            if v.CSS_VALUE_LIST == v.cssValueType:
+                for item in v:
+                    u = getUrl(item)
+                    if u is not None:
+                        yield u
+            elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
+                u = getUrl(v)
+                if u is not None:
+                    yield u
+        
+def replaceUrls(sheet, replacer):
+    """
+    Utility method to replace all ``url(urlstring)`` values in 
+    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
+
+    ``replacer`` must be a function which is called with a single
+    argument ``urlstring`` which is the current value of url()
+    excluding ``url(`` and ``)`` and surrounding single or double quotes.
+    """
+    for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
+        importrule.href = replacer(importrule.href)
+
+    def setProperty(v):
+        if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
+           v.CSS_URI == v.primitiveType:
+                v.setStringValue(v.CSS_URI,
+                                 replacer(v.getStringValue()))
+
+    def styleDeclarations(base):
+        "recursive generator to find all CSSStyleDeclarations"
+        if hasattr(base, 'cssRules'):
+            for rule in base.cssRules:
+                for s in styleDeclarations(rule):
+                    yield s
+        elif hasattr(base, 'style'):
+            yield base.style
+
+    for style in styleDeclarations(sheet):
+        for p in style.getProperties(all=True):
+            v = p.cssValue
+            if v.CSS_VALUE_LIST == v.cssValueType:
+                for item in v:
+                    setProperty(item)
+            elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
+                setProperty(v)
 
 
 if __name__ == '__main__':
