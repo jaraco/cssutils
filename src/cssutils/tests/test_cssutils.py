@@ -76,6 +76,50 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         cssutils.ser = newser
         self.assertEqual(exp4, s.cssText)
 
+    def test_getUrls(self):
+        "cssutils.getUrls()"
+        cssutils.ser.prefs.keepAllProperties = True
+
+        css='''
+        @import "im1";
+        @import url(im2);
+        @import url( im3 );
+        @import url( "im4" );
+        @import url( 'im5' );
+        a {
+            background-image: url(c) !important;
+            background-\image: url(b);
+            background: url(a) no-repeat !important;
+            }'''
+        s = cssutils.parseString(css)
+        urls = set(cssutils.getUrls(s))
+        self.assertEqual(urls, set(["im1", "im2", "im3", "im4", "im5", 
+                                    "c", "b", "a"]))
+
+        cssutils.ser.prefs.keepAllProperties = False
+
+    def test_replaceUrls(self):
+        "cssutils.replaceUrls()"
+        cssutils.ser.prefs.keepAllProperties = True
+
+        css='''
+        @import "im1";
+        @import url(im2);
+        a {
+            background-image: url(c) !important;
+            background-\image: url(b);
+            background: url(a) no-repeat !important;
+            }'''
+        s = cssutils.parseString(css)
+        cssutils.replaceUrls(s, lambda old: "NEW" + old)
+        self.assertEqual(u'@import "NEWim1";', s.cssRules[0].cssText)
+        self.assertEqual(u'NEWim2', s.cssRules[1].href)
+        self.assertEqual(u'''background-image: url(NEWc) !important;
+background-\\image: url(NEWb);
+background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
+
+        cssutils.ser.prefs.keepAllProperties = False
+
 
 if __name__ == '__main__':
     import unittest
