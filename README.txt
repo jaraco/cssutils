@@ -38,7 +38,7 @@ Please visit http://cthedot.de/cssutils/ for full details.
 
 license
 =======
-Published under the LGPL, see http://cthedot.de/cssutils/license.html
+Published under the LGPL, see http://cthedot.de/cssutils/license/
 
 
 installation
