@@ -12,6 +12,7 @@ version migration
 ==========================
 cssutils 0.9.5 introduced some minor incompatible API changes. Reason for most changes is that for most cases the new default behaviour makes more sense.
 
+
 iterating over ``CSSStyleDeclaration``
 --------------------------------------
 Iterating over ``css.CSSStyleDelcaration`` now yields *effective* properties only and not *all* properties set in the declaration. To retrieve *all* properties use ``CSSStyleDeclaration.getProperties(all=True)``.
@@ -67,3 +68,25 @@ OLD until 0.9.5
         p = Property(ur'color', 'red', '!IMPOR\\TANT')
         p.priority == u'!IMPOR\\TANT'
         p._normalpriority = u'!important'
+
+``CSSStyleSheet.replaceUrls(replacer)``
+---------------------------------------
+Since 0.9.5b1 ``replaceUrls`` has been moved from a method of ``CSSStyleSheet`` to a utility function in cssutils directly.
+
+Example::
+
+        def replacer(url):
+            "returns new URL"
+
+        sheet = cssutils.parse(url)
+
+
+New since 0.9.5b1
+    ::
+
+        cssutils.replaceUrls(sheet, replacer)
+
+OLD until 0.9.5a4
+    ::
+
+        sheet.replaceUrls(replacer)
