@@ -14,7 +14,7 @@ __version__ = '$Id$'
 
 import xml.dom
 import cssutils.stylesheets
-from cssutils.util import _Namespaces, _SimpleNamespaces
+from cssutils.util import _Namespaces, _SimpleNamespaces, Deprecated
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     """
@@ -536,6 +536,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     ownerRule = property(lambda self: self._ownerRule,
                          doc="(DOM attribute) NOT IMPLEMENTED YET")
 
+    @Deprecated('Use cssutils.replaceUrls(sheet, replacer) instead.')
     def replaceUrls(self, replacer):
         """
         **EXPERIMENTAL**
@@ -548,34 +549,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         excluding ``url(`` and ``)``. It still may have surrounding
         single or double quotes though.
         """
-        for importrule in (r for r in self if r.type == r.IMPORT_RULE):
-            importrule.href = replacer(importrule.href)
-
-        def setProperty(v):
-            if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
-               v.CSS_URI == v.primitiveType:
-                    v.setStringValue(v.CSS_URI,
-                                     replacer(v.getStringValue()))
-
-        def styleDeclarations(base):
-            "recursive function to find all CSSStyleDeclarations"
-            styles = []
-            if hasattr(base, 'cssRules'):
-                for rule in base.cssRules:
-                    styles.extend(styleDeclarations(rule))
-            elif hasattr(base, 'style'):
-                styles.append(base.style)
-            return styles
-
-        for style in styleDeclarations(self):
-            for p in style.getProperties(all=True):
-                v = p.cssValue
-                if v.CSS_VALUE_LIST == v.cssValueType:
-                    for item in v:
-                        setProperty(item)
-                elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
-                    setProperty(v)
-            
+        cssutils.replaceUrls(self, replacer)
+    
     def setSerializer(self, cssserializer):
         """
         Sets the global Serializer used for output of all stylesheet
