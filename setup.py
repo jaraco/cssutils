@@ -8,7 +8,7 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
-__version__ = '0.9.5a4'
+__version__ = '0.9.5b1'
 
 import codecs
 import os
@@ -45,7 +45,7 @@ setup(
     author_email='c@cthedot.de',
     url='http://cthedot.de/cssutils/',
     download_url='http://code.google.com/p/cssutils/downloads/list',
-    license='http://cthedot.de/cssutils/license.html',
+    license='http://cthedot.de/cssutils/license/',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
     platforms='Python 2.4 and later.',
     classifiers=[
