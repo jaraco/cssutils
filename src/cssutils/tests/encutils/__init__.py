@@ -40,7 +40,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'text/xml-external-parsed-entity': encutils._XML_TEXT_TYPE,
             'text/xhtml+xml': encutils._XML_TEXT_TYPE,
             'text/html': encutils._HTML_TEXT_TYPE,
-            'text/css': encutils._TEXT_TYPE,
+            'text/css': encutils._TEXT_UTF8,
             'text/plain': encutils._TEXT_TYPE,
             'x/x': encutils._OTHER_TYPE,
             'ANYTHING': encutils._OTHER_TYPE 
@@ -82,7 +82,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'text/xml-external-parsed-entity': 'ascii',
             'text/ANYTHING+xml': 'ascii',
             'text/html': 'iso-8859-1',
-            'text/css': 'iso-8859-1',
+            'text/css': 'utf-8',
             'text/plain': 'iso-8859-1',
             'ANYTHING': None
             }
@@ -127,6 +127,11 @@ class AutoEncodingTestCase(unittest.TestCase):
             """<meta http-equiv = " Content-Type" content = " text/html;charset=ascii " >""":
                 ('text/html', 'ascii'),
             """<meta http-equiv = " \n Content-Type " content = "  \t text/html   ;  charset=ascii " >""":
+                ('text/html', 'ascii'),
+
+            """<meta content="text/html;charset=ascii" http-equiv="Content-Type">""":
+                ('text/html', 'ascii'),
+            """<meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":
                 ('text/html', 'ascii')
             }
         for test, exp in tests.items():
