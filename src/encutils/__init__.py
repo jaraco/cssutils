@@ -3,14 +3,29 @@
 
 encutils
 ========
-:Author: Christof Hoeke
+:Author: Christof Hoeke, see http://cthedot.de/encutils/
+:Copyright: 2005-2008: Christof Hoeke
 :License: encutils has a dual-license, please choose whatever you prefer:
 
-    * encutils is licensed under the `LGPL <http://cthedot.de/encutils/license/>`__ or
-    * This work is licensed under a 
+    * encutils is published under the `LGPL 3 or later <http://cthedot.de/encutils/license/>`__
+    * encutils is published under the  
       `Creative Commons License <http://creativecommons.org/licenses/by/3.0/>`__.
+      
+    This file is part of encutils.
+
+    encutils is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    encutils is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with encutils.  If not, see <http://www.gnu.org/licenses/>.
  
-Website: http://cthedot.de/encutils/
 
 A collection of helper functions to detect encodings of text files (like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP, file or string.
 
@@ -64,10 +79,10 @@ XML
 HTML
     http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2
 
-TODO:
-    - HTML meta elements in comments? (use HTMLParser?)
-    - parse @charset of HTML elements?
-    - check for more texttypes if only text given
+TODO
+====
+- parse @charset of HTML elements?
+- check for more texttypes if only text given
     
 """
 __all__ = ['buildlog',
@@ -80,15 +95,27 @@ __all__ = ['buildlog',
            'EncodingInfo']
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke'
-__version__ = '0.8.2 $Id$'
+__version__ = '0.8.3 $Id$'
 
 import cgi
+import HTMLParser
 import httplib
 import re
 import StringIO
 import sys
 import types
 import urllib
+
+class _MetaHTMLParser(HTMLParser.HTMLParser):
+    """parses given data for <meta http-equiv="content-type">"""
+    content_type = None
+    
+    def handle_starttag(self, tag, attrs):
+        if tag == 'meta' and not self.content_type:
+            atts = dict([(a.lower(), v.lower()) for a, v in attrs])
+            if atts.get('http-equiv', u'').strip() == u'content-type':
+                self.content_type = atts.get('content')
+
 
 # application/xml, application/xml-dtd, application/xml-external-parsed-entity, or a subtype like application/rss+xml.
 _XML_APPLICATION_TYPE = 0
@@ -99,8 +126,11 @@ _XML_TEXT_TYPE = 1
 # text/html
 _HTML_TEXT_TYPE = 2
 
-# any other of text/* like text/plain, text/css, ...
+# any other of text/* like text/plain, ...
 _TEXT_TYPE = 3
+
+# any text/* like which defaults to UTF-8 encoding, for now only text/css
+_TEXT_UTF8 = 5
 
 # types not fitting in above types
 _OTHER_TYPE = 4
@@ -214,18 +244,18 @@ def _getTextTypeByMediaType(media_type, log=None):
 
     if media_type in xml_application_types or\
             re.match(xml_application_types[0], media_type, re.I|re.S|re.X):
-        xmltype = _XML_APPLICATION_TYPE
+        return _XML_APPLICATION_TYPE
     elif media_type in xml_text_types or\
             re.match(xml_text_types[0], media_type, re.I|re.S|re.X):
-        xmltype = _XML_TEXT_TYPE
+        return _XML_TEXT_TYPE
     elif media_type == u'text/html':
-        xmltype = _HTML_TEXT_TYPE
+        return _HTML_TEXT_TYPE
+    elif media_type == u'text/css':
+        return _TEXT_UTF8
     elif media_type.startswith(u'text/'):
-        xmltype = _TEXT_TYPE
+        return _TEXT_TYPE
     else:
-        xmltype = _OTHER_TYPE    
-        
-    return xmltype
+        return _OTHER_TYPE    
 
 def _getTextType(text, log=None):
     """
@@ -251,6 +281,7 @@ def encodingByMediaType(media_type, log=None):
         _XML_TEXT_TYPE: u'ascii',
         _HTML_TEXT_TYPE: u'iso-8859-1', # should be None?
         _TEXT_TYPE: u'iso-8859-1', # should be None?
+        _TEXT_UTF8: u'utf-8',
         _OTHER_TYPE: None}
 
     texttype = _getTextTypeByMediaType(media_type)
@@ -295,29 +326,16 @@ def getMetaInfo(text, log=None):
         ``<meta http-equiv="Content-Type" content="media_type;
         charset=encoding"/>``
     """
-    ctmetas = re.findall(ur'''<meta.*?
-            http-equiv\s* = \s*['"]\s*Content-Type\s*['"]\s*
-            .*?\/?>
-        ''', text, re.I|re.S|re.U|re.X)
-
-    if ctmetas:
-        first = ctmetas[0]
-        value = re.findall(ur'''
-                content\s*=\s*  # content= 
-                ['"]\s*         # " or '
-                (.*?)           # find only value text
-                \s*['"]         # " or '
-            '''
-            ,first, re.I|re.S|re.U|re.X)
-        if value:
-            media_type, params = cgi.parse_header(value[0])
-            encoding = params.get('charset') # defaults to None
-            if encoding:
-                encoding = encoding.lower()
-            if log:
-                log.debug(u'HTML <meta>: %s', value[0])
-                log.info(u'HTML META media_type: %s', media_type)
-                log.info(u'HTML META encoding: %s', encoding)
+    p = _MetaHTMLParser()
+    p.feed(text)
+    if p.content_type:
+        media_type, params = cgi.parse_header(p.content_type)
+        encoding = params.get('charset') # defaults to None
+        if encoding:
+            encoding = encoding.lower()
+        if log:
+            log.info(u'HTML META media_type: %s', media_type)
+            log.info(u'HTML META encoding: %s', encoding)
     else:
         media_type = encoding = None
 
@@ -536,6 +554,12 @@ def getEncodingInfo(response=None, text=u'', log=None, url=None):
 
     Mismatch possibilities:
         - HTTP + HTMLmeta 
+        
+    TEXT
+    ----
+    For most text/* types the encoding will be reported as iso-8859-1. 
+    Exceptions are XML formats send as text/* mime type (see above) and 
+    text/css which has a default encoding of UTF-8. 
     """
     if url:
         try:
@@ -544,7 +568,7 @@ def getEncodingInfo(response=None, text=u'', log=None, url=None):
         except IOError, e:
             print IOError(e)
             sys.exit(1)
-    
+        
     encinfo = EncodingInfo()
 
     logstream = StringIO.StringIO()
