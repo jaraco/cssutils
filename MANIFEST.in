@@ -1,5 +1,7 @@
 include doc/*.*
 include examples/*.py
+include COPYING
+include COPYING.LESSER
 exclude ANN.txt
 exclude PLAN.txt
 exclude MANIFEST.in
