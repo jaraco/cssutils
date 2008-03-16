@@ -21,7 +21,7 @@ except ImportError:
     from setuptools import setup, find_packages
 
 def read(*rnames):
-    return codecs.open(os.path.join(os.path.dirname(__file__), *rnames), 
+    return codecs.open(os.path.join(os.path.dirname(__file__), *rnames),
                        encoding='utf-8').read()
 
 long_description = u'\n' + read('README.txt') + u'\n'# + read('CHANGELOG.txt')
@@ -45,7 +45,7 @@ setup(
     author_email='c@cthedot.de',
     url='http://cthedot.de/cssutils/',
     download_url='http://code.google.com/p/cssutils/downloads/list',
-    license='http://cthedot.de/cssutils/license/',
+    license='LGPL 2.1 or later, see also http://cthedot.de/cssutils/',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
     platforms='Python 2.4 and later.',
     classifiers=[
