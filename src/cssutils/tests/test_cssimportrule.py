@@ -262,16 +262,14 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             return examples[i[0]]
         mock('cssutils.util._readURL', mock_obj=m)
         sheet = cssutils.parseString('@import "level1/anything.css" tv "title";', 
-                                     base='/root/')
+                                     href='/root/')
         restore()
         
-        self.assertEqual(sheet.base, '/root/')
-        self.assertEqual(sheet.href, None)
+        self.assertEqual(sheet.href, '/root/')
         
         ir = sheet.cssRules[0]
         self.assertEqual(ir.href, 'level1/anything.css')
         self.assertEqual(ir.styleSheet.href, '/root/level1/anything.css')
-        self.assertEqual(ir.styleSheet.base, '/root/level1/')
         self.assertEqual(ir.styleSheet.ownerRule, ir)
         self.assertEqual(ir.styleSheet.media.mediaText, 'tv')
         self.assertEqual(ir.styleSheet.parentStyleSheet, sheet)
@@ -281,7 +279,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         ir2 = ir.styleSheet.cssRules[0]
         self.assertEqual(ir2.href, 'level2/css.css')
         self.assertEqual(ir2.styleSheet.href, '/root/level1/level2/css.css')
-        self.assertEqual(ir2.styleSheet.base, '/root/level1/level2/')
         self.assertEqual(ir2.styleSheet.ownerRule, ir2)
         self.assertEqual(ir2.styleSheet.media.mediaText, 'all')
         self.assertEqual(ir2.styleSheet.parentStyleSheet, ir.styleSheet)

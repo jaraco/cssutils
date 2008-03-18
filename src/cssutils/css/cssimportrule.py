@@ -311,23 +311,14 @@ class CSSImportRule(cssrule.CSSRule):
         """
         # should simply fail so all errors are catched!
         if self.parentStyleSheet and self.href:
-            href = urlparse.urljoin(self.parentStyleSheet.base, self.href)
-                       
-            # set new base, may actually be simply url including filename?
-            _parts = urlparse.urlsplit(href)
-            _parts2 = list(_parts)
-            # b is a dir and so needs ending /!
-            _parts2[2] = os.path.dirname(_parts[2]) + '/' 
-            base = urlparse.urlunsplit(_parts2)
-            
+            href = urlparse.urljoin(self.parentStyleSheet.href, self.href)
+                                   
             try:
                 # all possible exceptions are ignored and styleSheet is None
                 sheet = cssutils.css.CSSStyleSheet(href=href,
                                                    media=self.media,
                                                    ownerRule=self,
-                                                   title=self.name,
-                                                   base=base
-                                                   )
+                                                   title=self.name)
                 cssText = cssutils.util._readURL(href)
                 if not cssText:
                     raise IOError()
