@@ -122,22 +122,27 @@ if 0:
 
 
 if 1:
-    css = '@import "src/t.css" "title for imported t.css sheet";'
+    css = '@import "sheets/import.css" "import";'
     s = cssutils.parseString(css, 
                              title='root sheet',
-                             base=r'file:///I:/dev-workspace/cssutils/')
+                             href=r'file:///I:/dev-workspace/cssutils/')
     print 
-    print "SHEET:", s    
+    print "0:", s    
     print s.cssText
     print 
     
     ir = s.cssRules[0]
-    print "IMPORTED SHEET:", ir.styleSheet
+    print "1:", ir.styleSheet
     print ir.styleSheet.cssText
     print
      
     ir = ir.styleSheet.cssRules[0]
-    print "IMPORTED SHEET FROM IMPORTED SHEET:", ir.styleSheet
+    print "2:", ir.styleSheet
+    print ir.styleSheet.cssText
+    print
+
+    ir = ir.styleSheet.cssRules[0]
+    print "3:", ir.styleSheet
     print ir.styleSheet.cssText
 
     sys.exit(1)
