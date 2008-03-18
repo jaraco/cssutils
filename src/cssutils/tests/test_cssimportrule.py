@@ -252,21 +252,41 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_styleSheet(self):
         "CSSImportRule.styleSheet"
+        i = [-1] # 
+        examples = [
+            '@import "level2/css.css" "title2";',
+            'a { color: red }'
+        ]
         def m(*p, **kw):
-            return 'a { color: red}'
+            i[0] += 1
+            return examples[i[0]]
         mock('cssutils.util._readURL', mock_obj=m)
-        sheet = cssutils.parseString('@import "anything.css" tv "title";', 
-                                     base='test')
+        sheet = cssutils.parseString('@import "level1/anything.css" tv "title";', 
+                                     base='/root/')
         restore()
         
+        self.assertEqual(sheet.base, '/root/')
+        self.assertEqual(sheet.href, None)
+        
         ir = sheet.cssRules[0]
-        self.assertEqual(ir.href, 'anything.css')
-        self.assertEqual(ir.styleSheet.cssText, 'a {\n    color: red\n    }')
-        self.assertEqual(ir.styleSheet.href, 'anything.css')
-        self.assertEqual(ir.styleSheet.media.mediaText, 'tv')
+        self.assertEqual(ir.href, 'level1/anything.css')
+        self.assertEqual(ir.styleSheet.href, '/root/level1/anything.css')
+        self.assertEqual(ir.styleSheet.base, '/root/level1/')
         self.assertEqual(ir.styleSheet.ownerRule, ir)
+        self.assertEqual(ir.styleSheet.media.mediaText, 'tv')
         self.assertEqual(ir.styleSheet.parentStyleSheet, sheet)
         self.assertEqual(ir.styleSheet.title, 'title')
+        self.assertEqual(ir.styleSheet.cssText, '@import "level2/css.css" "title2";')
+
+        ir2 = ir.styleSheet.cssRules[0]
+        self.assertEqual(ir2.href, 'level2/css.css')
+        self.assertEqual(ir2.styleSheet.href, '/root/level1/level2/css.css')
+        self.assertEqual(ir2.styleSheet.base, '/root/level1/level2/')
+        self.assertEqual(ir2.styleSheet.ownerRule, ir2)
+        self.assertEqual(ir2.styleSheet.media.mediaText, 'all')
+        self.assertEqual(ir2.styleSheet.parentStyleSheet, ir.styleSheet)
+        self.assertEqual(ir2.styleSheet.title, 'title2')
+        self.assertEqual(ir2.styleSheet.cssText, 'a {\n    color: red\n    }')
 
         sheet = cssutils.parseString('@import "CANNOT-FIND.css";')
         ir = sheet.cssRules[0]
