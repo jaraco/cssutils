@@ -41,7 +41,7 @@ if 0:
         print tk
     sys.exit(0)
 
-if 1:
+if 0:
     # copy to test_util
             from email import message_from_string, message_from_file
             import StringIO
@@ -122,16 +122,24 @@ if 1:
 
 
 if 1:
-    css = '@import "t.css" "title";'
-    s = cssutils.parseString(css, base=r'I:\dev-workspace\cssutils\src')
-    print s    
+    css = '@import "src/t.css" "title for imported t.css sheet";'
+    s = cssutils.parseString(css, 
+                             title='root sheet',
+                             base=r'file:///I:/dev-workspace/cssutils/')
+    print 
+    print "SHEET:", s    
     print s.cssText
+    print 
+    
     ir = s.cssRules[0]
-    print ir.styleSheet
+    print "IMPORTED SHEET:", ir.styleSheet
+    print ir.styleSheet.cssText
+    print
+     
+    ir = ir.styleSheet.cssRules[0]
+    print "IMPORTED SHEET FROM IMPORTED SHEET:", ir.styleSheet
+    print ir.styleSheet.cssText
 
-    #r = cssutils.css.CSSImportRule()
-    #r.cssText = css
-    #print r.cssText
     sys.exit(1)
 
 if 0:
