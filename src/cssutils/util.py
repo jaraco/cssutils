@@ -732,7 +732,10 @@ class _SimpleNamespaces(_Namespaces):
 
 def _readURL(url, encoding=None):
     """Retrieve text from url using explicit or detected encoding via encutils
-    """      
+    """
+    if not encoding:
+        encoding = 'css'
+        
     req = urllib2.Request(url)
     try:
         res = urllib2.urlopen(req)
