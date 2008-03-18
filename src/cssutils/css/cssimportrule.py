@@ -10,6 +10,7 @@ __all__ = ['CSSImportRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+import os
 import urlparse
 import xml.dom
 import cssrule
@@ -249,7 +250,7 @@ class CSSImportRule(cssrule.CSSRule):
                 
                 if self.styleSheet:
                     # title is set by href
-                    self.styleSheet._href = self.href
+                    #self.styleSheet._href = self.href
                     self.styleSheet._parentStyleSheet = self.parentStyleSheet
 
     cssText = property(fget=_getCssText, fset=_setCssText,
@@ -310,31 +311,30 @@ class CSSImportRule(cssrule.CSSRule):
         """
         # should simply fail so all errors are catched!
         if self.parentStyleSheet and self.href:
-            url = urlparse.urljoin(self.parentStyleSheet.base, self.href)
+            href = urlparse.urljoin(self.parentStyleSheet.base, self.href)
                        
-#            # set new base, may actually be simply url including filename?
-#            parts = urlparse.urlsplit(url)
-#            parts2 = list(parts)
-#            # b is a dir and so needs ending /!
-#            import os
-#            parts2[2] = os.path.dirname(parts[2]) + '/' 
-#            url = urlparse.urlunsplit(parts2)
+            # set new base, may actually be simply url including filename?
+            _parts = urlparse.urlsplit(href)
+            _parts2 = list(_parts)
+            # b is a dir and so needs ending /!
+            _parts2[2] = os.path.dirname(_parts[2]) + '/' 
+            base = urlparse.urlunsplit(_parts2)
             
             try:
                 # all possible exceptions are ignored and styleSheet is None
-                sheet = cssutils.css.CSSStyleSheet(href=self.href,
+                sheet = cssutils.css.CSSStyleSheet(href=href,
                                                    media=self.media,
                                                    ownerRule=self,
                                                    title=self.name,
-                                                   base=url
+                                                   base=base
                                                    )
-                cssText = cssutils.util._readURL(url)
+                cssText = cssutils.util._readURL(href)
                 if not cssText:
                     raise IOError()
                 sheet.cssText = cssText 
             except Exception, e:
-                self._log.warn(u'CSSImportRule: Error processing imported style sheet: href=%r url=%r: %r'
-                               % (self.href, url, e), neverraise=True)
+                self._log.warn(u'CSSImportRule: Error processing imported style sheet: href=%r: %r'
+                               % (self.href, e), neverraise=True)
             else:
                 self._styleSheet = sheet
                 
