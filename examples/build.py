@@ -13,7 +13,7 @@ atom|title {
     color: #000 !important
     }
 '''
-EXPERR = u'''Error opening url='some-other.css': ValueError('unknown url type: some-other.css',)\nCSSImportRule: Error processing imported style sheet: href='some-other.css' url='some-other.css': IOError()
+EXPERR = u'''Error opening url='some-other.css': ValueError('unknown url type: some-other.css',)\nCSSImportRule: Error processing imported style sheet: href='some-other.css': IOError()
 '''   
 
 def main():
