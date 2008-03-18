@@ -39,29 +39,29 @@ known issues
 0.9.x
 -----
 HEAD
-    - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have new parameters ``title`` and ``base`` (used to dereference e.g. href in @import rules).
+    - **API CHANGE**: ``cssutils.css.CSSSStyleSheet.replaceUrls(replacer)`` has been **DEPRECATED** but is available as an utility function so simply use ``cssutils.replaceUrls(sheet, replacer)`` instead. For the why see ``getUrls(sheet)`` below.
+
+    - **API CHANGE/FEATURE**: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
+
+    - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have a new parameter ``title`` needed for the cascade (yet to be implemented ;).
 
        Also the representation of ``CSSStyleSheet`` has been improved.
 
-    - **API CHANGE**: ``cssutils.css.CSSSStyleSheet.replaceUrls(replacer)`` has been **DEPRECATED** but is available as an utility function so simply use ``cssutils.replaceUrls(sheet, replacer)`` instead. For the why see ``getUrls``.
+    + **FEATURE**: Referenced stylesheet in an @import rule is read and parsed now if possible. Therefor the ``href`` given during parsing (parameter ``href`` to the ``parse*`` functions is used. It is also properly set on imported rules. The ``name`` property of the @import rule is set as the imported sheets ``title`` property.
 
-    + **FEATURE**: Added ``cssutils.getUrls(sheet)``utility method to get all ``url(urlstring)`` values in ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
-
-    + **FEATURE**: Referenced stylesheet in an @import rule is read and parsed now if possible. Therefor a ``base`` may be given to the stylesheet which contains the @import rule or directly to the ``parse*`` functions. The ``name`` of the @import rule is set as the sheets ``title`` property.
+    + **FEATURE**: Added ``cssutils.getUrls(sheet)`` utility method to get all ``url(urlstring)`` values in ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties). As this function and the above mentioned ``replaceUrls(sheet, replacer)`` are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec).
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + FEATURE: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
-
     + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used which also includes simple but sufficient date information.
 
-    + IMPROVEMENT: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
+    + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
         **TODO**: check selector of CSSStyleRule
 
     - TESTS: **Tests need ``minimock`` now!** Install with ``easy_install minimock``
 
-    + LICENSE: The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.2 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updates to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
+    + **LICENSE**: The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.2 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updates to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
 
 
 0.9.5a4 080222
