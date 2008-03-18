@@ -7,6 +7,7 @@ CSS Cascading Style Sheets library for Python
 :Copyright: 2004-2008 Christof Hoeke
 :Version: $Id$
 
+
 Overview
 ========
 A Python package to parse and build CSS Cascading Style Sheets.
@@ -38,7 +39,7 @@ Please visit http://cthedot.de/cssutils/ for full details.
 
 license
 =======
-Copyright © 2005 - 2008 Christof Hoeke
+Copyright 2005 - 2008 Christof Hoeke
 
 cssutils is published under the LGPL 2.1 or later
 
