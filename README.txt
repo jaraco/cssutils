@@ -10,9 +10,22 @@ CSS Cascading Style Sheets library for Python
 
 Overview
 ========
-A Python package to parse and build CSS Cascading Style Sheets.
+A Python package to parse and build CSS Cascading Style Sheets. DOM only, not any rendering facilities!
 
-Based upon and partly implements the following specifications (DOM only, not any rendering facilities):
+Based upon and partly implementing the following specifications :
+
+`CSS 2.1 <http://www.w3.org/TR/CSS21/>`__
+    General CSS rules and properties are defined here
+`CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`__
+    A few errata, mainly the definition of CHARSET_SYM tokens
+`CSS3 Module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
+    Used in parts since cssutils 0.9.4. cssutils tries to use the features from CSS 2.1 and CSS 3 with preference to CSS3 but as this is not final yet some parts are from CSS 2.1
+`MediaQueries <http://www.w3.org/TR/css3-mediaqueries/>`__
+    MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
+`Namespaces <http://dev.w3.org/csswg/css3-namespace/>`__
+    Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version
+`Selectors <http://www.w3.org/TR/css3-selectors/>`__
+    The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
 
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
     DOM for package css
@@ -21,20 +34,12 @@ Based upon and partly implements the following specifications (DOM only, not any
 `CSSOM <http://dev.w3.org/csswg/cssom/>`__
     A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...
 
-`CSS 2.1 <http://www.w3.org/TR/CSS21/>`__
-    Rules and properties are defined here
-`CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`__
-    A few erratas, mainly the definition of CHARSET_SYM tokens
-`CSS3 module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
-    Used in parts since cssutils 0.9.4 which basically tries to use the features from CSS 2.1 and CSS 3.
-`MediaQueries <http://www.w3.org/TR/css3-mediaqueries/>`__
-    MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
-`Namespaces <http://dev.w3.org/csswg/css3-namespace/>`__
-    Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version
-`Selectors <http://www.w3.org/TR/css3-selectors/>`__
-    The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
 
-Please visit http://cthedot.de/cssutils/ for full details.
+The cssutils tokenizer is a customized implementation of `CSS3 Module: Syntax (W3C Working Draft 13 August 2003) <http://www.w3.org/TR/css3-syntax/>`_ which itself is based on the CSS 2.1 tokenizer. It tries to be as compliant as possible but uses some (helpful) parts of the CSS 2.1 tokenizer.
+
+I guess cssutils is neither CSS 2.1 nor CSS 3 compliant but tries to at least be able to parse both grammars including some more real world cases (some CSS hacks are actually parsed and serialized). Both official grammars are not final nor bugfree but still feasible. cssutils aim is not to be fully compliant to any CSS specification (the specifications seem to be in a constant flow anyway) but cssutils *should* be able to read and write as many as possible CSS stylesheets "in the wild" while at the same time implement the official APIs which are well documented. Some minor extensions are provided as well.
+
+Please visit http://cthedot.de/cssutils/ for more details.
 
 
 license
