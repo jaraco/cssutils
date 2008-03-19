@@ -1,4 +1,4 @@
-changelog
+﻿changelog
 =========
 :Version: $Id$
 
@@ -39,6 +39,8 @@ known issues
 0.9.x
 -----
 HEAD
+
+0.9.5b1 080319
     - **API CHANGE**: ``cssutils.css.CSSSStyleSheet.replaceUrls(replacer)`` has been **DEPRECATED** but is available as an utility function so simply use ``cssutils.replaceUrls(sheet, replacer)`` instead. For the why see ``getUrls(sheet)`` below.
 
     - **API CHANGE/FEATURE**: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
@@ -49,7 +51,7 @@ HEAD
 
     + **FEATURE**: Referenced stylesheet in an @import rule is read and parsed now if possible. Therefor the ``href`` given during parsing (parameter ``href`` to the ``parse*`` functions is used. It is also properly set on imported rules. The ``name`` property of the @import rule is set as the imported sheets ``title`` property.
 
-    + **FEATURE**: Added ``cssutils.getUrls(sheet)`` utility method to get all ``url(urlstring)`` values in ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties). As this function and the above mentioned ``replaceUrls(sheet, replacer)`` are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec).
+    + **FEATURE**: Added ``cssutils.getUrls(sheet)`` utility method to get all ``url(urlstring)`` values in ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties). As this function and the above mentioned ``replaceUrls(sheet, replacer)`` are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
@@ -61,7 +63,9 @@ HEAD
 
     - TESTS: **Tests need ``minimock`` now!** Install with ``easy_install minimock``
 
-    + **LICENSE**: The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.2 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updates to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
+    + DOCUMENTATION: Improved docs a bit.
+
+    - **LICENSE**: The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.2 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updates to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
 
 
 0.9.5a4 080222
