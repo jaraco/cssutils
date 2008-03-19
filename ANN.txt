@@ -1,28 +1,28 @@
-what is it
+﻿what is it
 ----------
-A Python package to parse and build CSS Cascading Style Sheets.
+A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer  though!)
 
 main changes
 ------------
-0.9.5a4
-    + **FEATURE**: Defining a namespace with a prefix but an empty namespaceURI is not allowed in XML 1.0 (but in XML 1.1). It is allowed in CSS and therefor also in cssutils.
+0.9.5b1
+    - **API CHANGE**: ``cssutils.css.CSSSStyleSheet.replaceUrls(replacer)`` has been **DEPRECATED** but is available as an utility function so simply use ``cssutils.replaceUrls(sheet, replacer)`` instead. For the why see ``getUrls(sheet)`` below.
 
-    + **FEATURE**: Added property ``css.CSSImportRule.name`` and ``css.CSSMediaRule.name`` as decribed in http://www.w3.org/TR/css3-cascade/#cascading. It is parsed, serialized and available in this new property now. Property ``name`` is a constructor parameter now too.
+    - **API CHANGE/FEATURE**: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
 
-    + **FEATURE**: ``css.UnknownRule`` is now parsed properly ...
+    - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have a new parameter ``title`` needed for the cascade (yet to be implemented ;).
 
-    - **BUGFIX**: Improved escaping ...
+    + **FEATURE**: Referenced stylesheet in an @import rule is read and parsed now if possible. Therefor the ``href`` given during parsing (parameter ``href`` to the ``parse*`` functions is used. It is also properly set on imported rules. The ``name`` property of the @import rule is set as the imported sheets ``title`` property.
 
-    - **BUGFIX**: Fixed serialization of namespaces in Selector objects. Actually all possible namespaced selectors should be preserved now ...
+    + **FEATURE**: Added ``cssutils.getUrls(sheet)`` utility method to get all ``url(urlstring)`` values in ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties). As this function and the above mentioned ``replaceUrls(sheet, replacer)`` are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)
 
-    - **BUGFIX**: Default namespace is no longer used by attribute selectors.
+    + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    - IMPROVEMENT: Added simple testtool for functional tests in /examples plus lots of smaller bugfixes, improvements and refactorings
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used which also includes simple but sufficient date information.
 
+    + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
-For full details for 0.9.5a4 see the relevant CHANGELOG:  http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a4/CHANGELOG.txt
+    - TESTS: **Tests need ``minimock`` now!** Install with ``easy_install minimock``
 
-A few (minor) non-backwards compatible changes have been made, please see http://cssutils.googlecode.com/svn/tags/TAG_0.9.5a4/documentation/migrate.txt for migration help.
 
 
 Note:
@@ -33,7 +33,9 @@ Note:
 
 license
 -------
-cssutils is published under the LGPL, see http://cthedot.de/cssutils/license/
+cssutils is published under the LGPL version 2.1 or later, see http://cthedot.de/cssutils/license/
+
+The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.2 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updates to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
 
 download
 --------
