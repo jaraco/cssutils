@@ -1,8 +1,13 @@
 """base classes for css and stylesheets packages
+
+**this test class does not run standalone!**
+see _readURL() to fix this temporarily
+
 """
 __all__ = []
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
+
 
 import codecs
 from itertools import ifilter
@@ -10,44 +15,44 @@ import re
 import types
 import urllib2
 import xml.dom
-# import encutils
-import cssutils
+import cssutils 
+import encutils # this test class does not run standalone!
 from tokenize2 import Tokenizer
 
 class Base(object):
     """
     Base class for most CSS and StyleSheets classes
-    
-    **Superceded by Base2 which is used for new seq handling class.** 
+
+    **Superceded by Base2 which is used for new seq handling class.**
     See cssutils.util.Base2
 
     Contains helper methods for inheriting classes helping parsing
-    
+
     ``_normalize`` is static as used by Preferences.
     """
     __tokenizer2 = Tokenizer()
-    
+
     _log = cssutils.log
     _prods = cssutils.tokenize2.CSSProductions
 
-    # for more on shorthand properties see 
+    # for more on shorthand properties see
     # http://www.dustindiaz.com/css-shorthand/
     # format: shorthand: [(propname, mandatorycheck?)*]
     _SHORTHANDPROPERTIES = {
             u'background': [],
             u'border': [],
-            u'border-left': [], 
+            u'border-left': [],
             u'border-right': [],
-            u'border-top': [], 
+            u'border-top': [],
             u'border-bottom': [],
-            u'border-color': [], 
-            u'border-style': [], 
+            u'border-color': [],
+            u'border-style': [],
             u'border-width': [],
             u'cue': [],
             u'font': [],
-#                      [('font-weight', True), 
+#                      [('font-weight', True),
 #                      ('font-size', True),
-#                      ('line-height', False), 
+#                      ('line-height', False),
 #                      ('font-family', True)],
             u'list-style': [],
             u'margin': [],
@@ -66,7 +71,7 @@ class Base(object):
         """
         normalizes x, namely:
 
-        - remove any \ before non unicode sequences (0-9a-zA-Z) so for 
+        - remove any \ before non unicode sequences (0-9a-zA-Z) so for
           x=="c\olor\" return "color" (unicode escape sequences should have
           been resolved by the tokenizer already)
         - lowercase
@@ -75,7 +80,7 @@ class Base(object):
             def removeescape(matchobj):
                 return matchobj.group(0)[1:]
             x = Base.__escapes(removeescape, x)
-            return x.lower()        
+            return x.lower()
         else:
             return x
 
@@ -89,9 +94,9 @@ class Base(object):
 
     def _splitNamespacesOff(self, text_namespaces_tuple):
         """
-        returns tuple (text, dict-of-namespaces) or if no namespaces are 
+        returns tuple (text, dict-of-namespaces) or if no namespaces are
         in cssText returns (cssText, {})
-        
+
         used in Selector, SelectorList, CSSStyleRule, CSSMediaRule and
         CSSStyleSheet
         """
@@ -145,12 +150,12 @@ class Base(object):
         else:
             return None
 
-    def _stringtokenvalue(self, token): 
+    def _stringtokenvalue(self, token):
         """
         for STRING returns the actual content without surrounding "" or ''
         and without respective escapes, e.g.::
-            
-             "with \" char" => with " char 
+
+             "with \" char" => with " char
         """
         if token:
             value = token[1]
@@ -158,18 +163,18 @@ class Base(object):
         else:
             return None
 
-    def _uritokenvalue(self, token): 
+    def _uritokenvalue(self, token):
         """
         for URI returns the actual content without surrounding url()
         or url(""), url('') and without respective escapes, e.g.::
-            
-             url("\"") => " 
+
+             url("\"") => "
         """
         if token:
             value = token[1][4:-1].strip()
             if (value[0] in '\'"') and (value[0] == value[-1]):
                 # a string "..." or '...'
-                value = value.replace('\\'+value[0], value[0])[1:-1]            
+                value = value.replace('\\'+value[0], value[0])[1:-1]
             return value
         else:
             return None
@@ -247,23 +252,23 @@ class Base(object):
                 if 'EOF' == typ:
                     resulttokens.append(token)
                     break
-                if u'{' == val: 
+                if u'{' == val:
                     brace += 1
-                elif u'}' == val: 
+                elif u'}' == val:
                     brace -= 1
-                elif u'[' == val: 
+                elif u'[' == val:
                     bracket += 1
-                elif u']' == val: 
+                elif u']' == val:
                     bracket -= 1
                 # function( or single (
                 elif u'(' == val or \
-                     Base._prods.FUNCTION == typ: 
+                     Base._prods.FUNCTION == typ:
                     parant += 1
-                elif u')' == val: 
+                elif u')' == val:
                     parant -= 1
-                    
+
                 resulttokens.append(token)
-                
+
                 if (brace == bracket == parant == 0) and (
                     val in ends or typ in endtypes):
                     break
@@ -296,9 +301,9 @@ class Base(object):
 
     def _adddefaultproductions(self, productions, new=None):
         """
-        adds default productions if not already present, used by 
+        adds default productions if not already present, used by
         _parse only
-        
+
         each production should return the next expected token
         normaly a name like "uri" or "EOF"
         some have no expectation like S or COMMENT, so simply return
@@ -378,16 +383,16 @@ class Base2(Base):
         self._seq = newseq
 
     seq = property(lambda self: self._seq, doc="seq for most classes")
-    
+
     def _tempSeq(self, readonly=False):
-        "get a writeable Seq() which is added later"  
+        "get a writeable Seq() which is added later"
         return Seq(readonly=readonly)
 
     def _adddefaultproductions(self, productions, new=None):
         """
-        adds default productions if not already present, used by 
+        adds default productions if not already present, used by
         _parse only
-        
+
         each production should return the next expected token
         normaly a name like "uri" or "EOF"
         some have no expectation like S or COMMENT, so simply return
@@ -400,7 +405,7 @@ class Base2(Base):
                 rule = cssutils.css.CSSUnknownRule()
                 rule.cssText = self._tokensupto2(tokenizer, token)
                 if rule.wellformed:
-                    seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE, 
+                    seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE,
                                line=token[2], col=token[3])
                 return expected
             else:
@@ -414,7 +419,7 @@ class Base2(Base):
                 new['wellformed'] = False
                 self._log.error(u'Expected EOF but found comment.', token=token)
             seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
-            return expected 
+            return expected
 
         def S(expected, seq, token, tokenizer=None):
             "default impl, does nothing if not token == EOF"
@@ -439,9 +444,9 @@ class Base2(Base):
 class Seq(object):
     """
     property seq of Base2 inheriting classes, holds a list of Item objects.
-    
+
     used only by Selector for now
-    
+
     is normally readonly, only writable during parsing
     """
     def __init__(self, readonly=True):
@@ -451,7 +456,7 @@ class Seq(object):
         """
         self._seq = []
         self._readonly = readonly
-        
+
     def __delitem__(self, i):
         del self._seq[i]
 
@@ -466,7 +471,7 @@ class Seq(object):
 
     def __len__(self):
         return len(self._seq)
-        
+
     def append(self, val, typ, line=None, col=None):
         "if not readonly add new Item()"
         if self._readonly:
@@ -486,8 +491,8 @@ class Seq(object):
 
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"
-        return u'cssutils.%s.%s([\n    %s])' % (self.__module__, 
-                                          self.__class__.__name__, 
+        return u'cssutils.%s.%s([\n    %s])' % (self.__module__,
+                                          self.__class__.__name__,
             u',\n    '.join([u'(%r, %r)' % (item.type, item.value)
                           for item in self._seq]
             ))
@@ -498,9 +503,9 @@ class Seq(object):
 class Item(object):
     """
     an item in the seq list of classes (successor to tuple items in old seq)
-    
+
     each item has attributes:
-    
+
     type
         a sematic type like "element", "attribute"
     value
@@ -519,27 +524,27 @@ class Item(object):
     value = property(lambda self: self.__value)
     line = property(lambda self: self.__line)
     col = property(lambda self: self.__col)
-    
+
     def __repr__(self):
         return "%s.%s(value=%r, type=%r, line=%r, col=%r)" % (
-                self.__module__, self.__class__.__name__, 
+                self.__module__, self.__class__.__name__,
                 self.__value, self.__type, self.__line, self.__col)
 
 
 class ListSeq(object):
     """
     (EXPERIMENTAL)
-    A base class used for list classes like css.SelectorList or 
+    A base class used for list classes like css.SelectorList or
     stylesheets.MediaList
 
     adds list like behaviour running on inhering class' property ``seq``
-    
+
     - item in x => bool
     - len(x) => integer
     - get, set and del x[i]
     - for item in x
     - append(item)
-    
+
     some methods must be overwritten in inheriting class
     """
     def __init__(self):
@@ -595,20 +600,20 @@ class Deprecated(object):
         newFunc.__doc__ = func.__doc__
         newFunc.__dict__.update(func.__dict__)
         return newFunc
-    
-    
+
+
 class _Namespaces(object):
     """
     A dictionary like wrapper for @namespace rules used in a CSSStyleSheet.
     Works on effective namespaces, so e.g. if::
-    
+
         @namespace p1 "uri";
         @namespace p2 "uri";
-    
+
     only the second rule is effective and kept.
-    
+
     namespaces
-        a dictionary {prefix: namespaceURI} containing the effective namespaces 
+        a dictionary {prefix: namespaceURI} containing the effective namespaces
         only. These are the latest set in the CSSStyleSheet.
     parentStyleSheet
         the parent CSSStyleSheet
@@ -616,35 +621,35 @@ class _Namespaces(object):
     def __init__(self, parentStyleSheet, *args):
         "no initial values are set, only the relevant sheet is"
         self.parentStyleSheet = parentStyleSheet
-    
+
     def __contains__(self, prefix):
         return prefix in self.namespaces
-    
+
     def __delitem__(self, prefix):
         """deletes CSSNamespaceRule(s) with rule.prefix == prefix
-        
+
         prefix '' and None are handled the same
         """
         if not prefix:
             prefix = u''
         delrule = self.__findrule(prefix)
-        for i, rule in enumerate(ifilter(lambda r: r.type == r.NAMESPACE_RULE, 
+        for i, rule in enumerate(ifilter(lambda r: r.type == r.NAMESPACE_RULE,
                             self.parentStyleSheet.cssRules)):
             if rule == delrule:
                 self.parentStyleSheet.deleteRule(i)
                 return
 
         raise xml.dom.NamespaceErr('Prefix %r not found.' % prefix)
-            
+
     def __getitem__(self, prefix):
         try:
             return self.namespaces[prefix]
         except KeyError, e:
             raise xml.dom.NamespaceErr('Prefix %r not found.' % prefix)
-    
+
     def __iter__(self):
         return self.namespaces.__iter__()
-    
+
     def __len__(self):
         return len(self.namespaces)
 
@@ -666,23 +671,23 @@ class _Namespaces(object):
 
     def __findrule(self, prefix):
         # returns namespace rule where prefix == key
-        for rule in ifilter(lambda r: r.type == r.NAMESPACE_RULE, 
+        for rule in ifilter(lambda r: r.type == r.NAMESPACE_RULE,
                             reversed(self.parentStyleSheet.cssRules)):
             if rule.prefix == prefix:
                 return rule
 
     def __getNamespaces(self):
         namespaces = {}
-        for rule in ifilter(lambda r: r.type == r.NAMESPACE_RULE, 
+        for rule in ifilter(lambda r: r.type == r.NAMESPACE_RULE,
                             reversed(self.parentStyleSheet.cssRules)):
             if rule.namespaceURI not in namespaces.values():
                 namespaces[rule.prefix] = rule.namespaceURI
         return namespaces
-        
-    namespaces = property(__getNamespaces, 
+
+    namespaces = property(__getNamespaces,
         doc=u'Holds only effective @namespace rules in self.parentStyleSheets'
              '@namespace rules.')
-    
+
     def get(self, prefix, default):
         return self.namespaces.get(prefix, default)
 
@@ -694,10 +699,10 @@ class _Namespaces(object):
 
     def values(self):
         return self.namespaces.values()
-    
+
     def prefixForNamespaceURI(self, namespaceURI):
         """
-        returns effective prefix for given namespaceURI or raises IndexError 
+        returns effective prefix for given namespaceURI or raises IndexError
         if this cannot be found"""
         for prefix, uri in self.namespaces.items():
             if uri == namespaceURI:
@@ -707,24 +712,24 @@ class _Namespaces(object):
     def __str__(self):
         return u"<cssutils.util.%s object parentStyleSheet=%r namespaces=%r "\
                u"at 0x%x>" % (
-                self.__class__.__name__, str(self.parentStyleSheet), 
+                self.__class__.__name__, str(self.parentStyleSheet),
                 self.namespaces, id(self))
 
-  
+
 class _SimpleNamespaces(_Namespaces):
     """
     namespaces used in objects like Selector as long as they are not connected
     to a CSSStyleSheet
     """
     def __init__(self, *args):
-        self.__namespaces = dict(*args)   
-    
+        self.__namespaces = dict(*args)
+
     def __setitem__(self, prefix, namespaceURI):
         self.__namespaces[prefix] = namespaceURI
-            
-    namespaces = property(lambda self: self.__namespaces, 
+
+    namespaces = property(lambda self: self.__namespaces,
                           doc=u'Dict Wrapper for self.sheets @namespace rules.')
-           
+
     def __str__(self):
         return u"<cssutils.util.%s object namespaces=%r at 0x%x>" % (
                 self.__class__.__name__, self.namespaces, id(self))
@@ -733,32 +738,39 @@ class _SimpleNamespaces(_Namespaces):
 def _readURL(url, encoding=None):
     """Retrieve text from url using explicit or detected encoding via encutils
     """
-    if not encoding:
-        encoding = 'css'
-        
-    req = urllib2.Request(url)
     try:
+        req = urllib2.Request(url)
         res = urllib2.urlopen(req)
-    except urllib2.HTTPError, e:
-        cssutils.log.warn(u'Error opening url=%r: %s %s\n%s' % (e.geturl(), 
-                                                                e.code, 
-                                                                e.msg))
     except ValueError, e:
-        cssutils.log.warn(u'Error opening url=%r: %r' % (url, e),
+        # invalid url
+        cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.message),
                           error=ValueError)
+    except urllib2.HTTPError, e:
+        # http error
+        cssutils.log.warn(u'Error opening url=%r: %s %s' % (url, e.code, e.msg),
+                          error=e) # special case error=e!
+    except urllib2.URLError, e:
+        # urlerror like mailto:
+        cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.reason),
+                          error=e) # special case error=e!
     else:
-        # get real URL, may have been redirected
-        url = res.geturl()
         if res:
+            # get real URL, may have been redirected
+            url = res.geturl()
             if not encoding:
-                import encutils
+                # COMMENT OUT IF RUNNING THIS TEST STANDALONE!
                 media_type, encoding = encutils.getHTTPInfo(res)
                 if media_type != u'text/css':
-                    self._log.warn(u'Error opening url=%r: Media type %e != "text/css"' % 
-                                   (url, media_type))                    
+                    self._log.warn(u'Unexpected media type opening url=%s: %r != "text/css"' %
+                                   (url, media_type))
             try:
                 return codecs.getreader(encoding)(res).read()
-            except UnicodeDecodeError, e:
-                cssutils.log.warn(u'Error reading url=%r: %r' % (url, e))
+            except urllib2.HTTPError, e:
+                # http error
+                cssutils.log.warn(u'Error reading url=%r: %s %s' % (url, e.code, e.msg),
+                                  error=e) # special case error=e!
+            except urllib2.URLError, e:
+                cssutils.log.warn(u'Error reading url=%r: %s' % (url, e.reason),
+                                  error=e) # special case error=e!
             except Exception, e:
                 cssutils.log.warn(u'Error reading url=%r: %r' % (url, e))
