@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import logging
+import urllib2
 import xml.dom
 
 class _ErrorHandler(object):
@@ -80,7 +81,7 @@ class _ErrorHandler(object):
         self._log.setLevel(level)
 
     def __handle(self, msg=u'', token=None, error=xml.dom.SyntaxErr,
-                 neverraise=False):
+                 neverraise=False, args=None):
         """
         handles all calls
         logs or raises exception
@@ -94,7 +95,11 @@ class _ErrorHandler(object):
                     msg, token.line, token.col, token.value)
 
         if error and self.raiseExceptions and not neverraise:
-            raise error(msg)
+            if isinstance(error, urllib2.HTTPError) or isinstance(error, urllib2.URLError):
+                # done in util._readURL
+                raise error
+            else:
+                raise error(msg)
         else:
             self._logcall(msg)
 
