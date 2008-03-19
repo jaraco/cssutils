@@ -41,36 +41,26 @@ if 0:
         print tk
     sys.exit(0)
 
-if 0:
+if 1:
     # copy to test_util
+            import urllib2
             from email import message_from_string, message_from_file
             import StringIO
             from minimock import mock, restore
             from cssutils.util import _readURL
-
+            
             class Response(object):
                 """urllib2.Reponse mock"""
-                def __init__(self, url, text=u'', error=None):
+                def __init__(self, url, text=u'', exception=None, args=None):
                     self.url = url
                     self.text = text
-                    self.error = error
-
-                    if error=='HTTPError':
-                        # TODO
-                        raise urllib2.HTTPError(StringIO.StringIO('1'),
-                                                StringIO.StringIO('2'),
-                                                StringIO.StringIO('3'),
-                                                StringIO.StringIO('4'),
-                                                StringIO.StringIO('5')
-                                                )
-                    if error=='ValueError':
-                        raise ValueError(error)
+                    self.exception = exception
+                    self.args = args
 
                 def geturl(self):
                     return self.url
 
                 def info(self):
-
                     class Info(object):
                         def gettype(self):
                             return 'text/css'
@@ -80,62 +70,87 @@ if 0:
                     return Info()
 
                 def read(self):
-                    if self.error:
-                        raise Exception(self.error)
-                    else:
+                    # returns fake text or raises fake exception
+                    if not self.exception:
                         return self.text
+                    else:
+                        raise self.exception(*self.args)
 
-            def urlopen(url, text=None, error=None):
+            def urlopen(url, text=None, exception=None, args=None):
                 # return an mock which returns parameterized Response
                 def x(*ignored):
-                    return Response(url, text=text, error=error)
+                    if exception:
+                        raise exception(*args)
+                    else:
+                        return Response(url, 
+                                        text=text, 
+                                        exception=exception, args=args)
                 return x
 
-            import urllib2
+            
 
             tests = [
-                ('1', u'ä', 'utf-8', u'ä', 'utf-8'),
-                ('2', u'ä', 'utf-8', u'ä', None),
-                ('3', u'ä', 'utf-8', u'ä', 'css'),
-                #('4', 'HTTPError', None, None, urllib2.HTTPError),
-                #('5', 'ValueError', None, None, ValueError),
-                #('6', '404', None, None, xml.dom.SyntaxErr),
+                ('s1', u'ä', 'utf-8', None, u'ä'),
+                ('s2', u'ä', 'utf-8', 'css', u'ä'),
+                ('s3', u'ä', 'utf-8', 'utf-8', u'ä'),
+                ('s4', u'\xe4', 'iso-8859-1', 'iso-8859-1', u'ä'),
+                ('s5', u'123', 'ascii', 'ascii', u'123')
             ]
-            for url, text, textencoding, exp, encoding in tests:
-                if text:
-                    mock_obj = urlopen(url, text=text.encode(textencoding))
-                else:
-                    mock_obj = urlopen(url, error=textencoding)
+            for url, text, textencoding, encoding, exp in tests:
+                mock("urllib2.urlopen",
+                        mock_obj=urlopen(url, text=text.encode(textencoding)))
 
-                mock("urllib2.urlopen", mock_obj=mock_obj)
+                print url, exp == _readURL(url, encoding), exp, _readURL(url, encoding)
 
-                if isinstance(exp, basestring):
-                    print url, exp == _readURL(url, encoding), exp, _readURL(url, encoding)
-                else:
-                    # exception
-                    try:
-                        _readURL(url)
-                    except Exception, e:
-                        print url, e
+            print
+
+            # calling url results in fake exception
+            tests = [
+                #_readURL('1')
+                ('1', ValueError, ['invalid value for url']),
+                ('e2', urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
+                #_readURL('http://cthedot.de/__UNKNOWN__.css')
+                ('e3', urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
+                #_readURL('mailto:a.css')
+                ('mailto:e4', urllib2.URLError, ['urlerror']),
+            ]
+            for url, exception, args in tests:
+                mock("urllib2.urlopen",
+                        mock_obj=urlopen(url, exception=exception, args=args))
+                try:
+                    _readURL(url)
+                except Exception, e:
+                    print type(e), e, url
+
+            restore()
+            # ValueError:
+            #_readURL('1')
+
+            # HTTPError
+            #_readURL('http://cthedot.de/__UNKNOWN__.css')
+            
+            # URLError
+            #_readURL('mailto:a.css')
+            #_readURL('http://localhost/__UNKNOWN__.css')
 
             sys.exit(0)
 
 
 if 1:
     css = '@import "sheets/import.css" "import";'
-    s = cssutils.parseString(css, 
+    s = cssutils.parseString(css,
                              title='root sheet',
                              href=r'file:///I:/dev-workspace/cssutils/')
-    print 
-    print "0:", s    
+    print
+    print "0:", s
     print s.cssText
-    print 
-    
+    print
+
     ir = s.cssRules[0]
     print "1:", ir.styleSheet
     print ir.styleSheet.cssText
     print
-     
+
     ir = ir.styleSheet.cssRules[0]
     print "2:", ir.styleSheet
     print ir.styleSheet.cssText
