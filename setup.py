@@ -30,7 +30,7 @@ setup(
     name='cssutils',
     version=__version__,
     package_dir={'':'src'},
-    packages=find_packages('src'),
+    packages=find_packages('src', exclude='tests'),
     test_suite='cssutils.tests',
     entry_points={
         'console_scripts': [
