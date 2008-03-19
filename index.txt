@@ -4,7 +4,7 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:version: 0.9.5b1 $Id$
+:version: 0.9.5b2 $Id$
 
 
 available documentation
@@ -14,8 +14,8 @@ General
     * `license <LICENSE.txt>`_
 
     + `changelog <CHANGELOG.txt>`_
-    + `version migration (to 0.9.5) <documentation/migrate.txt>`_
-    + `backlog <documentation/backlog.txt>`_
+    + `version migration (to 0.9.5) <docs/migrate.txt>`_
+    + `backlog <docs/backlog.txt>`_
 
 
     see also
@@ -23,8 +23,8 @@ General
         * `cssutils at cthedot <http://cthedot.de/cssutils/>`_
 
 API
-    * `cssutils <documentation/cssutils.txt>`_ package
-    * `cssutils.css <documentation/css.txt>`_ package
-    * `cssutils.stylesheets <documentation/stylesheets.txt>`_ package
-    * `cssutils scripts <documentation/scripts.txt>`_
+    * `cssutils <docs/cssutils.txt>`_ package
+    * `cssutils.css <docs/css.txt>`_ package
+    * `cssutils.stylesheets <docs/stylesheets.txt>`_ package
+    * `cssutils scripts <docs/scripts.txt>`_
     * `generated API docs (Epydoc) <doc/index.html>`_
