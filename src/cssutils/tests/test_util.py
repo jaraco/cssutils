@@ -2,14 +2,20 @@
 """Testcases for cssutils.util"""
 __version__ = '$Id$'
 
+from email import message_from_string, message_from_file
+import StringIO
 import sys
+import urllib2
 import xml.dom
-import basetest
+
 try:
     from minimock import mock, restore
 except ImportError:
     mock = None 
     print "install minimock with ``easy_install minimock`` to run all tests"
+
+import basetest
+import encutils
     
 from cssutils.util import Base, ListSeq, _readURL
 
@@ -129,33 +135,73 @@ class _readURL_TestCase(basetest.BaseTestCase):
             
             class Response(object):
                 """urllib2.Reponse mock"""
-                def __init__(self, url, text, textencoding):
+                def __init__(self, url, text=u'', exception=None, args=None):
                     self.url = url
-                    self.text = text.encode(textencoding)
-                    
+                    self.text = text
+                    self.exception = exception
+                    self.args = args
+
                 def geturl(self):
                     return self.url
-                
+
+                def info(self):
+                    class Info(object):
+                        def gettype(self):
+                            return 'text/css'
+                        def getparam(self, name):
+                            return 'UTF-8'
+
+                    return Info()
+
                 def read(self):
-                    return self.text
-                        
-            def urlopen(url, text, textencoding):
+                    # returns fake text or raises fake exception
+                    if not self.exception:
+                        return self.text
+                    else:
+                        raise self.exception(*self.args)
+
+            def urlopen(url, text=None, exception=None, args=None):
                 # return an mock which returns parameterized Response
                 def x(*ignored):
-                    return Response(url, text, textencoding)
+                    if exception:
+                        raise exception(*args)
+                    else:
+                        return Response(url, 
+                                        text=text, 
+                                        exception=exception, args=args)
                 return x
-                
-            import urllib2
             
-            tests = [# TODO:
-                     #('1', 'utf-8', u'/*äöü*/', 'utf-8', u'/*äöü*/'),
-                     #('2', 'utf-8', u'/*äöü*/', None, u'/*äöü*/')
+            tests = [
+                ('s1', u'ä', 'utf-8', None, u'ä'),
+                ('s2', u'ä', 'utf-8', 'css', u'ä'),
+                ('s3', u'ä', 'utf-8', 'utf-8', u'ä'),
+                ('s4', u'\xe4', 'iso-8859-1', 'iso-8859-1', u'ä'),
+                ('s5', u'123', 'ascii', 'ascii', u'123')
             ]
-            for url, text, textencoding, encoding, exp in tests:    
-                mock("urllib2.urlopen", 
-                     mock_obj=urlopen(url, text, textencoding))           
-                self.assertEqual(exp, 
-                                 _readURL(url, encoding))
+            for url, text, textencoding, encoding, exp in tests:
+                mock("urllib2.urlopen",
+                        mock_obj=urlopen(url, text=text.encode(textencoding)))
+
+                #print url, exp == _readURL(url, encoding), exp, _readURL(url, encoding)
+                self.assertEqual(exp, _readURL(url, encoding))
+
+
+            # calling url results in fake exception
+            tests = [
+                #_readURL('1')
+                ('1', ValueError, ['invalid value for url']),
+                ('e2', urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
+                #_readURL('http://cthedot.de/__UNKNOWN__.css')
+                ('e3', urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
+                #_readURL('mailto:a.css')
+                ('mailto:e4', urllib2.URLError, ['urlerror']),
+            ]
+            for url, exception, args in tests:
+                mock("urllib2.urlopen",
+                        mock_obj=urlopen(url, exception=exception, args=args))
+                self.assertRaises(exception, _readURL, url)
+
+            restore()
         
 
 if __name__ == '__main__':
