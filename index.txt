@@ -4,7 +4,7 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:version: 0.9.5a5 $Id$
+:version: 0.9.5b1 $Id$
 
 
 available documentation
@@ -14,7 +14,7 @@ General
     * `license <LICENSE.txt>`_
 
     + `changelog <CHANGELOG.txt>`_
-    + `version migration (to 0.9.5) <documentation/migrate.txt>`_ 
+    + `version migration (to 0.9.5) <documentation/migrate.txt>`_
     + `backlog <documentation/backlog.txt>`_
 
 
@@ -28,10 +28,3 @@ API
     * `cssutils.stylesheets <documentation/stylesheets.txt>`_ package
     * `cssutils scripts <documentation/scripts.txt>`_
     * `generated API docs (Epydoc) <doc/index.html>`_
-
-
-status of the tokenizer
-=======================
-The tokenizer is a customized implementation of `CSS3 Module: Syntax (W3C Working Draft 13 August 2003) <http://www.w3.org/TR/css3-syntax/>`_ which itself is based in the CSS 2.1 tokenizer. It tries to be as simple as possible but uses some (helpful) parts of the CSS 2.1 tokenizer.
-
-I guess cssutils is therefor neither CSS 2.1 not CSS 3 compliant but tries to at least be able to parse both grammars as close as possible. Both official grammars are not final nor bugfree but still feasible.

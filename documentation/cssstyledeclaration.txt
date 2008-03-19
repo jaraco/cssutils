@@ -9,7 +9,7 @@ CSSStyleDeclaration
 
 CSSStyleDeclaration
 ===================
-A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule. It is iterable which yield all *effective* properties. It also supports ``in``.
+A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule. It is a generator which yields all *effective* properties (see Property_). It also supports ``in``.
 
 Example::
 
@@ -36,11 +36,11 @@ cssText
 
 length
     The number of distinct properties that have been explicitly set
-    in this declaration. These are properties with a different ``name``
+    in this declaration. These are properties with a different **normalized** ``name``
     only. ``item()`` and ``length`` work on the same set here.
 parentRule
     The CSS rule that contains this declaration block or
-    None if this CSSStyleDeclaration is not attached to a CSSRule.
+    ``None`` if this CSSStyleDeclaration is not attached to a CSSRule.
 
 methods
 -------
@@ -50,14 +50,22 @@ getCssText(separator=None)
     returns serialized property cssText, each property separated by
     given ``separator`` which may e.g. be ``u''`` to use
     cssText directly in an HTML style attribute. ";" is always part of
-    each property (except the last one) and can **not** be changed by giving
+    each property (except the last one) and can **not** be changed by giving a
     separator!
 
 getProperties(name=None, all=False):
     returns a list of Property objects set in this declaration in order
     they have been set e.g. in the original stylesheet
 
-The following methods all have a parameter ``normalize`` which if set to ``False`` results in handling of ``name`` not being normalized. Default behaviour is to always access the effective property in this rule (the last set or the one with the highest priority). An *un*\-normalized name like ``c\\olor`` gives access to the property with this actual name. To work on all properties it is probably easiest to iterate directly over all properties or to use ``getProperties(all=True)``.
+The following methods all have a parameter ``normalize`` which if set to ``False`` results in handling of ``name`` not being normalized. Default behaviour is to always access the effective property in this rule (the last set or the one with the highest priority). An *un*\-normalized name like ``c\olor`` gives access to the property with this specific name. To work on *all* properties it is probably easiest to use ``getProperties(all=True)``.
+
+Example CSS::
+
+    color: red;
+    c\olor: green !important;
+    col\or: blue;
+
+Normally you want to access the effective color (green!) so simply omit ``normalize``.
 
 getProperty(name, normalize=True):
     returns the effective Property object.
@@ -88,28 +96,31 @@ CSSStyleDeclaration implements CSS2Properties so most CSS 2 properties may be us
     declaration.color = 'red'
     declaration.backgroundColor = '#000'
 
-As some properties contain a "-" character these have to be used in camelcase instead!
+As some properties contain a "-" character these have to be used in camelcase!
 
 cssutils implements only a subset of CSS2Properties so setting e.g. ``declaration.border = '1px solid red'`` does only set border but **not** ``border-style``, ``border-color`` etc which it should. This may be implemented later.
 
 
+.. _Property:
+
 Property
 ========
-A Property is used in a ``CSSStyleDeclaration`` but also in a `MediaQuery <stylesheets.txt>`_ object. Only in the latter case a value is optional and a priority not used at all. As MediaQuery is not a finished spec so some details may still change.
+A Property is used in a ``CSSStyleDeclaration`` but also in a `MediaQuery <stylesheets.txt>`_ object. Only in the latter case a value is optional and a priority not used at all. As MediaQuery is not a finished spec some details may still change.
 
 A property has the following attributes:
 
 name
-    normalized name of the property, e.g. "color" when name is "c\olor" (since 0.9.5)
+    normalized name of the property, e.g. ``color`` when name is ``c\olor`` (since 0.9.5)
 literalname (since 0.9.5)
     original name of the property in the source CSS which is not normalized
-    e.g. "c\olor"
+    e.g.
+    ``c\olor``
 cssValue
-    the relevant CSSValue instance for this property
+    the relevant ``CSSValue`` instance for this property. As CSSOM deprecates interface ``CSSValue`` in favour of a simpler API usage of ``cssValue`` is **not recommended**.  Simply use ``value`` instead.
 value
-    the string value of the property, same as cssValue.cssText
+    the string value of the property, same as ``cssValue.cssText`` (but see the notes for ``cssValue``
 priority
-    of the property (currently only u"important" (until 0.9.5 this was "!important") or None)
+    of the property, from 0.9.5 ``important`` or ``None`` only (until 0.9.5 this was ``!important``, not the additional "!")
 
-DEPRECATED normalname (since 0.9.5)
-    normalized name of the property, e.g. "color" when name is "c\olor"
+normalname *DEPRECATED* since 0.9.5
+    use ``name`` and ``normalname`` instead

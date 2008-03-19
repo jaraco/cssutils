@@ -42,12 +42,14 @@ Options to parse a given stylesheet:
 
 * use the helper functions:
 
-  - ``cssutils.parse(filename, encoding)``
-  - ``cssutils.parseString(cssText, href=None, media=None)``
-
-* or get an instance of ``cssutils.CSSParser`` and use the provided ``parse`` methods which are the same as the helper functions. The parser is reusable.
+  - ``cssutils.parseString(cssText, encoding=None, href=None, media=None, title=None)``
+  - ``cssutils.parse(filename, encoding=None, href=None, media=None, title=None)``
+  - ``cssutils.parseURL(url, encoding=None, href=None, media=None, title=None)``
 
 * parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. Setting explicit properties (e.g. ``CSSStyleSheet.cssText`` with a syntactically incorrect sheet raises the relevant exeptions.
+
+* or get an instance of ``cssutils.CSSParser`` and use the provided ``parse`` methods which are the same as the helper functions. The parser is reusable. With parameter ``raiseExceptions=False`` it is possible to define how the parser should cope when encountering errors.
+
 
 
 .. _CSSSerializer:
@@ -57,9 +59,9 @@ serializing CSS
 
 Serializer
 ----------
-There is only one global serializer used throughout the library. You may configure it or even replace it with your own.
+There is a single global serializer used throughout the library. You may configure it by setting specific Preferences_ or completely replace it with your own.
 
-A custom serializer must implement all methods the default one implements. Easiest would be to subclass ``cssutils.serialize.Serializer``.
+A custom serializer must implement all methods the default one provides. Easiest would be to subclass ``cssutils.serialize.Serializer``.
 
 To set a new serializer, use::
 
@@ -68,6 +70,8 @@ To set a new serializer, use::
 
 You may also set ``cssutils.ser`` directly but the above method is the preferred one.
 
+
+.. _Preferences:
 
 Preferences
 -----------
@@ -78,18 +82,18 @@ To set a preference use::
     sheet = CSSStyleSheet()
     sheet.setSerializerPref(pref, value)
 
-You may also set ``cssutils.ser.prefs.pref`` directly but the above method is the preferred one.
+You may also set ``cssutils.ser.prefs.pref = value`` directly.
 
 Preferences are always used *globally*, so for all stylesheets until preferences are set again.
 
 group settings
 ~~~~~~~~~~~~~~
-Two methods are available to use a predefined set of setting:
+Two methods are available to use a predefined set of settings:
 
 useDefaults()
-    reset all preference options to the default value
+    reset all preference options to the default values
 useMinified()
-    sets options to achive a minified stylesheet
+    sets options to achieve a minified stylesheet
 
 
 individual settings
@@ -153,13 +157,13 @@ validOnly = False
 
 .. _functions:
 
-functions
-=========
+helper functions
+================
 
 .. _getUrls:
 
 def getUrls(sheet):
-    Utility function to get all ``url(urlstring)`` values in
+    Utility function to get all ``url(value)`` values in
     ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
     of given CSSStyleSheet ``sheet``.
 

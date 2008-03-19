@@ -42,18 +42,13 @@ The CSSStyleSheet contains all rules. It consists of the different rules defined
 
 Attributes
 ----------
-Also inherits properties from stylesheet.StyleSheet.
+Also inherits properties from stylesheet.StyleSheet (e.g. ``href``)
 
 .. _cssRules:
 
 cssRules
     A css::CSSRuleList of all CSS rules contained within the
     stylesheet.
-
-.. _ownerRule:
-
-ownerRule
-    of type CSSRule, readonly (NOT IMPLEMENTED YET)
 
 .. _encoding:
 
@@ -70,6 +65,13 @@ namespaces: a dict like object (cssutils only)
     A dict of {prefix: namespaceURI} mapping.
 
     Using CSSNamespaceRule directly is not really needed anymore (except if you want to add comments in these rules).
+
+.. _ownerRule:
+
+ownerRule
+    of type CSSRule, readonly (NOT IMPLEMENTED YET)
+
+
 
 Methods
 -------
@@ -105,7 +107,8 @@ setSerializerPref(pref, value)
     stylesheet. See cssutils.serialize.Preferences for possible
     preferences to be set.
 
-``replaceUrls(replacer)`` has been *DEPRECATED* since 0.9.5. Use ``cssutils.replaceUrls(sheet, replacer)`` instead.
+replaceUrls(replacer) *DEPRECATED*
+    ``replaceUrls(replacer)`` has been *DEPRECATED* since 0.9.5. Use ``cssutils.replaceUrls(sheet, replacer)`` instead.
 
 CSSCharsetRule
 ==============
@@ -133,9 +136,9 @@ href
 media
     The media information where the referenced style sheet should be used. See MediaList_ for more details.
 name
-    A name like a HTML named Stylesheet. (Not very useful yet.)
+    A name like a HTML named Stylesheet. (Not very useful yet but may be used when implementing the cascade.)
 stylesheet
-    The referenced CSSStyleSheet_. Currently always ``None`` as it is **not implemented**.
+    The referenced CSSStyleSheet_. (Implemented from 0.9.5b1.)
 
 
 CSSMediaRule
@@ -147,13 +150,15 @@ media
 cssRules
     A css::CSSRuleList of all CSS rules contained within the
     media block.
+name
+    A name like a HTML named Stylesheet. (Not very useful yet but may be used when implementing the cascade.)
 
 CSSFontFaceRule
 ===============
 Holds font related definitions. Hardly used in any CSS implementation, I only know PrinceXML which uses it to defined fonts.
 
-style
-    The declaration-block of this rule
+`style <cssstyledeclaration.txt>`_
+    The declaration-block of this rule (see `CSSStyleDeclaration <cssstyledeclaration.txt>`_)
 
 CSSPageRule
 ===========
@@ -161,8 +166,8 @@ Holds page related definitions. Mainly useful for print sheets, used extensively
 
 selectorText
     The parsable textual representation of the page selector for the rule.
-style
-    The declaration-block of this rule
+`style <cssstyledeclaration.txt>`_
+    The declaration-block of this rule (see `CSSStyleDeclaration <cssstyledeclaration.txt>`_)
 
 CSSStyleRule
 ============
@@ -174,7 +179,7 @@ selectorText
     The textual representation of the selector for the rule set.
 selectorList: of type SelectorList (cssutils only)
     A list of all Selectors for the rule set.
-style
+`style <cssstyledeclaration.txt>`_
     The declaration-block of this rule (see `CSSStyleDeclaration <cssstyledeclaration.txt>`_)
 
 
