@@ -4,25 +4,14 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 main changes
 ------------
-0.9.5b1
-    - **API CHANGE**: ``cssutils.css.CSSSStyleSheet.replaceUrls(replacer)`` has been **DEPRECATED** but is available as an utility function so simply use ``cssutils.replaceUrls(sheet, replacer)`` instead. For the why see ``getUrls(sheet)`` below.
+0.9.5b2
+    + **BUGFIX**: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information if passed along. Encoding of references sheet default to 'css' now.
 
-    - **API CHANGE/FEATURE**: ``parseString`` has a new parameter ``encoding`` now which is used if a ``str`` is given for cssText. Otherwise it is ignored. (patch by doerwalter)
+    + BUGFIX: Setting ``atkeyword`` of @rules checks if it is a valid keyword for the specific rule. E.g. an @import rule accepts ``@im\port`` but not ``@namespace``.
+    + BUGFIX: Fixed setting ``name`` of CSSImportRule. Setting ``name`` other than with a string results in xml.dom.SyntaxErr raised now
+    + BUGFIX: ``CSSStyleSheet.type`` with a fixed value of "text/css" and other readonly properties are really readonly now
 
-    - API CHANGE/FEATURE: ``.parse() .parseString()`` and constructor of ``CSSStyleSheet`` have a new parameter ``title`` needed for the cascade (yet to be implemented ;).
-
-    + **FEATURE**: Referenced stylesheet in an @import rule is read and parsed now if possible. Therefor the ``href`` given during parsing (parameter ``href`` to the ``parse*`` functions is used. It is also properly set on imported rules. The ``name`` property of the @import rule is set as the imported sheets ``title`` property.
-
-    + **FEATURE**: Added ``cssutils.getUrls(sheet)`` utility method to get all ``url(urlstring)`` values in ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties). As this function and the above mentioned ``replaceUrls(sheet, replacer)`` are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)
-
-    + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
-
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used which also includes simple but sufficient date information.
-
-    + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
-
-    - TESTS: **Tests need ``minimock`` now!** Install with ``easy_install minimock``
-
+    - IMPROVEMENT: Added ``__repr__`` for ``cssutils.util._SimpleNamespaces`` which is used in a selector repr.
 
 
 Note:
