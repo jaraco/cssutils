@@ -25,6 +25,12 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(None, self.s.ownerNode)
         self.assertEqual(None, self.s.parentStyleSheet)
         self.assertEqual(u'', self.s.title)
+        
+        # check that type is readonly
+        self.assertRaises(AttributeError, self.r.__setattr__, 'href', 'x')
+        self.assertRaises(AttributeError, self.r.__setattr__, 'parentStyleSheet', 'x')
+        self.assertRaises(AttributeError, self.r.__setattr__, 'ownerNode', 'x')
+        self.assertRaises(AttributeError, self.r.__setattr__, 'type', 'x')
 
     def test_iter(self):
         "CSSStyleSheet.__iter__()"
