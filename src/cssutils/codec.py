@@ -465,7 +465,8 @@ class StreamReader(codecs.StreamReader):
 
     def decode(self, input, errors='strict'):
         if self.streamreader is None:
-            self.encoding = _detectencoding_str(input, False)
+            if self.encoding is None:
+                self.encoding = _detectencoding_str(input, False)
             if self.encoding is None:
                 return (u"", 0) # no encoding determined yet, so no output
             if self.encoding == "css":
