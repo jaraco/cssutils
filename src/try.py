@@ -41,7 +41,7 @@ if 0:
         print tk
     sys.exit(0)
 
-if 1:
+if 0:
     s = cssutils.parseString('@import "a";')
     ir = s.cssRules[0]
     ir.atkeyword = "@imp\\or"
@@ -51,7 +51,7 @@ if 1:
     
     sys.exit(0)
 
-if 1:
+if 0:
     # copy to test_util
             import urllib2
             from email import message_from_string, message_from_file
@@ -147,10 +147,12 @@ if 1:
 
 
 if 1:
+    import urlparse
     css = '@import "sheets/import.css" "import";'
     s = cssutils.parseString(css,
                              title='root sheet',
-                             href=r'file:///I:/dev-workspace/cssutils/')
+                             href=r'file:///I:/dev-workspace/cssutils/x.css',
+                             encoding='utf-8')
     print
     print "0:", s
     print s.cssText
@@ -158,17 +160,21 @@ if 1:
 
     ir = s.cssRules[0]
     print "1:", ir.styleSheet
-    print ir.styleSheet.cssText
+    irs = ir.styleSheet
+    print irs.cssText
+    sr = irs.cssRules[1]
+    img = sr.style.getProperty('background-image').cssValue.getStringValue()
+    print urlparse.urljoin(irs.href, img)
     print
 
-    ir = ir.styleSheet.cssRules[0]
-    print "2:", ir.styleSheet
-    print ir.styleSheet.cssText
-    print
-
-    ir = ir.styleSheet.cssRules[0]
-    print "3:", ir.styleSheet
-    print ir.styleSheet.cssText
+#    ir = ir.styleSheet.cssRules[0]
+#    print "2:", ir.styleSheet
+#    print ir.styleSheet.cssText
+#    print
+#
+#    ir = ir.styleSheet.cssRules[0]
+#    print "3:", ir.styleSheet
+#    print ir.styleSheet.cssText
 
     sys.exit(1)
 
