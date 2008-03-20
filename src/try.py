@@ -42,6 +42,16 @@ if 0:
     sys.exit(0)
 
 if 1:
+    s = cssutils.parseString('@import "a";')
+    ir = s.cssRules[0]
+    ir.atkeyword = "@imp\\or"
+    cssutils.ser.prefs.defaultAtKeyword = False
+    print ir.cssText
+    
+    
+    sys.exit(0)
+
+if 1:
     # copy to test_util
             import urllib2
             from email import message_from_string, message_from_file
