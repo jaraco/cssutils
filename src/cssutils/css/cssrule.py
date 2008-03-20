@@ -114,7 +114,7 @@ class CSSRule(cssutils.util.Base2):
                                   self._normalize(self.atkeyword)):
             self._atkeyword = akw
         else:
-            self._log.error(u'@rule: Invalid atkeyword for this %r rule: %r' % 
+            self._log.error(u'%s: Invalid atkeyword for this rule: %r' % 
                             (self._normalize(self.atkeyword), akw), 
                             error=xml.dom.InvalidModificationErr)
 
