@@ -39,6 +39,10 @@ known issues
 0.9.x
 -----
 HEAD
+
+0.9.5b2 0803..
+    + **BUGFIX**: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information if passed along. Encoding of references sheet default to 'css' now.
+
     + BUGFIX: Setting ``atkeyword`` of @rules checks if it is a valid keyword for the specific rule. E.g. an @import rule accepts ``@im\port`` but not ``@namespace``.
     + BUGFIX: Fixed setting ``name`` of CSSImportRule. Setting ``name`` other than with a string results in xml.dom.SyntaxErr raised now
     + BUGFIX: ``CSSStyleSheet.type`` with a fixed value of "text/css" and other readonly properties are really readonly now
