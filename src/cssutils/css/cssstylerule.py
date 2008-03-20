@@ -42,7 +42,7 @@ class CSSStyleRule(cssrule.CSSRule):
         LBRACE S* declaration [ ';' S* declaration ]* '}' S*
         ;
     """
-    type = cssrule.CSSRule.STYLE_RULE
+    type = property(lambda self: cssrule.CSSRule.STYLE_RULE)
 
     def __init__(self, selectorText=None, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
