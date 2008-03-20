@@ -25,6 +25,9 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         # until any properties
         self.assertEqual(u'', r.cssText)
 
+        # only possible to set @... similar name
+        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
+
     def test_cssText(self):
         "CSSFontFaceRule.cssText"
         tests = {

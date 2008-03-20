@@ -220,6 +220,12 @@ class CSSRuleTestCase(basetest.BaseTestCase):
             self.assertRaises(xml.dom.InvalidModificationErr,
                  self.r._setCssText, test)
 
+        # check that type is readonly
+        self.assertRaises(AttributeError, self.r.__setattr__, 'parentRule', None)
+        self.assertRaises(AttributeError, self.r.__setattr__, 'parentStyleSheet', None)
+        self.assertRaises(AttributeError, self.r.__setattr__, 'type', 1)
+        self.assertRaises(AttributeError, self.r.__setattr__, 'typeString', "")
+
 
 if __name__ == '__main__':
     import unittest

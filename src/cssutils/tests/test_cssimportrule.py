@@ -76,6 +76,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(u'print', self.r.media.mediaText)
         self.assertEqual(u'n', self.r.name)
 
+        # only possible to set @... similar name
+        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
+
     def test_cssText(self):
         "CSSImportRule.cssText"
         tests = {
@@ -241,7 +244,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_name(self):
         "CSSImportRule.name"
-        r = cssutils.css.CSSImportRule('x')
+        r = cssutils.css.CSSImportRule('x', name='0')
+        self.assertEqual('0', r.name)
+        self.assertEqual(u'@import url(x) "0";', r.cssText)
 
         r.name = "n"
         self.assertEqual('n', r.name)
@@ -249,6 +254,22 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         r.name = '"'
         self.assertEqual('"', r.name)
         self.assertEqual(u'@import url(x) "\\"";', r.cssText)
+        
+        r.hreftype = 'string'
+        self.assertEqual(u'@import "x" "\\"";', r.cssText)
+        r.name = "123"
+        self.assertEqual(u'@import "x" "123";', r.cssText)
+
+        r.name = None
+        self.assertEqual(None, r.name)
+        self.assertEqual(u'@import "x";', r.cssText)
+
+        r.name = ""
+        self.assertEqual(None, r.name)
+        self.assertEqual(u'@import "x";', r.cssText)
+        
+        self.assertRaises(xml.dom.SyntaxErr, r._setName, 0)
+        self.assertRaises(xml.dom.SyntaxErr, r._setName, 123)
 
     def test_styleSheet(self):
         "CSSImportRule.styleSheet"

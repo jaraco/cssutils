@@ -37,6 +37,9 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('print', r.media.mediaText)
         self.assertEqual('name', r.name)
 
+        # only possible to set @... similar name
+        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
+
     def test_iter(self):
         "CSSMediaRule.__iter__()"
         m = cssutils.css.CSSMediaRule()
@@ -165,7 +168,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
                          r.cssText)
 
         r.name = ''
-        self.assertEqual('', r.name)
+        self.assertEqual(None, r.name)
         self.assertEqual(u'@media all {\n    a {\n        left: 0\n        }\n    }',
                          r.cssText)
 
@@ -173,6 +176,9 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(None, r.name)
         self.assertEqual(u'@media all {\n    a {\n        left: 0\n        }\n    }',
                          r.cssText)
+                
+        self.assertRaises(xml.dom.SyntaxErr, r._setName, 0)
+        self.assertRaises(xml.dom.SyntaxErr, r._setName, 123)
 
     def test_deleteRule(self):
         "CSSMediaRule.deleteRule"

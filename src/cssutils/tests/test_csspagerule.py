@@ -26,6 +26,9 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         # until any properties
         self.assertEqual(u'', r.cssText)
 
+        # only possible to set @... similar name
+        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
+
     def test_InvalidModificationErr(self):
         "CSSPageRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@page')

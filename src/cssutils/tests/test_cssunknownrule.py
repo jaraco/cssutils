@@ -62,8 +62,8 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
             '@x {}': u'@x {\n}',
             '@x{ \n \t \f\r}': u'@x {\n}',
             '@x {\n    [()]([ {\n    }]) {\n    }\n    }': None,
-            '@a {\n    @b;\n    }': None,
-            '''@a {
+            '@x {\n    @b;\n    }': None,
+            '''@x {
     @b {
         x: 1x;
         y: 2y;

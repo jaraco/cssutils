@@ -50,6 +50,9 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSNamespaceRule(cssText=css)
         self.assertEqual(r.cssText, css)       
 
+        # only possible to set @... similar name
+        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
+
     def test_cssText(self):
         "CSSNamespaceRule.cssText"
         # cssText may only be set initalially
