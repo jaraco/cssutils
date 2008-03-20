@@ -52,7 +52,7 @@ class CSSImportRule(cssrule.CSSRule):
       [STRING|URI] S* [ medium [ COMMA S* medium]* ]? S* STRING? S* ';' S*
       ;
     """
-    type = cssrule.CSSRule.IMPORT_RULE
+    type = property(lambda self: cssrule.CSSRule.IMPORT_RULE)
 
     def __init__(self, href=None, mediaText=u'all', name=None, 
                  parentRule=None, parentStyleSheet=None, readonly=False):
@@ -69,7 +69,7 @@ class CSSImportRule(cssrule.CSSRule):
         """
         super(CSSImportRule, self).__init__(parentRule=parentRule, 
                                             parentStyleSheet=parentStyleSheet)
-        self.atkeyword = u'@import'
+        self._atkeyword = u'@import'
         self.hreftype = None
         self._styleSheet = None
 
@@ -282,24 +282,31 @@ class CSSImportRule(cssrule.CSSRule):
                      " of type MediaList")
 
     def _setName(self, name):
-        # update seq
-        for i, item in enumerate(self.seq):
-            val, typ = item.value, item.type
-            if 'name' == typ:
-                self._seq[i] = (name, typ, item.line, item.col)
-                break
+        """raises xml.dom.SyntaxErr if name is not a string"""
+        if isinstance(name, basestring) or name is None:
+            # "" or ''
+            if not name:
+                name = None
+            # update seq
+            for i, item in enumerate(self.seq):
+                val, typ = item.value, item.type
+                if 'name' == typ:
+                    self._seq[i] = (name, typ, item.line, item.col)
+                    break
+            else:
+                # append
+                seq = self._tempSeq()
+                for item in self.seq:
+                    # copy current seq
+                    seq.append(item.value, item.type, item.line, item.col)
+                seq.append(name, 'name')
+                self._setSeq(seq)
+            self._name = name
+            # set title of referred sheet
+            if self.styleSheet:
+                self.styleSheet.title = name
         else:
-            # append
-            seq = self._tempSeq()
-            for item in self.seq:
-                # copy current seq
-                seq.append(item.value, item.type, item.line, item.col)
-            seq.append(self.href, 'href')
-            self._setSeq(seq)
-        self._name = name
-        # set title of referred sheet
-        if self.styleSheet:
-            self.styleSheet.title = name
+            self._log.error(u'CSSImportRule: Not a valid name: %s' % name)
 
     name = property(lambda self: self._name, _setName,
                     doc=u"An optional name for the imported sheet")

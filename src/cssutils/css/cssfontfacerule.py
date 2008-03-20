@@ -35,7 +35,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             '{' S* declaration [ ';' S* declaration ]* '}' S*
           ;
     """
-    type = cssrule.CSSRule.FONT_FACE_RULE
+    type = property(lambda self: cssrule.CSSRule.FONT_FACE_RULE)
     # constant but needed:
     wellformed = True
 
@@ -49,7 +49,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
         """
         super(CSSFontFaceRule, self).__init__(parentRule=parentRule, 
                                               parentStyleSheet=parentStyleSheet)
-        self.atkeyword = u'@font-face'
+        self._atkeyword = u'@font-face'
         if style:
             self.style = style
         else:

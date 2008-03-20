@@ -46,7 +46,7 @@ class CSSCharsetRule(cssrule.CSSRule):
     BUT: Only valid format is:
         @charset "ENCODING";
     """
-    type = cssrule.CSSRule.CHARSET_RULE
+    type = property(lambda self: cssrule.CSSRule.CHARSET_RULE)
 
     def __init__(self, encoding=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
@@ -60,6 +60,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         """
         super(CSSCharsetRule, self).__init__(parentRule=parentRule, 
                                              parentStyleSheet=parentStyleSheet)
+        self._atkeyword = '@charset'
         self._encoding = None
         if encoding:
             self.encoding = encoding

@@ -48,7 +48,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
       : IDENT
       ;
     """
-    type = cssrule.CSSRule.NAMESPACE_RULE
+    type = property(lambda self: cssrule.CSSRule.NAMESPACE_RULE)
 
     def __init__(self, namespaceURI=None, prefix=None, cssText=None, 
                  parentRule=None, parentStyleSheet=None, readonly=False):
@@ -83,7 +83,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
         """
         super(CSSNamespaceRule, self).__init__(parentRule=parentRule, 
                                                parentStyleSheet=parentStyleSheet)
-        self.atkeyword = u'@namespace'
+        self._atkeyword = u'@namespace'
         self._prefix = u''
         self._namespaceURI = None
         
@@ -288,12 +288,12 @@ class CSSNamespaceRule(cssrule.CSSRule):
     prefix = property(lambda self: self._prefix, _setPrefix,
         doc="Prefix used for the defined namespace.")
 
-    def _setParentStyleSheet(self, parentStyleSheet):
-        self._parentStyleSheet = parentStyleSheet
-
-    parentStyleSheet = property(lambda self: self._parentStyleSheet, 
-                                _setParentStyleSheet,
-                                doc=u"Containing CSSStyleSheet.")
+#    def _setParentStyleSheet(self, parentStyleSheet):
+#        self._parentStyleSheet = parentStyleSheet
+#
+#    parentStyleSheet = property(lambda self: self._parentStyleSheet, 
+#                                _setParentStyleSheet,
+#                                doc=u"Containing CSSStyleSheet.")
 
     wellformed = property(lambda self: self.namespaceURI is not None)
 
