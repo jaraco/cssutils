@@ -15,8 +15,7 @@ import re
 import types
 import urllib2
 import xml.dom
-import cssutils 
-import encutils # this test class does not run standalone!
+import cssutils
 from tokenize2 import Tokenizer
 
 class Base(object):
@@ -734,6 +733,10 @@ class _SimpleNamespaces(_Namespaces):
         return u"<cssutils.util.%s object namespaces=%r at 0x%x>" % (
                 self.__class__.__name__, self.namespaces, id(self))
 
+    def __repr__(self):
+        return u"cssutils.util.%s(%r)" % (self.__class__.__name__,
+            self.namespaces)
+
 
 def _readURL(url, encoding=None):
     """Retrieve text from url using explicit or detected encoding via encutils
@@ -759,6 +762,7 @@ def _readURL(url, encoding=None):
             url = res.geturl()
             if not encoding:
                 # COMMENT OUT IF RUNNING THIS TEST STANDALONE!
+                import encutils # this test class does not run standalone!
                 media_type, encoding = encutils.getHTTPInfo(res)
                 if media_type != u'text/css':
                     self._log.warn(u'Unexpected media type opening url=%s: %r != "text/css"' %
