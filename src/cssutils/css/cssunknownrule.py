@@ -33,7 +33,7 @@ class CSSUnknownRule(cssrule.CSSRule):
     unknownrule:
         @xxx until ';' or block {...}
     """
-    type = cssrule.CSSRule.UNKNOWN_RULE
+    type = property(lambda self: cssrule.CSSRule.UNKNOWN_RULE)
 
     def __init__(self, cssText=u'', parentRule=None, 
                  parentStyleSheet=None, readonly=False):
@@ -43,11 +43,10 @@ class CSSUnknownRule(cssrule.CSSRule):
         """
         super(CSSUnknownRule, self).__init__(parentRule=parentRule, 
                                              parentStyleSheet=parentStyleSheet)
+        self._atkeyword = None
         if cssText:
             self.cssText = cssText
-        else:
-            self.atkeyword = None
-            
+
         self._readonly = readonly
 
     def _getCssText(self):

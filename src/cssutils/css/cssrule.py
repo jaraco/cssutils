@@ -108,6 +108,19 @@ class CSSRule(cssutils.util.Base2):
         version!
         MUST BE OVERWRITTEN IN SUBCLASS TO WORK!""")
 
+    def _setAtkeyword(self, akw):
+        """checks if new keyword is normalized same as old"""
+        if not self.atkeyword or (self._normalize(akw) == 
+                                  self._normalize(self.atkeyword)):
+            self._atkeyword = akw
+        else:
+            self._log.error(u'@rule: Invalid atkeyword for this %r rule: %r' % 
+                            (self._normalize(self.atkeyword), akw), 
+                            error=xml.dom.InvalidModificationErr)
+
+    atkeyword = property(lambda self: self._atkeyword, _setAtkeyword,
+                          doc=u"@keyword for @rules")
+
     parentRule = property(lambda self: self._parentRule,
                           doc=u"READONLY")
 

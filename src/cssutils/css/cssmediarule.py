@@ -37,7 +37,7 @@ class CSSMediaRule(cssrule.CSSRule):
       LBRACE S* ruleset* '}' S*;
     """
     # CONSTANT
-    type = cssrule.CSSRule.MEDIA_RULE
+    type = property(lambda self: cssrule.CSSRule.MEDIA_RULE)
 
     def __init__(self, mediaText='all', name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
@@ -46,7 +46,7 @@ class CSSMediaRule(cssrule.CSSRule):
         """
         super(CSSMediaRule, self).__init__(parentRule=parentRule, 
                                            parentStyleSheet=parentStyleSheet)
-        self.atkeyword = u'@media'
+        self._atkeyword = u'@media'
         self._media = cssutils.stylesheets.MediaList(
             mediaText, readonly=readonly)
         if not self.media.wellformed:
@@ -221,7 +221,15 @@ class CSSMediaRule(cssrule.CSSRule):
         doc="(DOM attribute) The parsable textual representation.")
 
     def _setName(self, name):
-        self._name = name
+        if isinstance(name, basestring) or name is None:
+            # "" or ''
+            if not name:
+                name = None
+
+            self._name = name
+        else:
+            self._log.error(u'CSSImportRule: Not a valid name: %s' % name)
+
 
     name = property(lambda self: self._name, _setName,
                     doc=u"An optional name for the media rules")

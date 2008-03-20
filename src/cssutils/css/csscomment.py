@@ -27,7 +27,7 @@ class CSSComment(cssrule.CSSRule):
 
         /*...*/
     """
-    type = cssrule.CSSRule.COMMENT # value = -1
+    type = property(lambda self: cssrule.CSSRule.COMMENT) # value = -1
     # constant but needed:
     wellformed = True 
 

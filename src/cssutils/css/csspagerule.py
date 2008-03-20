@@ -42,7 +42,7 @@ class CSSPageRule(cssrule.CSSRule):
           ;
 
     """
-    type = cssrule.CSSRule.PAGE_RULE
+    type = property(lambda self: cssrule.CSSRule.PAGE_RULE)
     # constant but needed:
     wellformed = True 
 
@@ -58,7 +58,7 @@ class CSSPageRule(cssrule.CSSRule):
         """
         super(CSSPageRule, self).__init__(parentRule=parentRule, 
                                           parentStyleSheet=parentStyleSheet)
-        self.atkeyword = u'@page'
+        self._atkeyword = u'@page'
         tempseq = self._tempSeq()
         if selectorText:
             self.selectorText = selectorText
