@@ -43,11 +43,11 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     wellformed
         if this selectorlist is wellformed regarding the Selector spec
     """
-    def __init__(self, selectorText=None, parentRule=None, 
+    def __init__(self, selectorText=None, parentRule=None,
                  readonly=False):
         """
         initializes SelectorList with optional selectorText
-        
+
         :Parameters:
             selectorText
                 parsable list of Selectors
@@ -55,12 +55,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 the parent CSSRule if available
         """
         super(SelectorList, self).__init__()
-        
+
         self._parentRule = parentRule
-        
+
         if selectorText:
             self.selectorText = selectorText
-            
+
         self._readonly = readonly
 
     def __prepareset(self, newSelector, namespaces=None):
@@ -78,15 +78,15 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     def __setitem__(self, index, newSelector):
         """
         overwrites ListSeq.__setitem__
-        
+
         Any duplicate Selectors are **not** removed.
         """
         newSelector = self.__prepareset(newSelector)
         if newSelector:
             self.seq[index] = newSelector
-        
+
     def append(self, newSelector):
-        "overwrites ListSeq.append"
+        "same as appendSelector(newSelector)"
         self.appendSelector(newSelector)
 
     length = property(lambda self: len(self),
@@ -102,8 +102,8 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             for selector in self.seq:
                 namespaces.update(selector._namespaces)
             return namespaces
-            
-    _namespaces = property(__getNamespaces, doc="""if this SelectorList is 
+
+    _namespaces = property(__getNamespaces, doc="""if this SelectorList is
         attached to a CSSStyleSheet the namespaces of that sheet are mirrored
         here. While the SelectorList (or parentRule(s) are
         not attached the namespaces of all children Selectors are used.""")
@@ -111,7 +111,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     parentRule = property(lambda self: self._parentRule,
         doc="(DOM) The CSS rule that contains this SelectorList or\
         None if this SelectorList is not attached to a CSSRule.")
-        
+
     def _getSelectorText(self):
         "returns serialized format"
         return cssutils.ser.do_css_SelectorList(self)
@@ -119,7 +119,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     def _setSelectorText(self, selectorText):
         """
         :param selectorText:
-            comma-separated list of selectors or a tuple of 
+            comma-separated list of selectors or a tuple of
             (selectorText, dict-of-namespaces)
         :Exceptions:
             - `NAMESPACE_ERR`: (Selector)
@@ -132,7 +132,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
               Raised if this rule is readonly.
         """
         self._checkReadonly()
-        
+
         # might be (selectorText, namespaces)
         selectorText, namespaces = self._splitNamespacesOff(selectorText)
         try:
@@ -140,7 +140,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             namespaces = self.parentRule.parentStyleSheet.namespaces
         except AttributeError:
             pass
-        
+
         wellformed = True
         tokenizer = self._tokenize2(selectorText)
         newseq = []
@@ -183,18 +183,18 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(cssutils) The textual representation of the selector for
             a rule set.""")
-    
+
     wellformed = property(lambda self: bool(len(self.seq)))
-    
+
     def appendSelector(self, newSelector):
         """
         Append newSelector (a string will be converted to a new
-        Selector). 
-                
-        :param newSelector: 
-            comma-separated list of selectors or a tuple of 
+        Selector).
+
+        :param newSelector:
+            comma-separated list of selectors or a tuple of
             (selectorText, dict-of-namespaces)
-        :returns: New Selector or None if newSelector is not wellformed. 
+        :returns: New Selector or None if newSelector is not wellformed.
         :Exceptions:
             - `NAMESPACE_ERR`: (self)
               Raised if the specified selector uses an unknown namespace
@@ -206,7 +206,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
               Raised if this rule is readonly.
         """
         self._checkReadonly()
-        
+
         # might be (selectorText, namespaces)
         newSelector, namespaces = self._splitNamespacesOff(newSelector)
         try:
@@ -217,7 +217,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             _namespaces = self._namespaces
             _namespaces.update(namespaces)
             namespaces = _namespaces
-                
+
         newSelector = self.__prepareset(newSelector, namespaces)
         if newSelector:
             seq = self.seq[:]
@@ -232,7 +232,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         if self._namespaces:
             st = (self.selectorText, self._namespaces)
         else:
-            st = self.selectorText 
+            st = self.selectorText
         return "cssutils.css.%s(selectorText=%r)" % (
                 self.__class__.__name__, st)
 
