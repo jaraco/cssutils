@@ -767,6 +767,8 @@ def _readURL(url, encoding=None):
                 if media_type != u'text/css':
                     self._log.warn(u'Unexpected media type opening url=%s: %r != "text/css"' %
                                    (url, media_type))
+                if not encoding:
+                    encoding = 'css'
             try:
                 return codecs.getreader(encoding)(res).read()
             except urllib2.HTTPError, e:
