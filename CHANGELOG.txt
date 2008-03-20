@@ -39,6 +39,10 @@ known issues
 0.9.x
 -----
 HEAD
+    + BUGFIX: Fixed setting ``name`` of CSSImportRule. Setting ``name`` other than with a string results in xml.dom.SyntaxErr raised now
+    + BUGFIX: ``CSSStyleSheet.type`` with a fixed value of "text/css" and other readonly properties are really readonly now
+
+    - IMPROVEMENT: Added ``__repr__`` for ``cssutils.util._SimpleNamespaces`` which is used in a selector repr.
 
 0.9.5b1 080319
     - **API CHANGE**: ``cssutils.css.CSSSStyleSheet.replaceUrls(replacer)`` has been **DEPRECATED** but is available as an utility function so simply use ``cssutils.replaceUrls(sheet, replacer)`` instead. For the why see ``getUrls(sheet)`` below.
