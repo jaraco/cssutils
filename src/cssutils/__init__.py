@@ -148,9 +148,9 @@ def parse(*a, **k):
     return CSSParser().parse(*a, **k)
 parse.__doc__ = CSSParser.parse.__doc__
 
-def parseURL(*a, **k):
-    return CSSParser().parseURL(*a, **k)
-parseURL.__doc__ = CSSParser.parseURL.__doc__
+def parseUrl(*a, **k):
+    return CSSParser().parseUrl(*a, **k)
+parseUrl.__doc__ = CSSParser.parseUrl.__doc__
 
 
 # set "ser", default serializer
