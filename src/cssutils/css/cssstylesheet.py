@@ -567,11 +567,21 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         cssutils.ser.prefs.__setattr__(pref, value)
 
     def __repr__(self):
-        return "cssutils.css.%s(href=%r, title=%r)" % (
-                self.__class__.__name__, self.href, self.title)
+        if self.media:
+            mediaText = self.media.mediaText
+        else:
+            mediaText = None
+        return "cssutils.css.%s(href=%r, media=%r, title=%r)" % (
+                self.__class__.__name__, 
+                self.href, mediaText, self.title)
 
     def __str__(self):
+        if self.media:
+            mediaText = self.media.mediaText
+        else:
+            mediaText = None
         return "<cssutils.css.%s object encoding=%r href=%r "\
-               "namespaces=%r title=%r at 0x%x>" % (
+               "media=%r title=%r namespaces=%r at 0x%x>" % (
                 self.__class__.__name__, self.encoding, self.href,
-                self.namespaces.namespaces, self.title, id(self))
+                mediaText, self.title, self.namespaces.namespaces, 
+                id(self))
