@@ -44,7 +44,7 @@ Options to parse a given stylesheet:
 
   - ``cssutils.parseString(cssText, encoding=None, href=None, media=None, title=None)``
   - ``cssutils.parse(filename, encoding=None, href=None, media=None, title=None)``
-  - ``cssutils.parseURL(url, encoding=None, href=None, media=None, title=None)``
+  - ``cssutils.parseUrl(href, encoding=None, media=None, title=None)``
 
 * parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. Setting explicit properties (e.g. ``CSSStyleSheet.cssText`` with a syntactically incorrect sheet raises the relevant exeptions.
 

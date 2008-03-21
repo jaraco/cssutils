@@ -40,15 +40,18 @@ known issues
 -----
 HEAD
 
+0.9.5b2 0803xx
+    - **API CHANGE**: ``cssutils.parseUrl`` has been renamed to ``parseURL`` as other methods use a similar name too. Parameter ``href`` (before called ``url``) is the first and mandatory parameter now.
+
     + **BUGFIX**: Fix the streamreader in the codec: Honor the encoding if one is passed to the constructor instead of trying to detect it from the stream.
 
-0.9.5b2 080321
-    + **BUGFIX**: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information is passed along. Encoding for referenced sheet default to 'css' now.
+    + **BUGFIX**: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information is passed along. Encoding is always get via HTTP or from imported sheet itself. Fixed lots of unchecked cases and simplified exception handling when reading a referenced sheet.
 
     + BUGFIX: Setting ``atkeyword`` of @rules checks if it is a valid keyword for the specific rule. E.g. an @import rule accepts ``@im\port`` but not ``@namespace``.
     + BUGFIX: Fixed setting ``name`` of CSSImportRule. Setting ``name`` other than with a string results in xml.dom.SyntaxErr raised now
     + BUGFIX: ``CSSStyleSheet.type`` with a fixed value of "text/css" and other readonly properties are really readonly now
 
+    - IMPROVEMENT: Added media information to ``__str__`` and ``__repr__`` or CSSStyleSheet.
     - IMPROVEMENT: Added ``__repr__`` for ``cssutils.util._SimpleNamespaces`` which is used in a selector repr.
 
 0.9.5b1 080319
