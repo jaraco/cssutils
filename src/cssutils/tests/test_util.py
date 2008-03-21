@@ -194,6 +194,8 @@ class _readURL_TestCase(basetest.BaseTestCase):
                 ('e3', urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
                 #_readURL('mailto:a.css')
                 ('mailto:e4', urllib2.URLError, ['urlerror']),
+                # cannot resolve x, IOError
+                ('http://x', urllib2.URLError, ['ioerror']),
             ]
             for url, exception, args in tests:
                 mock("urllib2.urlopen",
