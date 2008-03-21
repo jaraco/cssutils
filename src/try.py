@@ -5,6 +5,7 @@ import codecs
 from pprint import pprint as pp
 import re
 import sys
+import urlparse
 import xml
 import cssutils
 
@@ -42,14 +43,62 @@ if 0:
     sys.exit(0)
 
 if 0:
-    s = cssutils.parseString('@import "a";')
-    ir = s.cssRules[0]
-    ir.atkeyword = "@imp\\or"
-    cssutils.ser.prefs.defaultAtKeyword = False
-    print ir.cssText
+    # ValueError:
+    cssutils.util._readURL('http://cthedot.de/test/x.css', encoding='iso-8859-1')
+
+#    css = u'a {content: "ä"}'.encode('iso-8859-1')
+#    s = cssutils.parseString(css, encoding='iso-8859-1')
+#    print s
+
+    # HTTPError
+    #_readURL('http://cthedot.de/__UNKNOWN__.css')
     
+    # URLError
+    #_readURL('mailto:a.css')
+    #_readURL('http://localhost/__UNKNOWN__.css')
     
     sys.exit(0)
+    
+if 1:
+    # ALL THE SAME:
+    css = '@import "import/import2.css";a{background-image: url(x.gif)}'
+    s = cssutils.parseString(css, href='file:///I:/dev-workspace/cssutils/sheets/import.css')
+    s = cssutils.parse('sheets/import.css')
+    s = cssutils.parseUrl('file:///I:/dev-workspace/cssutils/sheets/import.css')
+    print
+    print "0----------\n", s
+    print s.cssText
+    print
+    sr = s.cssRules[1]
+    img = sr.style.getProperty('background-image').cssValue.getStringValue()
+    print urlparse.urljoin(s.href, img)
+    print
+    
+    ir = s.cssRules[0]
+    print "1----------\n", ir.styleSheet
+    print ir.styleSheet.cssText
+    print
+    
+    ir = ir.styleSheet.cssRules[0]
+    print "2----------\n", ir.styleSheet
+    print ir.styleSheet.cssText
+    print
+
+    sys.exit(1)
+
+if 0:
+    sheet = cssutils.parseString(css, title="example", href='example.css',
+                                 base='file:///I:/dev-workspace/cssutils/src/')
+    print sheet
+    print
+    print sheet.cssText
+    print
+    ir = sheet.cssRules[0]
+    print ir.styleSheet
+    print ir.styleSheet.cssText
+    print "ownerRule:", ir.styleSheet.ownerRule
+    sys.exit(1)
+
 
 if 0:
     # copy to test_util
@@ -146,50 +195,6 @@ if 0:
             sys.exit(0)
 
 
-if 1:
-    import urlparse
-    css = '@import "sheets/import.css" "import";'
-    s = cssutils.parseString(css,
-                             title='root sheet',
-                             href=r'file:///I:/dev-workspace/cssutils/x.css',
-                             encoding='utf-8')
-    print
-    print "0:", s
-    print s.cssText
-    print
-
-    ir = s.cssRules[0]
-    print "1:", ir.styleSheet
-    irs = ir.styleSheet
-    print irs.cssText
-    sr = irs.cssRules[1]
-    img = sr.style.getProperty('background-image').cssValue.getStringValue()
-    print urlparse.urljoin(irs.href, img)
-    print
-
-#    ir = ir.styleSheet.cssRules[0]
-#    print "2:", ir.styleSheet
-#    print ir.styleSheet.cssText
-#    print
-#
-#    ir = ir.styleSheet.cssRules[0]
-#    print "3:", ir.styleSheet
-#    print ir.styleSheet.cssText
-
-    sys.exit(1)
-
-if 0:
-    sheet = cssutils.parseString(css, title="example", href='example.css',
-                                 base='file:///I:/dev-workspace/cssutils/src/')
-    print sheet
-    print
-    print sheet.cssText
-    print
-    ir = sheet.cssRules[0]
-    print ir.styleSheet
-    print ir.styleSheet.cssText
-    print "ownerRule:", ir.styleSheet.ownerRule
-    sys.exit(1)
 
 if 0:
     from cssutils.scripts import csscombine
