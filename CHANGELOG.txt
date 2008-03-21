@@ -40,6 +40,8 @@ known issues
 -----
 HEAD
 
+    + **BUGFIX**: Fix the streamreader in the codec: Honor the encoding if one is passed to the constructor instead of trying to detect it from the stream.
+
 0.9.5b2 080321
     + **BUGFIX**: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information is passed along. Encoding for referenced sheet default to 'css' now.
 
