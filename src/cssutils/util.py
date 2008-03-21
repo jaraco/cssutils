@@ -745,16 +745,16 @@ def _readURL(url, encoding=None):
         req = urllib2.Request(url)
         res = urllib2.urlopen(req)
     except ValueError, e:
-        # invalid url
+        # invalid url, e.g. "1"
         cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.message),
                           error=ValueError)
     except urllib2.HTTPError, e:
-        # http error
+        # http error, e.g. 404
         cssutils.log.warn(u'Error opening url=%r: %s %s' % (url, e.code, e.msg),
                           error=e) # special case error=e!
-    except urllib2.URLError, e:
-        # urlerror like mailto:
-        cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.reason),
+    except IOError, e:
+        # URLError like mailto: or other IO errors
+        cssutils.log.warn(u'Error opening url=%r: %r' % (url, e.args),
                           error=e) # special case error=e!
     else:
         if res:
@@ -765,7 +765,7 @@ def _readURL(url, encoding=None):
                 import encutils # this test class does not run standalone!
                 media_type, encoding = encutils.getHTTPInfo(res)
                 if media_type != u'text/css':
-                    self._log.warn(u'Unexpected media type opening url=%s: %r != "text/css"' %
+                    cssutils.log.warn(u'Unexpected media type opening url=%s: %r != "text/css"' %
                                    (url, media_type))
             try:
                 return codecs.lookup("css")[2](res, encoding=encoding).read()
@@ -773,8 +773,6 @@ def _readURL(url, encoding=None):
                 # http error
                 cssutils.log.warn(u'Error reading url=%r: %s %s' % (url, e.code, e.msg),
                                   error=e) # special case error=e!
-            except urllib2.URLError, e:
-                cssutils.log.warn(u'Error reading url=%r: %s' % (url, e.reason),
-                                  error=e) # special case error=e!
-            except Exception, e:
-                cssutils.log.warn(u'Error reading url=%r: %r' % (url, e))
+            except IOError, e:
+                cssutils.log.warn(u'Error opening url=%r: %r' % (url, e.args),
+                                  error=e) 
