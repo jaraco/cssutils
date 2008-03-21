@@ -173,10 +173,9 @@ class _readURL_TestCase(basetest.BaseTestCase):
             
             tests = [
                 ('s1', u'ä', 'utf-8', None, u'ä'),
-                ('s2', u'ä', 'utf-8', 'css', u'ä'),
-                ('s3', u'ä', 'utf-8', 'utf-8', u'ä'),
-                ('s4', u'\xe4', 'iso-8859-1', 'iso-8859-1', u'ä'),
-                ('s5', u'123', 'ascii', 'ascii', u'123')
+                ('s2', u'ä', 'utf-8', 'utf-8', u'ä'),
+                ('s3', u'\xe4', 'iso-8859-1', 'iso-8859-1', u'ä'),
+                ('s4', u'123', 'ascii', 'ascii', u'123')
             ]
             for url, text, textencoding, encoding, exp in tests:
                 mock("urllib2.urlopen",
