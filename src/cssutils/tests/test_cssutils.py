@@ -4,6 +4,7 @@ __version__ = '$Id$'
 
 import os
 import tempfile
+import urllib
 import xml.dom
 import basetest
 import cssutils
@@ -11,8 +12,89 @@ import codecs
 
 class CSSutilsTestCase(basetest.BaseTestCase):
 
+    exp = u'''@import "import/import2.css";
+a {
+    background-image: url(test/x.gif)
+    }
+/* import.css*/'''
+
+    def test_parseString(self):
+        "cssutils.parseString()"
+        s = cssutils.parseString(self.exp, 
+                                 media='handheld, screen', 
+                                 title='from string')
+        self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
+        self.assertEqual(None, s.href)
+        self.assertEqual(self.exp, s.cssText)
+        self.assertEqual(u'utf-8', s.encoding)
+        self.assertEqual(u'handheld, screen', s.media.mediaText)
+        self.assertEqual(u'from string', s.title)
+        self.assertEqual(self.exp, s.cssText)
+        
+        ir = s.cssRules[0]
+        self.assertEqual('import/import2.css', ir.href)
+        irs = ir.styleSheet
+        self.assertEqual(None, irs)
+
+        href = os.path.join(os.path.dirname(__file__), 
+                            '..', '..', '..', 'sheets', 'import.css')
+        href = 'file:' + urllib.pathname2url(href)
+        s = cssutils.parseString(self.exp, 
+                                 href=href)
+        self.assertEqual(href, s.href)
+
+        ir = s.cssRules[0]
+        self.assertEqual('import/import2.css', ir.href)
+        irs = ir.styleSheet
+        self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
+        self.assertEqual(u'''@import "../t2.css";
+/* sheets/import2.css */''', irs.cssText)
+
     def test_parse(self):
         "cssutils.parse()"
+        # name if used with open, href used for @import resolving
+        name = os.path.join(os.path.dirname(__file__), 
+                            '..', '..', '..', 'sheets', 'import.css')
+        href = 'file:' + urllib.pathname2url(name)
+        
+        s = cssutils.parse(name, href=href, media='screen', title='from file')
+        self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
+        self.assert_(s.href.startswith('file:///'))
+        self.assert_(s.href.endswith('/sheets/import.css'))
+        self.assertEqual(u'utf-8', s.encoding)
+        self.assertEqual(u'screen', s.media.mediaText)
+        self.assertEqual(u'from file', s.title)
+        self.assertEqual(self.exp, s.cssText)
+                
+        ir = s.cssRules[0]
+        self.assertEqual('import/import2.css', ir.href)
+        irs = ir.styleSheet
+        self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
+        self.assertEqual(u'''@import "../t2.css";
+/* sheets/import2.css */''', irs.cssText)
+        
+        # name is used for open and setting of href automatically
+        # test needs to be relative to this test file!
+        os.chdir(os.path.dirname(__file__))
+        name = os.path.join('..', '..', '..', 'sheets', 'import.css')
+        
+        s = cssutils.parse(name, media='screen', title='from file')
+        self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
+        self.assert_(s.href.startswith('file:///'))
+        self.assert_(s.href.endswith('/sheets/import.css'))
+        self.assertEqual(u'utf-8', s.encoding)
+        self.assertEqual(u'screen', s.media.mediaText)
+        self.assertEqual(u'from file', s.title)
+        self.assertEqual(self.exp, s.cssText)
+                
+        ir = s.cssRules[0]
+        self.assertEqual('import/import2.css', ir.href)
+        irs = ir.styleSheet
+        self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
+        self.assertEqual(u'''@import "../t2.css";
+/* sheets/import2.css */''', irs.cssText)
+        
+        # next test
         css = u'a:after { content: "羊蹄€\u2020" }'
 
         fd, name = tempfile.mkstemp('_cssutilstest.css')
@@ -50,14 +132,36 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         # clean up
         os.remove(name)
 
-    def test_parseString(self):
-        "cssutils.parseString()"
-        exp = '''a {
-    left: 0
-    }'''
-        s = cssutils.parseString(exp)
-        self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
-        self.assertEqual(exp, s.cssText)
+    def test_parseUrl(self):
+        "cssutils.parseUrl()"
+        href = os.path.join(os.path.dirname(__file__), 
+                            '..', '..', '..', 'sheets', 'import.css')
+        href = u'file:' + urllib.pathname2url(href)
+        #href = 'http://seewhatever.de/sheets/import.css'
+        s = cssutils.parseUrl(href, 
+                              media='tv, print', 
+                              title='from url')
+        self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
+        self.assertEqual(href, s.href)
+        self.assertEqual(self.exp, s.cssText)
+        self.assertEqual(u'utf-8', s.encoding)
+        self.assertEqual(u'tv, print', s.media.mediaText)
+        self.assertEqual('from url', s.title)
+        
+        sr = s.cssRules[1]
+        img = sr.style.getProperty('background-image').cssValue.getStringValue()
+        self.assertEqual(img, 'test/x.gif')
+        
+        ir = s.cssRules[0]
+        self.assertEqual(u'import/import2.css', ir.href)
+        irs = ir.styleSheet
+        self.assertEqual(u'''@import "../t2.css";
+/* sheets/import2.css */''', irs.cssText)
+
+        ir2 = irs.cssRules[0]
+        self.assertEqual(u'../t2.css', ir2.href)
+        irs2 = ir2.styleSheet
+        self.assertEqual(u'/* t2 */', irs2.cssText)
 
     def test_setCSSSerializer(self):
         "cssutils.setSerializer() and cssutils.ser"
