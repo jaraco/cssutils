@@ -5,13 +5,16 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 main changes
 ------------
 0.9.5b2
-    + **BUGFIX**: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information is passed along. Encoding for referenced sheet default to 'css' now.
+    - **API CHANGE**: ``cssutils.parseUrl`` has been renamed to ``parseURL`` for consistency with ``getUrls`` or ``replaceUrls``. Parameter ``href`` (before called ``url``) is the first and mandatory parameter now.
+
+    + **BUGFIX**: Fix the streamreader in the codec: Honor the encoding if one is passed to the constructor instead of trying to detect it from the stream.
+
+    + **BUGFIX**: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information is passed along. Encoding of referenced sheets is always retrieved via HTTP or from imported sheet itself. Fixed lots of unchecked cases and simplified exception handling when reading a referenced sheet.
 
     + BUGFIX: Setting ``atkeyword`` of @rules checks if it is a valid keyword for the specific rule. E.g. an @import rule accepts ``@im\port`` but not ``@namespace``.
     + BUGFIX: Fixed setting ``name`` of CSSImportRule. Setting ``name`` other than with a string results in xml.dom.SyntaxErr raised now
     + BUGFIX: ``CSSStyleSheet.type`` with a fixed value of "text/css" and other readonly properties are really readonly now
 
-    - IMPROVEMENT: Added ``__repr__`` for ``cssutils.util._SimpleNamespaces`` which is used in a selector repr.
 
 
 Note:
