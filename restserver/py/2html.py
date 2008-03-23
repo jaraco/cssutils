@@ -105,8 +105,8 @@ if __name__ == '__main__':
     preparedirs()
     convert2html()
     adjusthtml()
-    shutil.copy2('rst/documentation/default.css',
-                 '../documentation_html/documentation/default.css')
+    shutil.copy2('rst/docs/default.css',
+                 '../docs_html/docs/default.css')
 
     print "\nFINAL HTML docs are complete in ./%s/" % TARGETDIR
 
