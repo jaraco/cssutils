@@ -760,6 +760,7 @@ def _readURL(url, encoding=None):
         if res:
             # get real URL, may have been redirected
             url = res.geturl()
+
             if not encoding:
                 # COMMENT OUT IF RUNNING THIS TEST STANDALONE!
                 import encutils # this test class does not run standalone!
