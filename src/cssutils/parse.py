@@ -59,7 +59,6 @@ class CSSParser(object):
             The title attribute to assign to the parsed style sheet
         """
         if isinstance(cssText, str): 
-            # cssutils always needs unicode strings
             cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
         sheet = cssutils.css.CSSStyleSheet()
         sheet._href = href
@@ -74,14 +73,17 @@ class CSSParser(object):
 
         filename
             of the CSS file to parse, if no ``href`` is given filename is
-            converted to an URL and set as ``href`` of resulting stylesheet.
+            converted to a (file:) URL and set as ``href`` of resulting 
+            stylesheet.
             If href is given it is set as ``sheet.href``. Either way
             ``sheet.href`` is used to resolve e.g. stylesheet imports via
             @import rules. 
         encoding
             of the CSS file, ``None`` defaults to encoding detection from
-            BOM or an @charset rule. ``encoding`` is used for the sheet
-            at ``filename`` but **not** any imported sheets.
+            BOM or an @charset rule. ``encoding`` is used for the sheet at
+            ``filename`` (and may override a file internal encoding) 
+            but **not** any imported sheets where the file internal encoding
+            is detected.
 
         for other parameters see ``parseString``
         """
@@ -93,17 +95,17 @@ class CSSParser(object):
                                 href=href, media=media, title=title)
 
     def parseUrl(self, href, encoding=None, media=None, title=None):
-        """Retrieve and return a CSSStyleSheet from given url.
+        """Retrieve and return a CSSStyleSheet from given href (a URL).
 
         href
             URL of the CSS file to parse, will also be set as ``href`` of 
             resulting stylesheet
         encoding
-            if given overrides detected HTTP encoding for sheet at ``href``
-            but **not** any imported sheets.
+            if given overrides detected HTTP or file internal encoding for
+            sheet at ``href`` but **not** any imported sheets where the 
+            encoding if always detected via HTTP or from the file.
 
         for other parameters see ``parseString``
         """
         return self.parseString(cssutils.util._readURL(href, encoding),
-                                href=href, media=media,
-                                title=title)
+                                href=href, media=media, title=title)
