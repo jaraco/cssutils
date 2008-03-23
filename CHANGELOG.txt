@@ -52,7 +52,7 @@ HEAD
     + BUGFIX: ``CSSStyleSheet.type`` with a fixed value of "text/css" and other readonly properties are really readonly now
 
     - IMPROVEMENT: Added media information to ``__str__`` and ``__repr__`` or CSSStyleSheet.
-    - IMPROVEMENT: Added more information to ``__repr__`` or CSSImportRule.
+    - IMPROVEMENT: Added more information to ``__repr__`` of CSSImportRule.
     - IMPROVEMENT: Added ``__repr__`` for ``cssutils.util._SimpleNamespaces`` which is used in a selector repr.
 
 0.9.5b1 080319
