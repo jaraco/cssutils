@@ -342,10 +342,18 @@ class CSSImportRule(cssrule.CSSRule):
     wellformed = property(lambda self: bool(self.href and self.media.wellformed))
 
     def __repr__(self):
+        if self.media:
+            mediaText = self.media.mediaText
+        else:
+            mediaText = None
         return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
                 self.__class__.__name__, 
                 self.href, self.media.mediaText, self.name)
 
     def __str__(self):
-        return "<cssutils.css.%s object href=%r at 0x%x>" % (
-                self.__class__.__name__, self.href, id(self))
+        if self.media:
+            mediaText = self.media.mediaText
+        else:
+            mediaText = None
+        return "<cssutils.css.%s object href=%r mediaText=%r name=%r at 0x%x>" % (
+                self.__class__.__name__, self.href, mediaText, self.name, id(self))
