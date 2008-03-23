@@ -44,7 +44,8 @@ if 0:
 
 if 0:
     # ValueError:
-    cssutils.util._readURL('http://cthedot.de/test/x.css', encoding='iso-8859-1')
+    x = cssutils.parseUrl('http://seewhatever.de/sheets/import.css')
+    print x
 
 #    css = u'a {content: "ä"}'.encode('iso-8859-1')
 #    s = cssutils.parseString(css, encoding='iso-8859-1')
@@ -62,9 +63,10 @@ if 0:
 if 1:
     # ALL THE SAME:
     css = '@import "import/import2.css";a{background-image: url(x.gif)}'
-    s = cssutils.parseString(css, href='file:///I:/dev-workspace/cssutils/sheets/import.css')
-    s = cssutils.parse('sheets/import.css')
-    s = cssutils.parseUrl('file:///I:/dev-workspace/cssutils/sheets/import.css')
+    #s = cssutils.parseString(css, href='file:///I:/dev-workspace/cssutils/sheets/import.css')
+    s = cssutils.parse('..\\sheets\\import.css')
+    #s = cssutils.parseUrl('file:///I:/dev-workspace/cssutils/sheets/import.css')
+    #s = cssutils.parseUrl('http://seewhatever.de/sheets/import.css')
     print
     print "0----------\n", s
     print s.cssText
