@@ -11,7 +11,7 @@ available documentation
 =======================
 General
     * `readme <README.txt>`_
-    * `license <LICENSE.txt>`_
+    * license: LGPL 3 `COPYING <COPYING>`_ and `COPYING.LESSER <COPYING.LESSER>`_
 
     + `changelog <CHANGELOG.txt>`_
     + `version migration (to 0.9.5) <docs/migrate.txt>`_

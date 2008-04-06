@@ -40,6 +40,9 @@ known issues
 -----
 HEAD
 
+0.9.5b3 0804xx
+    - **LICENSE**: cssutils is licensed under the **LGPL v3** now (before LGPL v2.1). This should not be a problem I guess but please be aware. So the former mix of LGPL 2.1 and 3 is resolved to a single LGPL 3 license for both cssutils and the included encutils.
+
 0.9.5b2 080323
     - **API CHANGE**: ``cssutils.parseURL`` has been renamed to ``parseUrl`` for consistency with ``getUrls`` or ``replaceUrls``. Parameter ``href`` (before called ``url``) is the first and mandatory parameter now.
 
@@ -80,7 +83,7 @@ HEAD
 
     + DOCUMENTATION: Improved docs a bit.
 
-    - **LICENSE**: The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.2 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updates to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
+    - **LICENSE**: The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.2 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updated to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
 
 
 0.9.5a4 080222

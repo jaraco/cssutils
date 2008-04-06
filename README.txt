@@ -46,7 +46,7 @@ license
 =======
 Copyright 2005 - 2008 Christof Hoeke
 
-cssutils is published under the LGPL 2.1 or later
+cssutils is published under the LGPL 3 or later
 
 cssutils is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

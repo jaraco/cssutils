@@ -25,7 +25,7 @@ Note:
 
 license
 -------
-cssutils is published under the LGPL version 2.1 or later, see http://cthedot.de/cssutils/
+cssutils is published under the LGPL version 3 or later, see http://cthedot.de/cssutils/
 
 The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.3 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updates to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
 
