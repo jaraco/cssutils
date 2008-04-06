@@ -4,7 +4,8 @@ to generate static docs:
 
   - /index.txt,
   - /README.txt
-  - /LICENSE.txt
+  - /COPYING
+  - /COPYING.LESSER
   - /documentation
 
   to folder "rst"
