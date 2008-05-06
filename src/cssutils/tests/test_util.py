@@ -17,7 +17,7 @@ except ImportError:
 import basetest
 import encutils
     
-from cssutils.util import Base, ListSeq, _readURL
+from cssutils.util import Base, ListSeq, _readUrl
 
 class ListSeqTestCase(basetest.BaseTestCase):
     
@@ -126,11 +126,11 @@ class BaseTestCase(basetest.BaseTestCase):
             res = u''.join([t[1] for t in restokens])
             self.assertEqual(exp, res)
         
-class _readURL_TestCase(basetest.BaseTestCase):
+class _readUrl_TestCase(basetest.BaseTestCase):
     """needs minimock install with easy_install minimock""" 
 
-    def test_readURL(self):
-        """util._readURL()"""
+    def test_readUrl(self):
+        """util._readUrl()"""
         if mock:
             
             class Response(object):
@@ -181,18 +181,18 @@ class _readURL_TestCase(basetest.BaseTestCase):
                 mock("urllib2.urlopen",
                         mock_obj=urlopen(url, text=text.encode(textencoding)))
 
-                #print url, exp == _readURL(url, encoding), exp, _readURL(url, encoding)
-                self.assertEqual(exp, _readURL(url, encoding))
+                #print url, exp == _readUrl(url, encoding), exp, _readUrl(url, encoding)
+                self.assertEqual(exp, _readUrl(url, encoding))
 
 
             # calling url results in fake exception
             tests = [
-                #_readURL('1')
+                #_readUrl('1')
                 ('1', ValueError, ['invalid value for url']),
                 ('e2', urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
-                #_readURL('http://cthedot.de/__UNKNOWN__.css')
+                #_readUrl('http://cthedot.de/__UNKNOWN__.css')
                 ('e3', urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
-                #_readURL('mailto:a.css')
+                #_readUrl('mailto:a.css')
                 ('mailto:e4', urllib2.URLError, ['urlerror']),
                 # cannot resolve x, IOError
                 ('http://x', urllib2.URLError, ['ioerror']),
@@ -200,7 +200,7 @@ class _readURL_TestCase(basetest.BaseTestCase):
             for url, exception, args in tests:
                 mock("urllib2.urlopen",
                         mock_obj=urlopen(url, exception=exception, args=args))
-                self.assertRaises(exception, _readURL, url)
+                self.assertRaises(exception, _readUrl, url)
 
             restore()
         
