@@ -95,7 +95,7 @@ class CSSParser(object):
                                 href=href, media=media, title=title)
 
     def parseUrl(self, href, encoding=None, media=None, title=None):
-        """Retrieve and return a CSSStyleSheet from given href (a URL).
+        """Retrieve and return a CSSStyleSheet from given href (an URL).
 
         href
             URL of the CSS file to parse, will also be set as ``href`` of 
@@ -107,5 +107,5 @@ class CSSParser(object):
 
         for other parameters see ``parseString``
         """
-        return self.parseString(cssutils.util._readURL(href, encoding),
+        return self.parseString(cssutils.util._readUrl(href, encoding),
                                 href=href, media=media, title=title)

@@ -326,7 +326,7 @@ class CSSImportRule(cssrule.CSSRule):
                                                    media=self.media,
                                                    ownerRule=self,
                                                    title=self.name)
-                cssText = cssutils.util._readURL(href)
+                cssText = cssutils.util._readUrl(href)
                 if not cssText:
                     raise IOError()
                 sheet.cssText = cssText 
