@@ -42,21 +42,78 @@ if 0:
         print tk
     sys.exit(0)
 
-if 0:
-    # ValueError:
-    x = cssutils.parseUrl('http://seewhatever.de/sheets/import.css')
-    print x
+if 1:
+    def readUrlGAPE(self):
+        """
+        uses GAPE
+            fetch(url, payload=None, method=GET, headers={}, allow_truncated=False)
+        
+        Response
+            content
+                The body content of the response.
+            content_was_truncated
+                True if the allow_truncated parameter to fetch() was True and 
+                the response exceeded the maximum response size. In this case, 
+                the content attribute contains the truncated response.
+            status_code
+                The HTTP status code.
+            headers
+                The HTTP response headers, as a mapping of names to values. 
+                
+        Exceptions
+            exception InvalidURLError()        
+                The URL of the request was not a valid URL, or it used an 
+                unsupported method. Only http and https URLs are supported.
+            exception DownloadError()        
+                There was an error retrieving the data.
+            
+                This exception is not raised if the server returns an HTTP
+                error code: In that case, the response data comes back intact, 
+                including the error code.
+    
+            exception ResponseTooLargeError()        
+                The response data exceeded the maximum allowed size, and the
+                allow_truncated parameter passed to fetch() was False.
+        """
+        import google.appengine.api.urlfetch as urlfetch
+        try:        
+            r = urlfetch.fetch(url, method=urlfetch.GET)
+        except (InvalidURLError, DownloadError, ResponseTooLargeError), e:
+            cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.message),
+                              error=Error)
+        text = r.content
+        # TODO: encoding
+        
+        
+    def ru(url, encoding=None):
+        if url.endswith('import.css'):
+            # use default readUrl
+            print 111, encoding, url
+            return cssutils.util.readUrl(url, encoding)
+        else:
+            # special handling
+            print 222, encoding, url
+            return None
+        
+    #cssutils.registerReadUrl(None)
+    cssutils.registerReadUrl(ru)
+    
+    x = cssutils.parseUrl('http://seewhatever.de/sheets/import.css', encoding='ascii')
+    print 111, x.cssText[:50]
+    print 222, x.cssRules[0].styleSheet
 
+
+    # ValueError:
 #    css = u'a {content: "ä"}'.encode('iso-8859-1')
 #    s = cssutils.parseString(css, encoding='iso-8859-1')
 #    print s
 
     # HTTPError
-    #_readURL('http://cthedot.de/__UNKNOWN__.css')
+    #_readUrl('http://cthedot.de/__UNKNOWN__.css')
     
     # URLError
-    #_readURL('mailto:a.css')
-    #_readURL('http://localhost/__UNKNOWN__.css')
+    #_readUrl('mailto:a.css')
+    #_readUrl('http://localhost/__UNKNOWN__.css')
     
     sys.exit(0)
     
@@ -108,7 +165,7 @@ if 0:
             from email import message_from_string, message_from_file
             import StringIO
             from minimock import mock, restore
-            from cssutils.util import _readURL
+            from cssutils.util import _readUrl
             
             class Response(object):
                 """urllib2.Reponse mock"""
@@ -161,38 +218,38 @@ if 0:
                 mock("urllib2.urlopen",
                         mock_obj=urlopen(url, text=text.encode(textencoding)))
 
-                print url, exp == _readURL(url, encoding), exp, _readURL(url, encoding)
+                print url, exp == _readUrl(url, encoding), exp, _readUrl(url, encoding)
 
             print
 
             # calling url results in fake exception
             tests = [
-                #_readURL('1')
+                #_readUrl('1')
                 ('1', ValueError, ['invalid value for url']),
                 ('e2', urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
-                #_readURL('http://cthedot.de/__UNKNOWN__.css')
+                #_readUrl('http://cthedot.de/__UNKNOWN__.css')
                 ('e3', urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
-                #_readURL('mailto:a.css')
+                #_readUrl('mailto:a.css')
                 ('mailto:e4', urllib2.URLError, ['urlerror']),
             ]
             for url, exception, args in tests:
                 mock("urllib2.urlopen",
                         mock_obj=urlopen(url, exception=exception, args=args))
                 try:
-                    _readURL(url)
+                    _readUrl(url)
                 except Exception, e:
                     print type(e), e, url
 
             restore()
             # ValueError:
-            #_readURL('1')
+            #_readUrl('1')
 
             # HTTPError
-            #_readURL('http://cthedot.de/__UNKNOWN__.css')
+            #_readUrl('http://cthedot.de/__UNKNOWN__.css')
             
             # URLError
-            #_readURL('mailto:a.css')
-            #_readURL('http://localhost/__UNKNOWN__.css')
+            #_readUrl('mailto:a.css')
+            #_readUrl('http://localhost/__UNKNOWN__.css')
 
             sys.exit(0)
 
