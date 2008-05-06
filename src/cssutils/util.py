@@ -1,7 +1,7 @@
 """base classes for css and stylesheets packages
 
 **this test class does not run standalone!**
-see _readURL() to fix this temporarily
+see _readUrl() to fix this temporarily
 
 """
 __all__ = []
@@ -738,9 +738,8 @@ class _SimpleNamespaces(_Namespaces):
             self.namespaces)
 
 
-def _readURL(url, encoding=None):
-    """Retrieve text from url using explicit or detected encoding via encutils
-    """
+def readUrl(url, encoding=None):
+    """Default implementation of ``_readUrl``"""
     try:
         req = urllib2.Request(url)
         res = urllib2.urlopen(req)
@@ -777,3 +776,8 @@ def _readURL(url, encoding=None):
             except IOError, e:
                 cssutils.log.warn(u'Error opening url=%r: %r' % (url, e.args),
                                   error=e) 
+
+def _readUrl(url, encoding=None):
+    """Retrieve text from url using explicit or detected encoding via encutils
+    """
+    return readUrl(url, encoding)
