@@ -67,6 +67,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.cssRules.extend = self.insertRule
         self._namespaces = _Namespaces(parentStyleSheet=self)
         self._readonly = readonly
+        
+        # used only during setting cssText by parse*()
+        self._encodingOverride = None
 
     def __iter__(self):
         "generator which iterates over cssRules."
@@ -101,7 +104,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     def _getCssText(self):
         return cssutils.ser.do_CSSStyleSheet(self)
 
-    def _setCssText(self, cssText):
+    def _setCssText(self, cssText, _encodingOverride=None):
         """
         (cssutils)
         Parses ``cssText`` and overwrites the whole stylesheet.
@@ -118,6 +121,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
               is unparsable.
         """
         self._checkReadonly()
+        
+        # keep this info during parsing of cssText so that 
+        # @import can use it. Value is set to None after finishing with cssText
+        self._encodingOverride = _encodingOverride
 
         cssText, namespaces = self._splitNamespacesOff(cssText)
         if not namespaces:
@@ -128,7 +135,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         # for closures: must be a mutable
         new = { 'namespaces': namespaces}
-
         def S(expected, seq, token, tokenizer=None):
             # @charset must be at absolute beginning of style sheet
             if expected == 0:
@@ -245,6 +251,12 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             for rule in newseq:
                 self.insertRule(rule, _clean=False)
             self._cleanNamespaces()
+            if self._encodingOverride:
+                # override encoding of @charset with given _encodingOverride
+                self.encoding = _encodingOverride
+
+        # always reset as this is only during parse
+        self._encodingOverride = None
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
