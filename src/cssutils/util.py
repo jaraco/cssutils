@@ -1,7 +1,7 @@
 """base classes for css and stylesheets packages
 
 **this test class does not run standalone!**
-see _readUrl() to fix this temporarily
+see _fetchUrl() to fix this temporarily
 
 """
 __all__ = []
@@ -738,11 +738,16 @@ class _SimpleNamespaces(_Namespaces):
             self.namespaces)
 
 
-def readUrl(url, encoding=None):
-    """Default implementation of ``_readUrl``"""
+class FetchError(IOError):
+    """used if an URL may not be fetched (used in @import)"""
+    pass
+
+def fetchUrl(url, encoding=None):
+    """Default implementation of ``_fetchUrl``"""
     try:
-        req = urllib2.Request(url)
-        res = urllib2.urlopen(req)
+        #import urllib
+        #res = urllib.urlopen(url)
+        res = urllib2.urlopen(url)
     except ValueError, e:
         # invalid url, e.g. "1"
         cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.message),
@@ -769,15 +774,15 @@ def readUrl(url, encoding=None):
                                    (url, media_type))
             try:
                 return codecs.lookup("css")[2](res, encoding=encoding).read()
-            except urllib2.HTTPError, e:
-                # http error
-                cssutils.log.warn(u'Error reading url=%r: %s %s' % (url, e.code, e.msg),
-                                  error=e) # special case error=e!
+#            except urllib2.HTTPError, e:
+#                # http error
+#                cssutils.log.warn(u'Error reading url=%r: %s %s' % (url, e.code, e.msg),
+#                                  error=e) # special case error=e!
             except IOError, e:
                 cssutils.log.warn(u'Error opening url=%r: %r' % (url, e.args),
                                   error=e) 
 
-def _readUrl(url, encoding=None):
+def _fetchUrl(url, encoding=None):
     """Retrieve text from url using explicit or detected encoding via encutils
     """
-    return readUrl(url, encoding)
+    return fetchUrl(url, encoding)
