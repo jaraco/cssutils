@@ -17,12 +17,12 @@ except ImportError:
 import basetest
 import encutils
     
-from cssutils.util import Base, ListSeq, _readUrl
+from cssutils.util import Base, ListSeq, _fetchUrl
 
 class ListSeqTestCase(basetest.BaseTestCase):
     
     def test_all(self):
-        "ListSeq"
+        "util.ListSeq"
         ls = ListSeq()
         self.assertEqual(0, len(ls))
         # append()
@@ -130,7 +130,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
     """needs minimock install with easy_install minimock""" 
 
     def test_readUrl(self):
-        """util._readUrl()"""
+        """util._fetchUrl()"""
         if mock:
             
             class Response(object):
@@ -182,7 +182,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                         mock_obj=urlopen(url, text=text.encode(textencoding)))
 
                 #print url, exp == _readUrl(url, encoding), exp, _readUrl(url, encoding)
-                self.assertEqual(exp, _readUrl(url, encoding))
+                self.assertEqual(exp, _fetchUrl(url, encoding))
 
 
             # calling url results in fake exception
@@ -200,7 +200,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             for url, exception, args in tests:
                 mock("urllib2.urlopen",
                         mock_obj=urlopen(url, exception=exception, args=args))
-                self.assertRaises(exception, _readUrl, url)
+                self.assertRaises(exception, _fetchUrl, url)
 
             restore()
         

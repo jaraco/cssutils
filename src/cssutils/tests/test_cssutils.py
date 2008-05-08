@@ -50,14 +50,14 @@ a {
         self.assertEqual(u'''@import "../t2.css";
 /* sheets/import2.css */''', irs.cssText)
 
-    def test_parse(self):
-        "cssutils.parse()"
+    def test_parseFile(self):
+        "cssutils.parseFile()"
         # name if used with open, href used for @import resolving
         name = os.path.join(os.path.dirname(__file__), 
                             '..', '..', '..', 'sheets', 'import.css')
         href = 'file:' + urllib.pathname2url(name)
         
-        s = cssutils.parse(name, href=href, media='screen', title='from file')
+        s = cssutils.parseFile(name, href=href, media='screen', title='from file')
         self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
         self.assert_(s.href.startswith('file:///'))
         self.assert_(s.href.endswith('/sheets/import.css'))
@@ -78,7 +78,7 @@ a {
         os.chdir(os.path.dirname(__file__))
         name = os.path.join('..', '..', '..', 'sheets', 'import.css')
         
-        s = cssutils.parse(name, media='screen', title='from file')
+        s = cssutils.parseFile(name, media='screen', title='from file')
         self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
         self.assert_(s.href.startswith('file:///'))
         self.assert_(s.href.endswith('/sheets/import.css'))
@@ -106,13 +106,13 @@ a {
             UnicodeDecodeError, cssutils.parse, name, 'ascii')
         
         # ???
-        s = cssutils.parse(name, encoding='iso-8859-1')
+        s = cssutils.parseFile(name, encoding='iso-8859-1')
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
-        self.assertEqual(s.cssRules[0].selectorText, 'a:after')
+        self.assertEqual(s.cssRules[1].selectorText, 'a:after')
         
-        s = cssutils.parse(name, encoding='utf-8')
+        s = cssutils.parseFile(name, encoding='utf-8')
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
-        self.assertEqual(s.cssRules[0].selectorText, 'a:after')
+        self.assertEqual(s.cssRules[1].selectorText, 'a:after')
 
         css = u'@charset "iso-8859-1"; a:after { content: "ä" }'
         t = codecs.open(name, 'w', 'iso-8859-1')
@@ -122,7 +122,7 @@ a {
         self.assertRaises(
             UnicodeDecodeError, cssutils.parse, name, 'ascii')
         
-        s = cssutils.parse(name, encoding='iso-8859-1')
+        s = cssutils.parseFile(name, encoding='iso-8859-1')
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
         self.assertEqual(s.cssRules[1].selectorText, 'a:after')
 
