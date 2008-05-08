@@ -80,14 +80,14 @@ def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
     sys.stderr.write('COMBINING %s\n' % proxypath)
     if sourceencoding is not None:
         sys.stderr.write('USING SOURCE ENCODING: %s\n' % sourceencoding)
-    src = cssutils.parse(proxypath, encoding=sourceencoding)
+    src = cssutils.parseFile(proxypath, encoding=sourceencoding)
     srcpath = os.path.dirname(proxypath)
     r = cssutils.css.CSSStyleSheet()
     for rule in src.cssRules:
         if rule.type == rule.IMPORT_RULE:
             fn = os.path.join(srcpath, rule.href)
             sys.stderr.write('* PROCESSING @import %s\n' % fn)
-            importsheet = cssutils.parse(fn, encoding=sourceencoding)
+            importsheet = cssutils.parseFile(fn, encoding=sourceencoding)
             importsheet.encoding = None # remove @charset
             r.insertRule(cssutils.css.CSSComment(cssText=u'/* %s */' %
                                                  rule.cssText))
