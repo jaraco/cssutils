@@ -43,6 +43,12 @@ if 0:
     sys.exit(0)
 
 if 1:
+#    print cssutils.parseFile('sheets/1.css')
+#    p = cssutils.CSSParser()
+#    p.parse('sheets/1.css')
+#    sys.exit()
+    
+    
     def readUrlGAPE(self):
         """
         uses GAPE
@@ -87,20 +93,20 @@ if 1:
         
     def ru(url, encoding=None):
         if url.endswith('import.css'):
-            # use default readUrl
+            # use default fetchUrl
             print 111, encoding, url
-            return cssutils.util.readUrl(url, encoding)
+            return cssutils.util.fetchUrl(url, encoding)
         else:
             # special handling
             print 222, encoding, url
             return None
         
-    #cssutils.registerReadUrl(None)
-    cssutils.registerReadUrl(ru)
+    #cssutils.registerFetchUrl(None)
+    #cssutils.registerFetchUrl(ru)
     
     x = cssutils.parseUrl('http://seewhatever.de/sheets/import.css', encoding='ascii')
-    print 111, x.cssText[:50]
-    print 222, x.cssRules[0].styleSheet
+    print 111, x#.cssText[:50]
+    print 222, x.cssRules[1].styleSheet
 
 
     # ValueError:
@@ -109,11 +115,11 @@ if 1:
 #    print s
 
     # HTTPError
-    #_readUrl('http://cthedot.de/__UNKNOWN__.css')
+    #_fetchUrl('http://cthedot.de/__UNKNOWN__.css')
     
     # URLError
-    #_readUrl('mailto:a.css')
-    #_readUrl('http://localhost/__UNKNOWN__.css')
+    #_fetchUrl('mailto:a.css')
+    #_fetchUrl('http://localhost/__UNKNOWN__.css')
     
     sys.exit(0)
     
@@ -165,7 +171,7 @@ if 0:
             from email import message_from_string, message_from_file
             import StringIO
             from minimock import mock, restore
-            from cssutils.util import _readUrl
+            from cssutils.util import _fetchUrl
             
             class Response(object):
                 """urllib2.Reponse mock"""
@@ -218,38 +224,38 @@ if 0:
                 mock("urllib2.urlopen",
                         mock_obj=urlopen(url, text=text.encode(textencoding)))
 
-                print url, exp == _readUrl(url, encoding), exp, _readUrl(url, encoding)
+                print url, exp == _fetchUrl(url, encoding), exp, _fetchUrl(url, encoding)
 
             print
 
             # calling url results in fake exception
             tests = [
-                #_readUrl('1')
+                #_fetchUrl('1')
                 ('1', ValueError, ['invalid value for url']),
                 ('e2', urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
-                #_readUrl('http://cthedot.de/__UNKNOWN__.css')
+                #_fetchUrl('http://cthedot.de/__UNKNOWN__.css')
                 ('e3', urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
-                #_readUrl('mailto:a.css')
+                #_fetchUrl('mailto:a.css')
                 ('mailto:e4', urllib2.URLError, ['urlerror']),
             ]
             for url, exception, args in tests:
                 mock("urllib2.urlopen",
                         mock_obj=urlopen(url, exception=exception, args=args))
                 try:
-                    _readUrl(url)
+                    _fetchUrl(url)
                 except Exception, e:
                     print type(e), e, url
 
             restore()
             # ValueError:
-            #_readUrl('1')
+            #_fetchUrl('1')
 
             # HTTPError
-            #_readUrl('http://cthedot.de/__UNKNOWN__.css')
+            #_fetchUrl('http://cthedot.de/__UNKNOWN__.css')
             
             # URLError
-            #_readUrl('mailto:a.css')
-            #_readUrl('http://localhost/__UNKNOWN__.css')
+            #_fetchUrl('mailto:a.css')
+            #_fetchUrl('http://localhost/__UNKNOWN__.css')
 
             sys.exit(0)
 
