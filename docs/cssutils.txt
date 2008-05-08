@@ -43,12 +43,23 @@ Options to parse a given stylesheet:
 * use the helper functions:
 
   - ``cssutils.parseString(cssText, encoding=None, href=None, media=None, title=None)``
-  - ``cssutils.parse(filename, encoding=None, href=None, media=None, title=None)``
+  - ``cssutils.parseFile(filename, encoding=None, href=None, media=None, title=None)``
   - ``cssutils.parseUrl(href, encoding=None, media=None, title=None)``
+
+  parameter ``encoding`` for ``parseString``
+        If ``None`` the encoding will be read from BOM or an @charset
+        rule or defaults to UTF-8.
+        If ``cssText`` is a unicode string ``encoding`` will be ignored.
+
+  parameter ``encoding`` for ``parseFile`` or ``parseUrl``
+        Value ``None`` defaults to encoding detection via HTTP, BOM or an
+        @charset rule.
+        Other values override detected encoding for the sheet at ``href``
+        including any imported sheets.
 
 * parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. Setting explicit properties (e.g. ``CSSStyleSheet.cssText`` with a syntactically incorrect sheet raises the relevant exeptions.
 
-* or get an instance of ``cssutils.CSSParser`` and use the provided ``parse`` methods which are the same as the helper functions. The parser is reusable. With parameter ``raiseExceptions=False`` it is possible to define how the parser should cope when encountering errors.
+* or get an instance of ``cssutils.CSSParser`` and use the provided ``parse*`` methods which are the same as the helper functions. The parser is reusable. With parameter ``raiseExceptions=False`` it is possible to define how the parser should cope with encountered errors.
 
 
 
