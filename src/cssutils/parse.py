@@ -40,15 +40,15 @@ class CSSParser(object):
         self.__tokenizer = cssutils.tokenize2.Tokenizer()
 
     def parseString(self, cssText, encoding=None, href=None, media=None, 
-                    title=None):
+                    title=None, _encodingOverride=None):
         """Return parsed CSSStyleSheet from given string cssText.
 
         cssText
             CSS string to parse
         encoding
-            encoding of the CSS string. if ``None`` the encoding will be read
-            from a @charset rule. If there is none, the parser will fall back
-            to UTF-8. If cssText is a unicode string encoding will be ignored.
+            If ``None`` the encoding will be read from BOM or an @charset
+            rule or defaults to UTF-8. 
+            If ``cssText`` is a unicode string ``encoding`` will be ignored.
         href
             The href attribute to assign to the parsed style sheet.
             Used to resolve other urls in the parsed sheet like @import hrefs
@@ -57,18 +57,22 @@ class CSSParser(object):
             (may be a MediaList, list or a string)
         title
             The title attribute to assign to the parsed style sheet
+        _encodingOverride
+            Used by ``parseFile`` and ``parseUrl`` only. Given encoding
+            overrides any found encoding including the ones for imported 
+            sheets.
         """
         if isinstance(cssText, str): 
             cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
-        sheet = cssutils.css.CSSStyleSheet()
-        sheet._href = href
-        sheet.media = cssutils.stylesheets.MediaList(media)
-        sheet.title = title
-        # does close open constructs and adds EOF
-        sheet.cssText = self.__tokenizer.tokenize(cssText, fullsheet=True)
+        sheet = cssutils.css.CSSStyleSheet(href=href,
+                                           media=cssutils.stylesheets.MediaList(media),
+                                           title=title)
+        # tokenizing this ways closes open constructs and adds EOF
+        sheet._setCssText(self.__tokenizer.tokenize(cssText, fullsheet=True), 
+                          _encodingOverride)
         return sheet
 
-    def parse(self, filename, encoding=None, href=None, media=None, title=None):
+    def parseFile(self, filename, encoding=None, href=None, media=None, title=None):
         """Retrieve and return a CSSStyleSheet from given filename.
 
         filename
@@ -79,11 +83,10 @@ class CSSParser(object):
             ``sheet.href`` is used to resolve e.g. stylesheet imports via
             @import rules. 
         encoding
-            of the CSS file, ``None`` defaults to encoding detection from
-            BOM or an @charset rule. ``encoding`` is used for the sheet at
-            ``filename`` (and may override a file internal encoding) 
-            but **not** any imported sheets where the file internal encoding
-            is detected.
+            Value ``None`` defaults to encoding detection via BOM or an 
+            @charset rule.
+            Other values override detected encoding for the sheet at 
+            ``filename`` including any imported sheets.
 
         for other parameters see ``parseString``
         """
@@ -91,8 +94,10 @@ class CSSParser(object):
             # prepend // for file URL, urllib does not do this?
             href = u'file:' + urllib.pathname2url(os.path.abspath(filename))
             
-        return self.parseString(open(filename, 'rb').read(), encoding=encoding,
-                                href=href, media=media, title=title)
+        return self.parseString(open(filename, 'rb').read(), 
+                                encoding=encoding, # read returns a str
+                                href=href, media=media, title=title,
+                                _encodingOverride=encoding)
 
     def parseUrl(self, href, encoding=None, media=None, title=None):
         """Retrieve and return a CSSStyleSheet from given href (an URL).
@@ -101,11 +106,18 @@ class CSSParser(object):
             URL of the CSS file to parse, will also be set as ``href`` of 
             resulting stylesheet
         encoding
-            if given overrides detected HTTP or file internal encoding for
-            sheet at ``href`` but **not** any imported sheets where the 
-            encoding if always detected via HTTP or from the file.
+            Value ``None`` defaults to encoding detection via HTTP, BOM or an 
+            @charset rule.
+            Other values override detected encoding for the sheet at ``href`` 
+            including any imported sheets.
 
         for other parameters see ``parseString``
         """
-        return self.parseString(cssutils.util._readUrl(href, encoding),
-                                href=href, media=media, title=title)
+        return self.parseString(cssutils.util._fetchUrl(href, encoding),
+                                encoding=encoding, # if fetch returns str 
+                                href=href, media=media, title=title,
+                                _encodingOverride=encoding)                                
+
+    @cssutils.util.Deprecated('Use cssutils.CSSParser().parseFile() instead.')
+    def parse(self, filename, encoding=None, href=None, media=None, title=None):
+        self.parseFile(filename, encoding, href, media, title)

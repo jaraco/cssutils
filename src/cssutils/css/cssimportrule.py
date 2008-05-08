@@ -326,11 +326,13 @@ class CSSImportRule(cssrule.CSSRule):
                                                    media=self.media,
                                                    ownerRule=self,
                                                    title=self.name)
-                cssText = cssutils.util._readUrl(href)
+                cssText = cssutils.util._fetchUrl(href, self.parentStyleSheet._encodingOverride)
                 if not cssText:
-                    raise IOError()
-                sheet.cssText = cssText 
-            except Exception, e:
+                    sheet = None
+                    raise cssutils.util.FetchError()
+                # need to keep _encodingOverride
+                sheet._setCssText(cssText, self.parentStyleSheet._encodingOverride) 
+            except (IOError, ValueError), e:
                 self._log.warn(u'CSSImportRule: Error processing imported style sheet: href=%r: %r'
                                % (self.href, e), neverraise=True)
             else:
