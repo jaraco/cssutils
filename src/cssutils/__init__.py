@@ -144,13 +144,18 @@ def parseString(*a, **k):
     return CSSParser().parseString(*a, **k)
 parseString.__doc__ = CSSParser.parseString.__doc__
 
-def parse(*a, **k):
-    return CSSParser().parse(*a, **k)
-parse.__doc__ = CSSParser.parse.__doc__
+def parseFile(*a, **k):
+    return CSSParser().parseFile(*a, **k)
+parseFile.__doc__ = CSSParser.parseFile.__doc__
 
 def parseUrl(*a, **k):
     return CSSParser().parseUrl(*a, **k)
 parseUrl.__doc__ = CSSParser.parseUrl.__doc__
+
+@util.Deprecated('Use cssutils.parseFile() instead.')
+def parse(*a, **k):
+    return CSSParser().parseFile(*a, **k)
+parse.__doc__ = CSSParser.parse.__doc__
 
 
 # set "ser", default serializer
@@ -238,9 +243,9 @@ def replaceUrls(sheet, replacer):
             elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
                 setProperty(v)
 
-def registerReadUrl(func=None):
+def registerFetchUrl(func=None):
     """
-    replaces the default URL read method which is a function getting two 
+    replaces the default URL fetch method which is a function getting two 
     parameters:    
         url
             the URL to read
@@ -249,13 +254,13 @@ def registerReadUrl(func=None):
         
         Return read text from URL as unicode.
         
-    if ``func`` is None the default readUrl function is used so
+    if ``func`` is None the default fetchUrl function is used so
     effectively resets cssutils.
     """
     if not func:
         # resets to default implementation
-        func = util.readUrl
-    util._readUrl = func
+        func = util.fetchUrl
+    util._fetchUrl = func
 
 
 if __name__ == '__main__':
