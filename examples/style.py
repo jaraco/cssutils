@@ -157,7 +157,7 @@ def main():
         }
     '''
     # TODO:
-    #defaultsheet = cssutils.parse('sheets/default_html4.css')
+    #defaultsheet = cssutils.parseFile('sheets/default_html4.css')
     
     # adds style to @style
     document = getDocument(html, css)
