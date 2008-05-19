@@ -43,15 +43,14 @@ if 0:
     sys.exit(0)
 
 if 1:
-#    print cssutils.parseFile('sheets/1.css')
-#    p = cssutils.CSSParser()
-#    p.parse('sheets/1.css')
-#    sys.exit()
+    v = cssutils.css.CSSValue(cssText=u'f()f()')
+    print v
+    sys.exit()
     
     
-    def readUrlGAPE(self):
+    def fetchUrlGA(self):
         """
-        uses GAPE
+        uses GA
             fetch(url, payload=None, method=GET, headers={}, allow_truncated=False)
         
         Response
@@ -88,25 +87,28 @@ if 1:
             cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.message),
                               error=Error)
         text = r.content
-        # TODO: encoding
+        # TODO: encoding???
+        
+        # simply return str, encoding (explicit or HTTP)?
+        # if encoding==None css codec is used?
+        
+        # 1. HTTP
+        # 2. CSS encoding (via codec)
         
         
-    def ru(url, encoding=None):
-        if url.endswith('import.css'):
-            # use default fetchUrl
-            print 111, encoding, url
-            return cssutils.util.fetchUrl(url, encoding)
-        else:
-            # special handling
-            print 222, encoding, url
-            return None
+    def resolver(url, encoding=None):
+        print 333, encoding, url
+        return "a { color: 1 }"
         
-    #cssutils.registerFetchUrl(None)
-    #cssutils.registerFetchUrl(ru)
     
-    x = cssutils.parseUrl('http://seewhatever.de/sheets/import.css', encoding='ascii')
-    print 111, x#.cssText[:50]
-    print 222, x.cssRules[1].styleSheet
+    p = cssutils.CSSParser()
+    p.setImportResolver(resolver) # None
+    p.setImportResolver(lambda url, encoding: None) # None
+        
+    x = p.parseUrl('http://seewhatever.de/sheets/import.css', encoding='ascii')
+    print 
+    print 1, x#.cssText[:50]
+    print 2, x.cssRules[1].styleSheet#.cssText
 
 
     # ValueError:
@@ -127,7 +129,7 @@ if 1:
     # ALL THE SAME:
     css = '@import "import/import2.css";a{background-image: url(x.gif)}'
     #s = cssutils.parseString(css, href='file:///I:/dev-workspace/cssutils/sheets/import.css')
-    s = cssutils.parse('..\\sheets\\import.css')
+    s = cssutils.parseFile('..\\sheets\\import.css')
     #s = cssutils.parseUrl('file:///I:/dev-workspace/cssutils/sheets/import.css')
     #s = cssutils.parseUrl('http://seewhatever.de/sheets/import.css')
     print
