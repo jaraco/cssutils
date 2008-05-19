@@ -120,7 +120,9 @@ class CSSValueTestCase(basetest.BaseTestCase):
             ('color', 'red', True),
             ('left', '1', False),
             ('left', '1px', True),
-            ('font', 'normal 1em/1.5 serif', True)
+            ('font', 'normal 1em/1.5 serif', True),
+            # TODO:
+            #('background', 'url(x.gif) 1 0', False)
             ]
         for n, v, exp in tests:
             v = cssutils.css.CSSValue(cssText=v, _propertyName=n)
@@ -598,7 +600,18 @@ class CSSValueListTestCase(basetest.BaseTestCase):
             u'-1 -2 -3 -4': (None, 4),
             u'-1 2': (None, 2),
             u'-1px red "x"': (None, 3),
-            u'-1cm, 2 3': (None, 2)
+            u'-1cm, 2 3': (None, 2),
+            u'1px1 2% 3': (u'1px1 2% 3', 3),
+            u'f()0': (u'f() 0', 2),
+            u'f()1%': (u'f() 1%', 2),
+            u'f()1px': (u'f() 1px', 2),
+            u'f()"str"': (u'f() "str"', 2),
+            u'f()ident': (u'f() ident', 2),
+            u'f()#123': (u'f() #123', 2),
+            u'f()url()': (u'f() url()', 2),
+            u'f()f()': (u'f() f()', 2),
+            u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
+            u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
             }
         for test in tests:
             exp, num = tests[test]
