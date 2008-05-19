@@ -53,4 +53,4 @@ Options:
 
 CSSParse
 ========
-Script version of ``cssutils.parse()``.
+Script version of ``cssutils.parseString()`` and ``cssutils.parseFile()``.
