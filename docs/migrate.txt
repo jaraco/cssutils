@@ -78,7 +78,7 @@ Example::
         def replacer(url):
             "returns new URL"
 
-        sheet = cssutils.parse(url)
+        sheet = cssutils.parse(url) # use parseFile from 0.9.6!
 
 
 New since 0.9.5b1
