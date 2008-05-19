@@ -246,6 +246,17 @@ class CSSValue(cssutils.util.Base):
                     new['values'].append(val)
                 seq.append(val)
                 return 'operator'
+            elif 'operator' == expected:
+                # expected S but token which is ok
+                val = self._tokenvalue(token)
+                if new['values'] and new['values'][-1] in (u'-', u'+'):
+                    new['values'][-1] += val
+                else:
+                    new['values'].append(u' ')
+                    seq.append(u' ')
+                    new['values'].append(val)
+                seq.append(val)
+                return 'operator'
             elif expected in ('funcend', ')', ']', '}'):
                 # a block
                 seq[-1] += self._tokenvalue(token)
@@ -272,6 +283,22 @@ class CSSValue(cssutils.util.Base):
                 new['values'].append(val)
                 seq.append(val)
                 return 'operator'
+            elif 'operator' == expected:
+                # expected S but still ok
+                
+                # TODO: use actual values, probably needs Base2 for this                
+                typ = self._type(token)
+                if self._prods.STRING == typ:
+                    val = u'"%s"' % self._stringtokenvalue(token)
+#                elif 'URI' == typ:
+#                    val = u'url(%s)' % self._uritokenvalue(token)
+                else:
+                    val = self._tokenvalue(token)
+                new['values'].append(u' ')
+                new['values'].append(val)
+                seq.append(u' ')
+                seq.append(val)
+                return 'operator'
             elif expected in ('funcend', ')', ']', '}'):
                 # a block
                 seq[-1] += self._tokenvalue(token)
@@ -285,6 +312,11 @@ class CSSValue(cssutils.util.Base):
             # FUNCTION
             if expected.startswith('term'):
                 # normal value but add if funcend if found
+                seq.append(self._tokenvalue(token))
+                return 'funcend'
+            elif 'operator' == expected:
+                # normal value but add if funcend if found
+                seq.append(u' ')
                 seq.append(self._tokenvalue(token))
                 return 'funcend'
             elif expected in ('funcend', ')', ']', '}'):
