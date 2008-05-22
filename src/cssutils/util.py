@@ -1,13 +1,8 @@
-"""base classes for css and stylesheets packages
-
-**this test class does not run standalone!**
-see _fetchUrl() to fix this temporarily
-
+"""base classes and helper functions for css and stylesheets packages
 """
 __all__ = []
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
-
 
 import codecs
 from itertools import ifilter
@@ -17,6 +12,8 @@ import urllib2
 import xml.dom
 import cssutils
 from tokenize2 import Tokenizer
+# COMMENT OUT IF RUNNING THIS TEST STANDALONE!
+import encutils
 
 class Base(object):
     """
@@ -738,51 +735,60 @@ class _SimpleNamespaces(_Namespaces):
             self.namespaces)
 
 
-class FetchError(IOError):
-    """used if an URL may not be fetched (used in @import)"""
-    pass
-
-def fetchUrl(url, encoding=None):
-    """Default implementation of ``_fetchUrl``"""
+def _defaultFetcher(url):
+    """Retrieve data from ``url``. cssutils default implementation of fetch
+    URL function.
+    
+    Returns ``(mindType, encoding, stream)`` or ``None``
+    """
     try:
         #import urllib
         #res = urllib.urlopen(url)
         res = urllib2.urlopen(url)
     except ValueError, e:
         # invalid url, e.g. "1"
-        cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.message),
-                          error=ValueError)
+        cssutils.log.warn(u'ValueError, %s' % e.message, error=ValueError)
     except urllib2.HTTPError, e:
-        # http error, e.g. 404
-        cssutils.log.warn(u'Error opening url=%r: %s %s' % (url, e.code, e.msg),
-                          error=e) # special case error=e!
+        # http error, e.g. 404, e can be raised
+        cssutils.log.warn(u'HTTPError opening url=%r: %s %s' %
+                          (url, e.code, e.msg), error=e) 
     except IOError, e:
-        # URLError like mailto: or other IO errors
-        cssutils.log.warn(u'Error opening url=%r: %r' % (url, e.args),
-                          error=e) # special case error=e!
+        # URLError like mailto: or other IO errors, e can be raised
+        cssutils.log.warn(u'IOError, %s' % e.reason, error=e)
     else:
         if res:
-            # get real URL, may have been redirected
-            url = res.geturl()
+            # maybe get real URL, may have been redirected
+            # url = res.geturl()
+            mimeType, encoding = encutils.getHTTPInfo(res)
+            return mimeType, encoding, res
 
-            if not encoding:
-                # COMMENT OUT IF RUNNING THIS TEST STANDALONE!
-                import encutils # this test class does not run standalone!
-                media_type, encoding = encutils.getHTTPInfo(res)
-                if media_type != u'text/css':
-                    cssutils.log.warn(u'Unexpected media type opening url=%s: %r != "text/css"' %
-                                   (url, media_type))
-            try:
-                return codecs.lookup("css")[2](res, encoding=encoding).read()
-#            except urllib2.HTTPError, e:
-#                # http error
-#                cssutils.log.warn(u'Error reading url=%r: %s %s' % (url, e.code, e.msg),
-#                                  error=e) # special case error=e!
-            except IOError, e:
-                cssutils.log.warn(u'Error opening url=%r: %r' % (url, e.args),
-                                  error=e) 
-
-def _fetchUrl(url, encoding=None):
-    """Retrieve text from url using explicit or detected encoding via encutils
+def _readUrl(url, overrideEncoding=None, fetcher=None):
     """
-    return fetchUrl(url, encoding)
+    Read cssText from url and decode it using all relevant methods (HTTP 
+    header, BOM, @charset). Returns encoding which is needed to set encoding
+    of stylesheet properly and decoded text
+    
+    ``overrideEncoding``
+        If given this encoding is used and all other encoding information is 
+        ignored (HTTP, BOM etc)
+    ``fetcher``
+        see cssutils.registerFetchUrl for details
+    """
+    if not fetcher:
+        fetcher = _defaultFetcher
+    r = fetcher(url)
+    if r and len(r) == 3:
+        mimeType, httpEncoding, stream = r
+        
+        if mimeType != u'text/css':
+            cssutils.log.warn(u'Expected "text/css" mime type for url=%s but found: %r' %
+                              (url, mimeType))
+        
+        if overrideEncoding:
+            encoding = overrideEncoding
+        else:
+            encoding = httpEncoding 
+        
+        return encoding, codecs.lookup("css")[2](stream, encoding=encoding).read()
+    else:
+        return None, None
