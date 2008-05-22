@@ -18,11 +18,16 @@ class CSSParser(object):
     Usage::
 
         parser = CSSParser()
-        sheet = p.parse('test1.css', 'ascii')
+        
+        # optionally
+        parser.setFetchUrl(fetcher)
+        
+        sheet = parser.parseFile('test1.css', 'ascii')
 
         print sheet.cssText
     """
-    def __init__(self, log=None, loglevel=None, raiseExceptions=False):
+    def __init__(self, log=None, loglevel=None, raiseExceptions=False,
+                 fetcher=None):
         """
         log
             logging object
@@ -30,6 +35,8 @@ class CSSParser(object):
             logging loglevel
         raiseExceptions
             if log should simple log (default) or raise errors
+        fetcher
+            see ``setFetchUrl(fetcher)``
         """
         if log is not None:
             cssutils.log.setlog(log)
@@ -38,6 +45,7 @@ class CSSParser(object):
 
         cssutils.log.raiseExceptions = raiseExceptions
         self.__tokenizer = cssutils.tokenize2.Tokenizer()
+        self.setFetchUrl(fetcher)
 
     def parseString(self, cssText, encoding=None, href=None, media=None, 
                     title=None, _encodingOverride=None):
@@ -67,9 +75,10 @@ class CSSParser(object):
         sheet = cssutils.css.CSSStyleSheet(href=href,
                                            media=cssutils.stylesheets.MediaList(media),
                                            title=title)
+        sheet._setFetchUrl(self.__fetcher)
         # tokenizing this ways closes open constructs and adds EOF
-        sheet._setCssText(self.__tokenizer.tokenize(cssText, fullsheet=True), 
-                          _encodingOverride)
+        sheet._setCssTextWithEncodingOverride(self.__tokenizer.tokenize(cssText, fullsheet=True), 
+                                              _encodingOverride)
         return sheet
 
     def parseFile(self, filename, encoding=None, href=None, media=None, title=None):
@@ -108,15 +117,35 @@ class CSSParser(object):
         encoding
             Value ``None`` defaults to encoding detection via HTTP, BOM or an 
             @charset rule.
-            Other values override detected encoding for the sheet at ``href`` 
+            A value overrides detected encoding for the sheet at ``href`` 
             including any imported sheets.
 
         for other parameters see ``parseString``
         """
-        return self.parseString(cssutils.util._fetchUrl(href, encoding),
+        encoding, text = cssutils.util._readUrl(href, encoding)
+        if text:
+            return self.parseString(text,
                                 encoding=encoding, # if fetch returns str 
                                 href=href, media=media, title=title,
                                 _encodingOverride=encoding)                                
+
+    def setFetchUrl(self, fetcher=None):
+        """Replace the default URL fetch function with a custom one.
+        The function gets a single parameter    
+        
+        ``url``
+            the URL to read
+    
+        and returns ``(mimeType, encoding, stream)`` where ``mimeType``
+        and ``encoding`` are data normally retrieved from HTTP headers
+        and ``stream`` having a read() method to get its content. 
+        The content is decoded by cssutils using all encoding related data
+        available.
+    
+        Calling ``registerFetchUrl`` with no argument resets cssutils
+        to use its default function.
+        """
+        self.__fetcher = fetcher
 
     @cssutils.util.Deprecated('Use cssutils.CSSParser().parseFile() instead.')
     def parse(self, filename, encoding=None, href=None, media=None, title=None):
