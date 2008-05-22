@@ -17,7 +17,7 @@ except ImportError:
 import basetest
 import encutils
     
-from cssutils.util import Base, ListSeq, _fetchUrl
+from cssutils.util import Base, ListSeq, _readUrl
 
 class ListSeqTestCase(basetest.BaseTestCase):
     
@@ -130,7 +130,13 @@ class _readUrl_TestCase(basetest.BaseTestCase):
     """needs minimock install with easy_install minimock""" 
 
     def test_readUrl(self):
-        """util._fetchUrl()"""
+        """util._readUrl()"""
+        pass
+        
+
+    def test_defaultFetcher(self):
+        """util._defaultFetcher"""
+
         if mock:
             
             class Response(object):
