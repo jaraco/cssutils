@@ -14,7 +14,7 @@ __version__ = '$Id$'
 
 import xml.dom
 import cssutils.stylesheets
-from cssutils.util import _Namespaces, _SimpleNamespaces, Deprecated
+from cssutils.util import _Namespaces, _SimpleNamespaces, Deprecated, _readUrl
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     """
@@ -70,6 +70,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         
         # used only during setting cssText by parse*()
         self._encodingOverride = None
+        self.__fetcher = None
 
     def __iter__(self):
         "generator which iterates over cssRules."
@@ -104,7 +105,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     def _getCssText(self):
         return cssutils.ser.do_CSSStyleSheet(self)
 
-    def _setCssText(self, cssText, _encodingOverride=None):
+    def _setCssText(self, cssText):
         """
         (cssutils)
         Parses ``cssText`` and overwrites the whole stylesheet.
@@ -122,10 +123,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         self._checkReadonly()
         
-        # keep this info during parsing of cssText so that 
-        # @import can use it. Value is set to None after finishing with cssText
-        self._encodingOverride = _encodingOverride
-
         cssText, namespaces = self._splitNamespacesOff(cssText)
         if not namespaces:
             namespaces = _SimpleNamespaces()
@@ -253,13 +250,24 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             self._cleanNamespaces()
             if self._encodingOverride:
                 # override encoding of @charset with given _encodingOverride
-                self.encoding = _encodingOverride
-
-        # always reset as this is only during parse
-        self._encodingOverride = None
+                self.encoding = self._encodingOverride
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
+
+    def _setCssTextWithEncodingOverride(self, cssText, encodingOverride=None):
+        """Set cssText but use __encodingOverride to overwrite detected 
+        encoding. This is only used by @import during setting of cssText.
+        In all other cases __encodingOverwrite is None"""
+        if encodingOverride:
+            # parse sets it, @import uses the one from parsed
+            self._encodingOverride = encodingOverride
+            
+        self.cssText = cssText
+        
+        if encodingOverride:
+            # only use during parse
+            self._encodingOverride = None
 
     def _setEncoding(self, encoding):
         """
@@ -560,6 +568,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         cssutils.replaceUrls(self, replacer)
 
+    def _setFetchUrl(self, fetcher=None):
+        """sets @import URL loader, if None the default is used"""
+        self.__fetcher = fetcher
+
+    def _resolveImport(self, url):
+        """reads (encoding, cssText) from ``url`` for @import sheets
+        using __encodingOverride which is set during setting of cssText"""
+        return _readUrl(url, self._encodingOverride, self.__fetcher)
+        
     def setSerializer(self, cssserializer):
         """
         Sets the global Serializer used for output of all stylesheet
