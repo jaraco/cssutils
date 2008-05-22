@@ -243,25 +243,6 @@ def replaceUrls(sheet, replacer):
             elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
                 setProperty(v)
 
-def registerFetchUrl(func=None):
-    """
-    replaces the default URL fetch method which is a function getting two 
-    parameters:    
-        url
-            the URL to read
-        encoding=None
-            the expected encoding of the text read from ``url``
-        
-        Return read text from URL as unicode.
-        
-    if ``func`` is None the default fetchUrl function is used so
-    effectively resets cssutils.
-    """
-    if not func:
-        # resets to default implementation
-        func = util.fetchUrl
-    util._fetchUrl = func
-
 
 if __name__ == '__main__':
     print __doc__
