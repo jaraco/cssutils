@@ -281,7 +281,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         def m(*p, **kw):
             i[0] += 1
             return examples[i[0]]
-        mock('cssutils.util._fetchUrl', mock_obj=m)
+        mock('cssutils.util._readUrl', mock_obj=m)
         sheet = cssutils.parseString('@import "level1/anything.css" tv "title";', 
                                      href='/root/')
         restore()
