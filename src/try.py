@@ -43,13 +43,8 @@ if 0:
     sys.exit(0)
 
 if 1:
-#    print cssutils.parseFile('sheets/1.css')
-#    p = cssutils.CSSParser()
-#    p.parse('sheets/1.css')
-#    sys.exit()
     
-    
-    def readUrlGAPE(self):
+    def fetchUrlGA(self):
         """
         uses GAPE
             fetch(url, payload=None, method=GET, headers={}, allow_truncated=False)
@@ -81,7 +76,12 @@ if 1:
                 The response data exceeded the maximum allowed size, and the
                 allow_truncated parameter passed to fetch() was False.
         """
+        try:
+            from cStringIO import StringIO
+        except ImportError:
+            from StringIO import StringIO
         from google.appengine.api import urlfetch
+        
         try:        
             r = urlfetch.fetch(url, method=urlfetch.GET)
         except urlfetch.Error, e:
@@ -97,31 +97,26 @@ if 1:
                 except KeyError:
                     encoding = None
         
-                return mimetype, encoding, r.content
+                return mimetype, encoding, StringIO(r.content)
             else:
                 # TODO: 301 etc
-                cssutils.log.warn(u'Error opening url=%r: HTTP Status %s' % (url, r.status_code),
-                              error=IOError)
-
-        return None, None, None
+                cssutils.log.warn(u'Error opening url=%r: HTTP status %s' %
+                                  (url, r.status_code), error=IOError)
         
-    def ru(url, encoding=None):
-        if url.endswith('import.css'):
-            # use default fetchUrl
-            print 111, encoding, url
-            return cssutils.util.fetchUrl(url, encoding)
-        else:
-            # special handling
-            print 222, encoding, url
-            return None
+    def fetcher(url):
+        from cStringIO import StringIO
+        return 'text/css', 'ascii', StringIO('/*test*/')
         
-    #cssutils.registerFetchUrl(None)
-    #cssutils.registerFetchUrl(ru)
-    
-    x = cssutils.parseUrl('http://seewhatever.de/sheets/importa.css', encoding='ascii')
-    print 111, x#.cssText[:50]
-    print 222, x.cssRules[1].styleSheet
-
+    p = cssutils.CSSParser()#fetcher=fetcher)
+    url = 'http://cdot.local/sheets/import.css'
+    x = p.parseUrl(url, encoding='iso-8859-1')
+    print
+    print 1, x
+    print x.cssText[:80]
+    print 
+    x2 = x.cssRules[2].styleSheet
+    print 2, x2
+    print x2.cssText[:50]
 
     # ValueError:
 #    css = u'a {content: "ä"}'.encode('iso-8859-1')
