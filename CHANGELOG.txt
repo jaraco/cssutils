@@ -41,26 +41,30 @@ known issues
 HEAD
     - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead.
 
-    - API CHANGE: Renamed internal method ``util._readUrl`` to ``util._fetchUrl``.
-
     TODO:
 
-    - **FEATURE**: A custom ImportResolver may be used during parsing via ``CSSParser.setImportResolver(resolver)``. This resolver is called when an @import rule is found and should return cssText as a unicode string. It may be used to prevent loading imported stylesheets by setting ``resolver = lambda url, encoding: None``.
+    - **FEATURE**: A custom URL fetcher may be used during parsing via ``CSSParser.setFetchUrl(fetcher)`` (or as an init parameter). The so customized parser is reusable. The fetcher is called when an ``@import`` rule is found and the referenced stylesheet is about to be retrieved.
 
-        - Parameters ``url`` and ``encoding=None``
-        - returns an unicode string of the document at ``url`` using encoding or returns None.
-        - may use the default fetch method ``util.fetchUrl``
+      The function gets a single parameter
+
+      ``url``
+          the URL to read
+
+      and returns ``(mimeType, encoding, stream)`` where ``mimeType``
+      and ``encoding`` are data normally retrieved from HTTP headers
+      and ``stream`` having a read() method to get its content.
+      The content is then decoded by cssutils using all encoding related data available.
 
         Example::
 
-            def myFetch(url, encoding=None):
-                if url.endswith('special.css'):
-                    # use default fetchUrl
-                    return cssutils.util.fetchUrl(url, encoding)
-                else:
-                    # does not resolve anything
-                    return None
+            def fetcher(url):
+                from StringIO import StringIO
+                return 'text/css', 'ascii', StringIO('/*test*/')
 
+            parser = cssutils.CSSParser(fetcher=fetcher)
+            parser.parse...
+
+    - **BUGFIX**: ``parseUrl`` does return None if an error occurs during reading the given URL. Until now an empty stylesheet was returned.
 
     - **BUGFIX**: Given parameter ``encoding`` for ``parseFile`` and ``parseUrl`` functions/methods now overrides any detected encoding of read sheet like HTTP information or @charset rules. Useful if e.g. HTTP information is not set properly. The given ``encoding`` is used for **all** imported sheets of the parsed one too!
 
