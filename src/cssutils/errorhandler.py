@@ -96,7 +96,6 @@ class _ErrorHandler(object):
 
         if error and self.raiseExceptions and not neverraise:
             if isinstance(error, urllib2.HTTPError) or isinstance(error, urllib2.URLError):
-                # done in util._fetchUrl
                 raise error
             else:
                 raise error(msg)
