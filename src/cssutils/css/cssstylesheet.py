@@ -70,7 +70,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         
         # used only during setting cssText by parse*()
         self._encodingOverride = None
-        self.__fetcher = None
+        self._fetcher = None
 
     def __iter__(self):
         "generator which iterates over cssRules."
@@ -131,7 +131,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         newseq = [] #cssutils.css.CSSRuleList()
 
         # for closures: must be a mutable
-        new = { 'namespaces': namespaces}
+        new = {'encoding': None, # needed for setting encoding of @import rules
+               'namespaces': namespaces}
         def S(expected, seq, token, tokenizer=None):
             # @charset must be at absolute beginning of style sheet
             if expected == 0:
@@ -156,10 +157,12 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             else:
                 if rule.wellformed:
                     seq.append(rule)
+                    new['encoding'] = rule.encoding 
             return 1
 
         def importrule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSImportRule(parentStyleSheet=self)
+            rule._parentEncoding = new['encoding'] # set temporarily
             rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 1:
                 self._log.error(
@@ -167,6 +170,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     token, xml.dom.HierarchyRequestErr)
             else:
                 if rule.wellformed:
+                    del rule._parentEncoding # remove as later it is read from this sheet!
                     seq.append(rule)
             return 1
 
@@ -568,14 +572,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         cssutils.replaceUrls(self, replacer)
 
-    def _setFetchUrl(self, fetcher=None):
+    def _setFetcher(self, fetcher=None):
         """sets @import URL loader, if None the default is used"""
-        self.__fetcher = fetcher
+        self._fetcher = fetcher
 
     def _resolveImport(self, url):
         """reads (encoding, cssText) from ``url`` for @import sheets
         using __encodingOverride which is set during setting of cssText"""
-        return _readUrl(url, self._encodingOverride, self.__fetcher)
+        return _readUrl(url, self._encodingOverride, self._fetcher)
         
     def setSerializer(self, cssserializer):
         """
