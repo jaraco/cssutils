@@ -2,7 +2,6 @@
 __version__ = '$Id$'
 
 import xml.dom
-from minimock import mock, restore
 import test_cssrule
 import cssutils
 
@@ -273,24 +272,22 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_styleSheet(self):
         "CSSImportRule.styleSheet"
-        i = [-1] # 
-        examples = [
-            '@import "level2/css.css" "title2";',
-            'a { color: red }'
-        ]
-        def m(*p, **kw):
-            i[0] += 1
-            return examples[i[0]]
-        mock('cssutils.util._readUrl', mock_obj=m)
-        sheet = cssutils.parseString('@import "level1/anything.css" tv "title";', 
+        def fetcher(url):
+            if url == "/root/level1/anything.css": 
+                return None, '@import "level2/css.css" "title2";'
+            else:
+                return None, 'a { color: red }'
+            
+        parser = cssutils.CSSParser(fetcher=fetcher)
+        sheet = parser.parseString('@import "level1/anything.css" tv "title";', 
                                      href='/root/')
-        restore()
         
         self.assertEqual(sheet.href, '/root/')
         
         ir = sheet.cssRules[0]
         self.assertEqual(ir.href, 'level1/anything.css')
         self.assertEqual(ir.styleSheet.href, '/root/level1/anything.css')
+        self.assertEqual(ir.styleSheet.encoding, 'utf-8')
         self.assertEqual(ir.styleSheet.ownerRule, ir)
         self.assertEqual(ir.styleSheet.media.mediaText, 'tv')
         self.assertEqual(ir.styleSheet.parentStyleSheet, sheet)
@@ -300,6 +297,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         ir2 = ir.styleSheet.cssRules[0]
         self.assertEqual(ir2.href, 'level2/css.css')
         self.assertEqual(ir2.styleSheet.href, '/root/level1/level2/css.css')
+        self.assertEqual(ir2.styleSheet.encoding, 'utf-8')
         self.assertEqual(ir2.styleSheet.ownerRule, ir2)
         self.assertEqual(ir2.styleSheet.media.mediaText, 'all')
         self.assertEqual(ir2.styleSheet.parentStyleSheet, ir.styleSheet)

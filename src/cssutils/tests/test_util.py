@@ -188,7 +188,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                         mock_obj=urlopen(url, text=text.encode(textencoding)))
 
                 #print url, exp == _readUrl(url, encoding), exp, _readUrl(url, encoding)
-                self.assertEqual(exp, _fetchUrl(url, encoding))
+                self.assertEqual(exp, _fetcher(url, encoding))
 
 
             # calling url results in fake exception
