@@ -8,12 +8,40 @@ import sys
 import urlparse
 import xml
 import cssutils
+from StringIO import StringIO
 
 def save(name, string):
     f = open(name, 'w')
     f.write(string)
     f.close()
 
+if 1:
+        tests = {
+            # css, encoding, (mimetype, encoding, importcss):
+            #    encoding
+            ('@charset "ASCII"; @import "x";', None, (None, '/*t*/')): (
+                 'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'),
+        }
+        
+        def make_fetcher(encoding, content):
+            "make a fetcher with specified data"
+            def fetcher(url):
+                return None#encoding, content            
+            return fetcher
+        
+        parser = cssutils.CSSParser()
+        for test in tests:
+            css, encoding, fetchdata = test
+            parser.setFetcher(make_fetcher(*fetchdata))
+            sheet = parser.parseString(css, encoding=encoding)
+            
+            encoding, importIndex, importEncoding, importText = tests[test]
+            print 1, sheet, sheet.cssText
+            i = sheet.cssRules[importIndex].styleSheet
+            print 2, i
+            
+        sys.exit()
+            
 def escapecss(e):
     """
     Escapes characters not allowed in the current encoding the CSS way
@@ -76,10 +104,6 @@ if 1:
                 The response data exceeded the maximum allowed size, and the
                 allow_truncated parameter passed to fetch() was False.
         """
-        try:
-            from cStringIO import StringIO
-        except ImportError:
-            from StringIO import StringIO
         from google.appengine.api import urlfetch
         
         try:        
@@ -97,15 +121,14 @@ if 1:
                 except KeyError:
                     encoding = None
         
-                return mimetype, encoding, StringIO(r.content)
+                return encoding, r.content
             else:
                 # TODO: 301 etc
                 cssutils.log.warn(u'Error opening url=%r: HTTP status %s' %
                                   (url, r.status_code), error=IOError)
         
     def fetcher(url):
-        from cStringIO import StringIO
-        return 'text/css', 'ascii', StringIO('/*test*/')
+        return 'text/css', 'ascii', '/*test*/'
         
     p = cssutils.CSSParser()#fetcher=fetcher)
     url = 'http://cdot.local/sheets/import.css'
