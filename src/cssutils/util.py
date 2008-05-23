@@ -760,13 +760,16 @@ def _defaultFetcher(url):
             # maybe get real URL, may have been redirected
             # url = res.geturl()
             mimeType, encoding = encutils.getHTTPInfo(res)
-            return mimeType, encoding, res
+            if mimeType != u'text/css':
+                cssutils.log.warn(u'Expected "text/css" mime type for url=%s but found: %r' %
+                                  (url, mimeType))
+            return encoding, res.read()
 
 def _readUrl(url, overrideEncoding=None, fetcher=None):
     """
     Read cssText from url and decode it using all relevant methods (HTTP 
-    header, BOM, @charset). Returns encoding which is needed to set encoding
-    of stylesheet properly and decoded text
+    header, BOM, @charset). Returns encoding (which is needed to set encoding
+    of stylesheet properly) and decoded text
     
     ``overrideEncoding``
         If given this encoding is used and all other encoding information is 
@@ -777,18 +780,22 @@ def _readUrl(url, overrideEncoding=None, fetcher=None):
     if not fetcher:
         fetcher = _defaultFetcher
     r = fetcher(url)
-    if r and len(r) == 3:
-        mimeType, httpEncoding, stream = r
-        
-        if mimeType != u'text/css':
-            cssutils.log.warn(u'Expected "text/css" mime type for url=%s but found: %r' %
-                              (url, mimeType))
+    if r and len(r) == 2:
+        httpEncoding, content = r
         
         if overrideEncoding:
+            # 0. override encoding
             encoding = overrideEncoding
-        else:
+        elif httpEncoding:
+            # 1. HTTP
             encoding = httpEncoding 
-        
-        return encoding, codecs.lookup("css")[2](stream, encoding=encoding).read()
+        else:
+            # 2. BOM/@charset
+            charset = cssutils.codec._detectencoding_str(content)
+            if charset != 'utf-8': # UTF-8 is the default and is not reported
+                encoding = charset
+            else:
+                encoding = None
+        return encoding, codecs.lookup("css")[1](content, encoding=encoding)[0]
     else:
         return None, None
