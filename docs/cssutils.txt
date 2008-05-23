@@ -46,20 +46,43 @@ Options to parse a given stylesheet:
   - ``cssutils.parseFile(filename, encoding=None, href=None, media=None, title=None)``
   - ``cssutils.parseUrl(href, encoding=None, media=None, title=None)``
 
-  parameter ``encoding`` for ``parseString``
-        If ``None`` the encoding will be read from BOM or an @charset
-        rule or defaults to UTF-8.
-        If ``cssText`` is a unicode string ``encoding`` will be ignored.
-
-  parameter ``encoding`` for ``parseFile`` or ``parseUrl``
+  parameter ``encoding``
         Value ``None`` defaults to encoding detection via HTTP, BOM or an
         @charset rule.
         Other values override detected encoding for the sheet at ``href``
         including any imported sheets.
 
+        Additionally parameter ``encoding`` for ``parseString`` is used to decode the string if the given string is a byte string (not a unicode).
+
 * parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. Setting explicit properties (e.g. ``CSSStyleSheet.cssText`` with a syntactically incorrect sheet raises the relevant exeptions.
 
 * or get an instance of ``cssutils.CSSParser`` and use the provided ``parse*`` methods which are the same as the helper functions. The parser is reusable. With parameter ``raiseExceptions=False`` it is possible to define how the parser should cope with encountered errors.
+
+Custom URL Fetcher
+------------------
+If you want to control how imported stylesheets are read you may define a custom URL fetcher (e.g. needed on Google AppEngine as urllib2 which is normally used is not available, a GA helper method may be added to cssutils soon.)
+
+A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetcher)`` (or as an init parameter). The so customized parser is reusable. The fetcher is called when an ``@import`` rule is found and the referenced stylesheet is about to be retrieved.
+
+      The function gets a single parameter
+
+      ``url``
+          the URL to read
+
+      and returns ``(encoding, content)`` where ``encoding`` is the HTTP charset normally given via the Content-Type header (which may simple omit the charset) and ``content`` being the (byte) string content. The Mimetype should be 'text/css' but this has to be checked by the fetcher itself (the default fetcher emits a warning if encountering a different mimetype).
+      The content is then decoded by cssutils using all encoding related data available.
+
+        Example::
+
+            def fetcher(url):
+                return 'ascii', '/*test*/'
+
+            parser = cssutils.CSSParser(fetcher=fetcher)
+            parser.parse...
+
+      To omit parsing of imported sheets just define a fetcher like ``lambda url: None`` (A single None is sufficient but returning ``None, None`` would be clearer).
+
+      You may also define the encoding for each imported sheet with a fetcher which returns a (normally HTTP) encoding depending in URL.
 
 
 
