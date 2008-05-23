@@ -20,7 +20,7 @@ class CSSParser(object):
         parser = CSSParser()
         
         # optionally
-        parser.setFetchUrl(fetcher)
+        parser.setFetcher(fetcher)
         
         sheet = parser.parseFile('test1.css', 'ascii')
 
@@ -45,10 +45,10 @@ class CSSParser(object):
 
         cssutils.log.raiseExceptions = raiseExceptions
         self.__tokenizer = cssutils.tokenize2.Tokenizer()
-        self.setFetchUrl(fetcher)
+        self.setFetcher(fetcher)
 
     def parseString(self, cssText, encoding=None, href=None, media=None, 
-                    title=None, _encodingOverride=None):
+                    title=None):
         """Return parsed CSSStyleSheet from given string cssText.
 
         cssText
@@ -56,7 +56,10 @@ class CSSParser(object):
         encoding
             If ``None`` the encoding will be read from BOM or an @charset
             rule or defaults to UTF-8. 
-            If ``cssText`` is a unicode string ``encoding`` will be ignored.
+            If given overrides any found encoding including the ones for 
+            imported sheets.
+            It also will be used to decode ``cssText`` if given as a (byte)
+            string.
         href
             The href attribute to assign to the parsed style sheet.
             Used to resolve other urls in the parsed sheet like @import hrefs
@@ -65,20 +68,17 @@ class CSSParser(object):
             (may be a MediaList, list or a string)
         title
             The title attribute to assign to the parsed style sheet
-        _encodingOverride
-            Used by ``parseFile`` and ``parseUrl`` only. Given encoding
-            overrides any found encoding including the ones for imported 
-            sheets.
         """
         if isinstance(cssText, str): 
             cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
+
         sheet = cssutils.css.CSSStyleSheet(href=href,
                                            media=cssutils.stylesheets.MediaList(media),
                                            title=title)
-        sheet._setFetchUrl(self.__fetcher)
+        sheet._setFetcher(self.__fetcher)
         # tokenizing this ways closes open constructs and adds EOF
         sheet._setCssTextWithEncodingOverride(self.__tokenizer.tokenize(cssText, fullsheet=True), 
-                                              _encodingOverride)
+                                              encoding)
         return sheet
 
     def parseFile(self, filename, encoding=None, href=None, media=None, title=None):
@@ -105,8 +105,7 @@ class CSSParser(object):
             
         return self.parseString(open(filename, 'rb').read(), 
                                 encoding=encoding, # read returns a str
-                                href=href, media=media, title=title,
-                                _encodingOverride=encoding)
+                                href=href, media=media, title=title)
 
     def parseUrl(self, href, encoding=None, media=None, title=None):
         """Retrieve and return a CSSStyleSheet from given href (an URL).
@@ -126,10 +125,9 @@ class CSSParser(object):
         if text:
             return self.parseString(text,
                                 encoding=encoding, # if fetch returns str 
-                                href=href, media=media, title=title,
-                                _encodingOverride=encoding)                                
+                                href=href, media=media, title=title)                                
 
-    def setFetchUrl(self, fetcher=None):
+    def setFetcher(self, fetcher=None):
         """Replace the default URL fetch function with a custom one.
         The function gets a single parameter    
         
