@@ -6,24 +6,119 @@ import xml.dom
 import basetest
 import cssutils
 
-class CSSStyleSheetTestCase(basetest.BaseTestCase):
+class CSSParserTestCase(basetest.BaseTestCase):
 
     def test_parseString(self):
+        "CSSParser.parseString()"
         tests = {
-            # for unicode encoding is ignored
-            (u'@namespace "a";', 'BOGUS'): u'@namespace "a";',  
-            ('@namespace "a";', None): u'@namespace "a";',
-            ('@namespace "a";', 'ascii'): u'@namespace "a";',
-            # automatic convertion  
-            ('@namespace "b";', 'ascii'): '@namespace "b";',
-            # result is str not unicode
-            ('@namespace "\xc3\xa4";', None): '@namespace "\xc3\xa4";',  
-            ('@namespace "\xc3\xa4";', 'utf-8'): '@namespace "\xc3\xa4";'  
+            # (byte) string, encoding: encoding, cssText
+            ('/*a*/', None): ('utf-8', u'/*a*/'),
+            ('/*a*/', 'ascii'): ('ascii', '@charset "ascii";\n/*a*/'),
+            ('/*\xc3\xa4*/', None): ('utf-8', '/*\xc3\xa4*/'),  
+            ('/*\xc3\xa4*/', 'utf-8'): ('utf-8', '@charset "utf-8";\n/*\xc3\xa4*/'),  
+            ('@charset "ascii";/*a*/', None): ('ascii', u'@charset "ascii";\n/*a*/'),
+            ('@charset "utf-8";/*a*/', None): ('utf-8', u'@charset "utf-8";\n/*a*/'),
+            ('@charset "iso-8859-1";/*a*/', None): ('iso-8859-1', u'@charset "iso-8859-1";\n/*a*/'),
+            
+            # unicode string, no encoding: encoding, cssText
+            (u'/*€*/', None): (
+               'utf-8', u'/*€*/'.encode('utf-8')),  
+            (u'@charset "iso-8859-1";/*ä*/', None): (
+                'iso-8859-1', u'@charset "iso-8859-1";\n/*ä*/'.encode('iso-8859-1')),  
+            (u'@charset "utf-8";/*€*/', None): (
+                'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
+            (u'@charset "utf-16";/**/', None): (
+                'utf-16', u'@charset "utf-16";\n/**/'.encode('utf-16')),  
+            # unicode string, encoding utf-8: encoding, cssText            
+            (u'/*€*/', 'utf-8'): ('utf-8', 
+               u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
+            (u'@charset "iso-8859-1";/*ä*/', 'utf-8'): (
+                'utf-8', u'@charset "utf-8";\n/*ä*/'.encode('utf-8')),  
+            (u'@charset "utf-8";/*€*/', 'utf-8'): (
+                'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
+            (u'@charset "utf-16";/**/', 'utf-8'): (
+                'utf-8', u'@charset "utf-8";\n/**/'.encode('utf-8')),
+            # probably not what is wanted but does not raise:  
+            (u'/*€*/', 'ascii'): (
+               'ascii', u'@charset "ascii";\n/*\\20AC */'.encode('utf-8')),  
+            (u'/*€*/', 'iso-8859-1'): (
+               'iso-8859-1', u'@charset "iso-8859-1";\n/*\\20AC */'.encode('utf-8')),  
         }
         for test in tests:
             css, encoding = test
             sheet = cssutils.parseString(css, encoding=encoding)
-            self.assertEqual(tests[test], sheet.cssText)
+            encoding, cssText = tests[test]
+            self.assertEqual(encoding, sheet.encoding)
+            self.assertEqual(cssText, sheet.cssText)
+
+        tests = [
+            # encoded css, overiding encoding 
+            (u'/*€*/'.encode('utf-8'), 'ascii'), 
+            (u'a'.encode('ascii'), 'utf-16'),
+            (u'/*ä*/'.encode('iso-8859-1'), 'ascii'),
+            (u'/*€*/'.encode('utf-16'), 'utf-8'),
+        ]
+        for test in tests:
+            self.assertRaises(UnicodeDecodeError, cssutils.parseString, test[0], test[1])
+
+    def test_fetcher(self):
+        """CSSParser.fetcher
+        
+        order:
+           0. explicity given encoding OVERRIDE (cssutils only)
+           
+           1. An HTTP "charset" parameter in a "Content-Type" field (or similar parameters in other protocols)
+           2. BOM and/or @charset (see below)
+           3. <link charset=""> or other metadata from the linking mechanism (if any)
+           4. charset of referring style sheet or document (if any)
+           5. Assume UTF-8
+        """
+        tests = {
+            # css, encoding, (mimetype, encoding, importcss):
+            #    encoding, importIndex, importEncoding, importText            
+
+            # 0/0 override/override => ASCII/ASCII
+            (u'@charset "utf-16"; @import "x";', 'ASCII', ('iso-8859-1', 
+                                                          '@charset "latin1";/*t*/')): (
+                 'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'),
+            # 1/1 not tested her but same as next
+            # 2/1 @charset/HTTP => UTF-16/ISO-8859-1
+            (u'@charset "UTF-16"; @import "x";', None, ('ISO-8859-1', 
+                                                       '@charset "latin1";/*t*/')): (
+                 'utf-16', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*t*/'),
+            # 2/2 @charset/@charset => UTF-16/ISO-8859-1
+            (u'@charset "UTF-16"; @import "x";', None, (None, 
+                                                      '@charset "ISO-8859-1";/*t*/')): (
+                 'utf-16', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*t*/'),
+            # 2/4 @charset/referrer => ASCII/ASCII
+            ('@charset "ASCII"; @import "x";', None, (None, '/*t*/')): (
+                 'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'),
+            # 5/5 default/default or referrer
+            ('@import "x";', None, (None, '/*t*/')): (
+                 'utf-8', 0, 'utf-8', '/*t*/')
+        }
+        
+        def make_fetcher(encoding, content):
+            "make a fetcher with specified data"
+            def fetcher(url):
+                return encoding, content            
+            return fetcher
+        
+        parser = cssutils.CSSParser()
+        for test in tests:
+            css, encoding, fetchdata = test
+            parser.setFetcher(make_fetcher(*fetchdata))
+            sheet = parser.parseString(css, encoding=encoding)
+
+            encoding, importIndex, importEncoding, importText = tests[test]
+            # sheet
+            self.assertEqual(sheet.encoding, encoding)
+            # imported sheet
+            self.assertEqual(sheet.cssRules[importIndex].styleSheet.encoding, 
+                             importEncoding)
+            self.assertEqual(sheet.cssRules[importIndex].styleSheet.cssText, 
+                             importText)
+
 
     def test_roundtrip(self):
         "cssutils encodings"
