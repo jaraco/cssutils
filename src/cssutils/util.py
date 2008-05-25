@@ -739,11 +739,9 @@ def _defaultFetcher(url):
     """Retrieve data from ``url``. cssutils default implementation of fetch
     URL function.
     
-    Returns ``(mindType, encoding, stream)`` or ``None``
+    Returns ``(encoding, stream)`` or ``None``
     """
     try:
-        #import urllib
-        #res = urllib.urlopen(url)
         res = urllib2.urlopen(url)
     except ValueError, e:
         # invalid url, e.g. "1"
@@ -752,17 +750,15 @@ def _defaultFetcher(url):
         # http error, e.g. 404, e can be raised
         cssutils.log.warn(u'HTTPError opening url=%r: %s %s' %
                           (url, e.code, e.msg), error=e) 
-    except IOError, e:
+    except urllib2.URLError, e:
         # URLError like mailto: or other IO errors, e can be raised
-        cssutils.log.warn(u'IOError, %s' % e.reason, error=e)
+        cssutils.log.warn(u'URLError, %s' % e.reason, error=e)
     else:
         if res:
-            # maybe get real URL, may have been redirected
-            # url = res.geturl()
             mimeType, encoding = encutils.getHTTPInfo(res)
             if mimeType != u'text/css':
                 cssutils.log.warn(u'Expected "text/css" mime type for url=%s but found: %r' %
-                                  (url, mimeType))
+                                  (url, mimeType), error=ValueError)
             return encoding, res.read()
 
 def _readUrl(url, overrideEncoding=None, fetcher=None):
