@@ -107,18 +107,28 @@ class CSSParserTestCase(basetest.BaseTestCase):
         parser = cssutils.CSSParser()
         for test in tests:
             css, encoding, fetchdata = test
-            parser.setFetcher(make_fetcher(*fetchdata))
-            sheet = parser.parseString(css, encoding=encoding)
+            sheetencoding, importIndex, importEncoding, importText = tests[test]
 
-            encoding, importIndex, importEncoding, importText = tests[test]
+            # use setFetcher
+            parser.setFetcher(make_fetcher(*fetchdata))
+            # use init
+            parser2 = cssutils.CSSParser(fetcher=make_fetcher(*fetchdata))
+
+            sheet = parser.parseString(css, encoding=encoding)
+            sheet2 = parser2.parseString(css, encoding=encoding)
+
             # sheet
-            self.assertEqual(sheet.encoding, encoding)
+            self.assertEqual(sheet.encoding, sheetencoding)
+            self.assertEqual(sheet2.encoding, sheetencoding)
             # imported sheet
             self.assertEqual(sheet.cssRules[importIndex].styleSheet.encoding, 
                              importEncoding)
+            self.assertEqual(sheet2.cssRules[importIndex].styleSheet.encoding, 
+                             importEncoding)
             self.assertEqual(sheet.cssRules[importIndex].styleSheet.cssText, 
                              importText)
-
+            self.assertEqual(sheet2.cssRules[importIndex].styleSheet.cssText, 
+                             importText)
 
     def test_roundtrip(self):
         "cssutils encodings"
