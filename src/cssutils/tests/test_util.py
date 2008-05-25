@@ -2,6 +2,7 @@
 """Testcases for cssutils.util"""
 __version__ = '$Id$'
 
+import cgi
 from email import message_from_string, message_from_file
 import StringIO
 import sys
@@ -17,7 +18,7 @@ except ImportError:
 import basetest
 import encutils
     
-from cssutils.util import Base, ListSeq, _readUrl
+from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher
 
 class ListSeqTestCase(basetest.BaseTestCase):
     
@@ -125,25 +126,66 @@ class BaseTestCase(basetest.BaseTestCase):
 
             res = u''.join([t[1] for t in restokens])
             self.assertEqual(exp, res)
-        
+     
+   
 class _readUrl_TestCase(basetest.BaseTestCase):
     """needs minimock install with easy_install minimock""" 
 
     def test_readUrl(self):
-        """util._readUrl()"""
-        pass
+        """util._readUrl()"""        
+        # for additional tests see test_parse.py
+        url = 'http://example.com/test.css'
+
+        def make_fetcher(r):
+            # normally r == encoding, content
+            def fetcher(url):
+                return r
+            return fetcher
         
+        tests = {
+            # defaultFetcher returns: readUrl returns
+            None: (None, None),
+            (None, ''): (None, u''),
+            (None, u'€'.encode('utf-8')): (None, u'€'),
+            ('utf-8', u'€'.encode('utf-8')): ('utf-8', u'€'),
+            ('ISO-8859-1', u'ä'.encode('iso-8859-1')): ('ISO-8859-1', u'ä'),
+            ('ASCII', u'a'.encode('ascii')): ('ASCII', u'a')
+        }
+
+        for r, exp in tests.items():              
+            self.assertEquals(_readUrl(url, 
+                                       fetcher=make_fetcher(r)), exp)
+
+        tests = {
+            # (override, defaultFetcher returns): readUrl returns
+            ('latin1', None): (None, None),
+            ('latin1', (None, '')): ('latin1', u''),
+            ('latin1', ('', u'ä'.encode('iso-8859-1'))): 
+                ('latin1', u'ä'),
+            ('latin1', ('', u'a'.encode('ascii'))): 
+                ('latin1', u'a')
+        }
+        for (override, r), exp in tests.items():              
+            self.assertEquals(_readUrl(url, overrideEncoding=override,
+                                       fetcher=make_fetcher(r)), exp)
 
     def test_defaultFetcher(self):
         """util._defaultFetcher"""
-
         if mock:
             
             class Response(object):
                 """urllib2.Reponse mock"""
-                def __init__(self, url, text=u'', exception=None, args=None):
+                def __init__(self, url, 
+                             contenttype, content,
+                             exception=None, args=None):
                     self.url = url
-                    self.text = text
+                    
+                    mt, params = cgi.parse_header(contenttype)
+                    self.mimetype = mt
+                    self.charset = params.get('charset', None)
+                    
+                    self.text = content
+                    
                     self.exception = exception
                     self.args = args
 
@@ -151,11 +193,12 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                     return self.url
 
                 def info(self):
+                    mimetype, charset = self.mimetype, self.charset 
                     class Info(object):
                         def gettype(self):
-                            return 'text/css'
+                            return mimetype
                         def getparam(self, name):
-                            return 'UTF-8'
+                            return charset
 
                     return Info()
 
@@ -166,47 +209,56 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                     else:
                         raise self.exception(*self.args)
 
-            def urlopen(url, text=None, exception=None, args=None):
+            def urlopen(url, 
+                        contenttype=None, content=None,
+                        exception=None, args=None):
                 # return an mock which returns parameterized Response
                 def x(*ignored):
                     if exception:
                         raise exception(*args)
                     else:
-                        return Response(url, 
-                                        text=text, 
+                        return Response(url,
+                                        contenttype, content, 
                                         exception=exception, args=args)
                 return x
             
-            tests = [
-                ('s1', u'ä', 'utf-8', None, u'ä'),
-                ('s2', u'ä', 'utf-8', 'utf-8', u'ä'),
-                ('s3', u'\xe4', 'iso-8859-1', 'iso-8859-1', u'ä'),
-                ('s4', u'123', 'ascii', 'ascii', u'123')
-            ]
-            for url, text, textencoding, encoding, exp in tests:
-                mock("urllib2.urlopen",
-                        mock_obj=urlopen(url, text=text.encode(textencoding)))
+            # positive tests
+            tests = {
+                # content-type, contentstr: encoding, contentstr
+                ('text/css', u'€'.encode('utf-8')): 
+                        (None, u'€'.encode('utf-8')),  
+                ('text/css;charset=utf-8', u'€'.encode('utf-8')): 
+                        ('utf-8', u'€'.encode('utf-8')),  
+                ('text/css;charset=ascii', 'a'): 
+                        ('ascii', 'a')  
+            }
+            url = 'http://example.com/test.css'
+            for (contenttype, content), exp in tests.items():
+                
+                mock("urllib2.urlopen", mock_obj=urlopen(url, contenttype, content))
 
                 #print url, exp == _readUrl(url, encoding), exp, _readUrl(url, encoding)
-                self.assertEqual(exp, _fetcher(url, encoding))
+                self.assertEqual(exp, _defaultFetcher(url))
 
+            # wrong mimetype
+            mock("urllib2.urlopen", mock_obj=urlopen(url, 'text/html', 'a'))
+            self.assertRaises(ValueError, _defaultFetcher, url)
 
             # calling url results in fake exception
-            tests = [
-                #_readUrl('1')
-                ('1', ValueError, ['invalid value for url']),
-                ('e2', urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
+            tests = {
+                '1': (ValueError, ['invalid value for url']),
+                'e2': (urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
                 #_readUrl('http://cthedot.de/__UNKNOWN__.css')
-                ('e3', urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
+                'e3': (urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
                 #_readUrl('mailto:a.css')
-                ('mailto:e4', urllib2.URLError, ['urlerror']),
+                'mailto:e4': (urllib2.URLError, ['urlerror']),
                 # cannot resolve x, IOError
-                ('http://x', urllib2.URLError, ['ioerror']),
-            ]
-            for url, exception, args in tests:
+                'http://x': (urllib2.URLError, ['ioerror']),
+            }
+            for url, (exception, args) in tests.items():
                 mock("urllib2.urlopen",
                         mock_obj=urlopen(url, exception=exception, args=args))
-                self.assertRaises(exception, _fetchUrl, url)
+                self.assertRaises(exception, _defaultFetcher, url)
 
             restore()
         
