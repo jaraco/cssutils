@@ -162,13 +162,13 @@ class CSSCapture(object):
                 return None
                       
         sheet = cssutils.parseString(cssText)
-        sheet.href = href
+        sheet._href = href
         sheet.media = media
         sheet._parentStyleSheet = parentStyleSheet
         sheet.title = title
-        self._log.debug(u'    * title: %s', title)
         if href:
             self._log.info(u'    * href : %s', href)
+        self._log.debug(u'    * title: %s', title)
         self._log.info(u'    * media: %s', media.mediaText)
         self._log.info(u'    %s\n' % sheet)
         self._log.debug(u'    * cssText:\n%s\n', cssText)
@@ -377,7 +377,7 @@ def main(args=None):
         c.saveto(saveto, saveraw=options.saveraw, minified=options.minified)
     else:
         for i, s in enumerate(stylesheetlist):
-            print i+1, u'\ttitle: "%s", \n\thref : "%s"\n' % (s.title, s.href)
+            print i+1, u'\thref : "%s"\n\ttitle: "%s", \n' % (s.href, s.title)
 
 
 if __name__ == "__main__":
