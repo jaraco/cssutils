@@ -39,20 +39,20 @@ known issues
 0.9.x
 -----
 HEAD
-    - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are possible.
+    - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.
 
     - **FEATURE**: While reading an imported styleSheet all relevant encoding parameters (HTTP headers, BOM/@charset, etc) are used now as defined in http://www.w3.org/TR/CSS21/syndata.html#charset
 
-    - **FEATURE/BUGFIX**: Given parameter ``encoding`` for ``parseString``, ``parseFile`` and ``parseUrl`` functions/methods now overrides any detected encoding of read sheet like HTTP information or @charset rules. Useful if e.g. HTTP information is not set properly. The given ``encoding`` is used for **all** imported sheets of the parsed one too! This is a cssutils only addition to the rules defined at http://www.w3.org/TR/CSS21/syndata.html#charset.
+        Additionally a given parameter ``encoding`` for ``parseString``, ``parseFile`` and ``parseUrl`` functions/methods **overrides** any detected encoding of read sheet like HTTP information or @charset rules. Useful if e.g. HTTP information is not set properly. The given ``encoding`` is used for **all** imported sheets of the parsed one too! This is a cssutils only addition to the rules defined at http://www.w3.org/TR/CSS21/syndata.html#charset.
 
-    - **FEATURE**: A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetcher)`` (or as an init parameter). The so customized parser is reusable. The fetcher is called when an ``@import`` rule is found and the referenced stylesheet is about to be retrieved.
+    - **FEATURE**: A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetcher)`` (or as an init parameter). The so customized parser is reusable (as all parsers are). The fetcher is called when an ``@import`` rule is found and the referenced stylesheet is about to be retrieved.
 
       The function gets a single parameter
 
       ``url``
           the URL to read
 
-      and returns ``(encoding, content)`` where ``encoding`` is the HTTP charset normally given via the Content-Type header (which may simple omit the charset) and ``content`` being the (byte) string content. The Mimetype should be 'text/css' but this has to be checked by the fetcher itself (the default fetcher emits a warning if encountering a different mimetype).
+      and MUST Returns ``(encoding, content)`` where ``encoding`` normally is the HTTP charset given via a Content-Type header (which may simply omit the charset though) and ``content`` being the (byte) string content. The Mimetype of the fetched ``url`` should be ``text/css`` but this has to be checked by the fetcher itself (the default fetcher emits a warning if encountering a different mimetype).
       The content is then decoded by cssutils using all encoding related data available.
 
         Example::
@@ -63,13 +63,13 @@ HEAD
             parser = cssutils.CSSParser(fetcher=fetcher)
             parser.parse...
 
-      To omit parsing of imported sheets just define a fetcher like ``lambda url: None`` (A single None is sufficient but returning ``None, None`` would be clearer).
+      To omit parsing of imported sheets just define a fetcher like ``lambda url: None`` (A single None is sufficient but returning ``(None, None)`` is more explicit).
 
-      You may also define the encoding for each imported sheet with a fetcher which returns a (normally HTTP) encoding depending in URL.
+      You might also want to define an encoding for each imported sheet with a fetcher which returns a (normally HTTP content-type header) encoding depending on each URL.
 
     - **FEATURE**: Added option ``-s --string`` to cssparse script which expects a CSS string to be parsed.
 
-    - **BUGFIX**: ``parseUrl`` does returns ``None`` if an error occurs during reading the given URL. Until now an empty stylesheet was returned.
+    - **BUGFIX**: ``parseUrl`` does return ``None`` if an error occurs during reading the given URL. Until now an empty stylesheet was returned.
 
     - **BUGFIX**: Fixed parsing of values like ``background: url(x.gif)0 0;`` (missing space but still valid).
 
