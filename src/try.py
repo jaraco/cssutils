@@ -15,46 +15,6 @@ def save(name, string):
     f.write(string)
     f.close()
 
-if 1:
-        tests = {
-            # css, encoding, (mimetype, encoding, importcss):
-            #    encoding
-            ('@charset "ASCII"; @import "x";', None, (None, '/*t*/')): (
-                 'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'),
-        }
-        
-        def make_fetcher(encoding, content):
-            "make a fetcher with specified data"
-            def fetcher(url):
-                return None#encoding, content            
-            return fetcher
-        
-        parser = cssutils.CSSParser()
-        for test in tests:
-            css, encoding, fetchdata = test
-            parser.setFetcher(make_fetcher(*fetchdata))
-            sheet = parser.parseString(css, encoding=encoding)
-            
-            encoding, importIndex, importEncoding, importText = tests[test]
-            print 1, sheet, sheet.cssText
-            i = sheet.cssRules[importIndex].styleSheet
-            print 2, i
-            
-        sys.exit()
-            
-def escapecss(e):
-    """
-    Escapes characters not allowed in the current encoding the CSS way
-    with a backslash followed by a uppercase 6 digit hex code point (always
-    6 digits to make it easier not to have check if no hexdigit char is
-    following).
-    E.g. the german umlaut 'ä' is escaped as \0000E4
-    """
-    s = e.object[e.start:e.end]
-    return u''.join([ur'\%s ' % str(hex(ord(x)))[2:] # remove 0x from hex
-                     .upper() for x in s]), e.end
-codecs.register_error('escapecss', escapecss)
-
 
 if 0:
     css = ur'''
@@ -183,115 +143,6 @@ if 1:
 
     sys.exit(1)
 
-if 0:
-    sheet = cssutils.parseString(css, title="example", href='example.css',
-                                 base='file:///I:/dev-workspace/cssutils/src/')
-    print sheet
-    print
-    print sheet.cssText
-    print
-    ir = sheet.cssRules[0]
-    print ir.styleSheet
-    print ir.styleSheet.cssText
-    print "ownerRule:", ir.styleSheet.ownerRule
-    sys.exit(1)
-
-
-if 0:
-    # copy to test_util
-            import urllib2
-            from email import message_from_string, message_from_file
-            import StringIO
-            from minimock import mock, restore
-            from cssutils.util import _fetchUrl
-            
-            class Response(object):
-                """urllib2.Reponse mock"""
-                def __init__(self, url, text=u'', exception=None, args=None):
-                    self.url = url
-                    self.text = text
-                    self.exception = exception
-                    self.args = args
-
-                def geturl(self):
-                    return self.url
-
-                def info(self):
-                    class Info(object):
-                        def gettype(self):
-                            return 'text/css'
-                        def getparam(self, name):
-                            return 'UTF-8'
-
-                    return Info()
-
-                def read(self):
-                    # returns fake text or raises fake exception
-                    if not self.exception:
-                        return self.text
-                    else:
-                        raise self.exception(*self.args)
-
-            def urlopen(url, text=None, exception=None, args=None):
-                # return an mock which returns parameterized Response
-                def x(*ignored):
-                    if exception:
-                        raise exception(*args)
-                    else:
-                        return Response(url, 
-                                        text=text, 
-                                        exception=exception, args=args)
-                return x
-
-            
-
-            tests = [
-                ('s1', u'ä', 'utf-8', None, u'ä'),
-                ('s2', u'ä', 'utf-8', 'css', u'ä'),
-                ('s3', u'ä', 'utf-8', 'utf-8', u'ä'),
-                ('s4', u'\xe4', 'iso-8859-1', 'iso-8859-1', u'ä'),
-                ('s5', u'123', 'ascii', 'ascii', u'123')
-            ]
-            for url, text, textencoding, encoding, exp in tests:
-                mock("urllib2.urlopen",
-                        mock_obj=urlopen(url, text=text.encode(textencoding)))
-
-                print url, exp == _fetchUrl(url, encoding), exp, _fetchUrl(url, encoding)
-
-            print
-
-            # calling url results in fake exception
-            tests = [
-                #_fetchUrl('1')
-                ('1', ValueError, ['invalid value for url']),
-                ('e2', urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
-                #_fetchUrl('http://cthedot.de/__UNKNOWN__.css')
-                ('e3', urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
-                #_fetchUrl('mailto:a.css')
-                ('mailto:e4', urllib2.URLError, ['urlerror']),
-            ]
-            for url, exception, args in tests:
-                mock("urllib2.urlopen",
-                        mock_obj=urlopen(url, exception=exception, args=args))
-                try:
-                    _fetchUrl(url)
-                except Exception, e:
-                    print type(e), e, url
-
-            restore()
-            # ValueError:
-            #_fetchUrl('1')
-
-            # HTTPError
-            #_fetchUrl('http://cthedot.de/__UNKNOWN__.css')
-            
-            # URLError
-            #_fetchUrl('mailto:a.css')
-            #_fetchUrl('http://localhost/__UNKNOWN__.css')
-
-            sys.exit(0)
-
-
 
 if 0:
     from cssutils.scripts import csscombine
@@ -366,24 +217,6 @@ a[n|att], |a  {color: red}
     for r in sheet:
         print r
     print sheet.cssText
-
-    sys.exit(0)
-
-
-if 0:
-    css = '''
-        /* a*/
-        color: green !important;
-        c\\olor: red;
-        c\\olor: orange;
-        color: blue;
-        '''
-    css = '''background: url(a) no-repeat fixed'''
-    s = cssutils.css.CSSStyleDeclaration(cssText=css)
-    print s.cssText
-    cssutils.ser.prefs.keepAllProperties = False
-    print repr(cssutils.ser.prefs)
-    print s.cssText
 
     sys.exit(0)
 
@@ -555,103 +388,6 @@ if 1:
     sys.exit(0)
 
 
-if 0:
-    unicode = r'(\\[0-9a-f]{1,6}[\t|\r|\n|\f|\x20]?)'
-    unisub = re.compile(unicode).sub
-    def r(m):
-        print '"'+m.group(0)[1:]+'"'
-        return unichr(int(m.group(0)[1:], 16))
-    r = unisub(r, ur'''\e4 :''')
-    print r
-    sys.exit(0)
-
-if 0:
-    sl = cssutils.css.SelectorList()
-    sheet = cssutils.parseString(css)
-    print sheet.cssText
-    #print sheet.cssRules[0].style.valid
-    sys.exit(0)
-
-
-if 1:
-    css=r'''
-    p { color: green; }
-    p ( { color: red; } p { background: blue; } )
-    i { color: red}
-    b { color: green}
-    '''
-    sheet = cssutils.parseString(css)
-    sheet.setSerializerPref('keepComments', False)
-    print sheet.cssText
-    sys.exit(0)
-
-if 0:
-    v = cssutils.css.CSSValue(_propertyName='margin')
-    v.cssText = '-20px'
-    print v
-    sys.exit(0)
-
-if 0:
-    s = cssutils.css.Selector()
-    s.selectorText = 'x * '
-    print s
-    sys.exit(0)
-
-if 0:
-    text = codecs.open('../sheets/1.css', encoding='css').read()
-    print '1.css\n', text.encode('utf-8')
-
-    sheet = cssutils.parseString(text)
-    sheet.cssRules[0].encoding = 'ascii'
-    print '\nPARSED:\n', sheet.cssText
-    codecs.open('../sheets/2.css', 'w', encoding='css').write(sheet.cssText)
-
-    text = codecs.open('../sheets/2.css', encoding='css').read()
-    print '\n2.css\n', text
-    sheet = cssutils.parseString(text)
-    sheet.cssRules[0].encoding = 'utf-8'
-    print '\nPARSED:\n', sheet.cssText
-
-
-    sys.exit(0)
-
-
-if 1:
-    css = u'''
-    /*1*/
-    @import url(x) tv , print;
-    @media all {}
-    @media all {
-        a {}
-    }
-    @media all {
-        a { color: red; }
-    }
-    @page {}
-    a {}
-    a , b { top : 1px ;
-        font-family : arial ,  'some'
-        }
-    '''
-
-    s = cssutils.parseFile('../sheets/1.css', encoding='ISO-8859-1')
-    cssutils.ser.prefs.keepComments = True
-    print s.cssText
-
-    sys.exit(0)
-
-if 1:
-    p = cssutils.css.property.Property('top', '1px')
-    #print p, p.valid
-    v = p.cssValue
-    print v
-    p.name = 'color'
-    #print p, p.valid
-    v = p.cssValue
-    print v
-
-    sys.exit(0)
-
 if 1:
     s = cssutils.css.SelectorList()
     s.selectorText = 'a,'
@@ -727,30 +463,6 @@ if 1:
     print d.cssText
     sys.exit(0)
 
-
-if 1:
-    #c = cssutils.parseString(u'@import a() url(')
-    c = cssutils.parseString(u'@import "str" all,;')
-    print
-    print c.cssText
-    sys.exit(0)
-
-
-if 1:
-    css = '''
-    @namespace;
-    @namespace a;
-    @namespace "x";
-    @namespace a "x";
-'''
-    sheet = cssutils.parseString(css)
-    sheet.cssText = css
-    print '\n--- sheet.cssText ---\n', sheet.cssText
-    print sheet, sheet.prefixes
-    #print 'set:::'
-    #r = cssutils.css.CSSNamespaceRule()
-    #r.cssText = css
-    #print r.cssText
 
 if 0:
     import xml.dom
