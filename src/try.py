@@ -159,7 +159,7 @@ if 1:
     # ALL THE SAME:
     css = '@import "import/import2.css";a{background-image: url(x.gif)}'
     #s = cssutils.parseString(css, href='file:///I:/dev-workspace/cssutils/sheets/import.css')
-    s = cssutils.parse('..\\sheets\\import.css')
+    s = cssutils.parseFile('..\\sheets\\import.css')
     #s = cssutils.parseUrl('file:///I:/dev-workspace/cssutils/sheets/import.css')
     #s = cssutils.parseUrl('http://seewhatever.de/sheets/import.css')
     print
@@ -435,7 +435,7 @@ if 0:
     sys.exit(0)
 
 if 1:
-    defaultsheet = cssutils.parse('sheets/default_html4.css')
+    defaultsheet = cssutils.parseFile('sheets/default_html4.css')
 
     css = '''
         a { a: green; /* only here */
@@ -634,7 +634,7 @@ if 1:
         }
     '''
 
-    s = cssutils.parse('../sheets/1.css', encoding='ISO-8859-1')
+    s = cssutils.parseFile('../sheets/1.css', encoding='ISO-8859-1')
     cssutils.ser.prefs.keepComments = True
     print s.cssText
 
