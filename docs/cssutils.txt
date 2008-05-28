@@ -69,7 +69,7 @@ A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetch
       ``url``
           the URL to read
 
-      and returns ``(encoding, content)`` where ``encoding`` is the HTTP charset normally given via the Content-Type header (which may simple omit the charset) and ``content`` being the (byte) string content. The Mimetype should be 'text/css' but this has to be checked by the fetcher itself (the default fetcher emits a warning if encountering a different mimetype).
+      and returns ``(encoding, content)`` where ``encoding`` is the HTTP charset normally given via the Content-Type header (which may simply omit the charset) and ``content`` being the (byte) string content. The Mimetype should be 'text/css' but this has to be checked by the fetcher itself (the default fetcher emits a warning if encountering a different mimetype).
       The content is then decoded by cssutils using all encoding related data available.
 
         Example::
