@@ -162,7 +162,11 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def importrule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSImportRule(parentStyleSheet=self)
-            rule._parentEncoding = new['encoding'] # set temporarily
+            #rule._parentEncoding = new['encoding'] # set temporarily
+            
+            # set temporarily as used by _resolveImport
+            self.__newEncoding = new['encoding']
+            
             rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 1:
                 self._log.error(
@@ -170,8 +174,12 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     token, xml.dom.HierarchyRequestErr)
             else:
                 if rule.wellformed:
-                    del rule._parentEncoding # remove as later it is read from this sheet!
+                    #del rule._parentEncoding # remove as later it is read from this sheet!
                     seq.append(rule)
+
+            # remove as only used temporarily
+            del self.__newEncoding
+
             return 1
 
         def namespacerule(expected, seq, token, tokenizer):
@@ -272,6 +280,28 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         if encodingOverride:
             # only use during parse
             self._encodingOverride = None
+
+    def _resolveImport(self, url):
+        """Read (encoding, cssText) from ``url`` for @import sheets"""
+        try:
+            # only available during parse of a complete sheet
+            parentEncoding = self.__newEncoding
+        except AttributeError:
+            # or check if @charset explicity set
+            try:
+                # explicit cssRules[0] and not the default encoding UTF-8
+                # but in that case None
+                parentEncoding = self.cssRules[0].encoding
+            except (IndexError, AttributeError):
+                parentEncoding = None  
+        
+        return _readUrl(url, fetcher=self._fetcher, 
+                        overrideEncoding=self._encodingOverride,
+                        parentEncoding=parentEncoding)
+
+    def _setFetcher(self, fetcher=None):
+        """sets @import URL loader, if None the default is used"""
+        self._fetcher = fetcher
 
     def _setEncoding(self, encoding):
         """
@@ -572,15 +602,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         cssutils.replaceUrls(self, replacer)
 
-    def _setFetcher(self, fetcher=None):
-        """sets @import URL loader, if None the default is used"""
-        self._fetcher = fetcher
-
-    def _resolveImport(self, url):
-        """reads (encoding, cssText) from ``url`` for @import sheets
-        using __encodingOverride which is set during setting of cssText"""
-        return _readUrl(url, self._encodingOverride, self._fetcher)
-        
     def setSerializer(self, cssserializer):
         """
         Sets the global Serializer used for output of all stylesheet

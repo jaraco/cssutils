@@ -312,47 +312,36 @@ class CSSImportRule(cssrule.CSSRule):
                     doc=u"An optional name for the imported sheet")
 
     def __setStyleSheet(self):
-        """Read new CSSStyleSheet cssText from href using parentStyleSheet.base
+        """Read new CSSStyleSheet cssText from href using parentStyleSheet.href
         
         indirectly called if setting ``href``
         """
         # should simply fail so all errors are catched!
         if self.parentStyleSheet and self.href:
+            # relative href
             href = urlparse.urljoin(self.parentStyleSheet.href, self.href)
-                                   
+            # all possible exceptions are ignored and styleSheet is None
             try:
-                # all possible exceptions are ignored and styleSheet is None
-                sheet = cssutils.css.CSSStyleSheet(href=href,
-                                                   media=self.media,
-                                                   ownerRule=self,
-                                                   title=self.name)
-                # inherit fetcher
-                sheet._setFetcher(self.parentStyleSheet._fetcher)
-                encoding, cssText = self.parentStyleSheet._resolveImport(href)
+                overrideEncoding, cssText = self.parentStyleSheet._resolveImport(href)
                 if cssText is None:
                     raise IOError()
-                if not encoding:# or not cssText.startswith('@charset "utf-8";'):
-                    try:
-                        # only available during parse of a complete sheet
-                        parentEncoding = self._parentEncoding
-                    except AttributeError:
-                        # or check if @charset explicity set
-                        try:
-                            parentEncoding = self.parentStyleSheet.cssRules[0].encoding
-                        except (IndexError, AttributeError):
-                            parentEncoding = None  
-    
-                    # use parent encoding if no HTTP or no @charset
-                    encoding = parentEncoding
-                
-                # overriding encoding from override, HTTP or parentSheet 
-                sheet._setCssTextWithEncodingOverride(cssText, encoding)
+
+                refsheet = cssutils.css.CSSStyleSheet(href=href, 
+                                                      media=self.media,
+                                                      ownerRule=self,
+                                                      title=self.name)
+                # inherit fetcher for @imports in refsheet
+                refsheet._setFetcher(self.parentStyleSheet._fetcher)
+                # overrideEncoding with parentStyleSheet.overrideEncoding, 
+                # HTTP or parent
+                refsheet._setCssTextWithEncodingOverride(cssText, 
+                                                         overrideEncoding)
                  
             except (IOError, ValueError), e:
                 self._log.warn(u'CSSImportRule: Error processing imported style sheet href=%r: %r'
                                % (self.href, e), neverraise=True)
             else:
-                self._styleSheet = sheet
+                self._styleSheet = refsheet
                 
     styleSheet = property(lambda self: self._styleSheet,
                           doc="(readonly) The style sheet referred to by this rule.")
