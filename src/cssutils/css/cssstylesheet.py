@@ -69,7 +69,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._readonly = readonly
         
         # used only during setting cssText by parse*()
-        self._encodingOverride = None
+        self.__encodingOverride = None
         self._fetcher = None
 
     def __iter__(self):
@@ -260,9 +260,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             for rule in newseq:
                 self.insertRule(rule, _clean=False)
             self._cleanNamespaces()
-            if self._encodingOverride:
-                # override encoding of @charset with given _encodingOverride
-                self.encoding = self._encodingOverride
 
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
@@ -270,16 +267,17 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     def _setCssTextWithEncodingOverride(self, cssText, encodingOverride=None):
         """Set cssText but use __encodingOverride to overwrite detected 
         encoding. This is only used by @import during setting of cssText.
-        In all other cases __encodingOverwrite is None"""
+        In all other cases __encodingOverride is None"""
         if encodingOverride:
-            # parse sets it, @import uses the one from parsed
-            self._encodingOverride = encodingOverride
+            # encoding during @import resolve, is used again during parse!
+            self.__encodingOverride = encodingOverride
             
         self.cssText = cssText
         
         if encodingOverride:
-            # only use during parse
-            self._encodingOverride = None
+            # set explicit encodingOverride
+            self.encoding = self.__encodingOverride
+            self.__encodingOverride = None
 
     def _resolveImport(self, url):
         """Read (encoding, cssText) from ``url`` for @import sheets"""
@@ -287,7 +285,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             # only available during parse of a complete sheet
             parentEncoding = self.__newEncoding
         except AttributeError:
-            # or check if @charset explicity set
+            # or check if @charset explicitly set
             try:
                 # explicit cssRules[0] and not the default encoding UTF-8
                 # but in that case None
@@ -296,7 +294,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 parentEncoding = None  
         
         return _readUrl(url, fetcher=self._fetcher, 
-                        overrideEncoding=self._encodingOverride,
+                        overrideEncoding=self.__encodingOverride,
                         parentEncoding=parentEncoding)
 
     def _setFetcher(self, fetcher=None):
