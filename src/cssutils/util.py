@@ -761,37 +761,59 @@ def _defaultFetcher(url):
                                   (url, mimeType), error=ValueError)
             return encoding, res.read()
 
-def _readUrl(url, overrideEncoding=None, fetcher=None):
+def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
     """
     Read cssText from url and decode it using all relevant methods (HTTP 
     header, BOM, @charset). Returns encoding (which is needed to set encoding
     of stylesheet properly) and decoded text
     
+    ``fetcher``
+        see cssutils.registerFetchUrl for details
     ``overrideEncoding``
         If given this encoding is used and all other encoding information is 
         ignored (HTTP, BOM etc)
-    ``fetcher``
-        see cssutils.registerFetchUrl for details
+    ``parentEncoding``
+        Encoding of parent stylesheet (while e.g. reading @import references sheets)
+        or document if available.
+        
+    Priority or encoding information
+    --------------------------------
+    
+    0. **cssutils only**: overrideEncoding
+    1. An HTTP "charset" parameter in a "Content-Type" field (or similar parameters in other protocols)
+    2. BOM and/or @charset (see below)
+    3. <link charset=""> or other metadata from the linking mechanism (if any)
+    4. charset of referring style sheet or document (if any)
+    5. Assume UTF-8
+    
     """
     if not fetcher:
         fetcher = _defaultFetcher
     r = fetcher(url)
     if r and len(r) == 2:
         httpEncoding, content = r
-        
+        UTF8_BOM = '\xEF\xBB\xBF'
+
         if overrideEncoding:
             # 0. override encoding
             encoding = overrideEncoding
         elif httpEncoding:
             # 1. HTTP
             encoding = httpEncoding 
+        elif content.startswith('@charset "utf-8";') or content.startswith(UTF8_BOM):
+            # 2. BOM/@charset: explicitly UTF-8
+            encoding = 'utf-8'
         else:
-            # 2. BOM/@charset
-            charset = cssutils.codec._detectencoding_str(content)
-            if charset != 'utf-8': # UTF-8 is the default and is not reported
-                encoding = charset
+            # contentEncoding may be UTF-8 but this may not be explicit
+            contentEncoding = cssutils.codec._detectencoding_str(content)
+            if contentEncoding != 'utf-8': 
+                # 2. BOM/@charset: explicitly not UTF-8
+                encoding = contentEncoding
             else:
-                encoding = None
+                # 4. parent stylesheet or document
+                # may also be None in which case 5. is used in next step anyway
+                encoding = parentEncoding
+
         return encoding, codecs.lookup("css")[1](content, encoding=encoding)[0]
     else:
         return None, None

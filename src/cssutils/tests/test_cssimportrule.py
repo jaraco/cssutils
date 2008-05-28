@@ -279,30 +279,33 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
                 return None, 'a { color: red }'
             
         parser = cssutils.CSSParser(fetcher=fetcher)
-        sheet = parser.parseString('@import "level1/anything.css" tv "title";', 
+        sheet = parser.parseString('@charset "ascii";@import "level1/anything.css" tv "title";', 
                                      href='/root/')
         
         self.assertEqual(sheet.href, '/root/')
         
-        ir = sheet.cssRules[0]
+        ir = sheet.cssRules[1]
         self.assertEqual(ir.href, 'level1/anything.css')
         self.assertEqual(ir.styleSheet.href, '/root/level1/anything.css')
-        self.assertEqual(ir.styleSheet.encoding, 'utf-8')
+        self.assertEqual(ir.styleSheet.encoding, 'ascii')
         self.assertEqual(ir.styleSheet.ownerRule, ir)
         self.assertEqual(ir.styleSheet.media.mediaText, 'tv')
         self.assertEqual(ir.styleSheet.parentStyleSheet, sheet)
         self.assertEqual(ir.styleSheet.title, 'title')
-        self.assertEqual(ir.styleSheet.cssText, '@import "level2/css.css" "title2";')
+        self.assertEqual(ir.styleSheet.cssText, 
+                         '@charset "ascii";\n@import "level2/css.css" "title2";')
 
-        ir2 = ir.styleSheet.cssRules[0]
+        ir2 = ir.styleSheet.cssRules[1]
         self.assertEqual(ir2.href, 'level2/css.css')
         self.assertEqual(ir2.styleSheet.href, '/root/level1/level2/css.css')
-        self.assertEqual(ir2.styleSheet.encoding, 'utf-8')
+        # inherits ascii as no self charset is set 
+        self.assertEqual(ir2.styleSheet.encoding, 'ascii')
         self.assertEqual(ir2.styleSheet.ownerRule, ir2)
         self.assertEqual(ir2.styleSheet.media.mediaText, 'all')
         self.assertEqual(ir2.styleSheet.parentStyleSheet, ir.styleSheet)
         self.assertEqual(ir2.styleSheet.title, 'title2')
-        self.assertEqual(ir2.styleSheet.cssText, 'a {\n    color: red\n    }')
+        self.assertEqual(ir2.styleSheet.cssText, 
+                         '@charset "ascii";\na {\n    color: red\n    }')
 
         sheet = cssutils.parseString('@import "CANNOT-FIND.css";')
         ir = sheet.cssRules[0]

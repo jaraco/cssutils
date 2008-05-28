@@ -121,11 +121,11 @@ class CSSParser(object):
 
         for other parameters see ``parseString``
         """
-        encoding, text = cssutils.util._readUrl(href, encoding)
+        encoding, text = cssutils.util._readUrl(href, overrideEncoding=encoding)
         if text:
             return self.parseString(text,
-                                encoding=encoding, # if fetch returns str 
-                                href=href, media=media, title=title)                                
+                                    encoding=encoding,  
+                                    href=href, media=media, title=title)                                
 
     def setFetcher(self, fetcher=None):
         """Replace the default URL fetch function with a custom one.
