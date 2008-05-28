@@ -6,7 +6,78 @@ import xml.dom
 import basetest
 import cssutils
 
+try:
+    from minimock import mock, restore
+except ImportError:
+    mock = None 
+    print "install minimock with ``easy_install minimock`` to run all tests"
+
 class CSSParserTestCase(basetest.BaseTestCase):
+
+    def _make_fetcher(self, encoding, content):
+        "make an URL fetcher with specified data"
+        def fetcher(url):
+            return encoding, content            
+        return fetcher
+
+    def test_parseUrl(self):
+        "CSSParser.parseUrl()"
+        if mock:
+            # parseUrl(self, href, encoding=None, media=None, title=None):
+            parser = cssutils.CSSParser()
+            mock("cssutils.util._defaultFetcher", 
+                 mock_obj=self._make_fetcher(None, u''))
+            sheet = parser.parseUrl('http://example.com',
+                                    media='tv,print', 
+                                    title='test')
+            restore()
+            #self.assertEqual(sheet, 1)
+            self.assertEqual(sheet.href, 'http://example.com')
+            self.assertEqual(sheet.encoding, 'utf-8')
+            self.assertEqual(sheet.media.mediaText, 'tv, print')
+            self.assertEqual(sheet.title, 'test')
+            
+            # URL and content tests
+            tests = {
+                # (url, content): isSheet, encoding, cssText
+                ('', None): (False, None, None), 
+                ('1', None): (False, None, None), 
+                ('mailto:a@bb.cd', None): (False, None, None), 
+                ('http://example.com/x.css', None): (False, None, None), 
+                ('http://example.com/x.css', ''): (True, u'utf-8', u''), 
+                ('http://example.com/x.css', 'a'): (True, u'utf-8', u''), 
+                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
+                                                                 u'a {\n    color: red\n    }'), 
+                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
+                                                                 u'a {\n    color: red\n    }'), 
+                ('http://example.com/x.css', '@charset "ascii";a {color: red}'): (True, u'ascii', 
+                                                                 u'@charset "ascii";\na {\n    color: red\n    }'), 
+            }
+            override = 'iso-8859-1'
+            overrideprefix = u'@charset "iso-8859-1";'
+            httpencoding = None
+            
+            for (url, content), (isSheet, expencoding, cssText) in tests.items():
+                mock("cssutils.util._defaultFetcher", 
+                     mock_obj=self._make_fetcher(httpencoding, content))
+                #parser.setFetcher(self._make_fetcher(httpencoding, content))
+                sheet1 = parser.parseUrl(url)
+                sheet2 = parser.parseUrl(url, encoding=override)
+                restore()
+                if isSheet:
+                    self.assertEqual(sheet1.encoding, expencoding)
+                    self.assertEqual(sheet1.cssText, cssText)
+                    self.assertEqual(sheet2.encoding, override)
+                    if sheet1.cssText and sheet1.cssText.startswith('@charset'):
+                        self.assertEqual(sheet2.cssText, cssText.replace('ascii', override))
+                    elif sheet1.cssText:
+                        self.assertEqual(sheet2.cssText, overrideprefix + '\n' + cssText)
+                    else:
+                        self.assertEqual(sheet2.cssText, overrideprefix + cssText)
+                else:
+                    self.assertEqual(sheet1, None)
+                    self.assertEqual(sheet2, None)
+
 
     def test_parseString(self):
         "CSSParser.parseString()"
@@ -97,22 +168,15 @@ class CSSParserTestCase(basetest.BaseTestCase):
             ('@import "x";', None, (None, '/*t*/')): (
                  'utf-8', 0, 'utf-8', '/*t*/')
         }
-        
-        def make_fetcher(encoding, content):
-            "make a fetcher with specified data"
-            def fetcher(url):
-                return encoding, content            
-            return fetcher
-        
         parser = cssutils.CSSParser()
         for test in tests:
             css, encoding, fetchdata = test
             sheetencoding, importIndex, importEncoding, importText = tests[test]
 
             # use setFetcher
-            parser.setFetcher(make_fetcher(*fetchdata))
+            parser.setFetcher(self._make_fetcher(*fetchdata))
             # use init
-            parser2 = cssutils.CSSParser(fetcher=make_fetcher(*fetchdata))
+            parser2 = cssutils.CSSParser(fetcher=self._make_fetcher(*fetchdata))
 
             sheet = parser.parseString(css, encoding=encoding)
             sheet2 = parser2.parseString(css, encoding=encoding)
