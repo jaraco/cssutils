@@ -30,6 +30,34 @@ if 0:
         print tk
     sys.exit(0)
 
+
+if 1:
+        from cssutils.util import _readUrl
+        url = 'http://example.com/test.css'
+
+        def make_fetcher(r):
+            # normally r == encoding, content
+            def fetcher(url):
+                return r
+            return fetcher
+        
+        tests = {
+            (None, 'latin1', None): (None, None),
+            (None, 'latin1', (None, '')): ('latin1', u''),
+#            (None, 'latin1', ('', u'ä'.encode('iso-8859-1'))): 
+#                ('latin1', u'ä'),
+#            (None, 'latin1', ('', u'a'.encode('ascii'))): 
+#                ('latin1', u'a'),
+        
+        }
+        for (override, parent, r), exp in tests.items():              
+            print _readUrl(url, overrideEncoding=override,
+                           parentEncoding=parent,
+                            fetcher=make_fetcher(r)), 'exp:', exp
+        
+        sys.exit(0)
+
+
 if 1:
     
     def fetchUrlGA(self):
