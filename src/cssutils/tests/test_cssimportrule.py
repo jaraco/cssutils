@@ -287,6 +287,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         ir = sheet.cssRules[1]
         self.assertEqual(ir.href, 'level1/anything.css')
         self.assertEqual(ir.styleSheet.href, '/root/level1/anything.css')
+        # inherits ascii as no self charset is set 
         self.assertEqual(ir.styleSheet.encoding, 'ascii')
         self.assertEqual(ir.styleSheet.ownerRule, ir)
         self.assertEqual(ir.styleSheet.media.mediaText, 'tv')
