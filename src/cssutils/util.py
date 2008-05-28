@@ -739,7 +739,7 @@ def _defaultFetcher(url):
     """Retrieve data from ``url``. cssutils default implementation of fetch
     URL function.
     
-    Returns ``(encoding, stream)`` or ``None``
+    Returns ``(encoding, string)`` or ``None``
     """
     try:
         res = urllib2.urlopen(url)
@@ -790,9 +790,9 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
     if not fetcher:
         fetcher = _defaultFetcher
     r = fetcher(url)
-    if r and len(r) == 2:
+    if r and len(r) == 2 and r[1] is not None:
         httpEncoding, content = r
-        UTF8_BOM = '\xEF\xBB\xBF'
+        UTF8_BOM = u'\xEF\xBB\xBF'
 
         if overrideEncoding:
             # 0. override encoding
@@ -800,20 +800,38 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         elif httpEncoding:
             # 1. HTTP
             encoding = httpEncoding 
-        elif content.startswith('@charset "utf-8";') or content.startswith(UTF8_BOM):
-            # 2. BOM/@charset: explicitly UTF-8
-            encoding = 'utf-8'
         else:
-            # contentEncoding may be UTF-8 but this may not be explicit
-            contentEncoding = cssutils.codec._detectencoding_str(content)
-            if contentEncoding != 'utf-8': 
-                # 2. BOM/@charset: explicitly not UTF-8
+            try:
+                if content.startswith(u'@charset "utf-8";') or \
+                   content.startswith(UTF8_BOM + u'@charset "utf-8";'):
+                    # 2. BOM/@charset: explicitly UTF-8
+                    contentEncoding = 'utf-8'
+                else:
+                    # other encoding with ascii content as not UnicodeDecodeError
+                    contentEncoding = False
+            except UnicodeDecodeError, e:
+                # other encoding in any way (with other than ascii content)
+                contentEncoding = False
+                
+            if contentEncoding:
                 encoding = contentEncoding
             else:
-                # 4. parent stylesheet or document
-                # may also be None in which case 5. is used in next step anyway
-                encoding = parentEncoding
+                # contentEncoding may be UTF-8 but this may not be explicit
+                contentEncoding = cssutils.codec._detectencoding_str(content)
+                # contentEncoding may be None for empty string!
+                if contentEncoding and contentEncoding != 'utf-8': 
+                    # 2. BOM/@charset: explicitly not UTF-8
+                    encoding = contentEncoding
+                else:
+                    # 4. parent stylesheet or document
+                    # may also be None in which case 5. is used in next step anyway
+                    encoding = parentEncoding
+        try:
+            # encoding may still be wrong if encoding *is lying*!
+            decodedContent = codecs.lookup("css")[1](content, encoding=encoding)[0]
+        except UnicodeDecodeError, e:
+            decodedContent = None
 
-        return encoding, codecs.lookup("css")[1](content, encoding=encoding)[0]
+        return encoding, decodedContent
     else:
         return None, None
