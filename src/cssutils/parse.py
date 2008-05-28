@@ -77,11 +77,13 @@ class CSSParser(object):
                                            title=title)
         sheet._setFetcher(self.__fetcher)
         # tokenizing this ways closes open constructs and adds EOF
-        sheet._setCssTextWithEncodingOverride(self.__tokenizer.tokenize(cssText, fullsheet=True), 
+        sheet._setCssTextWithEncodingOverride(self.__tokenizer.tokenize(cssText, 
+                                                                        fullsheet=True), 
                                               encoding)
         return sheet
 
-    def parseFile(self, filename, encoding=None, href=None, media=None, title=None):
+    def parseFile(self, filename, encoding=None, 
+                  href=None, media=None, title=None):
         """Retrieve and return a CSSStyleSheet from given filename.
 
         filename
@@ -121,30 +123,33 @@ class CSSParser(object):
 
         for other parameters see ``parseString``
         """
-        encoding, text = cssutils.util._readUrl(href, overrideEncoding=encoding)
-        if text:
+        encoding, text = cssutils.util._readUrl(href, 
+                                                overrideEncoding=encoding)
+        if text is not None:
             return self.parseString(text,
                                     encoding=encoding,  
                                     href=href, media=media, title=title)                                
 
     def setFetcher(self, fetcher=None):
         """Replace the default URL fetch function with a custom one.
-        The function gets a single parameter    
+        The fetcher function gets a single parameter    
         
         ``url``
             the URL to read
     
-        and returns ``(mimeType, encoding, stream)`` where ``mimeType``
-        and ``encoding`` are data normally retrieved from HTTP headers
-        and ``stream`` having a read() method to get its content. 
-        The content is decoded by cssutils using all encoding related data
-        available.
+        and returns ``(encoding, content)`` where ``encoding`` is the HTTP
+        charset normally given via the Content-Type header (which may simply
+        omit the charset) and ``content`` being the (byte) string content.
+        The Mimetype should be 'text/css' but this has to be checked by the
+        fetcher itself (the default fetcher emits a warning if encountering
+        a different mimetype).
     
-        Calling ``registerFetchUrl`` with no argument resets cssutils
+        Calling ``setFetcher`` with ``fetcher=None`` resets cssutils
         to use its default function.
         """
         self.__fetcher = fetcher
 
     @cssutils.util.Deprecated('Use cssutils.CSSParser().parseFile() instead.')
-    def parse(self, filename, encoding=None, href=None, media=None, title=None):
+    def parse(self, filename, encoding=None, 
+              href=None, media=None, title=None):
         self.parseFile(filename, encoding, href, media, title)
