@@ -10,7 +10,7 @@ class CSSCombine(basetest.BaseTestCase):
 
     def test_combine(self):
         "scripts.csscombine"
-        csspath = os.path.join(os.path.dirname(__file__), '..', '..', '..', 
+        csspath = os.path.join(os.path.dirname(__file__), '..', '..', 
                                'sheets', 'csscombine-proxy.css')
         combined = csscombine(csspath)
         self.assertEqual(combined, 

@@ -75,6 +75,8 @@ HEAD
 
     - **LICENSE**: cssutils is licensed under the **LGPL v3** now (before LGPL v2.1). This should not be a problem I guess but please be aware. So the former mix of LGPL 2.1 and 3 is resolved to a single LGPL 3 license for both cssutils and the included encutils.
 
+    - INTERNAL: Moved tests out of cssutils main package into a tests package parallel to cssutils.
+
 0.9.5b2 080323
     - **API CHANGE**: ``cssutils.parseURL`` has been renamed to ``parseUrl`` for consistency with ``getUrls`` or ``replaceUrls``. Parameter ``href`` (before called ``url``) is the first and mandatory parameter now.
 
