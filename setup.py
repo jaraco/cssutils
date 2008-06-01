@@ -31,7 +31,7 @@ setup(
     version=__version__,
     package_dir={'':'src'},
     packages=find_packages('src', exclude='tests'),
-    test_suite='cssutils.tests',
+    test_suite='tests',
     entry_points={
         'console_scripts': [
             'csscapture = cssutils.scripts.csscapture:main',
