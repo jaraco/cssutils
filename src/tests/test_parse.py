@@ -20,6 +20,10 @@ class CSSParserTestCase(basetest.BaseTestCase):
             return encoding, content            
         return fetcher
 
+#    def test_parseFile(self):
+#        "CSSParser.parseFile()"
+#        # see test_cssutils
+
     def test_parseUrl(self):
         "CSSParser.parseUrl()"
         if mock:
