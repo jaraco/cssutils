@@ -60,9 +60,9 @@ if 1:
 
 if 1:
     
-    def fetchUrlGA(self):
+    def fetchUrlGAE(self):
         """
-        uses GAPE
+        uses GoogleAppEngine (GAE)
             fetch(url, payload=None, method=GET, headers={}, allow_truncated=False)
         
         Response
