@@ -39,6 +39,8 @@ known issues
 0.9.x
 -----
 HEAD
+
+0.9.5b3 08060
     - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.
 
     - **FEATURE**: While reading an imported styleSheet all relevant encoding parameters (HTTP headers, BOM/@charset, etc) are used now as defined in http://www.w3.org/TR/CSS21/syndata.html#charset
