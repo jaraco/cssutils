@@ -68,7 +68,7 @@ __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
-__version__ = '0.9.5b2 $Id$'
+__version__ = '0.9.5b3 $Id$'
 
 import codec
 
