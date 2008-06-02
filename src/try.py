@@ -30,6 +30,19 @@ if 0:
         print tk
     sys.exit(0)
 
+if 1:
+    st = cssutils.css.CSSStyleDeclaration()
+    st.color = 'red'
+    st['item'] = "123", "important"
+    for p in st.getProperties():
+        print st.__getattribute__(p.name)
+    print 
+    for p in st:
+        print repr(p)
+        
+    print st['notset']
+    sys.exit(0)
+
 
 if 1:
         from cssutils.util import _readUrl
