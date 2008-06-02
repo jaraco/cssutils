@@ -141,6 +141,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             name = self._normalize(nameOrProperty)
         return name in self.__nnames()
     
+    
     def __iter__(self):
         """
         iterator of set Property objects with different normalized names.
@@ -181,6 +182,34 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             if isinstance(x, Property) and not x.name in names:
                 names.append(x.name)
         return reversed(names)    
+
+    def __getitem__(self, CSSName):
+        """Retrieve the value of property ``CSSName`` from this declaration.
+        
+        ``CSSName`` will be always normalized.
+        """
+        return self.getPropertyValue(CSSName)
+    
+    def __setitem__(self, CSSName, value):
+        """Set value of property ``CSSName``. ``value`` may also be a tuple of 
+        (value, priority), e.g. style['color'] = ('red', 'important')
+        
+        ``CSSName`` will be always normalized.
+        """
+        priority = None
+        if type(value) == tuple:
+            value, priority = value
+
+        return self.setProperty(CSSName, value, priority)
+
+    def __delitem__(self, CSSName):
+        """Delete property ``CSSName`` from this declaration.
+        If property is not in this declaration return u'' just like 
+        removeProperty.
+        
+        ``CSSName`` will be always normalized.
+        """
+        return self.removeProperty(CSSName)
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):

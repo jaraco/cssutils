@@ -101,6 +101,23 @@ As some properties contain a "-" character these have to be used in camelcase!
 cssutils implements only a subset of CSS2Properties so setting e.g. ``declaration.border = '1px solid red'`` does only set border but **not** ``border-style``, ``border-color`` etc which it should. This may be implemented later.
 
 
+Using properties dictionary like
+--------------------------------
+Since cssutils 0.9.5 CSSStyleDeclatation objects may be used like dictionaries. The value during setting a property may be a single value string or a tuple of ``(value, priority)``. Using properties of style declarations this way should be preferred to using the attribute syntax (``style.color``) as not all properties may be used with the attribute syntax and currently only CSS2 Properties are defined anyway.
+
+    >>> style = css.CSSStyleDeclaration()
+    >>> style['color'] = 'red'
+    >>> style.getProperties()
+    [cssutils.css.Property(name='color', value=u'red', priority=u'')]
+    >>> del style['color']
+    >>> style['unknown'] = ('value', 'important')
+    INFO    Property: No CSS2 Property: 'unknown'.
+    >>> style.getProperties()
+    [cssutils.css.Property(name='unknown', value=u'value', priority=u'important')]
+    >>> del style['never-set'] # does not raise KeyError but returns u'' like removeProperty()
+    >>>
+
+
 .. _Property:
 
 Property

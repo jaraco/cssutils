@@ -43,6 +43,21 @@ HEAD
 0.9.5b3 080602
     - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.
 
+    - **FEATURE'**: CSSStyleDeclatation objects may be used like dictionaries now. The value during setting a property may be a single value string or a tuple of ``(value, priority)``::
+
+            >>> style = css.CSSStyleDeclaration()
+            >>> style['color'] = 'red'
+            >>> style.getProperties()
+            [cssutils.css.Property(name='color', value=u'red', priority=u'')]
+            >>> del style['color']
+            >>> style['unknown'] = ('value', 'important')
+            INFO    Property: No CSS2 Property: 'unknown'.
+            >>> style.getProperties()
+            [cssutils.css.Property(name='unknown', value=u'value', priority=u'impor
+            tant')]
+            >>> del style['never-set'] # does not raise KeyError but returns u'' like removeProperty()
+            >>>
+
     - **FEATURE**: While reading an imported styleSheet all relevant encoding parameters (HTTP headers, BOM/@charset, etc) are used now as defined in http://www.w3.org/TR/CSS21/syndata.html#charset
 
         Additionally a given parameter ``encoding`` for ``parseString``, ``parseFile`` and ``parseUrl`` functions/methods **overrides** any detected encoding of read sheet like HTTP information or @charset rules. Useful if e.g. HTTP information is not set properly. The given ``encoding`` is used for **all** imported sheets of the parsed one too! This is a cssutils only addition to the rules defined at http://www.w3.org/TR/CSS21/syndata.html#charset.
