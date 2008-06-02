@@ -30,6 +30,34 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(u'top: 0', s.cssText)
         self.assertEqual(sheet, s.parentRule)
 
+    def test_items(self):
+        "CSSStyleDeclaration[CSSName]"
+        s = cssutils.css.CSSStyleDeclaration()
+        name, value, priority = 'color', 'name', '' 
+        s[name] = value
+        self.assertEqual(value, s[name])
+        self.assertEqual(value, s.__getattribute__(name))
+        self.assertEqual(value, s.getProperty(name).value)
+        self.assertEqual(priority, s.getProperty(name).priority)
+
+        name, value, priority = 'UnKnown-ProPERTY', 'unknown value', 'important' 
+        s[name] = (value, priority)
+        self.assertEqual(value, s[name])
+        self.assertEqual(value, s[name.lower()]) # will be normalized
+        self.assertRaises(AttributeError, s.__getattribute__, name)
+        self.assertEqual(value, s.getProperty(name).value)
+        self.assertEqual(priority, s.getProperty(name).priority)
+
+        name, value, priority = 'item', '1', '' 
+        s[name] = value
+        self.assertEqual(value, s[name])
+        self.assertEqual(value, s.getProperty(name).value)
+        self.assertEqual(priority, s.getProperty(name).priority)
+        
+        del s[name]
+        self.assertEqual(u'', s[name])
+        self.assertEqual(u'', s['never set'])
+                
     def test__contains__(self):
         "CSSStyleDeclaration.__contains__(nameOrProperty)"
         s = cssutils.css.CSSStyleDeclaration(cssText=r'x: 1;\y: 2')
