@@ -291,14 +291,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         # for closures: must be a mutable
         new = {'valid': True,
-               'wellformed': True,
-               'char': None} # for IE hack
+               'wellformed': True} 
         def ident(expected, seq, token, tokenizer=None):
             # a property
-            if new['char']:
-                # maybe an IE hack?
-                token = (token[0], u'%s%s' % (new['char'], token[1]), 
-                         token[2], token[3])
             
             tokens = self._tokensupto2(tokenizer, starttoken=token,
                                        semicolon=True)
@@ -311,19 +306,21 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             else:
                 self._log.error(u'CSSStyleDeclaration: Syntax Error in Property: %s'
                                 % self._valuestr(tokens))
-
-            new['char'] = None
-            return expected
+            # does not matter in this case
+            return expected 
 
         def char(expected, seq, token, tokenizer=None):
-            # maybe an IE hack like "$color"
+            # error, find next ; or } to omit next invalid property
             new['valid'] = False # wellformed is set later
             self._log.error(u'CSSStyleDeclaration: Unexpected CHAR.', token)
-            c = self._tokenvalue(token)
-            if c in u'$':
-                self._log.warn(u'Trying to use (invalid) CHAR %r in Property name' %
-                                  c)
-                new['char'] = c
+
+            # ignore until ; or }
+            tokens = self._tokensupto2(tokenizer, propertyvalueendonly=True)
+            ignored = self._valuestr(tokens)
+            if ignored:
+                self._log.error(u'CSSStyleDeclaration: Ignored %r.' % 
+                                ignored)
+            # does not matter in this case
             return expected
 
         # [Property: Value;]* Property: Value?
@@ -332,15 +329,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             seq=newseq, tokenizer=tokenizer,
             productions={'IDENT': ident, 'CHAR': char})
         valid = new['valid']
-
         # wellformed set by parse
         # post conditions
-        if new['char']:
-            valid = wellformed = False
-            self._log.error(u'Could not use unexpected CHAR %r' % new['char'])            
-        
-        if wellformed:
-            self.seq = newseq
+
+        # do not check wellformed as each property             
+        #if wellformed: 
+        self.seq = newseq
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) A parsable textual representation of the declaration\
