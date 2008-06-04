@@ -305,7 +305,7 @@ o very long title"] {/*...*/}''': u'''a[title="a not so very long title"] {
             self.assertEqual(exp, s.cssText)
 
     def test_iehack(self):
-        "IEhack: $property"
+        "IEhack: $property (not since 0.9.5b3)"
         # $color is not color!
         css = 'a { color: green; $color: red; }'
         s = cssutils.parseString(css)
@@ -313,13 +313,11 @@ o very long title"] {/*...*/}''': u'''a[title="a not so very long title"] {
         p1 = s.cssRules[0].style.getProperty('color')
         self.assertEqual('color', p1.name)
         self.assertEqual('color', p1.literalname)
-        self.assertEqual('color', p1.normalname) # DEPRECATED
-        self.assertEqual('red', s.cssRules[0].style.getPropertyValue('$color'))
+        self.assertEqual('', s.cssRules[0].style.getPropertyValue('$color'))
 
         p2 = s.cssRules[0].style.getProperty('$color')
-        self.assertEqual('$color', p2.name)
-        self.assertEqual('$color', p2.literalname)
-        self.assertEqual('$color', p2.normalname) # DEPRECATED
+        self.assertEqual(None, p2)
+
         self.assertEqual('green', s.cssRules[0].style.getPropertyValue('color'))
         self.assertEqual('green', s.cssRules[0].style.color)
 

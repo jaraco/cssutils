@@ -120,8 +120,13 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
                 color: red;
                 color: green;''': u'color: green',
                 
-            # special IE hacks are preserved for now
-            ur'$top: 0': None,
+            # special IE hacks are not preserved anymore (>=0.9.5b3)
+            u'/color: red; color: green': u'color: green',
+            u'/ color: red; color: green': u'color: green',
+            u'1px: red; color: green': u'color: green',
+            u'0: red; color: green': u'color: green',
+            u'1px:: red; color: green': u'color: green',
+            ur'$top: 0': u'',
             ur'$: 0': u'' # really invalid!
             }
         cssutils.ser.prefs.keepAllProperties = False
