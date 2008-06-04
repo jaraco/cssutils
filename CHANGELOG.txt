@@ -15,7 +15,9 @@ known issues
 
   The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils (actually with hardly any css parser...).
 
-  Generally syntactically valid stylesheets should be preserved completely (otherwise it will be a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above ``*html`` hack. Most of these hacks may be rewritten while still be working, e.g. ``* html`` should work same to ``*html``. Currently the invalid IE-specific CSS hack using ``$propertyname`` is actually preserved but its usage is discouraged (and if e.g. specifying ``color`` and ``$color`` these properties are **not the same** for cssutils (but are for IE...). In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
+  Generally syntactically valid stylesheets should be preserved completely (otherwise it will be a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above ``*html`` hack. Most of these hacks may be rewritten while still be working, e.g. ``* html`` should work same to ``*html``. Until cssutils 0.9.5b2 the invalid IE-specific CSS hack using ``$propertyname`` was preserved but its usage was already discouraged (and if e.g. specifying ``color`` and ``$color`` these properties are **not the same** for cssutils (but are for IE...).
+  **These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!**
+  In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
 - The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
 
@@ -40,7 +42,7 @@ known issues
 -----
 HEAD
 
-0.9.5b3 080602
+0.9.5b3 080605
     - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.
 
     - **FEATURE'**: CSSStyleDeclatation objects may be used like dictionaries now. The value during setting a property may be a single value string or a tuple of ``(value, priority)``::
@@ -85,6 +87,8 @@ HEAD
       You might also want to define an encoding for each imported sheet with a fetcher which returns a (normally HTTP content-type header) encoding depending on each URL.
 
     - **FEATURE**: Added option ``-s --string`` to cssparse script which expects a CSS string to be parsed.
+
+    - **BUGFIX**: Parsing of CSSStyleDeclarations is improved. Invalid ``/color: red;color: green`` is now correctly parsed as ``color: green`` now. At the same time the until now parsed but invalid ``$color: red`` (an IE hack) is not parse anymore but correctly dismissed!
 
     - **BUGFIX**: ``parseUrl`` does return ``None`` if an error occurs during reading the given URL. Until now an empty stylesheet was returned.
 
