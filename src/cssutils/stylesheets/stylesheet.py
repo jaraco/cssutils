@@ -8,7 +8,7 @@ __version__ = '$Id$'
 import urlparse
 import cssutils
 
-class StyleSheet(cssutils.util.Base):
+class StyleSheet(cssutils.util.Base2):
     """
     The StyleSheet interface is the abstract base interface
     for any type of style sheet. It represents a single style

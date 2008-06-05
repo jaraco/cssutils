@@ -130,7 +130,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             ur'$: 0': u'', # really invalid!
             # unknown rule but valid
             u'@x;\ncolor: red': None, 
-            u'@x {\n}\ncolor: red': None,
+            u'@x {\n    }\ncolor: red': None,
             u'/**/\ncolor: red': None, 
             u'/**/\ncolor: red;\n/**/': None, 
             }

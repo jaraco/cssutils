@@ -84,11 +84,11 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         color: green
         }
     }''',
-            u'@media all { @x{}}': u'@media all {\n    @x {\n    }\n    }',
+            u'@media all { @x{}}': u'@media all {\n    @x {\n        }\n    }',
             u'@media all "n" /**/ { @x{}}': 
-                u'@media all "n" /**/ {\n    @x {\n    }\n    }',
+                u'@media all "n" /**/ {\n    @x {\n        }\n    }',
             u'@mediaall"n"/**/{@x{}}': 
-                u'@media all "n" /**/ {\n    @x {\n    }\n    }',
+                u'@media all "n" /**/ {\n    @x {\n        }\n    }',
             # comments
             u'@media/*1*//*2*/all/*3*//*4*/{/*5*/a{x:1}}': 
                 u'@media /*1*/ /*2*/ all /*3*/ /*4*/ {\n    /*5*/\n    a {\n        x: 1\n        }\n    }',

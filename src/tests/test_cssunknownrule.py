@@ -59,9 +59,9 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSUnknownRule.cssText"
         tests = {
             '@x;': None,
-            '@x {}': u'@x {\n}',
-            '@x{ \n \t \f\r}': u'@x {\n}',
-            '@x {\n    [()]([ {\n    }]) {\n    }\n    }': None,
+            '@x {}': u'@x {\n    }',
+            '@x{ \n \t \f\r}': u'@x {\n    }',
+            '@x {\n    [()]([ {\n        }]) {\n        }\n    }': None,
             '@x {\n    @b;\n    }': None,
             '''@x {
     @b {

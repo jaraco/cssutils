@@ -485,6 +485,13 @@ class Seq(object):
         else:
             self._seq.append(Item(val, typ, line, col))
 
+    def appendItem(self, item):
+        "if not readonly add item which must be an Item"
+        if self._readonly:
+            raise AttributeError('Seq is readonly.')
+        else:
+            self._seq.append(item)
+
     def replace(self, index=-1, val=None, typ=None, line=None, col=None):
         """
         if not readonly replace Item at index with new Item or
