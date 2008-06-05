@@ -307,7 +307,17 @@ class Base(object):
         """
         def ATKEYWORD(expected, seq, token, tokenizer=None):
             "TODO: add default impl for unexpected @rule?"
-            return expected
+            if expected != 'EOF':
+                # TODO: parentStyleSheet=self
+                rule = cssutils.css.CSSUnknownRule()
+                rule.cssText = self._tokensupto2(tokenizer, token)
+                if rule.wellformed:
+                    seq.append(rule)
+                return expected
+            else:
+                new['wellformed'] = False
+                self._log.error(u'Expected EOF.', token=token)
+                return expected
 
         def COMMENT(expected, seq, token, tokenizer=None):
             "default implementation for COMMENT token adds CSSCommentRule"

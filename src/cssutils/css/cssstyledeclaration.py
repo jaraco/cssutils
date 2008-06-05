@@ -290,8 +290,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         tokenizer = self._tokenize2(cssText)
 
         # for closures: must be a mutable
-        new = {'valid': True,
-               'wellformed': True} 
+        new = {'wellformed': True} 
         def ident(expected, seq, token, tokenizer=None):
             # a property
             
@@ -309,17 +308,14 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             # does not matter in this case
             return expected 
 
-        def char(expected, seq, token, tokenizer=None):
-            # error, find next ; or } to omit next invalid property
-            new['valid'] = False # wellformed is set later
-            self._log.error(u'CSSStyleDeclaration: Unexpected CHAR.', token)
+        def unexpected(expected, seq, token, tokenizer=None):
+            # error, find next ; or } to omit upto next property
 
             # ignore until ; or }
             tokens = self._tokensupto2(tokenizer, propertyvalueendonly=True)
-            ignored = self._valuestr(tokens)
-            if ignored:
-                self._log.error(u'CSSStyleDeclaration: Ignored %r.' % 
-                                ignored)
+            ignored = self._tokenvalue(token) + self._valuestr(tokens)
+            self._log.error(u'CSSStyleDeclaration: Unexpected token, ignoring %r.' %
+                            ignored,token)
             # does not matter in this case
             return expected
 
@@ -327,8 +323,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         newseq = []
         wellformed, expected = self._parse(expected=None,
             seq=newseq, tokenizer=tokenizer,
-            productions={'IDENT': ident, 'CHAR': char})
-        valid = new['valid']
+            productions={'IDENT': ident},#, 'CHAR': char},
+            default=unexpected)
         # wellformed set by parse
         # post conditions
 
