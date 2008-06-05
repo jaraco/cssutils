@@ -58,7 +58,7 @@ import cssutils
 from cssproperties import CSS2Properties
 from property import Property
 
-class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
+class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
     """
     The CSSStyleDeclaration class represents a single CSS declaration
     block. This class may be used to determine the style properties
@@ -124,7 +124,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         super(CSSStyleDeclaration, self).__init__()
         self._parentRule = parentRule
-        self.seq = []
+        #self._seq = self._tempSeq()
         self.cssText = cssText
         self._readonly = readonly
 
@@ -140,7 +140,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         else:
             name = self._normalize(nameOrProperty)
         return name in self.__nnames()
-    
     
     def __iter__(self):
         """
@@ -161,7 +160,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             implementation of known is not really nice, any alternative?
         """
         known = ['_tokenizer', '_log', '_ttypes',
-                 'seq', 'parentRule', '_parentRule', 'cssText',
+                 '_seq', 'seq', 'parentRule', '_parentRule', 'cssText',
                  'valid', 'wellformed',
                  '_readonly']
         known.extend(CSS2Properties._properties)
@@ -178,9 +177,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         if names are set twice the last one is used (double reverse!) 
         """
         names = []
-        for x in reversed(self.seq): 
-            if isinstance(x, Property) and not x.name in names:
-                names.append(x.name)
+        for item in reversed(self.seq):
+            val = item.value
+            if isinstance(val, Property) and not val.name in names:
+                names.append(val.name)
         return reversed(names)    
 
     def __getitem__(self, CSSName):
@@ -301,7 +301,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             property = Property()
             property.cssText = tokens
             if property.wellformed:
-                seq.append(property)
+                seq.append(property, 'Property')
             else:
                 self._log.error(u'CSSStyleDeclaration: Syntax Error in Property: %s'
                                 % self._valuestr(tokens))
@@ -310,17 +310,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
 
         def unexpected(expected, seq, token, tokenizer=None):
             # error, find next ; or } to omit upto next property
-
-            # ignore until ; or }
-            tokens = self._tokensupto2(tokenizer, propertyvalueendonly=True)
-            ignored = self._tokenvalue(token) + self._valuestr(tokens)
-            self._log.error(u'CSSStyleDeclaration: Unexpected token, ignoring %r.' %
+            ignored = self._tokenvalue(token) + self._valuestr(
+                                self._tokensupto2(tokenizer, propertyvalueendonly=True))
+            self._log.error(u'CSSStyleDeclaration: Unexpected token, ignoring upto %r.' %
                             ignored,token)
             # does not matter in this case
             return expected
 
         # [Property: Value;]* Property: Value?
-        newseq = []
+        newseq = self._tempSeq()
         wellformed, expected = self._parse(expected=None,
             seq=newseq, tokenizer=tokenizer,
             productions={'IDENT': ident},#, 'CHAR': char},
@@ -328,9 +326,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         # wellformed set by parse
         # post conditions
 
-        # do not check wellformed as each property             
+        # do not check wellformed as invalid things are removed anyway            
         #if wellformed: 
-        self.seq = newseq
+        self._setSeq(newseq)
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) A parsable textual representation of the declaration\
@@ -387,10 +385,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
             # all properties or all with this name    
             nname = self._normalize(name)
             properties = []
-            for x in self.seq:
-                if isinstance(x, Property) and (
-                   (bool(nname) == False) or (x.name == nname)):
-                    properties.append(x)
+            for item in self.seq:
+                val = item.value
+                if isinstance(val, Property) and (
+                   (bool(nname) == False) or (val.name == nname)):
+                    properties.append(val)
             return properties
 
     def getProperty(self, name, normalize=True):
@@ -408,13 +407,14 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         nname = self._normalize(name)
         found = None
-        for x in reversed(self.seq):
-            if isinstance(x, Property):
-                if (normalize and nname == x.name) or name == x.literalname:
-                    if x.priority:
-                        return x 
+        for item in reversed(self.seq):
+            val = item.value
+            if isinstance(val, Property):
+                if (normalize and nname == val.name) or name == val.literalname:
+                    if val.priority:
+                        return val
                     elif not found:
-                        found = x
+                        found = val
         return found
 
     def getPropertyCSSValue(self, name, normalize=True):
@@ -532,16 +532,19 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
         """
         self._checkReadonly()
         r = self.getPropertyValue(name, normalize=normalize)
+        newseq = self._tempSeq()
         if normalize:
             # remove all properties with name == nname
             nname = self._normalize(name)
-            newseq = [x for x in self.seq 
-                      if not(isinstance(x, Property) and x.name == nname)]
+            for item in self.seq:
+                if not (isinstance(item.value, Property) and item.value.name == nname):
+                    newseq.appendItem(item)
         else:
             # remove all properties with literalname == name
-            newseq = [x for x in self.seq 
-                      if not(isinstance(x, Property) and x.literalname == name)]
-        self.seq = newseq
+            for item in self.seq:
+                if not (isinstance(item.value, Property) and item.value.literalname == name):
+                    newseq.appendItem(item)
+        self._setSeq(newseq)
         return r
 
     def setProperty(self, name, value=None, priority=u'', normalize=True):
@@ -599,7 +602,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base):
                     property.priority = newp.priority
                     break
             else:
-                self.seq.append(newp)
+                self.seq._readonly = False
+                self.seq.append(newp, 'Property')
+                self.seq._readonly = True
 
     def item(self, index):
         """

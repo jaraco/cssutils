@@ -220,8 +220,8 @@ class CSSStyleRule(cssrule.CSSRule):
             self._style.cssText = style
         else:
             # cssText would be serialized with optional preferences
-            # so use seq!
-            self._style.seq = style.seq 
+            # so use _seq!
+            self._style._seq = style._seq 
 
     style = property(lambda self: self._style, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")

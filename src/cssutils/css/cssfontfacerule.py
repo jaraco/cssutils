@@ -149,7 +149,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
         if isinstance(style, basestring):
             self._style = CSSStyleDeclaration(parentRule=self, cssText=style)
         else:
-            self._style.seq = style.seq
+            self._style._seq = style.seq
 
     style = property(_getStyle, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")

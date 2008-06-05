@@ -271,7 +271,7 @@ class CSSPageRule(cssrule.CSSRule):
         else:
             # cssText would be serialized with optional preferences
             # so use seq!
-            self._style.seq = style.seq 
+            self._style._seq = style.seq 
 
     style = property(_getStyle, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")

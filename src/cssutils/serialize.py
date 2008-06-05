@@ -169,13 +169,14 @@ class Out(object):
             # remove trailing S
             del self.out[-1]
     
-    def append(self, val, typ=None, space=True, keepS=False, indent=False):
+    def append(self, val, typ=None, space=True, keepS=False, indent=False, 
+               lineSeparator=False):
         """
         Appends val. Adds a single S after each token except as follows:
         
         - typ COMMENT
             uses cssText depending on self.ser.prefs.keepComments
-        - typ cssutils.css.CSSRule.UNKNOWN_RULE
+        - typ "Property", cssutils.css.CSSRule.UNKNOWN_RULE
             uses cssText
         - typ STRING
             escapes ser._string
@@ -201,7 +202,7 @@ class Out(object):
                     val = val.cssText
                 else: 
                     return
-            elif cssutils.css.CSSRule.UNKNOWN_RULE == typ:
+            elif typ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
                 val = val.cssText
             elif 'S' == typ and not keepS:
                 return
@@ -220,9 +221,11 @@ class Out(object):
                 self.out.append(self.ser._indentblock(val, self.ser._level+1))
             else:
                 self.out.append(val)
-
             # POST
-            if val in u'+>~': # enclose selector combinator
+            if lineSeparator:
+                # Property , ...
+                pass
+            elif val in u'+>~': # enclose selector combinator
                 self.out.insert(-1, self.ser.prefs.selectorCombinatorSpacer)
                 self.out.append(self.ser.prefs.selectorCombinatorSpacer)
             elif u',' == val: # list
@@ -359,7 +362,6 @@ class CSSSerializer(object):
         """
         serializes CSSComment which consists only of commentText
         """
-        # no need to use Out() as too simple
         if rule._cssText and self.prefs.keepComments:
             return rule._cssText
         else:
@@ -373,7 +375,6 @@ class CSSSerializer(object):
         always @charset "encoding";
         no comments or other things allowed!
         """
-        # no need to use Out() as too simple
         if rule.wellformed:
             return u'@charset %s;' % self._string(rule.encoding)
         else:
@@ -557,7 +558,6 @@ class CSSSerializer(object):
             stacks = []
             for item in rule.seq:
                 typ, val = item.type, item.value
-                
                 # PRE
                 if u'}' == val:
                     # close last open item on stack
@@ -566,6 +566,8 @@ class CSSSerializer(object):
                         val = self._indentblock(
                                stackblock + self.prefs.lineSeparator + val, 
                                min(1, len(stacks)+1))
+                    else:
+                        val = self._indentblock(val, min(1, len(stacks)+1))
                 # APPEND
                 if stacks:
                     stacks[-1].append(val, typ)
@@ -699,44 +701,45 @@ class CSSSerializer(object):
         """
         Style declaration of CSSStyleRule
         """
-        # TODO: use Out()
+#        # TODO: use Out()
         
-        # may be comments only
+        # may be comments only       
         if len(style.seq) > 0:
             if separator is None:
                 separator = self.prefs.lineSeparator
 
             if self.prefs.keepAllProperties:
                 # all
-                parts = style.seq
+                seq = style.seq
             else:
                 # only effective ones
                 _effective = style.getProperties()
-                parts = [x for x in style.seq 
-                         if (isinstance(x, cssutils.css.Property) 
-                             and x in _effective)
-                         or not isinstance(x, cssutils.css.Property)]
+                seq = [item for item in style.seq 
+                         if (isinstance(item.value, cssutils.css.Property) 
+                             and item.value in _effective)
+                         or not isinstance(item.value, cssutils.css.Property)]
 
             out = []
-            for i, part in enumerate(parts):
-                if isinstance(part, cssutils.css.CSSComment):
+            for i, item in enumerate(seq):
+                typ, val = item.type, item.value
+                if isinstance(val, cssutils.css.CSSComment):
                     # CSSComment
                     if self.prefs.keepComments:
-                        out.append(part.cssText)
+                        out.append(val.cssText)
                         out.append(separator)
-                elif isinstance(part, cssutils.css.Property):
+                elif isinstance(val, cssutils.css.Property):
                     # PropertySimilarNameList
-                    out.append(self.do_Property(part))
-                    if not (self.prefs.omitLastSemicolon and i==len(parts)-1):
+                    out.append(self.do_Property(val))
+                    if not (self.prefs.omitLastSemicolon and i==len(seq)-1):
                         out.append(u';')
                     out.append(separator)
-                elif isinstance(part, cssutils.css.CSSUnknownRule):
+                elif isinstance(val, cssutils.css.CSSUnknownRule):
                     # @rule
-                    out.append(part.cssText)
+                    out.append(val.cssText)
                     out.append(separator)
                 else:
                     # ?
-                    out.append(part)
+                    out.append(val)
                     out.append(separator)
 
             if out and out[-1] == separator:

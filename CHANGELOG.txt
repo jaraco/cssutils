@@ -96,6 +96,8 @@ HEAD
 
     - **BUGFIX**: Fixed parsing of values like ``background: url(x.gif)0 0;`` (missing space but still valid).
 
+    - BUGFIX: Serializing CSSUnknownRules is slightly improved, blocks are correctly indentet now.
+
     - **LICENSE**: cssutils is licensed under the **LGPL v3** now (before LGPL v2.1). This should not be a problem I guess but please be aware. So the former mix of LGPL 2.1 and 3 is resolved to a single LGPL 3 license for both cssutils and the included encutils.
 
     - INTERNAL: Moved tests out of cssutils main package into a tests package parallel to cssutils.

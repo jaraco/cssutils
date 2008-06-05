@@ -31,16 +31,9 @@ if 0:
     sys.exit(0)
 
 if 1:
-    st = cssutils.css.CSSStyleDeclaration()
-    st.color = 'red'
-    st['item'] = "123", "important"
-    for p in st.getProperties():
-        print st.__getattribute__(p.name)
-    print 
-    for p in st:
-        print repr(p)
-        
-    print st['notset']
+    st = cssutils.css.CSSStyleDeclaration(cssText="left: 0;left:1")
+    cssutils.ser.prefs.keepAllProperties = False
+    print st.cssText
     sys.exit(0)
 
 
