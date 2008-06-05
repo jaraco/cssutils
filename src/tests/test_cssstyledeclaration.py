@@ -127,7 +127,12 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             u'0: red; color: green': u'color: green',
             u'1px:: red; color: green': u'color: green',
             ur'$top: 0': u'',
-            ur'$: 0': u'' # really invalid!
+            ur'$: 0': u'', # really invalid!
+            # unknown rule but valid
+            u'@x;\ncolor: red': None, 
+            u'@x {\n}\ncolor: red': None,
+            u'/**/\ncolor: red': None, 
+            u'/**/\ncolor: red;\n/**/': None, 
             }
         cssutils.ser.prefs.keepAllProperties = False
         for test, exp in tests.items():
@@ -368,6 +373,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
 
     def test_removeProperty(self):
         "CSSStyleDeclaration.removeProperty()"
+        cssutils.ser.prefs.useDefaults()
         s = cssutils.css.CSSStyleDeclaration()
         css = ur'\x:0 !important; x:1; \x:2; x:3'
 

@@ -730,9 +730,14 @@ class CSSSerializer(object):
                     if not (self.prefs.omitLastSemicolon and i==len(parts)-1):
                         out.append(u';')
                     out.append(separator)
+                elif isinstance(part, cssutils.css.CSSUnknownRule):
+                    # @rule
+                    out.append(part.cssText)
+                    out.append(separator)
                 else:
-                    # other?
+                    # ?
                     out.append(part)
+                    out.append(separator)
 
             if out and out[-1] == separator:
                 del out[-1]

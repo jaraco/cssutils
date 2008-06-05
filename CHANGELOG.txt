@@ -88,7 +88,9 @@ HEAD
 
     - **FEATURE**: Added option ``-s --string`` to cssparse script which expects a CSS string to be parsed.
 
-    - **BUGFIX**: Parsing of CSSStyleDeclarations is improved. Invalid ``/color: red;color: green`` is now correctly parsed as ``color: green`` now. At the same time the until now parsed but invalid ``$color: red`` (an IE hack) is not parse anymore but correctly dismissed!
+    - **FEATURE/BUGFIX**: Parsing of CSSStyleDeclarations is improved. Invalid ``/color: red;color: green`` is now correctly parsed as ``color: green`` now. At the same time the until now parsed but invalid ``$color: red`` (an IE hack) is not parse anymore but correctly dismissed!
+
+      Unknown rules in CSSStyleDeclaration are parsed now. So e.g ``@x; color: red;`` which is syntactically valid is kept completely.
 
     - **BUGFIX**: ``parseUrl`` does return ``None`` if an error occurs during reading the given URL. Until now an empty stylesheet was returned.
 
