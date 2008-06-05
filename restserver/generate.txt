@@ -4,12 +4,16 @@ to generate static docs:
 
   - /index.txt,
   - /README.txt
-  - /COPYING
-  - /COPYING.LESSER
   - /documentation
 
   to folder "rst"
 
 * run generate.bat (you need lxml)
-* generated HTML is in "cssutils_documentation"
+* generated HTML is in "docs-html"
+* copy
+  - /COPYING
+  - /COPYING.LESSER
+
+    to docs-html
+
 * optionally add /docs (Epydoc) to "cssutils_documentation"
