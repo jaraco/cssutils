@@ -424,23 +424,47 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     index, self.cssRules.length))
             return
 
-        if isinstance(rule, basestring):
-            # parse a new rule
-            tempsheet = CSSStyleSheet()
+        if isinstance(rule, basestring):            
+            # init a temp sheet which has the same properties as self
+            tempsheet = CSSStyleSheet(href=self.href, 
+                                      media=self.media, 
+                                      title=self.title,
+                                      parentStyleSheet=self.parentStyleSheet,
+                                      ownerRule=self.ownerRule)
+            tempsheet._ownerNode = self.ownerNode
+            tempsheet._fetcher = self._fetcher
+
+            # prepend encoding if in this sheet to be able to use it in 
+            # @import rules encoding resolution
+            # do not add if new rule startswith "@charset" (which is exact!)
+            if not rule.startswith(u'@charset') and (self.cssRules and 
+                self.cssRules[0].type == self.cssRules[0].CHARSET_RULE):
+                # rule 0 is @charset!
+                newrulescount, newruleindex = 2, 1
+                rule = self.cssRules[0].cssText + rule
+            else: 
+                newrulescount, newruleindex = 1, 0 
+            
+            # parse the new rule(s)
             tempsheet.cssText = (rule, self._namespaces)
-            if len(tempsheet.cssRules) != 1 or (tempsheet.cssRules and
-             not isinstance(tempsheet.cssRules[0], cssutils.css.CSSRule)):
-                self._log.error(u'CSSStyleSheet: Invalid Rule: %s' % rule)
+            
+            if len(tempsheet.cssRules) != newrulescount or (not isinstance(
+               tempsheet.cssRules[newruleindex], cssutils.css.CSSRule)):
+                self._log.error(u'CSSStyleSheet: Not a CSSRule: %s' % rule)
                 return
-            rule = tempsheet.cssRules[0]
-            rule._parentStyleSheet = None
+            rule = tempsheet.cssRules[newruleindex]
+            rule._parentStyleSheet = None # done later?
+
+            # TODO: 
+            #tempsheet._namespaces = self._namespaces
+
 
         elif isinstance(rule, cssutils.css.CSSRuleList):
             # insert all rules
             for i, r in enumerate(rule):
                 self.insertRule(r, index + i)
             return index
-
+            
         if not rule.wellformed:
             self._log.error(u'CSSStyleSheet: Invalid rules cannot be added.')
             return
@@ -575,11 +599,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                             error=xml.dom.HierarchyRequestErr)
                         return
                 self.cssRules.insert(index, rule)
-
-        rule._parentStyleSheet = self
+                
+        # post settings
+        rule._parentStyleSheet = self        
         if rule.MEDIA_RULE == rule.type:
             for r in rule:
                 r._parentStyleSheet = self
+        # ?
+        elif rule.IMPORT_RULE == rule.type:
+            rule.href = rule.href # try to reload stylesheet
+
         return index
 
     ownerRule = property(lambda self: self._ownerRule,
