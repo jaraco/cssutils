@@ -466,6 +466,52 @@ ex2|SEL4, a, ex2|SELSR {
                 self.assertEqual(u'\n'.join(expected), full.cssText)
                 self.assertEqual(i+1, index) # no same rule present
 
+    def test_addimport(self):
+        p = cssutils.CSSParser(fetcher=lambda url: (None, '/**/')) 
+
+        cssrulessheet = p.parseString('@import "example.css";')
+        cssrulessheet.cssRules[0]._styleSheet = None
+        imports = (
+            '@import "example.css";', # string
+            cssutils.css.CSSImportRule(href="example.css"), # CSSRule
+            cssrulessheet.cssRules # CSSRuleList
+            )
+        for imp in imports:
+            sheet = p.parseString('', href='http://example.com')
+            sheet.add(imp)
+            added = sheet.cssRules[0]
+            self.assertEqual(sheet, added.parentStyleSheet)
+            self.assertEqual(u'example.css', added.href)
+            self.assertEqual(u'utf-8', added.styleSheet.encoding)
+            self.assertEqual(u'/**/', added.styleSheet.cssText)
+
+        cssrulessheet = p.parseString('@import "example.css";')
+        cssrulessheet.cssRules[0]._styleSheet = None
+        imports = (
+            '@import "example.css";', # string
+            cssutils.css.CSSImportRule(href="example.css"), # CSSRule
+            cssrulessheet.cssRules # CSSRuleList
+            )
+        for imp in imports:
+            sheet = p.parseString('', href='http://example.com', encoding='ascii')
+            sheet.add(imp)
+            added = sheet.cssRules[1]
+            self.assertEqual(sheet, added.parentStyleSheet)
+            self.assertEqual(u'example.css', added.href)
+            self.assertEqual(u'ascii', added.styleSheet.encoding)
+            self.assertEqual(u'@charset "ascii";\n/**/', added.styleSheet.cssText)
+            
+        # if styleSheet is already there encoding is not set new
+        impsheet = p.parseString('@import "example.css";')
+        imp = impsheet.cssRules[0]
+        sheet = p.parseString('', href='http://example.com', encoding='ascii')
+        sheet.add(imp)
+        added = sheet.cssRules[1]
+        self.assertEqual(sheet, added.parentStyleSheet)
+        self.assertEqual(u'example.css', added.href)
+        self.assertEqual(u'utf-8', added.styleSheet.encoding)
+        self.assertEqual(u'/**/', added.styleSheet.cssText)
+
     def test_insertRule(self):
         "CSSStyleSheet.insertRule()"
         s, L = self._gets()
