@@ -41,6 +41,8 @@ known issues
 0.9.x
 -----
 HEAD
+    - **BUGFIX**: Properties of rules set via ``css.CSSStyleSheet.add`` or ``.insert`` were not set properly, e.g. ``parentStyleSheet`` or the stylesheet handling of new @import rules was buggy.
+
 
 0.9.5b3 080605
     - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.
