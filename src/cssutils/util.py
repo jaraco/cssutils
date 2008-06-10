@@ -834,9 +834,9 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
                 encoding = contentEncoding
             else:
                 # contentEncoding may be UTF-8 but this may not be explicit
-                contentEncoding = cssutils.codec._detectencoding_str(content)
+                (contentEncoding, explicit) = cssutils.codec.detectencoding_str(content)
                 # contentEncoding may be None for empty string!
-                if contentEncoding and contentEncoding != 'utf-8': 
+                if contentEncoding and explicit: 
                     # 2. BOM/@charset: explicitly not UTF-8
                     encoding = contentEncoding
                 else:

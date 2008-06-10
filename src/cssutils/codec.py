@@ -26,16 +26,20 @@ import codecs, marshal
 
 
 
-def _detectencoding_str(input, final=False):
+def detectencoding_str(input, final=False):
     """
     Detect the encoding of the byte string ``input``, which contains the
-    beginning of a CSS file. To detect the encoding the first few bytes are
-    used (or if ``input`` is ASCII compatible and starts with a charset rule
-    the encoding name from the rule).
+    beginning of a CSS file. This function returs the detected encoding (or
+    ``None`` if it hasn't got enough data), and a flag that indicates whether
+    to encoding has been detected explicitely or implicitely. To detect the
+    encoding the first few bytes are used (or if ``input`` is ASCII compatible
+    and starts with a charset rule the encoding name from the rule). "Explicit"
+    detection means that the bytes start with a BOM or a charset rule.
 
-    If the encoding can't be detected yet, ``None`` is returned. ``final``
-    specifies whether more data is available in later calls or not. If ``final``
-    is true, ``_detectencoding_str()`` will never return ``None``.
+    If the encoding can't be detected yet, ``None`` is returned as the encoding.
+    ``final`` specifies whether more data is available in later calls or not.
+    If ``final`` is true, ``detectencoding_str()`` will never return ``None``
+    as the encoding.
     """
 
     # A bit for every candidate
@@ -108,40 +112,40 @@ def _detectencoding_str(input, final=False):
                     if c != "a":
                         candidates &= ~CANDIDATE_CHARSET
     if candidates == 0:
-        return "utf-8"
+        return ("utf-8", False)
     if not (candidates & (candidates-1)): # only one candidate remaining
         if candidates == CANDIDATE_UTF_8_SIG and li >= 3:
-            return "utf-8-sig"
+            return ("utf-8-sig", True)
         elif candidates == CANDIDATE_UTF_16_AS_LE and li >= 2:
-            return "utf-16"
+            return ("utf-16", False)
         elif candidates == CANDIDATE_UTF_16_AS_BE and li >= 2:
-            return "utf-16"
+            return ("utf-16", False)
         elif candidates == CANDIDATE_UTF_16_LE and li >= 4:
-            return "utf-16-le"
+            return ("utf-16-le", False)
         elif candidates == CANDIDATE_UTF_16_BE and li >= 2:
-            return "utf-16-be"
+            return ("utf-16-be", False)
         elif candidates == CANDIDATE_UTF_32_AS_LE and li >= 4:
-            return "utf-32"
+            return ("utf-32", False)
         elif candidates == CANDIDATE_UTF_32_AS_BE and li >= 4:
-            return "utf-32"
+            return ("utf-32", False)
         elif candidates == CANDIDATE_UTF_32_LE and li >= 4:
-            return "utf-32-le"
+            return ("utf-32-le", False)
         elif candidates == CANDIDATE_UTF_32_BE and li >= 4:
-            return "utf-32-be"
+            return ("utf-32-be", False)
         elif candidates == CANDIDATE_CHARSET and li >= 4:
             prefix = '@charset "'
             if input[:len(prefix)] == prefix:
                 pos = input.find('"', len(prefix))
                 if pos >= 0:
-                    return input[len(prefix):pos]
+                    return (input[len(prefix):pos], True)
     # if this is the last call, and we haven't determined an encoding yet,
     # we default to UTF-8
     if final:
-        return "utf-8"
-    return None # dont' know yet
+        return ("utf-8", False)
+    return (None, False) # dont' know yet
 
 
-def _detectencoding_unicode(input, final=False):
+def detectencoding_unicode(input, final=False):
     """
     Detect the encoding of the unicode string ``input``, which contains the
     beginning of a CSS file. The encoding is detected from the charset rule
@@ -150,18 +154,18 @@ def _detectencoding_unicode(input, final=False):
 
     If the encoding can't be detected yet, ``None`` is returned. ``final``
     specifies whether more data will be available in later calls or not. If
-    ``final`` is true, ``_detectencoding_unicode()`` will never return ``None``.
+    ``final`` is true, ``detectencoding_unicode()`` will never return ``None``.
     """
     prefix = u'@charset "'
     if input.startswith(prefix):
         pos = input.find(u'"', len(prefix))
         if pos >= 0:
-            return input[len(prefix):pos]
+            return (input[len(prefix):pos], True)
     elif final or not prefix.startswith(input):
         # if this is the last call, and we haven't determined an encoding yet,
         # (or the string definitely doesn't start with prefix) we default to UTF-8
-        return "utf-8"
-    return None # don't know yet
+        return ("utf-8", False)
+    return (None, False) # don't know yet
 
 
 def _fixencoding(input, encoding, final=False):
@@ -195,7 +199,7 @@ def _fixencoding(input, encoding, final=False):
 
 def decode(input, errors="strict", encoding=None):
     if encoding is None:
-        encoding = _detectencoding_str(input, True)
+        encoding = detectencoding_str(input, True)[0]
     if encoding == "css":
         raise ValueError("css not allowed as encoding name")
     (input, consumed) = codecs.getdecoder(encoding)(input, errors)
@@ -205,7 +209,7 @@ def decode(input, errors="strict", encoding=None):
 def encode(input, errors="strict", encoding=None):
     consumed = len(input)
     if encoding is None:
-        encoding = _detectencoding_unicode(input, True)
+        encoding = detectencoding_unicode(input, True)[0]
         if encoding.replace("_", "-").lower() == "utf-8-sig":
             input = _fixencoding(input, u"utf-8", True)
     else:
@@ -262,7 +266,7 @@ if hasattr(codecs, "IncrementalDecoder"):
             # overhead.
             if self.decoder is None:
                 input = self.buffer + input
-                self.encoding = _detectencoding_str(input, final)
+                self.encoding = detectencoding_str(input, final)[0]
                 if self.encoding is None:
                     self.buffer = input # retry the complete input on the next call
                     return u"" # no encoding determined yet, so no output
@@ -357,7 +361,7 @@ if hasattr(codecs, "IncrementalEncoder"):
                     input = newinput
                 else:
                     # Use encoding from the @charset declaration
-                    self.encoding = _detectencoding_unicode(input, final)
+                    self.encoding = detectencoding_unicode(input, final)[0]
                 if self.encoding is not None:
                     if self.encoding == "css":
                         raise ValueError("css not allowed as encoding name")
@@ -430,7 +434,7 @@ class StreamWriter(codecs.StreamWriter):
                 input = newinput
             else:
                 # Use encoding from the @charset declaration
-                self.encoding = _detectencoding_unicode(input, False)
+                self.encoding = detectencoding_unicode(input, False)[0]
             if self.encoding is not None:
                 if self.encoding == "css":
                     raise ValueError("css not allowed as encoding name")
@@ -465,7 +469,7 @@ class StreamReader(codecs.StreamReader):
     def decode(self, input, errors='strict'):
         if self.streamreader is None:
             if self.encoding is None:
-                self.encoding = _detectencoding_str(input, False)
+                self.encoding = detectencoding_str(input, False)[0]
             if self.encoding is None:
                 return (u"", 0) # no encoding determined yet, so no output
             if self.encoding == "css":
