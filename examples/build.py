@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import cssutils
 
-EXPOUT = u'''@charset "ascii";
+EXPOUT = '''@charset "ascii";
 @import "some-other.css";
 /* a comment with umlaut \\E4  */
 @namespace xhtml "http://www.w3.org/1999/xhtml";
@@ -44,7 +44,7 @@ def main():
     sheet.namespaces['atom'] = 'http://www.w3.org/2005/Atom'
     
     # add from 0.9.5a3: adds at appropriate position
-    sheet.add('@import "http://example.com/some-other.css";')
+    sheet.add('@import "some-other.css";')
     sheet.add('atom|title {color: #000 !important}')
     
     print sheet.cssText
