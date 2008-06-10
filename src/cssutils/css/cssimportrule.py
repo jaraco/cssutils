@@ -245,7 +245,6 @@ class CSSImportRule(cssrule.CSSRule):
                 self._media = new['media']
                 self.name = new['name']
                 self._setSeq(newseq)
-
                 self.href = new['href']
                 
                 if self.styleSheet:
@@ -269,7 +268,6 @@ class CSSImportRule(cssrule.CSSRule):
             self._setSeq(seq)
         # set new href
         self._href = href
-        
         if not self.styleSheet:
             # set only if not set before
             self.__setStyleSheet()
@@ -324,7 +322,7 @@ class CSSImportRule(cssrule.CSSRule):
             try:
                 overrideEncoding, cssText = self.parentStyleSheet._resolveImport(href)
                 if cssText is None:
-                    raise IOError()
+                    raise IOError('Cannot read Stylesheet or it is empty.')
 
                 refsheet = cssutils.css.CSSStyleSheet(href=href, 
                                                       media=self.media,
@@ -338,7 +336,7 @@ class CSSImportRule(cssrule.CSSRule):
                                                          overrideEncoding)
                  
             except (IOError, ValueError), e:
-                self._log.warn(u'CSSImportRule: Error processing imported style sheet href=%r: %r'
+                self._log.warn(u'CSSImportRule: While processing imported style sheet href=%r: %r'
                                % (self.href, e), neverraise=True)
             else:
                 self._styleSheet = refsheet
