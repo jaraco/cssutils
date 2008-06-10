@@ -4,18 +4,26 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 main changes
 ------------
-0.9.5b2
-    - **API CHANGE**: ``cssutils.parseUrl`` has been renamed to ``parseURL`` for consistency with ``getUrls`` or ``replaceUrls``. Parameter ``href`` (before called ``url``) is the first and mandatory parameter now.
+0.9.5b3
+    - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.
 
-    + **BUGFIX**: Fix the streamreader in the codec: Honor the encoding if one is passed to the constructor instead of trying to detect it from the stream.
+    - **FEATURE'**: CSSStyleDeclatation objects may be used like dictionaries now. The value during setting a property may be a single value string or a tuple of ``(value, priority)``
 
-    + **BUGFIX**: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information is passed along. Encoding of referenced sheets is always retrieved via HTTP or from imported sheet itself. Fixed lots of unchecked cases and simplified exception handling when reading a referenced sheet.
+    - **FEATURE**: While reading an imported styleSheet all relevant encoding parameters (HTTP headers, BOM/@charset, etc) are used now as defined in http://www.w3.org/TR/CSS21/syndata.html#charset
 
-    + BUGFIX: Setting ``atkeyword`` of @rules checks if it is a valid keyword for the specific rule. E.g. an @import rule accepts ``@im\port`` but not ``@namespace``.
-    + BUGFIX: Fixed setting ``name`` of CSSImportRule. Setting ``name`` other than with a string results in xml.dom.SyntaxErr raised now
-    + BUGFIX: ``CSSStyleSheet.type`` with a fixed value of "text/css" and other readonly properties are really readonly now
+        Additionally a given parameter ``encoding`` for ``parseString``, ``parseFile`` and ``parseUrl`` functions/methods **overrides** any detected encoding of read sheet like HTTP information or @charset rules. Useful if e.g. HTTP information is not set properly. The given ``encoding`` is used for **all** imported sheets of the parsed one too! This is a cssutils only addition to the rules defined at http://www.w3.org/TR/CSS21/syndata.html#charset.
 
+    - **FEATURE**: A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetcher)`` (or as an init parameter). The so customized parser is reusable (as all parsers are). The fetcher is called when an ``@import`` rule is found and the referenced stylesheet is about to be retrieved.
 
+    - **FEATURE**: Added option ``-s --string`` to cssparse script which expects a CSS string to be parsed.
+
+    - **FEATURE/BUGFIX**: Parsing of CSSStyleDeclarations is improved. Invalid ``/color: red;color: green`` is now correctly parsed as ``color: green`` now. At the same time the until now parsed but invalid ``$color: red`` (an IE hack) is not parse anymore but correctly dismissed!
+
+      Unknown rules in CSSStyleDeclaration are parsed now. So e.g ``@x; color: red;`` which is syntactically valid is kept completely.
+
+    - **LICENSE**: cssutils is licensed under the **LGPL v3** now (before LGPL v2.1). This should not be a problem I guess but please be aware. So the former mix of LGPL 2.1 and 3 is resolved to a single LGPL 3 license for both cssutils and the included encutils.
+
+    - a few other changes, bugfixes  and improvements
 
 Note:
     CSSValue, CSSValueList, and CSSPrimitiveValue and the relevant methods/properties Property.cssValue and CSSStyleDeclaration.getPropertyCSSValue are more or less DEPRECATED and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings, e.g. ``Property.value``. As the aforementioned classes are not hardly that useful anyway this should not be a big problem but please beware if you use or have used them.
@@ -27,7 +35,7 @@ license
 -------
 cssutils is published under the LGPL version 3 or later, see http://cthedot.de/cssutils/
 
-The included `encutils <http://cthedot.de/encutils/>`__ has been updated to version 0.8.3 with a compatible LGPL license. `restserver.py <http://cthedot.de/restserver/>`__ has been updates to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.
+If you have other licensing needs please let me know.
 
 download
 --------
