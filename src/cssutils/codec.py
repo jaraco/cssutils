@@ -117,17 +117,17 @@ def detectencoding_str(input, final=False):
         if candidates == CANDIDATE_UTF_8_SIG and li >= 3:
             return ("utf-8-sig", True)
         elif candidates == CANDIDATE_UTF_16_AS_LE and li >= 2:
-            return ("utf-16", False)
+            return ("utf-16", True)
         elif candidates == CANDIDATE_UTF_16_AS_BE and li >= 2:
-            return ("utf-16", False)
+            return ("utf-16", True)
         elif candidates == CANDIDATE_UTF_16_LE and li >= 4:
             return ("utf-16-le", False)
         elif candidates == CANDIDATE_UTF_16_BE and li >= 2:
             return ("utf-16-be", False)
         elif candidates == CANDIDATE_UTF_32_AS_LE and li >= 4:
-            return ("utf-32", False)
+            return ("utf-32", True)
         elif candidates == CANDIDATE_UTF_32_AS_BE and li >= 4:
-            return ("utf-32", False)
+            return ("utf-32", True)
         elif candidates == CANDIDATE_UTF_32_LE and li >= 4:
             return ("utf-32-le", False)
         elif candidates == CANDIDATE_UTF_32_BE and li >= 4:
