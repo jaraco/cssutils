@@ -197,11 +197,13 @@ def _fixencoding(input, encoding, final=False):
     return None # don't know yet
 
 
-def decode(input, errors="strict", encoding=None):
-    if encoding is None:
-        encoding = detectencoding_str(input, True)[0]
-    if encoding == "css":
-        raise ValueError("css not allowed as encoding name")
+def decode(input, errors="strict", encoding=None, force=True):
+    if encoding is None or not force:
+        (_encoding, explicit) = detectencoding_str(input, True)
+        if _encoding == "css":
+            raise ValueError("css not allowed as encoding name")
+        if (explicit and not force) or encoding is None: # Take the encoding from the input
+            encoding = _encoding
     (input, consumed) = codecs.getdecoder(encoding)(input, errors)
     return (_fixencoding(input, unicode(encoding), True), consumed)
 
@@ -239,9 +241,10 @@ def _int2bytes(i):
 
 if hasattr(codecs, "IncrementalDecoder"):
     class IncrementalDecoder(codecs.IncrementalDecoder):
-        def __init__(self, errors="strict", encoding=None):
+        def __init__(self, errors="strict", encoding=None, force=True):
             self.decoder = None
             self.encoding = encoding
+            self.force = force
             codecs.IncrementalDecoder.__init__(self, errors)
             # Store ``errors`` somewhere else,
             # because we have to hide it in a property
@@ -266,12 +269,16 @@ if hasattr(codecs, "IncrementalDecoder"):
             # overhead.
             if self.decoder is None:
                 input = self.buffer + input
-                self.encoding = detectencoding_str(input, final)[0]
-                if self.encoding is None:
-                    self.buffer = input # retry the complete input on the next call
-                    return u"" # no encoding determined yet, so no output
-                if self.encoding == "css":
-                    raise ValueError("css not allowed as encoding name")
+                # Do we have to detect the encoding from the input?
+                if self.encoding is None or not self.force:
+                    (encoding, explicit) = detectencoding_str(input, final)
+                    if encoding is None: # no encoding determined yet
+                        self.buffer = input # retry the complete input on the next call
+                        return u"" # no encoding determined yet, so no output
+                    elif encoding == "css":
+                        raise ValueError("css not allowed as encoding name")
+                    if (explicit and not self.force) or self.encoding is None: # Take the encoding from the input
+                        self.encoding = encoding
                 self.buffer = "" # drop buffer, as the decoder might keep its own
                 decoder = codecs.getincrementaldecoder(self.encoding)
                 self.decoder = decoder(self._errors)
@@ -460,20 +467,23 @@ class StreamWriter(codecs.StreamWriter):
 
 
 class StreamReader(codecs.StreamReader):
-    def __init__(self, stream, errors="strict", encoding=None):
+    def __init__(self, stream, errors="strict", encoding=None, force=True):
         codecs.StreamReader.__init__(self, stream, errors)
         self.streamreader = None
         self.encoding = encoding
+        self.force = force
         self._errors = errors
 
     def decode(self, input, errors='strict'):
         if self.streamreader is None:
-            if self.encoding is None:
-                self.encoding = detectencoding_str(input, False)[0]
-            if self.encoding is None:
-                return (u"", 0) # no encoding determined yet, so no output
-            if self.encoding == "css":
-                raise ValueError("css not allowed as encoding name")
+            if self.encoding is None or not self.force:
+                (encoding, explicit) = detectencoding_str(input, False)
+                if encoding is None: # no encoding determined yet
+                    return (u"", 0) # no encoding determined yet, so no output
+                elif encoding == "css":
+                    raise ValueError("css not allowed as encoding name")
+                if (explicit and not self.force) or self.encoding is None: # Take the encoding from the input
+                    self.encoding = encoding
             streamreader = codecs.getreader(self.encoding)
             streamreader = streamreader(self.stream, self._errors)
             (output, consumed) = streamreader.decode(input, errors)

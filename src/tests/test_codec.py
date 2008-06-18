@@ -265,6 +265,40 @@ class CodecTestCase(unittest.TestCase):
         # No recursion
         self.assertRaises(ValueError, u'@charset "css";div{}'.encode, "css")
 
+    def test_decode_force(self):
+        "codec.decode (force)"
+        info = codecs.lookup("css")
+
+        def decodeall(input, **kwargs):
+            return info.decode(input, **kwargs)[0]
+
+        def incdecode(input, **kwargs):
+            decoder = info.incrementaldecoder(**kwargs)
+            return decoder.decode(input)
+
+        def streamdecode(input, **kwargs):
+            import StringIO
+            stream = StringIO.StringIO(input)
+            reader = info.streamreader(stream, **kwargs)
+            return reader.read()
+
+        for d in (decodeall, incdecode, streamdecode):
+            input = '@charset "utf-8"; \xc3\xbf'
+            output = u'@charset "utf-8"; \xff'
+            self.assertEqual(d(input), output)
+
+            input = '@charset "utf-8"; \xc3\xbf'
+            output = u'@charset "iso-8859-1"; \xc3\xbf'
+            self.assertEqual(d(input, encoding="iso-8859-1", force=True), output)
+
+            input = '\xc3\xbf'
+            output = u'\xc3\xbf'
+            self.assertEqual(d(input, encoding="iso-8859-1", force=True), output)
+
+            input = '@charset "utf-8"; \xc3\xbf'
+            output = u'@charset "utf-8"; \xff'
+            self.assertEqual(d(input, encoding="iso-8859-1", force=False), output)
+
 
 if __name__ == '__main__':
     import unittest
