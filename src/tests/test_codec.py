@@ -89,9 +89,10 @@ class CodecTestCase(unittest.TestCase):
     def test_detectencoding_unicode(self):
         "codec.detectencoding_unicode()"
         # Unicode version (only parses the header)
-        self.assert_(codec.detectencoding_unicode(u'@charset "x')[0] is None)
-        self.assertEqual(codec.detectencoding_unicode(u'@charset "x', True)[0], None)
-        self.assertEqual(codec.detectencoding_unicode(u'@charset "x"')[0], "x")
+        self.assertEqual(codec.detectencoding_unicode(u'@charset "x'), (None, False))
+        self.assertEqual(codec.detectencoding_unicode(u'a {}'), ("utf-8", False))
+        self.assertEqual(codec.detectencoding_unicode(u'@charset "x', True), (None, False))
+        self.assertEqual(codec.detectencoding_unicode(u'@charset "x"'), ("x", True))
 
     def test_fixencoding(self):
         "codec._fixencoding()"
