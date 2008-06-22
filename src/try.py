@@ -31,9 +31,15 @@ if 0:
     sys.exit(0)
 
 if 1:
-    st = cssutils.css.CSSStyleDeclaration(cssText="left: 0;left:1")
-    cssutils.ser.prefs.keepAllProperties = False
-    print st.cssText
+    #p = cssutils.CSSParser(fetcher=lambda url: (None, '/**/')) 
+
+    sheet = cssutils.parseString('@import "sheets/1.css"')
+    sheet.add('@import "sheets/import.css";')
+    print sheet.cssRules[0].styleSheet
+    print 
+    sheet = cssutils.parseFile('sheets/1.css')
+    print sheet
+    
     sys.exit(0)
 
 
