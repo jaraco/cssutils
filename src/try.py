@@ -34,7 +34,6 @@ if 1:
     #p = cssutils.CSSParser(fetcher=lambda url: (None, '/**/')) 
 
     sheet = cssutils.parseString('@import "sheets/1.css"')
-    sheet.add('@import "sheets/import.css";')
     print sheet.cssRules[0].styleSheet
     print 
     sheet = cssutils.parseFile('sheets/1.css')
