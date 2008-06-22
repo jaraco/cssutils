@@ -21,6 +21,7 @@ __version__ = '$Id$'
 import logging
 import urllib2
 import xml.dom
+from helper import Deprecated
 
 class _ErrorHandler(object):
     """
@@ -51,34 +52,22 @@ class _ErrorHandler(object):
             hdlr.setFormatter(formatter)
             self._log.addHandler(hdlr)
             self._log.setLevel(defaultloglevel)
-
+            
         self.raiseExceptions = raiseExceptions
 
     def __getattr__(self, name):
-        # here if new log has been set
-        _logcalls = {
-            u'debug': self._log.debug,
-            u'info': self._log.info,
-            u'warn': self._log.warn,
-            u'critical': self._log.critical,
-            u'fatal': self._log.fatal,
-            u'error': self._log.error
-            }
+        "use self._log items"
+        calls = ('debug', 'info', 'warn', 'critical', 'error', 'fatal')
+        other = ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler')
 
-        if name in _logcalls.keys():
-            self._logcall = _logcalls[name]
+        if name in calls:
+            self._logcall = getattr(self._log, name)
             return self.__handle
+        elif name in other:
+            return getattr(self._log, name)
         else:
             raise AttributeError(
-                '(errorhandler) No Attribute "%s" found' % name)
-
-    def setlog(self, log):
-        """set log of errorhandler's log"""
-        self._log = log
-
-    def setloglevel(self, level):
-        """set level of errorhandler's log"""
-        self._log.setLevel(level)
+                '(errorhandler) No Attribute %r found' % name)
 
     def __handle(self, msg=u'', token=None, error=xml.dom.SyntaxErr,
                  neverraise=False, args=None):
@@ -101,6 +90,14 @@ class _ErrorHandler(object):
                 raise error(msg)
         else:
             self._logcall(msg)
+
+    def setlog(self, log):
+        """set log of errorhandler's log"""
+        self._log = log
+
+    @Deprecated('Use setLevel() instead.')
+    def setloglevel(self, level):
+        self.setLevel(level)
 
 
 class ErrorHandler(_ErrorHandler):

@@ -10,7 +10,7 @@ __version__ = '$Id$'
 import xml.dom
 import cssrule
 import cssutils
-from cssutils.util import Deprecated
+from cssutils.helper import Deprecated
 
 class CSSNamespaceRule(cssrule.CSSRule):
     """
