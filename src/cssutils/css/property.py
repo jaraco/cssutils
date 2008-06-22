@@ -10,7 +10,7 @@ import xml.dom
 import cssutils
 import cssproperties
 from cssvalue import CSSValue
-from cssutils.util import Deprecated
+from cssutils.helper import Deprecated
 
 class Property(cssutils.util.Base):
     """

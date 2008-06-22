@@ -14,7 +14,8 @@ __version__ = '$Id$'
 
 import xml.dom
 import cssutils.stylesheets
-from cssutils.util import _Namespaces, _SimpleNamespaces, Deprecated, _readUrl
+from cssutils.util import _Namespaces, _SimpleNamespaces, _readUrl
+from cssutils.helper import Deprecated
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     """

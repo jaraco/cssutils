@@ -71,10 +71,10 @@ __date__ = '$LastChangedDate::                            $:'
 __version__ = '0.9.5b3 $Id$'
 
 import codec
-
-# order of imports is important (maybe as it is partly circular)
 import xml.dom
 
+# order of imports is important (maybe as it is partly circular)
+from helper import Deprecated
 import errorhandler
 log = errorhandler.ErrorHandler()
 
@@ -152,7 +152,7 @@ def parseUrl(*a, **k):
     return CSSParser().parseUrl(*a, **k)
 parseUrl.__doc__ = CSSParser.parseUrl.__doc__
 
-@util.Deprecated('Use cssutils.parseFile() instead.')
+@Deprecated('Use cssutils.parseFile() instead.')
 def parse(*a, **k):
     return CSSParser().parseFile(*a, **k)
 parse.__doc__ = CSSParser.parse.__doc__

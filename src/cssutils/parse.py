@@ -9,6 +9,7 @@ import os
 import codecs
 import urllib
 import cssutils
+from cssutils.helper import Deprecated
 
 class CSSParser(object):
     """
@@ -149,7 +150,7 @@ class CSSParser(object):
         """
         self.__fetcher = fetcher
 
-    @cssutils.util.Deprecated('Use cssutils.CSSParser().parseFile() instead.')
+    @Deprecated('Use cssutils.CSSParser().parseFile() instead.')
     def parse(self, filename, encoding=None, 
               href=None, media=None, title=None):
         self.parseFile(filename, encoding, href, media, title)
