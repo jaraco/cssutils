@@ -61,6 +61,8 @@ def main():
     testmod(build)
     import cssencodings
     testmod(cssencodings)
+    import customlog
+    testmod(customlog)
     import parse
     testmod(parse)
     import selectors_tolower
