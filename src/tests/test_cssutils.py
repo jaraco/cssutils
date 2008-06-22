@@ -47,7 +47,7 @@ a {
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(u'''@import "../t2.css";
+        self.assertEqual(u'''@import "../import3.css";
 /* sheets/import2.css */''', irs.cssText)
 
     def test_parseFile(self):
@@ -70,7 +70,7 @@ a {
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(u'''@import "../t2.css";
+        self.assertEqual(u'''@import "../import3.css";
 /* sheets/import2.css */''', irs.cssText)
         
         # name is used for open and setting of href automatically
@@ -91,7 +91,7 @@ a {
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(u'''@import "../t2.css";
+        self.assertEqual(u'''@import "../import3.css";
 /* sheets/import2.css */''', irs.cssText)
         
         # next test
@@ -155,13 +155,13 @@ a {
         ir = s.cssRules[0]
         self.assertEqual(u'import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assertEqual(u'''@import "../t2.css";
+        self.assertEqual(u'''@import "../import3.css";
 /* sheets/import2.css */''', irs.cssText)
 
         ir2 = irs.cssRules[0]
-        self.assertEqual(u'../t2.css', ir2.href)
+        self.assertEqual(u'../import3.css', ir2.href)
         irs2 = ir2.styleSheet
-        self.assertEqual(u'/* t2 */', irs2.cssText)
+        self.assertEqual(u'/* import3 */', irs2.cssText)
 
     def test_setCSSSerializer(self):
         "cssutils.setSerializer() and cssutils.ser"
