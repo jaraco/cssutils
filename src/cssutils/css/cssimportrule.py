@@ -11,6 +11,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import os
+import urllib
 import urlparse
 import xml.dom
 import cssrule
@@ -317,7 +318,12 @@ class CSSImportRule(cssrule.CSSRule):
         # should simply fail so all errors are catched!
         if self.parentStyleSheet and self.href:
             # relative href
-            href = urlparse.urljoin(self.parentStyleSheet.href, self.href)
+            parentHref = self.parentStyleSheet.href
+            if parentHref is None:
+                # use cwd instead
+                parentHref = u'file:' + urllib.pathname2url(os.getcwd()) + '/'
+            href = urlparse.urljoin(parentHref, self.href)
+            
             # all possible exceptions are ignored and styleSheet is None
             try:
                 overrideEncoding, cssText = self.parentStyleSheet._resolveImport(href)
@@ -335,7 +341,7 @@ class CSSImportRule(cssrule.CSSRule):
                 refsheet._setCssTextWithEncodingOverride(cssText, 
                                                          overrideEncoding)
                  
-            except (IOError, ValueError), e:
+            except (OSError, IOError, ValueError), e:
                 self._log.warn(u'CSSImportRule: While processing imported style sheet href=%r: %r'
                                % (self.href, e), neverraise=True)
             else:

@@ -41,6 +41,8 @@ known issues
 0.9.x
 -----
 HEAD
+    - **BUGFIX/IMPROVEMENT**: A style sheet with ``href == None`` (e.g. parsed with ``parseString()`` or build completely from scratch) uses ``os.getcwd()`` as its base href now to be able to resolve CSSImportRules.
+
     - **BUGFIX**: Properties of rules set via ``css.CSSStyleSheet.add`` or ``.insert`` were not set properly, e.g. ``parentStyleSheet`` or the stylesheet handling of new @import rules was buggy.
 
     - **FEATURE**: All three decoders in the codec now have an additional ``force`` argument. If ``force`` is false, the encoding from the input will only by used if is is detected explicitely via BOM or @charset rule.

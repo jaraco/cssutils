@@ -2,7 +2,7 @@
 import cssutils
 
 EXPOUT = '''@charset "ascii";
-@import "some-other.css";
+@import "sheets/import.css";
 /* a comment with umlaut \\E4  */
 @namespace xhtml "http://www.w3.org/1999/xhtml";
 @namespace atom "http://www.w3.org/2005/Atom";
@@ -14,8 +14,7 @@ atom|title {
     color: #000 !important
     }
 '''
-EXPERR = u'''ValueError, unknown url type: some-other.css\nCSSImportRule: Error processing imported style sheet href='some-other.css': IOError()
-'''   
+EXPERR = u''   
 
 def main():
     # -*- coding: utf-8 -*-
@@ -44,8 +43,9 @@ def main():
     sheet.namespaces['atom'] = 'http://www.w3.org/2005/Atom'
     
     # add from 0.9.5a3: adds at appropriate position
-    sheet.add('@import "some-other.css";')
     sheet.add('atom|title {color: #000 !important}')
+    # from 0.9.5: @import relative to cwd if no href given
+    sheet.add('@import "sheets/import.css";')
     
     print sheet.cssText
 
