@@ -3,12 +3,14 @@ __date__ = '$LastChangedDate::                            $:'
 
 import codecs
 from pprint import pprint as pp
+import logging
 import re
 import sys
 import urlparse
 import xml
 import cssutils
 from StringIO import StringIO
+import unicodedata
 
 def save(name, string):
     f = open(name, 'w')
@@ -31,13 +33,20 @@ if 0:
     sys.exit(0)
 
 if 1:
-    #p = cssutils.CSSParser(fetcher=lambda url: (None, '/**/')) 
+    x = u'@charset "utf-8-sig"; @import "sheets/import.css"'.encode('css')
+    s = cssutils.parseString(x)
+    print 'sheet:  ', s.href
+    print '@import:', s.cssRules[1].href
+    print 'sheet:  ', s.cssRules[1].styleSheet.href
+    print '@import:', s.cssRules[1].styleSheet.cssRules[1].href
+    print 'sheet:  ', s.cssRules[1].styleSheet.cssRules[1].styleSheet.href
+    
+    
+    
+    #p = cssutils.CSSParser(fetcher=lambda url: (None, '/**/'))
+    #cssutils.log.setLevel(logging.WARNING)
 
-    sheet = cssutils.parseString('@import "sheets/1.css"')
-    print sheet.cssRules[0].styleSheet
-    print 
-    sheet = cssutils.parseFile('sheets/1.css')
-    print sheet
+    #sheet = cssutils.parseString('@import "x"')
     
     sys.exit(0)
 
