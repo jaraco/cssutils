@@ -171,8 +171,7 @@ class Out(object):
     
     def append(self, val, typ=None, space=True, keepS=False, indent=False, 
                lineSeparator=False):
-        """
-        Appends val. Adds a single S after each token except as follows:
+        """Appends val. Adds a single S after each token except as follows:
         
         - typ COMMENT
             uses cssText depending on self.ser.prefs.keepComments
@@ -184,16 +183,16 @@ class Out(object):
             ignored except ``keepS=True``
         - typ URI
             calls ser_uri
-        - val {
-            adds \n after
-        - val ;
-            removes S before and adds \n after
-        - val , :
+        - val ``{``
+            adds LF after
+        - val ``;``
+            removes S before and adds LF after
+        - val ``, :``
             removes S before
-        - val + > ~
+        - val ``+ > ~``
             encloses in prefs.selectorCombinatorSpacer
         - some other vals
-            add *spacer except ``space=False``
+            add ``*spacer`` except ``space=False``
         """
         if val or 'STRING' == typ:
             # PRE
