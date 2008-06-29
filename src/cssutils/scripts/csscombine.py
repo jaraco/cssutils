@@ -66,15 +66,14 @@ def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
     """
     :returns: combined cssText
     :Parameters:
-        `proxypath`:
+        `proxypath`
             url or path to a CSSStyleSheet which imports other sheets which
             are then combined into one sheet
-        `sourceencoding`:
+        `sourceencoding`
             encoding of the source sheets including the proxy sheet
-
-        `targetencoding`:
+        `targetencoding`
             encoding of the combined stylesheet, default 'utf-8'
-        `minify`:
+        `minify`
             defines if the combined sheet should be minified, default True
     """
     sys.stderr.write('COMBINING %s\n' % proxypath)
