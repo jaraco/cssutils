@@ -6,16 +6,16 @@
 
 known issues
 ------------
-- although cssutils tries to preserve CSS hacks not all are yet (and some probably will never be). The following hacks are known to **not** be preserved:
+- although cssutils tries to preserve CSS hacks not all are (and some - mainly syntactically invalid ones - will probably never be). The following hacks are known to **not** be preserved:
 
-  star hack
-    ``*html`` without any whitespace
-  star7 hack
+  star hack (without any whitespace)
+    ``*html`` syntactically invalid
+  star7 hack (without any whitespace)
     ``html*#test-span`` (IMHO invalidated by the missing WS between html and "*")
 
   The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils (actually with hardly any css parser...).
 
-  Generally syntactically valid stylesheets should be preserved completely (otherwise it will be a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above ``*html`` hack. Most of these hacks may be rewritten while still be working, e.g. ``* html`` should work same to ``*html``. Until cssutils 0.9.5b2 the invalid IE-specific CSS hack using ``$propertyname`` was preserved but its usage was already discouraged (and if e.g. specifying ``color`` and ``$color`` these properties are **not the same** for cssutils (but are for IE...).
+  Generally **syntactically valid stylesheets** should be preserved completely (otherwise it will be a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above ``*html`` hack. Most of these hacks may be rewritten while still be working, e.g. ``* html`` should work same to ``*html``. Until cssutils 0.9.5b2 the invalid IE-specific CSS hack using ``$propertyname`` was preserved but its usage was already discouraged (and if e.g. specifying ``color`` and ``$color`` these properties are **not the same** for cssutils (but are for IE...).
   **These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!**
   In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
@@ -27,7 +27,7 @@ known issues
 
     There is the option ``cssutils.ser.prefs.validOnly`` which is used to keep valid (based on CSS 2 valid) properties only. Problem is that current stylesheets use quite a few properties (like e.g. ``opacity``) or property values (like ``display: inline-block``) which are more or less standard but not yet *official*. There is currently no option to specify a version for which properties with which valid values should be used in cssutils. At the moment warnings will be emitted which unfortunately also go for the aforementioned *newer* properties or values.
 
-    There is the plan to *register* custom properties or values but this is just a plan for now...
+    There is the plan to be able to *register* custom properties or values but this is just a plan for now...
 
 - ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
 
@@ -41,23 +41,28 @@ known issues
 0.9.x
 -----
 HEAD
-    - **API CHANGE**: ``The cssutils.log`` may be partly used like a standard logging log. The following methods are available: ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler') as well as all "messaging" calls like 'error', 'warning' etc.
+    - **API CHANGE/FEATURE**: ``The cssutils.log`` may be partly used like a standard logging log. The following methods are available: ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler') as well as all "messaging" calls like 'error', 'warning' etc.
 
       Therefor ``cssutils.log.setloglevel`` has been *DEPRECATED* and should be used via ``cssutils.log.setLevel``. The old method is still available though.
+
+      ``cssutils.log.setlog`` has been renamed to ``cssutils.log.setLog`` but is still available but *DEPRECATED* too.
 
     - **FEATURE**: All three decoders in the codec now have an additional ``force`` argument. If ``force`` is false, the encoding from the input will only by used if is is detected explicitely via BOM or @charset rule.
 
     - **BUGFIX**: Properties of rules set via ``css.CSSStyleSheet.add`` or ``.insert`` were not set properly, e.g. ``parentStyleSheet`` or the stylesheet handling of new @import rules was buggy.
 
-    - **BUGFIX/IMPROVEMENT**: A style sheet with ``href == None`` (e.g. parsed with ``parseString()`` or build completely from scratch) uses ``os.getcwd()`` as its base href now to be able to resolve CSSImportRules.
-
     - BUGFIX: Encountering OSError during resolving @import does not throw an error anymore but the resulting CSSImportRule.styleSheet will have a value of ``None``. OSError will probably only happen when using ``parseFile``.
 
+    - **BUGFIX/IMPROVEMENT**: A style sheet with ``href == None`` (e.g. parsed with ``parseString()`` or build completely from scratch) uses ``os.getcwd()`` as its base href now to be able to resolve CSSImportRules.
+
+    - BUGFIX/IMPROVEMENT: Added catching of WindowsError to default fetcher (e.g. is a file URL references a file not present).
+
+    - CHANGE: Default URL fetcher emits an ERROR instead of a warning if finding a different mine-type than ``text/css``.
 
 0.9.5b3 080605
     - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.
 
-    - **FEATURE'**: CSSStyleDeclatation objects may be used like dictionaries now. The value during setting a property may be a single value string or a tuple of ``(value, priority)``::
+    - **FEATURE**: CSSStyleDeclatation objects may be used like dictionaries now. The value during setting a property may be a single value string or a tuple of ``(value, priority)``::
 
             >>> style = css.CSSStyleDeclaration()
             >>> style['color'] = 'red'
@@ -83,7 +88,7 @@ HEAD
       ``url``
           the URL to read
 
-      and MUST return ``(encoding, content)`` where ``encoding`` normally is the HTTP charset given via a Content-Type header (which may simply omit the charset though) and ``content`` being the (byte) string content. The Mimetype of the fetched ``url`` should be ``text/css`` but this has to be checked by the fetcher itself (the default fetcher emits a warning if encountering a different mimetype).
+      and MUST return ``(encoding, content)`` where ``encoding`` normally is the HTTP charset given via a Content-Type header (which may simply omit the charset though) and ``content`` being the (byte) string content. The Mimetype of the fetched ``url`` should be ``text/css`` but this has to be checked by the fetcher itself (the default fetcher emits an ERROR (from 0.9.5 before a WARNING)  if encountering a different mimetype).
       The content is then decoded by cssutils using all encoding related data available.
 
         Example::
