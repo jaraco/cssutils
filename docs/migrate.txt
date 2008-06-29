@@ -16,6 +16,7 @@ parsing
 -------
 ``parse()`` is *DEPRECATED* in favour of ``parseFile()``. Both methods are still available but ``parse`` will be removed for cssutils 1.0.
 
+All ``parse*`` functions (or ``CSSParser.parse*`` methods) do raise errors from 0.9.5final.
 
 iterating over ``CSSStyleDeclaration``
 --------------------------------------
