@@ -57,7 +57,7 @@ class _ErrorHandler(object):
 
     def __getattr__(self, name):
         "use self._log items"
-        calls = ('debug', 'info', 'warn', 'critical', 'error', 'fatal')
+        calls = ('debug', 'info', 'warn', 'error', 'critical', 'fatal')
         other = ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler')
 
         if name in calls:
@@ -93,6 +93,10 @@ class _ErrorHandler(object):
 
     def setlog(self, log):
         """set log of errorhandler's log"""
+        self.setLog(log)
+
+    @Deprecated('Use setLog() instead.')
+    def setlog(self, log):
         self._log = log
 
     @Deprecated('Use setLevel() instead.')
