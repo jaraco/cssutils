@@ -55,6 +55,8 @@ HEAD
 
     - **BUGFIX/IMPROVEMENT**: A style sheet with ``href == None`` (e.g. parsed with ``parseString()`` or build completely from scratch) uses ``os.getcwd()`` as its base href now to be able to resolve CSSImportRules.
 
+    - **BUGFIX/IMPROVEMENT**: Rewrote ``csscombine`` script which should be much more stable now and handles namespaces correctly. Nested imports are still not resolved yet but this may come in the next release.
+
     - BUGFIX/IMPROVEMENT: Added catching of WindowsError to default fetcher (e.g. is a file URL references a file not present).
 
     - CHANGE: ``CSSStyleSheet.add(rule)`` simply appends rules with no specific order in the sheet to the end of it. So e.g. COMMENTs, STYLE_RULEs, etc are appended while rules with a specific place are ordered-in as before (e.g. IMPORT_RULE or NAMESPACE_RULE). Until now rules of a specific type like COMMENTs were ordered together which does not really make sense. The ``csscombine`` needs this functionality and the resulting combined sheets should be more readable and understandable now.

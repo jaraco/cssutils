@@ -3,4 +3,5 @@
 /* non-ascii chars: öäü */
 @import "csscombine-1.css";
 @import url(csscombine-2.css);
-from-proxy { top: 3 }
+@namespace other "other";
+proxy { top: 3px }

@@ -15,30 +15,37 @@ Example::
 
 results in log.txt::
 
-    COMBINING sheets\csscombine-proxy.css
-    USING SOURCE ENCODING: utf-8
+    COMBINING sheets/csscombine-proxy.css
+    USING SOURCE ENCODING: css
     * PROCESSING @import sheets\csscombine-1.css
     * PROCESSING @import sheets\csscombine-2.css
+    INFO    Nested @imports are not combined: @import "1.css";
     SETTING TARGET ENCODING: ascii
 
 and combined.css::
 
-    @charset "ascii";a{color:green}body{color:#fff;background:#000}
+    @charset "ascii";@import"1.css";@namespaces2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}
 
 or without option -m::
 
     @charset "ascii";
-    /* proxy sheet which imports sheets which should be combined \F6 \E4 \FC  */
+    @import "1.css";
+    @namespace s2 "uri";
+    @namespace other "other";
+    /* proxy sheet were imported sheets should be combined */
+    /* non-ascii chars: \F6 \E4 \FC  */
     /* @import "csscombine-1.css"; */
     /* combined sheet 1 */
-    a {
-        color: green
+    s2|sheet-1 {
+        top: 1px
         }
     /* @import url(csscombine-2.css); */
     /* combined sheet 2 */
-    body {
-        color: #fff;
-        background: #000
+    s2|sheet-2 {
+        top: 2px
+        }
+    proxy {
+        top: 3px
         }
 
 TODO
@@ -78,35 +85,37 @@ def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
         
     src = cssutils.parseFile(proxypath, encoding=sourceencoding)
     srcpath = os.path.dirname(proxypath)
-    r = cssutils.css.CSSStyleSheet()
+    combined = cssutils.css.CSSStyleSheet()
     for rule in src.cssRules:
         if rule.type == rule.IMPORT_RULE:
             fn = os.path.join(srcpath, rule.href)
             sys.stderr.write('* PROCESSING @import %s\n' % fn)
             importsheet = cssutils.parseFile(fn, encoding=sourceencoding)
             importsheet.encoding = None # remove @charset
-            r.insertRule(cssutils.css.CSSComment(cssText=u'/* %s */' %
+            combined.add(cssutils.css.CSSComment(cssText=u'/* %s */' %
                                                  rule.cssText))
             for x in importsheet.cssRules:
                 if x.type == x.IMPORT_RULE:
-                    sys.stderr.write('INFO\tNested @imports are not resolved: %s\n' % x.cssText)
+                    sys.stderr.write('INFO\tNested @imports are not combined: %s\n' % x.cssText)
 
-                r.add(x)
+                combined.add(x)
 
         else:
-            r.insertRule(rule)
+            combined.add(rule)
 
     sys.stderr.write('SETTING TARGET ENCODING: %s\n' % targetencoding)
-    r.encoding = targetencoding
+    combined.encoding = targetencoding
+    
     if minify:
         # save old setting and use own serializer
         oldser = cssutils.ser
         cssutils.setSerializer(CSSSerializer())
         cssutils.ser.prefs.useMinified()
-        cssText = r.cssText
+        cssText = combined.cssText
         cssutils.setSerializer(oldser)
     else:
-        cssText = r.cssText
+        cssText = combined.cssText
+        
     return cssText
 
 def main(args=None):
@@ -115,7 +124,7 @@ def main(args=None):
     usage = "usage: %prog [options] path"
     parser = optparse.OptionParser(usage=usage)
     parser.add_option('-s', '--sourceencoding', action='store',
-        dest='sourceencoding', default='css',
+        dest='sourceencoding', 
         help='encoding of input, defaulting to "css". If given overwrites other encoding information like @charset declarations')
     parser.add_option('-t', '--targetencoding', action='store',
         dest='targetencoding',
