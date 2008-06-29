@@ -432,39 +432,53 @@ ex2|SEL4, a, ex2|SELSR {
                '/*comment*/',
                '@x;'
                ]
+               
         fullcss = u'\n'.join(css)
         full.cssText = fullcss
         self.assertEqual(full.cssText, fullcss)
         for i, line in enumerate(css):
-            # sheet with no same rule
+            # sheet without same ruletype
             before = css[:i]
             after = css[i+1:]
             sheet.cssText = u''.join(before + after)
+            
             index = sheet.add(line)
             if i < 3:
+                # specific insertion point
                 self.assertEqual(fullcss, sheet.cssText)
-                self.assertEqual(i, index) # no same rule present
+                self.assertEqual(i, index)
             else:
+                # end of sheet
                 expected = before
                 expected.extend(after)
                 expected.append(line)
                 self.assertEqual(u'\n'.join(expected), sheet.cssText)
-                self.assertEqual(8, index) # no same rule present
+                self.assertEqual(len(expected)-1, index) # no same rule present
 
-            # sheet with one same rule
+            # sheet with the same ruletype
             if i == 1: line = '@import "x2";'
             if i == 2: line = '@namespace p2 "u2";'
+            
             full.cssText = fullcss
             index = full.add(line)
             if i < 1:
                 self.assertEqual(fullcss, sheet.cssText)
                 self.assertEqual(i, index) # no same rule present
             else:
-                expected = css[:i+1] # including same rule
-                expected.append(line)
-                expected.extend(css[i+1:])
+                if i < 3:
+                    # in order
+                    expected = css[:i+1] # including same rule
+                    expected.append(line)
+                    expected.extend(css[i+1:])
+                    expectedindex = i+1
+                else:
+                    # just appended as no order needed
+                    expected = css[:]
+                    expected.append(line)
+                    expectedindex = len(expected) - 1
+
                 self.assertEqual(u'\n'.join(expected), full.cssText)
-                self.assertEqual(i+1, index) # no same rule present
+                self.assertEqual(expectedindex, index) # no same rule present
 
     def test_addimport(self):
         p = cssutils.CSSParser(fetcher=lambda url: (None, '/**/')) 

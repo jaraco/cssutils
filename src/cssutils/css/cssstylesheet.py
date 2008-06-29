@@ -549,7 +549,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     # find first point to insert
                     for i, r in enumerate(self.cssRules):
                         if r.type in (r.MEDIA_RULE, r.PAGE_RULE, r.STYLE_RULE,
-                                      r.FONT_FACE_RULE):
+                                      r.FONT_FACE_RULE, r.UNKNOWN_RULE, r.COMMENT):
                             index = i # before these
                             break
             else:
@@ -578,19 +578,12 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 if _clean:
                     self._cleanNamespaces()
 
-        # all other
+        # all other where order is not important
         else:
             if inOrder:
-                # after last of this kind or at end of sheet
-                if rule.type in (r.type for r in self):
-                    # find last of this type
-                    for i, r in enumerate(reversed(self.cssRules)):
-                        if r.type == rule.type:
-                            index = len(self.cssRules) - i
-                            break
-                    self.cssRules.insert(index, rule)
-                else:
-                    self.cssRules.append(rule) # to end as no same present
+                # simply add to end as no specific order
+                self.cssRules.append(rule) 
+                index = len(self.cssRules) - 1 
             else:
                 for r in self.cssRules[index:]:
                     if r.type in (r.CHARSET_RULE, r.IMPORT_RULE, r.NAMESPACE_RULE):
@@ -601,7 +594,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         return
                 self.cssRules.insert(index, rule)
                 
-        # post settings
+        # post settings, TODO: for other rules which contain @rules
         rule._parentStyleSheet = self        
         if rule.MEDIA_RULE == rule.type:
             for r in rule:
