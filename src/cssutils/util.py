@@ -773,8 +773,8 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         
     Priority or encoding information
     --------------------------------
+    **cssutils only**: overrideEncoding
     
-    0. **cssutils only**: overrideEncoding
     1. An HTTP "charset" parameter in a "Content-Type" field (or similar parameters in other protocols)
     2. BOM and/or @charset (see below)
     3. <link charset=""> or other metadata from the linking mechanism (if any)

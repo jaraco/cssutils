@@ -72,10 +72,10 @@ def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
         `sourceencoding`:
             encoding of the source sheets including the proxy sheet
 
-        `targetencoding` = 'utf-8':
-            encoding of the combined stylesheet
-        `minify` = True:
-            defines if the combined sheet should be minified
+        `targetencoding`:
+            encoding of the combined stylesheet, default 'utf-8'
+        `minify`:
+            defines if the combined sheet should be minified, default True
     """
     sys.stderr.write('COMBINING %s\n' % proxypath)
     if sourceencoding is not None:
