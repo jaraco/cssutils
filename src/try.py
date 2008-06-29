@@ -18,68 +18,28 @@ def save(name, string):
     f.close()
 
 
+if 1:
+    from cssutils.scripts import csscombine
+    x = csscombine('sheets/csscombine-proxy.css', sourceencoding='css', minify=True)
+    print x
+
+    sys.exit(0)
+
 if 0:
+    # URL parsing
     css = ur'''
     fake(url())
     URL()
     uR\l()
-
     '''
-    #css = codecs.open('../sheets/1.css', encoding='css').read()
     t = cssutils.tokenize2.Tokenizer()
     gen = t.tokenize(css, fullsheet=0)
     for tk in gen:
         print tk
     sys.exit(0)
 
-if 1:
-    x = u'@charset "utf-8-sig"; @import "sheets/import.css"'.encode('css')
-    s = cssutils.parseString(x)
-    print 'sheet:  ', s.href
-    print '@import:', s.cssRules[1].href
-    print 'sheet:  ', s.cssRules[1].styleSheet.href
-    print '@import:', s.cssRules[1].styleSheet.cssRules[1].href
-    print 'sheet:  ', s.cssRules[1].styleSheet.cssRules[1].styleSheet.href
-    
-    
-    
-    #p = cssutils.CSSParser(fetcher=lambda url: (None, '/**/'))
-    #cssutils.log.setLevel(logging.WARNING)
-
-    #sheet = cssutils.parseString('@import "x"')
-    
-    sys.exit(0)
-
-
-if 1:
-        from cssutils.util import _readUrl
-        url = 'http://example.com/test.css'
-
-        def make_fetcher(r):
-            # normally r == encoding, content
-            def fetcher(url):
-                return r
-            return fetcher
-        
-        tests = {
-            (None, 'latin1', None): (None, None),
-            (None, 'latin1', (None, '')): ('latin1', u''),
-#            (None, 'latin1', ('', u'ä'.encode('iso-8859-1'))): 
-#                ('latin1', u'ä'),
-#            (None, 'latin1', ('', u'a'.encode('ascii'))): 
-#                ('latin1', u'a'),
-        
-        }
-        for (override, parent, r), exp in tests.items():              
-            print _readUrl(url, overrideEncoding=override,
-                           parentEncoding=parent,
-                            fetcher=make_fetcher(r)), 'exp:', exp
-        
-        sys.exit(0)
-
-
-if 1:
-    
+if 0:
+    # FETCHER
     def fetchUrlGAE(self):
         """
         uses GoogleAppEngine (GAE)
@@ -163,111 +123,6 @@ if 1:
     
     sys.exit(0)
     
-if 1:
-    # ALL THE SAME:
-    css = '@import "import/import2.css";a{background-image: url(x.gif)}'
-    #s = cssutils.parseString(css, href='file:///I:/dev-workspace/cssutils/sheets/import.css')
-    s = cssutils.parseFile('..\\sheets\\import.css')
-    #s = cssutils.parseUrl('file:///I:/dev-workspace/cssutils/sheets/import.css')
-    #s = cssutils.parseUrl('http://seewhatever.de/sheets/import.css')
-    print
-    print "0----------\n", s
-    print s.cssText
-    print
-    sr = s.cssRules[1]
-    img = sr.style.getProperty('background-image').cssValue.getStringValue()
-    print urlparse.urljoin(s.href, img)
-    print
-    
-    ir = s.cssRules[0]
-    print "1----------\n", ir.styleSheet
-    print ir.styleSheet.cssText
-    print
-    
-    ir = ir.styleSheet.cssRules[0]
-    print "2----------\n", ir.styleSheet
-    print ir.styleSheet.cssText
-    print
-
-    sys.exit(1)
-
-
-if 0:
-    from cssutils.scripts import csscombine
-    x = csscombine('sheets/csscombine-proxy.css', sourceencoding='css', minify=True)
-    print x
-
-    sys.exit(0)
-
-if 0:
-    css = ur'''
-    @import "ABC\a\d\c";
-@import 'ABC\a';
-a[href='\a\27'] {
-    a: "\a \d \c ";
-    b: "\a\d\c";
-    c: "\"";
-    d: "\22";
-    e: '\'';
-    content: '\27';
-    font: arial, "\22";
-    x: a("\22", 1);
-    background: url("\"");
-    background: url("\22");
-    '''
-    css = '''@media all {
-        a {color: red !important}
-    }
-    '''
-    sheet = cssutils.parseString(css)
-    for r in sheet.cssRules[0].cssRules:
-        print r.type, r.parentStyleSheet
-    sys.exit(0)
-
-if 0:
-    s = cssutils.css.CSSStyleSheet()
-    r = cssutils.css.CSSNamespaceRule()
-
-    css = u'''@namespace xxxx "default";
-@namespace p "example";
-@namespace n "new";
-a[n|att], |a  {color: red}
-@media all { p|a {color: red}}
-'''
-    s.cssText = css
-    print css
-    sl = s.cssRules[3].selectorList
-    #print sl._usedprefixes
-    s.cssRules[2].prefix = 'p123'
-    print s.cssText
-    print s.namespaces
-
-    sys.exit(0)
-
-    s = cssutils.css.SelectorList()
-    s.append(cssutils.css.Selector('a'))
-    print s[0].parentList
-    sys.exit(0)
-    #r = cssutils.css.CSSNamespaceRule(namespaceURI='example', prefix='p')
-    #print r.namespaceURI
-
-    css= u'''@charset "ascii";
-    @namespace 'default';
-    @namespace e 'example';
-    x, e|x {color: red}
-    '''
-    sheet = cssutils.parseString(css)
-    print sheet
-    print 'PREFIXES', sheet.prefixes
-    print 'NAMESPACES', sheet.namespaces
-    print
-    s = cssutils.css.CSSStyleRule()
-    for r in sheet:
-        print r
-    print sheet.cssText
-
-    sys.exit(0)
-
 
 if 0:
     # RESOLVE INDENTATION!!!
@@ -287,8 +142,9 @@ if 0:
 
     sys.exit(0)
 
+
 if 0:
-    # SELECTOR
+    # SELECTOR4QUERY
     from lxml.cssselect import CSSSelector
 #    sl = cssutils.css.SelectorList(selectorText='''
 #        :not(a|x) *|* a|* * /*x*/* b>c|c+d[a]~e[a=v].a,
@@ -316,6 +172,7 @@ if 0:
     sys.exit(0)
 
 if 1:
+    # QUERY
     defaultsheet = cssutils.parseFile('sheets/default_html4.css')
 
     css = '''
@@ -418,6 +275,7 @@ if 1:
 
 
 if 1:
+    #QUERY
     from lxml.cssselect import CSSSelector
 
     css = '''@namespace p 'test';
@@ -437,6 +295,7 @@ if 1:
 
 
 if 1:
+    # SELECTORS
     s = cssutils.css.SelectorList()
     s.selectorText = 'a,'
     print repr(s.seq)
@@ -487,33 +346,3 @@ if 1:
     print s.prefixes
     sys.exit(0)
 
-if 1:
-    import logging
-    cssutils.log.setloglevel(logging.FATAL)
-    cssutils.ser.prefs.keepAllProperties = True
-    s = cssutils.css.CSSStyleDeclaration(cssText=
-            'x: 1 !important;\\x: 2;x: 3 !important;\\x: 4')
-    print s.removeProperty('X', True)
-    print s
-
-
-    sys.exit(0)
-    print repr(d.getPropertyCSSValue('color'))
-    print d.getPropertyValue('color')
-    print d.getPropertyPriority('left')
-
-    print
-    print d.cssText
-    d.left = '222px'
-    print '---LEFT: 8then delete)', d.left
-    del d.left
-    print
-    print d.cssText
-    sys.exit(0)
-
-
-if 0:
-    import xml.dom
-    impl = xml.dom.getDOMImplementation()
-    print impl.hasFeature('css', '2.0')
-    sys.exit(0)
