@@ -14,11 +14,11 @@ class CSSCombine(basetest.BaseTestCase):
                                'sheets', 'csscombine-proxy.css')
         combined = csscombine(csspath)
         self.assertEqual(combined, 
-                         '@charset "utf-8";@import"1.css";sheet-1{top:1px}sheet-2{top:2px}from-proxy{top:3}' 
+                         '@charset "utf-8";@import"1.css";@namespaces2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}' 
                          )
         combined = csscombine(csspath, targetencoding='ascii')
         self.assertEqual(combined, 
-                         '@charset "ascii";@import"1.css";sheet-1{top:1px}sheet-2{top:2px}from-proxy{top:3}' 
+                         '@charset "ascii";@import"1.css";@namespaces2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}' 
                          )
 
         cssutils.log.raiseExceptions = True 

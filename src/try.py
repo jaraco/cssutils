@@ -20,7 +20,8 @@ def save(name, string):
 
 if 1:
     from cssutils.scripts import csscombine
-    x = csscombine('sheets/csscombine-proxy.css', sourceencoding='css', minify=True)
+    x = csscombine('sheets/csscombine-proxy.css', targetencoding='ascii', 
+                   minify=False)
     print x
 
     sys.exit(0)
