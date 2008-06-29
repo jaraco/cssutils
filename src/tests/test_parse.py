@@ -6,6 +6,7 @@ import xml.dom
 import basetest
 import cssutils
 
+
 try:
     from minimock import mock, restore
 except ImportError:
@@ -82,6 +83,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
                     self.assertEqual(sheet1, None)
                     self.assertEqual(sheet2, None)
 
+            self.assertEqual(None, parser.parseUrl('../not-valid-in-urllib'))
+            self.assertEqual(None, parser.parseUrl('http://example.com/not-present.css'))
 
     def test_parseString(self):
         "CSSParser.parseString()"
@@ -134,6 +137,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
             (u'/*€*/'.encode('utf-16'), 'utf-8'),
         ]
         for test in tests:
+            #self.assertEqual(None, cssutils.parseString(css, encoding=encoding))
             self.assertRaises(UnicodeDecodeError, cssutils.parseString, test[0], test[1])
 
     def test_fetcher(self):
