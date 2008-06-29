@@ -698,10 +698,8 @@ class _Namespaces(object):
         raise IndexError(u'NamespaceURI %r not found.' % namespaceURI)
 
     def __str__(self):
-        return u"<cssutils.util.%s object parentStyleSheet=%r namespaces=%r "\
-               u"at 0x%x>" % (
-                self.__class__.__name__, str(self.parentStyleSheet),
-                self.namespaces, id(self))
+        return u"<cssutils.util.%s object parentStyleSheet=%r at 0x%x>" % (
+                self.__class__.__name__, str(self.parentStyleSheet), id(self))
 
 
 class _SimpleNamespaces(_Namespaces):
