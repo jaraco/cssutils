@@ -11,7 +11,7 @@ from email import message_from_string, message_from_file
 import cssutils
 from minimock import mock, restore
 
-cssutils.log.setloglevel(logging.FATAL)
+cssutils.log.setLevel(logging.FATAL)
 
 class BaseTestCase(unittest.TestCase):
 
