@@ -735,7 +735,10 @@ def _defaultFetcher(url):
     """
     try:
         res = urllib2.urlopen(url)
-    except ValueError, e:
+    except WindowsError, e:
+        # e.g if file URL and not found
+        cssutils.log.warn(e, error=WindowsError)
+    except (WindowsError, ValueError), e:
         # invalid url, e.g. "1"
         cssutils.log.warn(u'ValueError, %s' % e.message, error=ValueError)
     except urllib2.HTTPError, e:
@@ -749,7 +752,7 @@ def _defaultFetcher(url):
         if res:
             mimeType, encoding = encutils.getHTTPInfo(res)
             if mimeType != u'text/css':
-                cssutils.log.warn(u'Expected "text/css" mime type for url=%s but found: %r' %
+                cssutils.log.error(u'Expected "text/css" mime type for url=%s but found: %r' %
                                   (url, mimeType), error=ValueError)
             return encoding, res.read()
 
@@ -822,6 +825,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
             # encoding may still be wrong if encoding *is lying*!
             decodedContent = codecs.lookup("css")[1](content, encoding=encoding)[0]
         except UnicodeDecodeError, e:
+            cssutils.log.warn(e, neverraise=True) 
             decodedContent = None
 
         return encoding, decodedContent
