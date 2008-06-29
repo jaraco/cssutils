@@ -5,8 +5,9 @@ __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import os
 import codecs
+import os
+import sys
 import urllib
 import cssutils
 from cssutils.helper import Deprecated
@@ -51,6 +52,7 @@ class CSSParser(object):
     def parseString(self, cssText, encoding=None, href=None, media=None, 
                     title=None):
         """Return parsed CSSStyleSheet from given string cssText.
+        Raises errors during retrieving (e.g. UnicodeDecodeError).
 
         cssText
             CSS string to parse
@@ -85,7 +87,8 @@ class CSSParser(object):
 
     def parseFile(self, filename, encoding=None, 
                   href=None, media=None, title=None):
-        """Retrieve and return a CSSStyleSheet from given filename.
+        """Retrieve and return a CSSStyleSheet from given filename. 
+        Raises errors during retrieving (e.g. IOError).
 
         filename
             of the CSS file to parse, if no ``href`` is given filename is
@@ -109,9 +112,10 @@ class CSSParser(object):
         return self.parseString(open(filename, 'rb').read(), 
                                 encoding=encoding, # read returns a str
                                 href=href, media=media, title=title)
-
+            
     def parseUrl(self, href, encoding=None, media=None, title=None):
         """Retrieve and return a CSSStyleSheet from given href (an URL).
+        In case of any errors while reading the URL returns None.
 
         href
             URL of the CSS file to parse, will also be set as ``href`` of 
@@ -125,10 +129,9 @@ class CSSParser(object):
         for other parameters see ``parseString``
         """
         encoding, text = cssutils.util._readUrl(href, 
-                                                overrideEncoding=encoding)
+                                                overrideEncoding=encoding)        
         if text is not None:
-            return self.parseString(text,
-                                    encoding=encoding,  
+            return self.parseString(text, encoding=encoding,  
                                     href=href, media=media, title=title)                                
 
     def setFetcher(self, fetcher=None):
