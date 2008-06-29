@@ -1,7 +1,7 @@
 """combines sheets referred to by @import rules in a given CSS proxy sheet
 into a single new sheet.
 
-- proxy currently is a path (no URI)
+- proxy currently is a path (no URI!)
 - in @import rules only relative paths do work for now but should be used
   anyway
 - currently no nested @imports are resolved
@@ -41,15 +41,10 @@ or without option -m::
         background: #000
         }
 
-issues
-
-- URL or file hrefs? URI should be default and therefor baseURI is needed
-- no nested @imports are resolved yet
-- namespace rules are not working yet!
-    - @namespace must be resolved (all should be moved to top of main sheet?
-      but how are different prefixes resolved???)
-
-- maybe add a config file which is used?
+TODO
+    - URL or file hrefs? URI should be default
+    - no nested @imports are resolved yet
+    - maybe add a config file which is used?
 
 """
 __all__ = ['csscombine']
@@ -77,8 +72,10 @@ def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
             defines if the combined sheet should be minified, default True
     """
     sys.stderr.write('COMBINING %s\n' % proxypath)
+    
     if sourceencoding is not None:
         sys.stderr.write('USING SOURCE ENCODING: %s\n' % sourceencoding)
+        
     src = cssutils.parseFile(proxypath, encoding=sourceencoding)
     srcpath = os.path.dirname(proxypath)
     r = cssutils.css.CSSStyleSheet()
@@ -92,18 +89,10 @@ def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
                                                  rule.cssText))
             for x in importsheet.cssRules:
                 if x.type == x.IMPORT_RULE:
-                    sys.stderr.write('WARN\tNo nested @imports: %s\n' % x.cssText)
-                # TODO: too simple if prefixes different in sheets!
-#                elif x.type == x.NAMESPACE_RULE:
-#                    print 'INFO\tMoved to begin of sheet', x.cssText
-#                    r.insertRule(x, 0)
-                else:
-                    r.insertRule(x)
-            #r.insertRule(importsheet.cssRules)
+                    sys.stderr.write('INFO\tNested @imports are not resolved: %s\n' % x.cssText)
 
-#        elif rule.type == rule.NAMESPACE_RULE:
-#            print 'INFO\tMoved to begin of sheet', rule.cssText
-#            r.insertRule(rule, 0)
+                r.add(x)
+
         else:
             r.insertRule(rule)
 
@@ -126,13 +115,13 @@ def main(args=None):
     usage = "usage: %prog [options] path"
     parser = optparse.OptionParser(usage=usage)
     parser.add_option('-s', '--sourceencoding', action='store',
-                      dest='sourceencoding', default='css',
+        dest='sourceencoding', default='css',
         help='encoding of input, defaulting to "css". If given overwrites other encoding information like @charset declarations')
     parser.add_option('-t', '--targetencoding', action='store',
-                      dest='targetencoding',
+        dest='targetencoding',
         help='encoding of output, defaulting to "UTF-8"', default='utf-8')
     parser.add_option('-m', '--minify', action='store_true', dest='minify',
-                      default=False,
+        default=False,
         help='saves minified version of combined files, defaults to False')
     options, path = parser.parse_args()
 
