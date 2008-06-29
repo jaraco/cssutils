@@ -134,7 +134,7 @@ Properties
 ----------
 :prio: 3
 
-Set styledeclaration properties with dict or list of tuples?
+Set styledeclaration properties with list of tuples? (dict done in 0.9.5)
 
 
 LinkStyle, DocumentStyle
