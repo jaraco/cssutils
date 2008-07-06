@@ -91,13 +91,13 @@ class _ErrorHandler(object):
         else:
             self._logcall(msg)
 
-    def setlog(self, log):
+    def setLog(self, log):
         """set log of errorhandler's log"""
-        self.setLog(log)
+        self._log = log
 
     @Deprecated('Use setLog() instead.')
     def setlog(self, log):
-        self._log = log
+        self.setLog(log)
 
     @Deprecated('Use setLevel() instead.')
     def setloglevel(self, level):
