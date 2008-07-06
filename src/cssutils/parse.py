@@ -41,9 +41,9 @@ class CSSParser(object):
             see ``setFetchUrl(fetcher)``
         """
         if log is not None:
-            cssutils.log.setlog(log)
+            cssutils.log.setLog(log)
         if loglevel is not None:
-            cssutils.log.setloglevel(loglevel)
+            cssutils.log.setLevel(loglevel)
 
         cssutils.log.raiseExceptions = raiseExceptions
         self.__tokenizer = cssutils.tokenize2.Tokenizer()
