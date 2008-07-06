@@ -59,6 +59,8 @@ HEAD
 
     - BUGFIX/IMPROVEMENT: Added catching of WindowsError to default fetcher (e.g. is a file URL references a file not present).
 
+    - **BUGFIX/CHANGE**: Redone ``csscapture`` script. A few minor method changes (parameter ``ua`` of ``capture`` has been replaced by init parameter) and lots of internal improvement has been done.
+
     - CHANGE: ``CSSStyleSheet.add(rule)`` simply appends rules with no specific order in the sheet to the end of it. So e.g. COMMENTs, STYLE_RULEs, etc are appended while rules with a specific place are ordered-in as before (e.g. IMPORT_RULE or NAMESPACE_RULE). Until now rules of a specific type like COMMENTs were ordered together which does not really make sense. The ``csscombine`` needs this functionality and the resulting combined sheets should be more readable and understandable now.
 
     - CHANGE: Default URL fetcher emits an ERROR instead of a warning if finding a different mine-type than ``text/css``.
