@@ -23,6 +23,8 @@ def main(args=None):
         help='encoding of the file')
     p.add_option('-d', '--debug', action='store_true', dest='debug',
         help='activate debugging output')
+    p.add_option('-m', '--minify', action='store_true', dest='minify',
+        help='minify parsed CSS', default=False)
     p.add_option('-s', '--string', action='store_true', dest='string',
         help='parse given string')
 
@@ -35,6 +37,9 @@ def main(args=None):
         p = cssutils.CSSParser(loglevel=logging.DEBUG)
     else:
         p = cssutils.CSSParser()
+
+    if options.minify:
+        cssutils.ser.prefs.useMinified()
 
     if options.string:
         sheet = p.parseString(u''.join(params), encoding=options.encoding)
