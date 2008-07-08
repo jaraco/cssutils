@@ -49,6 +49,8 @@ HEAD
 
     - **FEATURE**: All three decoders in the codec now have an additional ``force`` argument. If ``force`` is false, the encoding from the input will only by used if is is detected explicitely via BOM or @charset rule.
 
+    - **FEATURE**: ``cssparse`` script has new option ``-m --minify`` which results in the parsed CSS to be serialized minified
+
     - **BUGFIX**: Properties of rules set via ``css.CSSStyleSheet.add`` or ``.insert`` were not set properly, e.g. ``parentStyleSheet`` or the stylesheet handling of new @import rules was buggy.
 
     - BUGFIX: Encountering OSError during resolving @import does not throw an error anymore but the resulting CSSImportRule.styleSheet will have a value of ``None``. OSError will probably only happen when using ``parseFile``.
