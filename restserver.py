@@ -13,15 +13,28 @@ ReSTserver
 * .html requests will be checked if RST_EXT file with same name is present, if yes the request will be redirected to the RST_EXT file (and then served as above)
 * other requests (CSS, images etc) use default SimpleHTTPServer behaviour
 * supports command line options same as those for rst2html.py with a patch from Felix Wiemann
-* GET and HEAD are supported 
+* GET and HEAD are supported
 """
-import os.path
+import os
 import sys
 import traceback
 import BaseHTTPServer
 import SimpleHTTPServer
+
+# for eggs
+sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
+
+try:
+    import pkg_resources
+except ImportError:
+    pass
+else:
+    pkg_resources.require('docutils')
+
+
 import docutils.core
 import docutils.io
+
 
 # import constants
 try:
@@ -31,7 +44,7 @@ except ImportError:
     PORT = 8082
     RST_EXT = '.txt'
     RST_ROOT = '.'
-    
+
 
 class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
@@ -49,18 +62,15 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             p = p[1:] # remove starting /
             html = output = ''
             try:
-                pub = docutils.core.Publisher(
-                    source_class=docutils.io.FileInput,
-                    destination_class=docutils.io.StringOutput)
-                pub.set_components('standalone', 'rst', 'html')
-                settings_overrides = {'halt_level': 5}
-                pub.process_command_line(**settings_overrides)
-                # Source and destination path should not be overriden
-                # by process_command_line() to avoid getting wrong results.
-                pub.set_source(None, p)
-                pub.set_destination(None, p)
-                html = pub.publish()
-
+                
+                html = docutils.core.publish_string(open(p).read(),
+                                                writer_name='html',
+                                                settings_overrides={
+                                                    'template': os.path.join('lib',
+                                                                             'template.txt'),
+                                                    'embed_stylesheet': False,
+                                                    'xml_declaration': False
+                                                    })
             except:
                 output = traceback.format_exc()
                 print >>sys.stderr, output
