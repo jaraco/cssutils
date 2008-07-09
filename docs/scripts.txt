@@ -13,32 +13,28 @@ csscapture.py which is part of the main cssutils package but also installed as a
 
 The complete options of csscapture.py are:
 
-usage: csscapture.py [options] URL
+Usage: csscapture-script.py [options] URL
 
 Options:
   -h, --help            show this help message and exit
   -d, --debug           show debug messages during capturing
   -m, --minified        saves minified version of captured files
   -n, --notsave         if given files are NOT saved, only log is written
-  -r, --saveraw         if given saves raw css otherwise cssutils' parsed
-                        files
   -s SAVETO, --saveto=SAVETO
-                        saving retrieved files to "saveto", defaults to
-                        "_CSSCapture_SAVED"
+                        saving retrieved files to "saveto", defaults to "_CSSCapture_SAVED"
   -u UA, --useragent=UA
-                        useragent to use for request of URL, default is
-                        urllib2s default
+                        useragent to use for request of URL, default is urllib2s default
 
 
 CSSCombine
 ==========
-csscombine.py may be used to combine several sheets loaded from a main sheet via @import rules. No nested @imports are resolved yet and @namespace rules do not work yet!
+csscombine.py may be used to combine several sheets loaded from a main sheet via @import rules. No nested @imports are resolved yet.
 
 The resulting combined sheet (optionally minified) is send to stdout, info and error messages are send to stderr.
 
-CSSCombine may also be used to change the encoding of the stylesheet if the target encoding is given.
+CSSCombine may also be used to change the encoding of the stylesheet if a target encoding is given.
 
-Usage: csscombine.py [options] URL
+Usage: csscombine-script.py [options] path
 
 Options:
   -h, --help            show this help message and exit
@@ -54,3 +50,14 @@ Options:
 CSSParse
 ========
 Script version of ``cssutils.parseString()`` and ``cssutils.parseFile()``.
+
+Usage: cssparse-script.py [options] filename1.css [filename2.css ...]
+        [>filename_combined.css] [2>parserinfo.log]
+
+Options:
+  -h, --help            show this help message and exit
+  -e ENCODING, --encoding=ENCODING
+                        encoding of the file
+  -d, --debug           activate debugging output
+  -m, --minify          minify parsed CSS
+  -s, --string          parse given string
