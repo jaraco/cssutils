@@ -68,9 +68,6 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace "u";': None,
             u'@namespace p "u";': None,
             u'@namespace empty "";': None,
-            u'@namespacep"u";': u'@namespace p "u";',
-            u'@namespaceempty"";': u'@namespace empty "";',
-            u'@namespacep"u"   ;': u'@namespace p "u";',
             
             u'@namespace p "p";': None,
             u"@namespace p 'u';": u'@namespace p "u";',
@@ -187,7 +184,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_InvalidModificationErr(self):
         "CSSNamespaceRule.cssText InvalidModificationErr"
-        self._test_InvalidModificationErr(u'@namespace')
+        self._test_InvalidModificationErr(u'@namespace')        
 
     def test_incomplete(self):
         "CSSNamespaceRule (incomplete)"

@@ -58,6 +58,23 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_cssText(self):
         "CSSUnknownRule.cssText"
         tests = {
+            # not normal rules!
+            u'@font-facex{}': u'@font-facex {\n    }',
+            u'@importurl(x.css);': u'@importurl (x . css);',
+            u'@mediaAll{}': u'@mediaAll {\n    }',
+            u'@namespacep"x";': u'@namespacep "x";',
+            u'@pageX{}': u'@pageX {\n    }',
+            }
+        self.do_equal_p(tests)
+        
+        # expects the same atkeyword for self.r so do a new one each test
+        oldr = self.r
+        for t, e in tests.items():
+            self.r = cssutils.css.CSSUnknownRule()
+            self.do_equal_r({t:e})
+        self.r = oldr
+
+        tests = {
             '@x;': None,
             '@x {}': u'@x {\n    }',
             '@x{ \n \t \f\r}': u'@x {\n    }',

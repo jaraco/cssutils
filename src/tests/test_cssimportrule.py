@@ -96,7 +96,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             # href url
             u'''@import url(x.css);''': None,
             # nospace
-            u'''@importurl(x.css);''': u'''@import url(x.css);''',
             u'''@import url(")");''': u'''@import url(")");''',
             u'''@import url("\\"");''': u'''@import url(");''',
             u'''@import url('\\'');''': u'''@import url(');''',
