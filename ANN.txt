@@ -4,25 +4,36 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 main changes
 ------------
-0.9.5b3
-    - **API CHANGE**: ``parse()`` is *DEPRECATED*, use ``parseFile()`` instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.
+0.9.5rc1 080709
+    - **API CHANGE/FEATURE**: ``The cssutils.log`` may be partly used like a standard logging log. The following methods are available: ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler') as well as all "messaging" calls like 'error', 'warning' etc.
 
-    - **FEATURE'**: CSSStyleDeclatation objects may be used like dictionaries now. The value during setting a property may be a single value string or a tuple of ``(value, priority)``
+      Therefor ``cssutils.log.setloglevel`` has been *DEPRECATED* and should be used via ``cssutils.log.setLevel``. The old method is still available though.
 
-    - **FEATURE**: While reading an imported styleSheet all relevant encoding parameters (HTTP headers, BOM/@charset, etc) are used now as defined in http://www.w3.org/TR/CSS21/syndata.html#charset
+      ``cssutils.log.setlog`` has been renamed to ``cssutils.log.setLog`` but is still available but *DEPRECATED* too.
 
-        Additionally a given parameter ``encoding`` for ``parseString``, ``parseFile`` and ``parseUrl`` functions/methods **overrides** any detected encoding of read sheet like HTTP information or @charset rules. Useful if e.g. HTTP information is not set properly. The given ``encoding`` is used for **all** imported sheets of the parsed one too! This is a cssutils only addition to the rules defined at http://www.w3.org/TR/CSS21/syndata.html#charset.
+    - **FEATURE**: All three decoders in the codec now have an additional ``force`` argument. If ``force`` is false, the encoding from the input will only by used if is is detected explicitely via BOM or @charset rule.
 
-    - **FEATURE**: A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetcher)`` (or as an init parameter). The so customized parser is reusable (as all parsers are). The fetcher is called when an ``@import`` rule is found and the referenced stylesheet is about to be retrieved.
+    - **FEATURE**: ``cssparse`` script has new option ``-m --minify`` which results in the parsed CSS to be serialized minified
 
-    - **FEATURE**: Added option ``-s --string`` to cssparse script which expects a CSS string to be parsed.
+    - **FEATURE**: ``CSSCapture`` and ``csscombine`` are now available not only as standalone scripts but also via ``cssutils.script.CSSCapture`` and ``cssutils.script.csscombine`` repectively so you can use them programmatically now.
 
-    - **FEATURE/BUGFIX**: Parsing of CSSStyleDeclarations is improved. Invalid ``/color: red;color: green`` is now correctly parsed as ``color: green`` now. At the same time the until now parsed but invalid ``$color: red`` (an IE hack) is not parse anymore but correctly dismissed!
+    - **BUGFIX**: A space after @rule keyword is added when serializing minified something like ``@media all{}``. Until now it was ``@mediaall{}`` which is recognized by Safari only and may not be valid at all.
 
-      Unknown rules in CSSStyleDeclaration are parsed now. So e.g ``@x; color: red;`` which is syntactically valid is kept completely.
+    - **BUGFIX**: Properties of rules set via ``css.CSSStyleSheet.add`` or ``.insert`` were not set properly, e.g. ``parentStyleSheet`` or the stylesheet handling of new @import rules was buggy.
 
-    - **LICENSE**: cssutils is licensed under the **LGPL v3** now (before LGPL v2.1). This should not be a problem I guess but please be aware. So the former mix of LGPL 2.1 and 3 is resolved to a single LGPL 3 license for both cssutils and the included encutils.
+    - BUGFIX: Encountering OSError during resolving @import does not throw an error anymore but the resulting CSSImportRule.styleSheet will have a value of ``None``. OSError will probably only happen when using ``parseFile``.
 
+    - **BUGFIX/IMPROVEMENT**: A style sheet with ``href == None`` (e.g. parsed with ``parseString()`` or build completely from scratch) uses ``os.getcwd()`` as its base href now to be able to resolve CSSImportRules.
+
+    - **BUGFIX/IMPROVEMENT**: Rewrote ``csscombine`` script which should be much more stable now and handles namespaces correctly. Nested imports are still not resolved yet but this may come in the next release.
+
+    - BUGFIX/IMPROVEMENT: Added catching of WindowsError to default fetcher (e.g. is a file URL references a file not present).
+
+    - **BUGFIX/CHANGE**: Redone ``csscapture`` script. A few minor method changes (parameter ``ua`` of ``capture`` has been replaced by init parameter) and lots of internal improvement has been done.
+
+    - CHANGE: ``CSSStyleSheet.add(rule)`` simply appends rules with no specific order in the sheet to the end of it. So e.g. COMMENTs, STYLE_RULEs, etc are appended while rules with a specific place are ordered-in as before (e.g. IMPORT_RULE or NAMESPACE_RULE). Until now rules of a specific type like COMMENTs were ordered together which does not really make sense. The ``csscombine`` script needs this functionality and the resulting combined sheets should be more readable and understandable now.
+
+    - CHANGE: Default URL fetcher emits an ERROR instead of a warning if finding a different mine-type than ``text/css``.
     - a few other changes, bugfixes  and improvements
 
 Note:

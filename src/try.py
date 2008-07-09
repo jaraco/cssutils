@@ -19,6 +19,10 @@ def save(name, string):
 
 
 if 1:
+    sheet = cssutils.parseString('abc')
+    print type(sheet.cssText)
+
+if 0:
     from cssutils.scripts import csscombine
     x = csscombine('sheets/csscombine-proxy.css', targetencoding='ascii', 
                    minify=False)
