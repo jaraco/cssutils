@@ -58,9 +58,7 @@ class Base(object):
             }
 
     # simple escapes, all non unicodes
-    __escapes = re.compile(ur'(\\[^0-9a-fA-F])').sub
-    # all unicode (see cssproductions "unicode")
-    __unicodes = re.compile(ur'\\[0-9a-fA-F]{1,6}[\t|\r|\n|\f|\x20]?').sub
+    __simpleescapes = re.compile(ur'(\\[^0-9a-fA-F])').sub
 
     @staticmethod
     def _normalize(x):
@@ -75,7 +73,7 @@ class Base(object):
         if x:
             def removeescape(matchobj):
                 return matchobj.group(0)[1:]
-            x = Base.__escapes(removeescape, x)
+            x = Base.__simpleescapes(removeescape, x)
             return x.lower()
         else:
             return x
