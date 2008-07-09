@@ -43,6 +43,8 @@ known issues
 0.9.x
 -----
 HEAD
+    - **BUGFIX**: Parsing of unicode escapes like ``\\abc`` followed by CR/LF this is now correctly combined as only a single whitespace character.
+
     - **BUGFIX/IMPROVEMENT**: Parsing of @rules like ``@mediaall ...`` does not result in ``@media all ...`` so not in an CSSMediaRule but in ``@mediaall`` which is a CSSUnknownRule. The specification is not too clear here but it seems this is the way to go. To help finding typos like this probably is, for any found CSSUnknownRule (an unknown @rule) a WARNING is emitted now (but never an error raised).
 
         At the same time this change may have improved the parsing performance a bit as a nice side effect.
