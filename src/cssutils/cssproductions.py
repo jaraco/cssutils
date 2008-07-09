@@ -81,13 +81,15 @@ PRODUCTIONS = [
     ('URI', r'{U}{R}{L}\({w}({string}|{urlchar}*){w}\)'),
     ('FUNCTION', r'{ident}\('),
 
-    # from CSS2.1
-    ('IMPORT_SYM', r'@{I}{M}{P}{O}{R}{T}'),#'),
-    ('PAGE_SYM', r'@{P}{A}{G}{E}'),
-    ('MEDIA_SYM', r'@{M}{E}{D}{I}{A}'),
-    ('FONT_FACE_SYM', r'@{F}{O}{N}{T}\\?\-{F}{A}{C}{E}'),
+    # from CSS2.1 but they do not work as they also match something like 
+    # @mediaall as MEDIA_SYM
     ('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
-    ('NAMESPACE_SYM', r'@{N}{A}{M}{E}{S}{P}{A}{C}{E}'),
+#    ('IMPORT_SYM', r'@{I}{M}{P}{O}{R}{T}'),#'),
+#    ('PAGE_SYM', r'@{P}{A}{G}{E}'),
+#    ('MEDIA_SYM', r'@{M}{E}{D}{I}{A}'),
+#    ('FONT_FACE_SYM', r'@{F}{O}{N}{T}\\?\-{F}{A}{C}{E}'),
+#    ('NAMESPACE_SYM', r'@{N}{A}{M}{E}{S}{P}{A}{C}{E}'),
+
     # from CSS3
     ('ATKEYWORD', r'@{ident}'),
 
@@ -126,6 +128,13 @@ class CSSProductions(object):
     most attributes are set later
     """
     EOF = True
+    # removed from productions as they simply are ATKEYWORD until 
+    # tokenizing 
+    FONT_FACE_SYM = 'FONT_FACE_SYM'
+    MEDIA_SYM = 'MEDIA_SYM'
+    IMPORT_SYM = 'IMPORT_SYM'
+    NAMESPACE_SYM = 'NAMESPACE_SYM'
+    PAGE_SYM = 'PAGE_SYM'
 
 for i, t in enumerate(PRODUCTIONS):
     setattr(CSSProductions, t[0].replace('-', '_'), t[0])
