@@ -1,4 +1,5 @@
-"""combines sheets referred to by @import rules in a given CSS proxy sheet
+#!/usr/bin/env python
+"""Combine sheets referred to by @import rules in a given CSS proxy sheet
 into a single new sheet.
 
 - proxy currently is a path (no URI!)
@@ -58,69 +59,11 @@ __all__ = ['csscombine']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import os
+import optparse
 import sys
-import cssutils
-from cssutils.serialize import CSSSerializer
-
-def csscombine(proxypath, sourceencoding=None, targetencoding='utf-8',
-               minify=True):
-    """
-    :returns: combined cssText
-    :Parameters:
-        `proxypath`
-            url or path to a CSSStyleSheet which imports other sheets which
-            are then combined into one sheet
-        `sourceencoding`
-            encoding of the source sheets including the proxy sheet
-        `targetencoding`
-            encoding of the combined stylesheet, default 'utf-8'
-        `minify`
-            defines if the combined sheet should be minified, default True
-    """
-    sys.stderr.write('COMBINING %s\n' % proxypath)
-    
-    if sourceencoding is not None:
-        sys.stderr.write('USING SOURCE ENCODING: %s\n' % sourceencoding)
-        
-    src = cssutils.parseFile(proxypath, encoding=sourceencoding)
-    srcpath = os.path.dirname(proxypath)
-    combined = cssutils.css.CSSStyleSheet()
-    for rule in src.cssRules:
-        if rule.type == rule.IMPORT_RULE:
-            fn = os.path.join(srcpath, rule.href)
-            sys.stderr.write('* PROCESSING @import %s\n' % fn)
-            importsheet = cssutils.parseFile(fn, encoding=sourceencoding)
-            importsheet.encoding = None # remove @charset
-            combined.add(cssutils.css.CSSComment(cssText=u'/* %s */' %
-                                                 rule.cssText))
-            for x in importsheet.cssRules:
-                if x.type == x.IMPORT_RULE:
-                    sys.stderr.write('INFO\tNested @imports are not combined: %s\n' % x.cssText)
-
-                combined.add(x)
-
-        else:
-            combined.add(rule)
-
-    sys.stderr.write('SETTING TARGET ENCODING: %s\n' % targetencoding)
-    combined.encoding = targetencoding
-    
-    if minify:
-        # save old setting and use own serializer
-        oldser = cssutils.ser
-        cssutils.setSerializer(CSSSerializer())
-        cssutils.ser.prefs.useMinified()
-        cssText = combined.cssText
-        cssutils.setSerializer(oldser)
-    else:
-        cssText = combined.cssText
-        
-    return cssText
+from cssutils.script import csscombine
 
 def main(args=None):
-    import optparse
-
     usage = "usage: %prog [options] path"
     parser = optparse.OptionParser(usage=usage)
     parser.add_option('-s', '--sourceencoding', action='store',
