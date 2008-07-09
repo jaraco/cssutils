@@ -392,7 +392,7 @@ class CSSSerializer(object):
 
         if styleText and rule.wellformed:
             out = Out(self)
-            out.append(self._atkeyword(rule, u'@font-face'))            
+            out.append(self._atkeyword(rule, u'@font-face'))   
             for item in rule.seq:
                 # assume comments {
                 out.append(item.value, item.type)            
@@ -429,6 +429,8 @@ class CSSSerializer(object):
                              rule.hreftype == 'string'):
                         out.append(val, 'STRING')
                     else:
+                        if not len(self.prefs.spacer):
+                            out.append(u' ')   
                         out.append(val, 'URI')
                 elif 'media' == typ:
                     # media
@@ -458,6 +460,8 @@ class CSSSerializer(object):
         if rule.wellformed:
             out = Out(self)
             out.append(self._atkeyword(rule, u'@namespace'))
+            if not len(self.prefs.spacer):
+                out.append(u' ')   
             
             for item in rule.seq:
                 typ, val = item.type, item.value
@@ -478,13 +482,18 @@ class CSSSerializer(object):
         """
         # TODO: use Out()?
 
-        # @media
-        out = [self._atkeyword(rule, u'@media')]
-        out.append(self.prefs.spacer) # might be empty
-        
         # mediaquery
         if not rule.media.wellformed:
             return u''
+
+        # @media
+        out = [self._atkeyword(rule, u'@media')] 
+        if not len(self.prefs.spacer):
+            # for now always with space as only webkit supports @mediaall?
+            out.append(u' ')
+        else: 
+            out.append(self.prefs.spacer) # might be empty
+        
         out.append(self.do_stylesheets_medialist(rule.media))
         
         # name, seq contains content after name only (Comments)
@@ -534,6 +543,8 @@ class CSSSerializer(object):
         if styleText and rule.wellformed:
             out = Out(self)
             out.append(self._atkeyword(rule, u'@page'))
+            if not len(self.prefs.spacer):
+                out.append(u' ')
                         
             for item in rule.seq:
                 out.append(item.value, item.type)
@@ -553,7 +564,10 @@ class CSSSerializer(object):
         """
         if rule.wellformed:
             out = Out(self)
-            out.append(rule.atkeyword)           
+            out.append(rule.atkeyword)  
+            if not len(self.prefs.spacer):
+                out.append(u' ')
+                         
             stacks = []
             for item in rule.seq:
                 typ, val = item.type, item.value
