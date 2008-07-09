@@ -124,7 +124,6 @@ class BaseTestCase(unittest.TestCase):
                 print '"%s"' % test
             self.assertRaises(expected, p.parseString, test)
 
-
     def do_equal_r(self, tests, att='cssText', debug=False):
         # sets attribute att of self.r and asserts Equal
         for test, expected in tests.items():
