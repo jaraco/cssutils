@@ -10,11 +10,9 @@ open issues
             CSS2.1: 'nmchar': r'[_a-z0-9-]|{nonascii}|{escape}',
             CSS3: 'nmchar': r'[_a-z-]|{nonascii}|{escape}',
 """
-__all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS', 'RE_UNICODE']
+__all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
-
-RE_UNICODE = r'\\[0-9a-fA-F]{1,6}[\t|\r|\n|\f|\x20]?'
 
 # a complete list of css3 macros
 MACROS = {
@@ -22,7 +20,7 @@ MACROS = {
     'name': r'{nmchar}+',
     'nmstart': r'[_a-zA-Z]|{nonascii}|{escape}',
     'nonascii': r'[^\0-\177]',
-    'unicode': r'\\[0-9a-f]{1,6}{wc}?',
+    'unicode': r'\\[0-9a-f]{1,6}(?:{nl}|{wc})?',
     'escape': r'{unicode}|\\[ -~\200-\777]',
     #   'escape': r'{unicode}|\\[ -~\200-\4177777]',
     'nmchar': r'[-_a-zA-Z0-9]|{nonascii}|{escape}',
@@ -44,7 +42,7 @@ MACROS = {
     'invalid1': r'\"([^\n\r\f\\"]|\\{nl}|{escape})*',
     'invalid2': r"\'([^\n\r\f\\']|\\{nl}|{escape})*",
 
-    # what if \r\n, \n matches first?
+    # \r\n should be counted as one char see unicode above
     'nl': r'\n|\r\n|\r|\f',
     'w': r'{wc}*',
     'wc': r'\t|\r|\n|\f|\x20',
