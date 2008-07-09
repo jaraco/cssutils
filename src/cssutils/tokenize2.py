@@ -42,7 +42,7 @@ class Tokenizer(object):
                                     productions))
         self.commentmatcher = [x[1] for x in self.tokenmatches if x[0] == 'COMMENT'][0]
         self.urimatcher = [x[1] for x in self.tokenmatches if x[0] == 'URI'][0]
-        self.unicodesub = re.compile(RE_UNICODE).sub
+        self.unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t|\r|\n|\f|\x20])?').sub
 
     def _expand_macros(self, macros, productions):
         """returns macro expanded productions, order of productions is kept"""
