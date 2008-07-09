@@ -95,11 +95,11 @@ prefix|x, a + b > c ~ d, b {
         
         css = u'''
     /*1*/
-    @import url(x) tv , print;
-    @namespace prefix "uri";
-    @namespace unused "unused";
-    @media all {}
-    @media all {
+    @import   url(x) tv , print;
+    @namespace   prefix "uri";
+    @namespace   unused "unused";
+    @media  all {}
+    @media  all {
         a {}
     }
     @media all "name" {
@@ -112,10 +112,11 @@ prefix|x, a + b > c ~ d, b {
     prefix|x, a + b > c ~ d , b { top : 1px ; 
         font-family : arial ,  'some' 
         }
+    @x  x;
     '''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, 
-            u'''@import"x"tv,print;@namespaceprefix"uri";@mediaall"name"{a{color:red}}@page:left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
+            u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}@x x;''' 
             )
 
     def test_defaultAtKeyword(self):
@@ -409,6 +410,22 @@ a, b {}'''
         self.assertEqual(u'a + b > c ~ d e', s.selectorText)
         cssutils.ser.prefs.selectorCombinatorSpacer = u''
         self.assertEqual(u'a+b>c~d e', s.selectorText)
+
+    def test_spacer(self):
+        cssutils.ser.prefs.useDefaults()
+        cssutils.ser.prefs.spacer = u''
+        tests = {
+            u'@font-face {a:1}': u'@font-face {\n    a: 1\n    }', 
+            u'@import  url( a );': u'@import url(a);',
+            u'@media  all{a{color:red}}': u'@media all {\n    a {\n        color: red\n        }\n    }',
+            u'@namespace "a";': u'@namespace "a";',
+            u'@namespace a  "a";': u'@namespace a"a";',
+            u'@page  :left {   a  :1  }': u'@page :left {\n    a: 1\n    }',
+            u'@x  x;': u'@x x;',
+            #u'@importx a': u'@import "x" a;' # ? 
+            }
+        for css, exp in tests.items():
+            self.assertEqual(exp, cssutils.parseString(css).cssText)
 
     def test_validOnly(self):
         "Preferences.validOnly"
