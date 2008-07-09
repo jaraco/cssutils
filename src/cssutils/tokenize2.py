@@ -18,8 +18,32 @@ class Tokenizer(object):
     generates a list of Token tuples:
         (Tokenname, value, startline, startcolumn)
     """
+    _atkeywords = {
+        u'@font-face': 'FONT_FACE_SYM',
+        u'@import': 'IMPORT_SYM',
+        u'@media': 'MEDIA_SYM',        
+        u'@namespace': 'NAMESPACE_SYM',
+        u'@page': 'PAGE_SYM'
+        }
     _linesep = u'\n'
     
+    def __init__(self, macros=None, productions=None):
+        """
+        inits tokenizer with given macros and productions which default to
+        cssutils own macros and productions
+        """
+        self.log = cssutils.log
+        if not macros:
+            macros = MACROS
+        if not productions:
+            productions = PRODUCTIONS
+        self.tokenmatches = self._compile_productions(
+                self._expand_macros(macros, 
+                                    productions))
+        self.commentmatcher = [x[1] for x in self.tokenmatches if x[0] == 'COMMENT'][0]
+        self.urimatcher = [x[1] for x in self.tokenmatches if x[0] == 'URI'][0]
+        self.unicodesub = re.compile(RE_UNICODE).sub
+
     def _expand_macros(self, macros, productions):
         """returns macro expanded productions, order of productions is kept"""
         def macro_value(m):
@@ -39,31 +63,15 @@ class Tokenizer(object):
             compiled.append((key, re.compile('^(?:%s)' % value, re.U).match))
         return compiled
 
-    def __init__(self, macros=None, productions=None):
-        """
-        inits tokenizer with given macros and productions which default to
-        cssutils own macros and productions
-        """
-        self.log = cssutils.log
-        if not macros:
-            macros = MACROS
-        if not productions:
-            productions = PRODUCTIONS
-        self.tokenmatches = self._compile_productions(
-                self._expand_macros(macros, productions))
-        self.commentmatcher = [x[1] for x in self.tokenmatches if x[0] == 'COMMENT'][0]
-        self.urimatcher = [x[1] for x in self.tokenmatches if x[0] == 'URI'][0]
-        self.unicodesub = re.compile(RE_UNICODE).sub
-
     def tokenize(self, text, fullsheet=False):
-        """
-        generator: tokenizes text and yiels tokens, each token is a tuple of::
+        """Generator: Tokenize text and yield tokens, each token is a tuple 
+        of::
         
-            (tokenname, tokenvalue, line, col)
+            (nname, value, line, col)
         
-        The tokenvalue will contain a normal string, meaning CSS unicode 
+        The token value will contain a normal string, meaning CSS unicode 
         escapes have been resolved to normal characters. The serializer
-        escapes needed characters back to unicode escapes depending of
+        escapes needed characters back to unicode escapes depending on
         the stylesheet target encoding.
 
         text
@@ -72,11 +80,22 @@ class Tokenizer(object):
             if ``True`` appends EOF token as last one and completes incomplete
             COMMENT tokens
         """
-        line = col = 1
+        def repl(m):
+            "used by unicodesub"
+            num = int(m.group(0)[1:], 16)
+            if num < 0x10000:
+                return unichr(num)
+            else:
+                return m.group(0)
 
-        tokens = []
+        def normalize(value):
+            "normalize and do unicodesub"
+            return util.Base._normalize(self.unicodesub(repl, value))
+
+        line = col = 1
         while text:
             for name, matcher in self.tokenmatches:
+                
                 if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
                     # after all tokens except CHAR have been tested
                     # test for incomplete comment
@@ -87,41 +106,39 @@ class Tokenizer(object):
                         text = None
                         break
 
-                # default
-                match = matcher(text)
+                match = matcher(text) # if no match next one is tried
                 if match:
-                    found = match.group(0)
+                    found = match.group(0) # needed later for line/col
 
-                    if fullsheet:
-                        # check if tokens may be completed
+                    if fullsheet:                        
+                        # check if tokens may be completed for a full token
                         if 'INVALID' == name and text == found:
-                            # complete INVALID to STRING
-                            name = 'STRING'
-                            found = '%s%s' % (found, found[0])
+                            # complete INVALID to STRING with start char " or '
+                            name, found = 'STRING', '%s%s' % (found, found[0])
                         
                         elif 'FUNCTION' == name and\
-                             u'url(' == util.Base._normalize(found):
+                             u'url(' == normalize(found):
                             # FUNCTION url( is fixed to URI if fullsheet
                             # FUNCTION production MUST BE after URI production!
                             for end in (u"')", u'")', u')'):
                                 possibleuri = '%s%s' % (text, end)
                                 match = self.urimatcher(possibleuri)
                                 if match:
-                                    name = 'URI'
-                                    found = match.group(0)
+                                    name, found = 'URI', match.group(0)
                                     break
 
-                    if name in ('URI', 'FUNCTION', 'ATKEYWORD', 'IDENT', 'STRING', 
-                                'INVALID', 'HASH', 'DIMENSION', 'COMMENT'):
+                    if name in ('DIMENSION', 'IDENT', 'STRING', 'URI', 
+                                'HASH', 'COMMENT', 'FUNCTION', 'INVALID'):
                         # may contain unicode escape, replace with normal char
-                        def repl(m):
-                            num = int(m.group(0)[1:], 16)
-                            if num < 0x10000:
-                                return unichr(num)
-                            else:
-                                return m.group(0)
+                        # but do not normalize (?)
                         value = self.unicodesub(repl, found)
+
                     else:
+                        if 'ATKEYWORD' == name:
+                            # all @x are ATKEYWORD upto here
+                            # but do no normalize value!
+                            name = self._atkeywords.get(normalize(found), 'ATKEYWORD')
+
                         # should not contain unicodes
                         value = found
 
