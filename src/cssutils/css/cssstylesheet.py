@@ -224,6 +224,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             return 3
 
         def unknownrule(expected, seq, token, tokenizer):
+            self._log.warn(
+                    u'CSSStylesheet: Unknown @rule found.',
+                    token, neverraise=True)
             rule = cssutils.css.CSSUnknownRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.wellformed:
