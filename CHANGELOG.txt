@@ -43,6 +43,8 @@ known issues
 0.9.x
 -----
 HEAD
+
+0.9.5rc1 080709
     - **API CHANGE/FEATURE**: ``The cssutils.log`` may be partly used like a standard logging log. The following methods are available: ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler') as well as all "messaging" calls like 'error', 'warning' etc.
 
       Therefor ``cssutils.log.setloglevel`` has been *DEPRECATED* and should be used via ``cssutils.log.setLevel``. The old method is still available though.
@@ -52,6 +54,8 @@ HEAD
     - **FEATURE**: All three decoders in the codec now have an additional ``force`` argument. If ``force`` is false, the encoding from the input will only by used if is is detected explicitely via BOM or @charset rule.
 
     - **FEATURE**: ``cssparse`` script has new option ``-m --minify`` which results in the parsed CSS to be serialized minified
+
+    - **FEATURE**: ``CSSCapture`` and ``csscombine`` are now available not only as standalone scripts but also via ``cssutils.script.CSSCapture`` and ``cssutils.script.csscombine`` repectively so you can use them programmatically now.
 
     - **BUGFIX**: A space after @rule keyword is added when serializing minified something like ``@media all{}``. Until now it was ``@mediaall{}`` which is recognized by Safari only and may not be valid at all.
 
@@ -67,7 +71,7 @@ HEAD
 
     - **BUGFIX/CHANGE**: Redone ``csscapture`` script. A few minor method changes (parameter ``ua`` of ``capture`` has been replaced by init parameter) and lots of internal improvement has been done.
 
-    - CHANGE: ``CSSStyleSheet.add(rule)`` simply appends rules with no specific order in the sheet to the end of it. So e.g. COMMENTs, STYLE_RULEs, etc are appended while rules with a specific place are ordered-in as before (e.g. IMPORT_RULE or NAMESPACE_RULE). Until now rules of a specific type like COMMENTs were ordered together which does not really make sense. The ``csscombine`` needs this functionality and the resulting combined sheets should be more readable and understandable now.
+    - CHANGE: ``CSSStyleSheet.add(rule)`` simply appends rules with no specific order in the sheet to the end of it. So e.g. COMMENTs, STYLE_RULEs, etc are appended while rules with a specific place are ordered-in as before (e.g. IMPORT_RULE or NAMESPACE_RULE). Until now rules of a specific type like COMMENTs were ordered together which does not really make sense. The ``csscombine`` script needs this functionality and the resulting combined sheets should be more readable and understandable now.
 
     - CHANGE: Default URL fetcher emits an ERROR instead of a warning if finding a different mine-type than ``text/css``.
 
