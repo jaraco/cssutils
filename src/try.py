@@ -6,6 +6,7 @@ from pprint import pprint as pp
 import logging
 import re
 import sys
+import timeit
 import urlparse
 import xml
 import cssutils
@@ -17,30 +18,83 @@ def save(name, string):
     f.write(string)
     f.close()
 
+if 0:
+    tn = cssutils.tokenize2.Tokenizer()
+    l = list(tn.tokenize('\\i \\49\r\nm \\000065\r\n', fullsheet=0))
+    print l
+    t = l[0]
+    print len(t[1]), t
+    sys.exit(1)
 
 if 1:
-    sheet = cssutils.parseString('abc')
-    print type(sheet.cssText)
+    do = """
+    import cssutils
+    tn = cssutils.tokenize2.Tokenizer()
+    css = '''
+    /* contains rules unsuitable for Netscape 4.x; simpler rules are in ns4_only.css. see <http://style.tigris.org/> */
 
-if 0:
-    from cssutils.scripts import csscombine
-    x = csscombine('sheets/csscombine-proxy.css', targetencoding='ascii', 
-                   minify=False)
-    print x
+/* colors, backgrounds, borders, link indication */ 
 
-    sys.exit(0)
+body {
+ background: #fff;
+ color: #000;
+ }
+.app h3, .app h4, .tabs td, .tabs th, .functnbar {
+ background-image: url(../images/nw_min.gif);
+ background-repeat: no-repeat;
+ }
+#toptabs td, #toptabs th {
+ background-image: url(../images/nw_min_036.gif);
+ }
+#navcolumn .body div, body.docs #toc li li  {
+ background-image: url(../images/strich.gif);
+ background-repeat: no-repeat;
+ background-position: .5em .5em;
+ }
+#search .body div, .body .heading  {
+ background-image: none;
+ }
+.app h3, .app h4 {
+ color: #fff;
+ }
+.app h3, #banner td {
+ background-color: #036;
+ color: #fff;
+ }
+body #banner td a {
+ color: #fff !important;
+ } 
+.app h4 { 
+ background-color: #888;
+ }
+.a td { 
+ background: #ddd;
+ }
+.b td { 
+ background: #efefef;
+ }
+table, th, td {
+ border: none
+ } 
+.mtb {
+ border-top: solid 1px #ddd;
+ }
+div.colbar {
+ background: #bbb;
+ }
+#banner {
+ border-top: 1px solid #369;
+ }    '''
+    #list(tn.tokenize(css, fullsheet=0))
+    cssutils.parseString(css)
+    """
+        
+    t = timeit.Timer(do)       # outside the try/except
+    try:
+        print t.timeit(100)    # or t.repeat(...)
+    except:
+        print t.print_exc()
 
-if 0:
-    # URL parsing
-    css = ur'''
-    fake(url())
-    URL()
-    uR\l()
-    '''
-    t = cssutils.tokenize2.Tokenizer()
-    gen = t.tokenize(css, fullsheet=0)
-    for tk in gen:
-        print tk
     sys.exit(0)
 
 if 0:
