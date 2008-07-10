@@ -5,6 +5,7 @@
 __all__ = ['Tokenizer', 'CSSProductions']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
+
 import os
 import re
 import string
@@ -93,69 +94,76 @@ class Tokenizer(object):
             return util.Base._normalize(self.unicodesub(repl, value))
 
         line = col = 1
+        
+        # check for BOM first as it should only be max one at the start
+        (BOM, matcher), productions = self.tokenmatches[0], self.tokenmatches[1:]
+        match = matcher(text)
+        if match:
+            found = match.group(0)
+            yield (BOM, found, line, col)
+            text = text[len(found):]
+        
         while text:
-            for name, matcher in self.tokenmatches:
-                
-                if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
-                    # after all tokens except CHAR have been tested
-                    # test for incomplete comment
-                    possiblecomment = u'%s*/' % text
-                    match = self.commentmatcher(possiblecomment)
-                    if match:
-                        yield ('COMMENT', possiblecomment, line, col)
-                        text = None
-                        break
-
-                match = matcher(text) # if no match next one is tried
-                if match:
-                    found = match.group(0) # needed later for line/col
-
-                    if fullsheet:                        
-                        # check if tokens may be completed for a full token
-                        if 'INVALID' == name and text == found:
-                            # complete INVALID to STRING with start char " or '
-                            name, found = 'STRING', '%s%s' % (found, found[0])
-                        
-                        elif 'FUNCTION' == name and\
-                             u'url(' == normalize(found):
-                            # FUNCTION url( is fixed to URI if fullsheet
-                            # FUNCTION production MUST BE after URI production!
-                            for end in (u"')", u'")', u')'):
-                                possibleuri = '%s%s' % (text, end)
-                                match = self.urimatcher(possibleuri)
-                                if match:
-                                    name, found = 'URI', match.group(0)
-                                    break
-
-                    if name in ('DIMENSION', 'IDENT', 'STRING', 'URI', 
-                                'HASH', 'COMMENT', 'FUNCTION', 'INVALID'):
-                        # may contain unicode escape, replace with normal char
-                        # but do not normalize (?)
-                        value = self.unicodesub(repl, found)
-
-                    else:
-                        if 'ATKEYWORD' == name:
-                            # all @x are ATKEYWORD upto here
-                            # but do no normalize value!
-                            name = self._atkeywords.get(normalize(found), 'ATKEYWORD')
-
-                        # should not contain unicodes
-                        value = found
-
-                    yield (name, value, line, col)
-                    text = text[len(found):]
-                    nls = found.count(self._linesep)
-                    line += nls
-                    if nls:
-                        col = len(found[found.rfind(self._linesep):])
-                    else:
-                        col += len(found)
-                    break
-
-            else:
-                # should not happen at all
-                raise xml.dom.SyntaxErr('no token match "%s(...)"' % text[:10])
+            # speed test for most used CHARs
+            c = text[0]
+            if c in '{}:;,':
+                yield ('CHAR', c, line, col)
+                col += 1
                 text = text[1:]
+                
+            else:
+                # check all other productions, at least CHAR must match
+                for name, matcher in productions:
+                    if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
+                        # before CHAR production test for incomplete comment
+                        possiblecomment = u'%s*/' % text
+                        match = self.commentmatcher(possiblecomment)
+                        if match:
+                            yield ('COMMENT', possiblecomment, line, col)
+                            text = None # eats all remaining text 
+                            break 
+    
+                    match = matcher(text) # if no match try next production
+                    if match:
+                        found = match.group(0) # needed later for line/col
+                        if fullsheet:                        
+                            # check if found may be completed into a full token
+                            if 'INVALID' == name and text == found:
+                                # complete INVALID to STRING with start char " or '
+                                name, found = 'STRING', '%s%s' % (found, found[0])
+                            
+                            elif 'FUNCTION' == name and\
+                                 u'url(' == normalize(found):
+                                # FUNCTION url( is fixed to URI if fullsheet
+                                # FUNCTION production MUST BE after URI production!
+                                for end in (u"')", u'")', u')'):
+                                    possibleuri = '%s%s' % (text, end)
+                                    match = self.urimatcher(possibleuri)
+                                    if match:
+                                        name, found = 'URI', match.group(0)
+                                        break
+    
+                        if name in ('DIMENSION', 'IDENT', 'STRING', 'URI', 
+                                    'HASH', 'COMMENT', 'FUNCTION', 'INVALID'):
+                            # may contain unicode escape, replace with normal char
+                            # but do not normalize (?)
+                            value = self.unicodesub(repl, found)
+    
+                        else:
+                            if 'ATKEYWORD' == name:
+                                # get actual ATKEYWORD SYM
+                                name = self._atkeywords.get(normalize(found), 'ATKEYWORD')
+                            value = found # should not contain unicode escape (?)
+    
+                        yield (name, value, line, col)
+                        text = text[len(found):]
+                        nls = found.count(self._linesep)
+                        line += nls
+                        if nls:
+                            col = len(found[found.rfind(self._linesep):])
+                        else:
+                            col += len(found)
+                        break
 
         if fullsheet:
             yield ('EOF', u'', line, col)

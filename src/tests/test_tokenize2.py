@@ -271,10 +271,12 @@ class TokenizerTestCase(basetest.BaseTestCase):
                   ('S', u' ', 1, 4)],
         u'*==': [('SUBSTRINGMATCH', u'*=', 1, 1), ('CHAR', u'=', 1, 3)],
 
-        # BOM
-        u' \xFEFF ': [('S', u' ', 1, 1),
-                  ('BOM', u'\xFEFF', 1, 2), # len=3
-                  ('S', u' ', 1, 5)],
+        # BOM (only at start!)
+        u'\xFEFF ': [('BOM', u'\xFEFF', 1, 1), # len=3
+                  ('S', u' ', 1, 1)],
+#        u' \xFEFF ': [('S', u' ', 1, 1),
+#                  ('BOM', u'\xFEFF', 1, 2), # len=3
+#                  ('S', u' ', 1, 5)],
 
         }
 
@@ -582,21 +584,21 @@ class TokenizerTestCase(basetest.BaseTestCase):
                 expected = tests[css][i]
                 self.assertEqual(expected, actual)
 
-    # not really needed
-    def test_tokenizeCSS2_1(self):
-        "CSS2 Tokenizer().tokenize()"
-        import cssutils.css2productions
-        tokenizer = Tokenizer(cssutils.css2productions.MACROS,
-                              cssutils.css2productions.PRODUCTIONS)
-        tests = {}
-        tests.update(self.testsall)
-        #tests.update(self.tests2)
-        tests.update(self.tests2only)
-        for css in tests:
-            tokens = tokenizer.tokenize(css)
-            for i, actual in enumerate(tokens):
-                expected = tests[css][i]
-                self.assertEqual(expected, actual)
+#    # not really needed
+#    def test_tokenizeCSS2_1(self):
+#        "CSS2 Tokenizer().tokenize()"
+#        import cssutils.css2productions
+#        tokenizer = Tokenizer(cssutils.css2productions.MACROS,
+#                              cssutils.css2productions.PRODUCTIONS)
+#        tests = {}
+#        tests.update(self.testsall)
+#        #tests.update(self.tests2)
+#        tests.update(self.tests2only)
+#        for css in tests:
+#            tokens = tokenizer.tokenize(css)
+#            for i, actual in enumerate(tokens):
+#                expected = tests[css][i]
+#                self.assertEqual(expected, actual)
 
     # --------------
 

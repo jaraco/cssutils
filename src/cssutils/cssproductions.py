@@ -75,50 +75,30 @@ MACROS = {
 # used by cssutils, a mix of CSS3 and some CSS2.1 productions.
 # The productions are **ordered**:
 PRODUCTIONS = [
-    ('BOM', r'\xFEFF'),
+    ('BOM', r'\xFEFF'), # will only be checked at beginning of CSS
+    ('S', r'{wc}+'), # 1st in list of general productions
     ('URI', r'{U}{R}{L}\({w}({string}|{urlchar}*){w}\)'),
     ('FUNCTION', r'{ident}\('),
-
-    # from CSS2.1 but they do not work as they also match something like 
-    # @mediaall as MEDIA_SYM
-    ('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
-#    ('IMPORT_SYM', r'@{I}{M}{P}{O}{R}{T}'),#'),
-#    ('PAGE_SYM', r'@{P}{A}{G}{E}'),
-#    ('MEDIA_SYM', r'@{M}{E}{D}{I}{A}'),
-#    ('FONT_FACE_SYM', r'@{F}{O}{N}{T}\\?\-{F}{A}{C}{E}'),
-#    ('NAMESPACE_SYM', r'@{N}{A}{M}{E}{S}{P}{A}{C}{E}'),
-
-    # from CSS3
-    ('ATKEYWORD', r'@{ident}'),
-
-    # in CSS2.1: r'\!({w}|{comment})*{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
-    ##('IMPORTANT_SYM', r'{I}{M}{P}{O}{R}{T}{A}{N}{T}'),
-
     ('IDENT', r'{ident}'),
     ('STRING', r'{string}'),
-    # from CSS2.1
-    ('INVALID', r'{invalid}'),
-
+    ('INVALID', r'{invalid}'), # from CSS2.1
     ('HASH', r'\#{name}'),
     ('PERCENTAGE', r'{num}\%'),
     ('DIMENSION', r'{num}{ident}'),
     ('NUMBER', r'{num}'),
-    #???
-    ('UNICODE-RANGE', r'[0-9A-F?]{1,6}(\-[0-9A-F]{1,6})?'),
+    ('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
+    ('ATKEYWORD', r'@{ident}'), # other keywords are done in the tokenizer
+    #('UNICODE-RANGE', r'[0-9A-F?]{1,6}(\-[0-9A-F]{1,6})?'), #???
     ('CDO', r'\<\!\-\-'),
     ('CDC', r'\-\-\>'),
-    ('S', r'{wc}+'),
     ('INCLUDES', '\~\='),
     ('DASHMATCH', r'\|\='),
     ('PREFIXMATCH', r'\^\='),
     ('SUFFIXMATCH', r'\$\='),
     ('SUBSTRINGMATCH', r'\*\='),
-
     # checked specially if fullsheet is parsed
     ('COMMENT', r'{comment}'), #r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
-
-    # MUST always be last
-    ('CHAR', r'[^"\']')
+    ('CHAR', r'[^"\']') # MUST always be last
     ]
 
 class CSSProductions(object):

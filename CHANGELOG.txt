@@ -49,6 +49,13 @@ HEAD
 
         At the same time this change may have improved the parsing performance a bit as a nice side effect.
 
+    - **IMPROVEMENT**: Optimized performance of tokenizer. The following changes have been done which should not impact any actual stylesheet:
+
+        + A ``BOM`` token is recognized at the start of a stylesheet only (may be swallowed by the CSS codec anyway).
+        + A ``BOM`` token is not counted in the line/col reporting anymore so the following token has a line and col of 1 now
+        + Tests for tokenizing with css2productions has been removed but this is never used in the library anyway)
+
+
 0.9.5rc1 080709
     - **API CHANGE/FEATURE**: ``The cssutils.log`` may be partly used like a standard logging log. The following methods are available: ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler') as well as all "messaging" calls like 'error', 'warning' etc.
 
