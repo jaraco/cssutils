@@ -125,6 +125,7 @@ class MediaQuery(cssutils.util.Base):
                     seq.append(u'and')
                     return 'feature'
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'MediaQuery: Unexpected syntax.', token=token)
                     return expected
@@ -143,6 +144,7 @@ class MediaQuery(cssutils.util.Base):
                     seq.append(property)
                     return 'and or EOF'
                 else:
+                    new['wellformed'] = False
                     self._log.error(
                         u'MediaQuery: Unexpected syntax, expected "and" but found "%s".' %
                         val, token)
