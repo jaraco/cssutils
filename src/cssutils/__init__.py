@@ -154,7 +154,7 @@ parseUrl.__doc__ = CSSParser.parseUrl.__doc__
 
 @Deprecated('Use cssutils.parseFile() instead.')
 def parse(*a, **k):
-    return CSSParser().parseFile(*a, **k)
+    return parseFile(*a, **k)
 parse.__doc__ = CSSParser.parse.__doc__
 
 
