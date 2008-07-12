@@ -726,10 +726,10 @@ class Selector(cssutils.util.Base2):
                              'COMMENT': _COMMENT})
             wellformed = wellformed and new['wellformed']
 
-            # post condition
-            if len(new['context']) > 1:
+            # post condition         
+            if len(new['context']) > 1 or not newseq:
                 wellformed = False
-                self._log.error(u'Selector: Incomplete selector: %s' %
+                self._log.error(u'Selector: Invalid or incomplete selector: %s' %
                     self._valuestr(selectorText))
             
             if expected == 'element_name':
@@ -737,7 +737,7 @@ class Selector(cssutils.util.Base2):
                 self._log.error(u'Selector: No element name found: %s' %
                     self._valuestr(selectorText))
 
-            if expected == simple_selector_sequence:
+            if expected == simple_selector_sequence and newseq:
                 wellformed = False
                 self._log.error(u'Selector: Cannot end with combinator: %s' %
                     self._valuestr(selectorText))
