@@ -124,7 +124,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         rules = [
              ('b { left: 0 }', cssutils.css.CSSRule.STYLE_RULE),        
              ('/*1*/', cssutils.css.CSSRule.COMMENT),
-             ('@x', cssutils.css.CSSRule.UNKNOWN_RULE)
+             ('@x;', cssutils.css.CSSRule.UNKNOWN_RULE)
         ]
         def test(s):
             mr = s.cssRules[0]
