@@ -9,13 +9,22 @@ import xml.dom
 import basetest
 import cssutils
 
-
 class ErrorHandlerTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         "replace default log and ignore its output"
-        self.oldlog = cssutils.log._log
-        cssutils.log.setlog(logging.getLogger('IGNORED-CSSUTILS-TEST'))
+        self._oldlog = cssutils.log._log
+        self._saved = cssutils.log.raiseExceptions
+        
+        cssutils.log.raiseExceptions = False
+        cssutils.log.setLog(logging.getLogger('IGNORED-CSSUTILS-TEST'))
+
+    def tearDown(self):
+        "reset default log"
+        cssutils.log.setLog(self._oldlog)
+        # for tests only
+        cssutils.log.setLevel(logging.FATAL)
+        cssutils.log.raiseExceptions = self._saved
 
     def _setHandler(self):
         "sets new handler and returns StringIO instance to getvalue"
@@ -85,12 +94,6 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         cssutils.parseUrl('http://example.com')
         self.assertEqual(s.getvalue()[:38], 
                          u'ERROR    Expected "text/css" mime type')
-
-    def tearUp(self):
-        "reset default log"
-        cssutils.log.setlog(self.oldlog)
-        # for tests only
-        cssutils.log.setLevel(logging.FATAL)
 
 if __name__ == '__main__':
     import unittest
