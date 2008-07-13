@@ -16,7 +16,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r_typeString = 'CHARSET_RULE'
 
     def test_init(self):
-        "CSSCharsetRule.__init__()"
+        "CSSCharsetRule.__init__()"      
         super(CSSCharsetRuleTestCase, self).test_init()
         self.assertEqual(None, self.r.encoding)
         self.assertEqual(u'', self.r.cssText)
