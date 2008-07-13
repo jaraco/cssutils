@@ -218,8 +218,10 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
                 del self[i]
                 break
         else:
-            raise xml.dom.NotFoundErr(
-                u'"%s" not in this MediaList' % oldMedium)
+            self._log.error(u'"%s" not in this MediaList' % oldMedium,
+                            error=xml.dom.NotFoundErr)
+#            raise xml.dom.NotFoundErr(
+#                u'"%s" not in this MediaList' % oldMedium)
 
     def item(self, index):
         """
