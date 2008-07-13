@@ -11,12 +11,13 @@ from email import message_from_string, message_from_file
 import cssutils
 from minimock import mock, restore
 
-cssutils.log.setLevel(logging.FATAL)
 
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
         # a raising parser!!!
+        cssutils.log.raiseExceptions = True
+        cssutils.log.setLevel(logging.FATAL)
         self.p = cssutils.CSSParser(raiseExceptions=True)
 
     def assertRaisesEx(self, exception, callable, *args, **kwargs):
