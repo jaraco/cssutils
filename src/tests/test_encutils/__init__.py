@@ -9,9 +9,9 @@ import sys
 import unittest
 
 try:
-    import encutils
-except ImportError:
     import cssutils.encutils as encutils
+except ImportError:
+    import encutils
 
 # helper log
 log = encutils.buildlog(stream=StringIO())    
