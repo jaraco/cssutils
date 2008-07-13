@@ -37,7 +37,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             u'print and(color)': xml.dom.SyntaxErr, # a function
             u'3d': xml.dom.InvalidCharacterErr, # a dimension
             }
-        self.do_raise_r(tests, att='_setMediaText')
+        self.do_raise_r(tests, att='_setMediaText')        
 
     def test_mediaType(self):
         "MediaQuery.mediaType"
