@@ -16,6 +16,7 @@ cssutils.log.setLevel(logging.FATAL)
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
+        # a raising parser!!!
         self.p = cssutils.CSSParser(raiseExceptions=True)
 
     def assertRaisesEx(self, exception, callable, *args, **kwargs):
