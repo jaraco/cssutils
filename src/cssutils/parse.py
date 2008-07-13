@@ -28,7 +28,7 @@ class CSSParser(object):
 
         print sheet.cssText
     """
-    def __init__(self, log=None, loglevel=None, raiseExceptions=False,
+    def __init__(self, log=None, loglevel=None, raiseExceptions=None,
                  fetcher=None):
         """
         log
@@ -36,7 +36,9 @@ class CSSParser(object):
         loglevel
             logging loglevel
         raiseExceptions
-            if log should simple log (default) or raise errors
+            if log should simply log (default) or raise errors during 
+            parsing. Later while working with the resulting sheets 
+            the setting used in cssutils.log.raiseExeptions is used 
         fetcher
             see ``setFetchUrl(fetcher)``
         """
@@ -45,10 +47,26 @@ class CSSParser(object):
         if loglevel is not None:
             cssutils.log.setLevel(loglevel)
 
-        cssutils.log.raiseExceptions = raiseExceptions
+        # remember global setting
+        self.__globalRaising = cssutils.log.raiseExceptions
+        if raiseExceptions:
+            self.__parseRaising = raiseExceptions
+        else:
+            # DEFAULT during parse
+            self.__parseRaising = False
+ 
         self.__tokenizer = cssutils.tokenize2.Tokenizer()
         self.setFetcher(fetcher)
 
+    def __parseSetting(self, parse):
+        """during parse exceptions may be handled differently depending on
+        init parameter ``raiseExceptions``
+        """
+        if parse:
+            cssutils.log.raiseExceptions = self.__parseRaising
+        else:
+            cssutils.log.raiseExceptions = self.__globalRaising 
+            
     def parseString(self, cssText, encoding=None, href=None, media=None, 
                     title=None):
         """Return parsed CSSStyleSheet from given string cssText.
@@ -72,6 +90,8 @@ class CSSParser(object):
         title
             The title attribute to assign to the parsed style sheet
         """
+        self.__parseSetting(True)
+        
         if isinstance(cssText, str): 
             cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
 
@@ -83,6 +103,7 @@ class CSSParser(object):
         sheet._setCssTextWithEncodingOverride(self.__tokenizer.tokenize(cssText, 
                                                                         fullsheet=True), 
                                               encoding)
+        self.__parseSetting(False)
         return sheet
 
     def parseFile(self, filename, encoding=None, 
