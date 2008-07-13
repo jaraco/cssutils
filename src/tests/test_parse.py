@@ -5,8 +5,6 @@ __version__ = '$Id$'
 import xml.dom
 import basetest
 import cssutils
-
-
 try:
     from minimock import mock, restore
 except ImportError:
@@ -14,6 +12,47 @@ except ImportError:
     print "install minimock with ``easy_install minimock`` to run all tests"
 
 class CSSParserTestCase(basetest.BaseTestCase):
+
+    def test_init(self):
+        "CSSParser.__init__()"
+        self.assertEqual(True, cssutils.log.raiseExceptions)        
+        _saved = cssutils.log.raiseExceptions
+        
+        # also the default:
+        cssutils.log.raiseExceptions = True
+        
+        # default non raising parser
+        p = cssutils.CSSParser()
+        s = p.parseString('$')
+        self.assertEqual(s.cssText, '')
+        
+        # explicit raiseExceptions=False
+        p = cssutils.CSSParser(raiseExceptions=False)
+        s = p.parseString('$')
+        self.assertEqual(s.cssText, '')
+
+        # working with sheet does raise though! 
+        self.assertRaises(xml.dom.DOMException, s.__setattr__, 'cssText', '$')
+
+        # ---- 
+        
+        # raiseExceptions=True
+        p = cssutils.CSSParser(raiseExceptions=True)
+        self.assertRaises(xml.dom.SyntaxErr, p.parseString, '$')
+        
+        # working with a sheet does raise too
+        s = cssutils.css.CSSStyleSheet()
+        self.assertRaises(xml.dom.DOMException, s.__setattr__, 'cssText', '$')
+
+        # RESET cssutils.log.raiseExceptions
+        cssutils.log.raiseExceptions = False
+        s = cssutils.css.CSSStyleSheet()
+        # does not raise!
+        s.__setattr__('cssText', '$')
+        self.assertEqual(s.cssText, '')
+
+        # RESET cssutils.log.raiseExceptions
+        cssutils.log.raiseExceptions = _saved
 
     def _make_fetcher(self, encoding, content):
         "make an URL fetcher with specified data"
@@ -25,7 +64,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
 #        "CSSParser.parseFile()"
 #        # see test_cssutils
 
-    def test_parseUrl(self):
+    def XXXtest_parseUrl(self):
         "CSSParser.parseUrl()"
         if mock:
             # parseUrl(self, href, encoding=None, media=None, title=None):
