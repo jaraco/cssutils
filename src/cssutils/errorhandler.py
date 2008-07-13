@@ -27,8 +27,8 @@ class _ErrorHandler(object):
     """
     handles all errors and log messages
     """
-    def __init__(self, log,
-                 defaultloglevel=logging.DEBUG, raiseExceptions=False):
+    def __init__(self, log, defaultloglevel=logging.INFO, 
+                 raiseExceptions=True):
         """
         inits log if none given
 
@@ -37,8 +37,7 @@ class _ErrorHandler(object):
         defaultloglevel
             if none give this is logging.DEBUG
         raiseExceptions
-            - True: Errors will be reported to the calling app,
-              e.g. during building
+            - True: Errors will be raised e.g. during building
             - False: Errors will be written to the log, this is the
               default behaviour when parsing
         """
