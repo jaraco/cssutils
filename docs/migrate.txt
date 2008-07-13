@@ -12,6 +12,38 @@ version migration
 ==========================
 cssutils 0.9.5 introduced some minor incompatible API changes. Reason for most changes is that for most cases the new default behaviour makes more sense.
 
+
+logging versus raising
+----------------------
+Upto 0.9.5rc1 any sheet resulting from parsing via any ``parse*`` function or ``CSSParser(raiseExceptions=False)`` (which is also the default) resulted in the library simply logging any later exceptions and not raising them. 0.9.5rc2 fixes this. Until now the global setting of ``cssutils.log.raiseExceptions=True`` (the default) was overwritten with the value of the CSSParser ``raiseExceptions`` setting which is normally ``False`` any time a ``cssutils.parse*`` function or ``CSSParser.parse*`` method was used. So
+
+until 0.9.5rc1::
+
+    >>> # does not raise during parse
+    >>> s = cssutils.parseString('$') # empty but CSSStyleSheet object
+
+    >>> # does not raise either but should:
+    >>> s.cssText = '$'
+    ERROR   CSSStyleRule: No start { of style declaration found: u'$' [1:2: ]
+    # [...]
+
+from 0.9.5rc2::
+
+    >>> # still does not raise during parse
+    >>> s = cssutils.parseString('$') # empty but CSSStyleSheet object
+
+    >>> # working with the actual DOM does raise now though
+    >>> s.cssText = '$'
+    # [...] traceback
+    xml.dom.SyntaxErr: CSSStyleRule: No start { of style declaration found: u'$' [1:1: $]
+
+To use the old but false behaviour add the following line at the start to your program::
+
+    >>> cssutils.log.raiseExceptions = False # normally True
+
+**This should only be done in specific cases** as normal raising of exceptions in methods or functions with the CSS DOM is the expected behaviour.
+
+
 parsing
 -------
 ``parse()`` is *DEPRECATED* in favour of ``parseFile()``. Both methods are still available but ``parse`` will be removed for cssutils 1.0.
