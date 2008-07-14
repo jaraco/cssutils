@@ -13,8 +13,6 @@ print "\nORIGINAL CSS:"
 print css
 print "------------"
 
-print "\CSS serializer preferences"
-print cssutils.ser.prefs
 print repr(cssutils.ser.prefs)
 
 print "\nCSS Serialized"
