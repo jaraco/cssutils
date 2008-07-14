@@ -52,6 +52,7 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
             or a list of media
         """
         super(MediaList, self).__init__()
+        self._wellformed = False
 
         if isinstance(mediaText, list):
             mediaText = u','.join(mediaText)
@@ -117,12 +118,13 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
             del self[:]
             for mq in newseq:
                 self.appendMedium(mq)
+            self._wellformed = True
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="""(DOM) The parsable textual representation of the media list.
             This is a comma-separated list of media.""")
 
-    wellformed = property(lambda self: True)
+    wellformed = property(lambda self: self._wellformed)
 
     def __prepareset(self, newMedium):
         # used by appendSelector and __setitem__
