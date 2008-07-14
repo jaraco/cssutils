@@ -77,11 +77,14 @@ class CSSImportRule(cssrule.CSSRule):
         self._href = None
         self.href = href
         
-        self._media = cssutils.stylesheets.MediaList(
-            mediaText, readonly=readonly)
+        # if self._media is used (simply empty)
+        self._usemedia = False
+        self._media = cssutils.stylesheets.MediaList()
+        if mediaText:
+            self._usemedia = True
+            self._media.mediaText = mediaText
+            
         self._name = name
-        if not self.media.wellformed:
-            self._media = cssutils.stylesheets.MediaList()
             
         seq = self._tempSeq()
         seq.append(self.href, 'href')
@@ -125,7 +128,7 @@ class CSSImportRule(cssrule.CSSRule):
             new = {'keyword': self._tokenvalue(attoken),
                    'href': None,
                    'hreftype': None,
-                   'media': cssutils.stylesheets.MediaList(),
+                   'media': None,
                    'name': None,
                    'wellformed': True
                    }
@@ -243,7 +246,12 @@ class CSSImportRule(cssrule.CSSRule):
             if wellformed:
                 self.atkeyword = new['keyword']
                 self.hreftype = new['hreftype']
-                self._media = new['media']
+                if new['media']:
+                    # use same object
+                    self._usemedia = True
+                    self._media.mediaText = new['media'].mediaText
+                else:
+                    self._usemedia = False
                 self.name = new['name']
                 self._setSeq(newseq)
                 self.href = new['href']
@@ -350,10 +358,17 @@ class CSSImportRule(cssrule.CSSRule):
     styleSheet = property(lambda self: self._styleSheet,
                           doc="(readonly) The style sheet referred to by this rule.")
 
-    wellformed = property(lambda self: bool(self.href and self.media.wellformed))
+    def _getWellformed(self):
+        "depending if media is used at all"
+        if self._usemedia:
+            return bool(self.href and self.media.wellformed)
+        else:
+            return bool(self.href)
+
+    wellformed = property(_getWellformed)
 
     def __repr__(self):
-        if self.media:
+        if self._usemedia:
             mediaText = self.media.mediaText
         else:
             mediaText = None
@@ -362,7 +377,7 @@ class CSSImportRule(cssrule.CSSRule):
                 self.href, self.media.mediaText, self.name)
 
     def __str__(self):
-        if self.media:
+        if self._usemedia:
             mediaText = self.media.mediaText
         else:
             mediaText = None

@@ -41,18 +41,13 @@ class CSSMediaRule(cssrule.CSSRule):
 
     def __init__(self, mediaText='all', name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
-        """
-        constructor
-        """
+        """constructor"""
         super(CSSMediaRule, self).__init__(parentRule=parentRule, 
                                            parentStyleSheet=parentStyleSheet)
         self._atkeyword = u'@media'
-        self._media = cssutils.stylesheets.MediaList(
-            mediaText, readonly=readonly)
-        if not self.media.wellformed:
-            self._media = cssutils.stylesheets.MediaList()
+        self._media = cssutils.stylesheets.MediaList(mediaText, 
+                                                     readonly=readonly)
         self.name = name
-            
         self.cssRules = cssutils.css.cssrulelist.CSSRuleList()
         self.cssRules.append = self.insertRule
         self.cssRules.extend = self.insertRule
@@ -61,16 +56,12 @@ class CSSMediaRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __iter__(self):
-        """
-        generator which iterates over cssRules.
-        """
+        """generator which iterates over cssRules."""
         for rule in self.cssRules:
             yield rule
             
     def _getCssText(self):
-        """
-        returns serialized property cssText
-        """
+        """return serialized property cssText"""
         return cssutils.ser.do_CSSMediaRule(self)
 
     def _setCssText(self, cssText):
@@ -207,10 +198,10 @@ class CSSMediaRule(cssrule.CSSRule):
                                                    default=ruleset,
                                                    new=new)
                 
-                # no post condition
-                    
+                # no post condition                    
                 if newmedia.wellformed and wellformed:
-                    self._media = newmedia                
+                    # keep reference
+                    self._media.mediaText = newmedia.mediaText  
                     self.name = name
                     self._setSeq(nameseq)
                     del self.cssRules[:]
@@ -266,9 +257,7 @@ class CSSMediaRule(cssrule.CSSRule):
                 index, self.cssRules.length))
 
     def add(self, rule):
-        """
-        Adds rule to end of this mediarule. Same as ``.insertRule(rule)``. 
-        """
+        """Add rule to end of this mediarule. Same as ``.insertRule(rule)``."""
         self.insertRule(rule, index=None)
             
     def insertRule(self, rule, index=None):
