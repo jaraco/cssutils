@@ -18,12 +18,38 @@ def save(name, string):
     f.write(string)
     f.close()
 
-if 0:
+
+if 1:
     tn = cssutils.tokenize2.Tokenizer()
-    l = list(tn.tokenize('\\i \\49\r\nm \\000065\r\n', fullsheet=0))
-    print l
-    t = l[0]
-    print len(t[1]), t
+    
+    for t in tn.tokenize('@charset "x";@charset"y";@charset "x";@CHARset "y"', fullsheet=0):
+        print t 
+    sys.exit(1)
+
+
+if 0:
+    cssutils.log.setLevel(logging.INFO)
+    css = """
+                .normal {background-color: gray;}
+            .backslash {bac\kground-color: gray;}
+            html>body .childselector {background-color: green;}
+            html>/**/body .childselector-with-comment {background-color: orange}
+            .colon-default2, x:default {background-color: orange}
+            html>/**/body .colon-default, x:default {background-color: orange}
+            *:not(hr) .not-hr {background-color: red;}
+            * html .ie-only-1 {background-color: blue;}
+            *+html .ie-only-2 {background-color: blue;}
+            *+html .ie-only-3 {background-color: blue;}
+            html:first-child .first-child-2 {background-color: red;}
+            @mediaall { .mediaall { background-color: red; }}
+            .not-class:not([class='XXX']) {background-color: red;}
+            @media all and (min-width: 0) { .mediaquery { background-color: red;} }
+    """
+    print css
+    print
+    s = cssutils.parseString(css)
+    print s.cssText
+        
     sys.exit(1)
 
 if 1:
@@ -215,7 +241,7 @@ if 0:
     print s.selectorText
     ns = [
            {'p': 'URI'},
-           {'': 'EMPTY','p': 'URI'},
+           {'': 'EMPTY', 'p': 'URI'},
            ]
     for n in ns:
         sl = cssutils.css.SelectorList(selectorText='*|* |* * *|a |a a p|* p|a',
