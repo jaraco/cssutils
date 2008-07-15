@@ -20,11 +20,11 @@ class Tokenizer(object):
         (Tokenname, value, startline, startcolumn)
     """
     _atkeywords = {
-        u'@font-face': 'FONT_FACE_SYM',
-        u'@import': 'IMPORT_SYM',
-        u'@media': 'MEDIA_SYM',        
-        u'@namespace': 'NAMESPACE_SYM',
-        u'@page': 'PAGE_SYM'
+        u'@font-face': CSSProductions.FONT_FACE_SYM,
+        u'@import': CSSProductions.IMPORT_SYM,
+        u'@media': CSSProductions.MEDIA_SYM,        
+        u'@namespace': CSSProductions.NAMESPACE_SYM,
+        u'@page': CSSProductions.PAGE_SYM
         }
     _linesep = u'\n'
     
@@ -102,6 +102,13 @@ class Tokenizer(object):
             found = match.group(0)
             yield (BOM, found, line, col)
             text = text[len(found):]
+
+        # check for @charset which is valid only at start of CSS
+        if text.startswith('@charset '):
+            found = '@charset ' # production has trailing S!
+            yield (CSSProductions.CHARSET_SYM, found, line, col)
+            text = text[len(found):]
+            col += len(found)
         
         while text:
             # speed test for most used CHARs
@@ -152,7 +159,13 @@ class Tokenizer(object):
                         else:
                             if 'ATKEYWORD' == name:
                                 # get actual ATKEYWORD SYM
-                                name = self._atkeywords.get(normalize(found), 'ATKEYWORD')
+                                if '@charset' == found and ' ' == text[len(found):len(found)+1]:
+                                    # only this syntax!
+                                    name = CSSProductions.CHARSET_SYM
+                                    found += ' '
+                                else:
+                                    name = self._atkeywords.get(normalize(found), 'ATKEYWORD')
+                                    
                             value = found # should not contain unicode escape (?)
     
                         yield (name, value, line, col)

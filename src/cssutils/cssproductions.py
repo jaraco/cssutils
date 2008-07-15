@@ -76,6 +76,7 @@ MACROS = {
 # The productions are **ordered**:
 PRODUCTIONS = [
     ('BOM', r'\xFEFF'), # will only be checked at beginning of CSS
+    
     ('S', r'{wc}+'), # 1st in list of general productions
     ('URI', r'{U}{R}{L}\({w}({string}|{urlchar}*){w}\)'),
     ('FUNCTION', r'{ident}\('),
@@ -86,7 +87,8 @@ PRODUCTIONS = [
     ('PERCENTAGE', r'{num}\%'),
     ('DIMENSION', r'{num}{ident}'),
     ('NUMBER', r'{num}'),
-    ('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
+    # valid ony at start so not checked everytime
+    #('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
     ('ATKEYWORD', r'@{ident}'), # other keywords are done in the tokenizer
     #('UNICODE-RANGE', r'[0-9A-F?]{1,6}(\-[0-9A-F]{1,6})?'), #???
     ('CDO', r'\<\!\-\-'),
@@ -107,7 +109,8 @@ class CSSProductions(object):
     """
     EOF = True
     # removed from productions as they simply are ATKEYWORD until 
-    # tokenizing 
+    # tokenizing
+    CHARSET_SYM = 'CHARSET_SYM' 
     FONT_FACE_SYM = 'FONT_FACE_SYM'
     MEDIA_SYM = 'MEDIA_SYM'
     IMPORT_SYM = 'IMPORT_SYM'
