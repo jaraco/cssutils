@@ -45,6 +45,8 @@ known issues
 HEAD
     - **BUGFIX**: Replace usage of ``WindowsError`` with ``OSError``. I thought ``WindowsError`` at least be present in environments other than windows but it just gets a NameError... The part of the API which triggered this Exception is an @import rule with an invalid or local (file) URI so should have happened quite rarely anyway.
 
+    - IMPROVEMENT: Optimized tokenizer (CHARSET_SYM is handled special now).
+
 0.9.5rc2 080714
     - **API CHANGE/BUGFIX (major)**:
 
