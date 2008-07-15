@@ -731,10 +731,10 @@ def _defaultFetcher(url):
     """
     try:
         res = urllib2.urlopen(url)
-    except WindowsError, e:
+    except OSError, e:
         # e.g if file URL and not found
-        cssutils.log.warn(e, error=WindowsError)
-    except (WindowsError, ValueError), e:
+        cssutils.log.warn(e, error=OSError)
+    except (OSError, ValueError), e:
         # invalid url, e.g. "1"
         cssutils.log.warn(u'ValueError, %s' % e.message, error=ValueError)
     except urllib2.HTTPError, e:
