@@ -41,19 +41,15 @@ class Base(object):
             u'border-right': [],
             u'border-top': [],
             u'border-bottom': [],
-            u'border-color': [],
-            u'border-style': [],
-            u'border-width': [],
+            #u'border-color': [], # list or single but same values
+            #u'border-style': [], # list or single but same values
+            #u'border-width': [], # list or single but same values
             u'cue': [],
             u'font': [],
-#                      [('font-weight', True),
-#                      ('font-size', True),
-#                      ('line-height', False),
-#                      ('font-family', True)],
             u'list-style': [],
-            u'margin': [],
+            #u'margin': [], # list or single but same values
             u'outline': [],
-            u'padding': [],
+            #u'padding': [], # list or single but same values
             u'pause': []
             }
 
