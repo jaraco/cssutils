@@ -79,7 +79,7 @@ class Tokenizer(object):
             to be tokenized
         fullsheet
             if ``True`` appends EOF token as last one and completes incomplete
-            COMMENT tokens
+            COMMENT or INVALID (to STRING) tokens
         """
         def repl(m):
             "used by unicodesub"
