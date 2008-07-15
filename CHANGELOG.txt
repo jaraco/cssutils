@@ -43,6 +43,9 @@ known issues
 0.9.x
 -----
 HEAD
+    - **BUGFIX**: Replace usage of ``WindowsError`` with ``OSError``. I thought ``WindowsError`` at least be present in environments other than windows but it just gets a NameError... The part of the API which triggered this Exception is an @import rule with an invalid or local (file) URI so should have happened quite rarely anyway.
+
+0.9.5rc2 080714
     - **API CHANGE/BUGFIX (major)**:
 
         Upto 0.9.5rc1 any sheet resulting from parsing via any ``parse*`` function or ``CSSParser(raiseExceptions=False)`` (which also was and is the default) resulted in the library simply logging any later exceptions and not raising them. Until now the global setting of ``cssutils.log.raiseExceptions=True`` (the default) was overwritten with the value of the CSSParser ``raiseExceptions`` setting which normally is ``False`` any time a ``cssutils.parse*`` function or ``CSSParser.parse*`` method was used. 0.9.5rc2 fixes this.
