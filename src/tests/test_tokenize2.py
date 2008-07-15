@@ -336,8 +336,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
             ur'@\66\6f\6e\74\-\66\61\63\65', 1, 1)],
 
         # CHARSET_SYM only if "@charset "!
+        u'@charset  ': [('CHARSET_SYM', u'@charset ', 1, 1),
+                        ('S', u' ', 1, 10)],
         u' @charset  ': [('S', u' ', 1, 1),
-                 ('CHARSET_SYM', u'@charset ', 1, 2),
+                 ('CHARSET_SYM', u'@charset ', 1, 2), # not at start
                  ('S', u' ', 1, 11)],
         u'@charset': [('ATKEYWORD', u'@charset', 1, 1)], # no ending S
         u'@CHARSET ': [('ATKEYWORD', u'@CHARSET', 1, 1),# uppercase
