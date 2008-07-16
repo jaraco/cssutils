@@ -36,6 +36,7 @@ class Base(object):
     # format: shorthand: [(propname, mandatorycheck?)*]
     _SHORTHANDPROPERTIES = {
             u'background': [],
+            u'background-position': [],
             u'border': [],
             u'border-left': [],
             u'border-right': [],
