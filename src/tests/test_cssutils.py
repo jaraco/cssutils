@@ -59,7 +59,8 @@ a {
         
         s = cssutils.parseFile(name, href=href, media='screen', title='from file')
         self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
-        self.assert_(s.href.startswith('file:///'))
+        # normally file:/// on win and file:/ on unix
+        self.assert_(s.href.startswith('file:/')) 
         self.assert_(s.href.endswith('/sheets/import.css'))
         self.assertEqual(u'utf-8', s.encoding)
         self.assertEqual(u'screen', s.media.mediaText)
@@ -80,7 +81,7 @@ a {
         
         s = cssutils.parseFile(name, media='screen', title='from file')
         self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
-        self.assert_(s.href.startswith('file:///'))
+        self.assert_(s.href.startswith('file:/'))
         self.assert_(s.href.endswith('/sheets/import.css'))
         self.assertEqual(u'utf-8', s.encoding)
         self.assertEqual(u'screen', s.media.mediaText)
