@@ -5,6 +5,8 @@ __version__ = '$Id$'
 import xml.dom
 import basetest
 import cssutils
+import urllib2
+
 try:
     from minimock import mock, restore
 except ImportError:
@@ -64,7 +66,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
 #        "CSSParser.parseFile()"
 #        # see test_cssutils
 
-    def XXXtest_parseUrl(self):
+    def test_parseUrl(self):
         "CSSParser.parseUrl()"
         if mock:
             # parseUrl(self, href, encoding=None, media=None, title=None):
@@ -122,8 +124,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
                     self.assertEqual(sheet1, None)
                     self.assertEqual(sheet2, None)
 
-            self.assertEqual(None, parser.parseUrl('../not-valid-in-urllib'))
-            self.assertEqual(None, parser.parseUrl('http://example.com/not-present.css'))
+            self.assertRaises(ValueError, parser.parseUrl, '../not-valid-in-urllib')
+            self.assertRaises(urllib2.HTTPError, parser.parseUrl, 'http://example.com/not-present.css')
 
     def test_parseString(self):
         "CSSParser.parseString()"

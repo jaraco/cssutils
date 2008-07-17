@@ -9,7 +9,11 @@ import urllib2
 from email import message_from_string, message_from_file
 
 import cssutils
-from minimock import mock, restore
+try:
+    from minimock import mock, restore
+except ImportError:
+    mock = None 
+    print "install minimock with ``easy_install minimock`` to run all tests"
 
 
 class BaseTestCase(unittest.TestCase):
@@ -151,9 +155,6 @@ class BaseTestCase(unittest.TestCase):
             return _Response(url, text=text, error=error)
         return x
     
-    def init_urlopen_mock(self, url, text, encoding='utf-8'):
-        mock("urllib2.urlopen", 
-             mock_obj=self._urlopen(url, text=text.encode(encoding))) 
 
 class _Response(object):
     """urllib2.Reponse mock"""
