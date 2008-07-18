@@ -270,7 +270,8 @@ class CodecTestCase(unittest.TestCase):
         info = codecs.lookup("css")
 
         def decodeall(input, **kwargs):
-            return info.decode(input, **kwargs)[0]
+            # Py 2.5: info.decode('@charset "utf-8"; x') 
+            return info[1](input, **kwargs)[0]
 
         def incdecode(input, **kwargs):
             decoder = info.incrementaldecoder(**kwargs)
