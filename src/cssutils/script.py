@@ -328,12 +328,10 @@ into a single new sheet.
     log = cssutils.log
 
     log.info('Combining files in proxy %r' % proxypath, neverraise=True)
-    #sys.stderr.write('COMBINING %s\n' % proxypath)
 
     if sourceencoding is not None:
         log.info('Using source encoding %r' % sourceencoding,
                   neverraise=True)
-        #sys.stderr.write('USING SOURCE ENCODING: %s\n' % sourceencoding)
 
     src = cssutils.parseFile(proxypath, encoding=sourceencoding)
     srcpath = os.path.dirname(proxypath)
