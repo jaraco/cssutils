@@ -43,9 +43,11 @@ known issues
 0.9.x
 -----
 HEAD
-    - **BUGFIX**: Replaced usage of ``WindowsError`` with ``OSError``. I thought ``WindowsError`` at least be present in environments other than Windows but it just results in a ``NameError``... The part of the API which triggered this Exception is an @import rule with an invalid or local (file) URI so should have happened quite rarely anyway.
+    - **BUGFIX**: Replaced usage of ``WindowsError`` with ``OSError``. I (naively ;) thought ``WindowsError`` at least be present in environments other than Windows but it just results in a ``NameError``... The part of the API which triggered this Exception is an @import rule with an invalid or local (file) URI so should have happened quite rarely anyway.
 
-    - IMPROVEMENT: Optimized and refactored tokenizer (CHARSET_SYM).
+    + IMPROVEMENT: Standalone scripts ``csscombine`` and ``csscapture`` are available for programmatic use in ``cssutils.script.csscombine`` and ``cssutils.script.CSSCapture`` res.
+    + IMPROVEMENT: ``cssutils.script.csscombine`` and ``csscombine`` script do use the cssutils log now instead of just writing messages to ``sys.stderr``
+    + IMPROVEMENT: Optimized and refactored tokenizer (CHARSET_SYM).
 
 0.9.5rc2 080714
     - **API CHANGE/BUGFIX (major)**:
