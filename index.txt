@@ -19,12 +19,13 @@ General
 
 
     see also
-        * `cssutils at Google Code <http://code.google.com/p/cssutils/>`_
-        * `cssutils at cthedot <http://cthedot.de/cssutils/>`_
+        * `cssutils at Google Code <http://code.google.com/p/cssutils/>`__
+        * `cssutils at cthedot <http://cthedot.de/cssutils/>`__
+        * `cssutils discussion group <http://groups.google.com/group/cssutils>`__
 
 API
     * `cssutils <docs/cssutils.txt>`_ package
     * `cssutils.css <docs/css.txt>`_ package
     * `cssutils.stylesheets <docs/stylesheets.txt>`_ package
-    * `cssutils scripts <docs/scripts.txt>`_
+    * `cssutils.script module and standalone scripts <docs/scripts.txt>`_
     * `generated API docs (Epydoc) <doc/index.html>`_
