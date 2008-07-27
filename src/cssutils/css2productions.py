@@ -25,6 +25,8 @@ MACROS = {
     'invalid1': r'\"([^\n\r\f\\"]|\\{nl}|{escape})*',
     'invalid2': r"\'([^\n\r\f\\']|\\{nl}|{escape})*",
     'comment': r'\/\*[^*]*\*+([^/*][^*]*\*+)*\/',
+    # CSS list 080725 19:43 
+    # \/\*([^*\\]|{escape})*\*+(([^/*\\]|{escape})[^*]*\*+)*\/
 
     'ident':  r'[-]?{nmstart}{nmchar}*',
     'name': r'{nmchar}+',
