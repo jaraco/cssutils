@@ -43,6 +43,8 @@ known issues
 0.9.x
 -----
 HEAD
+    - **BUGFIX**: Deeply nested ``CSSImportRule``\ s with different encodings  should keep the encoding as defined in the imported sheet (or via HTTP etc) now.  Therefor ``cssutils.util._readUrl`` does return ``(encoding, enctype, decodedCssText)`` now where ``enctype`` is a number from 0 to 5 indicating which encoding type was used: 0 for encoding override, 1 for HTTP encoding, 2 for BOM or @charset rule, (3 is unused currently), 4 for encoding of the parent sheet and 5 if encoding defaults to UTF-8 as no other information is available. (This may later be done as constants but this function should not be used from programs generally).
+
     - **BUGFIX**: Replaced usage of ``WindowsError`` with ``OSError``. I (naively ;) thought ``WindowsError`` at least be present in environments other than Windows but it just results in a ``NameError``... The part of the API which triggered this Exception is an @import rule with an invalid or local (file) URI so should have happened quite rarely anyway.
 
     + IMPROVEMENT: Standalone scripts ``csscombine`` and ``csscapture`` are available for programmatic use in ``cssutils.script.csscombine`` and ``cssutils.script.CSSCapture`` res.
