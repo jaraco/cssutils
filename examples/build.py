@@ -50,5 +50,10 @@ def main():
     print sheet.cssText
 
 
-if __name__ == '__main__':
-    main()
+def _test():
+    import doctest           # replace M with your module's name
+    return doctest.testfile(__file__)   # ditto
+
+if __name__ == "__main__":
+    _test() 
+    #main()
