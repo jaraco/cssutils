@@ -1,6 +1,6 @@
 """CSSImportRule implements DOM Level 2 CSS CSSImportRule.
 
-plus: 
+plus:
 
 ``name`` property
     http://www.w3.org/TR/css3-cascade/#cascading
@@ -36,7 +36,7 @@ class CSSImportRule(cssrule.CSSRule):
         reconfigured in the serializer but it is kept anyway
     media: of type stylesheets::MediaList (DOM readonly)
         A list of media types for this rule of type MediaList.
-    name: 
+    name:
         An optional name used for cascading
     styleSheet: of type CSSStyleSheet (DOM readonly)
         The style sheet referred to by this rule. The value of this
@@ -55,7 +55,7 @@ class CSSImportRule(cssrule.CSSRule):
     """
     type = property(lambda self: cssrule.CSSRule.IMPORT_RULE)
 
-    def __init__(self, href=None, mediaText=u'all', name=None, 
+    def __init__(self, href=None, mediaText=u'all', name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """
         if readonly allows setting of properties in constructor only
@@ -68,7 +68,7 @@ class CSSImportRule(cssrule.CSSRule):
             A list of media types for which this style sheet may be used
             as a string
         """
-        super(CSSImportRule, self).__init__(parentRule=parentRule, 
+        super(CSSImportRule, self).__init__(parentRule=parentRule,
                                             parentStyleSheet=parentStyleSheet)
         self._atkeyword = u'@import'
         self.hreftype = None
@@ -76,16 +76,16 @@ class CSSImportRule(cssrule.CSSRule):
 
         self._href = None
         self.href = href
-        
+
         # if self._media is used (simply empty)
         self._usemedia = False
         self._media = cssutils.stylesheets.MediaList()
         if mediaText:
             self._usemedia = True
             self._media.mediaText = mediaText
-            
+
         self._name = name
-            
+
         seq = self._tempSeq()
         seq.append(self.href, 'href')
         seq.append(self.media, 'media')
@@ -192,7 +192,7 @@ class CSSImportRule(cssrule.CSSRule):
                         new['wellformed'] = False
                         self._log.error(u'CSSImportRule: Invalid MediaList: %s' %
                                         self._valuestr(cssText), token=token)
-                        
+
                     if lasttyp == self._prods.STRING:
                         # name
                         return __doname(seq, last)
@@ -216,7 +216,7 @@ class CSSImportRule(cssrule.CSSRule):
                     return expected
 
             # import : IMPORT_SYM S* [STRING|URI]
-            #            S* [ medium [ ',' S* medium]* ]? ';' S* 
+            #            S* [ medium [ ',' S* medium]* ]? ';' S*
             #         STRING? # see http://www.w3.org/TR/css3-cascade/#cascading
             #        ;
             newseq = self._tempSeq()
@@ -241,7 +241,7 @@ class CSSImportRule(cssrule.CSSRule):
                 wellformed = False
                 self._log.error(u'CSSImportRule: No ";" found: %s' %
                     self._valuestr(cssText))
-            
+
             # set all
             if wellformed:
                 self.atkeyword = new['keyword']
@@ -255,7 +255,7 @@ class CSSImportRule(cssrule.CSSRule):
                 self.name = new['name']
                 self._setSeq(newseq)
                 self.href = new['href']
-                
+
                 if self.styleSheet:
                     # title is set by href
                     #self.styleSheet._href = self.href
@@ -280,7 +280,7 @@ class CSSImportRule(cssrule.CSSRule):
         if not self.styleSheet:
             # set only if not set before
             self.__setStyleSheet()
-            
+
     href = property(lambda self: self._href, _setHref,
                     doc="Location of the style sheet to be imported.")
 
@@ -320,8 +320,9 @@ class CSSImportRule(cssrule.CSSRule):
 
     def __setStyleSheet(self):
         """Read new CSSStyleSheet cssText from href using parentStyleSheet.href
-        
-        indirectly called if setting ``href``
+
+        Indirectly called if setting ``href``. In case of any error styleSheet 
+        is set to ``None``.
         """
         # should simply fail so all errors are catched!
         if self.parentStyleSheet and self.href:
@@ -331,30 +332,37 @@ class CSSImportRule(cssrule.CSSRule):
                 # use cwd instead
                 parentHref = u'file:' + urllib.pathname2url(os.getcwd()) + '/'
             href = urlparse.urljoin(parentHref, self.href)
-            
-            # all possible exceptions are ignored and styleSheet is None
-            try:
-                overrideEncoding, cssText = self.parentStyleSheet._resolveImport(href)
-                if cssText is None:
-                    raise IOError('Cannot read Stylesheet or it is empty.')
 
-                refsheet = cssutils.css.CSSStyleSheet(href=href, 
+            # all possible exceptions are ignored (styleSheet is None then)
+            try:
+                usedEncoding, enctype, cssText = self.parentStyleSheet._resolveImport(href)
+                if cssText is None:
+                    # catched in next except below!
+                    raise IOError('Cannot read Stylesheet.')
+                styleSheet = cssutils.css.CSSStyleSheet(href=href,
                                                       media=self.media,
                                                       ownerRule=self,
                                                       title=self.name)
-                # inherit fetcher for @imports in refsheet
-                refsheet._setFetcher(self.parentStyleSheet._fetcher)
-                # overrideEncoding with parentStyleSheet.overrideEncoding, 
+                # inherit fetcher for @imports in styleSheet
+                styleSheet._setFetcher(self.parentStyleSheet._fetcher)
+                # contentEncoding with parentStyleSheet.overrideEncoding,
                 # HTTP or parent
-                refsheet._setCssTextWithEncodingOverride(cssText, 
-                                                         overrideEncoding)
-                 
+                encodingOverride, encoding = None, None
+                if enctype == 0:
+                    encodingOverride = usedEncoding
+                elif 5 > enctype > 0:
+                    encoding = usedEncoding
+                
+                styleSheet._setCssTextWithEncodingOverride(cssText, 
+                                                         encodingOverride=encodingOverride,
+                                                         encoding=encoding)
+
             except (OSError, IOError, ValueError), e:
                 self._log.warn(u'CSSImportRule: While processing imported style sheet href=%r: %r'
                                % (self.href, e), neverraise=True)
             else:
-                self._styleSheet = refsheet
-                
+                self._styleSheet = styleSheet
+
     styleSheet = property(lambda self: self._styleSheet,
                           doc="(readonly) The style sheet referred to by this rule.")
 
@@ -373,7 +381,7 @@ class CSSImportRule(cssrule.CSSRule):
         else:
             mediaText = None
         return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
-                self.__class__.__name__, 
+                self.__class__.__name__,
                 self.href, self.media.mediaText, self.name)
 
     def __str__(self):

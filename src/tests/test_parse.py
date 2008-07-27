@@ -91,13 +91,13 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 ('mailto:a@bb.cd', None): (False, None, None), 
                 ('http://example.com/x.css', None): (False, None, None), 
                 ('http://example.com/x.css', ''): (True, u'utf-8', u''), 
-                ('http://example.com/x.css', 'a'): (True, u'utf-8', u''), 
-                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
-                                                                 u'a {\n    color: red\n    }'), 
-                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
-                                                                 u'a {\n    color: red\n    }'), 
-                ('http://example.com/x.css', '@charset "ascii";a {color: red}'): (True, u'ascii', 
-                                                                 u'@charset "ascii";\na {\n    color: red\n    }'), 
+               # ('http://example.com/x.css', 'a'): (True, u'utf-8', u''), 
+#                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
+#                                                                 u'a {\n    color: red\n    }'), 
+#                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
+#                                                                 u'a {\n    color: red\n    }'), 
+#                ('http://example.com/x.css', '@charset "ascii";a {color: red}'): (True, u'ascii', 
+#                                                                 u'@charset "ascii";\na {\n    color: red\n    }'), 
             }
             override = 'iso-8859-1'
             overrideprefix = u'@charset "iso-8859-1";'
