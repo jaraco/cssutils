@@ -68,7 +68,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.cssRules.extend = self.insertRule
         self._namespaces = _Namespaces(parentStyleSheet=self)
         self._readonly = readonly
-        
+
         # used only during setting cssText by parse*()
         self.__encodingOverride = None
         self._fetcher = None
@@ -123,7 +123,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
               is unparsable.
         """
         self._checkReadonly()
-        
+
         cssText, namespaces = self._splitNamespacesOff(cssText)
         if not namespaces:
             namespaces = _SimpleNamespaces()
@@ -158,16 +158,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             else:
                 if rule.wellformed:
                     seq.append(rule)
-                    new['encoding'] = rule.encoding 
+                    new['encoding'] = rule.encoding
             return 1
 
         def importrule(expected, seq, token, tokenizer):
+            if new['encoding']:
+                # set temporarily as used by _resolveImport
+                # save newEncoding which have been set by resolveImport
+                self.__newEncoding = new['encoding']
+
             rule = cssutils.css.CSSImportRule(parentStyleSheet=self)
-            #rule._parentEncoding = new['encoding'] # set temporarily
-            
-            # set temporarily as used by _resolveImport
-            self.__newEncoding = new['encoding']
-            
             rule.cssText = self._tokensupto2(tokenizer, token)
             if expected > 1:
                 self._log.error(
@@ -178,8 +178,11 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     #del rule._parentEncoding # remove as later it is read from this sheet!
                     seq.append(rule)
 
-            # remove as only used temporarily
-            del self.__newEncoding
+            try:
+                # remove as only used temporarily but may not be set at all
+                del self.__newEncoding
+            except AttributeError, e:
+                pass
 
             return 1
 
@@ -268,38 +271,45 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     cssText = property(_getCssText, _setCssText,
             "(cssutils) a textual representation of the stylesheet")
 
-    def _setCssTextWithEncodingOverride(self, cssText, encodingOverride=None):
-        """Set cssText but use __encodingOverride to overwrite detected 
-        encoding. This is only used by @import during setting of cssText.
-        In all other cases __encodingOverride is None"""
-        if encodingOverride:
-            # encoding during @import resolve, is used again during parse!
-            self.__encodingOverride = encodingOverride
-            
-        self.cssText = cssText
-        
-        if encodingOverride:
-            # set explicit encodingOverride
-            self.encoding = self.__encodingOverride
-            self.__encodingOverride = None
-
     def _resolveImport(self, url):
-        """Read (encoding, cssText) from ``url`` for @import sheets"""
+        """Read (encoding, enctype, decodedContent) from ``url`` for @import 
+        sheets."""
         try:
             # only available during parse of a complete sheet
-            parentEncoding = self.__newEncoding
+            selfAsParentEncoding = self.__newEncoding
         except AttributeError:
-            # or check if @charset explicitly set
             try:
-                # explicit cssRules[0] and not the default encoding UTF-8
-                # but in that case None
-                parentEncoding = self.cssRules[0].encoding
+                # explicit @charset
+                selfAsParentEncoding = self.cssRules[0].encoding
             except (IndexError, AttributeError):
-                parentEncoding = None  
-        
-        return _readUrl(url, fetcher=self._fetcher, 
+                # default not UTF-8 but None!
+                selfAsParentEncoding = None
+
+        return _readUrl(url, fetcher=self._fetcher,
                         overrideEncoding=self.__encodingOverride,
-                        parentEncoding=parentEncoding)
+                        parentEncoding=selfAsParentEncoding)
+
+    def _setCssTextWithEncodingOverride(self, cssText, encodingOverride=None, 
+                                        encoding=None):
+        """Set cssText but use ``encodingOverride`` to overwrite detected
+        encoding. This is used by parse and @import during setting of cssText.
+
+        If ``encoding`` is given use this but do not save it as encodingOverride"""
+        if encodingOverride:
+            # encoding during resolving of @import
+            self.__encodingOverride = encodingOverride
+
+        self.__newEncoding = encoding # save for nested @import
+        self.cssText = cssText
+
+        if encodingOverride:
+            # set encodingOverride explicit again!
+            self.encoding = self.__encodingOverride
+            # remove?
+            self.__encodingOverride = None
+        elif encoding:
+            # may e.g. be httpEncoding
+            self.encoding = encoding
 
     def _setFetcher(self, fetcher=None):
         """sets @import URL loader, if None the default is used"""
@@ -428,30 +438,30 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     index, self.cssRules.length))
             return
 
-        if isinstance(rule, basestring):            
+        if isinstance(rule, basestring):
             # init a temp sheet which has the same properties as self
-            tempsheet = CSSStyleSheet(href=self.href, 
-                                      media=self.media, 
+            tempsheet = CSSStyleSheet(href=self.href,
+                                      media=self.media,
                                       title=self.title,
                                       parentStyleSheet=self.parentStyleSheet,
                                       ownerRule=self.ownerRule)
             tempsheet._ownerNode = self.ownerNode
             tempsheet._fetcher = self._fetcher
 
-            # prepend encoding if in this sheet to be able to use it in 
+            # prepend encoding if in this sheet to be able to use it in
             # @import rules encoding resolution
             # do not add if new rule startswith "@charset" (which is exact!)
-            if not rule.startswith(u'@charset') and (self.cssRules and 
+            if not rule.startswith(u'@charset') and (self.cssRules and
                 self.cssRules[0].type == self.cssRules[0].CHARSET_RULE):
                 # rule 0 is @charset!
                 newrulescount, newruleindex = 2, 1
                 rule = self.cssRules[0].cssText + rule
-            else: 
-                newrulescount, newruleindex = 1, 0 
-            
+            else:
+                newrulescount, newruleindex = 1, 0
+
             # parse the new rule(s)
             tempsheet.cssText = (rule, self._namespaces)
-            
+
             if len(tempsheet.cssRules) != newrulescount or (not isinstance(
                tempsheet.cssRules[newruleindex], cssutils.css.CSSRule)):
                 self._log.error(u'CSSStyleSheet: Not a CSSRule: %s' % rule)
@@ -459,16 +469,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule = tempsheet.cssRules[newruleindex]
             rule._parentStyleSheet = None # done later?
 
-            # TODO: 
+            # TODO:
             #tempsheet._namespaces = self._namespaces
-
 
         elif isinstance(rule, cssutils.css.CSSRuleList):
             # insert all rules
             for i, r in enumerate(rule):
                 self.insertRule(r, index + i)
             return index
-            
+
         if not rule.wellformed:
             self._log.error(u'CSSStyleSheet: Invalid rules cannot be added.')
             return
@@ -585,8 +594,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         else:
             if inOrder:
                 # simply add to end as no specific order
-                self.cssRules.append(rule) 
-                index = len(self.cssRules) - 1 
+                self.cssRules.append(rule)
+                index = len(self.cssRules) - 1
             else:
                 for r in self.cssRules[index:]:
                     if r.type in (r.CHARSET_RULE, r.IMPORT_RULE, r.NAMESPACE_RULE):
@@ -596,9 +605,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                             error=xml.dom.HierarchyRequestErr)
                         return
                 self.cssRules.insert(index, rule)
-                
+
         # post settings, TODO: for other rules which contain @rules
-        rule._parentStyleSheet = self        
+        rule._parentStyleSheet = self
         if rule.MEDIA_RULE == rule.type:
             for r in rule:
                 r._parentStyleSheet = self
@@ -650,7 +659,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         else:
             mediaText = None
         return "cssutils.css.%s(href=%r, media=%r, title=%r)" % (
-                self.__class__.__name__, 
+                self.__class__.__name__,
                 self.href, mediaText, self.title)
 
     def __str__(self):
@@ -661,5 +670,5 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         return "<cssutils.css.%s object encoding=%r href=%r "\
                "media=%r title=%r namespaces=%r at 0x%x>" % (
                 self.__class__.__name__, self.encoding, self.href,
-                mediaText, self.title, self.namespaces.namespaces, 
+                mediaText, self.title, self.namespaces.namespaces,
                 id(self))

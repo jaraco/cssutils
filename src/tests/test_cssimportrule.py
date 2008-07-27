@@ -312,6 +312,23 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(ir.href, "CANNOT-FIND.css")
         self.assertEqual(ir.styleSheet, None)
 
+        def fetcher(url):
+            if url.endswith('level1.css'): 
+                return None, '@charset "ascii"; @import "level2.css";'
+            else:
+                return None, 'a { color: red }'
+            
+        parser = cssutils.CSSParser(fetcher=fetcher)
+        
+        sheet = parser.parseString('@charset "iso-8859-1";@import "level1.css";')
+        self.assertEqual(sheet.encoding, 'iso-8859-1')
+
+        sheet = sheet.cssRules[1].styleSheet
+        self.assertEqual(sheet.encoding, 'ascii')
+
+        sheet = sheet.cssRules[1].styleSheet
+        self.assertEqual(sheet.encoding, 'ascii')
+
     def test_incomplete(self):
         "CSSImportRule (incomplete)"
         tests = {

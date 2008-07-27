@@ -101,7 +101,7 @@ class CSSParser(object):
         # tokenizing this ways closes open constructs and adds EOF
         sheet._setCssTextWithEncodingOverride(self.__tokenizer.tokenize(cssText,
                                                                         fullsheet=True),
-                                              encoding)
+                                              encodingOverride=encoding)
         self.__parseSetting(False)
         return sheet
 
@@ -148,8 +148,12 @@ class CSSParser(object):
 
         for other parameters see ``parseString``
         """
-        encoding, text = cssutils.util._readUrl(href,
-                                                overrideEncoding=encoding)
+        encoding, enctype, text = cssutils.util._readUrl(href,
+                                                         overrideEncoding=encoding)
+        if enctype == 5:
+            # do not used if defaulting to UTF-8
+            encoding = None
+            
         if text is not None:
             return self.parseString(text, encoding=encoding,
                                     href=href, media=media, title=title)

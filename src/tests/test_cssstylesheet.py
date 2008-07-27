@@ -502,18 +502,22 @@ ex2|SEL4, a, ex2|SELSR {
         cssrulessheet = p.parseString('@import "example.css";')
         cssrulessheet.cssRules[0]._styleSheet = None
         imports = (
-            '@import "example.css";', # string
-            cssutils.css.CSSImportRule(href="example.css"), # CSSRule
-            cssrulessheet.cssRules # CSSRuleList
+            # different encodings as only 1st is parsed!
+            ('@import "example.css";', 'ascii'), # string
+            (cssutils.css.CSSImportRule(href="example.css"), 'utf-8'), # CSSRule
+            (cssrulessheet.cssRules, 'utf-8') # CSSRuleList
             )
-        for imp in imports:
+        for imp, enc in imports:
             sheet = p.parseString('', href='http://example.com', encoding='ascii')
             sheet.add(imp)
             added = sheet.cssRules[1]
             self.assertEqual(sheet, added.parentStyleSheet)
             self.assertEqual(u'example.css', added.href)
-            self.assertEqual(u'ascii', added.styleSheet.encoding)
-            self.assertEqual(u'@charset "ascii";\n/**/', added.styleSheet.cssText)
+            self.assertEqual(enc, added.styleSheet.encoding)
+            if enc == 'ascii':
+                self.assertEqual(u'@charset "ascii";\n/**/', added.styleSheet.cssText)
+            else:
+                self.assertEqual(u'/**/', added.styleSheet.cssText)
             
         # if styleSheet is already there encoding is not set new
         impsheet = p.parseString('@import "example.css";')
