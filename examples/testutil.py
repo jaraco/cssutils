@@ -72,5 +72,9 @@ def main():
     print 70*'-' 
     print 'Ran %i tests (%i errors).' % (modules, errors)  
     
+    print 
+    # doctests
+    import website
+    
 if __name__ == '__main__':
     main()
