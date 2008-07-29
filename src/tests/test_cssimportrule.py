@@ -244,9 +244,13 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # for generated rule
         r = cssutils.css.CSSImportRule(href='x')
-        r.media.appendMedium('tv') # all + tv = all!
+        self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
+                             '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).''', 
+                             r.media.appendMedium, 'tv')
         self.assertEqual(u'@import url(x);', r.cssText)
-        r.media.append('tv') # all + tv = all!
+        self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
+                             '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).''', 
+                             r.media.appendMedium, 'tv')
         self.assertEqual(u'@import url(x);', r.cssText)
         r.media.mediaText = 'tv' 
         self.assertEqual(u'@import url(x) tv;', r.cssText)
@@ -256,9 +260,14 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         # for parsed rule without initial media
         s = cssutils.parseString('@import url(x);')
         r = s.cssRules[0]
-        r.media.appendMedium('tv') # all + tv = all!
+        
+        self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
+                             '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).''', 
+                             r.media.appendMedium, 'tv')        
         self.assertEqual(u'@import url(x);', r.cssText)
-        r.media.append('tv') # all + tv = all!
+        self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
+                             '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).''', 
+                             r.media.appendMedium, 'tv')
         self.assertEqual(u'@import url(x);', r.cssText)
         r.media.mediaText = 'tv' 
         self.assertEqual(u'@import url(x) tv;', r.cssText)

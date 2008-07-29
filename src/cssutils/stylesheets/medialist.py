@@ -163,6 +163,11 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         - INVALID_CHARACTER_ERR: (self)
           If the medium contains characters that are invalid in the
           underlying style language.
+        - INVALID_MODIFICATION_ERR (self)
+          If mediaText is "all" and a new medium is tried to be added.
+          Exception is "handheld" which is set in any case (Opera does handle
+          "all, handheld" special, this special case might be removed in the
+          future). 
         - NO_MODIFICATION_ALLOWED_ERR: (self)
           Raised if this list is readonly.
         """
@@ -188,6 +193,12 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
             elif u'all' in mts:
                 if u'handheld' == newmt:
                     self.seq.append(newMedium)
+                    self._log.warn(u'MediaList: Already specified "all" but still setting new medium: %r' %
+                                   newMedium, error=xml.dom.InvalidModificationErr, neverraise=True)
+                else:
+                    self._log.warn(u'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
+                                   newMedium, error=xml.dom.InvalidModificationErr)
+                    xml.com
             else:
                 self.seq.append(newMedium)
 
