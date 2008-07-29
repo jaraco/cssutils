@@ -55,6 +55,12 @@ def testmod(module):
     print '---', ok, ':', os.path.basename(module.__file__)
           
 def main():
+    print "DOCTESTS:::::::::::::"
+    # doctests
+    import website
+    import doctest
+    doctest.testmod(website)
+    
     global modules, errors
     
     import build
@@ -71,10 +77,6 @@ def main():
     print 
     print 70*'-' 
     print 'Ran %i tests (%i errors).' % (modules, errors)  
-    
-    print 
-    # doctests
-    import website
     
 if __name__ == '__main__':
     main()

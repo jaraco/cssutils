@@ -12,6 +12,7 @@ import xml
 import cssutils
 from StringIO import StringIO
 import unicodedata
+from minimock import mock, restore
 
 def save(name, string):
     f = open(name, 'w')
@@ -20,36 +21,25 @@ def save(name, string):
 
 
 if 1:
-    tn = cssutils.tokenize2.Tokenizer()
+    url = 'http://cthedot.de'
+    from cssutils.script import CSSCapture
+    capturer = CSSCapture(ua=None, log=None, defaultloglevel=logging.INFO)
+    stylesheetlist = capturer.capture(url)
+    for s in stylesheetlist:
+        print s
+
     
-    for t in tn.tokenize('@charset "x";@charset"y";@charset "x";@CHARset "y"', fullsheet=0):
-        print t 
+
+    
+    
     sys.exit(1)
 
+if 1:
+    cssutils.log.setLevel(logging.DEBUG)
+    from cssutils.script import csscombine
+    c = csscombine('sheets/csscombine-proxy.css')
+    print c
 
-if 0:
-    cssutils.log.setLevel(logging.INFO)
-    css = """
-                .normal {background-color: gray;}
-            .backslash {bac\kground-color: gray;}
-            html>body .childselector {background-color: green;}
-            html>/**/body .childselector-with-comment {background-color: orange}
-            .colon-default2, x:default {background-color: orange}
-            html>/**/body .colon-default, x:default {background-color: orange}
-            *:not(hr) .not-hr {background-color: red;}
-            * html .ie-only-1 {background-color: blue;}
-            *+html .ie-only-2 {background-color: blue;}
-            *+html .ie-only-3 {background-color: blue;}
-            html:first-child .first-child-2 {background-color: red;}
-            @mediaall { .mediaall { background-color: red; }}
-            .not-class:not([class='XXX']) {background-color: red;}
-            @media all and (min-width: 0) { .mediaquery { background-color: red;} }
-    """
-    print css
-    print
-    s = cssutils.parseString(css)
-    print s.cssText
-        
     sys.exit(1)
 
 if 1:
@@ -59,7 +49,7 @@ if 1:
     css = '''
     /* contains rules unsuitable for Netscape 4.x; simpler rules are in ns4_only.css. see <http://style.tigris.org/> */
 
-/* colors, backgrounds, borders, link indication */ 
+/* colors, backgrounds, borders, link indication */
 
 body {
  background: #fff;
@@ -89,19 +79,19 @@ body {
  }
 body #banner td a {
  color: #fff !important;
- } 
-.app h4 { 
+ }
+.app h4 {
  background-color: #888;
  }
-.a td { 
+.a td {
  background: #ddd;
  }
-.b td { 
+.b td {
  background: #efefef;
  }
 table, th, td {
  border: none
- } 
+ }
 .mtb {
  border-top: solid 1px #ddd;
  }
@@ -114,7 +104,7 @@ div.colbar {
     #list(tn.tokenize(css, fullsheet=0))
     cssutils.parseString(css)
     """
-        
+
     t = timeit.Timer(do)       # outside the try/except
     try:
         print t.timeit(100)    # or t.repeat(...)
@@ -129,37 +119,37 @@ if 0:
         """
         uses GoogleAppEngine (GAE)
             fetch(url, payload=None, method=GET, headers={}, allow_truncated=False)
-        
+
         Response
             content
                 The body content of the response.
             content_was_truncated
-                True if the allow_truncated parameter to fetch() was True and 
-                the response exceeded the maximum response size. In this case, 
+                True if the allow_truncated parameter to fetch() was True and
+                the response exceeded the maximum response size. In this case,
                 the content attribute contains the truncated response.
             status_code
                 The HTTP status code.
             headers
-                The HTTP response headers, as a mapping of names to values. 
-                
+                The HTTP response headers, as a mapping of names to values.
+
         Exceptions
-            exception InvalidURLError()        
-                The URL of the request was not a valid URL, or it used an 
+            exception InvalidURLError()
+                The URL of the request was not a valid URL, or it used an
                 unsupported method. Only http and https URLs are supported.
-            exception DownloadError()        
+            exception DownloadError()
                 There was an error retrieving the data.
-            
+
                 This exception is not raised if the server returns an HTTP
-                error code: In that case, the response data comes back intact, 
+                error code: In that case, the response data comes back intact,
                 including the error code.
-    
-            exception ResponseTooLargeError()        
+
+            exception ResponseTooLargeError()
                 The response data exceeded the maximum allowed size, and the
                 allow_truncated parameter passed to fetch() was False.
         """
         from google.appengine.api import urlfetch
-        
-        try:        
+
+        try:
             r = urlfetch.fetch(url, method=urlfetch.GET)
         except urlfetch.Error, e:
             cssutils.log.warn(u'Error opening url=%r: %s' % (url, e.message),
@@ -173,23 +163,23 @@ if 0:
                     encoding = params['charset']
                 except KeyError:
                     encoding = None
-        
+
                 return encoding, r.content
             else:
                 # TODO: 301 etc
                 cssutils.log.warn(u'Error opening url=%r: HTTP status %s' %
                                   (url, r.status_code), error=IOError)
-        
+
     def fetcher(url):
         return 'text/css', 'ascii', '/*test*/'
-        
+
     p = cssutils.CSSParser()#fetcher=fetcher)
     url = 'http://cdot.local/sheets/import.css'
     x = p.parseUrl(url, encoding='iso-8859-1')
     print
     print 1, x
     print x.cssText[:80]
-    print 
+    print
     x2 = x.cssRules[2].styleSheet
     print 2, x2
     print x2.cssText[:50]
@@ -201,13 +191,13 @@ if 0:
 
     # HTTPError
     #_fetchUrl('http://cthedot.de/__UNKNOWN__.css')
-    
+
     # URLError
     #_fetchUrl('mailto:a.css')
     #_fetchUrl('http://localhost/__UNKNOWN__.css')
-    
+
     sys.exit(0)
-    
+
 
 if 0:
     # RESOLVE INDENTATION!!!
