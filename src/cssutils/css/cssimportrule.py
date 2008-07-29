@@ -77,11 +77,8 @@ class CSSImportRule(cssrule.CSSRule):
         self._href = None
         self.href = href
 
-        # if self._media is used (simply empty)
-        self._usemedia = False
         self._media = cssutils.stylesheets.MediaList()
         if mediaText:
-            self._usemedia = True
             self._media.mediaText = mediaText
 
         self._name = name
@@ -89,9 +86,12 @@ class CSSImportRule(cssrule.CSSRule):
         seq = self._tempSeq()
         seq.append(self.href, 'href')
         seq.append(self.media, 'media')
-        seq.append(self.name, 'name')
+        seq.append(self.name, 'name')            
         self._setSeq(seq)
         self._readonly = readonly
+
+    _usemedia = property(lambda self: self.media.mediaText not in (u'', u'all'),
+                         doc="if self._media is used (or simply empty)")
 
     def _getCssText(self):
         """
@@ -247,7 +247,6 @@ class CSSImportRule(cssrule.CSSRule):
                 self.hreftype = new['hreftype']
                 if new['media']:
                     # use same object
-                    self._usemedia = True
                     self.media.mediaText = new['media'].mediaText
                     # put it in newseq too
                     for index, x in enumerate(newseq):
@@ -256,7 +255,9 @@ class CSSImportRule(cssrule.CSSRule):
                                            x.type, x.line, x.col)
                             break
                 else:
-                    self._usemedia = False
+                	# reset media 
+                    self.media.mediaText = u'all'
+                    newseq.append(self.media, 'media')
                 self.name = new['name']
                 self._setSeq(newseq)
                 self.href = new['href']
