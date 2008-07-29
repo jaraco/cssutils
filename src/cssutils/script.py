@@ -139,7 +139,7 @@ class CSSCapture(object):
             used if inline style found, same as self.docencoding
         """
         if cssText is None:
-            encoding, cssText = cssutils.util._readUrl(href, parentEncoding=self.docencoding)
+            encoding, enctype, cssText = cssutils.util._readUrl(href, parentEncoding=self.docencoding)
             encoding = None # already decoded???
 
         sheet = self._cssparser.parseString(cssText, href=href, media=media, title=title,
