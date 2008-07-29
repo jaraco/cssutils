@@ -239,6 +239,31 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         # but not static
         self.r.media.mediaText = 'print'
         self.assertEqual(u'@import url(x) print;', self.r.cssText)
+        self.r.media.appendMedium('tv')
+        self.assertEqual(u'@import url(x) print, tv;', self.r.cssText)
+
+        # for generated rule
+        r = cssutils.css.CSSImportRule(href='x')
+        r.media.appendMedium('tv') # all + tv = all!
+        self.assertEqual(u'@import url(x);', r.cssText)
+        r.media.append('tv') # all + tv = all!
+        self.assertEqual(u'@import url(x);', r.cssText)
+        r.media.mediaText = 'tv' 
+        self.assertEqual(u'@import url(x) tv;', r.cssText)
+        r.media.appendMedium('print') # all + tv = all!
+        self.assertEqual(u'@import url(x) tv, print;', r.cssText)
+
+        # for parsed rule without initial media
+        s = cssutils.parseString('@import url(x);')
+        r = s.cssRules[0]
+        r.media.appendMedium('tv') # all + tv = all!
+        self.assertEqual(u'@import url(x);', r.cssText)
+        r.media.append('tv') # all + tv = all!
+        self.assertEqual(u'@import url(x);', r.cssText)
+        r.media.mediaText = 'tv' 
+        self.assertEqual(u'@import url(x) tv;', r.cssText)
+        r.media.appendMedium('print') # all + tv = all!
+        self.assertEqual(u'@import url(x) tv, print;', r.cssText)
 
     def test_name(self):
         "CSSImportRule.name"
