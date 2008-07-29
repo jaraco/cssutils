@@ -11,6 +11,39 @@ backlog
 improvements
 ============
 
+Validation
+----------
+:prio: 1
+
+CSS2.1 and CSS3 properties should be added completely and validation has to be redefined.
+Possibility to add custom validation and register new properties?
+
+CSS3 color module
+-----------------
+:prio: 1
+
+implement rgba()
+
+- named colors::
+
+    Black = #000000         Green = #008000
+    Silver = #C0C0C0        Lime = #00FF00
+    Gray = #808080      Olive = #808000
+    White = #FFFFFF         Yellow = #FFFF00
+    Maroon = #800000        Navy = #000080
+    Red = #FF0000       Blue = #0000FF
+    Purple = #800080        Teal = #008080
+    Fuchsia = #FF00FF       Aqua = #00FFFF
+
+- "transparent"
+- rgba(R, G, B, opacity): opacity in range (0,1)
+- hsl(), hsla() ?
+- SVG colors?
+- "currentColor"
+- System Colors are DEPRECATED!
+- "flavor"?
+
+
 Selector
 --------
 :prio: 1
@@ -92,9 +125,6 @@ performance
 - profile.py
 
 
-new features
-============
-
 serializer
 ----------
 :prio: 2
@@ -102,32 +132,6 @@ serializer
 - prettyprint convinience serializer?
 - XML serializer to be able to handle CSS with XSLT, schemas etc?
 - different coding styles?
-
-
-rbga()
-------
-:prio: 3
-
-implement rgba
-
-- names colors::
-
-    Black = #000000 		Green = #008000
-    Silver = #C0C0C0 		Lime = #00FF00
-    Gray = #808080 		Olive = #808000
-    White = #FFFFFF 		Yellow = #FFFF00
-    Maroon = #800000 		Navy = #000080
-    Red = #FF0000 		Blue = #0000FF
-    Purple = #800080 		Teal = #008080
-    Fuchsia = #FF00FF 		Aqua = #00FFFF
-
-- "transparent"
-- rgba(R, G, B, opacity): opacity in range (0,1)
-- hsl(), hsla() ?
-- SVG colors?
-- "currentColor"
-- System Colors are DEPRECATED!
-- "flavor"?
 
 
 Properties

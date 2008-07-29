@@ -49,16 +49,16 @@ Options to parse a given stylesheet:
   parameter ``encoding``
         Value ``None`` defaults to encoding detection via HTTP, BOM or an
         @charset rule.
-        Other values override detected encoding for the sheet at ``href``
+        Other values **override** any detected encoding for the sheet at ``href``
         including any imported sheets.
 
         Additionally parameter ``encoding`` for ``parseString`` is used to decode the string if the given string is a byte string (not a unicode).
 
-* parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. Setting explicit properties (e.g. ``CSSStyleSheet.cssText`` with a syntactically incorrect sheet raises the relevant exeptions.
+* parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. Setting explicit properties (e.g. ``CSSStyleSheet.cssText``) with a syntactically incorrect sheet raises the relevant exeptions.
 
-* or get an instance of ``cssutils.CSSParser`` and use the provided ``parse*`` methods which are the same as the helper functions. The parser is reusable. With parameter ``raiseExceptions=False`` it is possible to define how the parser should cope with encountered errors.
+* or get an instance of ``cssutils.CSSParser`` and use the provided ``parse*`` methods which are the same as the helper functions. The parser is reusable. With parameter ``raiseExceptions`` it is possible override how the parse handles encountered errors.
 
-Custom URL Fetcher
+custom URL Fetcher
 ------------------
 If you want to control how imported stylesheets are read you may define a custom URL fetcher (e.g. needed on Google AppEngine as urllib2 which is normally used is not available, a GA helper method may be added to cssutils soon.)
 
@@ -69,7 +69,7 @@ A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetch
       ``url``
           the URL to read
 
-      and returns ``(encoding, content)`` where ``encoding`` is the HTTP charset normally given via the Content-Type header (which may simply omit the charset) and ``content`` being the (byte) string content. The Mimetype should be 'text/css' but this has to be checked by the fetcher itself (the default fetcher emits an ERROR if encountering a different mimetype).
+      and returns ``(encoding, content)`` where ``encoding`` is the HTTP charset normally given via the Content-Type header (which may simply omit the charset) and ``content`` being the (byte) string content. The Mimetype should be ``text/css`` but this has to be checked by the fetcher itself (the default fetcher emits an ERROR if encountering a different mimetype).
       The content is then decoded by cssutils using all encoding related data available.
 
         Example::
@@ -80,9 +80,9 @@ A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetch
             parser = cssutils.CSSParser(fetcher=fetcher)
             parser.parse...
 
-      To omit parsing of imported sheets just define a fetcher like ``lambda url: None`` (A single None is sufficient but returning ``None, None`` would be clearer).
+      To omit parsing of imported sheets just define a fetcher like ``lambda url: None`` (A single ``None`` is sufficient but returning ``None, None`` would be clearer).
 
-      You may also define the encoding for each imported sheet with a fetcher which returns a (normally HTTP) encoding depending in URL.
+      You may also define a fetcher which overrides the internal encoding for imported sheets with a fetcher that returns a (normally HTTP) encoding depending e.g on the URL.
 
 
 
@@ -103,6 +103,8 @@ To set a new serializer, use::
     sheet.setSerializer(newser)
 
 You may also set ``cssutils.ser`` directly but the above method is the preferred one.
+
+For most cases adjusting the preferences of the default serializer should be sufficient though.
 
 
 .. _Preferences:
@@ -230,5 +232,4 @@ The default logger is available as ``cssutils.log``. It has the following method
 * ``log.addHandler(h)`` and ``log.removeHandler(h)``
 * ``log.*(msg)`` where ``*`` is one of ``debug``, ``info``, ``warn``, ``error`` or ``fatal``/``critical``
 
-Additional method:
-* ``log.setLog(newlog)``: To replace the default log which sends output to ``stderr``.
+Additional method: ``cssutils.log.setLog(newlog)``: To replace the default log which sends output to ``stderr``.

@@ -21,14 +21,16 @@ def save(name, string):
 
 
 if 1:
-    url = 'http://cthedot.de'
-    from cssutils.script import CSSCapture
-    capturer = CSSCapture(ua=None, log=None, defaultloglevel=logging.INFO)
-    stylesheetlist = capturer.capture(url)
-    for s in stylesheetlist:
-        print s
+    css = r'''
+    color: red;
+    /* properties might be set more than once for different UAs */
+    c\olor: green;
+    background-color: #fff
+    '''
+    s = cssutils.css.CSSStyleDeclaration(cssText=css)
+    for p in s:
+        print repr(p)
 
-    
 
     
     

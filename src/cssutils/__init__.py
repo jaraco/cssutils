@@ -49,7 +49,7 @@ I guess cssutils is neither CSS 2.1 nor CSS 3 compliant but tries to at least be
 Please visit http://cthedot.de/cssutils/ for more details.
 
 
-Tested with Python 2.5 on Windows XP.
+Tested with Python 2.5 on Windows Vista mainly.
 
 
 This library may be used ``from cssutils import *`` which
@@ -62,6 +62,9 @@ Usage may be::
     >>> parser = CSSParser()
     >>> sheet = parser.parseString(u'a { color: red}')
     >>> print sheet.cssText
+    a {
+    color: red
+    }
 
 """
 __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']

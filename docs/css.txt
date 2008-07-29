@@ -22,6 +22,8 @@ Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/cs
 :CSSNamespaceRule_: @namespace rule
 :CSSPageRule_: @page rule
 :CSSStyleRule_: Main Rule with Selectors and ``CSSStyleDeclaration``
+:Selectorlist_: A list of Selector objects used in CSSStyleRule_
+:Selector_: A single CSS selector
 :`CSSStyleDeclaration <cssstyledeclaration.txt>`_: Containing a list of Properties
 :`Property <cssstyledeclaration.txt#property>`_: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
 :`CSSValue <values.txt>`_: A CSS value which might also be a CSSPrimitiveValue or CSSValueList.
@@ -31,10 +33,13 @@ Shared Attributes
 =================
 .. _cssText:
 
-cssText
-    The textual representation of the rule or sheet (cssutils defined this property for CSSStyleSheet_ objects too).
 atkeyword
-    All @rules have this attribute which holds the literal atkeyword, e.g. ``@im\port``.
+    All @rules have this attribute which holds the *literal* atkeyword, e.g. ``@im\port``.
+cssText (or selectorText for SelectorList_ and Selector_)
+    The textual representation of the rule or sheet (cssutils defined this property for CSSStyleSheet_ objects too).
+wellformed
+    Defines if this rule is valid to the CSS core grammar. Not all classes may have this attribute yet and it normally should be ``True``.
+
 
 CSSStyleSheet
 =============
@@ -177,10 +182,37 @@ associated group of selectors.
 
 selectorText
     The textual representation of the selector for the rule set.
-selectorList: of type SelectorList (cssutils only)
+selectorList_: of type SelectorList (cssutils only)
     A list of all Selectors for the rule set.
 `style <cssstyledeclaration.txt>`_
     The declaration-block of this rule (see `CSSStyleDeclaration <cssstyledeclaration.txt>`_)
 
 
 .. _MediaList: stylesheets.txt
+
+SelectorList
+============
+A list of Selector_ objects.
+
+length
+    The number of Selector elements in the list.
+parentRule
+    The CSS rule that contains this SelectorList or None if this SelectorList is not attached to a CSSRule.
+selectorText
+    The textual representation of the selector for the rule set.
+
+appendSelector(newSelector), also append(newSelector)
+    comma-separated list of selectors or a tuple of ``(selectorText, dict-of-namespaces)``
+
+Selector
+========
+A single CSS selector in a SelectorList_.
+
+element *EXPERIMENTAL*
+    Effective element target of this selector.
+parentRule
+    The SelectorList that contains this Selector or None if this Selector is not attached to a SelectorList.
+selectorText
+    The textual representation of the selector for the rule set.
+specificity
+    The specificity of this selector.

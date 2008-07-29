@@ -40,9 +40,13 @@ known issues
 - not all Comments reply to preference ``keepComments``, some will probably survive if set to ``False``
 
 
-0.9.x
+0.9.6
 -----
 HEAD
+
+0.9.5
+-----
+0.9.5 080730
     - **API CHANGE**: If a new medium is trying to be appended to a ``MediaList`` already set to ``all`` an ``xml.dom.InvalidModificationErr`` is raised. The exception to this handling is adding ``handheld`` which is a special case for Opera and kept for now. This special handling may be removed in the future. A ``WARNING`` is logged in any case.
 
     - **BUGFIX**: Fixed reference error in @import rule preventing change of the used ``MediaList``.
@@ -386,6 +390,9 @@ HEAD
     - CHANGE: ``CSSValueList`` does not emit warnings for shorthand properties anymore. Nevertheless these may be invalid!
 
     - IMPROVEMENT: ``CSSStyleDeclaration`` and some minor other parts refactored
+
+0.9 - 0.9.4
+-----------
 
 0.9.4b1 071229
     - **FEATURE**: Added ``csscombine`` script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!
