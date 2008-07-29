@@ -91,7 +91,6 @@ class CSSImportRule(cssrule.CSSRule):
         seq.append(self.media, 'media')
         seq.append(self.name, 'name')
         self._setSeq(seq)
-
         self._readonly = readonly
 
     def _getCssText(self):
@@ -249,7 +248,13 @@ class CSSImportRule(cssrule.CSSRule):
                 if new['media']:
                     # use same object
                     self._usemedia = True
-                    self._media.mediaText = new['media'].mediaText
+                    self.media.mediaText = new['media'].mediaText
+                    # put it in newseq too
+                    for index, x in enumerate(newseq):
+                        if x.type == 'media':
+                            newseq.replace(index, self.media,
+                                           x.type, x.line, x.col)
+                            break
                 else:
                     self._usemedia = False
                 self.name = new['name']
