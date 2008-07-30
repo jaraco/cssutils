@@ -2,6 +2,10 @@
 ----------
 A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer  though!)
 
+release
+-------
+0.9.5 had been in development for about half a year and this is the first *final* release for quite some time now - actually the last has been 0.6 ... It is nevertheless definitely not perfect but tests have been expanded, included scripts should all work and all examples on the website have been checked. 0.9.6 will start soon ...
+
 main changes
 ------------
 0.9.5 080730
