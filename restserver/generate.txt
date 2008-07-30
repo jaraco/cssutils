@@ -16,4 +16,4 @@ to generate static docs:
 
     to docs-html
 
-* optionally add /docs (Epydoc) to "cssutils_documentation"
+* optionally add /docs (Epydoc) to docs-html
