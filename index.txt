@@ -19,7 +19,7 @@ General
 
 
     see also
-        * `cssutils at Google Code <http://code.google.com/p/cssutils/>`__
+        * `cssutils at Google Code <http://code.google.com/p/cssutils>`__
         * `cssutils at cthedot <http://cthedot.de/cssutils/>`__
         * `cssutils discussion group <http://groups.google.com/group/cssutils>`__
 
