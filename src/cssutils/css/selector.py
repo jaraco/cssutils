@@ -676,6 +676,7 @@ class Selector(cssutils.util.Base2):
                         u'Selector: Single selector only.', 
                         error=xml.dom.InvalidModificationErr, 
                         token=token)
+                    return expected
 
                 else:
                     new['wellformed'] = False
