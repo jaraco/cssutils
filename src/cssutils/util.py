@@ -809,7 +809,10 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         
         try:
             # encoding may still be wrong if encoding *is lying*!
-            decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
+            if content is not None:
+                decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
+            else:
+                decodedCssText = u''     
         except UnicodeDecodeError, e:
             cssutils.log.warn(e, neverraise=True)
             decodedCssText = None
