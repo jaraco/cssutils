@@ -812,7 +812,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
             if content is not None:
                 decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
             else:
-                decodedCssText = u''     
+                decodedCssText = None     
         except UnicodeDecodeError, e:
             cssutils.log.warn(e, neverraise=True)
             decodedCssText = None
