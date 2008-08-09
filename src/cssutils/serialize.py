@@ -9,7 +9,6 @@ __version__ = '$Id$'
 import codecs
 import re
 import cssutils
-import util
 
 def _escapecss(e):
     """
