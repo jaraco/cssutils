@@ -7,10 +7,10 @@ __version__ = '$Id$'
 
 import codecs
 import os
-import sys
 import urllib
+from helper import Deprecated
+import tokenize2
 import cssutils
-from cssutils.helper import Deprecated
 
 class CSSParser(object):
     """
@@ -55,7 +55,7 @@ class CSSParser(object):
             # DEFAULT during parse
             self.__parseRaising = False
 
-        self.__tokenizer = cssutils.tokenize2.Tokenizer()
+        self.__tokenizer = tokenize2.Tokenizer()
         self.setFetcher(fetcher)
 
     def __parseSetting(self, parse):
