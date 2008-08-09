@@ -76,7 +76,7 @@ __version__ = '0.9.5 $Id$'
 import codec
 import xml.dom
 
-# order of imports is important (maybe as it is partly circular)
+# order of imports is important (partly circular)
 from helper import Deprecated
 import errorhandler
 log = errorhandler.ErrorHandler()
