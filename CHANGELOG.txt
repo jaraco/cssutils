@@ -47,6 +47,8 @@ HEAD
 
     + **BUGFIX**: Fixed parsing of "}a,b" resulting in TypeError
 
+    + IMPROVEMENT: Optimized imports and partly removed circular ones which are a bit tricky...
+
 0.9.5
 -----
 0.9.5 080730
