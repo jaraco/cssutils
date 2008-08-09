@@ -1,12 +1,10 @@
 #!/usr/bin/env python
-
 """Python codec for CSS."""
 __docformat__ = 'restructuredtext'
 __author__ = 'Walter Doerwald'
 __version__ = '$Id: util.py 1114 2008-03-05 13:22:59Z cthedot $'
 
 import codecs, marshal
-
 
 # We're using bits to store all possible candidate encodings (or variants, i.e.
 # we have two bits for the variants of UTF-16 and two for the
@@ -23,7 +21,6 @@ import codecs, marshal
 # UTF-32-LE    @   x00  x00  x00
 # UTF-32-BE   x00  x00  x00   @
 # CHARSET      @    c    h    a  ...
-
 
 
 def detectencoding_str(input, final=False):
