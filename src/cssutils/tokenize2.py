@@ -6,12 +6,8 @@ __all__ = ['Tokenizer', 'CSSProductions']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import os
 import re
-import string
-import xml.dom
-import cssutils
-import util
+from helper import normalize
 from cssproductions import *
 
 class Tokenizer(object):
@@ -33,7 +29,6 @@ class Tokenizer(object):
         inits tokenizer with given macros and productions which default to
         cssutils own macros and productions
         """
-        self.log = cssutils.log
         if not macros:
             macros = MACROS
         if not productions:
@@ -81,7 +76,7 @@ class Tokenizer(object):
             if ``True`` appends EOF token as last one and completes incomplete
             COMMENT or INVALID (to STRING) tokens
         """
-        def repl(m):
+        def _repl(m):
             "used by unicodesub"
             num = int(m.group(0)[1:], 16)
             if num < 0x10000:
@@ -89,9 +84,9 @@ class Tokenizer(object):
             else:
                 return m.group(0)
 
-        def normalize(value):
+        def _normalize(value):
             "normalize and do unicodesub"
-            return util.Base._normalize(self.unicodesub(repl, value))
+            return normalize(self.unicodesub(_repl, value))
 
         line = col = 1
         
@@ -140,7 +135,7 @@ class Tokenizer(object):
                                 name, found = 'STRING', '%s%s' % (found, found[0])
                             
                             elif 'FUNCTION' == name and\
-                                 u'url(' == normalize(found):
+                                 u'url(' == _normalize(found):
                                 # FUNCTION url( is fixed to URI if fullsheet
                                 # FUNCTION production MUST BE after URI production!
                                 for end in (u"')", u'")', u')'):
@@ -153,8 +148,8 @@ class Tokenizer(object):
                         if name in ('DIMENSION', 'IDENT', 'STRING', 'URI', 
                                     'HASH', 'COMMENT', 'FUNCTION', 'INVALID'):
                             # may contain unicode escape, replace with normal char
-                            # but do not normalize (?)
-                            value = self.unicodesub(repl, found)
+                            # but do not _normalize (?)
+                            value = self.unicodesub(_repl, found)
     
                         else:
                             if 'ATKEYWORD' == name:
@@ -164,7 +159,7 @@ class Tokenizer(object):
                                     name = CSSProductions.CHARSET_SYM
                                     found += ' '
                                 else:
-                                    name = self._atkeywords.get(normalize(found), 'ATKEYWORD')
+                                    name = self._atkeywords.get(_normalize(found), 'ATKEYWORD')
                                     
                             value = found # should not contain unicode escape (?)
     
