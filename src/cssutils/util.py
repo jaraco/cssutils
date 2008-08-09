@@ -6,13 +6,13 @@ __version__ = '$Id$'
 
 import codecs
 from itertools import ifilter
-import re
 import types
 import urllib2
 import xml.dom
+
+from helper import normalize
+import tokenize2
 import cssutils
-from tokenize2 import Tokenizer
-# COMMENT OUT IF RUNNING THIS TEST STANDALONE!
 import encutils
 
 class Base(object):
@@ -26,10 +26,10 @@ class Base(object):
 
     ``_normalize`` is static as used by Preferences.
     """
-    __tokenizer2 = Tokenizer()
+    __tokenizer2 = tokenize2.Tokenizer()
 
     _log = cssutils.log
-    _prods = cssutils.tokenize2.CSSProductions
+    _prods = tokenize2.CSSProductions
 
     # for more on shorthand properties see
     # http://www.dustindiaz.com/css-shorthand/
@@ -54,9 +54,6 @@ class Base(object):
             u'pause': []
             }
 
-    # simple escapes, all non unicodes
-    __simpleescapes = re.compile(ur'(\\[^0-9a-fA-F])').sub
-
     @staticmethod
     def _normalize(x):
         """
@@ -67,13 +64,7 @@ class Base(object):
           been resolved by the tokenizer already)
         - lowercase
         """
-        if x:
-            def removeescape(matchobj):
-                return matchobj.group(0)[1:]
-            x = Base.__simpleescapes(removeescape, x)
-            return x.lower()
-        else:
-            return x
+        return normalize(x)
 
     def _checkReadonly(self):
         "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
