@@ -71,7 +71,10 @@ __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
-__version__ = '0.9.5 $Id$'
+
+VERSION = '0.9.5.1'
+
+__version__ = '%s $Id$' % VERSION
 
 import codec
 import xml.dom
