@@ -94,12 +94,15 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.InvalidCharacterErr, ml.appendMedium, u'test')
 
     def test_append2All(self):
-        "MediaList.append() 3"
+        "MediaList all"
         ml = cssutils.stylesheets.MediaList()
         ml.appendMedium(u'all')
         self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
                              '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'print') as already specified "all" (set ``mediaText`` instead).''', 
                              ml.appendMedium, 'print')
+        
+        sheet = cssutils.parseString('@media all, print { /**/ }')
+        self.assertEqual(u'@media all {\n    /**/\n    }', sheet.cssText)
 
     def test_delete(self):
         "MediaList.deleteMedium()"
