@@ -40,19 +40,23 @@ known issues
 - not all Comments reply to preference ``keepComments``, some will probably survive if set to ``False``
 
 
-0.9.6
------
+0.9.6dev
+--------
 HEAD
-    + **BUGFIX**: Reading imported styles may have failed under certain conditions with an AttributeError.
-
-    + **BUGFIX**: Fixed parsing of "}a,b" resulting in TypeError
-    
-    + **BUGFIX**: Removed typo in MediaList which resulting in Exception when parsing medialist containing ``all`` and another media.
-
-    + IMPROVEMENT: Optimized imports and partly removed circular ones which are a bit tricky...
 
 0.9.5
 -----
+0.9.5.1 080811
+    + **BUGFIX**: Fixed parsing of "}a,b" resulting in TypeError
+
+    + **BUGFIX**: Removed typo in MediaList which resulted in Exception when parsing medialist containing ``all`` and another media.
+
+    + **BUGFIX**: Reading imported styles may have failed under certain conditions with an AttributeError.
+
+    + FEATURE: Added ``cssutils.VERSION`` which is the current release version, in this case e.g. ``"0.9.5.1"``
+
+    + IMPROVEMENT: Optimized imports and partly removed circular ones which are a bit tricky...
+
 0.9.5 080730
     + **API CHANGE**: If a new medium is trying to be appended to a ``MediaList`` already set to ``all`` an ``xml.dom.InvalidModificationErr`` is raised. The exception to this handling is adding ``handheld`` which is a special case for Opera and kept for now. This special handling may be removed in the future. A ``WARNING`` is logged in any case.
 
