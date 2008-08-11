@@ -47,7 +47,9 @@ HEAD
 0.9.5
 -----
 0.9.5.1 080811
-    + **BUGFIX**: Fixed parsing of "}a,b" resulting in TypeError
+    + **BUGFIX**: Fixed parsing of ``}a,b`` which resulted in TypeError until now.
+
+    + **BUGFIX**: A rule with a selector using an undefined and therefor invalid namespace prefix is ignored now.
 
     + **BUGFIX**: Removed typo in MediaList which resulted in Exception when parsing medialist containing ``all`` and another media.
 

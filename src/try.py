@@ -21,18 +21,13 @@ def save(name, string):
 
 
 if 1:
-    css = r'''
-    color: red;
-    /* properties might be set more than once for different UAs */
-    c\olor: green;
-    background-color: #fff
-    '''
-    s = cssutils.css.CSSStyleDeclaration(cssText=css)
-    for p in s:
-        print repr(p)
-
-
-    
+    s = cssutils.parseString('a|a { color: red }')
+    print s
+    print s.cssText
+    print 
+    s.cssText = 'a|a { color: red }'
+    print s
+    print s.cssText
     
     sys.exit(1)
 
