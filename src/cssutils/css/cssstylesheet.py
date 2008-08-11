@@ -66,7 +66,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self.cssRules = cssutils.css.CSSRuleList()
         self.cssRules.append = self.insertRule
         self.cssRules.extend = self.insertRule
-        self._namespaces = _Namespaces(parentStyleSheet=self)
+        self._namespaces = _Namespaces(parentStyleSheet=self, log=self._log)
         self._readonly = readonly
 
         # used only during setting cssText by parse*()
@@ -126,7 +126,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         cssText, namespaces = self._splitNamespacesOff(cssText)
         if not namespaces:
-            namespaces = _SimpleNamespaces()
+            namespaces = _SimpleNamespaces(log=self._log)
 
         tokenizer = self._tokenize2(cssText)
         newseq = [] #cssutils.css.CSSRuleList()

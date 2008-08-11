@@ -140,7 +140,7 @@ class Selector(cssutils.util.Base2):
         """
         super(Selector, self).__init__()
 
-        self.__namespaces = _SimpleNamespaces()
+        self.__namespaces = _SimpleNamespaces(log=self._log)
         self._element = None
         self._parent = parentList
         self._specificity = (0, 0, 0, 0)
@@ -197,6 +197,7 @@ class Selector(cssutils.util.Base2):
         
         # might be (selectorText, namespaces)
         selectorText, namespaces = self._splitNamespacesOff(selectorText)
+
         try:
             # uses parent stylesheets namespaces if available, otherwise given ones
             namespaces = self.parentList.parentRule.parentStyleSheet.namespaces
@@ -332,15 +333,16 @@ class Selector(cssutils.util.Base2):
                         namespaceURI = u''
                     else:
                         # explicit namespace prefix
-                        try:
-                            namespaceURI = namespaces[prefix]
-                        except KeyError:
+                        # does not raise KeyError, see _SimpleNamespaces
+                        namespaceURI = namespaces[prefix]
+
+                        if namespaceURI is None:
                             new['wellformed'] = False
                             self._log.error(
                                 u'Selector: No namespaceURI found for prefix %r' %
                                 prefix, token=token, error=xml.dom.NamespaceErr)
                             return
-                    
+                            
                     # val is now (namespaceprefix, name) tuple
                     val = (namespaceURI, val)
 
@@ -791,7 +793,7 @@ class Selector(cssutils.util.Base2):
     def _getUsedNamespaces(self):
         "returns actually used namespaces only"
         useduris = self._getUsedUris()
-        namespaces = _SimpleNamespaces()
+        namespaces = _SimpleNamespaces(log=self._log)
         for p, uri in self._namespaces.items():
             if uri in useduris:
                 namespaces[p] = uri
