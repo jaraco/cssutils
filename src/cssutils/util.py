@@ -83,10 +83,10 @@ class Base(object):
         CSSStyleSheet
         """
         if isinstance(text_namespaces_tuple, tuple):
-            return text_namespaces_tuple[0], _SimpleNamespaces(
+            return text_namespaces_tuple[0], _SimpleNamespaces(self._log,
                                                     text_namespaces_tuple[1])
         else:
-            return text_namespaces_tuple, _SimpleNamespaces()
+            return text_namespaces_tuple, _SimpleNamespaces(log=self._log)
 
     def _tokenize2(self, textortokens):
         """
@@ -292,7 +292,7 @@ class Base(object):
         the current value of self.__expected
         """
         def ATKEYWORD(expected, seq, token, tokenizer=None):
-            "TODO: add default impl for unexpected @rule?"
+            "default impl for unexpected @rule"
             if expected != 'EOF':
                 # TODO: parentStyleSheet=self
                 rule = cssutils.css.CSSUnknownRule()
@@ -592,9 +592,10 @@ class _Namespaces(object):
     parentStyleSheet
         the parent CSSStyleSheet
     """
-    def __init__(self, parentStyleSheet, *args):
+    def __init__(self, parentStyleSheet, log=None, *args):
         "no initial values are set, only the relevant sheet is"
         self.parentStyleSheet = parentStyleSheet
+        self._log = log
 
     def __contains__(self, prefix):
         return prefix in self.namespaces
@@ -613,13 +614,15 @@ class _Namespaces(object):
                 self.parentStyleSheet.deleteRule(i)
                 return
 
-        raise xml.dom.NamespaceErr('Prefix %r not found.' % prefix)
+        self._log.error('Prefix %r not found.' % prefix,
+                        error=xml.dom.NamespaceErr)
 
     def __getitem__(self, prefix):
         try:
             return self.namespaces[prefix]
         except KeyError, e:
-            raise xml.dom.NamespaceErr('Prefix %r not found.' % prefix)
+            self._log.error('Prefix %r not found.' % prefix,
+                            error=xml.dom.NamespaceErr)
 
     def __iter__(self):
         return self.namespaces.__iter__()
@@ -693,7 +696,9 @@ class _SimpleNamespaces(_Namespaces):
     namespaces used in objects like Selector as long as they are not connected
     to a CSSStyleSheet
     """
-    def __init__(self, *args):
+    def __init__(self, log=None, *args):
+        """init"""
+        super(_SimpleNamespaces, self).__init__(parentStyleSheet=None, log=log)
         self.__namespaces = dict(*args)
 
     def __setitem__(self, prefix, namespaceURI):

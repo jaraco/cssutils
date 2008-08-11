@@ -362,6 +362,19 @@ ex2|SEL4, a, ex2|SELSR {
         del s.namespaces.namespaces['p'] 
         self.assertEqual({u'p': 'uri'}, s.namespaces.namespaces)
         
+        self.assertRaisesMsg(xml.dom.NamespaceErr, u"Prefix 'undefined' not found.", 
+                             s.namespaces.__delitem__, 'undefined')
+        
+    def test_namespaces5(self):
+        "CSSStyleSheet.namespaces 5"
+        # unknown namespace
+        s = cssutils.parseString('a|a { color: red }')
+        self.assertEqual(u'', s.cssText)
+        
+        s = cssutils.css.CSSStyleSheet()
+        self.assertRaisesMsg(xml.dom.NamespaceErr, "Prefix u'a' not found.", 
+                             s._setCssText, 'a|a { color: red }')        
+        
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule()"
         self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {\n    x: 1\n    }@y;'
