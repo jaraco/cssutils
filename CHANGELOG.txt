@@ -46,6 +46,8 @@ HEAD
     + **BUGFIX**: Reading imported styles may have failed under certain conditions with an AttributeError.
 
     + **BUGFIX**: Fixed parsing of "}a,b" resulting in TypeError
+    
+    + **BUGFIX**: Removed typo in MediaList which resulting in Exception when parsing medialist containing ``all`` and another media.
 
     + IMPROVEMENT: Optimized imports and partly removed circular ones which are a bit tricky...
 

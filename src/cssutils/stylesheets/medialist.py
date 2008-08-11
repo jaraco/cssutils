@@ -198,7 +198,6 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
                 else:
                     self._log.warn(u'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
                                    newMedium, error=xml.dom.InvalidModificationErr)
-                    xml.com
             else:
                 self.seq.append(newMedium)
 
