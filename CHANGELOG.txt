@@ -43,6 +43,8 @@ known issues
 0.9.6dev
 --------
 HEAD
+    + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
+
 
 0.9.5
 -----
