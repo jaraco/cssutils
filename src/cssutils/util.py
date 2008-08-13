@@ -741,7 +741,7 @@ def _defaultFetcher(url):
         if res:
             mimeType, encoding = encutils.getHTTPInfo(res)
             if mimeType != u'text/css':
-                cssutils.log.error(u'Expected "text/css" mime type for url=%s but found: %r' %
+                cssutils.log.error(u'Expected "text/css" mime type for url=%r but found: %r' %
                                   (url, mimeType), error=ValueError)
             return encoding, res.read()
 
