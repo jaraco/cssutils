@@ -21,7 +21,7 @@ def main(args=None):
     p = optparse.OptionParser(usage=usage)
     p.add_option('-s', '--string', action='store_true', dest='string',
         help='parse given string')
-    p.add_option('-u', '--url', action='store_true', dest='string',
+    p.add_option('-u', '--url', action='store_true', dest='url',
         help='parse given url')
     p.add_option('-e', '--encoding', action='store', dest='encoding',
         help='encoding of the file or override encoding found')
