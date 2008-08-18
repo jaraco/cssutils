@@ -8,7 +8,8 @@ __version__ = '$Id$'
 
 import xml.dom
 import cssutils
-import cssproperties
+#import cssproperties
+from profiles import profiles
 from cssvalue import CSSValue
 from cssutils.helper import Deprecated
 
@@ -20,8 +21,8 @@ class Property(cssutils.util.Base):
     ==========
     cssText
         a parsable textual representation of this property
-    name 
-        normalized name of the property, e.g. "color" when name is "c\olor" 
+    name
+        normalized name of the property, e.g. "color" when name is "c\olor"
         (since 0.9.5)
     literalname (since 0.9.5)
         original name of the property in the source CSS which is not normalized
@@ -33,7 +34,7 @@ class Property(cssutils.util.Base):
     priority
         of the property (currently only u"important" or None)
     literalpriority
-        original priority of the property in the source CSS which is not 
+        original priority of the property in the source CSS which is not
         normalized e.g. "IM\portant"
     seqs
         combination of a list for seq of name, a CSSValue object, and
@@ -102,17 +103,17 @@ class Property(cssutils.util.Base):
         self._mediaQuery = _mediaQuery
 
         if name:
-            self.name = name 
+            self.name = name
         else:
             self._name = u''
             self._literalname = u''
             self.__normalname = u'' # DEPRECATED
-            
+
         if value:
             self.cssValue = value
         else:
             self.seqs[1] = CSSValue()
-        
+
         if priority:
             self.priority = priority
         else:
@@ -141,11 +142,11 @@ class Property(cssutils.util.Base):
         if nametokens:
             wellformed = True
 
-            valuetokens = self._tokensupto2(tokenizer, 
+            valuetokens = self._tokensupto2(tokenizer,
                                             propertyvalueendonly=True)
-            prioritytokens = self._tokensupto2(tokenizer, 
+            prioritytokens = self._tokensupto2(tokenizer,
                                                propertypriorityendonly=True)
-    
+
             if self._mediaQuery and not valuetokens:
                 # MediaQuery may consist of name only
                 self.name = nametokens
@@ -193,9 +194,9 @@ class Property(cssutils.util.Base):
         - SYNTAX_ERR: (self)
           Raised if the specified name has a syntax error and is
           unparsable.
-        """            
+        """
         # for closures: must be a mutable
-        new = {'literalname': None, 
+        new = {'literalname': None,
                'wellformed': True}
 
         def _ident(expected, seq, token, tokenizer=None):
@@ -211,18 +212,18 @@ class Property(cssutils.util.Base):
 
         newseq = []
         wellformed, expected = self._parse(expected='name',
-                                           seq=newseq, 
+                                           seq=newseq,
                                            tokenizer=self._tokenize2(name),
                                            productions={'IDENT': _ident})
         wellformed = wellformed and new['wellformed']
 
         # post conditions
-        # define a token for error logging 
+        # define a token for error logging
         if isinstance(name, list):
             token = name[0]
         else:
             token = None
-        
+
         if not new['literalname']:
             wellformed = False
             self._log.error(u'Property: No name found: %r' %
@@ -236,16 +237,16 @@ class Property(cssutils.util.Base):
             self.seqs[0] = newseq
 
             # validate
-            if self._name not in cssproperties.cssvalues:
+            if self._name not in profiles.propertiesByProfile():
                 self.valid = False
                 tokenizer=self._tokenize2(name)
-                self._log.info(u'Property: No CSS2 Property: %r.' %
+                self._log.warn(u'Property: Unknown Property: %r.' %
                          new['literalname'], token=token, neverraise=True)
             else:
                 self.valid = True
                 if self.cssValue:
                     self.cssValue._propertyName = self._name
-                    self.valid = self.cssValue.valid          
+                    self.valid = self.cssValue.valid
         else:
             self.wellformed = False
 
@@ -276,7 +277,7 @@ class Property(cssutils.util.Base):
         else:
             if not self.seqs[1]:
                 self.seqs[1] = CSSValue()
-            
+
             cssvalue = self.seqs[1]
             cssvalue._propertyName = self.name
             cssvalue.cssText = cssText
@@ -284,14 +285,14 @@ class Property(cssutils.util.Base):
                 self.seqs[1] = cssvalue
             self.valid = self.valid and cssvalue.valid
             self.wellformed = self.wellformed and cssvalue.wellformed
-                
+
     cssValue = property(_getCSSValue, _setCSSValue,
         doc="(cssutils) CSSValue object of this property")
 
     def _getValue(self):
-        if self.cssValue: 
+        if self.cssValue:
             return self.cssValue._value
-        else: 
+        else:
             return u''
 
     def _setValue(self, value):
@@ -305,7 +306,7 @@ class Property(cssutils.util.Base):
     def _setPriority(self, priority):
         """
         priority
-            a string, currently either u'', u'!important' or u'important' 
+            a string, currently either u'', u'!important' or u'important'
 
         Format
         ======
@@ -336,9 +337,9 @@ class Property(cssutils.util.Base):
         if isinstance(priority, basestring) and\
            u'important' == self._normalize(priority):
             priority = u'!%s' % priority
-            
+
         # for closures: must be a mutable
-        new = {'literalpriority': u'', 
+        new = {'literalpriority': u'',
                'wellformed': True}
 
         def _char(expected, seq, token, tokenizer=None):
@@ -367,9 +368,9 @@ class Property(cssutils.util.Base):
 
         newseq = []
         wellformed, expected = self._parse(expected='!',
-                                           seq=newseq, 
+                                           seq=newseq,
                                            tokenizer=self._tokenize2(priority),
-                                           productions={'CHAR': _char, 
+                                           productions={'CHAR': _char,
                                                         'IDENT': _ident})
         wellformed = wellformed and new['wellformed']
 
@@ -384,13 +385,13 @@ class Property(cssutils.util.Base):
             self._literalpriority = new['literalpriority']
             self._priority = self._normalize(self.literalpriority)
             self.seqs[2] = newseq
-            
+
             # validate
             if self._priority not in (u'', u'important'):
                 self.valid = False
                 self._log.info(u'Property: No CSS2 priority value: %r.' %
                     self._priority, neverraise=True)
-        
+
     priority = property(lambda self: self._priority, _setPriority,
         doc="(cssutils) Priority of this property")
 
@@ -399,7 +400,7 @@ class Property(cssutils.util.Base):
 
     def __repr__(self):
         return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
-                self.__class__.__name__, 
+                self.__class__.__name__,
                 self.literalname, self.cssValue.cssText, self.priority)
 
     def __str__(self):
@@ -410,5 +411,5 @@ class Property(cssutils.util.Base):
     @Deprecated(u'Use property ``name`` instead (since cssutils 0.9.5).')
     def _getNormalname(self):
         return self.__normalname
-    normalname = property(_getNormalname, 
+    normalname = property(_getNormalname,
                           doc="DEPRECATED since 0.9.5, use name instead")

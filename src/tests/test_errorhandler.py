@@ -15,7 +15,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         "replace default log and ignore its output"
         self._oldlog = cssutils.log._log
         self._saved = cssutils.log.raiseExceptions
-        
+
         cssutils.log.raiseExceptions = False
         cssutils.log.setLog(logging.getLogger('IGNORED-CSSUTILS-TEST'))
 
@@ -76,7 +76,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
     def test_handlers(self):
         "cssutils.log"
         s = self._setHandler()
-                       
+
         cssutils.log.setLevel(logging.FATAL)
         self.assertEqual(cssutils.log.getEffectiveLevel(), logging.FATAL)
 
@@ -85,14 +85,14 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
         cssutils.log.setLevel(logging.DEBUG)
         cssutils.parseString('a { color: 1 }')
-        self.assertEqual(s.getvalue(), 
-                         u"WARNING    CSSValue: Invalid value for CSS2 property u'color': u'1'\n")
+        self.assertEqual(s.getvalue(),
+                         u"WARNING    CSSValue: Invalid value for CSS level 2 property u'color': u'1'\n")
 
         s = self._setHandler()
 
         cssutils.log.setLevel(logging.ERROR)
         cssutils.parseUrl('http://example.com')
-        self.assertEqual(s.getvalue()[:38], 
+        self.assertEqual(s.getvalue()[:38],
                          u'ERROR    Expected "text/css" mime type')
 
 if __name__ == '__main__':

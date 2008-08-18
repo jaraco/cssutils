@@ -21,14 +21,15 @@ def save(name, string):
 
 
 if 1:
-    s = cssutils.parseString('a|a { color: red }')
-    print s
-    print s.cssText
-    print 
-    s.cssText = 'a|a { color: red }'
-    print s
-    print s.cssText
-    
+    import cssutils.css.profiles
+    cssutils.css.profiles.profiles.addProfile('x', {
+        'color': '1',
+        'x': '{int}'})
+
+    print cssutils.parseString('''
+        a { x: 1px;y:0}
+    ''').cssText
+
     sys.exit(1)
 
 if 1:

@@ -43,6 +43,10 @@ known issues
 0.9.6dev
 --------
 HEAD
+    + **FEATURE**: Started implementation of CSS profiles...
+
+        - unknown properties raise a WARNING instead of INFO now
+
     + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
 
 

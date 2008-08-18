@@ -12,7 +12,8 @@ __version__ = '$Id$'
 import re
 import xml.dom
 import cssutils
-import cssproperties
+#import cssproperties
+from profiles import profiles
 
 class CSSValue(cssutils.util.Base):
     """
@@ -116,7 +117,7 @@ class CSSValue(cssutils.util.Base):
         Format
         ======
         ::
-        
+
             unary_operator
               : '-' | '+'
               ;
@@ -158,8 +159,8 @@ class CSSValue(cssutils.util.Base):
         self._checkReadonly()
 
         # for closures: must be a mutable
-        new = {'values': [], 
-               'commas': 0, 
+        new = {'values': [],
+               'commas': 0,
                'valid': True,
                'wellformed': True }
 
@@ -270,8 +271,8 @@ class CSSValue(cssutils.util.Base):
             # STRING IDENT URI HASH
             if expected.startswith('term'):
                 # normal value
-                
-                # TODO: use actual values, probably needs Base2 for this                
+
+                # TODO: use actual values, probably needs Base2 for this
                 typ = self._type(token)
                 if self._prods.STRING == typ:
                     val = u'"%s"' % self._stringtokenvalue(token)
@@ -279,14 +280,14 @@ class CSSValue(cssutils.util.Base):
 #                    val = u'url(%s)' % self._uritokenvalue(token)
                 else:
                     val = self._tokenvalue(token)
-                
+
                 new['values'].append(val)
                 seq.append(val)
                 return 'operator'
             elif 'operator' == expected:
                 # expected S but still ok
-                
-                # TODO: use actual values, probably needs Base2 for this                
+
+                # TODO: use actual values, probably needs Base2 for this
                 typ = self._type(token)
                 if self._prods.STRING == typ:
                     val = u'"%s"' % self._stringtokenvalue(token)
@@ -396,7 +397,7 @@ class CSSValue(cssutils.util.Base):
                 else:
                     self._cssValueType = CSSValue.CSS_CUSTOM
                     self.__class__ = CSSValue # reset
-                    
+
             self.wellformed = wellformed
 
     cssText = property(_getCssText, _setCssText,
@@ -419,23 +420,41 @@ class CSSValue(cssutils.util.Base):
     cssValueTypeString = property(_getCssValueTypeString,
         doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
 
-    def _validate(self):
+    def _validate(self, profile='CSS level 2'):
         """
         validates value against _propertyName context if given
         """
         if self._value:
-            if self._propertyName in cssproperties.cssvalues:
-                if cssproperties.cssvalues[self._propertyName](self._value):
-                    self.valid = True
-                else:
-                    self.valid = False
-                    self._log.warn(
-                        u'CSSValue: Invalid value for CSS2 property %r: %r' %
-                        (self._propertyName, self._value), neverraise=True)
-            else:
-                self._log.debug(
-                    u'CSSValue: Unable to validate as no or unknown property context set for this value: %r'
-                    % self._value, neverraise=True)
+            if self._propertyName: # in profiles.propertiesByProfile(profile):
+                self.valid, validprofile = profiles.validateByProfile(self._propertyName,
+                                                                      self._value)
+                if validprofile:
+                    if not self.valid:
+                        self._log.warn(
+                            u'CSSValue: Invalid value for %s property %r: %r' %
+                            (validprofile, self._propertyName, self._value), neverraise=True)
+                    elif validprofile != profile:
+                        self._log.warn(
+                            u'CSSValue: Invalid value for %s property %r %r but valid for profile %s' %
+                            (profile, self._propertyName, self._value, validprofile), neverraise=True)
+                    return
+
+            self._log.debug(
+                u'CSSValue: Unable to validate as no or unknown property context set for value: %r'
+                % self._value, neverraise=True)
+
+#            if self._propertyName in cssproperties.cssvalues:
+ #               if cssproperties.cssvalues[self._propertyName](self._value):
+ #                   self.valid = True
+ #               else:
+  #                  self.valid = False
+   #                 self._log.warn(
+    #                    u'CSSValue: Invalid value for CSS2 property %r: %r' %
+     #                   (self._propertyName, self._value), neverraise=True)
+      #      else:
+       #         self._log.debug(
+        #            u'CSSValue: Unable to validate as no or unknown property context set for this value: %r'
+          #          % self._value, neverraise=True)
 
     def _get_propertyName(self):
         return self.__propertyName
@@ -443,9 +462,9 @@ class CSSValue(cssutils.util.Base):
     def _set_propertyName(self, _propertyName):
         self.__propertyName = _propertyName
         self._validate()
-    
+
     _propertyName = property(_get_propertyName, _set_propertyName,
-        doc="cssutils: Property this values is validated against") 
+        doc="cssutils: Property this values is validated against")
 
     def __repr__(self):
         return "cssutils.css.%s(%r, _propertyName=%r)" % (
@@ -821,7 +840,7 @@ class CSSPrimitiveValue(CSSValue):
             return self._stringtokenvalue((None,self._value))
         elif CSSPrimitiveValue.CSS_URI == self.primitiveType:
             # _uritokenvalue expects tuple with at least 2
-            return self._uritokenvalue((None, self._value)) 
+            return self._uritokenvalue((None, self._value))
         elif CSSPrimitiveValue.CSS_ATTR == self.primitiveType:
             return self._value[5:-1]
         else:
@@ -847,11 +866,11 @@ class CSSPrimitiveValue(CSSValue):
 
         raises
             DOMException
-            
-            - INVALID_ACCESS_ERR: Raised if the CSS value doesn't contain a 
+
+            - INVALID_ACCESS_ERR: Raised if the CSS value doesn't contain a
               string value or if the string value can't be converted into
               the specified unit.
-              
+
             - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
         """
         self._checkReadonly()
@@ -975,7 +994,7 @@ class CSSValueList(CSSValue):
         newseq = []
         i, max = 0, len(self.seq)
         minus = None
-        while i < max:            
+        while i < max:
             v = self.seq[i]
 
             if u'-' == v:
@@ -985,7 +1004,7 @@ class CSSValueList(CSSValue):
                             % u''.join(self.seq))
                 else:
                     minus = v
-                    
+
             elif isinstance(v, basestring) and not v.strip() == u'' and\
                not u'/' == v:
                 if minus:
@@ -1002,11 +1021,11 @@ class CSSValueList(CSSValue):
                         ivalueseq = len(valueseq) # end
                 else:
                     propname = self._propertyName
-                
+
                 # TODO: more (do not check individual values for these props)
                 if propname in self._SHORTHANDPROPERTIES:
                     propname = None
-                
+
                 if i+1 < max and self.seq[i+1] == u',':
                     # a comma separated list of values as ONE value
                     # e.g. font-family: a,b
