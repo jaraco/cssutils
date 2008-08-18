@@ -12,16 +12,16 @@ import xml.dom
 try:
     from minimock import mock, restore
 except ImportError:
-    mock = None 
+    mock = None
     print "install minimock with ``easy_install minimock`` to run all tests"
 
 import basetest
 import encutils
-    
+
 from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher
 
 class ListSeqTestCase(basetest.BaseTestCase):
-    
+
     def test_all(self):
         "util.ListSeq"
         ls = ListSeq()
@@ -34,7 +34,7 @@ class ListSeqTestCase(basetest.BaseTestCase):
         # hack:
         ls.seq.append(1)
         ls.seq.append(2)
-        
+
         # len
         self.assertEqual(2, len(ls))
         # __contains__
@@ -46,10 +46,10 @@ class ListSeqTestCase(basetest.BaseTestCase):
         del ls[0]
         self.assertEqual(1, len(ls))
         self.assertEqual(False, 1 in ls)
-        # for in 
+        # for in
         for x in ls:
             self.assertEqual(2, x)
-    
+
 
 class BaseTestCase(basetest.BaseTestCase):
 
@@ -126,13 +126,13 @@ class BaseTestCase(basetest.BaseTestCase):
 
             res = u''.join([t[1] for t in restokens])
             self.assertEqual(exp, res)
-     
-   
+
+
 class _readUrl_TestCase(basetest.BaseTestCase):
-    """needs minimock install with easy_install minimock""" 
+    """needs minimock install with easy_install minimock"""
 
     def test_readUrl(self):
-        """util._readUrl()"""        
+        """util._readUrl()"""
         # for additional tests see test_parse.py
         url = 'http://example.com/test.css'
 
@@ -141,7 +141,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             def fetcher(url):
                 return r
             return fetcher
-        
+
         tests = {
             # defaultFetcher returns: readUrl returns
             None: (None, None, None),
@@ -152,163 +152,163 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             ('ASCII', u'a'.encode('ascii')): ('ASCII', 1, u'a')
         }
 
-        for r, exp in tests.items():              
+        for r, exp in tests.items():
             self.assertEquals(_readUrl(url, fetcher=make_fetcher(r)), exp)
 
         tests = {
-            # (overrideEncoding, parentEncoding, (httpencoding, content)): 
+            # (overrideEncoding, parentEncoding, (httpencoding, content)):
             #                        readUrl returns
-            
+
             # ===== 0. OVERRIDE WINS =====
             # override + parent + http
             ('latin1', 'ascii', ('utf-16', '')): ('latin1', 0, u''),
             ('latin1', 'ascii', ('utf-16', '123')): ('latin1', 0, u'123'),
-            ('latin1', 'ascii', ('utf-16', u'ä'.encode('iso-8859-1'))): 
+            ('latin1', 'ascii', ('utf-16', u'ä'.encode('iso-8859-1'))):
                 ('latin1', 0, u'ä'),
-            ('latin1', 'ascii', ('utf-16', u'a'.encode('ascii'))): 
+            ('latin1', 'ascii', ('utf-16', u'a'.encode('ascii'))):
                 ('latin1',0,  u'a'),
             # + @charset
-            ('latin1', 'ascii', ('utf-16', '@charset "ascii";')): 
+            ('latin1', 'ascii', ('utf-16', '@charset "ascii";')):
                 ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', 'ascii', ('utf-16', u'@charset "utf-8";ä'.encode('latin1'))): 
+            ('latin1', 'ascii', ('utf-16', u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', 'ascii', ('utf-16', u'@charset "utf-8";ä'.encode('utf-8'))): 
+            ('latin1', 'ascii', ('utf-16', u'@charset "utf-8";ä'.encode('utf-8'))):
                 ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
 
             # override only
             ('latin1', None, None): (None, None, None),
             ('latin1', None, (None, '')): ('latin1', 0, u''),
             ('latin1', None, (None, '123')): ('latin1', 0, u'123'),
-            ('latin1', None, (None, u'ä'.encode('iso-8859-1'))): 
+            ('latin1', None, (None, u'ä'.encode('iso-8859-1'))):
                 ('latin1', 0, u'ä'),
-            ('latin1', None, (None, u'a'.encode('ascii'))): 
+            ('latin1', None, (None, u'a'.encode('ascii'))):
                 ('latin1', 0, u'a'),
             # + @charset
-            ('latin1', None, (None, '@charset "ascii";')): 
+            ('latin1', None, (None, '@charset "ascii";')):
                 ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('latin1'))): 
+            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('utf-8'))): 
+            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('utf-8'))):
                 ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
 
             # override + parent
             ('latin1', 'ascii', None): (None, None, None),
             ('latin1', 'ascii', (None, '')): ('latin1', 0, u''),
             ('latin1', 'ascii', (None, '123')): ('latin1', 0, u'123'),
-            ('latin1', 'ascii', (None, u'ä'.encode('iso-8859-1'))): 
+            ('latin1', 'ascii', (None, u'ä'.encode('iso-8859-1'))):
                 ('latin1', 0, u'ä'),
-            ('latin1', 'ascii', (None, u'a'.encode('ascii'))): 
+            ('latin1', 'ascii', (None, u'a'.encode('ascii'))):
                 ('latin1', 0, u'a'),
             # + @charset
-            ('latin1', 'ascii', (None, '@charset "ascii";')): 
+            ('latin1', 'ascii', (None, '@charset "ascii";')):
                 ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', 'ascii', (None, u'@charset "utf-8";ä'.encode('latin1'))): 
+            ('latin1', 'ascii', (None, u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', 'ascii', (None, u'@charset "utf-8";ä'.encode('utf-8'))): 
+            ('latin1', 'ascii', (None, u'@charset "utf-8";ä'.encode('utf-8'))):
                 ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
 
             # override + http
             ('latin1', None, ('utf-16', '')): ('latin1', 0, u''),
             ('latin1', None, ('utf-16', '123')): ('latin1', 0, u'123'),
-            ('latin1', None, ('utf-16', u'ä'.encode('iso-8859-1'))): 
+            ('latin1', None, ('utf-16', u'ä'.encode('iso-8859-1'))):
                 ('latin1', 0, u'ä'),
-            ('latin1', None, ('utf-16', u'a'.encode('ascii'))): 
+            ('latin1', None, ('utf-16', u'a'.encode('ascii'))):
                 ('latin1', 0, u'a'),
             # + @charset
-            ('latin1', None, ('utf-16', '@charset "ascii";')): 
+            ('latin1', None, ('utf-16', '@charset "ascii";')):
                 ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', None, ('utf-16', u'@charset "utf-8";ä'.encode('latin1'))): 
+            ('latin1', None, ('utf-16', u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', None, ('utf-16', u'@charset "utf-8";ä'.encode('utf-8'))): 
+            ('latin1', None, ('utf-16', u'@charset "utf-8";ä'.encode('utf-8'))):
                 ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
-            
+
             # override ü @charset
-            ('latin1', None, (None, '@charset "ascii";')): 
+            ('latin1', None, (None, '@charset "ascii";')):
                 ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('latin1'))): 
+            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('utf-8'))): 
+            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('utf-8'))):
                 ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
-            
-            
+
+
             # ===== 1. HTTP WINS =====
             (None, 'ascii', ('latin1', '')): ('latin1', 1, u''),
             (None, 'ascii', ('latin1', '123')): ('latin1', 1, u'123'),
-            (None, 'ascii', ('latin1', u'ä'.encode('iso-8859-1'))): 
+            (None, 'ascii', ('latin1', u'ä'.encode('iso-8859-1'))):
                 ('latin1', 1, u'ä'),
-            (None, 'ascii', ('latin1', u'a'.encode('ascii'))): 
+            (None, 'ascii', ('latin1', u'a'.encode('ascii'))):
                 ('latin1', 1, u'a'),
             # + @charset
-            (None, 'ascii', ('latin1', '@charset "ascii";')): 
+            (None, 'ascii', ('latin1', '@charset "ascii";')):
                 ('latin1', 1, u'@charset "latin1";'),
-            (None, 'ascii', ('latin1', u'@charset "utf-8";ä'.encode('latin1'))): 
+            (None, 'ascii', ('latin1', u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 1, u'@charset "latin1";ä'),
-            (None, 'ascii', ('latin1', u'@charset "utf-8";ä'.encode('utf-8'))): 
+            (None, 'ascii', ('latin1', u'@charset "utf-8";ä'.encode('utf-8'))):
                 ('latin1', 1, u'@charset "latin1";\xc3\xa4'), # read as latin1!
 
 
             # ===== 2. @charset WINS =====
-            (None, 'ascii', (None, '@charset "latin1";')): 
+            (None, 'ascii', (None, '@charset "latin1";')):
                 ('latin1', 2, u'@charset "latin1";'),
-            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('latin1'))): 
+            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('latin1'))):
                 ('latin1', 2, u'@charset "latin1";ä'),
-            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('utf-8'))): 
+            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('utf-8'))):
                 ('latin1', 2, u'@charset "latin1";\xc3\xa4'), # read as latin1!
-                
+
             # ===== 2. BOM WINS =====
-            (None, 'ascii', (None, u'ä'.encode('utf-8-sig'))): 
+            (None, 'ascii', (None, u'ä'.encode('utf-8-sig'))):
                 ('utf-8-sig', 2, u'\xe4'), # read as latin1!
-            (None, 'ascii', (None, u'@charset "utf-8";ä'.encode('utf-8-sig'))): 
+            (None, 'ascii', (None, u'@charset "utf-8";ä'.encode('utf-8-sig'))):
                 ('utf-8-sig', 2, u'@charset "utf-8";\xe4'), # read as latin1!
-            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('utf-8-sig'))): 
+            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('utf-8-sig'))):
                 ('utf-8-sig', 2, u'@charset "utf-8";\xe4'), # read as latin1!
-            
+
 
             # ===== 4. parentEncoding WINS =====
             (None, 'latin1', (None, '')): ('latin1', 4, u''),
             (None, 'latin1', (None, '123')): ('latin1', 4, u'123'),
-            (None, 'latin1', (None, u'ä'.encode('iso-8859-1'))): 
+            (None, 'latin1', (None, u'ä'.encode('iso-8859-1'))):
                 ('latin1', 4, u'ä'),
-            (None, 'latin1', (None, u'a'.encode('ascii'))): 
+            (None, 'latin1', (None, u'a'.encode('ascii'))):
                 ('latin1', 4, u'a'),
-            (None, 'latin1', (None, u'ä'.encode('utf-8'))): 
+            (None, 'latin1', (None, u'ä'.encode('utf-8'))):
                 ('latin1', 4, u'\xc3\xa4'), # read as latin1!
-        
+
             # ===== 5. default WINS which in this case is None! =====
             (None, None, (None, '')): ('utf-8', 5, u''),
             (None, None, (None, '123')): ('utf-8', 5, u'123'),
-            (None, None, (None, u'a'.encode('ascii'))): 
+            (None, None, (None, u'a'.encode('ascii'))):
                 ('utf-8', 5, u'a'),
-            (None, None, (None, u'ä'.encode('utf-8'))): 
+            (None, None, (None, u'ä'.encode('utf-8'))):
                 ('utf-8', 5, u'ä'), # read as utf-8
-            (None, None, (None, u'ä'.encode('iso-8859-1'))): # trigger UnicodeDecodeError! 
+            (None, None, (None, u'ä'.encode('iso-8859-1'))): # trigger UnicodeDecodeError!
                 ('utf-8', 5, None),
 
         }
-        for (override, parent, r), exp in tests.items():              
-            self.assertEquals(_readUrl(url, 
+        for (override, parent, r), exp in tests.items():
+            self.assertEquals(_readUrl(url,
                                        overrideEncoding=override,
                                        parentEncoding=parent,
-                                       fetcher=make_fetcher(r)), 
+                                       fetcher=make_fetcher(r)),
                               exp)
 
     def test_defaultFetcher(self):
         """util._defaultFetcher"""
         if mock:
-            
+
             class Response(object):
                 """urllib2.Reponse mock"""
-                def __init__(self, url, 
+                def __init__(self, url,
                              contenttype, content,
                              exception=None, args=None):
                     self.url = url
-                    
+
                     mt, params = cgi.parse_header(contenttype)
                     self.mimetype = mt
                     self.charset = params.get('charset', None)
-                    
+
                     self.text = content
-                    
+
                     self.exception = exception
                     self.args = args
 
@@ -316,7 +316,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                     return self.url
 
                 def info(self):
-                    mimetype, charset = self.mimetype, self.charset 
+                    mimetype, charset = self.mimetype, self.charset
                     class Info(object):
                         def gettype(self):
                             return mimetype
@@ -332,7 +332,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                     else:
                         raise self.exception(*self.args)
 
-            def urlopen(url, 
+            def urlopen(url,
                         contenttype=None, content=None,
                         exception=None, args=None):
                 # return an mock which returns parameterized Response
@@ -341,23 +341,23 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                         raise exception(*args)
                     else:
                         return Response(url,
-                                        contenttype, content, 
+                                        contenttype, content,
                                         exception=exception, args=args)
                 return x
-            
+
             # positive tests
             tests = {
                 # content-type, contentstr: encoding, contentstr
-                ('text/css', u'€'.encode('utf-8')): 
-                        (None, u'€'.encode('utf-8')),  
-                ('text/css;charset=utf-8', u'€'.encode('utf-8')): 
-                        ('utf-8', u'€'.encode('utf-8')),  
-                ('text/css;charset=ascii', 'a'): 
-                        ('ascii', 'a')  
+                ('text/css', u'€'.encode('utf-8')):
+                        (None, u'€'.encode('utf-8')),
+                ('text/css;charset=utf-8', u'€'.encode('utf-8')):
+                        ('utf-8', u'€'.encode('utf-8')),
+                ('text/css;charset=ascii', 'a'):
+                        ('ascii', 'a')
             }
             url = 'http://example.com/test.css'
             for (contenttype, content), exp in tests.items():
-                
+
                 mock("urllib2.urlopen", mock_obj=urlopen(url, contenttype, content))
 
                 #print url, exp == _readUrl(url, encoding), exp, _readUrl(url, encoding)
@@ -384,7 +384,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 self.assertRaises(exception, _defaultFetcher, url)
 
             restore()
-        
+
 
 if __name__ == '__main__':
     import unittest

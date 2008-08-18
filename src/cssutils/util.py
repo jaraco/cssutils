@@ -748,9 +748,9 @@ def _defaultFetcher(url):
 def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
     """
     Read cssText from url and decode it using all relevant methods (HTTP
-    header, BOM, @charset). Returns 
-    
-    - encoding used to decode text (which is needed to set encoding of 
+    header, BOM, @charset). Returns
+
+    - encoding used to decode text (which is needed to set encoding of
       stylesheet properly)
     - type of encoding (how it was retrieved, see list below)
     - decodedCssText
@@ -776,7 +776,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
 
     """
     enctype = None
-    
+
     if not fetcher:
         fetcher = _defaultFetcher
     r = fetcher(url)
@@ -787,10 +787,10 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
             enctype = 0 # 0. override encoding
             encoding = overrideEncoding
         elif httpEncoding:
-            enctype = 1 # 1. HTTP            
+            enctype = 1 # 1. HTTP
             encoding = httpEncoding
         else:
-            # check content            
+            # check content
             contentEncoding, explicit = cssutils.codec.detectencoding_str(content)
             if explicit:
                 enctype = 2 # 2. BOM/@charset: explicitly
@@ -802,13 +802,13 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
             else:
                 enctype = 5 # 5. assume UTF-8
                 encoding = 'utf-8'
-        
+
         try:
             # encoding may still be wrong if encoding *is lying*!
             if content is not None:
                 decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
             else:
-                decodedCssText = None     
+                decodedCssText = None
         except UnicodeDecodeError, e:
             cssutils.log.warn(e, neverraise=True)
             decodedCssText = None
