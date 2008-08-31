@@ -73,7 +73,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a:': (xml.dom.SyntaxErr,
                    u'''Property: No property value found: u'a:'. [1:2: :]'''),
             u'a: ': (xml.dom.SyntaxErr,
-                   u'''CSSValue: Unknown syntax or no value: u' '.'''),
+                   u"CSSValue: Incomplete value: u' '."),
             u'a: 1!': (xml.dom.SyntaxErr,
                    u'''Property: Invalid priority: u'!'.'''),
             u'a: 1!importantX': (xml.dom.SyntaxErr,

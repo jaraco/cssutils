@@ -101,6 +101,34 @@ class CSSValueTestCase(basetest.BaseTestCase):
                          v.cssText)
         self.assert_(False is v.valid)
 
+    def test_cssText2(self):
+        "CSSValue.cssText 2"
+        tests = {
+            # S or COMMENT
+            u'red': u'red',
+            u'red ': u'red',
+            u' red ': u'red',
+            u'/**/red': u'/**/red',
+            u'red/**/': u'red/**/',
+            u'/**/red/**/': u'/**/red/**/',
+            u'/**/ red': u'/**/red', # S is lost
+            u'red /**/': u'red /**/',
+            u'/**/ red /**/': u'/**/red /**/', # S is lost
+            # values 
+            u'0': u'0',
+            u'00': u'0',
+            u'0%': u'0',
+            u'0px': u'0',
+            u'1': u'1',
+            u'1px': u'1px',
+            u'1%': u'1%',
+            u'1px1': u'1px1',
+            #u'#112233': u'#123'
+            }
+        for test, exp in tests.items():
+            v = cssutils.css.CSSValue(cssText=test)
+            self.assertEqual(exp, v.cssText)
+
     def test_incomplete(self):
         "CSSValue (incomplete)"
         tests = {
@@ -392,20 +420,22 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         for test in tests:
             initialType, initialValue = test
             pv = cssutils.css.CSSPrimitiveValue(initialValue)
-            for setType, setValue, exp, msg in tests[test]:
+            for setType, setValue, exp, cssText in tests[test]:
                 if type(exp) == types.TypeType or\
                    type(exp) == types.ClassType: # 2.4 compactibility
-                    if msg:
+                    if cssText:
                         self.assertRaisesMsg(
-                            exp, msg, pv.setFloatValue, setType, setValue)
+                            exp, cssText, pv.setFloatValue, setType, setValue)
                     else:
                         self.assertRaises(
                             exp, pv.setFloatValue, setType, setValue)
                 else:
                     pv.setFloatValue(setType, setValue)
-                    self.assertEqual(pv.cssText, msg)
+                    self.assertEqual(pv._value, cssText)
+                    if cssText == '0mm':
+                        cssText = '0'
+                    self.assertEqual(pv.cssText, cssText)
                     self.assertEqual(pv.getFloatValue(initialType), exp)
-                    self.assertEqual(pv._value, msg)
 
     def test_getString(self):
         "CSSPrimitiveValue.getStringValue()"
