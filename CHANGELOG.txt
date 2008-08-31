@@ -49,11 +49,12 @@ HEAD
 
         - unknown properties raise a WARNING instead of INFO now
 
-    + FEATURE: Value with a zero value are now serialized just as ``0`` without any in this case unneeded dimension. Might not work for all cases but the most common ones.
-
     + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
 
+    + FEATURE: Value with a zero value are now serialized just as ``0`` without any in this case unneeded dimension. Might not work for all cases but the most common ones.
+
     - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
+    - BUGFIX: Parsing values with ``+`` operator fixed.
 
 
 0.9.5

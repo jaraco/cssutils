@@ -854,6 +854,9 @@ class CSSSerializer(object):
         if not cssvalue:
             return u''
         else:
+            #out = Out(self)
+            #typ, val = item.type, item.value
+            
             out = []
             for part in cssvalue.seq:
                 if hasattr(part, 'cssText'):
@@ -868,10 +871,17 @@ class CSSSerializer(object):
                     if part and part[0] == part[-1] and part[0] in '\'"':
                         # string has " " around it in CSSValue!
                         part = self._string(part[1:-1])
-                    if part == cssvalue._value:
+
+                    if out and out[-1] == u'-':
+                        sign = u'-'
+                    else: 
+                        sign = u''
+                    if sign + part == cssvalue._value:
                         try:
                             # DIMENSION and is it 0?
                             if 0 == cssvalue.getFloatValue():
+                                if sign:
+                                    del out[-1] 
                                 part = u'0'
                         except xml.dom.InvalidAccessErr, e:
                             pass
