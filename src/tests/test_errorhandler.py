@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Tests for parsing which does not raise Exceptions normally"""
 __version__ = '$Id: test_parse.py 1281 2008-06-04 21:12:29Z cthedot $'
 
@@ -86,7 +85,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         cssutils.log.setLevel(logging.DEBUG)
         cssutils.parseString('a { color: 1 }')
         self.assertEqual(s.getvalue(),
-                         u"WARNING    CSSValue: Invalid value for CSS level 2 property u'color': u'1'\n")
+                         u'WARNING    CSSValue: Invalid value for CSS Level 2 property "color: 1".\n')
 
         s = self._setHandler()
 

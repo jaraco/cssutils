@@ -179,7 +179,18 @@ css2 = {
     'z-index': r'auto|{integer}|inherit',
 }
 
+# CSS Color Module Level 3
+css3colormacros = {
+    'namedcolor': r'(black|green|silver|lime|gray|olive|white|yellow|maroon|navy|red|blue|purple|teal|fuchsia|aqua)',
+                    # orange?
+    'rgbacolor': r'rgba\({w}{int}{w},{w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgba\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',                    
+    }
 
+
+css3color = {
+    'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|inherit',
+    'opacity': r'{num}|inherit'
+    }
 
 class Profiles(object):
     """
@@ -194,7 +205,7 @@ class Profiles(object):
     - 'CSS level 2': Properties defined by CSS2
     
     """
-    tokens = {
+    basicmacros = {
         'ident': r'[-]?{nmstart}{nmchar}*',
         'name': r'{nmchar}+',
         'nmstart': r'[_a-z]|{nonascii}|{escape}',
@@ -213,8 +224,13 @@ class Profiles(object):
         'nl': r'\n|\r\n|\r|\f',
         'w': r'\s*',
         }
-    generalvalues = {
-        'color': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
+    generalmacros = {
+        'hexcolor': r'0-9a-f]{3}|#[0-9a-f]{6}',
+        'rgbcolor': r'rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
+        'namedcolor': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',
+        'systemcolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
+        'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{systemcolor}',
+        #'color': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
         'integer': r'{int}',
         'length': r'0|{num}(em|ex|px|in|cm|mm|pt|pc)',
         'angle': r'0|{num}(deg|grad|rad)',
@@ -223,26 +239,38 @@ class Profiles(object):
         'percentage': r'{num}%',
         }
     
+    CSS_LEVEL_2 = 'CSS Level 2'
+    CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
+    
     def __init__(self):
+        self._profilenames = [] # to keep order, REFACTOR!        
         self._profiles = {}        
-        self.addProfile('CSS level 2', css2, css2macros)
+        self.addProfile(self.CSS_LEVEL_2, css2, css2macros)
+        self.addProfile(self.CSS_COLOR_LEVEL_3, css3color, css3colormacros)
 
-    def _expand_macros(self, tokdict, macros):
-        """ Expand macros in token dictionary """
+    def _expand_macros(self, dictionary, macros):
+        """Expand macros in token dictionary"""
         def macro_value(m):
             return '(?:%s)' % macros[m.groupdict()['macro']]
-        for key, value in tokdict.items():
+        for key, value in dictionary.items():
+
+            # TODO: check if value is a callable and use that directly as callback 
+
             while re.search(r'{[a-z][a-z0-9-]*}', value):
                 value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
                                macro_value, value)
-            tokdict[key] = value
-        return tokdict
+            dictionary[key] = value
+        return dictionary
     
-    def _compile_regexes(self, tokdict):
-        """ Compile all regular expressions into callable objects """
-        for key, value in tokdict.items():
-            tokdict[key] = re.compile('^(?:%s)$' % value, re.I).match
-        return tokdict
+    def _compile_regexes(self, dictionary):
+        """Compile all regular expressions into callable objects"""
+        for key, value in dictionary.items():
+
+            # TODO: check if value is a callable and use that directly as callback 
+            
+            dictionary[key] = re.compile('^(?:%s)$' % value, re.I).match
+            
+        return dictionary
 
     profiles = property(lambda self: sorted(self._profiles.keys()),
                                             doc=u'Names of all profiles.')
@@ -261,9 +289,11 @@ class Profiles(object):
         """
         if not macros:
             macros = {}
-        macros.update(self.tokens)
-        macros.update(self.generalvalues)
-        properties = self._expand_macros(properties, macros) 
+        m = self.basicmacros
+        m.update(self.generalmacros)
+        m.update(macros)
+        properties = self._expand_macros(properties, m)
+        self._profilenames.append(profile) 
         self._profiles[profile] = self._compile_regexes(properties)
 
     def propertiesByProfile(self, profiles=None):
@@ -290,11 +320,14 @@ class Profiles(object):
         
         Return (valid, valid_in_propfile). You may check if
         valid_in_profile is in given ``profiles``."""
-        for profile in self.profiles:
-            if name in self._profiles[profile]:
-                return (bool(self._profiles[profile][name](value)),
-                        profile)
-        return False, None
+        r = False, None
+        for profilename in self._profilenames:
+            if name in self._profiles[profilename]:
+                r = (bool(self._profiles[profilename][name](value)),
+                        profilename)
+                if r[0]:
+                    return r
+        return r
 
 
 profiles = Profiles()

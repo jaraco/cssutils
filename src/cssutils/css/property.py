@@ -9,7 +9,7 @@ __version__ = '$Id$'
 import xml.dom
 import cssutils
 #import cssproperties
-from profiles import profiles
+from cssutils.profiles import profiles
 from cssvalue import CSSValue
 from cssutils.helper import Deprecated
 

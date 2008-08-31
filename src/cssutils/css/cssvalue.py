@@ -13,7 +13,7 @@ import re
 import xml.dom
 import cssutils
 #import cssproperties
-from profiles import profiles
+from cssutils.profiles import profiles
 
 class CSSValue(cssutils.util.Base):
     """
@@ -429,7 +429,8 @@ class CSSValue(cssutils.util.Base):
     cssValueTypeString = property(_getCssValueTypeString,
         doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
 
-    def _validate(self, profile='CSS level 2'):
+    def _validate(self, profile=None):
+        # profiles.CSS_LEVEL_2
         """
         validates value against _propertyName context if given
         """
@@ -440,12 +441,16 @@ class CSSValue(cssutils.util.Base):
                 if validprofile:
                     if not self.valid:
                         self._log.warn(
-                            u'CSSValue: Invalid value for %s property %r: %r' %
+                            u'CSSValue: Invalid value for %s property "%s: %s".' %
                             (validprofile, self._propertyName, self._value), neverraise=True)
-                    elif validprofile != profile:
+                    elif profile and validprofile != profile:
                         self._log.warn(
-                            u'CSSValue: Invalid value for %s property %r %r but valid for profile %s' %
+                            u'CSSValue: Invalid value for %s property "%s: %s" but valid %s property.' %
                             (profile, self._propertyName, self._value, validprofile), neverraise=True)
+                    else:
+                        self._log.debug(
+                            u'CSSValue: Found valid %s property "%s: %s".' %
+                            (validprofile, self._propertyName, self._value), neverraise=True)
                     return
 
             self._log.debug(
