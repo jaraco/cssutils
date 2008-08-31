@@ -863,20 +863,18 @@ class CSSSerializer(object):
                     # primitive value font-family: x, y ...
                     out.append(part)
                     out.append(self.prefs.listItemSpacer)
-                elif part == u' ':
-                    # S
-                    out.append(part)
                 else:
                     # TODO: escape func parameter if STRING!
                     if part and part[0] == part[-1] and part[0] in '\'"':
                         # string has " " around it in CSSValue!
                         part = self._string(part[1:-1])
-                    try:
-                        # DIMENSION and is it 0?
-                        if 0 == cssvalue.getFloatValue():
-                            part = u'0'
-                    except xml.dom.InvalidAccessErr, e:
-                        pass
+                    if part == cssvalue._value:
+                        try:
+                            # DIMENSION and is it 0?
+                            if 0 == cssvalue.getFloatValue():
+                                part = u'0'
+                        except xml.dom.InvalidAccessErr, e:
+                            pass
                         
                     out.append(part)
                     
