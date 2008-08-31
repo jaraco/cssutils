@@ -43,11 +43,17 @@ known issues
 0.9.6dev
 --------
 HEAD
+    - API CHANGE (minor): ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
+
     + **FEATURE**: Started implementation of CSS profiles...
 
         - unknown properties raise a WARNING instead of INFO now
 
+    + FEATURE: Value with a zero value are now serialized just as ``0`` without any in this case unneeded dimension. Might not work for all cases but the most common ones.
+
     + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
+
+    - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
 
 
 0.9.5
