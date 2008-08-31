@@ -360,7 +360,13 @@ class CSSValue(cssutils.util.Base):
             wellformed = wellformed and new['wellformed']
 
             # post conditions
-            if expected.startswith('term') and newseq and newseq[-1] != u' '  or (
+            def lastseqvalue(seq):
+                """find last actual value in seq, not COMMENT!"""
+                for x in reversed(seq):
+                    if type(x) != cssutils.css.csscomment.CSSComment:
+                        return x
+
+            if expected.startswith('term') and lastseqvalue(newseq) != u' '  or (
                expected in ('funcend', ')', ']', '}')):
                 wellformed = False
                 self._log.error(u'CSSValue: Incomplete value: %r.' %
@@ -730,7 +736,7 @@ class CSSPrimitiveValue(CSSValue):
 
         return val, dim
 
-    def getFloatValue(self, unitType):
+    def getFloatValue(self, unitType=None):
         """
         (DOM method) This method is used to get a float value in a
         specified unit. If this CSS value doesn't contain a float value
@@ -741,20 +747,22 @@ class CSSPrimitiveValue(CSSValue):
             to get the float value. The unit code can only be a float unit type
             (i.e. CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS, CSS_PX, CSS_CM,
             CSS_MM, CSS_IN, CSS_PT, CSS_PC, CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS,
-            CSS_S, CSS_HZ, CSS_KHZ, CSS_DIMENSION).
+            CSS_S, CSS_HZ, CSS_KHZ, CSS_DIMENSION) or None in which case
+            the current dimension is used.
 
-        returns not necessarily a float but some cases just an int
+        returns not necessarily a float but some cases just an integer
         e.g. if the value is ``1px`` it return ``1`` and **not** ``1.0``
 
         conversions might return strange values like 1.000000000001
         """
-        if unitType not in self._floattypes:
+        if unitType is not None and unitType not in self._floattypes:
             raise xml.dom.InvalidAccessErr(
                 u'unitType Parameter is not a float type')
 
         val, dim = self.__getValDim()
 
-        if self.primitiveType != unitType:
+        if unitType is not None and self.primitiveType != unitType:
+            # convert if needed
             try:
                 val = self._converter[self.primitiveType, unitType](val)
             except KeyError:
@@ -955,6 +963,17 @@ class CSSPrimitiveValue(CSSValue):
             raise xml.dom.InvalidAccessErr(u'value is not a Rect value')
         # TODO: use Rect class
         raise NotImplementedError()
+
+    def _getCssText(self):
+        """overwritten from CSSValue"""
+        return cssutils.ser.do_css_CSSPrimitiveValue(self)
+
+    def _setCssText(self, cssText):
+        """use CSSValue's implementation"""
+        return super(CSSPrimitiveValue, self)._setCssText(cssText)
+    
+    cssText = property(_getCssText, _setCssText,
+        doc="A string representation of the current value.")
 
     def __str__(self):
         return "<cssutils.css.%s object primitiveType=%s cssText=%r _propertyName=%r valid=%r at 0x%x>" % (
