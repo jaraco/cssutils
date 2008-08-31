@@ -8,6 +8,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 import codecs
 import re
+import xml.dom
 import cssutils
 
 def _escapecss(e):
@@ -825,29 +826,60 @@ class CSSSerializer(object):
         return u''.join(out).strip()
 
     def do_css_CSSValue(self, cssvalue):
-        """
-        serializes a CSSValue
-        """
+        """Serializes a CSSValue"""
         # TODO: use Out()
         # TODO: use self._valid(cssvalue)?
         
         if not cssvalue:
             return u''
         else:
-            sep = u',%s' % self.prefs.listItemSpacer
             out = []
             for part in cssvalue.seq:
                 if hasattr(part, 'cssText'):
                     # comments or CSSValue if a CSSValueList
                     out.append(part.cssText)
-                elif isinstance(part, basestring) and part == u',':
-                    out.append(sep)
                 else:
                     # TODO: escape func parameter if STRING!
                     if part and part[0] == part[-1] and part[0] in '\'"':
                         # string has " " around it in CSSValue!
                         part = self._string(part[1:-1])
                     out.append(part)
+                    
+            return (u''.join(out)).strip()
+        
+    def do_css_CSSPrimitiveValue(self, cssvalue):
+        """Serialize a CSSPrimitiveValue"""
+        # TODO: use Out()
+        # TODO: use self._valid(cssvalue)?
+        if not cssvalue:
+            return u''
+        else:
+            out = []
+            for part in cssvalue.seq:
+                if hasattr(part, 'cssText'):
+                    # comments
+                    out.append(part.cssText)
+                elif part == u',':
+                    # primitive value font-family: x, y ...
+                    out.append(part)
+                    out.append(self.prefs.listItemSpacer)
+                elif part == u' ':
+                    # S
+                    out.append(part)
+                else:
+                    # TODO: escape func parameter if STRING!
+                    if part and part[0] == part[-1] and part[0] in '\'"':
+                        # string has " " around it in CSSValue!
+                        part = self._string(part[1:-1])
+                    try:
+                        # DIMENSION and is it 0?
+                        if 0 == cssvalue.getFloatValue():
+                            part = u'0'
+                    except xml.dom.InvalidAccessErr, e:
+                        pass
+                        
+                    out.append(part)
+                    
             return (u''.join(out)).strip()
 
     def do_stylesheets_medialist(self, medialist):
