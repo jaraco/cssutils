@@ -19,9 +19,17 @@ def save(name, string):
     f.write(string)
     f.close()
 
+if 1:
+    s = cssutils.parseString(u'a { left: +0}')
+    v = s.cssRules[0].style.getPropertyCSSValue('left')
+    print v
+    print s.cssText
+
+    sys.exit(1)
 
 if 1:
     import cssutils.css.profiles
+    # TODO: better API
     cssutils.css.profiles.profiles.addProfile('x', {
         'color': '1',
         'x': '{int}'})

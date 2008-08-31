@@ -221,8 +221,11 @@ class CSSValue(cssutils.util.Base):
                 # start of { any* } block
                 seq.append(val)
                 return '}'
-            elif expected.startswith('term') and u'-' == val or u'+' == 'val':
-                # unary operator
+            elif expected.startswith('term') and u'+' == val:
+                # unary operator "+" omit
+                return 'number percentage dimension'
+            elif expected.startswith('term') and u'-' == val:
+                # unary "-" operator
                 seq.append(val)
                 new['values'].append(val)
                 return 'number percentage dimension'
