@@ -158,13 +158,13 @@ class CSSValueTestCase(basetest.BaseTestCase):
         "CSSValue.valid"
         # context property must be set
         tests = [
+            ('color', r'INHe\rIT', True),
             ('color', '1', False),
             ('color', 'red', True),
             ('left', '1', False),
             ('left', '1px', True),
             ('font', 'normal 1em/1.5 serif', True),
-            # TODO:
-            #('background', 'url(x.gif) 1 0', False)
+            ('background', 'url(x.gif) 1 0', False)
             ]
         for n, v, exp in tests:
             v = cssutils.css.CSSValue(cssText=v, _propertyName=n)
