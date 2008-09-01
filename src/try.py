@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import with_statement
 __date__ = '$LastChangedDate::                            $:'
 
 import codecs
@@ -28,6 +29,13 @@ if 0:
     sys.exit(1)
 
 if 1:
+    cssutils.log.setLevel(logging.DEBUG)
+    cssutils.parseString('a { x:1 }')
+    #v = s.cssRules[0].style.getPropertyCSSValue('color')
+    #print v
+    
+    sys.exit()
+    
     from cssutils.profiles import profiles
     # TODO: better API
 #    cssutils.css.profiles.profiles.addProfile('x', {
@@ -35,11 +43,11 @@ if 1:
 #        'x': '{int}'})
     cssutils.log.setLevel(logging.DEBUG)
 
-    print list(profiles.propertiesByProfile(profiles.CSS_COLOR_LEVEL_3))
+    print list(profiles.propertiesByProfile('profiles.CSS_COLOR_LEVEL_3'))
 
     print cssutils.parseString('''
         a { opacity: 0.9;
-            color: orange;
+            color: #000;
             color: rgba(0,0,0, 0);
         }
     ''').cssText

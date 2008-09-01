@@ -7,6 +7,7 @@ __all__ = ['profiles']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
+import cssutils
 import re
 
 """
@@ -181,16 +182,23 @@ css2 = {
 
 # CSS Color Module Level 3
 css3colormacros = {
-    'namedcolor': r'(black|green|silver|lime|gray|olive|white|yellow|maroon|navy|red|blue|purple|teal|fuchsia|aqua)',
+    # orange and transparent in CSS 2.1
+    'namedcolor': r'(currentcolor|transparent|orange|black|green|silver|lime|gray|olive|white|yellow|maroon|navy|red|blue|purple|teal|fuchsia|aqua)',
                     # orange?
     'rgbacolor': r'rgba\({w}{int}{w},{w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgba\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',                    
+    'hslcolor': r'hsl\({w}{int}{w},{w}{num}%{w},{w}{num}%{w}\)|hsla\({w}{int}{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',                    
     }
 
 
 css3color = {
-    'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|inherit',
+    'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|inherit',
     'opacity': r'{num}|inherit'
     }
+
+class NoSuchProfileException(Exception):
+    """Raised if no profile with given name is found"""
+    pass
+
 
 class Profiles(object):
     """
@@ -225,11 +233,11 @@ class Profiles(object):
         'w': r'\s*',
         }
     generalmacros = {
-        'hexcolor': r'0-9a-f]{3}|#[0-9a-f]{6}',
+        'hexcolor': r'#[0-9a-f]{3}|#[0-9a-f]{6}',
         'rgbcolor': r'rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
-        'namedcolor': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',
-        'systemcolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
-        'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{systemcolor}',
+        'namedcolor': r'(transparent|orange|maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',
+        'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
+        'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{uicolor}',
         #'color': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
         'integer': r'{int}',
         'length': r'0|{num}(em|ex|px|in|cm|mm|pt|pc)',
@@ -239,10 +247,11 @@ class Profiles(object):
         'percentage': r'{num}%',
         }
     
-    CSS_LEVEL_2 = 'CSS Level 2'
+    CSS_LEVEL_2 = 'CSS Level 2.1'
     CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
     
     def __init__(self):
+        self._log = cssutils.log
         self._profilenames = [] # to keep order, REFACTOR!        
         self._profiles = {}        
         self.addProfile(self.CSS_LEVEL_2, css2, css2macros)
@@ -253,22 +262,19 @@ class Profiles(object):
         def macro_value(m):
             return '(?:%s)' % macros[m.groupdict()['macro']]
         for key, value in dictionary.items():
-
-            # TODO: check if value is a callable and use that directly as callback 
-
-            while re.search(r'{[a-z][a-z0-9-]*}', value):
-                value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
-                               macro_value, value)
+            if not callable(value):
+                while re.search(r'{[a-z][a-z0-9-]*}', value):
+                    value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
+                                   macro_value, value)
             dictionary[key] = value
         return dictionary
     
     def _compile_regexes(self, dictionary):
         """Compile all regular expressions into callable objects"""
         for key, value in dictionary.items():
-
-            # TODO: check if value is a callable and use that directly as callback 
-            
-            dictionary[key] = re.compile('^(?:%s)$' % value, re.I).match
+            if not callable(value):
+                value = re.compile('^(?:%s)$' % value, re.I).match
+            dictionary[key] = value
             
         return dictionary
 
@@ -286,6 +292,14 @@ class Profiles(object):
             property-value is a regex which may use macros defined in given 
             ``macros`` or the standard macros Profiles.tokens and
             Profiles.generalvalues.
+            
+            ``propery-value`` may also be a function which takes a single 
+            argument which is the value to validate and which should return 
+            True or False. 
+            Any exceptions which may be raised during this custom validation 
+            are reported or raised as all other cssutils exceptions depending
+            on cssutils.log.raiseExceptions which e.g during parsing normally
+            is False so the exceptions would be logged only.
         """
         if not macros:
             macros = {}
@@ -304,30 +318,49 @@ class Profiles(object):
         elif isinstance(profiles, basestring):
             profiles = (profiles, )
             
-        for profile in sorted(profiles):
-            for name in sorted(self._profiles[profile].keys()):
-                yield name  
+        try:
+            for profile in sorted(profiles):
+                for name in sorted(self._profiles[profile].keys()):
+                    yield name
+        except KeyError, e:
+            raise NoSuchProfileException(e)  
 
     def validate(self, name, value):
-        """Check if value is valid for name using any profile."""
+        """Check if value is valid for given property name using any profile."""
         for profile in self.profiles:
             if name in self._profiles[profile]:
-                return bool(self._profiles[profile][name](value))
+                try:
+                    # custom validation errors are caught
+                    r =  bool(self._profiles[profile][name](value))
+                except Exception, e:
+                    self._log.error(e, error=Exception)
+                    return False
+                if r:
+                    return r
         return False
 
-    def validateByProfile(self, name, value, profiles=None):
-        """Check if value is valid for given property name.
+    def validateWithProfile(self, name, value):
+        """Check if value is valid for given property name returning 
+        (valid, valid_in_profile). 
         
-        Return (valid, valid_in_propfile). You may check if
-        valid_in_profile is in given ``profiles``."""
-        r = False, None
+        You may want to check if valid_in_profile is what you expected.
+        
+        Example: You might expect a valid Profiles.CSS_LEVEL_2 value but
+        e.g. ``validateWithProfile('color', 'rgba(1,1,1,1)')`` returns 
+        (True, Profiles.CSS_COLOR_LEVEL_3)
+        """
         for profilename in self._profilenames:
             if name in self._profiles[profilename]:
-                r = (bool(self._profiles[profilename][name](value)),
+                try:
+                    # custom validation errors are caught
+                    r = (bool(self._profiles[profilename][name](value)),
                         profilename)
+                except Exception, e:
+                    self._log.error(e, error=Exception)
+                    r = False, None
                 if r[0]:
                     return r
-        return r
+        return False, None
 
 
 profiles = Profiles()

@@ -430,32 +430,35 @@ class CSSValue(cssutils.util.Base):
         doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
 
     def _validate(self, profile=None):
-        # profiles.CSS_LEVEL_2
         """
         validates value against _propertyName context if given
         """
         if self._value:
-            if self._propertyName: # in profiles.propertiesByProfile(profile):
-                self.valid, validprofile = profiles.validateByProfile(self._propertyName,
-                                                                      self._value)
-                if validprofile:
-                    if not self.valid:
-                        self._log.warn(
-                            u'CSSValue: Invalid value for %s property "%s: %s".' %
-                            (validprofile, self._propertyName, self._value), neverraise=True)
-                    elif profile and validprofile != profile:
-                        self._log.warn(
-                            u'CSSValue: Invalid value for %s property "%s: %s" but valid %s property.' %
-                            (profile, self._propertyName, self._value, validprofile), neverraise=True)
-                    else:
-                        self._log.debug(
-                            u'CSSValue: Found valid %s property "%s: %s".' %
-                            (validprofile, self._propertyName, self._value), neverraise=True)
-                    return
-
-            self._log.debug(
-                u'CSSValue: Unable to validate as no or unknown property context set for value: %r'
-                % self._value, neverraise=True)
+            if self._propertyName and self._propertyName in profiles.propertiesByProfile():
+                self.valid, validprofile = \
+                        profiles.validateWithProfile(self._propertyName,
+                                                     self._normalize(self._value))
+                if not validprofile:
+                    validprofile = u''
+                    
+                if not self.valid:
+                    self._log.warn(
+                        u'CSSValue: Invalid value for %s property "%s: %s".' %
+                        (validprofile, self._propertyName, 
+                         self._value), neverraise=True)
+                elif profile and validprofile != profile:
+                    self._log.warn(
+                        u'CSSValue: Invalid value for %s property "%s: %s" but valid %s property.' %
+                        (profile, self._propertyName, self._value, 
+                         validprofile), neverraise=True)
+                else:
+                    self._log.debug(
+                        u'CSSValue: Found valid %s property "%s: %s".' %
+                        (validprofile, self._propertyName, self._value), 
+                        neverraise=True)
+            else:
+                self._log.debug(u'CSSValue: Unable to validate as no or unknown property context set for value: %r'
+                                % self._value, neverraise=True)
 
 #            if self._propertyName in cssproperties.cssvalues:
  #               if cssproperties.cssvalues[self._propertyName](self._value):
