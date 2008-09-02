@@ -95,6 +95,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('color', '#000000'): (True, CSS2),
             # rgb
             ('color', 'rgb(0,1,1)'): (True, CSS2),
+            ('color', 'rgb( 0 , 1 , 1 )'): (True, CSS2),
+            #('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'): (True, CSS2),
             ('color', 'rgb(-10,555,1)'): (True, CSS2), # should be clipped
             ('color', 'rgb(100%, 1.5%, 0%)'): (True, CSS2),
             ('color', 'rgb(150%, -20%, 0%)'): (True, CSS2), # should be clipped
@@ -105,6 +107,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('color', 'rgb(0, 1, 0%)'): (False, None), # mix
             # rgba
             ('color', 'rgba(1,1,1,1)'): (True, CM3),
+            ('color', 'rgba( 1 , 1 , 1 , 1 )'): (True, CM3),
             ('color', 'rgba(100%, 0%, 0%, 1)'): (True, CM3),
             ('color', 'rgba(0, 1, 1.0, 1)'): (False, None), # int
             ('color', 'rgba(0)'): (False, None),
@@ -114,12 +117,14 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('color', 'rgba(100%, 0%, 0, 1)'): (False, None), # mix
             # hsl
             ('color', 'hsl(1,1%,1%)'): (True, CM3),
+            ('color', 'hsl( 1 , 1% , 1% )'): (True, CM3),
             ('color', 'hsl(-1000,555.5%,-61.5%)'): (True, CM3),
             ('color', 'hsl(1.5,1%,1%)'): (False, None), # int
             ('color', 'hsl(1,1,1%)'): (False, None), # %
             ('color', 'hsl(1,1%,1)'): (False, None), # %
             #hsla
-            ('color', 'hsla(1,1%,1%, 1)'): (True, CM3),
+            ('color', 'hsla(1,1%,1%,1)'): (True, CM3),
+            ('color', 'hsla( 1, 1% , 1% , 1 )'): (True, CM3),
             ('color', 'hsla(-1000,555.5%,-61.5%, 0.5)'): (True, CM3),
             ('color', 'hsla(1.5,1%,1%, 1)'): (False, None), # int
             ('color', 'hsla(1,1,1%, 1)'): (False, None), # %
