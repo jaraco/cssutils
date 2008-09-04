@@ -72,7 +72,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             u'/*1*/ tv /*2*/': None,
             u'/*0*/ only /*1*/ tv /*2*/': None,
             u'/*0* /not /*1*/ tv /*2*/': None,
-            u'/*x*/ only /*x*/ print /*x*/ and /*x*/ (/*x*/min-width/*x*/: /*x*/100px/*x*/)': None,
+            u'/*x*/ only /*x*/ print /*x*/ and /*x*/ (/*x*/min-width/*x*/: /*x*/ 100px /*x*/)': None,
             u'print and/*1*/(color)': u'print and /*1*/ (color)'
             }
         self.do_equal_r(tests, att='mediaText')

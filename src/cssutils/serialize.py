@@ -194,7 +194,7 @@ class Out(object):
         - some other vals
             add ``*spacer`` except ``space=False``
         """
-        if val or 'STRING' == typ:
+        if val or typ in ('STRING', 'URI'):
             # PRE
             if 'COMMENT' == typ:
                 if self.ser.prefs.keepComments:
@@ -205,6 +205,11 @@ class Out(object):
                 val = val.cssText
             elif 'S' == typ and not keepS:
                 return
+            elif typ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == '0':
+                # remove sign + or - if value is zero
+                # TODO: only for lenghts!
+                if self.out and self.out[-1] in u'+-':
+                    del self.out[-1]
             elif 'STRING' == typ:
                 # may be empty but MUST not be None
                 if val is None: 
@@ -212,9 +217,9 @@ class Out(object):
                 val = self.ser._string(val)                
             elif 'URI' == typ:
                 val = self.ser._uri(val)
-            elif val in u'+>~,:{;)]':
+            elif val in u'+>~,:{;)]/':
                 self._remove_last_if_S()
-                
+
             # APPEND
             if indent:
                 self.out.append(self.ser._indentblock(val, self.ser._level+1))
@@ -236,12 +241,13 @@ class Out(object):
                 self.out.append(self.ser.prefs.lineSeparator)
             elif u';' == val: # end or prop or block
                 self.out.append(self.ser.prefs.lineSeparator)
-            elif val not in u'}[]()' and space:
+            elif val not in u'}[]()/' and space:
                 self.out.append(self.ser.prefs.spacer)
         
-    def value(self, delim=u'', end=None):
+    def value(self, delim=u'', end=None, keepS=False):
         "returns all items joined by delim"
-        self._remove_last_if_S()
+        if not keepS:
+            self._remove_last_if_S()
         if end:
             self.out.append(end)
         return delim.join(self.out)
@@ -254,8 +260,9 @@ class CSSSerializer(object):
     To use your own serializing method the easiest is to subclass CSS
     Serializer and overwrite the methods you like to customize.
     """
-    # chars not in URI without quotes around
-    __forbidden_in_uri_matcher = re.compile(ur'''.*?[\)\s\;]''', re.U).match
+    # chars not in URI without quotes around as problematic with other stuff
+    # really ","?
+    __forbidden_in_uri_matcher = re.compile(ur'''.*?[\(\)\s\;,]''', re.U).match
 
     def __init__(self, prefs=None):
         """
@@ -827,68 +834,99 @@ class CSSSerializer(object):
 
     def do_css_CSSValue(self, cssvalue):
         """Serializes a CSSValue"""
-        # TODO: use Out()
         # TODO: use self._valid(cssvalue)?
-        
         if not cssvalue:
             return u''
         else:
-            out = []
-            for part in cssvalue.seq:
-                if hasattr(part, 'cssText'):
+            out = Out(self)
+            for item in cssvalue.seq:
+                type_, val = item.type, item.value
+                if hasattr(val, 'cssText'):
                     # comments or CSSValue if a CSSValueList
-                    out.append(part.cssText)
+                    out.append(val.cssText, type_)
                 else:
-                    # TODO: escape func parameter if STRING!
-                    if part and part[0] == part[-1] and part[0] in '\'"':
-                        # string has " " around it in CSSValue!
-                        part = self._string(part[1:-1])
-                    out.append(part)
-                    
-            return (u''.join(out)).strip()
-        
+                    if val and val[0] == val[-1] and val[0] in '\'"':
+                        val = self._string(val[1:-1])
+                    out.append(val, type_) #?
+
+            return out.value() 
+                        
     def do_css_CSSPrimitiveValue(self, cssvalue):
         """Serialize a CSSPrimitiveValue"""
-        # TODO: use Out()
         # TODO: use self._valid(cssvalue)?
         if not cssvalue:
             return u''
         else:
-            #out = Out(self)
-            #typ, val = item.type, item.value
+            out = Out(self)
             
-            out = []
-            for part in cssvalue.seq:
-                if hasattr(part, 'cssText'):
-                    # comments
-                    out.append(part.cssText)
-                elif part == u',':
-                    # primitive value font-family: x, y ...
-                    out.append(part)
-                    out.append(self.prefs.listItemSpacer)
-                else:
-                    # TODO: escape func parameter if STRING!
-                    if part and part[0] == part[-1] and part[0] in '\'"':
-                        # string has " " around it in CSSValue!
-                        part = self._string(part[1:-1])
+            sign = None
+            for item in cssvalue.seq:
+                type_, val = item.type, item.value
+                if 'CHAR' == type_ and val in u'+-':
+                    # save for next round
+                    sign = val
+                    continue
+                if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
+                    # handle saved sign and add to number
+                    try:
+                        # NUMBER or DIMENSION and is it 0?
+                        if 0 == cssvalue.getFloatValue():
+                            val = u'0'
+                        else:
+                            # add sign to val if not 0
+                            # TODO: only for lengths!
+                            if u'-' == sign:
+                                val = sign + val
+                    except xml.dom.InvalidAccessErr, e:
+                        pass
+                    sign = None
+                elif sign:
+                    # or simple add
+                    out.append(sign, 'CHAR')
+                    sign = None
+                
+                out.append(val, type_)
+#                if hasattr(val, 'cssText'):
+#                    # comments or CSSValue if a CSSValueList
+#                    out.append(val.cssText, type_)
+#                else:
+#                    out.append(val, type_) #?
 
-                    if out and out[-1] == u'-':
-                        sign = u'-'
-                    else: 
-                        sign = u''
-                    if sign + part == cssvalue._value:
-                        try:
-                            # DIMENSION and is it 0?
-                            if 0 == cssvalue.getFloatValue():
-                                if sign:
-                                    del out[-1] 
-                                part = u'0'
-                        except xml.dom.InvalidAccessErr, e:
-                            pass
-                        
-                    out.append(part)
-                    
-            return (u''.join(out)).strip()
+            return out.value() 
+            
+
+#            out = []
+#            for part in cssvalue.seq:
+#                if hasattr(part, 'cssText'):
+#                    # comments
+#                    out.append(part.cssText)
+#                elif part == u',':
+#                    # primitive value font-family: x, y ...
+#                    out.append(part)
+#                    out.append(self.prefs.listItemSpacer)
+#                else:
+#                    # TODO: escape func parameter if STRING!
+#                    if part and part[0] == part[-1] and part[0] in '\'"':
+#                        # string has " " around it in CSSValue!
+#                        part = self._string(part[1:-1])
+#
+#                    if out and out[-1] == u'-':
+#                        sign = u'-'
+#                    else: 
+#                        sign = u''
+#                    if sign + part == cssvalue._value:
+#                        try:
+#                            # DIMENSION and is it 0?
+#                            if 0 == cssvalue.getFloatValue():
+#                                if sign:
+#                                    del out[-1] 
+#                                part = u'0'
+#                        except xml.dom.InvalidAccessErr, e:
+#                            pass
+#                        
+#                    out.append(part)
+#                    
+#            return (u''.join(out)).strip()
 
     def do_stylesheets_medialist(self, medialist):
         """

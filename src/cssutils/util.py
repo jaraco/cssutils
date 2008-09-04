@@ -154,7 +154,7 @@ class Base(object):
         """
         if token:
             value = token[1][4:-1].strip()
-            if (value[0] in '\'"') and (value[0] == value[-1]):
+            if value and (value[0] in '\'"') and (value[0] == value[-1]):
                 # a string "..." or '...'
                 value = value.replace('\\'+value[0], value[0])[1:-1]
             return value
@@ -487,6 +487,17 @@ class Seq(object):
             raise AttributeError('Seq is readonly.')
         else:
             self._seq[index] = Item(val, typ, line, col)
+
+    def appendToVal(self, val=None, index=-1):
+        """
+        if not readonly append to Item's value at index
+        """
+        if self._readonly:
+            raise AttributeError('Seq is readonly.')
+        else:
+            old = self._seq[index]
+            self._seq[index] = Item(old.value + val, old.type, 
+                                    old.line, old.col)
 
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"

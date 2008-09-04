@@ -189,9 +189,9 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             # comments
             # TODO: spaces?
             u'/*1*//*2*/left/*3*//*4*/:/*5*//*6*/0/*7*//*8*/!/*9*//*a*/important/*b*//*c*/;': 
-                u'/*1*/\n/*2*/\nleft/*3*//*4*/: /*5*//*6*/0/*7*//*8*/ !/*9*//*a*/important/*b*//*c*/',
+                u'/*1*/\n/*2*/\nleft/*3*//*4*/: /*5*/ /*6*/ 0 /*7*/ /*8*/ !/*9*//*a*/important/*b*//*c*/',
             u'/*1*/left: 0;/*2*/ top: 1/*3*/':
-                u'/*1*/\nleft: 0;\n/*2*/\ntop: 1/*3*/',
+                u'/*1*/\nleft: 0;\n/*2*/\ntop: 1 /*3*/',
             u'left:0; top:1;': u'left: 0;\ntop: 1',
             u'/*1*/left: 0;/*2*/ top: 1;/*3*/':
                 u'/*1*/\nleft: 0;\n/*2*/\ntop: 1;\n/*3*/',

@@ -15,7 +15,7 @@ import cssutils
 #import cssproperties
 from cssutils.profiles import profiles
 
-class CSSValue(cssutils.util.Base):
+class CSSValue(cssutils.util.Base2):
     """
     The CSSValue interface represents a simple or a complex value.
     A CSSValue object only occurs in a context of a CSS property
@@ -74,7 +74,7 @@ class CSSValue(cssutils.util.Base):
         """
         super(CSSValue, self).__init__()
 
-        self.seq = []
+        #self.seq = []
         self.valid = False
         self.wellformed = False
         self._valueValue = u''
@@ -89,14 +89,26 @@ class CSSValue(cssutils.util.Base):
         self._readonly = readonly
 
     def _getValue(self):
+        # TODO:
         v = []
-        for x in self.seq:
-            if isinstance(x, cssutils.css.CSSComment):
+        for item in self.seq:
+            type_, val = item.type, item.value
+            if isinstance(val, cssutils.css.CSSComment):
+                # only value here
                 continue
-            elif isinstance(x, basestring):
-                v.append(x)
-            else: # maybe CSSPrimitiveValue
-                v.append(x.cssText)
+            elif 'STRING' == type_:
+                v.append(cssutils.ser._string(val))
+            elif 'URI' == type_:
+                v.append(cssutils.ser._uri(val))
+            elif u',' == val:
+                # list of items
+                v.append(u' ')
+                v.append(val)
+            elif isinstance(val, basestring):
+                v.append(val)
+            else: 
+                # maybe CSSPrimitiveValue
+                v.append(val.cssText)
         if v and u'' == v[-1].strip():
             # simple strip of joined string does not work for escaped spaces
             del v[-1]
@@ -159,15 +171,17 @@ class CSSValue(cssutils.util.Base):
         self._checkReadonly()
 
         # for closures: must be a mutable
-        new = {'values': [],
+        new = {'rawvalues': [], # used for validation
+               'values': [],
                'commas': 0,
                'valid': True,
                'wellformed': True }
 
         def _S(expected, seq, token, tokenizer=None):
-            val = self._tokenvalue(token)
+            type_, val, line, col = token
+            new['rawvalues'].append(val)
             if expected.endswith('operator'):
-                seq.append(u' ')
+                seq.append(u' ', type_, line=line, col=col)
                 return 'term or operator'
             elif expected.endswith('S'):
                 return 'term or S'
@@ -175,63 +189,69 @@ class CSSValue(cssutils.util.Base):
                 return expected
 
         def _char(expected, seq, token, tokenizer=None):
-            val = self._tokenvalue(token)
+            type_, val, line, col = token
+            new['rawvalues'].append(val)
+            
             if 'funcend' == expected and u')' == val:
                 # end of FUNCTION
-                seq[-1] += val
+                seq.appendToVal(val)
                 new['values'].append(seq[-1])
                 return 'operator'
 
             elif expected in (')', ']', '}') and expected == val:
                 # end of any block: (), [], {}
-                seq[-1] += val
+                seq.appendToVal(val)
                 return 'operator'
 
             elif expected in ('funcend', ')', ']', '}'):
                 # content of func or block: (), [], {}
-                seq[-1] += val
+                seq.appendToVal(val)
                 return expected
 
             elif expected.endswith('operator') and ',' == val:
-                # term , term
+                # term, term; remove all WS between terms!!!
                 new['commas'] += 1
-                if seq and seq[-1] == u' ':
-                    seq[-1] = val
+                if seq and seq[-1].type == 'S':
+                    seq.replace(-1, val, type_, line=line, col=col)
                 else:
-                    seq.append(val)
+                    seq.append(val, type_, line=line, col=col)
                 return 'term or S'
 
             elif expected.endswith('operator') and '/' == val:
                 # term / term
-                if seq and seq[-1] == u' ':
+                if seq and seq[-1].value == u' ':
+                    old = seq[-1]
+                    seq.replace(val, old.type, old.line, old.col)
                     seq[-1] = val
                 else:
-                    seq.append(val)
+                    seq.append(val, type_, line=line, col=col)
                 return 'term or S'
 
             elif expected.startswith('term') and u'(' == val:
                 # start of ( any* ) block
-                seq.append(val)
+                seq.append(val, type_, line=line, col=col)
                 return ')'
             elif expected.startswith('term') and u'[' == val:
                 # start of [ any* ] block
-                seq.append(val)
+                seq.append(val, type_, line=line, col=col)
                 return ']'
             elif expected.startswith('term') and u'{' == val:
                 # start of { any* } block
-                seq.append(val)
+                seq.append(val, type_, line=line, col=col)
                 return '}'
             elif expected.startswith('term') and u'+' == val:
-                # unary operator "+" omit
+                # unary operator "+"
+                seq.append(val, type_, line=line, col=col)
+                new['values'].append(val)
                 return 'number percentage dimension'
             elif expected.startswith('term') and u'-' == val:
                 # unary "-" operator
-                seq.append(val)
+                seq.append(val, type_, line=line, col=col)
                 new['values'].append(val)
                 return 'number percentage dimension'
             elif expected.startswith('term') and u'/' == val:
                 # font-size/line-height separator
-                seq.append(val)
+                seq.append(val, type_, line=line, col=col)
                 new['values'].append(val)
                 return 'number percentage dimension'
             else:
@@ -241,29 +261,29 @@ class CSSValue(cssutils.util.Base):
 
         def _number_percentage_dimension(expected, seq, token, tokenizer=None):
             # NUMBER PERCENTAGE DIMENSION after -/+ or operator
+            type_, val, line, col = token
+            new['rawvalues'].append(val)
             if expected.startswith('term') or expected == 'number percentage dimension':
                 # normal value
-                val = self._tokenvalue(token)
                 if new['values'] and new['values'][-1] in (u'-', u'+'):
                     new['values'][-1] += val
                 else:
                     new['values'].append(val)
-                seq.append(val)
+                seq.append(val, type_, line=line, col=col)
                 return 'operator'
             elif 'operator' == expected:
                 # expected S but token which is ok
-                val = self._tokenvalue(token)
                 if new['values'] and new['values'][-1] in (u'-', u'+'):
                     new['values'][-1] += val
                 else:
                     new['values'].append(u' ')
-                    seq.append(u' ')
+                    seq.append(u' ', self._prods.S)
                     new['values'].append(val)
-                seq.append(val)
+                seq.append(val, type_, line=line, col=col)
                 return 'operator'
             elif expected in ('funcend', ')', ']', '}'):
                 # a block
-                seq[-1] += self._tokenvalue(token)
+                seq.appendToVal(val)
                 return expected
             else:
                 new['wellformed'] = False
@@ -272,40 +292,32 @@ class CSSValue(cssutils.util.Base):
 
         def _string_ident_uri_hexcolor(expected, seq, token, tokenizer=None):
             # STRING IDENT URI HASH
+            type_, val, line, col = token
+
+            new['rawvalues'].append(val)
             if expected.startswith('term'):
                 # normal value
-
-                # TODO: use actual values, probably needs Base2 for this
-                typ = self._type(token)
-                if self._prods.STRING == typ:
-                    val = u'"%s"' % self._stringtokenvalue(token)
-#                elif 'URI' == typ:
-#                    val = u'url(%s)' % self._uritokenvalue(token)
-                else:
-                    val = self._tokenvalue(token)
-
+                if self._prods.STRING == type_:
+                    val = self._stringtokenvalue(token)
+                elif self._prods.URI == type_:
+                    val = self._uritokenvalue(token)
                 new['values'].append(val)
-                seq.append(val)
+                seq.append(val, type_, line=line, col=col)
                 return 'operator'
             elif 'operator' == expected:
                 # expected S but still ok
-
-                # TODO: use actual values, probably needs Base2 for this
-                typ = self._type(token)
-                if self._prods.STRING == typ:
-                    val = u'"%s"' % self._stringtokenvalue(token)
-#                elif 'URI' == typ:
-#                    val = u'url(%s)' % self._uritokenvalue(token)
-                else:
-                    val = self._tokenvalue(token)
+                if self._prods.STRING == type_:
+                    val = self._stringtokenvalue(token)
+                elif self._prods.URI == type_:
+                    val = self._uritokenvalue(token)
                 new['values'].append(u' ')
                 new['values'].append(val)
-                seq.append(u' ')
-                seq.append(val)
+                seq.append(u' ', self._prods.S)
+                seq.append(val, type_, line=line, col=col)
                 return 'operator'
             elif expected in ('funcend', ')', ']', '}'):
                 # a block
-                seq[-1] += self._tokenvalue(token)
+                seq.appendToVal(val)
                 return expected
             else:
                 new['wellformed'] = False
@@ -314,18 +326,21 @@ class CSSValue(cssutils.util.Base):
 
         def _function(expected, seq, token, tokenizer=None):
             # FUNCTION
+            type_, val, line, col = token
+            new['rawvalues'].append(val)
+
             if expected.startswith('term'):
-                # normal value but add if funcend if found
-                seq.append(self._tokenvalue(token))
+                # normal value but add if funcend is found
+                seq.append(val, type_, line=line, col=col)
                 return 'funcend'
             elif 'operator' == expected:
-                # normal value but add if funcend if found
-                seq.append(u' ')
-                seq.append(self._tokenvalue(token))
+                # normal value but add if funcend is found
+                seq.append(u' ', self._prods.S)
+                seq.append(val, type_, line=line, col=col)
                 return 'funcend'
             elif expected in ('funcend', ')', ']', '}'):
                 # a block
-                seq[-1] += self._tokenvalue(token)
+                seq.appendToVal(val)
                 return expected
             else:
                 new['wellformed'] = False
@@ -333,15 +348,15 @@ class CSSValue(cssutils.util.Base):
                 return expected
 
         tokenizer = self._tokenize2(cssText)
-
+        
         linetoken = self._nexttoken(tokenizer)
         if not linetoken:
             self._log.error(u'CSSValue: Unknown syntax or no value: %r.' %
                 self._valuestr(cssText))
         else:
-            # TODO: not very efficient tokenizing twice!
+            # TODO: not very efficient tokenizing twice but generator?
             tokenizer = self._tokenize2(cssText)
-            newseq = []
+            newseq = self._tempSeq() # []
             wellformed, expected = self._parse(expected='term',
                 seq=newseq, tokenizer=tokenizer,
                 productions={'S': _S,
@@ -365,9 +380,9 @@ class CSSValue(cssutils.util.Base):
             # post conditions
             def lastseqvalue(seq):
                 """find last actual value in seq, not COMMENT!"""
-                for x in reversed(seq):
-                    if type(x) != cssutils.css.csscomment.CSSComment:
-                        return x
+                for item in reversed(seq):
+                    if 'COMMENT' != item.type:
+                        return item.value
 
             if expected.startswith('term') and lastseqvalue(newseq) != u' '  or (
                expected in ('funcend', ')', ']', '}')):
@@ -382,10 +397,9 @@ class CSSValue(cssutils.util.Base):
 
             else:
                 self._linetoken = linetoken # used for line report
-                self.seq = newseq
-                self.valid = False
-
-                self._validate()
+                self._setSeq(newseq)
+                                
+                self.valid = self._validate(u''.join(new['rawvalues']))
 
                 if len(new['values']) == 1 and new['values'][0] == u'inherit':
                     self._value = u'inherit'
@@ -429,19 +443,20 @@ class CSSValue(cssutils.util.Base):
     cssValueTypeString = property(_getCssValueTypeString,
         doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
 
-    def _validate(self, profile=None):
+    def _validate(self, value=None, profile=None):
         """
         validates value against _propertyName context if given
         """
+        valid = False
         if self._value:
             if self._propertyName and self._propertyName in profiles.propertiesByProfile():
-                self.valid, validprofile = \
+                valid, validprofile = \
                         profiles.validateWithProfile(self._propertyName,
                                                      self._normalize(self._value))
                 if not validprofile:
                     validprofile = u''
                     
-                if not self.valid:
+                if not valid:
                     self._log.warn(
                         u'CSSValue: Invalid value for %s property "%s: %s".' %
                         (validprofile, self._propertyName, 
@@ -459,6 +474,11 @@ class CSSValue(cssutils.util.Base):
             else:
                 self._log.debug(u'CSSValue: Unable to validate as no or unknown property context set for value: %r'
                                 % self._value, neverraise=True)
+        
+        if not value:
+            # if value is given this should not be saved
+            self.valid = valid
+        return valid
 
 #            if self._propertyName in cssproperties.cssvalues:
  #               if cssproperties.cssvalues[self._propertyName](self._value):
@@ -644,70 +664,80 @@ class CSSPrimitiveValue(CSSValue):
         no value is given as self._value is used
         """
         primitiveType = self.CSS_UNKNOWN
-        _floatType = False # if unary expect NUMBER DIMENSION or PERCENTAGE
-        tokenizer = self._tokenize2(self._value)
-        t = self._nexttoken(tokenizer)
-        if not t:
-            self._log.error(u'CSSPrimitiveValue: No value.')
-
-        # unary operator:
-        if self._tokenvalue(t) in (u'-', u'+'):
+        
+        for item in self.seq:
+            if item.type == self._prods.URI:
+                primitiveType = self.CSS_URI
+                break
+            elif item.type == self._prods.STRING:
+                primitiveType = self.CSS_STRING
+                break
+        else:
+            
+            _floatType = False # if unary expect NUMBER DIMENSION or PERCENTAGE
+            tokenizer = self._tokenize2(self._value)
             t = self._nexttoken(tokenizer)
             if not t:
                 self._log.error(u'CSSPrimitiveValue: No value.')
-
-            _floatType = True
-
-        # check for font1, "font2" etc which is treated as ONE string
-        fontstring = 0 # should be at leayst 2
-        expected = 'ident or string'
-        tokenizer = self._tokenize2(self._value) # add used tokens again
-        for token in tokenizer:
-            val, typ = self._tokenvalue(token, normalize=True), self._type(token)
-            if expected == 'ident or string' and typ in (
-                        self._prods.IDENT, self._prods.STRING):
-                expected = 'comma'
-                fontstring += 1
-            elif expected == 'comma' and val == ',':
-                expected = 'ident or string'
-                fontstring += 1
-            elif typ in (self._prods.S, self._prods.COMMENT):
-                continue
+    
+            # unary operator:
+            if self._tokenvalue(t) in (u'-', u'+'):
+                t = self._nexttoken(tokenizer)
+                if not t:
+                    self._log.error(u'CSSPrimitiveValue: No value.')
+    
+                _floatType = True
+    
+            # check for font1, "font2" etc which is treated as ONE string
+            fontstring = 0 # should be at leayst 2
+            expected = 'ident or string'
+            tokenizer = self._tokenize2(self._value) # add used tokens again
+            for token in tokenizer:
+                val, typ = self._tokenvalue(token, normalize=True), self._type(token)
+                if expected == 'ident or string' and typ in (
+                            self._prods.IDENT, self._prods.STRING):
+                    expected = 'comma'
+                    fontstring += 1
+                elif expected == 'comma' and val == ',':
+                    expected = 'ident or string'
+                    fontstring += 1
+                elif typ in (self._prods.S, self._prods.COMMENT):
+                    continue
+                else:
+                    fontstring = False
+                    break
+    
+            if fontstring > 2:
+                # special case: e.g. for font-family: a, b; only COMMA IDENT and STRING
+                primitiveType = CSSPrimitiveValue.CSS_STRING
+            elif self._type(t) == self._prods.HASH:
+                # special case, maybe should be converted to rgb in any case?
+                primitiveType = CSSPrimitiveValue.CSS_RGBCOLOR
             else:
-                fontstring = False
-                break
-
-        if fontstring > 2:
-            # special case: e.g. for font-family: a, b; only COMMA IDENT and STRING
-            primitiveType = CSSPrimitiveValue.CSS_STRING
-        elif self._type(t) == self._prods.HASH:
-            # special case, maybe should be converted to rgb in any case?
-            primitiveType = CSSPrimitiveValue.CSS_RGBCOLOR
-        else:
-            for i, (name, tokentype, search) in enumerate(self._unitinfos):
-                val, typ = self._tokenvalue(t, normalize=True), self._type(t)
-                if typ == tokentype:
-                    if typ == self._prods.DIMENSION:
-                        if not search:
+                for i, (name, tokentype, search) in enumerate(self._unitinfos):
+                    val, typ = self._tokenvalue(t, normalize=True), self._type(t)
+                    if typ == tokentype:
+                        if typ == self._prods.DIMENSION:
+                            if not search:
+                                primitiveType = i
+                                break
+                            elif re.match(ur'^[^a-z]*(%s)$' % search, val):
+                                primitiveType = i
+                                break
+                        elif typ == self._prods.FUNCTION:
+                            if not search:
+                                primitiveType = i
+                                break
+                            elif val.startswith(search):
+                                primitiveType = i
+                                break
+                        else:
                             primitiveType = i
                             break
-                        elif re.match(ur'^[^a-z]*(%s)$' % search, val):
-                            primitiveType = i
-                            break
-                    elif typ == self._prods.FUNCTION:
-                        if not search:
-                            primitiveType = i
-                            break
-                        elif val.startswith(search):
-                            primitiveType = i
-                            break
-                    else:
-                        primitiveType = i
-                        break
-
-        if _floatType and primitiveType not in self._floattypes:
-            # - or + only expected before floattype
-            primitiveType = self.CSS_UNKNOWN
+    
+            if _floatType and primitiveType not in self._floattypes:
+                # - or + only expected before floattype
+                primitiveType = self.CSS_UNKNOWN
 
         self._primitiveType = primitiveType
 
@@ -1021,24 +1051,25 @@ class CSSValueList(CSSValue):
         ivalueseq, valueseq = 0, self._SHORTHANDPROPERTIES.get(
                                                     self._propertyName, [])
         self._items = []
-        newseq = []
+        newseq = self._tempSeq(False)
         i, max = 0, len(self.seq)
         minus = None
         while i < max:
-            v = self.seq[i]
+            item = self.seq[i]
+            type_, val, line, col = item.type, item.value, item.line, item.col
 
-            if u'-' == v:
+            if u'-' == val:
                 if minus: # 2 "-" after another
-                    self._log.error(
+                    self._log.error( # TODO:
                         u'CSSValueList: Unknown syntax: %r.'
                             % u''.join(self.seq))
                 else:
-                    minus = v
+                    minus = val
 
-            elif isinstance(v, basestring) and not v.strip() == u'' and\
-               not u'/' == v:
+            elif isinstance(val, basestring) and not type_ == 'S' and\
+               not u'/' == val:
                 if minus:
-                    v = minus + v
+                    val = minus + val
                     minus = None
                 # TODO: complete
                 # if shorthand get new propname
@@ -1056,55 +1087,66 @@ class CSSValueList(CSSValue):
                 if propname in self._SHORTHANDPROPERTIES:
                     propname = None
 
-                if i+1 < max and self.seq[i+1] == u',':
+                if i+1 < max and self.seq[i+1].value == u',':
                     # a comma separated list of values as ONE value
                     # e.g. font-family: a,b
-                    fullvalue = [v]
+                    # CSSValue already has removed extra S tokens!
+                    fullvalue = [val]
 
                     expected = 'comma' # or 'value'
                     for j in range(i+1, max):
-                        testv = self.seq[j]
-                        if u' ' == testv: # a single value follows
+                        item2 = self.seq[j]
+                        typ2, val2, line2, col2 = (item2.type, item2.value, 
+                                                   item2.line, item2.col)
+                        if u' ' == val2: 
+                            # end or a single value follows
                             break
-                        elif testv in ('-', '+') and expected == 'value':
+                        elif 'value' == expected and val2 in u'-+':
                             # unary modifier
-                            fullvalue.append(testv)
+                            fullvalue.append(val2)
                             expected = 'value'
-                        elif u',' == testv and expected == 'comma':
-                            fullvalue.append(testv)
+                        elif 'comma' == expected and  u',' == val2:
+                            fullvalue.append(val2)
                             expected = 'value'
-                        elif u',' != testv and expected == 'value':
-                            fullvalue.append(testv)
+                        elif 'value' == expected and u',' != val2:
+                            if 'STRING' == typ2:
+                                val2 = cssutils.ser._string(val2)
+                            fullvalue.append(val2)
                             expected = 'comma'
                         else:
                             self._log.error(
                                 u'CSSValueList: Unknown syntax: %r.'
-                                % testv)
+                                % val2)
                             return
                     if expected == 'value':
-                        self._log.error(
+                        self._log.error( # TODO:
                             u'CSSValueList: Unknown syntax: %r.'
                             % u''.join(self.seq))
                         return
                     # setting _propertyName this way does not work
                     # for compound props like font!
                     i += len(fullvalue) - 1
-                    o = CSSValue(cssText=u''.join(fullvalue),
-                             _propertyName=propname)
+                    obj = CSSValue(cssText=u''.join(fullvalue),
+                                 _propertyName=propname)
                 else:
                     # a single value, u' ' or nothing should be following
-                    o = CSSValue(cssText=v, _propertyName=propname)
+                    if 'STRING' == type_:
+                        val = cssutils.ser._string(val)
+                    elif 'URI' == type_:
+                        val = cssutils.ser._uri(val)
+                    
+                    obj = CSSValue(cssText=val, _propertyName=propname)
 
-                self._items.append(o)
-                newseq.append(o)
+                self._items.append(obj)
+                newseq.append(obj, CSSValue)
 
             else:
                 # S (or TODO: comment?)
-                newseq.append(v)
+                newseq.append(val, type_)
 
             i += 1
 
-        self.seq = newseq
+        self._setSeq(newseq)
 
     length = property(lambda self: len(self._items),
                 doc="(DOM attribute) The number of CSSValues in the list.")
