@@ -108,12 +108,12 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'red': u'red',
             u'red ': u'red',
             u' red ': u'red',
-            u'/**/red': u'/**/red',
-            u'red/**/': u'red/**/',
-            u'/**/red/**/': u'/**/red/**/',
-            u'/**/ red': u'/**/red', # S is lost
+            u'/**/red': u'/**/ red',
+            u'red/**/': u'red /**/',
+            u'/**/red/**/': u'/**/ red /**/',
+            u'/**/ red': u'/**/ red',
             u'red /**/': u'red /**/',
-            u'/**/ red /**/': u'/**/red /**/', # S is lost
+            u'/**/ red /**/': u'/**/ red /**/',
             # values 
             u'.0': u'0',
             u'0': u'0',
@@ -146,7 +146,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
     def test_incomplete(self):
         "CSSValue (incomplete)"
         tests = {
-            u'url("a': u'url("a")',
+            u'url("a': u'url(a)',
             u'url(a': u'url(a)'
         }
         for v, exp in tests.items():
@@ -527,9 +527,9 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assertEqual(u')', v.getStringValue())
         self.assertEqual(u'url(")")', v._value)
 
-        v.setStringValue(v.CSS_URI, '""')
-        self.assertEqual(ur'""', v.getStringValue())
-        self.assertEqual(ur'url("\"\"")', v._value)
+        v.setStringValue(v.CSS_URI, '""') 
+        self.assertEqual(ur'', v.getStringValue())
+        self.assertEqual(ur'url("")', v._value)
 
         v.setStringValue(v.CSS_URI, ',')
         self.assertEqual(u'url(",")', v._value)
@@ -644,7 +644,7 @@ class CSSValueListTestCase(basetest.BaseTestCase):
             u'-1 -2 -3 -4': (None, 4),
             u'-1 2': (None, 2),
             u'-1px red "x"': (None, 3),
-            u'-1cm, 2 3': (None, 2),
+            u'a, b c': (None, 2),
             u'1px1 2% 3': (u'1px1 2% 3', 3),
             u'f()0': (u'f() 0', 2),
             u'f()1%': (u'f() 1%', 2),
