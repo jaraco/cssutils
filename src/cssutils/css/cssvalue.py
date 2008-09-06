@@ -5,7 +5,7 @@
 - CSSValueList implements DOM Level 2 CSS CSSValueList
 
 """
-__all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList']
+__all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'CSSColor']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
@@ -14,6 +14,164 @@ import xml.dom
 import cssutils
 #import cssproperties
 from cssutils.profiles import profiles
+
+class CSSColor(cssutils.util.Base2):
+    """A CSS color like RGB, RGBA or a simple value like `#000` or `red`."""
+    
+    def __init__(self, cssText=None, readonly=False):
+        """
+        Init a new CSSColor
+
+        cssText
+            the parsable cssText of the value
+        readonly
+            defaults to False
+        """
+        super(CSSColor, self).__init__()
+        self._colorType = None
+        self.valid = False
+        self.wellformed = False
+        if cssText is not None:
+            self.cssText = cssText
+
+        self._readonly = readonly
+    
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+        if False:
+            pass
+        else:
+            new = {'colorType': '', # rgb, rgba, hsl, hsla, name, hash, ?
+                   'rawvalues': [], 
+                   'valid': True,
+                   'wellformed': True 
+                   }
+            
+            def _function(expected, seq, token, tokenizer=None):
+                # FUNCTION rgb, rgba, hsl, hsla
+                type_, val, line, col = token
+                new['rawvalues'].append(val)
+                if 'colorType' == expected:
+                    n = self._normalize(val) 
+                    if n in ('rgb(', 'rgba(', 'hsl(', 'hsla('):
+                        new['colorType'] = n[:-1].upper()
+                        seq.append(val, type_, line=line, col=col)
+                    return 'value-or-sign' 
+                else:
+                    new['wellformed'] = False
+                    self._log.error(u'CSSColor: Unexpected token.', token)
+                    return expected
+
+            def _ident_hash(expected, seq, token, tokenizer=None):
+                # IDENT or HASH standalone
+                type_, val, line, col = token
+                new['rawvalues'].append(val)
+                if 'colorType' == expected:
+                    if type_ == self._prods.HASH:
+                        # HEX, validate
+                        if len(val) != 4 and len(val) != 7:
+                            self._log.error(u'CSSColor: Unknown HEX value.', token)
+                            return self._prods.EOF
+                        new['colorType'] = 'HEX color'
+                        
+                    else:
+                        # named
+                        # TODO: check names
+                        new['colorType'] = 'named color'
+                        
+                    seq.append(val, type_, line=line, col=col)
+                    return self._prods.EOF
+                else:
+                    new['wellformed'] = False
+                    self._log.error(u'CSSColor: Unexpected token.', token)
+                    return expected
+            
+            def _char(expected, seq, token, tokenizer=None):
+                type_, val, line, col = token
+                new['rawvalues'].append(val)
+                
+                if 'comma-or-end' == expected and u')' == val:
+                    # end of FUNCTION
+                    seq.append(val, type_, line=line, col=col)
+                    return 'EOF'
+    
+                elif 'comma-or-end' == expected and ',' == val:
+                    # term, term; remove all WS between terms!!!
+                    seq.append(val, type_, line=line, col=col)
+                    return 'value-or-sign'
+    
+                elif 'value-or-sign' == expected and val in u'+-':
+                    # unary operator + or -
+                    seq.append(val, type_, line=line, col=col)
+                    return 'value'
+                elif expected.startswith('term') and u'-' == val:
+                    # unary "-" operator
+                    seq.append(val, type_, line=line, col=col)
+                    return 'number percentage dimension'
+                else:
+                    new['wellformed'] = False
+                    self._log.error(u'CSSValue: Unexpected char.', token)
+                    return expected
+                
+            def _number_percentage(expected, seq, token, tokenizer=None):
+                # NUMBER PERCENTAGE
+                type_, val, line, col = token
+                new['rawvalues'].append(val)
+                if expected.startswith('value'):
+                    # normal value
+                    seq.append(val, type_, line=line, col=col)
+                    return 'comma-or-end'
+                else:
+                    new['wellformed'] = False
+                    self._log.error(u'CSSColor: Unexpected token.', token)
+                    return expected
+            
+            # colortype (FUNCTION or IDENT or HASH), 
+            # value-or-sign, value, comma-or-(, EOF
+            if type(cssText) == tuple: 
+                initialtoken, tokenizer = cssText
+            else:
+                initialtoken, tokenizer = None, self._tokenize2(cssText)
+                
+            newseq = self._tempSeq()
+            wellformed, expected = self._parse(expected='colorType',
+                seq=newseq, tokenizer=tokenizer, initialtoken=initialtoken,
+                productions={'CHAR': _char,
+                             'FUNCTION': _function,
+                             'IDENT': _ident_hash,
+                             'HASH': _ident_hash,
+                             'NUMBER': _number_percentage,
+                             'PERCENTAGE': _number_percentage
+                              })
+
+            wellformed = wellformed and new['wellformed']
+            
+            # post conditions
+            # 'eof' == expected
+            
+            if wellformed:
+                self._colorType = new['colorType']
+                self._setSeq(newseq)
+
+        # for closures: must be a mutable
+        new = {'rawvalues': [], # used for validation
+               'values': [],
+               'commas': 0,
+               'valid': True,
+               'wellformed': True }
+    
+    cssText = property(lambda self: cssutils.ser.do_css_CSSColor(self), 
+                       _setCssText)
+    
+    colorType = property(lambda self: self._colorType)
+    
+    def __repr__(self):
+        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object cssText=%r colorType=%r at 0x%x>" % (
+                self.__class__.__name__, self.cssText, 
+                self.colorType, id(self))
 
 class CSSValue(cssutils.util.Base2):
     """
@@ -290,8 +448,8 @@ class CSSValue(cssutils.util.Base2):
                 self._log.error(u'CSSValue: Unexpected token.', token)
                 return expected
 
-        def _string_ident_uri_hexcolor(expected, seq, token, tokenizer=None):
-            # STRING IDENT URI HASH
+        def _string_ident_uri(expected, seq, token, tokenizer=None):
+            # STRING IDENT URI
             type_, val, line, col = token
 
             new['rawvalues'].append(val)
@@ -324,9 +482,47 @@ class CSSValue(cssutils.util.Base2):
                 self._log.error(u'CSSValue: Unexpected token.', token)
                 return expected
 
-        def _function(expected, seq, token, tokenizer=None):
-            # FUNCTION
+        def _hash(expected, seq, token, tokenizer=None):
+            #  HASH
             type_, val, line, col = token
+            new['rawvalues'].append(val)
+
+            val = CSSColor(cssText=val)
+            type_ = type(val)
+            if expected.startswith('term'):
+                # normal value
+                new['values'].append(val)
+                seq.append(val, type_, line=line, col=col)
+                return 'operator'
+            elif 'operator' == expected:
+                # expected S but still ok
+                new['values'].append(u' ')
+                new['values'].append(val)
+                seq.append(u' ', self._prods.S)
+                seq.append(val, type_, line=line, col=col)
+                return 'operator'
+            elif expected in ('funcend', ')', ']', '}'):
+                # a block
+                seq.appendToVal(val)
+                return expected
+            else:
+                new['wellformed'] = False
+                self._log.error(u'CSSValue: Unexpected token.', token)
+                return expected
+            
+        def _function(expected, seq, token, tokenizer=None):
+            # FUNCTION incl colors
+            type_, val, line, col = token
+            
+            if self._normalize(val) in ('rgb(', 'rgba(', 'hsl(', 'hsla('):
+                # a CSSColor
+                val = CSSColor(cssText=(token, tokenizer))
+                type_ = type(val)
+                seq.append(val, type_, line=line, col=col)
+                new['values'].append(val)
+                new['rawvalues'].append(val.cssText)
+                return 'operator'
+                
             new['rawvalues'].append(val)
 
             if expected.startswith('term'):
@@ -354,11 +550,9 @@ class CSSValue(cssutils.util.Base2):
             self._log.error(u'CSSValue: Unknown syntax or no value: %r.' %
                 self._valuestr(cssText))
         else:
-            # TODO: not very efficient tokenizing twice but generator?
-            tokenizer = self._tokenize2(cssText)
             newseq = self._tempSeq() # []
             wellformed, expected = self._parse(expected='term',
-                seq=newseq, tokenizer=tokenizer,
+                seq=newseq, tokenizer=tokenizer,initialtoken=linetoken,
                 productions={'S': _S,
                              'CHAR': _char,
 
@@ -366,11 +560,11 @@ class CSSValue(cssutils.util.Base2):
                              'PERCENTAGE': _number_percentage_dimension,
                              'DIMENSION': _number_percentage_dimension,
 
-                             'STRING': _string_ident_uri_hexcolor,
-                             'IDENT': _string_ident_uri_hexcolor,
-                             'URI': _string_ident_uri_hexcolor,
-                             'HASH': _string_ident_uri_hexcolor,
-                             'UNICODE-RANGE': _string_ident_uri_hexcolor, #?
+                             'STRING': _string_ident_uri,
+                             'IDENT': _string_ident_uri,
+                             'URI': _string_ident_uri,
+                             'HASH': _hash,
+                             'UNICODE-RANGE': _string_ident_uri, #?
 
                              'FUNCTION': _function
                               })
@@ -1057,7 +1251,6 @@ class CSSValueList(CSSValue):
         while i < max:
             item = self.seq[i]
             type_, val, line, col = item.type, item.value, item.line, item.col
-
             if u'-' == val:
                 if minus: # 2 "-" after another
                     self._log.error( # TODO:
@@ -1133,12 +1326,16 @@ class CSSValueList(CSSValue):
                     if 'STRING' == type_:
                         val = cssutils.ser._string(val)
                     elif 'URI' == type_:
-                        val = cssutils.ser._uri(val)
+                        val = cssutils.ser._uri(val)                
                     
                     obj = CSSValue(cssText=val, _propertyName=propname)
 
                 self._items.append(obj)
                 newseq.append(obj, CSSValue)
+
+            elif CSSColor == type_:
+                self._items.append(val)
+                newseq.append(val, CSSColor)
 
             else:
                 # S (or TODO: comment?)
@@ -1172,6 +1369,8 @@ class CSSValueList(CSSValue):
         for i in range (0, self.length):
             yield self.item(i)
 
-    def __str_(self):
-        return "<cssutils.css.%s object length=%s at 0x%x>" % (
-                self.__class__.__name__, self.length, id(self))
+    def __str__(self):
+        return "<cssutils.css.%s object cssValueType=%r cssText=%r length=%r propname=%r valid=%r at 0x%x>" % (
+                self.__class__.__name__, self.cssValueTypeString,
+                self.cssText, self.length, self._propertyName, 
+                self.valid, id(self))

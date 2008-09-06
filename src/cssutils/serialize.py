@@ -241,7 +241,7 @@ class Out(object):
                 self.out.append(self.ser.prefs.lineSeparator)
             elif u';' == val: # end or prop or block
                 self.out.append(self.ser.prefs.lineSeparator)
-            elif val not in u'}[]()/' and space:
+            elif val not in u'}[]()/' and typ not in ('FUNCTION',) and space:
                 self.out.append(self.ser.prefs.spacer)
         
     def value(self, delim=u'', end=None, keepS=False):
@@ -841,8 +841,9 @@ class CSSSerializer(object):
             out = Out(self)
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
-                if hasattr(val, 'cssText'):
-                    # comments or CSSValue if a CSSValueList
+                if type_ in (cssutils.css.CSSColor, 
+                             cssutils.css.CSSValue):
+                    # CSSColor or CSSValue if a CSSValueList
                     out.append(val.cssText, type_)
                 else:
                     if val and val[0] == val[-1] and val[0] in '\'"':
@@ -866,7 +867,10 @@ class CSSSerializer(object):
                     # save for next round
                     sign = val
                     continue
-                if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
+                if cssutils.css.CSSColor == type_:
+                    # Comment or CSSColor
+                    val = val.cssText
+                elif type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
                     # handle saved sign and add to number
                     try:
                         # NUMBER or DIMENSION and is it 0?
@@ -894,39 +898,35 @@ class CSSSerializer(object):
 
             return out.value() 
             
-
-#            out = []
-#            for part in cssvalue.seq:
-#                if hasattr(part, 'cssText'):
-#                    # comments
-#                    out.append(part.cssText)
-#                elif part == u',':
-#                    # primitive value font-family: x, y ...
-#                    out.append(part)
-#                    out.append(self.prefs.listItemSpacer)
-#                else:
-#                    # TODO: escape func parameter if STRING!
-#                    if part and part[0] == part[-1] and part[0] in '\'"':
-#                        # string has " " around it in CSSValue!
-#                        part = self._string(part[1:-1])
-#
-#                    if out and out[-1] == u'-':
-#                        sign = u'-'
-#                    else: 
-#                        sign = u''
-#                    if sign + part == cssvalue._value:
-#                        try:
-#                            # DIMENSION and is it 0?
-#                            if 0 == cssvalue.getFloatValue():
-#                                if sign:
-#                                    del out[-1] 
-#                                part = u'0'
-#                        except xml.dom.InvalidAccessErr, e:
-#                            pass
-#                        
-#                    out.append(part)
-#                    
-#            return (u''.join(out)).strip()
+    def do_css_CSSColor(self, cssvalue):
+        """Serialize a CSSColor value"""
+        if not cssvalue:
+            return u''
+        else:
+            out = Out(self)
+            sign = None
+            for item in cssvalue.seq:
+                type_, val = item.type, item.value
+                
+                # prepare
+                if 'HASH' == type_:
+                    # TODO: add pref for this!
+                    if len(val) == 7 and val[1] == val[2] and \
+                       val[3] == val[4] and val[5] == val[6]:
+                        val = u'#%s%s%s' % (val[1], val[3], val[5])
+                elif 'CHAR' == type_ and val in u'+-':
+                    # save - for next round                
+                    if u'-' == val:
+                        # omit +
+                        sign = val
+                    continue
+                elif sign:
+                    val = sign + val
+                    sign = None
+                    
+                out.append(val, type_)
+            
+            return out.value() 
 
     def do_stylesheets_medialist(self, medialist):
         """
