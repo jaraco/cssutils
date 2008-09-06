@@ -37,7 +37,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         cssutils.ser.prefs.keepEmptyRules = True
         tests = {
             u'''a\n{color: #000}''': 'a {\n    color: #000\n    }', # issue 4
-            u'''a\n{color: #000000}''': 'a {\n    color: #000000\n    }', # issue 4
+            u'''a\n{color: #000000}''': 'a {\n    color: #000\n    }', # issue 4
             u'''a\n{color: #abc}''': 'a {\n    color: #abc\n    }', # issue 4
             u'''a\n{color: #abcdef}''': 'a {\n    color: #abcdef\n    }', # issue 4
             u'''a\n{color: #00a}''': 'a {\n    color: #00a\n    }', # issue 4

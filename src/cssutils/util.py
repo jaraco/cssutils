@@ -327,7 +327,7 @@ class Base(object):
         return p
 
     def _parse(self, expected, seq, tokenizer, productions, default=None,
-               new=None):
+               new=None, initialtoken=None):
         """
         puts parsed tokens in seq by calling a production with
             (seq, tokenizer, token)
@@ -344,13 +344,28 @@ class Base(object):
             default callback if tokentype not in productions
         new
             used to init default productions
+        initialtoken
+            will be used together with tokenizer running 1st this token
+            and then all tokens in tokenizer
 
         returns (wellformed, expected) which the last prod might have set
         """
         wellformed = True
-        if tokenizer:
+        
+        if initialtoken:
+            # add initialtoken to tokenizer
+            def tokens():
+                "Build new tokenizer including initialtoken"
+                yield initialtoken
+                for item in tokenizer:
+                    yield item
+            fulltokenizer = (t for t in tokens())
+        else:
+            fulltokenizer = tokenizer
+                
+        if fulltokenizer:
             prods = self._adddefaultproductions(productions, new)
-            for token in tokenizer:
+            for token in fulltokenizer:
                 p = prods.get(token[0], default)
                 if p:
                     expected = p(expected, seq, token, tokenizer)

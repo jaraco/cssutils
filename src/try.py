@@ -20,11 +20,20 @@ def save(name, string):
     f.write(string)
     f.close()
 
-if 0:
-    s = cssutils.parseString(u'a { left: +0}')
-    v = s.cssRules[0].style.getPropertyCSSValue('left')
-    print v
-    print s.cssText
+if 1:
+#    v = cssutils.css.CSSValue()
+#    v.cssText = 'rgb(1,2,3)'
+#    print v
+#    
+#    sys.exit(1)
+    c = cssutils.css.CSSColor()
+    v = cssutils.css.CSSValue()
+    for x in ('/**/#000000',):
+        v.cssText = x
+        print v
+    #print v
+    #print v.cssText 
+    #print s.cssText
 
     sys.exit(1)
 

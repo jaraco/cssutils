@@ -9,6 +9,9 @@ import types
 
 class CSSValueTestCase(basetest.BaseTestCase):
 
+    def setUp(self):
+        self.r = cssutils.css.CSSValue() # needed for tests
+
     def test_init(self):
         "CSSValue.__init__()"
         v = cssutils.css.CSSValue()
@@ -137,11 +140,28 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'1px': u'1px',
             u'1%': u'1%',
             u'1px1': u'1px1',
-            #u'#112233': u'#123'
+            # CSSColor
+            u'#112234': u'#112234',
+            u'#112233': u'#123',
+            u'rgb(1,2,3)': u'rgb(1, 2, 3)',
+            u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
+            u'rgb(-1,+2,0)': u'rgb(-1, 2, 0)',
+            u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
+            u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
+            u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
             }
-        for test, exp in tests.items():
-            v = cssutils.css.CSSValue(cssText=test)
-            self.assertEqual(exp, v.cssText)
+        self.do_equal_r(tests)
+
+        tests = {
+            # S or COMMENT
+            u'#': xml.dom.SyntaxErr,
+            u'#00': xml.dom.SyntaxErr,
+            u'#0000': xml.dom.SyntaxErr,
+            u'#00000': xml.dom.SyntaxErr,
+            u'#0000000': xml.dom.SyntaxErr,
+            u'-#0': xml.dom.SyntaxErr,
+            }
+        self.do_raise_r(tests)
 
     def test_incomplete(self):
         "CSSValue (incomplete)"
@@ -179,7 +199,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
               '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
                '"string"', "'string'", 'url(x)', 'red',
                'attr(a)', 'counter()', 'rect(1px,2px,3px,4px)',
-               'rgb(0,0,0)', '#000', '#000000', 'rgba(0,0,0,0)'],
+               'rgb(0, 0, 0)', '#000', '#123456', 'rgba(0, 0, 0, 0)'],
              'CSS_PRIMITIVE_VALUE'),
             ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST'),
             ([], 'CSS_CUSTOM') # what is a custom value?
@@ -674,6 +694,7 @@ class CSSValueListTestCase(basetest.BaseTestCase):
         s = cssutils.css.CSSValue(v)
         self.assert_(isinstance(s, cssutils.css.CSSValueList))
 
+        self.assert_('length=2' in str(s))
         self.assert_(v in str(s))
 
         # not "eval()"able!
