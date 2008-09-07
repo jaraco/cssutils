@@ -20,17 +20,24 @@ def save(name, string):
     f.write(string)
     f.close()
 
-if 1:
-#    v = cssutils.css.CSSValue()
-#    v.cssText = 'rgb(1,2,3)'
-#    print v
-#    
-#    sys.exit(1)
+
+class X(object):
+    def __init__(self, s):
+        self.s = s
+        
+    def n(self):
+        for i in self.s:
+            yield i
+            
+
+
+if 0:
+   
     c = cssutils.css.CSSColor()
     v = cssutils.css.CSSValue()
-    for x in ('/**/#000000',):
+    for x in ('rgb(0, 0.0, -0, -0.0)',):
         v.cssText = x
-        print v
+        print v.cssText
     #print v
     #print v.cssText 
     #print s.cssText
@@ -39,7 +46,8 @@ if 1:
 
 if 1:
     cssutils.log.setLevel(logging.DEBUG)
-    cssutils.parseString('a { x:1 }')
+    s = cssutils.parseString('')
+    print s.cssText
     #v = s.cssRules[0].style.getPropertyCSSValue('color')
     #print v
     
