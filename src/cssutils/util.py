@@ -518,8 +518,7 @@ class Seq(object):
         "returns a repr same as a list of tuples of (value, type)"
         return u'cssutils.%s.%s([\n    %s])' % (self.__module__,
                                           self.__class__.__name__,
-            u',\n    '.join([u'(%r, %r)' % (item.type, item.value)
-                          for item in self._seq]
+            u',\n    '.join([u'%r' % item for item in self._seq]
             ))
     def __str__(self):
         return "<cssutils.%s.%s object length=%r at 0x%x>" % (
