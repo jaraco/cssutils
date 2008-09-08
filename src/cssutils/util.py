@@ -521,8 +521,18 @@ class Seq(object):
             u',\n    '.join([u'%r' % item for item in self._seq]
             ))
     def __str__(self):
-        return "<cssutils.%s.%s object length=%r at 0x%x>" % (
-                self.__module__, self.__class__.__name__, len(self), id(self))
+        vals = []
+        for v in self:
+            if isinstance(v.value, basestring):
+                vals.append(v.value)
+            elif type(v) == tuple:
+                vals.append(v.value[1])
+            else:
+                vals.append(str(v))
+        
+        return "<cssutils.%s.%s object length=%r valuestring=%r at 0x%x>" % (
+                self.__module__, self.__class__.__name__, len(self), 
+                u''.join(vals), id(self))
 
 class Item(object):
     """
