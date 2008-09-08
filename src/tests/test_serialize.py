@@ -118,6 +118,28 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(s.cssText, 
             u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}@x x;''' 
             )
+        # CSSValues
+        valuetests = {
+            u'  a  a1  a-1  a-1a  ': 'a a1 a-1 a-1a',
+            u'a b 1 c 1em d -1em e': u'a b 1 c 1em d -1em e',
+            u'  1em  /  5  ': u'1em/5', 
+            u'1em/5': u'1em/5', 
+            u'a 0 a .0 a 0.0 a -0 a -.0 a -0.0 a +0 a +.0 a +0.0': 
+                u'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0', 
+            u'a  0px  a  .0px  a  0.0px  a  -0px  a  -.0px  a  -0.0px  a  +0px  a  +.0px  a  +0.0px ': 
+                u'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0', 
+            u'a  1  a  .1  a  1.0  a  0.1  a  -1  a  -.1  a  -1.0  a  -0.1  a  +1  a  +.1  a  +1.0': 
+                u'a 1 a .1 a 1.0 a 0.1 a -1 a -.1 a -1.0 a -0.1 a 1 a .1 a 1.0',
+            u'  url(  )  f()': 'url() f()', 
+            u'#112233': '#123', 
+            u'#112234': '#112234', 
+            u'#123': '#123', 
+            u'#123 url() f()': '#123 url() f()',
+            u'1 +2 + 3 - 4': u'1 2 3 -4' # ?  
+        }
+        for test, exp in valuetests.items():
+            s = cssutils.parseString(u'a{x:%s}' % test)
+            self.assertEqual(u'a{x:%s}' % exp, s.cssText)
 
     def test_defaultAtKeyword(self):
         "Preferences.defaultAtKeyword"

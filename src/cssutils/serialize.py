@@ -690,7 +690,7 @@ class CSSSerializer(object):
         if selector.wellformed:
             out = Out(self)
             
-            DEFAULTURI = selector._namespaces.get('', None)           
+            DEFAULTURI = selector._namespaces.get('', None)
             for item in selector.seq:
                 typ, val = item.type, item.value
                 if type(val) == tuple:
@@ -844,12 +844,12 @@ class CSSSerializer(object):
                 if type_ in (cssutils.css.CSSColor, 
                              cssutils.css.CSSValue):
                     # CSSColor or CSSValue if a CSSValueList
-                    out.append(val.cssText, type_)
+                    out.append(val.cssText, type_, space=False, keepS=True)
                 else:
                     if val and val[0] == val[-1] and val[0] in '\'"':
                         val = self._string(val[1:-1])
-                    out.append(val, type_) #?
-
+                    # S must be kept! in between values but no extra space
+                    out.append(val, type_, space=False, keepS=True)
             return out.value() 
                         
     def do_css_CSSPrimitiveValue(self, cssvalue):
@@ -886,7 +886,7 @@ class CSSSerializer(object):
                     sign = None
                 elif sign:
                     # or simple add
-                    out.append(sign, 'CHAR')
+                    out.append(sign, 'CHAR', space=False, keepS=True)
                     sign = None
                 
                 out.append(val, type_)
