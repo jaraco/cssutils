@@ -31,13 +31,19 @@ class X(object):
             
 
 
-if 0:
-   
-    c = cssutils.css.CSSColor()
-    v = cssutils.css.CSSValue()
-    for x in ('rgb(0, 0.0, -0, -0.0)',):
-        v.cssText = x
-        print v.cssText
+if 1:  
+#    cssutils.ser.prefs.useMinified()
+#    print cssutils.parseString('  a  b  {p:  x  y  ; \n p: a }').cssText
+#    cssutils.ser.prefs.useDefaults()
+#    print cssutils.parseString('a{p:  x   y   }').cssText
+    v = cssutils.css.CSSPrimitiveValue('url(" ")')
+    print v.cssText
+
+    
+#    v = cssutils.css.CSSValue()
+#    for x in ('a 1 b',):
+#        v.cssText = x
+#        print v.cssText
     #print v
     #print v.cssText 
     #print s.cssText

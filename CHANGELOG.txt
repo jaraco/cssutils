@@ -43,27 +43,31 @@ known issues
 0.9.6dev
 --------
 HEAD
-    + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``. This results in this changes:
+    + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``. This results in these changes:
 
         - serializing e.g. ``rgb(0,0,0)`` now defaults to ``rgb(0, 0, 0)``
         - HEX values are minified if possible, e.g. ``#112233`` results in ``#123``
-        - ...
+        - improved handling of zero values like ``-0, 0.0`` etc all should come out simply as ``0`` now
+
 
     - API CHANGE (minor): ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
 
-    + **FEATURE**: Started implementation of CSS profiles...
+
++ **FEATURE**: Started implementation of CSS profiles...
 
         - added CSS Color Module Level 3 with properties ``color`` and ``opacity``. Not implemented are SVG color names.
         - unknown properties raise a WARNING instead of INFO now
         - refactored CSSValue and subclasses therefore there may be some minor changes in serializing or value reporting
             + ``getStringValue()`` returns a string without quotes or for URIs without ``url(...)`` now
 
+
     + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
     + FEATURE: Value with a zero value are now serialized just as ``0`` without any in this case unneeded dimension. Might not work for all cases but the most common ones.
 
     - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
     - BUGFIX: Parsing values with ``+`` operator fixed.
-    - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)
+    - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it us
+    eless)
 
 0.9.5
 -----
