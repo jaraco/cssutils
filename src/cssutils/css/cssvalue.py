@@ -337,9 +337,9 @@ class CSSValue(cssutils.util.Base2):
 
         def _S(expected, seq, token, tokenizer=None):
             type_, val, line, col = token
-            new['rawvalues'].append(val)
-            if expected.endswith('operator'):
-                seq.append(u' ', type_, line=line, col=col)
+            new['rawvalues'].append(u' ')
+            if expected == 'operator': #expected.endswith('operator'):
+                seq.append(u' ', 'separator', line=line, col=col)
                 return 'term or operator'
             elif expected.endswith('S'):
                 return 'term or S'
@@ -369,7 +369,7 @@ class CSSValue(cssutils.util.Base2):
             elif expected.endswith('operator') and ',' == val:
                 # term, term; remove all WS between terms!!!
                 new['commas'] += 1
-                if seq and seq[-1].type == 'S':
+                if seq and seq[-1].type == 'separator':
                     seq.replace(-1, val, type_, line=line, col=col)
                 else:
                     seq.append(val, type_, line=line, col=col)
@@ -379,8 +379,8 @@ class CSSValue(cssutils.util.Base2):
                 # term / term
                 if seq and seq[-1].value == u' ':
                     old = seq[-1]
-                    seq.replace(val, old.type, old.line, old.col)
-                    seq[-1] = val
+                    seq.replace(-1, val, old.type, old.line, old.col)
+                    #seq[-1] = val
                 else:
                     seq.append(val, type_, line=line, col=col)
                 return 'term or S'
@@ -435,7 +435,7 @@ class CSSValue(cssutils.util.Base2):
                     new['values'][-1] += val
                 else:
                     new['values'].append(u' ')
-                    seq.append(u' ', self._prods.S)
+                    seq.append(u' ', 'separator') # self._prods.S
                     new['values'].append(val)
                 seq.append(val, type_, line=line, col=col)
                 return 'operator'
@@ -470,7 +470,7 @@ class CSSValue(cssutils.util.Base2):
                     val = self._uritokenvalue(token)
                 new['values'].append(u' ')
                 new['values'].append(val)
-                seq.append(u' ', self._prods.S)
+                seq.append(u' ', 'separator') # self._prods.S
                 seq.append(val, type_, line=line, col=col)
                 return 'operator'
             elif expected in ('funcend', ')', ']', '}'):
@@ -498,7 +498,7 @@ class CSSValue(cssutils.util.Base2):
                 # expected S but still ok
                 new['values'].append(u' ')
                 new['values'].append(val)
-                seq.append(u' ', self._prods.S)
+                seq.append(u' ', 'separator') # self._prods.S
                 seq.append(val, type_, line=line, col=col)
                 return 'operator'
             elif expected in ('funcend', ')', ']', '}'):
@@ -531,7 +531,7 @@ class CSSValue(cssutils.util.Base2):
                 return 'funcend'
             elif 'operator' == expected:
                 # normal value but add if funcend is found
-                seq.append(u' ', self._prods.S)
+                seq.append(u' ', 'separator') # self._prods.S
                 seq.append(val, type_, line=line, col=col)
                 return 'funcend'
             elif expected in ('funcend', ')', ']', '}'):
@@ -574,11 +574,14 @@ class CSSValue(cssutils.util.Base2):
             # post conditions
             def lastseqvalue(seq):
                 """find last actual value in seq, not COMMENT!"""
-                for item in reversed(seq):
+                for i, item in enumerate(reversed(seq)):
                     if 'COMMENT' != item.type:
-                        return item.value
-
-            if expected.startswith('term') and lastseqvalue(newseq) != u' '  or (
+                        return len(seq)-1-i, item.value
+                else:
+                    return 0, None
+            lastpos, lastval = lastseqvalue(newseq)
+            
+            if expected.startswith('term') and lastval != u' '  or (
                expected in ('funcend', ')', ']', '}')):
                 wellformed = False
                 self._log.error(u'CSSValue: Incomplete value: %r.' %
@@ -590,6 +593,10 @@ class CSSValue(cssutils.util.Base2):
                 self._valuestr(cssText))
 
             else:
+                # remove last token if 'separator'
+                if lastval == u' ':
+                    del newseq[lastpos]
+                
                 self._linetoken = linetoken # used for line report
                 self._setSeq(newseq)
                                 
@@ -895,7 +902,7 @@ class CSSPrimitiveValue(CSSValue):
                 elif expected == 'comma' and val == ',':
                     expected = 'ident or string'
                     fontstring += 1
-                elif typ in (self._prods.S, self._prods.COMMENT):
+                elif typ in ('separator', self._prods.S, self._prods.COMMENT):
                     continue
                 else:
                     fontstring = False
@@ -1259,7 +1266,7 @@ class CSSValueList(CSSValue):
                 else:
                     minus = val
 
-            elif isinstance(val, basestring) and not type_ == 'S' and\
+            elif isinstance(val, basestring) and not type_ == 'separator' and\
                not u'/' == val:
                 if minus:
                     val = minus + val
