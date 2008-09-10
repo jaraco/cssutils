@@ -6,6 +6,7 @@ import cssutils
 
 
 class ParseException(Exception):
+    """Raised during ProdParser run"""
     pass
 
 class ParseBase(object):
@@ -17,13 +18,14 @@ class ParseBase(object):
         return u'%s(%s)' % (self.__class__.__name__, u', '.join(props))
 
 class Choice(ParseBase):
-    """Choice of different productions"""
-    def __init__(self, prods=None):
+    """A Choice of productions (Sequence or single Prod)."""
+    def __init__(self, choice=None):
         """
         prods
             Prod or Sequence objects
         """
-        self.prods = prods
+        self._choice = choice
+        self._exhausted = False
 
     def nextProd(self, token=None):
         """Return next matching prod or sequence or raise ParseException.
@@ -31,50 +33,54 @@ class Choice(ParseBase):
         if not token:
             # called when probably done
             return None
-        for x in self.prods:
-            if isinstance(x, Prod):
-                test = x
+        elif not self._exhausted:
+            for x in self._choice:
+                if isinstance(x, Prod):
+                    test = x
+                else:
+                    # nested Sequence matches if 1st prod matches
+                    test = x.first()
+                try:
+                    if test.matches(token):
+                        self._exhausted = True
+                        return x
+                except ParseException, e:
+                    # do not raise if other my match
+                    continue
             else:
-                # nested Sequence matches if 1st prod matches
-                test = x.first()
-            try:
-                if test.matches(token):
-                    return x
-            except ParseException, e:
-                # do not raise if other my match
-                continue
+                # None matched
+                raise ParseException('No match in choice')
         else:
-            # None matched
-            raise ParseException('No match in choice')
-
+            # Choice is exhausted
+            raise ParseException('Extra token.')
 
 class Sequence(object):
-    """Sequence of Choice or Prod objects"""
+    """A Sequence of productions (Choice or single Prod)."""
     def __init__(self, sequence, minmax=None):
         """
         minmax = lambda: (1, 1)
-            number of times this sequence may occur
+            callback returning number of times this sequence may run
         """
-        self.sequence = sequence       
+        self._sequence = sequence       
         if not minmax:
             minmax = lambda: (1, 1)
         self._min, self._max = minmax()
         
-        self._number = len(self.sequence)
+        self._number = len(self._sequence)
         self._round = 1 # 1 based!    
         self._pos = 0
 
     def first(self):
         """Return 1st element of Sequence, used by Choice"""
         # TODO: current impl first only if 1st if an prod!
-        for prod in self.sequence:
+        for prod in self._sequence:
             if not prod.optional:
                 return prod
 
     def currentName(self):
         """Return current element of Sequence, used by name"""
         # TODO: current impl first only if 1st if an prod!
-        for prod in self.sequence[self._pos:]:
+        for prod in self._sequence[self._pos:]:
             if not prod.optional:
                 return prod.name
         else:
@@ -85,7 +91,7 @@ class Sequence(object):
     def nextProd(self, token=None):
         """Return next matching prod or raise ParseException."""
         while self._pos < self._number:
-            x = self.sequence[self._pos]
+            x = self._sequence[self._pos]
             self._pos += 1
 
             if self._pos == self._number and self._round < self._max:
@@ -101,13 +107,15 @@ class Sequence(object):
                 # nested Sequence or Choice
                 return x
         else:
+            # Sequence is exhausted
             if not self._min <= self._round <= self._max: 
-                raise ParseException(msg)
+                raise ParseException('Extra token.')
    
    
 class Prod(ParseBase):
     """Single Prod in Sequence or Choice"""
-    def __init__(self, name, match=None, toStore=None, toSeq=None,
+    def __init__(self, name, match=None, toSeq=None, 
+                 toStore=None, storeTypeAs=None, storeValueAs=None,
                  optional=False):
         """
         name
@@ -116,7 +124,9 @@ class Prod(ParseBase):
             function called with parameters tokentype and tokenvalue
             returning True, False or raising ParseException
         toStore (optional)
-            key to save val to store or callback(store, val)
+            key to save (type, value) to store or callback(store, type, value)
+        storeTypeAs and storeValueAs
+            key to save type or value only to store
         toSeq callback (optional)
             if given calling toSeq(val) will be appended to seq
             else simply seq
@@ -129,6 +139,10 @@ class Prod(ParseBase):
         
         if callable(toStore):
             self.toStore = toStore # toStore(store, val)
+        elif storeTypeAs:
+            self.toStore = self._makeSetTypeToStore(toStore)
+        elif storeValueAs:
+            self.toStore = self._makeSetValueToStore(toStore)
         else:
             self.toStore = self._makeSetStore(toStore)
             
@@ -139,10 +153,20 @@ class Prod(ParseBase):
        
     def _makeSetStore(self, key):
         "helper"
-        def setStore(store, val):
-            store[key] = val
+        def setStore(store, type_, val):
+            store[key] = (type_, val)
+        return setStore
+
+    def _makeSetTypeToStore(self, key):
+        def setStore(store, type_, val):
+            store[key] = type_
         return setStore
         
+    def _makeSetValueToStore(self, key):
+        def setStore(store, type_, val):
+            store[key] = val
+        return setStore
+    
     def matches(self, token):
         """Return True, False or raise ParseException."""
         type_, val, line, col = token
@@ -163,17 +187,22 @@ class ProdsParser(object):
     def __init__(self):
         self.types = cssutils.cssproductions.CSSProductions
         self._log = cssutils.log
+        self._tokenizer = cssutils.tokenize2.Tokenizer()
     
-    def parse(self, name, tokenizer, productions, store=None, seq=None):
+    def parse(self, text, name, productions, store=None):
         """
-        tokenizer
-            generating tokens
+        text
+            to parse, will be tokenized
+        name
+            used for logging
         productions
             used to parse tokens
         store  UPDATED
-            prod.store should be a dict. 
+            store should be a dict with some items already set
+            (e.g. to append to these). 
+            Otherwise an empty dict is used. 
             
-            TODO: NEEDED? 
+            TODO: NEEDED? :
             Key ``raw`` is always added and holds all unprocessed 
             values found
             
@@ -182,15 +211,29 @@ class ProdsParser(object):
           
         returns
             :wellformed: True or False
-            :token: Last token if not used to be used for new tokenizer
+            :seq: a filled cssutils.util.Seq object which is NOT readonly yet
+            :unusedtokens: token generator containing tokens not used yet
         """
-        # contains always raw values?
+        # tokenize if needed
+        if isinstance(text, basestring):
+            tokens = self._tokenizer.tokenize(text)
+        else:
+            # already tokenized, should be a generator
+            tokens = text
+        
+        # a new seq to append all Items to
+        seq = cssutils.util.Seq(readonly=False)
+        
+        # store for specific values
+        if not store:
+            store = {}
         store['_raw'] = []
-        prods = [productions] # a stack
+        
+        # stack of productions
+        prods = [productions]
 
         wellformed = True
-        next, token = None, None # if no tokens at all
-        for token in tokenizer:
+        for token in tokens:
             type_, val, line, col = token
             store['_raw'].append(val)
             
@@ -207,7 +250,8 @@ class ProdsParser(object):
 #                seq.append(r, type(r), line, col)
             elif type_ == self.types.EOF:
                 # do nothing
-                next = 'EOF'
+                pass
+#               next = 'EOF'
             else:
                 # check prods
                 try:
@@ -238,47 +282,50 @@ class ProdsParser(object):
                         seq.append(val, type_, line, col)
                         
                     if prod.toStore:
-                        prod.toStore(store, val)
+                        prod.toStore(store, type_, val)
                         
-                    if 'STOP' == next:
-                        # stop here and ignore following tokens
-                        token = None
-                        break
+#                    if 'STOP' == next: # EOF?
+#                        # stop here and ignore following tokens
+#                        break
+
         while True:
             # not all needed productions done?
             prod = prods[-1].nextProd()
-            if hasattr(prod, 'optional') and prod.optional:
-                # ignore optional ones
-                continue
-            
+            try:
+                if prod.optional:                    
+                    # ignore optional ones
+                    continue
+            except AttributeError:
+                pass
+        
             if prod:
+                wellformed = False
                 self._log.error(u'%s: Missing token for production %r' 
                                 % (name, prod.name)) 
-            elif not prod:
-                if len(prods) > 1:
-                    # nested exhausted, next in parent
-                    prods.pop()
-                else:
-                    break
-    
-        return wellformed, token    
+            elif len(prods) > 1:
+                # nested exhausted, next in parent
+                prods.pop()
+            else:
+                break
+            
+        # bool, Seq, None or generator
+        return wellformed, seq, tokens    
 
 
 
-
-types = cssutils.cssproductions.CSSProductions
 
 # PRODUCTION FOR CSSColor
-# sign + or -
-sign = Prod(name='sign +-', match=lambda t, v: v in u'+-',
-            optional=True)
-
 def makeAppendStore(key):
-    def appendStore(store, val):
+    def appendStore(store, type_, val):
         "helper"
         store[key].append(val)
     return appendStore
 
+types = cssutils.cssproductions.CSSProductions
+
+# sign + or -
+sign = Prod(name='sign +-', match=lambda t, v: v in u'+-',
+            optional=True)
 # value NUMBER or PERCENTAGE
 value = Prod(name='value', 
              match=lambda t, v: t in (types.NUMBER, types.PERCENTAGE), 
@@ -290,7 +337,7 @@ endfunc = Prod(name='end FUNC ")"', match=lambda t, v: v == u')')
 # COLOR PRODUCTION
 _funccolor = Sequence([
     Prod(name='FUNC', match=lambda t, v: v in ('rgb(', 'rgba(', 'hsl(', 'hsla(') and t == types.FUNCTION, 
-         toStore='colorType' ),
+         storeTypeAs='colorType' ),
     sign,
     value,
     # more values starting with Comma
@@ -299,6 +346,8 @@ _funccolor = Sequence([
               sign, 
               value
              ], 
+             # should use store where colorType is saved to 
+             # define min and may, closure?
              minmax=lambda: (2, 2)
     ),
     # end of FUNCTION )
@@ -308,8 +357,10 @@ colorproductions = Choice([_funccolor,
                       Prod(name='HEX color', 
                            match=lambda t, v: t == types.HASH and 
                             len(v) == 4 or len(v) == 7,
+                           storeTypeAs='colorType',
                            toSeq=cssutils.css.CSSPrimitiveValue),
                       Prod(name='named color', match=lambda t, v: t == types.IDENT,
+                           storeTypeAs='colorType',
                            toSeq=cssutils.css.CSSPrimitiveValue),
                       ]
     )
@@ -329,27 +380,18 @@ rectproductions = Sequence([Prod(name='FUNC rect(',
                             endfunc 
                             ])
 
-# tokenize    
-
-text = 'hsl(1,2,3)'#rgb(1%,   \n2% , -3.0%)'
-name = u'CSSColor'
-productions = colorproductions
-tokens = cssutils.tokenize2.Tokenizer().tokenize(text)
-
-# parse
+# EXAMPLE
+name, productions = u'CSSColor', colorproductions
+text = 'rgb(1%,   \n2% , -3.0%)' 
 # RESULT: colorType filled, in test all values
 store = {'test': []
          #'colorType': '', # rgb, rgba, hsl, hsla, name, hash, ?
          }
-seq = cssutils.util.Seq(readonly=False)
-wellformed, token = ProdsParser().parse(name,
-                                               tokens, 
-                                               productions, 
-                                               seq=seq, 
-                                               store=store)
 
-print
-print '- STORE:', store
+wellformed, seq, unusedtokens = ProdsParser().parse(text, name, productions,  
+                                                    store=store)
+
 print '- WELLFORMED:', wellformed
-print '- TOKENIZER: ', list(tokens)
+print '- STORE:', store
+print '- TOKENS:', list(unusedtokens) 
 pp(seq)
