@@ -14,7 +14,7 @@ value = Prod(name='value',
              toStore='test'
              )
 comma = Prod(name='comma', match=lambda t, v: v == u',')
-endfunc = Prod(name='end FUNC ")"', match=lambda t, v: v == u')')
+funcEnd = Prod(name='end FUNC ")"', match=lambda t, v: v == u')')
 
 # COLOR PRODUCTION
 funccolor = Sequence([
@@ -26,7 +26,7 @@ funccolor = Sequence([
     # define min and may, closure?
     Sequence([comma, sign, value], minmax=lambda: (2, 2)), 
     # end of FUNCTION )
-    endfunc
+    funcEnd
  ])
 colorprods = Choice([funccolor,
                       Prod(name='HEX color', 
@@ -52,7 +52,7 @@ rectprods = Sequence([Prod(name='FUNC rect(',
                            match=lambda t, v: v == u'rect('),  #normalized!
                            rectvalue,
                            Sequence([comma, rectvalue], minmax=lambda: (3,3)),
-                           endfunc 
+                           funcEnd 
                            ])
 
 # EXAMPLE
