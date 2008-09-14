@@ -201,8 +201,10 @@ class Out(object):
                     val = val.cssText
                 else: 
                     return
-            elif typ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
+            elif hasattr(val, 'cssText'):
                 val = val.cssText
+#            elif typ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
+#                val = val.cssText
             elif 'S' == typ and not keepS:
                 return
             elif typ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == '0':
