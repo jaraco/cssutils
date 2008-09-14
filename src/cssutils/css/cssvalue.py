@@ -12,166 +12,9 @@ __version__ = '$Id$'
 import re
 import xml.dom
 import cssutils
-#import cssproperties
 from cssutils.profiles import profiles
+from cssutils.prodsparser import *
 
-class CSSColor(cssutils.util.Base2):
-    """A CSS color like RGB, RGBA or a simple value like `#000` or `red`."""
-    
-    def __init__(self, cssText=None, readonly=False):
-        """
-        Init a new CSSColor
-
-        cssText
-            the parsable cssText of the value
-        readonly
-            defaults to False
-        """
-        super(CSSColor, self).__init__()
-        self._colorType = None
-        self.valid = False
-        self.wellformed = False
-        if cssText is not None:
-            self.cssText = cssText
-
-        self._readonly = readonly
-    
-    def _setCssText(self, cssText):
-        self._checkReadonly()
-        if False:
-            pass
-        else:
-            new = {'colorType': '', # rgb, rgba, hsl, hsla, name, hash, ?
-                   'rawvalues': [], 
-                   'valid': True,
-                   'wellformed': True 
-                   }
-            
-            def _function(expected, seq, token, tokenizer=None):
-                # FUNCTION rgb, rgba, hsl, hsla
-                type_, val, line, col = token
-                new['rawvalues'].append(val)
-                if 'colorType' == expected:
-                    n = self._normalize(val) 
-                    if n in ('rgb(', 'rgba(', 'hsl(', 'hsla('):
-                        new['colorType'] = n[:-1].upper()
-                        seq.append(val, type_, line=line, col=col)
-                    return 'value-or-sign' 
-                else:
-                    new['wellformed'] = False
-                    self._log.error(u'CSSColor: Unexpected token.', token)
-                    return expected
-
-            def _ident_hash(expected, seq, token, tokenizer=None):
-                # IDENT or HASH standalone
-                type_, val, line, col = token
-                new['rawvalues'].append(val)
-                if 'colorType' == expected:
-                    if type_ == self._prods.HASH:
-                        # HEX, validate
-                        if len(val) != 4 and len(val) != 7:
-                            self._log.error(u'CSSColor: Unknown HEX value.', token)
-                            return self._prods.EOF
-                        new['colorType'] = 'HEX color'
-                        
-                    else:
-                        # named
-                        # TODO: check names
-                        new['colorType'] = 'named color'
-                        
-                    seq.append(val, type_, line=line, col=col)
-                    return self._prods.EOF
-                else:
-                    new['wellformed'] = False
-                    self._log.error(u'CSSColor: Unexpected token.', token)
-                    return expected
-            
-            def _char(expected, seq, token, tokenizer=None):
-                type_, val, line, col = token
-                new['rawvalues'].append(val)
-                
-                if 'comma-or-end' == expected and u')' == val:
-                    # end of FUNCTION
-                    seq.append(val, type_, line=line, col=col)
-                    return 'EOF'
-    
-                elif 'comma-or-end' == expected and ',' == val:
-                    # term, term; remove all WS between terms!!!
-                    seq.append(val, type_, line=line, col=col)
-                    return 'value-or-sign'
-    
-                elif 'value-or-sign' == expected and val in u'+-':
-                    # unary operator + or -
-                    seq.append(val, type_, line=line, col=col)
-                    return 'value'
-                elif expected.startswith('term') and u'-' == val:
-                    # unary "-" operator
-                    seq.append(val, type_, line=line, col=col)
-                    return 'number percentage dimension'
-                else:
-                    new['wellformed'] = False
-                    self._log.error(u'CSSValue: Unexpected char.', token)
-                    return expected
-                
-            def _number_percentage(expected, seq, token, tokenizer=None):
-                # NUMBER PERCENTAGE
-                type_, val, line, col = token
-                new['rawvalues'].append(val)
-                if expected.startswith('value'):
-                    # normal value
-                    seq.append(val, type_, line=line, col=col)
-                    return 'comma-or-end'
-                else:
-                    new['wellformed'] = False
-                    self._log.error(u'CSSColor: Unexpected token.', token)
-                    return expected
-            
-            # colortype (FUNCTION or IDENT or HASH), 
-            # value-or-sign, value, comma-or-(, EOF
-            if type(cssText) == tuple: 
-                initialtoken, tokenizer = cssText
-            else:
-                initialtoken, tokenizer = None, self._tokenize2(cssText)
-                
-            newseq = self._tempSeq()
-            wellformed, expected = self._parse(expected='colorType',
-                seq=newseq, tokenizer=tokenizer, initialtoken=initialtoken,
-                productions={'CHAR': _char,
-                             'FUNCTION': _function,
-                             'IDENT': _ident_hash,
-                             'HASH': _ident_hash,
-                             'NUMBER': _number_percentage,
-                             'PERCENTAGE': _number_percentage
-                              })
-
-            wellformed = wellformed and new['wellformed']
-            
-            # post conditions
-            # 'eof' == expected
-            
-            if wellformed:
-                self._colorType = new['colorType']
-                self._setSeq(newseq)
-
-        # for closures: must be a mutable
-        new = {'rawvalues': [], # used for validation
-               'values': [],
-               'commas': 0,
-               'valid': True,
-               'wellformed': True }
-    
-    cssText = property(lambda self: cssutils.ser.do_css_CSSColor(self), 
-                       _setCssText)
-    
-    colorType = property(lambda self: self._colorType)
-    
-    def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
-
-    def __str__(self):
-        return "<cssutils.css.%s object cssText=%r colorType=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssText, 
-                self.colorType, id(self))
 
 class CSSValue(cssutils.util.Base2):
     """
@@ -487,7 +330,7 @@ class CSSValue(cssutils.util.Base2):
             type_, val, line, col = token
             new['rawvalues'].append(val)
 
-            val = CSSColor(cssText=val)
+            val = CSSColor(cssText=token)
             type_ = type(val)
             if expected.startswith('term'):
                 # normal value
@@ -680,19 +523,6 @@ class CSSValue(cssutils.util.Base2):
             # if value is given this should not be saved
             self.valid = valid
         return valid
-
-#            if self._propertyName in cssproperties.cssvalues:
- #               if cssproperties.cssvalues[self._propertyName](self._value):
- #                   self.valid = True
- #               else:
-  #                  self.valid = False
-   #                 self._log.warn(
-    #                    u'CSSValue: Invalid value for CSS2 property %r: %r' %
-     #                   (self._propertyName, self._value), neverraise=True)
-      #      else:
-       #         self._log.debug(
-        #            u'CSSValue: Unable to validate as no or unknown property context set for this value: %r'
-          #          % self._value, neverraise=True)
 
     def _get_propertyName(self):
         return self.__propertyName
@@ -1381,3 +1211,167 @@ class CSSValueList(CSSValue):
                 self.__class__.__name__, self.cssValueTypeString,
                 self.cssText, self.length, self._propertyName, 
                 self.valid, id(self))
+
+
+class CSSFunction(CSSPrimitiveValue):
+    """A CSS function value like rect() etc."""
+    
+    def __init__(self, cssText=None, readonly=False):
+        """
+        Init a new CSSFunction
+
+        cssText
+            the parsable cssText of the value
+        readonly
+            defaults to False
+        """
+        super(CSSColor, self).__init__()
+        self.valid = False
+        self.wellformed = False
+        if cssText is not None:
+            self.cssText = cssText
+
+        self._funcType = None
+
+        self._readonly = readonly
+    
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+        if False:
+            pass
+        else:            
+            types = self._prods # rename!
+            valueProd = Prod(name='value', 
+                         match=lambda t, v: t in (types.NUMBER, types.PERCENTAGE), 
+                         toSeq=CSSPrimitiveValue,
+                         toStore='parts'
+                         )
+            # COLOR PRODUCTION
+            funcProds = Sequence([
+                                  Prod(name='FUNC', 
+                                       match=lambda t, v: t == types.FUNCTION, 
+                                       toStore='funcType' ),
+                                       Prod(**PreDef.sign), 
+                                       valueProd,
+                                  # more values starting with Comma
+                                  # should use store where colorType is saved to 
+                                  # define min and may, closure?
+                                  Sequence([Prod(**PreDef.comma), 
+                                            Prod(**PreDef.sign), 
+                                            valueProd], 
+                                           minmax=lambda: (2, 2)), 
+                                  Prod(**PreDef.funcEnd)
+             ])
+            # store: colorType, parts
+            wellformed, seq, store, unusedtokens = ProdsParser().parse(cssText, 
+                                                                u'CSSFunction', 
+                                                                funcProds,
+                                                                {'parts': []})
+            
+            if wellformed:
+                self.wellformed = True
+                self._setSeq(seq)
+                self._funcType = self._normalize(store['colorType'].value[:-1])
+
+    cssText = property(lambda self: cssutils.ser.do_css_CSSColor(self), 
+                       _setCssText)
+    
+    funcType = property(lambda self: self._funcType)
+    
+    def __repr__(self):
+        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object colorType=%r cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.colorType, self.cssText,
+                id(self))
+
+
+
+
+class CSSColor(CSSPrimitiveValue):
+    """A CSS color like RGB, RGBA or a simple value like `#000` or `red`."""
+    
+    def __init__(self, cssText=None, readonly=False):
+        """
+        Init a new CSSColor
+
+        cssText
+            the parsable cssText of the value
+        readonly
+            defaults to False
+        """
+        super(CSSColor, self).__init__()
+        self._colorType = None
+        self.valid = False
+        self.wellformed = False
+        if cssText is not None:
+            self.cssText = cssText
+
+        self._readonly = readonly
+    
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+        if False:
+            pass
+        else:            
+            types = self._prods # rename!
+            valueProd = Prod(name='value', 
+                         match=lambda t, v: t in (types.NUMBER, types.PERCENTAGE), 
+                         toSeq=CSSPrimitiveValue,
+                         toStore='parts'
+                         )
+            # COLOR PRODUCTION
+            funccolor = Sequence([Prod(name='FUNC', 
+                                       match=lambda t, v: v in ('rgb(', 'rgba(', 'hsl(', 'hsla(') and t == types.FUNCTION, 
+                                       toStore='colorType' ),
+                                       Prod(**PreDef.sign), 
+                                       valueProd,
+                                  # 2 or 3 more values starting with Comma
+                                  Sequence([Prod(**PreDef.comma), 
+                                            Prod(**PreDef.sign), 
+                                            valueProd], 
+                                           minmax=lambda: (1,2)), 
+                                  Prod(**PreDef.funcEnd)
+                                 ]
+            )
+            colorprods = Choice([funccolor,
+                                 Prod(name='HEX color', 
+                                      match=lambda t, v: t == types.HASH and 
+                                      len(v) == 4 or len(v) == 7,
+                                      toStore='colorType'
+                                 ),
+                                 Prod(name='named color', 
+                                      match=lambda t, v: t == types.IDENT,
+                                      toStore='colorType'
+                                 ),
+                                ]
+            )     
+            # store: colorType, parts
+            wellformed, seq, store, unusedtokens = ProdsParser().parse(cssText, 
+                                                                u'CSSColor', 
+                                                                colorprods,
+                                                                {'parts': []})
+            
+            if wellformed:
+                self.wellformed = True
+                if store['colorType'].type == self._prods.HASH:
+                    self._colorType = 'HEX'
+                elif store['colorType'].type == self._prods.IDENT:
+                    self._colorType = 'Named Color'
+                else:
+                    self._colorType = self._normalize(store['colorType'].value[:-1])
+                self._setSeq(seq)
+
+    cssText = property(lambda self: cssutils.ser.do_css_CSSColor(self), 
+                       _setCssText)
+    
+    colorType = property(lambda self: self._colorType)
+    
+    def __repr__(self):
+        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object colorType=%r cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.colorType, self.cssText,
+                id(self))
