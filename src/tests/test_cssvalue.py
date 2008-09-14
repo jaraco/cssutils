@@ -199,7 +199,9 @@ class CSSValueTestCase(basetest.BaseTestCase):
               '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
                '"string"', "'string'", 'url(x)', 'red',
                'attr(a)', 'counter()', 'rect(1px,2px,3px,4px)',
-               'rgb(0, 0, 0)', '#000', '#123456', 'rgba(0, 0, 0, 0)'],
+               'rgb(0, 0, 0)', '#000', '#123456', 'rgba(0, 0, 0, 0)',
+               'hsl(0, 0, 0)', 'hsla(0, 0, 0, 0)',
+               ],
              'CSS_PRIMITIVE_VALUE'),
             ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST'),
             ([], 'CSS_CUSTOM') # what is a custom value?
