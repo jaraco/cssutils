@@ -168,7 +168,7 @@ cssvalues = {
     'border-top-width': r'{border-width}|inherit',
     'border-right-width': r'{border-width}|inherit',
     'border-bottom-width': r'{border-width}|inherit',
-    'border-right-width': r'{border-width}|inherit',
+    'border-left-width': r'{border-width}|inherit',
     'border-width': r'{border-width}(\s+{border-width}){0,3}|inherit',
     'border': r'{border-attrs}(\s+{border-attrs})*|inherit',
     'bottom': r'{length}|{percentage}|auto|inherit',
