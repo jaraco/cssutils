@@ -14,7 +14,7 @@ TODO:
         - opt first(), naive impl for now
 
 """
-__all__ = ['ProdsParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
+__all__ = ['ProdParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: parse.py 1418 2008-08-09 19:27:50Z cthedot $'
 
@@ -22,7 +22,7 @@ import cssutils
 
 
 class ParseError(Exception):
-    """Raised during ProdParser run internally."""
+    """Base Exception class for ProdParser (used internally)."""
     pass
 
 class Exhausted(ParseError):
@@ -30,7 +30,11 @@ class Exhausted(ParseError):
     pass
 
 class NoMatch(ParseError):
-    """Raised if Sequence is not done completely but at least min is done."""
+    """Raised if Sequence or Choice do not match."""
+    pass
+
+class MissingToken(ParseError):
+    """Raised if Sequence or Choice are not exhausted."""
     pass
 
 
@@ -119,8 +123,9 @@ class Sequence(object):
         """
         while self._pos < self._number:
             x = self._prods[self._pos]
+            thisround = self._round
+            
             self._pos += 1
-
             if self._pos == self._number:
                 if self._round < self._max:
                     # new round?
@@ -128,11 +133,26 @@ class Sequence(object):
                     self._round += 1
 
             if isinstance(x, Prod):
-                if token and x.matches(token):
-                    # token may be None
+                if not token and (x.optional or thisround > self._min):
+                    # token is None if nothing expected
+                    raise Exhausted()
+                elif not token and not x.optional:
+                    raise MissingToken(u'Missing token for production %s'
+                                       % x.name)
+                elif x.matches(token):
                     return x
-                else: 
+                elif x.optional:
+                    # try next 
                     continue
+#                elif thisround > self._min:
+#                    # minimum done
+#                    self._round = self._max
+#                    self._pos = self._number
+#                    return None
+                else:
+                    # should have matched
+                    raise NoMatch(u'No matching production for token')
+                    
             else:
                 # nested Sequence or Choice
                 return x
@@ -189,26 +209,16 @@ class Prod(object):
             self.toStore = None
 
     def matches(self, token):
-        """Return True, False or raise ParseError."""
+        """Return if token matches."""
         type_, val, line, col = token
-
-        msg = None
-        if not self.match(type_, val): # check type and value
-            msg = u'Expected %s, wrong type or value' % self.name
-
-        if msg and self.optional:
-            return False # try next in Sequence
-        elif msg:
-            raise ParseError(msg)
-        else:
-            return True
+        return self.match(type_, val)
 
     def __repr__(self):
         return "<cssutils.prodsparser.%s object name=%r at 0x%x>" % (
                 self.__class__.__name__, self.name, id(self))
 
 
-class ProdsParser(object):
+class ProdParser(object):
     """Productions parser."""
     def __init__(self):
         self.types = cssutils.cssproductions.CSSProductions
@@ -305,8 +315,10 @@ class ProdsParser(object):
                         # find next matching production
                         try:
                             prod = prods[-1].nextProd(token)
-                        except Exhausted, e:
+                        except (NoMatch, Exhausted), e:
+                            # try next
                             prod = None
+                            
                         if isinstance(prod, Prod):
                             break
                         elif not prod:
@@ -314,7 +326,7 @@ class ProdsParser(object):
                                 # nested exhausted, next in parent
                                 prods.pop()
                             else:
-                                raise ParseError('No match found')
+                                raise Exhausted('Extra token')
                         else:
                             # nested Sequence, Choice
                             prods.append(prod)
@@ -343,6 +355,10 @@ class ProdsParser(object):
                 prod = prods[-1].nextProd(token=None)
             except Exhausted, e:
                 prod = None # ok
+            except (MissingToken, NoMatch), e:
+                wellformed = False
+                self._log.error(u'%s: %s'
+                                % (name, e))
             else:
                 try:
                     if prod.optional:
@@ -366,16 +382,21 @@ class ProdsParser(object):
 
 
 class PreDef(object):
-    """Predefined Prod definition for use as e.g. 
-    ``Prod(**DefaultProds.sign)``
+    """Predefined Prod definition for use in productions definition
+    for ProdParser instances.
     """ 
-    # ,
-    comma = {'name': u'comma', 
-             'match': lambda t, v: v == u','}
-    # )
-    funcEnd = {'name': u'end FUNC ")"', 
-               'match': lambda t, v: v == u')'}
-    # + or -
-    sign = {'name': u'sign +-', 
-            'match': lambda t, v: v in u'+-', 
-            'optional': True}            
+    @staticmethod
+    def comma():
+        ","
+        return Prod(name=u'comma', match=lambda t, v: v == u',')
+
+    @staticmethod
+    def funcEnd():
+        ")"
+        return Prod(name=u'end FUNC ")"', match=lambda t, v: v == u')')
+    
+    @staticmethod
+    def unary():
+        "+ or -"
+        return Prod(name=u'unary +-', match=lambda t, v: v in u'+-', 
+                    optional=True)            
