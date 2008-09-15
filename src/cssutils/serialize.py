@@ -862,34 +862,34 @@ class CSSSerializer(object):
         else:
             out = Out(self)
             
-            sign = None
+            unary = None
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
                 if 'CHAR' == type_ and val in u'+-':
                     # save for next round
-                    sign = val
+                    unary = val
                     continue
                 if cssutils.css.CSSColor == type_:
                     # Comment or CSSColor
                     val = val.cssText
                 elif type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
-                    # handle saved sign and add to number
+                    # handle saved unary and add to number
                     try:
                         # NUMBER or DIMENSION and is it 0?
                         if 0 == cssvalue.getFloatValue():
                             val = u'0'
                         else:
-                            # add sign to val if not 0
+                            # add unary to val if not 0
                             # TODO: only for lengths!
-                            if u'-' == sign:
-                                val = sign + val
+                            if u'-' == unary:
+                                val = unary + val
                     except xml.dom.InvalidAccessErr, e:
                         pass
-                    sign = None
-                elif sign:
+                    unary = None
+                elif unary:
                     # or simple add
-                    out.append(sign, 'CHAR', space=False, keepS=True)
-                    sign = None
+                    out.append(unary, 'CHAR', space=False, keepS=True)
+                    unary = None
                 
                 out.append(val, type_)
 #                if hasattr(val, 'cssText'):
@@ -906,7 +906,7 @@ class CSSSerializer(object):
             return u''
         else:
             out = Out(self)
-            sign = None
+            unary = None
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
                 
@@ -920,11 +920,11 @@ class CSSSerializer(object):
                     # save - for next round                
                     if u'-' == val:
                         # omit +
-                        sign = val
+                        unary = val
                     continue
-                elif sign:
-                    val = sign + val
-                    sign = None
+                elif unary:
+                    val = unary + val.cssText
+                    unary = None
                     
                 out.append(val, type_)
             
