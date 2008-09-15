@@ -13,7 +13,7 @@ import re
 import xml.dom
 import cssutils
 from cssutils.profiles import profiles
-from cssutils.prodsparser import *
+from cssutils.prodparser import *
 
 
 class CSSValue(cssutils.util.Base2):
@@ -1323,16 +1323,17 @@ class CSSColor(CSSPrimitiveValue):
                          )
             # COLOR PRODUCTION
             funccolor = Sequence([Prod(name='FUNC', 
-                                       match=lambda t, v: v in ('rgb(', 'rgba(', 'hsl(', 'hsla(') and t == types.FUNCTION, 
+                                       match=lambda t, v: self._normalize(v) in ('rgb(', 'rgba(', 'hsl(', 'hsla(') and t == types.FUNCTION,
+                                       toSeq=lambda v: self._normalize(v), 
                                        toStore='colorType' ),
-                                       Prod(**PreDef.sign), 
+                                       PreDef.unary(), 
                                        valueProd,
                                   # 2 or 3 more values starting with Comma
-                                  Sequence([Prod(**PreDef.comma), 
-                                            Prod(**PreDef.sign), 
+                                  Sequence([PreDef.comma(), 
+                                            PreDef.unary(), 
                                             valueProd], 
-                                           minmax=lambda: (1,2)), 
-                                  Prod(**PreDef.funcEnd)
+                                           minmax=lambda: (2,3)), 
+                                  PreDef.funcEnd()
                                  ]
             )
             colorprods = Choice([funccolor,
@@ -1348,7 +1349,7 @@ class CSSColor(CSSPrimitiveValue):
                                 ]
             )     
             # store: colorType, parts
-            wellformed, seq, store, unusedtokens = ProdsParser().parse(cssText, 
+            wellformed, seq, store, unusedtokens = ProdParser().parse(cssText, 
                                                                 u'CSSColor', 
                                                                 colorprods,
                                                                 {'parts': []})
@@ -1360,7 +1361,8 @@ class CSSColor(CSSPrimitiveValue):
                 elif store['colorType'].type == self._prods.IDENT:
                     self._colorType = 'Named Color'
                 else:
-                    self._colorType = self._normalize(store['colorType'].value[:-1])
+                    self._colorType = self._normalize(store['colorType'].value)[:-1]
+                    
                 self._setSeq(seq)
 
     cssText = property(lambda self: cssutils.ser.do_css_CSSColor(self), 

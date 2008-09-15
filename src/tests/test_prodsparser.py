@@ -1,14 +1,12 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
 __version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
 
+import xml.dom
 import basetest
-from cssutils.prodsparser import *
-from cssutils.prodsparser import ParseError, Exhausted # not in __all__
+from cssutils.prodparser import *
+from cssutils.prodparser import ParseError, Exhausted, NoMatch # not in __all__
 
 class ProdTestCase(basetest.BaseTestCase):
-
-    def setUp(self):
-        pass
 
     def test_init(self):
         "Prod.__init__(...)"
@@ -73,15 +71,13 @@ class ProdTestCase(basetest.BaseTestCase):
 
     def test_matches(self):
         "Prod.matches(token)"
-        p1 = Prod('norm', lambda t, v: t == 1 and v == 2)
-        p2 = Prod('opt', lambda t, v: t == 1 and v == 2, optional=True)
+        p1 = Prod('p1', lambda t, v: t == 1 and v == 2)
+        p2 = Prod('p2', lambda t, v: t == 1 and v == 2, optional=True)
         self.assertEqual(p1.matches([1, 2, 0, 0]), True)
         self.assertEqual(p2.matches([1, 2, 0, 0]), True)
-        self.assertRaisesMsg(ParseError, 
-                             u'Expected norm, wrong type or value', 
-                             p1.matches, [0, 0, 0,0 ])
-        # optional!
+        self.assertEqual(p1.matches([0, 0, 0, 0]), False)
         self.assertEqual(p2.matches([0, 0, 0, 0]), False)
+
 
 class SequenceTestCase(basetest.BaseTestCase):
     
@@ -133,12 +129,12 @@ class SequenceTestCase(basetest.BaseTestCase):
                      [(t1, p1), (t2, u'Extra token')]
                     ),
             (p2, ): ([(t2, p2)],
-                     [(t1, 'Expected p2, wrong type or value')],
                      [(t2, p2), (t2, u'Extra token')],
-                     [(t2, p2), (t1, u'Extra token')]
+                     [(t2, p2), (t1, u'Extra token')],
+                     [(t1, 'No matching production for token')]
                     ),
             (p1, p2): ([(t1, p1), (t2, p2)],
-                       [(t1, p1), (t1, u'Expected p2, wrong type or value')]
+                       [(t1, p1), (t1, u'No matching production for token')]
                        )
             }
         for seqitems, results in tests.items():
@@ -169,13 +165,13 @@ class SequenceTestCase(basetest.BaseTestCase):
                     ),
             # as p2 NOT optional
             (p2, ): ([(t2, p2)],
-                     [(t1, 'Expected p2, wrong type or value')],
+                     [(t1, 'No matching production for token')],
                      [(t2, p2), (t2, p2)],
-                     [(t2, p2), (t1, u'Expected p2, wrong type or value')],
+                     [(t2, p2), (t1, u'No matching production for token')],
                      [(t2, p2), (t2, p2), (t2, u'Extra token')],
                      [(t2, p2), (t2, p2), (t1, u'Extra token')]
                     ),
-            (p1, p2): ([(t1, p1), (t1, u'Expected p2, wrong type or value')],
+            (p1, p2): ([(t1, p1), (t1, u'No matching production for token')],
                        [(t2, p2), (t2, p2)],
                        [(t2, p2), (t1, p1), (t2, p2)],
                        [(t1, p1), (t2, p2), (t2, p2)],
@@ -247,37 +243,44 @@ class ChoiceTestCase(basetest.BaseTestCase):
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
 
 
-class ProdsParserTestCase(basetest.BaseTestCase):
+class ProdParserTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         pass
 
     def test_parse(self):
-        "ProdsParser.parse()"      
+        "ProdParser.parse()"      
         # text, name, productions, store=None
-        #p = ProdsParser(text, name, productions, store=None)
+        #p = ProdParser(text, name, productions, store=None)
 
     def test_combi(self):
-        "ProdsParser.parse() 2"
+        "ProdParser.parse() 2"
         p1 = Prod('p1', lambda t, v: v == '1')      
         p2 = Prod('p2', lambda t, v: v == '2')
-        p3 = Prod('p2', lambda t, v: v == '3')
-        s1 = Sequence([p1], minmax=lambda: (1,2))
+        p3 = Prod('p3', lambda t, v: v == '3')
         
         tests = {
-                 '1': True,
-                 '1 1': True,
-                 '2': True,
+                 # ???
                  '1 3': True,
                  '1 1 3': True,
                  '2 3': True,
+                 '1': 'Missing token for production p3',
+                 '1 1': 'Missing token for production p3',
+                 '1 3 3': "Extra token: ('NUMBER', '3', 1, 5)",
+                 '1 1 3 3': "Extra token: ('NUMBER', '3', 1, 7)",
+                 '2 3 3': "Extra token: ('NUMBER', '3', 1, 5)",
                  }
         for text, exp in tests.items():
             prods = Sequence([Choice([Sequence([p1], minmax=lambda: (1,2)),
                                       p2]),
                               p3])
-            wellformed, seq, store, unused = ProdsParser().parse(text, 'T', prods)
-            self.assertEqual(wellformed, exp)
+            if exp is True:
+                wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
+                self.assertEqual(wellformed, exp)
+            else:
+                self.assertRaisesMsg(xml.dom.SyntaxErr, u'T: %s' % exp,
+                                     ProdParser().parse, text, 'T', prods)
+                
 
 
 if __name__ == '__main__':
