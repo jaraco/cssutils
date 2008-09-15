@@ -300,7 +300,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         "CSSPrimitiveValue.CSS_STRING .. CSS_RGBCOLOR"
         defs = [
             (('""', "''", '"some thing"', "' A\\ND '"), 'CSS_STRING'),
-# TODO:            (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
+# TODO:     
+#       (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
             (('some', 'or_anth-er'), 'CSS_IDENT'),            
             (('attr(a)', 'attr(b)'), 'CSS_ATTR'),
             (('counter(1)', 'counter(2)'), 'CSS_COUNTER'),
@@ -609,25 +610,27 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             u"CSSPrimitiveValue: stringType CSS_PX is not a string type",
             v.setStringValue, *(v.CSS_PX, 'brown'))
 
-#    def test_typeRGBColor(self):
-#        v = cssutils.cssprimitivevalue.PrimitiveValue('RGB(1, 5, 10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
-#
-#        v = cssutils.cssprimitivevalue.PrimitiveValue('rgb(1, 5, 10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
-#
-#        v = cssutils.cssprimitivevalue.PrimitiveValue('rgb(1%, 5%, 10%)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+    def test_typeCSSColor(self):
+        "CSSColor"
+        v = cssutils.css.CSSPrimitiveValue('RGB(1, 5, 10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
+
+        v = cssutils.css.CSSPrimitiveValue('rgb(1, 5, 10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
+
+        v = cssutils.css.CSSPrimitiveValue('rgb(1%, 5%, 10%)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        # TODO:
 #        self.assertEqual(u'rgb(1.0%, 5.0%, 10.0%)', v.cssText)
-#
-#        v = cssutils.cssprimitivevalue.PrimitiveValue('  rgb(  1 ,5,  10  )')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        v = cssutils.cssprimitivevalue.PrimitiveValue('rgb (1,5,10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        v = cssutils.cssprimitivevalue.PrimitiveValue('rgb(1%, .5%, 10.1%)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+
+        v = cssutils.css.CSSPrimitiveValue('  rgb(  1 ,5,  10  )')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        v = cssutils.css.CSSPrimitiveValue('rgb(1,5,10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        v = cssutils.css.CSSPrimitiveValue('rgb(1%, .5%, 10.1%)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
 
     def test_reprANDstr(self):
         "CSSPrimitiveValue.__repr__(), .__str__()"
