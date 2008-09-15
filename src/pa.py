@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pprint import pprint as pp
-from cssutils.prodsparser import *
+from cssutils.prodparser import *
 import cssutils
 
 # PRODUCTION FOR CSSColor
@@ -61,7 +61,7 @@ text = 'rgb(1%,   \n2% , -3.0%)'
 # RESULT: colorType filled, in test all values
 store = {'test': [] }
 
-wellformed, seq, unusedtokens = ProdsParser().parse(text, name, productions,  
+wellformed, seq, unusedtokens = ProdParser().parse(text, name, productions,  
                                                     store=store)
 
 print '- WELLFORMED:', wellformed
