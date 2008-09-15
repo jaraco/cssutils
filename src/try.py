@@ -15,7 +15,7 @@ from StringIO import StringIO
 import unicodedata
 from minimock import mock, restore
 
-from cssutils.prodsparser import *
+from cssutils.prodparser import *
 
 def save(name, string):
     f = open(name, 'w')
@@ -31,21 +31,10 @@ class X(object):
         for i in self.s:
             yield i
             
-
-
 if 1:
-    p1 = Prod('p1', lambda t, v: v == '1')      
-    prods = Sequence([Sequence([p1], lambda: (1,2)),
-                               Prod('p2', lambda t, v: v == ')')
-                                ])
-    parser = ProdsParser()
-    pp(parser.parse('1 )', 'test', prods))
-    
-    
-    
-#    v = cssutils.css.CSSValue('rgb(0,1,1 )')
-#    print v
-#    print v.cssText
+    v = cssutils.css.CSSValue('rgb(0,1,1,0 )')
+    print v
+    print v.cssText
 
     
 #    v = cssutils.css.CSSValue()
