@@ -66,8 +66,7 @@ HEAD
 
     - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
     - BUGFIX: Parsing values with ``+`` operator fixed.
-    - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it us
-    eless)
+    - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)
 
 0.9.5
 -----
