@@ -22,8 +22,7 @@ except ImportError:
     from setuptools import setup, find_packages
 
 def read(*rnames):
-    return codecs.open(os.path.join(os.path.dirname(__file__), *rnames),
-                       encoding='utf-8').read()
+    return codecs.open(os.path.join(*rnames), encoding='utf-8').read()
 
 long_description = u'\n' + read('README.txt') + u'\n'# + read('CHANGELOG.txt')
 
