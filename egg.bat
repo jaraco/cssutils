@@ -1,3 +1,5 @@
+python -V
+
 @echo off
 
 setup.py bdist_egg
