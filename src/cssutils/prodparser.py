@@ -18,6 +18,7 @@ __all__ = ['ProdParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: parse.py 1418 2008-08-09 19:27:50Z cthedot $'
 
+import sys
 import cssutils
 
 
@@ -40,13 +41,31 @@ class MissingToken(ParseError):
 
 class Choice(object):
     """A Choice of productions (Sequence or single Prod)."""
-    def __init__(self, prods):
+    
+    optional = False
+    
+    def __init__(self, *prods, **options):
         """
-        prods
+        *prods
             Prod or Sequence objects
         """
         self._prods = prods
+        self.reset()
+
+    name = property(lambda self: u'choice of (%s)' % 
+                    u', '.join([x.name for x in self._prods]),
+                    doc="Name shows all possible options in this choice.")
+
+    def reset(self):
+        """Start Choice from zero"""
         self._exhausted = False
+
+    def matches(self, token):
+        """Check if token matches"""
+        for prod in self._prods:
+            if prod.matches(token):
+                return True
+        return False            
 
     def nextProd(self, token):
         """
@@ -59,18 +78,10 @@ class Choice(object):
         ``token`` may be None but this occurs when no tokens left."""
         if not self._exhausted:
             for x in self._prods:
-                if isinstance(x, Prod):
-                    test = x
-                else:
-                    # nested Sequence matches if 1st prod matches
-                    test = x.first()
-                try:
-                    if test.matches(token):
-                        self._exhausted = True
-                        return x
-                except ParseError, e:
-                    # do not raise if other my match
-                    continue
+                if x.matches(token):
+                    self._exhausted = True
+                    x.reset()
+                    return x
             else:
                 # None matched
                 raise ParseError(u'No match in choice')
@@ -80,28 +91,44 @@ class Choice(object):
 
 class Sequence(object):
     """A Sequence of productions (Choice or single Prod)."""
-    def __init__(self, prods, minmax=None):
+    def __init__(self, *prods, **options):
         """
-        prods
+        *prods
             Prod or Sequence objects
-        minmax = lambda: (1, 1)
-            callback returning number of times this sequence may run
+        **options:
+            minmax = lambda: (1, 1)
+                callback returning number of times this sequence may run
         """
         self._prods = prods
-        if not minmax:
+        try:
+            minmax = options['minmax']
+        except KeyError:
             minmax = lambda: (1, 1)
+
         self._min, self._max = minmax()
+        if self._max is None:
+            # unlimited
+            self._max = sys.maxint 
 
         self._number = len(self._prods)
+        self.reset()
+
+    def matches(self, token):
+        """Called by Choice to try to find if Sequence matches."""
+        for prod in self._prods:
+            if prod.matches(token):
+                return True
+            try:
+                if not prod.optional:
+                    break
+            except AttributeError:
+                pass
+        return False
+        
+    def reset(self):
+        """Reset this Sequence if it is nested."""
         self._round = 1 # 1 based!
         self._pos = 0
-
-    def first(self):
-        """Return 1st element of Sequence, used by Choice"""
-        # TODO: current impl first only if 1st if an prod!
-        for prod in self._prods:
-            if not prod.optional:
-                return prod
 
     def _currentName(self):
         """Return current element of Sequence, used by name"""
@@ -113,6 +140,8 @@ class Sequence(object):
             return 'Unknown'
 
     name = property(_currentName, doc='Used for Error reporting')
+
+    optional = property(lambda self: self._min == 0)
 
     def nextProd(self, token):
         """Return
@@ -155,6 +184,7 @@ class Sequence(object):
                     
             else:
                 # nested Sequence or Choice
+                x.reset() # start Sequence or Choice from start
                 return x
         
         # Sequence is exhausted
@@ -213,6 +243,9 @@ class Prod(object):
         type_, val, line, col = token
         return self.match(type_, val)
 
+    def reset(self):
+        pass
+
     def __repr__(self):
         return "<cssutils.prodsparser.%s object name=%r at 0x%x>" % (
                 self.__class__.__name__, self.name, id(self))
@@ -225,7 +258,8 @@ class ProdParser(object):
         self._log = cssutils.log
         self._tokenizer = cssutils.tokenize2.Tokenizer()
 
-    def parse(self, text, name, productions, store=None):
+    def parse(self, text, name, productions, store=None,
+              defaultS=True):
         """
         text (or token generator)
             to parse, will be tokenized if not a generator yet
@@ -292,9 +326,8 @@ class ProdParser(object):
         for token in tokens:
             type_, val, line, col = token
 #            store['_raw'].append(val)
-
             # default productions
-            if type_ == self.types.S:
+            if defaultS and type_ == self.types.S:
                 # always append S?
                 seq.append(val, type_, line, col)
             elif type_ == self.types.COMMENT:
@@ -360,12 +393,9 @@ class ProdParser(object):
                 self._log.error(u'%s: %s'
                                 % (name, e))
             else:
-                try:
-                    if prod.optional:
-                        # ignore optional ones
-                        continue
-                except AttributeError:
-                    pass
+                if prod.optional:
+                    # ignore optional ones
+                    continue
 
             if prod:
                 wellformed = False
@@ -378,6 +408,9 @@ class ProdParser(object):
                 break
 
         # bool, Seq, None or generator
+        
+        # or tokenizer.push(tokens)????
+        
         return wellformed, seq, store, tokens
 
 
@@ -385,18 +418,76 @@ class PreDef(object):
     """Predefined Prod definition for use in productions definition
     for ProdParser instances.
     """ 
+    types = cssutils.cssproductions.CSSProductions
+    
+    @staticmethod
+    def CHAR(name='char', char=u','):
+        "any CHAR"
+        return Prod(name=name, match=lambda t, v: v in char)
+
     @staticmethod
     def comma():
-        ","
-        return Prod(name=u'comma', match=lambda t, v: v == u',')
+        return PreDef.CHAR(u'comma', u',')
+
+    @staticmethod
+    def dimension():
+        return Prod(name=u'dimension', 
+                    match=lambda t, v: t == PreDef.types.DIMENSION)
+
+    @staticmethod
+    def function():
+        return Prod(name=u'function', 
+                    match=lambda t, v: t == PreDef.types.FUNCTION)
 
     @staticmethod
     def funcEnd():
         ")"
-        return Prod(name=u'end FUNC ")"', match=lambda t, v: v == u')')
+        return PreDef.CHAR(u'end FUNC ")"', u')')
     
     @staticmethod
-    def unary():
+    def ident():
+        return Prod(name=u'ident', 
+                    match=lambda t, v: t == PreDef.types.IDENT)
+
+    @staticmethod
+    def number():
+        return Prod(name=u'number', 
+                    match=lambda t, v: t == PreDef.types.NUMBER)
+
+    @staticmethod
+    def string():
+        return Prod(name=u'string', 
+                    match=lambda t, v: t == PreDef.types.STRING)
+
+    @staticmethod
+    def percentage():
+        return Prod(name=u'percentage', 
+                    match=lambda t, v: t == PreDef.types.PERCENTAGE)
+
+    @staticmethod
+    def S(optional=True):
+        return Prod(name=u'whitespace', 
+                    match=lambda t, v: t == PreDef.types.S,
+                    optional=True)
+
+    @staticmethod
+    def unary(optional=True):
         "+ or -"
         return Prod(name=u'unary +-', match=lambda t, v: v in u'+-', 
-                    optional=True)            
+                    optional=optional)            
+
+    @staticmethod
+    def uri():
+        return Prod(name=u'URI', 
+                    match=lambda t, v: t == PreDef.types.URI)
+
+    @staticmethod
+    def hexcolor(toStore=None):
+        return Prod(name='HEX color', 
+                    match=lambda t, v: t == PreDef.types.HASH and 
+                                       len(v) == 4 or len(v) == 7,
+                    toStore=toStore
+                    )
+        
+
+
