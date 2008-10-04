@@ -1,3 +1,5 @@
+python -V
+
 @echo off
 set DISTUTILS_DEBUG='1'
 
