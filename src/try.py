@@ -40,9 +40,17 @@ if 1:
         1, -1, +1, 1%, -1%, 1px, -1px, 
         "a", a, url(a), #aaa, a()
     '''
-    v = cssutils.css.CSSValue('1,/**/2')
-    print v.cssText
-    print v
+    #v = cssutils.css.CSSValue('1,/**/2')
+    #print v.cssText
+    #print v
+    s = cssutils.parseString('a { color: red !x}')
+    print s.cssText
+    #cssutils.log.raiseExceptions = False
+    p = cssutils.css.Property(name="color", 
+                              value="red 1",
+                              priority=u"!x")
+    print p
+    print p.cssText
     sys.exit(1)
     
 
