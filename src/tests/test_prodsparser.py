@@ -13,7 +13,7 @@ class ProdTestCase(basetest.BaseTestCase):
         "Prod.__init__(...)"
         p = Prod('min', lambda t, v: t == 1 and v == 2)
         
-        self.assertEqual(p.name, 'min')
+        self.assertEqual(str(p), 'min')
         self.assertEqual(p.toStore, None)
         self.assertEqual(p.optional, False)
         
@@ -33,14 +33,14 @@ class ProdTestCase(basetest.BaseTestCase):
         # simply saves
         p = Prod('all', lambda t, v: True,
                  toSeq=None)
-        self.assertEqual(p.toSeq(1), 1) # simply saves
-        self.assertEqual(p.toSeq('same'), 'same') # simply saves
+        self.assertEqual(p.toSeq(1, 2), (1, 2)) # simply saves
+        self.assertEqual(p.toSeq('s1', 's2'), ('s1', 's2')) # simply saves
 
         # saves callback(val)
         p = Prod('all', lambda t, v: True, 
-                  toSeq=lambda val: 1 == val)        
-        self.assertEqual(p.toSeq(1), True)
-        self.assertEqual(p.toSeq(2), False)
+                  toSeq=lambda t, v: (1 == t, 3 == v))        
+        self.assertEqual(p.toSeq(1, 3), (True, True))
+        self.assertEqual(p.toSeq(2, 4), (False, False))
 
     def test_initToStore(self):
         "Prod.__init__(...toStore=...)"
@@ -242,7 +242,7 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2,0,0,0)
             
         ch = Choice(p1, p2)
-        self.assertRaisesMsg(ParseError, u'No match in choice', ch.nextProd, t0)
+        self.assertRaisesMsg(ParseError, u'No match in Choice(p1, p2)', ch.nextProd, t0)
         self.assertEqual(p1, ch.nextProd(t1))
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
 
@@ -251,7 +251,7 @@ class ChoiceTestCase(basetest.BaseTestCase):
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t2)
 
         ch = Choice(p2, p1)
-        self.assertRaisesMsg(ParseError, 'No match in choice', ch.nextProd, t0)
+        self.assertRaisesMsg(ParseError, 'No match in Choice(p2, p1)', ch.nextProd, t0)
         self.assertEqual(p1, ch.nextProd(t1))
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
 
@@ -289,7 +289,7 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2,0,0,0)
 
         ch = Choice(s1, s2)
-        self.assertRaisesMsg(ParseError, u'No match in choice', ch.nextProd, t0)
+        self.assertRaisesMsg(ParseError, u'No match in Choice(Sequence(p1, p1), Sequence(p2, p2))', ch.nextProd, t0)
         self.assertEqual(s1, ch.nextProd(t1))
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
             

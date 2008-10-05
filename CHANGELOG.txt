@@ -43,6 +43,8 @@ known issues
 0.9.6dev
 --------
 HEAD
+    + **IN WORK: CSSValue rewrite, currently not working in trunk!**
+
     + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``. This results in these changes:
 
         - serializing e.g. ``rgb(0,0,0)`` now defaults to ``rgb(0, 0, 0)``
