@@ -62,7 +62,7 @@ class CSSValue(cssutils.util.Base2):
     _typestrings = ['CSS_INHERIT' , 'CSS_PRIMITIVE_VALUE', 'CSS_VALUE_LIST',
                      'CSS_CUSTOM']
 
-    def __init__(self, cssText=None, readonly=False, _propertyName=None):
+    def __init__(self, cssText=None, readonly=False):#, _propertyName=None):
         """
         inits a new CSS Value
 
@@ -80,7 +80,6 @@ class CSSValue(cssutils.util.Base2):
         self.wellformed = False
         self._valueValue = u''
         self._linetoken = None # used for line report only
-        self._propertyName = _propertyName
 
         if cssText is not None: # may be 0
             if type(cssText) in (int, float):
@@ -575,59 +574,59 @@ class CSSValue(cssutils.util.Base2):
     cssValueTypeString = property(_getCssValueTypeString,
         doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
 
-    def _validate(self, value=None, profile=None):
-        """
-        validates value against _propertyName context if given
-        """
-        valid = False
-        if self._value:
-            if self._propertyName and self._propertyName in profiles.propertiesByProfile():
-                valid, validprofile = \
-                        profiles.validateWithProfile(self._propertyName,
-                                                     self._normalize(self._value))
-                if not validprofile:
-                    validprofile = u''
-                    
-                if not valid:
-                    self._log.warn(
-                        u'CSSValue: Invalid value for %s property "%s: %s".' %
-                        (validprofile, self._propertyName, 
-                         self._value), neverraise=True)
-                elif profile and validprofile != profile:
-                    self._log.warn(
-                        u'CSSValue: Invalid value for %s property "%s: %s" but valid %s property.' %
-                        (profile, self._propertyName, self._value, 
-                         validprofile), neverraise=True)
-                else:
-                    self._log.debug(
-                        u'CSSValue: Found valid %s property "%s: %s".' %
-                        (validprofile, self._propertyName, self._value), 
-                        neverraise=True)
-            else:
-                self._log.debug(u'CSSValue: Unable to validate as no or unknown property context set for value: %r'
-                                % self._value, neverraise=True)
-        
-        if not value:
-            # if value is given this should not be saved
-            self.valid = valid
-        return valid
-
-    def _set_propertyName(self, _propertyName):
-        self.__propertyName = _propertyName
-        self._validate()
-
-    _propertyName = property(lambda self: self.__propertyName, 
-                             _set_propertyName,
-                doc="cssutils: Property this values is validated against")
+#    def _validate(self, value=None, profile=None):
+#        """
+#        validates value against _propertyName context if given
+#        """
+#        valid = False
+#        if self._value:
+#            if self._propertyName and self._propertyName in profiles.propertiesByProfile():
+#                valid, validprofile = \
+#                        profiles.validateWithProfile(self._propertyName,
+#                                                     self._normalize(self._value))
+#                if not validprofile:
+#                    validprofile = u''
+#                    
+#                if not valid:
+#                    self._log.warn(
+#                        u'CSSValue: Invalid value for %s property "%s: %s".' %
+#                        (validprofile, self._propertyName, 
+#                         self._value), neverraise=True)
+#                elif profile and validprofile != profile:
+#                    self._log.warn(
+#                        u'CSSValue: Invalid value for %s property "%s: %s" but valid %s property.' %
+#                        (profile, self._propertyName, self._value, 
+#                         validprofile), neverraise=True)
+#                else:
+#                    self._log.debug(
+#                        u'CSSValue: Found valid %s property "%s: %s".' %
+#                        (validprofile, self._propertyName, self._value), 
+#                        neverraise=True)
+#            else:
+#                self._log.debug(u'CSSValue: Unable to validate as no or unknown property context set for value: %r'
+#                                % self._value, neverraise=True)
+#        
+#        if not value:
+#            # if value is given this should not be saved
+#            self.valid = valid
+#        return valid
+#
+#    def _set_propertyName(self, _propertyName):
+#        self.__propertyName = _propertyName
+#        self._validate()
+#
+#    _propertyName = property(lambda self: self.__propertyName, 
+#                             _set_propertyName,
+#                doc="cssutils: Property this values is validated against")
 
     def __repr__(self):
-        return "cssutils.css.%s(%r, _propertyName=%r)" % (
-                self.__class__.__name__, self.cssText, self._propertyName)
+        return "cssutils.css.%s(%r)" % (
+                self.__class__.__name__, self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object cssValueType=%r cssText=%r _propertyName=%r valid=%r at 0x%x>" % (
+        return "<cssutils.css.%s object cssValueType=%r cssText=%r at 0x%x>" % (
                 self.__class__.__name__, self.cssValueTypeString,
-                self.cssText, self._propertyName, self.valid, id(self))
+                self.cssText, id(self))
 
 
 class CSSPrimitiveValue(CSSValue):
@@ -731,13 +730,12 @@ class CSSPrimitiveValue(CSSValue):
         # TODO: convert deg <-> rad <-> grad
     }
 
-    def __init__(self, cssText=None, readonly=False, _propertyName=None):
+    def __init__(self, cssText=None, readonly=False):
         """
         see CSSPrimitiveValue.__init__()
         """
         super(CSSPrimitiveValue, self).__init__(cssText=cssText,
-                                       readonly=readonly,
-                                       _propertyName=_propertyName)
+                                       readonly=readonly)
 
         #(String representation for unit types, token type of unit type, detail)
         # used to detect primitiveType and for __repr__
@@ -1134,9 +1132,9 @@ class CSSPrimitiveValue(CSSValue):
         doc="A string representation of the current value.")
 
     def __str__(self):
-        return "<cssutils.css.%s object primitiveType=%s cssText=%r _propertyName=%r valid=%r at 0x%x>" % (
+        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
                 self.__class__.__name__, self.primitiveTypeString,
-                self.cssText, self._propertyName, self.valid, id(self))
+                self.cssText, id(self))
 
 
 class CSSValueList(CSSValue):
@@ -1153,20 +1151,17 @@ class CSSValueList(CSSValue):
     """
     cssValueType = CSSValue.CSS_VALUE_LIST
 
-    def __init__(self, cssText=None, readonly=False, _propertyName=None):
+    def __init__(self, cssText=None, readonly=False):
         """
         inits a new CSSValueList
         """
-        super(CSSValueList, self).__init__(cssText=cssText,
-                                       readonly=readonly,
-                                       _propertyName=_propertyName)
+        super(CSSValueList, self).__init__(cssText=cssText, readonly=readonly)
         self._init()
 
     def _init(self):
         "called by CSSValue if newly identified as CSSValueList"
         # defines which values
-        ivalueseq, valueseq = 0, self._SHORTHANDPROPERTIES.get(
-                                                    self._propertyName, [])
+        ivalueseq, valueseq = 0, [] #self._SHORTHANDPROPERTIES.get('*TODO*', [])
         self._items = []
         newseq = self._tempSeq(False)
         i, max = 0, len(self.seq)
@@ -1197,7 +1192,7 @@ class CSSValueList(CSSValue):
                         propname = None
                         ivalueseq = len(valueseq) # end
                 else:
-                    propname = self._propertyName
+                    propname = None #self._propertyName
 
                 # TODO: more (do not check individual values for these props)
                 if propname in self._SHORTHANDPROPERTIES:
@@ -1242,8 +1237,7 @@ class CSSValueList(CSSValue):
                     # setting _propertyName this way does not work
                     # for compound props like font!
                     i += len(fullvalue) - 1
-                    obj = CSSValue(cssText=u''.join(fullvalue),
-                                 _propertyName=propname)
+                    obj = CSSValue(cssText=u''.join(fullvalue))
                 else:
                     # a single value, u' ' or nothing should be following
                     if 'STRING' == type_:
@@ -1251,7 +1245,7 @@ class CSSValueList(CSSValue):
                     elif 'URI' == type_:
                         val = cssutils.ser._uri(val)                
                     
-                    obj = CSSValue(cssText=val, _propertyName=propname)
+                    obj = CSSValue(cssText=val)
 
                 self._items.append(obj)
                 newseq.append(obj, CSSValue)
@@ -1293,10 +1287,9 @@ class CSSValueList(CSSValue):
             yield self.item(i)
 
     def __str__(self):
-        return "<cssutils.css.%s object cssValueType=%r cssText=%r length=%r propname=%r valid=%r at 0x%x>" % (
+        return "<cssutils.css.%s object cssValueType=%r cssText=%r length=%r at 0x%x>" % (
                 self.__class__.__name__, self.cssValueTypeString,
-                self.cssText, self.length, self._propertyName, 
-                self.valid, id(self))
+                self.cssText, self.length, id(self))
 
 
 class CSSFunction(CSSPrimitiveValue):
