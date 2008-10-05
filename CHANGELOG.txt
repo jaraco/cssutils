@@ -45,6 +45,13 @@ known issues
 HEAD
     + **IN WORK: CSSValue rewrite, currently not working in trunk!**
 
+    - BUGFIX: Other priority values than ``!important`` are parsed and kept now.
+        **TODO**: Preference setting!
+
+    + **API CLEANUP**:
+        - moved validating of a property from CSSValue to Property
+        - removed DEPRECATED from 0.9.5 ``Property.normalname``, use ``Property.name`` instead
+
     + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``. This results in these changes:
 
         - serializing e.g. ``rgb(0,0,0)`` now defaults to ``rgb(0, 0, 0)``
