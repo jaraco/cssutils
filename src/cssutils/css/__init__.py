@@ -60,4 +60,5 @@ from cssunknownrule import *
 from selector import *
 from selectorlist import *
 from cssstyledeclaration import *
+from property import *
 from cssvalue import *
