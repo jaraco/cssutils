@@ -42,8 +42,6 @@ class MissingToken(ParseError):
 class Choice(object):
     """A Choice of productions (Sequence or single Prod)."""
     
-    optional = False
-    
     def __init__(self, *prods, **options):
         """
         *prods
@@ -52,10 +50,15 @@ class Choice(object):
         self._prods = prods
         self.reset()
 
-    name = property(lambda self: u'choice of (%s)' % 
-                    u', '.join([x.name for x in self._prods]),
-                    doc="Name shows all possible options in this choice.")
+    def _getOptional(self):
+        for p in self._prods:
+            if not p.optional:
+                return True
+        return False 
 
+    optional = property(_getOptional,
+                        doc="Choice is optional is any one Prod is optional.")
+    
     def reset(self):
         """Start Choice from zero"""
         self._exhausted = False
@@ -72,21 +75,29 @@ class Choice(object):
         Return:
         
         - next matching Prod or Sequence 
-        - raises ParseError if nothing matches
-        - raises Exhausted if choice already done
+        - ``None`` if any Prod or Sequence is optional and no token matched
+        - raise ParseError if nothing matches and all are mandatory
+        - raise Exhausted if choice already done
 
         ``token`` may be None but this occurs when no tokens left."""
         if not self._exhausted:
+            optional = False
             for x in self._prods:
                 if x.matches(token):
                     self._exhausted = True
                     x.reset()
                     return x
+                elif x.optional:
+                    optional = True
             else:
-                # None matched
-                raise ParseError(u'No match in choice')
+                if not optional:
+                    # None matched but also None is optional
+                    raise ParseError(u'No match in %s' % self)
         else:
             raise Exhausted(u'Extra token')
+
+    def __str__(self):
+        return u'Choice(%s)' % u', '.join([str(x) for x in self._prods])
 
 
 class Sequence(object):
@@ -135,11 +146,9 @@ class Sequence(object):
         # TODO: current impl first only if 1st if an prod!
         for prod in self._prods[self._pos:]:
             if not prod.optional:
-                return prod.name
+                return str(prod)
         else:
-            return 'Unknown'
-
-    name = property(_currentName, doc='Used for Error reporting')
+            return 'Sequence'
 
     optional = property(lambda self: self._min == 0)
 
@@ -167,7 +176,7 @@ class Sequence(object):
                     raise Exhausted()
                 elif not token and not x.optional:
                     raise MissingToken(u'Missing token for production %s'
-                                       % x.name)
+                                       % x)
                 elif x.matches(token):
                     return x
                 elif x.optional:
@@ -191,11 +200,15 @@ class Sequence(object):
         if self._round >= self._max:
             raise Exhausted(u'Extra token')
 
+    def __str__(self):
+        return u'Sequence(%s)' % u', '.join([str(x) for x in self._prods])
+
 
 class Prod(object):
     """Single Prod in Sequence or Choice."""
-    def __init__(self, name, match, toSeq=None, toStore=None,
-                 optional=False):
+    def __init__(self, name, match, optional=False, 
+                 toSeq=None, toStore=None
+                 ):
         """
         name
             name used for error reporting
@@ -203,14 +216,14 @@ class Prod(object):
             function called with parameters tokentype and tokenvalue
             returning True, False or raising ParseError
         toSeq callback (optional)
-            if given calling toSeq(token) will be appended to seq
-            else simply seq
+            calling toSeq(token) returns (type_, val) to be appended to seq
+            else simply unaltered (type_, val)
         toStore (optional)
             key to save util.Item to store or callback(store, util.Item)
         optional = False
             wether Prod is optional or not
         """
-        self.name = name
+        self._name = name
         self.match = match
         self.optional=optional
 
@@ -228,7 +241,7 @@ class Prod(object):
             # called: seq.append(toSeq(value))
             self.toSeq = toSeq
         else:
-            self.toSeq = lambda val: val
+            self.toSeq = lambda type_, val: (type_, val)
 
         if callable(toStore):
             self.toStore = toStore
@@ -246,9 +259,12 @@ class Prod(object):
     def reset(self):
         pass
 
+    def __str__(self):
+        return self._name
+
     def __repr__(self):
         return "<cssutils.prodsparser.%s object name=%r at 0x%x>" % (
-                self.__class__.__name__, self.name, id(self))
+                self.__class__.__name__, self._name, id(self))
 
 
 class ProdParser(object):
@@ -258,8 +274,7 @@ class ProdParser(object):
         self._log = cssutils.log
         self._tokenizer = cssutils.tokenize2.Tokenizer()
 
-    def parse(self, text, name, productions, store=None,
-              defaultS=True):
+    def parse(self, text, name, productions, store=None):
         """
         text (or token generator)
             to parse, will be tokenized if not a generator yet
@@ -327,12 +342,13 @@ class ProdParser(object):
             type_, val, line, col = token
 #            store['_raw'].append(val)
             # default productions
-            if defaultS and type_ == self.types.S:
+            if type_ == self.types.S:
                 # always append S?
                 seq.append(val, type_, line, col)
             elif type_ == self.types.COMMENT:
                 # always append COMMENT
-                seq.append(val, type_, line, col)
+                seq.append(cssutils.css.CSSComment(val), 
+                           cssutils.css.CSSComment, line, col)
 #            elif type_ == self.types.ATKEYWORD:
 #                # @rule
 #                r = cssutils.css.CSSUnknownRule(cssText=val)
@@ -351,7 +367,6 @@ class ProdParser(object):
                         except (NoMatch, Exhausted), e:
                             # try next
                             prod = None
-                            
                         if isinstance(prod, Prod):
                             break
                         elif not prod:
@@ -371,8 +386,8 @@ class ProdParser(object):
                 else:
                     # process prod
                     if prod.toSeq:
-                        seq.append(prod.toSeq(val), type_, line, col)
-                    else:
+                        type_, val = prod.toSeq(type_, val)
+                    if val is not None:
                         seq.append(val, type_, line, col)
 
                     if prod.toStore:
@@ -381,7 +396,6 @@ class ProdParser(object):
 #                    if 'STOP' == next: # EOF?
 #                        # stop here and ignore following tokens
 #                        break
-
         while True:
             # all productions exhausted?
             try:
@@ -393,20 +407,21 @@ class ProdParser(object):
                 self._log.error(u'%s: %s'
                                 % (name, e))
             else:
-                if prod.optional:
-                    # ignore optional ones
+                if prods[-1].optional:
+                    prod = None
+                elif prod.optional:
+                    # ignore optional
                     continue
 
-            if prod:
+            if prod and not prod.optional:
                 wellformed = False
                 self._log.error(u'%s: Missing token for production %r'
-                                % (name, prod.name))
+                                % (name, str(prod)))
             elif len(prods) > 1:
                 # nested exhausted, next in parent
                 prods.pop()
             else:
                 break
-
         # bool, Seq, None or generator
         
         # or tokenizer.push(tokens)????
@@ -421,9 +436,10 @@ class PreDef(object):
     types = cssutils.cssproductions.CSSProductions
     
     @staticmethod
-    def CHAR(name='char', char=u','):
+    def CHAR(name='char', char=u',', toSeq=None):
         "any CHAR"
-        return Prod(name=name, match=lambda t, v: v in char)
+        return Prod(name=name, match=lambda t, v: v in char,
+                    toSeq=toSeq)
 
     @staticmethod
     def comma():
@@ -465,10 +481,10 @@ class PreDef(object):
                     match=lambda t, v: t == PreDef.types.PERCENTAGE)
 
     @staticmethod
-    def S(optional=True):
+    def S(optional=True, toSeq=None):
         return Prod(name=u'whitespace', 
-                    match=lambda t, v: t == PreDef.types.S,
-                    optional=True)
+                    match=lambda t, v: t == PreDef.types.S, optional=optional,
+                    toSeq=toSeq)
 
     @staticmethod
     def unary(optional=True):

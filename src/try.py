@@ -30,22 +30,21 @@ class X(object):
     def n(self):
         for i in self.s:
             yield i
-            
+
 if 1:
-    v = cssutils.css.CSSValue('rgb(0,1,1,0 )')
-    print v
-    print v.cssText
-
     
-#    v = cssutils.css.CSSValue()
-#    for x in ('a 1 b',):
-#        v.cssText = x
-#        print v.cssText
-    #print v
-    #print v.cssText 
-    #print s.cssText
-
+#   [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
+#                  TIME S* | FREQ S* ]
+#              | STRING S* | IDENT S* | URI S* | hexcolor | function
+    css = '''
+        1, -1, +1, 1%, -1%, 1px, -1px, 
+        "a", a, url(a), #aaa, a()
+    '''
+    v = cssutils.css.CSSValue('1,/**/2')
+    print v.cssText
+    print v
     sys.exit(1)
+    
 
 if 1:
     cssutils.log.setLevel(logging.DEBUG)
