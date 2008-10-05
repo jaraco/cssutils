@@ -207,6 +207,8 @@ class Out(object):
 #                val = val.cssText
             elif 'S' == typ and not keepS:
                 return
+            elif 'S' == typ and keepS:
+                val = u' '
             elif typ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == '0':
                 # remove sign + or - if value is zero
                 # TODO: only for lenghts!
@@ -844,7 +846,8 @@ class CSSSerializer(object):
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
                 if type_ in (cssutils.css.CSSColor, 
-                             cssutils.css.CSSValue):
+                             cssutils.css.CSSValue,
+                             cssutils.css.CSSComment):
                     # CSSColor or CSSValue if a CSSValueList
                     out.append(val.cssText, type_, space=False, keepS=True)
                 else:
