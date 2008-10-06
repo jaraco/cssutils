@@ -13,6 +13,7 @@ class XTestCase(basetest.BaseTestCase):
         pass
 
     def test_x(self):
+        "CSSValue.cssText Syntax"
         v = cssutils.css.CSSValue()
         
         tests = {
@@ -40,13 +41,13 @@ class XTestCase(basetest.BaseTestCase):
                  '1 , /**/2': (True, '1/**/, 2'),
                  # , after
                  '1/**/,2': (True, '1/**/, 2'),
-                 '1/**/ ,2': (True, '1/**/, 2'),
-                 '1/**/, 2': (True, '1/**/, 2'),
-                 '1/**/ , 2': (True, '1/**/, 2'),
+                 '1/**/ ,2': (True, '1 /**/, 2'),
+                 '1/**/, 2': (True, '1 /**/, 2'),
+                 '1/**/ , 2': (True, '1 /**/, 2'),
                  # all
-                 '1/*a*/  ,/*b*/  2': (True, '1/*a*//*b*/, 2'),
-                 '1  /*a*/,  /*b*/2': (True, '1/*a*//*b*/, 2'),
-                 '1  /*a*/  ,  /*b*/  2': (True, '1/*a*//*b*/, 2'),
+                 '1/*a*/  ,/*b*/  2': (True, '1/*a*/ /*b*/, 2'),
+                 '1  /*a*/,  /*b*/2': (True, '1/*a*/ /*b*/, 2'),
+                 '1  /*a*/  ,  /*b*/  2': (True, '1/*a*/ /*b*/, 2'),
                  }
         for css, exp in tests.items():
             v.cssText = css
@@ -54,6 +55,36 @@ class XTestCase(basetest.BaseTestCase):
             self.assertEqual(wellformed, v.wellformed)
             self.assertEqual(res, v.cssText)
 
+    def test_prioriy(self):
+        "Property.priority"
+        s = cssutils.parseString('a { color: red }')
+        self.assertEqual(u'a {\n    color: red\n    }', s.cssText)
+        self.assertEqual(u'', s.cssRules[0].style.getPropertyPriority('color'))
+
+        s = cssutils.parseString('a { color: red !important }')
+        self.assertEqual(u'a {\n    color: red !important\n    }', s.cssText)
+        self.assertEqual(u'important', s.cssRules[0].style.getPropertyPriority('color'))
+        
+        # invalid but kept!
+        s = cssutils.parseString('a { color: red !x }')
+        self.assertEqual(u'a {\n    color: red !x\n    }', s.cssText)
+        self.assertEqual(u'x', s.cssRules[0].style.getPropertyPriority('color'))
+
+        p = cssutils.css.Property(u'color', u'red', u'')
+        self.assertEqual(p.priority, u'')
+        p = cssutils.css.Property(u'color', u'red', u'!important')
+        self.assertEqual(p.priority, u'important')
+        self.assertRaisesMsg(xml.dom.SyntaxErr, 
+                             u'', 
+                             cssutils.css.Property, u'color', u'red', u'x')
+        cssutils.log.raiseExceptions = False
+        p = cssutils.css.Property(u'color', u'red', u'!x')
+        self.assertEqual(p.priority, u'x')
+        p = cssutils.css.Property(u'color', u'red', u'!x')
+        self.assertEqual(p.priority, u'x')
+        cssutils.log.raiseExceptions = True
+        
+        
 
 if __name__ == '__main__':
     import unittest
