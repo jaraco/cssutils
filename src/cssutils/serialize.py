@@ -753,7 +753,7 @@ class CSSSerializer(object):
                         out.append(separator)
                 elif isinstance(val, cssutils.css.Property):
                     # PropertySimilarNameList
-                    out.append(self.do_Property(val))
+                    out.append(val.cssText)
                     if not (self.prefs.omitLastSemicolon and i==len(seq)-1):
                         out.append(u';')
                     out.append(separator)
@@ -855,6 +855,7 @@ class CSSSerializer(object):
                         val = self._string(val[1:-1])
                     # S must be kept! in between values but no extra space
                     out.append(val, type_, space=False, keepS=True)
+
             return out.value() 
                         
     def do_css_CSSPrimitiveValue(self, cssvalue):
@@ -900,7 +901,6 @@ class CSSSerializer(object):
 #                    out.append(val.cssText, type_)
 #                else:
 #                    out.append(val, type_) #?
-
             return out.value() 
             
     def do_css_CSSColor(self, cssvalue):
