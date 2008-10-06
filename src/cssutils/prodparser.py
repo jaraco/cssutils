@@ -305,8 +305,8 @@ class ProdParser(object):
             :unusedtokens: token generator containing tokens not used yet
         """
         if isinstance(text, basestring):
-            # to tokenize
-            tokens = self._tokenizer.tokenize(text)
+            # to tokenize strip space
+            tokens = self._tokenizer.tokenize(text.strip())
         elif isinstance(text, tuple):
             # (token, tokens) or a single token
             if len(text) == 2:
@@ -337,6 +337,8 @@ class ProdParser(object):
         # stack of productions
         prods = [productions]
 
+        # while no real token is found any S are ignored
+        started = False 
         wellformed = True
         for token in tokens:
             type_, val, line, col = token
@@ -344,7 +346,10 @@ class ProdParser(object):
             # default productions
             if type_ == self.types.S:
                 # always append S?
-                seq.append(val, type_, line, col)
+                if started:
+                    seq.append(val, type_, line, col)
+                else:
+                    continue
             elif type_ == self.types.COMMENT:
                 # always append COMMENT
                 seq.append(cssutils.css.CSSComment(val), 
@@ -358,6 +363,7 @@ class ProdParser(object):
                 pass
 #               next = 'EOF'
             else:
+                started = True
                 # check prods
                 try:
                     while True:
@@ -426,6 +432,10 @@ class ProdParser(object):
         
         # or tokenizer.push(tokens)????
         
+        # trim S from end
+        seq.rstrip() 
+        
+        
         return wellformed, seq, store, tokens
 
 
@@ -436,66 +446,79 @@ class PreDef(object):
     types = cssutils.cssproductions.CSSProductions
     
     @staticmethod
-    def CHAR(name='char', char=u',', toSeq=None):
+    def CHAR(name='char', char=u',', toSeq=None, toStore=None):
         "any CHAR"
         return Prod(name=name, match=lambda t, v: v in char,
-                    toSeq=toSeq)
+                    toSeq=toSeq,
+                    toStore=toStore)
 
     @staticmethod
-    def comma():
-        return PreDef.CHAR(u'comma', u',')
+    def comma(toStore=None):
+        return PreDef.CHAR(u'comma', u',', toStore=toStore)
 
     @staticmethod
-    def dimension():
+    def dimension(toStore=None):
         return Prod(name=u'dimension', 
-                    match=lambda t, v: t == PreDef.types.DIMENSION)
+                    match=lambda t, v: t == PreDef.types.DIMENSION,
+                    toStore=toStore)
 
     @staticmethod
-    def function():
+    def function(toStore=None):
         return Prod(name=u'function', 
-                    match=lambda t, v: t == PreDef.types.FUNCTION)
+                    match=lambda t, v: t == PreDef.types.FUNCTION,
+                    toStore=toStore)
 
     @staticmethod
     def funcEnd():
         ")"
-        return PreDef.CHAR(u'end FUNC ")"', u')')
+        return PreDef.CHAR(u'end FUNC ")"', u')',
+                           toStore=toStore)
     
     @staticmethod
-    def ident():
+    def ident(toStore=None):
         return Prod(name=u'ident', 
-                    match=lambda t, v: t == PreDef.types.IDENT)
+                    match=lambda t, v: t == PreDef.types.IDENT,
+                    toStore=toStore)
 
     @staticmethod
-    def number():
+    def number(toStore=None):
         return Prod(name=u'number', 
-                    match=lambda t, v: t == PreDef.types.NUMBER)
+                    match=lambda t, v: t == PreDef.types.NUMBER,
+                    toStore=toStore)
 
     @staticmethod
-    def string():
+    def string(toStore=None):
         return Prod(name=u'string', 
-                    match=lambda t, v: t == PreDef.types.STRING)
+                    match=lambda t, v: t == PreDef.types.STRING,
+                    toStore=toStore)
 
     @staticmethod
-    def percentage():
+    def percentage(toStore=None):
         return Prod(name=u'percentage', 
-                    match=lambda t, v: t == PreDef.types.PERCENTAGE)
+                    match=lambda t, v: t == PreDef.types.PERCENTAGE,
+                    toStore=toStore)
 
     @staticmethod
-    def S(optional=True, toSeq=None):
+    def S(optional=True, toSeq=None, toStore=None):
         return Prod(name=u'whitespace', 
                     match=lambda t, v: t == PreDef.types.S, optional=optional,
-                    toSeq=toSeq)
+                    toSeq=toSeq,
+                    toStore=toStore)
 
     @staticmethod
-    def unary(optional=True):
+    def unary(optional=True, toStore=None):
         "+ or -"
         return Prod(name=u'unary +-', match=lambda t, v: v in u'+-', 
-                    optional=optional)            
+                    optional=optional,
+                    toStore=toStore)            
 
     @staticmethod
-    def uri():
+    def uri(toStore=None):
+        "'url(' and ')' are removed and URI is stripped" 
         return Prod(name=u'URI', 
-                    match=lambda t, v: t == PreDef.types.URI)
+                    match=lambda t, v: t == PreDef.types.URI,
+                    toStore=toStore,
+                    toSeq=lambda t, v: (t, cssutils.helper.urivalue(v)))
 
     @staticmethod
     def hexcolor(toStore=None):
