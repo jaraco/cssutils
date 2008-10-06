@@ -27,42 +27,33 @@ class CSSValue(cssutils.util.Base2):
         A string representation of the current value.
     cssValueType
         A (readonly) code defining the type of the value.
+    cssValueTypeString
+        A (readonly) string describing ``cssValueType``.
 
     seq: a list (cssutils)
         All parts of this style declaration including CSSComments
-    valid: boolean
-        if the value is valid at all, False for e.g. color: #1
     wellformed
-        if this Property is syntactically ok
-
-    _value (INTERNAL!)
-        value without any comments, used to validate
+        if this value is syntactically ok
     """
 
+    # The value is inherited and the cssText contains "inherit".
     CSS_INHERIT = 0
-    """
-    The value is inherited and the cssText contains "inherit".
-    """
+    # The value is a CSSPrimitiveValue.
     CSS_PRIMITIVE_VALUE = 1
-    """
-    The value is a primitive value and an instance of the
-    CSSPrimitiveValue interface can be obtained by using binding-specific
-    casting methods on this instance of the CSSValue interface.
-    """
+    # The value is a CSSValueList.
     CSS_VALUE_LIST = 2
-    """
-    The value is a CSSValue list and an instance of the CSSValueList
-    interface can be obtained by using binding-specific casting
-    methods on this instance of the CSSValue interface.
-    """
+    # The value is a custom value.
     CSS_CUSTOM = 3
-    """
-    The value is a custom value.
-    """
-    _typestrings = ['CSS_INHERIT' , 'CSS_PRIMITIVE_VALUE', 'CSS_VALUE_LIST',
-                     'CSS_CUSTOM']
 
-    def __init__(self, cssText=None, readonly=False):#, _propertyName=None):
+    _typestrings = {0: 'CSS_INHERIT' , 
+                    1: 'CSS_PRIMITIVE_VALUE',
+                    2: 'CSS_VALUE_LIST',
+                    3: 'CSS_CUSTOM'}
+
+    # TODO: remove!
+    valid = False
+    
+    def __init__(self, cssText=None, readonly=False):
         """
         inits a new CSS Value
 
@@ -70,16 +61,11 @@ class CSSValue(cssutils.util.Base2):
             the parsable cssText of the value
         readonly
             defaults to False
-        property
-            used to validate this value in the context of a property
         """
         super(CSSValue, self).__init__()
 
-        #self.seq = []
-        self.valid = False
+        self._cssValueType = None
         self.wellformed = False
-        self._valueValue = u''
-        self._linetoken = None # used for line report only
 
         if cssText is not None: # may be 0
             if type(cssText) in (int, float):
@@ -87,39 +73,6 @@ class CSSValue(cssutils.util.Base2):
             self.cssText = cssText
 
         self._readonly = readonly
-
-    def _getValue(self):
-        # TODO:
-        v = []
-        for item in self.seq:
-            type_, val = item.type, item.value
-            if isinstance(val, cssutils.css.CSSComment):
-                # only value here
-                continue
-            elif 'STRING' == type_:
-                v.append(cssutils.ser._string(val))
-            elif 'URI' == type_:
-                v.append(cssutils.ser._uri(val))
-            elif u',' == val:
-                # list of items
-                v.append(u' ')
-                v.append(val)
-            elif isinstance(val, basestring):
-                v.append(val)
-            else: 
-                # maybe CSSPrimitiveValue
-                v.append(val.cssText)
-        if v and u'' == v[-1].strip():
-            # simple strip of joined string does not work for escaped spaces
-            del v[-1]
-        return u''.join(v)
-
-    def _setValue(self, value):
-        "overwritten by CSSValueList!"
-        self._valueValue = value
-
-    _value = property(_getValue, _setValue,
-                doc="Actual cssText value of this CSSValue.")
 
     def _setCssText(self, cssText):
         """
@@ -171,27 +124,27 @@ class CSSValue(cssutils.util.Base2):
                           PreDef.CHAR('comma', ',', toSeq=lambda t, v: ('operator', v)),
                           PreDef.S()                          
                           )
-        term = Choice(Sequence(PreDef.unary(), 
-                               Choice(PreDef.number(), 
-                                      PreDef.percentage(),
-                                      PreDef.dimension())),
-                      PreDef.string(),
-                      PreDef.ident(),
-                      PreDef.uri(),
-                      PreDef.hexcolor(),
-                      PreDef.function())
+        term = Choice(Sequence(PreDef.unary(toStore='unary'), 
+                               Choice(PreDef.number(toStore='values'), 
+                                      PreDef.percentage(toStore='values'),
+                                      PreDef.dimension(toStore='values'))),
+                      PreDef.string(toStore='values'),
+                      PreDef.ident(toStore='values'),
+                      PreDef.uri(toStore='values'),
+                      PreDef.hexcolor(toStore='values'),
+                      PreDef.function(toStore='values'))
         # CSSValue PRODUCTION
         valueprod = Sequence(term, 
                              Sequence(operator, 
                                       term,
                                       minmax=lambda: (0, None))) 
-        
+        # parse
         wellformed, seq, \
         store, unusedtokens = ProdParser().parse(cssText, 
                                                  u'CSSValue', 
                                                  valueprod,
+                                                 store={'values': []}
                                                  )
-
         # filter out double operators (S + "," etc)
         # if operator is , or / it is never followed by S
         newseq, i, end = self._tempSeq(), 0, len(seq)
@@ -225,19 +178,24 @@ class CSSValue(cssutils.util.Base2):
             i += 1
 
         if wellformed:
-            # set data
+            # exception is not raised during parse, therefor check!
             self._setSeq(newseq)
             self.wellformed = wellformed
                         
-#            self.valid = self._validate(u''.join(x.value for x in newseq))
-    
-#            if len(new['values']) == 1 and new['values'][0] == u'inherit':
-#                self._value = u'inherit'
-#                self._cssValueType = CSSValue.CSS_INHERIT
-#                self.__class__ = CSSValue # reset
-#            elif len(new['values']) == 1:
-#                self.__class__ = CSSPrimitiveValue
-#                self._init() #inits CSSPrimitiveValue
+            values = store['values']
+
+            if len(values) == 1:
+                if u'inherit' == cssutils.helper.normalize(values[0].value):
+                    self.__class__ = CSSValue
+                    self._cssValueType = CSSValue.CSS_INHERIT                 
+                else:
+                    self.__class__ = CSSPrimitiveValue
+                    val = values[0].value
+                    if 'unary' in store and u'-' == store['unary'].value:
+                        val = store['unary'].value + val
+
+                    self._value = (val, values[0].type)
+                    
 #            elif len(new['values']) > 1 and\
 #                 len(new['values']) == new['commas'] + 1:
 #                # e.g. value for font-family: a, b
@@ -253,28 +211,12 @@ class CSSValue(cssutils.util.Base2):
 
         
         
-#        return
-#        # ----------------------------
-#        
-#
+
 #        # for closures: must be a mutable
-#        new = {'rawvalues': [], # used for validation
+#        new = {
 #               'values': [],
 #               'commas': 0,
-#               'valid': True,
-#               'wellformed': True }
-#
-#        def _S(expected, seq, token, tokenizer=None):
-#            type_, val, line, col = token
-#            new['rawvalues'].append(u' ')
-#            if expected == 'operator': #expected.endswith('operator'):
-#                seq.append(u' ', 'separator', line=line, col=col)
-#                return 'term or operator'
-#            elif expected.endswith('S'):
-#                return 'term or S'
-#            else:
-#                return expected
-#
+
 #        def _char(expected, seq, token, tokenizer=None):
 #            type_, val, line, col = token
 #            new['rawvalues'].append(val)
@@ -557,22 +499,12 @@ class CSSValue(cssutils.util.Base2):
                        _setCssText,
                        doc="A string representation of the current value.")
 
-    def _getCssValueType(self):
-        if hasattr(self, '_cssValueType'):
-            return self._cssValueType
+    cssValueType = property(lambda self: self._cssValueType,
+        doc="A (readonly) code defining the type of the value.")
 
-    cssValueType = property(_getCssValueType,
-        doc="A (readonly) code defining the type of the value as defined above.")
-
-    def _getCssValueTypeString(self):
-        t = self.cssValueType
-        if t is not None: # may be 0!
-            return CSSValue._typestrings[t]
-        else:
-            return None
-
-    cssValueTypeString = property(_getCssValueTypeString,
-        doc="cssutils: Name of cssValueType of this CSSValue (readonly).")
+    cssValueTypeString = property(
+        lambda self: CSSValue._typestrings.get(self.cssValueType, None),
+        doc="(readonly) Name of cssValueType.")
 
 #    def _validate(self, value=None, profile=None):
 #        """
@@ -624,7 +556,7 @@ class CSSValue(cssutils.util.Base2):
                 self.__class__.__name__, self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object cssValueType=%r cssText=%r at 0x%x>" % (
+        return "<cssutils.css.%s object cssValueTypeString=%r cssText=%r at 0x%x>" % (
                 self.__class__.__name__, self.cssValueTypeString,
                 self.cssText, id(self))
 
@@ -647,6 +579,39 @@ class CSSPrimitiveValue(CSSValue):
     """
     # constant: type of this CSSValue class
     cssValueType = CSSValue.CSS_PRIMITIVE_VALUE
+
+    __types = cssutils.cssproductions.CSSProductions 
+    _unitinfos = [
+        # name, productiontype, searchstring 
+        ('CSS_UNKNOWN', None, None),
+        ('CSS_NUMBER', __types.NUMBER, None),
+        ('CSS_PERCENTAGE', __types.PERCENTAGE, None),
+        ('CSS_EMS', __types.DIMENSION, 'em'),
+        ('CSS_EXS', __types.DIMENSION, 'ex'),
+        ('CSS_PX', __types.DIMENSION, 'px'),
+        ('CSS_CM', __types.DIMENSION, 'cm'),
+        ('CSS_MM', __types.DIMENSION, 'mm'),
+        ('CSS_IN', __types.DIMENSION, 'in'),
+        ('CSS_PT', __types.DIMENSION, 'pt'),
+        ('CSS_PC', __types.DIMENSION, 'pc'),
+        ('CSS_DEG', __types.DIMENSION, 'deg'),
+        ('CSS_RAD', __types.DIMENSION, 'rad'),
+        ('CSS_GRAD', __types.DIMENSION, 'grad'),
+        ('CSS_MS', __types.DIMENSION, 'ms'),
+        ('CSS_S', __types.DIMENSION, 's'),
+        ('CSS_HZ', __types.DIMENSION, 'hz'),
+        ('CSS_KHZ', __types.DIMENSION, 'khz'),
+        # must be last dim!
+        ('CSS_DIMENSION', __types.DIMENSION, ''), 
+        ('CSS_STRING', __types.STRING, None),
+        ('CSS_URI', __types.URI, None),
+        ('CSS_IDENT', __types.IDENT, None),
+        ('CSS_ATTR', __types.FUNCTION, 'attr('),
+        ('CSS_COUNTER', __types.FUNCTION, 'counter('),
+        ('CSS_RECT', __types.FUNCTION, 'rect('),
+        ('CSS_RGBCOLOR', __types.FUNCTION, 'rgb('),
+        ('CSS_RGBACOLOR', __types.FUNCTION, 'rgba('),
+        ]
 
     # An integer indicating which type of unit applies to the value.
     CSS_UNKNOWN = 0 # only obtainable via cssText
@@ -687,8 +652,6 @@ class CSSPrimitiveValue(CSSValue):
     _countertypes = [CSS_COUNTER]
     _recttypes = [CSS_RECT]
     _rbgtypes = [CSS_RGBCOLOR, CSS_RGBACOLOR]
-
-    _reNumDim = re.compile(ur'^(.*?)([a-z]+|%)$', re.I| re.U|re.X)
 
     # oldtype: newType: converterfunc
     _converter = {
@@ -735,124 +698,31 @@ class CSSPrimitiveValue(CSSValue):
         see CSSPrimitiveValue.__init__()
         """
         super(CSSPrimitiveValue, self).__init__(cssText=cssText,
-                                       readonly=readonly)
-
-        #(String representation for unit types, token type of unit type, detail)
-        # used to detect primitiveType and for __repr__
-        self._init()
-
-    def _init(self):
-        # _unitinfos must be set here as self._prods is not known before
-        self._unitinfos = [
-            ('CSS_UNKNOWN', None, None),
-            ('CSS_NUMBER', self._prods.NUMBER, None),
-            ('CSS_PERCENTAGE', self._prods.PERCENTAGE, None),
-            ('CSS_EMS', self._prods.DIMENSION, 'em'),
-            ('CSS_EXS', self._prods.DIMENSION, 'ex'),
-            ('CSS_PX', self._prods.DIMENSION, 'px'),
-            ('CSS_CM', self._prods.DIMENSION, 'cm'),
-            ('CSS_MM', self._prods.DIMENSION, 'mm'),
-            ('CSS_IN', self._prods.DIMENSION, 'in'),
-            ('CSS_PT', self._prods.DIMENSION, 'pt'),
-            ('CSS_PC', self._prods.DIMENSION, 'pc'),
-            ('CSS_DEG', self._prods.DIMENSION, 'deg'),
-            ('CSS_RAD', self._prods.DIMENSION, 'rad'),
-            ('CSS_GRAD', self._prods.DIMENSION, 'grad'),
-            ('CSS_MS', self._prods.DIMENSION, 'ms'),
-            ('CSS_S', self._prods.DIMENSION, 's'),
-            ('CSS_HZ', self._prods.DIMENSION, 'hz'),
-            ('CSS_KHZ', self._prods.DIMENSION, 'khz'),
-            ('CSS_DIMENSION', self._prods.DIMENSION, None),
-            ('CSS_STRING', self._prods.STRING, None),
-            ('CSS_URI', self._prods.URI, None),
-            ('CSS_IDENT', self._prods.IDENT, None),
-            ('CSS_ATTR', self._prods.FUNCTION, 'attr('),
-            ('CSS_COUNTER', self._prods.FUNCTION, 'counter('),
-            ('CSS_RECT', self._prods.FUNCTION, 'rect('),
-            ('CSS_RGBCOLOR', self._prods.FUNCTION, 'rgb('),
-            ('CSS_RGBACOLOR', self._prods.FUNCTION, 'rgba('),
-            ]
+                                                readonly=readonly)
 
     def __set_primitiveType(self):
         """
         primitiveType is readonly but is set lazy if accessed
-        no value is given as self._value is used
         """
-        primitiveType = self.CSS_UNKNOWN
+        # TODO: check unary and font-family STRING a, b, "c"
+        val, type_ = self._value
+        val = cssutils.helper.normalize(val)
         
-        for item in self.seq:
-            if item.type == self._prods.URI:
-                primitiveType = self.CSS_URI
-                break
-            elif item.type == self._prods.STRING:
-                primitiveType = self.CSS_STRING
-                break
-        else:
-            
-            _floatType = False # if unary expect NUMBER DIMENSION or PERCENTAGE
-            tokenizer = self._tokenize2(self._value)
-            t = self._nexttoken(tokenizer)
-            if not t:
-                self._log.error(u'CSSPrimitiveValue: No value.')
-    
-            # unary operator:
-            if self._tokenvalue(t) in (u'-', u'+'):
-                t = self._nexttoken(tokenizer)
-                if not t:
-                    self._log.error(u'CSSPrimitiveValue: No value.')
-    
-                _floatType = True
-    
-            # check for font1, "font2" etc which is treated as ONE string
-            fontstring = 0 # should be at leayst 2
-            expected = 'ident or string'
-            tokenizer = self._tokenize2(self._value) # add used tokens again
-            for token in tokenizer:
-                val, typ = self._tokenvalue(token, normalize=True), self._type(token)
-                if expected == 'ident or string' and typ in (
-                            self._prods.IDENT, self._prods.STRING):
-                    expected = 'comma'
-                    fontstring += 1
-                elif expected == 'comma' and val == ',':
-                    expected = 'ident or string'
-                    fontstring += 1
-                elif typ in ('separator', self._prods.S, self._prods.COMMENT):
-                    continue
+        for i, (name, tokentype, s) in enumerate(self._unitinfos):
+            if type_ == tokentype:
+                if type_ == self._prods.DIMENSION:
+                    if val.endswith(s):
+                        primitiveType = i
+                        break
+                elif type_ == self._prods.FUNCTION:
+                    if val.startswith(s):
+                        primitiveType = i
+                        break
                 else:
-                    fontstring = False
+                    primitiveType = i
                     break
-    
-            if fontstring > 2:
-                # special case: e.g. for font-family: a, b; only COMMA IDENT and STRING
-                primitiveType = CSSPrimitiveValue.CSS_STRING
-            elif self._type(t) == self._prods.HASH:
-                # special case, maybe should be converted to rgb in any case?
-                primitiveType = CSSPrimitiveValue.CSS_RGBCOLOR
-            else:
-                for i, (name, tokentype, search) in enumerate(self._unitinfos):
-                    val, typ = self._tokenvalue(t, normalize=True), self._type(t)
-                    if typ == tokentype:
-                        if typ == self._prods.DIMENSION:
-                            if not search:
-                                primitiveType = i
-                                break
-                            elif re.match(ur'^[^a-z]*(%s)$' % search, val):
-                                primitiveType = i
-                                break
-                        elif typ == self._prods.FUNCTION:
-                            if not search:
-                                primitiveType = i
-                                break
-                            elif val.startswith(search):
-                                primitiveType = i
-                                break
-                        else:
-                            primitiveType = i
-                            break
-    
-            if _floatType and primitiveType not in self._floattypes:
-                # - or + only expected before floattype
-                primitiveType = self.CSS_UNKNOWN
+        else:
+            primitiveType = self.CSS_UNKNOWN
 
         self._primitiveType = primitiveType
 
@@ -862,7 +732,7 @@ class CSSPrimitiveValue(CSSValue):
         return self._primitiveType
 
     primitiveType = property(_getPrimitiveType,
-        doc="READONLY: The type of the value as defined by the constants specified above.")
+        doc="(readonly) The type of the value as defined by the constants specified above.")
 
     def _getPrimitiveTypeString(self):
         return self._unitinfos[self.primitiveType][0]
@@ -877,18 +747,21 @@ class CSSPrimitiveValue(CSSValue):
         except (IndexError, TypeError):
             return u'%r (UNKNOWN TYPE)' % type
 
-    def __getValDim(self):
+    # TODO: maybe too simple!
+    _reNumDim = re.compile(ur'^(.*?)(%|[a-z]+)$', re.I| re.U|re.X)
+
+    def __getNumDim(self):
         "splits self._value in numerical and dimension part"
+        value = cssutils.helper.normalize(self._value[0])
         try:
-            val, dim = self._reNumDim.findall(self._value)[0]
+            val, dim = self._reNumDim.findall(value)[0]
         except IndexError:
-            val, dim = self._value, u''
+            val, dim = value, u''
         try:
             val = float(val)
         except ValueError:
             raise xml.dom.InvalidAccessErr(
-                u'CSSPrimitiveValue: No float value %r'
-                % (self._value))
+                u'CSSPrimitiveValue: No float value %r' % self._value[0])
 
         return val, dim
 
@@ -915,8 +788,8 @@ class CSSPrimitiveValue(CSSValue):
             raise xml.dom.InvalidAccessErr(
                 u'unitType Parameter is not a float type')
 
-        val, dim = self.__getValDim()
-
+        val, dim = self.__getNumDim()
+        
         if unitType is not None and self.primitiveType != unitType:
             # convert if needed
             try:
@@ -965,7 +838,7 @@ class CSSPrimitiveValue(CSSValue):
                u'CSSPrimitiveValue: floatValue %r is not a float' %
                floatValue)
 
-        oldval, dim = self.__getValDim()
+        oldval, dim = self.__getNumDim()
 
         if self.primitiveType != unitType:
             # convert if possible
