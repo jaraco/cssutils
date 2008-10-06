@@ -379,7 +379,7 @@ class Property(cssutils.util.Base):
             # validate priority
             if self._priority not in (u'', u'important'):
                 self._log.error(u'Property: No CSS priority value: %r.' %
-                    self._priority, neverraise=True)
+                    self._priority)
 
     priority = property(lambda self: self._priority, _setPriority,
         doc="(cssutils) Priority of this property")
