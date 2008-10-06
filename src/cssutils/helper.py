@@ -1,6 +1,5 @@
 """cssutils helper
 """
-__all__ = ['Deprecated', 'normalize']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: errorhandler.py 1234 2008-05-22 20:26:12Z cthedot $'
 
@@ -49,3 +48,17 @@ def normalize(x):
         return x.lower()
     else:
         return x
+    
+def urivalue(uri):
+    """
+    Return actual content without surrounding "url(" and ")"
+    and removed surrounding quotes too including contained 
+    escapes of quotes, e.g.::
+    
+         ``url("\"")`` => ``"``
+    """
+    uri = uri[4:-1].strip()
+    if uri and (uri[0] in '\'"') and (uri[0] == uri[-1]):
+        # a string "..." or '...'
+        uri = uri.replace('\\'+uri[0], uri[0])[1:-1]
+    return uri
