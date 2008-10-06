@@ -15,7 +15,22 @@ import tokenize2
 import cssutils
 import encutils
 
-class Base(object):
+class BaseClass(object):
+    """
+    Base class for all CSS and StyleSheet's classes
+    """
+    _log = cssutils.log
+
+    def _checkReadonly(self):
+        "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
+        if hasattr(self, '_readonly') and self._readonly:
+            raise xml.dom.NoModificationAllowedErr(
+                u'%s is readonly.' % self.__class__)
+            return True
+        return False
+
+
+class Base(BaseClass):
     """
     Base class for most CSS and StyleSheets classes
 
@@ -28,7 +43,7 @@ class Base(object):
     """
     __tokenizer2 = tokenize2.Tokenizer()
 
-    _log = cssutils.log
+#    _log = cssutils.log
     _prods = tokenize2.CSSProductions
 
     # for more on shorthand properties see
@@ -65,14 +80,6 @@ class Base(object):
         - lowercase
         """
         return normalize(x)
-
-    def _checkReadonly(self):
-        "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
-        if hasattr(self, '_readonly') and self._readonly:
-            raise xml.dom.NoModificationAllowedErr(
-                u'%s is readonly.' % self.__class__)
-            return True
-        return False
 
     def _splitNamespacesOff(self, text_namespaces_tuple):
         """
@@ -503,6 +510,12 @@ class Seq(object):
         else:
             self._seq[index] = Item(val, typ, line, col)
 
+    def rstrip(self):
+        "trims S items from end of Seq"
+        while self._seq and self._seq[-1].type == tokenize2.CSSProductions.S:
+            # TODO: removed S before CSSComment /**/ /**/
+            del self._seq[-1] 
+
     def appendToVal(self, val=None, index=-1):
         """
         if not readonly append to Item's value at index
@@ -520,6 +533,7 @@ class Seq(object):
                                           self.__class__.__name__,
             u',\n    '.join([u'%r' % item for item in self._seq]
             ))
+    
     def __str__(self):
         vals = []
         for v in self:
@@ -530,7 +544,7 @@ class Seq(object):
             else:
                 vals.append(str(v))
         
-        return "<cssutils.%s.%s object length=%r valuestring=%r at 0x%x>" % (
+        return "<cssutils.%s.%s object length=%r values=%r at 0x%x>" % (
                 self.__module__, self.__class__.__name__, len(self), 
                 u''.join(vals), id(self))
 
