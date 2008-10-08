@@ -72,7 +72,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.5.1'
+VERSION = '0.9.6dev'
 
 __version__ = '%s $Id$' % VERSION
 
@@ -92,7 +92,7 @@ from parse import CSSParser
 from serialize import CSSSerializer
 ser = CSSSerializer()
 
-# used by Selector defining namespace prefix '*' 
+# used by Selector defining namespace prefix '*'
 _ANYNS = -1
 
 class DOMImplementationCSS(object):
@@ -175,7 +175,7 @@ def setSerializer(serializer):
 
 def getUrls(sheet):
     """
-    Utility function to get all ``url(urlstring)`` values in 
+    Utility function to get all ``url(urlstring)`` values in
     ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
     of given CSSStyleSheet ``sheet``.
 
@@ -211,10 +211,10 @@ def getUrls(sheet):
                 u = getUrl(v)
                 if u is not None:
                     yield u
-        
+
 def replaceUrls(sheet, replacer):
     """
-    Utility function to replace all ``url(urlstring)`` values in 
+    Utility function to replace all ``url(urlstring)`` values in
     ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
     of given CSSStyleSheet ``sheet``.
 
