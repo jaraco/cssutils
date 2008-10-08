@@ -283,7 +283,7 @@ class Property(cssutils.util.Base):
 
     def _getValue(self):
         if self.cssValue:
-            return self.cssValue._value
+            return self.cssValue.cssText # _value # [0]
         else:
             return u''
 
@@ -392,35 +392,35 @@ class Property(cssutils.util.Base):
         validates value against _propertyName context if given
         """
         valid = False
-        if self.value:            
+        if self.value:
             if self.name and self.name in profiles.propertiesByProfile():
-                valid, validprofile = profiles.validateWithProfile(self.name, 
+                valid, validprofile = profiles.validateWithProfile(self.name,
                                                                    self.value)
                 if not validprofile:
                     validprofile = u''
-                    
+
                 if not valid:
                     self._log.warn(u'Property: Invalid value for %s property "%s: %s".' %
-                                   (validprofile, self.name, self.value), 
+                                   (validprofile, self.name, self.value),
                                    neverraise=True)
                 elif profile and validprofile != profile:
                     self._log.warn(u'Property: Invalid value for %s property "%s: %s" but valid %s property.' %
-                                   (profile, self.name, self.value, validprofile), 
+                                   (profile, self.name, self.value, validprofile),
                                    neverraise=True)
                 else:
                     self._log.debug(u'Property: Found valid %s property "%s: %s".' %
-                                    (validprofile, self.name, self.value), 
+                                    (validprofile, self.name, self.value),
                                     neverraise=True)
             else:
                 self._log.debug(u'Property: Unable to validate as no or unknown property context set for value: %r'
                                 % self.value, neverraise=True)
-        
+
         if self._priority not in (u'', u'important'):
             valid = False
-        
+
         return valid
 
-    valid = property(validate, 
+    valid = property(validate,
                      doc='Check if value of this property is valid in the properties context.')
 
     def __repr__(self):
@@ -431,6 +431,6 @@ class Property(cssutils.util.Base):
     def __str__(self):
         return "<%s.%s object name=%r value=%r priority=%r valid=%r at 0x%x>" % (
                 self.__class__.__module__, self.__class__.__name__,
-                self.name, self.cssValue.cssText, self.priority, 
+                self.name, self.cssValue.cssText, self.priority,
                 self.valid, id(self))
 
