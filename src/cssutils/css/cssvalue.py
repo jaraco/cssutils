@@ -49,9 +49,6 @@ class CSSValue(cssutils.util.Base2):
                     1: 'CSS_PRIMITIVE_VALUE',
                     2: 'CSS_VALUE_LIST',
                     3: 'CSS_CUSTOM'}
-
-    # TODO: remove!
-    valid = False
     
     def __init__(self, cssText=None, readonly=False):
         """
@@ -131,7 +128,7 @@ class CSSValue(cssutils.util.Base2):
                       PreDef.string(),
                       PreDef.ident(),
                       PreDef.uri(),
-                      PreDef.hexcolor(),
+                      PreDef.hexcolor(),#toSeq=lambda t, v: (CSSColor, CSSColor(v))),
                       PreDef.function())
         # CSSValue PRODUCTION
         valueprod = Sequence(term, 
@@ -183,29 +180,36 @@ class CSSValue(cssutils.util.Base2):
                     
                 i += 1
 
-            self._setSeq(newseq)
-            self.wellformed = wellformed
-                        
-            if hasattr(self, '_value'):
-                # only in case of CSSPrimitiveValue, else remove!
-                del self._value
-                    
-            if count == 1:
-                if u'inherit' == cssutils.helper.normalize(firstvalue[0]):
-                    self.__class__ = CSSValue
-                    self._cssValueType = CSSValue.CSS_INHERIT                 
-                else:
-                    self.__class__ = CSSPrimitiveValue
-                    self._value = firstvalue
-                    
-            elif count > 1:
-                self.__class__ = CSSValueList
-                self._items = count * ['TODO']
-                    
+            if not firstvalue:
+                self._log.error(
+                        u'CSSValue: Unknown syntax or no value: %r.' %
+                        self._valuestr(cssText))
+                
             else:
-                # ? should not happen...
-                self.__class__ = CSSValue
-                self._cssValueType = CSSValue.CSS_CUSTOM
+    
+                self._setSeq(newseq)
+                self.wellformed = wellformed
+                            
+                if hasattr(self, '_value'):
+                    # only in case of CSSPrimitiveValue, else remove!
+                    del self._value
+                        
+                if count == 1:
+                    if u'inherit' == cssutils.helper.normalize(firstvalue[0]):
+                        self.__class__ = CSSValue
+                        self._cssValueType = CSSValue.CSS_INHERIT                 
+                    else:
+                        self.__class__ = CSSPrimitiveValue
+                        self._value = firstvalue
+                        
+                elif count > 1:
+                    self.__class__ = CSSValueList
+                    self._items = count * ['TODO']
+                        
+                else:
+                    # ? should not happen...
+                    self.__class__ = CSSValue
+                    self._cssValueType = CSSValue.CSS_CUSTOM
 
     cssText = property(lambda self: cssutils.ser.do_css_CSSValue(self), 
                        _setCssText,

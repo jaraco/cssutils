@@ -168,11 +168,14 @@ class Property(cssutils.util.Base):
                 self._log.error(u'Property: No property value found: %r.' %
                                 self._valuestr(cssText), colontoken)
 
-            if wellformed:
+            if wellformed:                
                 self.wellformed = True
                 self.name = nametokens
                 self.cssValue = valuetokens
                 self.priority = prioritytokens
+                
+                # also invalid values are set!
+                self.validate()
 
         else:
             self._log.error(u'Property: No property name found: %r.' %

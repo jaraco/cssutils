@@ -36,11 +36,12 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual('', p.value)
         self.assertEqual('', p.cssValue.cssText)
         self.assertEqual(u'', p.priority)
-        self.assertEqual(True, p.valid)
+        self.assertEqual(False, p.valid)
         p.cssValue.cssText = '1px'
         self.assertEqual('top: 1px', p.cssText)
         p.cssValue = ''
         self.assertEqual('top', p.cssText)
+#        self.assertEqual(True, p.valid)
 
     def test_cssText(self):
         "Property.cssText"
@@ -73,15 +74,15 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a:': (xml.dom.SyntaxErr,
                    u'''Property: No property value found: u'a:'. [1:2: :]'''),
             u'a: ': (xml.dom.SyntaxErr,
-                   u"CSSValue: Incomplete value: u' '."),
+                   u"CSSValue: Unknown syntax or no value: u' '."),
             u'a: 1!': (xml.dom.SyntaxErr,
                    u'''Property: Invalid priority: u'!'.'''),
             u'a: 1!importantX': (xml.dom.SyntaxErr,
-                   u'''Property: Unexpected ident. [1:6: importantX]'''),
+                   u"Property: No CSS priority value: u'importantx'."),
             u'a:!important': (xml.dom.SyntaxErr,
-                   u'''CSSValue: Unknown syntax or no value: u''.'''),
+                   u'''No content to parse.'''),
             u'a: 1;': (xml.dom.SyntaxErr,
-                   u'''CSSValue: Unexpected char. [1:5: ;]'''),
+                   u'''CSSValue: No match in Choice(Sequence(unary +-, Choice(number, percentage, dimension)), string, ident, URI, HEX color, function): ('CHAR', u';', 1, 5)''')
             }
         for test in tests:
             ecp, msg = tests[test]
@@ -122,7 +123,6 @@ class PropertyTestCase(basetest.BaseTestCase):
         p = cssutils.css.property.Property(r'c\olor', 'red')
         self.assertEqual(r'c\olor', p.literalname)
         self.assertEqual('color', p.name)
-        self.assertEqual('color', p.normalname) # DEPRECATED
 
     def test_literalname(self):
         "Property.literalname"
@@ -136,19 +136,15 @@ class PropertyTestCase(basetest.BaseTestCase):
         p = cssutils.css.property.Property('left', '1px', '')
 
         self.assertEqual(p.valid, True)
-        self.assertEqual(p.cssValue.valid, True)
        
         p.name = 'color'
         self.assertEqual(p.valid, False)
-        self.assertEqual(p.cssValue.valid, False)
 
         p.name = 'top'
         self.assertEqual(p.valid, True)
-        self.assertEqual(p.cssValue.valid, True)
 
         p.value = 'red'
         self.assertEqual(p.valid, False)
-        self.assertEqual(p.cssValue.valid,False)
         
     def test_cssValue(self):
         "Property.cssValue"
