@@ -40,7 +40,9 @@ if 1:
         1, -1, +1, 1%, -1%, 1px, -1px, 
         "a", a, url(a), #aaa, a()
     '''
-    v = cssutils.css.CSSValue('rgb(1, 2,3)')#'-1/2 a,b')
+    
+    
+    v = cssutils.css.CSSValue('#112233')
     print v
     print
 

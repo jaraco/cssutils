@@ -326,6 +326,9 @@ class ProdParser(object):
             # already tokenized, assume generator
             tokens = text
 
+        if not tokens:
+            self._log.error(u'No content to parse.')
+
         # a new seq to append all Items to
         seq = cssutils.util.Seq(readonly=False)
 
@@ -469,7 +472,7 @@ class PreDef(object):
                     toStore=toStore)
 
     @staticmethod
-    def funcEnd():
+    def funcEnd(toStore=None):
         ")"
         return PreDef.CHAR(u'end FUNC ")"', u')',
                            toStore=toStore)
@@ -525,11 +528,12 @@ class PreDef(object):
                     toSeq=lambda t, v: (t, cssutils.helper.urivalue(v)))
 
     @staticmethod
-    def hexcolor(toStore=None):
+    def hexcolor(toStore=None, toSeq=None):
         return Prod(name='HEX color', 
                     match=lambda t, v: t == PreDef.types.HASH and 
                                        len(v) == 4 or len(v) == 7,
-                    toStore=toStore
+                    toStore=toStore,
+                    toSeq=toSeq
                     )
         
 

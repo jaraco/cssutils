@@ -45,19 +45,21 @@ known issues
 HEAD
     + **IN WORK: CSSValue rewrite, currently not working in trunk!**
 
-    - BUGFIX: Other priority values than ``!important`` are parsed and kept now.
-        **TODO**: Preference setting!
+    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an error or raise a SyntaxErr.
+        **TODO**: Preference setting. Profile?
 
     + **API CLEANUP**:
         - moved validating of a property from CSSValue to Property
-        - removed DEPRECATED from 0.9.5 ``Property.normalname``, use ``Property.name`` instead
+        - removed ``CSSValue.valid`` as it does not make sense anymore
+        - removed private CSSValue init parameter _propertyName
+        - private attribute ``CSSValue._value`` contains ``(value, type)`` now. Do not use as it may change again
+        - removed ``Property.normalname`` (DEPRECATED from 0.9.5 ), use ``Property.name`` instead
 
     + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``. This results in these changes:
 
         - serializing e.g. ``rgb(0,0,0)`` now defaults to ``rgb(0, 0, 0)``
         - HEX values are minified if possible, e.g. ``#112233`` results in ``#123``
         - improved handling of zero values like ``-0, 0.0`` etc all should come out simply as ``0`` now
-
 
     - API CHANGE (minor): ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
 
