@@ -847,14 +847,15 @@ class CSSSerializer(object):
                 type_, val = item.type, item.value
                 if type_ in (cssutils.css.CSSColor, 
                              cssutils.css.CSSValue,
-                             cssutils.css.CSSComment):
+                             cssutils.css.CSSComment,
+                             cssutils.css.CSSPrimitiveValue):
                     # CSSColor or CSSValue if a CSSValueList
-                    out.append(val.cssText, type_, space=False, keepS=True)
+                    out.append(val.cssText, type_, space=True, keepS=False)
                 else:
                     if val and val[0] == val[-1] and val[0] in '\'"':
                         val = self._string(val[1:-1])
                     # S must be kept! in between values but no extra space
-                    out.append(val, type_, space=False, keepS=True)
+                    out.append(val, type_, space=True, keepS=False)
 
             return out.value() 
                         

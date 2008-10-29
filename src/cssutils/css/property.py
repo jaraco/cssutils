@@ -273,7 +273,7 @@ class Property(cssutils.util.Base):
 
             cssvalue = self.seqs[1]
             cssvalue.cssText = cssText
-            if cssvalue._value and cssvalue.wellformed:
+            if cssvalue.wellformed: #cssvalue._value and 
                 self.seqs[1] = cssvalue
             self.wellformed = self.wellformed and cssvalue.wellformed
 
