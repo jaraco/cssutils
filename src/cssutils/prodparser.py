@@ -487,9 +487,13 @@ class PreDef(object):
                     toStore=toStore)
 
     @staticmethod
-    def string(toStore=None):
+    def string(toSeq=None, toStore=None):
+        "string delimiters are removed by default"
+        if not toSeq:
+            toSeq = lambda type_, val: (type_, val[1:-1]) 
         return Prod(name=u'string', 
                     match=lambda t, v: t == PreDef.types.STRING,
+                    toSeq=toSeq,
                     toStore=toStore)
 
     @staticmethod

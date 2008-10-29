@@ -40,17 +40,22 @@ if 1:
         1, -1, +1, 1%, -1%, 1px, -1px, 
         "a", a, url(a), #aaa, a()
     '''
-    #v = cssutils.css.CSSValue('1,/**/2')
-    #print v.cssText
+    v = cssutils.css.CSSValue('rgb(1, 2,3)')#'-1/2 a,b')
+    print v
+    print
+
     #print v
-    s = cssutils.parseString('a { color: red !x}')
-    print s.cssText
+    #v.setFloatValue(cssutils.css.CSSPrimitiveValue.CSS_KHZ, 2000)
+    #print v
+#    s = cssutils.parseString('a { left:  inherit; }')
+#    print s.cssText
     #cssutils.log.raiseExceptions = False
-    p = cssutils.css.Property(name="color", 
-                              value="red 1",
-                              priority=u"!x")
-    print p
-    print p.cssText
+#    p = cssutils.css.Property(name="color", 
+#                              value="red",
+#                              priority="!important"
+#                              )
+#    print p
+#    print p.cssText
     sys.exit(1)
     
 

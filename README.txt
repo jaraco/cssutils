@@ -59,7 +59,7 @@ installation
 ============
 From 0.9 cssutils uses EasyInstall. Please find installation instructions and more information about EasyInstall from http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions.
 
-After installing EasyInstall simple use::
+After installing EasyInstall simply use::
 
     > easy_install cssutils
 
