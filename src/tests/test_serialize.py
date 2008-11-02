@@ -440,11 +440,11 @@ a, b {}'''
             u'@font-face {a:1}': u'@font-face {\n    a: 1\n    }', 
             u'@import  url( a );': u'@import url(a);',
             u'@media  all{a{color:red}}': u'@media all {\n    a {\n        color: red\n        }\n    }',
-            u'@namespace "a";': u'@namespace "a";',
+            u'@namespace "a";': u'@namespace"a";',
             u'@namespace a  "a";': u'@namespace a"a";',
             u'@page  :left {   a  :1  }': u'@page :left {\n    a: 1\n    }',
             u'@x  x;': u'@x x;',
-            #u'@importx a': u'@import "x" a;' # ? 
+            u'@import"x"a': u'@import"x"a;' # ? 
             }
         for css, exp in tests.items():
             self.assertEqual(exp, cssutils.parseString(css).cssText)

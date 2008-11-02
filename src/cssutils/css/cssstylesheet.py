@@ -620,21 +620,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     ownerRule = property(lambda self: self._ownerRule,
                          doc="(DOM attribute) NOT IMPLEMENTED YET")
 
-    @Deprecated('Use cssutils.replaceUrls(sheet, replacer) instead.')
-    def replaceUrls(self, replacer):
-        """
-        **EXPERIMENTAL**
-
-        Utility method to replace all ``url(urlstring)`` values in
-        ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties).
-
-        ``replacer`` must be a function which is called with a single
-        argument ``urlstring`` which is the current value of url()
-        excluding ``url(`` and ``)``. It still may have surrounding
-        single or double quotes though.
-        """
-        cssutils.replaceUrls(self, replacer)
-
     def setSerializer(self, cssserializer):
         """
         Sets the global Serializer used for output of all stylesheet

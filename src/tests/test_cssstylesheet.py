@@ -708,29 +708,6 @@ body {
         self.assert_(href == s2.href)
         self.assert_(title == s2.title)
 
-    # remove for 1.0
-    def test_replaceUrls(self):
-        "cssutils.replaceUrls() DEPRECATED"
-        cssutils.ser.prefs.keepAllProperties = True
-
-        css='''
-        @import "im1";
-        @import url(im2);
-        a {
-            background-image: url(c) !important;
-            background-\image: url(b);
-            background: url(a) no-repeat !important;
-            }'''
-        s = cssutils.parseString(css)
-        s.replaceUrls(lambda old: "NEW" + old)
-        self.assertEqual(u'@import "NEWim1";', s.cssRules[0].cssText)
-        self.assertEqual(u'NEWim2', s.cssRules[1].href)
-        self.assertEqual(u'''background-image: url(NEWc) !important;
-background-\\image: url(NEWb);
-background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
-
-        cssutils.ser.prefs.keepAllProperties = False
-
 
 if __name__ == '__main__':
     import unittest

@@ -101,40 +101,45 @@ class CSSValueTestCase(basetest.BaseTestCase):
         tests = {
             # S or COMMENT
             u'red': u'red',
-#            u'red ': u'red',
-#            u' red ': u'red',
-#            u'/**/red': u'/**/ red',
-#            u'red/**/': u'red /**/',
-#            u'/**/red/**/': u'/**/ red /**/',
-#            u'/**/ red': u'/**/ red',
-#            u'red /**/': u'red /**/',
-#            u'/**/ red /**/': u'/**/ red /**/',
-#            # values 
-#            u'.0': u'0',
-#            u'0': u'0',
-#            u'0.0': u'0',
-#            u'00': u'0',
-#            u'0%': u'0',
-#            u'0px': u'0',
-#            u'-.0': u'0',
-#            u'-0': u'0',
-#            u'-0.0': u'0',
-#            u'-00': u'0',
-#            u'-0%': u'0',
-#            u'-0px': u'0',
-#            u'+.0': u'0',
-#            u'+0': u'0',
-#            u'+0.0': u'0',
-#            u'+00': u'0',
-#            u'+0%': u'0',
-#            u'+0px': u'0',
-#            u'1': u'1',
-#            u'1px': u'1px',
-#            u'1%': u'1%',
-#            u'1px1': u'1px1',
-#            # CSSColor
-#            u'#112234': u'#112234',
-#            u'#112233': u'#123',
+            u'red ': u'red',
+            u' red ': u'red',
+            u'/**/red': u'/**/ red',
+            u'red/**/': u'red /**/',
+            u'/**/red/**/': u'/**/ red /**/',
+            u'/**/ red': u'/**/ red',
+            u'red /**/': u'red /**/',
+            u'/**/ red /**/': u'/**/ red /**/',
+            # values 
+            u'.0': u'0',
+            u'0': u'0',
+            u'0.0': u'0',
+            u'00': u'0',
+            u'0%': u'0',
+            u'0px': u'0',
+            u'-.0': u'0',
+            u'-0': u'0',
+            u'-0.0': u'0',
+            u'-00': u'0',
+            u'-0%': u'0',
+            u'-0px': u'0',
+            u'+.0': u'0',
+            u'+0': u'0',
+            u'+0.0': u'0',
+            u'+00': u'0',
+            u'+0%': u'0',
+            u'+0px': u'0',
+            u'1': u'1',
+            u'1.0': u'1.0',
+            u'1px': u'1px',
+            u'1%': u'1%',
+            u'1px1': u'1px1',
+            u'+1': u'+1',
+            u'-1': u'-1',
+            u'+1.0': u'+1.0',
+            u'-1.0': u'-1.0',
+#            # RGBColor
+            u'#112234': u'#112234',
+            u'#112233': u'#123',
 #            u'rgb(1,2,3)': u'rgb(1, 2, 3)',
 #            u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
 #            u'rgb(-1,+2,0)': u'rgb(-1, 2, 0)',
@@ -145,7 +150,12 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.do_equal_r(tests)
 
         tests = {
-            # S or COMMENT
+            u'-': xml.dom.SyntaxErr,
+            u'+': xml.dom.SyntaxErr,
+            u'-%': xml.dom.SyntaxErr,
+            u'+a': xml.dom.SyntaxErr,
+            u'--1px': xml.dom.SyntaxErr,
+            u'++1px': xml.dom.SyntaxErr,
             u'#': xml.dom.SyntaxErr,
             u'#00': xml.dom.SyntaxErr,
             u'#0000': xml.dom.SyntaxErr,
@@ -154,6 +164,49 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'-#0': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests)
+
+    def test_cssText3(self):
+        "CSSValue.cssText Syntax"
+        v = cssutils.css.CSSValue()
+        
+        tests = {
+                 '1': (True, '1'),
+                 '1 2': (True, '1 2'),
+                 '1   2': (True, '1 2'),
+                 '1,2': (True, '1, 2'),
+                 '1,  2': (True, '1, 2'),
+                 '1  ,2': (True, '1, 2'),
+                 '1  ,  2': (True, '1, 2'),
+                 '1/2': (True, '1/2'),
+                 '1/  2': (True, '1/2'),
+                 '1  /2': (True, '1/2'),
+                 '1  /  2': (True, '1/2'),
+                 # comment
+                 '1/**/2': (True, '1 /**/ 2'),
+                 '1 /**/2': (True, '1 /**/ 2'),
+                 '1/**/ 2': (True, '1 /**/ 2'),
+                 '1 /**/ 2': (True, '1 /**/ 2'),
+                 '1  /*a*/  /*b*/  2': (True, '1 /*a*/ /*b*/ 2'),
+                 # , before
+                 '1,/**/2': (True, '1, /**/ 2'),
+                 '1 ,/**/2': (True, '1, /**/ 2'),
+                 '1, /**/2': (True, '1, /**/ 2'),
+                 '1 , /**/2': (True, '1, /**/ 2'),
+                 # , after
+                 '1/**/,2': (True, '1 /**/, 2'),
+                 '1/**/ ,2': (True, '1 /**/, 2'),
+                 '1/**/, 2': (True, '1 /**/, 2'),
+                 '1/**/ , 2': (True, '1 /**/, 2'),
+                 # all
+                 '1/*a*/  ,/*b*/  2': (True, '1 /*a*/, /*b*/ 2'),
+                 '1  /*a*/,  /*b*/2': (True, '1 /*a*/, /*b*/ 2'),
+                 '1  /*a*/  ,  /*b*/  2': (True, '1 /*a*/, /*b*/ 2'),
+                 }
+        for css, exp in tests.items():
+            v.cssText = css
+            wellformed, res = exp
+            self.assertEqual(wellformed, v.wellformed)
+            self.assertEqual(res, v.cssText)
 
     def test_incomplete(self):
         "CSSValue (incomplete)"
@@ -449,7 +502,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             pv = cssutils.css.CSSPrimitiveValue(initialValue)
             for setType, setValue, exp, cssText in tests[test]:
                 if type(exp) == types.TypeType or\
-                   type(exp) == types.ClassType: # 2.4 compactibility
+                   type(exp) == types.ClassType: # 2.4 compatibility
                     if cssText:
                         self.assertRaisesMsg(
                             exp, cssText, pv.setFloatValue, setType, setValue)
@@ -599,8 +652,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 #            u"CSSPrimitiveValue: stringType CSS_PX is not a string type",
 #            v.setStringValue, *(v.CSS_PX, 'brown'))
 
-#    def test_typeCSSColor(self):
-#        "CSSColor"
+#    def test_typeRGBColor(self):
+#        "RGBColor"
 #        v = cssutils.css.CSSPrimitiveValue('RGB(1, 5, 10)')
 #        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
 #        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
@@ -653,6 +706,7 @@ class CSSValueListTestCase(basetest.BaseTestCase):
     def test_numbers(self):
         "CSSValueList.cssText"
         tests = {
+            u'0 0px -0px +0px': (u'0 0 0 0', 4),
             u'1 2 3 4': (None, 4),
             u'-1 -2 -3 -4': (None, 4),
             u'-1 2': (None, 2),

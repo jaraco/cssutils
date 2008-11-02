@@ -54,6 +54,7 @@ HEAD
         - removed private CSSValue init parameter _propertyName
         - private attribute ``CSSValue._value`` contains ``(value, type)`` now. Do not use as it may change again
         - removed ``Property.normalname`` (DEPRECATED from 0.9.5 ), use ``Property.name`` instead
+        - removed long deprecated ``CSSStyleSheet.replaceUrls``
 
     + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``. This results in these changes:
 
