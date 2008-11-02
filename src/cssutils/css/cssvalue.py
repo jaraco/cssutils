@@ -128,7 +128,7 @@ class CSSValue(cssutils.util.Base2):
                       PreDef.string(),
                       PreDef.ident(),
                       PreDef.uri(),
-                      PreDef.hexcolor(),#toSeq=lambda t, v: (RGBColor, RGBColor(v))),
+                      PreDef.hexcolor(),
                       PreDef.function())
         # CSSValue PRODUCTION
         valueprod = Sequence(term, 

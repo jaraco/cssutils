@@ -34,6 +34,7 @@ class XTestCase(basetest.BaseTestCase):
         self.assertRaisesMsg(xml.dom.SyntaxErr, 
                              u'', 
                              cssutils.css.Property, u'color', u'red', u'x')
+
         cssutils.log.raiseExceptions = False
         p = cssutils.css.Property(u'color', u'red', u'!x')
         self.assertEqual(p.priority, u'x')
