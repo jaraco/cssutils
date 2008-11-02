@@ -422,10 +422,10 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         self.assertEqual('important', s.getPropertyPriority('top'))
 
         tests = {
-            (u'left', u'0px', u''): u'left: 0',
-            (u'left', u'0px', u'important'): u'left: 0 !important',
-            (u'LEFT', u'0px', u'important'): u'left: 0 !important',
-            (u'left', u'0px', u'important'): u'left: 0 !important',
+            (u'left', u'0', u''): u'left: 0',
+            (u'left', u'0', u'important'): u'left: 0 !important',
+            (u'LEFT', u'0', u'important'): u'left: 0 !important',
+            (u'left', u'0', u'important'): u'left: 0 !important',
             }
         for test, exp in tests.items():
             s = cssutils.css.CSSStyleDeclaration()

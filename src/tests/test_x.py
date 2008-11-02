@@ -12,49 +12,6 @@ class XTestCase(basetest.BaseTestCase):
     def setUp(self):
         pass
 
-    def test_x(self):
-        "CSSValue.cssText Syntax"
-        v = cssutils.css.CSSValue()
-        
-        tests = {
-                 '1': (True, '1'),
-                 '1 2': (True, '1 2'),
-                 '1   2': (True, '1 2'),
-                 '1,2': (True, '1, 2'),
-                 '1,  2': (True, '1, 2'),
-                 '1  ,2': (True, '1, 2'),
-                 '1  ,  2': (True, '1, 2'),
-                 '1/2': (True, '1/2'),
-                 '1/  2': (True, '1/2'),
-                 '1  /2': (True, '1/2'),
-                 '1  /  2': (True, '1/2'),
-                 # comment
-                 '1/**/2': (True, '1 /**/ 2'),
-                 '1 /**/2': (True, '1 /**/ 2'),
-                 '1/**/ 2': (True, '1 /**/ 2'),
-                 '1 /**/ 2': (True, '1 /**/ 2'),
-                 '1  /*a*/  /*b*/  2': (True, '1 /*a*/ /*b*/ 2'),
-                 # , before
-                 '1,/**/2': (True, '1, /**/ 2'),
-                 '1 ,/**/2': (True, '1, /**/ 2'),
-                 '1, /**/2': (True, '1, /**/ 2'),
-                 '1 , /**/2': (True, '1, /**/ 2'),
-                 # , after
-                 '1/**/,2': (True, '1 /**/, 2'),
-                 '1/**/ ,2': (True, '1 /**/, 2'),
-                 '1/**/, 2': (True, '1 /**/, 2'),
-                 '1/**/ , 2': (True, '1 /**/, 2'),
-                 # all
-                 '1/*a*/  ,/*b*/  2': (True, '1 /*a*/, /*b*/ 2'),
-                 '1  /*a*/,  /*b*/2': (True, '1 /*a*/, /*b*/ 2'),
-                 '1  /*a*/  ,  /*b*/  2': (True, '1 /*a*/, /*b*/ 2'),
-                 }
-        for css, exp in tests.items():
-            v.cssText = css
-            wellformed, res = exp
-            self.assertEqual(wellformed, v.wellformed)
-            self.assertEqual(res, v.cssText)
-
     def test_prioriy(self):
         "Property.priority"
         s = cssutils.parseString('a { color: red }')

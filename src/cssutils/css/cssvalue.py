@@ -5,7 +5,7 @@
 - CSSValueList implements DOM Level 2 CSS CSSValueList
 
 """
-__all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'CSSColor']
+__all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
@@ -128,7 +128,7 @@ class CSSValue(cssutils.util.Base2):
                       PreDef.string(),
                       PreDef.ident(),
                       PreDef.uri(),
-                      PreDef.hexcolor(),#toSeq=lambda t, v: (CSSColor, CSSColor(v))),
+                      PreDef.hexcolor(),#toSeq=lambda t, v: (RGBColor, RGBColor(v))),
                       PreDef.function())
         # CSSValue PRODUCTION
         valueprod = Sequence(term, 
@@ -162,7 +162,11 @@ class CSSValue(cssutils.util.Base2):
                 elif item.value == u'+' or item.value == u'-':
                     # combine +- and following number or other
                     i += 1
-                    next = seq[i]
+                    try:
+                        next = seq[i]
+                    except IndexError:
+                        firstvalue = () # raised later
+                        break
                     newseq.append(item.value + next.value, next.type, 
                                   item.line, item.col)
                     if not firstvalue:
@@ -252,37 +256,6 @@ class CSSPrimitiveValue(CSSValue):
     cssValueType = CSSValue.CSS_PRIMITIVE_VALUE
 
     __types = cssutils.cssproductions.CSSProductions 
-    _unitinfos = [
-        # name, productiontype, searchstring 
-        ('CSS_UNKNOWN', None, None),
-        ('CSS_NUMBER', __types.NUMBER, None),
-        ('CSS_PERCENTAGE', __types.PERCENTAGE, None),
-        ('CSS_EMS', __types.DIMENSION, 'em'),
-        ('CSS_EXS', __types.DIMENSION, 'ex'),
-        ('CSS_PX', __types.DIMENSION, 'px'),
-        ('CSS_CM', __types.DIMENSION, 'cm'),
-        ('CSS_MM', __types.DIMENSION, 'mm'),
-        ('CSS_IN', __types.DIMENSION, 'in'),
-        ('CSS_PT', __types.DIMENSION, 'pt'),
-        ('CSS_PC', __types.DIMENSION, 'pc'),
-        ('CSS_DEG', __types.DIMENSION, 'deg'),
-        ('CSS_RAD', __types.DIMENSION, 'rad'),
-        ('CSS_GRAD', __types.DIMENSION, 'grad'),
-        ('CSS_MS', __types.DIMENSION, 'ms'),
-        ('CSS_S', __types.DIMENSION, 's'),
-        ('CSS_HZ', __types.DIMENSION, 'hz'),
-        ('CSS_KHZ', __types.DIMENSION, 'khz'),
-        # must be last dim!
-        ('CSS_DIMENSION', __types.DIMENSION, ''), 
-        ('CSS_STRING', __types.STRING, None),
-        ('CSS_URI', __types.URI, None),
-        ('CSS_IDENT', __types.IDENT, None),
-        ('CSS_ATTR', __types.FUNCTION, 'attr('),
-        ('CSS_COUNTER', __types.FUNCTION, 'counter('),
-        ('CSS_RECT', __types.FUNCTION, 'rect('),
-        ('CSS_RGBCOLOR', __types.FUNCTION, 'rgb('),
-        ('CSS_RGBACOLOR', __types.FUNCTION, 'rgba('),
-        ]
 
     # An integer indicating which type of unit applies to the value.
     CSS_UNKNOWN = 0 # only obtainable via cssText
@@ -371,40 +344,75 @@ class CSSPrimitiveValue(CSSValue):
         super(CSSPrimitiveValue, self).__init__(cssText=cssText,
                                                 readonly=readonly)
 
+
+    _unitnames = ['CSS_UNKNOWN',
+                  'CSS_NUMBER', 'CSS_PERCENTAGE',
+                  'CSS_EMS', 'CSS_EXS',
+                  'CSS_PX',
+                  'CSS_CM', 'CSS_MM',
+                  'CSS_IN',
+                  'CSS_PT', 'CSS_PC',
+                  'CSS_DEG', 'CSS_RAD', 'CSS_GRAD',
+                  'CSS_MS', 'CSS_S',
+                  'CSS_HZ', 'CSS_KHZ',
+                  'CSS_DIMENSION', 
+                  'CSS_STRING', 'CSS_URI', 'CSS_IDENT', 
+                  'CSS_ATTR', 'CSS_COUNTER', 'CSS_RECT',
+                  'CSS_RGBCOLOR', 'CSS_RGBACOLOR',
+                  ]
+    
+    def _unitDIMENSION(val):
+        """Check val for dimension name."""
+        units = {'em': 'CSS_EMS', 'ex': 'CSS_EXS',
+                 'px': 'CSS_PX',
+                 'cm': 'CSS_CM', 'mm': 'CSS_MM',
+                 'in': 'CSS_IN',
+                 'pt': 'CSS_PT', 'pc': 'CSS_PC',
+                 'deg': 'CSS_DEG', 'rad': 'CSS_RAD', 'grad': 'CSS_GRAD',
+                 'ms': 'CSS_MS', 's': 'CSS_S',
+                 'hz': 'CSS_HZ', 'khz': 'CSS_KHZ'
+                 }        
+        val = cssutils.helper.normalize(val)
+        return units.get(re.findall(ur'^.*?([a-z]+)$', val, re.U)[0],
+                         'CSS_DIMENSION')
+
+    def _unitFUNCTION(val):
+        """Check val for function name."""
+        units = {'attr(': 'CSS_ATTR',
+                 'counter(': 'CSS_COUNTER',
+                 'rect(': 'CSS_RECT',
+                 'rgb(': 'CSS_RGBCOLOR',
+                 'rgba(': 'CSS_RGBACOLOR',
+                 }
+        val = cssutils.helper.normalize(val)
+        return units.get(re.findall(ur'^(.*?\()', val, re.U)[0],
+                         'CSS_FUNCTION')
+    
+    __unitbytype = {
+        __types.NUMBER: 'CSS_NUMBER',
+        __types.PERCENTAGE: 'CSS_PERCENTAGE',
+        __types.STRING: 'CSS_STRING',
+        __types.URI: 'CSS_URI',
+        __types.IDENT: 'CSS_IDENT',
+        __types.HASH: 'CSS_RGBCOLOR',
+        __types.DIMENSION: _unitDIMENSION,
+        __types.FUNCTION: _unitFUNCTION
+        }
+
     def __set_primitiveType(self):
         """
         primitiveType is readonly but is set lazy if accessed
         """
         # TODO: check unary and font-family STRING a, b, "c"
-        val, type_ = self._value
-        val = cssutils.helper.normalize(val)
-        dim = re.findall(ur'^.*?([a-z]+)$', val, re.U)
         
-        for i, (name, tokentype, s) in enumerate(self._unitinfos):
-            if type_ == tokentype:
-                if type_ == self._prods.DIMENSION:
-                    try:
-                        # known DIMENSIONs are chars only, but unknown might be x1-
-                        if dim[0] == s:
-                            primitiveType = i
-                            break
-                    except IndexError:
-                        pass
-                elif type_ == self._prods.FUNCTION:
-                    if val.startswith(s):
-                        primitiveType = i
-                        break
-                else:
-                    primitiveType = i
-                    break
-        else:
-            if type_ == self._prods.DIMENSION:
-                primitiveType = self.CSS_DIMENSION
-            else:
-                primitiveType = self.CSS_UNKNOWN
-
-        self._primitiveType = primitiveType
-
+        val, type_ = self._value
+        # try get by type_
+        pt = self.__unitbytype.get(type_, 'CSS_UNKNOWN')
+        if callable(pt):
+            # multiple options, check value too
+            pt = pt(val)
+        self._primitiveType = getattr(self, pt)
+        
     def _getPrimitiveType(self):
         if not hasattr(self, '_primitivetype'):
             self.__set_primitiveType()
@@ -414,7 +422,7 @@ class CSSPrimitiveValue(CSSValue):
         doc="(readonly) The type of the value as defined by the constants specified above.")
 
     def _getPrimitiveTypeString(self):
-        return self._unitinfos[self.primitiveType][0]
+        return self._unitnames[self.primitiveType]
 
     primitiveTypeString = property(_getPrimitiveTypeString,
                                    doc="Name of primitive type of this value.")
@@ -422,7 +430,7 @@ class CSSPrimitiveValue(CSSValue):
     def _getCSSPrimitiveTypeString(self, type):
         "get TypeString by given type which may be unknown, used by setters"
         try:
-            return self._unitinfos[type][0]
+            return self._unitnames[type]
         except (IndexError, TypeError):
             return u'%r (UNKNOWN TYPE)' % type
 
@@ -646,11 +654,9 @@ class CSSPrimitiveValue(CSSValue):
         is raised. Modification to the corresponding style property
         can be achieved using the RGBColor interface.
         """
-        # TODO: what about coercing #000 to RGBColor?
         if self.primitiveType not in self._rbgtypes:
-            raise xml.dom.InvalidAccessErr(u'Value is not a RGB value')
-        # TODO: use RGBColor class
-        raise NotImplementedError()
+            raise xml.dom.InvalidAccessErr(u'Value is not a RGBColor value')
+        return RGBColor(self._value[0])
 
     def getRectValue(self):
         """
@@ -744,7 +750,7 @@ class CSSFunction(CSSPrimitiveValue):
         readonly
             defaults to False
         """
-        super(CSSColor, self).__init__()
+        super(RGBColor, self).__init__()
         self.valid = False
         self.wellformed = False
         if cssText is not None:
@@ -792,7 +798,7 @@ class CSSFunction(CSSPrimitiveValue):
                 self._setSeq(seq)
                 self._funcType = self._normalize(store['colorType'].value[:-1])
 
-    cssText = property(lambda self: cssutils.ser.do_css_CSSColor(self), 
+    cssText = property(lambda self: cssutils.ser.do_css_RGBColor(self), 
                        _setCssText)
     
     funcType = property(lambda self: self._funcType)
@@ -806,19 +812,19 @@ class CSSFunction(CSSPrimitiveValue):
                 id(self))
 
 
-class CSSColor(CSSPrimitiveValue):
+class RGBColor(CSSPrimitiveValue):
     """A CSS color like RGB, RGBA or a simple value like `#000` or `red`."""
     
     def __init__(self, cssText=None, readonly=False):
         """
-        Init a new CSSColor
+        Init a new RGBColor
 
         cssText
             the parsable cssText of the value
         readonly
             defaults to False
         """
-        super(CSSColor, self).__init__()
+        super(RGBColor, self).__init__()
         self._colorType = None
         self.valid = False
         self.wellformed = False
@@ -858,7 +864,7 @@ class CSSColor(CSSPrimitiveValue):
                             )     
         # store: colorType, parts
         wellformed, seq, store, unusedtokens = ProdParser().parse(cssText, 
-                                                            u'CSSColor', 
+                                                            u'RGBColor', 
                                                             colorprods,
                                                             {'parts': []})
         
@@ -873,7 +879,7 @@ class CSSColor(CSSPrimitiveValue):
                 
             self._setSeq(seq)
 
-    cssText = property(lambda self: cssutils.ser.do_css_CSSColor(self), 
+    cssText = property(lambda self: cssutils.ser.do_css_RGBColor(self), 
                        _setCssText)
     
     colorType = property(lambda self: self._colorType)

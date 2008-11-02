@@ -41,9 +41,19 @@ if 1:
         "a", a, url(a), #aaa, a()
     '''
     
+    s = cssutils.parseString(u'a{left: 0 a 0px a}')
+    print s.cssText
+    cssutils.ser.prefs.useMinified()
+    print s.cssText
     
-    v = cssutils.css.CSSValue('#112233')
-    print v
+#    p = cssutils.css.Property('left', '0px')
+#    print p
+#    v = cssutils.css.CSSValue('a 0 a 0px')
+#    print v.cssText
+#    
+#    print v.cssText
+    #print v.getRGBColorValue()
+    #v.setFloatValue(v.CSS_RGBACOLOR, 1)
     print
 
     #print v
