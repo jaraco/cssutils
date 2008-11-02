@@ -41,17 +41,17 @@ if 1:
         "a", a, url(a), #aaa, a()
     '''
     
-    s = cssutils.parseString(u'a{left: 0 a 0px a}')
+    s = cssutils.parseString('''a { font-family: 1 "Courier
+                ; }''')
     print s.cssText
-    cssutils.ser.prefs.useMinified()
-    print s.cssText
+#    cssutils.ser.prefs.useMinified()
+#    print s.cssText
     
-#    p = cssutils.css.Property('left', '0px')
+#    p = cssutils.css.Property('left', '''"'"''')
 #    print p
-#    v = cssutils.css.CSSValue('a 0 a 0px')
-#    print v.cssText
+#    v = cssutils.css.CSSValue('''"'"''')
+#    print v
 #    
-#    print v.cssText
     #print v.getRGBColorValue()
     #v.setFloatValue(v.CSS_RGBACOLOR, 1)
     print

@@ -92,7 +92,7 @@ class Choice(object):
             else:
                 if not optional:
                     # None matched but also None is optional
-                    raise NoMatch(u'No match in %s' % self)
+                    raise ParseError(u'No match in %s' % self)
         else:
             raise Exhausted(u'Extra token')
 
@@ -367,6 +367,7 @@ class ProdParser(object):
                 # invalidate parse
                 wellformed = False
                 self._log.error(u'Invalid token: %r' % (token,))
+                break
             elif type_ == self.types.EOF:
                 # do nothing
                 pass
