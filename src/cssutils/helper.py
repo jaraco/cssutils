@@ -49,6 +49,15 @@ def normalize(x):
     else:
         return x
     
+def stringvalue(string):
+    """
+    Return actual value of string without quotes. Escaped 
+    quotes inside the value are resolved, e.g.::
+    
+        ``'a \'string'`` => ``a 'string``
+    """
+    return string.replace('\\'+string[0], string[0])[1:-1]
+
 def urivalue(uri):
     """
     Return actual content without surrounding "url(" and ")"

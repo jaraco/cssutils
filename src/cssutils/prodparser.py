@@ -92,7 +92,7 @@ class Choice(object):
             else:
                 if not optional:
                     # None matched but also None is optional
-                    raise ParseError(u'No match in %s' % self)
+                    raise NoMatch(u'No match in %s' % self)
         else:
             raise Exhausted(u'Extra token')
 
@@ -253,6 +253,8 @@ class Prod(object):
 
     def matches(self, token):
         """Return if token matches."""
+        if not token: 
+            return False
         type_, val, line, col = token
         return self.match(type_, val)
 
@@ -361,6 +363,10 @@ class ProdParser(object):
 #                # @rule
 #                r = cssutils.css.CSSUnknownRule(cssText=val)
 #                seq.append(r, type(r), line, col)
+            elif type_ == self.types.INVALID:
+                # invalidate parse
+                wellformed = False
+                self._log.error(u'Invalid token: %r' % (token,))
             elif type_ == self.types.EOF:
                 # do nothing
                 pass
@@ -426,6 +432,7 @@ class ProdParser(object):
                 wellformed = False
                 self._log.error(u'%s: Missing token for production %r'
                                 % (name, str(prod)))
+                break
             elif len(prods) > 1:
                 # nested exhausted, next in parent
                 prods.pop()
@@ -490,14 +497,12 @@ class PreDef(object):
                     toStore=toStore)
 
     @staticmethod
-    def string(toSeq=None, toStore=None):
+    def string(toStore=None):
         "string delimiters are removed by default"
-        if not toSeq:
-            toSeq = lambda type_, val: (type_, val[1:-1]) 
         return Prod(name=u'string', 
                     match=lambda t, v: t == PreDef.types.STRING,
-                    toSeq=toSeq,
-                    toStore=toStore)
+                    toStore=toStore,
+                    toSeq=lambda t, v: (t, cssutils.helper.stringvalue(v)))
 
     @staticmethod
     def percentage(toStore=None):
@@ -535,6 +540,3 @@ class PreDef(object):
                     toStore=toStore,
                     toSeq=toSeq
                     )
-        
-
-
