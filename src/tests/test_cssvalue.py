@@ -65,7 +65,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
 
         v.cssText = u'  normal 1px a, b, "c" end   '
         self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
-        self.assert_('normal 1px a, b, "c" end' == v.cssText)
+        self.assertEqual('normal 1px a, b, "c" end', v.cssText)
 
 #        for i, x in enumerate(v):
 #            self.assertEqual(x.CSS_PRIMITIVE_VALUE, x.cssValueType)
@@ -219,8 +219,9 @@ class CSSValueTestCase(basetest.BaseTestCase):
             v = s.cssRules[0].style.background
             self.assertEqual(v, exp)
 
+# -------------- MOVE -----------------------
 #    def test_valid(self):
-#        "CSSValue.valid"
+#        "Property.valid"
 #        # context property must be set
 #        tests = [
 #            ('color', r'INHe\rIT', True),
@@ -238,17 +239,17 @@ class CSSValueTestCase(basetest.BaseTestCase):
     def test_cssValueType(self):
         "CSSValue.cssValueType .cssValueTypeString"
         tests = [
-#            ([u'inherit'], 'CSS_INHERIT'),
-#            (['1', '1%', '1em', '1ex', '1px', '1cm', '1mm', '1in', '1pt', '1pc',
-#              '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
-#               '"string"', "'string'", 'url(x)', 'red',
+            ([u'inherit'], 'CSS_INHERIT'),
+            (['1', '1%', '1em', '1ex', '1px', '1cm', '1mm', '1in', '1pt', '1pc',
+              '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
+               '"string"', "'string'", 'url(x)', 'red',
 #               'attr(a)', 'counter()', 'rect(1px,2px,3px,4px)',
 #               'rgb(0, 0, 0)', '#000', '#123456', 'rgba(0, 0, 0, 0)',
 #               'hsl(0, 0, 0)', 'hsla(0, 0, 0, 0)',
-#               ],
-#             'CSS_PRIMITIVE_VALUE'),
-#            ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST'),
-#            ([], 'CSS_CUSTOM') # what is a custom value?
+               ],
+             'CSS_PRIMITIVE_VALUE'),
+            ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST'),
+            ([], 'CSS_CUSTOM') # what is a custom value?
             ]
         for values, name in tests:
             for value in values:
