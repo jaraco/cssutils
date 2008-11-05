@@ -23,14 +23,6 @@ def save(name, string):
     f.close()
 
 
-class X(object):
-    def __init__(self, s):
-        self.s = s
-        
-    def n(self):
-        for i in self.s:
-            yield i
-
 if 1:
     
 #   [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
@@ -41,16 +33,14 @@ if 1:
         "a", a, url(a), #aaa, a()
     '''
     
-    s = cssutils.parseString('''a { font-family: 1 "Courier
-                ; }''')
-    print s.cssText
-#    cssutils.ser.prefs.useMinified()
-#    print s.cssText
-    
-#    p = cssutils.css.Property('left', '''"'"''')
-#    print p
-#    v = cssutils.css.CSSValue('''"'"''')
-#    print v
+    v = cssutils.css.CSSValue('''a,'""' "x"''')
+    print 
+    print v
+    for x in v: 
+        print x.value
+        for s in x.value.seq:
+            print s
+    print
 #    
     #print v.getRGBColorValue()
     #v.setFloatValue(v.CSS_RGBACOLOR, 1)

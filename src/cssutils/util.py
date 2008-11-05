@@ -529,10 +529,10 @@ class Seq(object):
 
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"
-        return u'cssutils.%s.%s([\n    %s])' % (self.__module__,
+        return u'cssutils.%s.%s([\n    %s], readonly=%r)' % (self.__module__,
                                           self.__class__.__name__,
             u',\n    '.join([u'%r' % item for item in self._seq]
-            ))
+            ), self._readonly)
     
     def __str__(self):
         vals = []
@@ -544,9 +544,9 @@ class Seq(object):
             else:
                 vals.append(str(v))
         
-        return "<cssutils.%s.%s object length=%r values=%r at 0x%x>" % (
+        return "<cssutils.%s.%s object length=%r values=%r readonly=%r at 0x%x>" % (
                 self.__module__, self.__class__.__name__, len(self), 
-                u''.join(vals), id(self))
+                u''.join(vals), self._readonly, id(self))
 
 class Item(object):
     """

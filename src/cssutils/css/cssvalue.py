@@ -140,8 +140,8 @@ class CSSValue(cssutils.util.Base2):
                                                                   u'CSSValue', 
                                                                   valueprod)
         if wellformed:
-            # filter out double operators (S + "," etc)
-            # if operator is , or / it is never followed by S
+            # count actual values and set firstvalue which is used later on
+            # filter out double operators (S + "," or "/")
             count, firstvalue = 0, ()
             newseq = self._tempSeq()
             i, end = 0, len(seq)
@@ -154,6 +154,7 @@ class CSSValue(cssutils.util.Base2):
                     newseq.appendItem(item)
                     if firstvalue:
                         firstvalue = firstvalue[0], 'STRING'
+                    # each comma separated list counts as a single one only
                     count -= 1
                 elif item.value == u'/':
                     # counts as a single one
@@ -167,12 +168,14 @@ class CSSValue(cssutils.util.Base2):
                     except IndexError:
                         firstvalue = () # raised later
                         break
-                    newseq.append(item.value + next.value, next.type, 
+
+                    newval = item.value + next.value
+                    newseq.append(newval, next.type, 
                                   item.line, item.col)
                     if not firstvalue:
-                        firstvalue = (item.value + next.value, next.type)
+                        firstvalue = (newval, next.type)
                     count += 1
-                
+                                
                 elif item.type != cssutils.css.CSSComment:
                     newseq.appendItem(item)
                     if not firstvalue:
@@ -181,16 +184,15 @@ class CSSValue(cssutils.util.Base2):
     
                 else:
                     newseq.appendItem(item)
-                    
+                                        
                 i += 1
 
             if not firstvalue:
                 self._log.error(
                         u'CSSValue: Unknown syntax or no value: %r.' %
                         self._valuestr(cssText))
-                
             else:
-    
+                # ok and set
                 self._setSeq(newseq)
                 self.wellformed = wellformed
                             
@@ -208,10 +210,65 @@ class CSSValue(cssutils.util.Base2):
                         
                 elif count > 1:
                     self.__class__ = CSSValueList
-                    self._items = count * ['TODO']
+                    # change items in list to specific type (primitive etc)
+                    # TODO: a, b, "c" and url(...)
+                    newseq = self._tempSeq()
+                    commalist = []
+                    nexttocommalist = False
+                    
+                    def saveifcommalist(commalist, newseq):
+                        """
+                        saves items in commalist to seq and items
+                        if anything in there
+                        """
+                        if commalist:
+                            newseq.replace(-1, 
+                                           CSSPrimitiveValue(cssText=u''.join(
+                                                    commalist)), 
+                                           CSSPrimitiveValue,
+                                           newseq[-1].line,
+                                           newseq[-1].col)
+                            del commalist[:]
                         
+                    for i, item in enumerate(self._seq):
+                        if item.type in (self._prods.DIMENSION,
+                                         self._prods.FUNCTION,
+                                         self._prods.HASH,
+                                         self._prods.IDENT,
+                                         self._prods.NUMBER,
+                                         self._prods.PERCENTAGE,
+                                         self._prods.STRING,
+                                         self._prods.URI):
+                            if nexttocommalist:
+                                # wait until complete
+                                commalist.append(item.value)
+                            else:
+                                saveifcommalist(commalist, newseq)                                
+                                # append new item
+                                pv = CSSPrimitiveValue(item.value)
+                                newseq.append(pv, CSSPrimitiveValue, 
+                                              item.line, item.col)
+
+                            nexttocommalist = False
+                                
+                        elif u',' == item.value:
+                            if not commalist:
+                                # save last item to commalist
+                                commalist.append(self._seq[i-1].value)
+                            commalist.append(u',')
+                            nexttocommalist = True
+                            
+                        else:
+                            if nexttocommalist:
+                                commalist.append(item.value.cssText)
+                            else:
+                                newseq.appendItem(item)
+
+                    saveifcommalist(commalist, newseq)
+                    self._setSeq(newseq)
+                                
                 else:
-                    # ? should not happen...
+                    # should not happen...
                     self.__class__ = CSSValue
                     self._cssValueType = CSSValue.CSS_CUSTOM
 
@@ -708,8 +765,12 @@ class CSSValueList(CSSValue):
         super(CSSValueList, self).__init__(cssText=cssText, readonly=readonly)
         self._items = []
 
-    length = property(lambda self: len(self._items),
+    length = property(lambda self: len(self.__items()),
                 doc="(DOM attribute) The number of CSSValues in the list.")
+
+    def __items(self):
+        return [item for item in self._seq 
+                    if isinstance(item.value, CSSPrimitiveValue)]
 
     def item(self, index):
         """
@@ -719,15 +780,15 @@ class CSSValueList(CSSValue):
         of values in the list, this returns None.
         """
         try:
-            return self._items[index]
+            return self.__items()[index]
         except IndexError:
             return None
 
     def __iter__(self):
         "CSSValueList is iterable"
-        return CSSValueList.__items(self)
+        return CSSValueList.__itemsiter(self)
 
-    def __items(self):
+    def __itemsiter(self):
         "the iterator"
         for i in range (0, self.length):
             yield self.item(i)
