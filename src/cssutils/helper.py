@@ -30,8 +30,7 @@ class Deprecated(object):
         return newFunc
 
 # simple escapes, all non unicodes
-_simpleescapes = re.compile(ur'(\\[^0-9a-fA-F])').sub
-        
+_simpleescapes = re.compile(ur'(\\[^0-9a-fA-F])').sub    
 def normalize(x):
     """
     normalizes x, namely:
@@ -49,14 +48,39 @@ def normalize(x):
     else:
         return x
     
+def string(value):
+    """
+    Serialize value with quotes e.g.::
+    
+        ``a \'string`` => ``'a \'string'``
+    """
+    # \n = 0xa, \r = 0xd, \f = 0xc
+    value = value.replace(u'\n', u'\\a ').replace(
+                          u'\r', u'\\d ').replace(
+                          u'\f', u'\\c ').replace(
+                          u'"', u'\\"')
+    
+    return u'"%s"' % value
+
 def stringvalue(string):
     """
-    Return actual value of string without quotes. Escaped 
+    Retrieve actual value of string without quotes. Escaped 
     quotes inside the value are resolved, e.g.::
     
         ``'a \'string'`` => ``a 'string``
     """
     return string.replace('\\'+string[0], string[0])[1:-1]
+
+_match_forbidden_in_uri = re.compile(ur'''.*?[\(\)\s\;,]''', re.U).match
+def uri(value):
+    """
+    Serialize value by adding ``url()`` and with quotes if needed e.g.::
+    
+        ``"`` => ``url("\"")`` 
+    """
+    if _match_forbidden_in_uri(value):
+        value = string(value)
+    return u'url(%s)' % value
 
 def urivalue(uri):
     """
@@ -68,6 +92,6 @@ def urivalue(uri):
     """
     uri = uri[4:-1].strip()
     if uri and (uri[0] in '\'"') and (uri[0] == uri[-1]):
-        # a string "..." or '...'
-        uri = uri.replace('\\'+uri[0], uri[0])[1:-1]
-    return uri
+        return stringvalue(uri)
+    else:
+        return uri
