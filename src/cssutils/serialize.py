@@ -9,6 +9,7 @@ __version__ = '$Id$'
 import codecs
 import re
 import xml.dom
+import helper
 import cssutils
 
 def _escapecss(e):
@@ -178,11 +179,11 @@ class Out(object):
         - typ "Property", cssutils.css.CSSRule.UNKNOWN_RULE
             uses cssText
         - typ STRING
-            escapes ser._string
+            escapes helper.string
         - typ S
             ignored except ``keepS=True``
         - typ URI
-            calls ser_uri
+            calls helper.uri
         - val ``{``
             adds LF after
         - val ``;``
@@ -220,11 +221,11 @@ class Out(object):
                 # may be empty but MUST not be None
                 if val is None: 
                     return
-                val = self.ser._string(val) 
+                val = helper.string(val) 
                 if not prefspace:
                     self._remove_last_if_S()
             elif 'URI' == typ:
-                val = self.ser._uri(val)
+                val = helper.uri(val)
             elif 'HASH' == typ:
                 val = self.ser._hash(val)
             elif val in u'+>~,:{;)]/':
@@ -342,24 +343,6 @@ class CSSSerializer(object):
         else:
             return val
 
-    def _string(self, s):
-        """
-        Return s enclosed between "..." and escape delim charater ", 
-        escape line breaks \\n \\r and \\f
-        """
-        # \n = 0xa, \r = 0xd, \f = 0xc
-        s = s.replace('\n', '\\a ').replace(
-                      '\r', '\\d ').replace(
-                      '\f', '\\c ')
-        return u'"%s"' % s.replace('"', u'\\"')
-
-    def _uri(self, uri):
-        """Return URI enclosed in url() and "..." if necessary"""
-        if CSSSerializer.__forbidden_in_uri_matcher(uri):
-            return 'url(%s)' % self._string(uri)
-        else:
-            return 'url(%s)' % uri
-
     def _valid(self, x):
         "checks items valid property and prefs.validOnly"
         return not self.prefs.validOnly or (self.prefs.validOnly and 
@@ -407,7 +390,7 @@ class CSSSerializer(object):
         no comments or other things allowed!
         """
         if rule.wellformed:
-            return u'@charset %s;' % self._string(rule.encoding)
+            return u'@charset %s;' % helper.string(rule.encoding)
         else:
             return u''
 
@@ -527,7 +510,7 @@ class CSSSerializer(object):
         if rule.name:
             out.append(self.prefs.spacer)
             nameout = Out(self)
-            nameout.append(self._string(rule.name))
+            nameout.append(helper.string(rule.name))
             for item in rule.seq:
                 nameout.append(item.value, item.type)
             out.append(nameout.value())
@@ -863,7 +846,7 @@ class CSSSerializer(object):
                     out.append(val.cssText, type_)
                 else:
                     if val and val[0] == val[-1] and val[0] in '\'"':
-                        val = self._string(val[1:-1])
+                        val = helper.string(val[1:-1])
                     # S must be kept! in between values but no extra space
                     out.append(val, type_)
 
@@ -876,39 +859,19 @@ class CSSSerializer(object):
             return u''
         else:
             out = Out(self)
-            
-            unary = None
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
-                if 'CHAR' == type_ and val in u'+-':
-                    # save for next round
-                    unary = val
-                    continue
-                if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
-                    # handle saved unary and add to number
-                    try:
-                        # NUMBER or DIMENSION and is it 0?
-                        if 0 == cssvalue.getFloatValue():
-                            val = u'0'
-                        else:
-                            # add unary to val if not 0
-                            # TODO: only for lengths!
-                            if u'-' == unary:
-                                val = unary + val
-                    except xml.dom.InvalidAccessErr, e:
-                        pass
-                    unary = None
-                elif unary:
-                    # or simple add
-                    out.append(unary, 'CHAR', space=False, keepS=True)
-                    unary = None
                 
+                if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
+                    if 0 == cssvalue.getFloatValue():
+                        # 0 if zero value
+                        val = u'0'
+                    elif val.startswith(u'+'):
+                        # omit +
+                        val = val[1:]
+                        
                 out.append(val, type_)
-#                if hasattr(val, 'cssText'):
-#                    # comments or CSSValue if a CSSValueList
-#                    out.append(val.cssText, type_)
-#                else:
-#                    out.append(val, type_) #?
+                
             return out.value() 
             
     def do_css_RGBColor(self, cssvalue):
