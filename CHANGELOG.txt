@@ -45,7 +45,7 @@ known issues
 HEAD
     + **IN WORK: CSSValue rewrite, currently not working in trunk!**
 
-    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an error or raise a SyntaxErr.
+    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
 
     + **API CLEANUP**:
