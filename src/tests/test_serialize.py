@@ -135,7 +135,7 @@ prefix|x, a + b > c ~ d, b {
             u'#112234': '#112234', 
             u'#123': '#123', 
             u'#123 url() f()': '#123 url() f()',
-            u'1 +2 + 3 - 4': u'1 2 3 -4' # ?  
+            u'1 +2 +3 -4': u'1 2 3 -4' # ?  
         }
         for test, exp in valuetests.items():
             s = cssutils.parseString(u'a{x:%s}' % test)

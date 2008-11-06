@@ -33,13 +33,14 @@ if 1:
         "a", a, url(a), #aaa, a()
     '''
     
-    v = cssutils.css.CSSValue('''a,'""' "x"''')
+    v = cssutils.css.CSSValue('''1.1px''') #, "a'b"
     print 
     print v
-    for x in v: 
-        print x.value
-        for s in x.value.seq:
-            print s
+    print v.getFloatValue()
+#    for x in v: 
+#        print x.value
+#        for s in x.value.seq:
+#            print s
     print
 #    
     #print v.getRGBColorValue()

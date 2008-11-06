@@ -12,6 +12,7 @@ __version__ = '$Id$'
 import re
 import xml.dom
 import cssutils
+import cssutils.helper
 from cssutils.profiles import profiles
 from cssutils.prodparser import *
 
@@ -211,10 +212,18 @@ class CSSValue(cssutils.util.Base2):
                 elif count > 1:
                     self.__class__ = CSSValueList
                     # change items in list to specific type (primitive etc)
-                    # TODO: a, b, "c" and url(...)
                     newseq = self._tempSeq()
                     commalist = []
                     nexttocommalist = False
+                    
+                    def itemValue(item):
+                        "Reserialized simple item.value"
+                        if self._prods.STRING == item.type:
+                            return cssutils.helper.string(item.value)
+                        elif self._prods.URI == item.type:
+                            return cssutils.helper.uri(item.value)
+                        else:
+                            return item.value
                     
                     def saveifcommalist(commalist, newseq):
                         """
@@ -241,12 +250,12 @@ class CSSValue(cssutils.util.Base2):
                                          self._prods.URI):
                             if nexttocommalist:
                                 # wait until complete
-                                commalist.append(item.value)
+                                commalist.append(itemValue(item))
                             else:
                                 saveifcommalist(commalist, newseq)                                
                                 # append new item
-                                pv = CSSPrimitiveValue(item.value)
-                                newseq.append(pv, CSSPrimitiveValue, 
+                                newseq.append(CSSPrimitiveValue(itemValue(item)), 
+                                              CSSPrimitiveValue, 
                                               item.line, item.col)
 
                             nexttocommalist = False
@@ -254,7 +263,7 @@ class CSSValue(cssutils.util.Base2):
                         elif u',' == item.value:
                             if not commalist:
                                 # save last item to commalist
-                                commalist.append(self._seq[i-1].value)
+                                commalist.append(itemValue(self._seq[i-1]))
                             commalist.append(u',')
                             nexttocommalist = True
                             
@@ -401,7 +410,6 @@ class CSSPrimitiveValue(CSSValue):
         super(CSSPrimitiveValue, self).__init__(cssText=cssText,
                                                 readonly=readonly)
 
-
     _unitnames = ['CSS_UNKNOWN',
                   'CSS_NUMBER', 'CSS_PERCENTAGE',
                   'CSS_EMS', 'CSS_EXS',
@@ -417,8 +425,10 @@ class CSSPrimitiveValue(CSSValue):
                   'CSS_ATTR', 'CSS_COUNTER', 'CSS_RECT',
                   'CSS_RGBCOLOR', 'CSS_RGBACOLOR',
                   ]
+
+    _reNumDim = re.compile(ur'([+-]?\d*\.\d+|[+-]?\d+)(.*)$', re.I| re.U|re.X)
     
-    def _unitDIMENSION(val):
+    def _unitDIMENSION(value):
         """Check val for dimension name."""
         units = {'em': 'CSS_EMS', 'ex': 'CSS_EXS',
                  'px': 'CSS_PX',
@@ -428,10 +438,10 @@ class CSSPrimitiveValue(CSSValue):
                  'deg': 'CSS_DEG', 'rad': 'CSS_RAD', 'grad': 'CSS_GRAD',
                  'ms': 'CSS_MS', 's': 'CSS_S',
                  'hz': 'CSS_HZ', 'khz': 'CSS_KHZ'
-                 }        
-        val = cssutils.helper.normalize(val)
-        return units.get(re.findall(ur'^.*?([a-z]+)$', val, re.U)[0],
-                         'CSS_DIMENSION')
+                 } 
+        value = cssutils.helper.normalize(value)       
+        val, dim = CSSPrimitiveValue._reNumDim.findall(value)[0]
+        return units.get(dim, 'CSS_DIMENSION')
 
     def _unitFUNCTION(val):
         """Check val for function name."""
@@ -491,14 +501,11 @@ class CSSPrimitiveValue(CSSValue):
         except (IndexError, TypeError):
             return u'%r (UNKNOWN TYPE)' % type
 
-    # TODO: maybe too simple!
-    _reNumDim = re.compile(ur'^(.*?)(%|[a-z]+)$', re.I| re.U|re.X)
-
     def __getNumDim(self):
         "splits self._value in numerical and dimension part"
         value = cssutils.helper.normalize(self._value[0])
         try:
-            val, dim = self._reNumDim.findall(value)[0]
+            val, dim = CSSPrimitiveValue._reNumDim.findall(value)[0]
         except IndexError:
             val, dim = value, u''
         try:
@@ -780,7 +787,7 @@ class CSSValueList(CSSValue):
         of values in the list, this returns None.
         """
         try:
-            return self.__items()[index]
+            return self.__items()[index].value
         except IndexError:
             return None
 
