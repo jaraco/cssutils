@@ -133,9 +133,9 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'1px': u'1px',
             u'1%': u'1%',
             u'1px1': u'1px1',
-            u'+1': u'+1',
+            u'+1': u'1',
             u'-1': u'-1',
-            u'+1.0': u'+1.0',
+            u'+1.0': u'1.0',
             u'-1.0': u'-1.0',
 #            # RGBColor
             u'#112234': u'#112234',
