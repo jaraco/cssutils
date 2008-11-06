@@ -67,20 +67,20 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
         self.assertEqual('normal 1px a, b, "c" end', v.cssText)
 
-#        for i, x in enumerate(v):
-#            self.assertEqual(x.CSS_PRIMITIVE_VALUE, x.cssValueType)
-#            if x == 0:
-#                self.assertEqual(x.CSS_IDENT, x.primitiveType)
-#                self.assertEqual(u'normal', x.cssText)
-#            elif x == 1:
-#                self.assertEqual(x.CSS_PX, x.primitiveType)
-#                self.assertEqual(u'1px', x.cssText)
-#            if x == 2:
-#                self.assertEqual(x.CSS_STRING, x.primitiveType)
-#                self.assertEqual(u'a, b, "c"', x.cssText)
-#            if x == 3:
-#                self.assertEqual(x.CSS_IDENT, x.primitiveType)
-#                self.assertEqual(u'end', x.cssText)
+        for i, x in enumerate(v):
+            self.assertEqual(x.CSS_PRIMITIVE_VALUE, x.cssValueType)
+            if x == 0:
+                self.assertEqual(x.CSS_IDENT, x.primitiveType)
+                self.assertEqual(u'normal', x.cssText)
+            elif x == 1:
+                self.assertEqual(x.CSS_PX, x.primitiveType)
+                self.assertEqual(u'1px', x.cssText)
+            if x == 2:
+                self.assertEqual(x.CSS_STRING, x.primitiveType)
+                self.assertEqual(u'a, b, "c"', x.cssText)
+            if x == 3:
+                self.assertEqual(x.CSS_IDENT, x.primitiveType)
+                self.assertEqual(u'end', x.cssText)
 
 
         v = cssutils.css.CSSValue()
@@ -301,10 +301,10 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         # DUMMY to be able to test empty constructor call
         #self.assertRaises(xml.dom.SyntaxErr, v.__init__, None)
 
-        #self.assertRaises(xml.dom.InvalidAccessErr, v.getCounterValue)
-        #self.assertRaises(xml.dom.InvalidAccessErr, v.getRGBColorValue)
-        #self.assertRaises(xml.dom.InvalidAccessErr, v.getRectValue)
-        #self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getCounterValue)
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getRGBColorValue)
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getRectValue)
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
 
 #    def test_CSS_UNKNOWN(self):
 #        "CSSPrimitiveValue.CSS_UNKNOWN"
@@ -332,6 +332,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             ('s', 'CSS_S'),
             ('hz', 'CSS_HZ'),
             ('khz', 'CSS_KHZ'),
+            ('p2', 'CSS_DIMENSION'),
             ('other_dimension', 'CSS_DIMENSION')
             ]
         for dim, name in defs:
@@ -340,13 +341,13 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                 self.assertEqual(name, v.primitiveTypeString)
                 self.assertEqual(getattr(v, name), v.primitiveType)
 
-#    def test_CSS_STRING_AND_OTHER(self):
-#        "CSSPrimitiveValue.CSS_STRING .. CSS_RGBCOLOR"
-#        defs = [
-#            (('""', "''", '"some thing"', "' A\\ND '"), 'CSS_STRING'),
-## TODO:     
-##       (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
-#            (('some', 'or_anth-er'), 'CSS_IDENT'),            
+    def test_CSS_STRING_AND_OTHER(self):
+        "CSSPrimitiveValue.CSS_STRING .. CSS_RGBCOLOR"
+        defs = [
+            (('""', "''", '"some thing"', "' A\\ND '"), 'CSS_STRING'),
+# TODO:     
+#       (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
+            (('some', 'or_anth-er'), 'CSS_IDENT'),            
 #            (('attr(a)', 'attr(b)'), 'CSS_ATTR'),
 #            (('counter(1)', 'counter(2)'), 'CSS_COUNTER'),
 #            (('rect(1,2,3,4)',), 'CSS_RECT'),
@@ -354,12 +355,12 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 #                 'CSS_RGBCOLOR'),
 #            (('rgba(1,2,3,4)','rgba(10%, 20%, 30%, 40%)', ),
 #                 'CSS_RGBACOLOR')
-#            ]
-#        for examples, name in defs:
-#            for x in examples:
-#                v = cssutils.css.CSSPrimitiveValue(x)
-#                #self.assertEqual(getattr(v, name), v.primitiveType)
-#                self.assertEqual(name, v.primitiveTypeString)
+            ]
+        for examples, name in defs:
+            for x in examples:
+                v = cssutils.css.CSSPrimitiveValue(x)
+                #self.assertEqual(getattr(v, name), v.primitiveType)
+                self.assertEqual(name, v.primitiveTypeString)
 
     def test_getFloat(self):
         "CSSPrimitiveValue.getFloatValue()"
@@ -369,6 +370,11 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         v = cssutils.css.CSSPrimitiveValue(u'1px')
         tests = {
             '0': (v.CSS_NUMBER, 0),
+            '+0': (v.CSS_NUMBER, 0),
+            '-0': (v.CSS_NUMBER, 0),
+            '1': (v.CSS_NUMBER, 1),
+            '+1': (v.CSS_NUMBER, 1),
+            '-1': (v.CSS_NUMBER, -1),
             '-1.1': (v.CSS_NUMBER, -1.1),
             '1%': (v.CSS_PERCENTAGE, 1),
             '-1%': (v.CSS_PERCENTAGE, -1),
@@ -700,9 +706,8 @@ class CSSValueListTestCase(basetest.BaseTestCase):
         self.assert_(2 == v.length)
 
         item = v.item(0)
-#        item.setStringValue(item.CSS_IDENT, 'green')
-#        self.assertEqual('green blue', v._value)
-#        self.assertEqual('green blue', v.cssText)
+        item.setStringValue(item.CSS_IDENT, 'green')
+        self.assertEqual('green blue', v.cssText)
 
     def test_numbers(self):
         "CSSValueList.cssText"
@@ -722,8 +727,8 @@ class CSSValueListTestCase(basetest.BaseTestCase):
 #            u'f()#123': (u'f() #123', 2),
 #            u'f()url()': (u'f() url()', 2),
 #            u'f()f()': (u'f() f()', 2),
-#            u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
-#            u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
+            u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
+            u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
             }
         for test in tests:
             exp, num = tests[test]
