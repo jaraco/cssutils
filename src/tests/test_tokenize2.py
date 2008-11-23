@@ -524,7 +524,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
             x = False
             for t in T.tokenize('1 x 2 3'):
                 if not x and t[1] == 'x':
-                    T.push([t])
+                    T.push(t)
                     x = True
                 r.append(t[1])
             return ''.join(r)

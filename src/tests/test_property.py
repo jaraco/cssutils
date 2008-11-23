@@ -80,7 +80,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a: 1!importantX': (xml.dom.SyntaxErr,
                    u"Property: No CSS priority value: u'importantx'."),
             u'a:!important': (xml.dom.SyntaxErr,
-                   u'''No content to parse.'''),
+                   u"CSSValue: Unknown syntax or no value: u''."),
             u'a: 1;': (xml.dom.SyntaxErr,
                    u'''CSSValue: No match in Choice(Sequence(unary +-, Choice(number, percentage, dimension)), string, ident, URI, HEX color, function): ('CHAR', u';', 1, 5)''')
             }

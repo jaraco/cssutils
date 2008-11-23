@@ -372,7 +372,7 @@ class Property(cssutils.util.Base):
         if priority and not new['literalpriority']:
             wellformed = False
             self._log.info(u'Property: Invalid priority: %r.' %
-                    self._valuestr(priority))
+                           self._valuestr(priority))
 
         if wellformed:
             self.wellformed = self.wellformed and wellformed
