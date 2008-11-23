@@ -140,11 +140,11 @@ class CSSValueTestCase(basetest.BaseTestCase):
 #            # RGBColor
             u'#112234': u'#112234',
             u'#112233': u'#123',
-#            u'rgb(1,2,3)': u'rgb(1, 2, 3)',
-#            u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
+            u'rgb(1,2,3)': u'rgb(1, 2, 3)',
+            u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
 #            u'rgb(-1,+2,0)': u'rgb(-1, 2, 0)',
-#            u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
-#            u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
+            u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
+            u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
 #            u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
             }
         self.do_equal_r(tests)
@@ -243,9 +243,9 @@ class CSSValueTestCase(basetest.BaseTestCase):
             (['1', '1%', '1em', '1ex', '1px', '1cm', '1mm', '1in', '1pt', '1pc',
               '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
                '"string"', "'string'", 'url(x)', 'red',
-#               'attr(a)', 'counter()', 'rect(1px,2px,3px,4px)',
-#               'rgb(0, 0, 0)', '#000', '#123456', 'rgba(0, 0, 0, 0)',
-#               'hsl(0, 0, 0)', 'hsla(0, 0, 0, 0)',
+               'attr(a)', 'counter(x)', 'rect(1px, 2px, 3px, 4px)',
+               'rgb(0, 0, 0)', '#000', '#123456', 'rgba(0, 0, 0, 0)',
+               'hsl(0, 0, 0)', 'hsla(0, 0, 0, 0)',
                ],
              'CSS_PRIMITIVE_VALUE'),
             ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST'),
@@ -332,7 +332,6 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             ('s', 'CSS_S'),
             ('hz', 'CSS_HZ'),
             ('khz', 'CSS_KHZ'),
-            ('p2', 'CSS_DIMENSION'),
             ('other_dimension', 'CSS_DIMENSION')
             ]
         for dim, name in defs:
@@ -344,22 +343,20 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
     def test_CSS_STRING_AND_OTHER(self):
         "CSSPrimitiveValue.CSS_STRING .. CSS_RGBCOLOR"
         defs = [
-            (('""', "''", '"some thing"', "' A\\ND '"), 'CSS_STRING'),
-# TODO:     
-#       (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
-            (('some', 'or_anth-er'), 'CSS_IDENT'),            
-#            (('attr(a)', 'attr(b)'), 'CSS_ATTR'),
-#            (('counter(1)', 'counter(2)'), 'CSS_COUNTER'),
-#            (('rect(1,2,3,4)',), 'CSS_RECT'),
-#            (('rgb(1,2,3)', 'rgb(10%, 20%, 30%)', '#123', '#123456'),
-#                 'CSS_RGBCOLOR'),
-#            (('rgba(1,2,3,4)','rgba(10%, 20%, 30%, 40%)', ),
-#                 'CSS_RGBACOLOR')
-            ]
+                (('""', "''", '"some thing"', "' A\\ND '"), 'CSS_STRING'),
+                (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
+                (('some', 'or_anth-er'), 'CSS_IDENT'),            
+                (('attr(a)', 'attr(b)'), 'CSS_ATTR'),
+                (('counter(1)', 'counter(2)'), 'CSS_COUNTER'),
+                (('rect(1,2,3,4)',), 'CSS_RECT'),
+                (('rgb(1,2,3)', 'rgb(10%, 20%, 30%)', '#123', '#123456'),
+                 'CSS_RGBCOLOR'),
+                (('rgba(1,2,3,4)','rgba(10%, 20%, 30%, 40%)', ),
+                 'CSS_RGBACOLOR')]
         for examples, name in defs:
             for x in examples:
                 v = cssutils.css.CSSPrimitiveValue(x)
-                #self.assertEqual(getattr(v, name), v.primitiveType)
+                self.assertEqual(getattr(v, name), v.primitiveType)
                 self.assertEqual(name, v.primitiveTypeString)
 
     def test_getFloat(self):
@@ -370,11 +367,6 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         v = cssutils.css.CSSPrimitiveValue(u'1px')
         tests = {
             '0': (v.CSS_NUMBER, 0),
-            '+0': (v.CSS_NUMBER, 0),
-            '-0': (v.CSS_NUMBER, 0),
-            '1': (v.CSS_NUMBER, 1),
-            '+1': (v.CSS_NUMBER, 1),
-            '-1': (v.CSS_NUMBER, -1),
             '-1.1': (v.CSS_NUMBER, -1.1),
             '1%': (v.CSS_PERCENTAGE, 1),
             '-1%': (v.CSS_PERCENTAGE, -1),
@@ -631,55 +623,55 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             v.setStringValue, *(v.CSS_ATTR, 'x'))
 
 #        # CSS_ATTR
-#        v = cssutils.css.CSSPrimitiveValue('attr(old)')
-#        v.setStringValue(v.CSS_ATTR, 'a')
-#        self.assert_(v.CSS_ATTR == v.primitiveType)
-#        self.assert_('attr(a)' == v._value)
+        v = cssutils.css.CSSPrimitiveValue('attr(old)')
+        v.setStringValue(v.CSS_ATTR, 'a')
+        self.assert_(v.CSS_ATTR == v.primitiveType)
+        # TODO:
 #        self.assert_('a' == v.getStringValue())
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_IDENT'",
-#            v.setStringValue, *(v.CSS_IDENT, 'x'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_STRING'",
-#            v.setStringValue, *(v.CSS_STRING, '"x"'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_URI'",
-#            v.setStringValue, *(v.CSS_URI, 'x'))
-#
-#        # TypeError as 'x' is no valid type
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: stringType 'x' (UNKNOWN TYPE) is not a string type",
-#            v.setStringValue, *('x', 'brown'))
-#        # IndexError as 111 is no valid type
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: stringType 111 (UNKNOWN TYPE) is not a string type",
-#            v.setStringValue, *(111, 'brown'))
-#        # CSS_PX is no string type
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: stringType CSS_PX is not a string type",
-#            v.setStringValue, *(v.CSS_PX, 'brown'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_IDENT'",
+            v.setStringValue, *(v.CSS_IDENT, 'x'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_STRING'",
+            v.setStringValue, *(v.CSS_STRING, '"x"'))
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_URI'",
+            v.setStringValue, *(v.CSS_URI, 'x'))
 
-#    def test_typeRGBColor(self):
-#        "RGBColor"
-#        v = cssutils.css.CSSPrimitiveValue('RGB(1, 5, 10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
-#
-#        v = cssutils.css.CSSPrimitiveValue('rgb(1, 5, 10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
-#
-#        v = cssutils.css.CSSPrimitiveValue('rgb(1%, 5%, 10%)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        # TODO:
-##        self.assertEqual(u'rgb(1.0%, 5.0%, 10.0%)', v.cssText)
-#
-#        v = cssutils.css.CSSPrimitiveValue('  rgb(  1 ,5,  10  )')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        v = cssutils.css.CSSPrimitiveValue('rgb(1,5,10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        v = cssutils.css.CSSPrimitiveValue('rgb(1%, .5%, 10.1%)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        # TypeError as 'x' is no valid type
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: stringType 'x' (UNKNOWN TYPE) is not a string type",
+            v.setStringValue, *('x', 'brown'))
+        # IndexError as 111 is no valid type
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: stringType 111 (UNKNOWN TYPE) is not a string type",
+            v.setStringValue, *(111, 'brown'))
+        # CSS_PX is no string type
+        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: stringType CSS_PX is not a string type",
+            v.setStringValue, *(v.CSS_PX, 'brown'))
+
+    def test_typeRGBColor(self):
+        "RGBColor"
+        v = cssutils.css.CSSPrimitiveValue('RGB(1, 5, 10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
+
+        v = cssutils.css.CSSPrimitiveValue('rgb(1, 5, 10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
+
+        v = cssutils.css.CSSPrimitiveValue('rgb(1%, 5%, 10%)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        # TODO:
+#        self.assertEqual(u'rgb(1.0%, 5.0%, 10.0%)', v.cssText)
+
+        v = cssutils.css.CSSPrimitiveValue('  rgb(  1 ,5,  10  )')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        v = cssutils.css.CSSPrimitiveValue('rgb(1,5,10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        v = cssutils.css.CSSPrimitiveValue('rgb(1%, .5%, 10.1%)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
 
     def test_reprANDstr(self):
         "CSSPrimitiveValue.__repr__(), .__str__()"
@@ -719,14 +711,15 @@ class CSSValueListTestCase(basetest.BaseTestCase):
             u'-1px red "x"': (None, 3),
             u'a, b c': (None, 2),
             u'1px1 2% 3': (u'1px1 2% 3', 3),
-#            u'f()0': (u'f() 0', 2),
-#            u'f()1%': (u'f() 1%', 2),
-#            u'f()1px': (u'f() 1px', 2),
-#            u'f()"str"': (u'f() "str"', 2),
-#            u'f()ident': (u'f() ident', 2),
-#            u'f()#123': (u'f() #123', 2),
-#            u'f()url()': (u'f() url()', 2),
-#            u'f()f()': (u'f() f()', 2),
+            u'0  f()0': (u'0 f() 0', 3),
+            u'f()0': (u'f() 0', 2),
+            u'f()1%': (u'f() 1%', 2),
+            u'f()1px': (u'f() 1px', 2),
+            u'f()"str"': (u'f() "str"', 2),
+            u'f()ident': (u'f() ident', 2),
+            u'f()#123': (u'f() #123', 2),
+            u'f()url()': (u'f() url()', 2),
+            u'f()f()': (u'f() f()', 2),
             u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
             u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
             }

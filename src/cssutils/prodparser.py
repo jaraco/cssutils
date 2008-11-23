@@ -207,8 +207,8 @@ class Sequence(object):
 class Prod(object):
     """Single Prod in Sequence or Choice."""
     def __init__(self, name, match, optional=False, 
-                 toSeq=None, toStore=None
-                 ):
+                 toSeq=None, toStore=None,
+                 stop=False):
         """
         name
             name used for error reporting
@@ -216,16 +216,19 @@ class Prod(object):
             function called with parameters tokentype and tokenvalue
             returning True, False or raising ParseError
         toSeq callback (optional)
-            calling toSeq(token) returns (type_, val) to be appended to seq
-            else simply unaltered (type_, val)
+            calling toSeq(token, tokens) returns (type_, val) == (token[0], token[1]) 
+            to be appended to seq else simply unaltered (type_, val)
         toStore (optional)
             key to save util.Item to store or callback(store, util.Item)
         optional = False
             wether Prod is optional or not
+        stop = False
+            if True stop parsing of tokens here
         """
         self._name = name
         self.match = match
-        self.optional=optional
+        self.optional = optional
+        self.stop = stop
 
         def makeToStore(key):
             "Return a function used by toStore."
@@ -241,7 +244,7 @@ class Prod(object):
             # called: seq.append(toSeq(value))
             self.toSeq = toSeq
         else:
-            self.toSeq = lambda type_, val: (type_, val)
+            self.toSeq = lambda t, tokens: (t[0], t[1])
 
         if callable(toStore):
             self.toStore = toStore
@@ -306,6 +309,8 @@ class ProdParser(object):
             :store: filled keys defined by Prod.toStore
             :unusedtokens: token generator containing tokens not used yet
         """
+        # build a generator which is the only thing that is parsed!
+        # old classes may use lists etc
         if isinstance(text, basestring):
             # to tokenize strip space
             tokens = self._tokenizer.tokenize(text.strip())
@@ -323,7 +328,10 @@ class ProdParser(object):
                 
             else:
                 # single token
-                tokens = [text]
+                tokens = (t for t in [text])
+        elif isinstance(text, list):
+            # generator from list
+            tokens = (t for t in text)
         else:
             # already tokenized, assume generator
             tokens = text
@@ -402,23 +410,24 @@ class ProdParser(object):
                 else:
                     # process prod
                     if prod.toSeq:
-                        type_, val = prod.toSeq(type_, val)
+                        type_, val = prod.toSeq(token, tokens)
                     if val is not None:
                         seq.append(val, type_, line, col)
 
                     if prod.toStore:
                         prod.toStore(store, seq[-1])
                         
-#                    if 'STOP' == next: # EOF?
-#                        # stop here and ignore following tokens
-#                        break
+                    if prod.stop: # EOF?
+                        # stop here and ignore following tokens
+                        break
+                    
         while True:
             # all productions exhausted?
             try:
                 prod = prods[-1].nextProd(token=None)
             except Exhausted, e:
                 prod = None # ok
-            except (MissingToken, NoMatch), e:
+            except (MissingToken, NoMatch, ParseError), e:
                 wellformed = False
                 self._log.error(u'%s: %s'
                                 % (name, e))
@@ -446,7 +455,6 @@ class ProdParser(object):
         # trim S from end
         seq.rstrip() 
         
-        
         return wellformed, seq, store, tokens
 
 
@@ -457,11 +465,12 @@ class PreDef(object):
     types = cssutils.cssproductions.CSSProductions
     
     @staticmethod
-    def CHAR(name='char', char=u',', toSeq=None, toStore=None):
+    def CHAR(name='char', char=u',', toSeq=None, toStore=None, stop=False):
         "any CHAR"
         return Prod(name=name, match=lambda t, v: v in char,
                     toSeq=toSeq,
-                    toStore=toStore)
+                    toStore=toStore,
+                    stop=stop)
 
     @staticmethod
     def comma(toStore=None):
@@ -474,16 +483,16 @@ class PreDef(object):
                     toStore=toStore)
 
     @staticmethod
-    def function(toStore=None):
+    def function(toSeq=None, toStore=None):
         return Prod(name=u'function', 
                     match=lambda t, v: t == PreDef.types.FUNCTION,
+                    toSeq=toSeq,
                     toStore=toStore)
 
     @staticmethod
-    def funcEnd(toStore=None):
+    def funcEnd(toStore=None, stop=False):
         ")"
-        return PreDef.CHAR(u'end FUNC ")"', u')',
-                           toStore=toStore)
+        return PreDef.CHAR(u'end FUNC ")"', u')', toStore=toStore, stop=stop)
     
     @staticmethod
     def ident(toStore=None):
@@ -503,7 +512,7 @@ class PreDef(object):
         return Prod(name=u'string', 
                     match=lambda t, v: t == PreDef.types.STRING,
                     toStore=toStore,
-                    toSeq=lambda t, v: (t, cssutils.helper.stringvalue(v)))
+                    toSeq=lambda t, tokens: (t[0], cssutils.helper.stringvalue(t[1])))
 
     @staticmethod
     def percentage(toStore=None):
@@ -531,7 +540,7 @@ class PreDef(object):
         return Prod(name=u'URI', 
                     match=lambda t, v: t == PreDef.types.URI,
                     toStore=toStore,
-                    toSeq=lambda t, v: (t, cssutils.helper.urivalue(v)))
+                    toSeq=lambda t, tokens: (t[0], cssutils.helper.urivalue(t[1])))
 
     @staticmethod
     def hexcolor(toStore=None, toSeq=None):

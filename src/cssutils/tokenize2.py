@@ -62,8 +62,11 @@ class Tokenizer(object):
         return compiled
 
     def push(self, tokens):
-        """``tokens`` will be the next tokens yielded by tokenize before
-        any new tokens are used."""
+        """``tokens`` (a single or a list of tokens) will be the next tokens
+        yielded by tokenize before any new tokens are used."""
+        if type(tokens) == tuple:
+            # not a list but a single token
+            tokens = [tokens]
         self._notused.extend(tokens)
 
     def tokenize(self, text, fullsheet=False):

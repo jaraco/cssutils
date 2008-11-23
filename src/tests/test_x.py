@@ -23,12 +23,12 @@ class XTestCase(basetest.BaseTestCase):
         self.assertEqual(u'important', s.cssRules[0].style.getPropertyPriority('color'))
         
         # invalid but kept!
-        cssutils.log.raiseExceptions = False
-        s = cssutils.parseString('a { color: red !x }')
-        self.assertEqual(u'a {\n    color: red !x\n    }', s.cssText)
-        self.assertEqual(u'x', s.cssRules[0].style.getPropertyPriority('color'))
+#        #cssutils.log.raiseExceptions = False
+#        s = cssutils.parseString('a { color: red !x }')
+#        self.assertEqual(u'a {\n    color: red !x\n    }', s.cssText)
+#        self.assertEqual(u'x', s.cssRules[0].style.getPropertyPriority('color'))
+        
         cssutils.log.raiseExceptions = True
-
         p = cssutils.css.Property(u'color', u'red', u'')
         self.assertEqual(p.priority, u'')
         p = cssutils.css.Property(u'color', u'red', u'!important')

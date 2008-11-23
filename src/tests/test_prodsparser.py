@@ -31,16 +31,16 @@ class ProdTestCase(basetest.BaseTestCase):
     def test_initToSeq(self):
         "Prod.__init__(...toSeq=...)"
         # simply saves
-        p = Prod('all', lambda t, v: True,
+        p = Prod('all', lambda t, tokens: True,
                  toSeq=None)
-        self.assertEqual(p.toSeq(1, 2), (1, 2)) # simply saves
-        self.assertEqual(p.toSeq('s1', 's2'), ('s1', 's2')) # simply saves
+        self.assertEqual(p.toSeq([1, 2], None), (1, 2)) # simply saves
+        self.assertEqual(p.toSeq(['s1', 's2'], None), ('s1', 's2')) # simply saves
 
         # saves callback(val)
         p = Prod('all', lambda t, v: True, 
-                  toSeq=lambda t, v: (1 == t, 3 == v))        
-        self.assertEqual(p.toSeq(1, 3), (True, True))
-        self.assertEqual(p.toSeq(2, 4), (False, False))
+                  toSeq=lambda t, tokens: (1 == t[0], 3 == t[1]))        
+        self.assertEqual(p.toSeq([1, 3], None), (True, True))
+        self.assertEqual(p.toSeq([2, 4], None), (False, False))
 
     def test_initToStore(self):
         "Prod.__init__(...toStore=...)"

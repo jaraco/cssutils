@@ -47,7 +47,14 @@ def normalize(x):
         return x.lower()
     else:
         return x
-    
+
+def pushtoken(token, tokens):
+    """Return new generator starting with token followed by all tokens in 
+    ``tokens``"""
+    yield token
+    for x in tokens:
+        yield x
+                  
 def string(value):
     """
     Serialize value with quotes e.g.::

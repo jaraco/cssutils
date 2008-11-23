@@ -53,6 +53,12 @@ a {
         self.assertEqual(u'''@import "../import3.css";
 /* sheets/import2.css */''', irs.cssText)
 
+        tests = {
+                 'a {color: red}': u'a {\n    color: red\n    }',
+                 'a {color: rgb(1,2,3)}': u'a {\n    color: rgb(1, 2, 3)\n    }'
+                 }
+        self.do_equal_p(tests)
+
     def test_parseFile(self):
         "cssutils.parseFile()"
         # name if used with open, href used for @import resolving

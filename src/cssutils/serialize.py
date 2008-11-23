@@ -838,10 +838,7 @@ class CSSSerializer(object):
             out = Out(self)
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
-                if type_ in (cssutils.css.RGBColor, 
-                             cssutils.css.CSSValue,
-                             cssutils.css.CSSComment,
-                             cssutils.css.CSSPrimitiveValue):
+                if hasattr(val, 'cssText'):
                     # RGBColor or CSSValue if a CSSValueList
                     out.append(val.cssText, type_)
                 else:
@@ -884,16 +881,16 @@ class CSSSerializer(object):
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
                 
-                # prepare
-                if 'CHAR' == type_ and val in u'+-':
-                    # save - for next round                
-                    if u'-' == val:
-                        # omit +
-                        unary = val
-                    continue
-                elif unary:
-                    val = unary + val.cssText
-                    unary = None
+#                # prepare
+#                if 'CHAR' == type_ and val in u'+-':
+#                    # save - for next round                
+#                    if u'-' == val:
+#                        # omit +
+#                        unary = val
+#                    continue
+#                elif unary:
+#                    val = unary + val.cssText
+#                    unary = None
                     
                 out.append(val, type_)
             

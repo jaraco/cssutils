@@ -43,7 +43,7 @@ known issues
 0.9.6dev
 --------
 HEAD
-    + **IN WORK: CSSValue rewrite, currently not working in trunk!**
+    + **IN WORK: CSSValue rewrite, currently not working completely in trunk!**
 
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
@@ -79,6 +79,7 @@ HEAD
     - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
     - BUGFIX: Parsing values with ``+`` operator fixed.
     - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)
+
 
 0.9.5
 -----

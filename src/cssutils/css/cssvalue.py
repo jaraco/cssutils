@@ -117,9 +117,8 @@ class CSSValue(cssutils.util.Base2):
           Raised if this value is readonly.
         """
         self._checkReadonly()
-        
-        operator = Choice(PreDef.CHAR('slash', '/', toSeq=lambda t, v: ('operator', v)),
-                          PreDef.CHAR('comma', ',', toSeq=lambda t, v: ('operator', v)),
+        operator = Choice(PreDef.CHAR('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
+                          PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
                           PreDef.S()                          
                           )
         term = Choice(Sequence(PreDef.unary(), 
@@ -130,7 +129,9 @@ class CSSValue(cssutils.util.Base2):
                       PreDef.ident(),
                       PreDef.uri(),
                       PreDef.hexcolor(),
-                      PreDef.function())
+                      PreDef.function(toSeq=lambda t, tokens: ('FUNCTION', 
+                                                               CSSFunction(cssutils.helper.pushtoken(t, 
+                                                                                                   tokens)))))
         # CSSValue PRODUCTION
         valueprod = Sequence(term, 
                              Sequence(operator, 
@@ -187,7 +188,7 @@ class CSSValue(cssutils.util.Base2):
                     newseq.appendItem(item)
                                         
                 i += 1
-
+                
             if not firstvalue:
                 self._log.error(
                         u'CSSValue: Unknown syntax or no value: %r.' %
@@ -196,13 +197,14 @@ class CSSValue(cssutils.util.Base2):
                 # ok and set
                 self._setSeq(newseq)
                 self.wellformed = wellformed
-                            
+                                           
                 if hasattr(self, '_value'):
                     # only in case of CSSPrimitiveValue, else remove!
                     del self._value
-                        
+
                 if count == 1:
-                    if u'inherit' == cssutils.helper.normalize(firstvalue[0]):
+                    if isinstance(firstvalue[0], basestring) and\
+                       u'inherit' == cssutils.helper.normalize(firstvalue[0]):
                         self.__class__ = CSSValue
                         self._cssValueType = CSSValue.CSS_INHERIT                 
                     else:
@@ -254,9 +256,15 @@ class CSSValue(cssutils.util.Base2):
                             else:
                                 saveifcommalist(commalist, newseq)                                
                                 # append new item
-                                newseq.append(CSSPrimitiveValue(itemValue(item)), 
-                                              CSSPrimitiveValue, 
-                                              item.line, item.col)
+                                if hasattr(item.value, 'cssText'):
+                                    newseq.append(item.value, 
+                                                  item.value.__class__, 
+                                                  item.line, item.col)
+
+                                else:
+                                    newseq.append(CSSPrimitiveValue(itemValue(item)), 
+                                                  CSSPrimitiveValue, 
+                                                  item.line, item.col)
 
                             nexttocommalist = False
                                 
@@ -275,7 +283,6 @@ class CSSValue(cssutils.util.Base2):
 
                     saveifcommalist(commalist, newseq)
                     self._setSeq(newseq)
-                                
                 else:
                     # should not happen...
                     self.__class__ = CSSValue
@@ -439,11 +446,10 @@ class CSSPrimitiveValue(CSSValue):
                  'ms': 'CSS_MS', 's': 'CSS_S',
                  'hz': 'CSS_HZ', 'khz': 'CSS_KHZ'
                  } 
-        value = cssutils.helper.normalize(value)       
-        val, dim = CSSPrimitiveValue._reNumDim.findall(value)[0]
+        val, dim = CSSPrimitiveValue._reNumDim.findall(cssutils.helper.normalize(value))[0]
         return units.get(dim, 'CSS_DIMENSION')
 
-    def _unitFUNCTION(val):
+    def _unitFUNCTION(value):
         """Check val for function name."""
         units = {'attr(': 'CSS_ATTR',
                  'counter(': 'CSS_COUNTER',
@@ -451,9 +457,10 @@ class CSSPrimitiveValue(CSSValue):
                  'rgb(': 'CSS_RGBCOLOR',
                  'rgba(': 'CSS_RGBACOLOR',
                  }
-        val = cssutils.helper.normalize(val)
-        return units.get(re.findall(ur'^(.*?\()', val, re.U)[0],
-                         'CSS_FUNCTION')
+        return units.get(re.findall(ur'^(.*?\()', 
+                                    cssutils.helper.normalize(value.cssText), 
+                                    re.U)[0],
+                         'CSS_UNKNOWN')
     
     __unitbytype = {
         __types.NUMBER: 'CSS_NUMBER',
@@ -777,7 +784,7 @@ class CSSValueList(CSSValue):
 
     def __items(self):
         return [item for item in self._seq 
-                    if isinstance(item.value, CSSPrimitiveValue)]
+                    if isinstance(item.value, CSSValue)]
 
     def item(self, index):
         """
@@ -809,6 +816,8 @@ class CSSValueList(CSSValue):
 class CSSFunction(CSSPrimitiveValue):
     """A CSS function value like rect() etc."""
     
+    primitiveType = CSSPrimitiveValue.CSS_UNKNOWN
+    
     def __init__(self, cssText=None, readonly=False):
         """
         Init a new CSSFunction
@@ -818,7 +827,7 @@ class CSSFunction(CSSPrimitiveValue):
         readonly
             defaults to False
         """
-        super(RGBColor, self).__init__()
+        super(CSSFunction, self).__init__()
         self.valid = False
         self.wellformed = False
         if cssText is not None:
@@ -828,43 +837,40 @@ class CSSFunction(CSSPrimitiveValue):
 
         self._readonly = readonly
     
+    
     def _setCssText(self, cssText):
         self._checkReadonly()
-        if False:
-            pass
-        else:            
-            types = self._prods # rename!
-            valueProd = Prod(name='value', 
-                         match=lambda t, v: t in (types.NUMBER, types.PERCENTAGE), 
-                         toSeq=CSSPrimitiveValue,
-                         toStore='parts'
-                         )
-            # COLOR PRODUCTION
-            funcProds = Sequence([
-                                  Prod(name='FUNC', 
-                                       match=lambda t, v: t == types.FUNCTION, 
-                                       toStore='funcType' ),
-                                       Prod(**PreDef.sign), 
-                                       valueProd,
-                                  # more values starting with Comma
-                                  # should use store where colorType is saved to 
-                                  # define min and may, closure?
-                                  Sequence([Prod(**PreDef.comma), 
-                                            Prod(**PreDef.sign), 
-                                            valueProd], 
-                                           minmax=lambda: (2, 2)), 
-                                  Prod(**PreDef.funcEnd)
-             ])
-            # store: colorType, parts
-            wellformed, seq, store, unusedtokens = ProdsParser().parse(cssText, 
-                                                                u'CSSFunction', 
-                                                                funcProds,
-                                                                {'parts': []})
-            
-            if wellformed:
-                self.wellformed = True
-                self._setSeq(seq)
-                self._funcType = self._normalize(store['colorType'].value[:-1])
+        types = self._prods # rename!
+        
+        valueProd = Prod(name='value', 
+                         match=lambda t, v: t in (types.DIMENSION, 
+                                                  types.IDENT, 
+                                                  types.NUMBER, 
+                                                  types.PERCENTAGE))
+        
+        funcProds = Sequence(Prod(name='FUNC', 
+                                  match=lambda t, v: t == types.FUNCTION, 
+                                  toSeq=lambda t, tokens: (t[0], cssutils.helper.normalize(t[1]))),
+                             Choice(Sequence(PreDef.unary(), 
+                                             valueProd,
+                                             # more values starting with Comma
+                                             # should use store where colorType is saved to 
+                                             # define min and may, closure?
+                                             Sequence(PreDef.comma(), 
+                                                      PreDef.unary(), 
+                                                      valueProd, 
+                                                      minmax=lambda: (0, 3)), 
+                                             PreDef.funcEnd(stop=True)),
+                                    PreDef.funcEnd(stop=True))
+         )
+        # store: colorType, parts
+        wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
+                                                                  u'CSSFunction', 
+                                                                  funcProds)
+        if wellformed:
+            self.wellformed = True
+            self._setSeq(seq)
+            #self._funcType = self._normalize(store['colorType'].value[:-1])
 
     cssText = property(lambda self: cssutils.ser.do_css_RGBColor(self), 
                        _setCssText)
@@ -875,8 +881,8 @@ class CSSFunction(CSSPrimitiveValue):
         return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object colorType=%r cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.colorType, self.cssText,
+        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.primitiveTypeString, self.cssText,
                 id(self))
 
 
