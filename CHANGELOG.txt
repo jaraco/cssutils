@@ -45,6 +45,9 @@ known issues
 HEAD
     + **IN WORK: CSSValue rewrite, currently not working completely in trunk!**
 
+        - DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
+
+
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
 
