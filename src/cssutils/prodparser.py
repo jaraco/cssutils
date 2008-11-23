@@ -171,24 +171,16 @@ class Sequence(object):
                     self._round += 1
 
             if isinstance(x, Prod):
-                if not token and (x.optional or thisround > self._min):
-                    # token is None if nothing expected
-                    raise Exhausted()
-                elif not token and not x.optional:
-                    raise MissingToken(u'Missing token for production %s'
-                                       % x)
-                elif x.matches(token):
-                    return x
+                if x.matches(token):
+                    return x                
                 elif x.optional:
-                    # try next 
                     continue
-#                elif thisround > self._min:
-#                    # minimum done
-#                    self._round = self._max
-#                    self._pos = self._number
-#                    return None
+                elif not token and (thisround > self._min):
+                    # token is None if nothing more expected
+                    raise Exhausted()                
+                elif not token:
+                    raise MissingToken(u'Missing token for production %s' % x)
                 else:
-                    # should have matched
                     raise NoMatch(u'No matching production for token')
                     
             else:
@@ -345,7 +337,6 @@ class ProdParser(object):
         # store for specific values
         if not store:
             store = {}
-#        store['_raw'] = []
 
         # stack of productions
         prods = [productions]
@@ -355,7 +346,6 @@ class ProdParser(object):
         wellformed = True
         for token in tokens:
             type_, val, line, col = token
-#            store['_raw'].append(val)
             # default productions
             if type_ == self.types.S:
                 # always append S?
@@ -388,7 +378,7 @@ class ProdParser(object):
                         # find next matching production
                         try:
                             prod = prods[-1].nextProd(token)
-                        except (NoMatch, Exhausted), e:
+                        except (Exhausted, NoMatch), e:
                             # try next
                             prod = None
                         if isinstance(prod, Prod):
@@ -480,7 +470,8 @@ class PreDef(object):
     def dimension(toStore=None):
         return Prod(name=u'dimension', 
                     match=lambda t, v: t == PreDef.types.DIMENSION,
-                    toStore=toStore)
+                    toStore=toStore,
+                    toSeq=lambda t, tokens: (t[0], cssutils.helper.normalize(t[1])))
 
     @staticmethod
     def function(toSeq=None, toStore=None):
