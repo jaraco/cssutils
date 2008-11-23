@@ -842,11 +842,12 @@ class CSSFunction(CSSPrimitiveValue):
         self._checkReadonly()
         types = self._prods # rename!
         
-        valueProd = Prod(name='value', 
+        valueProd = Prod(name='PrimitiveValue', 
                          match=lambda t, v: t in (types.DIMENSION, 
                                                   types.IDENT, 
                                                   types.NUMBER, 
-                                                  types.PERCENTAGE))
+                                                  types.PERCENTAGE),
+                         toSeq=lambda t, tokens: (t[0], CSSPrimitiveValue(t[1])))
         
         funcProds = Sequence(Prod(name='FUNC', 
                                   match=lambda t, v: t == types.FUNCTION, 
@@ -868,9 +869,29 @@ class CSSFunction(CSSPrimitiveValue):
                                                                   u'CSSFunction', 
                                                                   funcProds)
         if wellformed:
+
+            # combine +/- and following CSSPrimitiveValue, remove S
+            newseq = self._tempSeq()
+            i, end = 0, len(seq)
+            while i < end:
+                item = seq[i]
+                if item.type == self._prods.S:
+                    pass
+                elif item.value == u'+' or item.value == u'-':
+                    i += 1
+                    next = seq[i]
+                    newval = next.value
+                    newval.setFloatValue(newval.primitiveType, 
+                                         float(item.value + str(newval.getFloatValue())))
+                    newseq.append(newval, next.type, 
+                                  item.line, item.col)                                
+                else:
+                    newseq.appendItem(item)
+                                        
+                i += 1
+                        
             self.wellformed = True
-            self._setSeq(seq)
-            #self._funcType = self._normalize(store['colorType'].value[:-1])
+            self._setSeq(newseq)
 
     cssText = property(lambda self: cssutils.ser.do_css_RGBColor(self), 
                        _setCssText)

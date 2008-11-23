@@ -328,6 +328,24 @@ class ProdParserTestCase(basetest.BaseTestCase):
         
         tests = {
                  # ???
+                 '1 2': True,
+                 '1 2 1 2': True,
+                 '3': True,
+                 #'1': 'Missing token for production p2',
+                 #'1 2 1': 'Missing token for production p2',
+                 }
+        for text, exp in tests.items():
+            prods = Choice(Sequence(p1, p2, minmax=lambda: (1,2)),
+                           p3)
+            if exp is True:
+                wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
+                self.assertEqual(wellformed, exp)
+            else:
+                self.assertRaisesMsg(xml.dom.SyntaxErr, u'T: %s' % exp,
+                                     ProdParser().parse, text, 'T', prods)
+        
+        tests = {
+                 # ???
                  '1 3': True,
                  '1 1 3': True,
                  '2 3': True,
@@ -339,8 +357,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
                  }
         for text, exp in tests.items():
             prods = Sequence(Choice(Sequence(p1, minmax=lambda: (1,2)),
-                                      p2),
-                              p3)
+                                    p2),
+                             p3)
             if exp is True:
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
                 self.assertEqual(wellformed, exp)

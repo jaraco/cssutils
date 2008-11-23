@@ -30,14 +30,12 @@ class CSSValueTestCase(basetest.BaseTestCase):
         v.cssText = u'1PX'
         self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
         self.assert_(v.CSS_PX == v.primitiveType)
-        # TODO: maybe normalize?
-        self.assert_(u'1PX' == v.cssText)
+        self.assert_(u'1px' == v.cssText)
         
         v.cssText = u'1p\\x'
         self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
         self.assert_(v.CSS_PX == v.primitiveType)
-        # TODO: maybe normalize?
-        self.assert_(u'1p\\x' == v.cssText)
+        self.assert_(u'1px' == v.cssText)
 
     def test_cssText(self):
         "CSSValue.cssText"
@@ -711,6 +709,7 @@ class CSSValueListTestCase(basetest.BaseTestCase):
             u'-1px red "x"': (None, 3),
             u'a, b c': (None, 2),
             u'1px1 2% 3': (u'1px1 2% 3', 3),
+            u'f(+1pX, -2, 5%) 1': (u'f(1px, -2, 5%) 1', 2),
             u'0  f()0': (u'0 f() 0', 3),
             u'f()0': (u'f() 0', 2),
             u'f()1%': (u'f() 1%', 2),
@@ -730,7 +729,7 @@ class CSSValueListTestCase(basetest.BaseTestCase):
             v = cssutils.css.CSSValue(cssText=test)
             self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
             self.assertEqual(num, v.length)
-        self.assertEqual(exp, v.cssText)
+            self.assertEqual(exp, v.cssText)
 
     def test_reprANDstr(self):
         "CSSValueList.__repr__(), .__str__()"
