@@ -22,21 +22,39 @@ def save(name, string):
     f.write(string)
     f.close()
 
+if 1:
+    p1 = Prod('p1', lambda t, v: v == '1')      
+    p2 = Prod('p2', lambda t, v: v == '2')
+    p3 = Prod('p3', lambda t, v: v == '3')
+    
+    operator = Choice(PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
+                      PreDef.CHAR('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
+                      PreDef.S(optional=False))
+    valueprods = Sequence(p1, 
+                          Sequence(operator, 
+                                   p1,
+                                   minmax=lambda: (0, None))) 
+
+    
+    print ProdParser().parse('1 ,1', 'T', valueprods, spacetokens=True)[0]
+                
+    sys.exit(1)
 
 if 1:
-    
 #   [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
 #                  TIME S* | FREQ S* ]
 #              | STRING S* | IDENT S* | URI S* | hexcolor | function
     css = '''
         1, -1, +1, 1%, -1%, 1px, -1px, 
-        "a", a, url(a), #aaa, a()
-    '''
+        "a", a, url(a), #aabb44
+    '''#, a()
     
-    v = cssutils.css.CSSValue('''1.1px''') #, "a'b"
+    v = cssutils.css.CSSValue()
+    v.cssText = u'#000/a'
+        
     print 
     print v
-    print v.getFloatValue()
+    
 #    for x in v: 
 #        print x.value
 #        for s in x.value.seq:
