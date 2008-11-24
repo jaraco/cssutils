@@ -5,7 +5,7 @@ import sys
 import xml.dom
 import basetest
 from cssutils.prodparser import *
-from cssutils.prodparser import ParseError, Exhausted, NoMatch # not in __all__
+from cssutils.prodparser import ParseError, Done, Exhausted, NoMatch # not in __all__
 
 class ProdTestCase(basetest.BaseTestCase):
 
@@ -326,13 +326,16 @@ class ProdParserTestCase(basetest.BaseTestCase):
         p2 = Prod('p2', lambda t, v: v == '2')
         p3 = Prod('p3', lambda t, v: v == '3')
         
-        tests = {
-                 # ???
-                 '1 2': True,
+        tests = {'1 2': True,
                  '1 2 1 2': True,
                  '3': True,
-                 #'1': 'Missing token for production p2',
-                 #'1 2 1': 'Missing token for production p2',
+                 #'': 'No match in Choice(Sequence(p1, p2), p3)',
+                 '1': 'Missing token for production p2',
+                 '1 2 1': 'Missing token for production p2',
+                 '1 2 1 2 x': "No match: ('IDENT', 'x', 1, 9)",
+                 '1 2 1 2 1': "No match: ('NUMBER', '1', 1, 9)",
+                 '3 x': "No match: ('IDENT', 'x', 1, 3)",
+                 '3 3': "No match: ('NUMBER', '3', 1, 3)",
                  }
         for text, exp in tests.items():
             prods = Choice(Sequence(p1, p2, minmax=lambda: (1,2)),
@@ -344,16 +347,16 @@ class ProdParserTestCase(basetest.BaseTestCase):
                 self.assertRaisesMsg(xml.dom.SyntaxErr, u'T: %s' % exp,
                                      ProdParser().parse, text, 'T', prods)
         
-        tests = {
-                 # ???
-                 '1 3': True,
+        tests = {'1 3': True,
                  '1 1 3': True,
                  '2 3': True,
                  '1': 'Missing token for production p3',
                  '1 1': 'Missing token for production p3',
-                 '1 3 3': "Extra token: ('NUMBER', '3', 1, 5)",
-                 '1 1 3 3': "Extra token: ('NUMBER', '3', 1, 7)",
-                 '2 3 3': "Extra token: ('NUMBER', '3', 1, 5)",
+                 '1 3 3': "No match: ('NUMBER', '3', 1, 5)",
+                 '1 1 3 3': "No match: ('NUMBER', '3', 1, 7)",
+                 '2 3 3': "No match: ('NUMBER', '3', 1, 5)",
+                 '2': 'Missing token for production p3',
+                 '3': "No match: ('NUMBER', '3', 1, 1)",
                  }
         for text, exp in tests.items():
             prods = Sequence(Choice(Sequence(p1, minmax=lambda: (1,2)),
