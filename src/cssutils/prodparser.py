@@ -186,6 +186,10 @@ class Sequence(object):
             elif not token and (round >= self._min) and (i == 0):
                 raise Done()                
             elif not token:
+                if i > 0 and self._prods[i-1].optional and not self._prods[i].optional:
+                    # only done if all before are optional
+                    # TODO: not perfect!
+                    raise Done()
                 raise MissingToken(u'Missing token for production %s' % p)
             else:
                 raise NoMatch(u'No matching production for token')
@@ -467,6 +471,7 @@ class ProdParser(object):
             except Done, e:
                 prod = None # ok
             except ParseError, e:
+                prod = None
                 wellformed = False
                 self._log.error(u'%s: %s' % (name, e))
             else:
