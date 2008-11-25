@@ -135,15 +135,15 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'-1': u'-1',
             u'+1.0': u'1.0',
             u'-1.0': u'-1.0',
-#            # RGBColor
+            # RGBColor
             u'#112234': u'#112234',
             u'#112233': u'#123',
             u'rgb(1,2,3)': u'rgb(1, 2, 3)',
             u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
-#            u'rgb(-1,+2,0)': u'rgb(-1, 2, 0)',
+            u'rgb(-1,+2,0)': u'rgb(-1, 2, 0)',
             u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
             u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
-#            u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
+            u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
             }
         self.do_equal_r(tests)
 
@@ -151,6 +151,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'-': xml.dom.SyntaxErr,
             u'+': xml.dom.SyntaxErr,
             u'-%': xml.dom.SyntaxErr,
+# TODO
             u'+a': xml.dom.SyntaxErr,
             u'--1px': xml.dom.SyntaxErr,
             u'++1px': xml.dom.SyntaxErr,
@@ -209,8 +210,8 @@ class CSSValueTestCase(basetest.BaseTestCase):
     def test_incomplete(self):
         "CSSValue (incomplete)"
         tests = {
-#            u'url("a': u'url(a)',
-#            u'url(a': u'url(a)'
+            u'url("a': u'url(a)',
+            u'url(a': u'url(a)'
         }
         for v, exp in tests.items():
             s = cssutils.parseString('a { background: %s' % v)
@@ -533,7 +534,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             pv.CSS_URI: ('url("http://example.com?)")',
                          u'http://example.com?)'),
             pv.CSS_IDENT: ('red', None),
-#            pv.CSS_ATTR: ('attr(att-name)',
+#TODO            pv.CSS_ATTR: ('attr(att-name)',
 #                         u'att-name'), # the name of the attrr
             }
         for t in tests:
@@ -593,7 +594,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assertEqual(ur'""', v.getStringValue())
         self.assertEqual((ur'""', 'URI'), v._value)
 
-#        v.setStringValue(v.CSS_URI, ',') 
+#TODO        v.setStringValue(v.CSS_URI, ',') 
 #        self.assertEqual(ur',', v.getStringValue())
 #        self.assertEqual((ur',', 'URI'), v._value)
 
@@ -620,12 +621,11 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_URI' to 'CSS_ATTR'",
             v.setStringValue, *(v.CSS_ATTR, 'x'))
 
-#        # CSS_ATTR
+        # CSS_ATTR
         v = cssutils.css.CSSPrimitiveValue('attr(old)')
         v.setStringValue(v.CSS_ATTR, 'a')
         self.assert_(v.CSS_ATTR == v.primitiveType)
-        # TODO:
-#        self.assert_('a' == v.getStringValue())
+#TODO        self.assert_('a' == v.getStringValue())
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
             u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_IDENT'",
             v.setStringValue, *(v.CSS_IDENT, 'x'))
@@ -661,8 +661,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 
         v = cssutils.css.CSSPrimitiveValue('rgb(1%, 5%, 10%)')
         self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-        # TODO:
-#        self.assertEqual(u'rgb(1.0%, 5.0%, 10.0%)', v.cssText)
+# TODO        self.assertEqual(u'rgb(1.0%, 5.0%, 10.0%)', v.cssText)
 
         v = cssutils.css.CSSPrimitiveValue('  rgb(  1 ,5,  10  )')
         self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
@@ -710,17 +709,17 @@ class CSSValueListTestCase(basetest.BaseTestCase):
             u'a, b c': (None, 2),
             u'1px1 2% 3': (u'1px1 2% 3', 3),
             u'f(+1pX, -2, 5%) 1': (u'f(1px, -2, 5%) 1', 2),
-            u'0  f()  0': (u'0 f() 0', 3),
-            u'f()  0': (u'f() 0', 2),
-            u'f()  1%': (u'f() 1%', 2),
-            u'f()  1px': (u'f() 1px', 2),
-#            u'f()"str"': (u'f() "str"', 2),
-#            u'f()ident': (u'f() ident', 2),
-#            u'f()#123': (u'f() #123', 2),
-#            u'f()url()': (u'f() url()', 2),
-#            u'f()f()': (u'f() f()', 2),
-#            u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
-#            u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
+            u'0 f()0': (u'0 f() 0', 3),
+            u'f()0': (u'f() 0', 2),
+            u'f()1%': (u'f() 1%', 2),
+            u'f()1px': (u'f() 1px', 2),
+            u'f()"str"': (u'f() "str"', 2),
+            u'f()ident': (u'f() ident', 2),
+            u'f()#123': (u'f() #123', 2),
+            u'f()url()': (u'f() url()', 2),
+            u'f()f()': (u'f() f()', 2),
+            u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
+            u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
             }
         for test in tests:
             exp, num = tests[test]
