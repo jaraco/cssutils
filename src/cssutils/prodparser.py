@@ -26,8 +26,12 @@ class ParseError(Exception):
     """Base Exception class for ProdParser (used internally)."""
     pass
 
-class Exhausted(ParseError):
+class Done(ParseError):
     """Raised if Sequence or Choice is done."""
+    pass
+
+class Exhausted(ParseError):
+    """Raised if Sequence or Choice has no more prods left."""
     pass
 
 class NoMatch(ParseError):
@@ -46,18 +50,22 @@ class Choice(object):
         """
         *prods
             Prod or Sequence objects
+        options:
+            optional=False
         """
         self._prods = prods
+        
+        try:
+            self.optional = options['optional']
+        except KeyError, e: 
+            for p in self._prods:
+                if p.optional:
+                    self.optional = True
+                    break
+            else:
+                self.optional = False
+        
         self.reset()
-
-    def _getOptional(self):
-        for p in self._prods:
-            if not p.optional:
-                return True
-        return False 
-
-    optional = property(_getOptional,
-                        doc="Choice is optional is any one Prod is optional.")
     
     def reset(self):
         """Start Choice from zero"""
@@ -93,7 +101,7 @@ class Choice(object):
                 if not optional:
                     # None matched but also None is optional
                     raise ParseError(u'No match in %s' % self)
-        else:
+        elif token:
             raise Exhausted(u'Extra token')
 
     def __str__(self):
@@ -121,7 +129,7 @@ class Sequence(object):
             # unlimited
             self._max = sys.maxint 
 
-        self._number = len(self._prods)
+        self._prodcount = len(self._prods)
         self.reset()
 
     def matches(self, token):
@@ -138,13 +146,13 @@ class Sequence(object):
         
     def reset(self):
         """Reset this Sequence if it is nested."""
-        self._round = 1 # 1 based!
-        self._pos = 0
+        self._i = 0
+        self._round = 0
 
     def _currentName(self):
         """Return current element of Sequence, used by name"""
         # TODO: current impl first only if 1st if an prod!
-        for prod in self._prods[self._pos:]:
+        for prod in self._prods[self._i:]:
             if not prod.optional:
                 return str(prod)
         else:
@@ -159,37 +167,31 @@ class Sequence(object):
         - raises ParseError if nothing matches
         - raises Exhausted if sequence already done
         """
-        while self._pos < self._number:
-            x = self._prods[self._pos]
-            thisround = self._round
+        while self._round < self._max: #self._i < self._prodcount:
+            p = self._prods[self._i]
+            round = self._round
+            i = self._i
             
-            self._pos += 1
-            if self._pos == self._number:
-                if self._round < self._max:
-                    # new round?
-                    self._pos = 0
-                    self._round += 1
+            self._i += 1
+            if self._i == self._prodcount:
+                # new round
+                self._round += 1
+                self._i = 0
 
-            if isinstance(x, Prod):
-                if x.matches(token):
-                    return x                
-                elif x.optional:
-                    continue
-                elif not token and (thisround > self._min):
-                    # token is None if nothing more expected
-                    raise Exhausted()                
-                elif not token:
-                    raise MissingToken(u'Missing token for production %s' % x)
-                else:
-                    raise NoMatch(u'No matching production for token')
-                    
+            if p.matches(token):
+                p.reset() # start Choice from start
+                return p                
+            elif p.optional:
+                continue
+            elif not token and (round >= self._min) and (i == 0):
+                raise Done()                
+            elif not token:
+                raise MissingToken(u'Missing token for production %s' % p)
             else:
-                # nested Sequence or Choice
-                x.reset() # start Sequence or Choice from start
-                return x
-        
+                raise NoMatch(u'No matching production for token')
+
         # Sequence is exhausted
-        if self._round >= self._max:
+        if token and self._round >= self._max:
             raise Exhausted(u'Extra token')
 
     def __str__(self):
@@ -200,7 +202,7 @@ class Prod(object):
     """Single Prod in Sequence or Choice."""
     def __init__(self, name, match, optional=False, 
                  toSeq=None, toStore=None,
-                 stop=False):
+                 stop=False, nextSor=False):
         """
         name
             name used for error reporting
@@ -221,6 +223,7 @@ class Prod(object):
         self.match = match
         self.optional = optional
         self.stop = stop
+        self.nextSor = nextSor
 
         def makeToStore(key):
             "Return a function used by toStore."
@@ -271,6 +274,70 @@ class ProdParser(object):
         self._log = cssutils.log
         self._tokenizer = cssutils.tokenize2.Tokenizer()
 
+    def _texttotokens(self, text):
+        """Build a generator which is the only thing that is parsed!
+        old classes may use lists etc
+        """
+        if isinstance(text, basestring):
+            # to tokenize strip space
+            tokens = self._tokenizer.tokenize(text.strip())
+        elif isinstance(text, tuple):
+            # (token, tokens) or a single token
+            if len(text) == 2:
+                # (token, tokens)
+                def gen(token, tokens):
+                    "new generator appending token and tokens"
+                    yield token
+                    for t in tokens:
+                        yield t
+                        
+                tokens = (t for t in gen(*text))
+                
+            else:
+                # single token
+                tokens = (t for t in [text])
+        elif isinstance(text, list):
+            # generator from list
+            tokens = (t for t in text)
+        else:
+            # already tokenized, assume generator
+            tokens = text
+        
+        return tokens
+
+    def _SorTokens(self, tokens, until=',/'):
+        """New tokens generator which has S tokens removed,
+        if followed by anything in ``until``, normally a ``,``."""
+        def removedS(tokens):
+            for token in tokens:
+                if token[0] == self.types.S:
+                    try:
+                        next = tokens.next()
+                    except StopIteration:
+                        yield token
+                    else:
+                        if next[1] in until:
+                            # omit S as e.g. ``,`` has been found
+                            yield next
+                        elif next[0] == self.types.COMMENT:
+                            # pass COMMENT 
+                            yield next
+                        else:
+                            yield token
+                            yield next
+                
+                elif token[0] == self.types.COMMENT:
+                    # pass COMMENT 
+                    yield token
+                else:
+                    yield token
+                    break 
+            # normal mode again
+            for token in tokens:
+                yield token        
+            
+        return (token for token in removedS(tokens))
+
     def parse(self, text, name, productions, store=None):
         """
         text (or token generator)
@@ -301,62 +368,39 @@ class ProdParser(object):
             :store: filled keys defined by Prod.toStore
             :unusedtokens: token generator containing tokens not used yet
         """
-        # build a generator which is the only thing that is parsed!
-        # old classes may use lists etc
-        if isinstance(text, basestring):
-            # to tokenize strip space
-            tokens = self._tokenizer.tokenize(text.strip())
-        elif isinstance(text, tuple):
-            # (token, tokens) or a single token
-            if len(text) == 2:
-                # (token, tokens)
-                def gen(token, tokens):
-                    "new generator appending token and tokens"
-                    yield token
-                    for t in tokens:
-                        yield t
-                        
-                tokens = (t for t in gen(*text))
-                
-            else:
-                # single token
-                tokens = (t for t in [text])
-        elif isinstance(text, list):
-            # generator from list
-            tokens = (t for t in text)
-        else:
-            # already tokenized, assume generator
-            tokens = text
-
+        tokens = self._texttotokens(text)
         if not tokens:
             self._log.error(u'No content to parse.')
-
-        # a new seq to append all Items to
+            # TODO: return???
+                    
         seq = cssutils.util.Seq(readonly=False)
-
-        # store for specific values
-        if not store:
+        if not store: # store for specific values
             store = {}
-
-        # stack of productions
-        prods = [productions]
+        prods = [productions] # stack of productions
+        wellformed = True
 
         # while no real token is found any S are ignored
-        started = False 
-        wellformed = True
-        for token in tokens:
+        started = False
+        # flag if default S handling should be done
+        defaultS = True
+        while True:
+            try:
+                token = tokens.next()
+            except StopIteration:
+                break
             type_, val, line, col = token
+
             # default productions
-            if type_ == self.types.S:
-                # always append S?
+            if type_ == self.types.COMMENT:
+                # always append COMMENT
+                seq.append(cssutils.css.CSSComment(val), 
+                           cssutils.css.CSSComment, line, col)
+            elif defaultS and type_ == self.types.S:
+                # append S (but ignore starting ones)
                 if started:
                     seq.append(val, type_, line, col)
                 else:
                     continue
-            elif type_ == self.types.COMMENT:
-                # always append COMMENT
-                seq.append(cssutils.css.CSSComment(val), 
-                           cssutils.css.CSSComment, line, col)
 #            elif type_ == self.types.ATKEYWORD:
 #                # @rule
 #                r = cssutils.css.CSSUnknownRule(cssText=val)
@@ -367,12 +411,12 @@ class ProdParser(object):
                 self._log.error(u'Invalid token: %r' % (token,))
                 break
             elif type_ == self.types.EOF:
-                # do nothing
+                # do nothing?
                 pass
-#               next = 'EOF'
             else:
-                started = True
-                # check prods
+                started = True # check S now
+                nextSor = False # reset
+                
                 try:
                     while True:
                         # find next matching production
@@ -382,49 +426,53 @@ class ProdParser(object):
                             # try next
                             prod = None
                         if isinstance(prod, Prod):
+                            # found actual Prod, not a Choice or Sequence
                             break
-                        elif not prod:
-                            if len(prods) > 1:
-                                # nested exhausted, next in parent
-                                prods.pop()
-                            else:
-                                raise Exhausted('Extra token')
-                        else:
+                        elif prod:
                             # nested Sequence, Choice
                             prods.append(prod)
-
+                        else:
+                            # nested exhausted, try in parent
+                            if len(prods) > 1:
+                                prods.pop()
+                            else:
+                                raise ParseError('No match')
                 except ParseError, e:
                     wellformed = False
                     self._log.error(u'%s: %s: %r' % (name, e, token))
-
+                    break
                 else:
                     # process prod
                     if prod.toSeq:
                         type_, val = prod.toSeq(token, tokens)
                     if val is not None:
                         seq.append(val, type_, line, col)
-
                     if prod.toStore:
                         prod.toStore(store, seq[-1])
-                        
                     if prod.stop: # EOF?
                         # stop here and ignore following tokens
                         break
+                    if prod.nextSor:
+                        # following is S or other token (e.g. ",")?
+                        # remove S if
+                        tokens = self._SorTokens(tokens, ',/')
+                        defaultS = False
+                    else:
+                        defaultS = True
                     
         while True:
             # all productions exhausted?
             try:
                 prod = prods[-1].nextProd(token=None)
-            except Exhausted, e:
+            except Done, e:
                 prod = None # ok
-            except (MissingToken, NoMatch, ParseError), e:
+            except ParseError, e:
                 wellformed = False
-                self._log.error(u'%s: %s'
-                                % (name, e))
+                self._log.error(u'%s: %s' % (name, e))
             else:
                 if prods[-1].optional:
                     prod = None
-                elif prod.optional:
+                elif prod and prod.optional:
                     # ignore optional
                     continue
 
@@ -438,13 +486,9 @@ class ProdParser(object):
                 prods.pop()
             else:
                 break
-        # bool, Seq, None or generator
-        
-        # or tokenizer.push(tokens)????
-        
+            
         # trim S from end
         seq.rstrip() 
-        
         return wellformed, seq, store, tokens
 
 
@@ -455,64 +499,75 @@ class PreDef(object):
     types = cssutils.cssproductions.CSSProductions
     
     @staticmethod
-    def CHAR(name='char', char=u',', toSeq=None, toStore=None, stop=False):
+    def CHAR(name='char', char=u',', toSeq=None, toStore=None, stop=False, 
+             nextSor=False):
         "any CHAR"
         return Prod(name=name, match=lambda t, v: v in char,
                     toSeq=toSeq,
                     toStore=toStore,
-                    stop=stop)
+                    stop=stop,
+                    nextSor=nextSor)
 
     @staticmethod
     def comma(toStore=None):
         return PreDef.CHAR(u'comma', u',', toStore=toStore)
 
     @staticmethod
-    def dimension(toStore=None):
+    def dimension(toStore=None, nextSor=False):
         return Prod(name=u'dimension', 
                     match=lambda t, v: t == PreDef.types.DIMENSION,
                     toStore=toStore,
-                    toSeq=lambda t, tokens: (t[0], cssutils.helper.normalize(t[1])))
+                    toSeq=lambda t, tokens: (t[0], cssutils.helper.normalize(t[1])),
+                    nextSor=nextSor)
 
     @staticmethod
-    def function(toSeq=None, toStore=None):
+    def function(toSeq=None, toStore=None, nextSor=False):
         return Prod(name=u'function', 
                     match=lambda t, v: t == PreDef.types.FUNCTION,
                     toSeq=toSeq,
-                    toStore=toStore)
+                    toStore=toStore,
+                    nextSor=nextSor)
 
     @staticmethod
-    def funcEnd(toStore=None, stop=False):
+    def funcEnd(toStore=None, stop=False, nextSor=False):
         ")"
-        return PreDef.CHAR(u'end FUNC ")"', u')', toStore=toStore, stop=stop)
+        return PreDef.CHAR(u'end FUNC ")"', u')', 
+                           toStore=toStore, 
+                           stop=stop,
+                           nextSor=nextSor)
     
     @staticmethod
-    def ident(toStore=None):
+    def ident(toStore=None, nextSor=False):
         return Prod(name=u'ident', 
                     match=lambda t, v: t == PreDef.types.IDENT,
-                    toStore=toStore)
+                    toStore=toStore,
+                    nextSor=nextSor)
 
     @staticmethod
-    def number(toStore=None):
+    def number(toStore=None, nextSor=False):
         return Prod(name=u'number', 
                     match=lambda t, v: t == PreDef.types.NUMBER,
-                    toStore=toStore)
+                    toStore=toStore,
+                    nextSor=nextSor)
 
     @staticmethod
-    def string(toStore=None):
+    def string(toStore=None, nextSor=False):
         "string delimiters are removed by default"
         return Prod(name=u'string', 
                     match=lambda t, v: t == PreDef.types.STRING,
                     toStore=toStore,
-                    toSeq=lambda t, tokens: (t[0], cssutils.helper.stringvalue(t[1])))
+                    toSeq=lambda t, tokens: (t[0], cssutils.helper.stringvalue(t[1])),
+                    nextSor=nextSor)
 
     @staticmethod
-    def percentage(toStore=None):
+    def percentage(toStore=None, nextSor=False):
         return Prod(name=u'percentage', 
                     match=lambda t, v: t == PreDef.types.PERCENTAGE,
-                    toStore=toStore)
+                    toStore=toStore,
+                    nextSor=nextSor)
 
     @staticmethod
-    def S(optional=True, toSeq=None, toStore=None):
+    def S(optional=True, toSeq=None, toStore=None, nextSor=False):
         return Prod(name=u'whitespace', 
                     match=lambda t, v: t == PreDef.types.S, optional=optional,
                     toSeq=toSeq,
@@ -526,18 +581,20 @@ class PreDef(object):
                     toStore=toStore)            
 
     @staticmethod
-    def uri(toStore=None):
+    def uri(toStore=None, nextSor=False):
         "'url(' and ')' are removed and URI is stripped" 
         return Prod(name=u'URI', 
                     match=lambda t, v: t == PreDef.types.URI,
                     toStore=toStore,
-                    toSeq=lambda t, tokens: (t[0], cssutils.helper.urivalue(t[1])))
+                    toSeq=lambda t, tokens: (t[0], cssutils.helper.urivalue(t[1])),
+                    nextSor=nextSor)
 
     @staticmethod
-    def hexcolor(toStore=None, toSeq=None):
+    def hexcolor(toStore=None, toSeq=None, nextSor=False):
         return Prod(name='HEX color', 
                     match=lambda t, v: t == PreDef.types.HASH and 
                                        len(v) == 4 or len(v) == 7,
                     toStore=toStore,
-                    toSeq=toSeq
+                    toSeq=toSeq,
+                    nextSor=nextSor
                     )

@@ -117,30 +117,34 @@ class CSSValue(cssutils.util.Base2):
           Raised if this value is readonly.
         """
         self._checkReadonly()
-        operator = Choice(PreDef.CHAR('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
-                          PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
-                          PreDef.S()                          
-                          )
+        
+        # used as operator is , / or S
+        nextSor = u',/'
+        
         term = Choice(Sequence(PreDef.unary(), 
-                               Choice(PreDef.number(), 
-                                      PreDef.percentage(),
-                                      PreDef.dimension())),
-                      PreDef.string(),
-                      PreDef.ident(),
-                      PreDef.uri(),
-                      PreDef.hexcolor(),
-                      PreDef.function(toSeq=lambda t, tokens: ('FUNCTION', 
+                               Choice(PreDef.number(nextSor=nextSor), 
+                                      PreDef.percentage(nextSor=nextSor),
+                                      PreDef.dimension(nextSor=nextSor))),
+                      PreDef.string(nextSor=nextSor),
+                      PreDef.ident(nextSor=nextSor),
+                      PreDef.uri(nextSor=nextSor),
+                      PreDef.hexcolor(nextSor=nextSor),
+                      PreDef.function(nextSor=nextSor,
+                                      toSeq=lambda t, tokens: ('FUNCTION', 
                                                                CSSFunction(cssutils.helper.pushtoken(t, 
                                                                                                    tokens)))))
-        # CSSValue PRODUCTION
-        valueprod = Sequence(term, 
-                             Sequence(operator, 
-                                      term,
-                                      minmax=lambda: (0, None))) 
+        operator = Choice(PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
+                          PreDef.CHAR('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
+                          PreDef.S(optional=False))
+        # CSSValue PRODUCTIONS
+        valueprods = Sequence(term, 
+                              Sequence(operator, 
+                                       term,
+                                       minmax=lambda: (0, None))) 
         # parse
         wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
                                                                   u'CSSValue', 
-                                                                  valueprod)
+                                                                  valueprods)
         if wellformed:
             # count actual values and set firstvalue which is used later on
             # filter out double operators (S + "," or "/")
