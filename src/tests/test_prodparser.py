@@ -167,10 +167,10 @@ class SequenceTestCase(basetest.BaseTestCase):
             (p2, ): ([(t2, p2)],
                      [(t2, p2), (t2, u'Extra token')],
                      [(t2, p2), (t1, u'Extra token')],
-                     [(t1, 'No matching production for token')]
+                     [(t1, 'Missing token for production p2')]
                     ),
             (p1, p2): ([(t1, p1), (t2, p2)],
-                       [(t1, p1), (t1, u'No matching production for token')]
+                       [(t1, p1), (t1, u'Missing token for production p2')]
                        )
             }
         for seqitems, results in tests.items():
@@ -201,13 +201,13 @@ class SequenceTestCase(basetest.BaseTestCase):
                     ),
             # as p2 NOT optional
             (p2, ): ([(t2, p2)],
-                     [(t1, 'No matching production for token')],
+                     [(t1, 'Missing token for production p2')],
                      [(t2, p2), (t2, p2)],
                      [(t2, p2), (t1, u'No matching production for token')],
                      [(t2, p2), (t2, p2), (t2, u'Extra token')],
                      [(t2, p2), (t2, p2), (t1, u'Extra token')]
                     ),
-            (p1, p2): ([(t1, p1), (t1, u'No matching production for token')],
+            (p1, p2): ([(t1, p1), (t1, u'Missing token for production p2')],
                        [(t2, p2), (t2, p2)],
                        [(t2, p2), (t1, p1), (t2, p2)],
                        [(t1, p1), (t2, p2), (t2, p2)],
@@ -356,7 +356,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
                  '1 1 3 3': "No match: ('NUMBER', '3', 1, 7)",
                  '2 3 3': "No match: ('NUMBER', '3', 1, 5)",
                  '2': 'Missing token for production p3',
-                 '3': "No match: ('NUMBER', '3', 1, 1)",
+                 '3': "Missing token for production Choice(Sequence(p1), p2): ('NUMBER', '3', 1, 1)",
                  }
         for text, exp in tests.items():
             prods = Sequence(Choice(Sequence(p1, minmax=lambda: (1,2)),

@@ -191,6 +191,11 @@ class Sequence(object):
                     # TODO: not perfect!
                     raise Done()
                 raise MissingToken(u'Missing token for production %s' % p)
+            
+            elif not p.matches(token) and not p.optional and (round < self._min):
+                # check all before optional                
+                raise MissingToken(u'Missing token for production %s' % p)
+            
             else:
                 raise NoMatch(u'No matching production for token')
 

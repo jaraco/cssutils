@@ -22,21 +22,36 @@ def save(name, string):
     f.write(string)
     f.close()
 
-if 1:
-    p1 = Prod('p1', lambda t, v: v == '1')      
-    p2 = Prod('p2', lambda t, v: v == '2')
-    p3 = Prod('p3', lambda t, v: v == '3')
-    
-    operator = Choice(PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
+if 1:    
+    nextSor = u',/'
+    term = Choice(Sequence(PreDef.unary(optional=True), 
+                           PreDef.number(nextSor=nextSor)
+                           ),
+#                           Choice(PreDef.number(nextSor=nextSor), 
+#                                  PreDef.percentage(nextSor=nextSor),
+#                                  PreDef.dimension(nextSor=nextSor)),
+#                                  optional=False),
+                  PreDef.string(nextSor=nextSor),
+                  PreDef.ident(nextSor=nextSor),
+                  PreDef.uri(nextSor=nextSor),
+                  PreDef.hexcolor(nextSor=nextSor),
+                  PreDef.function(nextSor=nextSor,
+                                  toSeq=lambda t, tokens: ('FUNCTION', 
+                                                           CSSFunction(cssutils.helper.pushtoken(t, 
+                                                                                               tokens)))))
+    operator = Choice(PreDef.S(optional=False),
+                      PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
                       PreDef.CHAR('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
-                      PreDef.S(optional=False))
-    valueprods = Sequence(p1, 
+                      optional=True
+                      )
+    valueprods = Sequence(term, 
                           Sequence(operator, 
-                                   p1,
+                                   term,
                                    minmax=lambda: (0, None))) 
 
-    
-    print ProdParser().parse('1 ,1', 'T', valueprods, spacetokens=True)[0]
+    #print ProdParser().parse('1/**/2,1 2', 'T', valueprods)[0:2]
+    print
+    print ProdParser().parse('+a', 'T', valueprods)[0:2]
                 
     sys.exit(1)
 
@@ -50,7 +65,7 @@ if 1:
     '''#, a()
     
     v = cssutils.css.CSSValue()
-    v.cssText = u'#000/a'
+    v.cssText = u'1/**/1 1/**/ 1 /**/1,2 ,2, 2'
         
     print 
     print v
