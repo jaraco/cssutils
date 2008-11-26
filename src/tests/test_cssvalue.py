@@ -151,7 +151,6 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'-': xml.dom.SyntaxErr,
             u'+': xml.dom.SyntaxErr,
             u'-%': xml.dom.SyntaxErr,
-# TODO
             u'+a': xml.dom.SyntaxErr,
             u'--1px': xml.dom.SyntaxErr,
             u'++1px': xml.dom.SyntaxErr,
@@ -534,8 +533,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             pv.CSS_URI: ('url("http://example.com?)")',
                          u'http://example.com?)'),
             pv.CSS_IDENT: ('red', None),
-#TODO            pv.CSS_ATTR: ('attr(att-name)',
-#                         u'att-name'), # the name of the attrr
+            pv.CSS_ATTR: ('attr(att-name)',
+                         u'att-name'), # the name of the attrr
             }
         for t in tests:
             val, exp = tests[t]
