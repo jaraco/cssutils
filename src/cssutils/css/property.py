@@ -233,16 +233,16 @@ class Property(cssutils.util.Base):
             self.seqs[0] = newseq
 
 #            # validate
-#            if self._name not in profiles.propertiesByProfile():
+            if self._name not in profiles.propertiesByProfile():
 #                self.valid = False
-#                tokenizer=self._tokenize2(name)
-#                self._log.warn(u'Property: Unknown Property: %r.' %
-#                         new['literalname'], token=token, neverraise=True)
-#            else:
+                self._log.warn(u'Property: Unknown Property: %r.' %
+                         new['literalname'], token=token, neverraise=True)
+            else:
+                pass
 #                self.valid = True
 #                if self.cssValue:
 #                    self.cssValue._propertyName = self._name
-#                    self.valid = self.cssValue.valid
+#                    #self.valid = self.cssValue.valid
         else:
             self.wellformed = False
 

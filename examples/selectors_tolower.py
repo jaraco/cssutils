@@ -2,7 +2,7 @@ import cssutils
 from cssutils import css, stylesheets
 
 EXPOUT = '''--- ORIGINAL ---\n@charset "ascii";\n        @namespace PREfix "uri";\n        SOME > WeIrD + selector ~ used here {color: green}\n        PREfix|name {color: green}\n    \n\n--- SELECTORS TO LOWER CASE (does not simply work for PREfix|name!) ---\n--- CHANGE PREFIX (prefix is not really part of selectorText, URI is! ---\n\n@charset "ascii";\n@namespace lower-case_prefix "uri";\nsome > weird + selector ~ used here {\n    color: green\n    }\nlower-case_prefix|name {\n    color: green\n    }\n'''
-EXPERR = '''CSSValue: Found valid CSS Level 2.1 property "color: green".\nCSSValue: Found valid CSS Level 2.1 property "color: green".\n'''
+EXPERR = '''Property: Found valid CSS Level 2.1 property "color: green".\nProperty: Found valid CSS Level 2.1 property "color: green".\n'''
 
 def main():
     examplecss = u"""@charset "ascii";
