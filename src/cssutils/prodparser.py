@@ -27,19 +27,19 @@ class ParseError(Exception):
     pass
 
 class Done(ParseError):
-    """Raised if Sequence or Choice is done."""
+    """Raised if Sequence or Choice is finished and no more Prods left."""
     pass
 
 class Exhausted(ParseError):
-    """Raised if Sequence or Choice has no more prods left."""
+    """Raised if Sequence or Choice is finished but token is given."""
+    pass
+
+class Missing(ParseError):
+    """Raised if Sequence or Choice is not finished but no matching token given."""
     pass
 
 class NoMatch(ParseError):
-    """Raised if Sequence or Choice do not match."""
-    pass
-
-class MissingToken(ParseError):
-    """Raised if Sequence or Choice are not exhausted."""
+    """Raised if nothing in Sequence or Choice does match."""
     pass
 
 
@@ -146,6 +146,7 @@ class Sequence(object):
         
     def reset(self):
         """Reset this Sequence if it is nested."""
+        self._roundstarted = False
         self._i = 0
         self._round = 0
 
@@ -167,40 +168,42 @@ class Sequence(object):
         - raises ParseError if nothing matches
         - raises Exhausted if sequence already done
         """
-        while self._round < self._max: #self._i < self._prodcount:
-            p = self._prods[self._i]
-            round = self._round
+        while self._round < self._max:
+            # for this round
             i = self._i
+            round = self._round
+            p = self._prods[i]
+            if i == 0:
+                self._roundstarted = False            
             
-            self._i += 1
+            # for next round
+            self._i += 1            
             if self._i == self._prodcount:
-                # new round
                 self._round += 1
                 self._i = 0
 
             if p.matches(token):
-                p.reset() # start Choice from start
-                return p                
+                self._roundstarted = True
+                # reset nested Choice or Prod to use from start
+                p.reset() 
+                return p
+            
             elif p.optional:
                 continue
-            elif not token and (round >= self._min) and (i == 0):
-                raise Done()                
-            elif not token:
-                if i > 0 and self._prods[i-1].optional and not self._prods[i].optional:
-                    # only done if all before are optional
-                    # TODO: not perfect!
-                    raise Done()
-                raise MissingToken(u'Missing token for production %s' % p)
+
+            elif round < self._min:
+                raise Missing(u'Missing token for production %s' % p)
             
-            elif not p.matches(token) and not p.optional and (round < self._min):
-                # check all before optional                
-                raise MissingToken(u'Missing token for production %s' % p)
+            elif not token:
+                if self._roundstarted:
+                    raise Missing(u'Missing token for production %s' % p)
+                else:
+                    raise Done()                
             
             else:
                 raise NoMatch(u'No matching production for token')
 
-        # Sequence is exhausted
-        if token and self._round >= self._max:
+        if token:
             raise Exhausted(u'Extra token')
 
     def __str__(self):
@@ -211,7 +214,7 @@ class Prod(object):
     """Single Prod in Sequence or Choice."""
     def __init__(self, name, match, optional=False, 
                  toSeq=None, toStore=None,
-                 stop=False, nextSor=False):
+                 stop=False, nextSor=False, mayEnd=False):
         """
         name
             name used for error reporting
@@ -227,12 +230,16 @@ class Prod(object):
             wether Prod is optional or not
         stop = False
             if True stop parsing of tokens here
+        mayEnd = False
+            no token must follow even defined by Sequence. 
+            Used for operator ',/ ' currently only 
         """
         self._name = name
         self.match = match
         self.optional = optional
         self.stop = stop
         self.nextSor = nextSor
+        self.mayEnd = mayEnd
 
         def makeToStore(key):
             "Return a function used by toStore."
@@ -390,6 +397,7 @@ class ProdParser(object):
 
         # while no real token is found any S are ignored
         started = False
+        prod = None
         # flag if default S handling should be done
         defaultS = True
         while True:
@@ -419,8 +427,8 @@ class ProdParser(object):
                 wellformed = False
                 self._log.error(u'Invalid token: %r' % (token,))
                 break
-            elif type_ == self.types.EOF:
-                # do nothing?
+            elif type_ == 'EOF':  
+                # do nothing? (self.types.EOF == True!)
                 pass
             else:
                 started = True # check S now
@@ -469,16 +477,27 @@ class ProdParser(object):
                     else:
                         defaultS = True
                     
+        lastprod = prod
         while True:
             # all productions exhausted?
             try:
                 prod = prods[-1].nextProd(token=None)
             except Done, e:
-                prod = None # ok
+                # ok
+                prod = None
+                
+            except Missing, e:
+                prod = None
+                # last was a S operator which may End a Sequence, then ok 
+                if hasattr(lastprod, 'mayEnd') and not lastprod.mayEnd:
+                    wellformed = False
+                    self._log.error(u'%s: %s' % (name, e))
+                    
             except ParseError, e:
                 prod = None
                 wellformed = False
                 self._log.error(u'%s: %s' % (name, e))
+                
             else:
                 if prods[-1].optional:
                     prod = None
@@ -512,7 +531,7 @@ class PreDef(object):
     def CHAR(name='char', char=u',', toSeq=None, toStore=None, stop=False, 
              nextSor=False):
         "any CHAR"
-        return Prod(name=name, match=lambda t, v: v in char,
+        return Prod(name=name, match=lambda t, v: v == char,
                     toSeq=toSeq,
                     toStore=toStore,
                     stop=stop,
@@ -577,16 +596,19 @@ class PreDef(object):
                     nextSor=nextSor)
 
     @staticmethod
-    def S(optional=True, toSeq=None, toStore=None, nextSor=False):
-        return Prod(name=u'whitespace', 
-                    match=lambda t, v: t == PreDef.types.S, optional=optional,
+    def S(name=u'whitespace', optional=True, toSeq=None, toStore=None, nextSor=False,
+          mayEnd=False):
+        return Prod(name=name, 
+                    match=lambda t, v: t == PreDef.types.S, 
+                    optional=optional,
                     toSeq=toSeq,
-                    toStore=toStore)
+                    toStore=toStore,
+                    mayEnd=mayEnd)
 
     @staticmethod
     def unary(optional=True, toStore=None):
         "+ or -"
-        return Prod(name=u'unary +-', match=lambda t, v: v in u'+-', 
+        return Prod(name=u'unary +-', match=lambda t, v: v in (u'+', u'-'), 
                     optional=optional,
                     toStore=toStore)            
 

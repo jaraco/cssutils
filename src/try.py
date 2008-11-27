@@ -22,6 +22,12 @@ def save(name, string):
     f.write(string)
     f.close()
 
+if 1:
+    s = cssutils.parseString(ur'a { x: url(a')
+    print s.cssText
+    
+    sys.exit(1)
+
 if 1:    
     nextSor = u',/'
     term = Choice(Sequence(PreDef.unary(optional=True), 

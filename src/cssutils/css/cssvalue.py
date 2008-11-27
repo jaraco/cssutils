@@ -133,13 +133,13 @@ class CSSValue(cssutils.util.Base2):
                                       toSeq=lambda t, tokens: ('FUNCTION', 
                                                                CSSFunction(cssutils.helper.pushtoken(t, 
                                                                                                    tokens)))))
-        operator = Choice(PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
+        operator = Choice(PreDef.S(optional=False, mayEnd=True),
+                          PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
                           PreDef.CHAR('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
-                          PreDef.S(optional=False),
                           optional=True)
         # CSSValue PRODUCTIONS
         valueprods = Sequence(term, 
-                              Sequence(operator, 
+                              Sequence(operator, # mayEnd this Sequence if whitespace
                                        term,
                                        minmax=lambda: (0, None))) 
         # parse
