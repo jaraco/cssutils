@@ -74,13 +74,13 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a:': (xml.dom.SyntaxErr,
                    u'''Property: No property value found: u'a:'. [1:2: :]'''),
             u'a: ': (xml.dom.SyntaxErr,
-                   u"CSSValue: Missing token for production Choice(Sequence(unary +-, Choice(number, percentage, dimension)), string, ident, URI, HEX color, function)"),
+                   u"CSSValue: Unknown syntax or no value: u' '."),
             u'a: 1!': (xml.dom.SyntaxErr,
                    u'''Property: Invalid priority: u'!'.'''),
             u'a: 1!importantX': (xml.dom.SyntaxErr,
                    u"Property: No CSS priority value: u'importantx'."),
             u'a:!important': (xml.dom.SyntaxErr,
-                   u"CSSValue: Missing token for production Choice(Sequence(unary +-, Choice(number, percentage, dimension)), string, ident, URI, HEX color, function)"),
+                   u"CSSValue: Unknown syntax or no value: u''."),
             u'a: 1;': (xml.dom.SyntaxErr,
                    u'''CSSValue: No match: ('CHAR', u';', 1, 5)''')
             }
