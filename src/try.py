@@ -31,13 +31,8 @@ if 1:
         "a", a, url(a), #aabb44
     '''#, a()
     
-    v = cssutils.css.CSSValue('''url(',')''')
-    v.setStringValue(v.CSS_URI, '""') 
-    print v
-    print v.getStringValue()
-        
-    print 
-    print v
+    print cssutils.parseString('a {x:1}')
+    
     
 #    for x in v: 
 #        print x.value
