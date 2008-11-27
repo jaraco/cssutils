@@ -593,9 +593,13 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assertEqual(ur'""', v.getStringValue())
         self.assertEqual((ur'""', 'URI'), v._value)
 
-#TODO        v.setStringValue(v.CSS_URI, ',') 
-#        self.assertEqual(ur',', v.getStringValue())
-#        self.assertEqual((ur',', 'URI'), v._value)
+        v.setStringValue(v.CSS_URI, "''") 
+        self.assertEqual(ur"''", v.getStringValue())
+        self.assertEqual((ur"''", 'URI'), v._value)
+
+        v.setStringValue(v.CSS_URI, ',') 
+        self.assertEqual(ur',', v.getStringValue())
+        self.assertEqual((ur',', 'URI'), v._value)
 
         v.setStringValue(v.CSS_URI, ' ')
         self.assertEqual((u' ', 'URI'), v._value)
@@ -624,7 +628,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         v = cssutils.css.CSSPrimitiveValue('attr(old)')
         v.setStringValue(v.CSS_ATTR, 'a')
         self.assert_(v.CSS_ATTR == v.primitiveType)
-#TODO        self.assert_('a' == v.getStringValue())
+        self.assert_('a' == v.getStringValue())
         self.assertRaisesMsg(xml.dom.InvalidAccessErr,
             u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_IDENT'",
             v.setStringValue, *(v.CSS_IDENT, 'x'))

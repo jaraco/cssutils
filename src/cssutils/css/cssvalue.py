@@ -156,7 +156,7 @@ class CSSValue(cssutils.util.Base2):
                 item = seq[i]
                 if item.type == self._prods.S:
                     pass
-                elif item.value == u',':
+                elif item.value == u',' and item.type not in (self._prods.URI, self._prods.STRING):
                     # counts as a single one
                     newseq.appendItem(item)
                     if firstvalue:
@@ -634,7 +634,7 @@ class CSSPrimitiveValue(CSSValue):
                 % self.primitiveTypeString)
 
         if CSSPrimitiveValue.CSS_ATTR == self.primitiveType:
-            return self._value[0][5:-1]
+            return self._value[0].cssText[5:-1]
         else:
             return self._value[0]
 
@@ -684,27 +684,13 @@ class CSSPrimitiveValue(CSSValue):
                    self._getCSSPrimitiveTypeString(stringType)))
 
         if CSSPrimitiveValue.CSS_STRING == self._primitiveType:
-            self.cssText = u'"%s"' % stringValue.replace(u'"', ur'\\"')
+            self.cssText = cssutils.helper.string(stringValue)
+
         elif CSSPrimitiveValue.CSS_URI == self._primitiveType:
-            # Some characters appearing in an unquoted URI, such as
-            # parentheses, commas, whitespace characters, single quotes
-            # (') and double quotes ("), must be escaped with a backslash
-            # so that the resulting URI value is a URI token:
-            # '\(', '\)', '\,'.
-            #
-            # Here the URI is set in quotes alltogether!
-            if u'(' in stringValue or\
-               u')' in stringValue or\
-               u',' in stringValue or\
-               u'"' in stringValue or\
-               u'\'' in stringValue or\
-               u'\n' in stringValue or\
-               u'\t' in stringValue or\
-               u'\r' in stringValue or\
-               u'\f' in stringValue or\
-               u' ' in stringValue:
-                stringValue = '"%s"' % stringValue.replace(u'"', ur'\"')
-            self.cssText = u'url(%s)' % stringValue
+            if '"' in stringValue or "'" in stringValue:
+                stringValue = cssutils.helper.string(stringValue)
+            self.cssText = cssutils.helper.uri(stringValue)
+            
         elif CSSPrimitiveValue.CSS_ATTR == self._primitiveType:
             self.cssText = u'attr(%s)' % stringValue
         else:
@@ -846,7 +832,6 @@ class CSSFunction(CSSPrimitiveValue):
     def _setCssText(self, cssText):
         self._checkReadonly()
         types = self._prods # rename!
-        
         valueProd = Prod(name='PrimitiveValue', 
                          match=lambda t, v: t in (types.DIMENSION, 
                                                   types.IDENT, 
@@ -874,7 +859,6 @@ class CSSFunction(CSSPrimitiveValue):
                                                                   u'CSSFunction', 
                                                                   funcProds)
         if wellformed:
-
             # combine +/- and following CSSPrimitiveValue, remove S
             newseq = self._tempSeq()
             i, end = 0, len(seq)
@@ -894,9 +878,10 @@ class CSSFunction(CSSPrimitiveValue):
                     newseq.appendItem(item)
                                         
                 i += 1
-                        
+                     
             self.wellformed = True
             self._setSeq(newseq)
+            self._funcType = newseq[0].value
 
     cssText = property(lambda self: cssutils.ser.do_css_RGBColor(self), 
                        _setCssText)

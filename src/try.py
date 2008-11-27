@@ -23,45 +23,6 @@ def save(name, string):
     f.close()
 
 if 1:
-    s = cssutils.parseString(ur'a { x: url(a')
-    print s.cssText
-    
-    sys.exit(1)
-
-if 1:    
-    nextSor = u',/'
-    term = Choice(Sequence(PreDef.unary(optional=True), 
-                           PreDef.number(nextSor=nextSor)
-                           ),
-#                           Choice(PreDef.number(nextSor=nextSor), 
-#                                  PreDef.percentage(nextSor=nextSor),
-#                                  PreDef.dimension(nextSor=nextSor)),
-#                                  optional=False),
-                  PreDef.string(nextSor=nextSor),
-                  PreDef.ident(nextSor=nextSor),
-                  PreDef.uri(nextSor=nextSor),
-                  PreDef.hexcolor(nextSor=nextSor),
-                  PreDef.function(nextSor=nextSor,
-                                  toSeq=lambda t, tokens: ('FUNCTION', 
-                                                           CSSFunction(cssutils.helper.pushtoken(t, 
-                                                                                               tokens)))))
-    operator = Choice(PreDef.S(optional=False),
-                      PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
-                      PreDef.CHAR('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
-                      optional=True
-                      )
-    valueprods = Sequence(term, 
-                          Sequence(operator, 
-                                   term,
-                                   minmax=lambda: (0, None))) 
-
-    #print ProdParser().parse('1/**/2,1 2', 'T', valueprods)[0:2]
-    print
-    print ProdParser().parse('+a', 'T', valueprods)[0:2]
-                
-    sys.exit(1)
-
-if 1:
 #   [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
 #                  TIME S* | FREQ S* ]
 #              | STRING S* | IDENT S* | URI S* | hexcolor | function
@@ -70,8 +31,10 @@ if 1:
         "a", a, url(a), #aabb44
     '''#, a()
     
-    v = cssutils.css.CSSValue()
-    v.cssText = u'1/**/1 1/**/ 1 /**/1,2 ,2, 2'
+    v = cssutils.css.CSSValue('''url(',')''')
+    v.setStringValue(v.CSS_URI, '""') 
+    print v
+    print v.getStringValue()
         
     print 
     print v
