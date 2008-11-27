@@ -3,7 +3,7 @@ from pprint import pprint as pp
 from cssutils.prodparser import *
 import cssutils
 
-# PRODUCTION FOR CSSColor
+# PRODUCTION FOR RGBColor
 types = cssutils.cssproductions.CSSProductions
 
 sign = Prod(name='sign +-', match=lambda t, v: v in u'+-',
@@ -56,7 +56,7 @@ rectprods = Sequence([Prod(name='FUNC rect(',
                            ])
 
 # EXAMPLE
-name, productions = u'CSSColor', colorprods
+name, productions = u'RGBColor', colorprods
 text = 'rgb(1%,   \n2% , -3.0%)' 
 # RESULT: colorType filled, in test all values
 store = {'test': [] }
