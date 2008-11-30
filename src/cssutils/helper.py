@@ -78,7 +78,7 @@ def stringvalue(string):
     """
     return string.replace('\\'+string[0], string[0])[1:-1]
 
-_match_forbidden_in_uri = re.compile(ur'''.*?[\(\)\s\;,]''', re.U).match
+_match_forbidden_in_uri = re.compile(ur'''.*?[\(\)\s\;,'"]''', re.U).match
 def uri(value):
     """
     Serialize value by adding ``url()`` and with quotes if needed e.g.::
@@ -97,7 +97,7 @@ def urivalue(uri):
     
          ``url("\"")`` => ``"``
     """
-    uri = uri[4:-1].strip()
+    uri = uri[uri.find('(')+1:-1].strip()
     if uri and (uri[0] in '\'"') and (uri[0] == uri[-1]):
         return stringvalue(uri)
     else:
