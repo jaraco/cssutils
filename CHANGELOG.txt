@@ -48,19 +48,18 @@ HEAD
         - added CSS Color Module Level 3 with properties ``color`` and ``opacity``. Not implemented are SVG color names.
         - unknown properties raise a WARNING instead of INFO now
         - refactored CSSValue and subclasses therefore there may be some minor changes in serializing or value reporting
-            + ``getStringValue()`` returns a string without quotes or for URIs without ``url(...)`` now
-
+            + ``getStringValue()`` returns a string without quotes or for URIs a value without surrounding ``url(...)`` now
 
     + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
     + FEATURE: Value with a zero value are now serialized just as ``0`` without any in this case unneeded dimension. Might not work for all cases but the most common ones.
 
     + **API CLEANUP**:
-        - moved validating of a property from CSSValue to Property
+        - moved validating of a property from ``CSSValue`` to ``Property``
         - removed ``CSSValue.valid`` as it does not make sense anymore
-        - removed private CSSValue init parameter _propertyName
+        - removed private init parameter ``CSSValue_propertyName``
         - private attribute ``CSSValue._value`` contains ``(value, type)`` now. Do not use as it may change again
         - removed ``Property.normalname`` (DEPRECATED from 0.9.5 ), use ``Property.name`` instead
-        - removed long deprecated ``CSSStyleSheet.replaceUrls``
+        - removed long deprecated ``CSSStyleSheet.replaceUrls``, use ``cssutils.replaceUrls()`` instead
 
     + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``. This results in these changes:
 
@@ -71,6 +70,7 @@ HEAD
     - API CHANGE (minor): ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
 
     + BUGFIX/IMPROVEMENT: rewrite of CSSValue and related classes
+        - for CSSValueList values like e.g. ``margin: 0 1px`` there are no more false WARNINGs emitted
         - DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
         - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
         - BUGFIX: Parsing values with ``+`` operator fixed.
@@ -81,6 +81,7 @@ HEAD
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
 
+    - BUGFIX: Fixed Issue #14, added ``CSSStyleDeclaration().borderLeftWidth``. But prefer to use ``CSSStyleDeclaration()['border-left.width']``.
 
 0.9.5
 -----

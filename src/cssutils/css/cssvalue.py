@@ -147,8 +147,9 @@ class CSSValue(cssutils.util.Base2):
                                                                   u'CSSValue', 
                                                                   valueprods)
         if wellformed:
-            # count actual values and set firstvalue which is used later on
-            # filter out double operators (S + "," or "/")
+            # - count actual values and set firstvalue which is used later on
+            # - combine comma separated list, e.g. font-family to a single item
+            # - remove S which should be an operator but is no needed
             count, firstvalue = 0, ()
             newseq = self._tempSeq()
             i, end = 0, len(seq)
@@ -160,6 +161,7 @@ class CSSValue(cssutils.util.Base2):
                     # counts as a single one
                     newseq.appendItem(item)
                     if firstvalue:
+                        # may be IDENT or STRING but with , it is always STRING
                         firstvalue = firstvalue[0], 'STRING'
                     # each comma separated list counts as a single one only
                     count -= 1
@@ -685,12 +687,8 @@ class CSSPrimitiveValue(CSSValue):
 
         if CSSPrimitiveValue.CSS_STRING == self._primitiveType:
             self.cssText = cssutils.helper.string(stringValue)
-
         elif CSSPrimitiveValue.CSS_URI == self._primitiveType:
-            if '"' in stringValue or "'" in stringValue:
-                stringValue = cssutils.helper.string(stringValue)
             self.cssText = cssutils.helper.uri(stringValue)
-            
         elif CSSPrimitiveValue.CSS_ATTR == self._primitiveType:
             self.cssText = u'attr(%s)' % stringValue
         else:
@@ -836,7 +834,8 @@ class CSSFunction(CSSPrimitiveValue):
                          match=lambda t, v: t in (types.DIMENSION, 
                                                   types.IDENT, 
                                                   types.NUMBER, 
-                                                  types.PERCENTAGE),
+                                                  types.PERCENTAGE,
+                                                  types.STRING),
                          toSeq=lambda t, tokens: (t[0], CSSPrimitiveValue(t[1])))
         
         funcProds = Sequence(Prod(name='FUNC', 

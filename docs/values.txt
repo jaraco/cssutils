@@ -11,37 +11,4 @@ random notes about values
 =========================
 - CSSValue is always the base class of a Properties ``cssValue``. It may be more specific like a CSSPrimitiveValue or a CSSValueList which itself contains CSSValue or CSSPrimitiveValue objects
 
-- setting ``cssText`` validates only if context property is set (as constructor parameter ``_propertyName`` (**experimental**)
-
-- CSSValue values are invalid if no context property is set (``self.valid = False``). This may currently be set during initialization with parameter "_propertyname". This will propably change again.
-
-- SyntaxError in case of invalid value for a known property is not raised yet!
-
-validation
-==========
-Quite a few values in real life stylesheets are to be expected. Most are driven by the fact the modern browsers are much more forgiving than the actual specification. But the way cssutils works it emits also quite a few warnings which may simply be ignored.
-
-expected WARNING messages
--------------------------
-listed by property
-
-font
-    Example::
-
-        font: normal 80%/1.1 sans-serif
-
-        WARNING CSSValue: Invalid value for CSS2 property u'font': sans-serif
-
-    The optional line-height confuses cssutils that it emits this false WARNING
-
-background
-    Example::
-
-        background: #000 url(x.gif) top 0
-
-        WARNING CSSValue: Invalid value for CSS2 property u'background': #000 url(x.gif) top 0
-
-    Again this WARNING is as the spec defines that keyword and length values of background-position values are not to be mixed. IMHO there are a few UAs which ignore these values indeed so you might want to rewrite your CSS in these cases.
-
-
 

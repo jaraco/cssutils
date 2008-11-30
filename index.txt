@@ -4,7 +4,7 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:version: 0.9.5.1 $Id$
+:version: 0.9.6dev $Id$
 
 
 available documentation
@@ -14,7 +14,7 @@ General
     * license: LGPL 3 `COPYING <COPYING>`_ and `COPYING.LESSER <COPYING.LESSER>`_
 
     + `changelog <CHANGELOG.txt>`_
-    + `version migration (to 0.9.5) <docs/migrate.txt>`_
+    + `version migration (0.9.6, 0.9.5) <docs/migrate.txt>`_
     + `backlog <docs/backlog.txt>`_
 
 
