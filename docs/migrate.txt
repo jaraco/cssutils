@@ -8,6 +8,27 @@ version migration
 .. contents::
 
 
+0.9.6 incompatible changes
+==========================
+
+CSSValue / Property has been rewritten
+--------------------------------------
+- moved validating of a property from ``CSSValue`` to ``Property``
+- removed ``CSSValue.valid`` as it does not make sense anymore
+- ``CSSPrimitiveValue.getStringValue()`` returns a STRING without quotes or for URIs a value without surrounding ``url(...)`` now
+
+minor API changes
+-----------------
+A few private attributes have been changed. It is best to not use these anyway but if you have:
+    - removed private init parameter ``CSSValue._propertyName``
+    - private attribute ``CSSValue._value`` contains ``(value, type)`` now. Do not use as it may change again!
+
+The API has been cleaned up resulting in *DEPRECATED* attributes and methods being removed:
+    - removed ``Property.normalname`` (DEPRECATED from 0.9.5 ), use ``Property.name`` instead
+    - removed ``CSSStyleSheet.replaceUrls``, use ``cssutils.replaceUrls()`` instead
+
+----
+
 0.9.5 incompatible changes
 ==========================
 cssutils 0.9.5 introduced some minor incompatible API changes. Reason for most changes is that for most cases the new default behaviour makes more sense.

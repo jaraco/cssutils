@@ -19,11 +19,12 @@ Usage: cssparse-script.py [options] filename1.css [filename2.css ...]
 
 Options:
   -h, --help            show this help message and exit
-  -e ENCODING, --encoding=ENCODING
-                        encoding of the file
-  -d, --debug           activate debugging output
-  -m, --minify          minify parsed CSS
   -s, --string          parse given string
+  -u URL, --url=URL     parse given url
+  -e ENCODING, --encoding=ENCODING
+                        encoding of the file or override encoding found
+  -m, --minify          minify parsed CSS
+  -d, --debug           activate debugging output
 
 
 CSSCapture
