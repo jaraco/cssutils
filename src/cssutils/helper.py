@@ -102,3 +102,25 @@ def urivalue(uri):
         return stringvalue(uri)
     else:
         return uri
+
+def normalnumber(num):
+    """
+    Return normalized number as string.
+    """
+    sign = ''
+    if num.startswith('-'):
+        sign = '-'
+        num = num[1:]
+    elif num.startswith('+'):
+        num = num[1:]
+
+    if float(num) == 0.0:
+        return '0'
+    else:        
+        if num.find('.') == -1:
+            return sign + str(int(num)) 
+        else: 
+            a, b = num.split('.')
+            if not a:
+                a = '0'
+            return '%s%s.%s' % (sign, int(a), b)

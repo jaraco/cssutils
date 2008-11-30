@@ -21,6 +21,29 @@ class HelperTestCase(basetest.BaseTestCase):
             # static too
             self.assertEqual(normalize(test), exp)
 
+    def test_normalnumber(self):
+        "helper.normalnumber()"
+        tests = {
+                 '0': '0',
+                 '00': '0',
+                 '0.0': '0',
+                 '00.0': '0',
+                 '1': '1',
+                 '01': '1',
+                 '00.1': '0.1',
+                 '0.00001': '0.00001',
+                 '-0': '0',
+                 '-00': '0',
+                 '-0.0': '0',
+                 '-00.0': '0',
+                 '-1': '-1',
+                 '-01': '-1',
+                 '-00.1': '-0.1',
+                 '-0.00001': '-0.00001',
+                 }
+        for test, exp in tests.items():
+            self.assertEqual(exp, normalnumber(test))
+
     def test_string(self):
         "helper.string()"
         self.assertEqual(u'"x"', string(u'x'))
