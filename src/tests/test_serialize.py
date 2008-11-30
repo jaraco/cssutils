@@ -12,6 +12,50 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 #    def test_init(self):
 #        "CSSSerializer.__init__()"
 
+    def test_canonical(self):
+        tests = {
+            u'''1''': u'''1''',
+            # => remove +
+            u'''+1''': u'''1''',
+            # 0 => remove unit
+            u'''0''': u'''0''',
+            u'''+0''': u'''0''',
+            u'''-0''': u'''0''',
+            u'''0.0''': u'''0''',
+            u'''00.0''': u'''0''',
+            u'''00.0px''': u'''0''',
+            u'''00.0pc''': u'''0''',
+            u'''00.0em''': u'''0''',
+            u'''00.0ex''': u'''0''',
+            u'''00.0cm''': u'''0''',
+            u'''00.0mm''': u'''0''',
+            u'''00.0in''': u'''0''',
+            # 0 => keep unit
+            u'''00.0%''': u'''0%''',
+            u'''00.0ms''': u'''0ms''',
+            u'''00.0s''': u'''0s''',
+            u'''00.0khz''': u'''0khz''',
+            u'''00.0hz''': u'''0hz''',
+            u'''00.0khz''': u'''0khz''',
+            u'''00.0deg''': u'''0deg''',
+            u'''00.0rad''': u'''0rad''',
+            u'''00.0grad''': u'''0grad''',
+            u'''00.0xx''': u'''0xx''',
+            # 11. 
+            u'''a, 'b"', serif''': ur'''a, "b\"", serif''',
+            # SHOULD: \[ => [ but keep!
+            ur"""url('h)i') '\[\]'""": ur'''url("h)i") "\[\]"''',
+            u'''rgb(18, 52, 86)''': u'''rgb(18, 52, 86)''',
+            u'''#123456''': u'''#123456''',
+            # SHOULD => #112233
+            u'''#112233''': u'''#123''',
+            # SHOULD => #000000
+#            u'rgba(000001, 0, 0, 1)': u'#000'
+            }
+        for test, exp in tests.items():
+            v = cssutils.css.CSSValue(test)
+            self.assertEqual(exp, v.cssText)
+
     def test_useDefaults(self):
         "Preferences.useDefaults()"
         cssutils.ser.prefs.useMinified()
@@ -129,7 +173,7 @@ prefix|x, a + b > c ~ d, b {
             u'a  0px  a  .0px  a  0.0px  a  -0px  a  -.0px  a  -0.0px  a  +0px  a  +.0px  a  +0.0px ': 
                 u'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0', 
             u'a  1  a  .1  a  1.0  a  0.1  a  -1  a  -.1  a  -1.0  a  -0.1  a  +1  a  +.1  a  +1.0': 
-                u'a 1 a .1 a 1.0 a 0.1 a -1 a -.1 a -1.0 a -0.1 a 1 a .1 a 1.0',
+                u'a 1 a 0.1 a 1 a 0.1 a -1 a -0.1 a -1 a -0.1 a 1 a 0.1 a 1',
             u'  url(x)  f()': 'url(x) f()', 
             u'#112233': '#123', 
             u'#112234': '#112234', 

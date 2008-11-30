@@ -31,14 +31,15 @@ if 1:
         "a", a, url(a), #aabb44
     '''#, a()
     
-    print cssutils.parseString('a {x:1}')
+#    - font: 1em / 1.2 arial;
+#    - font-family: a, b, "c"
+#    - URL: url(  "ABc"  ) or Ur\L???
+    cssutils.log.setLevel(logging.DEBUG)
     
     
-#    for x in v: 
-#        print x.value
-#        for s in x.value.seq:
-#            print s
-    print
+    v = cssutils.css.CSSValue('010px')
+    print v.getFloatValue()
+
 #    
     #print v.getRGBColorValue()
     #v.setFloatValue(v.CSS_RGBACOLOR, 1)

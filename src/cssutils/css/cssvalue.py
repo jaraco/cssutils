@@ -367,15 +367,16 @@ class CSSPrimitiveValue(CSSValue):
     # NOT OFFICIAL:
     CSS_RGBACOLOR = 26
 
-    _floattypes = [CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS,
+    _floattypes = (CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS,
                    CSS_PX, CSS_CM, CSS_MM, CSS_IN, CSS_PT, CSS_PC,
                    CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS, CSS_S,
-                   CSS_HZ, CSS_KHZ, CSS_DIMENSION
-                   ]
-    _stringtypes = [CSS_ATTR, CSS_IDENT, CSS_STRING, CSS_URI]
-    _countertypes = [CSS_COUNTER]
-    _recttypes = [CSS_RECT]
-    _rbgtypes = [CSS_RGBCOLOR, CSS_RGBACOLOR]
+                   CSS_HZ, CSS_KHZ, CSS_DIMENSION)
+    _stringtypes = (CSS_ATTR, CSS_IDENT, CSS_STRING, CSS_URI)
+    _countertypes = (CSS_COUNTER,)
+    _recttypes = (CSS_RECT,)
+    _rbgtypes = (CSS_RGBCOLOR, CSS_RGBACOLOR)
+    _lengthtypes = (CSS_NUMBER, CSS_EMS, CSS_EXS, 
+                    CSS_PX, CSS_CM, CSS_MM, CSS_IN, CSS_PT, CSS_PC)
 
     # oldtype: newType: converterfunc
     _converter = {
@@ -515,15 +516,19 @@ class CSSPrimitiveValue(CSSValue):
         except (IndexError, TypeError):
             return u'%r (UNKNOWN TYPE)' % type
 
-    def __getNumDim(self):
+    def _getNumDim(self, value=None):
         "splits self._value in numerical and dimension part"
-        value = cssutils.helper.normalize(self._value[0])
+        if value is None:
+            value = cssutils.helper.normalize(self._value[0])
+            
         try:
             val, dim = CSSPrimitiveValue._reNumDim.findall(value)[0]
         except IndexError:
             val, dim = value, u''
         try:
             val = float(val)
+            if val == int(val):
+                val = int(val)
         except ValueError:
             raise xml.dom.InvalidAccessErr(
                 u'CSSPrimitiveValue: No float value %r' % self._value[0])
@@ -553,7 +558,7 @@ class CSSPrimitiveValue(CSSValue):
             raise xml.dom.InvalidAccessErr(
                 u'unitType Parameter is not a float type')
 
-        val, dim = self.__getNumDim()
+        val, dim = self._getNumDim()
         
         if unitType is not None and self.primitiveType != unitType:
             # convert if needed
@@ -603,7 +608,7 @@ class CSSPrimitiveValue(CSSValue):
                u'CSSPrimitiveValue: floatValue %r is not a float' %
                floatValue)
 
-        oldval, dim = self.__getNumDim()
+        oldval, dim = self._getNumDim()
         if self.primitiveType != unitType:
             # convert if possible
             try:

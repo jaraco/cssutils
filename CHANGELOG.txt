@@ -72,8 +72,9 @@ HEAD
     - API CHANGE (minor): ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
 
     + BUGFIX/IMPROVEMENT: rewrite of CSSValue and related classes
+        - IMPROVEMENT: number values are normalized now, e.g. ``010.0px`` results in ``10px`` etc
+        - IMPROVEMENT: DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
         - for CSSValueList values like e.g. ``margin: 0 1px`` there are no more false WARNINGs emitted
-        - DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
         - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
         - BUGFIX: Parsing values with ``+`` operator fixed.
         - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)

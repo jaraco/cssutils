@@ -851,22 +851,22 @@ class CSSSerializer(object):
                         
     def do_css_CSSPrimitiveValue(self, cssvalue):
         """Serialize a CSSPrimitiveValue"""
-        # TODO: use self._valid(cssvalue)?
         if not cssvalue:
             return u''
         else:
             out = Out(self)
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
-                
                 if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
-                    if 0 == cssvalue.getFloatValue():
-                        # 0 if zero value
-                        val = u'0'
-                    elif val.startswith(u'+'):
-                        # omit +
-                        val = val[1:]
-                        
+                    n, d = cssvalue._getNumDim(val)
+                    if 0 == n:
+                        if cssvalue.primitiveType in cssvalue._lengthtypes:
+                            # 0 if zero value
+                            val = u'0'
+                        else:
+                            val = u'0' + d
+                    else:
+                        val = unicode(n) + d
                 out.append(val, type_)
                 
             return out.value() 
