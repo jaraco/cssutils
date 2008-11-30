@@ -15,36 +15,72 @@ import tokenize2
 import cssutils
 import encutils
 
-class BaseClass(object):
+class _BaseClass(object):
     """
-    Base class for all CSS and StyleSheet's classes
+    Base class for Base, Base2 and _NewBase.
+     
+    **Base and Base2 will be removed in the future!**
     """
     _log = cssutils.log
-
+    _prods = tokenize2.CSSProductions
+    
     def _checkReadonly(self):
-        "raises xml.dom.NoModificationAllowedErr if rule/... is readonly"
+        "Raise xml.dom.NoModificationAllowedErr if rule/... is readonly"
         if hasattr(self, '_readonly') and self._readonly:
             raise xml.dom.NoModificationAllowedErr(
                 u'%s is readonly.' % self.__class__)
             return True
         return False
 
+    def _valuestr(self, t):
+        """
+        Return string value of t (t may be a string, a list of token tuples
+        or a single tuple in format (type, value, line, col).
+        Mainly used to get a string value of t for error messages.
+        """
+        if not t:
+            return u''
+        elif isinstance(t, basestring):
+            return t
+        else:
+            return u''.join([x[1] for x in t])
 
-class Base(BaseClass):
+
+class _NewBase(_BaseClass):
     """
-    Base class for most CSS and StyleSheets classes
+    New base class for classes using ProdParser. 
+    
+    **Currently CSSValue and related ones only.**
+    """
+    def __init__(self):
+        self._seq = Seq()
 
+    def _setSeq(self, newseq):
+        """Set value of ``seq`` which is readonly."""
+        newseq._readonly = True
+        self._seq = newseq
+
+    def _tempSeq(self, readonly=False):
+        "Get a writeable Seq() which is used to set ``seq`` later"
+        return Seq(readonly=readonly)
+
+    seq = property(lambda self: self._seq, 
+                   doc="Internal readonly attribute ``seq`` for most cssutils classes.")
+    
+
+class Base(_BaseClass):
+    """
+    **Superceded by _NewBase**
+    
     **Superceded by Base2 which is used for new seq handling class.**
-    See cssutils.util.Base2
+
+    Base class for most CSS and StyleSheets classes
 
     Contains helper methods for inheriting classes helping parsing
 
     ``_normalize`` is static as used by Preferences.
     """
     __tokenizer2 = tokenize2.Tokenizer()
-
-#    _log = cssutils.log
-    _prods = tokenize2.CSSProductions
 
     # for more on shorthand properties see
     # http://www.dustindiaz.com/css-shorthand/
@@ -275,19 +311,6 @@ class Base(BaseClass):
         else:
             return resulttokens
 
-    def _valuestr(self, t):
-        """
-        returns string value of t (t may be a string, a list of token tuples
-        or a single tuple in format (type, value, line, col).
-        Mainly used to get a string value of t for error messages.
-        """
-        if not t:
-            return u''
-        elif isinstance(t, basestring):
-            return t
-        else:
-            return u''.join([x[1] for x in t])
-
     def _adddefaultproductions(self, productions, new=None):
         """
         adds default productions if not already present, used by
@@ -382,26 +405,15 @@ class Base(BaseClass):
         return wellformed, expected
 
 
-class Base2(Base):
+class Base2(Base, _NewBase):
     """
-    Base class for new seq handling, used by Selector for now only
+    **Superceded by _NewBase.**
+    
+    Base class for new seq handling.
     """
     def __init__(self):
         self._seq = Seq()
-
-    def _setSeq(self, newseq):
-        """
-        sets newseq and makes it readonly
-        """
-        newseq._readonly = True
-        self._seq = newseq
-
-    seq = property(lambda self: self._seq, doc="seq for most classes")
-
-    def _tempSeq(self, readonly=False):
-        "get a writeable Seq() which is added later"
-        return Seq(readonly=readonly)
-
+    
     def _adddefaultproductions(self, productions, new=None):
         """
         adds default productions if not already present, used by

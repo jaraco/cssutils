@@ -17,7 +17,7 @@ from cssutils.profiles import profiles
 from cssutils.prodparser import *
 
 
-class CSSValue(cssutils.util.Base2):
+class CSSValue(cssutils.util._NewBase):
     """
     The CSSValue interface represents a simple or a complex value.
     A CSSValue object only occurs in a context of a CSS property
