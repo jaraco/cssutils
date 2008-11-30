@@ -43,6 +43,22 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual('top', p.cssText)
 #        self.assertEqual(True, p.valid)
 
+#    def test_valid(self):
+#        "Property.valid"
+#        # context property must be set
+#        tests = [
+#            ('color', r'INHe\rIT', True),
+#            ('color', '1', False),
+#            ('color', 'red', True),
+#            ('left', '1', False),
+#            ('left', '1px', True),
+#            ('font', 'normal 1em/1.5 serif', True),
+#            ('background', 'url(x.gif) 1 0', False)
+#            ]
+#        for n, v, exp in tests:
+#            v = cssutils.css.CSSValue(cssText=v)
+#            self.assert_(v.wellformed, True)
+
     def test_cssText(self):
         "Property.cssText"
         p = cssutils.css.property.Property()

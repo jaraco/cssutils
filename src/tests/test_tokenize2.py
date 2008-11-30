@@ -516,21 +516,22 @@ class TokenizerTestCase(basetest.BaseTestCase):
         #log = cssutils.errorhandler.ErrorHandler()
         self.tokenizer = Tokenizer()
 
-    def test_push(self):
-        "Tokenizer.push()"
-        r = []
-        def do():
-            T = Tokenizer()
-            x = False
-            for t in T.tokenize('1 x 2 3'):
-                if not x and t[1] == 'x':
-                    T.push(t)
-                    x = True
-                r.append(t[1])
-            return ''.join(r)
-    
-        # push reinserts token into token stream, so x is doubled 
-        self.assertEqual('1 xx 2 3', do()) 
+#    NOT USED
+#    def test_push(self):
+#        "Tokenizer.push()"
+#        r = []
+#        def do():
+#            T = Tokenizer()
+#            x = False
+#            for t in T.tokenize('1 x 2 3'):
+#                if not x and t[1] == 'x':
+#                    T.push(t)
+#                    x = True
+#                r.append(t[1])
+#            return ''.join(r)
+#    
+#        # push reinserts token into token stream, so x is doubled 
+#        self.assertEqual('1 xx 2 3', do()) 
 
     def test_linenumbers(self):
         "Tokenizer line + col"
