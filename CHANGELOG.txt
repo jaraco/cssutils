@@ -43,13 +43,16 @@ known issues
 0.9.6dev
 --------
 HEAD
-    + **IN WORK: CSSValue rewrite, currently not working completely in trunk!**
+    + **FEATURE**: Started implementation of CSS profiles...
 
-        - DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
+        - added CSS Color Module Level 3 with properties ``color`` and ``opacity``. Not implemented are SVG color names.
+        - unknown properties raise a WARNING instead of INFO now
+        - refactored CSSValue and subclasses therefore there may be some minor changes in serializing or value reporting
+            + ``getStringValue()`` returns a string without quotes or for URIs without ``url(...)`` now
 
 
-    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
-        **TODO**: Preference setting. Profile?
+    + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
+    + FEATURE: Value with a zero value are now serialized just as ``0`` without any in this case unneeded dimension. Might not work for all cases but the most common ones.
 
     + **API CLEANUP**:
         - moved validating of a property from CSSValue to Property
@@ -67,21 +70,16 @@ HEAD
 
     - API CHANGE (minor): ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
 
+    + BUGFIX/IMPROVEMENT: rewrite of CSSValue and related classes
+        - DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
+        - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
+        - BUGFIX: Parsing values with ``+`` operator fixed.
+        - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)
+        - IMPROVEMENT: Comments should be parsed much better now
+        - fixed lots of other minor bugs related to CSSValue
 
-+ **FEATURE**: Started implementation of CSS profiles...
-
-        - added CSS Color Module Level 3 with properties ``color`` and ``opacity``. Not implemented are SVG color names.
-        - unknown properties raise a WARNING instead of INFO now
-        - refactored CSSValue and subclasses therefore there may be some minor changes in serializing or value reporting
-            + ``getStringValue()`` returns a string without quotes or for URIs without ``url(...)`` now
-
-
-    + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
-    + FEATURE: Value with a zero value are now serialized just as ``0`` without any in this case unneeded dimension. Might not work for all cases but the most common ones.
-
-    - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
-    - BUGFIX: Parsing values with ``+`` operator fixed.
-    - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)
+    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
+        **TODO**: Preference setting. Profile?
 
 
 0.9.5
