@@ -107,6 +107,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'/**/ red': u'/**/ red',
             u'red /**/': u'red /**/',
             u'/**/ red /**/': u'/**/ red /**/',
+            u'red-': u'red-',
             # values 
             u'.0': u'0',
             u'0': u'0',
@@ -144,10 +145,58 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
             u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
             u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
+            # /
+            '1': '1',
+            '1 2': '1 2',
+            '1   2': '1 2',
+            '1,2': '1, 2',
+            '1,  2': '1, 2',
+            '1  ,2': '1, 2',
+            '1  ,  2': '1, 2',
+            '1/2': '1/2',
+            '1/  2': '1/2',
+            '1  /2': '1/2',
+            '1  /  2': '1/2',
+             # comment
+            '1/**/2': '1 /**/ 2',
+            '1 /**/2': '1 /**/ 2',
+            '1/**/ 2': '1 /**/ 2',
+            '1 /**/ 2': '1 /**/ 2',
+            '1  /*a*/  /*b*/  2': '1 /*a*/ /*b*/ 2',
+            # , before
+            '1,/**/2': '1, /**/ 2',
+            '1 ,/**/2': '1, /**/ 2',
+            '1, /**/2': '1, /**/ 2',
+            '1 , /**/2': '1, /**/ 2',
+            # , after
+            '1/**/,2': '1 /**/, 2',
+            '1/**/ ,2': '1 /**/, 2',
+            '1/**/, 2': '1 /**/, 2',
+            '1/**/ , 2': '1 /**/, 2',
+            # all
+            '1/*a*/  ,/*b*/  2': '1 /*a*/, /*b*/ 2',
+            '1  /*a*/,  /*b*/2': '1 /*a*/, /*b*/ 2',
+            '1  /*a*/  ,  /*b*/  2': '1 /*a*/, /*b*/ 2',
+            # list
+            'a b1,b2,b3': 'a b1, b2, b3',
+            # url
+            'url(a)': 'url(a)',
+            'uRl(a)': 'url(a)',
+            'u\\rl(a)': 'url(a)',
+            'url("a")': 'url(a)',
+            'url(  "a"  )': 'url(a)',
+            'url(a)': 'url(a)',
+            'url(";")': 'url(";")',
+            'url(",")': 'url(",")',
+            'url(")")': 'url(")")',
+            '''url("'")''': '''url("'")''',
+            '''url('"')''': '''url("\\"")''',
+            '''url("'")''': '''url("'")''',
             }
         self.do_equal_r(tests)
 
         tests = {
+            u'a+': xml.dom.SyntaxErr,
             u'-': xml.dom.SyntaxErr,
             u'+': xml.dom.SyntaxErr,
             u'-%': xml.dom.SyntaxErr,
@@ -160,51 +209,19 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'#00000': xml.dom.SyntaxErr,
             u'#0000000': xml.dom.SyntaxErr,
             u'-#0': xml.dom.SyntaxErr,
+            # operator
+            u',': xml.dom.SyntaxErr,
+            u'1,,2': xml.dom.SyntaxErr,
+            u'1,/**/,2': xml.dom.SyntaxErr,
+            u'1  ,  /**/  ,  2': xml.dom.SyntaxErr,
+            u'1,': xml.dom.SyntaxErr,
+            u'1, ': xml.dom.SyntaxErr,
+            u'1 ,': xml.dom.SyntaxErr,
+            u'1 , ': xml.dom.SyntaxErr,
+            u'1  ,  ': xml.dom.SyntaxErr,
+            u'1//2': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests)
-
-    def test_cssText3(self):
-        "CSSValue.cssText Syntax"
-        v = cssutils.css.CSSValue()
-        
-        tests = {
-                 '1': (True, '1'),
-                 '1 2': (True, '1 2'),
-                 '1   2': (True, '1 2'),
-                 '1,2': (True, '1, 2'),
-                 '1,  2': (True, '1, 2'),
-                 '1  ,2': (True, '1, 2'),
-                 '1  ,  2': (True, '1, 2'),
-                 '1/2': (True, '1/2'),
-                 '1/  2': (True, '1/2'),
-                 '1  /2': (True, '1/2'),
-                 '1  /  2': (True, '1/2'),
-                 # comment
-                 '1/**/2': (True, '1 /**/ 2'),
-                 '1 /**/2': (True, '1 /**/ 2'),
-                 '1/**/ 2': (True, '1 /**/ 2'),
-                 '1 /**/ 2': (True, '1 /**/ 2'),
-                 '1  /*a*/  /*b*/  2': (True, '1 /*a*/ /*b*/ 2'),
-                 # , before
-                 '1,/**/2': (True, '1, /**/ 2'),
-                 '1 ,/**/2': (True, '1, /**/ 2'),
-                 '1, /**/2': (True, '1, /**/ 2'),
-                 '1 , /**/2': (True, '1, /**/ 2'),
-                 # , after
-                 '1/**/,2': (True, '1 /**/, 2'),
-                 '1/**/ ,2': (True, '1 /**/, 2'),
-                 '1/**/, 2': (True, '1 /**/, 2'),
-                 '1/**/ , 2': (True, '1 /**/, 2'),
-                 # all
-                 '1/*a*/  ,/*b*/  2': (True, '1 /*a*/, /*b*/ 2'),
-                 '1  /*a*/,  /*b*/2': (True, '1 /*a*/, /*b*/ 2'),
-                 '1  /*a*/  ,  /*b*/  2': (True, '1 /*a*/, /*b*/ 2'),
-                 }
-        for css, exp in tests.items():
-            v.cssText = css
-            wellformed, res = exp
-            self.assertEqual(wellformed, v.wellformed)
-            self.assertEqual(res, v.cssText)
 
     def test_incomplete(self):
         "CSSValue (incomplete)"
@@ -217,27 +234,10 @@ class CSSValueTestCase(basetest.BaseTestCase):
             v = s.cssRules[0].style.background
             self.assertEqual(v, exp)
 
-# -------------- MOVE -----------------------
-#    def test_valid(self):
-#        "Property.valid"
-#        # context property must be set
-#        tests = [
-#            ('color', r'INHe\rIT', True),
-#            ('color', '1', False),
-#            ('color', 'red', True),
-#            ('left', '1', False),
-#            ('left', '1px', True),
-#            ('font', 'normal 1em/1.5 serif', True),
-#            ('background', 'url(x.gif) 1 0', False)
-#            ]
-#        for n, v, exp in tests:
-#            v = cssutils.css.CSSValue(cssText=v)
-#            self.assert_(v.wellformed, True)
-
     def test_cssValueType(self):
         "CSSValue.cssValueType .cssValueTypeString"
         tests = [
-            ([u'inherit'], 'CSS_INHERIT'),
+            ([u'inherit', u'INhe\\rit'], 'CSS_INHERIT', cssutils.css.CSSValue),
             (['1', '1%', '1em', '1ex', '1px', '1cm', '1mm', '1in', '1pt', '1pc',
               '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
                '"string"', "'string'", 'url(x)', 'red',
@@ -245,11 +245,12 @@ class CSSValueTestCase(basetest.BaseTestCase):
                'rgb(0, 0, 0)', '#000', '#123456', 'rgba(0, 0, 0, 0)',
                'hsl(0, 0, 0)', 'hsla(0, 0, 0, 0)',
                ],
-             'CSS_PRIMITIVE_VALUE'),
-            ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST'),
-            ([], 'CSS_CUSTOM') # what is a custom value?
+             'CSS_PRIMITIVE_VALUE', cssutils.css.CSSPrimitiveValue),
+            ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST', cssutils.css.CSSValueList),
+            # what is a custom value?
+            #([], 'CSS_CUSTOM', cssutils.css.CSSValue) 
             ]
-        for values, name in tests:
+        for values, name, cls in tests:
             for value in values:
                 v = cssutils.css.CSSValue(cssText=value)
                 if value == "'string'":
@@ -258,6 +259,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
                 self.assertEqual(value, v.cssText)
                 self.assertEqual(name, v.cssValueTypeString)
                 self.assertEqual(getattr(v, name), v.cssValueType)
+                self.assertEqual(cls, type(v))
 
     def test_readonly(self):
         "(CSSValue._readonly)"
@@ -589,9 +591,9 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assertEqual((u')', 'URI'), v._value)
         self.assertEqual(u')', v.getStringValue())
 
-        v.setStringValue(v.CSS_URI, '""') 
-        self.assertEqual(ur'""', v.getStringValue())
-        self.assertEqual((ur'""', 'URI'), v._value)
+        v.setStringValue(v.CSS_URI, '"') 
+        self.assertEqual(ur'"', v.getStringValue())
+        self.assertEqual((ur'"', 'URI'), v._value)
 
         v.setStringValue(v.CSS_URI, "''") 
         self.assertEqual(ur"''", v.getStringValue())

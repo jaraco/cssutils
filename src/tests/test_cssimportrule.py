@@ -97,8 +97,8 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'''@import url(x.css);''': None,
             # nospace
             u'''@import url(")");''': u'''@import url(")");''',
-            u'''@import url("\\"");''': u'''@import url(");''',
-            u'''@import url('\\'');''': u'''@import url(');''',
+            u'''@import url("\\"");''': u'''@import url("\\"");''',
+            u'''@import url('\\'');''': u'''@import url("'");''',
 
             # href + media
             # all is removed
@@ -202,7 +202,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.href = '"'
         self.assertEqual(u'@import "\\"";', self.r.cssText)
         self.r.hreftype='url'
-        self.assertEqual(u'@import url(");', self.r.cssText)
+        self.assertEqual(u'@import url("\\"");', self.r.cssText)
         
         # url escaping?
         self.r.href = ')'
