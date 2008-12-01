@@ -86,13 +86,11 @@ class CSSValueTestCase(basetest.BaseTestCase):
         self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
         self.assert_(u'1 px' == v.cssText)
 
-#        v.cssText = u'expression(document.body.clientWidth > 972 ? "1014px": "100%" )'
-#        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-#        self.assert_(v.CSS_UNKNOWN == v.primitiveType)
-#        self.assertEqual('expression(document.body.clientWidth>972?"1014px":"100%")',
-#                         v._value)
-#        self.assertEqual('expression(document.body.clientWidth>972?"1014px":"100%")',
-#                         v.cssText)
+        v.cssText = u'expression(document.body.clientWidth > 972 ? "1014px": "100%" )'
+        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
+        self.assert_(v.CSS_UNKNOWN == v.primitiveType)
+        self.assertEqual('expression(document.body.clientWidth > 972?"1014px": "100%")',
+                         v.cssText)
 
     def test_cssText2(self):
         "CSSValue.cssText 2"
@@ -192,6 +190,11 @@ class CSSValueTestCase(basetest.BaseTestCase):
             '''url("'")''': '''url("'")''',
             '''url('"')''': '''url("\\"")''',
             '''url("'")''': '''url("'")''',
+            
+            # IE expression
+            ur'E\xpression()': u'expression()',
+            ur'expression(-1 < +2)': u'expression(-1< + 2)',
+            ur'expression(document.width == "1")': u'expression(document.width=="1")'
             }
         self.do_equal_r(tests)
 
@@ -306,11 +309,11 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.InvalidAccessErr, v.getRectValue)
         self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
 
-#    def test_CSS_UNKNOWN(self):
-#        "CSSPrimitiveValue.CSS_UNKNOWN"
-#        v = cssutils.css.CSSPrimitiveValue(u'expression(false)')
-#        self.assert_(v.CSS_UNKNOWN == v.primitiveType)
-#        self.assert_('CSS_UNKNOWN' == v.primitiveTypeString)
+    def test_CSS_UNKNOWN(self):
+        "CSSPrimitiveValue.CSS_UNKNOWN"
+        v = cssutils.css.CSSPrimitiveValue(u'expression(false)')
+        self.assert_(v.CSS_UNKNOWN == v.primitiveType)
+        self.assert_('CSS_UNKNOWN' == v.primitiveTypeString)
 
     def test_CSS_NUMBER_AND_OTHER_DIMENSIONS(self):
         "CSSPrimitiveValue.CSS_NUMBER .. CSS_DIMENSION"

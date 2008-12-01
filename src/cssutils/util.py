@@ -714,17 +714,18 @@ class _Namespaces(object):
             if rule.prefix == prefix:
                 return rule
 
-    def __getNamespaces(self):
+    @property
+    def namespaces(self):
+        """
+        A property holding only effective @namespace rules in 
+        self.parentStyleSheets.
+        """
         namespaces = {}
         for rule in ifilter(lambda r: r.type == r.NAMESPACE_RULE,
                             reversed(self.parentStyleSheet.cssRules)):
             if rule.namespaceURI not in namespaces.values():
                 namespaces[rule.prefix] = rule.namespaceURI
         return namespaces
-
-    namespaces = property(__getNamespaces,
-        doc=u'Holds only effective @namespace rules in self.parentStyleSheets'
-             '@namespace rules.')
 
     def get(self, prefix, default):
         return self.namespaces.get(prefix, default)
