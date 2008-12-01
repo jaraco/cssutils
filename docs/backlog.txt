@@ -78,12 +78,6 @@ test improvements
 - CSSStyleSheet.setSerializerPref()
 
 
-CSS2Properties
---------------
-:prio: 2
-
-needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
-
 
 CSSValue
 --------
@@ -118,6 +112,13 @@ serializer
 
 - **refactor**: all preferences values should be constansts like above
 
+CSS2Properties
+--------------
+:prio: 3
+
+needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc
+
+
 performance
 -----------
 :prio: 3
@@ -132,7 +133,6 @@ serializer
 - prettyprint convinience serializer?
 - XML serializer to be able to handle CSS with XSLT, schemas etc?
 - different coding styles?
-
 
 Properties
 ----------

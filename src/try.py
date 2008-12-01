@@ -37,8 +37,9 @@ if 1:
     cssutils.log.setLevel(logging.DEBUG)
     
     
-    v = cssutils.css.CSSValue('010px')
-    print v.getFloatValue()
+    v = cssutils.css.CSSValue('expression(document.body.clientWidth(a, b) >   -1014?   "1014px": "100%")')
+    print v
+    print v.cssText
 
 #    
     #print v.getRGBColorValue()

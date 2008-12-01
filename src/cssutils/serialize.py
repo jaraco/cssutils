@@ -926,3 +926,29 @@ class CSSSerializer(object):
             return u' '.join(out)
         else:
             return u''
+
+
+    def do_css_ExpressionValue(self, cssvalue):
+        """Serialize an ExpressionValue (IE only), 
+        should at least keep the original syntax"""
+        if not cssvalue:
+            return u''
+        else:
+            out = Out(self)
+            for item in cssvalue.seq:
+                type_, val = item.type, item.value
+                if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
+                    n, d = cssvalue._getNumDim(val)
+                    if 0 == n:
+                        if cssvalue.primitiveType in cssvalue._lengthtypes:
+                            # 0 if zero value
+                            val = u'0'
+                        else:
+                            val = u'0' + d
+                    else:
+                        val = unicode(n) + d
+                # do no send type_ so no special cases!
+                out.append(val, None, space=False)
+                
+            return out.value() 
+            

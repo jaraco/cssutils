@@ -86,6 +86,12 @@ HEAD
 
     - BUGFIX: Fixed Issue #14, added ``CSSStyleDeclaration().borderLeftWidth``. But prefer to use ``CSSStyleDeclaration()['border-left.width']``.
 
+    + FEATURE (strange): IE only CSS expressions *should* be parsed and serialized now. I have not tested this deeply and there may be problems but for some common cases this should work, e.g. for hacking maxwidth for IE you may define the following::
+
+        width: expression(document.body.clientWidth > 1000 ? "1000px": "100%")
+
+        Usage of CSS expressions is strongly discouraged as they do not validate AND may slow down the rendering and browser quite a lot!
+
 0.9.5
 -----
 0.9.5.1 080811
