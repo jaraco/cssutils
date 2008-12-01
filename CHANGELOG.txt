@@ -44,7 +44,7 @@ known issues
 --------
 HEAD
     + **FEATURE**: Started implementation of CSS profiles...
-
+        - moved ``cssutils.css.cssproperties.cssvalues`` to ``cssutils.profiles.css2``
         - added CSS Color Module Level 3 with properties ``color`` and ``opacity``. Not implemented are SVG color names.
         - unknown properties raise a WARNING instead of INFO now
         - refactored CSSValue and subclasses therefore there may be some minor changes in serializing or value reporting
