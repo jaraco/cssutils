@@ -19,13 +19,15 @@ CSSValue / Property has been rewritten
 
 minor API changes
 -----------------
-``cssutils.utils.Base`` and ``cssutils.utils.Base2`` have been changed and will be removed in favor of new ``cssutils.utils.NewBase``. These are all internal helper classes and should not be used in client code anyway but ye be warned...
++ moved ``cssutils.css.cssproperties.cssvalues`` to ``cssutils.profiles.css2``
 
-A few private attributes have been changed. It is best to not use these anyway but if you have:
++ ``cssutils.utils.Base`` and ``cssutils.utils.Base2`` have been changed and will be removed in favor of new ``cssutils.utils.NewBase``. These are all internal helper classes and should not be used in client code anyway but ye be warned...
+
++ A few private attributes have been changed. It is best to not use these anyway but if you have:
     - removed private init parameter ``CSSValue._propertyName``
     - private attribute ``CSSValue._value`` contains ``(value, type)`` now. Do not use as it may change again!
 
-The API has been cleaned up resulting in *DEPRECATED* attributes and methods being removed:
++ The API has been cleaned up resulting in *DEPRECATED* attributes and methods being removed:
     - removed ``Property.normalname`` (DEPRECATED from 0.9.5 ), use ``Property.name`` instead
     - removed ``CSSStyleSheet.replaceUrls``, use ``cssutils.replaceUrls()`` instead
 

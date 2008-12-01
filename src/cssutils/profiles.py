@@ -2,6 +2,20 @@
 
 - 'CSS level 2'
 
+
+TODO
+    css2 based on cssvalues
+    =======================
+    contributed by Kevin D. Smith, thanks!
+    
+    "cssvalues" is used as a property validator.
+    it is an importable object that contains a dictionary of compiled regular
+    expressions.  The keys of this dictionary are all of the valid CSS property
+    names.  The values are compiled regular expressions that can be used to
+    validate the values for that property. (Actually, the values are references
+    to the 'match' method of a compiled regular expression, so that they are
+    simply called like functions.)
+
 """
 __all__ = ['profiles']
 __docformat__ = 'restructuredtext'

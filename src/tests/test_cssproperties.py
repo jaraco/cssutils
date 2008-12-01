@@ -4,23 +4,24 @@ __version__ = '$Id$'
 import xml.dom
 import basetest
 import cssutils.css
+import cssutils.profiles
 
 class CSSPropertiesTestCase(basetest.BaseTestCase):
 
-    def test_cssvalues(self):
-        "cssproperties cssvalues"
-        # does actually return match object, so a very simplified test...
-        match = cssutils.css.cssproperties.cssvalues
-
-        self.assertEquals(True, bool(match['color']('red')))
-        self.assertEquals(False, bool(match['top']('red')))
-
-        self.assertEquals(True, bool(match['left']('0')))
-        self.assertEquals(True, bool(match['left']('1px')))
-        self.assertEquals(True, bool(match['left']('.1px')))
-        self.assertEquals(True, bool(match['left']('-1px')))
-        self.assertEquals(True, bool(match['left']('-.1px')))
-        self.assertEquals(True, bool(match['left']('-0.1px')))
+#    def test_cssvalues(self):
+#        "cssproperties cssvalues"
+#        # does actually return match object, so a very simplified test...
+#        match = cssutils.css.cssproperties.cssvalues
+#
+#        self.assertEquals(True, bool(match['color']('red')))
+#        self.assertEquals(False, bool(match['top']('red')))
+#
+#        self.assertEquals(True, bool(match['left']('0')))
+#        self.assertEquals(True, bool(match['left']('1px')))
+#        self.assertEquals(True, bool(match['left']('.1px')))
+#        self.assertEquals(True, bool(match['left']('-1px')))
+#        self.assertEquals(True, bool(match['left']('-.1px')))
+#        self.assertEquals(True, bool(match['left']('-0.1px')))
 
     def test_toDOMname(self):
         "cssproperties _toDOMname(CSSname)"
@@ -46,7 +47,7 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
         "CSS2Properties"
         CSS2Properties = cssutils.css.cssproperties.CSS2Properties
         self.assertEquals(type(property()), type(CSS2Properties.color))
-        self.assertEquals(len(cssutils.css.cssproperties.cssvalues),
+        self.assertEquals(len(cssutils.profiles.css2),
                           len(CSS2Properties._properties))
 
         c2 = CSS2Properties()
