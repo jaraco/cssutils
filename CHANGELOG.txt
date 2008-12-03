@@ -81,6 +81,13 @@ HEAD
         - IMPROVEMENT: Comments should be parsed much better now
         - fixed lots of other minor bugs related to CSSValue
 
+    - BUGFIX: Fixed tokenizing/parsing of rather strange STRING and URI values like:
+        - ``url())`` => not allowed and must be written as ``url(")")``
+        - Valid::
+
+            "somestring followed by escaped NL\
+                and continuing here."
+
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
 

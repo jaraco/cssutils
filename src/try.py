@@ -36,10 +36,17 @@ if 1:
 #    - URL: url(  "ABc"  ) or Ur\L???
     cssutils.log.setLevel(logging.DEBUG)
     
+    T = cssutils.tokenize2.Tokenizer()
+    print list(T.tokenize('@import url(x.ss)'))
     
-    v = cssutils.css.CSSValue('expression(document.body.clientWidth(a, b) >   -1014?   "1014px": "100%")')
-    print v
-    print v.cssText
+    #print cssutils.parseString('@import url(x.css)').cssText
+    print 
+    
+#    v = cssutils.css.CSSValue(r'''"a\
+##b"''')
+#    
+#    print v
+#    print v.cssText
 
 #    
     #print v.getRGBColorValue()
