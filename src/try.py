@@ -26,27 +26,14 @@ if 1:
 #   [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
 #                  TIME S* | FREQ S* ]
 #              | STRING S* | IDENT S* | URI S* | hexcolor | function
-    css = '''
-        1, -1, +1, 1%, -1%, 1px, -1px, 
-        "a", a, url(a), #aabb44
-    '''#, a()
+    css = '''rect(1,2,3)'''
     
-#    - font: 1em / 1.2 arial;
-#    - font-family: a, b, "c"
-#    - URL: url(  "ABc"  ) or Ur\L???
     cssutils.log.setLevel(logging.DEBUG)
     
-    T = cssutils.tokenize2.Tokenizer()
-    print list(T.tokenize('@import url(x.ss)'))
-    
-    #print cssutils.parseString('@import url(x.css)').cssText
-    print 
-    
-#    v = cssutils.css.CSSValue(r'''"a\
-##b"''')
+    v = cssutils.css.CSSValue(css)
 #    
-#    print v
-#    print v.cssText
+    print v
+    print v.cssText
 
 #    
     #print v.getRGBColorValue()
