@@ -561,15 +561,15 @@ a[href='"\a\22\27"'] {
     content: '\27';
     }'''
         exp = ur'''@import url("ABC\a ");
-@import "ABC\a ";
-@import "ABC\a ";
-a[href="\"\a \"'\""] {
-    a: "\a \d \c ";
+@import "ABC\a";
+@import "ABC\a";
+a[href="\"\a\22\27\""] {
+    a: "\a\d\c";
     b: "\a \d \c ";
     c: "\"";
-    d: "\"";
+    d: "\22";
     e: "'";
-    content: "'"
+    content: "\27"
     }'''
         sheet = cssutils.parseString(css)
         self.assertEqual(sheet.cssText, exp)

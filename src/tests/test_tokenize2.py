@@ -77,12 +77,20 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u" '' ": [('S', u' ', 1, 1),
                  ('STRING', u"''", 1, 2),
                  ('S', u' ', 1, 4)],
-        u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
-        u"'\\\n\\\n\\\n'": [('STRING', u"'\\\n\\\n\\\n'", 1, 1)],
-        u"'\\\f'": [('STRING', u"'\\\f'", 1, 1)],
-        u"'\\\r'": [('STRING', u"'\\\r'", 1, 1)],
-        u"'\\\r\n'": [('STRING', u"'\\\r\n'", 1, 1)],
-        u"'1\\\n2'": [('STRING', u"'1\\\n2'", 1, 1)],
+        # until 0.9.5.x
+        #u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
+        #u"'\\\n\\\n\\\n'": [('STRING', u"'\\\n\\\n\\\n'", 1, 1)],
+        #u"'\\\f'": [('STRING', u"'\\\f'", 1, 1)],
+        #u"'\\\r'": [('STRING', u"'\\\r'", 1, 1)],
+        #u"'\\\r\n'": [('STRING', u"'\\\r\n'", 1, 1)],
+        #u"'1\\\n2'": [('STRING', u"'1\\\n2'", 1, 1)],
+        # from 0.9.6a0 escaped nl is removed from string
+        u"'\\\n'": [('STRING', u"''", 1, 1)],
+        u"'\\\n\\\n\\\n'": [('STRING', u"''", 1, 1)],
+        u"'\\\f'": [('STRING', u"''", 1, 1)],
+        u"'\\\r'": [('STRING', u"''", 1, 1)],
+        u"'1\\\n2'": [('STRING', u"'12'", 1, 1)],
+        u"'1\\\r\n2'": [('STRING', u"'12'", 1, 1)],
 
         # HASH
         u' #a ': [('S', u' ', 1, 1),
@@ -263,13 +271,12 @@ class TokenizerTestCase(basetest.BaseTestCase):
                   ('S', u' ', 1, 4)],
         u'*==': [('SUBSTRINGMATCH', u'*=', 1, 1), ('CHAR', u'=', 1, 3)],
 
-        # BOM (only at start!)
-        u'\xFEFF ': [('BOM', u'\xFEFF', 1, 1), # len=3
+        # BOM only at start
+        u'\xFEFF ': [('BOM', u'\xfeFF', 1, 1),
                   ('S', u' ', 1, 1)],
-#        u' \xFEFF ': [('S', u' ', 1, 1),
-#                  ('BOM', u'\xFEFF', 1, 2), # len=3
-#                  ('S', u' ', 1, 5)],
-
+        u' \xFEFF ': [('S', u' ', 1, 1),
+                  ('IDENT', u'\xfeFF', 1, 2),
+                  ('S', u' ', 1, 5)],
         }
 
     tests2 = {

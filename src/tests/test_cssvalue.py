@@ -95,6 +95,10 @@ class CSSValueTestCase(basetest.BaseTestCase):
     def test_cssText2(self):
         "CSSValue.cssText 2"
         tests = {
+            # mix
+            u'a()1,-1,+1,1%,-1%,1px,-1px,"a",a,url(a),#aabb44':
+                u'a() 1, -1, 1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4',
+            
             # S or COMMENT
             u'red': u'red',
             u'red ': u'red',
@@ -106,7 +110,8 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'red /**/': u'red /**/',
             u'/**/ red /**/': u'/**/ red /**/',
             u'red-': u'red-',
-            # values 
+            
+            # num / dimension 
             u'.0': u'0',
             u'0': u'0',
             u'0.0': u'0',
@@ -134,6 +139,26 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'-1': u'-1',
             u'+1.0': u'1',
             u'-1.0': u'-1',
+            
+            # string
+            # escaped nl is removed during tokenizing
+            ur'''"x\
+y"''': u'''"xy"''', 
+
+            # url
+            'url(a)': 'url(a)',
+            'uRl(a)': 'url(a)',
+            'u\\rl(a)': 'url(a)',
+            'url("a")': 'url(a)',
+            'url(  "a"  )': 'url(a)',
+            'url(a)': 'url(a)',
+            'url(";")': 'url(";")',
+            'url(",")': 'url(",")',
+            'url(")")': 'url(")")',
+            '''url("'")''': '''url("'")''',
+            '''url('"')''': '''url("\\"")''',
+            '''url("'")''': '''url("'")''',
+            
             # RGBColor
             u'#112234': u'#112234',
             u'#112233': u'#123',
@@ -143,7 +168,11 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
             u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
             u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
-            # /
+            
+            # FUNCTION 
+            u'f(-1,+2)': u'f(-1, 2)',
+            
+            # operator
             '1': '1',
             '1 2': '1 2',
             '1   2': '1 2',
@@ -175,21 +204,9 @@ class CSSValueTestCase(basetest.BaseTestCase):
             '1/*a*/  ,/*b*/  2': '1 /*a*/, /*b*/ 2',
             '1  /*a*/,  /*b*/2': '1 /*a*/, /*b*/ 2',
             '1  /*a*/  ,  /*b*/  2': '1 /*a*/, /*b*/ 2',
+            
             # list
             'a b1,b2,b3': 'a b1, b2, b3',
-            # url
-            'url(a)': 'url(a)',
-            'uRl(a)': 'url(a)',
-            'u\\rl(a)': 'url(a)',
-            'url("a")': 'url(a)',
-            'url(  "a"  )': 'url(a)',
-            'url(a)': 'url(a)',
-            'url(";")': 'url(";")',
-            'url(",")': 'url(",")',
-            'url(")")': 'url(")")',
-            '''url("'")''': '''url("'")''',
-            '''url('"')''': '''url("\\"")''',
-            '''url("'")''': '''url("'")''',
             
             # IE expression
             ur'E\xpression()': u'expression()',
@@ -223,6 +240,13 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'1 , ': xml.dom.SyntaxErr,
             u'1  ,  ': xml.dom.SyntaxErr,
             u'1//2': xml.dom.SyntaxErr,
+            # URL
+            u'url(x))': xml.dom.SyntaxErr,
+            # string
+            u'"': xml.dom.SyntaxErr,
+            u"'": xml.dom.SyntaxErr,
+            # function 
+            u'f(-)': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests)
 
@@ -669,7 +693,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 
         v = cssutils.css.CSSPrimitiveValue('rgb(1%, 5%, 10%)')
         self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-# TODO        self.assertEqual(u'rgb(1.0%, 5.0%, 10.0%)', v.cssText)
+        self.assertEqual(u'rgb(1%, 5%, 10%)', v.cssText)
 
         v = cssutils.css.CSSPrimitiveValue('  rgb(  1 ,5,  10  )')
         self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
