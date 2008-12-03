@@ -25,22 +25,16 @@ known issues
 
    **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
 
-- Properties are not bound to any CSS Version, so all properties are generally handled and kept. So effectively properties are *NOT* as described in  http://www.w3.org/TR/CSS21/syndata.html#parsing-errors "Illegal values".
-
-    There is the option ``cssutils.ser.prefs.validOnly`` which is used to keep valid (based on CSS 2 valid) properties only. Problem is that current stylesheets use quite a few properties (like e.g. ``opacity``) or property values (like ``display: inline-block``) which are more or less standard but not yet *official*. There is currently no option to specify a version for which properties with which valid values should be used in cssutils. At the moment warnings will be emitted which unfortunately also go for the aforementioned *newer* properties or values.
-
-    There is the plan to be able to *register* custom properties or values but this is just a plan for now...
-
-- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. (maybe 0.9.6 but again as CSSOM defined something else this may change)
+- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. Prefer to use ``style['property']`` over ``style.property``.
 
 - ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` and the relevant methods/properties ``Property.cssValue`` and ``CSSStyleDeclaration.getPropertyCSSValue`` are more or less *DEPRECATED* and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings. As the aforementioned classes are not hardly that useful this should not be a big problem but please beware if you use or have used them. If you think this a bad idea please let me know!
 
    Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` will probably be completely replaced/refactored with suggestions from CSSOM.
 
-- not all Comments reply to preference ``keepComments``, some will probably survive if set to ``False``
+- handling of comments does probable not work for all cases
 
 
-0.9.6dev
+0.9.6
 --------
 HEAD
     + **FEATURE**: Started implementation of CSS profiles...
@@ -51,7 +45,45 @@ HEAD
             + ``getStringValue()`` returns a string without quotes or for URIs a value without surrounding ``url(...)`` now
 
     + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
-    + FEATURE: Value with a zero value are now serialized just as ``0`` without any in this case unneeded dimension. Might not work for all cases but the most common ones.
+
+    + FEATURE (strange): IE only CSS expressions *should* be parsed and serialized now an an ``Expression`` value. I have not tested this deeply and there may be problems but for some common cases this should work, e.g. for hacking maxwidth for IE you may define the following::
+
+        width: expression(document.body.clientWidth > 1000 ? "1000px": "100%")
+
+      Usage of CSS expressions is strongly discouraged as they do not validate AND may slow down the rendering and browser quite a lot!
+
+    + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``.
+
+    + BUGFIX/IMPROVEMENT: rewrite of CSSValue and related classes
+        - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
+        - BUGFIX: Parsing values with ``+`` operator fixed.
+        - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)
+        - IMPROVEMENT: Serializing e.g. ``rgb(0,0,0)`` now defaults to ``rgb(0, 0, 0)``
+        - IMPROVEMENT: HEX values are minified if possible, e.g. ``#112233`` results in ``#123``
+        - IMPROVEMENT: Improved handling of zero lengths like ``-0, 0.0, .0mm`` etc all should come out simply as ``0`` now
+        - IMPROVEMENT: number values are normalized now, e.g. ``010.0px`` results in ``10px`` etc
+        - IMPROVEMENT: DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
+        - IMPROVEMENT: for CSSValueList values like e.g. ``margin: 0 1px`` there are no more false WARNINGs emitted
+        - IMPROVEMENT: Comments should be parsed much better now
+        - IMPROVEMENT: ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
+        - fixed lots of other minor bugs related to CSSValue
+
+    - BUGFIX: Fixed tokenizing/parsing of rather strange STRING and URI values like:
+        - Valid::
+
+            "somestring followed by escaped NL\
+             and continuing here."
+
+          and now results in::
+
+            "somestring followed by escaped and continuing here."
+
+        - ``url())`` => not allowed and must be written as ``url(")")``
+
+    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
+        **TODO**: Preference setting. Profile?
+
+    - BUGFIX: Fixed Issue #14, added ``CSSStyleDeclaration().borderLeftWidth``. But prefer to use ``CSSStyleDeclaration()['border-left.width']``.
 
     + **API CLEANUP**:
         - moved validating of a property from ``CSSValue`` to ``Property``
@@ -60,44 +92,8 @@ HEAD
         - private attribute ``CSSValue._value`` contains ``(value, type)`` now. Do not use as it may change again
         - removed ``Property.normalname`` (DEPRECATED from 0.9.5 ), use ``Property.name`` instead
         - removed long deprecated ``CSSStyleSheet.replaceUrls``, use ``cssutils.replaceUrls()`` instead
+        - ``cssutils.utils.Base`` and ``cssutils.utils.Base2`` have been changed and will be removed in favor of new ``cssutils.utils._NewBase``. These are all internal helper classes and should not be used in client code anyway but ye be warned...
 
-    + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``. This results in these changes:
-
-        - serializing e.g. ``rgb(0,0,0)`` now defaults to ``rgb(0, 0, 0)``
-        - HEX values are minified if possible, e.g. ``#112233`` results in ``#123``
-        - improved handling of zero values like ``-0, 0.0`` etc all should come out simply as ``0`` now
-
-    - API CHANGE: ``cssutils.utils.Base`` and ``cssutils.utils.Base2`` have been changed and will be removed in favor of new ``cssutils.utils.NewBase``. These are all internal helper classes and should not be used in client code anyway but ye be warned...
-
-    - API CHANGE (minor): ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
-
-    + BUGFIX/IMPROVEMENT: rewrite of CSSValue and related classes
-        - IMPROVEMENT: number values are normalized now, e.g. ``010.0px`` results in ``10px`` etc
-        - IMPROVEMENT: DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
-        - for CSSValueList values like e.g. ``margin: 0 1px`` there are no more false WARNINGs emitted
-        - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
-        - BUGFIX: Parsing values with ``+`` operator fixed.
-        - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)
-        - IMPROVEMENT: Comments should be parsed much better now
-        - fixed lots of other minor bugs related to CSSValue
-
-    - BUGFIX: Fixed tokenizing/parsing of rather strange STRING and URI values like:
-        - ``url())`` => not allowed and must be written as ``url(")")``
-        - Valid::
-
-            "somestring followed by escaped NL\
-                and continuing here."
-
-    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
-        **TODO**: Preference setting. Profile?
-
-    - BUGFIX: Fixed Issue #14, added ``CSSStyleDeclaration().borderLeftWidth``. But prefer to use ``CSSStyleDeclaration()['border-left.width']``.
-
-    + FEATURE (strange): IE only CSS expressions *should* be parsed and serialized now. I have not tested this deeply and there may be problems but for some common cases this should work, e.g. for hacking maxwidth for IE you may define the following::
-
-        width: expression(document.body.clientWidth > 1000 ? "1000px": "100%")
-
-        Usage of CSS expressions is strongly discouraged as they do not validate AND may slow down the rendering and browser quite a lot!
 
 0.9.5
 -----
