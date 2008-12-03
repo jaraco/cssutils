@@ -23,6 +23,8 @@ class Tokenizer(object):
         u'@page': CSSProductions.PAGE_SYM
         }
     _linesep = u'\n'
+    unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t|\r|\n|\f|\x20])?').sub
+    cleanstring = re.compile(r'\\((\r\n)|[\n|\r|\f])').sub
     
     def __init__(self, macros=None, productions=None):
         """
@@ -38,7 +40,6 @@ class Tokenizer(object):
                                     productions))
         self.commentmatcher = [x[1] for x in self.tokenmatches if x[0] == 'COMMENT'][0]
         self.urimatcher = [x[1] for x in self.tokenmatches if x[0] == 'URI'][0]
-        self.unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t|\r|\n|\f|\x20])?').sub
 
     def _expand_macros(self, macros, productions):
         """returns macro expanded productions, order of productions is kept"""
@@ -150,6 +151,9 @@ class Tokenizer(object):
                             # may contain unicode escape, replace with normal char
                             # but do not _normalize (?)
                             value = self.unicodesub(_repl, found)
+                            if name in ('STRING', 'INVALID'): #'URI'?
+                                # remove \ followed by nl (so escaped) from string
+                                value = self.cleanstring('', found)
     
                         else:
                             if 'ATKEYWORD' == name:
