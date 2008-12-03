@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
 """Testcases for new cssutils.tokenize.Tokenizer
 
-TODO::
-
-    - escape ends with explicit space but \r\n as single space
-    - ur'"\""': [('STRING', ur'"\""', 1, 1)],
-    - font-face with escaped "-"
-
-+ old tests as new ones are **not complete**!
+TODO: old tests as new ones are **not complete**!
 """
 __version__ = '$Id$'
 
@@ -206,12 +200,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' , ': [('S', u' ', 1, 1),
                  ('CHAR', u',', 1, 2),
                  ('S', u' ', 1, 3)],
-
         # class
         u' . ': [('S', u' ', 1, 1),
                   ('CHAR', u'.', 1, 2),
                   ('S', u' ', 1, 3)],
-
         }
 
     tests3 = {  
@@ -439,10 +431,11 @@ class TokenizerTestCase(basetest.BaseTestCase):
         }
 
     testsfullsheet = {
-        # TODO: escape ends with explicit space but \r\n as single space
-        #u'\\1\r\nb': [('IDENT', u'\\1\r', 1, 1), ('IDENT', u'b', 1, 4)],
+        # escape ends with explicit space but \r\n as single space
+        u'\\65\r\nb': [('IDENT', u'eb', 1, 1)],
 
         # STRING
+        ur'"\""': [('STRING', ur'"\""', 1, 1)],
         ur'"\" "': [('STRING', ur'"\" "', 1, 1)],
         u"""'\\''""": [('STRING', u"""'\\''""", 1, 1)],
         u'''"\\""''': [('STRING', u'''"\\""''', 1, 1)],
@@ -464,7 +457,14 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'ur\\l(a)': [('URI', u'ur\\l(a)', 1, 1)],
         u'url(a)': [('URI', u'url(a)', 1, 1)],
         u'\\55r\\4c(a)': [('URI', u'UrL(a)', 1, 1)],
-        u'\\75r\\6c(a)': [('URI', u'url(a)', 1, 1)],
+        u'\\75r\\6c(a)': [('URI', u'url(a)', 1, 1)],        
+        u' url())': [('S', u' ', 1, 1),
+                 ('URI', u'url()', 1, 2),
+                 ('CHAR', u')', 1, 7)],
+        u'url("x"))': [('URI', u'url("x")', 1, 1),
+                       ('CHAR', u')', 1, 9)],
+        u"url('x'))": [('URI', u"url('x')", 1, 1),
+                       ('CHAR', u')', 1, 9)],
         }
 
     # tests if fullsheet=False is set on tokenizer
@@ -495,7 +495,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         # COMMENT incomplete
         u'/*': [('COMMENT', u'/**/', 1, 1)],
 
-        # INVALID incomplete => STRING 
+#        # INVALID incomplete => STRING 
         u' " ': [('S', u' ', 1, 1),
                  ('STRING', u'" "', 1, 2)],
         u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
@@ -509,7 +509,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u"url('a": [('URI', u"url('a')", 1, 1)],
         u'url("a"': [('URI', u'url("a")', 1, 1)],
         u"url('a'": [('URI', u"url('a')", 1, 1)],
-
         }
 
     def setUp(self):
@@ -533,9 +532,9 @@ class TokenizerTestCase(basetest.BaseTestCase):
 #        # push reinserts token into token stream, so x is doubled 
 #        self.assertEqual('1 xx 2 3', do()) 
 
-    def test_linenumbers(self):
-        "Tokenizer line + col"
-        pass
+#    def test_linenumbers(self):
+#        "Tokenizer line + col"
+#        pass
 
     def test_tokenize(self):
         "cssutils Tokenizer().tokenize()"
@@ -602,22 +601,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
             for i, actual in enumerate(tokens):
                 expected = tests[css][i]
                 self.assertEqual(expected, actual)
-
-#    # not really needed
-#    def test_tokenizeCSS2_1(self):
-#        "CSS2 Tokenizer().tokenize()"
-#        import cssutils.css2productions
-#        tokenizer = Tokenizer(cssutils.css2productions.MACROS,
-#                              cssutils.css2productions.PRODUCTIONS)
-#        tests = {}
-#        tests.update(self.testsall)
-#        #tests.update(self.tests2)
-#        tests.update(self.tests2only)
-#        for css in tests:
-#            tokens = tokenizer.tokenize(css)
-#            for i, actual in enumerate(tokens):
-#                expected = tests[css][i]
-#                self.assertEqual(expected, actual)
 
     # --------------
 
@@ -798,18 +781,18 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
             }
 
-#        tests = {
-#            u'/*a': xml.dom.SyntaxErr,
-#            u'"a': xml.dom.SyntaxErr,
-#            u"'a": xml.dom.SyntaxErr,
-#            u"\\0 a": xml.dom.SyntaxErr,
-#            u"\\00": xml.dom.SyntaxErr,
-#            u"\\000": xml.dom.SyntaxErr,
-#            u"\\0000": xml.dom.SyntaxErr,
-#            u"\\00000": xml.dom.SyntaxErr,
-#            u"\\000000": xml.dom.SyntaxErr,
-#            u"\\0000001": xml.dom.SyntaxErr
-#            }
+        tests = {
+            u'/*a': xml.dom.SyntaxErr,
+            u'"a': xml.dom.SyntaxErr,
+            u"'a": xml.dom.SyntaxErr,
+            u"\\0 a": xml.dom.SyntaxErr,
+            u"\\00": xml.dom.SyntaxErr,
+            u"\\000": xml.dom.SyntaxErr,
+            u"\\0000": xml.dom.SyntaxErr,
+            u"\\00000": xml.dom.SyntaxErr,
+            u"\\000000": xml.dom.SyntaxErr,
+            u"\\0000001": xml.dom.SyntaxErr
+            }
 #        self.tokenizer.log.raiseExceptions = True #!!
 #        for css, exception in tests.items():
 #            self.assertRaises(exception, self.tokenizer.tokenize, css)
