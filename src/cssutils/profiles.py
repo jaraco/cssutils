@@ -70,6 +70,7 @@ css2macros = {
     'font-attrs': r'{font-style}|{font-variant}|{font-weight}',
     'outline-attrs': r'{outline-color}|{outline-style}|{outline-width}',
     'text-attrs': r'underline|overline|line-through|blink',
+    'overflow': r'visible|hidden|scroll|auto|inherit',
 }
 
 """
@@ -151,7 +152,7 @@ css2 = {
     'outline-style': r'{outline-style}',
     'outline-width': r'{outline-width}',
     'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
-    'overflow': r'visible|hidden|scroll|auto|inherit',
+    'overflow': r'{overflow}',
     'padding-top': r'{padding-width}|inherit',
     'padding-right': r'{padding-width}|inherit',
     'padding-bottom': r'{padding-width}|inherit',
@@ -202,11 +203,16 @@ css3colormacros = {
     'rgbacolor': r'rgba\({w}{int}{w},{w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgba\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',                    
     'hslcolor': r'hsl\({w}{int}{w},{w}{num}%{w},{w}{num}%{w}\)|hsla\({w}{int}{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',                    
     }
-
-
 css3color = {
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|inherit',
     'opacity': r'{num}|inherit'
+    }
+
+# CSS Box Module Level 3
+css3box = {
+    'overflow': '{overflow}\s?{overflow}?',
+    'overflow-x': '{overflow}',
+    'overflow-y': '{overflow}'
     }
 
 class NoSuchProfileException(Exception):
@@ -224,7 +230,9 @@ class Profiles(object):
             
     Predefined profiles are:
     
-    - 'CSS level 2': Properties defined by CSS2
+    - CSS level 2: Properties defined by CSS2.1
+    - CSS Color Module Level 3
+    - CSS Box Module Level 3: Currently overflow related properties only
     
     """
     basicmacros = {
@@ -263,6 +271,7 @@ class Profiles(object):
     
     CSS_LEVEL_2 = 'CSS Level 2.1'
     CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
+    CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
     
     def __init__(self):
         self._log = cssutils.log
@@ -270,6 +279,7 @@ class Profiles(object):
         self._profiles = {}        
         self.addProfile(self.CSS_LEVEL_2, css2, css2macros)
         self.addProfile(self.CSS_COLOR_LEVEL_3, css3color, css3colormacros)
+        self.addProfile(self.CSS_BOX_LEVEL_3, css3box)
 
     def _expand_macros(self, dictionary, macros):
         """Expand macros in token dictionary"""
@@ -363,8 +373,10 @@ class Profiles(object):
         e.g. ``validateWithProfile('color', 'rgba(1,1,1,1)')`` returns 
         (True, Profiles.CSS_COLOR_LEVEL_3)
         """
+        profile = []
         for profilename in self._profilenames:
             if name in self._profiles[profilename]:
+                profile.append(profilename)
                 try:
                     # custom validation errors are caught
                     r = (bool(self._profiles[profilename][name](value)),
@@ -374,7 +386,7 @@ class Profiles(object):
                     r = False, None
                 if r[0]:
                     return r
-        return False, None
+        return False, '/'.join(profile)
 
 
 profiles = Profiles()
