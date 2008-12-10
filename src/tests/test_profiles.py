@@ -1,6 +1,7 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 __version__ = '$Id: test_cssvalue.py 1443 2008-08-31 13:54:39Z cthedot $'
 
+import sys
 import basetest
 import cssutils
 from cssutils.profiles import profiles, NoSuchProfileException
@@ -47,7 +48,12 @@ class ProfilesTestCase(basetest.BaseTestCase):
         cssutils.log.raiseExceptions = True
         
         # raises:
-        self.assertRaisesMsg(Exception, "invalid literal for int() with base 10: 'x'", 
+        if sys.version_info[0:2] == (2,4):
+            # Python 2.4 has a different msg...
+            self.assertRaisesMsg(Exception, "invalid literal for int(): x", 
+                             profiles.validate, '-test-z', 'x')
+        else:
+            self.assertRaisesMsg(Exception, "invalid literal for int() with base 10: 'x'", 
                              profiles.validate, '-test-z', 'x')
         
     def test_propertiesByProfile(self):
@@ -59,6 +65,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         "CSS Color Module Level 3"
         CSS2 = profiles.CSS_LEVEL_2
         CM3 = profiles.CSS_COLOR_LEVEL_3
+        CSS2_CM3 = '%s/%s' % (CSS2, CM3)
         
         # (propname, propvalue): (valid, validprofile)
 
@@ -80,58 +87,58 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('color', 'currentColor'): (True, CM3),
             ('color', 'currentcolor'): (True, CM3),
             # names
-            ('color', 'x'): (False, None),
+            ('color', 'x'): (False, CSS2_CM3),
             ('color', 'black'): (True, CSS2),
-            # hex
-            ('color', '#'): (False, None),
-            ('color', '#0'): (False, None),
-            ('color', '#00'): (False, None),
-            ('color', '#0000'): (False, None),
-            ('color', '#00000'): (False, None),
-            ('color', '#0000000'): (False, None),
-            ('color', '#00j'): (False, None),
-            ('color', '#j00000'): (False, None),
+#            # hex
+            ('color', '#'): (False, CSS2_CM3),
+            ('color', '#0'): (False, CSS2_CM3),
+            ('color', '#00'): (False, CSS2_CM3),
+            ('color', '#0000'): (False, CSS2_CM3),
+            ('color', '#00000'): (False, CSS2_CM3),
+            ('color', '#0000000'): (False, CSS2_CM3),
+            ('color', '#00j'): (False, CSS2_CM3),
+            ('color', '#j00000'): (False, CSS2_CM3),
             ('color', '#000'): (True, CSS2),
             ('color', '#000000'): (True, CSS2),
-            # rgb
+#            # rgb
             ('color', 'rgb(0,1,1)'): (True, CSS2),
             ('color', 'rgb( 0 , 1 , 1 )'): (True, CSS2),
-            #('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'): (True, CSS2),
+# TODO?:
+#            ('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'): (True, CSS2),
             ('color', 'rgb(-10,555,1)'): (True, CSS2), # should be clipped
             ('color', 'rgb(100%, 1.5%, 0%)'): (True, CSS2),
             ('color', 'rgb(150%, -20%, 0%)'): (True, CSS2), # should be clipped
-            ('color', 'rgb(0.0,1,1)'): (False, None), # int!
-            ('color', 'rgb(0)'): (False, None),
-            ('color', 'rgb(0, 1)'): (False, None),
-            ('color', 'rgb(0, 1, 1, 1)'): (False, None),
-            ('color', 'rgb(0, 1, 0%)'): (False, None), # mix
-            # rgba
+            ('color', 'rgb(0.0,1,1)'): (False, CSS2_CM3), # int!
+            ('color', 'rgb(0)'): (False, CSS2_CM3),
+            ('color', 'rgb(0, 1)'): (False, CSS2_CM3),
+            ('color', 'rgb(0, 1, 1, 1)'): (False, CSS2_CM3),
+            ('color', 'rgb(0, 1, 0%)'): (False, CSS2_CM3), # mix
+#            # rgba
             ('color', 'rgba(1,1,1,1)'): (True, CM3),
             ('color', 'rgba( 1 , 1 , 1 , 1 )'): (True, CM3),
             ('color', 'rgba(100%, 0%, 0%, 1)'): (True, CM3),
-            ('color', 'rgba(0, 1, 1.0, 1)'): (False, None), # int
-            ('color', 'rgba(0)'): (False, None),
-            ('color', 'rgba(0, 1)'): (False, None),
-            ('color', 'rgba(0, 1, 1, 1, 1)'): (False, None),
-            ('color', 'rgba(100%, 0%, 0%, 1%)'): (False, None),
-            ('color', 'rgba(100%, 0%, 0, 1)'): (False, None), # mix
-            # hsl
+            ('color', 'rgba(0, 1, 1.0, 1)'): (False, CSS2_CM3), # int
+            ('color', 'rgba(0)'): (False, CSS2_CM3),
+            ('color', 'rgba(0, 1)'): (False, CSS2_CM3),
+            ('color', 'rgba(0, 1, 1, 1, 1)'): (False, CSS2_CM3),
+            ('color', 'rgba(100%, 0%, 0%, 1%)'): (False, CSS2_CM3),
+            ('color', 'rgba(100%, 0%, 0, 1)'): (False, CSS2_CM3), # mix
+#            # hsl
             ('color', 'hsl(1,1%,1%)'): (True, CM3),
             ('color', 'hsl( 1 , 1% , 1% )'): (True, CM3),
             ('color', 'hsl(-1000,555.5%,-61.5%)'): (True, CM3),
-            ('color', 'hsl(1.5,1%,1%)'): (False, None), # int
-            ('color', 'hsl(1,1,1%)'): (False, None), # %
-            ('color', 'hsl(1,1%,1)'): (False, None), # %
-            #hsla
+            ('color', 'hsl(1.5,1%,1%)'): (False, CSS2_CM3), # int
+            ('color', 'hsl(1,1,1%)'): (False, CSS2_CM3), # %
+            ('color', 'hsl(1,1%,1)'): (False, CSS2_CM3), # %
+#            #hsla
             ('color', 'hsla(1,1%,1%,1)'): (True, CM3),
             ('color', 'hsla( 1, 1% , 1% , 1 )'): (True, CM3),
             ('color', 'hsla(-1000,555.5%,-61.5%, 0.5)'): (True, CM3),
-            ('color', 'hsla(1.5,1%,1%, 1)'): (False, None), # int
-            ('color', 'hsla(1,1,1%, 1)'): (False, None), # %
-            ('color', 'hsla(1,1%,1, 1)'): (False, None), # %
-            ('color', 'hsla(1,1%,1%, 1%)'): (False, None), # %
-
-            # opacity
+            ('color', 'hsla(1.5,1%,1%, 1)'): (False, CSS2_CM3), # int
+            ('color', 'hsla(1,1,1%, 1)'): (False, CSS2_CM3), # %
+            ('color', 'hsla(1,1%,1, 1)'): (False, CSS2_CM3), # %
+            ('color', 'hsla(1,1%,1%, 1%)'): (False, CSS2_CM3), # %
+#            # opacity
             ('opacity', 'inherit'): (True, CM3),
             ('opacity', '0'): (True, CM3),
             ('opacity', '0.0'): (True, CM3),
@@ -144,9 +151,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('opacity', '-10'): (True, CM3),
             ('opacity', '2'): (True, CM3),
             # invalid
-            ('opacity', 'a'): (False, None),
-            ('opacity', '#000'): (False, None),
-            ('opacity', '+1'): (False, None),
+            ('opacity', 'a'): (False, CM3),
+            ('opacity', '#000'): (False, CM3),
+            ('opacity', '+1'): (False, CM3),
         }
         for test, (v, p) in tests.items():            
             self.assertEqual(v, profiles.validate(*test))

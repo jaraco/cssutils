@@ -223,7 +223,7 @@ class SequenceTestCase(basetest.BaseTestCase):
             }
         for seqitems, results in tests.items():
             for result in results: 
-                seq = Sequence(*seqitems, minmax=lambda: (1,2))
+                seq = Sequence(minmax=lambda: (1,2), *seqitems)
                 for t, p in result:
                     if isinstance(p, basestring):
                         self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
