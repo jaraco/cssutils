@@ -275,10 +275,6 @@ class CSSSerializer(object):
     To use your own serializing method the easiest is to subclass CSS
     Serializer and overwrite the methods you like to customize.
     """
-    # chars not in URI without quotes around as problematic with other stuff
-    # really ","?
-    __forbidden_in_uri_matcher = re.compile(ur'''.*?[\(\)\s\;,]''', re.U).match
-
     def __init__(self, prefs=None):
         """
         prefs
