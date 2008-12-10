@@ -6,6 +6,7 @@
 __all__ = ['CSSSerializer', 'Preferences']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
+
 import codecs
 import cssutils
 import helper
