@@ -18,12 +18,12 @@ import encutils
 class _BaseClass(object):
     """
     Base class for Base, Base2 and _NewBase.
-     
+
     **Base and Base2 will be removed in the future!**
     """
     _log = cssutils.log
     _prods = tokenize2.CSSProductions
-    
+
     def _checkReadonly(self):
         "Raise xml.dom.NoModificationAllowedErr if rule/... is readonly"
         if hasattr(self, '_readonly') and self._readonly:
@@ -48,8 +48,8 @@ class _BaseClass(object):
 
 class _NewBase(_BaseClass):
     """
-    New base class for classes using ProdParser. 
-    
+    New base class for classes using ProdParser.
+
     **Currently CSSValue and related ones only.**
     """
     def __init__(self):
@@ -64,14 +64,14 @@ class _NewBase(_BaseClass):
         "Get a writeable Seq() which is used to set ``seq`` later"
         return Seq(readonly=readonly)
 
-    seq = property(lambda self: self._seq, 
+    seq = property(lambda self: self._seq,
                    doc="Internal readonly attribute ``seq`` for most cssutils classes.")
-    
+
 
 class Base(_BaseClass):
     """
     **Superceded by _NewBase**
-    
+
     **Superceded by Base2 which is used for new seq handling class.**
 
     Base class for most CSS and StyleSheets classes
@@ -381,7 +381,7 @@ class Base(_BaseClass):
         returns (wellformed, expected) which the last prod might have set
         """
         wellformed = True
-        
+
         if initialtoken:
             # add initialtoken to tokenizer
             def tokens():
@@ -392,7 +392,7 @@ class Base(_BaseClass):
             fulltokenizer = (t for t in tokens())
         else:
             fulltokenizer = tokenizer
-                
+
         if fulltokenizer:
             prods = self._adddefaultproductions(productions, new)
             for token in fulltokenizer:
@@ -408,12 +408,12 @@ class Base(_BaseClass):
 class Base2(Base, _NewBase):
     """
     **Superceded by _NewBase.**
-    
+
     Base class for new seq handling.
     """
     def __init__(self):
         self._seq = Seq()
-    
+
     def _adddefaultproductions(self, productions, new=None):
         """
         adds default productions if not already present, used by
@@ -526,7 +526,7 @@ class Seq(object):
         "trims S items from end of Seq"
         while self._seq and self._seq[-1].type == tokenize2.CSSProductions.S:
             # TODO: removed S before CSSComment /**/ /**/
-            del self._seq[-1] 
+            del self._seq[-1]
 
     def appendToVal(self, val=None, index=-1):
         """
@@ -536,7 +536,7 @@ class Seq(object):
             raise AttributeError('Seq is readonly.')
         else:
             old = self._seq[index]
-            self._seq[index] = Item(old.value + val, old.type, 
+            self._seq[index] = Item(old.value + val, old.type,
                                     old.line, old.col)
 
     def __repr__(self):
@@ -545,7 +545,7 @@ class Seq(object):
                                           self.__class__.__name__,
             u',\n    '.join([u'%r' % item for item in self._seq]
             ), self._readonly)
-    
+
     def __str__(self):
         vals = []
         for v in self:
@@ -555,9 +555,9 @@ class Seq(object):
                 vals.append(v.value[1])
             else:
                 vals.append(str(v))
-        
+
         return "<cssutils.%s.%s object length=%r values=%r readonly=%r at 0x%x>" % (
-                self.__module__, self.__class__.__name__, len(self), 
+                self.__module__, self.__class__.__name__, len(self),
                 u''.join(vals), self._readonly, id(self))
 
 class Item(object):
@@ -717,7 +717,7 @@ class _Namespaces(object):
     @property
     def namespaces(self):
         """
-        A property holding only effective @namespace rules in 
+        A property holding only effective @namespace rules in
         self.parentStyleSheets.
         """
         namespaces = {}
@@ -791,7 +791,7 @@ def _defaultFetcher(url):
         cssutils.log.warn(e, error=OSError)
     except (OSError, ValueError), e:
         # invalid url, e.g. "1"
-        cssutils.log.warn(u'ValueError, %s' % e.message, error=ValueError)
+        cssutils.log.warn(u'ValueError, %s' % e.args[0], error=ValueError)
     except urllib2.HTTPError, e:
         # http error, e.g. 404, e can be raised
         cssutils.log.warn(u'HTTPError opening url=%r: %s %s' %
