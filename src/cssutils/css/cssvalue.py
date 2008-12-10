@@ -9,12 +9,12 @@ __all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import re
-import xml.dom
+from cssutils.prodparser import *
+from cssutils.profiles import profiles
 import cssutils
 import cssutils.helper
-from cssutils.profiles import profiles
-from cssutils.prodparser import *
+import re
+import xml.dom
 
 
 class CSSValue(cssutils.util._NewBase):

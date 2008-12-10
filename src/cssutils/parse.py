@@ -5,12 +5,12 @@ __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import codecs
-import os
-import urllib
 from helper import Deprecated
-import tokenize2
+import codecs
 import cssutils
+import os
+import tokenize2
+import urllib
 
 class CSSParser(object):
     """

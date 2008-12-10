@@ -19,9 +19,9 @@ __all__ = ['SelectorList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
-import cssutils
 from selector import Selector
+import cssutils
+import xml.dom
 
 class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     """

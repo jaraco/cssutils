@@ -9,10 +9,10 @@ __all__ = ['MediaList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
-import cssutils
 from cssutils.css import csscomment
 from mediaquery import MediaQuery
+import cssutils
+import xml.dom
 
 class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
     """

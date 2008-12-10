@@ -8,9 +8,9 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import codecs
-import xml.dom
 import cssrule
 import cssutils
+import xml.dom
 
 class CSSCharsetRule(cssrule.CSSRule):
     """

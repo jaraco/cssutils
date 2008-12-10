@@ -6,12 +6,11 @@ __all__ = ['Property']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
-import cssutils
-#import cssproperties
+from cssutils.helper import Deprecated
 from cssutils.profiles import profiles
 from cssvalue import CSSValue
-from cssutils.helper import Deprecated
+import cssutils
+import xml.dom
 
 class Property(cssutils.util.Base):
     """

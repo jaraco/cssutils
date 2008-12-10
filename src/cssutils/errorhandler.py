@@ -18,10 +18,10 @@ __all__ = ['ErrorHandler']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+from helper import Deprecated
 import logging
 import urllib2
 import xml.dom
-from helper import Deprecated
 
 class _ErrorHandler(object):
     """

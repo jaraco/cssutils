@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+    #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """serializer classes for CSS classes
 
@@ -7,10 +7,10 @@ __all__ = ['CSSSerializer', 'Preferences']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 import codecs
+import cssutils
+import helper
 import re
 import xml.dom
-import helper
-import cssutils
 
 def _escapecss(e):
     """

@@ -3,8 +3,8 @@ __all__ = ['CSSRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
 import cssutils
+import xml.dom
 
 class CSSRule(cssutils.util.Base2):
     """

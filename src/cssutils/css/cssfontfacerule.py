@@ -4,10 +4,10 @@ __all__ = ['CSSFontFaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
+from cssstyledeclaration import CSSStyleDeclaration
 import cssrule
 import cssutils
-from cssstyledeclaration import CSSStyleDeclaration
+import xml.dom
 
 class CSSFontFaceRule(cssrule.CSSRule):
     """

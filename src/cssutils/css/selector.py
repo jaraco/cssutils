@@ -11,9 +11,9 @@ __all__ = ['Selector']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
-import cssutils
 from cssutils.util import _SimpleNamespaces
+import cssutils
+import xml.dom
 
 class Selector(cssutils.util.Base2):
     """

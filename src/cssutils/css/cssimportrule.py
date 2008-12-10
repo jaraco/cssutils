@@ -10,12 +10,12 @@ __all__ = ['CSSImportRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+import cssrule
+import cssutils
 import os
 import urllib
 import urlparse
 import xml.dom
-import cssrule
-import cssutils
 
 class CSSImportRule(cssrule.CSSRule):
     """
