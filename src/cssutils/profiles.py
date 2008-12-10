@@ -7,7 +7,7 @@ TODO
     css2 based on cssvalues
     =======================
     contributed by Kevin D. Smith, thanks!
-    
+
     "cssvalues" is used as a property validator.
     it is an importable object that contains a dictionary of compiled regular
     expressions.  The keys of this dictionary are all of the valid CSS property
@@ -200,8 +200,11 @@ css3colormacros = {
     # orange and transparent in CSS 2.1
     'namedcolor': r'(currentcolor|transparent|orange|black|green|silver|lime|gray|olive|white|yellow|maroon|navy|red|blue|purple|teal|fuchsia|aqua)',
                     # orange?
-    'rgbacolor': r'rgba\({w}{int}{w},{w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgba\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',                    
-    'hslcolor': r'hsl\({w}{int}{w},{w}{num}%{w},{w}{num}%{w}\)|hsla\({w}{int}{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',                    
+    'rgbacolor': r'rgba\({w}{int}{w},{w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgba\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',
+    'hslcolor': r'hsl\({w}{int}{w},{w}{num}%{w},{w}{num}%{w}\)|hsla\({w}{int}{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',
+    'x11color': r'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen',
+    'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
+
     }
 css3color = {
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|inherit',
@@ -222,18 +225,18 @@ class NoSuchProfileException(Exception):
 
 class Profiles(object):
     """
-    A dictionary of:: 
-        
+    A dictionary of::
+
         profilename: {
             propname: propvalue_regex*
             }
-            
+
     Predefined profiles are:
-    
+
     - CSS level 2: Properties defined by CSS2.1
     - CSS Color Module Level 3
     - CSS Box Module Level 3: Currently overflow related properties only
-    
+
     """
     basicmacros = {
         'ident': r'[-]?{nmstart}{nmchar}*',
@@ -268,15 +271,15 @@ class Profiles(object):
         'frequency': r'0|{num}k?Hz',
         'percentage': r'{num}%',
         }
-    
+
     CSS_LEVEL_2 = 'CSS Level 2.1'
     CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
     CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
-    
+
     def __init__(self):
         self._log = cssutils.log
-        self._profilenames = [] # to keep order, REFACTOR!        
-        self._profiles = {}        
+        self._profilenames = [] # to keep order, REFACTOR!
+        self._profiles = {}
         self.addProfile(self.CSS_LEVEL_2, css2, css2macros)
         self.addProfile(self.CSS_COLOR_LEVEL_3, css3color, css3colormacros)
         self.addProfile(self.CSS_BOX_LEVEL_3, css3box)
@@ -292,14 +295,14 @@ class Profiles(object):
                                    macro_value, value)
             dictionary[key] = value
         return dictionary
-    
+
     def _compile_regexes(self, dictionary):
         """Compile all regular expressions into callable objects"""
         for key, value in dictionary.items():
             if not callable(value):
                 value = re.compile('^(?:%s)$' % value, re.I).match
             dictionary[key] = value
-            
+
         return dictionary
 
     profiles = property(lambda self: sorted(self._profiles.keys()),
@@ -307,20 +310,20 @@ class Profiles(object):
 
     def addProfile(self, profile, properties, macros=None):
         """Add a new profile with name ``profile`` (e.g. 'CSS level 2')
-        and the given ``properties``. ``macros`` are         
-        
+        and the given ``properties``. ``macros`` are
+
         ``profile``
             The new profile's name
         ``properties``
             A dictionary of ``{ property-name: propery-value }`` items where
-            property-value is a regex which may use macros defined in given 
+            property-value is a regex which may use macros defined in given
             ``macros`` or the standard macros Profiles.tokens and
             Profiles.generalvalues.
-            
-            ``propery-value`` may also be a function which takes a single 
-            argument which is the value to validate and which should return 
-            True or False. 
-            Any exceptions which may be raised during this custom validation 
+
+            ``propery-value`` may also be a function which takes a single
+            argument which is the value to validate and which should return
+            True or False.
+            Any exceptions which may be raised during this custom validation
             are reported or raised as all other cssutils exceptions depending
             on cssutils.log.raiseExceptions which e.g during parsing normally
             is False so the exceptions would be logged only.
@@ -331,23 +334,23 @@ class Profiles(object):
         m.update(self.generalmacros)
         m.update(macros)
         properties = self._expand_macros(properties, m)
-        self._profilenames.append(profile) 
+        self._profilenames.append(profile)
         self._profiles[profile] = self._compile_regexes(properties)
 
     def propertiesByProfile(self, profiles=None):
-        """Generator: Yield property names, if no profile(s) is given all 
+        """Generator: Yield property names, if no profile(s) is given all
         profile's properties are used."""
         if not profiles:
             profiles = self.profiles
         elif isinstance(profiles, basestring):
             profiles = (profiles, )
-            
+
         try:
             for profile in sorted(profiles):
                 for name in sorted(self._profiles[profile].keys()):
                     yield name
         except KeyError, e:
-            raise NoSuchProfileException(e)  
+            raise NoSuchProfileException(e)
 
     def validate(self, name, value):
         """Check if value is valid for given property name using any profile."""
@@ -364,13 +367,13 @@ class Profiles(object):
         return False
 
     def validateWithProfile(self, name, value):
-        """Check if value is valid for given property name returning 
-        (valid, valid_in_profile). 
-        
+        """Check if value is valid for given property name returning
+        (valid, valid_in_profile).
+
         You may want to check if valid_in_profile is what you expected.
-        
+
         Example: You might expect a valid Profiles.CSS_LEVEL_2 value but
-        e.g. ``validateWithProfile('color', 'rgba(1,1,1,1)')`` returns 
+        e.g. ``validateWithProfile('color', 'rgba(1,1,1,1)')`` returns
         (True, Profiles.CSS_COLOR_LEVEL_3)
         """
         profile = []

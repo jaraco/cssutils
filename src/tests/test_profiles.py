@@ -40,7 +40,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
             if v:
                 p = 'test'
             else:
-                p = None 
+                p = 'test'
             self.assertEqual(v, profiles.validate(*test))
             self.assertEqual((v, p), profiles.validateWithProfile(*test))
             

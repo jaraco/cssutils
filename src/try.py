@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
 __date__ = '$LastChangedDate::                            $:'
 
 import codecs
@@ -13,22 +12,97 @@ import xml
 import cssutils
 from StringIO import StringIO
 import unicodedata
-from minimock import mock, restore
+try:
+    from minimock import mock, restore
+except ImportError:
+    pass
 
 from cssutils.prodparser import *
+
+print sys.version
+print 
 
 def save(name, string):
     f = open(name, 'w')
     f.write(string)
     f.close()
 
+if 0:
+    do = """
+    import cssutils
+    css = '''
+    /* contains rules unsuitable for Netscape 4.x; simpler rules are in ns4_only.css. see <http://style.tigris.org/> */
+
+/* colors, backgrounds, borders, link indication */
+
+body {
+ background: #fff;
+ color: #000;
+ }
+.app h3, .app h4, .tabs td, .tabs th, .functnbar {
+ background-image: url(../images/nw_min.gif);
+ background-repeat: no-repeat;
+ }
+#toptabs td, #toptabs th {
+ background-image: url(../images/nw_min_036.gif);
+ }
+#navcolumn .body div, body.docs #toc li li  {
+ background-image: url(../images/strich.gif);
+ background-repeat: no-repeat;
+ background-position: .5em .5em;
+ }
+#search .body div, .body .heading  {
+ background-image: none;
+ }
+.app h3, .app h4 {
+ color: #fff;
+ }
+.app h3, #banner td {
+ background-color: #036;
+ color: #fff;
+ }
+body #banner td a {
+ color: #fff !important;
+ }
+.app h4 {
+ background-color: #888;
+ }
+.a td {
+ background: #ddd;
+ }
+.b td {
+ background: #efefef;
+ }
+table, th, td {
+ border: none
+ }
+.mtb {
+ border-top: solid 1px #ddd;
+ }
+div.colbar {
+ background: #bbb;
+ }
+#banner {
+ border-top: 1px solid #369;
+ }    '''
+    cssutils.parseString(css)
+    """
+    print cssutils.VERSION
+    t = timeit.Timer(do)       # outside the try/except
+    try:
+        print t.timeit(100)    # or t.repeat(...)
+    except:
+        print t.print_exc()
+
+    sys.exit(0)
+
+
 if 1:
-#   [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
-#                  TIME S* | FREQ S* ]
-#              | STRING S* | IDENT S* | URI S* | hexcolor | function
-    css = '''rect(1,2,3)'''
-    
     cssutils.log.setLevel(logging.DEBUG)
+    css = '''rect(1,2,3)'''
+    p = cssutils.css.Property('left', '1.2pc')
+    print p
+    
     
     v = cssutils.css.CSSValue(css)
 #    
@@ -90,76 +164,6 @@ if 1:
 
     sys.exit(1)
 
-if 1:
-    do = """
-    import cssutils
-    tn = cssutils.tokenize2.Tokenizer()
-    css = '''
-    /* contains rules unsuitable for Netscape 4.x; simpler rules are in ns4_only.css. see <http://style.tigris.org/> */
-
-/* colors, backgrounds, borders, link indication */
-
-body {
- background: #fff;
- color: #000;
- }
-.app h3, .app h4, .tabs td, .tabs th, .functnbar {
- background-image: url(../images/nw_min.gif);
- background-repeat: no-repeat;
- }
-#toptabs td, #toptabs th {
- background-image: url(../images/nw_min_036.gif);
- }
-#navcolumn .body div, body.docs #toc li li  {
- background-image: url(../images/strich.gif);
- background-repeat: no-repeat;
- background-position: .5em .5em;
- }
-#search .body div, .body .heading  {
- background-image: none;
- }
-.app h3, .app h4 {
- color: #fff;
- }
-.app h3, #banner td {
- background-color: #036;
- color: #fff;
- }
-body #banner td a {
- color: #fff !important;
- }
-.app h4 {
- background-color: #888;
- }
-.a td {
- background: #ddd;
- }
-.b td {
- background: #efefef;
- }
-table, th, td {
- border: none
- }
-.mtb {
- border-top: solid 1px #ddd;
- }
-div.colbar {
- background: #bbb;
- }
-#banner {
- border-top: 1px solid #369;
- }    '''
-    #list(tn.tokenize(css, fullsheet=0))
-    cssutils.parseString(css)
-    """
-
-    t = timeit.Timer(do)       # outside the try/except
-    try:
-        print t.timeit(100)    # or t.repeat(...)
-    except:
-        print t.print_exc()
-
-    sys.exit(0)
 
 if 0:
     # FETCHER
