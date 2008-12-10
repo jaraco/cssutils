@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 __date__ = '$LastChangedDate::                            $:'
 
-import codecs
+from StringIO import StringIO
+from cssutils.prodparser import *
 from pprint import pprint as pp
+import codecs
+import cssutils
 import logging
 import re
 import sys
 import timeit
+import unicodedata
 import urlparse
 import xml
-import cssutils
-from StringIO import StringIO
-import unicodedata
 try:
     from minimock import mock, restore
 except ImportError:
     pass
 
-from cssutils.prodparser import *
 
 print sys.version
 print 
@@ -219,7 +219,7 @@ if 0:
                 return encoding, r.content
             else:
                 # TODO: 301 etc
-                cssutils.log.warn(u'Error opening url=%r: HTTP status %s' %
+                cssutils.log.warn(u'Error opening url=%r: HTTP status %s' % 
                                   (url, r.status_code), error=IOError)
 
     def fetcher(url):
@@ -378,10 +378,10 @@ if 1:
                         view[element].setProperty(p)
                         specificities[element][p.name] = selector.specificity
                     else:
-                        sameprio = (p.priority ==
+                        sameprio = (p.priority == 
                                     view[element].getPropertyPriority(p.name))
                         if not sameprio and bool(p.priority) or (
-                           sameprio and selector.specificity >=
+                           sameprio and selector.specificity >= 
                                         specificities[element][p.name]):
                             # later, more specific or higher prio
                             view[element].setProperty(p)
