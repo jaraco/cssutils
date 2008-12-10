@@ -289,7 +289,7 @@ class Profiles(object):
         def macro_value(m):
             return '(?:%s)' % macros[m.groupdict()['macro']]
         for key, value in dictionary.items():
-            if not callable(value):
+            if not hasattr(value, '__call__'):
                 while re.search(r'{[a-z][a-z0-9-]*}', value):
                     value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
                                    macro_value, value)
@@ -299,7 +299,7 @@ class Profiles(object):
     def _compile_regexes(self, dictionary):
         """Compile all regular expressions into callable objects"""
         for key, value in dictionary.items():
-            if not callable(value):
+            if not hasattr(value, '__call__'):
                 value = re.compile('^(?:%s)$' % value, re.I).match
             dictionary[key] = value
 
