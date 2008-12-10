@@ -6,9 +6,9 @@ __all__ = ['CSSComment']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
 import cssrule
 import cssutils
+import xml.dom
 
 class CSSComment(cssrule.CSSRule):
     """

@@ -4,16 +4,16 @@ __all__ = []
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import codecs
+from helper import normalize
 from itertools import ifilter
+import codecs
+import cssutils
+import encutils
+import tokenize2
 import types
 import urllib2
 import xml.dom
 
-from helper import normalize
-import tokenize2
-import cssutils
-import encutils
 
 class _BaseClass(object):
     """
@@ -184,7 +184,7 @@ class Base(_BaseClass):
         """
         if token:
             value = token[1]
-            return value.replace('\\'+value[0], value[0])[1:-1]
+            return value.replace('\\' + value[0], value[0])[1: - 1]
         else:
             return None
 
@@ -196,10 +196,10 @@ class Base(_BaseClass):
              url("\"") => "
         """
         if token:
-            value = token[1][4:-1].strip()
-            if value and (value[0] in '\'"') and (value[0] == value[-1]):
+            value = token[1][4: - 1].strip()
+            if value and (value[0] in '\'"') and (value[0] == value[ - 1]):
                 # a string "..." or '...'
-                value = value.replace('\\'+value[0], value[0])[1:-1]
+                value = value.replace('\\' + value[0], value[0])[1: - 1]
             return value
         else:
             return None
@@ -233,7 +233,7 @@ class Base(_BaseClass):
 
         if blockstartonly: # {
             ends = u'{'
-            brace = -1 # set to 0 with first {
+            brace = - 1 # set to 0 with first {
         elif blockendonly: # }
             ends = u'}'
             brace = 1
@@ -248,7 +248,7 @@ class Base(_BaseClass):
             # end of mediaquery which may be { or STRING
             # special case, see below
             ends = u'{'
-            brace = -1 # set to 0 with first {
+            brace = - 1 # set to 0 with first {
             endtypes = ('STRING',)
         elif semicolon:
             ends = u';'
@@ -297,7 +297,7 @@ class Base(_BaseClass):
                 if (brace == bracket == parant == 0) and (
                     val in ends or typ in endtypes):
                     break
-                elif mediaqueryendonly and brace == -1 and (
+                elif mediaqueryendonly and brace == - 1 and (
                      bracket == parant == 0) and typ in endtypes:
                      # mediaqueryendonly with STRING
                     break
@@ -305,7 +305,7 @@ class Base(_BaseClass):
         if separateEnd:
             # TODO: use this method as generator, then this makes sense
             if resulttokens:
-                return resulttokens[:-1], resulttokens[-1]
+                return resulttokens[: - 1], resulttokens[ - 1]
             else:
                 return resulttokens, None
         else:
@@ -512,7 +512,7 @@ class Seq(object):
         else:
             self._seq.append(item)
 
-    def replace(self, index=-1, val=None, typ=None, line=None, col=None):
+    def replace(self, index= - 1, val=None, typ=None, line=None, col=None):
         """
         if not readonly replace Item at index with new Item or
         simply replace value or type
@@ -524,11 +524,11 @@ class Seq(object):
 
     def rstrip(self):
         "trims S items from end of Seq"
-        while self._seq and self._seq[-1].type == tokenize2.CSSProductions.S:
+        while self._seq and self._seq[ - 1].type == tokenize2.CSSProductions.S:
             # TODO: removed S before CSSComment /**/ /**/
-            del self._seq[-1]
+            del self._seq[ - 1]
 
-    def appendToVal(self, val=None, index=-1):
+    def appendToVal(self, val=None, index= - 1):
         """
         if not readonly append to Item's value at index
         """
@@ -794,7 +794,7 @@ def _defaultFetcher(url):
         cssutils.log.warn(u'ValueError, %s' % e.args[0], error=ValueError)
     except urllib2.HTTPError, e:
         # http error, e.g. 404, e can be raised
-        cssutils.log.warn(u'HTTPError opening url=%r: %s %s' %
+        cssutils.log.warn(u'HTTPError opening url=%r: %s %s' % 
                           (url, e.code, e.msg), error=e)
     except urllib2.URLError, e:
         # URLError like mailto: or other IO errors, e can be raised
@@ -803,7 +803,7 @@ def _defaultFetcher(url):
         if res:
             mimeType, encoding = encutils.getHTTPInfo(res)
             if mimeType != u'text/css':
-                cssutils.log.error(u'Expected "text/css" mime type for url=%r but found: %r' %
+                cssutils.log.error(u'Expected "text/css" mime type for url=%r but found: %r' % 
                                   (url, mimeType), error=ValueError)
             return encoding, res.read()
 

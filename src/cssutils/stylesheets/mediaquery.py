@@ -13,9 +13,9 @@ __all__ = ['MediaQuery']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+import cssutils
 import re
 import xml.dom
-import cssutils
 
 class MediaQuery(cssutils.util.Base):
     """

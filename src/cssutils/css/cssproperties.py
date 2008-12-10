@@ -50,8 +50,8 @@ __all__ = ['CSS2Properties']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import re
 import cssutils.profiles
+import re
 
 class CSS2Properties(object):
     """

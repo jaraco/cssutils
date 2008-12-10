@@ -4,7 +4,8 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Walter Doerwald'
 __version__ = '$Id: util.py 1114 2008-03-05 13:22:59Z cthedot $'
 
-import codecs, marshal
+import codecs
+import marshal
 
 # We're using bits to store all possible candidate encodings (or variants, i.e.
 # we have two bits for the variants of UTF-16 and two for the

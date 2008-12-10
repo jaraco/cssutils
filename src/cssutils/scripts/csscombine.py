@@ -59,9 +59,9 @@ __all__ = ['csscombine']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+from cssutils.script import csscombine
 import optparse
 import sys
-from cssutils.script import csscombine
 
 def main(args=None):
     usage = "usage: %prog [options] path"

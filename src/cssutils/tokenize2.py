@@ -6,9 +6,9 @@ __all__ = ['Tokenizer', 'CSSProductions']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import re
-from helper import normalize
 from cssproductions import *
+from helper import normalize
+import re
 
 class Tokenizer(object):
     """

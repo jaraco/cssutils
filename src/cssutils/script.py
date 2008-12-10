@@ -4,16 +4,16 @@ __all__ = ['CSSCapture', 'csscombine']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: parse.py 1323 2008-07-06 18:13:57Z cthedot $'
 
-import codecs
-import errno
 import HTMLParser
+import codecs
+import cssutils
+import errno
 import logging
 import os
 import sys
 import urllib2
 import urlparse
 
-import cssutils
 try:
     import cssutils.encutils as encutils
 except ImportError:

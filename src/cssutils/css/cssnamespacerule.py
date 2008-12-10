@@ -7,10 +7,10 @@ __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
+from cssutils.helper import Deprecated
 import cssrule
 import cssutils
-from cssutils.helper import Deprecated
+import xml.dom
 
 class CSSNamespaceRule(cssrule.CSSRule):
     """

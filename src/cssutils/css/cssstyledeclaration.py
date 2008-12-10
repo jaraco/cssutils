@@ -53,10 +53,10 @@ __all__ = ['CSSStyleDeclaration', 'Property']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
-import cssutils
 from cssproperties import CSS2Properties
 from property import Property
+import cssutils
+import xml.dom
 
 class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
     """

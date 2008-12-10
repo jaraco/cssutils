@@ -5,8 +5,8 @@ __all__ = ['StyleSheet']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import urlparse
 import cssutils
+import urlparse
 
 class StyleSheet(cssutils.util.Base2):
     """

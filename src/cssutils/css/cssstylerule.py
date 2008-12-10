@@ -4,11 +4,11 @@ __all__ = ['CSSStyleRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
+from cssstyledeclaration import CSSStyleDeclaration
+from selectorlist import SelectorList
 import cssrule
 import cssutils
-from selectorlist import SelectorList
-from cssstyledeclaration import CSSStyleDeclaration
+import xml.dom
 
 class CSSStyleRule(cssrule.CSSRule):
     """

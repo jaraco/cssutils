@@ -12,10 +12,10 @@ __all__ = ['CSSStyleSheet']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
-import cssutils.stylesheets
-from cssutils.util import _Namespaces, _SimpleNamespaces, _readUrl
 from cssutils.helper import Deprecated
+from cssutils.util import _Namespaces, _SimpleNamespaces, _readUrl
+import cssutils.stylesheets
+import xml.dom
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     """

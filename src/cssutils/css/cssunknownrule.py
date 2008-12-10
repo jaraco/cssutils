@@ -4,9 +4,9 @@ __all__ = ['CSSUnknownRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import xml.dom
 import cssrule
 import cssutils
+import xml.dom
 
 class CSSUnknownRule(cssrule.CSSRule):
     """
