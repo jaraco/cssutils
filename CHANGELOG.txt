@@ -44,7 +44,9 @@ HEAD
         - refactored CSSValue and subclasses therefore there may be some minor changes in serializing or value reporting
             + ``getStringValue()`` returns a string without quotes or for URIs a value without surrounding ``url(...)`` now
 
-    + FEATURE: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
+    + **FEATURE**: @page rule accepts named page selector now, e.g. ``@page intro`` or ``page main:left``.
+
+    + **FEATURE**: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
 
     + FEATURE (strange): IE only CSS expressions *should* be parsed and serialized now an an ``Expression`` value. I have not tested this deeply and there may be problems but for some common cases this should work, e.g. for hacking maxwidth for IE you may define the following::
 
@@ -68,7 +70,7 @@ HEAD
         - IMPROVEMENT: ``CSSValue.getFloattype(unitType=None)``, parameter is now optional in which case the current dimension is used.
         - fixed lots of other minor bugs related to CSSValue
 
-    - BUGFIX: Fixed tokenizing/parsing of rather strange STRING and URI values like:
+    - **BUGFIX**: Fixed tokenizing/parsing of rather strange STRING and URI values like:
         - Valid::
 
             "somestring followed by escaped NL\
@@ -76,9 +78,11 @@ HEAD
 
           and now results in::
 
-            "somestring followed by escaped and continuing here."
+            "somestring followed by escaped NL and continuing here."
 
         - ``url())`` => not allowed and must be written as ``url(")")``
+
+    - **BUGFIX**: Setting ``CSSPageRule.selectorText`` does actually work now.
 
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
