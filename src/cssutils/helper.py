@@ -51,6 +51,7 @@ def normalize(x):
 def pushtoken(token, tokens):
     """Return new generator starting with token followed by all tokens in 
     ``tokens``"""
+    # TODO: may use itertools.chain?
     yield token
     for x in tokens:
         yield x
