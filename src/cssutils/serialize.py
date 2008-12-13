@@ -546,20 +546,26 @@ class CSSSerializer(object):
         + CSSComments
         """
         styleText = self.do_css_CSSStyleDeclaration(rule.style)
-
         if styleText and rule.wellformed:
             out = Out(self)
             out.append(self._atkeyword(rule, u'@page'))
-                        
-            for item in rule.seq:
-                out.append(item.value, item.type)
-                            
+            out.append(rule.selectorText)                            
             out.append(u'{')            
             out.append(u'%s%s}' % (styleText, self.prefs.lineSeparator),
                        indent=1)
             return out.value()            
         else:
             return u''
+
+    def do_CSSPageRuleSelector(self, seq):
+        "Serialize selector of a CSSPageRule"
+        out = Out(self)
+        for item in seq:
+            if item.type == 'IDENT':
+                out.append(item.value, item.type, space=False)
+            else:
+                out.append(item.value, item.type)
+        return out.value()
         
     def do_CSSUnknownRule(self, rule):
         """
