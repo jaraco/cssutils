@@ -102,7 +102,14 @@ class SequenceTestCase(basetest.BaseTestCase):
 
         s = Sequence(p1, p2, minmax=lambda: (0, None))        
         self.assertEqual(0, s._min)
-        self.assertEqual(sys.maxint, s._max)
+        
+        try:
+            # py2.6/3
+            m = sys.maxsize
+        except AttributeError:
+            # py<1.6
+            m = sys.maxint
+        self.assertEqual(m, s._max)
 
     def test_optional(self):
         "Sequence.optional"
