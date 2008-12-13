@@ -64,7 +64,7 @@ class CSSPageRule(cssrule.CSSRule):
             self.selectorText = selectorText
             tempseq.append(self.selectorText, 'selectorText')
         else:
-            self._selectorText = u''
+            self._selectorText = self._tempSeq()
         if style:
             self.style = style
             tempseq.append(self.style, 'style')
@@ -82,12 +82,12 @@ class CSSPageRule(cssrule.CSSRule):
         see _setSelectorText for details
         """
         # for closures: must be a mutable
-        new = {'selector': None, 'wellformed': True}
+        new = {'wellformed': True, 'last-S': False}
 
         def _char(expected, seq, token, tokenizer=None):
             # pseudo_page, :left, :right or :first
             val = self._tokenvalue(token)
-            if ':' == expected and u':' == val:
+            if not new['last-S'] and expected in ['page', ': or EOF'] and u':' == val:
                 try:
                     identtoken = tokenizer.next()
                 except StopIteration:
@@ -100,8 +100,7 @@ class CSSPageRule(cssrule.CSSRule):
                             u'CSSPageRule selectorText: Expected IDENT but found: %r' % 
                             ival, token)
                     else:
-                        new['selector'] = val + ival
-                        seq.append(new['selector'], 'selector')
+                        seq.append(val + ival, 'pseudo')
                         return 'EOF'
                 return expected
             else:
@@ -112,7 +111,22 @@ class CSSPageRule(cssrule.CSSRule):
 
         def S(expected, seq, token, tokenizer=None):
             "Does not raise if EOF is found."
+            if expected == ': or EOF':
+                # pseudo must directly follow IDENT if given
+                new['last-S'] = True
             return expected
+
+        def IDENT(expected, seq, token, tokenizer=None):
+            ""
+            val = self._tokenvalue(token)
+            if 'page' == expected:
+                seq.append(val, 'IDENT')
+                return ': or EOF'
+            else:
+                new['wellformed'] = False
+                self._log.error(
+                    u'CSSPageRule selectorText: Unexpected IDENT: %r' % val, token)
+                return expected
 
         def COMMENT(expected, seq, token, tokenizer=None):
             "Does not raise if EOF is found."
@@ -120,14 +134,14 @@ class CSSPageRule(cssrule.CSSRule):
             return expected 
 
         newseq = self._tempSeq()
-        wellformed, expected = self._parse(expected=':',
+        wellformed, expected = self._parse(expected='page',
             seq=newseq, tokenizer=self._tokenize2(selectorText),
             productions={'CHAR': _char,
+                         'IDENT': IDENT,
                          'COMMENT': COMMENT, 
                          'S': S}, 
             new=new)
         wellformed = wellformed and new['wellformed']
-        newselector = new['selector']
         
         # post conditions
         if expected == 'ident':
@@ -135,11 +149,11 @@ class CSSPageRule(cssrule.CSSRule):
                 u'CSSPageRule selectorText: No valid selector: %r' %
                     self._valuestr(selectorText))
             
-        if not newselector in (None, u':first', u':left', u':right'):
-            self._log.warn(u'CSSPageRule: Unknown CSS 2.1 @page selector: %r' %
-                     newselector, neverraise=True)
+#        if not newselector in (None, u':first', u':left', u':right'):
+#            self._log.warn(u'CSSPageRule: Unknown CSS 2.1 @page selector: %r' %
+#                     newselector, neverraise=True)
 
-        return newselector, newseq
+        return wellformed, newseq
 
     def _getCssText(self):
         """
@@ -190,7 +204,7 @@ class CSSPageRule(cssrule.CSSRule):
                     u'CSSPageRule: Trailing content found.', token=nonetoken)
                 
                 
-            newselector, newselectorseq = self.__parseSelectorText(selectortokens)
+            wellformed, newselectorseq = self.__parseSelectorText(selectortokens)
 
             newstyle = CSSStyleDeclaration()
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
@@ -206,7 +220,7 @@ class CSSPageRule(cssrule.CSSRule):
                 newstyle.cssText = styletokens
 
             if wellformed:
-                self._selectorText = newselector # already parsed
+                self._selectorText = newselectorseq # already parsed
                 self.style = newstyle
                 self._setSeq(newselectorseq) # contains upto style only
 
@@ -217,7 +231,7 @@ class CSSPageRule(cssrule.CSSRule):
         """
         wrapper for cssutils Selector object
         """
-        return self._selectorText
+        return cssutils.ser.do_CSSPageRuleSelector(self._selectorText)#self._selectorText
 
     def _setSelectorText(self, selectorText):
         """
@@ -244,13 +258,9 @@ class CSSPageRule(cssrule.CSSRule):
         self._checkReadonly()
 
         # may raise SYNTAX_ERR
-        newselectortext, newseq = self.__parseSelectorText(selectorText)
-
-        if newselectortext:
-            for i, x in enumerate(self.seq):
-                if x == self._selectorText:
-                    self.seq[i] = newselectortext
-            self._selectorText = newselectortext
+        wellformed, newseq = self.__parseSelectorText(selectorText)
+        if wellformed and newseq:
+            self._selectorText = newseq
 
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(DOM) The parsable textual representation of the page selector for the rule.""")

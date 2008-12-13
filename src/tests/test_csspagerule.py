@@ -49,17 +49,21 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_cssText(self):
         "CSSPageRule.cssText"
-        EXP = u'@page :%s {\n    margin: 0\n    }'
+        EXP = u'@page %s {\n    margin: 0\n    }'
         tests = {
             u'@page {}': u'',
             u'@page:left{}': u'',
             u'@page :right {}': u'',
             u'@page {margin:0;}': u'@page {\n    margin: 0\n    }',
 
-            u'@page :left { margin: 0 }': EXP % u'left',
-            u'@page :right { margin: 0 }': EXP % u'right',
-            u'@page :first { margin: 0 }': EXP % u'first',
-            u'@page :UNKNOWNIDENT { margin: 0 }': EXP % u'UNKNOWNIDENT',
+            u'@page name { margin: 0 }': EXP % u'name',
+            u'@page name:left { margin: 0 }': EXP % u'name:left',
+            u'@page name:right { margin: 0 }': EXP % u'name:right',
+            u'@page name:first { margin: 0 }': EXP % u'name:first',
+            u'@page :left { margin: 0 }': EXP % u':left',
+            u'@page :right { margin: 0 }': EXP % u':right',
+            u'@page :first { margin: 0 }': EXP % u':first',
+            u'@page :UNKNOWNIDENT { margin: 0 }': EXP % u':UNKNOWNIDENT',
 
             u'@PAGE:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
             u'@\\page:left{margin:0;}': u'@page :left {\n    margin: 0\n    }',
@@ -82,12 +86,19 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@page : left {}': xml.dom.SyntaxErr,
             u'@page :left :right {}': xml.dom.SyntaxErr,
             u'@page :left a {}': xml.dom.SyntaxErr,
+            # no S between IDENT and PSEUDO
+            u'@page a :left  {}': xml.dom.SyntaxErr,
 
             u'@page :left;': xml.dom.SyntaxErr,
             u'@page :left }': xml.dom.SyntaxErr,
             }
         self.do_raise_p(tests) # parse
         tests.update({
+            # false selector
+            u'@page :right :left {}': xml.dom.SyntaxErr, # no }
+            u'@page :right X {}': xml.dom.SyntaxErr, # no }
+            u'@page X Y {}': xml.dom.SyntaxErr, # no }
+            
             u'@page :left {': xml.dom.SyntaxErr, # no }
             # trailing
             u'@page :left {}1': xml.dom.SyntaxErr, # no }
@@ -98,19 +109,24 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_selectorText(self):
         "CSSPageRule.selectorText"
+        r = cssutils.css.CSSPageRule()
+        r.selectorText = u'a:left'
+        self.assertEqual(r.selectorText, u'a:left')
+        
         tests = {
             u'': u'',
+            u'name': None,
             u':left': None,
             u':right': None,
             u':first': None,
             u':UNKNOWNIDENT': None,
-
+            u'name:left': None,
             u' :left': u':left',
             u':left': u':left',
-            u'/*1*/:left/*a*/': u':left',
-            u'/*1*/ :left /*a*/ /*b*/': u':left',
-            u':left/*a*/': u':left',
-            u'/*1*/:left': u':left',
+            u'/*1*/:left/*a*/': u'/*1*/ :left /*a*/',
+            u'/*1*/ :left /*a*/ /*b*/': None,
+            u':left/*a*/': u':left /*a*/',
+            u'/*1*/:left': u'/*1*/ :left',
             }
         self.do_equal_r(tests, att='selectorText')
 
@@ -120,6 +136,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u': left': xml.dom.SyntaxErr,
             u':left :right': xml.dom.SyntaxErr,
             u':left a': xml.dom.SyntaxErr,
+            u'name :left': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests, att='_setSelectorText')
 
