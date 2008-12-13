@@ -127,7 +127,12 @@ class Sequence(object):
         self._min, self._max = minmax()
         if self._max is None:
             # unlimited
-            self._max = sys.maxint
+            try:
+                # py2.6/3
+                self._max = sys.maxsize
+            except AttributeError:
+                # py<2.6
+                self._max = sys.maxint
 
         self._prodcount = len(self._prods)
         self.reset()
