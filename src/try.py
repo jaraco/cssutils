@@ -27,6 +27,15 @@ def save(name, string):
     f.write(string)
     f.close()
 
+
+if 1:
+    s = cssutils.parseString('''@page :left { @top-left {x:1} left: 0; @top-right {x:1} top: 0}''')
+    pr = s.cssRules[0] 
+    pr.selectorText = 'X:right'
+    print pr.selectorText
+    print s.cssText
+    sys.exit(1)
+
 if 0:
     do = """
     import cssutils
