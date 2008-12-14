@@ -138,6 +138,3 @@ value
     the string value of the property, same as ``cssValue.cssText`` (but see the notes for ``cssValue``
 priority
     of the property, from 0.9.5 ``important`` or ``None`` only (until 0.9.5 this was ``!important``, not the additional "!")
-
-normalname *DEPRECATED* since 0.9.5
-    use ``name`` and ``normalname`` instead

@@ -8,6 +8,12 @@ known issues
 ------------
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
 
+- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
+
+   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
+
+- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. Prefer to use ``style['property']`` over ``style.property``.
+
 - although cssutils tries to preserve CSS hacks not all are (and some - mainly syntactically invalid ones - will probably never be). The following hacks are known to **not** be preserved:
 
   star hack (without any whitespace)
@@ -21,12 +27,6 @@ known issues
   **These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!**
   In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
-- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
-
-   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
-
-- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. Prefer to use ``style['property']`` over ``style.property``.
-
 - ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` and the relevant methods/properties ``Property.cssValue`` and ``CSSStyleDeclaration.getPropertyCSSValue`` are more or less *DEPRECATED* and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings. As the aforementioned classes are not hardly that useful this should not be a big problem but please beware if you use or have used them. If you think this a bad idea please let me know!
 
    Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` will probably be completely replaced/refactored with suggestions from CSSOM.
@@ -37,6 +37,8 @@ known issues
 0.9.6
 --------
 HEAD
+
+0.9.6a0 081214
     + **FEATURE**: ``xml.dom.DOMException``\ s raised do now contain infos about the position where the exception occured. An exception might for example have been raised as::
 
         raise xml.dom.SyntaxErr('the message', 10, 5)
