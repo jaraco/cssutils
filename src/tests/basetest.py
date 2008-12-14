@@ -85,7 +85,7 @@ class BaseTestCase(unittest.TestCase):
         try:
             callableObj(*args, **kwargs)
         except excClass, exc:
-            excMsg = str(exc)
+            excMsg = unicode(exc.args[0]) #str(exc)
             if not msg:
                 # No message provided: any message is fine.
                 return
@@ -95,9 +95,8 @@ class BaseTestCase(unittest.TestCase):
             else:
                 # Message provided, and it didn't match: fail!
                 raise self.failureException(
-                "Right exception, wrong message: got '%s' expected '%s'" %
-                (excMsg, msg)
-                )
+                    u"Right exception, wrong message: got '%s' instead of '%s'" %
+                    (excMsg, msg))
         else:
             if hasattr(excClass, '__name__'):
                 excName = excClass.__name__

@@ -37,7 +37,13 @@ known issues
 0.9.6
 --------
 HEAD
-    + **FEATURE**: Exceptions based on ``xml.dom.DOMException`` raised by cssutils have attributes ``e.line`` and ``e.col`` now which contain the position of the error occured or ``None`` if the position is not known. Mind that other exceptions like HTTPError etc do not have this information!
+    + **FEATURE**: ``xml.dom.DOMException``\ s raised do now contain infos about the position where the exception occured. An exception might for example have been raised as::
+
+        raise xml.dom.SyntaxErr('the message', 10, 5)
+
+      (where 10 is the line and 5 the column of the offending text).
+
+      Therefor you may **not** simply use ``str(e)`` to get the exception message but you have to use ``msg, line, col = e.args[0], e.args[1], e.args[2]``. Additionally exceptions raised have attributes ``e.line`` and ``e.col``.
 
     + **FEATURE**: @page rule accepts named page selector now, e.g. ``@page intro`` or ``page main:left``.
 
