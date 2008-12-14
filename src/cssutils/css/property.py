@@ -78,7 +78,8 @@ class Property(cssutils.util.Base):
           ;
 
     """
-    def __init__(self, name=None, value=None, priority=u'', _mediaQuery=False):
+    def __init__(self, name=None, value=None, priority=u'', 
+                 profiles=None, _mediaQuery=False):
         """
         inits property
 
@@ -96,6 +97,7 @@ class Property(cssutils.util.Base):
 
         self.seqs = [[], None, []]
         self.wellformed = False
+        self._profiles = profiles
         self._mediaQuery = _mediaQuery
 
         self._name = u''
@@ -112,6 +114,7 @@ class Property(cssutils.util.Base):
         self._literalpriority = u''
         if priority:
             self.priority = priority
+            
 
     def _getCssText(self):
         """
@@ -395,9 +398,10 @@ class Property(cssutils.util.Base):
         """
         valid = False
         if self.value:
-            if self.name and self.name in profiles.propertiesByProfile():
+            if self.name and self.name in profiles.propertiesByProfile(self._profiles):
                 valid, validprofile = profiles.validateWithProfile(self.name,
-                                                                   self.value)
+                                                                   self.value,
+                                                                   self._profiles)
                 if not validprofile:
                     validprofile = u''
 
@@ -413,6 +417,9 @@ class Property(cssutils.util.Base):
                     self._log.debug(u'Property: Found valid %s property "%s: %s".' %
                                     (validprofile, self.name, self.value),
                                     neverraise=True)
+            elif self.name not in profiles.propertiesByProfile(self._profiles):
+                self._log.warn(u'Property: %r is not an allowed property for profiles %r' %
+                               (self.name, self._profiles), neverraise=True)
             else:
                 self._log.debug(u'Property: Unable to validate as no or unknown property context set for value: %r'
                                 % self.value, neverraise=True)

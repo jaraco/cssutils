@@ -98,11 +98,14 @@ def _toCSSname(DOMname):
     def _doDOMtoCSSname2(m): return '-' + m.group(0).lower()
     return _reDOMtoCSSname.sub(_doDOMtoCSSname2, DOMname)
 
-
 # add list of DOMname properties to CSS2Properties
 # used for CSSStyleDeclaration to check if allowed properties
 # but somehow doubled, any better way?
-CSS2Properties._properties = [_toDOMname(p) for p in cssutils.profiles.css2.keys()]
+CSS2Properties._properties = []
+for group in cssutils.profiles.properties:
+    for name in cssutils.profiles.properties[group]:
+        CSS2Properties._properties.append(_toDOMname(name))
+
 
 # add CSS2Properties to CSSStyleDeclaration:
 def __named_property_def(DOMname):

@@ -37,6 +37,12 @@ known issues
 0.9.6
 --------
 HEAD
+    - IMPROVEMENT: Added all known properties to CSS2Properties.
+
+    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
+        **TODO**: Preference setting. Profile?
+
+
 
 0.9.6a0 081214
     + **FEATURE**: ``xml.dom.DOMException``\ s raised do now contain infos about the position where the exception occured. An exception might for example have been raised as::
@@ -95,7 +101,6 @@ HEAD
     - **BUGFIX**: Setting ``CSSPageRule.selectorText`` does actually work now.
 
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
-        **TODO**: Preference setting. Profile?
 
     - BUGFIX: Fixed Issue #14, added ``CSSStyleDeclaration().borderLeftWidth``. But prefer to use ``CSSStyleDeclaration()['border-left.width']``.
 
@@ -326,8 +331,6 @@ HEAD
     + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
-
-        **TODO**: check selector of CSSStyleRule
 
     - TESTS: **Tests need ``minimock`` now!** Install with ``easy_install minimock``
 

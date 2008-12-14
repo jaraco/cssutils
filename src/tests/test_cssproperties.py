@@ -47,7 +47,7 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
         "CSS2Properties"
         CSS2Properties = cssutils.css.cssproperties.CSS2Properties
         self.assertEquals(type(property()), type(CSS2Properties.color))
-        self.assertEquals(len(cssutils.profiles.css2),
+        self.assertEquals(sum([len(x) for x in cssutils.profiles.properties.values()]),
                           len(CSS2Properties._properties))
 
         c2 = CSS2Properties()
