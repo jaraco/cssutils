@@ -74,17 +74,22 @@ class _ErrorHandler(object):
         handles all calls
         logs or raises exception
         """
+        line, col = None, None
         if token:
             if isinstance(token, tuple):
-                msg = u'%s [%s:%s: %s]' % (
-                    msg, token[2], token[3], token[1])
+                value, line, col = token[1], token[2], token[3]
             else:
-                msg = u'%s [%s:%s: %s]' % (
-                    msg, token.line, token.col, token.value)
+                value, line, col = token.value, token.line, token.col
+            msg = u'%s [%s:%s: %s]' % (
+                msg, line, col, value)
 
         if error and self.raiseExceptions and not neverraise:
             if isinstance(error, urllib2.HTTPError) or isinstance(error, urllib2.URLError):
-                raise error
+                raise
+            elif issubclass(error, xml.dom.DOMException): 
+                error.line = line
+                error.col = col
+                raise error(msg)
             else:
                 raise error(msg)
         else:

@@ -37,6 +37,12 @@ known issues
 0.9.6
 --------
 HEAD
+    + **FEATURE**: Exceptions based on ``xml.dom.DOMException`` raised by cssutils have attributes ``e.line`` and ``e.col`` now which contain the position of the error occured or ``None`` if the position is not known. Mind that other exceptions like HTTPError etc do not have this information!
+
+    + **FEATURE**: @page rule accepts named page selector now, e.g. ``@page intro`` or ``page main:left``.
+
+    + **FEATURE**: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
+
     + **FEATURE**: Started implementation of CSS profiles...
         - moved ``cssutils.css.cssproperties.cssvalues`` to ``cssutils.profiles.css2``
         - added CSS Color Module Level 3 with properties ``color`` and ``opacity``. Not implemented are SVG color names.
@@ -44,17 +50,13 @@ HEAD
         - refactored CSSValue and subclasses therefore there may be some minor changes in serializing or value reporting
             + ``getStringValue()`` returns a string without quotes or for URIs a value without surrounding ``url(...)`` now
 
-    + **FEATURE**: @page rule accepts named page selector now, e.g. ``@page intro`` or ``page main:left``.
-
-    + **FEATURE**: Script ``cssparse`` has new option ``-u URL`` which parses the given URL.
+    + FEATURE **experimental**: Added class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``.
 
     + FEATURE (strange): IE only CSS expressions *should* be parsed and serialized now an an ``Expression`` value. I have not tested this deeply and there may be problems but for some common cases this should work, e.g. for hacking maxwidth for IE you may define the following::
 
         width: expression(document.body.clientWidth > 1000 ? "1000px": "100%")
 
       Usage of CSS expressions is strongly discouraged as they do not validate AND may slow down the rendering and browser quite a lot!
-
-    + **API CHANGE/FEATURE**: Added **experimental** class ``CSSColor`` which is used for RGB, RGBA, HSL, HSLA and HEX color values of ``CSSValue`` respective ``CSSPrimitiveValue``.
 
     + BUGFIX/IMPROVEMENT: rewrite of CSSValue and related classes
         - BUGFIX: Parsing of a CSSValue like ``red /**/`` (value, Space, comment) fixed.
