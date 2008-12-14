@@ -89,7 +89,7 @@ class _ErrorHandler(object):
             elif issubclass(error, xml.dom.DOMException): 
                 error.line = line
                 error.col = col
-                raise error(msg)
+                raise error(msg, line, col)
             else:
                 raise error(msg)
         else:

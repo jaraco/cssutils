@@ -50,11 +50,11 @@ class ProfilesTestCase(basetest.BaseTestCase):
         # raises:
         if sys.version_info[0:2] == (2,4):
             # Python 2.4 has a different msg...
-            self.assertRaisesMsg(Exception, "invalid literal for int(): x", 
-                             profiles.validate, '-test-z', 'x')
+            self.assertRaisesMsg(Exception, u"invalid literal for int(): x", 
+                                 profiles.validate, u'-test-z', u'x')
         else:
-            self.assertRaisesMsg(Exception, "invalid literal for int() with base 10: 'x'", 
-                             profiles.validate, '-test-z', 'x')
+            self.assertRaisesMsg(Exception, u"invalid literal for int() with base 10: 'x'", 
+                                 profiles.validate, u'-test-z', u'x')
         
     def test_propertiesByProfile(self):
         "Profiles.propertiesByProfile"
