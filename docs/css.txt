@@ -112,8 +112,6 @@ setSerializerPref(pref, value)
     stylesheet. See cssutils.serialize.Preferences for possible
     preferences to be set.
 
-replaceUrls(replacer) *DEPRECATED*
-    ``replaceUrls(replacer)`` has been *DEPRECATED* since 0.9.5. Use ``cssutils.replaceUrls(sheet, replacer)`` instead.
 
 CSSCharsetRule
 ==============
