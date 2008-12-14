@@ -98,9 +98,8 @@ table {
 		width: 20%;
 	}
 code, pre, tt, .pre {
-	font-family: "Lucida Console", monospace;	
-	color: #00a;
-	font-size: 0.95em;
+	font-family: "Consolas", "Lucida Console", monospace;	
+	color: #00b;
 	}
 pre {
 	background-color: #f6f6f0;
