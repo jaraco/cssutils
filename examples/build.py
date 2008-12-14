@@ -25,26 +25,17 @@ def main():
          html|a { color:red; }'''
     sheet = cssutils.parseString(css)
     
-    # from 0.9.5a3 iterate on sheet directly
     for rule in sheet:
         if rule.type == rule.STYLE_RULE:
             for property in rule.style:
                 property.value = 'green' 
-                # from 0.9.5a3 priority string is "important"
-                property.priority = 'important'
-            # dictionary like access since 0.9.5b3, also possible: ('1em', 'important')
-            rule.style['margin'] = '1em'
+                property.priority = 'IMPORTANT'
+            rule.style['margin'] = '01.0eM' # or: ('1em', 'important')
     
-    # encoding from  0.9.4
     sheet.encoding = 'ascii'
-    
-    # namespaces from 0.9.5a3: effectively replaces prefix as same URI 
     sheet.namespaces['xhtml'] = 'http://www.w3.org/1999/xhtml'
     sheet.namespaces['atom'] = 'http://www.w3.org/2005/Atom'
-    
-    # add from 0.9.5a3: adds at appropriate position
-    sheet.add('atom|title {color: #000 !important}')
-    # from 0.9.5: @import relative to cwd if no href given
+    sheet.add('atom|title {color: #000000 !important}')
     sheet.add('@import "sheets/import.css";')
     
     print sheet.cssText
@@ -56,4 +47,4 @@ def _test():
 
 if __name__ == "__main__":
     _test() 
-    #main()
+    main()
