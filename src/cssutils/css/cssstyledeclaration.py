@@ -94,6 +94,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
     seq: a list (cssutils)
         All parts of this style declaration including CSSComments
 
+    _profiles:
+        profile to use for validating properties in this style declaration
+
     $css2propertyname
         All properties defined in the CSS2Properties class are available
         as direct properties of CSSStyleDeclaration with their respective
@@ -112,7 +115,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
     ======
     [Property: Value Priority?;]* [Property: Value Priority?]?
     """
-    def __init__(self, cssText=u'', parentRule=None, readonly=False):
+    def __init__(self, cssText=u'', parentRule=None, profiles=None, readonly=False):
         """
         cssText
             Shortcut, sets CSSStyleDeclaration.cssText
@@ -125,6 +128,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         super(CSSStyleDeclaration, self).__init__()
         self._parentRule = parentRule
         #self._seq = self._tempSeq()
+        self._profiles = profiles
         self.cssText = cssText
         self._readonly = readonly
 
@@ -162,7 +166,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         known = ['_tokenizer', '_log', '_ttypes',
                  '_seq', 'seq', 'parentRule', '_parentRule', 'cssText',
                  'valid', 'wellformed',
-                 '_readonly']
+                 '_readonly', '_profiles']
         known.extend(CSS2Properties._properties)
         if n in known:
             super(CSSStyleDeclaration, self).__setattr__(n, v)
@@ -298,7 +302,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                                        semicolon=True)
             if self._tokenvalue(tokens[-1]) == u';':
                 tokens.pop()
-            property = Property()
+            property = Property(profiles=self._profiles)
             property.cssText = tokens
             if property.wellformed:
                 seq.append(property, 'Property')
@@ -582,10 +586,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         self._checkReadonly()
         
         if isinstance(name, Property):
-            newp = name
+            newp = name 
             name = newp.literalname
+            newp._profiles = self._profiles
         else:
-            newp = Property(name, value, priority)
+            newp = Property(name, value, priority, profiles=self._profiles)
         if not newp.wellformed:
             self._log.warn(u'Invalid Property: %s: %s %s'
                     % (name, value, priority))

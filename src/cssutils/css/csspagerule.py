@@ -69,7 +69,8 @@ class CSSPageRule(cssrule.CSSRule):
             self.style = style
             tempseq.append(self.style, 'style')
         else:
-            self._style = CSSStyleDeclaration(parentRule=self)
+            self._style = CSSStyleDeclaration(parentRule=self,
+                                              profiles=(cssutils.profiles.Profiles.CSS_LEVEL_2,))
         self._setSeq(tempseq)
         
         self._readonly = readonly
@@ -206,7 +207,7 @@ class CSSPageRule(cssrule.CSSRule):
                 
             wellformed, newselectorseq = self.__parseSelectorText(selectortokens)
 
-            newstyle = CSSStyleDeclaration()
+            newstyle = CSSStyleDeclaration(profiles=(cssutils.profiles.Profiles.CSS_LEVEL_2,) )
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
                 wellformed = False

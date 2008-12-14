@@ -24,6 +24,7 @@ __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 import cssutils
 import re
 
+properties = {}
 """
 Define some regular expression fragments that will be used as
 macros within the CSS property value regular expressions.
@@ -76,7 +77,7 @@ css2macros = {
 """
 Define the regular expressions for validation all CSS values
 """
-css2 = {
+properties['css2'] = {
     'azimuth': r'{angle}|(behind\s+)?(left-side|far-left|left|center-left|center|center-right|right|far-right|right-side)(\s+behind)?|behind|leftwards|rightwards|inherit',
     'background-attachment': r'{background-attachment}',
     'background-color': r'{background-color}',
@@ -206,13 +207,13 @@ css3colormacros = {
     'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
 
     }
-css3color = {
+properties['css3color'] = {
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|inherit',
     'opacity': r'{num}|inherit'
     }
 
 # CSS Box Module Level 3
-css3box = {
+properties['css3box'] = {
     'overflow': '{overflow}\s?{overflow}?',
     'overflow-x': '{overflow}',
     'overflow-y': '{overflow}'
@@ -280,9 +281,9 @@ class Profiles(object):
         self._log = cssutils.log
         self._profilenames = [] # to keep order, REFACTOR!
         self._profiles = {}
-        self.addProfile(self.CSS_LEVEL_2, css2, css2macros)
-        self.addProfile(self.CSS_COLOR_LEVEL_3, css3color, css3colormacros)
-        self.addProfile(self.CSS_BOX_LEVEL_3, css3box)
+        self.addProfile(self.CSS_LEVEL_2, properties['css2'], css2macros)
+        self.addProfile(self.CSS_COLOR_LEVEL_3, properties['css3color'], css3colormacros)
+        self.addProfile(self.CSS_BOX_LEVEL_3, properties['css3box'])
 
     def _expand_macros(self, dictionary, macros):
         """Expand macros in token dictionary"""
@@ -366,7 +367,7 @@ class Profiles(object):
                     return r
         return False
 
-    def validateWithProfile(self, name, value):
+    def validateWithProfile(self, name, value, profiles=None):
         """Check if value is valid for given property name returning
         (valid, valid_in_profile).
 
@@ -376,8 +377,10 @@ class Profiles(object):
         e.g. ``validateWithProfile('color', 'rgba(1,1,1,1)')`` returns
         (True, Profiles.CSS_COLOR_LEVEL_3)
         """
+        if not profiles:
+            profiles = self._profilenames
         profile = []
-        for profilename in self._profilenames:
+        for profilename in profiles:
             if name in self._profiles[profilename]:
                 profile.append(profilename)
                 try:
