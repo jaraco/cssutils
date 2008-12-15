@@ -333,19 +333,19 @@ class ProdParser(object):
             for token in tokens:
                 if token[0] == self.types.S:
                     try:
-                        next = tokens.next()
+                        next_ = tokens.next()
                     except StopIteration:
                         yield token
                     else:
-                        if next[1] in until:
+                        if next_[1] in until:
                             # omit S as e.g. ``,`` has been found
-                            yield next
-                        elif next[0] == self.types.COMMENT:
+                            yield next_
+                        elif next_[0] == self.types.COMMENT:
                             # pass COMMENT
-                            yield next
+                            yield next_
                         else:
                             yield token
-                            yield next
+                            yield next_
 
                 elif token[0] == self.types.COMMENT:
                     # pass COMMENT
