@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
+
 __date__ = '$LastChangedDate::                            $:'
 
 from StringIO import StringIO
@@ -20,7 +22,7 @@ except ImportError:
 
 
 print sys.version
-print 
+print
 
 def save(name, string):
     f = open(name, 'w')
@@ -29,15 +31,10 @@ def save(name, string):
 
 
 if 1:
-    s = cssutils.parseString('''@page :left { @top-left {x:1} left: 0; @top-right {x:1} top: 0}''')
-    pr = s.cssRules[0] 
-    try:
-        pr.selectorText = 'X Y'
-        
-    except Exception, e:
-        print e
-        print 'LINE', e.line, 'COL', e.col
-    print pr.selectorText
+    css = '''@page :left { @top-left {x:1} left: 0; @top-right {x:1} top: 0}'''
+    css = '''@page :left { opacity: 0}'''
+    s = cssutils.parseString(css)
+    style = s.cssRules[0].style
     print s.cssText
     sys.exit(1)
 
@@ -116,14 +113,14 @@ if 1:
     css = '''rect(1,2,3)'''
     p = cssutils.css.Property('left', '1.2pc')
     print p
-    
-    
+
+
     v = cssutils.css.CSSValue(css)
-#    
+#
     print v
     print v.cssText
 
-#    
+#
     #print v.getRGBColorValue()
     #v.setFloatValue(v.CSS_RGBACOLOR, 1)
     print
@@ -134,14 +131,14 @@ if 1:
 #    s = cssutils.parseString('a { left:  inherit; }')
 #    print s.cssText
     #cssutils.log.raiseExceptions = False
-#    p = cssutils.css.Property(name="color", 
+#    p = cssutils.css.Property(name="color",
 #                              value="red",
 #                              priority="!important"
 #                              )
 #    print p
 #    print p.cssText
     sys.exit(1)
-    
+
 
 if 1:
     cssutils.log.setLevel(logging.DEBUG)
@@ -149,9 +146,9 @@ if 1:
     print s.cssText
     #v = s.cssRules[0].style.getPropertyCSSValue('color')
     #print v
-    
+
     sys.exit()
-    
+
     from cssutils.profiles import profiles
     # TODO: better API
 #    cssutils.css.profiles.profiles.addProfile('x', {
@@ -233,7 +230,7 @@ if 0:
                 return encoding, r.content
             else:
                 # TODO: 301 etc
-                cssutils.log.warn(u'Error opening url=%r: HTTP status %s' % 
+                cssutils.log.warn(u'Error opening url=%r: HTTP status %s' %
                                   (url, r.status_code), error=IOError)
 
     def fetcher(url):
@@ -392,10 +389,10 @@ if 1:
                         view[element].setProperty(p)
                         specificities[element][p.name] = selector.specificity
                     else:
-                        sameprio = (p.priority == 
+                        sameprio = (p.priority ==
                                     view[element].getPropertyPriority(p.name))
                         if not sameprio and bool(p.priority) or (
-                           sameprio and selector.specificity >= 
+                           sameprio and selector.specificity >=
                                         specificities[element][p.name]):
                             # later, more specific or higher prio
                             view[element].setProperty(p)
