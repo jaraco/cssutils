@@ -64,8 +64,11 @@ import optparse
 import sys
 
 def main(args=None):
-    usage = "usage: %prog [options] path"
+    usage = "usage: %prog [options] [path]"
     parser = optparse.OptionParser(usage=usage)
+    parser.add_option('-u', '--url', action='store',
+        dest='url', 
+        help='URL to parse (path is ignored if URL given)')
     parser.add_option('-s', '--sourceencoding', action='store',
         dest='sourceencoding', 
         help='encoding of input, defaulting to "css". If given overwrites other encoding information like @charset declarations')
@@ -77,13 +80,19 @@ def main(args=None):
         help='saves minified version of combined files, defaults to False')
     options, path = parser.parse_args()
 
-    if not path:
-        parser.error('no path given')
+    if options.url:
+        print csscombine(url=options.url, 
+                         sourceencoding=options.sourceencoding, 
+                         targetencoding=options.targetencoding,
+                         minify=options.minify)
+    elif path:
+        print csscombine(path=path[0],
+                         sourceencoding=options.sourceencoding, 
+                         targetencoding=options.targetencoding,
+                         minify=options.minify)
     else:
-        path = path[0]
+        parser.error('no path or URL (-u) given')
 
-    print csscombine(path, options.sourceencoding, options.targetencoding,
-                     options.minify)
 
 
 if __name__ == '__main__':
