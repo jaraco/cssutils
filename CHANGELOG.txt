@@ -37,7 +37,12 @@ known issues
 0.9.6
 --------
 HEAD
-    - IMPROVEMENT: Added all known properties to CSS2Properties.
+    + **FEATURE**: CSSCombine script and helper function resolve nested imports now.
+    + **FEATURE**: Script ``csscombine`` has new option ``-u URL, --url=URL     URL to parse (path is ignored if URL given)`` now
+
+    - **API CHANGE**: ``cssutils.script.csscombine`` has **ONLY** keyword parameters now. Use ``csscombine(path=path[,...])`` for the old behaviour. New parameter ``url`` combines the sheet at URL now.
+
+    + IMPROVEMENT: Added all known properties to CSS2Properties.
 
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?

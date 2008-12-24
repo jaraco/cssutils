@@ -61,7 +61,7 @@ Options:
 
 CSSCombine
 ==========
-``csscombine`` may be used to combine several sheets loaded from a main sheet via @import rules. No nested @imports are resolved yet.
+``csscombine`` may be used to combine several sheets loaded from a main sheet via @import rules. Nested @import rules are resolved from cssutils 0.9.6a1.
 
 The resulting combined sheet (optionally minified) is send to stdout, info and error messages are handled by the normal cssutils log.
 
@@ -73,7 +73,7 @@ example::
 
     >>> proxypath = 'sheets/csscombine-proxy.css'
     >>> from cssutils.script import csscombine
-    >>> print csscombine(proxypath, sourceencoding=None, targetencoding='utf-8', minify=True)
+    >>> print csscombine(path=proxypath, sourceencoding=None, targetencoding='utf-8', minify=True)
     Processing @import u'sheets\\csscombine-1.css'
     Processing @import u'sheets\\csscombine-2.css'
     Nested @imports are not combined: @import "1.css";
@@ -82,10 +82,11 @@ example::
 
 script use
 ----------
-Usage: csscombine-script.py [options] path
+Usage: csscombine-script.py [options] [path]
 
 Options:
   -h, --help            show this help message and exit
+  -u URL, --url=URL     URL to parse (path is ignored if URL given)
   -s SOURCEENCODING, --sourceencoding=SOURCEENCODING
                         encoding of input, defaulting to "css". If given
                         overwrites other encoding information like @charset
