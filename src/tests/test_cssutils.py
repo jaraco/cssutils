@@ -2,13 +2,19 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
 __version__ = '$Id$'
 
+import basetest
+import codecs
+import cssutils
 import os
 import tempfile
 import urllib
 import xml.dom
-import basetest
-import cssutils
-import codecs
+
+try:
+    from minimock import mock, restore
+except ImportError:
+    mock = None 
+
 
 class CSSutilsTestCase(basetest.BaseTestCase):
 
@@ -233,6 +239,38 @@ background-\\image: url(NEWb);
 background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
 
         cssutils.ser.prefs.keepAllProperties = False
+
+    def test_resolveImports(self):
+        "cssutils.resolveImports(sheet)"
+        if mock:
+            self._tempSer()
+            cssutils.ser.prefs.useMinified()
+
+            a = u'@import"b.css";a{color:green}'
+            b = u'b{color:red}'
+            
+            # normal
+            mock("cssutils.util._defaultFetcher", 
+                 mock_obj=self._make_fetcher(None, b))
+            s = cssutils.parseString(a)
+            restore()            
+            self.assertEqual(a, s.cssText)
+            self.assertEqual(b, s.cssRules[0].styleSheet.cssText)
+            c = cssutils.resolveImports(s)
+            self.assertEqual('b{color:red}a{color:green}', c.cssText)
+
+            # b cannot be found
+            mock("cssutils.util._defaultFetcher", 
+                 mock_obj=self._make_fetcher(None, None))
+            s = cssutils.parseString(a)
+            restore()            
+            self.assertEqual(a, s.cssText)
+            self.assertEqual(None, s.cssRules[0].styleSheet)
+            c = cssutils.resolveImports(s)
+            self.assertEqual('@import"b.css";a{color:green}', c.cssText)
+
+        else:
+            self.assertEqual(False, u'Minimock needed for this test')
 
 
 if __name__ == '__main__':
