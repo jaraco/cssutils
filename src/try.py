@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-
 __date__ = '$LastChangedDate::                            $:'
 
 from StringIO import StringIO
@@ -20,15 +18,24 @@ try:
 except ImportError:
     pass
 
-
-print sys.version
-print
+sys.stdout.write(sys.version)
+print 
 
 def save(name, string):
     f = open(name, 'w')
     f.write(string)
     f.close()
 
+
+if 1:
+    from cssutils.script import csscombine
+    a =  csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
+    print
+    b = csscombine(r"E:\xampp\htdocs\css.css", targetencoding='iso-8859-1', minify=False)
+    print a
+    print b
+    
+    sys.exit(0)
 
 if 1:
     css = '''@page :left { @top-left {x:1} left: 0; @top-right {x:1} top: 0}'''
