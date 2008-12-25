@@ -84,9 +84,9 @@ from helper import Deprecated
 import errorhandler
 log = errorhandler.ErrorHandler()
 
-import util
 import css
 import stylesheets
+import util
 from parse import CSSParser
 
 from serialize import CSSSerializer
@@ -249,6 +249,24 @@ def replaceUrls(sheet, replacer):
             elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
                 setProperty(v)
 
+def resolveImports(sheet, target=None):
+    """Recurcively combine all rules in given sheet into 
+    a new target sheet which is returned."""
+    if not target:
+        target = css.CSSStyleSheet()
+        
+    target.add(css.CSSComment(cssText=u'/* START %s */' %
+                                       sheet.href))            
+    for rule in sheet.cssRules:
+        if rule.type == rule.IMPORT_RULE:
+            log.info(u'Processing @import %r' % rule.href,
+                              neverraise=True)
+            resolveImports(rule.styleSheet, target)
+        else:
+            target.add(rule)
+    target.add(css.CSSComment(cssText=u'/* END %s */' %
+                                       sheet.href))          
+    return target
 
 if __name__ == '__main__':
     print __doc__
