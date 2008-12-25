@@ -18,11 +18,30 @@ except ImportError:
 
 class BaseTestCase(unittest.TestCase):
 
+    def _tempSer(self):
+        "Replace default ser with temp ser."
+        self._ser = cssutils.ser
+        cssutils.ser = cssutils.serialize.CSSSerializer()
+
+    def _restoreSer(self):
+        "Restore the default ser."
+        cssutils.ser = self._ser
+
+    def _make_fetcher(self, encoding, content):
+        "make an URL fetcher with specified data"
+        def fetcher(url):
+            return encoding, content            
+        return fetcher
+
     def setUp(self):
         # a raising parser!!!
         cssutils.log.raiseExceptions = True
         cssutils.log.setLevel(logging.FATAL)
         self.p = cssutils.CSSParser(raiseExceptions=True)
+
+    def tearDown(self):
+        if hasattr(self, '_ser'):
+            self._restoreSer()
 
     def assertRaisesEx(self, exception, callable, *args, **kwargs):
         """
