@@ -255,17 +255,19 @@ def resolveImports(sheet, target=None):
     if not target:
         target = css.CSSStyleSheet()
         
-    target.add(css.CSSComment(cssText=u'/* START %s */' %
-                                       sheet.href))            
+    target.add(css.CSSComment(cssText=u'/* START %s */' % sheet.href))
     for rule in sheet.cssRules:
         if rule.type == rule.IMPORT_RULE:
-            log.info(u'Processing @import %r' % rule.href,
-                              neverraise=True)
-            resolveImports(rule.styleSheet, target)
+            log.info(u'Processing @import %r' % rule.href, neverraise=True)
+            if rule.styleSheet:
+                resolveImports(rule.styleSheet, target)
+            else:
+                log.error(u'Cannot get referenced stylesheet %r' % 
+                          rule.href, neverraise=True)
+                target.add(rule)
         else:
             target.add(rule)
-    target.add(css.CSSComment(cssText=u'/* END %s */' %
-                                       sheet.href))          
+    target.add(css.CSSComment(cssText=u'/* END %s */' % sheet.href))          
     return target
 
 if __name__ == '__main__':
