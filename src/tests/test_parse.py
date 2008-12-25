@@ -56,12 +56,6 @@ class CSSParserTestCase(basetest.BaseTestCase):
         # RESET cssutils.log.raiseExceptions
         cssutils.log.raiseExceptions = _saved
 
-    def _make_fetcher(self, encoding, content):
-        "make an URL fetcher with specified data"
-        def fetcher(url):
-            return encoding, content            
-        return fetcher
-
 #    def test_parseFile(self):
 #        "CSSParser.parseFile()"
 #        # see test_cssutils
