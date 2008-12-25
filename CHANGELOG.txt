@@ -37,16 +37,17 @@ known issues
 0.9.6
 --------
 HEAD
-    + **FEATURE**: CSSCombine script and helper function resolve nested imports now.
-    + **FEATURE**: Script ``csscombine`` has new option ``-u URL, --url=URL     URL to parse (path is ignored if URL given)`` now
+    + **FEATURE**: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if ``import google.appengine`` is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.
+    + **FEATURE**: Function ``cssutils.resolveImports(sheet)`` returns a new stylesheet with all rules in given sheet but with all @import rules being pulled into the top sheet.
+    + FEATURE: CSSCombine script and helper function resolve nested imports now.
+    + FEATURE: Script ``csscombine`` has new option ``-u URL, --url=URL     URL to parse (path is ignored if URL given)`` now
 
     - **API CHANGE**: ``cssutils.script.csscombine`` has **ONLY** keyword parameters now. Use ``csscombine(path=path[,...])`` for the old behaviour. New parameter ``url`` combines the sheet at URL now.
 
-    + IMPROVEMENT: Added all known properties to CSS2Properties.
+    + IMPROVEMENT: Added all known properties (by cssutils ;) to CSS2Properties.
 
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
-
 
 
 0.9.6a0 081214
