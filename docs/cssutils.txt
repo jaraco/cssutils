@@ -15,7 +15,7 @@ Implemented is also the interface `DOMImplementationCSS <http://www.w3.org/TR/DO
 :codec_: A CSS codec registered at standard module ``codecs``
 :CSSParser_: A CSS parser
 :CSSSerializer_: A configurable CSS serializer
-:functions_: Utility functions ``getUrls`` and ``replaceUrls`` for now
+:functions_: Utility functions
 :log_: A configurable ``cssutils.errorhandler.ErrorHandler()`` logger
 :DOMImplementationCSS: Registers cssutils at standard package ``xml.dom``
 
@@ -198,7 +198,7 @@ helper functions
 
 .. _getUrls:
 
-def getUrls(sheet):
+getUrls(sheet):
     Utility function to get all ``url(value)`` values in
     ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
     of given CSSStyleSheet ``sheet``.
@@ -215,6 +215,15 @@ replaceUrls(sheet, replacer)
     ``replacer`` must be a function which is called with a single
     argument which is the current value of url()
     excluding ``url(`` and ``)`` and surrounding single or double quotes.
+
+.. _resolverImports:
+
+resolveImports(sheet)
+    Returns a new stylesheet with all rules in given sheet but all @import rules
+    will be resolved and **all rules** are effectively residing in a single "flat" sheet.
+
+    If an imported sheet cannot be read the @import rule will be kept.
+
 
 .. _log:
 
