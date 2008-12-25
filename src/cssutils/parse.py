@@ -40,7 +40,7 @@ class CSSParser(object):
             parsing. Later while working with the resulting sheets
             the setting used in cssutils.log.raiseExeptions is used
         fetcher
-            see ``setFetchUrl(fetcher)``
+            see ``setFetcher(fetcher)``
         """
         if log is not None:
             cssutils.log.setLog(log)
