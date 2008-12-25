@@ -6,14 +6,20 @@ __version__ = '$Id$'
 
 from helper import normalize
 from itertools import ifilter
+import css
+import codec
 import codecs
-import cssutils
-import encutils
+import errorhandler
 import tokenize2
 import types
-import urllib2
 import xml.dom
 
+try:
+    from _fetchgae import _defaultFetcher
+except ImportError, e:
+    from _fetch import _defaultFetcher
+    
+log = errorhandler.ErrorHandler()
 
 class _BaseClass(object):
     """
@@ -21,7 +27,7 @@ class _BaseClass(object):
 
     **Base and Base2 will be removed in the future!**
     """
-    _log = cssutils.log
+    _log = errorhandler.ErrorHandler()
     _prods = tokenize2.CSSProductions
 
     def _checkReadonly(self):
@@ -325,7 +331,7 @@ class Base(_BaseClass):
             "default impl for unexpected @rule"
             if expected != 'EOF':
                 # TODO: parentStyleSheet=self
-                rule = cssutils.css.CSSUnknownRule()
+                rule = css.CSSUnknownRule()
                 rule.cssText = self._tokensupto2(tokenizer, token)
                 if rule.wellformed:
                     seq.append(rule)
@@ -337,7 +343,7 @@ class Base(_BaseClass):
 
         def COMMENT(expected, seq, token, tokenizer=None):
             "default implementation for COMMENT token adds CSSCommentRule"
-            seq.append(cssutils.css.CSSComment([token]))
+            seq.append(css.CSSComment([token]))
             return expected
 
         def S(expected, seq, token, tokenizer=None):
@@ -428,10 +434,10 @@ class Base2(Base, _NewBase):
             "default impl for unexpected @rule"
             if expected != 'EOF':
                 # TODO: parentStyleSheet=self
-                rule = cssutils.css.CSSUnknownRule()
+                rule = css.CSSUnknownRule()
                 rule.cssText = self._tokensupto2(tokenizer, token)
                 if rule.wellformed:
-                    seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE,
+                    seq.append(rule, css.CSSRule.UNKNOWN_RULE,
                                line=token[2], col=token[3])
                 return expected
             else:
@@ -444,7 +450,7 @@ class Base2(Base, _NewBase):
             if expected == 'EOF':
                 new['wellformed'] = False
                 self._log.error(u'Expected EOF but found comment.', token=token)
-            seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
+            seq.append(css.CSSComment([token]), 'COMMENT')
             return expected
 
         def S(expected, seq, token, tokenizer=None):
@@ -697,7 +703,7 @@ class _Namespaces(object):
             prefix = u'' # None or ''
         rule = self.__findrule(prefix)
         if not rule:
-            self.parentStyleSheet.insertRule(cssutils.css.CSSNamespaceRule(
+            self.parentStyleSheet.insertRule(css.CSSNamespaceRule(
                                                     prefix=prefix,
                                                     namespaceURI=namespaceURI),
                                   inOrder=True)
@@ -778,35 +784,6 @@ class _SimpleNamespaces(_Namespaces):
             self.namespaces)
 
 
-def _defaultFetcher(url):
-    """Retrieve data from ``url``. cssutils default implementation of fetch
-    URL function.
-
-    Returns ``(encoding, string)`` or ``None``
-    """
-    try:
-        res = urllib2.urlopen(url)
-    except OSError, e:
-        # e.g if file URL and not found
-        cssutils.log.warn(e, error=OSError)
-    except (OSError, ValueError), e:
-        # invalid url, e.g. "1"
-        cssutils.log.warn(u'ValueError, %s' % e.args[0], error=ValueError)
-    except urllib2.HTTPError, e:
-        # http error, e.g. 404, e can be raised
-        cssutils.log.warn(u'HTTPError opening url=%r: %s %s' % 
-                          (url, e.code, e.msg), error=e)
-    except urllib2.URLError, e:
-        # URLError like mailto: or other IO errors, e can be raised
-        cssutils.log.warn(u'URLError, %s' % e.reason, error=e)
-    else:
-        if res:
-            mimeType, encoding = encutils.getHTTPInfo(res)
-            if mimeType != u'text/css':
-                cssutils.log.error(u'Expected "text/css" mime type for url=%r but found: %r' % 
-                                  (url, mimeType), error=ValueError)
-            return encoding, res.read()
-
 def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
     """
     Read cssText from url and decode it using all relevant methods (HTTP
@@ -853,7 +830,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
             encoding = httpEncoding
         else:
             # check content
-            contentEncoding, explicit = cssutils.codec.detectencoding_str(content)
+            contentEncoding, explicit = codec.detectencoding_str(content)
             if explicit:
                 enctype = 2 # 2. BOM/@charset: explicitly
                 encoding = contentEncoding
@@ -872,9 +849,10 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
             else:
                 decodedCssText = None
         except UnicodeDecodeError, e:
-            cssutils.log.warn(e, neverraise=True)
+            log.warn(e, neverraise=True)
             decodedCssText = None
 
         return encoding, enctype, decodedCssText
     else:
         return None, None, None
+
