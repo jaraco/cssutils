@@ -246,8 +246,8 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
             self._tempSer()
             cssutils.ser.prefs.useMinified()
 
-            a = u'@import"b.css";a{color:green}'
-            b = u'b{color:red}'
+            a = u'@charset "iso-8859-1";@import"b.css";ä{color:green}'.encode('iso-8859-1')
+            b = u'@charset "ascii";\E4 {color:red}'.encode('ascii')
             
             # normal
             mock("cssutils.util._defaultFetcher", 
@@ -255,9 +255,12 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
             s = cssutils.parseString(a)
             restore()            
             self.assertEqual(a, s.cssText)
-            self.assertEqual(b, s.cssRules[0].styleSheet.cssText)
+            self.assertEqual(b, s.cssRules[1].styleSheet.cssText)
             c = cssutils.resolveImports(s)
-            self.assertEqual('b{color:red}a{color:green}', c.cssText)
+            self.assertEqual('\xc3\xa4{color:red}\xc3\xa4{color:green}', c.cssText)
+
+            c.encoding = 'ascii'
+            self.assertEqual(r'@charset "ascii";\E4 {color:red}\E4 {color:green}', c.cssText)
 
             # b cannot be found
             mock("cssutils.util._defaultFetcher", 
@@ -265,9 +268,10 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
             s = cssutils.parseString(a)
             restore()            
             self.assertEqual(a, s.cssText)
-            self.assertEqual(None, s.cssRules[0].styleSheet)
+            self.assertEqual(None, s.cssRules[1].styleSheet)
             c = cssutils.resolveImports(s)
-            self.assertEqual('@import"b.css";a{color:green}', c.cssText)
+            self.assertEqual('@import"b.css";\xc3\xa4{color:green}', c.cssText)
+            
 
         else:
             self.assertEqual(False, u'Minimock needed for this test')
