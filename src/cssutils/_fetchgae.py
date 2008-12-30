@@ -47,7 +47,7 @@ def _defaultFetcher(url):
     try:
         r = urlfetch.fetch(url, method=urlfetch.GET)
     except urlfetch.Error, e:
-        log.warn(u'Error opening url=%r: %s' % (url, e.message),
+        log.warn(u'Error opening url=%r: %s' % (url, e),
                           error=IOError)
     else:
         if r.status_code == 200:
