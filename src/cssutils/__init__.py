@@ -257,7 +257,9 @@ def resolveImports(sheet, target=None):
         
     target.add(css.CSSComment(cssText=u'/* START %s */' % sheet.href))
     for rule in sheet.cssRules:
-        if rule.type == rule.IMPORT_RULE:
+        if rule.type == rule.CHARSET_RULE:
+            pass
+        elif rule.type == rule.IMPORT_RULE:
             log.info(u'Processing @import %r' % rule.href, neverraise=True)
             if rule.styleSheet:
                 resolveImports(rule.styleSheet, target)
