@@ -1,6 +1,4 @@
-"""
-StyleSheet implements DOM Level 2 Style Sheets StyleSheet.
-"""
+"""StyleSheet implements DOM Level 2 Style Sheets StyleSheet."""
 __all__ = ['StyleSheet']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'

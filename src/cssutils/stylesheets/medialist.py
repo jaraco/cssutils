@@ -1,5 +1,4 @@
-"""
-MediaList implements DOM Level 2 Style Sheets MediaList.
+"""MediaList implements DOM Level 2 Style Sheets MediaList.
 
 TODO:
     - delete: maybe if deleting from all, replace *all* with all others?
@@ -15,41 +14,28 @@ import cssutils
 import xml.dom
 
 class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
-    """
-    Provides the abstraction of an ordered collection of media,
+    """Provides the abstraction of an ordered collection of media,
     without defining or constraining how this collection is
     implemented.
 
-    A media is always an instance of MediaQuery.
+    A single media in the list is an instance of MediaQuery. An empty
+    list is the same as a list that contains the medium "all".
 
-    An empty list is the same as a list that contains the medium "all".
-
-    Properties
-    ==========
-    length:
-        The number of MediaQuery objects in the list.
-    mediaText: of type DOMString
-        The parsable textual representation of this MediaList
-    self: a list (cssutils)
-        All MediaQueries in this MediaList
-    wellformed:
-        if this list is wellformed
-
-    Format
-    ======
-    ::
+    Format from CSS2.1::
 
         medium [ COMMA S* medium ]*
 
-    New::
+    New format with MediaQuery::
 
         <media_query> [, <media_query> ]*
     """
     def __init__(self, mediaText=None, readonly=False):
         """
         mediaText
-            unicodestring of parsable comma separared media
-            or a list of media
+            Unicodestring of parsable comma separared media
+            or a (Python) list of media.
+        readonly
+            Not used yet.
         """
         super(MediaList, self).__init__()
         self._wellformed = False
@@ -63,12 +49,9 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         self._readonly = readonly
 
     length = property(lambda self: len(self),
-        doc="(DOM readonly) The number of media in the list.")
+        doc="The number of media in the list (DOM readonly).")
 
     def _getMediaText(self):
-        """
-        returns serialized property mediaText
-        """
         return cssutils.ser.do_stylesheets_medialist(self)
 
     def _setMediaText(self, mediaText):
@@ -76,7 +59,7 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         mediaText
             simple value or comma-separated list of media
 
-        DOMException
+        :class:`xml.dom.DOMException`
 
         - SYNTAX_ERR: (MediaQuery)
           Raised if the specified string value has a syntax error and is
@@ -121,7 +104,7 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
             self._wellformed = True
 
     mediaText = property(_getMediaText, _setMediaText,
-        doc="""(DOM) The parsable textual representation of the media list.
+        doc="""The parsable textual representation of the media list.
             This is a comma-separated list of media.""")
 
     wellformed = property(lambda self: self._wellformed)
@@ -129,47 +112,41 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
     def __prepareset(self, newMedium):
         # used by appendSelector and __setitem__
         self._checkReadonly()
-        
+
         if not isinstance(newMedium, MediaQuery):
             newMedium = MediaQuery(newMedium)
 
         if newMedium.wellformed:
             return newMedium
-        
+
     def __setitem__(self, index, newMedium):
-        """
-        overwrites ListSeq.__setitem__
-        
-        Any duplicate items are **not** removed.
+        """Overwriting ListSeq.__setitem__
+
+        Any duplicate items are **not yet** removed.
         """
         newMedium = self.__prepareset(newMedium)
         if newMedium:
             self.seq[index] = newMedium
-        # TODO: remove duplicates?   
-    
+        # TODO: remove duplicates?
+
     def appendMedium(self, newMedium):
-        """
-        (DOM)
-        Adds the medium newMedium to the end of the list. If the newMedium
-        is already used, it is first removed.
-
-        newMedium
-            a string or a MediaQuery object
-
-        returns if newMedium is wellformed
-
-        DOMException
-
-        - INVALID_CHARACTER_ERR: (self)
-          If the medium contains characters that are invalid in the
-          underlying style language.
-        - INVALID_MODIFICATION_ERR (self)
-          If mediaText is "all" and a new medium is tried to be added.
-          Exception is "handheld" which is set in any case (Opera does handle
-          "all, handheld" special, this special case might be removed in the
-          future). 
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this list is readonly.
+        """Add the `newMedium` to the end of the list. 
+        If the `newMedium` is already used, it is first removed.
+        
+        :param newMedium:
+            a string or a :class:`~cssutils.stylesheets.MediaQuery`
+        :returns: Wellformedness of :param:`newMedium`.
+        :exceptions:
+            - `INVALID_CHARACTER_ERR`: (self)
+              If the medium contains characters that are invalid in the
+              underlying style language.
+            - `INVALID_MODIFICATION_ERR`: (self)
+              If mediaText is "all" and a new medium is tried to be added.
+              Exception is "handheld" which is set in any case (Opera does handle
+              "all, handheld" special, this special case might be removed in the
+              future).
+            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+              Raised if this list is readonly.
         """
         newMedium = self.__prepareset(newMedium)
 
@@ -207,13 +184,11 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
             return False
 
     def append(self, newMedium):
-        "overwrites ListSeq.append"
+        "Same as :meth:`appendMedium`."
         self.appendMedium(newMedium)
-    
+
     def deleteMedium(self, oldMedium):
-        """
-        (DOM)
-        Deletes the medium indicated by oldMedium from the list.
+        """Delete the medium indicated by oldMedium from the list.
 
         DOMException
 
@@ -236,9 +211,7 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 #                u'"%s" not in this MediaList' % oldMedium)
 
     def item(self, index):
-        """
-        (DOM)
-        Returns the mediaType of the index'th element in the list.
+        """Return the mediaType of the index'th element in the list.
         If index is greater than or equal to the number of media in the
         list, returns None.
         """

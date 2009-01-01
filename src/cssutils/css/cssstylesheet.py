@@ -1,5 +1,4 @@
-"""
-CSSStyleSheet implements DOM Level 2 CSS CSSStyleSheet.
+"""CSSStyleSheet implements DOM Level 2 CSS CSSStyleSheet.
 
 Partly also:
     - http://dev.w3.org/csswg/cssom/#the-cssstylesheet
@@ -18,26 +17,13 @@ import cssutils.stylesheets
 import xml.dom
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
-    """
-    The CSSStyleSheet interface represents a CSS style sheet.
+    """CSSStyleSheet represents a CSS style sheet. Inherits properties from stylesheet.StyleSheet.
 
-    Properties
-    ==========
-    CSSOM
-    -----
     cssRules
-        of type CSSRuleList, (DOM readonly)
-    encoding
-        reflects the encoding of an @charset rule or 'utf-8' (default)
-        if set to ``None``
-    ownerRule
-        of type CSSRule, readonly. If this sheet is imported this is a ref
-        to the @import rule that imports it.
+        All Rules in this style sheet, a CSSRuleList, (DOM readonly)
 
-    Inherits properties from stylesheet.StyleSheet
 
-    cssutils
-    --------
+
     cssText: string
         a textual representation of the stylesheet
     namespaces
@@ -45,12 +31,11 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         A dict of {prefix: namespaceURI} mapping.
 
     Format
-    ======
-    stylesheet
-      : [ CHARSET_SYM S* STRING S* ';' ]?
-        [S|CDO|CDC]* [ import [S|CDO|CDC]* ]*
-        [ namespace [S|CDO|CDC]* ]* # according to @namespace WD
-        [ [ ruleset | media | page ] [S|CDO|CDC]* ]*
+        stylesheet
+          : [ CHARSET_SYM S* STRING S* ';' ]?
+            [S|CDO|CDC]* [ import [S|CDO|CDC]* ]*
+            [ namespace [S|CDO|CDC]* ]* # according to @namespace WD
+            [ [ ruleset | media | page ] [S|CDO|CDC]* ]*
     """
     def __init__(self, href=None, media=None, title=u'', disabled=None,
                  ownerNode=None, parentStyleSheet=None, readonly=False,
@@ -272,7 +257,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             "(cssutils) a textual representation of the stylesheet")
 
     def _resolveImport(self, url):
-        """Read (encoding, enctype, decodedContent) from ``url`` for @import 
+        """Read (encoding, enctype, decodedContent) from ``url`` for @import
         sheets."""
         try:
             # only available during parse of a complete sheet
@@ -289,7 +274,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         overrideEncoding=self.__encodingOverride,
                         parentEncoding=selfAsParentEncoding)
 
-    def _setCssTextWithEncodingOverride(self, cssText, encodingOverride=None, 
+    def _setCssTextWithEncodingOverride(self, cssText, encodingOverride=None,
                                         encoding=None):
         """Set cssText but use ``encodingOverride`` to overwrite detected
         encoding. This is used by parse and @import during setting of cssText.
@@ -334,7 +319,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             self.insertRule(cssutils.css.CSSCharsetRule(encoding=encoding), 0)
 
     def _getEncoding(self):
-        "return encoding if @charset rule if given or default of 'utf-8'"
+        """Encoding set in an @charset rule or 'utf-8' (default)
+        if set to ``None``."""
         try:
             return self.cssRules[0].encoding
         except (IndexError, AttributeError):
@@ -349,7 +335,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     def add(self, rule):
         """
         Adds rule to stylesheet at appropriate position.
-        Same as ``sheet.insertRule(rule, inOrder=True)``.
+        Same as ``insertRule(rule, inOrder=True)``.
         """
         return self.insertRule(rule, index=None, inOrder=True)
 
@@ -618,7 +604,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         return index
 
     ownerRule = property(lambda self: self._ownerRule,
-                         doc="(DOM attribute) NOT IMPLEMENTED YET")
+                         doc="If this sheet a ref to the relevant @import rule.")
 
     def setSerializer(self, cssserializer):
         """

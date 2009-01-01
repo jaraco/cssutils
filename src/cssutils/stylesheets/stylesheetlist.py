@@ -1,13 +1,10 @@
-"""
-StyleSheetList implements DOM Level 2 Style Sheets StyleSheetList.
-"""
+"""StyleSheetList implements DOM Level 2 Style Sheets StyleSheetList."""
 __all__ = ['StyleSheetList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 class StyleSheetList(list):
-    """
-    Interface StyleSheetList (introduced in DOM Level 2)
+    """Interface StyleSheetList (introduced in DOM Level 2)
 
     The StyleSheetList interface provides the abstraction of an ordered
     collection of style sheets.
