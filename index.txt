@@ -1,31 +1,41 @@
 =============================================
-                 cssutils
+                cssutils
 =============================================
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
 :version: 0.9.6a0 $Id$
 
+Contents
+========
 
-available documentation
-=======================
-General
-    * `readme <README.txt>`_
-    * license: LGPL 3 `COPYING <COPYING>`_ and `COPYING.LESSER <COPYING.LESSER>`_
+.. toctree::
+   :maxdepth: 2
 
-    + `changelog <CHANGELOG.txt>`_
-    + `version migration (0.9.6, 0.9.5) <docs/migrate.txt>`_
-    + `backlog <docs/backlog.txt>`_
+    README
+    CHANGELOG
+    version migration (0.9.6, 0.9.5) <docs/migrate.txt>
+    backlog <docs/backlog.txt>
+
+    cssutils <docs/cssutils>
+    css <docs/css>
+    stylesheets <docs/stylesheets>
+
+    license: LGPL 3 `COPYING <COPYING>`_ and `COPYING.LESSER <COPYING.LESSER>`_
 
 
-    see also
-        * `cssutils at Google Code <http://code.google.com/p/cssutils>`__
-        * `cssutils at cthedot <http://cthedot.de/cssutils/>`__
-        * `cssutils discussion group <http://groups.google.com/group/cssutils>`__
+See also
+========
 
-API
-    * `cssutils <docs/cssutils.txt>`_ package
-    * `cssutils.css <docs/css.txt>`_ package
-    * `cssutils.stylesheets <docs/stylesheets.txt>`_ package
-    * `cssutils.script module and standalone scripts <docs/scripts.txt>`_
-    * `generated API docs (Epydoc) <doc/index.html>`_
+* `cssutils at Google Code <http://code.google.com/p/cssutils>`__
+* `cssutils at cthedot <http://cthedot.de/cssutils/>`__
+* `cssutils discussion group <http://groups.google.com/group/cssutils>`__
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
