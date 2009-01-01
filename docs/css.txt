@@ -1,12 +1,7 @@
-`Index </index.txt>`_
-
 ========================
 package ``cssutils.css``
 ========================
 :Version: $Id$
-
-.. contents::
-
 
 overview
 ========

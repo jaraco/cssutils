@@ -96,4 +96,6 @@ class StyleSheet(cssutils.util.Base2):
     
     parentStyleSheet = property(lambda self: self._parentStyleSheet)
 
-    type = property(lambda self: self._type, doc=u'Default: "ext/css"')
+    type = property(lambda self: self._type, 
+                    doc="Style sheet language used, a content type."
+                    " For CSS this is always ``text/css``.")

@@ -71,7 +71,7 @@ class _NewBase(_BaseClass):
         return Seq(readonly=readonly)
 
     seq = property(lambda self: self._seq,
-                   doc="Internal readonly attribute ``seq`` for most cssutils classes.")
+                   doc="Internal readonly attribute, **DO NOT USE**!")
 
 
 class Base(_BaseClass):

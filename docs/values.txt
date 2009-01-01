@@ -1,11 +1,7 @@
-`Index </index.txt>`_
-
-==========
-CSS Values
-==========
+============
+css.CSSValue
+============
 :version: $Id$
-
-.. contents::
 
 random notes about values
 =========================

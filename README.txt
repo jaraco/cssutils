@@ -1,10 +1,10 @@
 =============================================
-                 cssutils
+                 cssutils README
 =============================================
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:Copyright: 2004-2008 Christof Hoeke
+:Copyright: 2004-2009 Christof Hoeke
 :Version: $Id$
 
 
@@ -44,7 +44,7 @@ Please visit http://cthedot.de/cssutils/ for more details.
 
 license
 =======
-Copyright 2005 - 2008 Christof Hoeke
+Copyright 2005 - 2009 Christof Hoeke
 
 cssutils is published under the LGPL 3 or later
 
@@ -57,7 +57,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 installation
 ============
-From 0.9 cssutils uses EasyInstall. Please find installation instructions and more information about EasyInstall from http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions.
+From 0.9.0 cssutils uses EasyInstall. Please find installation instructions and more information about EasyInstall from http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions.
 
 After installing EasyInstall simply use::
 

@@ -1,11 +1,7 @@
-`Index </index.txt>`_
-
 ========
 backlog
 ========
 :Version: $Id$
-
-.. contents::
 
 
 improvements

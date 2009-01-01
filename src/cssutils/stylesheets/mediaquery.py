@@ -13,12 +13,8 @@ import xml.dom
 
 class MediaQuery(cssutils.util.Base):
     """
-    A Media Query consists of a :attr:`MEDIA_TYPES` and one or more
-    expressions involving media features.
-
-    seq: a list (cssutils)
-        All parts of this MediaQuery including 
-        :class:`~cssutils.css.CSSComment`s
+    A Media Query consists of one of :const:`MediaQuery.MEDIA_TYPES`
+    and one or more expressions involving media features.
 
     Format::
     
@@ -152,8 +148,7 @@ class MediaQuery(cssutils.util.Base):
                 self.seq = newseq
 
     mediaText = property(_getMediaText, _setMediaText,
-        doc="The parsable textual representation of the media list."
-            " This is a comma-separated list of media.")
+        doc="The parsable textual representation of the media list.")
 
     def _setMediaType(self, mediaType):
         """
