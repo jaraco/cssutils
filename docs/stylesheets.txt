@@ -1,17 +1,8 @@
-`Index </index.txt>`_
+.. _stylesheets:
 
-================================
-package ``cssutils.stylesheets``
-================================
-:version: $Id$
+cssutils.stylesheets API
+========================
 
-.. contents::
-
-overview
-========
-Classes implementing `DOM Level 2 Style Sheet <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`_ and `Media Queries (W3C Candidate Recommendation 6 June 2007) <http://www.w3.org/TR/css3-mediaqueries/>`_
-
-:StyleSheet: A StyleSheet, ``css.CSSStyleSheet`` is its only subclass for now
-:StyleSheetList: A list of StyleSheets, not used yet
-:MediaList: A list of ``MediaQuery`` objects used  used by `css.CSSImportRule <css.txt>`_ and `css.CSSMediaRule <css.txt>`_
-:MediaQuery: A single MediaQuery like ``print and (color)``
+.. automodule:: cssutils.stylesheets
+   :members:
+   :inherited-members:
