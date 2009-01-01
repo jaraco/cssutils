@@ -1,11 +1,7 @@
-`Index </index.txt>`_
-
-====================
-CSSStyleDeclaration
-====================
+=======================
+css.CSSStyleDeclaration
+=======================
 :version: $Id$
-
-.. contents::
 
 CSSStyleDeclaration
 ===================

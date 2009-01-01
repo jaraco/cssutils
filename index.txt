@@ -4,23 +4,30 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:version: 0.9.6a0 $Id$
+:version: 0.9.6a1
 
 Contents
 ========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-    README
-    CHANGELOG
-    version migration (0.9.6, 0.9.5) <docs/migrate.txt>
-    backlog <docs/backlog.txt>
+    <README>
 
-    cssutils <docs/cssutils>
-    css <docs/css>
-    stylesheets <docs/stylesheets>
+    <docs/cssutils>
+    <docs/css>
+    <docs/cssstyledeclaration>
+    <docs/values>
+    <docs/stylesheets>
 
+    <docs/scripts>
+
+    <CHANGELOG>
+    <docs/migrate.txt>
+    <docs/backlog.txt>
+
+
+..
     license: LGPL 3 `COPYING <COPYING>`_ and `COPYING.LESSER <COPYING.LESSER>`_
 
 

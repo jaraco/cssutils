@@ -2,8 +2,6 @@
 =========
 :Version: $Id$
 
-.. contents::
-
 known issues
 ------------
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.

@@ -1,8 +1,12 @@
 .. _stylesheets:
 
-cssutils.stylesheets API
-========================
+package ``cssutils.stylesheets``
+================================
 
 .. automodule:: cssutils.stylesheets
    :members:
    :inherited-members:
+
+.. autoclass:: cssutils.stylesheets.StyleSheetList
+   :members: item,   length
+

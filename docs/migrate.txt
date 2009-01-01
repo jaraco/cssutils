@@ -1,12 +1,7 @@
-`Index </index.txt>`_
-
 =================
 version migration
 =================
 :version: $Id$
-
-.. contents::
-
 
 0.9.6 incompatible changes
 ==========================
