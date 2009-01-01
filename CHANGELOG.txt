@@ -1,5 +1,6 @@
-﻿changelog
-=========
+﻿==================
+CHANGELOG
+==================
 :Version: $Id$
 
 known issues
@@ -42,10 +43,12 @@ HEAD
 
     - **API CHANGE**: ``cssutils.script.csscombine`` has **ONLY** keyword parameters now. Use ``csscombine(path=path[,...])`` for the old behaviour. New parameter ``url`` combines the sheet at URL now.
 
-    + IMPROVEMENT: Added all known properties (by cssutils ;) to CSS2Properties.
-
-    - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
+    + BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
+
+    - IMPROVEMENT: Added all known properties (by cssutils ;) to CSS2Properties.
+    - DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markuped yet but not too bad either...
+
 
 
 0.9.6a0 081214

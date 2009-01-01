@@ -4,7 +4,7 @@
 ---------------------------------------------
 CSS Cascading Style Sheets library for Python
 ---------------------------------------------
-:version: 0.9.6a1
+:version release: |release|
 
 Contents
 ========
@@ -13,6 +13,7 @@ Contents
    :maxdepth: 1
 
     <README>
+    <CHANGELOG>
 
     <docs/cssutils>
     <docs/css>
@@ -22,10 +23,8 @@ Contents
 
     <docs/scripts>
 
-    <CHANGELOG>
     <docs/migrate.txt>
     <docs/backlog.txt>
-
 
 ..
     license: LGPL 3 `COPYING <COPYING>`_ and `COPYING.LESSER <COPYING.LESSER>`_
