@@ -68,7 +68,7 @@ unused_docs = ['ANN']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['build', 'dist', 'examples', 'sheets', 'src']
+exclude_trees = ['docs/html', 'dist', 'examples', 'sheets', 'src']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
