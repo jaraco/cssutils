@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>version migration &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="backlog" href="backlog.html" />
+    <link rel="prev" title="cssutils scripts" href="scripts.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="backlog.html" title="backlog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="cssutils scripts"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="version-migration">
+<h1>version migration<a class="headerlink" href="#version-migration" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">version:</th><td class="field-body">$Id: migrate.txt 1590 2009-01-01 21:11:36Z cthedot $</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="incompatible-changes">
+<h2>0.9.6 incompatible changes<a class="headerlink" href="#incompatible-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exception-handling-with-position-information">
+<h3>Exception handling with position information<a class="headerlink" href="#exception-handling-with-position-information" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">xml.dom.DOMException</span></tt>s raised do now contain infos about the position where the exception occured. An exception might for example have been raised as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">xml</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">SyntaxErr</span><span class="p">(</span><span class="s">&#39;the message&#39;</span><span class="p">,</span> <span class="mf">10</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(where 10 is the line and 5 the column of the offending text).</p>
+<p>Therefor you may <strong>not</strong> simply use <tt class="docutils literal"><span class="pre">str(e)</span></tt> to get the exception message but you have to use <tt class="docutils literal"><span class="pre">msg,</span> <span class="pre">line,</span> <span class="pre">col</span> <span class="pre">=</span> <span class="pre">e.args[0],</span> <span class="pre">e.args[1],</span> <span class="pre">e.args[2]</span></tt>. Additionally exceptions raised have attributes <tt class="docutils literal"><span class="pre">e.line</span></tt> and <tt class="docutils literal"><span class="pre">e.col</span></tt>.</p>
+</div>
+<div class="section" id="cssvalue-property-has-been-rewritten">
+<h3>CSSValue / Property has been rewritten<a class="headerlink" href="#cssvalue-property-has-been-rewritten" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>moved validating of a property from <tt class="docutils literal"><span class="pre">CSSValue</span></tt> to <tt class="docutils literal"><span class="pre">Property</span></tt></li>
+<li>removed <tt class="docutils literal"><span class="pre">CSSValue.valid</span></tt> as it does not make sense anymore</li>
+<li><tt class="docutils literal"><span class="pre">CSSPrimitiveValue.getStringValue()</span></tt> returns a STRING without quotes or for URIs a value without surrounding <tt class="docutils literal"><span class="pre">url(...)</span></tt> now</li>
+</ul>
+</div>
+<div class="section" id="minor-api-changes">
+<h3>minor API changes<a class="headerlink" href="#minor-api-changes" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">moved <tt class="docutils literal"><span class="pre">cssutils.css.cssproperties.cssvalues</span></tt> to <tt class="docutils literal"><span class="pre">cssutils.profiles.css2</span></tt></p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">cssutils.utils.Base</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.utils.Base2</span></tt> have been changed and will be removed in favor of new <tt class="docutils literal"><span class="pre">cssutils.utils.NewBase</span></tt>. These are all internal helper classes and should not be used in client code anyway but ye be warned...</p>
+</li>
+<li><dl class="first docutils">
+<dt>A few private attributes have been changed. It is best to not use these anyway but if you have:</dt>
+<dd><ul class="first last simple">
+<li>removed private init parameter <tt class="docutils literal"><span class="pre">CSSValue._propertyName</span></tt></li>
+<li>private attribute <tt class="docutils literal"><span class="pre">CSSValue._value</span></tt> contains <tt class="docutils literal"><span class="pre">(value,</span> <span class="pre">type)</span></tt> now. Do not use as it may change again!</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>The API has been cleaned up resulting in <em>DEPRECATED</em> attributes and methods being removed:</dt>
+<dd><ul class="first last simple">
+<li>removed <tt class="docutils literal"><span class="pre">Property.normalname</span></tt> (DEPRECATED from 0.9.5 ), use <tt class="docutils literal"><span class="pre">Property.name</span></tt> instead</li>
+<li>removed <tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls</span></tt>, use <tt class="docutils literal"><span class="pre">cssutils.replaceUrls()</span></tt> instead</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="id1">
+<h2>0.9.5 incompatible changes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>cssutils 0.9.5 introduced some minor incompatible API changes. Reason for most changes is that for most cases the new default behaviour makes more sense.</p>
+<div class="section" id="logging-versus-raising">
+<h3>logging versus raising<a class="headerlink" href="#logging-versus-raising" title="Permalink to this headline">¶</a></h3>
+<p>Upto 0.9.5rc1 any sheet resulting from parsing via any <tt class="docutils literal"><span class="pre">parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser(raiseExceptions=False)</span></tt> (which is also the default) resulted in the library simply logging any later exceptions and not raising them. 0.9.5rc2 fixes this. Until now the global setting of <tt class="docutils literal"><span class="pre">cssutils.log.raiseExceptions=True</span></tt> (the default) was overwritten with the value of the CSSParser <tt class="docutils literal"><span class="pre">raiseExceptions</span></tt> setting which is normally <tt class="xref docutils literal"><span class="pre">False</span></tt> any time a <tt class="docutils literal"><span class="pre">cssutils.parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser.parse*</span></tt> method was used. So</p>
+<p>until 0.9.5rc1:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># does not raise during parse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;$&#39;</span><span class="p">)</span> <span class="c"># empty but CSSStyleSheet object</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># does not raise either but should:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">cssText</span> <span class="o">=</span> <span class="s">&#39;$&#39;</span>
+<span class="go">ERROR   CSSStyleRule: No start { of style declaration found: u&#39;$&#39; [1:2: ]</span>
+<span class="go"># [...]</span>
+</pre></div>
+</div>
+<p>from 0.9.5rc2:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># still does not raise during parse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;$&#39;</span><span class="p">)</span> <span class="c"># empty but CSSStyleSheet object</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># working with the actual DOM does raise now though</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">cssText</span> <span class="o">=</span> <span class="s">&#39;$&#39;</span>
+<span class="go"># [...] traceback</span>
+<span class="go">xml.dom.SyntaxErr: CSSStyleRule: No start { of style declaration found: u&#39;$&#39; [1:1: $]</span>
+</pre></div>
+</div>
+<p>To use the old but false behaviour add the following line at the start to your program:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">raiseExceptions</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># normally True</span>
+</pre></div>
+</div>
+<p><strong>This should only be done in specific cases</strong> as normal raising of exceptions in methods or functions with the CSS DOM is the expected behaviour.</p>
+</div>
+<div class="section" id="parsing">
+<h3>parsing<a class="headerlink" href="#parsing" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">parse()</span></tt> is <em>DEPRECATED</em> in favour of <tt class="docutils literal"><span class="pre">parseFile()</span></tt>. Both methods are still available but <tt class="docutils literal"><span class="pre">parse</span></tt> will be removed for cssutils 1.0.</p>
+<p>All <tt class="docutils literal"><span class="pre">parse*</span></tt> functions (or <tt class="docutils literal"><span class="pre">CSSParser.parse*</span></tt> methods) do raise errors from 0.9.5final.</p>
+</div>
+<div class="section" id="iterating-over-cssstyledeclaration">
+<h3>iterating over <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt><a class="headerlink" href="#iterating-over-cssstyledeclaration" title="Permalink to this headline">¶</a></h3>
+<p>Iterating over <tt class="docutils literal"><span class="pre">css.CSSStyleDelcaration</span></tt> now yields <em>effective</em> properties only and not <em>all</em> properties set in the declaration. To retrieve <em>all</em> properties use <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getProperties(all=True)</span></tt>.</p>
+<div class="section" id="example">
+<h4>example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<p>iterating over a CSSStyleDeclaration with <tt class="docutils literal"><span class="pre">cssText='color:</span> <span class="pre">red;</span> <span class="pre">c\olor:</span> <span class="pre">green'</span></tt></p>
+<dl class="docutils">
+<dt>OLD:</dt>
+<dd>yielded two Property objects with the values <tt class="docutils literal"><span class="pre">red</span></tt> and <tt class="docutils literal"><span class="pre">green</span></tt>.</dd>
+<dt>NEW since 0.9.5:</dt>
+<dd>yields one Property only (the actual one used) which has the value <tt class="docutils literal"><span class="pre">green</span></tt>.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="property-name-attribute">
+<h3><tt class="docutils literal"><span class="pre">Property.name</span></tt> attribute<a class="headerlink" href="#property-name-attribute" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">Property.name</span></tt> until now hold the <em>literal</em> value (e.g. <tt class="docutils literal"><span class="pre">c\olor</span></tt> of a properties name. Now it holds the <em>normalized</em> name. <tt class="docutils literal"><span class="pre">Property.normalname</span></tt> is therefor <em>DEPRECATED</em>. To access the unnormalized (literal) name use the new readonly property <tt class="docutils literal"><span class="pre">Property.literalname</span></tt>.</p>
+<div class="section" id="id2">
+<h4>example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s">ur&#39;c\olor&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>OLD</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">ur&#39;c\olor&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">normalname</span> <span class="o">==</span> <span class="s">ur&#39;color&#39;</span> <span class="c"># now DEPRECATED</span>
+</pre></div>
+</div>
+</dd>
+<dt>NEW since 0.9.5</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">ur&#39;color&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">literalname</span> <span class="o">==</span> <span class="s">ur&#39;c\olor&#39;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="property-priority-attribute">
+<h3><tt class="docutils literal"><span class="pre">Property.priority</span></tt> attribute<a class="headerlink" href="#property-priority-attribute" title="Permalink to this headline">¶</a></h3>
+<p>The value of <tt class="docutils literal"><span class="pre">Property.priority</span></tt> (or <tt class="docutils literal"><span class="pre">CSSStyleDeclatation.getPropertyPriority(p)</span></tt>) is now <tt class="docutils literal"><span class="pre">important</span></tt> without a leading <tt class="docutils literal"><span class="pre">!</span></tt> as defined in the CSS specs.</p>
+<p>(<tt class="docutils literal"><span class="pre">Property._normalpriority</span></tt> has been removed, the normalized value that was available here is now in <tt class="docutils literal"><span class="pre">Property.priority</span></tt>. The literal priority value is available in <tt class="docutils literal"><span class="pre">Property.literalproperty</span></tt> now (analog to <tt class="docutils literal"><span class="pre">Property.literalname</span></tt>). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)</p>
+<div class="section" id="id3">
+<h4>example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s">u&#39;color&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">u&#39;!IMPOR</span><span class="se">\\</span><span class="s">TANT&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>OLD</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">priority</span> <span class="o">==</span> <span class="s">u&#39;!IMPOR</span><span class="se">\\</span><span class="s">TANT&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">_normalpriority</span> <span class="o">==</span> <span class="s">u&#39;!important&#39;</span> <span class="c"># now REMOVED!</span>
+</pre></div>
+</div>
+</dd>
+<dt>NEW since 0.9.5</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">priority</span> <span class="o">==</span> <span class="s">u&#39;important&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">literalpriority</span> <span class="o">==</span> <span class="s">u&#39;IMPOR</span><span class="se">\\</span><span class="s">TANT&#39;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="cssstylesheet-replaceurls-replacer">
+<h3><tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt><a class="headerlink" href="#cssstylesheet-replaceurls-replacer" title="Permalink to this headline">¶</a></h3>
+<p>Since 0.9.5b1 <tt class="docutils literal"><span class="pre">replaceUrls</span></tt> has been moved from a method of <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> to a utility function in cssutils directly.</p>
+<div class="section" id="id4">
+<h4>example<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">replacer</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="s">&quot;returns new URL&quot;</span>
+
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseUrl</span><span class="p">(</span><span class="s">&#39;http://example.com/test.css&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>OLD</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="n">sheet</span><span class="o">.</span><span class="n">replaceUrls</span><span class="p">(</span><span class="n">replacer</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>NEW since 0.9.5b1</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="n">cssutils</span><span class="o">.</span><span class="n">replaceUrls</span><span class="p">(</span><span class="n">sheet</span><span class="p">,</span> <span class="n">replacer</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">version migration</a><ul>
+<li><a class="reference external" href="#incompatible-changes">0.9.6 incompatible changes</a><ul>
+<li><a class="reference external" href="#exception-handling-with-position-information">Exception handling with position information</a></li>
+<li><a class="reference external" href="#cssvalue-property-has-been-rewritten">CSSValue / Property has been rewritten</a></li>
+<li><a class="reference external" href="#minor-api-changes">minor API changes</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#id1">0.9.5 incompatible changes</a><ul>
+<li><a class="reference external" href="#logging-versus-raising">logging versus raising</a></li>
+<li><a class="reference external" href="#parsing">parsing</a></li>
+<li><a class="reference external" href="#iterating-over-cssstyledeclaration">iterating over <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a><ul>
+<li><a class="reference external" href="#example">example</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#property-name-attribute"><tt class="docutils literal"><span class="pre">Property.name</span></tt> attribute</a><ul>
+<li><a class="reference external" href="#id2">example</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#property-priority-attribute"><tt class="docutils literal"><span class="pre">Property.priority</span></tt> attribute</a><ul>
+<li><a class="reference external" href="#id3">example</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#cssstylesheet-replaceurls-replacer"><tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt></a><ul>
+<li><a class="reference external" href="#id4">example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="scripts.html" title="previous chapter"><tt class="docutils literal"><span class="pre">cssutils</span></tt> scripts</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="backlog.html" title="next chapter">backlog</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/migrate.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="backlog.html" title="backlog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="cssutils scripts"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>

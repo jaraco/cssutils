@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>package cssutils.css &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="css.CSSStyleDeclaration" href="cssstyledeclaration.html" />
+    <link rel="prev" title="package cssutils" href="cssutils.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="cssstyledeclaration.html" title="css.CSSStyleDeclaration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cssutils.html" title="package cssutils"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="package-cssutils-css">
+<h1>package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt><a class="headerlink" href="#package-cssutils-css" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: css.txt 1590 2009-01-01 21:11:36Z cthedot $</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="overview">
+<h2>overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Classes implementing <a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 CSS</a> and <a class="reference external" href="http://www.w3.org/TR/css3-namespace/">CSS Module: Namespaces (W3C Working Draft 28 August 2006)</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name"><a class="reference internal" href="#cssstylesheet">CSSStyleSheet</a>:</th><td class="field-body">Implements <tt class="docutils literal"><span class="pre">stylesheets.StyleSheet</span></tt> and is the <em>root</em> of a stylesheet.</td>
+</tr>
+<tr class="field"><th class="field-name">CSSRuleList:</th><td class="field-body">A list of CSSRule objects used in <a class="reference internal" href="#cssstylesheet">CSSStyleSheet</a> and <a class="reference internal" href="#cssmediarule">CSSMediaRule</a></td>
+</tr>
+<tr class="field"><th class="field-name">CSSRule:</th><td class="field-body">Base class of all CSS rules, hardly useful itself</td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference internal" href="#csscharsetrule">CSSCharsetRule</a>:</th><td class="field-body">&#64;charset rule</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2"><a class="reference internal" href="#cssfontfacerule">CSSFontFaceRule</a>:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">&#64;font-face rule (from v0.9.5a4)</td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference internal" href="#cssimportrule">CSSImportRule</a>:</th><td class="field-body">&#64;import rule</td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference internal" href="#cssmediarule">CSSMediaRule</a>:</th><td class="field-body">&#64;media rule</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2"><a class="reference internal" href="#cssnamespacerule">CSSNamespaceRule</a>:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">&#64;namespace rule</td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference internal" href="#csspagerule">CSSPageRule</a>:</th><td class="field-body">&#64;page rule</td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference internal" href="#cssstylerule">CSSStyleRule</a>:</th><td class="field-body">Main Rule with Selectors and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference internal" href="#selectorlist">Selectorlist</a>:</th><td class="field-body">A list of Selector objects used in <a class="reference internal" href="#cssstylerule">CSSStyleRule</a></td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference internal" href="#selector">Selector</a>:</th><td class="field-body">A single CSS selector</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2"><a class="reference external" href="cssstyledeclaration.txt">CSSStyleDeclaration</a>:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Containing a list of Properties</td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference external" href="cssstyledeclaration.txt#property">Property</a>:</th><td class="field-body">A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery</td>
+</tr>
+<tr class="field"><th class="field-name"><a class="reference external" href="values.txt">CSSValue</a>:</th><td class="field-body">A CSS value which might also be a CSSPrimitiveValue or CSSValueList.</td>
+</tr>
+<tr class="field"><th class="field-name">CSSComment:</th><td class="field-body">A comment anywhere in the stylesheet. Not in any official spec.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="shared-attributes">
+<h2>Shared Attributes<a class="headerlink" href="#shared-attributes" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="csstext">
+<dt>atkeyword</dt>
+<dd>All &#64;rules have this attribute which holds the <em>literal</em> atkeyword, e.g. <tt class="docutils literal"><span class="pre">&#64;im\port</span></tt>.</dd>
+<dt>cssText (or selectorText for <a class="reference internal" href="#selectorlist">SelectorList</a> and <a class="reference internal" href="#selector">Selector</a>)</dt>
+<dd>The textual representation of the rule or sheet (cssutils defined this property for <a class="reference internal" href="#cssstylesheet">CSSStyleSheet</a> objects too).</dd>
+<dt>wellformed</dt>
+<dd>Defines if this rule is valid to the CSS core grammar. Not all classes may have this attribute yet and it normally should be <tt class="xref docutils literal"><span class="pre">True</span></tt>.</dd>
+</dl>
+</div>
+<div class="section" id="cssstylesheet">
+<h2>CSSStyleSheet<a class="headerlink" href="#cssstylesheet" title="Permalink to this headline">¶</a></h2>
+<p>The CSSStyleSheet contains all rules. It consists of the different rules defined above like <a class="reference internal" href="#cssimportrule">CSSImportRule</a> <a class="reference internal" href="#cssstylerule">CSSStyleRule</a> etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an <a class="reference internal" href="#csscharsetrule">CSSCharsetRule</a> rules or simpler with the <a class="reference internal" href="#encoding">encoding</a> attribute. The serialized sheet may be obtained from <a class="reference internal" href="#csstext">cssText</a>. All rules are present in <a class="reference internal" href="#cssrules">cssRules</a>, a stylesheet iterates on its rules so this might be easier. Namespaces are available via <a class="reference internal" href="#namespaces">namespaces</a>, the actual namespace rules in the <a class="reference internal" href="#cssnamespacerule">CSSNamespaceRule</a> objects (do not rely on prefixes, see <a class="reference external" href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a> how these work).</p>
+<div class="section" id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
+<p>Also inherits properties from stylesheet.StyleSheet (e.g. <tt class="docutils literal"><span class="pre">href</span></tt>)</p>
+<dl class="docutils" id="cssrules">
+<dt>cssRules</dt>
+<dd>A css::CSSRuleList of all CSS rules contained within the
+stylesheet.</dd>
+</dl>
+<dl class="docutils" id="encoding">
+<dt>encoding (cssutils and CSSOM only)</dt>
+<dd><p class="first">reflects the encoding of an &#64;charset rule or &#8216;utf-8&#8217; (default)
+if set to <tt class="xref docutils literal"><span class="pre">None</span></tt>. If an explicit encoding of &#8216;utf-8&#8217; is set an &#64;charset rule is serialized, if encoding is <tt class="xref docutils literal"><span class="pre">None</span></tt> (and therefor also effectively &#8216;utf-8&#8217;) no &#64;charset rule is serialized.</p>
+<p class="last">Effectively using CSSCharsetRule directly is not needed anymore.</p>
+</dd>
+</dl>
+<dl class="docutils" id="namespaces">
+<dt>namespaces: a dict like object (cssutils only)</dt>
+<dd><p class="first">reflects set &#64;namespace rules of this rule.
+A dict of {prefix: namespaceURI} mapping.</p>
+<p class="last">Using CSSNamespaceRule directly is not really needed anymore (except if you want to add comments in these rules).</p>
+</dd>
+</dl>
+<dl class="docutils" id="ownerrule">
+<dt>ownerRule</dt>
+<dd>of type CSSRule, readonly (NOT IMPLEMENTED YET)</dd>
+</dl>
+</div>
+<div class="section" id="methods">
+<h3>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils" id="append">
+<dt>add(self, rule)</dt>
+<dd>Adds a rule to the proper hierarchical position in the style sheet. Same as <tt class="docutils literal"><span class="pre">insertRule(rule,</span> <span class="pre">inOrder=True)</span></tt> but simpler.</dd>
+</dl>
+<dl class="docutils" id="deleterule">
+<dt>deleteRule(self, index)</dt>
+<dd>Used to delete a rule from the style sheet.</dd>
+</dl>
+<dl class="docutils" id="insertrule">
+<dt>insertRule(rule, index=None, inorder=False)</dt>
+<dd><p class="first">Used to insert a new rule into the style sheet. The new rule now
+becomes part of the cascade.</p>
+<p class="last">Rule may be a string or a valid <tt class="docutils literal"><span class="pre">CSSRule</span></tt> or <tt class="docutils literal"><span class="pre">CSSRuleList</span></tt></p>
+</dd>
+</dl>
+<dl class="docutils" id="setserializer">
+<dt>setSerializer(self, cssserializer)</dt>
+<dd>Sets the global Serializer used for output of all stylesheet
+output.</dd>
+</dl>
+<dl class="docutils" id="setserializerpref">
+<dt>setSerializerPref(pref, value)</dt>
+<dd>Sets Preference of CSSSerializer used for output of this
+stylesheet. See cssutils.serialize.Preferences for possible
+preferences to be set.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="csscharsetrule">
+<h2>CSSCharsetRule<a class="headerlink" href="#csscharsetrule" title="Permalink to this headline">¶</a></h2>
+<p>This rule is not really needed anymore as using  <a class="reference internal" href="#encoding">encoding</a> of <a class="reference internal" href="#cssstylesheet">CSSStyleSheet</a> is much easier.</p>
+</div>
+<div class="section" id="cssnamespacerule">
+<h2>CSSNamespaceRule<a class="headerlink" href="#cssnamespacerule" title="Permalink to this headline">¶</a></h2>
+<p>CSSNamespaceRule currently implements <a class="reference external" href="http://www.w3.org/TR/2006/WD-css3-namespace-20060828/">http://www.w3.org/TR/2006/WD-css3-namespace-20060828/</a>. Dealing with these rules directly is not needed anymore, easier is the use of CSSStyleSheet <a class="reference internal" href="#namespaces">namespaces</a>.</p>
+<dl class="docutils">
+<dt>namespaceURI</dt>
+<dd>The namespace URI (a simple string!) which is bound to the given prefix. If no prefix is set (CSSNamespaceRule.prefix==&#8217;&#8216;) the namespace defined by <tt class="docutils literal"><span class="pre">namespaceURI</span></tt> is set as the default namespace. This property is readonly to prevent making stylesheets invalid.</dd>
+<dt>prefix</dt>
+<dd>The prefix used in the stylesheet for the given <tt class="docutils literal"><span class="pre">namespaceURI</span></tt>. If prefix is empty <tt class="docutils literal"><span class="pre">namespaceURI</span></tt> sets the default namespace for the stylesheet.</dd>
+</dl>
+</div>
+<div class="section" id="cssimportrule">
+<h2>CSSImportRule<a class="headerlink" href="#cssimportrule" title="Permalink to this headline">¶</a></h2>
+<p>Used to import other CSS style sheets.</p>
+<dl class="docutils" id="href">
+<dt>href</dt>
+<dd>The URI where the referenced sheet may be found. May be a string or <tt class="docutils literal"><span class="pre">url()</span></tt> value.</dd>
+<dt>media</dt>
+<dd>The media information where the referenced style sheet should be used. See <a class="reference external" href="stylesheets.txt">MediaList</a> for more details.</dd>
+<dt>name</dt>
+<dd>A name like a HTML named Stylesheet. (Not very useful yet but may be used when implementing the cascade.)</dd>
+<dt>stylesheet</dt>
+<dd>The referenced <a class="reference internal" href="#cssstylesheet">CSSStyleSheet</a>. (Implemented from 0.9.5b1.)</dd>
+</dl>
+</div>
+<div class="section" id="cssmediarule">
+<h2>CSSMediaRule<a class="headerlink" href="#cssmediarule" title="Permalink to this headline">¶</a></h2>
+<p>Rules (mainly <tt class="docutils literal"><span class="pre">CSSStyleRule</span></tt> s) which are to be used for the given <tt class="docutils literal"><span class="pre">media</span></tt> only.</p>
+<dl class="docutils">
+<dt>media</dt>
+<dd>A list of media types for this rule of type MediaList.</dd>
+<dt>cssRules</dt>
+<dd>A css::CSSRuleList of all CSS rules contained within the
+media block.</dd>
+<dt>name</dt>
+<dd>A name like a HTML named Stylesheet. (Not very useful yet but may be used when implementing the cascade.)</dd>
+</dl>
+</div>
+<div class="section" id="cssfontfacerule">
+<h2>CSSFontFaceRule<a class="headerlink" href="#cssfontfacerule" title="Permalink to this headline">¶</a></h2>
+<p>Holds font related definitions. Hardly used in any CSS implementation, I only know PrinceXML which uses it to defined fonts.</p>
+<dl class="docutils">
+<dt><a class="reference external" href="cssstyledeclaration.txt">style</a></dt>
+<dd>The declaration-block of this rule (see <a class="reference external" href="cssstyledeclaration.txt">CSSStyleDeclaration</a>)</dd>
+</dl>
+</div>
+<div class="section" id="csspagerule">
+<h2>CSSPageRule<a class="headerlink" href="#csspagerule" title="Permalink to this headline">¶</a></h2>
+<p>Holds page related definitions. Mainly useful for print sheets, used extensively in page defining applications like PrinceXML.</p>
+<dl class="docutils">
+<dt>selectorText</dt>
+<dd>The parsable textual representation of the page selector for the rule.</dd>
+<dt><a class="reference external" href="cssstyledeclaration.txt">style</a></dt>
+<dd>The declaration-block of this rule (see <a class="reference external" href="cssstyledeclaration.txt">CSSStyleDeclaration</a>)</dd>
+</dl>
+</div>
+<div class="section" id="cssstylerule">
+<h2>CSSStyleRule<a class="headerlink" href="#cssstylerule" title="Permalink to this headline">¶</a></h2>
+<p>The CSSStyleRule object represents a ruleset specified (if any) in a CSS
+style sheet. It provides access to a declaration block as well as to the
+associated group of selectors.</p>
+<dl class="docutils">
+<dt>selectorText</dt>
+<dd>The textual representation of the selector for the rule set.</dd>
+<dt><a class="reference internal" href="#selectorlist">selectorList</a>: of type SelectorList (cssutils only)</dt>
+<dd>A list of all Selectors for the rule set.</dd>
+<dt><a class="reference external" href="cssstyledeclaration.txt">style</a></dt>
+<dd>The declaration-block of this rule (see <a class="reference external" href="cssstyledeclaration.txt">CSSStyleDeclaration</a>)</dd>
+</dl>
+</div>
+<div class="section" id="selectorlist">
+<h2>SelectorList<a class="headerlink" href="#selectorlist" title="Permalink to this headline">¶</a></h2>
+<p>A list of <a class="reference internal" href="#selector">Selector</a> objects.</p>
+<dl class="docutils">
+<dt>length</dt>
+<dd>The number of Selector elements in the list.</dd>
+<dt>parentRule</dt>
+<dd>The CSS rule that contains this SelectorList or None if this SelectorList is not attached to a CSSRule.</dd>
+<dt>selectorText</dt>
+<dd>The textual representation of the selector for the rule set.</dd>
+<dt>appendSelector(newSelector), also append(newSelector)</dt>
+<dd>comma-separated list of selectors or a tuple of <tt class="docutils literal"><span class="pre">(selectorText,</span> <span class="pre">dict-of-namespaces)</span></tt></dd>
+</dl>
+</div>
+<div class="section" id="selector">
+<h2>Selector<a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h2>
+<p>A single CSS selector in a <a class="reference internal" href="#selectorlist">SelectorList</a>.</p>
+<dl class="docutils">
+<dt>element <em>EXPERIMENTAL</em></dt>
+<dd>Effective element target of this selector.</dd>
+<dt>parentRule</dt>
+<dd>The SelectorList that contains this Selector or None if this Selector is not attached to a SelectorList.</dd>
+<dt>selectorText</dt>
+<dd>The textual representation of the selector for the rule set.</dd>
+<dt>specificity</dt>
+<dd>The specificity of this selector.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt></a><ul>
+<li><a class="reference external" href="#overview">overview</a></li>
+<li><a class="reference external" href="#shared-attributes">Shared Attributes</a></li>
+<li><a class="reference external" href="#cssstylesheet">CSSStyleSheet</a><ul>
+<li><a class="reference external" href="#attributes">Attributes</a></li>
+<li><a class="reference external" href="#methods">Methods</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#csscharsetrule">CSSCharsetRule</a></li>
+<li><a class="reference external" href="#cssnamespacerule">CSSNamespaceRule</a></li>
+<li><a class="reference external" href="#cssimportrule">CSSImportRule</a></li>
+<li><a class="reference external" href="#cssmediarule">CSSMediaRule</a></li>
+<li><a class="reference external" href="#cssfontfacerule">CSSFontFaceRule</a></li>
+<li><a class="reference external" href="#csspagerule">CSSPageRule</a></li>
+<li><a class="reference external" href="#cssstylerule">CSSStyleRule</a></li>
+<li><a class="reference external" href="#selectorlist">SelectorList</a></li>
+<li><a class="reference external" href="#selector">Selector</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="cssutils.html" title="previous chapter">package <tt class="docutils literal docutils literal"><span class="pre">cssutils</span></tt></a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="cssstyledeclaration.html" title="next chapter">css.CSSStyleDeclaration</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/css.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="cssstyledeclaration.html" title="css.CSSStyleDeclaration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cssutils.html" title="package cssutils"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>

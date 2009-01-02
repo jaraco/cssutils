@@ -1,0 +1,136 @@
+=======================
+css.CSSStyleDeclaration
+=======================
+:version: $Id: cssstyledeclaration.txt 1590 2009-01-01 21:11:36Z cthedot $
+
+CSSStyleDeclaration
+===================
+A CSSStyleDeclaration contains all properties set in a CSSStyleRule or CSSPageRule. It is a generator which yields all *effective* properties (see Property_). It also supports ``in``.
+
+Example::
+
+    >>> css = r'''
+        color: red;
+        /* properties might be set more than once for different UAs */
+        c\olor: green;
+        background-color: #fff
+        '''
+    >>> s = cssutils.css.CSSStyleDeclaration(cssText=css)
+    >>> for p in s:
+    ...     print repr(p)
+    cssutils.css.Property(name='c\\olor', value=u'green', priority=u'')
+    cssutils.css.Property(name='background-color', value=u'#fff', priority=u'')
+
+    >>> 'color' in s
+    True
+
+
+attributes
+----------
+cssText
+    a parsable textual representation of the declaration. See also getCssText_
+
+length
+    The number of distinct properties that have been explicitly set
+    in this declaration. These are properties with a different **normalized** ``name``
+    only. ``item()`` and ``length`` work on the same set here.
+parentRule
+    The CSS rule that contains this declaration block or
+    ``None`` if this CSSStyleDeclaration is not attached to a CSSRule.
+
+methods
+-------
+.. _getCssText:
+
+getCssText(separator=None)
+    returns serialized property cssText, each property separated by
+    given ``separator`` which may e.g. be ``u''`` to use
+    cssText directly in an HTML style attribute. ";" is always part of
+    each property (except the last one) and can **not** be changed by giving a
+    separator!
+
+getProperties(name=None, all=False):
+    returns a list of Property objects set in this declaration in order
+    they have been set e.g. in the original stylesheet
+
+The following methods all have a parameter ``normalize`` which if set to ``False`` results in handling of ``name`` not being normalized. Default behaviour is to always access the effective property in this rule (the last set or the one with the highest priority). An *un*\-normalized name like ``c\olor`` gives access to the property with this specific name. To work on *all* properties it is probably easiest to use ``getProperties(all=True)``.
+
+Example CSS::
+
+    color: red;
+    c\olor: green !important;
+    col\or: blue;
+
+Normally you want to access the effective color (green!) so simply omit ``normalize``.
+
+getProperty(name, normalize=True):
+    returns the effective Property object.
+setProperty(name, value, priority=None, normalize=True)
+    sets/overwriters a property
+removeProperty(name, normalize=True)
+    removes the property with given ``name``.
+
+    If ``normalize==True`` (DEFAULT) ``name`` will be normalized (lowercase, no simple escapes) so "color", "COLOR" or "C\olor" will all be equivalent. The effective Property value is returned and *all* Properties with ``Property.name == name`` are removed.
+
+    If ``normalize==False`` may return **NOT** the effective value but the effective for the unnormalized ``name`` only. Also only the Properties with the literal name ``name`` are removed!
+
+getPropertyCSSValue(name, normalize=True)
+    returns a CSSValue object
+getPropertyValue(name, normalize=True)
+    returns the string value
+getPropertyPriority(name, normalize=True)
+    returns the priority
+
+item(index)
+    returns property at index. Same as ``length`` item works on
+    effective properties only and not on the complete set!
+
+CSS2Properties
+--------------
+CSSStyleDeclaration implements CSS2Properties so most CSS 2 properties may be used like::
+
+    declaration.color = 'red'
+    declaration.backgroundColor = '#000'
+
+As some properties contain a "-" character these have to be used in camelcase!
+
+cssutils implements only a subset of CSS2Properties so setting e.g. ``declaration.border = '1px solid red'`` does only set border but **not** ``border-style``, ``border-color`` etc which it should. This may be implemented later.
+
+
+Using properties dictionary like
+--------------------------------
+Since cssutils 0.9.5 CSSStyleDeclatation objects may be used like dictionaries. The value during setting a property may be a single value string or a tuple of ``(value, priority)``. Using properties of style declarations this way should be preferred to using the attribute syntax (``style.color``) as not all properties may be used with the attribute syntax and currently only CSS2 Properties are defined anyway.
+
+    >>> style = css.CSSStyleDeclaration()
+    >>> style['color'] = 'red'
+    >>> style.getProperties()
+    [cssutils.css.Property(name='color', value=u'red', priority=u'')]
+    >>> del style['color']
+    >>> style['unknown'] = ('value', 'important')
+    INFO    Property: No CSS2 Property: 'unknown'.
+    >>> style.getProperties()
+    [cssutils.css.Property(name='unknown', value=u'value', priority=u'important')]
+    >>> del style['never-set'] # does not raise KeyError but returns u'' like removeProperty()
+    >>>
+
+
+.. _Property:
+
+Property
+========
+A Property is used in a ``CSSStyleDeclaration`` but also in a `MediaQuery <stylesheets.txt>`_ object. Only in the latter case a value is optional and a priority not used at all. As MediaQuery is not a finished spec some details may still change.
+
+A property has the following attributes:
+
+name
+    normalized name of the property, e.g. ``color`` when name is ``c\olor`` (since 0.9.5)
+literalname (since 0.9.5)
+    original name of the property in the source CSS which is not normalized
+    e.g.
+    ``c\olor``
+cssValue
+    the relevant ``CSSValue`` instance for this property. As CSSOM deprecates interface ``CSSValue`` in favour of a simpler API usage of ``cssValue`` is **not recommended**.  Simply use ``value`` instead.
+value
+    the string value of the property, same as ``cssValue.cssText`` (but see the notes for ``cssValue``
+priority
+    of the property, from 0.9.5 ``important`` or ``None`` only (until 0.9.5 this was ``!important``, not the additional "!")

@@ -1,0 +1,47 @@
+=============================================
+                cssutils
+=============================================
+---------------------------------------------
+CSS Cascading Style Sheets library for Python
+---------------------------------------------
+:version release: |release|
+
+Contents
+========
+
+.. toctree::
+   :maxdepth: 1
+
+    <README>
+    <CHANGELOG>
+
+    <docs/cssutils>
+    <docs/css>
+    <docs/cssstyledeclaration>
+    <docs/values>
+    <docs/stylesheets>
+
+    <docs/scripts>
+
+    <docs/migrate.txt>
+    <docs/backlog.txt>
+
+..
+    license: LGPL 3 `COPYING <COPYING>`_ and `COPYING.LESSER <COPYING.LESSER>`_
+
+
+See also
+========
+
+* `cssutils at Google Code <http://code.google.com/p/cssutils>`__
+* `cssutils at cthedot <http://cthedot.de/cssutils/>`__
+* `cssutils discussion group <http://groups.google.com/group/cssutils>`__
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

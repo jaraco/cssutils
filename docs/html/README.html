@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>README &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="index.html" />
+    <link rel="next" title="CHANGELOG" href="CHANGELOG.html" />
+    <link rel="prev" title="cssutils" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="CHANGELOG.html" title="CHANGELOG"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="cssutils"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="readme">
+<h1>README<a class="headerlink" href="#readme" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="cssutils-css-cascading-style-sheets-library-for-python">
+<h2>cssutils: CSS Cascading Style Sheets library for Python<a class="headerlink" href="#cssutils-css-cascading-style-sheets-library-for-python" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">2004-2009 Christof Hoeke</td>
+</tr>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: README.txt 1591 2009-01-01 21:19:15Z cthedot $</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
+<p>A Python package to parse and build CSS Cascading Style Sheets. DOM only, not any rendering facilities!</p>
+<p>Based upon and partly implementing the following specifications :</p>
+<dl class="docutils">
+<dt><a class="reference external" href="http://www.w3.org/TR/CSS21/">CSS 2.1</a></dt>
+<dd>General CSS rules and properties are defined here</dd>
+<dt><a class="reference external" href="http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html">CSS 2.1 Errata</a></dt>
+<dd>A few errata, mainly the definition of CHARSET_SYM tokens</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/css3-syntax/">CSS3 Module: Syntax</a></dt>
+<dd>Used in parts since cssutils 0.9.4. cssutils tries to use the features from CSS 2.1 and CSS 3 with preference to CSS3 but as this is not final yet some parts are from CSS 2.1</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/css3-mediaqueries/">MediaQueries</a></dt>
+<dd>MediaQueries are part of <tt class="docutils literal"><span class="pre">stylesheets.MediaList</span></tt> since v0.9.4, used in &#64;import and &#64;media rules.</dd>
+<dt><a class="reference external" href="http://dev.w3.org/csswg/css3-namespace/">Namespaces</a></dt>
+<dd>Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/css3-selectors/">Selectors</a></dt>
+<dd>The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (<em>should</em> mind though ;) )</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 Style CSS</a></dt>
+<dd>DOM for package css</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html">DOM Level 2 Style Stylesheets</a></dt>
+<dd>DOM for package stylesheets</dd>
+<dt><a class="reference external" href="http://dev.w3.org/csswg/cssom/">CSSOM</a></dt>
+<dd>A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...</dd>
+</dl>
+<p>The cssutils tokenizer is a customized implementation of <a class="reference external" href="http://www.w3.org/TR/css3-syntax/">CSS3 Module: Syntax (W3C Working Draft 13 August 2003)</a> which itself is based on the CSS 2.1 tokenizer. It tries to be as compliant as possible but uses some (helpful) parts of the CSS 2.1 tokenizer.</p>
+<p>I guess cssutils is neither CSS 2.1 nor CSS 3 compliant but tries to at least be able to parse both grammars including some more real world cases (some CSS hacks are actually parsed and serialized). Both official grammars are not final nor bugfree but still feasible. cssutils aim is not to be fully compliant to any CSS specification (the specifications seem to be in a constant flow anyway) but cssutils <em>should</em> be able to read and write as many as possible CSS stylesheets &#8220;in the wild&#8221; while at the same time implement the official APIs which are well documented. Some minor extensions are provided as well.</p>
+<p>Please visit <a class="reference external" href="http://cthedot.de/cssutils/">http://cthedot.de/cssutils/</a> for more details.</p>
+</div>
+<div class="section" id="license">
+<h3>license<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
+<p>Copyright 2005 - 2009 Christof Hoeke</p>
+<p>cssutils is published under the LGPL 3 or later</p>
+<p>cssutils is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+<p>cssutils is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
+<p>You should have received a copy of the GNU Lesser General Public License along with cssutils. If not, see <a class="reference external" href="http://www.gnu.org/licenses">http://www.gnu.org/licenses</a>.</p>
+</div>
+<div class="section" id="installation">
+<h3>installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>From 0.9.0 cssutils uses EasyInstall. Please find installation instructions and more information about EasyInstall from <a class="reference external" href="http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions">http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions</a>.</p>
+<p>After installing EasyInstall simply use:</p>
+<div class="highlight-python"><pre>&gt; easy_install cssutils</pre>
+</div>
+<p>to install the latest version of cssutils.</p>
+<p>Alternatively download the provided source distribution. Expand the file and from a command line install with:</p>
+<div class="highlight-python"><pre>&gt; python setup.py install</pre>
+</div>
+<p>Before using EasyInstall the first time or using the sdist please remove any old version which should be installed at PYTHONDIR/Lib/site-packages/cssutils.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">README</a><ul>
+<li><a class="reference external" href="#cssutils-css-cascading-style-sheets-library-for-python">cssutils: CSS Cascading Style Sheets library for Python</a><ul>
+<li><a class="reference external" href="#overview">Overview</a></li>
+<li><a class="reference external" href="#license">license</a></li>
+<li><a class="reference external" href="#installation">installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html" title="previous chapter">cssutils</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="CHANGELOG.html" title="next chapter">CHANGELOG</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/README.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="CHANGELOG.html" title="CHANGELOG"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="cssutils"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>
