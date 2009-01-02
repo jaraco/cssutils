@@ -12,25 +12,12 @@ import xml.dom
 
 class CSSComment(cssrule.CSSRule):
     """
-    (cssutils) a CSS comment
+    Represents a CSS comment (cssutils only).
 
-    Properties
-    ==========
-    cssText: of type DOMString
-        The comment text including comment delimiters
-
-    Inherits properties from CSSRule
-
-    Format
-    ======
-    ::
+    Format::
 
         /*...*/
     """
-    type = property(lambda self: cssrule.CSSRule.COMMENT) # value = -1
-    # constant but needed:
-    wellformed = True 
-
     def __init__(self, cssText=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         super(CSSComment, self).__init__(parentRule=parentRule, 
@@ -41,6 +28,14 @@ class CSSComment(cssrule.CSSRule):
             self._setCssText(cssText)
 
         self._readonly = readonly
+
+    def __repr__(self):
+        return "cssutils.css.%s(cssText=%r)" % (
+                self.__class__.__name__, self.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.cssText, id(self))
 
     def _getCssText(self):
         """returns serialized property cssText"""
@@ -83,10 +78,9 @@ class CSSComment(cssrule.CSSRule):
     cssText = property(_getCssText, _setCssText,
         doc=u"(cssutils) Textual representation of this comment")
 
-    def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__, self.cssText)
-
-    def __str__(self):
-        return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssText, id(self))
+    type = property(lambda self: self.COMMENT, 
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
+    
+    # constant but needed:
+    wellformed = True 

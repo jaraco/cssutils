@@ -22,39 +22,13 @@ class CSSImportRule(cssrule.CSSRule):
     Represents an @import rule within a CSS style sheet.  The @import rule
     is used to import style rules from other style sheets.
 
-    Properties
-    ==========
-    atkeyword: (cssutils only)
-        the literal keyword used
-    cssText: of type DOMString
-        The parsable textual representation of this rule
-    href: of type DOMString, (DOM readonly, cssutils also writable)
-        The location of the style sheet to be imported. The attribute will
-        not contain the url(...) specifier around the URI.
-    hreftype: 'uri' (serializer default) or 'string' (cssutils only)
-        The original type of href, not really relevant as it may be
-        reconfigured in the serializer but it is kept anyway
-    media: of type stylesheets::MediaList (DOM readonly)
-        A list of media types for this rule of type MediaList.
-    name:
-        An optional name used for cascading
-    styleSheet: of type CSSStyleSheet (DOM readonly)
-        The style sheet referred to by this rule. The value of this
-        attribute is None if the style sheet has not yet been loaded or if
-        it will not be loaded (e.g. if the stylesheet is for a media type
-        not supported by the user agent).
+    Format::
 
-    Inherits properties from CSSRule
-
-    Format
-    ======
-    import
-      : IMPORT_SYM S*
-      [STRING|URI] S* [ medium [ COMMA S* medium]* ]? S* STRING? S* ';' S*
-      ;
+        import
+          : IMPORT_SYM S*
+          [STRING|URI] S* [ medium [ COMMA S* medium]* ]? S* STRING? S* ';' S*
+          ;
     """
-    type = property(lambda self: cssrule.CSSRule.IMPORT_RULE)
-
     def __init__(self, href=None, mediaText=u'all', name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """
@@ -89,6 +63,23 @@ class CSSImportRule(cssrule.CSSRule):
         seq.append(self.name, 'name')            
         self._setSeq(seq)
         self._readonly = readonly
+
+    def __repr__(self):
+        if self._usemedia:
+            mediaText = self.media.mediaText
+        else:
+            mediaText = None
+        return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
+                self.__class__.__name__,
+                self.href, self.media.mediaText, self.name)
+
+    def __str__(self):
+        if self._usemedia:
+            mediaText = self.media.mediaText
+        else:
+            mediaText = None
+        return "<cssutils.css.%s object href=%r mediaText=%r name=%r at 0x%x>" % (
+                self.__class__.__name__, self.href, mediaText, self.name, id(self))
 
     _usemedia = property(lambda self: self.media.mediaText not in (u'', u'all'),
                          doc="if self._media is used (or simply empty)")
@@ -372,6 +363,10 @@ class CSSImportRule(cssrule.CSSRule):
     styleSheet = property(lambda self: self._styleSheet,
                           doc="(readonly) The style sheet referred to by this rule.")
 
+    type = property(lambda self: self.IMPORT_RULE, 
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
+
     def _getWellformed(self):
         "depending if media is used at all"
         if self._usemedia:
@@ -380,20 +375,3 @@ class CSSImportRule(cssrule.CSSRule):
             return bool(self.href)
 
     wellformed = property(_getWellformed)
-
-    def __repr__(self):
-        if self._usemedia:
-            mediaText = self.media.mediaText
-        else:
-            mediaText = None
-        return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
-                self.__class__.__name__,
-                self.href, self.media.mediaText, self.name)
-
-    def __str__(self):
-        if self._usemedia:
-            mediaText = self.media.mediaText
-        else:
-            mediaText = None
-        return "<cssutils.css.%s object href=%r mediaText=%r name=%r at 0x%x>" % (
-                self.__class__.__name__, self.href, mediaText, self.name, id(self))

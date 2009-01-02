@@ -1,1 +1,1 @@
-sphinx-build -b html . .\build
+sphinx-build -b html . .\docs\html

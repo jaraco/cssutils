@@ -15,30 +15,13 @@ class CSSFontFaceRule(cssrule.CSSRule):
     style sheet. The @font-face rule is used to hold a set of font 
     descriptions.
 
-    Properties
-    ==========
-    atkeyword (cssutils only)
-        the literal keyword used
-    cssText: of type DOMString
-        The parsable textual representation of this rule
-    style: of type CSSStyleDeclaration
-        The declaration-block of this rule.
-
-    Inherits properties from CSSRule
-
-    Format
-    ======
-    ::
+    Format::
 
         font_face
           : FONT_FACE_SYM S*
             '{' S* declaration [ ';' S* declaration ]* '}' S*
           ;
     """
-    type = property(lambda self: cssrule.CSSRule.FONT_FACE_RULE)
-    # constant but needed:
-    wellformed = True
-
     def __init__(self, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         """
@@ -56,6 +39,14 @@ class CSSFontFaceRule(cssrule.CSSRule):
             self._style = CSSStyleDeclaration(parentRule=self)
         
         self._readonly = readonly
+
+    def __repr__(self):
+        return "cssutils.css.%s(style=%r)" % (
+                self.__class__.__name__, self.style.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object style=%r at 0x%x>" % (
+                self.__class__.__name__, self.style.cssText, id(self))
 
     def _getCssText(self):
         """
@@ -154,10 +145,9 @@ class CSSFontFaceRule(cssrule.CSSRule):
     style = property(_getStyle, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")
 
-    def __repr__(self):
-        return "cssutils.css.%s(style=%r)" % (
-                self.__class__.__name__, self.style.cssText)
+    type = property(lambda self: self.FONT_FACE_RULE, 
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
 
-    def __str__(self):
-        return "<cssutils.css.%s object style=%r at 0x%x>" % (
-                self.__class__.__name__, self.style.cssText, id(self))
+    # constant but needed:
+    wellformed = True

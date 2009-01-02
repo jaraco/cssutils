@@ -16,22 +16,7 @@ class CSSPageRule(cssrule.CSSRule):
     sheet. The @page rule is used to specify the dimensions, orientation,
     margins, etc. of a page box for paged media.
 
-    Properties
-    ==========
-    atkeyword (cssutils only)
-        the literal keyword used
-    cssText: of type DOMString
-        The parsable textual representation of this rule
-    selectorText: of type DOMString
-        The parsable textual representation of the page selector for the rule.
-    style: of type CSSStyleDeclaration
-        The declaration-block of this rule.
-
-    Inherits properties from CSSRule
-
-    Format
-    ======
-    ::
+    Format::
 
         page
           : PAGE_SYM S* pseudo_page? S*
@@ -40,12 +25,7 @@ class CSSPageRule(cssrule.CSSRule):
         pseudo_page
           : ':' IDENT # :first, :left, :right in CSS 2.1
           ;
-
     """
-    type = property(lambda self: cssrule.CSSRule.PAGE_RULE)
-    # constant but needed:
-    wellformed = True 
-
     def __init__(self, selectorText=None, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         """
@@ -74,6 +54,15 @@ class CSSPageRule(cssrule.CSSRule):
         self._setSeq(tempseq)
         
         self._readonly = readonly
+
+    def __repr__(self):
+        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
+                self.__class__.__name__, self.selectorText, self.style.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object selectorText=%r style=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self.style.cssText,
+                id(self))
 
     def __parseSelectorText(self, selectorText):
         """
@@ -287,11 +276,9 @@ class CSSPageRule(cssrule.CSSRule):
     style = property(_getStyle, _setStyle,
         doc="(DOM) The declaration-block of this rule set.")
 
-    def __repr__(self):
-        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
-                self.__class__.__name__, self.selectorText, self.style.cssText)
-
-    def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r style=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, self.style.cssText,
-                id(self))
+    type = property(lambda self: self.PAGE_RULE, 
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
+    
+    # constant but needed:
+    wellformed = True 
