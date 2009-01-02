@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>package cssutils.stylesheets &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="cssutils scripts" href="scripts.html" />
+    <link rel="prev" title="css.CSSValue" href="values.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="cssutils scripts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="values.html" title="css.CSSValue"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="module-cssutils.stylesheets">
+<span id="stylesheets"></span><h1>package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt><a class="headerlink" href="#module-cssutils.stylesheets" title="Permalink to this headline">¶</a></h1>
+<p>Implements Document Object Model Level 2 Style Sheets
+<a class="reference external" href="http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927/stylesheets.html">http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927/stylesheets.html</a></p>
+<dl class="class">
+<dt id="cssutils.stylesheets.MediaList">
+<!--[cssutils.stylesheets.MediaList]-->class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">MediaList</tt><big>(</big><em>mediaText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides the abstraction of an ordered collection of media,
+without defining or constraining how this collection is
+implemented.</p>
+<p>A single media in the list is an instance of <a title="cssutils.stylesheets.MediaQuery" class="reference internal" href="#cssutils.stylesheets.MediaQuery"><tt class="xref docutils literal"><span class="pre">MediaQuery</span></tt></a>. 
+An empty list is the same as a list that contains the medium &#8220;all&#8221;.</p>
+<p>Format from CSS2.1:</p>
+<div class="highlight-python"><pre>medium [ COMMA S* medium ]*</pre>
+</div>
+<p>New format with <a title="cssutils.stylesheets.MediaQuery" class="reference internal" href="#cssutils.stylesheets.MediaQuery"><tt class="xref docutils literal"><span class="pre">MediaQuery</span></tt></a>:</p>
+<div class="highlight-python"><pre>&lt;media_query&gt; [, &lt;media_query&gt; ]*</pre>
+</div>
+<dl class="method">
+<dt id="cssutils.stylesheets.MediaList.append">
+<!--[cssutils.stylesheets.MediaList.append]--><tt class="descname">append</tt><big>(</big><em>newMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.append" title="Permalink to this definition">¶</a></dt>
+<dd>Same as <a title="cssutils.stylesheets.MediaList.appendMedium" class="reference internal" href="#cssutils.stylesheets.MediaList.appendMedium"><tt class="xref docutils literal"><span class="pre">appendMedium()</span></tt></a>.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.MediaList.appendMedium">
+<!--[cssutils.stylesheets.MediaList.appendMedium]--><tt class="descname">appendMedium</tt><big>(</big><em>newMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.appendMedium" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the <cite>newMedium</cite> to the end of the list. 
+If the <cite>newMedium</cite> is already used, it is first removed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>newMedium</em> &#8211; a string or a <a title="cssutils.stylesheets.MediaQuery" class="reference internal" href="#cssutils.stylesheets.MediaQuery"><tt class="xref docutils literal"><span class="pre">MediaQuery</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Wellformedness of <cite>newMedium</cite>.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.InvalidCharacterErr"><tt class="xref docutils literal"><span class="pre">InvalidCharacterErr</span></tt></a>:
+If the medium contains characters that are invalid in the
+underlying style language.</li>
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.InvalidModificationErr"><tt class="xref docutils literal"><span class="pre">InvalidModificationErr</span></tt></a>:
+If mediaText is &#8220;all&#8221; and a new medium is tried to be added.
+Exception is &#8220;handheld&#8221; which is set in any case (Opera does handle
+&#8220;all, handheld&#8221; special, this special case might be removed in the
+future).</li>
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+Raised if this list is readonly.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.MediaList.deleteMedium">
+<!--[cssutils.stylesheets.MediaList.deleteMedium]--><tt class="descname">deleteMedium</tt><big>(</big><em>oldMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.deleteMedium" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a medium from the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>oldMedium</em> &#8211; delete this medium from the list.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NotFoundErr"><tt class="xref docutils literal"><span class="pre">NotFoundErr</span></tt></a>:
+Raised if <cite>oldMedium</cite> is not in the list.</li>
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+Raised if this list is readonly.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.MediaList.item">
+<!--[cssutils.stylesheets.MediaList.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.item" title="Permalink to this definition">¶</a></dt>
+<dd>Return the mediaType of the <cite>index</cite>&#8216;th element in the list.
+If <cite>index</cite> is greater than or equal to the number of media in the
+list, returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.stylesheets.MediaList.length">
+<!--[cssutils.stylesheets.MediaList.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.length" title="Permalink to this definition">¶</a></dt>
+<dd>The number of media in the list (DOM readonly).</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.stylesheets.MediaList.mediaText">
+<!--[cssutils.stylesheets.MediaList.mediaText]--><tt class="descname">mediaText</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.mediaText" title="Permalink to this definition">¶</a></dt>
+<dd>The parsable textual representation of the media list.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.stylesheets.MediaList.wellformed">
+<!--[cssutils.stylesheets.MediaList.wellformed]--><tt class="descname">wellformed</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.wellformed" title="Permalink to this definition">¶</a></dt>
+<dd>If this MediaList is wellformed.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cssutils.stylesheets.MediaQuery">
+<!--[cssutils.stylesheets.MediaQuery]-->class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">MediaQuery</tt><big>(</big><em>mediaText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Media Query consists of one of <tt class="xref docutils literal"><span class="pre">MediaQuery.MEDIA_TYPES</span></tt>
+and one or more expressions involving media features.</p>
+<p>Format:</p>
+<div class="highlight-python"><pre>media_query: [[only | not]? &lt;media_type&gt; [ and &lt;expression&gt; ]*]
+  | &lt;expression&gt; [ and &lt;expression&gt; ]*
+expression: ( &lt;media_feature&gt; [: &lt;value&gt;]? )
+media_type: all | aural | braille | handheld | print |
+  projection | screen | tty | tv | embossed
+media_feature: width | min-width | max-width
+  | height | min-height | max-height
+  | device-width | min-device-width | max-device-width
+  | device-height | min-device-height | max-device-height
+  | device-aspect-ratio | min-device-aspect-ratio | max-device-aspect-ratio
+  | color | min-color | max-color
+  | color-index | min-color-index | max-color-index
+  | monochrome | min-monochrome | max-monochrome
+  | resolution | min-resolution | max-resolution
+  | scan | grid</pre>
+</div>
+<dl class="attribute">
+<dt id="cssutils.stylesheets.MediaQuery.mediaText">
+<!--[cssutils.stylesheets.MediaQuery.mediaText]--><tt class="descname">mediaText</tt><a class="headerlink" href="#cssutils.stylesheets.MediaQuery.mediaText" title="Permalink to this definition">¶</a></dt>
+<dd>The parsable textual representation of the media list.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.stylesheets.MediaQuery.mediaType">
+<!--[cssutils.stylesheets.MediaQuery.mediaType]--><tt class="descname">mediaType</tt><a class="headerlink" href="#cssutils.stylesheets.MediaQuery.mediaType" title="Permalink to this definition">¶</a></dt>
+<dd>The media type of this MediaQuery (one of <tt class="xref docutils literal"><span class="pre">MEDIA_TYPES</span></tt>).</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.stylesheets.MediaQuery.wellformed">
+<!--[cssutils.stylesheets.MediaQuery.wellformed]--><tt class="descname">wellformed</tt><a class="headerlink" href="#cssutils.stylesheets.MediaQuery.wellformed" title="Permalink to this definition">¶</a></dt>
+<dd>If this MediaQuery is wellformed.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cssutils.stylesheets.StyleSheet">
+<!--[cssutils.stylesheets.StyleSheet]-->class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheet</tt><big>(</big><em>type='text/css'</em>, <em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>disabled=None</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheet" title="Permalink to this definition">¶</a></dt>
+<dd><p>The StyleSheet interface is the abstract base interface
+for any type of style sheet. It represents a single style
+sheet associated with a structured document.</p>
+<p>In HTML, the StyleSheet interface represents either an
+external style sheet, included via the HTML LINK element,
+or an inline STYLE element (-ch: also an &#64;import stylesheet?).</p>
+<p>In XML, this interface represents
+an external style sheet, included via a style sheet
+processing instruction.</p>
+<dl class="attribute">
+<dt id="cssutils.stylesheets.StyleSheet.seq">
+<!--[cssutils.stylesheets.StyleSheet.seq]--><tt class="descname">seq</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.stylesheets.StyleSheet.type">
+<!--[cssutils.stylesheets.StyleSheet.type]--><tt class="descname">type</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.type" title="Permalink to this definition">¶</a></dt>
+<dd>Style sheet language used, a content type. For CSS this is always <tt class="docutils literal"><span class="pre">text/css</span></tt>.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cssutils.stylesheets.StyleSheetList">
+<!--[cssutils.stylesheets.StyleSheetList]-->class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheetList</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface <cite>StyleSheetList</cite> (introduced in DOM Level 2)</p>
+<p>The <cite>StyleSheetList</cite> interface provides the abstraction of an ordered
+collection of style sheets.</p>
+<p>The items in the <cite>StyleSheetList</cite> are accessible via an integral index,
+starting from 0.</p>
+<p>This Python implementation is based on a standard Python list so e.g.
+allows <tt class="docutils literal"><span class="pre">examplelist[index]</span></tt> usage.</p>
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.append">
+<!--[cssutils.stylesheets.StyleSheetList.append]--><tt class="descname">append</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.append" title="Permalink to this definition">¶</a></dt>
+<dd>L.append(object) &#8211; append object to end</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.count">
+<!--[cssutils.stylesheets.StyleSheetList.count]--><tt class="descname">count</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.count" title="Permalink to this definition">¶</a></dt>
+<dd>L.count(value) -&gt; integer &#8211; return number of occurrences of value</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.extend">
+<!--[cssutils.stylesheets.StyleSheetList.extend]--><tt class="descname">extend</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.extend" title="Permalink to this definition">¶</a></dt>
+<dd>L.extend(iterable) &#8211; extend list by appending elements from the iterable</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.index">
+<!--[cssutils.stylesheets.StyleSheetList.index]--><tt class="descname">index</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.index" title="Permalink to this definition">¶</a></dt>
+<dd>L.index(value, [start, [stop]]) -&gt; integer &#8211; return first index of value.
+Raises ValueError if the value is not present.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.insert">
+<!--[cssutils.stylesheets.StyleSheetList.insert]--><tt class="descname">insert</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.insert" title="Permalink to this definition">¶</a></dt>
+<dd>L.insert(index, object) &#8211; insert object before index</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.item">
+<!--[cssutils.stylesheets.StyleSheetList.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.item" title="Permalink to this definition">¶</a></dt>
+<dd>Used to retrieve a style sheet by ordinal <cite>index</cite>. If <cite>index</cite> is
+greater than or equal to the number of style sheets in the list,
+this returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.stylesheets.StyleSheetList.length">
+<!--[cssutils.stylesheets.StyleSheetList.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.length" title="Permalink to this definition">¶</a></dt>
+<dd>The number of <a title="cssutils.stylesheets.StyleSheet" class="reference internal" href="#cssutils.stylesheets.StyleSheet"><tt class="xref docutils literal"><span class="pre">StyleSheet</span></tt></a> objects in the list. The range  of valid child stylesheet indices is 0 to length-1 inclusive.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.pop">
+<!--[cssutils.stylesheets.StyleSheetList.pop]--><tt class="descname">pop</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.pop" title="Permalink to this definition">¶</a></dt>
+<dd>L.pop([index]) -&gt; item &#8211; remove and return item at index (default last).
+Raises IndexError if list is empty or index is out of range.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.remove">
+<!--[cssutils.stylesheets.StyleSheetList.remove]--><tt class="descname">remove</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.remove" title="Permalink to this definition">¶</a></dt>
+<dd>L.remove(value) &#8211; remove first occurrence of value.
+Raises ValueError if the value is not present.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.reverse">
+<!--[cssutils.stylesheets.StyleSheetList.reverse]--><tt class="descname">reverse</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.reverse" title="Permalink to this definition">¶</a></dt>
+<dd>L.reverse() &#8211; reverse <em>IN PLACE</em></dd></dl>
+
+<dl class="method">
+<dt id="cssutils.stylesheets.StyleSheetList.sort">
+<!--[cssutils.stylesheets.StyleSheetList.sort]--><tt class="descname">sort</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.sort" title="Permalink to this definition">¶</a></dt>
+<dd>L.sort(cmp=None, key=None, reverse=False) &#8211; stable sort <em>IN PLACE</em>;
+cmp(x, y) -&gt; -1, 0, 1</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheetList</tt></dt>
+<dd><p>Interface <cite>StyleSheetList</cite> (introduced in DOM Level 2)</p>
+<p>The <cite>StyleSheetList</cite> interface provides the abstraction of an ordered
+collection of style sheets.</p>
+<p>The items in the <cite>StyleSheetList</cite> are accessible via an integral index,
+starting from 0.</p>
+<p>This Python implementation is based on a standard Python list so e.g.
+allows <tt class="docutils literal"><span class="pre">examplelist[index]</span></tt> usage.</p>
+<dl class="method">
+<dt>
+<tt class="descname">item</tt><big>(</big><em>index</em><big>)</big></dt>
+<dd>Used to retrieve a style sheet by ordinal <cite>index</cite>. If <cite>index</cite> is
+greater than or equal to the number of style sheets in the list,
+this returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">length</tt></dt>
+<dd>The number of <a title="cssutils.stylesheets.StyleSheet" class="reference internal" href="#cssutils.stylesheets.StyleSheet"><tt class="xref docutils literal"><span class="pre">StyleSheet</span></tt></a> objects in the list. The range  of valid child stylesheet indices is 0 to length-1 inclusive.</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="values.html" title="previous chapter">css.CSSValue</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="scripts.html" title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">cssutils</span></tt> scripts</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/stylesheets.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="cssutils scripts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="values.html" title="css.CSSValue"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>

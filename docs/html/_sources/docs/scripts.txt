@@ -1,0 +1,92 @@
+====================
+``cssutils`` scripts
+====================
+:version: $Id: scripts.txt 1590 2009-01-01 21:11:36Z cthedot $
+
+The provided scripts are available as a standalone script which is installed in the default PYTHONHOME/scripts directory. Additionally an API for the functionality of the scripts is provided for use in programs.
+
+CSSParse
+========
+Script version of ``cssutils.parseString()`` and ``cssutils.parseFile()``.
+
+Usage: cssparse-script.py [options] filename1.css [filename2.css ...]
+        [>filename_combined.css] [2>parserinfo.log]
+
+Options:
+  -h, --help            show this help message and exit
+  -s, --string          parse given string
+  -u URL, --url=URL     parse given url
+  -e ENCODING, --encoding=ENCODING
+                        encoding of the file or override encoding found
+  -m, --minify          minify parsed CSS
+  -d, --debug           activate debugging output
+
+
+CSSCapture
+==========
+``CSSCapture`` downloads all referenced CSS stylesheets of a given URL and saves them to a given target directory.
+
+programmatic use
+----------------
+example::
+
+    >>> url = 'http://cthedot.de'
+    >>> from cssutils.script import CSSCapture
+    >>> capturer = CSSCapture(ua=None, log=None, defaultloglevel=logging.INFO)
+    >>> stylesheetlist = capturer.capture(url)
+    >>> print stylesheetlist
+    [cssutils.css.CSSStyleSheet(href=u'http://cthedot.de/css/default.css', media=None, title=None),
+     cssutils.css.CSSStyleSheet(href=u'http://cthedot.de/static/alternate1.css', media=None, title=u'red'),
+     cssutils.css.CSSStyleSheet(href=u'http://cthedot.de/static/alternate2.css', media=None, title=u'blue')]
+
+script use
+----------
+Usage: csscapture-script.py [options] URL
+
+Options:
+  -h, --help            show this help message and exit
+  -d, --debug           show debug messages during capturing
+  -m, --minified        saves minified version of captured files
+  -n, --notsave         if given files are NOT saved, only log is written
+  -s SAVETO, --saveto=SAVETO
+                        saving retrieved files to "saveto", defaults to "_CSSCapture_SAVED"
+  -u UA, --useragent=UA
+                        useragent to use for request of URL, default is urllib2s default
+
+
+CSSCombine
+==========
+``csscombine`` may be used to combine several sheets loaded from a main sheet via @import rules. Nested @import rules are resolved from cssutils 0.9.6a1.
+
+The resulting combined sheet (optionally minified) is send to stdout, info and error messages are handled by the normal cssutils log.
+
+``csscombine`` may also be used to change the encoding of the stylesheet if a target encoding is given.
+
+programmatic use
+----------------
+example::
+
+    >>> proxypath = 'sheets/csscombine-proxy.css'
+    >>> from cssutils.script import csscombine
+    >>> print csscombine(path=proxypath, sourceencoding=None, targetencoding='utf-8', minify=True)
+    Processing @import u'sheets\\csscombine-1.css'
+    Processing @import u'sheets\\csscombine-2.css'
+    Nested @imports are not combined: @import "1.css";
+    Setting target encoding 'utf-8'
+    '@charset "utf-8";@import"1.css";@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}'
+
+script use
+----------
+Usage: csscombine-script.py [options] [path]
+
+Options:
+  -h, --help            show this help message and exit
+  -u URL, --url=URL     URL to parse (path is ignored if URL given)
+  -s SOURCEENCODING, --sourceencoding=SOURCEENCODING
+                        encoding of input, defaulting to "css". If given
+                        overwrites other encoding information like @charset
+                        declarations
+  -t TARGETENCODING, --targetencoding=TARGETENCODING
+                        encoding of output, defaulting to "UTF-8"
+  -m, --minify          saves minified version of combined files, defaults to
+                        False

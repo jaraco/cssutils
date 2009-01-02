@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cssutils scripts &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="version migration" href="migrate.html" />
+    <link rel="prev" title="package cssutils.stylesheets" href="stylesheets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="migrate.html" title="version migration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="stylesheets.html" title="package cssutils.stylesheets"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="cssutils-scripts">
+<h1><tt class="docutils literal"><span class="pre">cssutils</span></tt> scripts<a class="headerlink" href="#cssutils-scripts" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">version:</th><td class="field-body">$Id: scripts.txt 1590 2009-01-01 21:11:36Z cthedot $</td>
+</tr>
+</tbody>
+</table>
+<p>The provided scripts are available as a standalone script which is installed in the default PYTHONHOME/scripts directory. Additionally an API for the functionality of the scripts is provided for use in programs.</p>
+<div class="section" id="cssparse">
+<h2>CSSParse<a class="headerlink" href="#cssparse" title="Permalink to this headline">¶</a></h2>
+<p>Script version of <tt class="docutils literal"><span class="pre">cssutils.parseString()</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.parseFile()</span></tt>.</p>
+<dl class="docutils">
+<dt>Usage: cssparse-script.py [options] filename1.css [filename2.css ...]</dt>
+<dd>[&gt;filename_combined.css] [2&gt;parserinfo.log]</dd>
+<dt>Options:</dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>show this help message and exit</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-s</span>, <span class="option">--string</span></kbd></td>
+<td>parse given string</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-u <var>URL</var></span>, <span class="option">--url=<var>URL</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>parse given url</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-e <var>ENCODING</var></span>, <span class="option">--encoding=<var>ENCODING</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>encoding of the file or override encoding found</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-m</span>, <span class="option">--minify</span></kbd></td>
+<td>minify parsed CSS</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d</span>, <span class="option">--debug</span></kbd></td>
+<td>activate debugging output</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</div>
+<div class="section" id="csscapture">
+<h2>CSSCapture<a class="headerlink" href="#csscapture" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">CSSCapture</span></tt> downloads all referenced CSS stylesheets of a given URL and saves them to a given target directory.</p>
+<div class="section" id="programmatic-use">
+<h3>programmatic use<a class="headerlink" href="#programmatic-use" title="Permalink to this headline">¶</a></h3>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://cthedot.de&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cssutils.script</span> <span class="kn">import</span> <span class="n">CSSCapture</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">capturer</span> <span class="o">=</span> <span class="n">CSSCapture</span><span class="p">(</span><span class="n">ua</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">defaultloglevel</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stylesheetlist</span> <span class="o">=</span> <span class="n">capturer</span><span class="o">.</span><span class="n">capture</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">stylesheetlist</span>
+<span class="go">[cssutils.css.CSSStyleSheet(href=u&#39;http://cthedot.de/css/default.css&#39;, media=None, title=None),</span>
+<span class="go"> cssutils.css.CSSStyleSheet(href=u&#39;http://cthedot.de/static/alternate1.css&#39;, media=None, title=u&#39;red&#39;),</span>
+<span class="go"> cssutils.css.CSSStyleSheet(href=u&#39;http://cthedot.de/static/alternate2.css&#39;, media=None, title=u&#39;blue&#39;)]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="script-use">
+<h3>script use<a class="headerlink" href="#script-use" title="Permalink to this headline">¶</a></h3>
+<p>Usage: csscapture-script.py [options] URL</p>
+<dl class="docutils">
+<dt>Options:</dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>show this help message and exit</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d</span>, <span class="option">--debug</span></kbd></td>
+<td>show debug messages during capturing</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-m</span>, <span class="option">--minified</span></kbd></td>
+<td>saves minified version of captured files</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-n</span>, <span class="option">--notsave</span></kbd></td>
+<td>if given files are NOT saved, only log is written</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s <var>SAVETO</var></span>, <span class="option">--saveto=<var>SAVETO</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>saving retrieved files to &#8220;saveto&#8221;, defaults to &#8220;_CSSCapture_SAVED&#8221;</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-u <var>UA</var></span>, <span class="option">--useragent=<var>UA</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>useragent to use for request of URL, default is urllib2s default</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="csscombine">
+<h2>CSSCombine<a class="headerlink" href="#csscombine" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">csscombine</span></tt> may be used to combine several sheets loaded from a main sheet via &#64;import rules. Nested &#64;import rules are resolved from cssutils 0.9.6a1.</p>
+<p>The resulting combined sheet (optionally minified) is send to stdout, info and error messages are handled by the normal cssutils log.</p>
+<p><tt class="docutils literal"><span class="pre">csscombine</span></tt> may also be used to change the encoding of the stylesheet if a target encoding is given.</p>
+<div class="section" id="id1">
+<h3>programmatic use<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxypath</span> <span class="o">=</span> <span class="s">&#39;sheets/csscombine-proxy.css&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cssutils.script</span> <span class="kn">import</span> <span class="n">csscombine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">csscombine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">proxypath</span><span class="p">,</span> <span class="n">sourceencoding</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">targetencoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">minify</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">Processing @import u&#39;sheets\\csscombine-1.css&#39;</span>
+<span class="go">Processing @import u&#39;sheets\\csscombine-2.css&#39;</span>
+<span class="go">Nested @imports are not combined: @import &quot;1.css&quot;;</span>
+<span class="go">Setting target encoding &#39;utf-8&#39;</span>
+<span class="go">&#39;@charset &quot;utf-8&quot;;@import&quot;1.css&quot;;@namespace s2&quot;uri&quot;;s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>script use<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Usage: csscombine-script.py [options] [path]</p>
+<dl class="docutils">
+<dt>Options:</dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>show this help message and exit</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-u <var>URL</var></span>, <span class="option">--url=<var>URL</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>URL to parse (path is ignored if URL given)</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s <var>SOURCEENCODING</var></span>, <span class="option">--sourceencoding=<var>SOURCEENCODING</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>encoding of input, defaulting to &#8220;css&#8221;. If given
+overwrites other encoding information like &#64;charset
+declarations</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-t <var>TARGETENCODING</var></span>, <span class="option">--targetencoding=<var>TARGETENCODING</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>encoding of output, defaulting to &#8220;UTF-8&#8221;</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-m</span>, <span class="option">--minify</span></kbd></td>
+<td>saves minified version of combined files, defaults to
+False</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">cssutils</span></tt> scripts</a><ul>
+<li><a class="reference external" href="#cssparse">CSSParse</a></li>
+<li><a class="reference external" href="#csscapture">CSSCapture</a><ul>
+<li><a class="reference external" href="#programmatic-use">programmatic use</a></li>
+<li><a class="reference external" href="#script-use">script use</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#csscombine">CSSCombine</a><ul>
+<li><a class="reference external" href="#id1">programmatic use</a></li>
+<li><a class="reference external" href="#id2">script use</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="stylesheets.html" title="previous chapter">package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="migrate.html" title="next chapter">version migration</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/scripts.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="migrate.html" title="version migration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="stylesheets.html" title="package cssutils.stylesheets"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>

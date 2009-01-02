@@ -1,0 +1,1849 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CHANGELOG &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="index.html" />
+    <link rel="next" title="package cssutils" href="docs/cssutils.html" />
+    <link rel="prev" title="README" href="README.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="docs/cssutils.html" title="package cssutils"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="README.html" title="README"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="changelog">
+<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: CHANGELOG.txt 1591 2009-01-01 21:19:15Z cthedot $</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="known-issues">
+<h2>known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">CSSStyleSheet.cssText</span></tt> is a serialized byte string (<strong>not</strong> unicode string) currently. This may change in the future.</p>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">seq</span></tt> attribute of most classes does not hinder you to add invalid items. It will probably become readonly. <strong>Never write to it!</strong></p>
+<blockquote>
+<p><strong>Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet</strong></p>
+</blockquote>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">CSS2Properties</span></tt> not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. Prefer to use <tt class="docutils literal"><span class="pre">style['property']</span></tt> over <tt class="docutils literal"><span class="pre">style.property</span></tt>.</p>
+</li>
+<li><p class="first">although cssutils tries to preserve CSS hacks not all are (and some - mainly syntactically invalid ones - will probably never be). The following hacks are known to <strong>not</strong> be preserved:</p>
+<dl class="docutils">
+<dt>star hack (without any whitespace)</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">*html</span></tt> syntactically invalid</p>
+</dd>
+<dt>star7 hack (without any whitespace)</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">html*#test-span</span></tt> (IMHO invalidated by the missing WS between html and &#8220;*&#8221;)</p>
+</dd>
+</dl>
+<p>The main problem for cssutils users is that some stylesheets in the wild are not parsable without loosing some information, a pretty print for these sheets is simply not possible with cssutils (actually with hardly any css parser...).</p>
+<p>Generally <strong>syntactically valid stylesheets</strong> should be preserved completely (otherwise it will be a bug in cssutils itself). Invalid stylesheets will probably loose some information like to above <tt class="docutils literal"><span class="pre">*html</span></tt> hack. Most of these hacks may be rewritten while still be working, e.g. <tt class="docutils literal"><span class="pre">*</span> <span class="pre">html</span></tt> should work same to <tt class="docutils literal"><span class="pre">*html</span></tt>. Until cssutils 0.9.5b2 the invalid IE-specific CSS hack using <tt class="docutils literal"><span class="pre">$propertyname</span></tt> was preserved but its usage was already discouraged (and if e.g. specifying <tt class="docutils literal"><span class="pre">color</span></tt> and <tt class="docutils literal"><span class="pre">$color</span></tt> these properties are <strong>not the same</strong> for cssutils (but are for IE...).
+<strong>These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!</strong>
+In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">CSSValue</span></tt>, <tt class="docutils literal"><span class="pre">CSSValueList</span></tt>, and <tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt> and the relevant methods/properties <tt class="docutils literal"><span class="pre">Property.cssValue</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getPropertyCSSValue</span></tt> are more or less <em>DEPRECATED</em> and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings. As the aforementioned classes are not hardly that useful this should not be a big problem but please beware if you use or have used them. If you think this a bad idea please let me know!</p>
+<blockquote>
+<p>Some methods of <tt class="docutils literal"><span class="pre">css.CSSPrimitiveValue</span></tt> and subclasses <tt class="docutils literal"><span class="pre">Rect</span></tt>, <tt class="docutils literal"><span class="pre">Counter</span></tt> and <tt class="docutils literal"><span class="pre">RGBColor</span></tt> are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of <tt class="docutils literal"><span class="pre">CSSValue</span></tt>, <tt class="docutils literal"><span class="pre">CSSValueList</span></tt>, and <tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt> will probably be completely replaced/refactored with suggestions from CSSOM.</p>
+</blockquote>
+</li>
+<li><p class="first">handling of comments does probable not work for all cases</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h2>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>HEAD</dt>
+<dd><ul class="first simple">
+<li><strong>FEATURE</strong>: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if <tt class="docutils literal"><span class="pre">import</span> <span class="pre">google.appengine</span></tt> is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.</li>
+<li><strong>FEATURE</strong>: Function <tt class="docutils literal"><span class="pre">cssutils.resolveImports(sheet)</span></tt> returns a new stylesheet with all rules in given sheet but with all &#64;import rules being pulled into the top sheet.</li>
+<li>FEATURE: CSSCombine script and helper function resolve nested imports now.</li>
+<li>FEATURE: Script <tt class="docutils literal"><span class="pre">csscombine</span></tt> has new option <tt class="docutils literal"><span class="pre">-u</span> <span class="pre">URL,</span> <span class="pre">--url=URL</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">URL</span> <span class="pre">to</span> <span class="pre">parse</span> <span class="pre">(path</span> <span class="pre">is</span> <span class="pre">ignored</span> <span class="pre">if</span> <span class="pre">URL</span> <span class="pre">given)</span></tt> now</li>
+</ul>
+<ul class="simple">
+<li><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">cssutils.script.csscombine</span></tt> has <strong>ONLY</strong> keyword parameters now. Use <tt class="docutils literal"><span class="pre">csscombine(path=path[,...])</span></tt> for the old behaviour. New parameter <tt class="docutils literal"><span class="pre">url</span></tt> combines the sheet at URL now.</li>
+</ul>
+<ul>
+<li><dl class="first docutils">
+<dt>BUGFIX: Other priority values than <tt class="docutils literal"><span class="pre">!important</span></tt> are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.</dt>
+<dd><p class="first last"><strong>TODO</strong>: Preference setting. Profile?</p>
+</dd>
+</dl>
+</li>
+</ul>
+<ul class="last simple">
+<li>IMPROVEMENT: Added all known properties (by cssutils ;) to CSS2Properties.</li>
+<li>DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markuped yet but not too bad either...</li>
+</ul>
+</dd>
+<dt>0.9.6a0 081214</dt>
+<dd><ul class="first">
+<li><p class="first"><strong>FEATURE</strong>: <tt class="docutils literal"><span class="pre">xml.dom.DOMException</span></tt>s raised do now contain infos about the position where the exception occured. An exception might for example have been raised as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">xml</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">SyntaxErr</span><span class="p">(</span><span class="s">&#39;the message&#39;</span><span class="p">,</span> <span class="mf">10</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(where 10 is the line and 5 the column of the offending text).</p>
+<p>Therefor you may <strong>not</strong> simply use <tt class="docutils literal"><span class="pre">str(e)</span></tt> to get the exception message but you have to use <tt class="docutils literal"><span class="pre">msg,</span> <span class="pre">line,</span> <span class="pre">col</span> <span class="pre">=</span> <span class="pre">e.args[0],</span> <span class="pre">e.args[1],</span> <span class="pre">e.args[2]</span></tt>. Additionally exceptions raised have attributes <tt class="docutils literal"><span class="pre">e.line</span></tt> and <tt class="docutils literal"><span class="pre">e.col</span></tt>.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: &#64;page rule accepts named page selector now, e.g. <tt class="docutils literal"><span class="pre">&#64;page</span> <span class="pre">intro</span></tt> or <tt class="docutils literal"><span class="pre">page</span> <span class="pre">main:left</span></tt>.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: Script <tt class="docutils literal"><span class="pre">cssparse</span></tt> has new option <tt class="docutils literal"><span class="pre">-u</span> <span class="pre">URL</span></tt> which parses the given URL.</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>FEATURE</strong>: Started implementation of CSS profiles...</dt>
+<dd><ul class="first last">
+<li><p class="first">moved <tt class="docutils literal"><span class="pre">cssutils.css.cssproperties.cssvalues</span></tt> to <tt class="docutils literal"><span class="pre">cssutils.profiles.css2</span></tt></p>
+</li>
+<li><p class="first">added CSS Color Module Level 3 with properties <tt class="docutils literal"><span class="pre">color</span></tt> and <tt class="docutils literal"><span class="pre">opacity</span></tt>. Not implemented are SVG color names.</p>
+</li>
+<li><p class="first">unknown properties raise a WARNING instead of INFO now</p>
+</li>
+<li><dl class="first docutils">
+<dt>refactored CSSValue and subclasses therefore there may be some minor changes in serializing or value reporting</dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">getStringValue()</span></tt> returns a string without quotes or for URIs a value without surrounding <tt class="docutils literal"><span class="pre">url(...)</span></tt> now</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">FEATURE <strong>experimental</strong>: Added class <tt class="docutils literal"><span class="pre">CSSColor</span></tt> which is used for RGB, RGBA, HSL, HSLA and HEX color values of <tt class="docutils literal"><span class="pre">CSSValue</span></tt> respective <tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt>.</p>
+</li>
+<li><p class="first">FEATURE (strange): IE only CSS expressions <em>should</em> be parsed and serialized now an an <tt class="docutils literal"><span class="pre">Expression</span></tt> value. I have not tested this deeply and there may be problems but for some common cases this should work, e.g. for hacking maxwidth for IE you may define the following:</p>
+<div class="highlight-python"><pre>width: expression(document.body.clientWidth &gt; 1000 ? "1000px": "100%")</pre>
+</div>
+<p>Usage of CSS expressions is strongly discouraged as they do not validate AND may slow down the rendering and browser quite a lot!</p>
+</li>
+<li><dl class="first docutils">
+<dt>BUGFIX/IMPROVEMENT: rewrite of CSSValue and related classes</dt>
+<dd><ul class="first last simple">
+<li>BUGFIX: Parsing of a CSSValue like <tt class="docutils literal"><span class="pre">red</span> <span class="pre">/**/</span></tt> (value, Space, comment) fixed.</li>
+<li>BUGFIX: Parsing values with <tt class="docutils literal"><span class="pre">+</span></tt> operator fixed.</li>
+<li>BUGFIX: <tt class="docutils literal"><span class="pre">CSSValueList.__str__</span></tt> added (missing last underscore rendered it useless)</li>
+<li>IMPROVEMENT: Serializing e.g. <tt class="docutils literal"><span class="pre">rgb(0,0,0)</span></tt> now defaults to <tt class="docutils literal"><span class="pre">rgb(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></tt></li>
+<li>IMPROVEMENT: HEX values are minified if possible, e.g. <tt class="docutils literal"><span class="pre">#112233</span></tt> results in <tt class="docutils literal"><span class="pre">#123</span></tt></li>
+<li>IMPROVEMENT: Improved handling of zero lengths like <tt class="docutils literal"><span class="pre">-0,</span> <span class="pre">0.0,</span> <span class="pre">.0mm</span></tt> etc all should come out simply as <tt class="docutils literal"><span class="pre">0</span></tt> now</li>
+<li>IMPROVEMENT: number values are normalized now, e.g. <tt class="docutils literal"><span class="pre">010.0px</span></tt> results in <tt class="docutils literal"><span class="pre">10px</span></tt> etc</li>
+<li>IMPROVEMENT: DIMENSIONs are normalized now, e.g. <tt class="docutils literal"><span class="pre">1pX</span></tt> results in <tt class="docutils literal"><span class="pre">1px</span></tt></li>
+<li>IMPROVEMENT: for CSSValueList values like e.g. <tt class="docutils literal"><span class="pre">margin:</span> <span class="pre">0</span> <span class="pre">1px</span></tt> there are no more false WARNINGs emitted</li>
+<li>IMPROVEMENT: Comments should be parsed much better now</li>
+<li>IMPROVEMENT: <tt class="docutils literal"><span class="pre">CSSValue.getFloattype(unitType=None)</span></tt>, parameter is now optional in which case the current dimension is used.</li>
+<li>fixed lots of other minor bugs related to CSSValue</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>BUGFIX</strong>: Fixed tokenizing/parsing of rather strange STRING and URI values like:</dt>
+<dd><ul class="first last">
+<li><p class="first">Valid:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;somestring followed by escaped NL</span><span class="se">\</span>
+<span class="s"> and continuing here.&quot;</span>
+</pre></div>
+</div>
+<p>and now results in:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;somestring followed by escaped NL and continuing here.&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">url())</span></tt> =&gt; not allowed and must be written as <tt class="docutils literal"><span class="pre">url(&quot;)&quot;)</span></tt></p>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Setting <tt class="docutils literal"><span class="pre">CSSPageRule.selectorText</span></tt> does actually work now.</p>
+</li>
+<li><p class="first">BUGFIX: Other priority values than <tt class="docutils literal"><span class="pre">!important</span></tt> are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.</p>
+</li>
+<li><p class="first">BUGFIX: Fixed Issue #14, added <tt class="docutils literal"><span class="pre">CSSStyleDeclaration().borderLeftWidth</span></tt>. But prefer to use <tt class="docutils literal"><span class="pre">CSSStyleDeclaration()['border-left.width']</span></tt>.</p>
+</li>
+</ul>
+<ul class="last">
+<li><dl class="first docutils">
+<dt><strong>API CLEANUP</strong>:</dt>
+<dd><ul class="first last simple">
+<li>moved validating of a property from <tt class="docutils literal"><span class="pre">CSSValue</span></tt> to <tt class="docutils literal"><span class="pre">Property</span></tt></li>
+<li>removed <tt class="docutils literal"><span class="pre">CSSValue.valid</span></tt> as it does not make sense anymore</li>
+<li>removed private init parameter <tt class="docutils literal"><span class="pre">CSSValue_propertyName</span></tt></li>
+<li>private attribute <tt class="docutils literal"><span class="pre">CSSValue._value</span></tt> contains <tt class="docutils literal"><span class="pre">(value,</span> <span class="pre">type)</span></tt> now. Do not use as it may change again</li>
+<li>removed <tt class="docutils literal"><span class="pre">Property.normalname</span></tt> (DEPRECATED from 0.9.5 ), use <tt class="docutils literal"><span class="pre">Property.name</span></tt> instead</li>
+<li>removed long deprecated <tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls</span></tt>, use <tt class="docutils literal"><span class="pre">cssutils.replaceUrls()</span></tt> instead</li>
+<li><tt class="docutils literal"><span class="pre">cssutils.utils.Base</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.utils.Base2</span></tt> have been changed and will be removed in favor of new <tt class="docutils literal"><span class="pre">cssutils.utils._NewBase</span></tt>. These are all internal helper classes and should not be used in client code anyway but ye be warned...</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>IMPROVEMENT:</dt>
+<dd><ul class="first last simple">
+<li>minor changes due to deprecation in Py3k. cssutils is NOT Py3k compliant yet though and it will probably take a while until it will be...</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="id2">
+<h2>0.9.5<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>0.9.5.1 080811</dt>
+<dd><ul class="first last simple">
+<li><strong>BUGFIX</strong>: Fixed parsing of <tt class="docutils literal"><span class="pre">}a,b</span></tt> which resulted in TypeError until now.</li>
+<li><strong>BUGFIX</strong>: A rule with a selector using an undefined and therefor invalid namespace prefix is ignored now.</li>
+<li><strong>BUGFIX</strong>: Removed typo in MediaList which resulted in Exception when parsing medialist containing <tt class="docutils literal"><span class="pre">all</span></tt> and another media.</li>
+<li><strong>BUGFIX</strong>: Reading imported styles may have failed under certain conditions with an AttributeError.</li>
+<li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.VERSION</span></tt> which is the current release version, in this case e.g. <tt class="docutils literal"><span class="pre">&quot;0.9.5.1&quot;</span></tt></li>
+<li>IMPROVEMENT: Optimized imports and partly removed circular ones which are a bit tricky...</li>
+</ul>
+</dd>
+<dt>0.9.5 080730</dt>
+<dd><ul class="first simple">
+<li><strong>API CHANGE</strong>: If a new medium is trying to be appended to a <tt class="docutils literal"><span class="pre">MediaList</span></tt> already set to <tt class="docutils literal"><span class="pre">all</span></tt> an <tt class="docutils literal"><span class="pre">xml.dom.InvalidModificationErr</span></tt> is raised. The exception to this handling is adding <tt class="docutils literal"><span class="pre">handheld</span></tt> which is a special case for Opera and kept for now. This special handling may be removed in the future. A <tt class="docutils literal"><span class="pre">WARNING</span></tt> is logged in any case.</li>
+</ul>
+<ul class="simple">
+<li><strong>BUGFIX</strong>: Fixed reference error in &#64;import rule preventing change of the used <tt class="docutils literal"><span class="pre">MediaList</span></tt>.</li>
+<li><strong>BUGFIX</strong>: Deeply nested <tt class="docutils literal"><span class="pre">CSSImportRule</span></tt>s with different encodings  should keep the encoding as defined (via HTTP, parendSheet, &#64;charset etc) now.  Therefor <tt class="docutils literal"><span class="pre">cssutils.util._readUrl</span></tt> does return <tt class="docutils literal"><span class="pre">(encoding,</span> <span class="pre">enctype,</span> <span class="pre">decodedCssText)</span></tt> now where <tt class="docutils literal"><span class="pre">enctype</span></tt> is a number from 0 to 5 indicating which encoding type was used: 0 for encoding override, 1 for HTTP encoding, 2 for BOM or &#64;charset rule, (3 is unused currently), 4 for encoding of the parent sheet and 5 if encoding defaults to UTF-8 as no other information is available. (This may later be done as constants but this function should not be used from programs generally).</li>
+<li><strong>BUGFIX</strong>: Replaced usage of <tt class="docutils literal"><span class="pre">WindowsError</span></tt> with <tt class="docutils literal"><span class="pre">OSError</span></tt>. I (naively ;) thought <tt class="docutils literal"><span class="pre">WindowsError</span></tt> at least be present in environments other than Windows but it just results in a <tt class="docutils literal"><span class="pre">NameError</span></tt>... The part of the API which triggered this Exception is an &#64;import rule with an invalid or local (file) URI so should have happened quite rarely anyway.</li>
+</ul>
+<ul class="last simple">
+<li>IMPROVEMENT: Standalone scripts <tt class="docutils literal"><span class="pre">csscombine</span></tt> and <tt class="docutils literal"><span class="pre">csscapture</span></tt> are available for programmatic use in <tt class="docutils literal"><span class="pre">cssutils.script.csscombine</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.script.CSSCapture</span></tt> res.</li>
+<li>IMPROVEMENT: <tt class="docutils literal"><span class="pre">cssutils.script.csscombine</span></tt> and <tt class="docutils literal"><span class="pre">csscombine</span></tt> script do use the cssutils log now instead of just writing messages to <tt class="docutils literal"><span class="pre">sys.stderr</span></tt></li>
+<li>IMPROVEMENT: Optimized and refactored tokenizer (CHARSET_SYM).</li>
+</ul>
+</dd>
+<dt>0.9.5rc2 080714</dt>
+<dd><ul class="first last">
+<li><p class="first"><strong>API CHANGE/BUGFIX (major)</strong>:</p>
+<blockquote>
+<p>Upto 0.9.5rc1 any sheet resulting from parsing via any <tt class="docutils literal"><span class="pre">parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser(raiseExceptions=False)</span></tt> (which also was and is the default) resulted in the library simply logging any later exceptions and not raising them. Until now the global setting of <tt class="docutils literal"><span class="pre">cssutils.log.raiseExceptions=True</span></tt> (the default) was overwritten with the value of the CSSParser <tt class="docutils literal"><span class="pre">raiseExceptions</span></tt> setting which normally is <tt class="xref docutils literal"><span class="pre">False</span></tt> any time a <tt class="docutils literal"><span class="pre">cssutils.parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser.parse*</span></tt> method was used. 0.9.5rc2 fixes this.</p>
+<p>until 0.9.5rc1:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># parsing does not raise errors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;$&#39;</span><span class="p">)</span> <span class="c"># empty but CSSStyleSheet object</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># using DOM methods does **not raise either** but should:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">cssText</span> <span class="o">=</span> <span class="s">&#39;$&#39;</span> <span class="c"># just logs:</span>
+<span class="go">ERROR   CSSStyleRule: No start { of style declaration found: u&#39;$&#39; [1:2: ]</span>
+</pre></div>
+</div>
+<p>from 0.9.5rc2:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># parsing STILL does not raise errors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;$&#39;</span><span class="p">)</span> <span class="c"># empty but CSSStyleSheet object</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># using DOM methods **does raise now though**</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">cssText</span> <span class="o">=</span> <span class="s">&#39;$&#39;</span> <span class="c"># raises:</span>
+<span class="go">xml.dom.SyntaxErr: CSSStyleRule: No start { of style declaration found: u&#39;$&#39; [1:1: $]</span>
+</pre></div>
+</div>
+<p>To use the old but false behaviour add the following line at the start to your program:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">raiseExceptions</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># normally True</span>
+</pre></div>
+</div>
+<p><strong>This should only be done in specific cases</strong> as normal raising of exceptions in methods or functions with the CSS DOM is the expected behaviour. <strong>This setting may also be removed in the future so use with care.</strong></p>
+</blockquote>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Parsing of &#64;rules like <tt class="docutils literal"><span class="pre">&#64;mediaall</span> <span class="pre">...</span></tt> does not result in <tt class="docutils literal"><span class="pre">&#64;media</span> <span class="pre">all</span> <span class="pre">...</span></tt> anymore (so not a <tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt>) but parses as  <tt class="docutils literal"><span class="pre">&#64;mediaall</span></tt> so a <tt class="docutils literal"><span class="pre">CSSUnknownRule</span></tt>. The specification is not too clear here but it seems this is the way to go. To help finding typos like this probably is, for any found CSSUnknownRule (an unknown &#64;rule) a WARNING is emitted now (but never an exception raised). These typos will most likely happen like e.g. <tt class="docutils literal"><span class="pre">&#64;mediaall</span></tt>, <tt class="docutils literal"><span class="pre">&#64;importurl()</span></tt>, <tt class="docutils literal"><span class="pre">&#64;namespaceprefix&quot;uri&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&#64;pagename:left</span></tt>.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Parsing of unicode escapes like <tt class="docutils literal"><span class="pre">\\abc</span></tt> followed by CR/LF this is now correctly combined as only a single whitespace character.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Adding a malformed <tt class="docutils literal"><span class="pre">stylesheets.MediaQuery</span></tt> to a <tt class="docutils literal"><span class="pre">stylesheets.MediaList</span></tt> does fail now, e.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># invalid malformed medialist (missing comma):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;@media tv INVALID {a {top: 0;}}&#39;</span><span class="p">)</span>
+<span class="go">ERROR   MediaQuery: Unexpected syntax. [1:11: INVALID]</span>
+<span class="go">ERROR   MediaList: Invalid MediaQuery:  tv INVALID</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># the actual rule exists but has default empty content, this may be</span>
+<span class="go">changed later as it can be seen as a bug itself</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+<span class="go">cssutils.css.CSSMediaRule(mediaText=u&#39;all&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span>
+<span class="go">&#39;&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># BUT: Unknown media type but as it is valid does parse:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;@media tv, UNKNOWN {a {top: 0;}}&#39;</span><span class="p">)</span>
+<span class="go">WARNING MediaQuery: Unknown media type &quot;UNKNOWN&quot;.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+<span class="go">cssutils.css.CSSMediaRule(mediaText=u&#39;tv, UNKNOWN&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span>
+<span class="go">&#39;@media tv, UNKNOWN {\n    a {\n        top: 0\n        }\n    }&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: References to <tt class="docutils literal"><span class="pre">MediaList</span></tt> in <tt class="docutils literal"><span class="pre">CSSImportRule</span></tt> and <tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt> are kept now properly.</p>
+</li>
+<li><p class="first">BUGFIX: Deleting a <tt class="docutils literal"><span class="pre">MediaQuery</span></tt> item from a <tt class="docutils literal"><span class="pre">MediaList</span></tt> does use the libs logging/raising settings instead of always raising</p>
+</li>
+<li><p class="first"><strong>IMPROVEMENT</strong>: Parsing performance has been improved (by about 25%, tested with a basic CSS of about 50 lines, so may not be representative but this release definitely is faster ;). The following changes have been done which should not impact any actual stylesheet:</p>
+<blockquote>
+<ul class="simple">
+<li>A <tt class="docutils literal"><span class="pre">BOM</span></tt> token is recognized at the start of a stylesheet only (may be swallowed by the CSS codec anyway).</li>
+<li>A <tt class="docutils literal"><span class="pre">BOM</span></tt> token is not counted in the line/col reporting anymore so the following token has a line and col of 1 now</li>
+<li>Tests for tokenizing with css2productions has been removed but this is never used in the library anyway</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</dd>
+<dt>0.9.5rc1 080709</dt>
+<dd><ul class="first last">
+<li><p class="first"><strong>API CHANGE/FEATURE</strong>: <tt class="docutils literal"><span class="pre">The</span> <span class="pre">cssutils.log</span></tt> may be partly used like a standard logging log. The following methods are available: (&#8216;setLevel&#8217;, &#8216;getEffectiveLevel&#8217;, &#8216;addHandler&#8217;, &#8216;removeHandler&#8217;) as well as all &#8220;messaging&#8221; calls like &#8216;error&#8217;, &#8216;warning&#8217; etc.</p>
+<p>Therefor <tt class="docutils literal"><span class="pre">cssutils.log.setloglevel</span></tt> has been <em>DEPRECATED</em> and should be used via <tt class="docutils literal"><span class="pre">cssutils.log.setLevel</span></tt>. The old method is still available though.</p>
+<p><tt class="docutils literal"><span class="pre">cssutils.log.setlog</span></tt> has been renamed to <tt class="docutils literal"><span class="pre">cssutils.log.setLog</span></tt> but is still available but <em>DEPRECATED</em> too.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: All three decoders in the codec now have an additional <tt class="docutils literal"><span class="pre">force</span></tt> argument. If <tt class="docutils literal"><span class="pre">force</span></tt> is false, the encoding from the input will only by used if is is detected explicitely via BOM or &#64;charset rule.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: <tt class="docutils literal"><span class="pre">cssparse</span></tt> script has new option <tt class="docutils literal"><span class="pre">-m</span> <span class="pre">--minify</span></tt> which results in the parsed CSS to be serialized minified</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: <tt class="docutils literal"><span class="pre">CSSCapture</span></tt> and <tt class="docutils literal"><span class="pre">csscombine</span></tt> are now available not only as standalone scripts but also via <tt class="docutils literal"><span class="pre">cssutils.script.CSSCapture</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.script.csscombine</span></tt> repectively so you can use them programmatically now.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: A space after &#64;rule keyword is added when serializing minified something like <tt class="docutils literal"><span class="pre">&#64;media</span> <span class="pre">all{}</span></tt>. Until now it was <tt class="docutils literal"><span class="pre">&#64;mediaall{}</span></tt> which is recognized by Safari only but probably is not valid at all. Other &#64;rules behave similar now too.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Properties of rules set via <tt class="docutils literal"><span class="pre">css.CSSStyleSheet.add</span></tt> or <tt class="docutils literal"><span class="pre">.insert</span></tt> were not set properly, e.g. <tt class="docutils literal"><span class="pre">parentStyleSheet</span></tt> or the stylesheet handling of new &#64;import rules was buggy.</p>
+</li>
+<li><p class="first">BUGFIX: Encountering OSError during resolving &#64;import does not throw an error anymore but the resulting CSSImportRule.styleSheet will have a value of <tt class="xref docutils literal"><span class="pre">None</span></tt>. OSError will probably only happen when using <tt class="docutils literal"><span class="pre">parseFile</span></tt>.</p>
+</li>
+<li><p class="first"><strong>IMPROVEMENT/BUGFIX</strong>: A style sheet with <tt class="docutils literal"><span class="pre">href</span> <span class="pre">==</span> <span class="pre">None</span></tt> (e.g. parsed with <tt class="docutils literal"><span class="pre">parseString()</span></tt> or build completely from scratch) uses <tt class="docutils literal"><span class="pre">os.getcwd()</span></tt> as its base href now to be able to resolve CSSImportRules.</p>
+</li>
+<li><p class="first"><strong>IMPROVEMENT/BUGFIX</strong>: Rewrote <tt class="docutils literal"><span class="pre">csscombine</span></tt> script which should be much more stable now and handles namespaces correctly. Nested imports are still not resolved yet but this may come in the next release.</p>
+</li>
+<li><p class="first">IMPROVEMENT/BUGFIX: Added catching of WindowsError to default fetcher (e.g. is a file URL references a file not present).</p>
+</li>
+<li><p class="first"><strong>CHANGE/BUGFIX</strong>: Redone <tt class="docutils literal"><span class="pre">csscapture</span></tt> script. A few minor method changes (parameter <tt class="docutils literal"><span class="pre">ua</span></tt> of <tt class="docutils literal"><span class="pre">capture</span></tt> has been replaced by init parameter) and lots of internal improvement has been done.</p>
+</li>
+<li><p class="first">CHANGE: <tt class="docutils literal"><span class="pre">CSSStyleSheet.add(rule)</span></tt> simply appends rules with no specific order in the sheet to the end of it. So e.g. COMMENTs, STYLE_RULEs, etc are appended while rules with a specific place are ordered-in as before (e.g. IMPORT_RULE or NAMESPACE_RULE). Until now rules of a specific type like COMMENTs were ordered together which does not really make sense. The <tt class="docutils literal"><span class="pre">csscombine</span></tt> script needs this functionality and the resulting combined sheets should be more readable and understandable now.</p>
+</li>
+<li><p class="first">CHANGE: Default URL fetcher emits an ERROR instead of a warning if finding a different mine-type than <tt class="docutils literal"><span class="pre">text/css</span></tt>.</p>
+</li>
+</ul>
+</dd>
+<dt>0.9.5b3 080605</dt>
+<dd><ul class="first last">
+<li><p class="first"><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">parse()</span></tt> is <em>DEPRECATED</em>, use <tt class="docutils literal"><span class="pre">parseFile()</span></tt> instead. I know this should not happen in a release already in beta but better now than later and currently both ways are still possible.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: CSSStyleDeclatation objects may be used like dictionaries now. The value during setting a property may be a single value string or a tuple of <tt class="docutils literal"><span class="pre">(value,</span> <span class="pre">priority)</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">style</span> <span class="o">=</span> <span class="n">css</span><span class="o">.</span><span class="n">CSSStyleDeclaration</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span><span class="p">[</span><span class="s">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;red&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">()</span>
+<span class="go">[cssutils.css.Property(name=&#39;color&#39;, value=u&#39;red&#39;, priority=u&#39;&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">style</span><span class="p">[</span><span class="s">&#39;color&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span><span class="p">[</span><span class="s">&#39;unknown&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="s">&#39;important&#39;</span><span class="p">)</span>
+<span class="go">INFO    Property: No CSS2 Property: &#39;unknown&#39;.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">()</span>
+<span class="go">[cssutils.css.Property(name=&#39;unknown&#39;, value=u&#39;value&#39;, priority=u&#39;impor</span>
+<span class="go">tant&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">style</span><span class="p">[</span><span class="s">&#39;never-set&#39;</span><span class="p">]</span> <span class="c"># does not raise KeyError but returns u&#39;&#39; like removeProperty()</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: While reading an imported styleSheet all relevant encoding parameters (HTTP headers, <a class="reference external" href="mailto:BOM/&#37;&#52;&#48;charset">BOM/<span>&#64;</span>charset</a>, etc) are used now as defined in <a class="reference external" href="http://www.w3.org/TR/CSS21/syndata.html#charset">http://www.w3.org/TR/CSS21/syndata.html#charset</a></p>
+<blockquote>
+<p>Additionally a given parameter <tt class="docutils literal"><span class="pre">encoding</span></tt> for <tt class="docutils literal"><span class="pre">parseString</span></tt>, <tt class="docutils literal"><span class="pre">parseFile</span></tt> and <tt class="docutils literal"><span class="pre">parseUrl</span></tt> functions/methods <strong>overrides</strong> any detected encoding of read sheet like HTTP information or &#64;charset rules. Useful if e.g. HTTP information is not set properly. The given <tt class="docutils literal"><span class="pre">encoding</span></tt> is used for <strong>all</strong> imported sheets of the parsed one too! This is a cssutils only addition to the rules defined at <a class="reference external" href="http://www.w3.org/TR/CSS21/syndata.html#charset">http://www.w3.org/TR/CSS21/syndata.html#charset</a>.</p>
+</blockquote>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: A custom URL fetcher may be used during parsing via <tt class="docutils literal"><span class="pre">CSSParser.setFetcher(fetcher)</span></tt> (or as an init parameter). The so customized parser is reusable (as all parsers are). The fetcher is called when an <tt class="docutils literal"><span class="pre">&#64;import</span></tt> rule is found and the referenced stylesheet is about to be retrieved.</p>
+<p>The function gets a single parameter</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">url</span></tt></dt>
+<dd><p class="first last">the URL to read</p>
+</dd>
+</dl>
+<p>and MUST return <tt class="docutils literal"><span class="pre">(encoding,</span> <span class="pre">content)</span></tt> where <tt class="docutils literal"><span class="pre">encoding</span></tt> normally is the HTTP charset given via a Content-Type header (which may simply omit the charset though) and <tt class="docutils literal"><span class="pre">content</span></tt> being the (byte) string content. The Mimetype of the fetched <tt class="docutils literal"><span class="pre">url</span></tt> should be <tt class="docutils literal"><span class="pre">text/css</span></tt> but this has to be checked by the fetcher itself (the default fetcher emits an ERROR (from 0.9.5 before a WARNING)  if encountering a different mimetype).
+The content is then decoded by cssutils using all encoding related data available.</p>
+<blockquote>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">fetcher</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;ascii&#39;</span><span class="p">,</span> <span class="s">&#39;/*test*/&#39;</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">CSSParser</span><span class="p">(</span><span class="n">fetcher</span><span class="o">=</span><span class="n">fetcher</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="o">...</span>
+</pre></div>
+</div>
+</blockquote>
+<p>To omit parsing of imported sheets just define a fetcher like <tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">url:</span> <span class="pre">None</span></tt> (A single None is sufficient but returning <tt class="docutils literal"><span class="pre">(None,</span> <span class="pre">None)</span></tt> is more explicit).</p>
+<p>You might also want to define an encoding for each imported sheet with a fetcher which returns a (normally HTTP content-type header) encoding depending on each URL.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: Added option <tt class="docutils literal"><span class="pre">-s</span> <span class="pre">--string</span></tt> to cssparse script which expects a CSS string to be parsed.</p>
+</li>
+<li><p class="first"><strong>FEATURE/BUGFIX</strong>: Parsing of CSSStyleDeclarations is improved. Invalid <tt class="docutils literal"><span class="pre">/color:</span> <span class="pre">red;color:</span> <span class="pre">green</span></tt> is now correctly parsed as <tt class="docutils literal"><span class="pre">color:</span> <span class="pre">green</span></tt> now. At the same time the until now parsed but invalid <tt class="docutils literal"><span class="pre">$color:</span> <span class="pre">red</span></tt> (an IE hack) is not parse anymore but correctly dismissed!</p>
+<p>Unknown rules in CSSStyleDeclaration are parsed now. So e.g <tt class="docutils literal"><span class="pre">&#64;x;</span> <span class="pre">color:</span> <span class="pre">red;</span></tt> which is syntactically valid is kept completely.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: <tt class="docutils literal"><span class="pre">parseUrl</span></tt> does return <tt class="xref docutils literal"><span class="pre">None</span></tt> if an error occurs during reading the given URL. Until now an empty stylesheet was returned.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Fixed parsing of values like <tt class="docutils literal"><span class="pre">background:</span> <span class="pre">url(x.gif)0</span> <span class="pre">0;</span></tt> (missing space but still valid).</p>
+</li>
+<li><p class="first">BUGFIX: Serializing CSSUnknownRules is slightly improved, blocks are correctly indentet now.</p>
+</li>
+<li><p class="first"><strong>LICENSE</strong>: cssutils is licensed under the <strong>LGPL v3</strong> now (before LGPL v2.1). This should not be a problem I guess but please be aware. So the former mix of LGPL 2.1 and 3 is resolved to a single LGPL 3 license for both cssutils and the included encutils.</p>
+</li>
+<li><p class="first">INTERNAL: Moved tests out of cssutils main package into a tests package parallel to cssutils.</p>
+</li>
+</ul>
+</dd>
+<dt>0.9.5b2 080323</dt>
+<dd><ul class="first simple">
+<li><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">cssutils.parseURL</span></tt> has been renamed to <tt class="docutils literal"><span class="pre">parseUrl</span></tt> for consistency with <tt class="docutils literal"><span class="pre">getUrls</span></tt> or <tt class="docutils literal"><span class="pre">replaceUrls</span></tt>. Parameter <tt class="docutils literal"><span class="pre">href</span></tt> (before called <tt class="docutils literal"><span class="pre">url</span></tt>) is the first and mandatory parameter now.</li>
+</ul>
+<ul class="simple">
+<li><strong>BUGFIX</strong>: Fix the streamreader in the codec: Honor the encoding if one is passed to the constructor instead of trying to detect it from the stream.</li>
+<li><strong>BUGFIX</strong>: Reading referenced styleSheet in CSSImportRule did not succeed as no encoding information is passed along. Encoding of referenced sheets is always retrieved via HTTP or from imported sheet itself. Fixed lots of unchecked cases and simplified exception handling when reading a referenced sheet.</li>
+<li>BUGFIX: Setting <tt class="docutils literal"><span class="pre">atkeyword</span></tt> of &#64;rules checks if it is a valid keyword for the specific rule. E.g. an &#64;import rule accepts <tt class="docutils literal"><span class="pre">&#64;im\port</span></tt> but not <tt class="docutils literal"><span class="pre">&#64;namespace</span></tt>.</li>
+<li>BUGFIX: Fixed setting <tt class="docutils literal"><span class="pre">name</span></tt> of CSSImportRule. Setting <tt class="docutils literal"><span class="pre">name</span></tt> other than with a string results in xml.dom.SyntaxErr raised now</li>
+<li>BUGFIX: <tt class="docutils literal"><span class="pre">CSSStyleSheet.type</span></tt> with a fixed value of &#8220;text/css&#8221; and other readonly properties are really readonly now</li>
+</ul>
+<ul class="last simple">
+<li>IMPROVEMENT: Added media information to <tt class="docutils literal"><span class="pre">__str__</span></tt> and <tt class="docutils literal"><span class="pre">__repr__</span></tt> or CSSStyleSheet.</li>
+<li>IMPROVEMENT: Added more information to <tt class="docutils literal"><span class="pre">__repr__</span></tt> of CSSImportRule.</li>
+<li>IMPROVEMENT: Added <tt class="docutils literal"><span class="pre">__repr__</span></tt> for <tt class="docutils literal"><span class="pre">cssutils.util._SimpleNamespaces</span></tt> which is used in a selector repr.</li>
+</ul>
+</dd>
+<dt>0.9.5b1 080319</dt>
+<dd><ul class="first">
+<li><p class="first"><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">cssutils.css.CSSSStyleSheet.replaceUrls(replacer)</span></tt> has been <strong>DEPRECATED</strong> but is available as an utility function so simply use <tt class="docutils literal"><span class="pre">cssutils.replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> instead. For the why see <tt class="docutils literal"><span class="pre">getUrls(sheet)</span></tt> below.</p>
+</li>
+<li><p class="first"><strong>API CHANGE/FEATURE</strong>: <tt class="docutils literal"><span class="pre">parseString</span></tt> has a new parameter <tt class="docutils literal"><span class="pre">encoding</span></tt> now which is used if a <tt class="docutils literal"><span class="pre">str</span></tt> is given for cssText. Otherwise it is ignored. (patch by doerwalter)</p>
+</li>
+<li><p class="first">API CHANGE/FEATURE: <tt class="docutils literal"><span class="pre">.parse()</span> <span class="pre">.parseString()</span></tt> and constructor of <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> have a new parameter <tt class="docutils literal"><span class="pre">title</span></tt> needed for the cascade (yet to be implemented ;).</p>
+<blockquote>
+<p>Also the representation of <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> has been improved.</p>
+</blockquote>
+</li>
+</ul>
+<ul class="simple">
+<li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
+<li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
+<li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-01-01</span> <span class="pre">22:19:15</span> <span class="pre">+0100</span> <span class="pre">(Do,</span> <span class="pre">01</span> <span class="pre">Jan</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1591</span> <span class="pre">2009-01-01</span> <span class="pre">21:19:15Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
+</ul>
+<ul class="simple">
+<li>TESTS: <strong>Tests need ``minimock`` now!</strong> Install with <tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">minimock</span></tt></li>
+</ul>
+<ul class="simple">
+<li>DOCUMENTATION: Improved docs a bit.</li>
+</ul>
+<ul class="last simple">
+<li><strong>LICENSE</strong>: The included <a class="reference external" href="http://cthedot.de/encutils/">encutils</a> has been updated to version 0.8.2 with a compatible LGPL license. <a class="reference external" href="http://cthedot.de/restserver/">restserver.py</a> has been updated to version 2.1 which is in the public domain now (no Creative Commons license anymore). So only a single license (the LGPL) is used throughout cssutils now. If you have other licensing needs please let me know.</li>
+</ul>
+</dd>
+<dt>0.9.5a4 080222</dt>
+<dd><ul class="first simple">
+<li><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">.wellformed</span></tt> replaces <tt class="docutils literal"><span class="pre">.valid</span></tt> for most classes. This is more an internal value so should be used carefully anyway. Some classes still have both, notably <tt class="docutils literal"><span class="pre">Property</span></tt> and <tt class="docutils literal"><span class="pre">CSSValue</span></tt>. Also removed <tt class="docutils literal"><span class="pre">Preferences.removeInvalid</span></tt> which was deprecated for some time now and made not really sense anyway.</li>
+<li>API CHANGE: Removed <tt class="docutils literal"><span class="pre">cssutils.ser.prefs.wellformedOnly</span></tt> which made no sense at all. It probably was not used in client code anyway. cssutils serializes wellformed (not necessarily valid) stylesheets only (hopefully ;).</li>
+<li>API CHANGE: Removed constructor parameter <tt class="docutils literal"><span class="pre">css.CSSImportRule(hreftype=...)</span></tt> which made no sense really. The type of href is still retained if <tt class="docutils literal"><span class="pre">css.CSSImportRule.cssText</span></tt> is set (e.g. for <tt class="docutils literal"><span class="pre">&#64;import</span> <span class="pre">&quot;a-str&quot;;</span></tt> it is &#8220;string&#8221; and for <tt class="docutils literal"><span class="pre">&#64;import</span> <span class="pre">url(an-uri);</span></tt> it is &#8220;uri&#8221;. How it is serialized is defined in the serializer anyway (<tt class="docutils literal"><span class="pre">cssutils.ser.prefs.importHrefFormat</span></tt> &#8220;string&#8221;, &#8220;uri&#8221; or None which then uses the one in each &#64;import rule or defaults to &#8220;uri&#8221;) so it made no sense to have it hear too. It still may be used but generally should not.</li>
+</ul>
+<ul>
+<li><p class="first"><strong>FEATURE</strong>: Defining a namespace with a prefix but an empty namespaceURI is not allowed in XML 1.0 (but in XML 1.1). It is allowed in CSS and therefor also in cssutils.</p>
+<p><strong>ATTENTION</strong>: CSS differs from XML 1.0 here!</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: Added property <tt class="docutils literal"><span class="pre">css.CSSImportRule.name</span></tt> and <tt class="docutils literal"><span class="pre">css.CSSMediaRule.name</span></tt> as decribed in <a class="reference external" href="http://www.w3.org/TR/css3-cascade/#cascading">http://www.w3.org/TR/css3-cascade/#cascading</a>. It is parsed, serialized and available in this new property now. Property <tt class="docutils literal"><span class="pre">name</span></tt> is a constructor parameter now too.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: <tt class="docutils literal"><span class="pre">css.UnknownRule</span></tt> is now parsed properly and checked for INVALID tokens or if {}, [] or () are not nested or paired properly. CSSUnknownRule is removed from CSSOM but in cssutils it is and will be used for &#64;rules of programs using extensions, e.g. PrinceXML CSS. It is not very usable yet as no actual properties except <tt class="docutils literal"><span class="pre">atkeyword</span></tt>, <tt class="docutils literal"><span class="pre">cssText</span></tt> and <tt class="docutils literal"><span class="pre">seq</span></tt> are present but at least it is syntactically checked properly and I hope serialized similar to other rules. This has been completely rewritten so may contain a few bugs so check your serialized sheets if you use non-standard &#64;rules.</p>
+</li>
+</ul>
+<ul>
+<li><p class="first"><strong>BUGFIX</strong>: Improved escaping. Fixed cases where e.g. an URI is given as <tt class="docutils literal"><span class="pre">url(&quot;\&quot;&quot;)</span></tt>. Also escapes of delimiters in STRINGs is improved. This is used by <tt class="docutils literal"><span class="pre">CSSImportRule</span></tt> or <tt class="docutils literal"><span class="pre">CSSNamespaceRule</span></tt> among others. All STRING values are serialized with <tt class="docutils literal"><span class="pre">&quot;...&quot;</span></tt> (double quotes) now. This should not be a problem but please note that e.g. a <tt class="docutils literal"><span class="pre">CSSValue</span></tt> may be slightly different now (but be as valid as before).</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Fixed serialization of namespaces in Selector objects. Actually all possible namespaced selectors should be preserved now:</p>
+<blockquote>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">*</span></tt></dt>
+<dd><p class="first last">any element or if a default namespace is given any element in that namespace</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">a</span></tt></dt>
+<dd><p class="first last">all &#8220;a&#8221; elements or if a default namespace is given &#8220;a&#8221; elements in that namespace</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">|*</span></tt></dt>
+<dd><p class="first last">any element in the no namespace (the <em>empty namespace</em>)</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">|a</span></tt></dt>
+<dd><p class="first last">&#8220;a&#8221; elements in the no namespace (the <em>empty namespace</em>)</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">*|*</span></tt></dt>
+<dd><p class="first last">any element in any namespace including the no namespace</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">*|a</span></tt></dt>
+<dd><p class="first last">&#8220;a&#8221; elements in any namespace including the no namespace</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">p|*</span></tt></dt>
+<dd><p class="first last">any element in the namespace defined for prefix p</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">p|a</span></tt></dt>
+<dd><p class="first last">&#8220;a&#8221; elements in the namespace defined for prefix p</p>
+</dd>
+</dl>
+</blockquote>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Default namespace is no longer used by attribute selectors.</p>
+</li>
+</ul>
+<ul class="simple">
+<li>CHANGE: <tt class="docutils literal"><span class="pre">CSSNamespaceRule</span></tt> implements <a class="reference external" href="http://dev.w3.org/csswg/css3-namespace/">http://dev.w3.org/csswg/css3-namespace/</a> now. Giving the namespaceURI as an URI token (<tt class="docutils literal"><span class="pre">url(&quot;uri&quot;)</span></tt>) is no longer deprecated so no warning is emitted any longer.</li>
+</ul>
+<ul class="last simple">
+<li>IMPROVEMENT: Started refactoring rules to have <tt class="docutils literal"><span class="pre">wellformed</span></tt> property and serializing included comments better.</li>
+<li>IMPROVEMENT: Added simple testtool for functional tests in /examples plus lots of smaller bugfixes, improvements and refactorings</li>
+</ul>
+</dd>
+<dt>0.9.5a3 080203</dt>
+<dd><ul class="first">
+<li><dl class="first docutils">
+<dt><strong>API CHANGE: Refactored and fixed namespace handling</strong></dt>
+<dd><p class="first">Aim was to prevent building invalid style sheets. therefor namespaces must be checked e.g. when adding a new <tt class="docutils literal"><span class="pre">Selector</span></tt> etc. This probably is not fixed for all cases but much better now than before.</p>
+<ul class="last simple">
+<li>added <tt class="docutils literal"><span class="pre">CSSStyleSheet.namespaces</span></tt> which is a mapping of <tt class="docutils literal"><span class="pre">prefix:</span> <span class="pre">namespaceURI</span></tt> and mirrors all namespaces as defined in &#64;namespace rules. New Namespaces may also be set here as well as prefixes changed.</li>
+<li>if more than one <tt class="docutils literal"><span class="pre">CSSNamespaceRule</span></tt> with the same <tt class="docutils literal"><span class="pre">namespaceURI</span></tt> is set only the last one will be kept. The <tt class="docutils literal"><span class="pre">prefix</span></tt> of that rule is used.</li>
+<li><tt class="docutils literal"><span class="pre">CSSNamespaceRule.namespaceURI</span></tt> is readonly now, it can only be set in the constructor (needed to prevent an invalid sheet when changing this uri)</li>
+<li>Namespaces used in a Selector or SelectorList or even a CSSStyleRule while these are not attached to a CSSStyleSheet (which would contain the necessary CSSNamespaceRules) are kept internally. All these classes accept for parameter <tt class="docutils literal"><span class="pre">selectorText</span></tt> (or <tt class="docutils literal"><span class="pre">cssText</span></tt> for CSSStyleRule) a tuple of <tt class="docutils literal"><span class="pre">(string-to-parse,</span> <span class="pre">dict-of-namespaces)</span></tt> now while not attached to a style sheet. If attached <tt class="docutils literal"><span class="pre">dict-of-namespaces</span></tt> is ignored as the namespaces of the relevant style sheet are used. If you need to set e.g. a new selector within a yet undefined namespace, set the namespace in the style sheet first simply by setting e.g. <tt class="docutils literal"><span class="pre">sheet[prefix]</span> <span class="pre">=</span> <span class="pre">namespaceURI</span></tt></li>
+<li>removed <tt class="docutils literal"><span class="pre">CSSStyleSheet.prefixes</span></tt></li>
+<li>removed <tt class="docutils literal"><span class="pre">Selector.prefixes</span></tt></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">parentRule</span></tt> and <tt class="docutils literal"><span class="pre">parentStyleSheet</span></tt> of all CSS rules are now readonly to prevent building illegal style sheets.</p>
+</li>
+<li><p class="first"><strong>API CHANGE</strong>: Changed order of constructor parameters for <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>. Named parameters SHOULD be used anyway but be careful if you used ordered ones here!</p>
+</li>
+</ul>
+<ul class="simple">
+<li><strong>FEATURE</strong>: <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> and <tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt> are iterable now. Both iterate on their <tt class="docutils literal"><span class="pre">cssRules</span></tt>. (Internally generators are used.)</li>
+<li><strong>FEATURE</strong>: added convinience method <tt class="docutils literal"><span class="pre">CSSStyleSheet.add(rule)</span></tt>  which behaves exactly like <tt class="docutils literal"><span class="pre">.insertRule(rule,</span> <span class="pre">inOrder=True)</span></tt>. So rules are added to the approprite position in a style sheet. E.g a namespace rule if put after any &#64;import but before other rules like style or font-face rules.</li>
+<li><strong>FEATURE</strong>: added parameter <tt class="docutils literal"><span class="pre">inOrder=False</span></tt> to method <tt class="docutils literal"><span class="pre">CSSStyleSheet.insertRule</span></tt> which inserts a given rule to its proper hierarchy. Parameter <tt class="docutils literal"><span class="pre">index</span></tt> is ignored in this case but the resulting index is properly returned.</li>
+<li>FEATURE: added convinience method <tt class="docutils literal"><span class="pre">CSSMediaRule.add(rule)</span></tt> which behaves exactly like <tt class="docutils literal"><span class="pre">.insertRule(rule)</span></tt> (there is no parameter &#8220;inOrder&#8221; here as no invalid order may be build in CSS 2.1 or 3).</li>
+<li>FEATURE: Added <tt class="docutils literal"><span class="pre">Selector.parentList</span></tt> which contains a reference to the containing <tt class="docutils literal"><span class="pre">SelectorList</span></tt>. Needed (at least) to process namespaces properly.</li>
+</ul>
+<ul>
+<li><p class="first"><strong>BUGFIX</strong>: <tt class="docutils literal"><span class="pre">CSSMediaRule.insertRule</span></tt> setting with a rule string fixed</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: <tt class="docutils literal"><span class="pre">*.parentStyleSheet</span></tt> and <tt class="docutils literal"><span class="pre">*.parentRule</span></tt> where * is any CSSRule is properly set now</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: <tt class="docutils literal"><span class="pre">CSSStyleDeclatation.getPropertyPriority(p)</span></tt> returns <tt class="docutils literal"><span class="pre">important</span></tt> (without the <tt class="docutils literal"><span class="pre">&quot;!&quot;</span></tt>!) or the empty string now (see <a class="reference external" href="http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration">http://dev.w3.org/csswg/cssom/#the-cssstyledeclaration</a>). Same goes for <tt class="docutils literal"><span class="pre">Property.priority</span></tt> which is not in CSSOM but cssutils only.</p>
+<blockquote>
+<p>(<tt class="docutils literal"><span class="pre">Property._normalpriority</span></tt> has been removed, the normalized value that was available here is now in <tt class="docutils literal"><span class="pre">Property.priority</span></tt>. The literal priority value is available in <tt class="docutils literal"><span class="pre">Property.literalproperty</span></tt> now (analog to <tt class="docutils literal"><span class="pre">Property.literalname</span></tt>). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)</p>
+</blockquote>
+</li>
+<li><p class="first">BUGFIX: Changed serialization of combinators in <tt class="docutils literal"><span class="pre">Selector</span></tt> according to <a class="reference external" href="http://dev.w3.org/csswg/cssom/#selectors">http://dev.w3.org/csswg/cssom/#selectors</a>, e.g. <tt class="docutils literal"><span class="pre">a&gt;b+c~d</span> <span class="pre">e</span></tt> serializes as <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&gt;</span> <span class="pre">b</span> <span class="pre">+</span> <span class="pre">c</span> <span class="pre">~</span> <span class="pre">d</span> <span class="pre">e</span></tt> now (single spaces around +, &gt; and ~). A new serializer preference <tt class="docutils literal"><span class="pre">selectorCombinatorSpacer</span> <span class="pre">=</span> <span class="pre">u'</span> <span class="pre">'</span></tt> has been added to overwrite this behaviour (which is set to <tt class="docutils literal"><span class="pre">u''</span></tt> when using the CSS minifier settings)</p>
+</li>
+<li><p class="first">BUGFIX: Some minor fixes including some reference improvements</p>
+</li>
+</ul>
+<ul class="last simple">
+<li>IMPROVEMENT: csscombine is available via <tt class="docutils literal"><span class="pre">from</span> <span class="pre">cssutils.scripts</span> <span class="pre">import</span> <span class="pre">csscombine</span></tt> now (not directly in cssutils though!). Some optimizations and comments added.</li>
+</ul>
+</dd>
+<dt>0.9.5a2 080115</dt>
+<dd><ul class="first last simple">
+<li><strong>BUGFIX</strong>: Serializing a <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> did not include the effective properties but the last property if set multiple times in a single declaration and preferences <tt class="docutils literal"><span class="pre">keepAllProperties</span> <span class="pre">==</span> <span class="pre">False</span></tt>.</li>
+<li>BUGFIX: Fixed parsing of last remaining example in CSS spec <tt class="docutils literal"><span class="pre">color:red;</span> <span class="pre">color{;color:maroon};</span> <span class="pre">color:green</span></tt> which now correctly parses <tt class="docutils literal"><span class="pre">color:</span> <span class="pre">green</span></tt></li>
+<li>BUGFIX: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.__contains__(property)</span></tt> uses not the literal but the normalized name (<tt class="docutils literal"><span class="pre">Property.name</span></tt>) to check if a property is set in this declaration now</li>
+<li>BUGFIX: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getProperties(all=True)</span></tt> failed if comments were present</li>
+</ul>
+</dd>
+<dt>0.9.5a1 080113</dt>
+<dd><ul class="first">
+<li><p class="first"><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">Property.name</span></tt> is now the same as <tt class="docutils literal"><span class="pre">Property.normalname</span></tt> which is DEPRECATED now. To access the literal name (the value which was available in <tt class="docutils literal"><span class="pre">name</span></tt> until now) use <tt class="docutils literal"><span class="pre">Property.literalname</span></tt>. For most cases where a property name is used the new behaviour makes more sense, therefor the change.</p>
+<blockquote>
+<p><strong>Do not use ``normalname`` anymore, it will probably be removed for release 1.0.</strong></p>
+<p>NEW since 0.9.5:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s">ur&#39;c\olor&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">ur&#39;color&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">literalname</span> <span class="o">==</span> <span class="s">ur&#39;c\olor&#39;</span>
+<span class="c"># DEPRECATED: p.normalname == ur&#39;color&#39;</span>
+</pre></div>
+</div>
+<p>OLD until 0.9.5:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s">ur&#39;c\olor&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">ur&#39;c\olor&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">normalname</span> <span class="o">==</span> <span class="s">ur&#39;color&#39;</span>
+</pre></div>
+</div>
+</blockquote>
+</li>
+<li><p class="first"><strong>API CHANGE</strong>: iterating over <tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration</span></tt> yields now <em>effective</em> properties only and not <em>all</em> properties set in the declaration. E.g. from <tt class="docutils literal"><span class="pre">color:</span> <span class="pre">red;</span> <span class="pre">c\olor:</span> <span class="pre">green</span></tt> only one Property is returned which has the value <tt class="docutils literal"><span class="pre">green</span></tt>. To retrieve <em>all</em> properties use <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getProperties(all=True)</span></tt>. Reason for this change is that for most cases the new default makes more sense.</p>
+</li>
+</ul>
+<ul>
+<li><p class="first"><strong>FEATURE</strong>: <tt class="docutils literal"><span class="pre">css.CSSStyleDelcaration</span></tt> supports <tt class="docutils literal"><span class="pre">in</span></tt> now. Expected is a Property or a name of a property which is checked if already in the style declaration</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: <tt class="docutils literal"><span class="pre">css.Selector</span></tt> has a <strong>readonly</strong> property <tt class="docutils literal"><span class="pre">specificity</span></tt> now which is calculated as described at <a class="reference external" href="http://www.w3.org/TR/css3-selectors/#specificity">http://www.w3.org/TR/css3-selectors/#specificity</a></p>
+<p><strong>ATTENTION</strong>: changing the Selector by changing its property <tt class="docutils literal"><span class="pre">seq</span></tt> does <strong>not</strong> update the specificity! <tt class="docutils literal"><span class="pre">Selector.seq.append</span></tt> has been made private therefor and writing to <tt class="docutils literal"><span class="pre">seq</span></tt> <strong>not</strong> be used at all!</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration.getProperty(name,</span> <span class="pre">normalize=True)</span></tt> which returns the effective Property object for <tt class="docutils literal"><span class="pre">name</span></tt>.</p>
+</li>
+<li><p class="first">FEATURE: Implemented <a class="reference external" href="http://csswg.inkedblade.net/spec/css2.1#issue-23">http://csswg.inkedblade.net/spec/css2.1#issue-23</a>, URI may be <tt class="docutils literal"><span class="pre">URL(...)</span></tt> or <tt class="docutils literal"><span class="pre">u\r\6c(...)</span></tt> now</p>
+</li>
+</ul>
+<ul class="simple">
+<li><strong>BUGFIX</strong>: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.removeProperty(name,</span> <span class="pre">normalize=True)</span></tt> removes all properties with given <tt class="docutils literal"><span class="pre">name</span></tt> now and returns the effective value. If <tt class="docutils literal"><span class="pre">normalize==False</span></tt> removes only properties with <tt class="docutils literal"><span class="pre">name=Property.literalname</span></tt> and also only returns the effective value of the unnormalized name.</li>
+<li><strong>BUGFIX</strong>: Priority of Properties is acknowledged by all methods of <tt class="docutils literal"><span class="pre">css.CSSStylesDeclaration</span></tt> now.</li>
+<li><strong>BUGFIX</strong>: Fixed serializing of strings like &#8220;\a&#8221;, &#8220;\22&#8221; and &#8216;\27&#8217; in &#64;import urls, selectors and values. <strong>func(&#8220;string&#8221;) is not yet fixed!!!</strong></li>
+</ul>
+<ul class="last simple">
+<li>CHANGE: <tt class="docutils literal"><span class="pre">CSSValueList</span></tt> does not emit warnings for shorthand properties anymore. Nevertheless these may be invalid!</li>
+<li>IMPROVEMENT: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> and some minor other parts refactored</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="id3">
+<h2>0.9 - 0.9.4<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>0.9.4b1 071229</dt>
+<dd><ul class="first simple">
+<li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">csscombine</span></tt> script which currently resolves &#64;import rules into the input sheet. No nested &#64;imports are resolved yet and &#64;namespace rules do not work yet though!</li>
+<li>FEATURE: <tt class="docutils literal"><span class="pre">css.CSSStyleSheet.insertRule(rule,</span> <span class="pre">index)</span></tt> accepts now a <tt class="docutils literal"><span class="pre">css.CSSRuleList</span></tt> in addition to a <tt class="docutils literal"><span class="pre">css.CSSRule</span></tt> object or a CSS string. Useful if you like a combine a complete sheet into an existing one.</li>
+</ul>
+<ul>
+<li><p class="first"><strong>BUGFIX</strong>: Serializing escape sequences add a single SPACE after each escape. This was not present until now so a sequence like &#8220;\74 a&#8221; did come out as &#8220;\000074a&#8221; which was not as intended. Also as a SPACE is inserted in any case all escapes are not padded to 6 digits anymore but are only as long as needed.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Handling of illegal selectors is now same as the W3C CSS validator (and according the selector spec - I hope ;). Illegal selectors result the complete rule being dropped. Fixed are the following (edge) cases:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">a/**/b</span></tt></dt>
+<dd><p class="first last">Meant was probably a space between a and b (plus maybe the comment) but it MUST be inserted. IE and Safari nevertheless seem to parse this rule as <tt class="docutils literal"><span class="pre">a</span> <span class="pre">b</span></tt> so as if a space would be present. cssutils now parses this selector as intented by the spec as <tt class="docutils literal"><span class="pre">ab</span></tt>.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">a*b</span></tt></dt>
+<dd><p class="first last">Again spaces around the UNIVERSAL <tt class="docutils literal"><span class="pre">*</span></tt> were probably meant by the author. IE and Safari seem to parse this <strong>invalid</strong> selector as <tt class="docutils literal"><span class="pre">a</span> <span class="pre">b</span></tt>. cssutils ignores this rule completely!</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">BUGFIX: <tt class="docutils literal"><span class="pre">css.CSSRuleList</span></tt> is still a Python list but setting methods like <tt class="docutils literal"><span class="pre">__init__</span></tt>, <tt class="docutils literal"><span class="pre">append</span></tt>,     <tt class="docutils literal"><span class="pre">extend</span></tt> or <tt class="docutils literal"><span class="pre">__setslice__</span></tt> are added later on instances of this class if so desired. E.g. CSSStyleSheet adds <tt class="docutils literal"><span class="pre">append</span></tt> which is not available in a simple instance of this class! This has been changed as no validation is possible in CSSRuleList itself.</p>
+</li>
+</ul>
+<ul class="simple">
+<li>CHANGE: Unknown media type in a MediaQuery (e.g. <tt class="docutils literal"><span class="pre">&#64;media</span> <span class="pre">tv,</span> <span class="pre">radio</span></tt>) does emit WARNING instead of ERROR now.</li>
+</ul>
+<ul class="last simple">
+<li>IMPROVEMENT: Added better <tt class="docutils literal"><span class="pre">str</span></tt> and <tt class="docutils literal"><span class="pre">repr</span></tt> to cssutils.serializer.Preferences</li>
+<li>IMPROVEMENT: Added position information to some error reportings (Property, CSSMediaRule</li>
+</ul>
+</dd>
+<dt>0.9.4a4 071202</dt>
+<dd><ul class="first">
+<li><p class="first"><strong>FEATURE</strong>: Implemented <tt class="docutils literal"><span class="pre">css.CSSFontFaceRule</span></tt>.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">css.CSSStyleSheet.encoding</span></tt> which reflects the encoding of an explicit &#64;charset rule. Setting the property to <tt class="xref docutils literal"><span class="pre">None</span></tt> removes an &#64;charset rule if present and sets the encoding to the default value &#8216;utf-8&#8217;. Setting a value of <tt class="docutils literal"><span class="pre">utf-8</span></tt> sets the encoding to the default value too but the &#64;charset rule is explicitly added.</p>
+<p>Effectively this removes the need to use <tt class="docutils literal"><span class="pre">css.CSSCharsetRule</span></tt> directly as using this new property is easier and simpler.</p>
+<p>(A suggestion in the <a class="reference external" href="http://dev.w3.org/csswg/cssom/#the-csscharsetrule">CSSOM</a> but not yet resolved. IMHO it does make sense so it is present in cssutils. <tt class="docutils literal"><span class="pre">css.CSSCharsetRule</span></tt> remains though if you really <em>want</em> to use it).</p>
+</li>
+</ul>
+<ul>
+<li><p class="first"><strong>BUGFIX/IMPROVEMENT</strong>: <tt class="docutils literal"><span class="pre">css.SelectorList</span></tt> and <tt class="docutils literal"><span class="pre">stylesheets.MediaList</span></tt> have (Python) list like behaviour partly but are <em>directly not lists anymore</em> (which did not work properly anyway...). The following list like possibilities are implemented for now:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">item</span> <span class="pre">in</span> <span class="pre">x</span></tt> =&gt; bool</li>
+<li><tt class="docutils literal"><span class="pre">len(x)</span></tt> =&gt; integer</li>
+<li>get, <tt class="docutils literal"><span class="pre">del</span></tt> and set <tt class="docutils literal"><span class="pre">x[i]</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">for</span> <span class="pre">item</span> <span class="pre">in</span> <span class="pre">x</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">x.append(item)</span></tt></li>
+</ul>
+<p>The DOM additional methods and properties like <tt class="docutils literal"><span class="pre">length</span></tt> or <tt class="docutils literal"><span class="pre">item()</span></tt> are still present (and also will be in the future) but the standard Python idioms are probably easier to use.</p>
+<p><tt class="docutils literal"><span class="pre">stylesheets.StyleSheetList</span></tt> and <tt class="docutils literal"><span class="pre">css.CSSRuleList</span></tt> are the only direct lists for now. This may change in the future so it is safer to also use the above possibilities only for now.</p>
+</li>
+<li><p class="first">BUGFIX: Fixed handling of &#8220;\ &#8221; (an escaped space) in selectors and values.</p>
+</li>
+<li><p class="first">BUGFIX: <tt class="docutils literal"><span class="pre">!important</span></tt> is normalized (lowercase) now</p>
+</li>
+</ul>
+<ul class="simple">
+<li>IMPROVEMENT: Some error messages have been changed slightly, mostly values are given with their Python representation and not the actual values.</li>
+<li>IMPROVEMENT: The setup process of cssutils has been adapted to suggestions at <a class="reference external" href="http://jimmyg.org/2007/11/08/creating-a-python-package-using-eggs-and-subversion/">http://jimmyg.org/2007/11/08/creating-a-python-package-using-eggs-and-subversion/</a></li>
+</ul>
+<ul class="last simple">
+<li>DOCS: Slight overhaul of docs.</li>
+</ul>
+</dd>
+<dt>0.9.4a3 071106</dt>
+<dd><ul class="first">
+<li><dl class="first docutils">
+<dt>CSSCapture:</dt>
+<dd><ul class="first simple">
+<li><strong>FEATURE</strong>: Added option <tt class="docutils literal"><span class="pre">-m,</span> <span class="pre">--minified</span></tt> to CSSCapture which saves the retrieved CSS files with the cssutils serializer setting <tt class="docutils literal"><span class="pre">Preferences.useMinified()</span></tt>.</li>
+</ul>
+<ul class="last simple">
+<li><strong>BUGFIX</strong>: option &#8216;-p&#8217; of csscapture is removed as it was not used anyway. A new option <tt class="docutils literal"><span class="pre">-r,</span> <span class="pre">--saveraw</span></tt> has been added which defaults to <tt class="xref docutils literal"><span class="pre">False</span></tt>. If given saves raw css otherwise cssutils&#8217; parsed files.</li>
+<li><strong>BUGFIX</strong>: CSSCapture now uses the <tt class="docutils literal"><span class="pre">cssutils.parseString</span></tt> method so invalid sheets should be saved too. Until now in case of an error the sheet was not saved at all.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<ul>
+<li><p class="first"><strong>BUGFIX/FEATURE</strong>: Handling of unicode escapes should now work propertly.</p>
+<p>The tokenizer resolves any unicodes escape sequences now so cssutils internally simple unicode strings are used.</p>
+<p>The serializer should serialize a CSSStyleSheet properly escaped according to the relevant encoding defined in an &#64;charset rule or defaulting to UTF-8. Characters not allowed in the current encoding are escaped the CSS way with a backslash followed by a uppercase 6 digit hex code point (<strong>always 6 digits</strong> to make it easier not to have to check if no hexdigit char is following).</p>
+<p>This <em>FEATURE</em> was not present in any older version of cssutils.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Names (of properties or values) which are normalized should be properly normalized now so simple escapes like <tt class="docutils literal"><span class="pre">c\olor</span></tt> but also unicode escapes like <tt class="docutils literal"><span class="pre">\43olor</span></tt> should result in the property name <tt class="docutils literal"><span class="pre">color</span></tt> now</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Selector did fail to parse negation <tt class="docutils literal"><span class="pre">:not(</span></tt> correctly</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: CSSValueList treated a value like <tt class="docutils literal"><span class="pre">-1px</span></tt> as 2 entries, now they are correctly 1.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Validation of values for <tt class="docutils literal"><span class="pre">background-position</span></tt> was wrong.</p>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: <tt class="docutils literal"><span class="pre">CSSPrimitiveValue.primitiveValue</span></tt> was not recognized properly if e.g. a CSS_PX was given as &#8216;1PX&#8217; instead of &#8216;1px&#8217;.</p>
+</li>
+<li><p class="first"><strong>BUGFIX/CHANGE</strong>: Reporting of line numbers should have improved as <tt class="docutils literal"><span class="pre">\n</span></tt> is now used instead of <tt class="docutils literal"><span class="pre">os.linesep</span></tt>.</p>
+</li>
+</ul>
+<ul>
+<li><p class="first"><strong>CHANGE</strong>: Invalid Properties like <tt class="docutils literal"><span class="pre">$top</span></tt> which some UAs like Internet Explorer still are use are preserved. This makes the containing Property and CSSStyleDeclaration invalid (but still <em>wellformed</em> although they technically are not) so if the serializer is set to only output valid stuff they get stripped anyway.</p>
+<p><strong>This may change and also simply may be put in a cssutils wide &#8220;compatibility mode&#8221; feature.</strong></p>
+</li>
+<li><p class="first"><strong>CHANGE</strong>: If a CSSValue cannot be validated (no property context is set) the message describing this is set to DEBUG level now (was INFO).</p>
+</li>
+<li><p class="first">IMPROVEMENT: &#8220;setup.py&#8221; catches exception if setuptools is not installed and emits message</p>
+</li>
+</ul>
+<ul class="last simple">
+<li>DOCS: Added more documentation and also a standalone HTML documentation which is generated from the SVN RST docs.</li>
+</ul>
+</dd>
+<dt>0.9.4a2 071027</dt>
+<dd><ul class="first simple">
+<li><strong>FEATURE</strong>: added <tt class="docutils literal"><span class="pre">Preferences.useMinified()</span></tt> which sets preferences that a stylesheet will be serialized as compact as possible. Added <tt class="docutils literal"><span class="pre">Preferences.useDefaults()</span></tt> which resets the serializer preferences. There a few new preferences have been added as well (see the documentation for details as most are hardly useful for normal usage of the library)</li>
+</ul>
+<ul class="simple">
+<li><strong>BUGFIX</strong>: Fixed parsing of <tt class="docutils literal"><span class="pre">font</span></tt> value which uses &#8220;font-size/line-height&#8221; syntax.</li>
+</ul>
+<ul class="last simple">
+<li>CHANGE: <tt class="docutils literal"><span class="pre">Preferences.keepAllProperties</span></tt> defaults to <tt class="xref docutils literal"><span class="pre">True</span></tt> now (hardly used but safer if different values have been set which are used by different UAs for example.)</li>
+</ul>
+</dd>
+<dt>0.9.4a1 071021 (new parser [again])</dt>
+<dd><ul class="first">
+<li><p class="first"><strong>FEATURE</strong>: Added a new module <tt class="docutils literal"><span class="pre">cssutils.codec</span></tt> that registers a codec that can be used for encoding and decoding CSS. (<a class="reference external" href="http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23">http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q23</a>)</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: Added implementation of <tt class="docutils literal"><span class="pre">stylesheets.MediaQuery</span></tt> which are part of  stylesheets.MediaList. See the complete spec at <a class="reference external" href="http://www.w3.org/TR/css3-mediaqueries/">http://www.w3.org/TR/css3-mediaqueries/</a> for details.</p>
+<p>Not complete yet: Properties of MediaQueries are not validated for now and maybe some details are missing</p>
+</li>
+<li><p class="first">FEATURE: Implemented <tt class="docutils literal"><span class="pre">cssutils.DOMImplementationCSS</span></tt>. This way it is possible to create a new StyleSheet by calling <tt class="docutils literal"><span class="pre">DOMImplementationCSS.createCSSStyleSheet(title,</span> <span class="pre">media)</span></tt>. For most cases it is probably easier to make a new StyleSheet by getting an instance of <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt> though.</p>
+</li>
+<li><p class="first">FEATURE: cssutils is registered to <tt class="docutils literal"><span class="pre">xml.dom.DOMImplementation</span></tt> claiming to implement CSS 1.0, CSS 2.0, StyleSheets 1.0 and StyleSheets 2.0. This is probably not absolutely correct as cssutils currently is not a fully compliant implementation but I guess this is used very rarely anyway.</p>
+</li>
+</ul>
+<ul class="simple">
+<li><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">CSSNamespacerule.uri</span></tt> is renamed to <tt class="docutils literal"><span class="pre">CSSNamespaceRule.namespaceURI</span></tt> which is defined is CSSOM. <tt class="docutils literal"><span class="pre">uri</span></tt> is deprecated and still available but the constructor parameter is named <tt class="docutils literal"><span class="pre">namespaceURI</span></tt> in any case now.</li>
+<li><strong>API CHANGE</strong>: As <tt class="docutils literal"><span class="pre">stylesheets.MediaQuery</span></tt> is implemented now all classes using an instance of <tt class="docutils literal"><span class="pre">stylesheets.MediaList</span></tt> are presented slightly different. Until now a simple list of string was given, now the list contains MediaQuery objects.</li>
+<li><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">_Property</span></tt> has been renamed to <tt class="docutils literal"><span class="pre">css.Property</span></tt> and is used in context of <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> and <tt class="docutils literal"><span class="pre">MediaQuery</span></tt>. Attribute <tt class="docutils literal"><span class="pre">Property.value</span></tt> has been <em>de-deprecated</em> and may be used normally now (again). The Property constructor has only optional parameters now.</li>
+<li><strong>API CHANGE</strong>: Removed experimental class <tt class="docutils literal"><span class="pre">SameNamePropertyList</span></tt> which was used in <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> and also method <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getSameNamePropertyList</span></tt>. A new method <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getProperties()</span></tt> has been added which is simpler and more useful</li>
+<li><strong>API CHANGE</strong>: renamed attribute <tt class="docutils literal"><span class="pre">namespaces</span></tt> of CSSStyleSheet and Selector to <tt class="docutils literal"><span class="pre">prefixes</span></tt> as they really are the prefixes of declared namespaces</li>
+</ul>
+<ul class="simple">
+<li>API CHANGE (internal): renamed <tt class="docutils literal"><span class="pre">Serializer.do_css_Property</span></tt> to <tt class="docutils literal"><span class="pre">Serializer.do_Property</span></tt> as it is <tt class="docutils literal"><span class="pre">Property</span></tt> is not in the official DOM, may not stay in package <tt class="docutils literal"><span class="pre">css</span></tt> and is used by MediaQuery too</li>
+<li>API CHANGE (internal): renamed <tt class="docutils literal"><span class="pre">Serializer.do_CSSvalue</span></tt> to <tt class="docutils literal"><span class="pre">Serializer.do_CSSValue</span></tt></li>
+</ul>
+<ul class="simple">
+<li>BUGFIX: Tantek hack (using <tt class="docutils literal"><span class="pre">voice-family</span></tt>) should work now as SameNamePropertyList is removed and properties are kept in order</li>
+<li>BUGFIX: Token CHARSET_SYM is now as defined in the CSS 2.1 Errata as literal &#8220;&#64;charset &#8221; including the ending space.</li>
+</ul>
+<ul class="simple">
+<li><strong>CHANGE</strong>: A completely new tokenizer and mostly also the parser have been reimplemented in this release. Generally it should be much more robust and more compliant now. It will have new errors and also some slight details in parsing are changed.</li>
+</ul>
+<ul class="last simple">
+<li><strong>DOCS</strong>: Added some docs in reStructuredText format including a basic server to view it as HTML. The HTML may be published as well.</li>
+</ul>
+</dd>
+<dt>0.9.3a1 - 070905</dt>
+<dd><ul class="first">
+<li><p class="first">FEATURE: Implemented css.CSSValue, css.CSSPrimitiveValue and css.CSSValueList.</p>
+<blockquote>
+<dl class="docutils">
+<dt>Not yet implemented are:</dt>
+<dd><ul class="first last simple">
+<li>css.CSSPrimitiveValue.getCounterValue and css. Counter</li>
+<li>css.CSSPrimitiveValue.getRGBColorValue and css.RGBColor</li>
+<li>css.CSSPrimitiveValue.getRectValue and css.Rect</li>
+</ul>
+</dd>
+</dl>
+<ul class="simple">
+<li>FEATURE: css.CSSValueList is iterable so may be used in a for loop</li>
+<li>FEATURE: CSSValue has property <tt class="docutils literal"><span class="pre">cssValueTypeString</span></tt> which is the name of the relevant <tt class="docutils literal"><span class="pre">cssValueType</span></tt>, e.g. &#8220;CSS_PRIMITIVE_TYPE&#8221;. Mainly useful for debugging.</li>
+<li>FEATURE: CSSPrimitiveValue has property <tt class="docutils literal"><span class="pre">primitiveTypeString</span></tt> which is the name of the relevant <tt class="docutils literal"><span class="pre">primitiveType</span></tt>, e.g. &#8220;CSS_PX&#8221;. Mainly useful for debugging.</li>
+<li>CSSValue has an init Parameter <tt class="docutils literal"><span class="pre">_propertyname</span></tt> to set a context property for validation. If none is set the value is always invalid. <strong>THIS MAY CHANGE!</strong></li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">FEATURE (<strong>experimental</strong>): CSSStyleDeclaration is iterable now. The iterator returns <em>all</em> properties set in this style as objects with properties <tt class="docutils literal"><span class="pre">name</span></tt>, <tt class="docutils literal"><span class="pre">cssValue</span></tt> and <tt class="docutils literal"><span class="pre">priority</span></tt>. Calling CSSStyleDeclaration.item(index) on the other hand simply returns a property name and also only the normalized name (once). Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;a { color: red; c\olor: blue; left: 0 !important }&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">:</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">style</span>
+    <span class="k">for</span> <span class="nb">property</span> <span class="ow">in</span> <span class="n">style</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">property</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">cssValue</span> <span class="o">=</span> <span class="nb">property</span><span class="o">.</span><span class="n">cssValue</span>
+        <span class="n">priority</span> <span class="o">=</span> <span class="nb">property</span><span class="o">.</span><span class="n">priority</span>
+        <span class="k">print</span> <span class="n">name</span><span class="p">,</span> <span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="n">cssValue</span><span class="o">.</span><span class="n">cssText</span><span class="p">,</span> <span class="n">priority</span>
+
+    <span class="c"># prints:</span>
+    <span class="c"># color = red</span>
+    <span class="c"># c\olor = blue</span>
+    <span class="c"># left = 0 !important</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="n">style</span><span class="o">.</span><span class="n">length</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">cssValue</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">getPropertyCSSValue</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">priority</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">getPropertyPriority</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">name</span><span class="p">,</span> <span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="n">cssValue</span><span class="o">.</span><span class="n">cssText</span> <span class="p">,</span> <span class="n">priority</span>
+
+    <span class="c"># prints:</span>
+    <span class="c"># color = blue</span>
+    <span class="c"># left = 0 !important</span>
+</pre></div>
+</div>
+<p><strong>ATTENTION</strong>: This has been changed in 0.9.5, see details there!</p>
+</li>
+<li><p class="first">FEATURE (<strong>experimental</strong>): added <tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt> which may be used to adjust all &#8220;url()&#8221; values in a style sheet (currently in CSSStyleDeclaration and CSSImportRules).</p>
+</li>
+<li><p class="first">FEATURE: added <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getCssText(separator=None)</span></tt> which returns serialized property cssText, each property separated by given <tt class="docutils literal"><span class="pre">separator</span></tt> which may e.g. be u&#8217;&#8217; to be able to use cssText directly in an HTML style attribute. &#8220;;&#8221; is always part of each property (except the last one) and can <strong>not</strong> be set with separator!</p>
+</li>
+<li><p class="first">FEATURE: <tt class="docutils literal"><span class="pre">href</span></tt> and <tt class="docutils literal"><span class="pre">media</span></tt> arguments can now be passed to <tt class="docutils literal"><span class="pre">parse()</span></tt> and <tt class="docutils literal"><span class="pre">parseString()</span></tt> functions and methods. This sets the appropriate attributes on the generated stylesheet objects.</p>
+</li>
+<li><p class="first">FEATURE: CSSMediaRule has an init parameter <tt class="docutils literal"><span class="pre">mediaText</span></tt> synchronous to CSSImportRule now</p>
+</li>
+<li><p class="first">FEATURE: The <tt class="docutils literal"><span class="pre">MediaList</span></tt> constructor can now be passed a list of media types.</p>
+</li>
+<li><p class="first">FEATURE: <tt class="docutils literal"><span class="pre">CSSRule</span></tt> and subclasses have a property <tt class="docutils literal"><span class="pre">typeString</span></tt> which is the name of the relevant <tt class="docutils literal"><span class="pre">type</span></tt>, e.g. <tt class="docutils literal"><span class="pre">STYLE_RULE</span></tt>. Mainly useful for debugging.</p>
+</li>
+<li><p class="first">FEATURE: <tt class="docutils literal"><span class="pre">cssutils.serialize.Preferences</span></tt> has a new option <tt class="docutils literal"><span class="pre">lineSeparator</span></tt> that is used as linefeed character(s). May also be set to <tt class="docutils literal"><span class="pre">u''</span></tt> for <tt class="docutils literal"><span class="pre">CSSStyleDeclareation.cssText'</span></tt> to be directly usable in e.g. HTML style attributes</p>
+</li>
+</ul>
+<ul class="simple">
+<li>API CHANGE (internal): renamed serializers method <tt class="docutils literal"><span class="pre">do_stylesheet</span></tt> to <tt class="docutils literal"><span class="pre">do_CSSStyleSheet</span></tt></li>
+</ul>
+<ul class="simple">
+<li>BUGFIX (issue #9): Parsing of empty <tt class="docutils literal"><span class="pre">url()</span></tt> values has been fixed</li>
+<li>BUGFIX: Handling of linenumbers in the serializer has been fixed.</li>
+<li>BUGFIX (minor): removed debug output in CSSStyleDeclaration</li>
+</ul>
+<ul class="last">
+<li><p class="first">CHANGE (experimental!): CSSStyleDeclaration.getPropertyCSSValue() for shorthand properties like e.g. <tt class="docutils literal"><span class="pre">background</span></tt> should return None. cssutils returns a CSSValueList in these cases now. Use with care as this may change later</p>
+</li>
+<li><p class="first">CHANGE: CSSValue default cssText is now <tt class="docutils literal"><span class="pre">u&quot;&quot;</span></tt> and not <tt class="docutils literal"><span class="pre">u&quot;inherit&quot;</span></tt> anymore</p>
+</li>
+<li><p class="first">CHANGE: <tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration.cssText</span></tt> indents its property not anymore.</p>
+</li>
+<li><p class="first">CHANGE: <tt class="docutils literal"><span class="pre">cssutils.serialize.CSSSerializer</span></tt> has been refactored internally to support the lineSeparator option.</p>
+</li>
+<li><p class="first">CHANGE: The Selector and SameNamePropertyList (which might be renamed as it is experimental) class are now available from cssutils.css too.</p>
+<blockquote>
+<p><strong>UPDATE: SameNamePropertyList removed in 0.9.4</strong></p>
+</blockquote>
+</li>
+<li><p class="first">CHANGE: Tokenizer strips HTML comment tokens CDO and CDC from tokenlist now.</p>
+</li>
+<li><p class="first">CHANGE: Added __repr__ and __str__ methods to most classes. __str__ reports e.g. <tt class="docutils literal"><span class="pre">&lt;cssutils.css.CSSImportRule</span> <span class="pre">object</span> <span class="pre">href=None</span> <span class="pre">at</span> <span class="pre">0xaaa870&gt;</span></tt>, __repr__  e.g. <tt class="docutils literal"><span class="pre">cssutils.css.CSSImportRule(href=None,</span> <span class="pre">mediaText=u'all')</span></tt> which is a valid contructor  for the object in most cases (which might not be complete for all init parameter for all classes like in this case though). The following details are included:</p>
+<dl class="docutils">
+<dt>css</dt>
+<dd><ul class="first last simple">
+<li>CSSStyleSheet shows the title and href</li>
+<li>CSSCharsetRule shows the encoding</li>
+<li>CSSCharsetRule shows the cssText (not in __str__ though)</li>
+<li>CSSImportRule shows the href and the MediaList mediaText</li>
+<li>CSSMediaRule shows the MediaList mediaText</li>
+<li>CSSNameSpaceRule shows the prefix and uri</li>
+<li>CSSPageRule shows the selectorText</li>
+<li>CSSStyleRule shows the selectorText</li>
+<li>CSSUnknownRule shows nothing special</li>
+<li>CSSStyleDeclaration shows the number of properties set for __str__ but an empty CSSStyleDeclaration constructor for __repr__ as showing cssText might be way too much</li>
+<li>SameNamePropertyList shows the name</li>
+<li>CSSValue, CSSPrimitiveValue show the actual value for __repr__, some details for __str__</li>
+<li>CSSValueList shows an __repr__ which is <strong>not</strong> possible to <tt class="docutils literal"><span class="pre">eval()</span></tt> and some details for __str__</li>
+<li>_Property shows infos but should be used directly for now anyway!</li>
+<li>Selector the selectorText</li>
+</ul>
+</dd>
+<dt>stylesheets</dt>
+<dd><ul class="first last simple">
+<li>MediaList shows the mediaText</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>0.9.2b3 070804</dt>
+<dd><ul class="first last simple">
+<li>FEATURE: Script <tt class="docutils literal"><span class="pre">cssparse</span></tt> handles more than one file at a time now (patch from Issue #6 by Walter Doerwald)</li>
+<li>BUGFIX: Fixed Issue #7: typo gave AssertionError for selectors like <tt class="docutils literal"><span class="pre">tr:nth-child(odd)</span> <span class="pre">td{}</span></tt></li>
+<li>BUGFIX: Fixed Issue #5: false warning for certain values for <tt class="docutils literal"><span class="pre">background-position</span></tt> removed</li>
+<li>BUGFIX: Report of line/col for any node was not correct if a node contained line breaks itself</li>
+<li>Quite a few internal optimizations (thanks to Walter Doerwald)</li>
+<li>Added tests for issues #3 and #4 to tokenizer too</li>
+</ul>
+</dd>
+<dt>0.9.2b2 070728</dt>
+<dd><ul class="first last simple">
+<li>BUGFIX: Fixed Issue #4, tokenizing of color values like <tt class="docutils literal"><span class="pre">#00a</span></tt> was buggy (mixture of numbers and characters). Also warnings of invalid property values should be more reliable now (regexes in <tt class="docutils literal"><span class="pre">css.cssproperties</span></tt> changed).</li>
+</ul>
+</dd>
+<dt>0.9.2b1 070726</dt>
+<dd><ul class="first last simple">
+<li>BUGFIX: Fixed Issue #3, WS was not handled properly if added to token list by tokenizer</li>
+</ul>
+</dd>
+<dt>0.9.2a5 070624</dt>
+<dd><ul class="first last simple">
+<li>BUGFIX: Unexpected end of style sheet now handled according to spec for most cases, e.g. incomplete CSSStyleRule, CSSMediaRule, CSSImportRule, CSSNamespaceRule, CSSPageRule.</li>
+</ul>
+</dd>
+<dt>0.9.2a4 070620</dt>
+<dd><ul class="first last simple">
+<li>BUGFIX (major): no changes to the library, but fixed setup of source dist</li>
+</ul>
+</dd>
+<dt>0.9.2a3 071018</dt>
+<dd><ul class="first last simple">
+<li>no changes to the library, just optimized setuptools dist</li>
+</ul>
+</dd>
+<dt>0.9.2a2 070617</dt>
+<dd><ul class="first last simple">
+<li>API CHANGE: removed cssutils.util.normalize function, use static (but private!) method cssutils.util.Base._normalize if absolutely needed which may be change too though</li>
+<li>API CHANGE (minor): removed <tt class="docutils literal"><span class="pre">getFormatted</span></tt> and <tt class="docutils literal"><span class="pre">`pprint</span></tt> from various classes which were both DEPRECATED for some time anyway</li>
+<li>API CHANGE (minor): _Property.value is DEPRECATED, use _Property.cssValue.cssText instead, _Property is defined as private anyway so should not be used directly</li>
+<li>API CHANGE (minor): removed <tt class="docutils literal"><span class="pre">Tokenizer.tokensupto</span></tt> which was used internally only</li>
+<li>CHANGE: Numbers and Dimensions starting with &#8220;.&#8221; like &#8220;.1em&#8221; in the original stylesheet will be output as &#8220;0.1em&#8221; with a proceding 0 now.</li>
+<li>CHANGE: Report of parsing errors have a slightly different syntax now.</li>
+<li>FEATURE: New <tt class="docutils literal"><span class="pre">Preferences.omitLastSemicolon</span></tt> option. If <tt class="xref docutils literal"><span class="pre">True</span></tt> omits ; after last property of CSSStyleDeclaration</li>
+<li>BUGFIX: The css validator definition for &#8220;num&#8221; was wrong, so values like <tt class="docutils literal"><span class="pre">-5.5em</span></tt> would issue a warning but should be correct</li>
+<li>BUGFIX: Dimension were not parsed correcly so 1em5 was parsed a &#8220;1em&#8221; + 5 which should really be one &#8220;1em5&#8221; were &#8220;em5&#8221; is an unknown dimension. This had probably no effect on current stylesheets but was a tokenizing error</li>
+<li>BUGFIX: Parsing of nested blocks like {}, [] or () is improved</li>
+<li>BUGFIX: Comment were not parsed correctly, now <tt class="docutils literal"><span class="pre">/*\*/</span></tt> is a valid comment</li>
+<li>BUGFIX: <tt class="docutils literal"><span class="pre">css.Selector</span></tt> had a warning which called &#8220;warning&#8221; which in fact is named &#8220;warn&#8221;. Some other error messages gave token list instead of a more useful string in case of an error, that is fixed as well (CSSComment and CSSValue).</li>
+<li>IMPROVEMENT: Line number are still not given for all errors reported but for at least some more now</li>
+<li>IMPROVEMENT: Performance of the tokenizer has been improved, it is now about 20% faster (testing the unittests) which may not hold for all usages but is not too bad as well ;)</li>
+</ul>
+</dd>
+<dt>0.9.2a1 070610</dt>
+<dd><ul class="first last">
+<li><p class="first">FEATURE: Partly Implemented css.CSS2Properties so you can now use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;a { font-style: italic; }&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">style</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span><span class="o">.</span><span class="n">fontStyle</span> <span class="o">=</span> <span class="s">&#39;normal&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">fontStyle</span>
+<span class="go">normal</span>
+</pre></div>
+</div>
+<p>Each property can be retrieved from CSSStyleDeclaration object with its name as
+an object property. Names with &#8220;-&#8221; in it like <tt class="docutils literal"><span class="pre">font-style</span></tt> need to be called by
+the respective DOM name <tt class="docutils literal"><span class="pre">fontStyle</span></tt>.
+Setting a property value works the same way and even <tt class="docutils literal"><span class="pre">del</span></tt> which effectively removes a property from a CSSStyleDeclaration works. For details see CSSStyleDeclaration.</p>
+<p>Not implemented are the finer details, see the module documentation of
+cssutils.css.cssproperties.</p>
+</li>
+<li><p class="first">BUGFIX: CSSStyleDeclaration.getPropertyCSSValue returns None for all shorthand properties</p>
+</li>
+<li><p class="first">refactored some parts and added more tests</p>
+</li>
+</ul>
+</dd>
+<dt>0.9.1b3 070114</dt>
+<dd><ul class="first last">
+<li><p class="first"><strong>CHANGE</strong> for Serializer preference options:</p>
+<blockquote>
+<p>new name
++ <tt class="docutils literal"><span class="pre">defaultAtKeyword</span></tt> instead of <tt class="docutils literal"><span class="pre">normalkeyword</span></tt>
++ <tt class="docutils literal"><span class="pre">defaultPropertyName</span></tt> instead of <tt class="docutils literal"><span class="pre">normalpropertyname</span></tt></p>
+<p>camelcase now:
++ <tt class="docutils literal"><span class="pre">keepComments</span></tt> instead of <tt class="docutils literal"><span class="pre">keepComments</span></tt>
++ <tt class="docutils literal"><span class="pre">lineNumbers</span></tt> instead of <tt class="docutils literal"><span class="pre">linenumbers</span></tt></p>
+<p>replaced (see below)
++ <tt class="docutils literal"><span class="pre">keepAllProperties</span></tt> instead of <tt class="docutils literal"><span class="pre">keepsimilarnamedproperties</span></tt></p>
+</blockquote>
+</li>
+<li><dl class="first docutils">
+<dt>FEATURE: <tt class="docutils literal"><span class="pre">Serializer.prefs.keepAllProperties</span></tt> replaces `` <tt class="docutils literal"><span class="pre">keepsimilarnamedproperties</span></tt>:</dt>
+<dd><p class="first">if <tt class="xref docutils literal"><span class="pre">True</span></tt> all properties given in the parsed CSS are kept.
+This may be useful for cases like:</p>
+<div class="highlight-python"><pre>background: url(1.gif) fixed;
+background: url(2.gif) scroll;</pre>
+</div>
+<p>Certain UAs may not know fixed and will therefor ignore property 1 but
+an application might simply like to prettyprint the stylesheet without
+loosing any information.</p>
+<p>Defaults to <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<p class="last">See examples/serialize.py for an usage example.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>FEATURE(experimental, might change!):</dt>
+<dd><p class="first"><tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getSameNamePropertyList(name)</span></tt>
+Experimental method to retrieve a SameNamePropertyList object which
+holds all Properties with the given <tt class="docutils literal"><span class="pre">name</span></tt>. The object has an
+attribute <tt class="docutils literal"><span class="pre">name</span></tt> and a list of Property objects each with an actual name,
+value and priority.</p>
+<p><strong>UPDATE: SameNamePropertyList removed in 0.9.4</strong></p>
+<p><tt class="docutils literal"><span class="pre">CSSStyleDeclaration.setProperty</span></tt> has a new positional parameter
+<tt class="docutils literal"><span class="pre">overwrite</span></tt> which defines if the property which is set overwrites any former
+value (or values, see <tt class="docutils literal"><span class="pre">getSameNamePropertyList</span></tt>) (default behaviour) or the
+given value is appended to any former value (overwrite=False).
+Useful for cases where a property should have different values for different UAs.</p>
+<p>Example 1: CSS hacks:</p>
+<div class="highlight-python"><pre>width: 100px; /* wrong box model value for IE5-5.5 */
+padding: 5px;
+w\idth: 90px; /* correct box model value for later browsers */</pre>
+</div>
+<p>Example 2: UA capabilities:</p>
+<div class="last highlight-python"><pre>background: url(2.gif) scroll; /* Fallback for UA which do not understand fixed */
+background: url(1.gif) fixed; /* UA which do know fixed */</pre>
+</div>
+</dd>
+</dl>
+</li>
+<li><p class="first">FEATURE: Reimplemented csscapture, which uses the new serializer preference <tt class="docutils literal"><span class="pre">keepAllProperties</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>BUGFIX(major!): Serializer outputs actual property depending on Property priority out now</dt>
+<dd><p class="first last">see <tt class="docutils literal"><span class="pre">examples/serialize.py</span></tt></p>
+</dd>
+</dl>
+</li>
+<li><p class="first">BUGFIX(minor): Parameter <tt class="docutils literal"><span class="pre">name</span></tt> for <cite>CSSStyleDeclaration.XXX(name)`</cite>
+is normalized now, so <tt class="docutils literal"><span class="pre">color</span></tt>, <tt class="docutils literal"><span class="pre">c\olor</span></tt> and <tt class="docutils literal"><span class="pre">COLOR</span></tt> are all equivalent</p>
+</li>
+</ul>
+</dd>
+<dt>0.9.1b2 070111</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>FEATURE: added <tt class="docutils literal"><span class="pre">Serializer.prefs.keepsimilarnamedproperties</span></tt>:</dt>
+<dd><p class="first">if <tt class="xref docutils literal"><span class="pre">True</span></tt> all properties with the same normalname but different
+actual names are kept, e.g. color, color, color.
+This is mainly useful to keep a stylesheet complete which uses
+xbrowser hacks as above.</p>
+<p class="last"><strong>UPDATE IN 0.9.1b3!</strong></p>
+</dd>
+</dl>
+</li>
+<li><p class="first">BUGFIX (minor): <tt class="docutils literal"><span class="pre">Serializer.prefs.normalpropertyname</span></tt> did not work properly if a property was set 2 times in the same declaration, e.g. <tt class="docutils literal"><span class="pre">color:</span> <span class="pre">red;c\olor:</span> <span class="pre">green</span></tt> setting the pref to <tt class="xref docutils literal"><span class="pre">False</span></tt> results in <tt class="docutils literal"><span class="pre">c\olor:</span> <span class="pre">green</span></tt> now.</p>
+</li>
+<li><p class="first">BUGFIX (minor): Serializing of CSSStyleDeclaration did not work well when CSSComments were mixed with Properties.</p>
+</li>
+</ul>
+</dd>
+<dt>0.9.1b1</dt>
+<dd><ul class="first last">
+<li><p class="first">FUTURE CHANGE: <tt class="docutils literal"><span class="pre">readonly</span></tt> will be removed from most rules. It is not used anyway, may be readded in a future release</p>
+</li>
+<li><p class="first">CHANGE: order of constructor parameters changed in <tt class="docutils literal"><span class="pre">CSSImportRule</span></tt>. Should be no problem as positional parameters are discouraged anyway</p>
+</li>
+<li><p class="first">CHANGE: cssutils needs Python 2.4 from the release on as it uses the buildin <tt class="docutils literal"><span class="pre">set</span></tt></p>
+</li>
+<li><p class="first">CHANGE: removed <tt class="docutils literal"><span class="pre">CSSMediaRule.addRule</span></tt> which was deprecated anyway</p>
+</li>
+<li><p class="first">FEATURE: implemented &#64;page CSSRule including testcases</p>
+</li>
+<li><dl class="first docutils">
+<dt>FEATURE: implemented &#64;namespace CSSRule according to <a class="reference external" href="http://www.w3.org/TR/2006/WD-css3-namespace-20060828/">http://www.w3.org/TR/2006/WD-css3-namespace-20060828/</a> with the following changes</dt>
+<dd><ul class="first last simple">
+<li>the url() syntax is not implemented as it may (?) be deprecated anyway</li>
+<li>added namespace parsing to <tt class="docutils literal"><span class="pre">Selector</span></tt>, see <a class="reference external" href="http://www.w3.org/TR/css3-selectors/">http://www.w3.org/TR/css3-selectors/</a></li>
+<li>CSSStyleSheet checks if all namespaces in CSSStyleRules have been declared with CSSNamespaceRules. If not the rule&#8217;s <tt class="docutils literal"><span class="pre">valid</span></tt> property is set to <tt class="xref docutils literal"><span class="pre">False</span></tt> and the serializer omits it (you may change <tt class="docutils literal"><span class="pre">Preferences.removeInvalid</span></tt> to change this behaviour).</li>
+<li>CSSStyleSheet and Selector object have a new propery <tt class="docutils literal"><span class="pre">namespaces</span></tt> which currently contain declared and used namespace prefixes (!), this may change in the future so use with care if at all.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">FEATURE: implemented <tt class="docutils literal"><span class="pre">CSSRule.parentStyleSheet</span></tt> for all rules</p>
+</li>
+<li><p class="first">FEATURE: implemented <tt class="docutils literal"><span class="pre">CSSRule.parentRule</span></tt> for relevant rules (all allowed in &#64;media)</p>
+</li>
+<li><p class="first">BUGFIX: Set <tt class="docutils literal"><span class="pre">parentStyleSheet</span></tt> and <tt class="docutils literal"><span class="pre">parentRule</span></tt> as instance vars in <tt class="docutils literal"><span class="pre">css.CSSRule</span></tt> instead as class vars</p>
+</li>
+<li><p class="first">BUGFIX: CSSComment raised exception if setting cssText with empty string - fixed</p>
+</li>
+<li><p class="first">DOCS: generated docs with epydoc which are then included in src dist. Source documentation is cleaned up a bit.</p>
+</li>
+<li><p class="first">INTERNAL: Refactored some unittests</p>
+</li>
+<li><p class="first">INTERNAL: implementation based on <a class="reference external" href="http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/">DOM Level 2 Style Recommendation</a> as opposed to the <a class="reference external" href="http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927/">Proposed Recommendation</a> now. As there are no main changes I could find this does not make any difference...</p>
+</li>
+</ul>
+</dd>
+<dt>0.9.1a1</dt>
+<dd><ul class="first last">
+<li><p class="first">CHANGE, renamed <tt class="docutils literal"><span class="pre">Serializer.prefs.srcatkeyword</span></tt> to <tt class="docutils literal"><span class="pre">Serializer.prefs.normalkeyword</span></tt>
+which work just the other way round but work as <tt class="docutils literal"><span class="pre">Serializer.prefs.normalpropertyname</span></tt></p>
+</li>
+<li><p class="first">BUGFIX in css.Selector and added support regarding handling of pseudoclasses (<tt class="docutils literal"><span class="pre">:x</span></tt> or <tt class="docutils literal"><span class="pre">:x()</span></tt>) and pseudoelements <tt class="docutils literal"><span class="pre">::x</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>BUGFIX and refactoring in tokenizer, mostly regarding escape sequences</dt>
+<dd><ul class="first last simple">
+<li>combination of and NEWLINE in a string is removed according to spec now</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">added <tt class="docutils literal"><span class="pre">Serializer.prefs.normalpropertyname</span></tt>, if True, property names are normalized if known (<tt class="docutils literal"><span class="pre">color</span></tt>), else literal form from CSS src is used (e.g. <tt class="docutils literal"><span class="pre">c\olor</span></tt>). Defaults to <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
+</li>
+<li><p class="first">removed <tt class="docutils literal"><span class="pre">Token.literal</span></tt> which value is in <tt class="docutils literal"><span class="pre">value</span></tt> now, normalized value is in <tt class="docutils literal"><span class="pre">normalvalue</span></tt></p>
+</li>
+<li><p class="first">removed <tt class="docutils literal"><span class="pre">Token.ESCAPE</span></tt>. Escapes are contained in IDENTifiers now.</p>
+</li>
+<li><p class="first">internal change: WS is generally kept by tokenizer now, former normalized value <tt class="docutils literal"><span class="pre">u'</span> <span class="pre">'</span></tt> is hold in <tt class="docutils literal"><span class="pre">Token.normalvalue</span></tt>. Serializer does not use it yet and some classes (like Selector) use normalvalue.</p>
+<p>uses normalized form of &#64;keyword in source CSS if <tt class="xref docutils literal"><span class="pre">True</span></tt> (e.g. <tt class="docutils literal"><span class="pre">&#64;import</span></tt>), else literal form in CSS sourcefile (e.g. <tt class="docutils literal"><span class="pre">&#64;i\mport</span></tt>). Defaults to <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
+</li>
+</ul>
+</dd>
+<dt>0.9a6</dt>
+<dd><ul class="first last">
+<li><p class="first">NEW <tt class="docutils literal"><span class="pre">Serializer.prefs.keepcomments</span></tt> removes all comments if <tt class="xref docutils literal"><span class="pre">False</span></tt>, defaults to <tt class="xref docutils literal"><span class="pre">True</span></tt></p>
+</li>
+<li><p class="first">NEW <tt class="docutils literal"><span class="pre">Serializer.prefs.srcatkeyword</span></tt> UPDATE see 9.91a1</p>
+</li>
+<li><p class="first">fixed tokenizer to handle at least simple escapes like <tt class="docutils literal"><span class="pre">c\olor</span></tt> which is the same as <tt class="docutils literal"><span class="pre">color</span></tt>. The original value is preserved but not used yet except in CSSComments which preserve the original values. See also Serializer.prefs.srcatkeywords</p>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt> tested and lots of bugfixes</dt>
+<dd><ul class="first last simple">
+<li>constructor has <strong>no</strong> parameters anymore (<tt class="docutils literal"><span class="pre">mediaText</span></tt> is removed!)</li>
+<li><tt class="docutils literal"><span class="pre">addRule</span></tt> is DEPRECATED, use <tt class="docutils literal"><span class="pre">insertRule(rule)</span></tt> with no index instead.
+Synchronized with <tt class="docutils literal"><span class="pre">CSSStyleSheet.insertRule</span></tt></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">setting of <tt class="docutils literal"><span class="pre">CSSImportRule.media</span></tt> removed, use methods of this object directly.
+Synchronized with <tt class="docutils literal"><span class="pre">CSSMediaRule.media</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">CSSStyleSheet.insertRule</span></tt> raises <tt class="docutils literal"><span class="pre">xml.dom.IndexSizeErr</span></tt> if an invalid index is given. Index may be <tt class="xref docutils literal"><span class="pre">None</span></tt> in which case the rule will be appended.</dt>
+<dd><p class="first last">Synchronized with <tt class="docutils literal"><span class="pre">CSSMediaRule.insertRule</span></tt></p>
+</dd>
+</dl>
+</li>
+<li><p class="first">CSSStyleDeclaration bugfixes in parsing invalid tokens</p>
+</li>
+<li><p class="first">stylesheets.MediaList bugfixes in parsing uppercase media values like <tt class="docutils literal"><span class="pre">PRINT</span></tt></p>
+</li>
+<li><p class="first">added more unittests (CSSMediaRule)</p>
+</li>
+<li><p class="first">various bugfixes</p>
+</li>
+</ul>
+</dd>
+<dt>0.9a5 061015</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>reimplemented property validator:</dt>
+<dd><ul class="first last simple">
+<li>for unknown CSS2 Properties a INFO message is logged</li>
+<li>for invalid CSS2 Property values a WARNING message is issued</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">atrules have a new property <tt class="docutils literal"><span class="pre">atkeyword</span></tt> which is the keyword used in the CSS provided. Normally something like &#8220;&#64;import&#8221; but may also be an escaped version like &#8220;&#64;import&#8221; or a custom one used in CSSUnknownRule.</p>
+</li>
+<li><dl class="first docutils">
+<dt>tokenizer and css.selector.Selector</dt>
+<dd><ul class="first last simple">
+<li>added CSS3 combinator <tt class="docutils literal"><span class="pre">~</span></tt></li>
+<li>added CSS3 attribute selectors <tt class="docutils literal"><span class="pre">^=</span></tt>, <tt class="docutils literal"><span class="pre">$=</span></tt>, <tt class="docutils literal"><span class="pre">*=</span></tt></li>
+<li>added CSS3 pseudo selector <tt class="docutils literal"><span class="pre">::</span></tt> and pseudo-functions like <tt class="docutils literal"><span class="pre">:lang(fr)</span></tt></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Token</dt>
+<dd><ul class="first simple">
+<li>added some new constants mainly replacing DELIM, e.g. UNIVERSAL, GREATER, PLUS, TILDE</li>
+</ul>
+<p class="last">(CSS3 see <a class="reference external" href="http://www.w3.org/TR/css3-selectors">http://www.w3.org/TR/css3-selectors</a>)</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Improved parsing of &#8220;Unexpected end of string&#8221; according to spec</p>
+</li>
+<li><p class="first">fixed serializing of CSSUnknownRule if <tt class="docutils literal"><span class="pre">valid</span> <span class="pre">==</span> <span class="pre">False</span></tt></p>
+</li>
+<li><p class="first">Properties may also be set with a numeric value now, before everything had to be a string. Direct use of _Property is discouraged though as it may well be changed again in a future version.</p>
+</li>
+</ul>
+</dd>
+<dt>0.9a4 060927</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>CSSStyleSheet:</dt>
+<dd><ul class="first last simple">
+<li>removed init parameter <tt class="docutils literal"><span class="pre">type</span></tt> which is now set as a static type to &#8220;text/css&#8221;</li>
+<li>removed <tt class="docutils literal"><span class="pre">addRule</span></tt> which emits DeprecationWarning now
+Use <tt class="docutils literal"><span class="pre">insertRule</span></tt> without parameter <tt class="docutils literal"><span class="pre">index</span></tt></li>
+<li>added new methods <tt class="docutils literal"><span class="pre">setSerializer(cssserializer)</span></tt> and
+<tt class="docutils literal"><span class="pre">setSerializerPref(self,</span> <span class="pre">pref,</span> <span class="pre">value)</span></tt> to control output
+of a stylesheet directly.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>CSSStyleRule:</dt>
+<dd><ul class="first last simple">
+<li>new property <tt class="docutils literal"><span class="pre">selectorList</span></tt> is an instance of SelectorList
+which contains a list of all Selector elements of the rule</li>
+<li>removed <tt class="docutils literal"><span class="pre">addSelector()</span></tt> and <tt class="docutils literal"><span class="pre">getSelectors()</span></tt>,
+use property <tt class="docutils literal"><span class="pre">selectorList</span></tt> instead</li>
+<li>removed <tt class="docutils literal"><span class="pre">getStyleDeclaration()</span></tt> and <tt class="docutils literal"><span class="pre">setStyleDeclaration()</span></tt>,
+use property <tt class="docutils literal"><span class="pre">style</span></tt> instead</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>CSSStyleDeclaration:</dt>
+<dd><ul class="first last simple">
+<li>new constructor parameter <tt class="docutils literal"><span class="pre">cssText</span></tt></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">moved <tt class="docutils literal"><span class="pre">SelectorList</span></tt>, <tt class="docutils literal"><span class="pre">Selector</span></tt> and <tt class="docutils literal"><span class="pre">Property</span></tt> to own modules.
+Should not be used directly yet anyway.</p>
+</li>
+<li><p class="first">Token: renamed <tt class="docutils literal"><span class="pre">IMPORTANT</span></tt> to <tt class="docutils literal"><span class="pre">IMPORTANT_SYM</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>unittests:</dt>
+<dd><ul class="first last simple">
+<li>added tests for CSSStyleSheet, CSSStyleRule, SelectorList, Selector
+CSSStyleDeclaration, _Property</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>0.9a3 - 060909</dt>
+<dd><ul class="first last">
+<li><p class="first">refined EasyInstall (still some issues to be done)</p>
+</li>
+<li><dl class="first docutils">
+<dt>CSSCharsetRule serialized and parsed according to spec only as <tt class="docutils literal"><span class="pre">&#64;charset</span> <span class="pre">&quot;ENCODING&quot;;</span></tt> so no comments allowed, only one space before encoding string which MUST use <tt class="docutils literal"><span class="pre">&quot;</span></tt> as delimiter (see <a class="reference external" href="http://www.w3.org/TR/CSS21/syndata.html#q23">http://www.w3.org/TR/CSS21/syndata.html#q23</a>)</dt>
+<dd><p class="first last">NOT COMPLETE YET, E.G. BOM HANDLING</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">added tests for setting empty cssText for all &#64;rules and CSSStyleRule</p>
+</li>
+<li><dl class="first docutils">
+<dt>bugfixes</dt>
+<dd><ul class="first last simple">
+<li>CSSStyleDeclaration: Of two Properties if written directly after another``a:1;b:2`` one was swallowed</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>CSSSerializer:</dt>
+<dd><p class="first last">added new class cssutils.serialize.Preferences to control output or CSSSerializer</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>0.9a2 - 060908</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>using setuptools for deployment</dt>
+<dd><ul class="first last simple">
+<li>new script <tt class="docutils literal"><span class="pre">cssparse</span></tt> which pprints css &#8220;filename&#8221;</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">subpackages <tt class="docutils literal"><span class="pre">css</span></tt> and <tt class="docutils literal"><span class="pre">stylesheets</span></tt> are directly available from <tt class="docutils literal"><span class="pre">cssutils</span></tt> now</p>
+</li>
+<li><p class="first">renamed module <tt class="docutils literal"><span class="pre">cssutils.cssparser</span></tt> to <tt class="docutils literal"><span class="pre">cssutils.parse</span></tt> which should not be used directly anyway. Always use <tt class="docutils literal"><span class="pre">cssutils.CSSParser</span></tt> or <tt class="docutils literal"><span class="pre">cssutils.parse</span></tt> (s.b)</p>
+</li>
+<li><p class="first">added utility functions <tt class="docutils literal"><span class="pre">parse(cssText)</span></tt> and <tt class="docutils literal"><span class="pre">parse(filename,</span> <span class="pre">encoding='utf-8')</span></tt> to cssutils main package which work like the CSSParser functions with the same name and API</p>
+</li>
+<li><p class="first">return value of <tt class="docutils literal"><span class="pre">.cssText</span></tt> is <tt class="docutils literal"><span class="pre">u''</span></tt> and not <tt class="xref docutils literal"><span class="pre">None</span></tt> if empty now</p>
+</li>
+<li><dl class="first docutils">
+<dt>serializing</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>cssutils.Serializer renamed to cssutils.CSSSerializer to improve usage of</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">from</span> <span class="pre">cssutils</span> <span class="pre">import</span> <span class="pre">*</span></tt></p>
+</dd>
+</dl>
+</li>
+<li><p class="first">cssutils has a property &#8220;ser&#8221; which is used by all classes to serialize themselves
+it is definable with a custom instance of cssutils.Serializer by setting
+cssutils.setCSSSerializer(newserializer)</p>
+</li>
+<li><dl class="first docutils">
+<dt>prefs[&#8216;CSSImportrule.href format&#8217;] may be set to</dt>
+<dd><ul class="first last simple">
+<li>&#8216;uri&#8217;: renders url(...) (default)</li>
+<li>&#8216;string&#8217;: renders &#8220;...&#8221;</li>
+<li>None: renders as set in CSSImportRule.hreftype</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>css.CSSCharsetRule:</dt>
+<dd><ul class="first last simple">
+<li>improved parsing</li>
+<li>fixed API handling (setting of encoding did not work)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>css.CSSImportRule:</dt>
+<dd><ul class="first last simple">
+<li>improved parsing</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">usage of *.getFormatted emits DeprecationWarning now and returns *.cssText</p>
+</li>
+<li><p class="first">lots of bugfixes and refactoring of modules, classes</p>
+</li>
+<li><p class="first">extension and refactoring of unittests</p>
+</li>
+</ul>
+</dd>
+<dt>0.9a1 - 060905 with a new parser (again)</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>new tokenizer, complete rewrite</dt>
+<dd><ul class="first last simple">
+<li>parses strings and comments</li>
+<li>parses unicode escape sequences (see following)</li>
+<li>emits CSS tokens according to spec (update: not all yet (ESCAPE)!)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">renamed module &#8220;comment&#8221; to &#8220;csscomment&#8221; and class &#8220;Comment&#8221; to &#8220;CSSComment&#8221;</p>
+</li>
+<li><p class="first">configurable Serializer instead of pprint</p>
+</li>
+<li><p class="first">reimplemented CSSMediaRule</p>
+</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="x">
+<h2>0.8.x<a class="headerlink" href="#x" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>0.8a6 - 050827</dt>
+<dd><ul class="first last simple">
+<li>bugfixes in valuevalidator regarding values of &#8220;background-position&#8221;, thanks to Tim Gerla!</li>
+</ul>
+</dd>
+<dt>0.8a5 - 050824</dt>
+<dd><ul class="first last simple">
+<li>bugfix in css.Comment: if constructor was called with empty or no cssText an exception was raised, reported by Tim Gerla!</li>
+<li>prepared inline comments run through epydoc and generated API docs</li>
+</ul>
+</dd>
+<dt>0.8a4 - 050814</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>csscapture.py</dt>
+<dd><ul class="first last simple">
+<li>does download linked, inline and &#64;imported stylesheets now</li>
+<li>renamed csscapture.Capture to csscapture.CSSCapture</li>
+<li>added options, use <tt class="docutils literal"><span class="pre">csspapture.py</span> <span class="pre">-h</span></tt> to view all options</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">cssutils.css.CSSStyleSheet defines <tt class="docutils literal"><span class="pre">literalCssText</span></tt> property if property
+<tt class="docutils literal"><span class="pre">cssText</span></tt> is set. This is the unparsed cssText and might be different to cssText
+e.g. in case of parser errors.</p>
+</li>
+</ul>
+</dd>
+<dt>0.8a3 - 050813</dt>
+<dd><ul class="first last">
+<li><p class="first">custom log for CSSparser should work again</p>
+</li>
+<li><dl class="first docutils">
+<dt>calling script cssparser has 2 new options (not using optparse yet...)</dt>
+<dd><p class="first last">cssparser.py filename.css [encoding[, &#8220;debug&#8221;]]
+1. encoding of the filename.css to parse
+2. if called with &#8220;debug&#8221; debugging mode is enabled and default log prints all messages</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">cssutils.css.CSSUnknownRule reintegrated and Tests added</p>
+</li>
+<li><dl class="first docutils">
+<dt>cssutils.Comment reintegrated</dt>
+<dd><p class="first last">implements css.CSSRule, there a new typevalue COMMENT (=-1) is added</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">lexer does handle strings <em>almost</em> right now...</p>
+</li>
+<li><p class="first">bugfixes</p>
+</li>
+<li><p class="first">simplified lexer, still lots of simplification todo</p>
+</li>
+</ul>
+</dd>
+<dt>0.8a2 - 050731</dt>
+<dd><ul class="first last simple">
+<li>CSSParser may now directly be used from cssutils
+cssutils.cssparser as a standalone script does work too.</li>
+<li>css.CSSStyleDeclaration.getPropertyCSSValue(name) implemented</li>
+<li>css.CSSValue updated</li>
+<li>xml.dom.InvalidModificationErr now raised by CSSRule subclasses instead of xml.dom.SyntaxErr in case a non expected rule has been tried to set</li>
+<li>test are updated to the new API and work (not complete and exhaustive though but a bit more than for 0.61)</li>
+<li>bugfixes in some classes due to reanimated tests</li>
+<li>moved module valuevalidator from cssutils.css to cssutils.
+Should not be used directly anyway</li>
+<li>split CSSParser in actual CSSParser and utility module used by CSSParser and each css class cssText setting method</li>
+<li>loghandler.ErrorHandler does raiseExceptions by default now. Only CSSParser does overwrite this behaviour. Some tests still need to be looked into...</li>
+</ul>
+</dd>
+<dt>0.8a1 - 050730</dt>
+<dd><dl class="first last docutils">
+<dt>bugfix medialist</dt>
+<dd>medium &#8220;projection&#8221; was spelled wrong (ended with a space)</dd>
+<dt>docs</dt>
+<dd>new examples and new structure on the website</dd>
+<dt>NEW API <strong>INCOMPATIBLE API CHANGES</strong></dt>
+<dd><ul class="first last">
+<li><p class="first">new package cssutils.css which contains CSS interface implementations (css.CSSStyleSheet, css.CSSRuleList etc)</p>
+</li>
+<li><p class="first">new package cssutils.stylesheets which contains Stylesheets interface implementations are in (stylesheets.StyleSheet, stylesheets.MediaList etc)</p>
+</li>
+<li><p class="first">module cssutils.cssbuilder has therefor been removed and is replaced by packages cssutils.css and cssutils.stylesheets.
+(You may like to define your own cssbuilder module which imports all new classes with their old name if you do not want to change all your code at this time. Usage of the new names is recommended however and there are more subtle changes.)</p>
+</li>
+<li><p class="first">CSS interfaces use W3 DOM names normally starting with CSS... now (e.g. CSSStyleSheet)</p>
+</li>
+<li><p class="first">CSSStyleSheet now uses superclass stylesheets.StyleSheet</p>
+</li>
+<li><p class="first">CSSImportRule is changed to comply to its specification (MediaList is after the URI and not before)</p>
+</li>
+<li><p class="first">CSSFontfaceRule (cssutils FontfaceRule) is removed as CSS 2.1 removed this &#64; rule completely</p>
+</li>
+<li><p class="first">CSSProperties is removed. Properties are useful in CSSStyleDeclaration only anyway and are used through that class now.</p>
+</li>
+<li><p class="first">some parameters have been renamed to their respective DOM names (e.g. selector is selectorText now in CSSStyleRule constructor</p>
+</li>
+<li><dl class="first docutils">
+<dt>the API has been cleaned up a bit. Some redundant methods have been removed.</dt>
+<dd><ul class="first last simple">
+<li>cssmediarule: removed  getRules(), use cssRules property instead</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Comment as a rule is removed currently, might be reintegrated in a future version.</p>
+</li>
+<li><p class="first">some classes which have not been implemented fully anyway are not available until they are finished. This is mainly CSSMediaRule (will follow shortly), CSSUnknownRule, CSSValue and other value classes.</p>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+<div class="section" id="id4">
+<h2>0.6.x<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>0.61 - 050604</dt>
+<dd><dl class="first last docutils">
+<dt>bugfix reported and fixed thanks to Matt Harrison:</dt>
+<dd>&#8216;border-left-width&#8217; property was missing from cssvalues.py</dd>
+</dl>
+</dd>
+<dt>0.60b</dt>
+<dd>tiny internal changes</dd>
+<dt>0.60a</dt>
+<dd><p class="first">added modules to validate Properties and Values
+thanks to Kevin D. Smith</p>
+<p class="last">MediaList renamed media type &#8220;speech&#8221; to &#8220;aural&#8221;</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="id5">
+<h2>0.5.x<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>0.55_52 - 040517 bugfix bugfix release</dt>
+<dd>should do test first ;)
+added unittest and fix for fix</dd>
+<dt>0.55_51 - 040517 bugfix release</dt>
+<dd>cssstylesheet.StyleSheet _pprint was renamed to _getCssText but
+the call in pprint was not changed...</dd>
+<dt>0.55_5 - 040509</dt>
+<dd><p class="first">API CHANGES</p>
+<dl class="docutils">
+<dt>StyleDeclaration</dt>
+<dd><p class="first">addProperty made/named private
+DEPRECATED anyway, use setProperty</p>
+<p class="last">parentRule raises NotImplementedError</p>
+</dd>
+</dl>
+<p>RGBColor Implemented
+PrimitiveValue uses RGBColor</p>
+<p>CSSParser uses setProperty instead of addProperty now
+StyleDeclaration, Value, ValueList, PrimitiveValue, RGBcolor
+done comparing spec and module docstrings</p>
+<p class="last">made list of TODOs</p>
+</dd>
+<dt>0.55_4 - 040502</dt>
+<dd><p class="first">implement *Rule.cssText setting (UnknownRule not complete)</p>
+<p>lexer has no log anymore, simply &#8220;logs&#8221; everything to the
+resulting tokenlist</p>
+<p>cssstylesheet simplified</p>
+<p class="last">bugfixes</p>
+</dd>
+<dt>0.55_3 not released</dt>
+<dd><p class="first">cssnormalizer renamed, does not work anyway at the moment</p>
+<p>implemented StyleRule.cssText setting</p>
+<p>cssproperties.Property has new init param raiseExceptions
+similar to the one of CSSParser. does not log yet
+and functionality might change as well
+* what will not change is that you can specify not
+officially specified properties (like moz-opacity etc)</p>
+<p class="last">some cleanup in various classes</p>
+</dd>
+<dt>0.55_2 not released</dt>
+<dd>tests only</dd>
+<dt>0.55_1 not released</dt>
+<dd><dl class="first docutils">
+<dt>API CHANGES</dt>
+<dd>CSSFontFaceRule and CSSPageRule
+style is readonly now</dd>
+<dt>NEW</dt>
+<dd>CSSRule
+implementation cssText setting
+improved docstrings</dd>
+<dt>CSSCharsetRule, CSSFontFaceRule, CSSFontFaceRule, CSSImportRule, CSSSMediaRule, CSSPageRule, CSSStyleRule, CSSUnknownRule</dt>
+<dd>use CSSRule implementation</dd>
+<dt>CSSCharsetRule</dt>
+<dd>uses codecs module to check if valid encoding given</dd>
+<dt>CSSImportRule</dt>
+<dd>new property styleSheet, always None for now</dd>
+</dl>
+<p>simplified and cleaned up sources
+some bugfixes</p>
+<dl class="last docutils">
+<dt>added tests</dt>
+<dd><p class="first">test_cssrule
+test_csscharsetrule, test_cssfontfacerule, test_cssimportrule,</p>
+<dl class="last docutils">
+<dt>test_mediarule, test_stylesheetrule, test_unknownrule</dt>
+<dd>subclass test_cssrule now</dd>
+</dl>
+</dd>
+<dt>improved unittests</dt>
+<dd>test_cssstylesheet import problem removed</dd>
+</dl>
+</dd>
+<dt>0.55b not released</dt>
+<dd>start implementation StyleRule.cssText setting</dd>
+<dt>0.54 not released</dt>
+<dd><dl class="first docutils">
+<dt>API CHANGES</dt>
+<dd>Comment.cssText contains comment delimiter
+attribute text of Comment private now, renamed to _text
+ALPHA new StyleSheet.cssText property (not in W3C DOM)</dd>
+<dt>BUG FIXES</dt>
+<dd>Commentable checked only for str, not unicode. now both
+Parser did not raises all errors, might still not do (s. a.)</dd>
+</dl>
+<p class="last">added unittest for __init__ module</p>
+</dd>
+<dt>0.53 - 040418</dt>
+<dd><p class="first">!cssnormalizer does not work in this version - on hold for 1.0</p>
+<p class="last">new cssunknownrule.UnknownRule (moved out of module cssrule)
+parser now creates Unknown At-Rules in the resulting StyleSheet. they
+are no longer just dumped and reported in the parser log.</p>
+</dd>
+<dt>0.52 - 040414</dt>
+<dd><p class="first">!cssnormalizer does not work in this version - on hold for 1.0</p>
+<dl class="last docutils">
+<dt>whitespace in comments will be preserved now</dt>
+<dd>added unittest</dd>
+</dl>
+</dd>
+<dt>0.51 - 040412</dt>
+<dd><p class="first">!cssnormalizer does not work in this version - on hold for 1.0</p>
+<p>API CHANGES
+cssrule.SimpleAtRule DEPRECATED and empty
+cssmediarule.MediaRule init param &#8220;medias&#8221; renamed to &#8220;media&#8221;
+use subclasses of CSSRule (CharsetRule, ImportRule,
+FontFaceRule or PageRule) instead
+StyleRule constructor can be called with arguments (again...)
+Comment attribute &#8220;comment&#8221; renamed to &#8220;text&#8221;</p>
+<p>implemented at least partly almost all DOM Level 2 CSS interfaces now
+so the API should be more stable from now on</p>
+<p class="last">new statemachine and lexer helper classes for parsing
+complete rewrite of CSSParser
+CSSParser and lexer put all error messages in a log now
+you might give your own log for messages
+CSSParser might be configured just to log errors or to raise
+xml.dom.DOMExceptions when finding an error</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="id6">
+<h2>0.4.x<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>0.41 - 040328</dt>
+<dd><p class="first">!cssnormalizer does not work in this version - on hold for 1.0</p>
+<p>API CHANGES
+StyleSheet.getRules() returns a RuleList now
+class Selector removed, integrated into Rules now</p>
+<dl class="last docutils">
+<dt>moved most Classes to own module</dt>
+<dd>StyleSheet, StyleRule, MediaRule, ...</dd>
+</dl>
+</dd>
+<dt>0.40a - 040321</dt>
+<dd><p class="first">!cssnormalizer does not work in this version</p>
+<p>API CHANGES:
+cssbuilder.RuleList subclasses list
+cssbuilder.Selector moved to cssrules
+attribute style of class StyleRule made private (_style)
+removed StyleRule.clearStyleDeclaration
+attribute selectorlist of class Selector renamed to _selectors and made private</p>
+<p>NEW:
+MediaList class</p>
+<p>moved tests to directory test</p>
+<p class="last">made a dist package complete with setup.py</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="id7">
+<h2>0.3.x<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>0.31 - 040320</dt>
+<dd><p class="first">!cssnormalizer does not work in this version</p>
+<p>API CHANGES:
+StyleDeclaration.addProperty is now DEPRECATED
+use StyleDeclaration.setProperty instead</p>
+<dl class="docutils">
+<dt>removed CSSParser.pprint(). use CSSParser.getStyleSheet().pprint() instead</dt>
+<dd>(a StyleSheet object had a pprint method anyway)</dd>
+<dt>replaced cssutils own exceptions with standard xml.dom.DOMException</dt>
+<dd>and subclasses
+!catch these exceptions instead of CSSException or CSSParserException</dd>
+<dt>moved internal lists (e.g. StyleSheet.nodes list) to private vars</dt>
+<dd>StyleSheet._nodes
+!please use methods instead of implementation details</dd>
+</dl>
+<p>removed cssexception module
+removed csscomment module, classes now directly in cssutils</p>
+<p>more unittests, start with python cssutils/_test.py</p>
+<p>more docs</p>
+<p class="last">integrated patches by Cory Dodt for SGML comments and Declaration additions
+added some w3c DOM methods</p>
+</dd>
+<dt>0.30b - 040216</dt>
+<dd><p class="first">severe API changes
+renamed some classes to (almost) DOM names, the CSS prefix of DOM names is ommited though</p>
+<dl class="docutils">
+<dt>renamed are</dt>
+<dd><ul class="first last simple">
+<li>Stylesheet TO StyleSheet</li>
+<li>Rule TO StyleRule</li>
+<li>AtMediaRule TO MediaRule</li>
+<li>Declaration TO StyleDeclaration</li>
+</ul>
+</dd>
+</dl>
+<p>the according methods are renamed as well</p>
+<p>class hierarchy is changed as well, please see the example</p>
+<p class="last">classes are organized in new modules</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="id8">
+<h2>0.2.x<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>0.24_1 - 040214</dt>
+<dd>legal stuff: added licensing information
+no files released</dd>
+<dt>0.24 - 040111</dt>
+<dd>split classes in modules, has to be cleaned up again</dd>
+<dt>0.24b - 040106</dt>
+<dd><dl class="first docutils">
+<dt>cleaned up cssbuilder</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>Comment now may only contain text</dt>
+<dd><p class="first last">and no comment end delimiter.
+(before it had to be a complete css
+comment including delimiters)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>AtMediaRule revised completely</dt>
+<dd><p class="first last">validates given media types
+new method: addMediaType(media_type)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p class="last">cssparser updated to new cssbuilder interface and logic
+started unittests (v0.0.0.1..., not included yet)</p>
+</dd>
+<dt>0.23 - 031228</dt>
+<dd><p class="first">new CSSNormalizer.normalizeDeclarationOrder(stylesheet)</p>
+<p>cssbuilder: added methods needed by CSSNormalizer</p>
+<p class="last">CSSParser.parse bugfix</p>
+</dd>
+<dt>0.22 - 031226</dt>
+<dd><dl class="first last docutils">
+<dt>CSSParser:</dt>
+<dd>added n for a declaration ending in addition to ; and }</dd>
+<dt>cssbuilder:</dt>
+<dd>docstrings added for &#64;import and &#64;charset
+support build of a selector list in a rule</dd>
+</dl>
+</dd>
+<dt>0.21 - 031226</dt>
+<dd>cleaned up docstrings and added version information</dd>
+<dt>0.20 - 031224</dt>
+<dd>complete rewrite with combination of parser and builder classes</dd>
+</dl>
+</div>
+<div class="section" id="id9">
+<h2>0.1.x<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<p>0.10 - 031221
+first version to try if i can bring it to work at all</p>
+<p>only a prettyprinter included, no builder</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">CHANGELOG</a><ul>
+<li><a class="reference external" href="#known-issues">known issues</a></li>
+<li><a class="reference external" href="#id1">0.9.6</a></li>
+<li><a class="reference external" href="#id2">0.9.5</a></li>
+<li><a class="reference external" href="#id3">0.9 - 0.9.4</a></li>
+<li><a class="reference external" href="#x">0.8.x</a></li>
+<li><a class="reference external" href="#id4">0.6.x</a></li>
+<li><a class="reference external" href="#id5">0.5.x</a></li>
+<li><a class="reference external" href="#id6">0.4.x</a></li>
+<li><a class="reference external" href="#id7">0.3.x</a></li>
+<li><a class="reference external" href="#id8">0.2.x</a></li>
+<li><a class="reference external" href="#id9">0.1.x</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="README.html" title="previous chapter">README</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="docs/cssutils.html" title="next chapter">package <tt class="docutils literal"><span class="pre">cssutils</span></tt></a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/CHANGELOG.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="docs/cssutils.html" title="package cssutils"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="README.html" title="README"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>

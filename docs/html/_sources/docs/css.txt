@@ -1,0 +1,211 @@
+========================
+package ``cssutils.css``
+========================
+:Version: $Id: css.txt 1590 2009-01-01 21:11:36Z cthedot $
+
+overview
+========
+Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ and `CSS Module: Namespaces (W3C Working Draft 28 August 2006) <http://www.w3.org/TR/css3-namespace/>`_
+
+:CSSStyleSheet_: Implements ``stylesheets.StyleSheet`` and is the *root* of a stylesheet.
+:CSSRuleList: A list of CSSRule objects used in CSSStyleSheet_ and CSSMediaRule_
+:CSSRule: Base class of all CSS rules, hardly useful itself
+:CSSCharsetRule_: @charset rule
+:CSSFontFaceRule_: @font-face rule (from v0.9.5a4)
+:CSSImportRule_: @import rule
+:CSSMediaRule_: @media rule
+:CSSNamespaceRule_: @namespace rule
+:CSSPageRule_: @page rule
+:CSSStyleRule_: Main Rule with Selectors and ``CSSStyleDeclaration``
+:Selectorlist_: A list of Selector objects used in CSSStyleRule_
+:Selector_: A single CSS selector
+:`CSSStyleDeclaration <cssstyledeclaration.txt>`_: Containing a list of Properties
+:`Property <cssstyledeclaration.txt#property>`_: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
+:`CSSValue <values.txt>`_: A CSS value which might also be a CSSPrimitiveValue or CSSValueList.
+:CSSComment: A comment anywhere in the stylesheet. Not in any official spec.
+
+Shared Attributes
+=================
+.. _cssText:
+
+atkeyword
+    All @rules have this attribute which holds the *literal* atkeyword, e.g. ``@im\port``.
+cssText (or selectorText for SelectorList_ and Selector_)
+    The textual representation of the rule or sheet (cssutils defined this property for CSSStyleSheet_ objects too).
+wellformed
+    Defines if this rule is valid to the CSS core grammar. Not all classes may have this attribute yet and it normally should be ``True``.
+
+
+CSSStyleSheet
+=============
+The CSSStyleSheet contains all rules. It consists of the different rules defined above like CSSImportRule_ CSSStyleRule_ etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an CSSCharsetRule_ rules or simpler with the encoding_ attribute. The serialized sheet may be obtained from cssText_. All rules are present in cssRules_, a stylesheet iterates on its rules so this might be easier. Namespaces are available via namespaces_, the actual namespace rules in the CSSNamespaceRule_ objects (do not rely on prefixes, see http://www.w3.org/TR/REC-xml-names/ how these work).
+
+Attributes
+----------
+Also inherits properties from stylesheet.StyleSheet (e.g. ``href``)
+
+.. _cssRules:
+
+cssRules
+    A css::CSSRuleList of all CSS rules contained within the
+    stylesheet.
+
+.. _encoding:
+
+encoding (cssutils and CSSOM only)
+    reflects the encoding of an @charset rule or 'utf-8' (default)
+    if set to ``None``. If an explicit encoding of 'utf-8' is set an @charset rule is serialized, if encoding is ``None`` (and therefor also effectively 'utf-8') no @charset rule is serialized.
+
+    Effectively using CSSCharsetRule directly is not needed anymore.
+
+.. _namespaces:
+
+namespaces: a dict like object (cssutils only)
+    reflects set @namespace rules of this rule.
+    A dict of {prefix: namespaceURI} mapping.
+
+    Using CSSNamespaceRule directly is not really needed anymore (except if you want to add comments in these rules).
+
+.. _ownerRule:
+
+ownerRule
+    of type CSSRule, readonly (NOT IMPLEMENTED YET)
+
+
+
+Methods
+-------
+
+.. _append:
+
+add(self, rule)
+    Adds a rule to the proper hierarchical position in the style sheet. Same as ``insertRule(rule, inOrder=True)`` but simpler.
+
+.. _deleteRule:
+
+deleteRule(self, index)
+    Used to delete a rule from the style sheet.
+
+.. _insertRule:
+
+insertRule(rule, index=None, inorder=False)
+    Used to insert a new rule into the style sheet. The new rule now
+    becomes part of the cascade.
+
+    Rule may be a string or a valid ``CSSRule`` or ``CSSRuleList``
+
+.. _setSerializer:
+
+setSerializer(self, cssserializer)
+    Sets the global Serializer used for output of all stylesheet
+    output.
+
+.. _setSerializerPref:
+
+setSerializerPref(pref, value)
+    Sets Preference of CSSSerializer used for output of this
+    stylesheet. See cssutils.serialize.Preferences for possible
+    preferences to be set.
+
+
+CSSCharsetRule
+==============
+This rule is not really needed anymore as using  encoding_ of CSSStyleSheet_ is much easier.
+
+
+CSSNamespaceRule
+================
+CSSNamespaceRule currently implements http://www.w3.org/TR/2006/WD-css3-namespace-20060828/. Dealing with these rules directly is not needed anymore, easier is the use of CSSStyleSheet namespaces_.
+
+namespaceURI
+    The namespace URI (a simple string!) which is bound to the given prefix. If no prefix is set (CSSNamespaceRule.prefix=='') the namespace defined by ``namespaceURI`` is set as the default namespace. This property is readonly to prevent making stylesheets invalid.
+prefix
+    The prefix used in the stylesheet for the given ``namespaceURI``. If prefix is empty ``namespaceURI`` sets the default namespace for the stylesheet.
+
+
+CSSImportRule
+=============
+Used to import other CSS style sheets.
+
+.. _href:
+
+href
+    The URI where the referenced sheet may be found. May be a string or ``url()`` value.
+media
+    The media information where the referenced style sheet should be used. See MediaList_ for more details.
+name
+    A name like a HTML named Stylesheet. (Not very useful yet but may be used when implementing the cascade.)
+stylesheet
+    The referenced CSSStyleSheet_. (Implemented from 0.9.5b1.)
+
+
+CSSMediaRule
+============
+Rules (mainly ``CSSStyleRule`` s) which are to be used for the given ``media`` only.
+
+media
+    A list of media types for this rule of type MediaList.
+cssRules
+    A css::CSSRuleList of all CSS rules contained within the
+    media block.
+name
+    A name like a HTML named Stylesheet. (Not very useful yet but may be used when implementing the cascade.)
+
+CSSFontFaceRule
+===============
+Holds font related definitions. Hardly used in any CSS implementation, I only know PrinceXML which uses it to defined fonts.
+
+`style <cssstyledeclaration.txt>`_
+    The declaration-block of this rule (see `CSSStyleDeclaration <cssstyledeclaration.txt>`_)
+
+CSSPageRule
+===========
+Holds page related definitions. Mainly useful for print sheets, used extensively in page defining applications like PrinceXML.
+
+selectorText
+    The parsable textual representation of the page selector for the rule.
+`style <cssstyledeclaration.txt>`_
+    The declaration-block of this rule (see `CSSStyleDeclaration <cssstyledeclaration.txt>`_)
+
+CSSStyleRule
+============
+The CSSStyleRule object represents a ruleset specified (if any) in a CSS
+style sheet. It provides access to a declaration block as well as to the
+associated group of selectors.
+
+selectorText
+    The textual representation of the selector for the rule set.
+selectorList_: of type SelectorList (cssutils only)
+    A list of all Selectors for the rule set.
+`style <cssstyledeclaration.txt>`_
+    The declaration-block of this rule (see `CSSStyleDeclaration <cssstyledeclaration.txt>`_)
+
+
+.. _MediaList: stylesheets.txt
+
+SelectorList
+============
+A list of Selector_ objects.
+
+length
+    The number of Selector elements in the list.
+parentRule
+    The CSS rule that contains this SelectorList or None if this SelectorList is not attached to a CSSRule.
+selectorText
+    The textual representation of the selector for the rule set.
+
+appendSelector(newSelector), also append(newSelector)
+    comma-separated list of selectors or a tuple of ``(selectorText, dict-of-namespaces)``
+
+Selector
+========
+A single CSS selector in a SelectorList_.
+
+element *EXPERIMENTAL*
+    Effective element target of this selector.
+parentRule
+    The SelectorList that contains this Selector or None if this Selector is not attached to a SelectorList.
+selectorText
+    The textual representation of the selector for the rule set.
+specificity
+    The specificity of this selector.

@@ -1,0 +1,10 @@
+============
+css.CSSValue
+============
+:version: $Id: values.txt 1590 2009-01-01 21:11:36Z cthedot $
+
+random notes about values
+=========================
+- CSSValue is always the base class of a Properties ``cssValue``. It may be more specific like a CSSPrimitiveValue or a CSSValueList which itself contains CSSValue or CSSPrimitiveValue objects
+
+
