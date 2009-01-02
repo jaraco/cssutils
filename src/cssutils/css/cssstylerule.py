@@ -1,5 +1,4 @@
-"""CSSStyleRule implements DOM Level 2 CSS CSSStyleRule.
-"""
+"""CSSStyleRule implements DOM Level 2 CSS CSSStyleRule."""
 __all__ = ['CSSStyleRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -16,34 +15,12 @@ class CSSStyleRule(cssrule.CSSRule):
     style sheet. It provides access to a declaration block as well as to the
     associated group of selectors.
     
-    Properties
-    ==========
-    selectorList: of type SelectorList (cssutils only)
-        A list of all Selector elements for the rule set.
-    selectorText: of type DOMString
-        The textual representation of the selector for the rule set. The
-        implementation may have stripped out insignificant whitespace while
-        parsing the selector.
-    style: of type CSSStyleDeclaration, (DOM)
-        The declaration-block of this rule set.
-    type
-        the type of this rule, constant cssutils.CSSRule.STYLE_RULE
-        
-    inherited properties:
-        - cssText
-        - parentRule
-        - parentStyleSheet
-
-    Format
-    ======
-    ruleset::
+    Format::
     
         : selector [ COMMA S* selector ]*
         LBRACE S* declaration [ ';' S* declaration ]* '}' S*
         ;
     """
-    type = property(lambda self: cssrule.CSSRule.STYLE_RULE)
-
     def __init__(self, selectorText=None, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         """
@@ -67,6 +44,18 @@ class CSSStyleRule(cssrule.CSSRule):
 
         self._readonly = readonly
 
+    def __repr__(self):
+        if self._namespaces:
+            st = (self.selectorText, self._namespaces)
+        else:
+            st = self.selectorText 
+        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
+                self.__class__.__name__, st, self.style.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object selector=%r style=%r _namespaces=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self.style.cssText,
+                self._namespaces, id(self))
 
     def _getCssText(self):
         """
@@ -224,19 +213,10 @@ class CSSStyleRule(cssrule.CSSRule):
             self._style._seq = style._seq 
 
     style = property(lambda self: self._style, _setStyle,
-        doc="(DOM) The declaration-block of this rule set.")
+                     doc="(DOM) The declaration-block of this rule set.")
+
+    type = property(lambda self: self.STYLE_RULE, 
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
 
     wellformed = property(lambda self: self.selectorList.wellformed)
-
-    def __repr__(self):
-        if self._namespaces:
-            st = (self.selectorText, self._namespaces)
-        else:
-            st = self.selectorText 
-        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
-                self.__class__.__name__, st, self.style.cssText)
-
-    def __str__(self):
-        return "<cssutils.css.%s object selector=%r style=%r _namespaces=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, self.style.cssText,
-                self._namespaces, id(self))

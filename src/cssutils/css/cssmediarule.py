@@ -1,5 +1,4 @@
-"""CSSMediaRule implements DOM Level 2 CSS CSSMediaRule.
-"""
+"""CSSMediaRule implements DOM Level 2 CSS CSSMediaRule."""
 __all__ = ['CSSMediaRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -14,31 +13,14 @@ class CSSMediaRule(cssrule.CSSRule):
     MEDIA_RULE constant. On these objects the type attribute must return the
     value of that constant.
 
-    Properties
-    ==========
-    atkeyword: (cssutils only)    
-        the literal keyword used    
-    cssRules: A css::CSSRuleList of all CSS rules contained within the
-        media block.
-    cssText: of type DOMString
-        The parsable textual representation of this rule
-    media: of type stylesheets::MediaList, (DOM readonly)
-        A list of media types for this rule of type MediaList.
-    name: 
-        An optional name used for cascading
+    Format::
 
-    Format
-    ======
-    media
       : MEDIA_SYM S* medium [ COMMA S* medium ]* 
       
           STRING? # the name
       
       LBRACE S* ruleset* '}' S*;
     """
-    # CONSTANT
-    type = property(lambda self: cssrule.CSSRule.MEDIA_RULE)
-
     def __init__(self, mediaText='all', name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """constructor"""
@@ -54,6 +36,14 @@ class CSSMediaRule(cssrule.CSSRule):
         self.cssRules.__delitem__ == self.deleteRule
 
         self._readonly = readonly
+
+    def __repr__(self):
+        return "cssutils.css.%s(mediaText=%r)" % (
+                self.__class__.__name__, self.media.mediaText)
+        
+    def __str__(self):
+        return "<cssutils.css.%s object mediaText=%r at 0x%x>" % (
+                self.__class__.__name__, self.media.mediaText, id(self))
 
     def __iter__(self):
         """generator which iterates over cssRules."""
@@ -229,8 +219,6 @@ class CSSMediaRule(cssrule.CSSRule):
         doc=u"(DOM readonly) A list of media types for this rule of type\
             MediaList")
 
-    wellformed = property(lambda self: self.media.wellformed)
-
     def deleteRule(self, index):
         """
         index
@@ -340,10 +328,8 @@ class CSSMediaRule(cssrule.CSSRule):
         rule._parentStyleSheet = self.parentStyleSheet
         return index
 
-    def __repr__(self):
-        return "cssutils.css.%s(mediaText=%r)" % (
-                self.__class__.__name__, self.media.mediaText)
-        
-    def __str__(self):
-        return "<cssutils.css.%s object mediaText=%r at 0x%x>" % (
-                self.__class__.__name__, self.media.mediaText, id(self))
+    type = property(lambda self: self.MEDIA_RULE, 
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
+
+    wellformed = property(lambda self: self.media.wellformed)

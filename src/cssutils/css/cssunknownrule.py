@@ -1,5 +1,4 @@
-"""CSSUnknownRule implements DOM Level 2 CSS CSSUnknownRule.
-"""
+"""CSSUnknownRule implements DOM Level 2 CSS CSSUnknownRule."""
 __all__ = ['CSSUnknownRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -10,31 +9,13 @@ import xml.dom
 
 class CSSUnknownRule(cssrule.CSSRule):
     """
-    represents an at-rule not supported by this user agent.
+    Represents an at-rule not supported by this user agent, so in 
+    effect all other at-rules not defined in cssutils.
 
-    Properties
-    ==========
-    inherited from CSSRule
-        - cssText
-        - type
+    Format::
 
-    cssutils only
-    -------------
-    atkeyword
-        the literal keyword used
-    seq
-        All parts of this rule excluding @KEYWORD but including CSSComments
-    wellformed
-        if this Rule is wellformed, for Unknown rules if an atkeyword is set
-        at all
-
-    Format
-    ======
-    unknownrule:
         @xxx until ';' or block {...}
     """
-    type = property(lambda self: cssrule.CSSRule.UNKNOWN_RULE)
-
     def __init__(self, cssText=u'', parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         """
@@ -48,6 +29,14 @@ class CSSUnknownRule(cssrule.CSSRule):
             self.cssText = cssText
 
         self._readonly = readonly
+
+    def __repr__(self):
+        return "cssutils.css.%s(cssText=%r)" % (
+                self.__class__.__name__, self.cssText)
+        
+    def __str__(self):
+        return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.cssText, id(self))
 
     def _getCssText(self):
         """ returns serialized property cssText """
@@ -197,12 +186,9 @@ class CSSUnknownRule(cssrule.CSSRule):
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation.")
     
+    type = property(lambda self: self.UNKNOWN_RULE, 
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
+    
     wellformed = property(lambda self: bool(self.atkeyword))
     
-    def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__, self.cssText)
-        
-    def __str__(self):
-        return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssText, id(self))

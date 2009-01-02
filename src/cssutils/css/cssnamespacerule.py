@@ -1,8 +1,4 @@
-"""CSSNamespaceRule currently implements
-http://dev.w3.org/csswg/css3-namespace/
-
-(until 0.9.5a2: http://www.w3.org/TR/2006/WD-css3-namespace-20060828/)
-"""
+"""CSSNamespaceRule currently implements http://dev.w3.org/csswg/css3-namespace/"""
 __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -20,36 +16,19 @@ class CSSNamespaceRule(cssrule.CSSRule):
     it with a given namespace (a string). This namespace prefix can then be
     used in namespace-qualified names such as those described in the
     Selectors Module [SELECT] or the Values and Units module [CSS3VAL].
+    
+    Dealing with these rules directly is not needed anymore, easier is 
+    the use of :attr:`cssutils.css.CSSStyleSheet.namespaces`.
 
-    Properties
-    ==========
-    atkeyword (cssutils only)
-        the literal keyword used
-    cssText: of type DOMString
-        The parsable textual representation of this rule
-    namespaceURI: of type DOMString
-        The namespace URI (a simple string!) which is bound to the given
-        prefix. If no prefix is set (``CSSNamespaceRule.prefix==''``)
-        the namespace defined by ``namespaceURI`` is set as the default 
-        namespace.
-    prefix: of type DOMString
-        The prefix used in the stylesheet for the given
-        ``CSSNamespaceRule.nsuri``. If prefix is empty namespaceURI sets a 
-        default namespace for the stylesheet.
+    Format::
 
-    Inherits properties from CSSRule
-
-    Format
-    ======
-    namespace
-      : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
-      ;
-    namespace_prefix
-      : IDENT
-      ;
+        namespace
+          : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
+          ;
+        namespace_prefix
+          : IDENT
+          ;
     """
-    type = property(lambda self: cssrule.CSSRule.NAMESPACE_RULE)
-
     def __init__(self, namespaceURI=None, prefix=None, cssText=None, 
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """
@@ -101,6 +80,14 @@ class CSSNamespaceRule(cssrule.CSSRule):
             self._parentStyleSheet = parentStyleSheet
 
         self._readonly = readonly
+
+    def __repr__(self):
+        return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
+                self.__class__.__name__, self.namespaceURI, self.prefix)
+
+    def __str__(self):
+        return "<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
+                self.__class__.__name__, self.namespaceURI, self.prefix, id(self))
 
     def _getCssText(self):
         """
@@ -295,12 +282,9 @@ class CSSNamespaceRule(cssrule.CSSRule):
 #                                _setParentStyleSheet,
 #                                doc=u"Containing CSSStyleSheet.")
 
+    type = property(lambda self: self.NAMESPACE_RULE, 
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
+    
     wellformed = property(lambda self: self.namespaceURI is not None)
-
-    def __repr__(self):
-        return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
-                self.__class__.__name__, self.namespaceURI, self.prefix)
-
-    def __str__(self):
-        return "<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
-                self.__class__.__name__, self.namespaceURI, self.prefix, id(self))
+    
