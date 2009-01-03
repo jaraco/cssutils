@@ -58,29 +58,7 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="overview">
-<h2>overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Classes implementing <a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 CSS</a> and <a class="reference external" href="http://www.w3.org/TR/css3-namespace/">CSS Module: Namespaces (W3C Working Draft 28 August 2006)</a></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">CSSRuleList:</th><td class="field-body">A list of CSSRule objects used in <a class="reference internal" href="#cssstylesheet">CSSStyleSheet</a> and <a class="reference internal" href="#cssmediarule">CSSMediaRule</a></td>
-</tr>
-<tr class="field"><th class="field-name"><a class="reference internal" href="#selectorlist">Selectorlist</a>:</th><td class="field-body">A list of Selector objects used in <a class="reference internal" href="#cssstylerule">CSSStyleRule</a></td>
-</tr>
-<tr class="field"><th class="field-name"><a class="reference internal" href="#selector">Selector</a>:</th><td class="field-body">A single CSS selector</td>
-</tr>
-<tr class="field"><th class="field-name" colspan="2"><a class="reference external" href="cssstyledeclaration.txt">CSSStyleDeclaration</a>:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">Containing a list of Properties</td>
-</tr>
-<tr class="field"><th class="field-name"><a class="reference external" href="cssstyledeclaration.txt#property">Property</a>:</th><td class="field-body">A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery</td>
-</tr>
-<tr class="field"><th class="field-name"><a class="reference external" href="values.txt">CSSValue</a>:</th><td class="field-body">A CSS value which might also be a CSSPrimitiveValue or CSSValueList.</td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="section" id="cssstylesheet">
 <h2>CSSStyleSheet<a class="headerlink" href="#cssstylesheet" title="Permalink to this headline">¶</a></h2>
 <p>A CSSStyleSheet contains all rules. It consists of the different CSS ruleslike <a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">CSSImportRule</span></tt></a>, <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a> etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an <a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> rule or simpler with the <a title="cssutils.css.CSSStyleSheet.encoding" class="reference internal" href="#cssutils.css.CSSStyleSheet.encoding"><tt class="xref docutils literal"><span class="pre">encoding</span></tt></a> attribute. The serialized sheet may be obtained from <a title="cssutils.css.CSSStyleSheet.cssText" class="reference internal" href="#cssutils.css.CSSStyleSheet.cssText"><tt class="xref docutils literal"><span class="pre">cssText</span></tt></a>. All rules are present in <tt class="xref docutils literal"><span class="pre">cssRules</span></tt>, a stylesheet iterates on its rules so this might be easier. Namespaces are available via <a title="cssutils.css.CSSStyleSheet.namespaces" class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces"><tt class="xref docutils literal"><span class="pre">namespaces</span></tt></a> (do not rely on prefixes, see <a class="reference external" href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a> how these work).</p>
@@ -1140,8 +1118,8 @@ negation_arg
 </div>
 <div class="section" id="styles">
 <h2>Styles<a class="headerlink" href="#styles" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>CSSStyleDeclaration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="cssstyledeclaration">
+<h3>CSSStyleDeclaration<a class="headerlink" href="#cssstyledeclaration" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSStyleDeclaration">
 <!--[cssutils.css.CSSStyleDeclaration]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleDeclaration</tt><big>(</big><em>cssText=u''</em>, <em>parentRule=None</em>, <em>profiles=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration" title="Permalink to this definition">¶</a></dt>
@@ -1399,8 +1377,8 @@ readonly.</li>
 </dd></dl>
 
 </div>
-<div class="section" id="id2">
-<h3>Property<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="property">
+<h3>Property<a class="headerlink" href="#property" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.Property">
 <!--[cssutils.css.Property]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>profiles=None</em>, <em>_mediaQuery=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
@@ -1485,8 +1463,8 @@ prio
 </div>
 <div class="section" id="values">
 <h3>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id3">
-<h4>CSSValue<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="cssvalue">
+<h4>CSSValue<a class="headerlink" href="#cssvalue" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.CSSValue">
 <!--[cssutils.css.CSSValue]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValue" title="Permalink to this definition">¶</a></dt>
@@ -1756,7 +1734,6 @@ of values in the list, this returns None.</dd></dl>
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="">package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt></a><ul>
-<li><a class="reference external" href="#overview">overview</a></li>
 <li><a class="reference external" href="#cssstylesheet">CSSStyleSheet</a></li>
 <li><a class="reference external" href="#cssrules-rules-and-style-rules">CSSRules: &#64;rules and style rules</a><ul>
 <li><a class="reference external" href="#cssrulelist">CSSRuleList</a></li>
@@ -1777,10 +1754,10 @@ of values in the list, this returns None.</dd></dl>
 </ul>
 </li>
 <li><a class="reference external" href="#styles">Styles</a><ul>
-<li><a class="reference external" href="#id1">CSSStyleDeclaration</a></li>
-<li><a class="reference external" href="#id2">Property</a></li>
+<li><a class="reference external" href="#cssstyledeclaration">CSSStyleDeclaration</a></li>
+<li><a class="reference external" href="#property">Property</a></li>
 <li><a class="reference external" href="#values">Values</a><ul>
-<li><a class="reference external" href="#id3">CSSValue</a></li>
+<li><a class="reference external" href="#cssvalue">CSSValue</a></li>
 <li><a class="reference external" href="#cssprimitivevalue">CSSPrimitiveValue</a></li>
 <li><a class="reference external" href="#cssvaluelist">CSSValueList</a></li>
 <li><a class="reference external" href="#cssfunction">CSSFunction</a></li>
