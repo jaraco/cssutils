@@ -21,20 +21,6 @@ class CSSValue(cssutils.util._NewBase):
     """
     The CSSValue interface represents a simple or a complex value.
     A CSSValue object only occurs in a context of a CSS property
-
-    Properties
-    ==========
-    cssText
-        A string representation of the current value.
-    cssValueType
-        A (readonly) code defining the type of the value.
-    cssValueTypeString
-        A (readonly) string describing ``cssValueType``.
-
-    seq: a list (cssutils)
-        All parts of this style declaration including CSSComments
-    wellformed
-        if this value is syntactically ok
     """
 
     # The value is inherited and the cssText contains "inherit".
@@ -72,11 +58,18 @@ class CSSValue(cssutils.util._NewBase):
 
         self._readonly = readonly
 
+    def __repr__(self):
+        return "cssutils.css.%s(%r)" % (
+                self.__class__.__name__, self.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object cssValueTypeString=%r cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.cssValueTypeString,
+                self.cssText, id(self))
+
     def _setCssText(self, cssText):
         """
-        Format
-        ======
-        ::
+        Format::
 
             unary_operator
               : '-' | '+'
@@ -314,15 +307,6 @@ class CSSValue(cssutils.util._NewBase):
         lambda self: CSSValue._typestrings.get(self.cssValueType, None),
         doc="(readonly) Name of cssValueType.")
 
-    def __repr__(self):
-        return "cssutils.css.%s(%r)" % (
-                self.__class__.__name__, self.cssText)
-
-    def __str__(self):
-        return "<cssutils.css.%s object cssValueTypeString=%r cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssValueTypeString,
-                self.cssText, id(self))
-
 
 class CSSPrimitiveValue(CSSValue):
     """
@@ -432,6 +416,11 @@ class CSSPrimitiveValue(CSSValue):
         """
         super(CSSPrimitiveValue, self).__init__(cssText=cssText,
                                                 readonly=readonly)
+
+    def __str__(self):
+        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.primitiveTypeString,
+                self.cssText, id(self))
 
     _unitnames = ['CSS_UNKNOWN',
                   'CSS_NUMBER', 'CSS_PERCENTAGE',
@@ -754,11 +743,6 @@ class CSSPrimitiveValue(CSSValue):
     cssText = property(_getCssText, _setCssText,
         doc="A string representation of the current value.")
 
-    def __str__(self):
-        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.primitiveTypeString,
-                self.cssText, id(self))
-
 
 class CSSValueList(CSSValue):
     """
@@ -781,8 +765,17 @@ class CSSValueList(CSSValue):
         super(CSSValueList, self).__init__(cssText=cssText, readonly=readonly)
         self._items = []
 
-    length = property(lambda self: len(self.__items()),
-                doc="(DOM attribute) The number of CSSValues in the list.")
+    def __iter__(self):
+        "CSSValueList is iterable"
+        def itemsiter():
+            for i in range (0, self.length):
+                yield self.item(i)
+        return itemsiter()
+
+    def __str__(self):
+        return "<cssutils.css.%s object cssValueType=%r cssText=%r length=%r at 0x%x>" % (
+                self.__class__.__name__, self.cssValueTypeString,
+                self.cssText, self.length, id(self))
 
     def __items(self):
         return [item for item in self._seq 
@@ -800,20 +793,9 @@ class CSSValueList(CSSValue):
         except IndexError:
             return None
 
-    def __iter__(self):
-        "CSSValueList is iterable"
-        return CSSValueList.__itemsiter(self)
-
-    def __itemsiter(self):
-        "the iterator"
-        for i in range (0, self.length):
-            yield self.item(i)
-
-    def __str__(self):
-        return "<cssutils.css.%s object cssValueType=%r cssText=%r length=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssValueTypeString,
-                self.cssText, self.length, id(self))
-
+    length = property(lambda self: len(self.__items()),
+                doc="(DOM attribute) The number of CSSValues in the list.")
+            
 
 class CSSFunction(CSSPrimitiveValue):
     """A CSS function value like rect() etc."""
@@ -838,6 +820,14 @@ class CSSFunction(CSSPrimitiveValue):
         self._funcType = None
 
         self._readonly = readonly
+
+    def __repr__(self):
+        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.primitiveTypeString, self.cssText,
+                id(self))
     
     def _productiondefinition(self):
         """Return defintion used for parsing."""
@@ -908,17 +898,9 @@ class CSSFunction(CSSPrimitiveValue):
     
     funcType = property(lambda self: self._funcType)
     
-    def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
-
-    def __str__(self):
-        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.primitiveTypeString, self.cssText,
-                id(self))
 
 class RGBColor(CSSPrimitiveValue):
     """A CSS color like RGB, RGBA or a simple value like `#000` or `red`."""
-    
     def __init__(self, cssText=None, readonly=False):
         """
         Init a new RGBColor
@@ -936,6 +918,14 @@ class RGBColor(CSSPrimitiveValue):
             self.cssText = cssText
 
         self._readonly = readonly
+    
+    def __repr__(self):
+        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+
+    def __str__(self):
+        return "<cssutils.css.%s object colorType=%r cssText=%r at 0x%x>" % (
+                self.__class__.__name__, self.colorType, self.cssText,
+                id(self))
     
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -988,18 +978,9 @@ class RGBColor(CSSPrimitiveValue):
     
     colorType = property(lambda self: self._colorType)
     
-    def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
-
-    def __str__(self):
-        return "<cssutils.css.%s object colorType=%r cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.colorType, self.cssText,
-                id(self))
-
 
 class ExpressionValue(CSSFunction):
     """Special IE only FUNCTION which may contain *anything*."""
-    
     name = u'Expression (IE only)'
     
     def _productiondefinition(self):
@@ -1022,7 +1003,9 @@ class ExpressionValue(CSSFunction):
     
     def _getCssText(self):
         return cssutils.ser.do_css_ExpressionValue(self)
+    
     def _setCssText(self, cssText):
         return super(ExpressionValue, self)._setCssText(cssText)
+    
     cssText = property(_getCssText, _setCssText,
                        doc="A string representation of the current value.")

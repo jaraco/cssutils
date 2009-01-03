@@ -19,17 +19,6 @@ class Selector(cssutils.util.Base2):
     """
     (cssutils) a single selector in a SelectorList of a CSSStyleRule
 
-    Properties
-    ==========
-    element
-        Effective element target of this selector
-    parentList: of type SelectorList, readonly
-        The SelectorList that contains this selector or None if this
-        Selector is not attached to a SelectorList.
-    selectorText
-        textual representation of this Selector
-    seq
-        sequence of Selector parts including comments
     specificity (READONLY)
         tuple of (a, b, c, d) where:
         
@@ -45,9 +34,7 @@ class Selector(cssutils.util.Base2):
     wellformed
         if this selector is wellformed regarding the Selector spec
 
-    Format
-    ======
-    ::
+    Format::
 
         # implemented in SelectorList
         selectors_group
@@ -149,6 +136,38 @@ class Selector(cssutils.util.Base2):
             self.selectorText = selectorText
 
         self._readonly = readonly
+
+    def __repr__(self):
+        if self.__getNamespaces():
+            st = (self.selectorText, self._getUsedNamespaces())
+        else:
+            st = self.selectorText
+        return u"cssutils.css.%s(selectorText=%r)" % (
+                self.__class__.__name__, st)
+
+    def __str__(self):
+        return u"<cssutils.css.%s object selectorText=%r specificity=%r _namespaces=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self.specificity, 
+                self._getUsedNamespaces(), id(self))
+
+    def _getUsedUris(self):
+        "returns list of actually used URIs in this Selector"
+        uris = set()
+        for item in self.seq:
+            type_, val = item.type, item.value
+            if type_.endswith(u'-selector') or type_ == u'universal' and \
+               type(val) == tuple and val[0] not in (None, u'*'):
+                uris.add(val[0])
+        return uris
+
+    def _getUsedNamespaces(self):
+        "returns actually used namespaces only"
+        useduris = self._getUsedUris()
+        namespaces = _SimpleNamespaces(log=self._log)
+        for p, uri in self._namespaces.items():
+            if uri in useduris:
+                namespaces[p] = uri
+        return namespaces
 
     def __getNamespaces(self):
         "uses own namespaces if not attached to a sheet, else the sheet's ones"
@@ -766,35 +785,3 @@ class Selector(cssutils.util.Base2):
                            doc="Specificity of this selector (READONLY).")
 
     wellformed = property(lambda self: bool(len(self.seq)))
-
-    def __repr__(self):
-        if self.__getNamespaces():
-            st = (self.selectorText, self._getUsedNamespaces())
-        else:
-            st = self.selectorText
-        return u"cssutils.css.%s(selectorText=%r)" % (
-                self.__class__.__name__, st)
-
-    def __str__(self):
-        return u"<cssutils.css.%s object selectorText=%r specificity=%r _namespaces=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, self.specificity, 
-                self._getUsedNamespaces(), id(self))
-
-    def _getUsedUris(self):
-        "returns list of actually used URIs in this Selector"
-        uris = set()
-        for item in self.seq:
-            type_, val = item.type, item.value
-            if type_.endswith(u'-selector') or type_ == u'universal' and \
-               type(val) == tuple and val[0] not in (None, u'*'):
-                uris.add(val[0])
-        return uris
-
-    def _getUsedNamespaces(self):
-        "returns actually used namespaces only"
-        useduris = self._getUsedUris()
-        namespaces = _SimpleNamespaces(log=self._log)
-        for p, uri in self._namespaces.items():
-            if uri in useduris:
-                namespaces[p] = uri
-        return namespaces

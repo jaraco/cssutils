@@ -56,6 +56,26 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         for rule in self.cssRules:
             yield rule
 
+    def __repr__(self):
+        if self.media:
+            mediaText = self.media.mediaText
+        else:
+            mediaText = None
+        return "cssutils.css.%s(href=%r, media=%r, title=%r)" % (
+                self.__class__.__name__,
+                self.href, mediaText, self.title)
+
+    def __str__(self):
+        if self.media:
+            mediaText = self.media.mediaText
+        else:
+            mediaText = None
+        return "<cssutils.css.%s object encoding=%r href=%r "\
+               "media=%r title=%r namespaces=%r at 0x%x>" % (
+                self.__class__.__name__, self.encoding, self.href,
+                mediaText, self.title, self.namespaces.namespaces,
+                id(self))
+
     def _cleanNamespaces(self):
         "Remove all namespace rules with same namespaceURI but last one set."
         rules = self.cssRules
@@ -610,23 +630,3 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         preferences to be set.
         """
         cssutils.ser.prefs.__setattr__(pref, value)
-
-    def __repr__(self):
-        if self.media:
-            mediaText = self.media.mediaText
-        else:
-            mediaText = None
-        return "cssutils.css.%s(href=%r, media=%r, title=%r)" % (
-                self.__class__.__name__,
-                self.href, mediaText, self.title)
-
-    def __str__(self):
-        if self.media:
-            mediaText = self.media.mediaText
-        else:
-            mediaText = None
-        return "<cssutils.css.%s object encoding=%r href=%r "\
-               "media=%r title=%r namespaces=%r at 0x%x>" % (
-                self.__class__.__name__, self.encoding, self.href,
-                mediaText, self.title, self.namespaces.namespaces,
-                id(self))

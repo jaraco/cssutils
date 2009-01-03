@@ -1,16 +1,12 @@
-"""
-CSSRuleList implements DOM Level 2 CSS CSSRuleList.
-
-Partly also
-    * http://dev.w3.org/csswg/cssom/#the-cssrulelist
+"""CSSRuleList implements DOM Level 2 CSS CSSRuleList.
+Partly also http://dev.w3.org/csswg/cssom/#the-cssrulelist
 """
 __all__ = ['CSSRuleList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 class CSSRuleList(list):
-    """
-    The CSSRuleList object represents an (ordered) list of statements.
+    """The CSSRuleList object represents an (ordered) list of statements.
 
     The items in the CSSRuleList are accessible via an integral index,
     starting from 0.
@@ -21,12 +17,6 @@ class CSSRuleList(list):
     class if so desired.
     E.g. CSSStyleSheet adds ``append`` which is not available in a simple
     instance of this class! 
-
-    Properties
-    ==========
-    length: of type unsigned long, readonly
-        The number of CSSRules in the list. The range of valid child rule
-        indices is 0 to length-1 inclusive.
     """
     def __init__(self, *ignored):
         "nothing is set as this must also be defined later"

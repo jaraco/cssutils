@@ -155,5 +155,4 @@ class CSSCharsetRule(cssrule.CSSRule):
                     doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
 
-    wellformed = property(lambda self: bool(self.encoding),
-                          doc="If this rule is wellformed.")
+    wellformed = property(lambda self: bool(self.encoding))

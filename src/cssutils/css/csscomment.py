@@ -83,4 +83,4 @@ class CSSComment(cssrule.CSSRule):
                         "type constant.")
     
     # constant but needed:
-    wellformed = True 
+    wellformed = property(lambda self: True)

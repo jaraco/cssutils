@@ -1,5 +1,4 @@
-"""
-Document Object Model Level 2 CSS
+"""Implements Document Object Model Level 2 CSS
 http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927/css.html
 
 currently implemented

@@ -58,6 +58,14 @@ class MediaQuery(cssutils.util.Base):
 
         self._readonly = readonly
 
+    def __repr__(self):
+        return "cssutils.stylesheets.%s(mediaText=%r)" % (
+                self.__class__.__name__, self.mediaText)
+
+    def __str__(self):
+        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
+                self.__class__.__name__, self.mediaText, id(self))
+
     def _getMediaText(self):
         return cssutils.ser.do_stylesheets_mediaquery(self)
 
@@ -196,13 +204,4 @@ class MediaQuery(cssutils.util.Base):
         doc="The media type of this MediaQuery (one of "
             ":attr:`MEDIA_TYPES`).")
 
-    wellformed = property(lambda self: bool(len(self.seq)),
-                          doc="If this MediaQuery is wellformed.")
-
-    def __repr__(self):
-        return "cssutils.stylesheets.%s(mediaText=%r)" % (
-                self.__class__.__name__, self.mediaText)
-
-    def __str__(self):
-        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
-                self.__class__.__name__, self.mediaText, id(self))
+    wellformed = property(lambda self: bool(len(self.seq)))

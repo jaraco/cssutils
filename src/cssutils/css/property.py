@@ -16,8 +16,6 @@ class Property(cssutils.util.Base):
     """
     (cssutils) a CSS property in a StyleDeclaration of a CSSStyleRule
 
-    Properties
-    ==========
     cssText
         a parsable textual representation of this property
     name
@@ -44,9 +42,7 @@ class Property(cssutils.util.Base):
         if this Property is syntactically ok
 
 
-    Format
-    ======
-    ::
+    Format::
 
         property = name
           : IDENT S*
@@ -115,6 +111,16 @@ class Property(cssutils.util.Base):
         if priority:
             self.priority = priority
             
+    def __repr__(self):
+        return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
+                self.__class__.__name__,
+                self.literalname, self.cssValue.cssText, self.priority)
+
+    def __str__(self):
+        return "<%s.%s object name=%r value=%r priority=%r valid=%r at 0x%x>" % (
+                self.__class__.__module__, self.__class__.__name__,
+                self.name, self.cssValue.cssText, self.priority,
+                self.valid, id(self))
 
     def _getCssText(self):
         """
@@ -431,15 +437,3 @@ class Property(cssutils.util.Base):
 
     valid = property(validate,
                      doc='Check if value of this property is valid in the properties context.')
-
-    def __repr__(self):
-        return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
-                self.__class__.__name__,
-                self.literalname, self.cssValue.cssText, self.priority)
-
-    def __str__(self):
-        return "<%s.%s object name=%r value=%r priority=%r valid=%r at 0x%x>" % (
-                self.__class__.__module__, self.__class__.__name__,
-                self.name, self.cssValue.cssText, self.priority,
-                self.valid, id(self))
-

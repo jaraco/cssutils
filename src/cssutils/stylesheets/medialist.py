@@ -48,6 +48,14 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 
         self._readonly = readonly
 
+    def __repr__(self):
+        return "cssutils.stylesheets.%s(mediaText=%r)" % (
+                self.__class__.__name__, self.mediaText)
+
+    def __str__(self):
+        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
+                self.__class__.__name__, self.mediaText, id(self))
+
     length = property(lambda self: len(self),
         doc="The number of media in the list (DOM readonly).")
 
@@ -104,9 +112,6 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="The parsable textual representation of the media list.")
-
-    wellformed = property(lambda self: self._wellformed,
-                          doc="If this MediaList is wellformed.")
 
     def __prepareset(self, newMedium):
         # used by appendSelector and __setitem__
@@ -207,8 +212,6 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         else:
             self._log.error(u'"%s" not in this MediaList' % oldMedium,
                             error=xml.dom.NotFoundErr)
-#            raise xml.dom.NotFoundErr(
-#                u'"%s" not in this MediaList' % oldMedium)
 
     def item(self, index):
         """Return the mediaType of the `index`'th element in the list.
@@ -220,10 +223,4 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         except IndexError:
             return None
 
-    def __repr__(self):
-        return "cssutils.stylesheets.%s(mediaText=%r)" % (
-                self.__class__.__name__, self.mediaText)
-
-    def __str__(self):
-        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
-                self.__class__.__name__, self.mediaText, id(self))
+    wellformed = property(lambda self: self._wellformed)
