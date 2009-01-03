@@ -1,7 +1,7 @@
 ========================
 package ``cssutils.css``
 ========================
-:Version: $Id: css.txt 1605 2009-01-03 18:27:32Z cthedot $
+:Version: $Id: css.txt 1609 2009-01-03 21:07:17Z cthedot $
 
 .. module:: cssutils.css
 
@@ -28,12 +28,21 @@ A CSSStyleSheet contains all rules. It consists of the different CSS ruleslike :
    :members:
    :inherited-members:
 
-CSSRule
-==============
+CSSRules: @rules and style rules
+================================
 
+CSSRuleList
+-----------
+.. autoclass:: cssutils.css.CSSRuleList
+   :members:
+   :inherited-members:
+
+CSSRule
+-------
 .. autoclass:: cssutils.css.CSSRule
    :members:
    :inherited-members:
+
 
 CSSCharsetRule
 --------------
@@ -84,16 +93,79 @@ CSSStyleRule
    :inherited-members:
 
 
-.. _MediaList: stylesheets.txt
+
+Selectors
+=========
 
 SelectorList
-============
+------------
 .. autoclass:: cssutils.css.SelectorList
    :members:
    :inherited-members:
 
 Selector
-========
+--------
 .. autoclass:: cssutils.css.Selector
    :members:
    :inherited-members:
+
+
+
+Styles
+======
+
+
+CSSStyleDeclaration
+-------------------
+.. autoclass:: cssutils.css.CSSStyleDeclaration
+   :members:
+   :inherited-members:
+
+
+Property
+--------
+.. autoclass:: cssutils.css.Property
+   :members:
+   :inherited-members:
+
+
+Values
+------
+
+CSSValue
+~~~~~~~~
+.. autoclass:: cssutils.css.CSSValue
+    :members:
+    :inherited-members:
+
+CSSPrimitiveValue
+~~~~~~~~~~~~~~~~~
+.. autoclass:: cssutils.css.CSSPrimitiveValue
+    :members:
+    :inherited-members:
+
+CSSValueList
+~~~~~~~~~~~~
+.. autoclass:: cssutils.css.CSSValueList
+    :members:
+    :inherited-members:
+
+
+CSSFunction
+~~~~~~~~~~~
+.. autoclass:: cssutils.css.cssvalue.CSSFunction
+    :members:
+
+..
+    RGBColor
+    ~~~~~~~~
+    .. autoclass:: cssutils.css.RGBColor
+        :members:
+        :inherited-members:
+
+ExpressionValue
+~~~~~~~~~~~~~~~
+.. autoclass:: cssutils.css.cssvalue.ExpressionValue
+    :members:
+
+
