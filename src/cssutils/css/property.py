@@ -1,7 +1,4 @@
-"""Property is a single CSS property in a CSSStyleDeclaration
-
-Internal use only, may be removed in the future!
-"""
+"""Property is a single CSS property in a CSSStyleDeclaration."""
 __all__ = ['Property']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -13,34 +10,7 @@ import cssutils
 import xml.dom
 
 class Property(cssutils.util.Base):
-    """
-    (cssutils) a CSS property in a StyleDeclaration of a CSSStyleRule
-
-    cssText
-        a parsable textual representation of this property
-    name
-        normalized name of the property, e.g. "color" when name is "c\olor"
-        (since 0.9.5)
-    literalname (since 0.9.5)
-        original name of the property in the source CSS which is not normalized
-        e.g. "C\\OLor"
-    cssValue
-        the relevant CSSValue instance for this property
-    value
-        the string value of the property, same as cssValue.cssText
-    priority
-        of the property (currently only u"important" or None)
-    literalpriority
-        original priority of the property in the source CSS which is not
-        normalized e.g. "IM\portant"
-    seqs
-        combination of a list for seq of name, a CSSValue object, and
-        a list for seq of  priority (empty or [!important] currently)
-    valid
-        if this Property is valid
-    wellformed
-        if this Property is syntactically ok
-
+    """A CSS property in a StyleDeclaration of a CSSStyleRule (cssutils).
 
     Format::
 
