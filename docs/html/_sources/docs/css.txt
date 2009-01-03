@@ -5,17 +5,7 @@ package ``cssutils.css``
 
 .. module:: cssutils.css
 
-overview
-========
 Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ and `CSS Module: Namespaces (W3C Working Draft 28 August 2006) <http://www.w3.org/TR/css3-namespace/>`_
-
-:CSSRuleList: A list of CSSRule objects used in CSSStyleSheet_ and CSSMediaRule_
-
-:Selectorlist_: A list of Selector objects used in CSSStyleRule_
-:Selector_: A single CSS selector
-:`CSSStyleDeclaration <cssstyledeclaration.txt>`_: Containing a list of Properties
-:`Property <cssstyledeclaration.txt#property>`_: A single property with name, value and priority information, used for properties in CSSStyleDeclaration and stylesheets.MediaQuery
-:`CSSValue <values.txt>`_: A CSS value which might also be a CSSPrimitiveValue or CSSValueList.
 
 
 CSSStyleSheet
