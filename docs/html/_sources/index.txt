@@ -1,9 +1,9 @@
 =============================================
                 cssutils
 =============================================
----------------------------------------------
+
 CSS Cascading Style Sheets library for Python
----------------------------------------------
+
 :version release: |release|
 
 Contents
@@ -15,16 +15,14 @@ Contents
     <README>
     <CHANGELOG>
 
-    <docs/cssutils>
-    <docs/logging>
     <docs/parse>
     <docs/serialize>
     <docs/css>
     <docs/stylesheets>
-    <docs/cssstyledeclaration>
-    <docs/values>
-    <docs/profiles>
+
     <docs/codec>
+    <docs/profiles>
+    <docs/logging>
 
     <docs/scripts>
 
