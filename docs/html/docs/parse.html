@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>parsing CSS &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="serializing CSS" href="serialize.html" />
+    <link rel="prev" title="logging" href="logging.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="serialize.html" title="serializing CSS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="logging.html" title="logging"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="parsing-css">
+<span id="module-cssutils.parse"></span><h1>parsing CSS<a class="headerlink" href="#parsing-css" title="Permalink to this headline">¶</a></h1>
+<p>Options to parse a given stylesheet: Get an instance of <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> and use the provided <tt class="docutils literal"><span class="pre">parse*</span></tt> methods or for simpler parsing use the <tt class="docutils literal"><span class="pre">parse*</span></tt> <a class="reference internal" href="#helper-functions">helper functions</a>.</p>
+<div class="section" id="cssparser">
+<h2>CSSParser<a class="headerlink" href="#cssparser" title="Permalink to this headline">¶</a></h2>
+<p>The parser is reusable.</p>
+<dl class="class">
+<dt id="cssutils.CSSParser">
+<!--[cssutils.CSSParser]-->class <tt class="descclassname">cssutils.</tt><tt class="descname">CSSParser</tt><big>(</big><em>log=None</em>, <em>loglevel=None</em>, <em>raiseExceptions=None</em>, <em>fetcher=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a CSS StyleSheet from URL, string or file and return a DOM Level 2
+CSS StyleSheet object.</p>
+<p>Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">parser</span> <span class="o">=</span> <span class="n">CSSParser</span><span class="p">()</span>
+<span class="c"># optionally</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">setFetcher</span><span class="p">(</span><span class="n">fetcher</span><span class="p">)</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parseFile</span><span class="p">(</span><span class="s">&#39;test1.css&#39;</span><span class="p">,</span> <span class="s">&#39;ascii&#39;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="cssutils.CSSParser.parseFile">
+<!--[cssutils.CSSParser.parseFile]--><tt class="descname">parseFile</tt><big>(</big><em>filename</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve and return a CSSStyleSheet from given filename.
+Raises errors during retrieving (e.g. IOError).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>filename</em> &#8211; of the CSS file to parse, if no <cite>href</cite> is given filename is
+converted to a (file:) URL and set as <tt class="docutils literal"><span class="pre">href</span></tt> of resulting
+stylesheet.
+If <cite>href</cite> is given it is set as <tt class="docutils literal"><span class="pre">sheet.href</span></tt>. Either way
+<tt class="docutils literal"><span class="pre">sheet.href</span></tt> is used to resolve e.g. stylesheet imports via
+&#64;import rules.</li>
+<li><em>encoding</em> &#8211; Value <tt class="xref docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via BOM or an
+&#64;charset rule.
+Other values override detected encoding for the sheet at
+<cite>filename</cite> including any imported sheets.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For other parameters see <tt class="docutils literal"><span class="pre">parseString</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.CSSParser.parseString">
+<!--[cssutils.CSSParser.parseString]--><tt class="descname">parseString</tt><big>(</big><em>cssText</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return parsed CSSStyleSheet from given string cssText.
+Raises errors during retrieving (e.g. UnicodeDecodeError).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>cssText</em> &#8211; CSS string to parse</li>
+<li><em>encoding</em> &#8211; If <tt class="xref docutils literal"><span class="pre">None</span></tt> the encoding will be read from BOM or an &#64;charset
+rule or defaults to UTF-8.
+If given overrides any found encoding including the ones for
+imported sheets.
+It also will be used to decode <cite>cssText</cite> if given as a (byte)
+string.</li>
+<li><em>href</em> &#8211; The <tt class="docutils literal"><span class="pre">href</span></tt> attribute to assign to the parsed style sheet.
+Used to resolve other urls in the parsed sheet like &#64;import hrefs.</li>
+<li><em>media</em> &#8211; The <tt class="docutils literal"><span class="pre">media</span></tt> attribute to assign to the parsed style sheet
+(may be a MediaList, list or a string).</li>
+<li><em>title</em> &#8211; The <tt class="docutils literal"><span class="pre">title</span></tt> attribute to assign to the parsed style sheet.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.CSSParser.parseUrl">
+<!--[cssutils.CSSParser.parseUrl]--><tt class="descname">parseUrl</tt><big>(</big><em>href</em>, <em>encoding=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseUrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve and return a CSSStyleSheet from given href (an URL).
+In case of any errors while reading the URL returns None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>href</em> &#8211; URL of the CSS file to parse, will also be set as <tt class="docutils literal"><span class="pre">href</span></tt> of
+resulting stylesheet</li>
+<li><em>encoding</em> &#8211; Value <tt class="xref docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via HTTP, BOM or an
+&#64;charset rule.
+A value overrides detected encoding for the sheet at <tt class="docutils literal"><span class="pre">href</span></tt>
+including any imported sheets.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For other parameters see <tt class="docutils literal"><span class="pre">parseString</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.CSSParser.setFetcher">
+<!--[cssutils.CSSParser.setFetcher]--><tt class="descname">setFetcher</tt><big>(</big><em>fetcher=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.setFetcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace the default URL fetch function with a custom one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>fetcher</em> &#8211; <p>A function which gets a single parameter</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">url</span></tt></dt>
+<dd>the URL to read</dd>
+</dl>
+<p>and must return <tt class="docutils literal"><span class="pre">(encoding,</span> <span class="pre">content)</span></tt> where <tt class="docutils literal"><span class="pre">encoding</span></tt> is the 
+HTTP charset normally given via the Content-Type header (which may
+simply omit the charset) and <tt class="docutils literal"><span class="pre">content</span></tt> being the (byte) string 
+content.
+The Mimetype should be &#8216;text/css&#8217; but this has to be checked by the
+fetcher itself (the default fetcher emits a warning if encountering
+a different mimetype).</p>
+<p>Calling <tt class="docutils literal"><span class="pre">setFetcher</span></tt> with <tt class="docutils literal"><span class="pre">fetcher=None</span></tt> resets cssutils
+to use its default function.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="custom-url-fetcher">
+<h3>custom URL Fetcher<a class="headerlink" href="#custom-url-fetcher" title="Permalink to this headline">¶</a></h3>
+<p>If you want to control how imported stylesheets are read you may define a custom URL fetcher (e.g. would be needed on Google AppEngine as urllib2, which is normally used, is not available. A GAE specific fetcher is included in cssutils from 0.9.5a1 though.)</p>
+<p>A custom URL fetcher may be used during parsing via <tt class="docutils literal"><span class="pre">CSSParser.setFetcher(fetcher)</span></tt> (or as an init parameter). The so customized parser is reusable. The fetcher is called when an <tt class="docutils literal"><span class="pre">&#64;import</span></tt> rule is found and the referenced stylesheet is about to be retrieved.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">fetcher</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;ascii&#39;</span><span class="p">,</span> <span class="s">&#39;/*test*/&#39;</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">CSSParser</span><span class="p">(</span><span class="n">fetcher</span><span class="o">=</span><span class="n">fetcher</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="o">...</span>
+</pre></div>
+</div>
+<p>To omit parsing of imported sheets just define a fetcher like <tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">url:</span> <span class="pre">None</span></tt> (A single <tt class="xref docutils literal"><span class="pre">None</span></tt> is sufficient but returning <tt class="docutils literal"><span class="pre">None,</span> <span class="pre">None</span></tt> would be clearer).</p>
+<p>You may also define a fetcher which overrides the internal encoding for imported sheets with a fetcher that returns a (normally HTTP) encoding depending e.g on the URL.</p>
+</div>
+</div>
+<div class="section" id="helper-functions">
+<h2>helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+<p>Shortcuts for initializing a new <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> and use its <tt class="docutils literal"><span class="pre">parse*</span></tt> methods. Parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. If you need advanced parser handline use <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> directly.</p>
+<dl class="function">
+<dt id="cssutils.parse.cssutils.parseString">
+<!--[cssutils.parse.cssutils.parseString]--><tt class="descclassname">cssutils.</tt><tt class="descname">parseString</tt><big>(</big><em>cssText</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.parse.cssutils.parseString" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cssutils.parse.cssutils.parseFile">
+<!--[cssutils.parse.cssutils.parseFile]--><tt class="descclassname">cssutils.</tt><tt class="descname">parseFile</tt><big>(</big><em>filename</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.parse.cssutils.parseFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cssutils.parse.cssutils.parseUrl">
+<!--[cssutils.parse.cssutils.parseUrl]--><tt class="descclassname">cssutils.</tt><tt class="descname">parseUrl</tt><big>(</big><em>href</em>, <em>encoding=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.parse.cssutils.parseUrl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">parsing CSS</a><ul>
+<li><a class="reference external" href="#cssparser">CSSParser</a><ul>
+<li><a class="reference external" href="#custom-url-fetcher">custom URL Fetcher</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#helper-functions">helper functions</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="logging.html" title="previous chapter">logging</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="serialize.html" title="next chapter">serializing CSS</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/parse.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="serialize.html" title="serializing CSS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="logging.html" title="logging"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>

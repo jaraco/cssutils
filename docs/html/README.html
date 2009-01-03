@@ -88,7 +88,8 @@
 </dl>
 <p>The cssutils tokenizer is a customized implementation of <a class="reference external" href="http://www.w3.org/TR/css3-syntax/">CSS3 Module: Syntax (W3C Working Draft 13 August 2003)</a> which itself is based on the CSS 2.1 tokenizer. It tries to be as compliant as possible but uses some (helpful) parts of the CSS 2.1 tokenizer.</p>
 <p>I guess cssutils is neither CSS 2.1 nor CSS 3 compliant but tries to at least be able to parse both grammars including some more real world cases (some CSS hacks are actually parsed and serialized). Both official grammars are not final nor bugfree but still feasible. cssutils aim is not to be fully compliant to any CSS specification (the specifications seem to be in a constant flow anyway) but cssutils <em>should</em> be able to read and write as many as possible CSS stylesheets &#8220;in the wild&#8221; while at the same time implement the official APIs which are well documented. Some minor extensions are provided as well.</p>
-<p>Please visit <a class="reference external" href="http://cthedot.de/cssutils/">http://cthedot.de/cssutils/</a> for more details.</p>
+<p>Please visit <a class="reference external" href="http://cthedot.de/cssutils/">http://cthedot.de/cssutils/</a> or <a class="reference external" href="http://code.google.com/p/cssutils/">http://code.google.com/p/cssutils/</a> for more details.</p>
+<p>There is also a low-traffic <a class="reference external" href="http://groups.google.com/group/cssutils">cssutils discussion group</a>.</p>
 </div>
 <div class="section" id="license">
 <h3>license<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
@@ -110,6 +111,14 @@
 </div>
 <p>Before using EasyInstall the first time or using the sdist please remove any old version which should be installed at PYTHONDIR/Lib/site-packages/cssutils.</p>
 </div>
+<div class="section" id="kind-request">
+<h3>kind request<a class="headerlink" href="#kind-request" title="Permalink to this headline">¶</a></h3>
+<p>cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the <a class="reference external" href="http://code.google.com/p/cssutils/issues/list">Issue Tracker</a> at Google.</p>
+</div>
+<div class="section" id="thanks">
+<h3>thanks<a class="headerlink" href="#thanks" title="Permalink to this headline">¶</a></h3>
+<p>Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla and James Dobson for helpful suggestions and code patches.</p>
+</div>
 </div>
 </div>
 
@@ -126,6 +135,8 @@
 <li><a class="reference external" href="#overview">Overview</a></li>
 <li><a class="reference external" href="#license">license</a></li>
 <li><a class="reference external" href="#installation">installation</a></li>
+<li><a class="reference external" href="#kind-request">kind request</a></li>
+<li><a class="reference external" href="#thanks">thanks</a></li>
 </ul>
 </li>
 </ul>

@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>logging &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="parsing CSS" href="parse.html" />
+    <link rel="prev" title="cssutils" href="cssutils.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="parse.html" title="parsing CSS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cssutils.html" title="cssutils"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <span class="target" id="module-cssutils.errorhandler"></span><div class="section" id="logging">
+<span id="index-1"></span><h1>logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h1>
+<p>A global logger is used throughout the library. You may configure it or even replace it with your own. Customizing the default log should be sufficient for most purposes though.</p>
+<p>The default logger is available as <tt class="docutils literal"><span class="pre">cssutils.log</span></tt>. It has the following methods which are basically the same as defined for standard <tt class="docutils literal"><span class="pre">logging</span></tt> loggers:</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">log.setLevel(level)</span></tt> and <tt class="docutils literal"><span class="pre">log.getEffectiveLevel()</span></tt>, example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">cssutils</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">FATAL</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">log.addHandler(h)</span></tt> and <tt class="docutils literal"><span class="pre">log.removeHandler(h)</span></tt></p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">log.*(msg)</span></tt> where <tt class="docutils literal"><span class="pre">*</span></tt> is one of <tt class="docutils literal"><span class="pre">debug</span></tt>, <tt class="docutils literal"><span class="pre">info</span></tt>, <tt class="docutils literal"><span class="pre">warn</span></tt>, <tt class="docutils literal"><span class="pre">error</span></tt> or <tt class="docutils literal"><span class="pre">fatal</span></tt>/<tt class="docutils literal"><span class="pre">critical</span></tt></p>
+</li>
+</ul>
+<p>Additional method: <tt class="docutils literal"><span class="pre">cssutils.log.setLog(newlog)</span></tt>: To replace the default log which sends output to <tt class="docutils literal"><span class="pre">stderr</span></tt>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="cssutils.html" title="previous chapter"><tt class="docutils literal"><span class="pre">cssutils</span></tt></a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="parse.html" title="next chapter">parsing CSS</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/logging.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="parse.html" title="parsing CSS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cssutils.html" title="cssutils"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>
