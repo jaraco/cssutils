@@ -1,36 +1,5 @@
 ====================
-``cssutils``
+package ``cssutils``
 ====================
 :version: $Id$
 
-.. module:: cssutils
-
-helper functions
-================
-
-.. function:: cssutils.getUrls(sheet)
-
-    Utility function to get all ``url(value)`` values in
-    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
-    of given CSSStyleSheet `sheet`.
-
-    This function is a generator. The url values exclude ``url(`` and ``)`` and any surrounding single or double quotes.
-
-
-.. function:: cssutils.replaceUrls(sheet, replacer)
-
-    Utility function to replace all ``url(value)`` values in
-    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
-    of given CSSStyleSheet `sheet`.
-
-    `replacer` must be a function which is called with a single
-    argument which is the current value of the URL
-    excluding ``url(`` and ``)`` and any surrounding single or double quotes.
-
-
-.. function:: cssutils.resolveImports(sheet)
-
-    Returns a new stylesheet with all rules in given `sheet` but all @import rules
-    will be resolved and **all rules** are effectively residing in a single "flat" sheet.
-
-    If an imported sheet cannot be read the @import rule will be kept.
