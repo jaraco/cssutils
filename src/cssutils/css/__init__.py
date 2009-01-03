@@ -39,7 +39,7 @@ __all__ = [
     'CSSUnknownRule',
     'Selector', 'SelectorList',
     'CSSStyleDeclaration', 'Property',
-    'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
+    'CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'ExpressionValue'
     ]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'

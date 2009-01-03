@@ -3,9 +3,8 @@
 - 'CSS level 2'
 
 
-TODO
-    css2 based on cssvalues
-    =======================
+css2 based on cssvalues
+
     contributed by Kevin D. Smith, thanks!
 
     "cssvalues" is used as a property validator.

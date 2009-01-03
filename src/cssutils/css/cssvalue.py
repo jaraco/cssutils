@@ -980,7 +980,7 @@ class RGBColor(CSSPrimitiveValue):
     
 
 class ExpressionValue(CSSFunction):
-    """Special IE only FUNCTION which may contain *anything*."""
+    """Special IE only CSSFunction which may contain *anything*."""
     name = u'Expression (IE only)'
     
     def _productiondefinition(self):
