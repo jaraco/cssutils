@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""serializer classes for CSS classes
-
-"""
+"""cssutils serializer"""
 __all__ = ['CSSSerializer', 'Preferences']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -28,8 +26,7 @@ codecs.register_error('escapecss', _escapecss)
 
 
 class Preferences(object):
-    """
-    controls output of CSSSerializer
+    """Control output of CSSSerializer.
 
     defaultAtKeyword = True
         Should the literal @keyword from src CSS be used or the default
@@ -41,11 +38,12 @@ class Preferences(object):
         Only used if ``keepAllProperties==False``.
         
     defaultPropertyPriority = True
-        Should the normalized or literal priority be used, e.g. '!important'
-        or u'!Im\portant'
+        Should the normalized or literal priority be used, e.g. ``!important``
+        or ``!Im\portant``
 
     importHrefFormat = None
-        Uses hreftype if ``None`` or explicit ``'string'`` or ``'uri'``
+        Uses hreftype if ``None`` or format ``"URI"`` if ``'string'`` or
+        format ``url(URI)`` if ``'uri'``
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
     indentSpecificities = False
@@ -89,21 +87,28 @@ class Preferences(object):
         
         A Property is valid if it is a known Property with a valid value.
         Currently CSS 2.1 values as defined in cssproperties.py would be
-        valid.
-        
+        valid. 
     """
     def __init__(self, **initials):
-        """
-        Always use named instead of positional parameters
-        """
+        """Always use named instead of positional parameters."""
         self.useDefaults()
-        
         for key, value in initials.items():
             if value:
                 self.__setattr__(key, value)
 
+    def __repr__(self):
+        return u"cssutils.css.%s(%s)" % (self.__class__.__name__, 
+            u', '.join(['\n    %s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]
+                ))
+
+    def __str__(self):
+        return u"<cssutils.css.%s object %s at 0x%x" % (self.__class__.__name__, 
+            u' '.join(['%s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]
+                ),
+                id(self))
+
     def useDefaults(self):
-        "reset all preference options to the default value"
+        "Reset all preference options to their default value."
         self.defaultAtKeyword = True
         self.defaultPropertyName = True
         self.defaultPropertyPriority = True
@@ -125,11 +130,10 @@ class Preferences(object):
         self.validOnly = False # should not be changed currently!!!
         
     def useMinified(self):
-        """
-        sets options to achive a minified stylesheet
+        """Set options resulting in a minified stylesheet.
         
-        you may want to set preferences with this convenience method
-        and set settings you want adjusted afterwards
+        You may want to set preferences with this convenience method
+        and set settings you want adjusted afterwards.
         """
         self.importHrefFormat = 'string'
         self.indent = u''
@@ -146,22 +150,9 @@ class Preferences(object):
         self.spacer = u''
         self.validOnly = False
 
-    def __repr__(self):
-        return u"cssutils.css.%s(%s)" % (self.__class__.__name__, 
-            u', '.join(['\n    %s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]
-                ))
-
-    def __str__(self):
-        return u"<cssutils.css.%s object %s at 0x%x" % (self.__class__.__name__, 
-            u' '.join(['%s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]
-                ),
-                id(self))
-
 
 class Out(object):
-    """
-    a simple class which makes appended items available as a combined string
-    """
+    """A simple class which makes appended items available as a combined string"""
     def __init__(self, ser):
         self.ser = ser
         self.out = []
@@ -269,15 +260,14 @@ class Out(object):
     
 
 class CSSSerializer(object):
-    """
-    Methods to serialize a CSSStylesheet and its parts
+    """Serialize a CSSStylesheet and its parts.
 
     To use your own serializing method the easiest is to subclass CSS
     Serializer and overwrite the methods you like to customize.
     """
     def __init__(self, prefs=None):
         """
-        prefs
+        :param prefs:
             instance of Preferences
         """
         if not prefs:
