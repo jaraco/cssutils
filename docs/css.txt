@@ -3,6 +3,8 @@ package ``cssutils.css``
 ========================
 :Version: $Id$
 
+.. module:: cssutils.css
+
 overview
 ========
 Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ and `CSS Module: Namespaces (W3C Working Draft 28 August 2006) <http://www.w3.org/TR/css3-namespace/>`_
@@ -86,27 +88,12 @@ CSSStyleRule
 
 SelectorList
 ============
-A list of Selector_ objects.
-
-length
-    The number of Selector elements in the list.
-parentRule
-    The CSS rule that contains this SelectorList or None if this SelectorList is not attached to a CSSRule.
-selectorText
-    The textual representation of the selector for the rule set.
-
-appendSelector(newSelector), also append(newSelector)
-    comma-separated list of selectors or a tuple of ``(selectorText, dict-of-namespaces)``
+.. autoclass:: cssutils.css.SelectorList
+   :members:
+   :inherited-members:
 
 Selector
 ========
-A single CSS selector in a SelectorList_.
-
-element *EXPERIMENTAL*
-    Effective element target of this selector.
-parentRule
-    The SelectorList that contains this Selector or None if this Selector is not attached to a SelectorList.
-selectorText
-    The textual representation of the selector for the rule set.
-specificity
-    The specificity of this selector.
+.. autoclass:: cssutils.css.Selector
+   :members:
+   :inherited-members:

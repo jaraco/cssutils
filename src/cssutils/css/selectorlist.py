@@ -24,25 +24,7 @@ import cssutils
 import xml.dom
 
 class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
-    """
-    (cssutils) a list of Selectors of a CSSStyleRule
-
-    Properties
-    ==========
-    length: of type unsigned long, readonly
-        The number of Selector elements in the list.
-    parentRule: of type CSSRule, readonly
-        The CSS rule that contains this selector list or None if this
-        list is not attached to a CSSRule.
-    selectorText: of type DOMString
-        The textual representation of the selector for the rule set. The
-        implementation may have stripped out insignificant whitespace while
-        parsing the selector.
-    seq: (internal use!)
-        A list of Selector objects
-    wellformed
-        if this selectorlist is wellformed regarding the Selector spec
-    """
+    """A list of Selectors of a CSSStyleRule."""
     def __init__(self, selectorText=None, parentRule=None,
                  readonly=False):
         """
@@ -63,6 +45,29 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
 
         self._readonly = readonly
 
+    def __repr__(self):
+        if self._namespaces:
+            st = (self.selectorText, self._namespaces)
+        else:
+            st = self.selectorText
+        return "cssutils.css.%s(selectorText=%r)" % (
+                self.__class__.__name__, st)
+
+    def __str__(self):
+        return "<cssutils.css.%s object selectorText=%r _namespaces=%r at 0x%x>" % (
+                self.__class__.__name__, self.selectorText, self._namespaces,
+                id(self))
+
+    def __setitem__(self, index, newSelector):
+        """
+        overwrites ListSeq.__setitem__
+
+        Any duplicate Selectors are **not** removed.
+        """
+        newSelector = self.__prepareset(newSelector)
+        if newSelector:
+            self.seq[index] = newSelector
+
     def __prepareset(self, newSelector, namespaces=None):
         "used by appendSelector and __setitem__"
         if not namespaces:
@@ -75,23 +80,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             newSelector._parent = self # maybe set twice but must be!
             return newSelector
 
-    def __setitem__(self, index, newSelector):
-        """
-        overwrites ListSeq.__setitem__
-
-        Any duplicate Selectors are **not** removed.
-        """
-        newSelector = self.__prepareset(newSelector)
-        if newSelector:
-            self.seq[index] = newSelector
-
-    def append(self, newSelector):
-        "same as appendSelector(newSelector)"
-        self.appendSelector(newSelector)
-
-    length = property(lambda self: len(self),
-        doc="The number of Selector elements in the list.")
-
+    def _getUsedUris(self):
+        "used by CSSStyleSheet to check if @namespace rules are needed"
+        uris = set()
+        for s in self:
+            uris.update(s._getUsedUris())
+        return uris
 
     def __getNamespaces(self):
         "uses children namespaces if not attached to a sheet, else the sheet's ones"
@@ -107,6 +101,10 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         attached to a CSSStyleSheet the namespaces of that sheet are mirrored
         here. While the SelectorList (or parentRule(s) are
         not attached the namespaces of all children Selectors are used.""")
+
+    length = property(lambda self: len(self),
+        doc="The number of Selector elements in the list.")
+
 
     parentRule = property(lambda self: self._parentRule,
         doc="(DOM) The CSS rule that contains this SelectorList or\
@@ -184,8 +182,6 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         doc="""(cssutils) The textual representation of the selector for
             a rule set.""")
 
-    wellformed = property(lambda self: bool(len(self.seq)))
-
     def appendSelector(self, newSelector):
         """
         Append newSelector (a string will be converted to a new
@@ -228,22 +224,9 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self.seq.append(newSelector)
             return newSelector
 
-    def __repr__(self):
-        if self._namespaces:
-            st = (self.selectorText, self._namespaces)
-        else:
-            st = self.selectorText
-        return "cssutils.css.%s(selectorText=%r)" % (
-                self.__class__.__name__, st)
+    def append(self, newSelector):
+        "same as appendSelector(newSelector)"
+        self.appendSelector(newSelector)
 
-    def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r _namespaces=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, self._namespaces,
-                id(self))
+    wellformed = property(lambda self: bool(len(self.seq)))
 
-    def _getUsedUris(self):
-        "used by CSSStyleSheet to check if @namespace rules are needed"
-        uris = set()
-        for s in self:
-            uris.update(s._getUsedUris())
-        return uris

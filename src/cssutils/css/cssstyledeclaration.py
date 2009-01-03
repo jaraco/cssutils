@@ -76,27 +76,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     Additionally the CSS2Properties interface is implemented.
 
-    Properties
-    ==========
-    cssText
-        The parsable textual representation of the declaration block
-        (excluding the surrounding curly braces). Setting this attribute
-        will result in the parsing of the new value and resetting of the
-        properties in the declaration block. It also allows the insertion
-        of additional properties and their values into the block.
-    length: of type unsigned long, readonly
-        The number of properties that have been explicitly set in this
-        declaration block. The range of valid indices is 0 to length-1
-        inclusive.
-    parentRule: of type CSSRule, readonly
-        The CSS rule that contains this declaration block or None if this
-        CSSStyleDeclaration is not attached to a CSSRule.
-    seq: a list (cssutils)
-        All parts of this style declaration including CSSComments
-
-    _profiles:
-        profile to use for validating properties in this style declaration
-
     $css2propertyname
         All properties defined in the CSS2Properties class are available
         as direct properties of CSSStyleDeclaration with their respective
@@ -111,9 +90,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             >>> del style.color
             >>> print style.color # print empty string
 
-    Format
-    ======
-    [Property: Value Priority?;]* [Property: Value Priority?]?
+    Format::
+    
+        [Property: Value Priority?;]* [Property: Value Priority?]?
     """
     def __init__(self, cssText=u'', parentRule=None, profiles=None, readonly=False):
         """
@@ -154,39 +133,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                 yield self.getProperty(name)
         return properties()
     
-    def __setattr__(self, n, v):
-        """
-        Prevent setting of unknown properties on CSSStyleDeclaration
-        which would not work anyway. For these
-        ``CSSStyleDeclaration.setProperty`` MUST be called explicitly!
-
-        TODO:
-            implementation of known is not really nice, any alternative?
-        """
-        known = ['_tokenizer', '_log', '_ttypes',
-                 '_seq', 'seq', 'parentRule', '_parentRule', 'cssText',
-                 'valid', 'wellformed',
-                 '_readonly', '_profiles']
-        known.extend(CSS2Properties._properties)
-        if n in known:
-            super(CSSStyleDeclaration, self).__setattr__(n, v)
-        else:
-            raise AttributeError(
-                'Unknown CSS Property, ``CSSStyleDeclaration.setProperty("%s", ...)`` MUST be used.'
-                % n)
-
-    def __nnames(self):
-        """
-        returns iterator for all different names in order as set
-        if names are set twice the last one is used (double reverse!) 
-        """
-        names = []
-        for item in reversed(self.seq):
-            val = item.value
-            if isinstance(val, Property) and not val.name in names:
-                names.append(val.name)
-        return reversed(names)    
-
     def __getitem__(self, CSSName):
         """Retrieve the value of property ``CSSName`` from this declaration.
         
@@ -214,6 +160,48 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         ``CSSName`` will be always normalized.
         """
         return self.removeProperty(CSSName)
+
+    def __setattr__(self, n, v):
+        """
+        Prevent setting of unknown properties on CSSStyleDeclaration
+        which would not work anyway. For these
+        ``CSSStyleDeclaration.setProperty`` MUST be called explicitly!
+
+        TODO:
+            implementation of known is not really nice, any alternative?
+        """
+        known = ['_tokenizer', '_log', '_ttypes',
+                 '_seq', 'seq', 'parentRule', '_parentRule', 'cssText',
+                 'valid', 'wellformed',
+                 '_readonly', '_profiles']
+        known.extend(CSS2Properties._properties)
+        if n in known:
+            super(CSSStyleDeclaration, self).__setattr__(n, v)
+        else:
+            raise AttributeError(
+                'Unknown CSS Property, ``CSSStyleDeclaration.setProperty("%s", ...)`` MUST be used.'
+                % n)
+
+    def __repr__(self):
+        return "cssutils.css.%s(cssText=%r)" % (
+                self.__class__.__name__, self.getCssText(separator=u' '))
+
+    def __str__(self):
+        return "<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
+                self.__class__.__name__, self.length,
+                len(self.getProperties(all=True)), id(self))
+
+    def __nnames(self):
+        """
+        returns iterator for all different names in order as set
+        if names are set twice the last one is used (double reverse!) 
+        """
+        names = []
+        for item in reversed(self.seq):
+            val = item.value
+            if isinstance(val, Property) and not val.name in names:
+                names.append(val.name)
+        return reversed(names)    
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
@@ -645,12 +633,3 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         in this declaration block. The range of valid indices is 0 to\
         length-1 inclusive. These are properties with a different ``name``\
         only. ``item()`` and ``length`` work on the same set here.")
-
-    def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__, self.getCssText(separator=u' '))
-
-    def __str__(self):
-        return "<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
-                self.__class__.__name__, self.length,
-                len(self.getProperties(all=True)), id(self))

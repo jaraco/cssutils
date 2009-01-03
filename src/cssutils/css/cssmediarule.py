@@ -37,6 +37,11 @@ class CSSMediaRule(cssrule.CSSRule):
 
         self._readonly = readonly
 
+    def __iter__(self):
+        """generator which iterates over cssRules."""
+        for rule in self.cssRules:
+            yield rule
+            
     def __repr__(self):
         return "cssutils.css.%s(mediaText=%r)" % (
                 self.__class__.__name__, self.media.mediaText)
@@ -45,11 +50,6 @@ class CSSMediaRule(cssrule.CSSRule):
         return "<cssutils.css.%s object mediaText=%r at 0x%x>" % (
                 self.__class__.__name__, self.media.mediaText, id(self))
 
-    def __iter__(self):
-        """generator which iterates over cssRules."""
-        for rule in self.cssRules:
-            yield rule
-            
     def _getCssText(self):
         """return serialized property cssText"""
         return cssutils.ser.do_CSSMediaRule(self)

@@ -46,6 +46,19 @@ class CSSRule(cssutils.util.Base2):
         # must be set after initialization of #inheriting rule is done
         self._readonly = False
 
+    def _setAtkeyword(self, akw):
+        """Check if new keyword fits the rule it is used for."""
+        if not self.atkeyword or (self._normalize(akw) == 
+                                  self._normalize(self.atkeyword)):
+            self._atkeyword = akw
+        else:
+            self._log.error(u'%s: Invalid atkeyword for this rule: %r' % 
+                            (self._normalize(self.atkeyword), akw), 
+                            error=xml.dom.InvalidModificationErr)
+
+    atkeyword = property(lambda self: self._atkeyword, _setAtkeyword,
+                          doc=u"Literal @keyword of @rules.")
+
     def _setCssText(self, cssText):
         """
         :param cssText:
@@ -70,19 +83,6 @@ class CSSRule(cssutils.util.Base2):
                            "rule. This reflects the current state of the rule "
                            "and not its initial value.")
 
-    def _setAtkeyword(self, akw):
-        """Check if new keyword fits the rule it is used for."""
-        if not self.atkeyword or (self._normalize(akw) == 
-                                  self._normalize(self.atkeyword)):
-            self._atkeyword = akw
-        else:
-            self._log.error(u'%s: Invalid atkeyword for this rule: %r' % 
-                            (self._normalize(self.atkeyword), akw), 
-                            error=xml.dom.InvalidModificationErr)
-
-    atkeyword = property(lambda self: self._atkeyword, _setAtkeyword,
-                          doc=u"Literal @keyword of @rules.")
-
     parentRule = property(lambda self: self._parentRule,
                                 doc="If this rule is contained inside "
                                     "another rule (e.g. a style rule inside "
@@ -93,12 +93,12 @@ class CSSRule(cssutils.util.Base2):
     parentStyleSheet = property(lambda self: self._parentStyleSheet,
                           doc="The style sheet that contains this rule.")
 
-    wellformed = property(lambda self: False, 
-                          doc=u"If the rule is wellformed.")
-
     type = property(lambda self: self.UNKNOWN_RULE, 
                     doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
 
     typeString = property(lambda self: CSSRule._typestrings[self.type], 
                           doc="Full name of this rule's type.")
+
+    wellformed = property(lambda self: False, 
+                          doc=u"If the rule is wellformed.")
