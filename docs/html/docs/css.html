@@ -54,7 +54,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: css.txt 1605 2009-01-03 18:27:32Z cthedot $</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: css.txt 1609 2009-01-03 21:07:17Z cthedot $</td>
 </tr>
 </tbody>
 </table>
@@ -97,7 +97,7 @@
 </div>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">cssRules</span></tt></dt>
-<dd>All Rules in this style sheet, a <tt class="xref docutils literal"><span class="pre">CSSRuleList</span></tt>.</dd>
+<dd>All Rules in this style sheet, a <a title="cssutils.css.CSSRuleList" class="reference internal" href="#cssutils.css.CSSRuleList"><tt class="xref docutils literal"><span class="pre">CSSRuleList</span></tt></a>.</dd>
 </dl>
 <dl class="method">
 <dt id="cssutils.css.CSSStyleSheet.add">
@@ -158,7 +158,7 @@ becomes part of the cascade.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><em>rule</em> &#8211; a parsable DOMString, in cssutils also a 
-<a title="cssutils.css.CSSRule" class="reference internal" href="#cssutils.css.CSSRule"><tt class="xref docutils literal"><span class="pre">CSSRule</span></tt></a> or <tt class="xref docutils literal"><span class="pre">CSSRuleList</span></tt></li>
+<a title="cssutils.css.CSSRule" class="reference internal" href="#cssutils.css.CSSRule"><tt class="xref docutils literal"><span class="pre">CSSRule</span></tt></a> or <a title="cssutils.css.CSSRuleList" class="reference internal" href="#cssutils.css.CSSRuleList"><tt class="xref docutils literal"><span class="pre">CSSRuleList</span></tt></a></li>
 <li><em>index</em> &#8211; of the rule before the new rule will be inserted.
 If the specified <cite>index</cite> is equal to the length of the
 StyleSheet&#8217;s rule collection, the rule will be added to the end
@@ -228,8 +228,93 @@ preferences to be set.</dd></dl>
 </dd></dl>
 
 </div>
+<div class="section" id="cssrules-rules-and-style-rules">
+<h2>CSSRules: &#64;rules and style rules<a class="headerlink" href="#cssrules-rules-and-style-rules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cssrulelist">
+<h3>CSSRuleList<a class="headerlink" href="#cssrulelist" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cssutils.css.CSSRuleList">
+<!--[cssutils.css.CSSRuleList]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSRuleList</tt><big>(</big><em>*ignored</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSRuleList object represents an (ordered) list of statements.</p>
+<p>The items in the CSSRuleList are accessible via an integral index,
+starting from 0.</p>
+<p>Subclasses a standard Python list so theoretically all standard list
+methods are available. Setting methods like <tt class="docutils literal"><span class="pre">__init__</span></tt>, <tt class="docutils literal"><span class="pre">append</span></tt>,
+<tt class="docutils literal"><span class="pre">extend</span></tt> or <tt class="docutils literal"><span class="pre">__setslice__</span></tt> are added later on instances of this
+class if so desired.
+E.g. CSSStyleSheet adds <tt class="docutils literal"><span class="pre">append</span></tt> which is not available in a simple
+instance of this class!</p>
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.append">
+<!--[cssutils.css.CSSRuleList.append]--><tt class="descname">append</tt><big>(</big><em>*ignored</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.append" title="Permalink to this definition">¶</a></dt>
+<dd>no direct setting possible</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.count">
+<!--[cssutils.css.CSSRuleList.count]--><tt class="descname">count</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.count" title="Permalink to this definition">¶</a></dt>
+<dd>L.count(value) -&gt; integer &#8211; return number of occurrences of value</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.extend">
+<!--[cssutils.css.CSSRuleList.extend]--><tt class="descname">extend</tt><big>(</big><em>*ignored</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.extend" title="Permalink to this definition">¶</a></dt>
+<dd>no direct setting possible</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.index">
+<!--[cssutils.css.CSSRuleList.index]--><tt class="descname">index</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.index" title="Permalink to this definition">¶</a></dt>
+<dd>L.index(value, [start, [stop]]) -&gt; integer &#8211; return first index of value.
+Raises ValueError if the value is not present.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.insert">
+<!--[cssutils.css.CSSRuleList.insert]--><tt class="descname">insert</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.insert" title="Permalink to this definition">¶</a></dt>
+<dd>L.insert(index, object) &#8211; insert object before index</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.item">
+<!--[cssutils.css.CSSRuleList.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>(DOM)
+Used to retrieve a CSS rule by ordinal index. The order in this
+collection represents the order of the rules in the CSS style
+sheet. If index is greater than or equal to the number of rules in
+the list, this returns None.</p>
+<p>Returns CSSRule, the style rule at the index position in the
+CSSRuleList, or None if that is not a valid index.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRuleList.length">
+<!--[cssutils.css.CSSRuleList.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.css.CSSRuleList.length" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The number of CSSRules in the list.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.pop">
+<!--[cssutils.css.CSSRuleList.pop]--><tt class="descname">pop</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.pop" title="Permalink to this definition">¶</a></dt>
+<dd>L.pop([index]) -&gt; item &#8211; remove and return item at index (default last).
+Raises IndexError if list is empty or index is out of range.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.remove">
+<!--[cssutils.css.CSSRuleList.remove]--><tt class="descname">remove</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.remove" title="Permalink to this definition">¶</a></dt>
+<dd>L.remove(value) &#8211; remove first occurrence of value.
+Raises ValueError if the value is not present.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.reverse">
+<!--[cssutils.css.CSSRuleList.reverse]--><tt class="descname">reverse</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.reverse" title="Permalink to this definition">¶</a></dt>
+<dd>L.reverse() &#8211; reverse <em>IN PLACE</em></dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSRuleList.sort">
+<!--[cssutils.css.CSSRuleList.sort]--><tt class="descname">sort</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.sort" title="Permalink to this definition">¶</a></dt>
+<dd>L.sort(cmp=None, key=None, reverse=False) &#8211; stable sort <em>IN PLACE</em>;
+cmp(x, y) -&gt; -1, 0, 1</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="cssrule">
-<h2>CSSRule<a class="headerlink" href="#cssrule" title="Permalink to this headline">¶</a></h2>
+<h3>CSSRule<a class="headerlink" href="#cssrule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSRule">
 <!--[cssutils.css.CSSRule]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSRule</tt><big>(</big><em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRule" title="Permalink to this definition">¶</a></dt>
@@ -280,6 +365,7 @@ recognized by the parser. Unrecognized rules are represented using the
 
 </dd></dl>
 
+</div>
 <div class="section" id="csscharsetrule">
 <h3>CSSCharsetRule<a class="headerlink" href="#csscharsetrule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
@@ -856,8 +942,10 @@ rule set.</dd></dl>
 
 </div>
 </div>
+<div class="section" id="selectors">
+<h2>Selectors<a class="headerlink" href="#selectors" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="selectorlist">
-<h2>SelectorList<a class="headerlink" href="#selectorlist" title="Permalink to this headline">¶</a></h2>
+<h3>SelectorList<a class="headerlink" href="#selectorlist" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.SelectorList">
 <!--[cssutils.css.SelectorList]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">SelectorList</tt><big>(</big><em>selectorText=None</em>, <em>parentRule=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.SelectorList" title="Permalink to this definition">¶</a></dt>
@@ -921,7 +1009,7 @@ a rule set.</dd></dl>
 
 </div>
 <div class="section" id="selector">
-<h2>Selector<a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h2>
+<h3>Selector<a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.Selector">
 <!--[cssutils.css.Selector]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">Selector</tt><big>(</big><em>selectorText=None</em>, <em>parentList=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Selector" title="Permalink to this definition">¶</a></dt>
@@ -1050,6 +1138,614 @@ negation_arg
 
 </div>
 </div>
+<div class="section" id="styles">
+<h2>Styles<a class="headerlink" href="#styles" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>CSSStyleDeclaration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cssutils.css.CSSStyleDeclaration">
+<!--[cssutils.css.CSSStyleDeclaration]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleDeclaration</tt><big>(</big><em>cssText=u''</em>, <em>parentRule=None</em>, <em>profiles=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSStyleDeclaration class represents a single CSS declaration
+block. This class may be used to determine the style properties
+currently set in a block or to set style properties explicitly
+within the block.</p>
+<p>While an implementation may not recognize all CSS properties within
+a CSS declaration block, it is expected to provide access to all
+specified properties in the style sheet through the
+CSSStyleDeclaration interface.
+Furthermore, implementations that support a specific level of CSS
+should correctly handle CSS shorthand properties for that level. For
+a further discussion of shorthand properties, see the CSS2Properties
+interface.</p>
+<p>Additionally the CSS2Properties interface is implemented.</p>
+<dl class="docutils">
+<dt>$css2propertyname</dt>
+<dd><p class="first">All properties defined in the CSS2Properties class are available
+as direct properties of CSSStyleDeclaration with their respective
+DOM name, so e.g. <tt class="docutils literal"><span class="pre">fontStyle</span></tt> for property &#8216;font-style&#8217;.</p>
+<p>These may be used as:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">style</span> <span class="o">=</span> <span class="n">CSSStyleDeclaration</span><span class="p">(</span><span class="n">cssText</span><span class="o">=</span><span class="s">&#39;color: red&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="s">&#39;green&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">color</span>
+<span class="go">green</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">style</span><span class="o">.</span><span class="n">color</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">color</span> <span class="c"># print empty string</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>Format:</p>
+<div class="highlight-python"><pre>[Property: Value Priority?;]* [Property: Value Priority?]?</pre>
+</div>
+<dl class="attribute">
+<dt id="cssutils.css.CSSStyleDeclaration.cssText">
+<!--[cssutils.css.CSSStyleDeclaration.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) A parsable textual representation of the declaration        block excluding the surrounding curly braces.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.getCssText">
+<!--[cssutils.css.CSSStyleDeclaration.getCssText]--><tt class="descname">getCssText</tt><big>(</big><em>separator=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getCssText" title="Permalink to this definition">¶</a></dt>
+<dd>returns serialized property cssText, each property separated by
+given <tt class="docutils literal"><span class="pre">separator</span></tt> which may e.g. be u&#8217;&#8217; to be able to use
+cssText directly in an HTML style attribute. &#8220;;&#8221; is always part of
+each property (except the last one) and can <strong>not</strong> be set with
+separator!</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.getProperties">
+<!--[cssutils.css.CSSStyleDeclaration.getProperties]--><tt class="descname">getProperties</tt><big>(</big><em>name=None</em>, <em>all=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getProperties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of Property objects set in this declaration.</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd>optional name of properties which are requested (a filter).
+Only properties with this <strong>always normalized</strong> name are returned.</dd>
+<dt>all=False</dt>
+<dd><p class="first">if False (DEFAULT) only the effective properties (the ones set
+last) are returned. If name is given a list with only one property
+is returned.</p>
+<p class="last">if True all properties including properties set multiple times with
+different values or priorities for different UAs are returned.
+The order of the properties is fully kept as in the original 
+stylesheet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.getProperty">
+<!--[cssutils.css.CSSStyleDeclaration.getProperty]--><tt class="descname">getProperty</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the effective Property object.</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd>of the CSS property, always lowercase (even if not normalized)</dd>
+<dt>normalize</dt>
+<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
+<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
+for the unnormalized name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.getPropertyCSSValue">
+<!--[cssutils.css.CSSStyleDeclaration.getPropertyCSSValue]--><tt class="descname">getPropertyCSSValue</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getPropertyCSSValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns CSSValue, the value of the effective property if it has been
+explicitly set for this declaration block.</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd>of the CSS property, always lowercase (even if not normalized)</dd>
+<dt>normalize</dt>
+<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
+<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
+for the unnormalized name.</p>
+</dd>
+</dl>
+<p>(DOM)
+Used to retrieve the object representation of the value of a CSS
+property if it has been explicitly set within this declaration
+block. Returns None if the property has not been set.</p>
+<p>(This method returns None if the property is a shorthand
+property. Shorthand property values can only be accessed and
+modified as strings, using the getPropertyValue and setProperty
+methods.)</p>
+<p><strong>cssutils currently always returns a CSSValue if the property is 
+set.</strong></p>
+<dl class="docutils">
+<dt>for more on shorthand properties see</dt>
+<dd><a class="reference external" href="http://www.dustindiaz.com/css-shorthand/">http://www.dustindiaz.com/css-shorthand/</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.getPropertyPriority">
+<!--[cssutils.css.CSSStyleDeclaration.getPropertyPriority]--><tt class="descname">getPropertyPriority</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getPropertyPriority" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the priority of the effective CSS property (e.g. the
+&#8220;important&#8221; qualifier) if the property has been explicitly set in
+this declaration block. The empty string if none exists.</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd>of the CSS property, always lowercase (even if not normalized)</dd>
+<dt>normalize</dt>
+<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
+<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
+for the unnormalized name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.getPropertyValue">
+<!--[cssutils.css.CSSStyleDeclaration.getPropertyValue]--><tt class="descname">getPropertyValue</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getPropertyValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value of the effective property if it has been explicitly
+set for this declaration block. Returns the empty string if the
+property has not been set.</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd>of the CSS property, always lowercase (even if not normalized)</dd>
+<dt>normalize</dt>
+<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
+<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
+for the unnormalized name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.item">
+<!--[cssutils.css.CSSStyleDeclaration.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>(DOM)
+Used to retrieve the properties that have been explicitly set in
+this declaration block. The order of the properties retrieved using
+this method does not have to be the order in which they were set.
+This method can be used to iterate over all properties in this
+declaration block.</p>
+<dl class="docutils">
+<dt>index</dt>
+<dd>of the property to retrieve, negative values behave like
+negative indexes on Python lists, so -1 is the last element</dd>
+</dl>
+<p>returns the name of the property at this ordinal position. The
+empty string if no property exists at this position.</p>
+<p>ATTENTION:
+Only properties with a different name are counted. If two
+properties with the same name are present in this declaration
+only the effective one is included.</p>
+<p><tt class="docutils literal"><span class="pre">item()</span></tt> and <tt class="docutils literal"><span class="pre">length</span></tt> work on the same set here.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSStyleDeclaration.length">
+<!--[cssutils.css.CSSStyleDeclaration.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.length" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The number of distinct properties that have been explicitly        in this declaration block. The range of valid indices is 0 to        length-1 inclusive. These are properties with a different <tt class="docutils literal"><span class="pre">name</span></tt>        only. <tt class="docutils literal"><span class="pre">item()</span></tt> and <tt class="docutils literal"><span class="pre">length</span></tt> work on the same set here.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSStyleDeclaration.parentRule">
+<!--[cssutils.css.CSSStyleDeclaration.parentRule]--><tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.parentRule" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The CSS rule that contains this declaration block or        None if this CSSStyleDeclaration is not attached to a CSSRule.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.removeProperty">
+<!--[cssutils.css.CSSStyleDeclaration.removeProperty]--><tt class="descname">removeProperty</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.removeProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>(DOM)
+Used to remove a CSS property if it has been explicitly set within
+this declaration block.</p>
+<p>Returns the value of the property if it has been explicitly set for
+this declaration block. Returns the empty string if the property
+has not been set or the property name does not correspond to a
+known CSS property</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd>of the CSS property</dd>
+<dt>normalize</dt>
+<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent.
+The effective Property value is returned and <em>all</em> Properties
+with <tt class="docutils literal"><span class="pre">Property.name</span> <span class="pre">==</span> <span class="pre">name</span></tt> are removed.</p>
+<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
+for the unnormalized <tt class="docutils literal"><span class="pre">name</span></tt> only. Also only the Properties with
+the literal name <tt class="docutils literal"><span class="pre">name</span></tt> are removed.</p>
+</dd>
+</dl>
+<p>raises DOMException</p>
+<ul class="simple">
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this declaration is readonly or the property is
+readonly.</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSStyleDeclaration.seq">
+<!--[cssutils.css.CSSStyleDeclaration.seq]--><tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.setProperty">
+<!--[cssutils.css.CSSStyleDeclaration.setProperty]--><tt class="descname">setProperty</tt><big>(</big><em>name</em>, <em>value=None</em>, <em>priority=u''</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.setProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>(DOM)
+Used to set a property value and priority within this declaration
+block.</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd><p class="first">of the CSS property to set (in W3C DOM the parameter is called
+&#8220;propertyName&#8221;), always lowercase (even if not normalized)</p>
+<p>If a property with this name is present it will be reset</p>
+<p class="last">cssutils also allowed name to be a Property object, all other
+parameter are ignored in this case</p>
+</dd>
+<dt>value</dt>
+<dd>the new value of the property, omit if name is already a Property</dd>
+<dt>priority</dt>
+<dd>the optional priority of the property (e.g. &#8220;important&#8221;)</dd>
+<dt>normalize</dt>
+<dd>if True (DEFAULT) name will be normalized (lowercase, no simple
+escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</dd>
+</dl>
+<p>DOMException on setting</p>
+<ul class="simple">
+<li>SYNTAX_ERR: (self)
+Raised if the specified value has a syntax error and is
+unparsable.</li>
+<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+Raised if this declaration is readonly or the property is
+readonly.</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="id2">
+<h3>Property<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cssutils.css.Property">
+<!--[cssutils.css.Property]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>profiles=None</em>, <em>_mediaQuery=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
+<dd><p>A CSS property in a StyleDeclaration of a CSSStyleRule (cssutils).</p>
+<p>Format:</p>
+<div class="highlight-python"><pre>property = name
+  : IDENT S*
+  ;
+
+expr = value
+  : term [ operator term ]*
+  ;
+term
+  : unary_operator?
+    [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
+      TIME S* | FREQ S* | function ]
+  | STRING S* | IDENT S* | URI S* | hexcolor
+  ;
+function
+  : FUNCTION S* expr ')' S*
+  ;
+/*
+ * There is a constraint on the color that it must
+ * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
+ * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
+ */
+hexcolor
+  : HASH S*
+  ;
+
+prio
+  : IMPORTANT_SYM S*
+  ;</pre>
+</div>
+<dl class="attribute">
+<dt id="cssutils.css.Property.cssText">
+<!--[cssutils.css.Property.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.Property.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>A parsable textual representation.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.cssValue">
+<!--[cssutils.css.Property.cssValue]--><tt class="descname">cssValue</tt><a class="headerlink" href="#cssutils.css.Property.cssValue" title="Permalink to this definition">¶</a></dt>
+<dd>(cssutils) CSSValue object of this property</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.literalname">
+<!--[cssutils.css.Property.literalname]--><tt class="descname">literalname</tt><a class="headerlink" href="#cssutils.css.Property.literalname" title="Permalink to this definition">¶</a></dt>
+<dd>Readonly literal (not normalized) name of this property</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.literalpriority">
+<!--[cssutils.css.Property.literalpriority]--><tt class="descname">literalpriority</tt><a class="headerlink" href="#cssutils.css.Property.literalpriority" title="Permalink to this definition">¶</a></dt>
+<dd>Readonly literal (not normalized) priority of this property</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.name">
+<!--[cssutils.css.Property.name]--><tt class="descname">name</tt><a class="headerlink" href="#cssutils.css.Property.name" title="Permalink to this definition">¶</a></dt>
+<dd>Name of this property</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.priority">
+<!--[cssutils.css.Property.priority]--><tt class="descname">priority</tt><a class="headerlink" href="#cssutils.css.Property.priority" title="Permalink to this definition">¶</a></dt>
+<dd>(cssutils) Priority of this property</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.valid">
+<!--[cssutils.css.Property.valid]--><tt class="descname">valid</tt><a class="headerlink" href="#cssutils.css.Property.valid" title="Permalink to this definition">¶</a></dt>
+<dd>Check if value of this property is valid in the properties context.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.Property.validate">
+<!--[cssutils.css.Property.validate]--><tt class="descname">validate</tt><big>(</big><em>profile=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property.validate" title="Permalink to this definition">¶</a></dt>
+<dd>validates value against _propertyName context if given</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.value">
+<!--[cssutils.css.Property.value]--><tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.Property.value" title="Permalink to this definition">¶</a></dt>
+<dd>The textual value of this Properties cssValue.</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="values">
+<h3>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h4>CSSValue<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.CSSValue">
+<!--[cssutils.css.CSSValue]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSValue interface represents a simple or a complex value.
+A CSSValue object only occurs in a context of a CSS property</p>
+<dl class="attribute">
+<dt id="cssutils.css.CSSValue.cssText">
+<!--[cssutils.css.CSSValue.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSValue.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>A string representation of the current value.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSValue.cssValueType">
+<!--[cssutils.css.CSSValue.cssValueType]--><tt class="descname">cssValueType</tt><a class="headerlink" href="#cssutils.css.CSSValue.cssValueType" title="Permalink to this definition">¶</a></dt>
+<dd>A (readonly) code defining the type of the value.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSValue.cssValueTypeString">
+<!--[cssutils.css.CSSValue.cssValueTypeString]--><tt class="descname">cssValueTypeString</tt><a class="headerlink" href="#cssutils.css.CSSValue.cssValueTypeString" title="Permalink to this definition">¶</a></dt>
+<dd>(readonly) Name of cssValueType.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSValue.seq">
+<!--[cssutils.css.CSSValue.seq]--><tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSValue.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cssprimitivevalue">
+<h4>CSSPrimitiveValue<a class="headerlink" href="#cssprimitivevalue" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.CSSPrimitiveValue">
+<!--[cssutils.css.CSSPrimitiveValue]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSPrimitiveValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>represents a single CSS Value.  May be used to determine the value of a
+specific style property currently set in a block or to set a specific
+style property explicitly within the block. Might be obtained from the
+getPropertyCSSValue method of CSSStyleDeclaration.</p>
+<p>Conversions are allowed between absolute values (from millimeters to
+centimeters, from degrees to radians, and so on) but not between
+relative values. (For example, a pixel value cannot be converted to a
+centimeter value.) Percentage values can&#8217;t be converted since they are
+relative to the parent value (or another property value). There is one
+exception for color percentage values: since a color percentage value
+is relative to the range 0-255, a color percentage value can be
+converted to a number; (see also the RGBColor interface).</p>
+<dl class="attribute">
+<dt id="cssutils.css.CSSPrimitiveValue.cssText">
+<!--[cssutils.css.CSSPrimitiveValue.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>A string representation of the current value.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSPrimitiveValue.cssValueTypeString">
+<!--[cssutils.css.CSSPrimitiveValue.cssValueTypeString]--><tt class="descname">cssValueTypeString</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.cssValueTypeString" title="Permalink to this definition">¶</a></dt>
+<dd>(readonly) Name of cssValueType.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSPrimitiveValue.getCounterValue">
+<!--[cssutils.css.CSSPrimitiveValue.getCounterValue]--><tt class="descname">getCounterValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getCounterValue" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM method) This method is used to get the Counter value. If
+this CSS value doesn&#8217;t contain a counter value, a DOMException
+is raised. Modification to the corresponding style property
+can be achieved using the Counter interface.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSPrimitiveValue.getFloatValue">
+<!--[cssutils.css.CSSPrimitiveValue.getFloatValue]--><tt class="descname">getFloatValue</tt><big>(</big><em>unitType=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getFloatValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>(DOM method) This method is used to get a float value in a
+specified unit. If this CSS value doesn&#8217;t contain a float value
+or can&#8217;t be converted into the specified unit, a DOMException
+is raised.</p>
+<dl class="docutils">
+<dt>unitType</dt>
+<dd>to get the float value. The unit code can only be a float unit type
+(i.e. CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS, CSS_PX, CSS_CM,
+CSS_MM, CSS_IN, CSS_PT, CSS_PC, CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS,
+CSS_S, CSS_HZ, CSS_KHZ, CSS_DIMENSION) or None in which case
+the current dimension is used.</dd>
+</dl>
+<p>returns not necessarily a float but some cases just an integer
+e.g. if the value is <tt class="docutils literal"><span class="pre">1px</span></tt> it return <tt class="docutils literal"><span class="pre">1</span></tt> and <strong>not</strong> <tt class="docutils literal"><span class="pre">1.0</span></tt></p>
+<p>conversions might return strange values like 1.000000000001</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSPrimitiveValue.getRGBColorValue">
+<!--[cssutils.css.CSSPrimitiveValue.getRGBColorValue]--><tt class="descname">getRGBColorValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getRGBColorValue" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM method) This method is used to get the RGB color. If this
+CSS value doesn&#8217;t contain a RGB color value, a DOMException
+is raised. Modification to the corresponding style property
+can be achieved using the RGBColor interface.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSPrimitiveValue.getRectValue">
+<!--[cssutils.css.CSSPrimitiveValue.getRectValue]--><tt class="descname">getRectValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getRectValue" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM method) This method is used to get the Rect value. If this CSS
+value doesn&#8217;t contain a rect value, a DOMException is raised.
+Modification to the corresponding style property can be achieved
+using the Rect interface.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSPrimitiveValue.getStringValue">
+<!--[cssutils.css.CSSPrimitiveValue.getStringValue]--><tt class="descname">getStringValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getStringValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>(DOM method) This method is used to get the string value. If the
+CSS value doesn&#8217;t contain a string value, a DOMException is raised.</p>
+<p>Some properties (like &#8216;font-family&#8217; or &#8216;voice-family&#8217;)
+convert a whitespace separated list of idents to a string.</p>
+<p>Only the actual value is returned so e.g. all the following return the
+actual value <tt class="docutils literal"><span class="pre">a</span></tt>: url(a), attr(a), &#8220;a&#8221;, &#8216;a&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSPrimitiveValue.primitiveType">
+<!--[cssutils.css.CSSPrimitiveValue.primitiveType]--><tt class="descname">primitiveType</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.primitiveType" title="Permalink to this definition">¶</a></dt>
+<dd>(readonly) The type of the value as defined by the constants specified above.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSPrimitiveValue.primitiveTypeString">
+<!--[cssutils.css.CSSPrimitiveValue.primitiveTypeString]--><tt class="descname">primitiveTypeString</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.primitiveTypeString" title="Permalink to this definition">¶</a></dt>
+<dd>Name of primitive type of this value.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSPrimitiveValue.seq">
+<!--[cssutils.css.CSSPrimitiveValue.seq]--><tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSPrimitiveValue.setFloatValue">
+<!--[cssutils.css.CSSPrimitiveValue.setFloatValue]--><tt class="descname">setFloatValue</tt><big>(</big><em>unitType</em>, <em>floatValue</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.setFloatValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>(DOM method) A method to set the float value with a specified unit.
+If the property attached with this value can not accept the
+specified unit or the float value, the value will be unchanged and
+a DOMException will be raised.</p>
+<dl class="docutils">
+<dt>unitType</dt>
+<dd>a unit code as defined above. The unit code can only be a float
+unit type</dd>
+<dt>floatValue</dt>
+<dd><p class="first">the new float value which does not have to be a float value but
+may simple be an int e.g. if setting:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">setFloatValue</span><span class="p">(</span><span class="n">CSS_PX</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>raises DOMException</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>INVALID_ACCESS_ERR: Raised if the attached property doesn&#8217;t</dt>
+<dd><p class="first last">support the float value or the unit type.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.</p>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSPrimitiveValue.setStringValue">
+<!--[cssutils.css.CSSPrimitiveValue.setStringValue]--><tt class="descname">setStringValue</tt><big>(</big><em>stringType</em>, <em>stringValue</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.setStringValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>(DOM method) A method to set the string value with the specified
+unit. If the property attached to this value can&#8217;t accept the
+specified unit or the string value, the value will be unchanged and
+a DOMException will be raised.</p>
+<dl class="docutils">
+<dt>stringType</dt>
+<dd>a string code as defined above. The string code can only be a
+string unit type (i.e. CSS_STRING, CSS_URI, CSS_IDENT, and
+CSS_ATTR).</dd>
+<dt>stringValue</dt>
+<dd>the new string value
+Only the actual value is expected so for (CSS_URI, &#8220;a&#8221;) the
+new value will be <tt class="docutils literal"><span class="pre">url(a)</span></tt>. For (CSS_STRING, &#8220;&#8216;a&#8217;&#8221;)
+the new value will be <tt class="docutils literal"><span class="pre">&quot;\'a\'&quot;</span></tt> as the surrounding <tt class="docutils literal"><span class="pre">'</span></tt> are
+not part of the string value</dd>
+<dt>raises</dt>
+<dd><p class="first">DOMException</p>
+<ul class="last simple">
+<li>INVALID_ACCESS_ERR: Raised if the CSS value doesn&#8217;t contain a
+string value or if the string value can&#8217;t be converted into
+the specified unit.</li>
+<li>NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cssvaluelist">
+<h4>CSSValueList<a class="headerlink" href="#cssvaluelist" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.CSSValueList">
+<!--[cssutils.css.CSSValueList]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValueList</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValueList" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSValueList interface provides the abstraction of an ordered
+collection of CSS values.</p>
+<p>Some properties allow an empty list into their syntax. In that case,
+these properties take the none identifier. So, an empty list means
+that the property has the value none.</p>
+<p>The items in the CSSValueList are accessible via an integral index,
+starting from 0.</p>
+<dl class="attribute">
+<dt id="cssutils.css.CSSValueList.cssText">
+<!--[cssutils.css.CSSValueList.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSValueList.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>A string representation of the current value.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSValueList.cssValueTypeString">
+<!--[cssutils.css.CSSValueList.cssValueTypeString]--><tt class="descname">cssValueTypeString</tt><a class="headerlink" href="#cssutils.css.CSSValueList.cssValueTypeString" title="Permalink to this definition">¶</a></dt>
+<dd>(readonly) Name of cssValueType.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSValueList.item">
+<!--[cssutils.css.CSSValueList.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValueList.item" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM method) Used to retrieve a CSSValue by ordinal index. The
+order in this collection represents the order of the values in the
+CSS style property. If index is greater than or equal to the number
+of values in the list, this returns None.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSValueList.length">
+<!--[cssutils.css.CSSValueList.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.css.CSSValueList.length" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM attribute) The number of CSSValues in the list.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSValueList.seq">
+<!--[cssutils.css.CSSValueList.seq]--><tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSValueList.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cssfunction">
+<h4>CSSFunction<a class="headerlink" href="#cssfunction" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.cssvalue.CSSFunction">
+<!--[cssutils.css.cssvalue.CSSFunction]-->class <tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">CSSFunction</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.CSSFunction" title="Permalink to this definition">¶</a></dt>
+<dd>A CSS function value like rect() etc.</dd></dl>
+
+</div>
+<div class="section" id="expressionvalue">
+<h4>ExpressionValue<a class="headerlink" href="#expressionvalue" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.cssvalue.ExpressionValue">
+<!--[cssutils.css.cssvalue.ExpressionValue]-->class <tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">ExpressionValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special IE only CSSFunction which may contain <em>anything</em>.</p>
+<dl class="attribute">
+<dt id="cssutils.css.cssvalue.ExpressionValue.cssText">
+<!--[cssutils.css.cssvalue.ExpressionValue.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>A string representation of the current value.</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+</div>
 
 
           </div>
@@ -1062,7 +1758,9 @@ negation_arg
 <li><a class="reference external" href="">package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt></a><ul>
 <li><a class="reference external" href="#overview">overview</a></li>
 <li><a class="reference external" href="#cssstylesheet">CSSStyleSheet</a></li>
-<li><a class="reference external" href="#cssrule">CSSRule</a><ul>
+<li><a class="reference external" href="#cssrules-rules-and-style-rules">CSSRules: &#64;rules and style rules</a><ul>
+<li><a class="reference external" href="#cssrulelist">CSSRuleList</a></li>
+<li><a class="reference external" href="#cssrule">CSSRule</a></li>
 <li><a class="reference external" href="#csscharsetrule">CSSCharsetRule</a></li>
 <li><a class="reference external" href="#csscomment">CSSComment</a></li>
 <li><a class="reference external" href="#cssnamespacerule">CSSNamespaceRule</a></li>
@@ -1073,8 +1771,24 @@ negation_arg
 <li><a class="reference external" href="#cssstylerule">CSSStyleRule</a></li>
 </ul>
 </li>
+<li><a class="reference external" href="#selectors">Selectors</a><ul>
 <li><a class="reference external" href="#selectorlist">SelectorList</a></li>
 <li><a class="reference external" href="#selector">Selector</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#styles">Styles</a><ul>
+<li><a class="reference external" href="#id1">CSSStyleDeclaration</a></li>
+<li><a class="reference external" href="#id2">Property</a></li>
+<li><a class="reference external" href="#values">Values</a><ul>
+<li><a class="reference external" href="#id3">CSSValue</a></li>
+<li><a class="reference external" href="#cssprimitivevalue">CSSPrimitiveValue</a></li>
+<li><a class="reference external" href="#cssvaluelist">CSSValueList</a></li>
+<li><a class="reference external" href="#cssfunction">CSSFunction</a></li>
+<li><a class="reference external" href="#expressionvalue">ExpressionValue</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

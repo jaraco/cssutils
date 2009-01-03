@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cssutils &mdash; cssutils v0.9.6a1 documentation</title>
+    <title>package cssutils &mdash; cssutils v0.9.6a1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -19,9 +19,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
-    <link rel="next" title="logging" href="logging.html" />
-    <link rel="prev" title="CHANGELOG" href="../CHANGELOG.html" /> 
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -33,12 +31,6 @@
         <li class="right" >
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
-        <li class="right" >
-          <a href="logging.html" title="logging"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="../CHANGELOG.html" title="CHANGELOG"
-             accesskey="P">previous</a> |</li>
         <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,47 +40,16 @@
           <div class="body">
             
   
-  <div class="section" id="module-cssutils">
-<h1><tt class="docutils literal"><span class="pre">cssutils</span></tt><a class="headerlink" href="#module-cssutils" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="package-cssutils">
+<h1>package <tt class="docutils literal"><span class="pre">cssutils</span></tt><a class="headerlink" href="#package-cssutils" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">version:</th><td class="field-body">$Id: cssutils.txt 1590 2009-01-01 21:11:36Z cthedot $</td>
+<tr class="field"><th class="field-name">version:</th><td class="field-body">$Id: cssutils.txt 1609 2009-01-03 21:07:17Z cthedot $</td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="helper-functions">
-<h2>helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cssutils.cssutils.getUrls">
-<!--[cssutils.cssutils.getUrls]--><tt class="descclassname">cssutils.</tt><tt class="descname">getUrls</tt><big>(</big><em>sheet</em><big>)</big><a class="headerlink" href="#cssutils.cssutils.getUrls" title="Permalink to this definition">¶</a></dt>
-<dd><p>Utility function to get all <tt class="docutils literal"><span class="pre">url(value)</span></tt> values in
-<tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties)
-of given CSSStyleSheet <cite>sheet</cite>.</p>
-<p>This function is a generator. The url values exclude <tt class="docutils literal"><span class="pre">url(</span></tt> and <tt class="docutils literal"><span class="pre">)</span></tt> and any surrounding single or double quotes.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cssutils.cssutils.replaceUrls">
-<!--[cssutils.cssutils.replaceUrls]--><tt class="descclassname">cssutils.</tt><tt class="descname">replaceUrls</tt><big>(</big><em>sheet</em>, <em>replacer</em><big>)</big><a class="headerlink" href="#cssutils.cssutils.replaceUrls" title="Permalink to this definition">¶</a></dt>
-<dd><p>Utility function to replace all <tt class="docutils literal"><span class="pre">url(value)</span></tt> values in
-<tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties)
-of given CSSStyleSheet <cite>sheet</cite>.</p>
-<p><cite>replacer</cite> must be a function which is called with a single
-argument which is the current value of the URL
-excluding <tt class="docutils literal"><span class="pre">url(</span></tt> and <tt class="docutils literal"><span class="pre">)</span></tt> and any surrounding single or double quotes.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cssutils.cssutils.resolveImports">
-<!--[cssutils.cssutils.resolveImports]--><tt class="descclassname">cssutils.</tt><tt class="descname">resolveImports</tt><big>(</big><em>sheet</em><big>)</big><a class="headerlink" href="#cssutils.cssutils.resolveImports" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new stylesheet with all rules in given <cite>sheet</cite> but all &#64;import rules
-will be resolved and <strong>all rules</strong> are effectively residing in a single &#8220;flat&#8221; sheet.</p>
-<p>If an imported sheet cannot be read the &#64;import rule will be kept.</p>
-</dd></dl>
-
-</div>
 </div>
 
 
@@ -97,18 +58,6 @@ will be resolved and <strong>all rules</strong> are effectively residing in a si
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">cssutils</span></tt></a><ul>
-<li><a class="reference external" href="#helper-functions">helper functions</a></li>
-</ul>
-</li>
-</ul>
-
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="../CHANGELOG.html" title="previous chapter">CHANGELOG</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="logging.html" title="next chapter">logging</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/cssutils.txt">Show Source</a></li>
@@ -132,12 +81,6 @@ will be resolved and <strong>all rules</strong> are effectively residing in a si
         <li class="right" >
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
-        <li class="right" >
-          <a href="logging.html" title="logging"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="../CHANGELOG.html" title="CHANGELOG"
-             accesskey="P">previous</a> |</li>
         <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
       </ul>
     </div>
