@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>implementation status &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="backlog" href="backlog.html" />
+    <link rel="prev" title="version migration" href="migrate.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="backlog.html" title="backlog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="migrate.html" title="version migration"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="implementation-status">
+<h1>implementation status<a class="headerlink" href="#implementation-status" title="Permalink to this headline">¶</a></h1>
+<p>cssutils partly implements the DOM Level 2 Style Stylesheets and DOM Level 2 CSS interfaces. DOM Level 2 Core and DOM Level 2 Views are not implemented.</p>
+<p>See the relevant specification on the W3C site for details about usage, cssutils tries to implement these as close as possible.</p>
+<div class="section" id="dom-level-2-css-implementation-details">
+<h2>DOM Level 2 CSS implementation details<a class="headerlink" href="#dom-level-2-css-implementation-details" title="Permalink to this headline">¶</a></h2>
+<p>All classes are in package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt> which is directly available from <tt class="docutils literal"><span class="pre">cssutils</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name" colspan="2">css.CSSStyleSheet:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE (except some details)</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSRuleList:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE, based partly on Python list</td>
+</tr>
+<tr class="field"><th class="field-name">css.CSSRule:</th><td class="field-body">DONE, but useful really only as a superclass for individual rule classes like CSSCharsetRule</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSCharsetRule:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSFontFaceRule:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE (from v0.9.4a4. Was removed in CSS 2.1 but is used in some products (Prince XML) and seems useful after all)</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSImportRule:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSMediaRule:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSNamespaceRule:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSPageRule:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSStyleRule:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE (except some details)</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSUnknownRule:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE (mostly)</td>
+</tr>
+<tr class="field"><th class="field-name">css.CSSComment:</th><td class="field-body">(No official DOM) Similar to other CSSRule subclasses.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.SelectorList:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">(No official DOM) A custom list of css.Selector objects in a css.CSSStyleRule.</td>
+</tr>
+<tr class="field"><th class="field-name">css.Selector:</th><td class="field-body">(No official DOM) A simple selector in a css.SelectorList of a css.CSSStyleRule . Also implements parts of the Selectors Working Draft namely the namespace matching possibilities e.g. <tt class="docutils literal"><span class="pre">xsl|match</span></tt>.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSStyleDeclaration:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSS2Properties:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Partly implemented by CSSStyleDeclaration (since cssutils v0.9.2)</td>
+</tr>
+<tr class="field"><th class="field-name">Property:</th><td class="field-body">(No official DOM) A single CSS property with name, value and priority attributes. A list of these form a CSSStyleDeclaration and are retrievable via CSSStyleDeclaration.getProperties(name)</td>
+</tr>
+<tr class="field"><th class="field-name">css.CSSValue:</th><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSPrimitiveValue:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">css.CSSValueList:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE</td>
+</tr>
+<tr class="field"><th class="field-name">css.RGBColor:</th><td class="field-body">Waits development of CSSOM</td>
+</tr>
+<tr class="field"><th class="field-name">css.Rect:</th><td class="field-body">Waits development of CSSOM</td>
+</tr>
+<tr class="field"><th class="field-name">css.Counter:</th><td class="field-body">Waits development of CSSOM</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dom-level-2-stylesheets-implementation-details">
+<h2>DOM Level 2 Stylesheets implementation details<a class="headerlink" href="#dom-level-2-stylesheets-implementation-details" title="Permalink to this headline">¶</a></h2>
+<p>All classes are in package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt> which is directly available from <tt class="docutils literal"><span class="pre">cssutils</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name" colspan="2">stylesheets.StyleSheet:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE mostly</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">stylesheets.StyleSheetList:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE, based on Python list</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">stylesheets.MediaList:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE, contains stylesheets.MediaQuery objects in contrast to the official DOM 2 which did define simple strings. Partly implements a Python list.</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">stylesheets.MediaQuery:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">DONE. Forms the MediaList entries.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="cssutils-scripts">
+<h2>cssutils scripts<a class="headerlink" href="#cssutils-scripts" title="Permalink to this headline">¶</a></h2>
+<p>Additional cssutils helpers installed as scripts.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">csscapture:</th><td class="field-body">Capture all CSS style sheets for a given URI, normally from an HTML page.</td>
+</tr>
+<tr class="field"><th class="field-name">csscombine:</th><td class="field-body">Resolve &#64;import definitions and cut down on HTTP requests.</td>
+</tr>
+<tr class="field"><th class="field-name">cssparse:</th><td class="field-body">Command line parser.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">implementation status</a><ul>
+<li><a class="reference external" href="#dom-level-2-css-implementation-details">DOM Level 2 CSS implementation details</a></li>
+<li><a class="reference external" href="#dom-level-2-stylesheets-implementation-details">DOM Level 2 Stylesheets implementation details</a></li>
+<li><a class="reference external" href="#cssutils-scripts">cssutils scripts</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="migrate.html" title="previous chapter">version migration</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="backlog.html" title="next chapter">backlog</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/implementation.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="backlog.html" title="backlog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="migrate.html" title="version migration"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>

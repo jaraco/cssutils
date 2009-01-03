@@ -4,7 +4,7 @@ CHANGELOG
 :Version: $Id: CHANGELOG.txt 1591 2009-01-01 21:19:15Z cthedot $
 
 known issues
-------------
+============
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
 
 - The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
@@ -33,8 +33,11 @@ known issues
 - handling of comments does probable not work for all cases
 
 
+development version
+===================
+
 0.9.6
---------
+-----
 HEAD
     + **FEATURE**: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if ``import google.appengine`` is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.
     + **FEATURE**: Function ``cssutils.resolveImports(sheet)`` returns a new stylesheet with all rules in given sheet but with all @import rules being pulled into the top sheet.
@@ -47,7 +50,7 @@ HEAD
         **TODO**: Preference setting. Profile?
 
     - IMPROVEMENT: Added all known properties (by cssutils ;) to CSS2Properties.
-    - DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markuped yet but not too bad either...
+    - DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markup'd yet but not too bad either...
 
 
 
@@ -122,6 +125,10 @@ HEAD
 
     + IMPROVEMENT:
         - minor changes due to deprecation in Py3k. cssutils is NOT Py3k compliant yet though and it will probably take a while until it will be...
+
+
+stable version
+==============
 
 0.9.5
 -----
@@ -479,8 +486,8 @@ HEAD
 
     - IMPROVEMENT: ``CSSStyleDeclaration`` and some minor other parts refactored
 
-0.9 - 0.9.4
------------
+deprecated versions
+===================
 
 0.9.4b1 071229
     - **FEATURE**: Added ``csscombine`` script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!

@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CSS codec &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="cssutils scripts" href="scripts.html" />
+    <link rel="prev" title="profiles" href="profiles.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="cssutils scripts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="profiles.html" title="profiles"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="module-cssutils.codec">
+<h1>CSS codec<a class="headerlink" href="#module-cssutils.codec" title="Permalink to this headline">¶</a></h1>
+<p>Python codec for CSS.</p>
+<dl class="function">
+<dt id="cssutils.codec.detectencoding_str">
+<!--[cssutils.codec.detectencoding_str]--><tt class="descclassname">cssutils.codec.</tt><tt class="descname">detectencoding_str</tt><big>(</big><em>input</em>, <em>final=False</em><big>)</big><a class="headerlink" href="#cssutils.codec.detectencoding_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect the encoding of the byte string <tt class="docutils literal"><span class="pre">input</span></tt>, which contains the
+beginning of a CSS file. This function returs the detected encoding (or
+<tt class="xref docutils literal"><span class="pre">None</span></tt> if it hasn&#8217;t got enough data), and a flag that indicates whether
+to encoding has been detected explicitely or implicitely. To detect the
+encoding the first few bytes are used (or if <tt class="docutils literal"><span class="pre">input</span></tt> is ASCII compatible
+and starts with a charset rule the encoding name from the rule). &#8220;Explicit&#8221;
+detection means that the bytes start with a BOM or a charset rule.</p>
+<p>If the encoding can&#8217;t be detected yet, <tt class="xref docutils literal"><span class="pre">None</span></tt> is returned as the encoding.
+<tt class="docutils literal"><span class="pre">final</span></tt> specifies whether more data is available in later calls or not.
+If <tt class="docutils literal"><span class="pre">final</span></tt> is true, <tt class="docutils literal"><span class="pre">detectencoding_str()</span></tt> will never return <tt class="xref docutils literal"><span class="pre">None</span></tt>
+as the encoding.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cssutils.codec.detectencoding_unicode">
+<!--[cssutils.codec.detectencoding_unicode]--><tt class="descclassname">cssutils.codec.</tt><tt class="descname">detectencoding_unicode</tt><big>(</big><em>input</em>, <em>final=False</em><big>)</big><a class="headerlink" href="#cssutils.codec.detectencoding_unicode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect the encoding of the unicode string <tt class="docutils literal"><span class="pre">input</span></tt>, which contains the
+beginning of a CSS file. The encoding is detected from the charset rule
+at the beginning of <tt class="docutils literal"><span class="pre">input</span></tt>. If there is no charset rule, <tt class="docutils literal"><span class="pre">&quot;utf-8&quot;</span></tt>
+will be returned.</p>
+<p>If the encoding can&#8217;t be detected yet, <tt class="xref docutils literal"><span class="pre">None</span></tt> is returned. <tt class="docutils literal"><span class="pre">final</span></tt>
+specifies whether more data will be available in later calls or not. If
+<tt class="docutils literal"><span class="pre">final</span></tt> is true, <tt class="docutils literal"><span class="pre">detectencoding_unicode()</span></tt> will never return <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="profiles.html" title="previous chapter">profiles</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="scripts.html" title="next chapter"><tt class="docutils literal"><span class="pre">cssutils</span></tt> scripts</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/codec.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="cssutils scripts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="profiles.html" title="profiles"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>
