@@ -1,10 +1,39 @@
 ============
-css.CSSValue
+values
 ============
-:version: $Id$
 
-random notes about values
-=========================
-- CSSValue is always the base class of a Properties ``cssValue``. It may be more specific like a CSSPrimitiveValue or a CSSValueList which itself contains CSSValue or CSSPrimitiveValue objects
+CSSValue
+========
+.. autoclass:: cssutils.css.CSSValue
+    :members:
+    :inherited-members:
+
+CSSPrimitiveValue
+=================
+.. autoclass:: cssutils.css.CSSPrimitiveValue
+    :members:
+    :inherited-members:
+
+CSSValueList
+============
+.. autoclass:: cssutils.css.CSSValueList
+    :members:
+    :inherited-members:
 
 
+CSSFunction
+===========
+.. autoclass:: cssutils.css.cssvalue.CSSFunction
+    :members:
+
+..
+    RGBColor
+    ========
+    .. autoclass:: cssutils.css.RGBColor
+        :members:
+        :inherited-members:
+
+ExpressionValue
+===============
+.. autoclass:: cssutils.css.cssvalue.ExpressionValue
+    :members:

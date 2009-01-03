@@ -1,0 +1,45 @@
+.. module:: cssutils.parse
+
+===========
+parsing CSS
+===========
+Options to parse a given stylesheet: Get an instance of :class:`cssutils.CSSParser` and use the provided ``parse*`` methods or for simpler parsing use the ``parse*`` `helper functions`_.
+
+CSSParser
+=========
+The parser is reusable.
+
+.. autoclass:: cssutils.CSSParser
+   :members:
+   :inherited-members:
+
+custom URL Fetcher
+------------------
+If you want to control how imported stylesheets are read you may define a custom URL fetcher (e.g. would be needed on Google AppEngine as urllib2, which is normally used, is not available. A GAE specific fetcher is included in cssutils from 0.9.5a1 though.)
+
+A custom URL fetcher may be used during parsing via ``CSSParser.setFetcher(fetcher)`` (or as an init parameter). The so customized parser is reusable. The fetcher is called when an ``@import`` rule is found and the referenced stylesheet is about to be retrieved.
+
+
+Example::
+
+    def fetcher(url):
+        return 'ascii', '/*test*/'
+
+    parser = cssutils.CSSParser(fetcher=fetcher)
+    parser.parse...
+
+To omit parsing of imported sheets just define a fetcher like ``lambda url: None`` (A single ``None`` is sufficient but returning ``None, None`` would be clearer).
+
+You may also define a fetcher which overrides the internal encoding for imported sheets with a fetcher that returns a (normally HTTP) encoding depending e.g on the URL.
+
+
+helper functions
+================
+Shortcuts for initializing a new :class:`cssutils.CSSParser` and use its ``parse*`` methods. Parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. If you need advanced parser handline use :class:`cssutils.CSSParser` directly.
+
+.. function:: cssutils.parseString(cssText, encoding=None, href=None, media=None, title=None)
+
+.. function:: cssutils.parseFile(filename, encoding=None, href=None, media=None, title=None)
+
+.. function:: cssutils.parseUrl(href, encoding=None, media=None, title=None)
+
