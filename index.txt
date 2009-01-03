@@ -10,20 +10,26 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
     <README>
     <CHANGELOG>
 
     <docs/cssutils>
+    <docs/logging>
+    <docs/parse>
+    <docs/serialize>
     <docs/css>
+    <docs/stylesheets>
     <docs/cssstyledeclaration>
     <docs/values>
-    <docs/stylesheets>
+    <docs/profiles>
+    <docs/codec>
 
     <docs/scripts>
 
     <docs/migrate.txt>
+    <docs/implementation>
     <docs/backlog.txt>
 
 ..

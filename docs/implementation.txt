@@ -1,0 +1,53 @@
+=====================
+implementation status
+=====================
+cssutils partly implements the DOM Level 2 Style Stylesheets and DOM Level 2 CSS interfaces. DOM Level 2 Core and DOM Level 2 Views are not implemented.
+
+See the relevant specification on the W3C site for details about usage, cssutils tries to implement these as close as possible.
+
+DOM Level 2 CSS implementation details
+======================================
+All classes are in package ``cssutils.css`` which is directly available from ``cssutils``.
+
+:css.CSSStyleSheet:	DONE (except some details)
+:css.CSSRuleList: DONE, based partly on Python list
+:css.CSSRule: DONE, but useful really only as a superclass for individual rule classes like CSSCharsetRule
+:css.CSSCharsetRule: DONE
+:css.CSSFontFaceRule: DONE (from v0.9.4a4. Was removed in CSS 2.1 but is used in some products (Prince XML) and seems useful after all)
+:css.CSSImportRule: DONE
+:css.CSSMediaRule: DONE
+:css.CSSNamespaceRule: DONE
+:css.CSSPageRule: DONE
+:css.CSSStyleRule: DONE (except some details)
+:css.CSSUnknownRule: DONE (mostly)
+:css.CSSComment: (No official DOM) Similar to other CSSRule subclasses.
+:css.SelectorList: (No official DOM) A custom list of css.Selector objects in a css.CSSStyleRule.
+:css.Selector: (No official DOM) A simple selector in a css.SelectorList of a css.CSSStyleRule . Also implements parts of the Selectors Working Draft namely the namespace matching possibilities e.g. ``xsl|match``.
+:css.CSSStyleDeclaration: DONE
+:css.CSS2Properties: Partly implemented by CSSStyleDeclaration (since cssutils v0.9.2)
+:Property: (No official DOM) A single CSS property with name, value and priority attributes. A list of these form a CSSStyleDeclaration and are retrievable via CSSStyleDeclaration.getProperties(name)
+:css.CSSValue: DONE
+:css.CSSPrimitiveValue: DONE
+:css.CSSValueList: DONE
+:css.RGBColor: Waits development of CSSOM
+:css.Rect: Waits development of CSSOM
+:css.Counter: Waits development of CSSOM
+
+
+DOM Level 2 Stylesheets implementation details
+==============================================
+All classes are in package ``cssutils.stylesheets`` which is directly available from ``cssutils``.
+
+:stylesheets.StyleSheet: DONE mostly
+:stylesheets.StyleSheetList: DONE, based on Python list
+:stylesheets.MediaList: DONE, contains stylesheets.MediaQuery objects in contrast to the official DOM 2 which did define simple strings. Partly implements a Python list.
+:stylesheets.MediaQuery: DONE. Forms the MediaList entries.
+
+
+cssutils scripts
+================
+Additional cssutils helpers installed as scripts.
+
+:csscapture: Capture all CSS style sheets for a given URI, normally from an HTML page.
+:csscombine: Resolve @import definitions and cut down on HTTP requests.
+:cssparse: Command line parser.
