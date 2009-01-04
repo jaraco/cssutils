@@ -1,15 +1,15 @@
 ========================
 package ``cssutils.css``
 ========================
-:Version: $Id: css.txt 1624 2009-01-03 21:47:53Z cthedot $
+:Version: $Id: css.txt 1627 2009-01-04 13:16:00Z cthedot $
 
 .. module:: cssutils.css
 
 Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`_ and `CSS Module: Namespaces (W3C Working Draft 28 August 2006) <http://www.w3.org/TR/css3-namespace/>`_
 
 
-CSSStyleSheet
-=============
+``CSSStyleSheet``
+=================
 
 A CSSStyleSheet contains all rules. It consists of the different CSS ruleslike :class:`~cssutils.css.CSSImportRule`, :class:`~cssutils.css.CSSStyleRule` etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an :class:`~cssutils.css.CSSCharsetRule` rule or simpler with the :attr:`~cssutils.css.CSSStyleSheet.encoding` attribute. The serialized sheet may be obtained from :attr:`~cssutils.css.CSSStyleSheet.cssText`. All rules are present in :attr:`~cssutils.css.CSSStyleSheet.cssRules`, a stylesheet iterates on its rules so this might be easier. Namespaces are available via :attr:`~cssutils.css.CSSStyleSheet.namespaces` (do not rely on prefixes, see http://www.w3.org/TR/REC-xml-names/ how these work).
 
@@ -18,8 +18,8 @@ A CSSStyleSheet contains all rules. It consists of the different CSS ruleslike :
    :members:
    :inherited-members:
 
-CSSRules: @rules and style rules
-================================
+CSS rules: @rules and ``CSSStyleRule``
+======================================
 
 CSSRuleList
 -----------
@@ -84,8 +84,8 @@ CSSStyleRule
 
 
 
-Selectors
-=========
+Selector related classes: ``SelectorList`` and ``Selector``
+===========================================================
 
 SelectorList
 ------------
@@ -101,8 +101,8 @@ Selector
 
 
 
-Styles
-======
+Style related classes: ``CSSStyleDeclaration``, ``Property``, ``CSSValue`` etc
+==============================================================================================
 
 
 CSSStyleDeclaration

@@ -4,11 +4,12 @@
     single: ser, cssutils.ser
     object: cssutils.ser
 
+===============
 serializing CSS
 ===============
 
-CSSSerializer
--------------
+``CSSSerializer``
+=================
 There is a single global serializer used throughout the library. You may configure it by setting specific Preferences_ or completely replace it with your own.
 
 A custom serializer must implement all methods the default one provides. Easiest would be to subclass :class:`cssutils.serialize.CSSSerializer`.
@@ -31,8 +32,8 @@ For most cases adjusting the :attr:`cssutils.ser.prefs` of the default serialize
     single: cssutils.ser.prefs
     object: cssutils.ser.prefs
 
-Preferences
------------
+``Preferences``
+===============
 Quite a few preferences of the cssutils serializer may be tweaked.
 
 To set a preference use::
