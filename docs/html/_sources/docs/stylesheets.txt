@@ -3,7 +3,7 @@
 ================================
 package ``cssutils.stylesheets``
 ================================
-:Version: $Id: css.txt 1627 2009-01-04 13:16:00Z cthedot $
+:Version: $Id: stylesheets.txt 1630 2009-01-04 18:59:18Z cthedot $
 
 Classes implementing Document Object Model Level 2 Style Sheets http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927/stylesheets.html
 

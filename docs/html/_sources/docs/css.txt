@@ -1,7 +1,7 @@
 ========================
 package ``cssutils.css``
 ========================
-:Version: $Id: css.txt 1627 2009-01-04 13:16:00Z cthedot $
+:Version: $Id: css.txt 1630 2009-01-04 18:59:18Z cthedot $
 
 .. module:: cssutils.css
 
