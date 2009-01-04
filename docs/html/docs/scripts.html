@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cssutils scripts &mdash; cssutils v0.9.6a1 documentation</title>
+    <title>scripts &mdash; cssutils v0.9.6a1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -20,8 +20,8 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
-    <link rel="next" title="version migration" href="migrate.html" />
-    <link rel="prev" title="logging" href="logging.html" /> 
+    <link rel="next" title="profiles" href="profiles.html" />
+    <link rel="prev" title="package cssutils.stylesheets" href="stylesheets.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,10 +34,10 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="migrate.html" title="version migration"
+          <a href="profiles.html" title="profiles"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="logging.html" title="logging"
+          <a href="stylesheets.html" title="package cssutils.stylesheets"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
       </ul>
@@ -48,19 +48,19 @@
           <div class="body">
             
   
-  <div class="section" id="cssutils-scripts">
-<h1><tt class="docutils literal"><span class="pre">cssutils</span></tt> scripts<a class="headerlink" href="#cssutils-scripts" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="scripts">
+<h1>scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">version:</th><td class="field-body">$Id: scripts.txt 1590 2009-01-01 21:11:36Z cthedot $</td>
+<tr class="field"><th class="field-name">version:</th><td class="field-body">$Id: scripts.txt 1627 2009-01-04 13:16:00Z cthedot $</td>
 </tr>
 </tbody>
 </table>
 <p>The provided scripts are available as a standalone script which is installed in the default PYTHONHOME/scripts directory. Additionally an API for the functionality of the scripts is provided for use in programs.</p>
 <div class="section" id="cssparse">
-<h2>CSSParse<a class="headerlink" href="#cssparse" title="Permalink to this headline">¶</a></h2>
+<h2><tt class="docutils literal"><span class="pre">CSSParse</span></tt><a class="headerlink" href="#cssparse" title="Permalink to this headline">¶</a></h2>
 <p>Script version of <tt class="docutils literal"><span class="pre">cssutils.parseString()</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.parseFile()</span></tt>.</p>
 <dl class="docutils">
 <dt>Usage: cssparse-script.py [options] filename1.css [filename2.css ...]</dt>
@@ -96,7 +96,7 @@
 </dl>
 </div>
 <div class="section" id="csscapture">
-<h2>CSSCapture<a class="headerlink" href="#csscapture" title="Permalink to this headline">¶</a></h2>
+<h2><tt class="docutils literal"><span class="pre">CSSCapture</span></tt><a class="headerlink" href="#csscapture" title="Permalink to this headline">¶</a></h2>
 <p><tt class="docutils literal"><span class="pre">CSSCapture</span></tt> downloads all referenced CSS stylesheets of a given URL and saves them to a given target directory.</p>
 <div class="section" id="programmatic-use">
 <h3>programmatic use<a class="headerlink" href="#programmatic-use" title="Permalink to this headline">¶</a></h3>
@@ -196,7 +196,7 @@
 </div>
 </div>
 <div class="section" id="csscombine">
-<h2>CSSCombine<a class="headerlink" href="#csscombine" title="Permalink to this headline">¶</a></h2>
+<h2><tt class="docutils literal"><span class="pre">CSSCombine</span></tt><a class="headerlink" href="#csscombine" title="Permalink to this headline">¶</a></h2>
 <p><tt class="docutils literal"><span class="pre">csscombine</span></tt> may be used to combine several sheets loaded from a main sheet via &#64;import rules. Nested &#64;import rules are resolved from cssutils 0.9.6a1.</p>
 <p>The resulting combined sheet (optionally minified) is send to stdout, info and error messages are handled by the normal cssutils log.</p>
 <p><tt class="docutils literal"><span class="pre">csscombine</span></tt> may also be used to change the encoding of the stylesheet if a target encoding is given.</p>
@@ -260,14 +260,14 @@ False</td></tr>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">cssutils</span></tt> scripts</a><ul>
-<li><a class="reference external" href="#cssparse">CSSParse</a></li>
-<li><a class="reference external" href="#csscapture">CSSCapture</a><ul>
+<li><a class="reference external" href="">scripts</a><ul>
+<li><a class="reference external" href="#cssparse"><tt class="docutils literal"><span class="pre">CSSParse</span></tt></a></li>
+<li><a class="reference external" href="#csscapture"><tt class="docutils literal"><span class="pre">CSSCapture</span></tt></a><ul>
 <li><a class="reference external" href="#programmatic-use">programmatic use</a></li>
 <li><a class="reference external" href="#script-use">script use</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#csscombine">CSSCombine</a><ul>
+<li><a class="reference external" href="#csscombine"><tt class="docutils literal"><span class="pre">CSSCombine</span></tt></a><ul>
 <li><a class="reference external" href="#id1">programmatic use</a></li>
 <li><a class="reference external" href="#id2">script use</a></li>
 </ul>
@@ -277,9 +277,9 @@ False</td></tr>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="logging.html" title="previous chapter">logging</a></p>
+            <p class="topless"><a href="stylesheets.html" title="previous chapter">package <tt class="docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="migrate.html" title="next chapter">version migration</a></p>
+            <p class="topless"><a href="profiles.html" title="next chapter">profiles</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/scripts.txt">Show Source</a></li>
@@ -304,10 +304,10 @@ False</td></tr>
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="migrate.html" title="version migration"
+          <a href="profiles.html" title="profiles"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="logging.html" title="logging"
+          <a href="stylesheets.html" title="package cssutils.stylesheets"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
       </ul>

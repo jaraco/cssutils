@@ -54,13 +54,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: css.txt 1624 2009-01-03 21:47:53Z cthedot $</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: css.txt 1627 2009-01-04 13:16:00Z cthedot $</td>
 </tr>
 </tbody>
 </table>
 <p>Classes implementing <a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 CSS</a> and <a class="reference external" href="http://www.w3.org/TR/css3-namespace/">CSS Module: Namespaces (W3C Working Draft 28 August 2006)</a></p>
 <div class="section" id="cssstylesheet">
-<h2>CSSStyleSheet<a class="headerlink" href="#cssstylesheet" title="Permalink to this headline">¶</a></h2>
+<h2><tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt><a class="headerlink" href="#cssstylesheet" title="Permalink to this headline">¶</a></h2>
 <p>A CSSStyleSheet contains all rules. It consists of the different CSS ruleslike <a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">CSSImportRule</span></tt></a>, <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a> etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an <a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> rule or simpler with the <a title="cssutils.css.CSSStyleSheet.encoding" class="reference internal" href="#cssutils.css.CSSStyleSheet.encoding"><tt class="xref docutils literal"><span class="pre">encoding</span></tt></a> attribute. The serialized sheet may be obtained from <a title="cssutils.css.CSSStyleSheet.cssText" class="reference internal" href="#cssutils.css.CSSStyleSheet.cssText"><tt class="xref docutils literal"><span class="pre">cssText</span></tt></a>. All rules are present in <tt class="xref docutils literal"><span class="pre">cssRules</span></tt>, a stylesheet iterates on its rules so this might be easier. Namespaces are available via <a title="cssutils.css.CSSStyleSheet.namespaces" class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces"><tt class="xref docutils literal"><span class="pre">namespaces</span></tt></a> (do not rely on prefixes, see <a class="reference external" href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a> how these work).</p>
 <dl class="class">
 <dt id="cssutils.css.CSSStyleSheet">
@@ -125,6 +125,11 @@ Raised if this style sheet is readonly.</li>
 <dd>Encoding set in <a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> or if <tt class="xref docutils literal"><span class="pre">None</span></tt>
 resulting in default <tt class="docutils literal"><span class="pre">utf-8</span></tt> encoding being used.</dd></dl>
 
+<dl class="attribute">
+<dt id="cssutils.css.CSSStyleSheet.href">
+<!--[cssutils.css.CSSStyleSheet.href]--><tt class="descname">href</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.href" title="Permalink to this definition">¶</a></dt>
+<dd>If the style sheet is a linked style sheet, the value of this attribute is its location. For inline style sheets, the value of this attribute is None. See the href attribute definition for the LINK element in HTML 4.0, and the href pseudo-attribute for the XML style sheet processing instruction.</dd></dl>
+
 <dl class="method">
 <dt id="cssutils.css.CSSStyleSheet.insertRule">
 <!--[cssutils.css.CSSStyleSheet.insertRule]--><tt class="descname">insertRule</tt><big>(</big><em>rule</em>, <em>index=None</em>, <em>inOrder=False</em>, <em>_clean=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleSheet.insertRule" title="Permalink to this definition">¶</a></dt>
@@ -177,9 +182,19 @@ unparsable.</li>
 <dd>All Namespaces used in this CSSStyleSheet.</dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.CSSStyleSheet.ownerNode">
+<!--[cssutils.css.CSSStyleSheet.ownerNode]--><tt class="descname">ownerNode</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.ownerNode" title="Permalink to this definition">¶</a></dt>
+<dd>Not used in cssutils yet.</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.CSSStyleSheet.ownerRule">
 <!--[cssutils.css.CSSStyleSheet.ownerRule]--><tt class="descname">ownerRule</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.ownerRule" title="Permalink to this definition">¶</a></dt>
 <dd>A ref to an &#64;import rule if it is imported, alse <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSStyleSheet.parentStyleSheet">
+<!--[cssutils.css.CSSStyleSheet.parentStyleSheet]--><tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
+<dd>For style sheet languages that support the concept of style sheet inclusion, this attribute represents the including style sheet, if one exists. If the style sheet is a top-level style sheet, or the style sheet language does not support inclusion, the value of this attribute is None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleSheet.seq">
@@ -201,13 +216,13 @@ preferences to be set.</dd></dl>
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleSheet.type">
 <!--[cssutils.css.CSSStyleSheet.type]--><tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.type" title="Permalink to this definition">¶</a></dt>
-<dd>Style sheet language used, a content type. For CSS this is always <tt class="docutils literal"><span class="pre">text/css</span></tt>.</dd></dl>
+<dd>This specifies the style sheet language for this style sheet. The style sheet language is specified as a content type (e.g. <tt class="docutils literal"><span class="pre">text/css</span></tt>). The content type is often specified in the ownerNode. Also see the type attribute definition for the LINK element in HTML 4.0, and the type pseudo-attribute for the XML style sheet processing instruction. For CSS this is always <tt class="docutils literal"><span class="pre">text/css</span></tt>.</dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="cssrules-rules-and-style-rules">
-<h2>CSSRules: &#64;rules and style rules<a class="headerlink" href="#cssrules-rules-and-style-rules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="css-rules-rules-and-cssstylerule">
+<h2>CSS rules: &#64;rules and <tt class="docutils literal"><span class="pre">CSSStyleRule</span></tt><a class="headerlink" href="#css-rules-rules-and-cssstylerule" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="cssrulelist">
 <h3>CSSRuleList<a class="headerlink" href="#cssrulelist" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
@@ -920,8 +935,8 @@ rule set.</dd></dl>
 
 </div>
 </div>
-<div class="section" id="selectors">
-<h2>Selectors<a class="headerlink" href="#selectors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="selector-related-classes-selectorlist-and-selector">
+<h2>Selector related classes: <tt class="docutils literal"><span class="pre">SelectorList</span></tt> and <tt class="docutils literal"><span class="pre">Selector</span></tt><a class="headerlink" href="#selector-related-classes-selectorlist-and-selector" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="selectorlist">
 <h3>SelectorList<a class="headerlink" href="#selectorlist" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
@@ -1116,8 +1131,8 @@ negation_arg
 
 </div>
 </div>
-<div class="section" id="styles">
-<h2>Styles<a class="headerlink" href="#styles" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="style-related-classes-cssstyledeclaration-property-cssvalue-etc">
+<h2>Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc<a class="headerlink" href="#style-related-classes-cssstyledeclaration-property-cssvalue-etc" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="cssstyledeclaration">
 <h3>CSSStyleDeclaration<a class="headerlink" href="#cssstyledeclaration" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
@@ -1765,8 +1780,8 @@ of values in the list, this returns None.</dd></dl>
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="">package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt></a><ul>
-<li><a class="reference external" href="#cssstylesheet">CSSStyleSheet</a></li>
-<li><a class="reference external" href="#cssrules-rules-and-style-rules">CSSRules: &#64;rules and style rules</a><ul>
+<li><a class="reference external" href="#cssstylesheet"><tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt></a></li>
+<li><a class="reference external" href="#css-rules-rules-and-cssstylerule">CSS rules: &#64;rules and <tt class="docutils literal"><span class="pre">CSSStyleRule</span></tt></a><ul>
 <li><a class="reference external" href="#cssrulelist">CSSRuleList</a></li>
 <li><a class="reference external" href="#cssrule">CSSRule</a></li>
 <li><a class="reference external" href="#csscharsetrule">CSSCharsetRule</a></li>
@@ -1779,12 +1794,12 @@ of values in the list, this returns None.</dd></dl>
 <li><a class="reference external" href="#cssstylerule">CSSStyleRule</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#selectors">Selectors</a><ul>
+<li><a class="reference external" href="#selector-related-classes-selectorlist-and-selector">Selector related classes: <tt class="docutils literal"><span class="pre">SelectorList</span></tt> and <tt class="docutils literal"><span class="pre">Selector</span></tt></a><ul>
 <li><a class="reference external" href="#selectorlist">SelectorList</a></li>
 <li><a class="reference external" href="#selector">Selector</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#styles">Styles</a><ul>
+<li><a class="reference external" href="#style-related-classes-cssstyledeclaration-property-cssvalue-etc">Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc</a><ul>
 <li><a class="reference external" href="#cssstyledeclaration">CSSStyleDeclaration</a></li>
 <li><a class="reference external" href="#property">Property</a></li>
 <li><a class="reference external" href="#values">Values</a><ul>
@@ -1804,7 +1819,7 @@ of values in the list, this returns None.</dd></dl>
             <h4>Previous topic</h4>
             <p class="topless"><a href="serialize.html" title="previous chapter">serializing CSS</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="stylesheets.html" title="next chapter">package <tt class="docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
+            <p class="topless"><a href="stylesheets.html" title="next chapter">package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/css.txt">Show Source</a></li>

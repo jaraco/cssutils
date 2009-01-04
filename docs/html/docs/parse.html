@@ -50,9 +50,9 @@
   
   <div class="section" id="parsing-css">
 <span id="module-cssutils.parse"></span><h1>parsing CSS<a class="headerlink" href="#parsing-css" title="Permalink to this headline">¶</a></h1>
-<p>Options to parse a given stylesheet: Get an instance of <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> and use the provided <tt class="docutils literal"><span class="pre">parse*</span></tt> methods or for simpler parsing use the <tt class="docutils literal"><span class="pre">parse*</span></tt> <a class="reference internal" href="#helper-functions">helper functions</a>.</p>
+<p>Options to parse a given stylesheet: Get an instance of <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> and use the provided <tt class="docutils literal"><span class="pre">parse*</span></tt> methods or for simpler parsing use the <tt class="docutils literal"><span class="pre">parse*</span></tt> <a class="reference internal" href="#shortcut-functions">shortcut functions</a>.</p>
 <div class="section" id="cssparser">
-<h2>CSSParser<a class="headerlink" href="#cssparser" title="Permalink to this headline">¶</a></h2>
+<h2><tt class="docutils literal"><span class="pre">CSSParser</span></tt><a class="headerlink" href="#cssparser" title="Permalink to this headline">¶</a></h2>
 <p>The parser is reusable.</p>
 <dl class="class">
 <dt id="cssutils.CSSParser">
@@ -197,8 +197,8 @@ to use its default function.</p>
 <p>You may also define a fetcher which overrides the internal encoding for imported sheets with a fetcher that returns a (normally HTTP) encoding depending e.g on the URL.</p>
 </div>
 </div>
-<div class="section" id="helper-functions">
-<h2>helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="shortcut-functions">
+<h2>shortcut functions<a class="headerlink" href="#shortcut-functions" title="Permalink to this headline">¶</a></h2>
 <p>Shortcuts for initializing a new <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> and use its <tt class="docutils literal"><span class="pre">parse*</span></tt> methods. Parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. If you need advanced parser handline use <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> directly.</p>
 <dl class="function">
 <dt id="cssutils.parse.cssutils.parseString">
@@ -227,11 +227,11 @@ to use its default function.</p>
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="">parsing CSS</a><ul>
-<li><a class="reference external" href="#cssparser">CSSParser</a><ul>
+<li><a class="reference external" href="#cssparser"><tt class="docutils literal"><span class="pre">CSSParser</span></tt></a><ul>
 <li><a class="reference external" href="#custom-url-fetcher">custom URL Fetcher</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#helper-functions">helper functions</a></li>
+<li><a class="reference external" href="#shortcut-functions">shortcut functions</a></li>
 </ul>
 </li>
 </ul>
