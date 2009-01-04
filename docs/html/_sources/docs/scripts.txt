@@ -1,12 +1,12 @@
 ====================
-``cssutils`` scripts
+scripts
 ====================
-:version: $Id: scripts.txt 1590 2009-01-01 21:11:36Z cthedot $
+:version: $Id: scripts.txt 1627 2009-01-04 13:16:00Z cthedot $
 
 The provided scripts are available as a standalone script which is installed in the default PYTHONHOME/scripts directory. Additionally an API for the functionality of the scripts is provided for use in programs.
 
-CSSParse
-========
+``CSSParse``
+============
 Script version of ``cssutils.parseString()`` and ``cssutils.parseFile()``.
 
 Usage: cssparse-script.py [options] filename1.css [filename2.css ...]
@@ -22,8 +22,8 @@ Options:
   -d, --debug           activate debugging output
 
 
-CSSCapture
-==========
+``CSSCapture``
+==============
 ``CSSCapture`` downloads all referenced CSS stylesheets of a given URL and saves them to a given target directory.
 
 programmatic use
@@ -102,8 +102,8 @@ The following example outputs a list of stylesheets found with title and href of
         title: None
         href: u'http://cthedot.de/static/cssutils/examples/css/inlineimportimport1.css'
 
-CSSCombine
-==========
+``CSSCombine``
+==============
 ``csscombine`` may be used to combine several sheets loaded from a main sheet via @import rules. Nested @import rules are resolved from cssutils 0.9.6a1.
 
 The resulting combined sheet (optionally minified) is send to stdout, info and error messages are handled by the normal cssutils log.
