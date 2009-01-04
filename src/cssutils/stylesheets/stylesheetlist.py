@@ -7,7 +7,7 @@ class StyleSheetList(list):
     """Interface `StyleSheetList` (introduced in DOM Level 2)
 
     The `StyleSheetList` interface provides the abstraction of an ordered
-    collection of style sheets.
+    collection of :class:`~cssutils.stylesheets.StyleSheet` objects.
 
     The items in the `StyleSheetList` are accessible via an integral index,
     starting from 0.
