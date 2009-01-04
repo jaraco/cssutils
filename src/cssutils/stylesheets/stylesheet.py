@@ -14,7 +14,7 @@ class StyleSheet(cssutils.util.Base2):
 
     In HTML, the StyleSheet interface represents either an
     external style sheet, included via the HTML LINK element,
-    or an inline STYLE element (-ch: also an @import stylesheet?).
+    or an inline STYLE element (also an @import stylesheet?).
 
     In XML, this interface represents
     an external style sheet, included via a style sheet
@@ -28,14 +28,8 @@ class StyleSheet(cssutils.util.Base2):
                  ownerNode=None,
                  parentStyleSheet=None):
         """
-        type: readonly
-            This specifies the style sheet language for this
-            style sheet. The style sheet language is specified
-            as a content type (e.g. "text/css"). The content
-            type is often specified in the ownerNode. Also see
-            the type attribute definition for the LINK element
-            in HTML 4.0, and the type pseudo-attribute for the
-            XML style sheet processing instruction.
+        type
+            readonly
         href: readonly
             If the style sheet is a linked style sheet, the value
             of this attribute is its location. For inline style
@@ -72,12 +66,6 @@ class StyleSheet(cssutils.util.Base2):
             included by other style sheets, the value of this
             attribute is None.
         parentStyleSheet: of type StyleSheet, readonly
-            For style sheet languages that support the concept
-            of style sheet inclusion, this attribute represents
-            the including style sheet, if one exists. If the style
-            sheet is a top-level style sheet, or the style sheet
-            language does not support inclusion, the value of this
-            attribute is None.
         """
         super(StyleSheet, self).__init__()
         
@@ -90,12 +78,31 @@ class StyleSheet(cssutils.util.Base2):
         self.media = media
         self.title = title
     
-    href = property(lambda self: self._href)
+    href = property(lambda self: self._href,
+        doc="If the style sheet is a linked style sheet, the value "
+            "of this attribute is its location. For inline style "
+            "sheets, the value of this attribute is None. See the "
+            "href attribute definition for the LINK element in HTML "
+            "4.0, and the href pseudo-attribute for the XML style "
+            "sheet processing instruction.")
 
-    ownerNode = property(lambda self: self._ownerNode)
+    ownerNode = property(lambda self: self._ownerNode, 
+                         doc="Not used in cssutils yet.")
     
-    parentStyleSheet = property(lambda self: self._parentStyleSheet)
+    parentStyleSheet = property(lambda self: self._parentStyleSheet,
+        doc="For style sheet languages that support the concept "
+            "of style sheet inclusion, this attribute represents "
+            "the including style sheet, if one exists. If the style "
+            "sheet is a top-level style sheet, or the style sheet "
+            "language does not support inclusion, the value of this "
+            "attribute is None.")
 
     type = property(lambda self: self._type, 
-                    doc="Style sheet language used, a content type."
-                    " For CSS this is always ``text/css``.")
+        doc="This specifies the style sheet language for this "
+            "style sheet. The style sheet language is specified "
+            "as a content type (e.g. ``text/css``). The content "
+            "type is often specified in the ownerNode. Also see "
+            "the type attribute definition for the LINK element "
+            "in HTML 4.0, and the type pseudo-attribute for the "
+            "XML style sheet processing instruction. "
+            "For CSS this is always ``text/css``.")

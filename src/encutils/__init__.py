@@ -1,18 +1,16 @@
 #!/usr/bin/env python
 """encutils - encoding detection collection for Python
 
-encutils
-========
+:Version: 0.8.3.1
 :Author: Christof Hoeke, see http://cthedot.de/encutils/
-:Copyright: 2005-2008: Christof Hoeke
+:Copyright: 2005-2009: Christof Hoeke
 :License: encutils has a dual-license, please choose whatever you prefer:
 
-    * encutils is published under the `LGPL 3 or later <http://cthedot.de/encutils/license/>`__
+    * encutils is published under the 
+      `LGPL 3 or later <http://cthedot.de/encutils/license/>`__
     * encutils is published under the  
       `Creative Commons License <http://creativecommons.org/licenses/by/3.0/>`__.
       
-    This file is part of encutils.
-
     encutils is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -29,24 +27,9 @@ encutils
 
 A collection of helper functions to detect encodings of text files (like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP, file or string.
 
-``getEncodingInfo`` is probably the main function of interest which uses
+:func:`getEncodingInfo` is probably the main function of interest which uses
 other supplied functions itself and gathers all information together and
-supplies an ``EncodingInfo`` object with the following properties:
-
-- ``encoding``: The guessed encoding
-    Encoding is the explicit or implicit encoding or None and
-    always lowercase.
-
-- from HTTP response    
-    * ``http_encoding``
-    * ``http_media_type``
-
-- from HTML <meta> element    
-    * ``meta_encoding``
-    * ``meta_media_type``
-
-- from XML declaration
-    * ``xml_encoding``
+supplies an :class:`EncodingInfo` object.
 
 example::
 
@@ -68,22 +51,19 @@ example::
 
 
 references
-==========
-XML
-    RFC 3023 (http://www.ietf.org/rfc/rfc3023.txt)
-    
-    easier explained in 
-        - http://feedparser.org/docs/advanced.html
-        - http://www.xml.com/pub/a/2004/07/21/dive.html
+    XML
+        RFC 3023 (http://www.ietf.org/rfc/rfc3023.txt)
         
-HTML
-    http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2
+        easier explained in 
+            - http://feedparser.org/docs/advanced.html
+            - http://www.xml.com/pub/a/2004/07/21/dive.html
+            
+    HTML
+        http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2
 
 TODO
-====
-- parse @charset of HTML elements?
-- check for more texttypes if only text given
-    
+    - parse @charset of HTML elements?
+    - check for more texttypes if only text given    
 """
 __all__ = ['buildlog',
            'encodingByMediaType',
@@ -95,7 +75,7 @@ __all__ = ['buildlog',
            'EncodingInfo']
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke'
-__version__ = '0.8.3 $Id$'
+__version__ = '$Id$'
 
 import cgi
 import HTMLParser
@@ -106,8 +86,11 @@ import sys
 import types
 import urllib
 
+VERSION = '0.8.3.1'
+
+
 class _MetaHTMLParser(HTMLParser.HTMLParser):
-    """parses given data for <meta http-equiv="content-type">"""
+    """Parse given data for <meta http-equiv="content-type">."""
     content_type = None
     
     def handle_starttag(self, tag, attrs):
@@ -137,37 +120,37 @@ _OTHER_TYPE = 4
 
 class EncodingInfo(object):
     """
-    All encoding related information, returned by ``getEncodingInfo``
+    All encoding related information, returned by :func:`getEncodingInfo`.
     
-    - ``encoding``: The guessed encoding
-        Encoding is the explicit or implicit encoding or None and
-        always lowercase.
-
-    - from HTTP response    
-        * ``http_encoding``
-        * ``http_media_type``
-
-    - from HTML <meta> element    
-        * ``meta_encoding``
-        * ``meta_media_type``
-
-    - from XML declaration
-        * ``xml_encoding``
-
-    - ``mismatch``: True if mismatch between XML declaration and HTTP header
-        Mismatch is True if any mismatches between HTTP header, XML
-        declaration or textcontent (meta) are found. More detailed mismatch
-        reports are written to the optional log or ``logtext``
-
-        Mismatches are not necessarily errors as preferences are defined.
-        For details see the specifications.
-
-    - ``logtext``: if no log was given log reports are given here 
+    Attributes filled:
+        - ``encoding``: The guessed encoding
+            Encoding is the explicit or implicit encoding or None and
+            always lowercase.
     
+        - from HTTP response    
+            * ``http_encoding``
+            * ``http_media_type``
+    
+        - from HTML <meta> element    
+            * ``meta_encoding``
+            * ``meta_media_type``
+    
+        - from XML declaration
+            * ``xml_encoding``
+    
+        - ``mismatch``: True if mismatch between XML declaration and HTTP 
+            header.
+            Mismatch is True if any mismatches between HTTP header, XML
+            declaration or textcontent (meta) are found. More detailed
+            mismatch reports are written to the optional log or ``logtext``
+    
+            Mismatches are not necessarily errors as preferences are defined.
+            For details see the specifications.
+    
+        - ``logtext``: if no log was given log reports are given here         
     """
     def __init__(self):
-        """
-        initializes all possible properties to ``None``, see class
+        """Initialize all possible properties to ``None``, see class
         description
         """
         self.encoding = self.mismatch = self.logtext =\
@@ -177,9 +160,7 @@ class EncodingInfo(object):
                 None
         
     def __str__(self):
-        """
-        ``str(EncodingInfo())`` outputs the guessed encoding itself or the empty string
-        """
+        """Output the guessed encoding itself or the empty string."""
         if self.encoding:
             return self.encoding
         else:
@@ -194,17 +175,17 @@ class EncodingInfo(object):
 def buildlog(logname='encutils', level='INFO', stream=sys.stderr,
             filename=None, filemode="w",
             format='%(levelname)s\t%(message)s'):
-    """
-    helper to build a basic log
+    """Helper to build a basic log
     
-    - if ``filename`` is given returns a log logging to ``filename`` with
-      mode ``filemode``
-    - else uses a log streaming to ``stream`` which defaults to
-      ``sys.stderr``
-    - ``level`` defines the level of the log
-    - ``format`` defines the formatter format of the log
+    - if `filename` is given returns a log logging to `filename` with
+      mode `filemode`
+    - else uses a log streaming to `stream` which defaults to
+      `sys.stderr`
+    - `level` defines the level of the log
+    - `format` defines the formatter format of the log
 
-    returns a log with the name ``logname``
+    :returns:
+        a log with the name `logname`
     """
     import logging
     
@@ -225,7 +206,8 @@ def buildlog(logname='encutils', level='INFO', stream=sys.stderr,
 
 def _getTextTypeByMediaType(media_type, log=None):
     """
-    returns type as defined by constants above
+    :returns:
+        type as defined by constants in this class
     """
     if not media_type:
         return _OTHER_TYPE
@@ -258,8 +240,7 @@ def _getTextTypeByMediaType(media_type, log=None):
         return _OTHER_TYPE    
 
 def _getTextType(text, log=None):
-    """
-    checks if given text is XML (**naive test!**)
+    """Check if given text is XML (**naive test!**)
     used if no content-type given    
     """
     if text[:30].find(u'<?xml version=') != -1:
@@ -269,12 +250,13 @@ def _getTextType(text, log=None):
     
 def encodingByMediaType(media_type, log=None):
     """
-    Returns a default encoding for the given media_type.
-    For example ``'utf-8'`` for ``media_type='application/xml'``. 
-
-    Refers to RFC 3023 and HTTP MIME specification.
+    :returns:
+        a default encoding for given `media_type`. For example
+        ``"utf-8"`` for ``media_type="application/xml"``. 
    
-    If no default encoding is available returns ``None``.
+        If no default encoding is available returns ``None``.
+    
+        Refers to RFC 3023 and HTTP MIME specification.
     """
     defaultencodings = {
         _XML_APPLICATION_TYPE: u'utf-8',
@@ -299,10 +281,11 @@ def encodingByMediaType(media_type, log=None):
 
 def getHTTPInfo(response, log=None):
     """
-    Returns ``(media_type, encoding)`` information from the response'
-    Content-Type HTTP header. (Case of headers is ignored.)
-    May be ``(None, None)`` e.g. if no Content-Type header is
-    available.
+    :returns:
+        ``(media_type, encoding)`` information from the `response`
+        Content-Type HTTP header. (Case of headers is ignored.)
+        May be ``(None, None)`` e.g. if no Content-Type header is
+        available.
     """
     info = response.info()
     media_type = info.gettype()
@@ -319,12 +302,14 @@ def getHTTPInfo(response, log=None):
 
 def getMetaInfo(text, log=None):
     """
-    Returns (media_type, encoding) information from (first)
-    X/HTML Content-Type ``<meta>`` element if available.
+    :returns:
+        ``(media_type, encoding)`` information from (first)
+        X/HTML Content-Type ``<meta>`` element if available in `text`.
 
-    Normally in X/HTML:
-        ``<meta http-equiv="Content-Type" content="media_type;
-        charset=encoding"/>``
+        XHTML format::
+        
+            <meta http-equiv="Content-Type" 
+                  content="media_type;charset=encoding" />
     """
     p = _MetaHTMLParser()
     p.feed(text)
@@ -342,12 +327,16 @@ def getMetaInfo(text, log=None):
     return media_type, encoding
 
 def detectXMLEncoding(fp, log=None, includeDefault=True):
-    """
-    Attempts to detect the character encoding of the xml file
-    given by a file object fp. fp must not be a codec wrapped file
-    object! fp may also be a string or unicode string
+    """Attempt to detect the character encoding of the xml file
+    given by a file object `fp`. `fp` must not be a codec wrapped file
+    object! `fp` may be a string or unicode string though.
 
-    The return value can be:
+    Based on a recipe by Lars Tiede:
+    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/363841
+    which itself is based on Paul Prescotts recipe:
+    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52257
+
+    :returns:
         - if detection of the BOM succeeds, the codec name of the
           corresponding unicode charset is returned
 
@@ -358,11 +347,6 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
 
         - if BOM and xml declaration fail, utf-8 is returned according
           to XML 1.0.
-
-    Based on a recipe by Lars Tiede:
-    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/363841
-    which itself is based on Paul Prescotts recipe:
-    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52257
     """
     if type(fp) in types.StringTypes:
         fp = StringIO.StringIO(fp)
@@ -439,18 +423,18 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
             return None
 
 def tryEncodings(text, log=None):
-    """
-    If installed uses chardet http://chardet.feedparser.org/ to detect
-    encoding, else tries different encodings on text and returns the one
+    """If installed uses chardet http://chardet.feedparser.org/ to detect
+    encoding, else tries different encodings on `text` and returns the one
     that does not raise an exception which is not very advanced or may
     be totally wrong.
 
-    Returns working encoding or None if no encoding does work at all.
+    :returns:
+        Working encoding or ``None`` if no encoding does work at all.
 
-    The returned encoding might nevertheless be not the one intended by the
-    author as it is only checked if the text might be encoded in that
-    encoding. Some texts might be working in "iso-8859-1" *and*
-    "windows-1252" *and* "ascii" *and* "utf-8" and ...
+        The returned encoding might nevertheless be not the one intended by
+        the author as it is only checked if the text might be encoded in 
+        that encoding. Some texts might be working in "iso-8859-1" *and*
+        "windows-1252" *and* "ascii" *and* "utf-8" and ...
     """
     try:
         import chardet
@@ -482,84 +466,82 @@ def tryEncodings(text, log=None):
     return encoding
             
 def getEncodingInfo(response=None, text=u'', log=None, url=None):
-    """
-    Finds all encoding related information in given ``text``.
-    Uses information in headers of supplied HTTPResponse, possible XML
-    declaration and X/HTML ``<meta>`` elements.
-    ``text`` will mostly be HTML or XML.
+    """Find all encoding related information in given `text`.
     
-    Parameters
-        - ``response``: HTTP response object,
-          e.g. ``urllib.urlopen('url')``
-        - ``text``: to guess encoding for, might include XML
-          prolog with encoding pseudo attribute or HTML meta element 
-        - ``log``: an optional logging logger to which messages may go, if
-          no log given all log messages are available from resulting
-          ``EncodingInfo``
+    Information in headers of supplied HTTPResponse, possible XML
+    declaration and X/HTML ``<meta>`` elements are used.
+    
+    :param response: 
+        HTTP response object, e.g. ``urllib.urlopen('url')``
+    :param text: 
+        to guess encoding for, might include XML prolog with encoding
+        pseudo attribute or HTML meta element 
+    :param log: 
+        an optional logging logger to which messages may go, if
+        no log given all log messages are available from resulting
+        ``EncodingInfo``
+    :param url:
+        When given fetches document at `url` and all needed information.
+        No `reponse` or `text` are needed in this case.
 
-    May also simply be called with ``getEncodingInfo(url='URL')`` which fetches
-    the url and all needed information.
+    :returns: 
+        instance of :class:`EncodingInfo`.
 
-    Returns instance of ``EncodingInfo``.
+    How the resulting encoding is retrieved:
 
-    How the resulting encoding is retrieved
-    =======================================
     XML
-    ---
-    RFC 3023 states if media type given in the Content-Type HTTP header is
-    application/xml, application/xml-dtd,
-    application/xml-external-parsed-entity, or any one of the subtypes of
-    application/xml such as application/atom+xml or application/rss+xml
-    etc then the character encoding is determined in this order:
-
-    1. the encoding given in the charset parameter of the Content-Type HTTP
-    header, or
-    2. the encoding given in the encoding attribute of the XML declaration
-    within the document, or
-    3. utf-8.
-
-    Mismatch possibilities:
-        - HTTP + XMLdecla 
-        - HTTP + HTMLmeta
-
-        application/xhtml+xml ?
-            XMLdecla + HTMLmeta   
-        
-    If the media type given in the Content-Type HTTP header is text/xml,
-    text/xml-external-parsed-entity, or a subtype like text/Anything+xml,
-    the encoding attribute of the XML declaration is ignored completely
-    and the character encoding is determined in the order:
-    1. the encoding given in the charset parameter of the Content-Type HTTP
-    header, or
-    2. ascii.
-
-    Mismatch possibilities:
-        - HTTP + XMLdecla 
-        - HTTP + HTMLmeta 
-        
-        text/xhtml+xml
-            XMLdecla + HTMLmeta 
+        RFC 3023 states if media type given in the Content-Type HTTP header is
+        application/xml, application/xml-dtd,
+        application/xml-external-parsed-entity, or any one of the subtypes of
+        application/xml such as application/atom+xml or application/rss+xml
+        etc then the character encoding is determined in this order:
+    
+        1. the encoding given in the charset parameter of the Content-Type HTTP
+        header, or
+        2. the encoding given in the encoding attribute of the XML declaration
+        within the document, or
+        3. utf-8.
+    
+        Mismatch possibilities:
+            - HTTP + XMLdecla 
+            - HTTP + HTMLmeta
+    
+            application/xhtml+xml ?
+                XMLdecla + HTMLmeta   
+            
+        If the media type given in the Content-Type HTTP header is text/xml,
+        text/xml-external-parsed-entity, or a subtype like text/Anything+xml,
+        the encoding attribute of the XML declaration is ignored completely
+        and the character encoding is determined in the order:
+        1. the encoding given in the charset parameter of the Content-Type HTTP
+        header, or
+        2. ascii.
+    
+        Mismatch possibilities:
+            - HTTP + XMLdecla 
+            - HTTP + HTMLmeta 
+            
+            text/xhtml+xml
+                XMLdecla + HTMLmeta 
 
     HTML
-    ----
-    For HTML served as text/html:
-        http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2 
-
-    1. An HTTP "charset" parameter in a "Content-Type" field.
-       (maybe defaults to ISO-8859-1, but should not assume this)
-    2. A META declaration with "http-equiv" set to "Content-Type" and a
-       value set for "charset".
-    3. The charset attribute set on an element that designates an external
-       resource. (NOT IMPLEMENTED HERE YET)
-
-    Mismatch possibilities:
-        - HTTP + HTMLmeta 
+        For HTML served as text/html:
+            http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2 
+    
+        1. An HTTP "charset" parameter in a "Content-Type" field.
+           (maybe defaults to ISO-8859-1, but should not assume this)
+        2. A META declaration with "http-equiv" set to "Content-Type" and a
+           value set for "charset".
+        3. The charset attribute set on an element that designates an external
+           resource. (NOT IMPLEMENTED HERE YET)
+    
+        Mismatch possibilities:
+            - HTTP + HTMLmeta 
         
     TEXT
-    ----
-    For most text/* types the encoding will be reported as iso-8859-1. 
-    Exceptions are XML formats send as text/* mime type (see above) and 
-    text/css which has a default encoding of UTF-8. 
+        For most text/* types the encoding will be reported as iso-8859-1. 
+        Exceptions are XML formats send as text/* mime type (see above) and 
+        text/css which has a default encoding of UTF-8. 
     """
     if url:
         try:
