@@ -54,7 +54,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: css.txt 1609 2009-01-03 21:07:17Z cthedot $</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: css.txt 1624 2009-01-03 21:47:53Z cthedot $</td>
 </tr>
 </tbody>
 </table>
@@ -1376,6 +1376,37 @@ readonly.</li>
 
 </dd></dl>
 
+<p>The official DOM provides no method to obtain all values set for a property. Cssutils from 0.9.4 implements the additional method <a title="cssutils.css.CSSStyleDeclaration.getProperties" class="reference internal" href="#cssutils.css.CSSStyleDeclaration.getProperties"><tt class="xref docutils literal"><span class="pre">getProperties()</span></tt></a>, example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cssText</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;background: white url(paper.png) scroll; /* for all UAs */</span>
+<span class="gp">... </span><span class="s">background: white url(ledger.png) fixed; /* for UAs that do fixed backgrounds */</span>
+<span class="gp">... </span><span class="s">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># omit comments for this example</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">ser</span><span class="o">.</span><span class="n">prefs</span><span class="o">.</span><span class="n">keepComments</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">css</span><span class="o">.</span><span class="n">CSSStyleDeclaration</span><span class="p">(</span><span class="n">cssText</span><span class="o">=</span><span class="n">cssText</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">cssText</span>
+<span class="go">background: white url(paper.png) scroll;</span>
+<span class="go">background: white url(ledger.png) fixed;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># work with properties:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">proplist</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">(</span><span class="s">&#39;background&#39;</span><span class="p">,</span> <span class="n">all</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">proplist</span>
+<span class="go">[cssutils.css.Property(name=&#39;background&#39;, value=u&#39;white url(paper.png) scroll&#39;, priority=u&#39;&#39;), cssutils.css.Property(name=&#39;background&#39;, value=u&#39;white url(ledger.png) fixed&#39;, priority=u&#39;&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">proplist</span><span class="p">:</span> <span class="k">print</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
+<span class="go">white url(paper.png) scroll</span>
+<span class="go">white url(ledger.png) fixed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># overwrite the current property, to overwrite all iterate over proplist</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span><span class="p">[</span><span class="s">&#39;background&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;!important&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># importance in DOM ist &#39;important&#39; but &#39;!important&#39; works too</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="p">[</span><span class="s">&#39;background&#39;</span><span class="p">],</span> <span class="n">style</span><span class="o">.</span><span class="n">getPropertyPriority</span><span class="p">(</span><span class="s">&#39;background&#39;</span><span class="p">)</span>
+<span class="go">red important</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">cssText</span>
+<span class="go">background: white url(paper.png) scroll;</span>
+<span class="go">background: red !important;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># output only &quot;effective&quot; properties</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">ser</span><span class="o">.</span><span class="n">prefs</span><span class="o">.</span><span class="n">keepAllProperties</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">cssText</span>
+<span class="go">background: red !important;</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="property">
 <h3>Property<a class="headerlink" href="#property" title="Permalink to this headline">¶</a></h3>
@@ -1773,7 +1804,7 @@ of values in the list, this returns None.</dd></dl>
             <h4>Previous topic</h4>
             <p class="topless"><a href="serialize.html" title="previous chapter">serializing CSS</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="stylesheets.html" title="next chapter">package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
+            <p class="topless"><a href="stylesheets.html" title="next chapter">package <tt class="docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/css.txt">Show Source</a></li>

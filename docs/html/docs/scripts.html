@@ -145,6 +145,54 @@
 </table>
 </dd>
 </dl>
+<p>The following example outputs a list of stylesheets found with title and href of the found stylesheet. (<tt class="docutils literal"><span class="pre">PYTHONHOME/Scripts</span></tt> should be on your <tt class="docutils literal"><span class="pre">PATH</span></tt>.  Additional log output is not shown.):</p>
+<div class="highlight-python"><pre>&gt; csscapture http://cthedot.de/static/cssutils/examples/capturefrom.html -n
+
+1.
+    encoding: 'utf-8'
+    title: u'html 1: link1'
+    href: u'http://cthedot.de/css/default.css'
+2.
+    encoding: 'utf-8'
+    title: u'html 2: style1'
+    href: None
+3.
+    encoding: 'utf-8'
+    title: u'HTML 2.1: @import'
+    href: u'http://cthedot.de/static/cssutils/examples/inlineimport1.css'
+4.
+    encoding: 'utf-8'
+    title: u'html 3: link2'
+    href: u'http://cthedot.de/static/cssutils/examples/link1.css'
+5.
+    encoding: 'utf-8'
+    title: u'link1: s1'
+    href: u'http://cthedot.de/static/cssutils/examples/linkimport1.css'
+6.
+    encoding: 'utf-8'
+    title: None
+    href: u'http://cthedot.de/static/cssutils/examples/css/linkimportimport1.css'
+7.
+    encoding: 'utf-8'
+    title: None
+    href: u'http://cthedot.de/static/cssutils/examples/css/linkimportimport2.css'
+8.
+    encoding: 'iso-8859-1'
+    title: u'link1: s2'
+    href: u'http://cthedot.de/static/cssutils/examples/linkimport2.css'
+9.
+    encoding: 'utf-8'
+    title: u'html 4: style2'
+    href: None
+10.
+    encoding: 'utf-8'
+    title: None
+    href: u'http://cthedot.de/static/cssutils/examples/css/inlineimport2.css'
+11.
+    encoding: 'utf-8'
+    title: None
+    href: u'http://cthedot.de/static/cssutils/examples/css/inlineimportimport1.css'</pre>
+</div>
 </div>
 </div>
 <div class="section" id="csscombine">
