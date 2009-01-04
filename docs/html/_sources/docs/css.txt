@@ -1,7 +1,7 @@
 ========================
 package ``cssutils.css``
 ========================
-:Version: $Id: css.txt 1609 2009-01-03 21:07:17Z cthedot $
+:Version: $Id: css.txt 1624 2009-01-03 21:47:53Z cthedot $
 
 .. module:: cssutils.css
 
@@ -110,6 +110,37 @@ CSSStyleDeclaration
 .. autoclass:: cssutils.css.CSSStyleDeclaration
    :members:
    :inherited-members:
+
+The official DOM provides no method to obtain all values set for a property. Cssutils from 0.9.4 implements the additional method :meth:`~cssutils.css.CSSStyleDeclaration.getProperties`, example::
+
+    >>> cssText = '''background: white url(paper.png) scroll; /* for all UAs */
+    ... background: white url(ledger.png) fixed; /* for UAs that do fixed backgrounds */
+    ... '''
+    >>> # omit comments for this example
+    >>> cssutils.ser.prefs.keepComments = False
+    >>> style = cssutils.css.CSSStyleDeclaration(cssText=cssText)
+    >>> print style.cssText
+    background: white url(paper.png) scroll;
+    background: white url(ledger.png) fixed;
+    >>> # work with properties:
+    >>> proplist = style.getProperties('background', all=True)
+    >>> proplist
+    [cssutils.css.Property(name='background', value=u'white url(paper.png) scroll', priority=u''), cssutils.css.Property(name='background', value=u'white url(ledger.png) fixed', priority=u'')]
+    >>> for prop in proplist: print prop.value
+    white url(paper.png) scroll
+    white url(ledger.png) fixed
+    >>> # overwrite the current property, to overwrite all iterate over proplist
+    >>> style['background'] = ('red', '!important')
+    >>> # importance in DOM ist 'important' but '!important' works too
+    >>> print style['background'], style.getPropertyPriority('background')
+    red important
+    >>> print style.cssText
+    background: white url(paper.png) scroll;
+    background: red !important;
+    >>> # output only "effective" properties
+    >>> cssutils.ser.prefs.keepAllProperties = False
+    >>> print style.cssText
+    background: red !important;
 
 
 Property
