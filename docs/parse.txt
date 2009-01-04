@@ -3,10 +3,10 @@
 ===========
 parsing CSS
 ===========
-Options to parse a given stylesheet: Get an instance of :class:`cssutils.CSSParser` and use the provided ``parse*`` methods or for simpler parsing use the ``parse*`` `helper functions`_.
+Options to parse a given stylesheet: Get an instance of :class:`cssutils.CSSParser` and use the provided ``parse*`` methods or for simpler parsing use the ``parse*`` `shortcut functions`_.
 
-CSSParser
-=========
+``CSSParser``
+=============
 The parser is reusable.
 
 .. autoclass:: cssutils.CSSParser
@@ -33,8 +33,8 @@ To omit parsing of imported sheets just define a fetcher like ``lambda url: None
 You may also define a fetcher which overrides the internal encoding for imported sheets with a fetcher that returns a (normally HTTP) encoding depending e.g on the URL.
 
 
-helper functions
-================
+shortcut functions
+==================
 Shortcuts for initializing a new :class:`cssutils.CSSParser` and use its ``parse*`` methods. Parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. If you need advanced parser handline use :class:`cssutils.CSSParser` directly.
 
 .. function:: cssutils.parseString(cssText, encoding=None, href=None, media=None, title=None)
