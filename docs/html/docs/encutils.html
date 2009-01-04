@@ -1,0 +1,468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>encutils module &mdash; cssutils v0.9.6a1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6a1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="next" title="version migration" href="migrate.html" />
+    <link rel="prev" title="CSS codec" href="codec.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="migrate.html" title="version migration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="codec.html" title="CSS codec"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="module-encutils">
+<h1><tt class="docutils literal"><span class="pre">encutils</span></tt> module<a class="headerlink" href="#module-encutils" title="Permalink to this headline">¶</a></h1>
+<p>encutils - encoding detection collection for Python</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">0.8.3.1</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Author:</th><td class="field-body"><p class="first">Christof Hoeke, see <a class="reference external" href="http://cthedot.de/encutils/">http://cthedot.de/encutils/</a></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Copyright:</th><td class="field-body"><p class="first">2005-2009: Christof Hoeke</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">License:</th><td class="field-body"><p class="first">encutils has a dual-license, please choose whatever you prefer:</p>
+<ul class="simple">
+<li>encutils is published under the 
+<a class="reference external" href="http://cthedot.de/encutils/license/">LGPL 3 or later</a></li>
+<li>encutils is published under the  
+<a class="reference external" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons License</a>.</li>
+</ul>
+<p>encutils is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>encutils is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.</p>
+<p class="last">You should have received a copy of the GNU Lesser General Public License
+along with encutils.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>A collection of helper functions to detect encodings of text files (like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP, file or string.</p>
+<p><a title="encutils.getEncodingInfo" class="reference internal" href="#encutils.getEncodingInfo"><tt class="xref docutils literal"><span class="pre">getEncodingInfo()</span></tt></a> is probably the main function of interest which uses
+other supplied functions itself and gathers all information together and
+supplies an <a title="encutils.EncodingInfo" class="reference internal" href="#encutils.EncodingInfo"><tt class="xref docutils literal"><span class="pre">EncodingInfo</span></tt></a> object.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">encutils</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">encutils</span><span class="o">.</span><span class="n">getEncodingInfo</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&#39;http://cthedot.de/encutils/&#39;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">info</span>  <span class="c"># = str(info)</span>
+<span class="go">utf-8</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span>        <span class="c"># = repr(info)</span>
+<span class="go">&lt;encutils.EncodingInfo object encoding=&#39;utf-8&#39; mismatch=False at 0xb86d30&gt;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">info</span><span class="o">.</span><span class="n">logtext</span>
+<span class="go">HTTP media_type: text/html</span>
+<span class="go">HTTP encoding: utf-8</span>
+<span class="go">HTML META media_type: text/html</span>
+<span class="go">HTML META encoding: utf-8</span>
+<span class="go">Encoding (probably): utf-8 (Mismatch: False)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>references</dt>
+<dd><dl class="first last docutils">
+<dt>XML</dt>
+<dd><p class="first">RFC 3023 (<a class="reference external" href="http://www.ietf.org/rfc/rfc3023.txt">http://www.ietf.org/rfc/rfc3023.txt</a>)</p>
+<dl class="last docutils">
+<dt>easier explained in </dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="http://feedparser.org/docs/advanced.html">http://feedparser.org/docs/advanced.html</a></li>
+<li><a class="reference external" href="http://www.xml.com/pub/a/2004/07/21/dive.html">http://www.xml.com/pub/a/2004/07/21/dive.html</a></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>HTML</dt>
+<dd><a class="reference external" href="http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2">http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2</a></dd>
+</dl>
+</dd>
+<dt>TODO</dt>
+<dd><ul class="first last simple">
+<li>parse &#64;charset of HTML elements?</li>
+<li>check for more texttypes if only text given</li>
+</ul>
+</dd>
+</dl>
+<dl class="function">
+<dt id="encutils.buildlog">
+<!--[encutils.buildlog]--><tt class="descclassname">encutils.</tt><tt class="descname">buildlog</tt><big>(</big><em>logname='encutils'</em>, <em>level='INFO'</em>, <em>stream=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x018C30C0&gt;</em>, <em>filename=None</em>, <em>filemode='w'</em>, <em>format='%(levelname)st%(message)s'</em><big>)</big><a class="headerlink" href="#encutils.buildlog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper to build a basic log</p>
+<ul class="simple">
+<li>if <cite>filename</cite> is given returns a log logging to <cite>filename</cite> with
+mode <cite>filemode</cite></li>
+<li>else uses a log streaming to <cite>stream</cite> which defaults to
+<cite>sys.stderr</cite></li>
+<li><cite>level</cite> defines the level of the log</li>
+<li><cite>format</cite> defines the formatter format of the log</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">a log with the name <cite>logname</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="encutils.encodingByMediaType">
+<!--[encutils.encodingByMediaType]--><tt class="descclassname">encutils.</tt><tt class="descname">encodingByMediaType</tt><big>(</big><em>media_type</em>, <em>log=None</em><big>)</big><a class="headerlink" href="#encutils.encodingByMediaType" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a default encoding for given <cite>media_type</cite>. For example
+<tt class="docutils literal"><span class="pre">&quot;utf-8&quot;</span></tt> for <tt class="docutils literal"><span class="pre">media_type=&quot;application/xml&quot;</span></tt>.</p>
+<p>If no default encoding is available returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<p class="last">Refers to RFC 3023 and HTTP MIME specification.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="encutils.getHTTPInfo">
+<!--[encutils.getHTTPInfo]--><tt class="descclassname">encutils.</tt><tt class="descname">getHTTPInfo</tt><big>(</big><em>response</em>, <em>log=None</em><big>)</big><a class="headerlink" href="#encutils.getHTTPInfo" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from the <cite>response</cite>
+Content-Type HTTP header. (Case of headers is ignored.)
+May be <tt class="docutils literal"><span class="pre">(None,</span> <span class="pre">None)</span></tt> e.g. if no Content-Type header is
+available.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="encutils.getMetaInfo">
+<!--[encutils.getMetaInfo]--><tt class="descclassname">encutils.</tt><tt class="descname">getMetaInfo</tt><big>(</big><em>text</em>, <em>log=None</em><big>)</big><a class="headerlink" href="#encutils.getMetaInfo" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from (first)
+X/HTML Content-Type <tt class="docutils literal"><span class="pre">&lt;meta&gt;</span></tt> element if available in <cite>text</cite>.</p>
+<p>XHTML format:</p>
+<div class="last highlight-python"><pre>&lt;meta http-equiv="Content-Type" 
+      content="media_type;charset=encoding" /&gt;</pre>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="encutils.detectXMLEncoding">
+<!--[encutils.detectXMLEncoding]--><tt class="descclassname">encutils.</tt><tt class="descname">detectXMLEncoding</tt><big>(</big><em>fp</em>, <em>log=None</em>, <em>includeDefault=True</em><big>)</big><a class="headerlink" href="#encutils.detectXMLEncoding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to detect the character encoding of the xml file
+given by a file object <cite>fp</cite>. <cite>fp</cite> must not be a codec wrapped file
+object! <cite>fp</cite> may be a string or unicode string though.</p>
+<p>Based on a recipe by Lars Tiede:
+<a class="reference external" href="http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/363841">http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/363841</a>
+which itself is based on Paul Prescotts recipe:
+<a class="reference external" href="http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52257">http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52257</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
+<li>if detection of the BOM succeeds, the codec name of the
+corresponding unicode charset is returned</li>
+<li>if BOM detection fails, the xml declaration is searched for
+the encoding attribute and its value returned. the &#8220;&lt;&#8221;
+character has to be the very first in the file then (it&#8217;s xml
+standard after all).</li>
+<li>if BOM and xml declaration fail, utf-8 is returned according
+to XML 1.0.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="encutils.getEncodingInfo">
+<!--[encutils.getEncodingInfo]--><tt class="descclassname">encutils.</tt><tt class="descname">getEncodingInfo</tt><big>(</big><em>response=None</em>, <em>text=u''</em>, <em>log=None</em>, <em>url=None</em><big>)</big><a class="headerlink" href="#encutils.getEncodingInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find all encoding related information in given <cite>text</cite>.</p>
+<p>Information in headers of supplied HTTPResponse, possible XML
+declaration and X/HTML <tt class="docutils literal"><span class="pre">&lt;meta&gt;</span></tt> elements are used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>response</em> &#8211; HTTP response object, e.g. <tt class="docutils literal"><span class="pre">urllib.urlopen('url')</span></tt></li>
+<li><em>text</em> &#8211; to guess encoding for, might include XML prolog with encoding
+pseudo attribute or HTML meta element</li>
+<li><em>log</em> &#8211; an optional logging logger to which messages may go, if
+no log given all log messages are available from resulting
+<tt class="docutils literal"><span class="pre">EncodingInfo</span></tt></li>
+<li><em>url</em> &#8211; When given fetches document at <cite>url</cite> and all needed information.
+No <cite>reponse</cite> or <cite>text</cite> are needed in this case.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">instance of <a title="encutils.EncodingInfo" class="reference internal" href="#encutils.EncodingInfo"><tt class="xref docutils literal"><span class="pre">EncodingInfo</span></tt></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>How the resulting encoding is retrieved:</p>
+<dl class="docutils">
+<dt>XML</dt>
+<dd><p class="first">RFC 3023 states if media type given in the Content-Type HTTP header is
+application/xml, application/xml-dtd,
+application/xml-external-parsed-entity, or any one of the subtypes of
+application/xml such as application/atom+xml or application/rss+xml
+etc then the character encoding is determined in this order:</p>
+<p>1. the encoding given in the charset parameter of the Content-Type HTTP
+header, or
+2. the encoding given in the encoding attribute of the XML declaration
+within the document, or
+3. utf-8.</p>
+<dl class="docutils">
+<dt>Mismatch possibilities:</dt>
+<dd><ul class="first simple">
+<li>HTTP + XMLdecla</li>
+<li>HTTP + HTMLmeta</li>
+</ul>
+<dl class="last docutils">
+<dt>application/xhtml+xml ?</dt>
+<dd>XMLdecla + HTMLmeta</dd>
+</dl>
+</dd>
+</dl>
+<p>If the media type given in the Content-Type HTTP header is text/xml,
+text/xml-external-parsed-entity, or a subtype like text/Anything+xml,
+the encoding attribute of the XML declaration is ignored completely
+and the character encoding is determined in the order:
+1. the encoding given in the charset parameter of the Content-Type HTTP
+header, or
+2. ascii.</p>
+<dl class="last docutils">
+<dt>Mismatch possibilities:</dt>
+<dd><ul class="first simple">
+<li>HTTP + XMLdecla</li>
+<li>HTTP + HTMLmeta</li>
+</ul>
+<dl class="last docutils">
+<dt>text/xhtml+xml</dt>
+<dd>XMLdecla + HTMLmeta</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>HTML</dt>
+<dd><dl class="first docutils">
+<dt>For HTML served as text/html:</dt>
+<dd><a class="reference external" href="http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2">http://www.w3.org/TR/REC-html40/charset.html#h-5.2.2</a></dd>
+</dl>
+<ol class="arabic simple">
+<li>An HTTP &#8220;charset&#8221; parameter in a &#8220;Content-Type&#8221; field.
+(maybe defaults to ISO-8859-1, but should not assume this)</li>
+<li>A META declaration with &#8220;http-equiv&#8221; set to &#8220;Content-Type&#8221; and a
+value set for &#8220;charset&#8221;.</li>
+<li>The charset attribute set on an element that designates an external
+resource. (NOT IMPLEMENTED HERE YET)</li>
+</ol>
+<dl class="last docutils">
+<dt>Mismatch possibilities:</dt>
+<dd><ul class="first last simple">
+<li>HTTP + HTMLmeta</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>TEXT</dt>
+<dd>For most text/* types the encoding will be reported as iso-8859-1. 
+Exceptions are XML formats send as text/* mime type (see above) and 
+text/css which has a default encoding of UTF-8.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="encutils.tryEncodings">
+<!--[encutils.tryEncodings]--><tt class="descclassname">encutils.</tt><tt class="descname">tryEncodings</tt><big>(</big><em>text</em>, <em>log=None</em><big>)</big><a class="headerlink" href="#encutils.tryEncodings" title="Permalink to this definition">¶</a></dt>
+<dd><p>If installed uses chardet <a class="reference external" href="http://chardet.feedparser.org/">http://chardet.feedparser.org/</a> to detect
+encoding, else tries different encodings on <cite>text</cite> and returns the one
+that does not raise an exception which is not very advanced or may
+be totally wrong.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Working encoding or <tt class="xref docutils literal"><span class="pre">None</span></tt> if no encoding does work at all.</p>
+<p class="last">The returned encoding might nevertheless be not the one intended by
+the author as it is only checked if the text might be encoded in 
+that encoding. Some texts might be working in &#8220;iso-8859-1&#8221; <em>and</em>
+&#8220;windows-1252&#8221; <em>and</em> &#8220;ascii&#8221; <em>and</em> &#8220;utf-8&#8221; and ...</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="encutils.EncodingInfo">
+<!--[encutils.EncodingInfo]-->class <tt class="descclassname">encutils.</tt><tt class="descname">EncodingInfo</tt><a class="headerlink" href="#encutils.EncodingInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>All encoding related information, returned by <a title="encutils.getEncodingInfo" class="reference internal" href="#encutils.getEncodingInfo"><tt class="xref docutils literal"><span class="pre">getEncodingInfo()</span></tt></a>.</p>
+<dl class="docutils">
+<dt>Attributes filled:</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">encoding</span></tt>: The guessed encoding</dt>
+<dd><p class="first last">Encoding is the explicit or implicit encoding or None and
+always lowercase.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>from HTTP response    </dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">http_encoding</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">http_media_type</span></tt></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>from HTML &lt;meta&gt; element    </dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">meta_encoding</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">meta_media_type</span></tt></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>from XML declaration</dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">xml_encoding</span></tt></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">mismatch</span></tt>: True if mismatch between XML declaration and HTTP </dt>
+<dd><p class="first">header.
+Mismatch is True if any mismatches between HTTP header, XML
+declaration or textcontent (meta) are found. More detailed
+mismatch reports are written to the optional log or <tt class="docutils literal"><span class="pre">logtext</span></tt></p>
+<p class="last">Mismatches are not necessarily errors as preferences are defined.
+For details see the specifications.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">logtext</span></tt>: if no log was given log reports are given here</p>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="codec.html" title="previous chapter">CSS codec</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="migrate.html" title="next chapter">version migration</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/encutils.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="../search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="migrate.html" title="version migration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="codec.html" title="CSS codec"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>
