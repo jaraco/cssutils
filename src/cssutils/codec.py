@@ -27,17 +27,17 @@ import marshal
 def detectencoding_str(input, final=False):
     """
     Detect the encoding of the byte string ``input``, which contains the
-    beginning of a CSS file. This function returs the detected encoding (or
+    beginning of a CSS file. This function returns the detected encoding (or
     ``None`` if it hasn't got enough data), and a flag that indicates whether
-    to encoding has been detected explicitely or implicitely. To detect the
+    that encoding has been detected explicitely or implicitely. To detect the
     encoding the first few bytes are used (or if ``input`` is ASCII compatible
     and starts with a charset rule the encoding name from the rule). "Explicit"
     detection means that the bytes start with a BOM or a charset rule.
 
     If the encoding can't be detected yet, ``None`` is returned as the encoding.
-    ``final`` specifies whether more data is available in later calls or not.
-    If ``final`` is true, ``detectencoding_str()`` will never return ``None``
-    as the encoding.
+    ``final`` specifies whether more data will be available in later calls or
+    not. If ``final`` is true, ``detectencoding_str()`` will never return
+    ``None`` as the encoding.
     """
 
     # A bit for every candidate
