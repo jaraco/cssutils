@@ -1,7 +1,7 @@
 ﻿==================
 CHANGELOG
 ==================
-:Version: $Id: CHANGELOG.txt 1607 2009-01-03 20:32:44Z cthedot $
+:Version: $Id: CHANGELOG.txt 1638 2009-01-13 20:39:33Z cthedot $
 
 known issues
 ============
@@ -341,7 +341,7 @@ stable version
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-01-03 21:32:44 +0100 (Sa, 03 Jan 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1607 2009-01-03 20:32:44Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-01-13 21:39:33 +0100 (Di, 13 Jan 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1638 2009-01-13 20:39:33Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
