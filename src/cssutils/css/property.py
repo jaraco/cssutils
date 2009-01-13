@@ -47,17 +47,15 @@ class Property(cssutils.util.Base):
     def __init__(self, name=None, value=None, priority=u'', 
                  profiles=None, _mediaQuery=False):
         """
-        inits property
-
-        name
+        :param name:
             a property name string (will be normalized)
-        value
+        :param value:
             a property value string
-        priority
+        :param priority:
             an optional priority string which currently must be u'',
             u'!important' or u'important'
-        _mediaQuery boolean
-            if True value is optional as used by MediaQuery objects
+        :param _mediaQuery:
+            if ``True`` value is optional (used by MediaQuery)
         """
         super(Property, self).__init__()
 
@@ -93,20 +91,17 @@ class Property(cssutils.util.Base):
                 self.valid, id(self))
 
     def _getCssText(self):
-        """
-        returns serialized property cssText
-        """
+        """Return serialized property cssText."""
         return cssutils.ser.do_Property(self)
 
     def _setCssText(self, cssText):
         """
-        DOMException on setting
-
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if the rule is readonly.
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
+        :exceptions:
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if the rule is readonly.
         """
         # check and prepare tokenlists for setting
         tokenizer = self._tokenize2(cssText)
@@ -164,11 +159,10 @@ class Property(cssutils.util.Base):
 
     def _setName(self, name):
         """
-        DOMException on setting
-
-        - SYNTAX_ERR: (self)
-          Raised if the specified name has a syntax error and is
-          unparsable.
+        :exceptions:    
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified name has a syntax error and is
+              unparsable.
         """
         # for closures: must be a mutable
         new = {'literalname': None,
@@ -225,25 +219,25 @@ class Property(cssutils.util.Base):
             self.wellformed = False
 
     name = property(lambda self: self._name, _setName,
-        doc="Name of this property")
-
+                    doc="Name of this property.")
+    
     literalname = property(lambda self: self._literalname,
-        doc="Readonly literal (not normalized) name of this property")
+                           doc="Readonly literal (not normalized) name "
+                               "of this property")
 
     def _getCSSValue(self):
         return self.seqs[1]
 
     def _setCSSValue(self, cssText):
         """
-        see css.CSSValue
+        See css.CSSValue
 
-        DOMException on setting?
-
-        - SYNTAX_ERR: (self)
+        :exceptions:
+        - :exc:`~xml.dom.SyntaxErr`:
           Raised if the specified CSS string value has a syntax error
           (according to the attached property) or is unparsable.
-        - TODO: INVALID_MODIFICATION_ERR:
-          Raised if the specified CSS string value represents a different
+        - :exc:`~xml.dom.InvalidModificationErr`:
+          TODO: Raised if the specified CSS string value represents a different
           type of values than the values allowed by the CSS property.
         """
         if self._mediaQuery and not cssText:
@@ -281,9 +275,7 @@ class Property(cssutils.util.Base):
         priority
             a string, currently either u'', u'!important' or u'important'
 
-        Format
-        ======
-        ::
+        Format::
 
             prio
               : IMPORTANT_SYM S*
@@ -291,14 +283,13 @@ class Property(cssutils.util.Base):
 
             "!"{w}"important"   {return IMPORTANT_SYM;}
 
-        DOMException on setting
-
-        - SYNTAX_ERR: (self)
-          Raised if the specified priority has a syntax error and is
-          unparsable.
-          In this case a priority not equal to None, "" or "!{w}important".
-          As CSSOM defines CSSStyleDeclaration.getPropertyPriority resulting in
-          u'important' this value is also allowed to set a Properties priority
+        :exceptions:
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified priority has a syntax error and is
+              unparsable.
+              In this case a priority not equal to None, "" or "!{w}important".
+              As CSSOM defines CSSStyleDeclaration.getPropertyPriority resulting in
+              u'important' this value is also allowed to set a Properties priority
         """
         if self._mediaQuery:
             self._priority = u''
@@ -363,15 +354,13 @@ class Property(cssutils.util.Base):
                     self._priority)
 
     priority = property(lambda self: self._priority, _setPriority,
-        doc="(cssutils) Priority of this property")
+        doc="Priority of this property.")
 
     literalpriority = property(lambda self: self._literalpriority,
         doc="Readonly literal (not normalized) priority of this property")
 
     def validate(self, profile=None):
-        """
-        validates value against _propertyName context if given
-        """
+        """Validate value against name."""
         valid = False
         if self.value:
             if self.name and self.name in profiles.propertiesByProfile(self._profiles):
@@ -405,5 +394,5 @@ class Property(cssutils.util.Base):
 
         return valid
 
-    valid = property(validate,
-                     doc='Check if value of this property is valid in the properties context.')
+    valid = property(validate, doc="Check if value of this property is valid "
+                                   "in the properties context.")

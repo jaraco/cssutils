@@ -90,26 +90,22 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 self.__class__.__name__, self.namespaceURI, self.prefix, id(self))
 
     def _getCssText(self):
-        """
-        returns serialized property cssText
-        """
+        """Return serialized property cssText"""
         return cssutils.ser.do_CSSNamespaceRule(self)
 
     def _setCssText(self, cssText):
         """
-        DOMException on setting
-
         :param cssText: initial value for this rules cssText which is parsed
-        :Exceptions:
-            - `HIERARCHY_REQUEST_ERR`: (CSSStylesheet)
+        :exceptions:
+            - :exc:`~xml.dom.HierarchyRequestErr`:
               Raised if the rule cannot be inserted at this point in the
               style sheet.
-            - `INVALID_MODIFICATION_ERR`: (self)
+            - :exc:`~xml.dom.InvalidModificationErr`:
               Raised if the specified CSS string value represents a different
               type of rule than the current one.
-            - `NO_MODIFICATION_ALLOWED_ERR`: (CSSRule)
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
-            - `SYNTAX_ERR`: (self)
+            - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified CSS string value has a syntax error and
               is unparsable.
         """
@@ -209,15 +205,13 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 self._setSeq(newseq)
 
     cssText = property(fget=_getCssText, fset=_setCssText,
-        doc="(DOM attribute) The parsable textual representation.")
+        doc="(DOM) The parsable textual representation of this rule.")
 
     def _setNamespaceURI(self, namespaceURI):
         """
-        DOMException on setting
-    
         :param namespaceURI: the initial value for this rules namespaceURI
-        :Exceptions:
-            - `NO_MODIFICATION_ALLOWED_ERR`: 
+        :exceptions:
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
               (CSSRule) Raised if this rule is readonly or a namespaceURI is 
               already set in this rule.
         """
@@ -233,18 +227,16 @@ class CSSNamespaceRule(cssrule.CSSRule):
                             error=xml.dom.NoModificationAllowedErr)
 
     namespaceURI = property(lambda self: self._namespaceURI, _setNamespaceURI,
-        doc="URI (string!) of the defined namespace.")
+        doc="URI (handled as simple string) of the defined namespace.")
 
     def _setPrefix(self, prefix=None):
         """
-        DOMException on setting
-        
         :param prefix: the new prefix 
-        :Exceptions:
-            - `SYNTAX_ERR`: (TODO)
+        :exceptions:
+            - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified CSS string value has a syntax error and
               is unparsable.
-            - `NO_MODIFICATION_ALLOWED_ERR`: CSSRule)
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this rule is readonly.
         """
         self._checkReadonly()

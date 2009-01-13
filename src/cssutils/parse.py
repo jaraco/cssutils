@@ -64,8 +64,8 @@ class CSSParser(object):
 
     def parseString(self, cssText, encoding=None, href=None, media=None,
                     title=None):
-        """Return parsed CSSStyleSheet from given string cssText.
-        Raises errors during retrieving (e.g. UnicodeDecodeError).
+        """Parse `cssText` as :class:`~cssutils.css.CSSStyleSheet`.
+        Errors may be raised (e.g. UnicodeDecodeError).
 
         :param cssText:
             CSS string to parse
@@ -84,6 +84,8 @@ class CSSParser(object):
             (may be a MediaList, list or a string).
         :param title:
             The ``title`` attribute to assign to the parsed style sheet.
+        :returns:
+            :class:`~cssutils.css.CSSStyleSheet`.
         """
         self.__parseSetting(True)
         if isinstance(cssText, str):
@@ -102,9 +104,9 @@ class CSSParser(object):
 
     def parseFile(self, filename, encoding=None,
                   href=None, media=None, title=None):
-        """Retrieve and return a CSSStyleSheet from given filename.
-        Raises errors during retrieving (e.g. IOError).
-
+        """Retrieve content from `filename` and parse it. Errors may be raised
+        (e.g. IOError).
+        
         :param filename:
             of the CSS file to parse, if no `href` is given filename is
             converted to a (file:) URL and set as ``href`` of resulting
@@ -117,8 +119,8 @@ class CSSParser(object):
             @charset rule.
             Other values override detected encoding for the sheet at
             `filename` including any imported sheets.
-
-        For other parameters see ``parseString``
+        :returns:
+            :class:`~cssutils.css.CSSStyleSheet`.
         """
         if not href:
             # prepend // for file URL, urllib does not do this?
@@ -129,9 +131,9 @@ class CSSParser(object):
                                 href=href, media=media, title=title)
 
     def parseUrl(self, href, encoding=None, media=None, title=None):
-        """Retrieve and return a CSSStyleSheet from given href (an URL).
-        In case of any errors while reading the URL returns None.
-
+        """Retrieve content from URL `href` and parse it. Errors may be raised
+        (e.g. URLError).
+        
         :param href:
             URL of the CSS file to parse, will also be set as ``href`` of
             resulting stylesheet
@@ -140,8 +142,8 @@ class CSSParser(object):
             @charset rule.
             A value overrides detected encoding for the sheet at ``href``
             including any imported sheets.
-
-        For other parameters see ``parseString``
+        :returns:
+            :class:`~cssutils.css.CSSStyleSheet`.
         """
         encoding, enctype, text = cssutils.util._readUrl(href,
                                                          overrideEncoding=encoding)

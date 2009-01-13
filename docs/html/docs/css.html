@@ -50,14 +50,6 @@
   
   <div class="section" id="module-cssutils.css">
 <h1>package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt><a class="headerlink" href="#module-cssutils.css" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: css.txt 1630 2009-01-04 18:59:18Z cthedot $</td>
-</tr>
-</tbody>
-</table>
 <p>Classes implementing <a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 CSS</a> and <a class="reference external" href="http://www.w3.org/TR/css3-namespace/">CSS Module: Namespaces (W3C Working Draft 28 August 2006)</a></p>
 <div class="section" id="cssstylesheet">
 <h2><tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt><a class="headerlink" href="#cssstylesheet" title="Permalink to this headline">¶</a></h2>
@@ -240,7 +232,7 @@ instance of this class!</p>
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.append">
 <!--[cssutils.css.CSSRuleList.append]--><tt class="descname">append</tt><big>(</big><em>*ignored</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.append" title="Permalink to this definition">¶</a></dt>
-<dd>no direct setting possible</dd></dl>
+<dd>Not implemented.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.count">
@@ -250,7 +242,7 @@ instance of this class!</p>
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.extend">
 <!--[cssutils.css.CSSRuleList.extend]--><tt class="descname">extend</tt><big>(</big><em>*ignored</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.extend" title="Permalink to this definition">¶</a></dt>
-<dd>no direct setting possible</dd></dl>
+<dd>Not implemented.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.index">
@@ -266,8 +258,7 @@ Raises ValueError if the value is not present.</dd></dl>
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.item">
 <!--[cssutils.css.CSSRuleList.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.item" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM)
-Used to retrieve a CSS rule by ordinal index. The order in this
+<dd><p>(DOM) Retrieve a CSS rule by ordinal <cite>index</cite>. The order in this
 collection represents the order of the rules in the CSS style
 sheet. If index is greater than or equal to the number of rules in
 the list, this returns None.</p>
@@ -319,7 +310,7 @@ recognized by the parser. Unrecognized rules are represented using the
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.atkeyword">
 <!--[cssutils.css.CSSRule.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.cssText">
@@ -349,7 +340,7 @@ recognized by the parser. Unrecognized rules are represented using the
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.typeString">
 <!--[cssutils.css.CSSRule.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.wellformed">
@@ -389,7 +380,7 @@ CSSCharsetRule.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSCharsetRule.atkeyword">
 <!--[cssutils.css.CSSCharsetRule.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSCharsetRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSCharsetRule.cssText">
@@ -424,7 +415,7 @@ CSSCharsetRule.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSCharsetRule.typeString">
 <!--[cssutils.css.CSSCharsetRule.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSCharsetRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 </dd></dl>
 
@@ -441,12 +432,12 @@ CSSCharsetRule.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSComment.atkeyword">
 <!--[cssutils.css.CSSComment.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSComment.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSComment.cssText">
 <!--[cssutils.css.CSSComment.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSComment.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(cssutils) Textual representation of this comment</dd></dl>
+<dd>The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSComment.parentRule">
@@ -471,7 +462,7 @@ CSSCharsetRule.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSComment.typeString">
 <!--[cssutils.css.CSSComment.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSComment.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 </dd></dl>
 
@@ -499,17 +490,17 @@ namespace_prefix
 <dl class="attribute">
 <dt id="cssutils.css.CSSNamespaceRule.atkeyword">
 <!--[cssutils.css.CSSNamespaceRule.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSNamespaceRule.cssText">
 <!--[cssutils.css.CSSNamespaceRule.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM attribute) The parsable textual representation.</dd></dl>
+<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSNamespaceRule.namespaceURI">
 <!--[cssutils.css.CSSNamespaceRule.namespaceURI]--><tt class="descname">namespaceURI</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.namespaceURI" title="Permalink to this definition">¶</a></dt>
-<dd>URI (string!) of the defined namespace.</dd></dl>
+<dd>URI (handled as simple string) of the defined namespace.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSNamespaceRule.parentRule">
@@ -539,7 +530,7 @@ namespace_prefix
 <dl class="attribute">
 <dt id="cssutils.css.CSSNamespaceRule.typeString">
 <!--[cssutils.css.CSSNamespaceRule.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 </dd></dl>
 
@@ -560,12 +551,12 @@ is used to import style rules from other style sheets.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.atkeyword">
 <!--[cssutils.css.CSSImportRule.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.cssText">
 <!--[cssutils.css.CSSImportRule.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM attribute) The parsable textual representation.</dd></dl>
+<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.href">
@@ -575,12 +566,12 @@ is used to import style rules from other style sheets.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.media">
 <!--[cssutils.css.CSSImportRule.media]--><tt class="descname">media</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.media" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM readonly) A list of media types for this rule of type MediaList</dd></dl>
+<dd>(DOM readonly) A list of media types for this rule of type <a title="cssutils.stylesheets.MediaList" class="reference external" href="stylesheets.html#cssutils.stylesheets.MediaList"><tt class="xref docutils literal"><span class="pre">MediaList</span></tt></a>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.name">
 <!--[cssutils.css.CSSImportRule.name]--><tt class="descname">name</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.name" title="Permalink to this definition">¶</a></dt>
-<dd>An optional name for the imported sheet</dd></dl>
+<dd>An optional name for the imported sheet.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.parentRule">
@@ -610,12 +601,12 @@ is used to import style rules from other style sheets.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.typeString">
 <!--[cssutils.css.CSSImportRule.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.wellformed">
 <!--[cssutils.css.CSSImportRule.wellformed]--><tt class="descname">wellformed</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.wellformed" title="Permalink to this definition">¶</a></dt>
-<dd>depending if media is used at all</dd></dl>
+<dd>Depending if media is used at all.</dd></dl>
 
 </dd></dl>
 
@@ -638,84 +629,102 @@ LBRACE S* ruleset* '}' S*;</pre>
 <dl class="method">
 <dt id="cssutils.css.CSSMediaRule.add">
 <!--[cssutils.css.CSSMediaRule.add]--><tt class="descname">add</tt><big>(</big><em>rule</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSMediaRule.add" title="Permalink to this definition">¶</a></dt>
-<dd>Add rule to end of this mediarule. Same as <tt class="docutils literal"><span class="pre">.insertRule(rule)</span></tt>.</dd></dl>
+<dd>Add <cite>rule</cite> to end of this mediarule. 
+Same as <a title="cssutils.css.CSSMediaRule.insertRule" class="reference internal" href="#cssutils.css.CSSMediaRule.insertRule"><tt class="xref docutils literal"><span class="pre">insertRule()</span></tt></a>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.atkeyword">
 <!--[cssutils.css.CSSMediaRule.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSMediaRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.cssText">
 <!--[cssutils.css.CSSMediaRule.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSMediaRule.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM attribute) The parsable textual representation.</dd></dl>
+<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSMediaRule.deleteRule">
 <!--[cssutils.css.CSSMediaRule.deleteRule]--><tt class="descname">deleteRule</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSMediaRule.deleteRule" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>index</dt>
-<dd>within the media block&#8217;s rule collection of the rule to remove.</dd>
-</dl>
-<p>Used to delete a rule from the media block.</p>
-<p>DOMExceptions</p>
-<ul class="simple">
-<li>INDEX_SIZE_ERR: (self)
+<dd><p>Delete the rule at <cite>index</cite> from the media block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>index</em> &#8211; of the rule to remove within the media block&#8217;s rule collection</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr"><tt class="xref docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified index does not correspond to a rule in
 the media rule list.</li>
-<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this media rule is readonly.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSMediaRule.insertRule">
 <!--[cssutils.css.CSSMediaRule.insertRule]--><tt class="descname">insertRule</tt><big>(</big><em>rule</em>, <em>index=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSMediaRule.insertRule" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>rule</dt>
-<dd><p class="first">The parsable text representing the rule. For rule sets this
-contains both the selector and the style declaration. For
-at-rules, this specifies both the at-identifier and the rule
+<dd><p>Insert <cite>rule</cite> into the media block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>rule</em> &#8211; <p>the parsable text representing the <cite>rule</cite> to be inserted. For rule
+sets this contains both the selector and the style declaration. 
+For at-rules, this specifies both the at-identifier and the rule
 content.</p>
-<p class="last">cssutils also allows rule to be a valid <strong>CSSRule</strong> object</p>
-</dd>
-<dt>index</dt>
-<dd>within the media block&#8217;s rule collection of the rule before
-which to insert the specified rule. If the specified index is
+<p>cssutils also allows rule to be a valid <a title="cssutils.css.CSSRule" class="reference internal" href="#cssutils.css.CSSRule"><tt class="xref docutils literal"><span class="pre">CSSRule</span></tt></a>
+object.</p>
+</li>
+<li><em>index</em> &#8211; before the specified <cite>rule</cite> will be inserted. 
+If the specified <cite>index</cite> is
 equal to the length of the media blocks&#8217;s rule collection, the
 rule will be added to the end of the media block.
 If index is not given or None rule will be appended to rule
-list.</dd>
-</dl>
-<p>Used to insert a new rule into the media block.</p>
-<p>DOMException on setting</p>
-<ul class="simple">
-<li>HIERARCHY_REQUEST_ERR:
-(no use case yet as no &#64;charset or &#64;import allowed))
-Raised if the rule cannot be inserted at the specified index,
+list.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the index within the media block&#8217;s rule collection of the
+newly inserted rule.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr"><tt class="xref docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
+Raised if the <cite>rule</cite> cannot be inserted at the specified <cite>index</cite>,
 e.g., if an &#64;import rule is inserted after a standard rule set
 or other at-rule.</li>
-<li>INDEX_SIZE_ERR: (self)
-Raised if the specified index is not a valid insertion point.</li>
-<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr"><tt class="xref docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+Raised if the specified <cite>index</cite> is not a valid insertion point.</li>
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this media rule is readonly.</li>
-<li>SYNTAX_ERR: (CSSStyleRule)
-Raised if the specified rule has a syntax error and is
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr"><tt class="xref docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+Raised if the specified <cite>rule</cite> has a syntax error and is
 unparsable.</li>
 </ul>
-<p>returns the index within the media block&#8217;s rule collection of the
-newly inserted rule.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.media">
 <!--[cssutils.css.CSSMediaRule.media]--><tt class="descname">media</tt><a class="headerlink" href="#cssutils.css.CSSMediaRule.media" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM readonly) A list of media types for this rule of type            MediaList</dd></dl>
+<dd>(DOM readonly) A list of media types for this rule of type <a title="cssutils.stylesheets.MediaList" class="reference external" href="stylesheets.html#cssutils.stylesheets.MediaList"><tt class="xref docutils literal"><span class="pre">MediaList</span></tt></a>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.name">
 <!--[cssutils.css.CSSMediaRule.name]--><tt class="descname">name</tt><a class="headerlink" href="#cssutils.css.CSSMediaRule.name" title="Permalink to this definition">¶</a></dt>
-<dd>An optional name for the media rules</dd></dl>
+<dd>An optional name for this media rule.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.parentRule">
@@ -740,7 +749,7 @@ newly inserted rule.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.typeString">
 <!--[cssutils.css.CSSMediaRule.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSMediaRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 </dd></dl>
 
@@ -762,12 +771,12 @@ descriptions.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSFontFaceRule.atkeyword">
 <!--[cssutils.css.CSSFontFaceRule.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSFontFaceRule.cssText">
 <!--[cssutils.css.CSSFontFaceRule.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The parsable textual representation of the rule.</dd></dl>
+<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSFontFaceRule.parentRule">
@@ -787,7 +796,7 @@ descriptions.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSFontFaceRule.style">
 <!--[cssutils.css.CSSFontFaceRule.style]--><tt class="descname">style</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.style" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The declaration-block of this rule set.</dd></dl>
+<dd>(DOM) The declaration-block of this rule set, a <a title="cssutils.css.CSSStyleDeclaration" class="reference internal" href="#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSFontFaceRule.type">
@@ -797,7 +806,7 @@ descriptions.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSFontFaceRule.typeString">
 <!--[cssutils.css.CSSFontFaceRule.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 </dd></dl>
 
@@ -822,12 +831,12 @@ pseudo_page
 <dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.atkeyword">
 <!--[cssutils.css.CSSPageRule.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSPageRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.cssText">
 <!--[cssutils.css.CSSPageRule.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSPageRule.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The parsable textual representation of the rule.</dd></dl>
+<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.parentRule">
@@ -852,7 +861,7 @@ pseudo_page
 <dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.style">
 <!--[cssutils.css.CSSPageRule.style]--><tt class="descname">style</tt><a class="headerlink" href="#cssutils.css.CSSPageRule.style" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The declaration-block of this rule set.</dd></dl>
+<dd>(DOM) The declaration-block of this rule set, a <a title="cssutils.css.CSSStyleDeclaration" class="reference internal" href="#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.type">
@@ -862,7 +871,7 @@ pseudo_page
 <dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.typeString">
 <!--[cssutils.css.CSSPageRule.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSPageRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 </dd></dl>
 
@@ -883,12 +892,12 @@ LBRACE S* declaration [ ';' S* declaration ]* '}' S*
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.atkeyword">
 <!--[cssutils.css.CSSStyleRule.atkeyword]--><tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSStyleRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal &#64;keyword of &#64;rules.</dd></dl>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.cssText">
 <!--[cssutils.css.CSSStyleRule.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSStyleRule.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The parsable textual representation of the rule.</dd></dl>
+<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.parentRule">
@@ -908,8 +917,7 @@ LBRACE S* declaration [ ';' S* declaration ]* '}' S*
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.selectorText">
 <!--[cssutils.css.CSSStyleRule.selectorText]--><tt class="descname">selectorText</tt><a class="headerlink" href="#cssutils.css.CSSStyleRule.selectorText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The textual representation of the selector for the
-rule set.</dd></dl>
+<dd>(DOM) The textual representation of the selector for the rule set.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.seq">
@@ -929,7 +937,7 @@ rule set.</dd></dl>
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.typeString">
 <!--[cssutils.css.CSSStyleRule.typeString]--><tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSStyleRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Full name of this rule&#8217;s type.</dd></dl>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
 
 </dd></dl>
 
@@ -942,38 +950,40 @@ rule set.</dd></dl>
 <dl class="class">
 <dt id="cssutils.css.SelectorList">
 <!--[cssutils.css.SelectorList]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">SelectorList</tt><big>(</big><em>selectorText=None</em>, <em>parentRule=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.SelectorList" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list of Selectors of a CSSStyleRule.</p>
+<dd><p>A list of <a title="cssutils.css.Selector" class="reference internal" href="#cssutils.css.Selector"><tt class="xref docutils literal"><span class="pre">Selector</span></tt></a> objects
+of a <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a>.</p>
 <dl class="method">
 <dt id="cssutils.css.SelectorList.append">
 <!--[cssutils.css.SelectorList.append]--><tt class="descname">append</tt><big>(</big><em>newSelector</em><big>)</big><a class="headerlink" href="#cssutils.css.SelectorList.append" title="Permalink to this definition">¶</a></dt>
-<dd>same as appendSelector(newSelector)</dd></dl>
+<dd>Same as <a title="cssutils.css.SelectorList.appendSelector" class="reference internal" href="#cssutils.css.SelectorList.appendSelector"><tt class="xref docutils literal"><span class="pre">appendSelector()</span></tt></a>.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.SelectorList.appendSelector">
 <!--[cssutils.css.SelectorList.appendSelector]--><tt class="descname">appendSelector</tt><big>(</big><em>newSelector</em><big>)</big><a class="headerlink" href="#cssutils.css.SelectorList.appendSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append newSelector (a string will be converted to a new
-Selector).</p>
+<dd><p>Append <cite>newSelector</cite> to this list (a string will be converted to a 
+<a title="cssutils.css.Selector" class="reference internal" href="#cssutils.css.Selector"><tt class="xref docutils literal"><span class="pre">Selector</span></tt></a>).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>newSelector</em> &#8211; comma-separated list of selectors or a tuple of
-(selectorText, dict-of-namespaces)</li>
+<li><em>newSelector</em> &#8211; comma-separated list of selectors (as a single string) or a tuple of
+<cite>(newSelector, dict-of-namespaces)</cite></li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New Selector or None if newSelector is not wellformed.</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New <a title="cssutils.css.Selector" class="reference internal" href="#cssutils.css.Selector"><tt class="xref docutils literal"><span class="pre">Selector</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt> if 
+<cite>newSelector</cite> is not wellformed.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
-<li><cite>NAMESPACE_ERR</cite>: (self)
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr"><tt class="xref docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
 Raised if the specified selector uses an unknown namespace
 prefix.</li>
-<li><cite>SYNTAX_ERR</cite>: (self)
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr"><tt class="xref docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified CSS string value has a syntax error
 and is unparsable.</li>
-<li><cite>NO_MODIFICATION_ALLOWED_ERR</cite>: (self)
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this rule is readonly.</li>
 </ul>
 </td>
@@ -985,12 +995,12 @@ Raised if this rule is readonly.</li>
 <dl class="attribute">
 <dt id="cssutils.css.SelectorList.length">
 <!--[cssutils.css.SelectorList.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.css.SelectorList.length" title="Permalink to this definition">¶</a></dt>
-<dd>The number of Selector elements in the list.</dd></dl>
+<dd>The number of <a title="cssutils.css.Selector" class="reference internal" href="#cssutils.css.Selector"><tt class="xref docutils literal"><span class="pre">Selector</span></tt></a> objects in the list.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.SelectorList.parentRule">
 <!--[cssutils.css.SelectorList.parentRule]--><tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.SelectorList.parentRule" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The CSS rule that contains this SelectorList or        None if this SelectorList is not attached to a CSSRule.</dd></dl>
+<dd>(DOM) The CSS rule that contains this SelectorList or <tt class="xref docutils literal"><span class="pre">None</span></tt> if this SelectorList is not attached to a CSSRule.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.SelectorList.selectorText">
@@ -1006,24 +1016,8 @@ a rule set.</dd></dl>
 <dl class="class">
 <dt id="cssutils.css.Selector">
 <!--[cssutils.css.Selector]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">Selector</tt><big>(</big><em>selectorText=None</em>, <em>parentList=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Selector" title="Permalink to this definition">¶</a></dt>
-<dd><p>(cssutils) a single selector in a SelectorList of a CSSStyleRule</p>
-<dl class="docutils">
-<dt>specificity (READONLY)</dt>
-<dd><p class="first">tuple of (a, b, c, d) where:</p>
-<dl class="last docutils">
-<dt>a</dt>
-<dd>presence of style in document, always 0 if not used on a document</dd>
-<dt>b</dt>
-<dd>number of ID selectors</dd>
-<dt>c </dt>
-<dd>number of .class selectors</dd>
-<dt>d </dt>
-<dd>number of Element (type) selectors</dd>
-</dl>
-</dd>
-<dt>wellformed</dt>
-<dd>if this selector is wellformed regarding the Selector spec</dd>
-</dl>
+<dd><p>(cssutils) a single selector in a <a title="cssutils.css.SelectorList" class="reference internal" href="#cssutils.css.SelectorList"><tt class="xref docutils literal"><span class="pre">SelectorList</span></tt></a> 
+of a <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a>.</p>
 <p>Format:</p>
 <div class="highlight-python"><pre># implemented in SelectorList
 selectors_group
@@ -1125,7 +1119,19 @@ negation_arg
 <dl class="attribute">
 <dt id="cssutils.css.Selector.specificity">
 <!--[cssutils.css.Selector.specificity]--><tt class="descname">specificity</tt><a class="headerlink" href="#cssutils.css.Selector.specificity" title="Permalink to this definition">¶</a></dt>
-<dd>Specificity of this selector (READONLY).</dd></dl>
+<dd><p>Specificity of this selector (READONLY). 
+Tuple of (a, b, c, d) where:</p>
+<dl class="docutils">
+<dt>a</dt>
+<dd>presence of style in document, always 0 if not used on a document</dd>
+<dt>b</dt>
+<dd>number of ID selectors</dd>
+<dt>c </dt>
+<dd>number of .class selectors</dd>
+<dt>d </dt>
+<dd>number of Element (type) selectors</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1178,63 +1184,97 @@ DOM name, so e.g. <tt class="docutils literal"><span class="pre">fontStyle</span
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.getCssText">
 <!--[cssutils.css.CSSStyleDeclaration.getCssText]--><tt class="descname">getCssText</tt><big>(</big><em>separator=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getCssText" title="Permalink to this definition">¶</a></dt>
-<dd>returns serialized property cssText, each property separated by
-given <tt class="docutils literal"><span class="pre">separator</span></tt> which may e.g. be u&#8217;&#8217; to be able to use
-cssText directly in an HTML style attribute. &#8220;;&#8221; is always part of
-each property (except the last one) and can <strong>not</strong> be set with
-separator!</dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">serialized property cssText, each property separated by
+given <cite>separator</cite> which may e.g. be <tt class="docutils literal"><span class="pre">u''</span></tt> to be able to use
+cssText directly in an HTML style attribute. <tt class="docutils literal"><span class="pre">;</span></tt> is part of
+each property (except the last one) and <strong>cannot</strong> be set with
+separator!</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.getProperties">
 <!--[cssutils.css.CSSStyleDeclaration.getProperties]--><tt class="descname">getProperties</tt><big>(</big><em>name=None</em>, <em>all=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getProperties" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of Property objects set in this declaration.</p>
-<dl class="docutils">
-<dt>name</dt>
-<dd>optional name of properties which are requested (a filter).
-Only properties with this <strong>always normalized</strong> name are returned.</dd>
-<dt>all=False</dt>
-<dd><p class="first">if False (DEFAULT) only the effective properties (the ones set
-last) are returned. If name is given a list with only one property
-is returned.</p>
-<p class="last">if True all properties including properties set multiple times with
-different values or priorities for different UAs are returned.
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>name</em> &#8211; optional <cite>name</cite> of properties which are requested.
+Only properties with this <strong>always normalized</strong> <cite>name</cite> are returned.
+If <cite>name</cite> is <tt class="xref docutils literal"><span class="pre">None</span></tt> all properties are returned (at least one for 
+each set name depending on parameter <cite>all</cite>).</li>
+<li><em>all</em> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">False</span></tt> (DEFAULT) only the effective properties are returned. 
+If name is given a list with only one property is returned.</p>
+<p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> all properties including properties set multiple times
+with different values or priorities for different UAs are returned.
 The order of the properties is fully kept as in the original 
 stylesheet.</p>
-</dd>
-</dl>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a title="cssutils.css.Property" class="reference internal" href="#cssutils.css.Property"><tt class="xref docutils literal"><span class="pre">Property</span></tt></a> objects set in 
+this declaration.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.getProperty">
 <!--[cssutils.css.CSSStyleDeclaration.getProperty]--><tt class="descname">getProperty</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the effective Property object.</p>
-<dl class="docutils">
-<dt>name</dt>
-<dd>of the CSS property, always lowercase (even if not normalized)</dd>
-<dt>normalize</dt>
-<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>name</em> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
+<li><em>normalize</em> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
-for the unnormalized name.</p>
-</dd>
-</dl>
+<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
+effective for the unnormalized name.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the effective <a title="cssutils.css.Property" class="reference internal" href="#cssutils.css.Property"><tt class="xref docutils literal"><span class="pre">Property</span></tt></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.getPropertyCSSValue">
 <!--[cssutils.css.CSSStyleDeclaration.getPropertyCSSValue]--><tt class="descname">getPropertyCSSValue</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getPropertyCSSValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns CSSValue, the value of the effective property if it has been
-explicitly set for this declaration block.</p>
-<dl class="docutils">
-<dt>name</dt>
-<dd>of the CSS property, always lowercase (even if not normalized)</dd>
-<dt>normalize</dt>
-<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>name</em> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
+<li><em>normalize</em> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
+<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the effective
 for the unnormalized name.</p>
-</dd>
-</dl>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a title="cssutils.css.CSSValue" class="reference internal" href="#cssutils.css.CSSValue"><tt class="xref docutils literal"><span class="pre">CSSValue</span></tt></a>, the value of the effective
+property if it has been explicitly set for this declaration block.</p>
+</td>
+</tr>
+</tbody>
+</table>
 <p>(DOM)
 Used to retrieve the object representation of the value of a CSS
 property if it has been explicitly set within this declaration
@@ -1254,71 +1294,95 @@ set.</strong></p>
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.getPropertyPriority">
 <!--[cssutils.css.CSSStyleDeclaration.getPropertyPriority]--><tt class="descname">getPropertyPriority</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getPropertyPriority" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the priority of the effective CSS property (e.g. the
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>name</em> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
+<li><em>normalize</em> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
+escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
+<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the
+effective for the unnormalized name.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the priority of the effective CSS property (e.g. the
 &#8220;important&#8221; qualifier) if the property has been explicitly set in
 this declaration block. The empty string if none exists.</p>
-<dl class="docutils">
-<dt>name</dt>
-<dd>of the CSS property, always lowercase (even if not normalized)</dd>
-<dt>normalize</dt>
-<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
-escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
-for the unnormalized name.</p>
-</dd>
-</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.getPropertyValue">
 <!--[cssutils.css.CSSStyleDeclaration.getPropertyValue]--><tt class="descname">getPropertyValue</tt><big>(</big><em>name</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.getPropertyValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the value of the effective property if it has been explicitly
-set for this declaration block. Returns the empty string if the
-property has not been set.</p>
-<dl class="docutils">
-<dt>name</dt>
-<dd>of the CSS property, always lowercase (even if not normalized)</dd>
-<dt>normalize</dt>
-<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>name</em> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
+<li><em>normalize</em> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
-for the unnormalized name.</p>
-</dd>
-</dl>
+<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the
+effective for the unnormalized name.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the value of the effective property if it has been explicitly set
+for this declaration block. Returns the empty string if the
+property has not been set.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.item">
 <!--[cssutils.css.CSSStyleDeclaration.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.item" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM)
-Used to retrieve the properties that have been explicitly set in
+<dd><p>(DOM) Retrieve the properties that have been explicitly set in
 this declaration block. The order of the properties retrieved using
 this method does not have to be the order in which they were set.
 This method can be used to iterate over all properties in this
 declaration block.</p>
-<dl class="docutils">
-<dt>index</dt>
-<dd>of the property to retrieve, negative values behave like
-negative indexes on Python lists, so -1 is the last element</dd>
-</dl>
-<p>returns the name of the property at this ordinal position. The
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>index</em> &#8211; of the property to retrieve, negative values behave like
+negative indexes on Python lists, so -1 is the last element</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the name of the property at this ordinal position. The
 empty string if no property exists at this position.</p>
-<p>ATTENTION:
-Only properties with a different name are counted. If two
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ATTENTION:</strong>
+Only properties with different names are counted. If two
 properties with the same name are present in this declaration
 only the effective one is included.</p>
-<p><tt class="docutils literal"><span class="pre">item()</span></tt> and <tt class="docutils literal"><span class="pre">length</span></tt> work on the same set here.</p>
+<p><a title="cssutils.css.CSSStyleDeclaration.item" class="reference internal" href="#cssutils.css.CSSStyleDeclaration.item"><tt class="xref docutils literal"><span class="pre">item()</span></tt></a> and <a title="cssutils.css.CSSStyleDeclaration.length" class="reference internal" href="#cssutils.css.CSSStyleDeclaration.length"><tt class="xref docutils literal"><span class="pre">length</span></tt></a> work on the same set here.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleDeclaration.length">
 <!--[cssutils.css.CSSStyleDeclaration.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.length" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The number of distinct properties that have been explicitly        in this declaration block. The range of valid indices is 0 to        length-1 inclusive. These are properties with a different <tt class="docutils literal"><span class="pre">name</span></tt>        only. <tt class="docutils literal"><span class="pre">item()</span></tt> and <tt class="docutils literal"><span class="pre">length</span></tt> work on the same set here.</dd></dl>
+<dd>(DOM) The number of distinct properties that have been explicitly in this declaration block. The range of valid indices is 0 to length-1 inclusive. These are properties with a different <tt class="docutils literal"><span class="pre">name</span></tt> only. <a title="cssutils.css.CSSStyleDeclaration.item" class="reference internal" href="#cssutils.css.CSSStyleDeclaration.item"><tt class="xref docutils literal"><span class="pre">item()</span></tt></a> and <a title="cssutils.css.CSSStyleDeclaration.length" class="reference internal" href="#cssutils.css.CSSStyleDeclaration.length"><tt class="xref docutils literal"><span class="pre">length</span></tt></a> work on the same set here.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleDeclaration.parentRule">
 <!--[cssutils.css.CSSStyleDeclaration.parentRule]--><tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.parentRule" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The CSS rule that contains this declaration block or        None if this CSSStyleDeclaration is not attached to a CSSRule.</dd></dl>
+<dd>(DOM) The CSS rule that contains this declaration block or None if this CSSStyleDeclaration is not attached to a CSSRule.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.removeProperty">
@@ -1326,29 +1390,38 @@ only the effective one is included.</p>
 <dd><p>(DOM)
 Used to remove a CSS property if it has been explicitly set within
 this declaration block.</p>
-<p>Returns the value of the property if it has been explicitly set for
-this declaration block. Returns the empty string if the property
-has not been set or the property name does not correspond to a
-known CSS property</p>
-<dl class="docutils">
-<dt>name</dt>
-<dd>of the CSS property</dd>
-<dt>normalize</dt>
-<dd><p class="first">if True (DEFAULT) name will be normalized (lowercase, no simple
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>name</em> &#8211; of the CSS property</li>
+<li><em>normalize</em> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent.
 The effective Property value is returned and <em>all</em> Properties
 with <tt class="docutils literal"><span class="pre">Property.name</span> <span class="pre">==</span> <span class="pre">name</span></tt> are removed.</p>
-<p class="last">If False may return <strong>NOT</strong> the effective value but the effective
-for the unnormalized <tt class="docutils literal"><span class="pre">name</span></tt> only. Also only the Properties with
-the literal name <tt class="docutils literal"><span class="pre">name</span></tt> are removed.</p>
-</dd>
-</dl>
-<p>raises DOMException</p>
-<ul class="simple">
-<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
+effective for the unnormalized <cite>name</cite> only. Also only the 
+Properties with the literal name <cite>name</cite> are removed.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the value of the property if it has been explicitly set for
+this declaration block. Returns the empty string if the property
+has not been set or the property name does not correspond to a
+known CSS property</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly or the property is
 readonly.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -1359,34 +1432,40 @@ readonly.</li>
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.setProperty">
 <!--[cssutils.css.CSSStyleDeclaration.setProperty]--><tt class="descname">setProperty</tt><big>(</big><em>name</em>, <em>value=None</em>, <em>priority=u''</em>, <em>normalize=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.setProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM)
-Used to set a property value and priority within this declaration
+<dd><p>(DOM) Set a property value and priority within this declaration
 block.</p>
-<dl class="docutils">
-<dt>name</dt>
-<dd><p class="first">of the CSS property to set (in W3C DOM the parameter is called
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>name</em> &#8211; <p>of the CSS property to set (in W3C DOM the parameter is called
 &#8220;propertyName&#8221;), always lowercase (even if not normalized)</p>
-<p>If a property with this name is present it will be reset</p>
-<p class="last">cssutils also allowed name to be a Property object, all other
+<p>If a property with this <cite>name</cite> is present it will be reset.</p>
+<p>cssutils also allowed <cite>name</cite> to be a 
+<a title="cssutils.css.Property" class="reference internal" href="#cssutils.css.Property"><tt class="xref docutils literal"><span class="pre">Property</span></tt></a> object, all other
 parameter are ignored in this case</p>
-</dd>
-<dt>value</dt>
-<dd>the new value of the property, omit if name is already a Property</dd>
-<dt>priority</dt>
-<dd>the optional priority of the property (e.g. &#8220;important&#8221;)</dd>
-<dt>normalize</dt>
-<dd>if True (DEFAULT) name will be normalized (lowercase, no simple
-escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</dd>
-</dl>
-<p>DOMException on setting</p>
-<ul class="simple">
-<li>SYNTAX_ERR: (self)
+</li>
+<li><em>value</em> &#8211; the new value of the property, ignored if <cite>name</cite> is a Property.</li>
+<li><em>priority</em> &#8211; the optional priority of the property (e.g. &#8220;important&#8221;),
+ignored if <cite>name</cite> is a Property.</li>
+<li><em>normalize</em> &#8211; if True (DEFAULT) <cite>name</cite> will be normalized (lowercase, no simple
+escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr"><tt class="xref docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified value has a syntax error and is
 unparsable.</li>
-<li>NO_MODIFICATION_ALLOWED_ERR: (self)
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly or the property is
 readonly.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -1482,12 +1561,12 @@ prio
 <dl class="attribute">
 <dt id="cssutils.css.Property.name">
 <!--[cssutils.css.Property.name]--><tt class="descname">name</tt><a class="headerlink" href="#cssutils.css.Property.name" title="Permalink to this definition">¶</a></dt>
-<dd>Name of this property</dd></dl>
+<dd>Name of this property.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Property.priority">
 <!--[cssutils.css.Property.priority]--><tt class="descname">priority</tt><a class="headerlink" href="#cssutils.css.Property.priority" title="Permalink to this definition">¶</a></dt>
-<dd>(cssutils) Priority of this property</dd></dl>
+<dd>Priority of this property.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Property.valid">
@@ -1497,7 +1576,7 @@ prio
 <dl class="method">
 <dt id="cssutils.css.Property.validate">
 <!--[cssutils.css.Property.validate]--><tt class="descname">validate</tt><big>(</big><em>profile=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property.validate" title="Permalink to this definition">¶</a></dt>
-<dd>validates value against _propertyName context if given</dd></dl>
+<dd>Validate value against name.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Property.value">
@@ -1515,7 +1594,7 @@ prio
 <dt id="cssutils.css.CSSValue">
 <!--[cssutils.css.CSSValue]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>The CSSValue interface represents a simple or a complex value.
-A CSSValue object only occurs in a context of a CSS property</p>
+A CSSValue object only occurs in a context of a CSS property.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSValue.cssText">
 <!--[cssutils.css.CSSValue.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSValue.cssText" title="Permalink to this definition">¶</a></dt>
@@ -1544,7 +1623,7 @@ A CSSValue object only occurs in a context of a CSS property</p>
 <dl class="class">
 <dt id="cssutils.css.CSSPrimitiveValue">
 <!--[cssutils.css.CSSPrimitiveValue]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSPrimitiveValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>represents a single CSS Value.  May be used to determine the value of a
+<dd><p>Represents a single CSS Value.  May be used to determine the value of a
 specific style property currently set in a block or to set a specific
 style property explicitly within the block. Might be obtained from the
 getPropertyCSSValue method of CSSStyleDeclaration.</p>
@@ -1569,35 +1648,46 @@ converted to a number; (see also the RGBColor interface).</p>
 <dl class="method">
 <dt id="cssutils.css.CSSPrimitiveValue.getCounterValue">
 <!--[cssutils.css.CSSPrimitiveValue.getCounterValue]--><tt class="descname">getCounterValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getCounterValue" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM method) This method is used to get the Counter value. If
+<dd><p>(DOM) This method is used to get the Counter value. If
 this CSS value doesn&#8217;t contain a counter value, a DOMException
 is raised. Modification to the corresponding style property
-can be achieved using the Counter interface.</dd></dl>
+can be achieved using the Counter interface.</p>
+<p><strong>Not implemented.</strong></p>
+</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSPrimitiveValue.getFloatValue">
 <!--[cssutils.css.CSSPrimitiveValue.getFloatValue]--><tt class="descname">getFloatValue</tt><big>(</big><em>unitType=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getFloatValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM method) This method is used to get a float value in a
+<dd><p>(DOM) This method is used to get a float value in a
 specified unit. If this CSS value doesn&#8217;t contain a float value
 or can&#8217;t be converted into the specified unit, a DOMException
 is raised.</p>
-<dl class="docutils">
-<dt>unitType</dt>
-<dd>to get the float value. The unit code can only be a float unit type
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>unitType</em> &#8211; to get the float value. The unit code can only be a float unit type
 (i.e. CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS, CSS_PX, CSS_CM,
 CSS_MM, CSS_IN, CSS_PT, CSS_PC, CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS,
 CSS_S, CSS_HZ, CSS_KHZ, CSS_DIMENSION) or None in which case
-the current dimension is used.</dd>
-</dl>
-<p>returns not necessarily a float but some cases just an integer
+the current dimension is used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">not necessarily a float but some cases just an integer
 e.g. if the value is <tt class="docutils literal"><span class="pre">1px</span></tt> it return <tt class="docutils literal"><span class="pre">1</span></tt> and <strong>not</strong> <tt class="docutils literal"><span class="pre">1.0</span></tt></p>
-<p>conversions might return strange values like 1.000000000001</p>
+<p class="last">Conversions might return strange values like 1.000000000001</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSPrimitiveValue.getRGBColorValue">
 <!--[cssutils.css.CSSPrimitiveValue.getRGBColorValue]--><tt class="descname">getRGBColorValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getRGBColorValue" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM method) This method is used to get the RGB color. If this
+<dd>(DOM) This method is used to get the RGB color. If this
 CSS value doesn&#8217;t contain a RGB color value, a DOMException
 is raised. Modification to the corresponding style property
 can be achieved using the RGBColor interface.</dd></dl>
@@ -1605,15 +1695,17 @@ can be achieved using the RGBColor interface.</dd></dl>
 <dl class="method">
 <dt id="cssutils.css.CSSPrimitiveValue.getRectValue">
 <!--[cssutils.css.CSSPrimitiveValue.getRectValue]--><tt class="descname">getRectValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getRectValue" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM method) This method is used to get the Rect value. If this CSS
+<dd><p>(DOM) This method is used to get the Rect value. If this CSS
 value doesn&#8217;t contain a rect value, a DOMException is raised.
 Modification to the corresponding style property can be achieved
-using the Rect interface.</dd></dl>
+using the Rect interface.</p>
+<p><strong>Not implemented.</strong></p>
+</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSPrimitiveValue.getStringValue">
 <!--[cssutils.css.CSSPrimitiveValue.getStringValue]--><tt class="descname">getStringValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getStringValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM method) This method is used to get the string value. If the
+<dd><p>(DOM) This method is used to get the string value. If the
 CSS value doesn&#8217;t contain a string value, a DOMException is raised.</p>
 <p>Some properties (like &#8216;font-family&#8217; or &#8216;voice-family&#8217;)
 convert a whitespace separated list of idents to a string.</p>
@@ -1624,7 +1716,7 @@ actual value <tt class="docutils literal"><span class="pre">a</span></tt>: url(a
 <dl class="attribute">
 <dt id="cssutils.css.CSSPrimitiveValue.primitiveType">
 <!--[cssutils.css.CSSPrimitiveValue.primitiveType]--><tt class="descname">primitiveType</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.primitiveType" title="Permalink to this definition">¶</a></dt>
-<dd>(readonly) The type of the value as defined by the constants specified above.</dd></dl>
+<dd>(readonly) The type of the value as defined by the constants in this class.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSPrimitiveValue.primitiveTypeString">
@@ -1639,64 +1731,74 @@ actual value <tt class="docutils literal"><span class="pre">a</span></tt>: url(a
 <dl class="method">
 <dt id="cssutils.css.CSSPrimitiveValue.setFloatValue">
 <!--[cssutils.css.CSSPrimitiveValue.setFloatValue]--><tt class="descname">setFloatValue</tt><big>(</big><em>unitType</em>, <em>floatValue</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.setFloatValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM method) A method to set the float value with a specified unit.
+<dd><p>(DOM) A method to set the float value with a specified unit.
 If the property attached with this value can not accept the
 specified unit or the float value, the value will be unchanged and
 a DOMException will be raised.</p>
-<dl class="docutils">
-<dt>unitType</dt>
-<dd>a unit code as defined above. The unit code can only be a float
-unit type</dd>
-<dt>floatValue</dt>
-<dd><p class="first">the new float value which does not have to be a float value but
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>unitType</em> &#8211; a unit code as defined above. The unit code can only be a float
+unit type</li>
+<li><em>floatValue</em> &#8211; <p>the new float value which does not have to be a float value but
 may simple be an int e.g. if setting:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span class="n">setFloatValue</span><span class="p">(</span><span class="n">CSS_PX</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">setFloatValue</span><span class="p">(</span><span class="n">CSS_PX</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>raises DOMException</dt>
-<dd><ul class="first last">
-<li><dl class="first docutils">
-<dt>INVALID_ACCESS_ERR: Raised if the attached property doesn&#8217;t</dt>
-<dd><p class="first last">support the float value or the unit type.</p>
-</dd>
-</dl>
-</li>
-<li><p class="first">NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.</p>
 </li>
 </ul>
-</dd>
-</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.InvalidAccessErr"><tt class="xref docutils literal"><span class="pre">InvalidAccessErr</span></tt></a>:
+Raised if the attached property doesn&#8217;t
+support the float value or the unit type.</li>
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+Raised if this property is readonly.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSPrimitiveValue.setStringValue">
 <!--[cssutils.css.CSSPrimitiveValue.setStringValue]--><tt class="descname">setStringValue</tt><big>(</big><em>stringType</em>, <em>stringValue</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.setStringValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM method) A method to set the string value with the specified
+<dd><p>(DOM) A method to set the string value with the specified
 unit. If the property attached to this value can&#8217;t accept the
 specified unit or the string value, the value will be unchanged and
 a DOMException will be raised.</p>
-<dl class="docutils">
-<dt>stringType</dt>
-<dd>a string code as defined above. The string code can only be a
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>stringType</em> &#8211; a string code as defined above. The string code can only be a
 string unit type (i.e. CSS_STRING, CSS_URI, CSS_IDENT, and
-CSS_ATTR).</dd>
-<dt>stringValue</dt>
-<dd>the new string value
+CSS_ATTR).</li>
+<li><em>stringValue</em> &#8211; the new string value
 Only the actual value is expected so for (CSS_URI, &#8220;a&#8221;) the
 new value will be <tt class="docutils literal"><span class="pre">url(a)</span></tt>. For (CSS_STRING, &#8220;&#8216;a&#8217;&#8221;)
 the new value will be <tt class="docutils literal"><span class="pre">&quot;\'a\'&quot;</span></tt> as the surrounding <tt class="docutils literal"><span class="pre">'</span></tt> are
-not part of the string value</dd>
-<dt>raises</dt>
-<dd><p class="first">DOMException</p>
-<ul class="last simple">
-<li>INVALID_ACCESS_ERR: Raised if the CSS value doesn&#8217;t contain a
+not part of the string value</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.InvalidAccessErr"><tt class="xref docutils literal"><span class="pre">InvalidAccessErr</span></tt></a>: 
+Raised if the CSS value doesn&#8217;t contain a
 string value or if the string value can&#8217;t be converted into
 the specified unit.</li>
-<li>NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.</li>
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+Raised if this property is readonly.</li>
 </ul>
-</dd>
-</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -1727,10 +1829,10 @@ starting from 0.</p>
 <dl class="method">
 <dt id="cssutils.css.CSSValueList.item">
 <!--[cssutils.css.CSSValueList.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValueList.item" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM method) Used to retrieve a CSSValue by ordinal index. The
+<dd>(DOM) Retrieve a CSSValue by ordinal <cite>index</cite>. The
 order in this collection represents the order of the values in the
-CSS style property. If index is greater than or equal to the number
-of values in the list, this returns None.</dd></dl>
+CSS style property. If <cite>index</cite> is greater than or equal to the number
+of values in the list, this returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSValueList.length">

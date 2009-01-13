@@ -313,8 +313,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._fetcher = fetcher
 
     def _setEncoding(self, encoding):
-        """
-        Set encoding of charset rule if present in sheet or insert a new 
+        """Set `encoding` of charset rule if present in sheet or insert a new
         :class:`~cssutils.css.CSSCharsetRule` with given `encoding`. 
         If `encoding` is None removes charsetrule if present resulting in 
         default encoding of utf-8.

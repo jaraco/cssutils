@@ -1,7 +1,6 @@
 ====================
 scripts
 ====================
-:version: $Id: scripts.txt 1630 2009-01-04 18:59:18Z cthedot $
 
 The provided scripts are available as a standalone script which is installed in the default PYTHONHOME/scripts directory. Additionally an API for the functionality of the scripts is provided for use in programs.
 

@@ -26,9 +26,7 @@ known issues
   **These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!**
   In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
-- ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` and the relevant methods/properties ``Property.cssValue`` and ``CSSStyleDeclaration.getPropertyCSSValue`` are more or less *DEPRECATED* and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings. As the aforementioned classes are not hardly that useful this should not be a big problem but please beware if you use or have used them. If you think this a bad idea please let me know!
-
-   Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` will probably be completely replaced/refactored with suggestions from CSSOM.
+- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` may be completely replaced/refactored with suggestions from CSSOM.
 
 - handling of comments does probable not work for all cases
 
@@ -50,7 +48,8 @@ HEAD
         **TODO**: Preference setting. Profile?
 
     - IMPROVEMENT: Added all known properties (by cssutils ;) to CSS2Properties.
-    - DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markup'd yet but not too bad either...
+
+    + DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markup'd yet but not too bad either...
 
 
 

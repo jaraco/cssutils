@@ -1,7 +1,5 @@
 """Selector is a single Selector of a CSSStyleRule SelectorList.
-
-Partly implements
-    http://www.w3.org/TR/css3-selectors/
+Partly implements http://www.w3.org/TR/css3-selectors/.
 
 TODO
     - .contains(selector)
@@ -17,22 +15,8 @@ import xml.dom
 
 class Selector(cssutils.util.Base2):
     """
-    (cssutils) a single selector in a SelectorList of a CSSStyleRule
-
-    specificity (READONLY)
-        tuple of (a, b, c, d) where:
-        
-        a
-            presence of style in document, always 0 if not used on a document
-        b
-            number of ID selectors
-        c 
-            number of .class selectors
-        d 
-            number of Element (type) selectors
-        
-    wellformed
-        if this selector is wellformed regarding the Selector spec
+    (cssutils) a single selector in a :class:`~cssutils.css.SelectorList` 
+    of a :class:`~cssutils.css.CSSStyleRule`.
 
     Format::
 
@@ -151,7 +135,7 @@ class Selector(cssutils.util.Base2):
                 self._getUsedNamespaces(), id(self))
 
     def _getUsedUris(self):
-        "returns list of actually used URIs in this Selector"
+        "Return list of actually used URIs in this Selector."
         uris = set()
         for item in self.seq:
             type_, val = item.type, item.value
@@ -161,7 +145,7 @@ class Selector(cssutils.util.Base2):
         return uris
 
     def _getUsedNamespaces(self):
-        "returns actually used namespaces only"
+        "Return actually used namespaces only."
         useduris = self._getUsedUris()
         namespaces = _SimpleNamespaces(log=self._log)
         for p, uri in self._namespaces.items():
@@ -170,13 +154,13 @@ class Selector(cssutils.util.Base2):
         return namespaces
 
     def __getNamespaces(self):
-        "uses own namespaces if not attached to a sheet, else the sheet's ones"
+        "Use own namespaces if not attached to a sheet, else the sheet's ones."
         try:
             return self._parent.parentRule.parentStyleSheet.namespaces
         except AttributeError:
             return self.__namespaces
 
-    _namespaces = property(__getNamespaces, doc="""if this Selector is attached
+    _namespaces = property(__getNamespaces, doc="""If this Selector is attached
         to a CSSStyleSheet the namespaces of that sheet are mirrored here.
         While the Selector (or parent SelectorList or parentRule(s) of that are
         not attached a own dict of {prefix: namespaceURI} is used.""")
@@ -190,9 +174,7 @@ class Selector(cssutils.util.Base2):
         None if this Selector is not attached to a SelectorList.")
         
     def _getSelectorText(self):
-        """
-        returns serialized format
-        """
+        """Return serialized format."""
         return cssutils.ser.do_css_Selector(self)
 
     def _setSelectorText(self, selectorText):
@@ -202,14 +184,14 @@ class Selector(cssutils.util.Base2):
             Given namespaces are ignored if this object is attached to a 
             CSSStyleSheet!
         
-        :Exceptions:
-            - `NAMESPACE_ERR`: (self)
+        :exceptions:
+            - :exc:`~xml.dom.NamespaceErr`:
               Raised if the specified selector uses an unknown namespace
               prefix.
-            - `SYNTAX_ERR`: (self)
+            - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified CSS string value has a syntax error
               and is unparsable.
-            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this rule is readonly.
         """
         self._checkReadonly()
@@ -782,6 +764,17 @@ class Selector(cssutils.util.Base2):
 
 
     specificity = property(lambda self: self._specificity, 
-                           doc="Specificity of this selector (READONLY).")
+         doc="""Specificity of this selector (READONLY). 
+                Tuple of (a, b, c, d) where: 
+                
+                a
+                    presence of style in document, always 0 if not used on a document
+                b
+                    number of ID selectors
+                c 
+                    number of .class selectors
+                d 
+                    number of Element (type) selectors
+                    """)
 
     wellformed = property(lambda self: bool(len(self.seq)))

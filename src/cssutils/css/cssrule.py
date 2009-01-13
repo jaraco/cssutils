@@ -7,8 +7,7 @@ import cssutils
 import xml.dom
 
 class CSSRule(cssutils.util.Base2):
-    """
-    Abstract base interface for any type of CSS statement. This includes
+    """Abstract base interface for any type of CSS statement. This includes
     both rule sets and at-rules. An implementation is expected to preserve
     all rules specified in a CSS style sheet, even if the rule is not
     recognized by the parser. Unrecognized rules are represented using the
@@ -33,12 +32,8 @@ class CSSRule(cssutils.util.Base2):
                      'MEDIA_RULE', 'FONT_FACE_RULE', 'PAGE_RULE', 'NAMESPACE_RULE',
                      'COMMENT']
 
-
-
     def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):
-        """
-        set common attributes for all rules
-        """
+        """Set common attributes for all rules."""
         super(CSSRule, self).__init__()
         self._parentRule = parentRule
         self._parentStyleSheet = parentStyleSheet
@@ -57,7 +52,7 @@ class CSSRule(cssutils.util.Base2):
                             error=xml.dom.InvalidModificationErr)
 
     atkeyword = property(lambda self: self._atkeyword, _setAtkeyword,
-                          doc=u"Literal @keyword of @rules.")
+                         doc=u"Literal keyword of an @rule (e.g. ``@IMport``).")
 
     def _setCssText(self, cssText):
         """
@@ -98,7 +93,7 @@ class CSSRule(cssutils.util.Base2):
                         "type constant.")
 
     typeString = property(lambda self: CSSRule._typestrings[self.type], 
-                          doc="Full name of this rule's type.")
+                          doc="Descriptive name of this rule's type.")
 
     wellformed = property(lambda self: False, 
                           doc=u"If the rule is wellformed.")

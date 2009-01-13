@@ -75,12 +75,12 @@ class MediaQuery(cssutils.util.Base):
             a single media query string, e.g. ``print and (min-width: 25cm)``
 
         :exceptions:    
-            - `SYNTAX_ERR`: (self)
+            - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified string value has a syntax error and is
               unparsable.
-            - `INVALID_CHARACTER_ERR`: (self)
+            - :exc:`~xml.dom.InvalidCharacterErr`:
               Raised if the given mediaType is unknown.
-            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this media query is readonly.
         """
         self._checkReadonly()
@@ -164,12 +164,12 @@ class MediaQuery(cssutils.util.Base):
             one of :attr:`MEDIA_TYPES`
 
         :exceptions:
-            - SYNTAX_ERR: (self)
+            - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified string value has a syntax error and is
               unparsable.
-            - INVALID_CHARACTER_ERR: (self)
+            - :exc:`~xml.dom.InvalidCharacterErr`:
               Raised if the given mediaType is unknown.
-            - NO_MODIFICATION_ALLOWED_ERR: (self)
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this media query is readonly.
         """
         self._checkReadonly()

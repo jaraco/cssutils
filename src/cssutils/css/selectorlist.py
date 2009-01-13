@@ -24,12 +24,11 @@ import cssutils
 import xml.dom
 
 class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
-    """A list of Selectors of a CSSStyleRule."""
+    """A list of :class:`~cssutils.css.Selector` objects
+    of a :class:`~cssutils.css.CSSStyleRule`."""
     def __init__(self, selectorText=None, parentRule=None,
                  readonly=False):
         """
-        initializes SelectorList with optional selectorText
-
         :Parameters:
             selectorText
                 parsable list of Selectors
@@ -59,8 +58,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 id(self))
 
     def __setitem__(self, index, newSelector):
-        """
-        overwrites ListSeq.__setitem__
+        """Overwrite ListSeq.__setitem__
 
         Any duplicate Selectors are **not** removed.
         """
@@ -69,7 +67,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self.seq[index] = newSelector
 
     def __prepareset(self, newSelector, namespaces=None):
-        "used by appendSelector and __setitem__"
+        "Used by appendSelector and __setitem__"
         if not namespaces:
             namespaces = {}
         self._checkReadonly()
@@ -80,15 +78,8 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             newSelector._parent = self # maybe set twice but must be!
             return newSelector
 
-    def _getUsedUris(self):
-        "used by CSSStyleSheet to check if @namespace rules are needed"
-        uris = set()
-        for s in self:
-            uris.update(s._getUsedUris())
-        return uris
-
     def __getNamespaces(self):
-        "uses children namespaces if not attached to a sheet, else the sheet's ones"
+        "Use children namespaces if not attached to a sheet, else the sheet's ones."
         try:
             return self.parentRule.parentStyleSheet.namespaces
         except AttributeError:
@@ -97,21 +88,67 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 namespaces.update(selector._namespaces)
             return namespaces
 
-    _namespaces = property(__getNamespaces, doc="""if this SelectorList is
+    def _getUsedUris(self):
+        "Used by CSSStyleSheet to check if @namespace rules are needed"
+        uris = set()
+        for s in self:
+            uris.update(s._getUsedUris())
+        return uris
+
+    _namespaces = property(__getNamespaces, doc="""If this SelectorList is
         attached to a CSSStyleSheet the namespaces of that sheet are mirrored
         here. While the SelectorList (or parentRule(s) are
         not attached the namespaces of all children Selectors are used.""")
 
-    length = property(lambda self: len(self),
-        doc="The number of Selector elements in the list.")
+    def append(self, newSelector):
+        "Same as :meth:`appendSelector`."
+        self.appendSelector(newSelector)
 
+    def appendSelector(self, newSelector):
+        """
+        Append `newSelector` to this list (a string will be converted to a 
+        :class:`~cssutils.css.Selector`).
 
-    parentRule = property(lambda self: self._parentRule,
-        doc="(DOM) The CSS rule that contains this SelectorList or\
-        None if this SelectorList is not attached to a CSSRule.")
+        :param newSelector:
+            comma-separated list of selectors (as a single string) or a tuple of
+            `(newSelector, dict-of-namespaces)`
+        :returns: New :class:`~cssutils.css.Selector` or ``None`` if 
+            `newSelector` is not wellformed.
+        :exceptions:
+            - :exc:`~xml.dom.NamespaceErr`:
+              Raised if the specified selector uses an unknown namespace
+              prefix.
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error
+              and is unparsable.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this rule is readonly.
+        """
+        self._checkReadonly()
+
+        # might be (selectorText, namespaces)
+        newSelector, namespaces = self._splitNamespacesOff(newSelector)
+        try:
+            # use parent's only if available
+            namespaces = self.parentRule.parentStyleSheet.namespaces
+        except AttributeError:
+            # use already present namespaces plus new given ones
+            _namespaces = self._namespaces
+            _namespaces.update(namespaces)
+            namespaces = _namespaces
+
+        newSelector = self.__prepareset(newSelector, namespaces)
+        if newSelector:
+            seq = self.seq[:]
+            del self.seq[:]
+            for s in seq:
+                if s.selectorText != newSelector.selectorText:
+                    self.seq.append(s)
+            self.seq.append(newSelector)
+            return newSelector
 
     def _getSelectorText(self):
-        "returns serialized format"
+        "Return serialized format."
         return cssutils.ser.do_css_SelectorList(self)
 
     def _setSelectorText(self, selectorText):
@@ -119,14 +156,14 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         :param selectorText:
             comma-separated list of selectors or a tuple of
             (selectorText, dict-of-namespaces)
-        :Exceptions:
-            - `NAMESPACE_ERR`: (Selector)
+        :exceptions:
+            - :exc:`~xml.dom.NamespaceErr`:
               Raised if the specified selector uses an unknown namespace
               prefix.
-            - `SYNTAX_ERR`: (self)
+            - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified CSS string value has a syntax error
               and is unparsable.
-            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this rule is readonly.
         """
         self._checkReadonly()
@@ -182,51 +219,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         doc="""(cssutils) The textual representation of the selector for
             a rule set.""")
 
-    def appendSelector(self, newSelector):
-        """
-        Append newSelector (a string will be converted to a new
-        Selector).
+    length = property(lambda self: len(self),
+        doc="The number of :class:`~cssutils.css.Selector` objects in the list.")
 
-        :param newSelector:
-            comma-separated list of selectors or a tuple of
-            (selectorText, dict-of-namespaces)
-        :returns: New Selector or None if newSelector is not wellformed.
-        :Exceptions:
-            - `NAMESPACE_ERR`: (self)
-              Raised if the specified selector uses an unknown namespace
-              prefix.
-            - `SYNTAX_ERR`: (self)
-              Raised if the specified CSS string value has a syntax error
-              and is unparsable.
-            - `NO_MODIFICATION_ALLOWED_ERR`: (self)
-              Raised if this rule is readonly.
-        """
-        self._checkReadonly()
-
-        # might be (selectorText, namespaces)
-        newSelector, namespaces = self._splitNamespacesOff(newSelector)
-        try:
-            # use parent's only if available
-            namespaces = self.parentRule.parentStyleSheet.namespaces
-        except AttributeError:
-            # use already present namespaces plus new given ones
-            _namespaces = self._namespaces
-            _namespaces.update(namespaces)
-            namespaces = _namespaces
-
-        newSelector = self.__prepareset(newSelector, namespaces)
-        if newSelector:
-            seq = self.seq[:]
-            del self.seq[:]
-            for s in seq:
-                if s.selectorText != newSelector.selectorText:
-                    self.seq.append(s)
-            self.seq.append(newSelector)
-            return newSelector
-
-    def append(self, newSelector):
-        "same as appendSelector(newSelector)"
-        self.appendSelector(newSelector)
+    parentRule = property(lambda self: self._parentRule,
+        doc="(DOM) The CSS rule that contains this SelectorList or "
+            "``None`` if this SelectorList is not attached to a CSSRule.")
 
     wellformed = property(lambda self: bool(len(self.seq)))
 

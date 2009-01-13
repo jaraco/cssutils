@@ -19,7 +19,7 @@ class CSSUnknownRule(cssrule.CSSRule):
     def __init__(self, cssText=u'', parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         """
-        cssText
+        :param cssText:
             of type string
         """
         super(CSSUnknownRule, self).__init__(parentRule=parentRule, 
@@ -39,24 +39,23 @@ class CSSUnknownRule(cssrule.CSSRule):
                 self.__class__.__name__, self.cssText, id(self))
 
     def _getCssText(self):
-        """ returns serialized property cssText """
+        """Return serialized property cssText."""
         return cssutils.ser.do_CSSUnknownRule(self)
 
     def _setCssText(self, cssText):
         """
-        DOMException on setting
-        
-        - SYNTAX_ERR:
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
-        - INVALID_MODIFICATION_ERR:
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - HIERARCHY_REQUEST_ERR: (never raised)
-          Raised if the rule cannot be inserted at this point in the
-          style sheet.
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if the rule is readonly.
+        :exceptions:
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - :exc:`~xml.dom.InvalidModificationErr`:
+              Raised if the specified CSS string value represents a different
+              type of rule than the current one.
+            - :exc:`~xml.dom.HierarchyRequestErr`:
+              Raised if the rule cannot be inserted at this point in the
+              style sheet.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if the rule is readonly.
         """
         super(CSSUnknownRule, self)._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)

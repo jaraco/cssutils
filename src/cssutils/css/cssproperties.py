@@ -54,8 +54,7 @@ import cssutils.profiles
 import re
 
 class CSS2Properties(object):
-    """
-    The CSS2Properties interface represents a convenience mechanism
+    """The CSS2Properties interface represents a convenience mechanism
     for retrieving and setting properties within a CSSStyleDeclaration.
     The attributes of this interface correspond to all the properties
     specified in CSS2. Getting an attribute of this interface is
@@ -82,18 +81,16 @@ class CSS2Properties(object):
 
 _reCSStoDOMname = re.compile('-[a-z]', re.I)
 def _toDOMname(CSSname):
-    """
-    returns DOMname for given CSSname e.g. for CSSname 'font-style' returns
-    'fontStyle'
+    """Returns DOMname for given CSSname e.g. for CSSname 'font-style' returns
+    'fontStyle'.
     """
     def _doCSStoDOMname2(m): return m.group(0)[1].capitalize()
     return _reCSStoDOMname.sub(_doCSStoDOMname2, CSSname)
 
 _reDOMtoCSSname = re.compile('([A-Z])[a-z]+')
 def _toCSSname(DOMname):
-    """
-    returns CSSname for given DOMname e.g. for DOMname 'fontStyle' returns
-    'font-style'
+    """Return CSSname for given DOMname e.g. for DOMname 'fontStyle' returns
+    'font-style'.
     """
     def _doDOMtoCSSname2(m): return '-' + m.group(0).lower()
     return _reDOMtoCSSname.sub(_doDOMtoCSSname2, DOMname)
@@ -110,8 +107,8 @@ for group in cssutils.profiles.properties:
 # add CSS2Properties to CSSStyleDeclaration:
 def __named_property_def(DOMname):
     """
-    closure to keep name known in each properties accessor function
-    DOMname is converted to CSSname here, so actual calls use CSSname
+    Closure to keep name known in each properties accessor function
+    DOMname is converted to CSSname here, so actual calls use CSSname.
     """
     CSSname = _toCSSname(DOMname)
     def _get(self): return self._getP(CSSname)

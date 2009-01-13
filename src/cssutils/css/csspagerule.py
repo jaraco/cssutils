@@ -29,11 +29,11 @@ class CSSPageRule(cssrule.CSSRule):
     def __init__(self, selectorText=None, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         """
-        if readonly allows setting of properties in constructor only
+        If readonly allows setting of properties in constructor only.
 
-        selectorText
+        :param selectorText:
             type string
-        style
+        :param style:
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSPageRule, self).__init__(parentRule=parentRule, 
@@ -66,8 +66,8 @@ class CSSPageRule(cssrule.CSSRule):
 
     def __parseSelectorText(self, selectorText):
         """
-        parses selectorText which may also be a list of tokens
-        and returns (selectorText, seq)
+        Parse `selectorText` which may also be a list of tokens
+        and returns (selectorText, seq).
 
         see _setSelectorText for details
         """
@@ -146,26 +146,23 @@ class CSSPageRule(cssrule.CSSRule):
         return wellformed, newseq
 
     def _getCssText(self):
-        """
-        returns serialized property cssText
-        """
+        """Return serialized property cssText."""
         return cssutils.ser.do_CSSPageRule(self)
 
     def _setCssText(self, cssText):
         """
-        DOMException on setting
-
-        - SYNTAX_ERR: (self, StyleDeclaration)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
-        - INVALID_MODIFICATION_ERR: (self)
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
-          Raised if the rule cannot be inserted at this point in the
-          style sheet.
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if the rule is readonly.
+        :exceptions:    
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - :exc:`~xml.dom.InvalidModificationErr`:
+              Raised if the specified CSS string value represents a different
+              type of rule than the current one.
+            - :exc:`~xml.dom.HierarchyRequestErr`:
+              Raised if the rule cannot be inserted at this point in the
+              style sheet.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if the rule is readonly.
         """
         super(CSSPageRule, self)._setCssText(cssText)
         
@@ -215,35 +212,29 @@ class CSSPageRule(cssrule.CSSRule):
                 self._setSeq(newselectorseq) # contains upto style only
 
     cssText = property(_getCssText, _setCssText,
-        doc="(DOM) The parsable textual representation of the rule.")
+        doc="(DOM) The parsable textual representation of this rule.")
 
     def _getSelectorText(self):
-        """
-        wrapper for cssutils Selector object
-        """
+        """Wrapper for cssutils Selector object."""
         return cssutils.ser.do_CSSPageRuleSelector(self._selectorText)#self._selectorText
 
     def _setSelectorText(self, selectorText):
-        """
-        wrapper for cssutils Selector object
+        """Wrapper for cssutils Selector object.
 
-        selector: DOM String
-            in CSS 2.1 one of
+        :param selectorText: 
+            DOM String, in CSS 2.1 one of
+            
             - :first
             - :left
             - :right
             - empty
 
-        If WS or Comments are included they are ignored here! Only
-        way to add a comment is via setting ``cssText``
-
-        DOMException on setting
-
-        - SYNTAX_ERR:
-          Raised if the specified CSS string value has a syntax error
-          and is unparsable.
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this rule is readonly.
+        :exceptions:
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error
+              and is unparsable.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this rule is readonly.
         """
         self._checkReadonly()
 
@@ -255,14 +246,10 @@ class CSSPageRule(cssrule.CSSRule):
     selectorText = property(_getSelectorText, _setSelectorText,
         doc="""(DOM) The parsable textual representation of the page selector for the rule.""")
 
-    def _getStyle(self):
-        
-        return self._style
-
     def _setStyle(self, style):
         """
-        style
-            StyleDeclaration or string
+        :param style:
+            a CSSStyleDeclaration or string
         """
         self._checkReadonly()
         
@@ -273,8 +260,10 @@ class CSSPageRule(cssrule.CSSRule):
             # so use seq!
             self._style._seq = style.seq 
 
-    style = property(_getStyle, _setStyle,
-        doc="(DOM) The declaration-block of this rule set.")
+    style = property(lambda self: self._style, _setStyle,
+                     doc="(DOM) The declaration-block of this rule set, "
+                         "a :class:`~cssutils.css.CSSStyleDeclaration`.")
+
 
     type = property(lambda self: self.PAGE_RULE, 
                     doc="The type of this rule, as defined by a CSSRule "

@@ -25,9 +25,9 @@ class CSSFontFaceRule(cssrule.CSSRule):
     def __init__(self, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         """
-        if readonly allows setting of properties in constructor only
+        If readonly allows setting of properties in constructor only.
 
-        style
+        :param style:
             CSSStyleDeclaration for this CSSStyleRule
         """
         super(CSSFontFaceRule, self).__init__(parentRule=parentRule, 
@@ -49,26 +49,23 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self.__class__.__name__, self.style.cssText, id(self))
 
     def _getCssText(self):
-        """
-        returns serialized property cssText
-        """
+        """Return serialized property cssText."""
         return cssutils.ser.do_CSSFontFaceRule(self)
 
     def _setCssText(self, cssText):
         """
-        DOMException on setting
-
-        - SYNTAX_ERR: (self, StyleDeclaration)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
-        - INVALID_MODIFICATION_ERR: (self)
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
-          Raised if the rule cannot be inserted at this point in the
-          style sheet.
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if the rule is readonly.
+        :exceptions:
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - :exc:`~xml.dom.InvalidModificationErr`:
+              Raised if the specified CSS string value represents a different
+              type of rule than the current one.
+            - :exc:`~xml.dom.HierarchyRequestErr`:
+              Raised if the rule cannot be inserted at this point in the
+              style sheet.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if the rule is readonly.
         """
         super(CSSFontFaceRule, self)._setCssText(cssText)
         
@@ -126,15 +123,12 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self._setSeq(newseq) # contains (probably comments) upto { only
 
     cssText = property(_getCssText, _setCssText,
-        doc="(DOM) The parsable textual representation of the rule.")
-
-    def _getStyle(self):
-        return self._style
+        doc="(DOM) The parsable textual representation of this rule.")
 
     def _setStyle(self, style):
         """
-        style
-            StyleDeclaration or string
+        :param style:
+            a CSSStyleDeclaration or string
         """
         self._checkReadonly()
         if isinstance(style, basestring):
@@ -142,8 +136,9 @@ class CSSFontFaceRule(cssrule.CSSRule):
         else:
             self._style._seq = style.seq
 
-    style = property(_getStyle, _setStyle,
-        doc="(DOM) The declaration-block of this rule set.")
+    style = property(lambda self: self._style, _setStyle,
+                     doc="(DOM) The declaration-block of this rule set, "
+                         "a :class:`~cssutils.css.CSSStyleDeclaration`.")
 
     type = property(lambda self: self.FONT_FACE_RULE, 
                     doc="The type of this rule, as defined by a CSSRule "
