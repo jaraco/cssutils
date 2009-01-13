@@ -23,7 +23,7 @@ class CSSRuleList(list):
         pass
     
     def __notimplemented(self, *ignored):
-        "Not implemented."
+        "Implemented in class using a CSSRuleList only."
         raise NotImplementedError(
             'Must be implemented by class using an instance of this class.')
     
