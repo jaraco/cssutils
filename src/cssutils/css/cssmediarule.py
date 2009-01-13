@@ -20,6 +20,9 @@ class CSSMediaRule(cssrule.CSSRule):
           STRING? # the name
       
       LBRACE S* ruleset* '}' S*;
+      
+    ``cssRules``
+        All Rules in this media rule, a :class:`~cssutils.css.CSSRuleList`.
     """
     def __init__(self, mediaText='all', name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):

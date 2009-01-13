@@ -614,10 +614,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         return index
 
     ownerRule = property(lambda self: self._ownerRule,
-                         doc="A ref to an @import rule if it is imported, alse ``None``.")
+                         doc="A ref to an @import rule if it is imported, else ``None``.")
 
     def setSerializer(self, cssserializer):
-        """Set the cssutils global Serializer used for output of all output."""
+        """Set the cssutils global Serializer used for all output."""
         if isinstance(cssserializer, cssutils.CSSSerializer):
             cssutils.ser = cssserializer
         else:
