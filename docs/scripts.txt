@@ -1,7 +1,6 @@
 ====================
 scripts
 ====================
-:version: $Id$
 
 The provided scripts are available as a standalone script which is installed in the default PYTHONHOME/scripts directory. Additionally an API for the functionality of the scripts is provided for use in programs.
 

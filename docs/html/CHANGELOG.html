@@ -84,10 +84,7 @@
 <strong>These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!</strong>
 In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.</p>
 </li>
-<li><p class="first"><tt class="docutils literal"><span class="pre">CSSValue</span></tt>, <tt class="docutils literal"><span class="pre">CSSValueList</span></tt>, and <tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt> and the relevant methods/properties <tt class="docutils literal"><span class="pre">Property.cssValue</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getPropertyCSSValue</span></tt> are more or less <em>DEPRECATED</em> and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings. As the aforementioned classes are not hardly that useful this should not be a big problem but please beware if you use or have used them. If you think this a bad idea please let me know!</p>
-<blockquote>
-<p>Some methods of <tt class="docutils literal"><span class="pre">css.CSSPrimitiveValue</span></tt> and subclasses <tt class="docutils literal"><span class="pre">Rect</span></tt>, <tt class="docutils literal"><span class="pre">Counter</span></tt> and <tt class="docutils literal"><span class="pre">RGBColor</span></tt> are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of <tt class="docutils literal"><span class="pre">CSSValue</span></tt>, <tt class="docutils literal"><span class="pre">CSSValueList</span></tt>, and <tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt> will probably be completely replaced/refactored with suggestions from CSSOM.</p>
-</blockquote>
+<li><p class="first">Some methods of <tt class="docutils literal"><span class="pre">css.CSSPrimitiveValue</span></tt> and subclasses <tt class="docutils literal"><span class="pre">Rect</span></tt>, <tt class="docutils literal"><span class="pre">Counter</span></tt> and <tt class="docutils literal"><span class="pre">RGBColor</span></tt> are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of <tt class="docutils literal"><span class="pre">CSSValue</span></tt>, <tt class="docutils literal"><span class="pre">CSSValueList</span></tt>, and <tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt> may be completely replaced/refactored with suggestions from CSSOM.</p>
 </li>
 <li><p class="first">handling of comments does probable not work for all cases</p>
 </li>
@@ -116,8 +113,10 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </dl>
 </li>
 </ul>
-<ul class="last simple">
+<ul class="simple">
 <li>IMPROVEMENT: Added all known properties (by cssutils ;) to CSS2Properties.</li>
+</ul>
+<ul class="last simple">
 <li>DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markup&#8217;d yet but not too bad either...</li>
 </ul>
 </dd>

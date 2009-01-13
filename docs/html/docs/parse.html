@@ -70,13 +70,13 @@ CSS StyleSheet object.</p>
 <dl class="method">
 <dt id="cssutils.CSSParser.parseFile">
 <!--[cssutils.CSSParser.parseFile]--><tt class="descname">parseFile</tt><big>(</big><em>filename</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve and return a CSSStyleSheet from given filename.
-Raises errors during retrieving (e.g. IOError).</p>
+<dd><p>Retrieve content from <cite>filename</cite> and parse it. Errors may be raised
+(e.g. IOError).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><em>filename</em> &#8211; of the CSS file to parse, if no <cite>href</cite> is given filename is
 converted to a (file:) URL and set as <tt class="docutils literal"><span class="pre">href</span></tt> of resulting
 stylesheet.
@@ -90,21 +90,23 @@ Other values override detected encoding for the sheet at
 </ul>
 </td>
 </tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+</td>
+</tr>
 </tbody>
 </table>
-<p>For other parameters see <tt class="docutils literal"><span class="pre">parseString</span></tt></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="cssutils.CSSParser.parseString">
 <!--[cssutils.CSSParser.parseString]--><tt class="descname">parseString</tt><big>(</big><em>cssText</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseString" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return parsed CSSStyleSheet from given string cssText.
-Raises errors during retrieving (e.g. UnicodeDecodeError).</p>
+<dd><p>Parse <cite>cssText</cite> as <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.
+Errors may be raised (e.g. UnicodeDecodeError).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><em>cssText</em> &#8211; CSS string to parse</li>
 <li><em>encoding</em> &#8211; If <tt class="xref docutils literal"><span class="pre">None</span></tt> the encoding will be read from BOM or an &#64;charset
 rule or defaults to UTF-8.
@@ -120,6 +122,9 @@ Used to resolve other urls in the parsed sheet like &#64;import hrefs.</li>
 </ul>
 </td>
 </tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -127,13 +132,13 @@ Used to resolve other urls in the parsed sheet like &#64;import hrefs.</li>
 <dl class="method">
 <dt id="cssutils.CSSParser.parseUrl">
 <!--[cssutils.CSSParser.parseUrl]--><tt class="descname">parseUrl</tt><big>(</big><em>href</em>, <em>encoding=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseUrl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve and return a CSSStyleSheet from given href (an URL).
-In case of any errors while reading the URL returns None.</p>
+<dd><p>Retrieve content from URL <cite>href</cite> and parse it. Errors may be raised
+(e.g. URLError).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><em>href</em> &#8211; URL of the CSS file to parse, will also be set as <tt class="docutils literal"><span class="pre">href</span></tt> of
 resulting stylesheet</li>
 <li><em>encoding</em> &#8211; Value <tt class="xref docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via HTTP, BOM or an
@@ -143,9 +148,11 @@ including any imported sheets.</li>
 </ul>
 </td>
 </tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+</td>
+</tr>
 </tbody>
 </table>
-<p>For other parameters see <tt class="docutils literal"><span class="pre">parseString</span></tt></p>
 </dd></dl>
 
 <dl class="method">

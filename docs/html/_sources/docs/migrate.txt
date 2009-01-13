@@ -1,7 +1,6 @@
 =================
 version migration
 =================
-:version: $Id: migrate.txt 1590 2009-01-01 21:11:36Z cthedot $
 
 0.9.6 incompatible changes
 ==========================

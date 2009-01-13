@@ -1,9 +1,5 @@
-"""CSSImportRule implements DOM Level 2 CSS CSSImportRule.
-
-plus:
-
-``name`` property
-    http://www.w3.org/TR/css3-cascade/#cascading
+"""CSSImportRule implements DOM Level 2 CSS CSSImportRule plus the 
+``name`` property from http://www.w3.org/TR/css3-cascade/#cascading.
 
 """
 __all__ = ['CSSImportRule']
@@ -85,26 +81,23 @@ class CSSImportRule(cssrule.CSSRule):
                          doc="if self._media is used (or simply empty)")
 
     def _getCssText(self):
-        """
-        returns serialized property cssText
-        """
+        """Return serialized property cssText."""
         return cssutils.ser.do_CSSImportRule(self)
 
     def _setCssText(self, cssText):
         """
-        DOMException on setting
-
-        - HIERARCHY_REQUEST_ERR: (CSSStylesheet)
-          Raised if the rule cannot be inserted at this point in the
-          style sheet.
-        - INVALID_MODIFICATION_ERR: (self)
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if the rule is readonly.
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
+        :exceptions:    
+            - :exc:`~xml.dom.HierarchyRequestErr`:
+              Raised if the rule cannot be inserted at this point in the
+              style sheet.
+            - :exc:`~xml.dom.InvalidModificationErr`:
+              Raised if the specified CSS string value represents a different
+              type of rule than the current one.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if the rule is readonly.
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
         """
         super(CSSImportRule, self)._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
@@ -259,7 +252,7 @@ class CSSImportRule(cssrule.CSSRule):
                     self.styleSheet._parentStyleSheet = self.parentStyleSheet
 
     cssText = property(fget=_getCssText, fset=_setCssText,
-        doc="(DOM attribute) The parsable textual representation.")
+        doc="(DOM) The parsable textual representation of this rule.")
 
     def _setHref(self, href):
         # update seq
@@ -282,11 +275,11 @@ class CSSImportRule(cssrule.CSSRule):
                     doc="Location of the style sheet to be imported.")
 
     media = property(lambda self: self._media,
-                     doc=u"(DOM readonly) A list of media types for this rule"
-                     " of type MediaList")
+                     doc="(DOM readonly) A list of media types for this rule "
+                         "of type :class:`~cssutils.stylesheets.MediaList`.")
 
     def _setName(self, name):
-        """raises xml.dom.SyntaxErr if name is not a string"""
+        """Raises xml.dom.SyntaxErr if name is not a string."""
         if isinstance(name, basestring) or name is None:
             # "" or ''
             if not name:
@@ -313,7 +306,7 @@ class CSSImportRule(cssrule.CSSRule):
             self._log.error(u'CSSImportRule: Not a valid name: %s' % name)
 
     name = property(lambda self: self._name, _setName,
-                    doc=u"An optional name for the imported sheet")
+                    doc=u"An optional name for the imported sheet.")
 
     def __setStyleSheet(self):
         """Read new CSSStyleSheet cssText from href using parentStyleSheet.href
@@ -368,7 +361,7 @@ class CSSImportRule(cssrule.CSSRule):
                         "type constant.")
 
     def _getWellformed(self):
-        "depending if media is used at all"
+        "Depending if media is used at all."
         if self._usemedia:
             return bool(self.href and self.media.wellformed)
         else:

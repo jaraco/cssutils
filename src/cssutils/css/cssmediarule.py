@@ -38,7 +38,7 @@ class CSSMediaRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __iter__(self):
-        """generator which iterates over cssRules."""
+        """Generator iterating over these rule's cssRules."""
         for rule in self.cssRules:
             yield rule
             
@@ -51,7 +51,7 @@ class CSSMediaRule(cssrule.CSSRule):
                 self.__class__.__name__, self.media.mediaText, id(self))
 
     def _getCssText(self):
-        """return serialized property cssText"""
+        """Return serialized property cssText."""
         return cssutils.ser.do_CSSMediaRule(self)
 
     def _setCssText(self, cssText):
@@ -59,19 +59,19 @@ class CSSMediaRule(cssrule.CSSRule):
         :param cssText:
             a parseable string or a tuple of (cssText, dict-of-namespaces)
         :Exceptions:
-            - `NAMESPACE_ERR`: (Selector)
+            - :exc:`~xml.dom.NamespaceErr`:
               Raised if a specified selector uses an unknown namespace
               prefix.
-            - `SYNTAX_ERR`: (self, StyleDeclaration, etc)
+            - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified CSS string value has a syntax error and
               is unparsable.
-            - `INVALID_MODIFICATION_ERR`: (self)
+            - :exc:`~xml.dom.InvalidModificationErr`:
               Raised if the specified CSS string value represents a different
               type of rule than the current one.
-            - `HIERARCHY_REQUEST_ERR`: (CSSStylesheet)
+            - :exc:`~xml.dom.HierarchyRequestErr`:
               Raised if the rule cannot be inserted at this point in the
               style sheet.
-            - `NO_MODIFICATION_ALLOWED_ERR`: (CSSRule)
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
         super(CSSMediaRule, self)._setCssText(cssText)
@@ -199,7 +199,7 @@ class CSSMediaRule(cssrule.CSSRule):
                         self.cssRules.append(r)
         
     cssText = property(_getCssText, _setCssText,
-        doc="(DOM attribute) The parsable textual representation.")
+        doc="(DOM) The parsable textual representation of this rule.")
 
     def _setName(self, name):
         if isinstance(name, basestring) or name is None:
@@ -211,28 +211,26 @@ class CSSMediaRule(cssrule.CSSRule):
         else:
             self._log.error(u'CSSImportRule: Not a valid name: %s' % name)
 
-
     name = property(lambda self: self._name, _setName,
-                    doc=u"An optional name for the media rules")
+                    doc=u"An optional name for this media rule.")
     
     media = property(lambda self: self._media,
-        doc=u"(DOM readonly) A list of media types for this rule of type\
-            MediaList")
+        doc=u"(DOM readonly) A list of media types for this rule of type "
+            u":class:`~cssutils.stylesheets.MediaList`.")
 
     def deleteRule(self, index):
         """
-        index
-            within the media block's rule collection of the rule to remove.
+        Delete the rule at `index` from the media block.
+        
+        :param index:
+            of the rule to remove within the media block's rule collection
 
-        Used to delete a rule from the media block.
-
-        DOMExceptions
-
-        - INDEX_SIZE_ERR: (self)
-          Raised if the specified index does not correspond to a rule in
-          the media rule list.
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this media rule is readonly.
+        :Exceptions:
+            - :exc:`~xml.dom.IndexSizeErr`:
+              Raised if the specified index does not correspond to a rule in
+              the media rule list.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this media rule is readonly.
         """
         self._checkReadonly()
 
@@ -245,46 +243,47 @@ class CSSMediaRule(cssrule.CSSRule):
                 index, self.cssRules.length))
 
     def add(self, rule):
-        """Add rule to end of this mediarule. Same as ``.insertRule(rule)``."""
+        """Add `rule` to end of this mediarule. 
+        Same as :meth:`~cssutils.css.CSSMediaRule.insertRule`."""
         self.insertRule(rule, index=None)
             
     def insertRule(self, rule, index=None):
         """
-        rule
-            The parsable text representing the rule. For rule sets this
-            contains both the selector and the style declaration. For
-            at-rules, this specifies both the at-identifier and the rule
+        Insert `rule` into the media block.
+        
+        :param rule:
+            the parsable text representing the `rule` to be inserted. For rule
+            sets this contains both the selector and the style declaration. 
+            For at-rules, this specifies both the at-identifier and the rule
             content.
 
-            cssutils also allows rule to be a valid **CSSRule** object
+            cssutils also allows rule to be a valid :class:`~cssutils.css.CSSRule`
+            object.
 
-        index
-            within the media block's rule collection of the rule before
-            which to insert the specified rule. If the specified index is
+        :param index:
+            before the specified `rule` will be inserted. 
+            If the specified `index` is
             equal to the length of the media blocks's rule collection, the
             rule will be added to the end of the media block.
             If index is not given or None rule will be appended to rule
             list.
 
-        Used to insert a new rule into the media block.
+        :returns:
+            the index within the media block's rule collection of the
+            newly inserted rule.
 
-        DOMException on setting
-
-        - HIERARCHY_REQUEST_ERR:
-          (no use case yet as no @charset or @import allowed))
-          Raised if the rule cannot be inserted at the specified index,
-          e.g., if an @import rule is inserted after a standard rule set
-          or other at-rule.
-        - INDEX_SIZE_ERR: (self)
-          Raised if the specified index is not a valid insertion point.
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this media rule is readonly.
-        - SYNTAX_ERR: (CSSStyleRule)
-          Raised if the specified rule has a syntax error and is
-          unparsable.
-
-        returns the index within the media block's rule collection of the
-        newly inserted rule.
+        :exceptions:
+            - :exc:`~xml.dom.HierarchyRequestErr`:
+              Raised if the `rule` cannot be inserted at the specified `index`,
+              e.g., if an @import rule is inserted after a standard rule set
+              or other at-rule.
+            - :exc:`~xml.dom.IndexSizeErr`:
+              Raised if the specified `index` is not a valid insertion point.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this media rule is readonly.
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified `rule` has a syntax error and is
+              unparsable.
 
         """
         self._checkReadonly()

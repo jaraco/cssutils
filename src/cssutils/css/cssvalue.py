@@ -18,9 +18,8 @@ import xml.dom
 
 
 class CSSValue(cssutils.util._NewBase):
-    """
-    The CSSValue interface represents a simple or a complex value.
-    A CSSValue object only occurs in a context of a CSS property
+    """The CSSValue interface represents a simple or a complex value.
+    A CSSValue object only occurs in a context of a CSS property.
     """
 
     # The value is inherited and the cssText contains "inherit".
@@ -39,11 +38,9 @@ class CSSValue(cssutils.util._NewBase):
     
     def __init__(self, cssText=None, readonly=False):
         """
-        inits a new CSS Value
-
-        cssText
+        :param cssText:
             the parsable cssText of the value
-        readonly
+        :param readonly:
             defaults to False
         """
         super(CSSValue, self).__init__()
@@ -98,16 +95,15 @@ class CSSValue(cssutils.util._NewBase):
               : HASH S*
               ;
 
-        DOMException on setting
-
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error
-          (according to the attached property) or is unparsable.
-        - TODO: INVALID_MODIFICATION_ERR:
-          Raised if the specified CSS string value represents a different
-          type of values than the values allowed by the CSS property.
-        - NO_MODIFICATION_ALLOWED_ERR: (self)
-          Raised if this value is readonly.
+        :exceptions:
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error
+              (according to the attached property) or is unparsable.
+            - :exc:`~xml.dom.InvalidModificationErr`:
+              TODO: Raised if the specified CSS string value represents a different
+              type of values than the values allowed by the CSS property.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this value is readonly.
         """
         self._checkReadonly()
         
@@ -309,8 +305,7 @@ class CSSValue(cssutils.util._NewBase):
 
 
 class CSSPrimitiveValue(CSSValue):
-    """
-    represents a single CSS Value.  May be used to determine the value of a
+    """Represents a single CSS Value.  May be used to determine the value of a
     specific style property currently set in a block or to set a specific
     style property explicitly within the block. Might be obtained from the
     getPropertyCSSValue method of CSSStyleDeclaration.
@@ -411,9 +406,7 @@ class CSSPrimitiveValue(CSSValue):
     }
 
     def __init__(self, cssText=None, readonly=False):
-        """
-        see CSSPrimitiveValue.__init__()
-        """
+        """See CSSPrimitiveValue.__init__()"""
         super(CSSPrimitiveValue, self).__init__(cssText=cssText,
                                                 readonly=readonly)
 
@@ -479,9 +472,7 @@ class CSSPrimitiveValue(CSSValue):
         }
 
     def __set_primitiveType(self):
-        """
-        primitiveType is readonly but is set lazy if accessed
-        """
+        """primitiveType is readonly but is set lazy if accessed"""
         # TODO: check unary and font-family STRING a, b, "c"
         
         val, type_ = self._value
@@ -498,7 +489,8 @@ class CSSPrimitiveValue(CSSValue):
         return self._primitiveType
 
     primitiveType = property(_getPrimitiveType,
-        doc="(readonly) The type of the value as defined by the constants specified above.")
+                             doc="(readonly) The type of the value as defined "
+                                 "by the constants in this class.")
 
     def _getPrimitiveTypeString(self):
         return self._unitnames[self.primitiveType]
@@ -514,7 +506,7 @@ class CSSPrimitiveValue(CSSValue):
             return u'%r (UNKNOWN TYPE)' % type
 
     def _getNumDim(self, value=None):
-        "splits self._value in numerical and dimension part"
+        "Split self._value in numerical and dimension part."
         if value is None:
             value = cssutils.helper.normalize(self._value[0])
             
@@ -533,23 +525,23 @@ class CSSPrimitiveValue(CSSValue):
         return val, dim
 
     def getFloatValue(self, unitType=None):
-        """
-        (DOM method) This method is used to get a float value in a
+        """(DOM) This method is used to get a float value in a
         specified unit. If this CSS value doesn't contain a float value
         or can't be converted into the specified unit, a DOMException
         is raised.
 
-        unitType
+        :param unitType:
             to get the float value. The unit code can only be a float unit type
             (i.e. CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS, CSS_PX, CSS_CM,
             CSS_MM, CSS_IN, CSS_PT, CSS_PC, CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS,
             CSS_S, CSS_HZ, CSS_KHZ, CSS_DIMENSION) or None in which case
             the current dimension is used.
 
-        returns not necessarily a float but some cases just an integer
-        e.g. if the value is ``1px`` it return ``1`` and **not** ``1.0``
+        :returns:
+            not necessarily a float but some cases just an integer
+            e.g. if the value is ``1px`` it return ``1`` and **not** ``1.0``
 
-        conversions might return strange values like 1.000000000001
+            Conversions might return strange values like 1.000000000001
         """
         if unitType is not None and unitType not in self._floattypes:
             raise xml.dom.InvalidAccessErr(
@@ -573,25 +565,26 @@ class CSSPrimitiveValue(CSSValue):
         return val
 
     def setFloatValue(self, unitType, floatValue):
-        """
-        (DOM method) A method to set the float value with a specified unit.
+        """(DOM) A method to set the float value with a specified unit.
         If the property attached with this value can not accept the
         specified unit or the float value, the value will be unchanged and
         a DOMException will be raised.
 
-        unitType
+        :param unitType:
             a unit code as defined above. The unit code can only be a float
             unit type
-        floatValue
+        :param floatValue:
             the new float value which does not have to be a float value but
             may simple be an int e.g. if setting::
 
                 setFloatValue(CSS_PX, 1)
 
-        raises DOMException
-            - INVALID_ACCESS_ERR: Raised if the attached property doesn't
-                support the float value or the unit type.
-            - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
+        :exceptions:
+            - :exc:`~xml.dom.InvalidAccessErr`:
+              Raised if the attached property doesn't
+              support the float value or the unit type.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this property is readonly.
         """
         self._checkReadonly()
         if unitType not in self._floattypes:
@@ -622,8 +615,7 @@ class CSSPrimitiveValue(CSSValue):
         self.cssText = '%s%s' % (val, dim)
 
     def getStringValue(self):
-        """
-        (DOM method) This method is used to get the string value. If the
+        """(DOM) This method is used to get the string value. If the
         CSS value doesn't contain a string value, a DOMException is raised.
 
         Some properties (like 'font-family' or 'voice-family')
@@ -643,31 +635,30 @@ class CSSPrimitiveValue(CSSValue):
             return self._value[0]
 
     def setStringValue(self, stringType, stringValue):
-        """
-        (DOM method) A method to set the string value with the specified
+        """(DOM) A method to set the string value with the specified
         unit. If the property attached to this value can't accept the
         specified unit or the string value, the value will be unchanged and
         a DOMException will be raised.
 
-        stringType
+        :param stringType:
             a string code as defined above. The string code can only be a
             string unit type (i.e. CSS_STRING, CSS_URI, CSS_IDENT, and
             CSS_ATTR).
-        stringValue
+        :param stringValue:
             the new string value
             Only the actual value is expected so for (CSS_URI, "a") the
             new value will be ``url(a)``. For (CSS_STRING, "'a'")
             the new value will be ``"\\'a\\'"`` as the surrounding ``'`` are
             not part of the string value
 
-        raises
-            DOMException
-
-            - INVALID_ACCESS_ERR: Raised if the CSS value doesn't contain a
+        :exceptions:
+            - :exc:`~xml.dom.InvalidAccessErr`: 
+              Raised if the CSS value doesn't contain a
               string value or if the string value can't be converted into
               the specified unit.
 
-            - NO_MODIFICATION_ALLOWED_ERR: Raised if this property is readonly.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this property is readonly.
         """
         self._checkReadonly()
         # self not stringType
@@ -698,11 +689,12 @@ class CSSPrimitiveValue(CSSValue):
         self._primitiveType = stringType
 
     def getCounterValue(self):
-        """
-        (DOM method) This method is used to get the Counter value. If
+        """(DOM) This method is used to get the Counter value. If
         this CSS value doesn't contain a counter value, a DOMException
         is raised. Modification to the corresponding style property
         can be achieved using the Counter interface.
+        
+        **Not implemented.**
         """
         if not self.CSS_COUNTER == self.primitiveType:
             raise xml.dom.InvalidAccessErr(u'Value is not a counter type')
@@ -710,8 +702,7 @@ class CSSPrimitiveValue(CSSValue):
         raise NotImplementedError()
 
     def getRGBColorValue(self):
-        """
-        (DOM method) This method is used to get the RGB color. If this
+        """(DOM) This method is used to get the RGB color. If this
         CSS value doesn't contain a RGB color value, a DOMException
         is raised. Modification to the corresponding style property
         can be achieved using the RGBColor interface.
@@ -721,11 +712,12 @@ class CSSPrimitiveValue(CSSValue):
         return RGBColor(self._value[0])
 
     def getRectValue(self):
-        """
-        (DOM method) This method is used to get the Rect value. If this CSS
+        """(DOM) This method is used to get the Rect value. If this CSS
         value doesn't contain a rect value, a DOMException is raised.
         Modification to the corresponding style property can be achieved
         using the Rect interface.
+        
+        **Not implemented.**
         """
         if self.primitiveType not in self._recttypes:
             raise xml.dom.InvalidAccessErr(u'value is not a Rect value')
@@ -733,11 +725,11 @@ class CSSPrimitiveValue(CSSValue):
         raise NotImplementedError()
 
     def _getCssText(self):
-        """overwritten from CSSValue"""
+        """Overwrites CSSValue."""
         return cssutils.ser.do_css_CSSPrimitiveValue(self)
 
     def _setCssText(self, cssText):
-        """use CSSValue's implementation"""
+        """Use CSSValue."""
         return super(CSSPrimitiveValue, self)._setCssText(cssText)
     
     cssText = property(_getCssText, _setCssText,
@@ -745,8 +737,7 @@ class CSSPrimitiveValue(CSSValue):
 
 
 class CSSValueList(CSSValue):
-    """
-    The CSSValueList interface provides the abstraction of an ordered
+    """The CSSValueList interface provides the abstraction of an ordered
     collection of CSS values.
 
     Some properties allow an empty list into their syntax. In that case,
@@ -759,14 +750,12 @@ class CSSValueList(CSSValue):
     cssValueType = CSSValue.CSS_VALUE_LIST
 
     def __init__(self, cssText=None, readonly=False):
-        """
-        inits a new CSSValueList
-        """
+        """Init a new CSSValueList"""
         super(CSSValueList, self).__init__(cssText=cssText, readonly=readonly)
         self._items = []
 
     def __iter__(self):
-        "CSSValueList is iterable"
+        "CSSValueList is iterable."
         def itemsiter():
             for i in range (0, self.length):
                 yield self.item(i)
@@ -782,11 +771,10 @@ class CSSValueList(CSSValue):
                     if isinstance(item.value, CSSValue)]
 
     def item(self, index):
-        """
-        (DOM method) Used to retrieve a CSSValue by ordinal index. The
+        """(DOM) Retrieve a CSSValue by ordinal `index`. The
         order in this collection represents the order of the values in the
-        CSS style property. If index is greater than or equal to the number
-        of values in the list, this returns None.
+        CSS style property. If `index` is greater than or equal to the number
+        of values in the list, this returns ``None``.
         """
         try:
             return self.__items()[index].value
@@ -806,9 +794,9 @@ class CSSFunction(CSSPrimitiveValue):
         """
         Init a new CSSFunction
 
-        cssText
+        :param cssText:
             the parsable cssText of the value
-        readonly
+        :param readonly:
             defaults to False
         """
         super(CSSFunction, self).__init__()
@@ -905,9 +893,9 @@ class RGBColor(CSSPrimitiveValue):
         """
         Init a new RGBColor
 
-        cssText
+        :param cssText:
             the parsable cssText of the value
-        readonly
+        :param readonly:
             defaults to False
         """
         super(RGBColor, self).__init__()

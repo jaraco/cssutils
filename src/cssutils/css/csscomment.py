@@ -1,6 +1,7 @@
 """CSSComment is not defined in DOM Level 2 at all but a cssutils defined
 class only.
-Implements CSSRule which is also extended for a CSSComment rule type
+
+Implements CSSRule which is also extended for a CSSComment rule type.
 """
 __all__ = ['CSSComment']
 __docformat__ = 'restructuredtext'
@@ -38,27 +39,24 @@ class CSSComment(cssrule.CSSRule):
                 self.__class__.__name__, self.cssText, id(self))
 
     def _getCssText(self):
-        """returns serialized property cssText"""
+        """Return serialized property cssText."""
         return cssutils.ser.do_CSSComment(self)
 
     def _setCssText(self, cssText):
         """
-        cssText
+        :param cssText:
             textual text to set or tokenlist which is not tokenized
             anymore. May also be a single token for this rule
-        parser
-            if called from cssparser directly this is Parser instance
 
-        DOMException on setting
-
-        - SYNTAX_ERR: (self)
-          Raised if the specified CSS string value has a syntax error and
-          is unparsable.
-        - INVALID_MODIFICATION_ERR: (self)
-          Raised if the specified CSS string value represents a different
-          type of rule than the current one.
-        - NO_MODIFICATION_ALLOWED_ERR: (CSSRule)
-          Raised if the rule is readonly.
+        :exceptions:
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified CSS string value has a syntax error and
+              is unparsable.
+            - :exc:`~xml.dom.InvalidModificationErr`:
+              Raised if the specified CSS string value represents a different
+              type of rule than the current one.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if the rule is readonly.
         """
         super(CSSComment, self)._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
@@ -76,7 +74,7 @@ class CSSComment(cssrule.CSSRule):
             self._cssText = self._tokenvalue(commenttoken)
 
     cssText = property(_getCssText, _setCssText,
-        doc=u"(cssutils) Textual representation of this comment")
+        doc=u"The parsable textual representation of this rule.")
 
     type = property(lambda self: self.COMMENT, 
                     doc="The type of this rule, as defined by a CSSRule "
