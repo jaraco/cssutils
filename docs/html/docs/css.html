@@ -181,7 +181,7 @@ unparsable.</li>
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleSheet.ownerRule">
 <!--[cssutils.css.CSSStyleSheet.ownerRule]--><tt class="descname">ownerRule</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.ownerRule" title="Permalink to this definition">¶</a></dt>
-<dd>A ref to an &#64;import rule if it is imported, alse <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
+<dd>A ref to an &#64;import rule if it is imported, else <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleSheet.parentStyleSheet">
@@ -196,7 +196,7 @@ unparsable.</li>
 <dl class="method">
 <dt id="cssutils.css.CSSStyleSheet.setSerializer">
 <!--[cssutils.css.CSSStyleSheet.setSerializer]--><tt class="descname">setSerializer</tt><big>(</big><em>cssserializer</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleSheet.setSerializer" title="Permalink to this definition">¶</a></dt>
-<dd>Set the cssutils global Serializer used for output of all output.</dd></dl>
+<dd>Set the cssutils global Serializer used for all output.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSStyleSheet.setSerializerPref">
@@ -232,7 +232,7 @@ instance of this class!</p>
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.append">
 <!--[cssutils.css.CSSRuleList.append]--><tt class="descname">append</tt><big>(</big><em>*ignored</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.append" title="Permalink to this definition">¶</a></dt>
-<dd>Not implemented.</dd></dl>
+<dd>Implemented in class using a CSSRuleList only.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.count">
@@ -242,7 +242,7 @@ instance of this class!</p>
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.extend">
 <!--[cssutils.css.CSSRuleList.extend]--><tt class="descname">extend</tt><big>(</big><em>*ignored</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.extend" title="Permalink to this definition">¶</a></dt>
-<dd>Not implemented.</dd></dl>
+<dd>Implemented in class using a CSSRuleList only.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.index">
@@ -626,6 +626,10 @@ value of that constant.</p>
 
 LBRACE S* ruleset* '}' S*;</pre>
 </div>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">cssRules</span></tt></dt>
+<dd>All Rules in this media rule, a <a title="cssutils.css.CSSRuleList" class="reference internal" href="#cssutils.css.CSSRuleList"><tt class="xref docutils literal"><span class="pre">CSSRuleList</span></tt></a>.</dd>
+</dl>
 <dl class="method">
 <dt id="cssutils.css.CSSMediaRule.add">
 <!--[cssutils.css.CSSMediaRule.add]--><tt class="descname">add</tt><big>(</big><em>rule</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSMediaRule.add" title="Permalink to this definition">¶</a></dt>
@@ -1871,6 +1875,22 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 </div>
 </div>
 </div>
+<div class="section" id="additional-info">
+<h2>Additional Info<a class="headerlink" href="#additional-info" title="Permalink to this headline">¶</a></h2>
+<p>Some classes in this package support standard Python idioms like iteration on certain attributes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cssutils</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">css</span><span class="o">.</span><span class="n">CSSStyleSheet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span> <span class="o">=</span> <span class="s">&#39;@charset &quot;ascii&quot;;a { color: green }&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">sheet</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">rule</span>
+<span class="gp">...</span>
+<span class="go">&lt;cssutils.css.CSSCharsetRule object encoding=&#39;ascii&#39; at 0x2ce7</span>
+<span class="go">&lt;cssutils.css.CSSStyleRule object selector=u&#39;a&#39; style=u&#39;color:</span>
+<span class="go">s=&lt;cssutils.util._Namespaces object at 0x02CE7B30&gt; at 0x2ce7d3</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">for</span> <span class="pre">in</span></tt> is supported by <a title="cssutils.css.CSSStyleSheet" class="reference internal" href="#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">CSSStyleSheet</span></tt></a> and  <a title="cssutils.css.CSSMediaRule" class="reference internal" href="#cssutils.css.CSSMediaRule"><tt class="xref docutils literal"><span class="pre">CSSMediaRule</span></tt></a> (iterating over the contained <a title="cssutils.css.CSSRule" class="reference internal" href="#cssutils.css.CSSRule"><tt class="xref docutils literal"><span class="pre">CSSRule</span></tt></a> objects, <a title="cssutils.css.CSSStyleDeclaration" class="reference internal" href="#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a> (over the names of the contained <a title="cssutils.css.Property" class="reference internal" href="#cssutils.css.Property"><tt class="xref docutils literal"><span class="pre">Property</span></tt></a> objects), <a title="cssutils.css.CSSValueList" class="reference internal" href="#cssutils.css.CSSValueList"><tt class="xref docutils literal"><span class="pre">CSSValueList</span></tt></a> (over the <a title="cssutils.css.CSSValue" class="reference internal" href="#cssutils.css.CSSValue"><tt class="xref docutils literal"><span class="pre">CSSValue</span></tt></a> objects in the list).</p>
+</div>
 </div>
 
 
@@ -1914,6 +1934,7 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 </li>
 </ul>
 </li>
+<li><a class="reference external" href="#additional-info">Additional Info</a></li>
 </ul>
 </li>
 </ul>
