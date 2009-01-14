@@ -87,7 +87,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             >>> print style.color
             green
             >>> del style.color
-            >>> print style.color # print empty string
+            >>> print style.color
+            <BLANKLINE>
 
     Format::
     
@@ -229,6 +230,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             >>> style.fontStyle = 'italic'
             >>> # or
             >>> style.setProperty('font-style', 'italic', '!important')
+            
         """
         self.setProperty(CSSName, value)
         # TODO: Shorthand ones
@@ -241,7 +243,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
             >>> style = CSSStyleDeclaration(cssText='font-style:italic;')
             >>> del style.fontStyle
-            >>> print style.fontStyle # prints u''
+            >>> print style.fontStyle
+            <BLANKLINE>
 
         """
         self.removeProperty(CSSName)
