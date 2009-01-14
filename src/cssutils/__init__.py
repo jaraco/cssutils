@@ -63,8 +63,8 @@ Usage may be::
     >>> sheet = parser.parseString(u'a { color: red}')
     >>> print sheet.cssText
     a {
-    color: red
-    }
+        color: red
+        }
 
 """
 __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']

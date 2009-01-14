@@ -36,11 +36,11 @@ example::
     >>> import encutils
     >>> info = encutils.getEncodingInfo(url='http://cthedot.de/encutils/')
     
-    >>> print info  # = str(info)
+    >>> print info # = str(info)
     utf-8
     
-    >>> info        # = repr(info)
-    <encutils.EncodingInfo object encoding='utf-8' mismatch=False at 0xb86d30>
+    >>> print repr(info) # doctest:+ELLIPSIS
+    <encutils.EncodingInfo object encoding='utf-8' mismatch=False at...>
     
     >>> print info.logtext
     HTTP media_type: text/html
@@ -48,7 +48,7 @@ example::
     HTML META media_type: text/html
     HTML META encoding: utf-8
     Encoding (probably): utf-8 (Mismatch: False)
-
+    <BLANKLINE>
 
 references
     XML
