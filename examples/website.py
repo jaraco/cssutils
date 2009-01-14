@@ -6,6 +6,7 @@ Log output cannot be tested!
 
 """
 import cssutils
+cssutils.ser.prefs.useDefaults()
 
 def cssparse_example():
     """
@@ -29,7 +30,8 @@ def logging():
     >>> cssutils.log.setLevel(logging.INFO)
     >>> sheet = cssutils.parseString('a { x: 1; } @import "http://example.com/x";')
     >>> print mylog.getvalue()
-    INFO Property: No CSS2 Property: u'x'. [1:5: x]
+    WARNING Property: Unknown Property: u'x'. [1:5: x]
+    WARNING Property: u'x' is not an allowed property for profiles None
     WARNING HTTPError opening url=u'http://example.com/x': 404 Not Found
     WARNING CSSImportRule: While processing imported style sheet href=u'http://example.com/x': IOError('Cannot read Stylesheet.',)
     ERROR CSSStylesheet: CSSImportRule not allowed here. [1:13: @import]
