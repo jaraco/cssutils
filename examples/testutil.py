@@ -59,7 +59,7 @@ def main():
     # doctests
     import website
     import doctest
-    doctest.mod(website)
+    doctest.testmod(website)
     
     global modules, errors
     
