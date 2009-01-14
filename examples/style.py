@@ -10,9 +10,13 @@ adds css as text to html
 import codecs
 import webbrowser
 import cssutils
-from lxml import etree
-from lxml.builder import E
-from lxml.cssselect import CSSSelector
+
+try:
+    from lxml import etree
+    from lxml.builder import E
+    from lxml.cssselect import CSSSelector
+except ImportError:
+    pass
 
 def getDocument(html, css=None):
     """

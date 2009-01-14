@@ -44,7 +44,7 @@ class TestUtil(object):
 modules = 0
 errors = 0
 
-def testmod(module):
+def mod(module):
     global modules, errors
     modules += 1
     t = TestUtil()
@@ -59,20 +59,20 @@ def main():
     # doctests
     import website
     import doctest
-    doctest.testmod(website)
+    doctest.mod(website)
     
     global modules, errors
     
     import build
-    testmod(build)
+    mod(build)
     import cssencodings
-    testmod(cssencodings)
+    mod(cssencodings)
     import customlog
-    testmod(customlog)
+    mod(customlog)
     import parse
-    testmod(parse)
+    mod(parse)
     import selectors_tolower
-    testmod(selectors_tolower)
+    mod(selectors_tolower)
     
     print 
     print 70*'-' 
