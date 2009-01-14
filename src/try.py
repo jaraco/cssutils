@@ -27,9 +27,9 @@ def save(name, string):
     f.close()
 
 
-if 1:
+if 0:
     from cssutils.script import csscombine
-    a =  csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
+    a = csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
     print
     b = csscombine(r"E:\xampp\htdocs\css.css", targetencoding='iso-8859-1', minify=False)
     print a
