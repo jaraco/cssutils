@@ -118,8 +118,7 @@ a {
         t.write(css.encode('utf-8'))
         t.close()
         
-        self.assertRaises(
-            UnicodeDecodeError, cssutils.parse, name, 'ascii')
+        self.assertRaises(UnicodeDecodeError, cssutils.parseFile, name, 'ascii')
         
         # ???
         s = cssutils.parseFile(name, encoding='iso-8859-1')
@@ -136,14 +135,14 @@ a {
         t.close()
         
         self.assertRaises(
-            UnicodeDecodeError, cssutils.parse, name, 'ascii')
+            UnicodeDecodeError, cssutils.parseFile, name, 'ascii')
         
         s = cssutils.parseFile(name, encoding='iso-8859-1')
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
         self.assertEqual(s.cssRules[1].selectorText, 'a:after')
 
         self.assertRaises(
-            UnicodeDecodeError, cssutils.parse, name, 'utf-8')
+            UnicodeDecodeError, cssutils.parseFile, name, 'utf-8')
 
         # clean up
         os.remove(name)
