@@ -93,11 +93,11 @@ supplies an <a title="encutils.EncodingInfo" class="reference internal" href="#e
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">encutils</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">encutils</span><span class="o">.</span><span class="n">getEncodingInfo</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&#39;http://cthedot.de/encutils/&#39;</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">info</span>  <span class="c"># = str(info)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">info</span> <span class="c"># = str(info)</span>
 <span class="go">utf-8</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span>        <span class="c"># = repr(info)</span>
-<span class="go">&lt;encutils.EncodingInfo object encoding=&#39;utf-8&#39; mismatch=False at 0xb86d30&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">info</span><span class="p">)</span> <span class="c"># doctest:+ELLIPSIS</span>
+<span class="go">&lt;encutils.EncodingInfo object encoding=&#39;utf-8&#39; mismatch=False at...&gt;</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">info</span><span class="o">.</span><span class="n">logtext</span>
 <span class="go">HTTP media_type: text/html</span>
@@ -105,6 +105,7 @@ supplies an <a title="encutils.EncodingInfo" class="reference internal" href="#e
 <span class="go">HTML META media_type: text/html</span>
 <span class="go">HTML META encoding: utf-8</span>
 <span class="go">Encoding (probably): utf-8 (Mismatch: False)</span>
+<span class="go">&lt;BLANKLINE&gt;</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -134,7 +135,7 @@ supplies an <a title="encutils.EncodingInfo" class="reference internal" href="#e
 </dl>
 <dl class="function">
 <dt id="encutils.buildlog">
-<!--[encutils.buildlog]--><tt class="descclassname">encutils.</tt><tt class="descname">buildlog</tt><big>(</big><em>logname='encutils'</em>, <em>level='INFO'</em>, <em>stream=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x01A630C0&gt;</em>, <em>filename=None</em>, <em>filemode='w'</em>, <em>format='%(levelname)st%(message)s'</em><big>)</big><a class="headerlink" href="#encutils.buildlog" title="Permalink to this definition">¶</a></dt>
+<!--[encutils.buildlog]--><tt class="descclassname">encutils.</tt><tt class="descname">buildlog</tt><big>(</big><em>logname='encutils'</em>, <em>level='INFO'</em>, <em>stream=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x019430C0&gt;</em>, <em>filename=None</em>, <em>filemode='w'</em>, <em>format='%(levelname)st%(message)s'</em><big>)</big><a class="headerlink" href="#encutils.buildlog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper to build a basic log</p>
 <ul class="simple">
 <li>if <cite>filename</cite> is given returns a log logging to <cite>filename</cite> with
