@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """cssutils - CSS Cascading Style Sheets library for Python
 
-    Copyright (C) 2004-2008 Christof Hoeke
+    Copyright (C) 2004-2009 Christof Hoeke
 
     cssutils is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -72,7 +72,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.6a0'
+VERSION = '0.9.6a1'
 
 __version__ = '%s $Id$' % VERSION
 
@@ -96,8 +96,7 @@ ser = CSSSerializer()
 _ANYNS = -1
 
 class DOMImplementationCSS(object):
-    """
-    This interface allows the DOM user to create a CSSStyleSheet
+    """This interface allows the DOM user to create a CSSStyleSheet
     outside the context of a document. There is no way to associate
     the new CSSStyleSheet with a document in DOM Level 2.
 
@@ -166,21 +165,21 @@ parse.__doc__ = CSSParser.parse.__doc__
 
 # set "ser", default serializer
 def setSerializer(serializer):
-    """
-    sets the global serializer used by all class in cssutils
-    """
+    """Set the global serializer used by all class in cssutils."""
     global ser
     ser = serializer
 
 
 def getUrls(sheet):
-    """
-    Utility function to get all ``url(urlstring)`` values in
-    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
-    of given CSSStyleSheet ``sheet``.
+    """Retrieve all ``url(urlstring)`` values (in e.g.
+    :class:`cssutils.css.CSSImportRule` or :class:`cssutils.css.CSSValue`
+    objects of given `sheet`.
 
-    This function is a generator. The url values exclude ``url(`` and ``)``
-    and surrounding single or double quotes.
+    :param sheet:
+        :class:`cssutils.css.CSSStyleSheet` object whose URLs are yielded
+
+    This function is a generator. The generated URL values exclude ``url(`` and
+    ``)`` and surrounding single or double quotes.
     """
     for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
         yield importrule.href
@@ -213,14 +212,15 @@ def getUrls(sheet):
                     yield u
 
 def replaceUrls(sheet, replacer):
-    """
-    Utility function to replace all ``url(urlstring)`` values in
-    ``CSSImportRules`` and ``CSSStyleDeclaration`` objects (properties)
-    of given CSSStyleSheet ``sheet``.
+    """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
+    :class:`cssutils.css.CSSValue` objects of given `sheet`.
 
-    ``replacer`` must be a function which is called with a single
-    argument ``urlstring`` which is the current value of url()
-    excluding ``url(`` and ``)`` and surrounding single or double quotes.
+    :param sheet:
+        :class:`cssutils.css.CSSStyleSheet` which is changed
+    :param replacer:
+        a function which is called with a single argument `urlstring` which is
+        the current value of each url() excluding ``url(`` and ``)`` and
+        surrounding single or double quotes.
     """
     for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
         importrule.href = replacer(importrule.href)
@@ -250,11 +250,19 @@ def replaceUrls(sheet, replacer):
                 setProperty(v)
 
 def resolveImports(sheet, target=None):
-    """Recurcively combine all rules in given sheet into 
-    a new target sheet which is returned."""
+    """Recurcively combine all rules in given `sheet` into a `target` sheet.
+
+    :param sheet:
+        in this given :class:`cssutils.css.CSSStyleSheet` all import rules are
+        resolved and added to a resulting *flat* sheet.
+    :param target:
+        A :class:`cssutils.css.CSSStyleSheet` object which will be the resulting
+        *flat* sheet if given
+    :returns: given `target` or a new :class:`cssutils.css.CSSStyleSheet` object
+    """
     if not target:
         target = css.CSSStyleSheet()
-        
+
     target.add(css.CSSComment(cssText=u'/* START %s */' % sheet.href))
     for rule in sheet.cssRules:
         if rule.type == rule.CHARSET_RULE:
@@ -264,12 +272,12 @@ def resolveImports(sheet, target=None):
             if rule.styleSheet:
                 resolveImports(rule.styleSheet, target)
             else:
-                log.error(u'Cannot get referenced stylesheet %r' % 
+                log.error(u'Cannot get referenced stylesheet %r' %
                           rule.href, neverraise=True)
                 target.add(rule)
         else:
             target.add(rule)
-    target.add(css.CSSComment(cssText=u'/* END %s */' % sheet.href))          
+    target.add(css.CSSComment(cssText=u'/* END %s */' % sheet.href))
     return target
 
 if __name__ == '__main__':

@@ -19,6 +19,7 @@ Contents
     <docs/serialize>
     <docs/css>
     <docs/stylesheets>
+    <docs/utilities>
     <docs/scripts>
 
     <docs/profiles>
