@@ -828,9 +828,14 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         elif httpEncoding:
             enctype = 1 # 1. HTTP
             encoding = httpEncoding
-        else:
-            # check content
-            contentEncoding, explicit = codec.detectencoding_str(content)
+        else:  
+            if isinstance(content, unicode): 
+                # no need to check content as unicode so no BOM
+                explicit = False
+            else:
+                # check content
+                contentEncoding, explicit = codec.detectencoding_str(content)
+
             if explicit:
                 enctype = 2 # 2. BOM/@charset: explicitly
                 encoding = contentEncoding
@@ -842,15 +847,15 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
                 enctype = 5 # 5. assume UTF-8
                 encoding = 'utf-8'
 
-        try:
-            # encoding may still be wrong if encoding *is lying*!
-            if content is not None:
+        if isinstance(content, unicode):
+            decodedCssText = content
+        else:
+            try:
+                # encoding may still be wrong if encoding *is lying*!
                 decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
-            else:
+            except UnicodeDecodeError, e:
+                log.warn(e, neverraise=True)
                 decodedCssText = None
-        except UnicodeDecodeError, e:
-            log.warn(e, neverraise=True)
-            decodedCssText = None
 
         return encoding, enctype, decodedCssText
     else:

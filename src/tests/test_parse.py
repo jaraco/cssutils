@@ -209,7 +209,23 @@ class CSSParserTestCase(basetest.BaseTestCase):
                  'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'),
             # 5/5 default/default or referrer
             ('@import "x";', None, (None, '/*t*/')): (
-                 'utf-8', 0, 'utf-8', '/*t*/')
+                 'utf-8', 0, 'utf-8', '/*t*/'),
+            # 0/0 override/override+unicode
+            ('@charset "utf-16"; @import "x";', 'ASCII', (
+                     None, u'@charset "latin1";/*\u0287*/')): (
+                 'ascii', 1, 'ascii', u'@charset "ascii";\n/*\\287 */'),
+            # 2/1 @charset/HTTP+unicode
+            ('@charset "ascii"; @import "x";', None, ('iso-8859-1', u'/*\u0287*/')): (
+                 'ascii', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*\\287 */'),
+            # 2/4 @charset/referrer+unicode
+            ('@charset "ascii"; @import "x";', None, (None, u'/*\u0287*/')): (
+                 'ascii', 1, 'ascii', '@charset "ascii";\n/*\\287 */'),
+            # 5/1 default/HTTP+unicode
+            ('@import "x";', None, ('ascii', u'/*\u0287*/')): (
+                 'utf-8', 0, 'ascii', '@charset "ascii";\n/*\\287 */'),
+            # 5/5 default+unicode/default+unicode
+            ('@import "x";', None, (None, u'/*\u0287*/')): (
+                 'utf-8', 0, 'utf-8', '/*\xca\x87*/')
         }
         parser = cssutils.CSSParser()
         for test in tests:
