@@ -28,6 +28,14 @@ Example::
     parser = cssutils.CSSParser(fetcher=fetcher)
     parser.parse...
 
+Example 2 with a fetcher returning a unicode string::
+
+    def fetcher(url):
+        return None, u'/*test*/'
+
+    parser = cssutils.CSSParser(fetcher=fetcher)
+    parser.parse...
+
 To omit parsing of imported sheets just define a fetcher like ``lambda url: None`` (A single ``None`` is sufficient but returning ``None, None`` would be clearer).
 
 You may also define a fetcher which overrides the internal encoding for imported sheets with a fetcher that returns a (normally HTTP) encoding depending e.g on the URL.
