@@ -166,8 +166,9 @@ class CSSParser(object):
 
             and must return ``(encoding, content)`` where ``encoding`` is the 
             HTTP charset normally given via the Content-Type header (which may
-            simply omit the charset) and ``content`` being the (byte) string 
-            content.
+            simply omit the charset in which case ``encoding`` would be 
+            ``None``) and ``content`` being the string (or unicode) content.
+            
             The Mimetype should be 'text/css' but this has to be checked by the
             fetcher itself (the default fetcher emits a warning if encountering
             a different mimetype).
