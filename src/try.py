@@ -27,6 +27,19 @@ def save(name, string):
     f.close()
 
 
+if 1:
+    def fetcher(url):
+        return "utf-8", u'@charset "utf-8";/*ätest*/'
+
+    parser = cssutils.CSSParser(fetcher=fetcher)
+    s = parser.parseString('@import "x";')
+    print s.cssRules[0].styleSheet.encoding
+    print s.cssRules[0].styleSheet.cssText
+    s.cssRules[0].styleSheet.encoding = 'ascii'
+    print s.cssRules[0].styleSheet.cssText
+
+    sys.exit(0)
+
 if 0:
     from cssutils.script import csscombine
     a = csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
