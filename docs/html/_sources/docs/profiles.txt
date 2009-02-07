@@ -1,3 +1,20 @@
+=========
 profiles
 =========
-.. automodule:: cssutils.profiles
+Most important method in this module is :meth:`cssutils.profiles.Profiles.addProfile` to add new properties to cssutils and the setting of ``defaultprofile``.
+
+``defaultprofile``
+==================
+`defaultprofile` = None
+        `defaultprofile` is used for validation. To use e.g. the CSS2 profile set ``cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2``
+
+        **This may change again, please beware!**
+
+        A per CSSStyleSheet setting of a profile may be added soon.
+
+
+``Profiles``
+============
+.. autoclass:: cssutils.profiles.Profiles
+    :members:
+    :inherited-members:
