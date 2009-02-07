@@ -1,11 +1,8 @@
 .. module:: cssutils.stylesheets
 
-
 ================================
 package ``cssutils.stylesheets``
 ================================
-:Version: $Id$
-
 Classes implementing Document Object Model Level 2 Style Sheets http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927/stylesheets.html
 
 

@@ -1,7 +1,6 @@
 ﻿==================
 CHANGELOG
 ==================
-:Version: $Id$
 
 known issues
 ============
@@ -37,11 +36,24 @@ development version
 0.9.6
 -----
 HEAD
+
+0.9.6a1 090207
     - **API CHANGE**: Known but invalid properties raise/log an ERROR instead of a WARNING now. Properties not expected in the current profile log an INFO. As the default profile is ``None`` even basic properties like ``color`` are logged now. You may want to change the default profile by setting e.g. ``cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2`` (~ CSS 2.1) to prevent CSS 2.1 properties to be reported. Also other validation related output has been slightly changed.
 
         **The way to change a defaultprofile may change again.**
 
     - **API CHANGE**: ``cssutils.script.csscombine`` has **ONLY** keyword parameters now. Use ``csscombine(path=path[,...])`` for the old behaviour. New parameter ``url`` combines the sheet at URL now.
+
+    + **FEATURE**: Added **experimental** profiles handling. You may add new profiles with new properties and their validation and set a defaultprofile used for validation. The current default profile is ``None`` so all predefined profiles are used. Currently 3 profiles are defined:
+
+      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2`
+            Properties defined by CSS2.1
+      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_COLOR_LEVEL_3`
+            CSS 3 color properties
+      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3`
+            Currently overflow related properties only
+
+      See the docs and source of the cssutils.profiles module for details.
 
     + **FEATURE**:  ``cssutils.util._readUrl()`` allows fetchers to pre-decode CSS content and return `unicode` instances, with or without a specified source encoding (integrated from patch of Issue #19).
 
