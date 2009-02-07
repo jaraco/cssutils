@@ -1,10 +1,6 @@
-"""CSS profiles. Predefined are:
+"""CSS profiles. 
 
-- 'CSS level 2'
-
-
-css2 based on cssvalues
-
+css2 is based on cssvalues
     contributed by Kevin D. Smith, thanks!
 
     "cssvalues" is used as a property validator.
@@ -277,12 +273,16 @@ class Profiles(object):
     CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
 
     def __init__(self):
+        """A few known profiles are predefined."""
         self._log = cssutils.log
         self._profilenames = [] # to keep order, REFACTOR!
         self._profiles = {}
+        
         self.addProfile(self.CSS_LEVEL_2, properties['css2'], css2macros)
         self.addProfile(self.CSS_COLOR_LEVEL_3, properties['css3color'], css3colormacros)
         self.addProfile(self.CSS_BOX_LEVEL_3, properties['css3box'])
+        
+        self.__update_knownnames()
 
     def _expand_macros(self, dictionary, macros):
         """Expand macros in token dictionary"""
@@ -305,16 +305,24 @@ class Profiles(object):
 
         return dictionary
 
+    def __update_knownnames(self):
+        self._knownnames = []
+        for properties in self._profiles.values():
+            self._knownnames.extend(properties.keys())
+        
     profiles = property(lambda self: sorted(self._profiles.keys()),
                                             doc=u'Names of all profiles.')
+
+    knownnames = property(lambda self: self._knownnames,
+                               doc="All known properties")
 
     def addProfile(self, profile, properties, macros=None):
         """Add a new profile with name ``profile`` (e.g. 'CSS level 2')
         and the given ``properties``. ``macros`` are
 
-        ``profile``
-            The new profile's name
-        ``properties``
+        :param profile:
+            The new `profile`'s name
+        :param properties:
             A dictionary of ``{ property-name: propery-value }`` items where
             property-value is a regex which may use macros defined in given
             ``macros`` or the standard macros Profiles.tokens and
@@ -336,10 +344,16 @@ class Profiles(object):
         properties = self._expand_macros(properties, m)
         self._profilenames.append(profile)
         self._profiles[profile] = self._compile_regexes(properties)
+        
+        self.__update_knownnames()
 
     def propertiesByProfile(self, profiles=None):
-        """Generator: Yield property names, if no profile(s) is given all
-        profile's properties are used."""
+        """Generator: Yield property names, if no `profiles` is given all
+        profile's properties are used.
+        
+        :param profiles:
+            a single profile name or a list of names.
+        """
         if not profiles:
             profiles = self.profiles
         elif isinstance(profiles, basestring):
@@ -352,7 +366,16 @@ class Profiles(object):
             raise NoSuchProfileException(e)
 
     def validate(self, name, value):
-        """Check if value is valid for given property name using any profile."""
+        """Check if value is valid for given property name using any profile.
+        
+        :param name:
+            a property name
+        :param value:
+            a CSS value (string)
+        :returns: 
+            if the `value` is valid for the given property `name` in any
+            profile
+        """
         for profile in self.profiles:
             if name in self._profiles[profile]:
                 try:
@@ -367,9 +390,17 @@ class Profiles(object):
 
     def validateWithProfile(self, name, value, profiles=None):
         """Check if value is valid for given property name returning
-        (valid, valid_in_profile).
+        (valid, profile).
 
-        You may want to check if valid_in_profile is what you expected.
+        :param name:
+            a property name
+        :param value:
+            a CSS value (string)
+        :returns: 
+            ``valid, profile`` where `valid` is if the `value` is valid for
+            the given property `name` in any profile of given `profiles` 
+            and `profile` the profile name for which the value is valid
+            (or ``None`` if not valid at all)
 
         Example: You might expect a valid Profiles.CSS_LEVEL_2 value but
         e.g. ``validateWithProfile('color', 'rgba(1,1,1,1)')`` returns
@@ -377,21 +408,39 @@ class Profiles(object):
         """
         if not profiles:
             profiles = self._profilenames
-        profile = []
+        elif isinstance(profiles, basestring):
+            profiles = (profiles, )  
+
         for profilename in profiles:
+            # check given profiles
             if name in self._profiles[profilename]:
-                profile.append(profilename)
+                validate = self._profiles[profilename][name]
                 try:
-                    # custom validation errors are caught
-                    r = (bool(self._profiles[profilename][name](value)),
-                        profilename)
+                    if validate(value):
+                        return True, profilename
                 except Exception, e:
                     self._log.error(e, error=Exception)
-                    r = False, None
-                if r[0]:
-                    return r
-        return False, '/'.join(profile)
 
+        for profilename in (p for p in self._profilenames if p not in profiles):
+            # check remaining profiles as well
+            for validate in self._profiles[profilename].values():
+                try:
+                    if validate(value):
+                        return True, profilename
+                except Exception, e:
+                    self._log.error(e, error=Exception)
+        
+        if name in self.knownnames:
+            names = []
+            for profilename, properties in self._profiles.items():
+                # return profile to which name belongs
+                if name in properties.keys():
+                    names.append(profilename)
+            names.sort()
+            return False, '/'.join(names)
+        
+        return False, None
+        
 # used by 
 profiles = Profiles()
 
