@@ -50,14 +50,6 @@
   
   <div class="section" id="changelog">
 <h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: CHANGELOG.txt 1660 2009-02-07 20:38:07Z cthedot $</td>
-</tr>
-</tbody>
-</table>
 <div class="section" id="known-issues">
 <h2>known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
 <ul>
@@ -94,8 +86,9 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>HEAD</p>
 <dl class="docutils">
-<dt>HEAD</dt>
+<dt>0.9.6a1 090207</dt>
 <dd><ul class="first">
 <li><p class="first"><strong>API CHANGE</strong>: Known but invalid properties raise/log an ERROR instead of a WARNING now. Properties not expected in the current profile log an INFO. As the default profile is <tt class="xref docutils literal"><span class="pre">None</span></tt> even basic properties like <tt class="docutils literal"><span class="pre">color</span></tt> are logged now. You may want to change the default profile by setting e.g. <tt class="docutils literal"><span class="pre">cssutils.profiles.defaultprofile</span> <span class="pre">=</span> <span class="pre">cssutils.profiles.Profiles.CSS_LEVEL_2</span></tt> (~ CSS 2.1) to prevent CSS 2.1 properties to be reported. Also other validation related output has been slightly changed.</p>
 <blockquote>
@@ -106,6 +99,20 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </li>
 </ul>
 <ul>
+<li><p class="first"><strong>FEATURE</strong>: Added <strong>experimental</strong> profiles handling. You may add new profiles with new properties and their validation and set a defaultprofile used for validation. The current default profile is <tt class="xref docutils literal"><span class="pre">None</span></tt> so all predefined profiles are used. Currently 3 profiles are defined:</p>
+<dl class="docutils">
+<dt><tt class="xref docutils literal"><span class="pre">CSS_LEVEL_2</span></tt></dt>
+<dd><p class="first last">Properties defined by CSS2.1</p>
+</dd>
+<dt><tt class="xref docutils literal"><span class="pre">CSS_COLOR_LEVEL_3</span></tt></dt>
+<dd><p class="first last">CSS 3 color properties</p>
+</dd>
+<dt><tt class="xref docutils literal"><span class="pre">CSS_BOX_LEVEL_3</span></tt></dt>
+<dd><p class="first last">Currently overflow related properties only</p>
+</dd>
+</dl>
+<p>See the docs and source of the cssutils.profiles module for details.</p>
+</li>
 <li><p class="first"><strong>FEATURE</strong>:  <tt class="docutils literal"><span class="pre">cssutils.util._readUrl()</span></tt> allows fetchers to pre-decode CSS content and return <cite>unicode</cite> instances, with or without a specified source encoding (integrated from patch of Issue #19).</p>
 </li>
 <li><p class="first"><strong>FEATURE</strong>: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if <tt class="docutils literal"><span class="pre">import</span> <span class="pre">google.appengine</span></tt> is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.</p>

@@ -1,8 +1,6 @@
 ========
 backlog
 ========
-:Version: $Id: backlog.txt 1590 2009-01-01 21:11:36Z cthedot $
-
 
 improvements
 ============
