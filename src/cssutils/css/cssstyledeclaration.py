@@ -94,7 +94,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
     
         [Property: Value Priority?;]* [Property: Value Priority?]?
     """
-    def __init__(self, cssText=u'', parentRule=None, profiles=None, readonly=False):
+    def __init__(self, cssText=u'', parentRule=None, readonly=False):
         """
         :param cssText:
             Shortcut, sets CSSStyleDeclaration.cssText
@@ -106,8 +106,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         """
         super(CSSStyleDeclaration, self).__init__()
         self._parentRule = parentRule
-        #self._seq = self._tempSeq()
-        self._profiles = profiles
         self.cssText = cssText
         self._readonly = readonly
 
@@ -277,7 +275,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                                        semicolon=True)
             if self._tokenvalue(tokens[-1]) == u';':
                 tokens.pop()
-            property = Property(profiles=self._profiles)
+            property = Property()
             property.cssText = tokens
             if property.wellformed:
                 seq.append(property, 'Property')
@@ -565,9 +563,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         if isinstance(name, Property):
             newp = name 
             name = newp.literalname
-            newp._profiles = self._profiles
         else:
-            newp = Property(name, value, priority, profiles=self._profiles)
+            newp = Property(name, value, priority)
         if not newp.wellformed:
             self._log.warn(u'Invalid Property: %s: %s %s'
                     % (name, value, priority))

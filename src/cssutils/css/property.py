@@ -4,7 +4,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 from cssutils.helper import Deprecated
-from cssutils.profiles import profiles
+from cssutils.profiles import profiles, defaultprofile
 from cssvalue import CSSValue
 import cssutils
 import xml.dom
@@ -45,7 +45,7 @@ class Property(cssutils.util.Base):
 
     """
     def __init__(self, name=None, value=None, priority=u'', 
-                 profiles=None, _mediaQuery=False):
+                 _mediaQuery=False, _parent=None):
         """
         :param name:
             a property name string (will be normalized)
@@ -56,13 +56,16 @@ class Property(cssutils.util.Base):
             u'!important' or u'important'
         :param _mediaQuery:
             if ``True`` value is optional (used by MediaQuery)
+        :param _parent:
+            the parent object, normally a 
+            :class:`cssutils.css.CSSStyleDeclaration`
         """
         super(Property, self).__init__()
 
         self.seqs = [[], None, []]
         self.wellformed = False
-        self._profiles = profiles
         self._mediaQuery = _mediaQuery
+        self._parent = _parent
 
         self._name = u''
         self._literalname = u''
@@ -360,13 +363,22 @@ class Property(cssutils.util.Base):
         doc="Readonly literal (not normalized) priority of this property")
 
     def validate(self, profile=None):
-        """Validate value against name."""
+        """Validate value against `profile`.
+        
+        :param profile:
+            A profile name used for validating. If no `profile` is given
+            ``Property.profiles
+        
+        """
         valid = False
         if self.value:
-            if self.name and self.name in profiles.propertiesByProfile(self._profiles):
+            if profile is None:
+                usedprofiles = defaultprofile
+            
+            if self.name and self.name in profiles.propertiesByProfile(usedprofiles):
                 valid, validprofile = profiles.validateWithProfile(self.name,
                                                                    self.value,
-                                                                   self._profiles)
+                                                                   usedprofiles)
                 if not validprofile:
                     validprofile = u''
 
@@ -382,12 +394,13 @@ class Property(cssutils.util.Base):
                     self._log.debug(u'Property: Found valid %s property "%s: %s".' %
                                     (validprofile, self.name, self.value),
                                     neverraise=True)
-            elif self.name not in profiles.propertiesByProfile(self._profiles):
-                self._log.warn(u'Property: %r is not an allowed property for profiles %r' %
-                               (self.name, self._profiles), neverraise=True)
+            elif usedprofiles and self.name not in profiles.propertiesByProfile(usedprofiles):
+                self._log.warn(u'Property: %r is not an allowed property for %r profiles' %
+                               (self.name, usedprofiles), neverraise=True)
             else:
-                self._log.debug(u'Property: Unable to validate as no or unknown property context set for value: %r'
-                                % self.value, neverraise=True)
+                self._log.debug(u'Property: Unable to validate as no or unknown '
+                                u'profile set: %s: %s'
+                                % (self.name, self.value), neverraise=True)
 
         if self._priority not in (u'', u'important'):
             valid = False
