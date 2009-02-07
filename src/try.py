@@ -28,15 +28,12 @@ def save(name, string):
 
 
 if 1:
-    def fetcher(url):
-        return "utf-8", u'@charset "utf-8";/*ätest*/'
-
-    parser = cssutils.CSSParser(fetcher=fetcher)
-    s = parser.parseString('@import "x";')
-    print s.cssRules[0].styleSheet.encoding
-    print s.cssRules[0].styleSheet.cssText
-    s.cssRules[0].styleSheet.encoding = 'ascii'
-    print s.cssRules[0].styleSheet.cssText
+    #print cssutils.profiles.profiles.knownnames
+    cssutils.log.setLevel(logging.DEBUG)
+    parser = cssutils.CSSParser()
+    cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_COLOR_LEVEL_3
+    s = parser.parseString('a { color: 1px')
+    print s.cssText
 
     sys.exit(0)
 

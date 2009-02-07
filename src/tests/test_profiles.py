@@ -8,6 +8,31 @@ from cssutils.profiles import profiles, NoSuchProfileException
 
 class ProfilesTestCase(basetest.BaseTestCase):
 
+    P1 = {
+        '-test-x': '{num}', 
+        '-test-y': '{ident}|{percentage}',
+        # custom validation function 
+        '-test-z': lambda(v): int(v) > 0 
+        }  
+
+    def test_knownnames(self):
+        "Profiles.knownnames"
+        p = cssutils.profiles.Profiles()
+        p.removeProfile(all=True)
+        p.addProfile('test', self.P1)
+        self.assertEqual(p.knownnames, self.P1.keys())
+        p.removeProfile(all=True)
+        self.assertEqual(p.knownnames, [])
+        
+    def test_profiles(self):
+        "Profiles.profiles"
+        p = cssutils.profiles.Profiles()
+        p.removeProfile(all=True)
+        p.addProfile('test', self.P1)
+        self.assertEqual(p.profiles, ['test'])
+        p.removeProfile(all=True)
+        self.assertEqual(p.profiles, [])
+
     def test_addProfile(self):
         "Profiles.addProfile with custom validation function"
         # unknown profile
@@ -15,15 +40,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
                           lambda: list(profiles.propertiesByProfile('NOTSET')) )
 
         # new profile
-        test = {
-            '-test-x': '{num}', 
-            '-test-y': '{ident}|{percentage}',
-            # custom validation function 
-            '-test-z': lambda(v): int(v) > 0 
-            }        
-        profiles.addProfile('test', test)
+        profiles.addProfile('test', self.P1)
         
-        props = test.keys()
+        props = self.P1.keys()
         props.sort()
         self.assertEqual(props, list(profiles.propertiesByProfile('test')))
         
@@ -38,12 +57,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('-test-z', 'x'): False     
             }
         for test, v in tests.items():
-            if v:
-                p = 'test'
-            else:
-                p = 'test'
             self.assertEqual(v, profiles.validate(*test))
-            self.assertEqual((v, p), profiles.validateWithProfile(*test))
+            self.assertEqual((v, ['test']), profiles.validateWithProfile(*test))
             
         cssutils.log.raiseExceptions = True
         
@@ -55,7 +70,47 @@ class ProfilesTestCase(basetest.BaseTestCase):
         else:
             self.assertRaisesMsg(Exception, u"invalid literal for int() with base 10: 'x'", 
                                  profiles.validate, u'-test-z', u'x')
+
+    def test_removeProfile(self):
+        "Profiles.removeProfile()"
+        p = cssutils.profiles.Profiles()
+        self.assertEqual(3, len(p.profiles))
+        p.removeProfile(p.CSS_LEVEL_2)
+        self.assertEqual(2, len(p.profiles))
+        p.removeProfile(all=True)
+        self.assertEqual(0, len(p.profiles))
+
+    def test_validateWithProfile(self):
+        "Profiles.validate(), Profiles.validateWithProfile()"
+        p = cssutils.profiles.Profiles()
+        tests = {
+            ('color', 'red', None): (True, [p.CSS_LEVEL_2]),
+            ('color', 'red', p.CSS_LEVEL_2): (True, [p.CSS_LEVEL_2]),
+            ('color', 'red', p.CSS_COLOR_LEVEL_3): (True, [p.CSS_COLOR_LEVEL_3]),
+            ('color', 'rgba(0,0,0,0)', None): (True, [p.CSS_COLOR_LEVEL_3]),
+            ('color', 'rgba(0,0,0,0)', p.CSS_LEVEL_2): (True, [p.CSS_COLOR_LEVEL_3]),
+            ('color', 'rgba(0,0,0,0)', p.CSS_COLOR_LEVEL_3): (True, [p.CSS_COLOR_LEVEL_3]),
+            ('color', '1px', None): (False, [p.CSS_COLOR_LEVEL_3, p.CSS_LEVEL_2]),
+            ('color', '1px', p.CSS_LEVEL_2): (False, [p.CSS_COLOR_LEVEL_3, p.CSS_LEVEL_2]),
+            ('color', '1px', p.CSS_COLOR_LEVEL_3): (False, [p.CSS_COLOR_LEVEL_3, p.CSS_LEVEL_2]),
+
+            ('opacity', '1', None): (True, [p.CSS_COLOR_LEVEL_3]),
+            ('opacity', '1', p.CSS_LEVEL_2): (True, [p.CSS_COLOR_LEVEL_3]),
+            ('opacity', '1', p.CSS_COLOR_LEVEL_3): (True, [p.CSS_COLOR_LEVEL_3]),
+            ('opacity', '1px', None): (False, [p.CSS_COLOR_LEVEL_3]),
+            ('opacity', '1px', p.CSS_LEVEL_2): (False, [p.CSS_COLOR_LEVEL_3]),
+            ('opacity', '1px', p.CSS_COLOR_LEVEL_3): (False, [p.CSS_COLOR_LEVEL_3]),
+
+            ('-x', '1', None): (False, []),
+            ('-x', '1', p.CSS_LEVEL_2): (False, []),
+            ('-x', '1', p.CSS_COLOR_LEVEL_3): (False, []),
+        }
+        for test, r in tests.items():
+            self.assertEqual(p.validate(test[0], test[1]), r[0])
+            self.assertEqual(p.validateWithProfile(*test), r)
+            
         
+
     def test_propertiesByProfile(self):
         "Profiles.propertiesByProfile"
         self.assertEqual(['color', 'opacity'], 
@@ -63,9 +118,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
         
     def test_csscolorlevel3(self):
         "CSS Color Module Level 3"
-        CSS2 = profiles.CSS_LEVEL_2
-        CM3 = profiles.CSS_COLOR_LEVEL_3
-        CSS2_CM3 = '%s/%s' % (CM3, CSS2)
+        CSS2 = [profiles.CSS_LEVEL_2]
+        CM3 = [profiles.CSS_COLOR_LEVEL_3]
+        CSS2_CM3 = [profiles.CSS_COLOR_LEVEL_3, profiles.CSS_LEVEL_2]
         
         # (propname, propvalue): (valid, validprofile)
 
