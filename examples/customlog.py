@@ -1,8 +1,7 @@
 import logging, StringIO
 
 EXPOUT = ""
-EXPERR = u'''Property: Unknown Property: u'x'. [1:5: x]\nProperty: u'x' is not an allowed property for profiles None\nHTTPError opening url=u'http://example.com/x': 404 Not Found\nCSSImportRule: While processing imported style sheet href=u'http://example.com/x': IOError('Cannot read Stylesheet.',)\nCSSStylesheet: CSSImportRule not allowed here. [1:13: @import]\n'''
-
+EXPERR = u"""Property: Unknown Property: u'x'. [1:5: x]\nHTTPError opening url=u'http://example.com/x': 404 Not Found\nCSSImportRule: While processing imported style sheet href=u'http://example.com/x': IOError('Cannot read Stylesheet.',)\nCSSStylesheet: CSSImportRule not allowed here. [1:13: @import]\n"""
 
 def main():
     import cssutils
