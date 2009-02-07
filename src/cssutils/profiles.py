@@ -344,7 +344,6 @@ class Profiles(object):
             profiles = self.profiles
         elif isinstance(profiles, basestring):
             profiles = (profiles, )
-
         try:
             for profile in sorted(profiles):
                 for name in sorted(self._profiles[profile].keys()):
@@ -358,7 +357,7 @@ class Profiles(object):
             if name in self._profiles[profile]:
                 try:
                     # custom validation errors are caught
-                    r =  bool(self._profiles[profile][name](value))
+                    r = bool(self._profiles[profile][name](value))
                 except Exception, e:
                     self._log.error(e, error=Exception)
                     return False
@@ -393,6 +392,9 @@ class Profiles(object):
                     return r
         return False, '/'.join(profile)
 
-
+# used by 
 profiles = Profiles()
+
+# set for validation to e.g.``Profiles.CSS_LEVEL_2``
+defaultprofile = None
 
