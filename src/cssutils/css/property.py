@@ -4,7 +4,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 from cssutils.helper import Deprecated
-from cssutils.profiles import profiles, defaultprofile
+from cssutils.profiles import profiles
 from cssvalue import CSSValue
 import cssutils
 import xml.dom
@@ -208,10 +208,10 @@ class Property(cssutils.util.Base):
             self.seqs[0] = newseq
 
 #            # validate
-            if self._name not in profiles.propertiesByProfile():
-#                self.valid = False
-                self._log.warn(u'Property: Unknown Property: %r.' %
-                         new['literalname'], token=token, neverraise=True)
+            if self._name not in profiles.knownnames:
+                # self.valid = False
+                self._log.warn(u'Property: Unknown Property.',
+                               token=token, neverraise=True)
             else:
                 pass
 #                self.valid = True
@@ -368,40 +368,34 @@ class Property(cssutils.util.Base):
         :param profile:
             A profile name used for validating. If no `profile` is given
             ``Property.profiles
-        
         """
         valid = False
-        if self.value:
+        
+        if self.name and self.value:
             if profile is None:
-                usedprofiles = defaultprofile
+                usedprofile = cssutils.profiles.defaultprofile
+            else:
+                usedprofile = profile
             
-            if self.name and self.name in profiles.propertiesByProfile(usedprofiles):
+            if self.name in profiles.knownnames:
                 valid, validprofile = profiles.validateWithProfile(self.name,
                                                                    self.value,
-                                                                   usedprofiles)
-                if not validprofile:
-                    validprofile = u''
+                                                                   usedprofile)
 
                 if not valid:
-                    self._log.warn(u'Property: Invalid value for %s property "%s: %s".' %
-                                   (validprofile, self.name, self.value),
+                    self._log.error(u'Property: Invalid value for "%s" property: %s: %s'
+                                   % (validprofile, self.name, self.value),
                                    neverraise=True)
-                elif profile and validprofile != profile:
-                    self._log.warn(u'Property: Invalid value for %s property "%s: %s" but valid %s property.' %
-                                   (profile, self.name, self.value, validprofile),
+                elif valid and (usedprofile and validprofile != usedprofile):
+                    self._log.warn(u'Property: Not valid for profile "%s": %s: %s'
+                                   % (usedprofile, self.name, self.value),
                                    neverraise=True)
-                else:
-                    self._log.debug(u'Property: Found valid %s property "%s: %s".' %
-                                    (validprofile, self.name, self.value),
-                                    neverraise=True)
-            elif usedprofiles and self.name not in profiles.propertiesByProfile(usedprofiles):
-                self._log.warn(u'Property: %r is not an allowed property for %r profiles' %
-                               (self.name, usedprofiles), neverraise=True)
-            else:
-                self._log.debug(u'Property: Unable to validate as no or unknown '
-                                u'profile set: %s: %s'
-                                % (self.name, self.value), neverraise=True)
-
+                                
+                if valid:
+                    self._log.info(u'Property: Found valid "%s" property: %s: %s'
+                                   % (validprofile, self.name, self.value),
+                                   neverraise=True)
+                    
         if self._priority not in (u'', u'important'):
             valid = False
 

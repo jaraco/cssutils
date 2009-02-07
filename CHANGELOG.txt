@@ -37,14 +37,18 @@ development version
 0.9.6
 -----
 HEAD
+    - **API CHANGE**: Known but invalid properties raise/log an ERROR instead of a WARNING now. Properties not expected in the current profile log an INFO. As the default profile is ``None`` even basic properties like ``color`` are logged now. You may want to change the default profile by setting e.g. ``cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2`` (~ CSS 2.1) to prevent CSS 2.1 properties to be reported. Also other validation related output has been slightly changed.
+
+        **The way to change a defaultprofile may change again.**
+
+    - **API CHANGE**: ``cssutils.script.csscombine`` has **ONLY** keyword parameters now. Use ``csscombine(path=path[,...])`` for the old behaviour. New parameter ``url`` combines the sheet at URL now.
+
     + **FEATURE**:  ``cssutils.util._readUrl()`` allows fetchers to pre-decode CSS content and return `unicode` instances, with or without a specified source encoding (integrated from patch of Issue #19).
 
     + **FEATURE**: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if ``import google.appengine`` is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.
     + **FEATURE**: Function ``cssutils.resolveImports(sheet)`` returns a new stylesheet with all rules in given sheet but with all @import rules being pulled into the top sheet.
     + FEATURE: CSSCombine script and helper function resolve nested imports now.
     + FEATURE: Script ``csscombine`` has new option ``-u URL, --url=URL     URL to parse (path is ignored if URL given)`` now
-
-    - **API CHANGE**: ``cssutils.script.csscombine`` has **ONLY** keyword parameters now. Use ``csscombine(path=path[,...])`` for the old behaviour. New parameter ``url`` combines the sheet at URL now.
 
     + BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
         **TODO**: Preference setting. Profile?
