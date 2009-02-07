@@ -221,19 +221,24 @@ class NoSuchProfileException(Exception):
 
 class Profiles(object):
     """
-    A dictionary of::
+    All profiles used for validation.
 
-        profilename: {
-            propname: propvalue_regex*
-            }
+    Predefined profiles are (use 
+    :meth:`~cssutils.profiles.Profiles.propertiesByProfile` to
+    get a list of defined properties):
 
-    Predefined profiles are:
-
-    - CSS level 2: Properties defined by CSS2.1
-    - CSS Color Module Level 3
-    - CSS Box Module Level 3: Currently overflow related properties only
+    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2`: 
+        Properties defined by CSS2.1
+    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_COLOR_LEVEL_3`
+        CSS 3 color properties
+    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3`: 
+        Currently overflow related properties only
 
     """
+    CSS_LEVEL_2 = 'CSS Level 2.1'
+    CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
+    CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
+    
     basicmacros = {
         'ident': r'[-]?{nmstart}{nmchar}*',
         'name': r'{nmchar}+',
@@ -267,10 +272,6 @@ class Profiles(object):
         'frequency': r'0|{num}k?Hz',
         'percentage': r'{num}%',
         }
-
-    CSS_LEVEL_2 = 'CSS Level 2.1'
-    CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
-    CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
 
     def __init__(self):
         """A few known profiles are predefined."""
@@ -314,16 +315,16 @@ class Profiles(object):
                                             doc=u'Names of all profiles.')
 
     knownnames = property(lambda self: self._knownnames,
-                               doc="All known properties")
+                               doc="All known property names of all profiles.")
 
     def addProfile(self, profile, properties, macros=None):
-        """Add a new profile with name ``profile`` (e.g. 'CSS level 2')
-        and the given ``properties``. ``macros`` are
+        """Add a new profile with name `profile` (e.g. 'CSS level 2')
+        and the given `properties`.
 
         :param profile:
-            The new `profile`'s name
+            the new `profile`'s name
         :param properties:
-            A dictionary of ``{ property-name: propery-value }`` items where
+            a dictionary of ``{ property-name: propery-value }`` items where
             property-value is a regex which may use macros defined in given
             ``macros`` or the standard macros Profiles.tokens and
             Profiles.generalvalues.
@@ -335,6 +336,10 @@ class Profiles(object):
             are reported or raised as all other cssutils exceptions depending
             on cssutils.log.raiseExceptions which e.g during parsing normally
             is False so the exceptions would be logged only.
+        :param macros:
+            may be used in the given properties definitions. There are some
+            predefined basic macros which may always be used in 
+            :attr:`Profiles.basicmacros` and :attr:`Profiles.generalmacros`.
         """
         if not macros:
             macros = {}
@@ -366,7 +371,8 @@ class Profiles(object):
             raise NoSuchProfileException(e)
 
     def validate(self, name, value):
-        """Check if value is valid for given property name using any profile.
+        """Check if `value` is valid for given property `name` using **any** 
+        profile.
         
         :param name:
             a property name
@@ -389,8 +395,8 @@ class Profiles(object):
         return False
 
     def validateWithProfile(self, name, value, profiles=None):
-        """Check if value is valid for given property name returning
-        (valid, profile).
+        """Check if `value` is valid for given property `name` returning
+        ``(valid, profile)``.
 
         :param name:
             a property name
