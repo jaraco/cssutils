@@ -14,7 +14,7 @@ atom|title {
     color: #000 !important
     }
 '''
-EXPERR = u''   
+EXPERR = u'Property: Found valid "CSS Level 2.1" property: color: red\nProperty: Found valid "CSS Level 2.1" property: color: #000\nProperty: Found valid "CSS Level 2.1" property: background-image: url(test/x.gif)\n'
 
 def main():
     # -*- coding: utf-8 -*-
