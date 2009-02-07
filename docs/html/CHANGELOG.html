@@ -54,7 +54,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: CHANGELOG.txt 1654 2009-02-03 20:16:20Z cthedot $</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">$Id: CHANGELOG.txt 1660 2009-02-07 20:38:07Z cthedot $</td>
 </tr>
 </tbody>
 </table>
@@ -96,17 +96,26 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>HEAD</dt>
-<dd><ul class="first simple">
-<li><strong>FEATURE</strong>:  <tt class="docutils literal"><span class="pre">cssutils.util._readUrl()</span></tt> allows fetchers to pre-decode CSS content and return <cite>unicode</cite> instances, with or without a specified source encoding (integrated from patch of Issue #19).</li>
-<li><strong>FEATURE</strong>: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if <tt class="docutils literal"><span class="pre">import</span> <span class="pre">google.appengine</span></tt> is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.</li>
-<li><strong>FEATURE</strong>: Function <tt class="docutils literal"><span class="pre">cssutils.resolveImports(sheet)</span></tt> returns a new stylesheet with all rules in given sheet but with all &#64;import rules being pulled into the top sheet.</li>
-<li>FEATURE: CSSCombine script and helper function resolve nested imports now.</li>
-<li>FEATURE: Script <tt class="docutils literal"><span class="pre">csscombine</span></tt> has new option <tt class="docutils literal"><span class="pre">-u</span> <span class="pre">URL,</span> <span class="pre">--url=URL</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">URL</span> <span class="pre">to</span> <span class="pre">parse</span> <span class="pre">(path</span> <span class="pre">is</span> <span class="pre">ignored</span> <span class="pre">if</span> <span class="pre">URL</span> <span class="pre">given)</span></tt> now</li>
-</ul>
-<ul class="simple">
-<li><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">cssutils.script.csscombine</span></tt> has <strong>ONLY</strong> keyword parameters now. Use <tt class="docutils literal"><span class="pre">csscombine(path=path[,...])</span></tt> for the old behaviour. New parameter <tt class="docutils literal"><span class="pre">url</span></tt> combines the sheet at URL now.</li>
+<dd><ul class="first">
+<li><p class="first"><strong>API CHANGE</strong>: Known but invalid properties raise/log an ERROR instead of a WARNING now. Properties not expected in the current profile log an INFO. As the default profile is <tt class="xref docutils literal"><span class="pre">None</span></tt> even basic properties like <tt class="docutils literal"><span class="pre">color</span></tt> are logged now. You may want to change the default profile by setting e.g. <tt class="docutils literal"><span class="pre">cssutils.profiles.defaultprofile</span> <span class="pre">=</span> <span class="pre">cssutils.profiles.Profiles.CSS_LEVEL_2</span></tt> (~ CSS 2.1) to prevent CSS 2.1 properties to be reported. Also other validation related output has been slightly changed.</p>
+<blockquote>
+<p><strong>The way to change a defaultprofile may change again.</strong></p>
+</blockquote>
+</li>
+<li><p class="first"><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">cssutils.script.csscombine</span></tt> has <strong>ONLY</strong> keyword parameters now. Use <tt class="docutils literal"><span class="pre">csscombine(path=path[,...])</span></tt> for the old behaviour. New parameter <tt class="docutils literal"><span class="pre">url</span></tt> combines the sheet at URL now.</p>
+</li>
 </ul>
 <ul>
+<li><p class="first"><strong>FEATURE</strong>:  <tt class="docutils literal"><span class="pre">cssutils.util._readUrl()</span></tt> allows fetchers to pre-decode CSS content and return <cite>unicode</cite> instances, with or without a specified source encoding (integrated from patch of Issue #19).</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if <tt class="docutils literal"><span class="pre">import</span> <span class="pre">google.appengine</span></tt> is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.</p>
+</li>
+<li><p class="first"><strong>FEATURE</strong>: Function <tt class="docutils literal"><span class="pre">cssutils.resolveImports(sheet)</span></tt> returns a new stylesheet with all rules in given sheet but with all &#64;import rules being pulled into the top sheet.</p>
+</li>
+<li><p class="first">FEATURE: CSSCombine script and helper function resolve nested imports now.</p>
+</li>
+<li><p class="first">FEATURE: Script <tt class="docutils literal"><span class="pre">csscombine</span></tt> has new option <tt class="docutils literal"><span class="pre">-u</span> <span class="pre">URL,</span> <span class="pre">--url=URL</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">URL</span> <span class="pre">to</span> <span class="pre">parse</span> <span class="pre">(path</span> <span class="pre">is</span> <span class="pre">ignored</span> <span class="pre">if</span> <span class="pre">URL</span> <span class="pre">given)</span></tt> now</p>
+</li>
 <li><dl class="first docutils">
 <dt>BUGFIX: Other priority values than <tt class="docutils literal"><span class="pre">!important</span></tt> are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.</dt>
 <dd><p class="first last"><strong>TODO</strong>: Preference setting. Profile?</p>
@@ -467,7 +476,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-02-03</span> <span class="pre">21:16:20</span> <span class="pre">+0100</span> <span class="pre">(Di,</span> <span class="pre">03</span> <span class="pre">Feb</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1654</span> <span class="pre">2009-02-03</span> <span class="pre">20:16:20Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-02-07</span> <span class="pre">21:38:07</span> <span class="pre">+0100</span> <span class="pre">(Sa,</span> <span class="pre">07</span> <span class="pre">Feb</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1660</span> <span class="pre">2009-02-07</span> <span class="pre">20:38:07Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
