@@ -6,14 +6,38 @@ Most important method in this module is :meth:`cssutils.profiles.Profiles.addPro
 .. index::
     single: defaultprofile
 
+Example of how to add a new profile::
+
+    >>> import cssutils
+    >>> sheet = cssutils.parseString('x { -test-x: 1 }')
+    >>> print sheet.cssRules[0].style.getProperties()[0].valid
+    False
+    >>> P1 = {
+    ...    '-test-x': '{num}',
+    ...    '-test-y': '{ident}|{percentage}',
+    ...    # custom validation function
+    ...    '-test-z': lambda(v): int(v) > 0}
+    >>> cssutils.profiles.profiles.addProfile('test', P1)
+    >>> sheet = cssutils.parseString('x { -test-x: 1 }')
+    >>> print sheet.cssRules[0].style.getProperties()[0].valid
+    True
+
+**This may change again, please beware!**
+
+A per CSSStyleSheet setting of a profile may be added soon.
+
+Current status in release 0.9.6a1.
+
+
+``profiles``
+============
+A global :class:`cssutils.profiles.Profile` object which is used by all CSS properties for validation. Add or remove new profile definitions here.
+
+
 ``defaultprofile``
 ==================
 `defaultprofile` = None
         `defaultprofile` is used for validation. To use e.g. the CSS2 profile set ``cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2``
-
-        **This may change again, please beware!**
-
-        A per CSSStyleSheet setting of a profile may be added soon.
 
 
 ``Profiles``
