@@ -65,7 +65,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         "CSS Color Module Level 3"
         CSS2 = profiles.CSS_LEVEL_2
         CM3 = profiles.CSS_COLOR_LEVEL_3
-        CSS2_CM3 = '%s/%s' % (CSS2, CM3)
+        CSS2_CM3 = '%s/%s' % (CM3, CSS2)
         
         # (propname, propvalue): (valid, validprofile)
 
