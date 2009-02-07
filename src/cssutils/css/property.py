@@ -378,22 +378,26 @@ class Property(cssutils.util.Base):
                 usedprofile = profile
             
             if self.name in profiles.knownnames:
-                valid, validprofile = profiles.validateWithProfile(self.name,
+                valid, validprofiles = profiles.validateWithProfile(self.name,
                                                                    self.value,
                                                                    usedprofile)
 
                 if not valid:
                     self._log.error(u'Property: Invalid value for "%s" property: %s: %s'
-                                   % (validprofile, self.name, self.value),
+                                   % (u'/'.join(validprofiles), 
+                                      self.name, 
+                                      self.value),
                                    neverraise=True)
-                elif valid and (usedprofile and validprofile != usedprofile):
+                elif valid and (usedprofile and usedprofile not in validprofiles):
                     self._log.warn(u'Property: Not valid for profile "%s": %s: %s'
                                    % (usedprofile, self.name, self.value),
                                    neverraise=True)
                                 
                 if valid:
                     self._log.info(u'Property: Found valid "%s" property: %s: %s'
-                                   % (validprofile, self.name, self.value),
+                                   % (u'/'.join(validprofiles), 
+                                       self.name, 
+                                       self.value),
                                    neverraise=True)
                     
         if self._priority not in (u'', u'important'):

@@ -8,6 +8,23 @@ Log output cannot be tested!
 import cssutils
 cssutils.ser.prefs.useDefaults()
 
+def profile():
+    """
+    >>> import cssutils
+    >>> sheet = cssutils.parseString('x { -test-x: 1 }')
+    >>> print sheet.cssRules[0].style.getProperties()[0].valid
+    False
+    >>> P1 = {
+    ...    '-test-x': '{num}', 
+    ...    '-test-y': '{ident}|{percentage}',
+    ...    # custom validation function 
+    ...    '-test-z': lambda(v): int(v) > 0}
+    >>> cssutils.profiles.profiles.addProfile('test', P1)
+    >>> sheet = cssutils.parseString('x { -test-x: 1 }')
+    >>> print sheet.cssRules[0].style.getProperties()[0].valid
+    True
+    """
+
 def cssparse_example():
     """
     >>> import cssutils

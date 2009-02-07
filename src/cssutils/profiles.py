@@ -221,17 +221,18 @@ class NoSuchProfileException(Exception):
 
 class Profiles(object):
     """
-    All profiles used for validation.
+    All profiles used for validation. ``cssutils.profiles.profiles`` is a
+    preset object of this class and used by all properties for validation.
 
     Predefined profiles are (use 
     :meth:`~cssutils.profiles.Profiles.propertiesByProfile` to
     get a list of defined properties):
 
-    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2`: 
+    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2`
         Properties defined by CSS2.1
     :attr:`~cssutils.profiles.Profiles.Profiles.CSS_COLOR_LEVEL_3`
         CSS 3 color properties
-    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3`: 
+    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3`
         Currently overflow related properties only
 
     """
@@ -352,6 +353,27 @@ class Profiles(object):
         
         self.__update_knownnames()
 
+    def removeProfile(self, profile=None, all=False):
+        """Remove `profile` or remove `all` profiles.
+        
+        :param profile:
+            profile name to remove
+        :param all:
+            if ``True`` removes all profiles to start with a clean state
+        :exceptions:
+            - :exc:`cssutils.profiles.NoSuchProfileException`:
+              If given `profile` cannot be found.
+        """
+        if all:
+            self._profiles.clear()
+        else:
+            try:
+                del self._profiles[profile]
+            except KeyError:
+                raise NoSuchProfileException(u'No profile %r.' % profile)
+
+        self.__update_knownnames()
+
     def propertiesByProfile(self, profiles=None):
         """Generator: Yield property names, if no `profiles` is given all
         profile's properties are used.
@@ -403,50 +425,51 @@ class Profiles(object):
         :param value:
             a CSS value (string)
         :returns: 
-            ``valid, profile`` where `valid` is if the `value` is valid for
+            ``valid, profiles`` where ``valid`` is if the `value` is valid for
             the given property `name` in any profile of given `profiles` 
-            and `profile` the profile name for which the value is valid
-            (or ``None`` if not valid at all)
+            and ``profiles`` the profile names for which the value is valid
+            (or ``[]`` if not valid at all)
 
         Example: You might expect a valid Profiles.CSS_LEVEL_2 value but
         e.g. ``validateWithProfile('color', 'rgba(1,1,1,1)')`` returns
         (True, Profiles.CSS_COLOR_LEVEL_3)
         """
-        if not profiles:
-            profiles = self._profilenames
-        elif isinstance(profiles, basestring):
-            profiles = (profiles, )  
-
-        for profilename in profiles:
-            # check given profiles
-            if name in self._profiles[profilename]:
-                validate = self._profiles[profilename][name]
-                try:
-                    if validate(value):
-                        return True, profilename
-                except Exception, e:
-                    self._log.error(e, error=Exception)
-
-        for profilename in (p for p in self._profilenames if p not in profiles):
-            # check remaining profiles as well
-            for validate in self._profiles[profilename].values():
-                try:
-                    if validate(value):
-                        return True, profilename
-                except Exception, e:
-                    self._log.error(e, error=Exception)
-        
-        if name in self.knownnames:
+        if name not in self.knownnames:
+            return False, []
+        else:
+            if not profiles:
+                profiles = self._profilenames
+            elif isinstance(profiles, basestring):
+                profiles = (profiles, )  
+    
+            for profilename in profiles:
+                # check given profiles
+                if name in self._profiles[profilename]:
+                    validate = self._profiles[profilename][name]
+                    try:
+                        if validate(value):
+                            return True, [profilename]
+                    except Exception, e:
+                        self._log.error(e, error=Exception)
+    
+            for profilename in (p for p in self._profilenames if p not in profiles):
+                # check remaining profiles as well
+                if name in self._profiles[profilename]:
+                    validate = self._profiles[profilename][name]
+                    try:
+                        if validate(value):
+                            return True, [profilename]
+                    except Exception, e:
+                        self._log.error(e, error=Exception)
+            
             names = []
             for profilename, properties in self._profiles.items():
                 # return profile to which name belongs
                 if name in properties.keys():
                     names.append(profilename)
             names.sort()
-            return False, '/'.join(names)
-        
-        return False, None
-        
+            return False, names
+                    
 # used by 
 profiles = Profiles()
 
