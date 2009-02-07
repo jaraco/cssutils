@@ -31,7 +31,6 @@ def logging():
     >>> sheet = cssutils.parseString('a { x: 1; } @import "http://example.com/x";')
     >>> print mylog.getvalue()
     WARNING Property: Unknown Property: u'x'. [1:5: x]
-    WARNING Property: u'x' is not an allowed property for profiles None
     WARNING HTTPError opening url=u'http://example.com/x': 404 Not Found
     WARNING CSSImportRule: While processing imported style sheet href=u'http://example.com/x': IOError('Cannot read Stylesheet.',)
     ERROR CSSStylesheet: CSSImportRule not allowed here. [1:13: @import]
