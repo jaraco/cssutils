@@ -3,6 +3,9 @@ profiles
 =========
 Most important method in this module is :meth:`cssutils.profiles.Profiles.addProfile` to add new properties to cssutils and the setting of ``defaultprofile``.
 
+.. index::
+    single: defaultprofile
+
 ``defaultprofile``
 ==================
 `defaultprofile` = None
