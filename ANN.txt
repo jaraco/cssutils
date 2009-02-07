@@ -4,28 +4,36 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.5.1 is a bugfix release.
+0.9.6a1 is an alpha release.
 
 main changes
 ------------
-0.9.5.1 080811
-    + **BUGFIX**: Fixed parsing of ``}a,b`` which resulted in TypeError until now.
+0.9.6a1 090207
+    - **API CHANGE**: Known but invalid properties raise/log an ERROR instead of a WARNING now. Properties not expected in the current profile log an INFO. As the default profile is ``None`` even basic properties like ``color`` are logged now. You may want to change the default profile by setting e.g. ``cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2`` (~ CSS 2.1) to prevent CSS 2.1 properties to be reported. Also other validation related output has been slightly changed.
 
-    + **BUGFIX**: A rule with a selector using an undefined and therefor invalid namespace prefix is ignored now.
+        **The way to change a defaultprofile may change again.**
 
-    + **BUGFIX**: Removed typo in MediaList which resulted in Exception when parsing medialist containing ``all`` and another media.
+    - **API CHANGE**: ``cssutils.script.csscombine`` has **ONLY** keyword parameters now. Use ``csscombine(path=path[,...])`` for the old behaviour. New parameter ``url`` combines the sheet at URL now.
 
-    + **BUGFIX**: Reading imported styles may have failed under certain conditions with an AttributeError.
+    + **FEATURE**: Added **experimental** profiles handling. You may add new profiles with new properties and their validation and set a defaultprofile used for validation. The current default profile is ``None`` so all predefined profiles are used. Currently 3 profiles are defined:
 
-    + FEATURE: Added ``cssutils.VERSION`` which is the current release version, in this case e.g. ``"0.9.5.1"``
+      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2`
+            Properties defined by CSS2.1
+      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_COLOR_LEVEL_3`
+            CSS 3 color properties
+      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3`
+            Currently overflow related properties only
 
-    + IMPROVEMENT: Optimized imports and partly removed circular ones which are a bit tricky...
+      See the docs and source of the cssutils.profiles module for details.
 
+    + **FEATURE**:  ``cssutils.util._readUrl()`` allows fetchers to pre-decode CSS content and return `unicode` instances, with or without a specified source encoding (integrated from patch of Issue #19).
 
-Note:
-    CSSValue, CSSValueList, and CSSPrimitiveValue and the relevant methods/properties Property.cssValue and CSSStyleDeclaration.getPropertyCSSValue are more or less DEPRECATED and will probably be replaced with interfaces defined in CSSOM. For now use the properties and methods that handle values as simple strings, e.g. ``Property.value``. As the aforementioned classes are not hardly that useful anyway this should not be a big problem but please beware if you use or have used them.
+    + **FEATURE**: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if ``import google.appengine`` is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.
+    + **FEATURE**: Function ``cssutils.resolveImports(sheet)`` returns a new stylesheet with all rules in given sheet but with all @import rules being pulled into the top sheet.
+    + FEATURE: CSSCombine script and helper function resolve nested imports now.
+    + FEATURE: Script ``csscombine`` has new option ``-u URL, --url=URL     URL to parse (path is ignored if URL given)`` now
 
-    If you think this a bad idea please let me know!
+    + DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markup'd yet but not too bad either...
 
 
 license

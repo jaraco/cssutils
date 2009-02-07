@@ -11,7 +11,9 @@ echo "set __version__ in setup.py"
 echo
 pause
 
-python setup.py test
+nosetests -v -w src\tests --with-doctest 
+pause
+nosetests -v -w examples --with-doctest 
 pause
 
 python examples\testutil.py
