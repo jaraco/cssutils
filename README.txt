@@ -5,8 +5,6 @@ README
 cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
 :Copyright: 2004-2009 Christof Hoeke
-:Version: $Id$
-
 
 Overview
 ========
