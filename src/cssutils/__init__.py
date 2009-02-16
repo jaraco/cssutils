@@ -263,21 +263,22 @@ def resolveImports(sheet, target=None):
     if not target:
         target = css.CSSStyleSheet()
 
-    target.add(css.CSSComment(cssText=u'/* START %s */' % sheet.href))
+    #target.add(css.CSSComment(cssText=u'/* START %s */' % sheet.href))
     for rule in sheet.cssRules:
         if rule.type == rule.CHARSET_RULE:
             pass
         elif rule.type == rule.IMPORT_RULE:
             log.info(u'Processing @import %r' % rule.href, neverraise=True)
             if rule.styleSheet:
+                target.add(css.CSSComment(cssText=u'/* START @import "%s" */' % rule.href))
                 resolveImports(rule.styleSheet, target)
+                target.add(css.CSSComment(cssText=u'/* END "%s" */' % rule.href))
             else:
                 log.error(u'Cannot get referenced stylesheet %r' %
                           rule.href, neverraise=True)
                 target.add(rule)
         else:
             target.add(rule)
-    target.add(css.CSSComment(cssText=u'/* END %s */' % sheet.href))
     return target
 
 if __name__ == '__main__':
