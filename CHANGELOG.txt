@@ -36,6 +36,8 @@ development version
 0.9.6
 -----
 HEAD
+    - IMPROVEMENT: comments added by ``cssutils.resolveImports`` only use the @import rules href and not the absolute href of the referenced sheets anymore (might have been a possible security hole when showing full path to a sheet)
+
 
 0.9.6a1 090207
     - **API CHANGE**: Known but invalid properties raise/log an ERROR instead of a WARNING now. Properties not expected in the current profile log an INFO. As the default profile is ``None`` even basic properties like ``color`` are logged now. You may want to change the default profile by setting e.g. ``cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2`` (~ CSS 2.1) to prevent CSS 2.1 properties to be reported. Also other validation related output has been slightly changed.
