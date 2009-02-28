@@ -121,7 +121,8 @@ class CSSValue(cssutils.util._NewBase):
                       # special case IE only expression
                       Prod(name='expression', 
                            match=lambda t, v: t == self._prods.FUNCTION and 
-                                              cssutils.helper.normalize(v) == 'expression(',
+                                              cssutils.helper.normalize(v) in (u'expression(', 
+                                                                               u'alpha('),
                            nextSor=nextSor,
                            toSeq=lambda t, tokens: (ExpressionValue.name, 
                                                     ExpressionValue(cssutils.helper.pushtoken(t, 
@@ -968,7 +969,8 @@ class RGBColor(CSSPrimitiveValue):
     
 
 class ExpressionValue(CSSFunction):
-    """Special IE only CSSFunction which may contain *anything*."""
+    """Special IE only CSSFunction which may contain *anything*.
+    Used for expressions and ``alpha(opacity=100)`` currently"""
     name = u'Expression (IE only)'
     
     def _productiondefinition(self):
