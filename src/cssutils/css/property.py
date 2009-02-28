@@ -210,7 +210,7 @@ class Property(cssutils.util.Base):
 #            # validate
             if self._name not in profiles.knownnames:
                 # self.valid = False
-                self._log.warn(u'Property: Unknown Property.',
+                self._log.warn(u'Property: Unknown Property name.',
                                token=token, neverraise=True)
             else:
                 pass
@@ -367,7 +367,57 @@ class Property(cssutils.util.Base):
         
         :param profile:
             A profile name used for validating. If no `profile` is given
-            ``Property.profiles
+            ``cssutils.profiles.defaultprofile`` is used
+            
+        For each of the following case a message is reported:
+        
+        - INVALID (so the property is known but not valid)
+            ``ERROR    Property: Invalid value for "{PROFILE-1[/PROFILE-2...]"
+            property: ...``
+
+        - VALID but not in given or defaultprofile
+            ``WARNING    Property: Not valid for profile "{PROFILE-X}" but valid
+            "{PROFILE-Y}" property: ...``
+
+        - VALID in current profile
+            ``DEBUG    Found valid "{PROFILE-1[/PROFILE-2...]" property...``
+
+        - UNKNOWN property
+            ``WARNING    Unknown Property name...`` is issued            
+            
+        so for example::
+        
+            cssutils.log.setLevel(logging.DEBUG)
+            parser = cssutils.CSSParser()
+            s = parser.parseString('''body { 
+                unknown-property: x;
+                color: 4;
+                color: rgba(1,2,3,4);
+                color: red 
+            }''')
+
+            # Log output:
+            WARNING Property: Unknown Property name. [2:4: unknown-property]
+            ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: color: 4
+            DEBUG   Property: Found valid "CSS Color Module Level 3" property: color: rgba(1, 2, 3, 4)
+            DEBUG   Property: Found valid "CSS Level 2.1" property: color: red
+
+
+        and when setting an explicit default profile::
+
+            cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2
+            s = parser.parseString('''body { 
+                unknown-property: x;
+                color: 4;
+                color: rgba(1,2,3,4);
+                color: red 
+            }''')
+
+            # Log output:
+            WARNING Property: Unknown Property name. [2:4: unknown-property]
+            ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: color: 4
+            WARNING Property: Not valid for profile "CSS Level 2.1" but valid "CSS Color Module Level 3" property: color: rgba(1, 2, 3, 4)
+            DEBUG   Property: Found valid "CSS Level 2.1" property: color: red
         """
         valid = False
         
@@ -376,28 +426,29 @@ class Property(cssutils.util.Base):
                 usedprofile = cssutils.profiles.defaultprofile
             else:
                 usedprofile = profile
-            
+
             if self.name in profiles.knownnames:
                 valid, validprofiles = profiles.validateWithProfile(self.name,
-                                                                   self.value,
-                                                                   usedprofile)
+                                                                    self.value,
+                                                                    usedprofile)
 
                 if not valid:
                     self._log.error(u'Property: Invalid value for "%s" property: %s: %s'
                                    % (u'/'.join(validprofiles), 
-                                      self.name, 
-                                      self.value),
+                                      self.name, self.value),
                                    neverraise=True)
                 elif valid and (usedprofile and usedprofile not in validprofiles):
-                    self._log.warn(u'Property: Not valid for profile "%s": %s: %s'
-                                   % (usedprofile, self.name, self.value),
+                    self._log.warn(u'Property: Not valid for profile "%s" '
+                                   u'but valid "%s" property: %s: %s '
+                                   % (usedprofile, u'/'.join(validprofiles),
+                                      self.name, self.value),
                                    neverraise=True)
+                    valid = False
                                 
-                if valid:
-                    self._log.info(u'Property: Found valid "%s" property: %s: %s'
+                elif valid:
+                    self._log.debug(u'Property: Found valid "%s" property: %s: %s'
                                    % (u'/'.join(validprofiles), 
-                                       self.name, 
-                                       self.value),
+                                       self.name, self.value),
                                    neverraise=True)
                     
         if self._priority not in (u'', u'important'):
