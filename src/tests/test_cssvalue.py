@@ -89,7 +89,7 @@ class CSSValueTestCase(basetest.BaseTestCase):
         v.cssText = u'expression(document.body.clientWidth > 972 ? "1014px": "100%" )'
         self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
         self.assert_(v.CSS_UNKNOWN == v.primitiveType)
-        self.assertEqual('expression(document.body.clientWidth > 972?"1014px": "100%")',
+        self.assertEqual(u'expression(document.body.clientWidth > 972?"1014px": "100%")',
                          v.cssText)
 
     def test_cssText2(self):
@@ -211,7 +211,9 @@ y"''': u'''"xy"''',
             # IE expression
             ur'E\xpression()': u'expression()',
             ur'expression(-1 < +2)': u'expression(-1< + 2)',
-            ur'expression(document.width == "1")': u'expression(document.width=="1")'
+            ur'expression(document.width == "1")': u'expression(document.width=="1")',
+            u'alpha(opacity=80)': u'alpha(opacity=80)',
+            u'alpha( opacity = 80 , x=2  )': u'alpha(opacity=80, x=2)'
             }
         self.do_equal_r(tests)
 
