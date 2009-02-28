@@ -3,13 +3,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>package cssutils.css &mdash; cssutils v0.9.6a1 documentation</title>
+    <title>package cssutils.css &mdash; cssutils v0.9.6a2 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6a1',
+        VERSION:     '0.9.6a2',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6a2 documentation" href="../index.html" />
     <link rel="next" title="package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
     <div class="document">
@@ -1147,7 +1147,7 @@ Tuple of (a, b, c, d) where:</p>
 <h3>CSSStyleDeclaration<a class="headerlink" href="#cssstyledeclaration" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSStyleDeclaration">
-<!--[cssutils.css.CSSStyleDeclaration]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleDeclaration</tt><big>(</big><em>cssText=u''</em>, <em>parentRule=None</em>, <em>profiles=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration" title="Permalink to this definition">¶</a></dt>
+<!--[cssutils.css.CSSStyleDeclaration]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleDeclaration</tt><big>(</big><em>cssText=u''</em>, <em>parentRule=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration" title="Permalink to this definition">¶</a></dt>
 <dd><p>The CSSStyleDeclaration class represents a single CSS declaration
 block. This class may be used to determine the style properties
 currently set in a block or to set style properties explicitly
@@ -1511,7 +1511,7 @@ readonly.</li>
 <h3>Property<a class="headerlink" href="#property" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.Property">
-<!--[cssutils.css.Property]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>profiles=None</em>, <em>_mediaQuery=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
+<!--[cssutils.css.Property]-->class <tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>_mediaQuery=False</em>, <em>_parent=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
 <dd><p>A CSS property in a StyleDeclaration of a CSSStyleRule (cssutils).</p>
 <p>Format:</p>
 <div class="highlight-python"><pre>property = name
@@ -1581,7 +1581,80 @@ prio
 <dl class="method">
 <dt id="cssutils.css.Property.validate">
 <!--[cssutils.css.Property.validate]--><tt class="descname">validate</tt><big>(</big><em>profile=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property.validate" title="Permalink to this definition">¶</a></dt>
-<dd>Validate value against name.</dd></dl>
+<dd><p>Validate value against <cite>profile</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>profile</em> &#8211; A profile name used for validating. If no <cite>profile</cite> is given
+<tt class="docutils literal"><span class="pre">cssutils.profiles.defaultprofile</span></tt> is used</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For each of the following case a message is reported:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>INVALID (so the property is known but not valid)</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">ERROR</span>&nbsp;&nbsp;&nbsp; <span class="pre">Property:</span> <span class="pre">Invalid</span> <span class="pre">value</span> <span class="pre">for</span> <span class="pre">&quot;{PROFILE-1[/PROFILE-2...]&quot;</span>
+<span class="pre">property:</span> <span class="pre">...</span></tt></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>VALID but not in given or defaultprofile</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">WARNING</span>&nbsp;&nbsp;&nbsp; <span class="pre">Property:</span> <span class="pre">Not</span> <span class="pre">valid</span> <span class="pre">for</span> <span class="pre">profile</span> <span class="pre">&quot;{PROFILE-X}&quot;</span> <span class="pre">but</span> <span class="pre">valid</span>
+<span class="pre">&quot;{PROFILE-Y}&quot;</span> <span class="pre">property:</span> <span class="pre">...</span></tt></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>VALID in current profile</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">DEBUG</span>&nbsp;&nbsp;&nbsp; <span class="pre">Found</span> <span class="pre">valid</span> <span class="pre">&quot;{PROFILE-1[/PROFILE-2...]&quot;</span> <span class="pre">property...</span></tt></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>UNKNOWN property</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">WARNING</span>&nbsp;&nbsp;&nbsp; <span class="pre">Unknown</span> <span class="pre">Property</span> <span class="pre">name...</span></tt> is issued</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>so for example:</p>
+<div class="highlight-python"><pre>cssutils.log.setLevel(logging.DEBUG)
+parser = cssutils.CSSParser()
+s = parser.parseString('''body { 
+    unknown-property: x;
+    color: 4;
+    color: rgba(1,2,3,4);
+    color: red 
+}''')
+
+# Log output:
+WARNING Property: Unknown Property name. [2:4: unknown-property]
+ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: color: 4
+DEBUG   Property: Found valid "CSS Color Module Level 3" property: color: rgba(1, 2, 3, 4)
+DEBUG   Property: Found valid "CSS Level 2.1" property: color: red</pre>
+</div>
+<p>and when setting an explicit default profile:</p>
+<div class="highlight-python"><pre>cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2
+s = parser.parseString('''body { 
+    unknown-property: x;
+    color: 4;
+    color: rgba(1,2,3,4);
+    color: red 
+}''')
+
+# Log output:
+WARNING Property: Unknown Property name. [2:4: unknown-property]
+ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: color: 4
+WARNING Property: Not valid for profile "CSS Level 2.1" but valid "CSS Color Module Level 3" property: color: rgba(1, 2, 3, 4)
+DEBUG   Property: Found valid "CSS Level 2.1" property: color: red</pre>
+</div>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Property.value">
@@ -1865,7 +1938,8 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 <dl class="class">
 <dt id="cssutils.css.cssvalue.ExpressionValue">
 <!--[cssutils.css.cssvalue.ExpressionValue]-->class <tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">ExpressionValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Special IE only CSSFunction which may contain <em>anything</em>.</p>
+<dd><p>Special IE only CSSFunction which may contain <em>anything</em>.
+Used for expressions and <tt class="docutils literal"><span class="pre">alpha(opacity=100)</span></tt> currently</p>
 <dl class="attribute">
 <dt id="cssutils.css.cssvalue.ExpressionValue.cssText">
 <!--[cssutils.css.cssvalue.ExpressionValue.cssText]--><tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue.cssText" title="Permalink to this definition">¶</a></dt>
@@ -1973,7 +2047,7 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
