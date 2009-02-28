@@ -510,10 +510,10 @@ a, b {}'''
         # CSSStyleDeclaration has no actual property valid 
         # but is empty if containing invalid Properties only
         s = cssutils.css.CSSStyleDeclaration()
-        s.setProperty(p)
-        self.assertEqual(s.cssText, 'color: 1px')
+        s.cssText = u'left: x;top: x'
+        self.assertEqual(s.cssText, u'left: x;\ntop: x')
         cssutils.ser.prefs.validOnly = True
-        self.assertEqual(s.cssText, '')
+        self.assertEqual(s.cssText, u'')
         
     def test_CSSStyleSheet(self):
         "CSSSerializer.do_CSSStyleSheet"
