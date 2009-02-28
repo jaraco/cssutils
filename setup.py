@@ -9,7 +9,7 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
-__version__ = '0.9.6a1'
+__version__ = '0.9.6a2'
 
 import codecs
 import os
