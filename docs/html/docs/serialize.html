@@ -3,13 +3,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>serializing CSS &mdash; cssutils v0.9.6a1 documentation</title>
+    <title>serializing CSS &mdash; cssutils v0.9.6a2 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6a1',
+        VERSION:     '0.9.6a2',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a1 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6a2 documentation" href="../index.html" />
     <link rel="next" title="package cssutils.css" href="css.html" />
     <link rel="prev" title="parsing CSS" href="parse.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="parse.html" title="parsing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
     <div class="document">
@@ -49,7 +49,7 @@
             
   
   <span class="target" id="module-cssutils.serialize"></span><div class="section" id="serializing-css">
-<span id="index-3"></span><h1>serializing CSS<a class="headerlink" href="#serializing-css" title="Permalink to this headline">¶</a></h1>
+<span id="index-18"></span><h1>serializing CSS<a class="headerlink" href="#serializing-css" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cssserializer">
 <h2><tt class="docutils literal"><span class="pre">CSSSerializer</span></tt><a class="headerlink" href="#cssserializer" title="Permalink to this headline">¶</a></h2>
 <p>There is a single global serializer used throughout the library. You may configure it by setting specific <a class="reference internal" href="#preferences">Preferences</a> or completely replace it with your own.</p>
@@ -71,7 +71,7 @@ Serializer and overwrite the methods you like to customize.</p>
 
 <span class="target" id="preferences"></span></div>
 <div class="section" id="id1">
-<span id="index-4"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span id="index-19"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>Quite a few preferences of the cssutils serializer may be tweaked.</p>
 <p>To set a preference use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">sheet</span> <span class="o">=</span> <span class="n">CSSStyleSheet</span><span class="p">()</span>
@@ -134,11 +134,9 @@ CSSStyleDeclarations usable in HTML style attribute.</dd>
 CSSOM defines a single space for this which is also the default in cssutils.</dd>
 <dt>spacer = u&#8217; &#8216;</dt>
 <dd>general spacer, used e.g. by CSSUnknownRule</dd>
-<dt>validOnly = False <strong>DO NOT CHANGE YET</strong></dt>
-<dd><p class="first">if True only valid (currently Properties) are kept</p>
-<p class="last">A Property is valid if it is a known Property with a valid value.
-Currently CSS 2.1 values as defined in cssproperties.py would be
-valid.</p>
+<dt>validOnly = False</dt>
+<dd><p class="first">if True only valid (Properties) are output</p>
+<p class="last">A Property is valid if it is a known Property with a valid value.</p>
 </dd>
 </dl>
 <dl class="method">
@@ -177,7 +175,7 @@ and set settings you want adjusted afterwards.</p>
             <h4>Previous topic</h4>
             <p class="topless"><a href="parse.html" title="previous chapter">parsing CSS</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="css.html" title="next chapter">package <tt class="docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
+            <p class="topless"><a href="css.html" title="next chapter">package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/serialize.txt">Show Source</a></li>
@@ -207,7 +205,7 @@ and set settings you want adjusted afterwards.</p>
         <li class="right" >
           <a href="parse.html" title="parsing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
