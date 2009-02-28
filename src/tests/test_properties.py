@@ -123,10 +123,29 @@ class PropertiesTestCase(basetest.BaseTestCase):
             # keep track of valid keys
             self._check(name, keys)
 
+    def test_validate(self):
+        "Property.validate() and Property.valid"
+        tests = {
+            # (default L2, no default, no profile, L2, Color L3)
+            'red': (True, True, True, True, True),
+            'rgba(1,2,3,1)': (False, True, True, False, True),
+            '1': (False, False, False, False, False)
+        }
+        for v, rs in tests.items():
+            p = Property('color', v)
+            cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2
+            self.assertEqual(rs[0], p.valid)
+            cssutils.profiles.defaultprofile = None
+            self.assertEqual(rs[1], p.valid)
+
+            self.assertEqual(rs[2], p.validate())
+            self.assertEqual(rs[3], p.validate(cssutils.profiles.Profiles.CSS_LEVEL_2))
+            self.assertEqual(rs[4], p.validate(cssutils.profiles.Profiles.CSS_COLOR_LEVEL_3))
+
 
 if __name__ == '__main__':
     import logging
     import unittest
     cssutils.log.setLevel(logging.FATAL)
-    debug = True
+    #debug = True
     unittest.main()
