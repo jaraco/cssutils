@@ -19,6 +19,8 @@ EXPERR = u'Property: Found valid "CSS Level 2.1" property: color: red\nProperty:
 def main():
     # -*- coding: utf-8 -*-
     import cssutils
+    import logging
+    cssutils.log.setLevel(logging.DEBUG)
     
     css = u'''/* a comment with umlaut ä */ 
          @namespace html "http://www.w3.org/1999/xhtml";
