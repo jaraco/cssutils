@@ -82,12 +82,10 @@ class Preferences(object):
     spacer = u' '
         general spacer, used e.g. by CSSUnknownRule
     
-    validOnly = False **DO NOT CHANGE YET**
-        if True only valid (currently Properties) are kept
+    validOnly = False
+        if True only valid (Properties) are output
         
         A Property is valid if it is a known Property with a valid value.
-        Currently CSS 2.1 values as defined in cssproperties.py would be
-        valid. 
     """
     def __init__(self, **initials):
         """Always use named instead of positional parameters."""
@@ -741,10 +739,11 @@ class CSSSerializer(object):
                         out.append(separator)
                 elif isinstance(val, cssutils.css.Property):
                     # PropertySimilarNameList
-                    out.append(val.cssText)
-                    if not (self.prefs.omitLastSemicolon and i==len(seq)-1):
-                        out.append(u';')
-                    out.append(separator)
+                    if val.cssText:
+                        out.append(val.cssText)
+                        if not (self.prefs.omitLastSemicolon and i==len(seq)-1):
+                            out.append(u';')
+                        out.append(separator)
                 elif isinstance(val, cssutils.css.CSSUnknownRule):
                     # @rule
                     out.append(val.cssText)
