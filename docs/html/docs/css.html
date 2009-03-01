@@ -1580,21 +1580,21 @@ prio
 
 <dl class="method">
 <dt id="cssutils.css.Property.validate">
-<!--[cssutils.css.Property.validate]--><tt class="descname">validate</tt><big>(</big><em>profile=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate value against <cite>profile</cite>.</p>
+<!--[cssutils.css.Property.validate]--><tt class="descname">validate</tt><big>(</big><em>profiles=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate value against <cite>profiles</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>profile</em> &#8211; A profile name used for validating. If no <cite>profile</cite> is given
-<tt class="docutils literal"><span class="pre">cssutils.profiles.defaultprofile</span></tt> is used</li>
+<li><em>profiles</em> &#8211; A list of profile names used for validating. If no <cite>profiles</cite>
+is given <tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span></tt> is used</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>For each of the following case a message is reported:</p>
+<p>For each of the following cases a message is reported:</p>
 <ul>
 <li><dl class="first docutils">
 <dt>INVALID (so the property is known but not valid)</dt>
@@ -1604,7 +1604,7 @@ prio
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>VALID but not in given or defaultprofile</dt>
+<dt>VALID but not in given profiles or defaultProfiles</dt>
 <dd><p class="first last"><tt class="docutils literal"><span class="pre">WARNING</span>&nbsp;&nbsp;&nbsp; <span class="pre">Property:</span> <span class="pre">Not</span> <span class="pre">valid</span> <span class="pre">for</span> <span class="pre">profile</span> <span class="pre">&quot;{PROFILE-X}&quot;</span> <span class="pre">but</span> <span class="pre">valid</span>
 <span class="pre">&quot;{PROFILE-Y}&quot;</span> <span class="pre">property:</span> <span class="pre">...</span></tt></p>
 </dd>
@@ -1634,13 +1634,14 @@ s = parser.parseString('''body {
 }''')
 
 # Log output:
-WARNING Property: Unknown Property name. [2:4: unknown-property]
-ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: color: 4
-DEBUG   Property: Found valid "CSS Color Module Level 3" property: color: rgba(1, 2, 3, 4)
-DEBUG   Property: Found valid "CSS Level 2.1" property: color: red</pre>
+
+WARNING Property: Unknown Property name. [2:9: unknown-property]
+ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 4 [3:9: color]
+DEBUG   Property: Found valid "CSS Color Module Level 3" value: rgba(1, 2, 3, 4) [4:9: color]
+DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]</pre>
 </div>
 <p>and when setting an explicit default profile:</p>
-<div class="highlight-python"><pre>cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2
+<div class="highlight-python"><pre>cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2
 s = parser.parseString('''body { 
     unknown-property: x;
     color: 4;
@@ -1649,10 +1650,11 @@ s = parser.parseString('''body {
 }''')
 
 # Log output:
-WARNING Property: Unknown Property name. [2:4: unknown-property]
-ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: color: 4
-WARNING Property: Not valid for profile "CSS Level 2.1" but valid "CSS Color Module Level 3" property: color: rgba(1, 2, 3, 4)
-DEBUG   Property: Found valid "CSS Level 2.1" property: color: red</pre>
+
+WARNING Property: Unknown Property name. [2:9: unknown-property]
+ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 4 [3:9: color]
+WARNING Property: Not valid for profile "CSS Level 2.1" but valid "CSS Color Module Level 3" value: rgba(1, 2, 3, 4)  [4:9: color]
+DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]            </pre>
 </div>
 </dd></dl>
 
