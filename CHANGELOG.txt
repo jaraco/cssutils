@@ -36,14 +36,22 @@ development version
 0.9.6
 -----
 HEAD
+    + **API CHANGE**: :class:`cssutils.profiles.Profiles` (introduced in 0.9.6a1) has been refactored:
+
+        - a global ``cssutils.profiles.Profiles`` object is now preset as ``cssutils.profile`` and is used for all validation
+        - moved variable ``cssutils.profiles.defaultprofile`` to attribute ``cssutils.profile.defaultProfiles`` (attribute of the class of this object)
+        - renamed ``Profiles.knownnames`` to ``Profiles.knownNames``
+        - ``Profiles.validateWithProfile`` returns ``valid, matching, profiles`` now
+        - renamed parameter in :meth:`cssutils.css.Property.validate(profile=None)` to ``profiles``
+
+    + **CHANGE**: Reporting levels of properties have changed. Please see :meth:`cssutils.css.Property.validate` for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore. The log output has been changed too, context information is provided now (line, column and name of the relevant property)
+
     - **BUGFIX**: ``p.valid == False`` is now set for Properties not valid in the current profile even if they are valid in a different profile
     - BUGFIX: If ``cssutils.ser.prefs.validOnly == True`` serializer incorrectly put a single ``;`` for invalid properties out until now.
 
-    + **CHANGE**: Reporting levels of properties have changed. Please see :meth:`cssutils.css.Property.validate` for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore.
+    + **IMPROVEMENT**: comments added by ``cssutils.resolveImports`` only use the @import rules' href and not the absolute href of the referenced sheets anymore (might have been a possible security hole when showing a full local path to a sheet in a combined but not minified sheet)
 
-    - **IMPROVEMENT**: comments added by ``cssutils.resolveImports`` only use the @import rules' href and not the absolute href of the referenced sheets anymore (might have been a possible security hole when showing a full local path to a sheet in a combined but not minified sheet)
-
-    - IMPROVEMENT: IE specific `alpha` values like ``filter: alpha(opacity=80)`` are parsed and kept now.
+    + IMPROVEMENT: IE specific `alpha` values like ``filter: alpha(opacity=80)`` are parsed and kept now.
 
 
 0.9.6a1 090207
