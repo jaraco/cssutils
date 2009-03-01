@@ -7,7 +7,7 @@ example css is in default UTF-8 encoding
 from cssutils import CSSParser
 
 EXPOUT = '''cssText in different encodings, depending on the console some\n     chars may look broken but are actually not\n\n@charset "ascii";\n/* some umlauts \\E4 \\F6 \\FC  and EURO sign \\20AC  */\na:before {\n    content: "\\E4 "\n    }\n\n@charset "iso-8859-1";\n/* some umlauts \xe4\xf6\xfc and EURO sign \\20AC  */\na:before {\n    content: "\xe4"\n    }\n\n@charset "iso-8859-15";\n/* some umlauts \xe4\xf6\xfc and EURO sign \xa4 */\na:before {\n    content: "\xe4"\n    }\n\n@charset "utf-8";\n/* some umlauts \xc3\xa4\xc3\xb6\xc3\xbc and EURO sign \xe2\x82\xac */\na:before {\n    content: "\xc3\xa4"\n    }\n\n/* some umlauts \xc3\xa4\xc3\xb6\xc3\xbc and EURO sign \xe2\x82\xac */\na:before {\n    content: "\xc3\xa4"\n    }\n'''
-EXPERR = u'Property: Found valid "CSS Level 2.1" property: content: "\xe4"\n'
+EXPERR = u'Property: Found valid "CSS Level 2.1" value: "\xe4" [4:8: content]\n'
 
 
 def main():
