@@ -92,6 +92,9 @@ from parse import CSSParser
 from serialize import CSSSerializer
 ser = CSSSerializer()
 
+from profiles import Profiles
+profile = Profiles(log=log)
+
 # used by Selector defining namespace prefix '*'
 _ANYNS = -1
 
