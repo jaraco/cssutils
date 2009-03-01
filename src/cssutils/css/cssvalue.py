@@ -10,7 +10,6 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 from cssutils.prodparser import *
-from cssutils.profiles import profiles
 import cssutils
 import cssutils.helper
 import re
