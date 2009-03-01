@@ -133,14 +133,17 @@ class PropertiesTestCase(basetest.BaseTestCase):
         }
         for v, rs in tests.items():
             p = Property('color', v)
-            cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2
+            cssutils.profile.defaultProfiles = \
+                cssutils.profile.CSS_LEVEL_2
             self.assertEqual(rs[0], p.valid)
-            cssutils.profiles.defaultprofile = None
+            cssutils.profile.defaultProfiles = None
             self.assertEqual(rs[1], p.valid)
 
             self.assertEqual(rs[2], p.validate())
-            self.assertEqual(rs[3], p.validate(cssutils.profiles.Profiles.CSS_LEVEL_2))
-            self.assertEqual(rs[4], p.validate(cssutils.profiles.Profiles.CSS_COLOR_LEVEL_3))
+            self.assertEqual(rs[3], p.validate(
+                profiles=cssutils.profile.CSS_LEVEL_2))
+            self.assertEqual(rs[4], p.validate(
+                cssutils.profile.CSS_COLOR_LEVEL_3))
 
 
 if __name__ == '__main__':

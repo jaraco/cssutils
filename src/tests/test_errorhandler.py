@@ -101,7 +101,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         cssutils.log.setLevel(logging.DEBUG)
         cssutils.parseString('a { color: 1 }')
         self.assertEqual(s.getvalue(),
-                         u'ERROR    Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: color: 1\n')
+                         u'ERROR    Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 1 [1:5: color]\n')
 
         s = self._setHandler()
 
