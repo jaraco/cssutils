@@ -16,7 +16,7 @@ __all__ = ['profiles']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
-import cssutils
+#import cssutils
 import re
 
 properties = {}
@@ -221,18 +221,18 @@ class NoSuchProfileException(Exception):
 
 class Profiles(object):
     """
-    All profiles used for validation. ``cssutils.profiles.profiles`` is a
+    All profiles used for validation. ``cssutils.profile`` is a
     preset object of this class and used by all properties for validation.
 
     Predefined profiles are (use 
     :meth:`~cssutils.profiles.Profiles.propertiesByProfile` to
     get a list of defined properties):
 
-    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2`
+    :attr:`~cssutils.profiles.Profiles.CSS_LEVEL_2`
         Properties defined by CSS2.1
-    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_COLOR_LEVEL_3`
+    :attr:`~cssutils.profiles.Profiles.CSS_COLOR_LEVEL_3`
         CSS 3 color properties
-    :attr:`~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3`
+    :attr:`~cssutils.profiles.Profiles.CSS_BOX_LEVEL_3`
         Currently overflow related properties only
 
     """
@@ -274,17 +274,18 @@ class Profiles(object):
         'percentage': r'{num}%',
         }
 
-    def __init__(self):
-        """A few known profiles are predefined."""
-        self._log = cssutils.log
-        self._profilenames = [] # to keep order, REFACTOR!
+    def __init__(self, log=None):
+        """A few known profiles are predefined."""            
+        self._log = log
+        self._profileNames = [] # to keep order, REFACTOR!
         self._profiles = {}
+        self._defaultProfiles = None
         
         self.addProfile(self.CSS_LEVEL_2, properties['css2'], css2macros)
         self.addProfile(self.CSS_COLOR_LEVEL_3, properties['css3color'], css3colormacros)
         self.addProfile(self.CSS_BOX_LEVEL_3, properties['css3box'])
         
-        self.__update_knownnames()
+        self.__update_knownNames()
 
     def _expand_macros(self, dictionary, macros):
         """Expand macros in token dictionary"""
@@ -307,15 +308,33 @@ class Profiles(object):
 
         return dictionary
 
-    def __update_knownnames(self):
-        self._knownnames = []
+    def __update_knownNames(self):
+        self._knownNames = []
         for properties in self._profiles.values():
-            self._knownnames.extend(properties.keys())
-        
-    profiles = property(lambda self: sorted(self._profiles.keys()),
-                                            doc=u'Names of all profiles.')
+            self._knownNames.extend(properties.keys())
+      
+    def _getDefaultProfiles(self):
+        "If not explicitly set same as Profiles.profiles but in reverse order."
+        if not self._defaultProfiles:
+            return self.profiles#list(reversed(self.profiles))
+        else:
+            return self._defaultProfiles
 
-    knownnames = property(lambda self: self._knownnames,
+    def _setDefaultProfiles(self, profiles):
+        "profiles may be a single or a list of profile names"
+        if isinstance(profiles, basestring):
+            self._defaultProfiles = (profiles,)
+        else:
+            self._defaultProfiles = profiles
+        
+    defaultProfiles = property(_getDefaultProfiles, 
+                               _setDefaultProfiles,
+                               doc=u"Names of profiles to use for validation.")
+            
+    profiles = property(lambda self: self._profileNames,
+                        doc=u'Names of all profiles in order as defined.')
+
+    knownNames = property(lambda self: self._knownNames,
                                doc="All known property names of all profiles.")
 
     def addProfile(self, profile, properties, macros=None):
@@ -348,10 +367,10 @@ class Profiles(object):
         m.update(self.generalmacros)
         m.update(macros)
         properties = self._expand_macros(properties, m)
-        self._profilenames.append(profile)
+        self._profileNames.append(profile)
         self._profiles[profile] = self._compile_regexes(properties)
         
-        self.__update_knownnames()
+        self.__update_knownNames()
 
     def removeProfile(self, profile=None, all=False):
         """Remove `profile` or remove `all` profiles.
@@ -366,13 +385,15 @@ class Profiles(object):
         """
         if all:
             self._profiles.clear()
+            del self._profileNames[:]
         else:
             try:
                 del self._profiles[profile]
+                del self._profileNames[self._profileNames.index(profile)]
             except KeyError:
                 raise NoSuchProfileException(u'No profile %r.' % profile)
 
-        self.__update_knownnames()
+        self.__update_knownNames()
 
     def propertiesByProfile(self, profiles=None):
         """Generator: Yield property names, if no `profiles` is given all
@@ -424,41 +445,47 @@ class Profiles(object):
             a property name
         :param value:
             a CSS value (string)
+        :param profiles:
+            internal parameter used by Property.validate only
         :returns: 
-            ``valid, profiles`` where ``valid`` is if the `value` is valid for
-            the given property `name` in any profile of given `profiles` 
+            ``valid, matching, profiles`` where ``valid`` is if the `value` 
+            is valid for the given property `name` in any profile, 
+            ``matching==True`` if it is valid in the given `profiles`
             and ``profiles`` the profile names for which the value is valid
             (or ``[]`` if not valid at all)
 
-        Example: You might expect a valid Profiles.CSS_LEVEL_2 value but
-        e.g. ``validateWithProfile('color', 'rgba(1,1,1,1)')`` returns
-        (True, Profiles.CSS_COLOR_LEVEL_3)
+        Example::
+        
+            >>> cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2
+            >>> print cssutils.profile.validateWithProfile('color', 'rgba(1,1,1,1)')
+            (True, False, Profiles.CSS_COLOR_LEVEL_3)
         """
-        if name not in self.knownnames:
-            return False, []
+        if name not in self.knownNames:
+            return False, False, []
         else:
             if not profiles:
-                profiles = self._profilenames
+                profiles = self.defaultProfiles
             elif isinstance(profiles, basestring):
                 profiles = (profiles, )  
-    
+
             for profilename in profiles:
                 # check given profiles
                 if name in self._profiles[profilename]:
                     validate = self._profiles[profilename][name]
                     try:
                         if validate(value):
-                            return True, [profilename]
+                            return True, True, [profilename]
                     except Exception, e:
                         self._log.error(e, error=Exception)
     
-            for profilename in (p for p in self._profilenames if p not in profiles):
+            for profilename in (p for p in self._profileNames 
+                                if p not in profiles):
                 # check remaining profiles as well
                 if name in self._profiles[profilename]:
                     validate = self._profiles[profilename][name]
                     try:
                         if validate(value):
-                            return True, [profilename]
+                            return True, False, [profilename]
                     except Exception, e:
                         self._log.error(e, error=Exception)
             
@@ -468,11 +495,8 @@ class Profiles(object):
                 if name in properties.keys():
                     names.append(profilename)
             names.sort()
-            return False, names
+            return False, False, names
                     
 # used by 
-profiles = Profiles()
-
-# set for validation to e.g.``Profiles.CSS_LEVEL_2``
-defaultprofile = None
+#profiles = Profiles()
 
