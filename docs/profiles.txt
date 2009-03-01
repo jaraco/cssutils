@@ -1,10 +1,17 @@
 =========
 profiles
 =========
-Most important method in this module is :meth:`cssutils.profiles.Profiles.addProfile` to add new properties to cssutils and the setting of ``defaultprofile``.
 
 .. index::
-    single: defaultprofile
+    single: profile
+
+``cssutils.profile``
+====================
+A global object ``cssutils.profile`` is used for validation of all properties. It is an instance of :class:`cssutils.profiles.Profiles`. Add or remove new profile definitions here.
+
+Most important method is :meth:`cssutils.profiles.Profiles.addProfile` to add new properties to cssutils and the setting of ``defaultProfiles``.
+
+
 
 Example of how to add a new profile::
 
@@ -17,31 +24,26 @@ Example of how to add a new profile::
     ...    '-test-y': '{ident}|{percentage}',
     ...    # custom validation function
     ...    '-test-z': lambda(v): int(v) > 0}
-    >>> cssutils.profiles.profiles.addProfile('test', P1)
+    >>> cssutils.profile.addProfile('test', P1)
     >>> sheet = cssutils.parseString('x { -test-x: 1 }')
     >>> print sheet.cssRules[0].style.getProperties()[0].valid
     True
 
-**This may change again, please beware!**
+An additional per CSSStyleSheet setting of a profile may be added soon.
 
-A per CSSStyleSheet setting of a profile may be added soon.
-
-Current status in release 0.9.6a1.
+**Please note: This might change again, but only slightly as it has been refactored in 0.9.6a2.**
 
 
-``profiles``
-============
-A global :class:`cssutils.profiles.Profile` object which is used by all CSS properties for validation. Add or remove new profile definitions here.
+.. index::
+    single: defaultProfiles
+
+``cssutils.profile.defaultProfiles``
+====================================
+`defaultProfiles` is used for validation. To use e.g. the CSS2 profile set ``cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2``
 
 
-``defaultprofile``
-==================
-`defaultprofile` = None
-        `defaultprofile` is used for validation. To use e.g. the CSS2 profile set ``cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2``
-
-
-``Profiles``
-============
+``cssutils.profiles.Profiles``
+==============================
 .. autoclass:: cssutils.profiles.Profiles
     :members:
     :inherited-members:
