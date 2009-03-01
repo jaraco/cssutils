@@ -19,7 +19,7 @@ def profile():
     ...    '-test-y': '{ident}|{percentage}',
     ...    # custom validation function 
     ...    '-test-z': lambda(v): int(v) > 0}
-    >>> cssutils.profiles.profiles.addProfile('test', P1)
+    >>> cssutils.profile.addProfile('test', P1)
     >>> sheet = cssutils.parseString('x { -test-x: 1 }')
     >>> print sheet.cssRules[0].style.getProperties()[0].valid
     True
