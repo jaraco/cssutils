@@ -50,8 +50,11 @@
   
   <div class="section" id="profiles">
 <h1>profiles<a class="headerlink" href="#profiles" title="Permalink to this headline">¶</a></h1>
-<p>Most important method in this module is <a title="cssutils.profiles.Profiles.addProfile" class="reference internal" href="#cssutils.profiles.Profiles.addProfile"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles.addProfile()</span></tt></a> to add new properties to cssutils and the setting of <tt class="docutils literal"><span class="pre">defaultprofile</span></tt>.</p>
-<p id="index-15">Example of how to add a new profile:</p>
+<div class="section" id="cssutils-profile">
+<span id="index-31"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
+<p>A global object <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is used for validation of all properties. It is an instance of <a title="cssutils.profiles.Profiles" class="reference internal" href="#cssutils.profiles.Profiles"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a>. Add or remove new profile definitions here.</p>
+<p>Most important method is <a title="cssutils.profiles.Profiles.addProfile" class="reference internal" href="#cssutils.profiles.Profiles.addProfile"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles.addProfile()</span></tt></a> to add new properties to cssutils and the setting of <tt class="docutils literal"><span class="pre">defaultProfiles</span></tt>.</p>
+<p>Example of how to add a new profile:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cssutils</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;x { -test-x: 1 }&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">()[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">valid</span>
@@ -61,32 +64,25 @@
 <span class="gp">... </span>   <span class="s">&#39;-test-y&#39;</span><span class="p">:</span> <span class="s">&#39;{ident}|{percentage}&#39;</span><span class="p">,</span>
 <span class="gp">... </span>   <span class="c"># custom validation function</span>
 <span class="gp">... </span>   <span class="s">&#39;-test-z&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">(</span><span class="n">v</span><span class="p">):</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">addProfile</span><span class="p">(</span><span class="s">&#39;test&#39;</span><span class="p">,</span> <span class="n">P1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">addProfile</span><span class="p">(</span><span class="s">&#39;test&#39;</span><span class="p">,</span> <span class="n">P1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;x { -test-x: 1 }&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">()[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">valid</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-<p><strong>This may change again, please beware!</strong></p>
-<p>A per CSSStyleSheet setting of a profile may be added soon.</p>
-<p>Current status in release 0.9.6a1.</p>
-<div class="section" id="id1">
-<h2><tt class="docutils literal"><span class="pre">profiles</span></tt><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>A global <tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profile</span></tt> object which is used by all CSS properties for validation. Add or remove new profile definitions here.</p>
+<p>An additional per CSSStyleSheet setting of a profile may be added soon.</p>
+<p><strong>Please note: This might change again, but only slightly as it has been refactored in 0.9.6a2.</strong></p>
 </div>
-<div class="section" id="defaultprofile">
-<h2><tt class="docutils literal"><span class="pre">defaultprofile</span></tt><a class="headerlink" href="#defaultprofile" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt><cite>defaultprofile</cite> = None</dt>
-<dd><cite>defaultprofile</cite> is used for validation. To use e.g. the CSS2 profile set <tt class="docutils literal"><span class="pre">cssutils.profiles.defaultprofile</span> <span class="pre">=</span> <span class="pre">cssutils.profiles.Profiles.CSS_LEVEL_2</span></tt></dd>
-</dl>
+<div class="section" id="cssutils-profile-defaultprofiles">
+<span id="index-32"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span></tt><a class="headerlink" href="#cssutils-profile-defaultprofiles" title="Permalink to this headline">¶</a></h2>
+<p><cite>defaultProfiles</cite> is used for validation. To use e.g. the CSS2 profile set <tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span> <span class="pre">=</span> <span class="pre">cssutils.profile.CSS_LEVEL_2</span></tt></p>
 </div>
-<div class="section" id="id2">
-<h2><tt class="docutils literal"><span class="pre">Profiles</span></tt><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cssutils-profiles-profiles">
+<h2><tt class="docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt><a class="headerlink" href="#cssutils-profiles-profiles" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cssutils.profiles.Profiles">
-<!--[cssutils.profiles.Profiles]-->class <tt class="descclassname">cssutils.profiles.</tt><tt class="descname">Profiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>All profiles used for validation. <tt class="docutils literal"><span class="pre">cssutils.profiles.profiles</span></tt> is a
+<!--[cssutils.profiles.Profiles]-->class <tt class="descclassname">cssutils.profiles.</tt><tt class="descname">Profiles</tt><big>(</big><em>log=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>All profiles used for validation. <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is a
 preset object of this class and used by all properties for validation.</p>
 <p>Predefined profiles are (use 
 <a title="cssutils.profiles.Profiles.propertiesByProfile" class="reference internal" href="#cssutils.profiles.Profiles.propertiesByProfile"><tt class="xref docutils literal"><span class="pre">propertiesByProfile()</span></tt></a> to
@@ -133,14 +129,19 @@ predefined basic macros which may always be used in
 </dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.profiles.Profiles.knownnames">
-<!--[cssutils.profiles.Profiles.knownnames]--><tt class="descname">knownnames</tt><a class="headerlink" href="#cssutils.profiles.Profiles.knownnames" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.profiles.Profiles.defaultProfiles">
+<!--[cssutils.profiles.Profiles.defaultProfiles]--><tt class="descname">defaultProfiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles.defaultProfiles" title="Permalink to this definition">¶</a></dt>
+<dd>Names of profiles to use for validation.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.profiles.Profiles.knownNames">
+<!--[cssutils.profiles.Profiles.knownNames]--><tt class="descname">knownNames</tt><a class="headerlink" href="#cssutils.profiles.Profiles.knownNames" title="Permalink to this definition">¶</a></dt>
 <dd>All known property names of all profiles.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.profiles.Profiles.profiles">
 <!--[cssutils.profiles.Profiles.profiles]--><tt class="descname">profiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles.profiles" title="Permalink to this definition">¶</a></dt>
-<dd>Names of all profiles.</dd></dl>
+<dd>Names of all profiles in order as defined.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.propertiesByProfile">
@@ -219,20 +220,25 @@ profile</p>
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><em>name</em> &#8211; a property name</li>
 <li><em>value</em> &#8211; a CSS value (string)</li>
+<li><em>profiles</em> &#8211; internal parameter used by Property.validate only</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">valid,</span> <span class="pre">profiles</span></tt> where <tt class="docutils literal"><span class="pre">valid</span></tt> is if the <cite>value</cite> is valid for
-the given property <cite>name</cite> in any profile of given <cite>profiles</cite> 
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">valid,</span> <span class="pre">matching,</span> <span class="pre">profiles</span></tt> where <tt class="docutils literal"><span class="pre">valid</span></tt> is if the <cite>value</cite> 
+is valid for the given property <cite>name</cite> in any profile, 
+<tt class="docutils literal"><span class="pre">matching==True</span></tt> if it is valid in the given <cite>profiles</cite>
 and <tt class="docutils literal"><span class="pre">profiles</span></tt> the profile names for which the value is valid
 (or <tt class="docutils literal"><span class="pre">[]</span></tt> if not valid at all)</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>Example: You might expect a valid Profiles.CSS_LEVEL_2 value but
-e.g. <tt class="docutils literal"><span class="pre">validateWithProfile('color',</span> <span class="pre">'rgba(1,1,1,1)')</span></tt> returns
-(True, Profiles.CSS_COLOR_LEVEL_3)</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">defaultProfiles</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">CSS_LEVEL_2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">validateWithProfile</span><span class="p">(</span><span class="s">&#39;color&#39;</span><span class="p">,</span> <span class="s">&#39;rgba(1,1,1,1)&#39;</span><span class="p">)</span>
+<span class="go">(True, False, Profiles.CSS_COLOR_LEVEL_3)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -249,9 +255,9 @@ e.g. <tt class="docutils literal"><span class="pre">validateWithProfile('color',
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="">profiles</a><ul>
-<li><a class="reference external" href="#id1"><tt class="docutils literal"><span class="pre">profiles</span></tt></a></li>
-<li><a class="reference external" href="#defaultprofile"><tt class="docutils literal"><span class="pre">defaultprofile</span></tt></a></li>
-<li><a class="reference external" href="#id2"><tt class="docutils literal"><span class="pre">Profiles</span></tt></a></li>
+<li><a class="reference external" href="#cssutils-profile"><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt></a></li>
+<li><a class="reference external" href="#cssutils-profile-defaultprofiles"><tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span></tt></a></li>
+<li><a class="reference external" href="#cssutils-profiles-profiles"><tt class="docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a></li>
 </ul>
 </li>
 </ul>
