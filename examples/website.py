@@ -10,7 +10,8 @@ cssutils.ser.prefs.useDefaults()
 
 def profile():
     """
-    >>> import cssutils
+    >>> import cssutils, logging
+    >>> cssutils.log.setLevel(logging.FATAL)
     >>> sheet = cssutils.parseString('x { -test-x: 1 }')
     >>> print sheet.cssRules[0].style.getProperties()[0].valid
     False
@@ -27,7 +28,8 @@ def profile():
 
 def cssparse_example():
     """
-    >>> import cssutils
+    >>> import cssutils, logging
+    >>> cssutils.log.setLevel(logging.FATAL)
     >>> sheet = cssutils.parseString('@import url(example.css); body { color: red }')
     >>> # log output not shown
     >>> print sheet.cssText
@@ -39,6 +41,8 @@ def cssparse_example():
 
 def logging():
     """
+    >>> import cssutils, logging
+    >>> cssutils.log.setLevel(logging.FATAL)
     >>> import logging, StringIO, cssutils
     >>> mylog = StringIO.StringIO()
     >>> h = logging.StreamHandler(mylog)
@@ -56,6 +60,8 @@ def logging():
 
 def prefs():
     """
+    >>> import cssutils, logging
+    >>> cssutils.log.setLevel(logging.FATAL)
     >>> css = '@import "example.css"; body { color: red }'
     >>> sheet = cssutils.parseString(css)
     >>> cssutils.ser.prefs.indent = 2*' '
@@ -73,6 +79,8 @@ def prefs():
 
 def work_and_build():
     """
+    >>> import cssutils, logging
+    >>> cssutils.log.setLevel(logging.FATAL)
     >>> cssutils.ser.prefs.useDefaults()
     >>> # --- RESET ---
     >>> from cssutils import css, stylesheets
@@ -109,6 +117,8 @@ def work_and_build():
 
 def api_addons():
     """
+    >>> import cssutils, logging
+    >>> cssutils.log.setLevel(logging.FATAL)
     >>> cssText = '''background: white url(paper.png) scroll; /* for all UAs */
     ... background: white url(ledger.png) fixed; /* for UAs that do fixed backgrounds */
     ... '''
