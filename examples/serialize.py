@@ -1,4 +1,7 @@
 import cssutils
+import logging
+cssutils.log.setLevel(logging.FATAL)
+
 
 css = '''@import "example.css"; 
 a {

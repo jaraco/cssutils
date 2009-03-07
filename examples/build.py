@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import cssutils
+import logging
+cssutils.log.setLevel(logging.FATAL)
+
 
 EXPOUT = '''@charset "ascii";
 @import "sheets/import.css";
