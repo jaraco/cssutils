@@ -20,3 +20,6 @@ The default logger is available as ``cssutils.log``. It has the following method
 * ``log.*(msg)`` where ``*`` is one of ``debug``, ``info``, ``warn``, ``error`` or ``fatal``/``critical``
 
 Additional method: ``cssutils.log.setLog(newlog)``: To replace the default log which sends output to ``stderr``.
+
+
+See also :meth:`cssutils.css.Property.validate` for details on how properties log.
