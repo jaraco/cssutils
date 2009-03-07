@@ -43,7 +43,6 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'CLIP': ('rect(1,2,3,4)'),
             'FUNCTION': (),
             
-            'COLOR': 'red',
             'HEX3': '#123',
             'HEX6': '#123abc',
             'RGB': 'rgb(1,2,3)',
@@ -68,11 +67,9 @@ class PropertiesTestCase(basetest.BaseTestCase):
         
         # combined values, only keys of V may be used!
         self.V['LENGTHS'] = expanded('0', 'EM', 'EX', 'PX', 'CM', 'MM', 'IN', 'PT', 'PC')
-        self.V['COLORS'] = expanded('COLOR', 'HEX3', 'HEX6', 'RGB', 'RGB100')
+        self.V['COLORS'] = expanded('HEX3', 'HEX6', 'RGB', 'RGB100')
         self.V['COLORS3'] = expanded('RGBA', 'RGBA100', 'HSL', 'HSLA')
         
-        
-
     def _allvalues(self):
         "Return list of **all** possible values as simple list"
         return copy.copy(self.ALL)
@@ -81,18 +78,23 @@ class PropertiesTestCase(basetest.BaseTestCase):
         "Generate all distinct values in given keys of self.V"
         done = []
         for key in keys:
-            v = self.V[key]
-            if isinstance(v, basestring):
-                # single value
-                if v not in done: 
-                    done.append(v)
+            if isinstance(key, list):
+                # not a key but a list of values, return directly
+                for v in key:
                     yield v
             else:
-                # a list of values
-                for value in v:
-                    if value not in done: 
-                        done.append(value)
-                        yield value
+                v = self.V[key]
+                if isinstance(v, basestring):
+                    # single value
+                    if v not in done: 
+                        done.append(v)
+                        yield v
+                else:
+                    # a list of values
+                    for value in v:
+                        if value not in done: 
+                            done.append(value)
+                            yield value
         
     def _check(self, name, keys):
         """
@@ -101,23 +103,40 @@ class PropertiesTestCase(basetest.BaseTestCase):
         notvalid = self._allvalues()
 
         for value in self._valuesofkeys(keys):
-            if debug:
+            if debug == name:
                 print '+True?', Property(name, value).valid, value
-            self.assertEqual(Property(name, value).valid, True)
+            self.assertEqual(True, Property(name, value).valid)
             if value in notvalid:
                 notvalid.remove(value)
-        
         for value in notvalid:
-            if debug:
+            if name == debug:
                 print '-False?', Property(name, value).valid, value
-            self.assertEqual(Property(name, value).valid, False)
+            self.assertEqual(False, Property(name, value).valid)
                 
     def test_properties(self):
         "properties"
         tests = {
-            'color': ('COLORS', 'INHERIT'),
+            # propname: key or [list of values]
+            'color': ('COLORS', 'INHERIT', ['red']),
             'left': ('LENGTHS', 'PERCENTAGE', 'AUTO', 'INHERIT'),
-            'opacity': ('NUMBER', 'INHERIT')
+            # CSS3 COLOR
+            'opacity': ('NUMBER', 'INHERIT'),
+            # CSS3 PAGED MEDIA
+            'fit': (['fill', 'hidden', 'meet', 'slice'],),
+            'fit-position': ('AUTO', 'LENGTHS', 'PERCENTAGE', 
+                             ['top left', 
+                              '0% 50%',
+                              '1cm 5em',
+                              'bottom']),
+            'image-orientation': ('AUTO', '0', 'ANGLES'),
+            'page': ('AUTO', 'IDENT', 'INHERIT'), # inherit is an IDENT?
+            'page-break-inside': ('AUTO', 'INHERIT', ['avoid']),
+            'size': ('AUTO', 'LENGTHS', ['1em 1em', 
+                                         'a4 portrait',
+                                         'b4 landscape',
+                                         'A5 PORTRAIT']),
+            'orphans': ('0', ['1', '99999'], 'INHERIT'),
+            'widows': ('0', ['1', '99999'], 'INHERIT')
         }
         for name, keys in tests.items():
             # keep track of valid keys
@@ -143,10 +162,11 @@ class PropertiesTestCase(basetest.BaseTestCase):
             self.assertEqual(rs[3], p.validate(
                 profiles=cssutils.profile.CSS_LEVEL_2))
             self.assertEqual(rs[4], p.validate(
-                cssutils.profile.CSS_COLOR_LEVEL_3))
+                cssutils.profile.CSS3_COLOR))
 
 
 if __name__ == '__main__':
+    debug = 'fit-position'
     import logging
     import unittest
     cssutils.log.setLevel(logging.FATAL)

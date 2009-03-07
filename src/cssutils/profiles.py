@@ -35,7 +35,6 @@ css2macros = {
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
 
-
     'shape': r'rect\(({w}({length}|auto}){w},){3}{w}({length}|auto){w}\)',
     'counter': r'counter\({w}{identifier}{w}(?:,{w}{list-style-type}{w})?\)',
     'identifier': r'{ident}',
@@ -200,7 +199,6 @@ css3colormacros = {
     'hslcolor': r'hsl\({w}{int}{w},{w}{num}%{w},{w}{num}%{w}\)|hsla\({w}{int}{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',
     'x11color': r'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen',
     'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
-
     }
 properties['css3color'] = {
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|inherit',
@@ -209,10 +207,30 @@ properties['css3color'] = {
 
 # CSS Box Module Level 3
 properties['css3box'] = {
-    'overflow': '{overflow}\s?{overflow}?',
-    'overflow-x': '{overflow}',
-    'overflow-y': '{overflow}'
+    'overflow': '{overflow}\s?{overflow}?|inherit',
+    'overflow-x': '{overflow}|inherit',
+    'overflow-y': '{overflow}|inherit'
     }
+
+# CSS3 Paged Media
+css3pagedmediamacros = {
+    'pagesize': 'a5|a4|a3|b5|b4|letter|legal|ledger',
+    'pagebreak': 'auto|always|avoid|left|right'
+    }
+properties['css3pagedmedia'] = {
+    'fit': 'fill|hidden|meet|slice',
+    'fit-position': r'auto|(({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?))',
+    'image-orientation': 'auto|{angle}',
+    'orphans': r'{integer}|inherit',
+    'page': 'auto|{ident}',
+    'page-break-before': '{pagebreak}|inherit',
+    'page-break-after': '{pagebreak}|inherit',
+    'page-break-inside': 'auto|avoid|inherit',
+    'size': '{length}{w}{length}?|auto|{pagesize}{w}(?:portrait|landscape)',
+    'widows': r'{integer}|inherit',
+    
+    }
+
 
 class NoSuchProfileException(Exception):
     """Raised if no profile with given name is found"""
@@ -230,15 +248,18 @@ class Profiles(object):
 
     :attr:`~cssutils.profiles.Profiles.CSS_LEVEL_2`
         Properties defined by CSS2.1
-    :attr:`~cssutils.profiles.Profiles.CSS_COLOR_LEVEL_3`
+    :attr:`~cssutils.profiles.Profiles.CSS3_COLOR`
         CSS 3 color properties
-    :attr:`~cssutils.profiles.Profiles.CSS_BOX_LEVEL_3`
+    :attr:`~cssutils.profiles.Profiles.CSS3_BOX`
         Currently overflow related properties only
+    :attr:`~cssutils.profiles.Profiles.CSS3_PAGED_MEDIA`
+        As defined at http://www.w3.org/TR/css3-page/ (at 090307)
 
     """
     CSS_LEVEL_2 = 'CSS Level 2.1'
-    CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
-    CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
+    CSS3_COLOR = CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
+    CSS3_BOX = CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
+    CSS3_PAGED_MEDIA = 'CSS3 Paged Media Module'
     
     basicmacros = {
         'ident': r'[-]?{nmstart}{nmchar}*',
@@ -281,9 +302,14 @@ class Profiles(object):
         self._profiles = {}
         self._defaultProfiles = None
         
-        self.addProfile(self.CSS_LEVEL_2, properties['css2'], css2macros)
-        self.addProfile(self.CSS_COLOR_LEVEL_3, properties['css3color'], css3colormacros)
-        self.addProfile(self.CSS_BOX_LEVEL_3, properties['css3box'])
+        self.addProfile(self.CSS_LEVEL_2, 
+                        properties['css2'], css2macros)
+        self.addProfile(self.CSS3_BOX, 
+                        properties['css3box'])
+        self.addProfile(self.CSS3_COLOR, 
+                        properties['css3color'], css3colormacros)
+        self.addProfile(self.CSS3_PAGED_MEDIA, 
+                        properties['css3pagedmedia'], css3pagedmediamacros)
         
         self.__update_knownNames()
 
@@ -458,7 +484,7 @@ class Profiles(object):
         
             >>> cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2
             >>> print cssutils.profile.validateWithProfile('color', 'rgba(1,1,1,1)')
-            (True, False, Profiles.CSS_COLOR_LEVEL_3)
+            (True, False, Profiles.CSS3_COLOR)
         """
         if name not in self.knownNames:
             return False, False, []
