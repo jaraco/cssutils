@@ -43,8 +43,11 @@ HEAD
         - renamed ``Profiles.knownnames`` to ``Profiles.knownNames``
         - ``Profiles.validateWithProfile`` returns ``valid, matching, profiles`` now
         - renamed parameter in :meth:`cssutils.css.Property.validate(profile=None)` to ``profiles``
+        - renamed ``Profiles.CSS_BOX_LEVEL_3`` to ``Profiles.CSS3_BOX`` and ``Profiles.CSS_COLOR_LEVEL_3`` to ``Profiles.CSS3_COLOR``
 
     + **CHANGE**: Reporting levels of properties have changed. Please see :meth:`cssutils.css.Property.validate` for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore. The log output has been changed too, context information is provided now (line, column and name of the relevant property)
+
+    - FEATURE: Added new properties as profile ``Profiles.CSS3_PAGED_MEDIA``: *fit*, *fit-position*, *image-orientation*, *page*, *size* and relevant properties already defined in ``Profiles.CSS_LEVEL_2``
 
     - **BUGFIX**: ``p.valid == False`` is now set for Properties not valid in the current profile even if they are valid in a different profile
     - BUGFIX: If ``cssutils.ser.prefs.validOnly == True`` serializer incorrectly put a single ``;`` for invalid properties out until now.
