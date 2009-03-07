@@ -75,9 +75,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
     def test_removeProfile(self):
         "Profiles.removeProfile()"
         p = cssutils.profiles.Profiles()
-        self.assertEqual(3, len(p.profiles))
+        self.assertEqual(4, len(p.profiles))
         p.removeProfile(p.CSS_LEVEL_2)
-        self.assertEqual(2, len(p.profiles))
+        self.assertEqual(3, len(p.profiles))
         p.removeProfile(all=True)
         self.assertEqual(0, len(p.profiles))
 
@@ -85,43 +85,41 @@ class ProfilesTestCase(basetest.BaseTestCase):
         "Profiles.validate(), Profiles.validateWithProfile()"
         p = cssutils.profiles.Profiles()
         tests = {
-#            ('color', 'red', None): (True, [p.CSS_LEVEL_2]),
-#            ('color', 'red', p.CSS_LEVEL_2): (True, [p.CSS_LEVEL_2]),
-#            ('color', 'red', p.CSS_COLOR_LEVEL_3): (True, [p.CSS_COLOR_LEVEL_3]),
-#            ('color', 'rgba(0,0,0,0)', None): (True, [p.CSS_COLOR_LEVEL_3]),
-#            ('color', 'rgba(0,0,0,0)', p.CSS_LEVEL_2): (True, [p.CSS_COLOR_LEVEL_3]),
-#            ('color', 'rgba(0,0,0,0)', p.CSS_COLOR_LEVEL_3): (True, [p.CSS_COLOR_LEVEL_3]),
-#            ('color', '1px', None): (False, [p.CSS_COLOR_LEVEL_3, p.CSS_LEVEL_2]),
-#            ('color', '1px', p.CSS_LEVEL_2): (False, [p.CSS_COLOR_LEVEL_3, p.CSS_LEVEL_2]),
-#            ('color', '1px', p.CSS_COLOR_LEVEL_3): (False, [p.CSS_COLOR_LEVEL_3, p.CSS_LEVEL_2]),
-#
-#            ('opacity', '1', None): (True, [p.CSS_COLOR_LEVEL_3]),
-#            ('opacity', '1', p.CSS_LEVEL_2): (True, [p.CSS_COLOR_LEVEL_3]),
-#            ('opacity', '1', p.CSS_COLOR_LEVEL_3): (True, [p.CSS_COLOR_LEVEL_3]),
-#            ('opacity', '1px', None): (False, [p.CSS_COLOR_LEVEL_3]),
-#            ('opacity', '1px', p.CSS_LEVEL_2): (False, [p.CSS_COLOR_LEVEL_3]),
-#            ('opacity', '1px', p.CSS_COLOR_LEVEL_3): (False, [p.CSS_COLOR_LEVEL_3]),
-#
-#            ('-x', '1', None): (False, []),
-#            ('-x', '1', p.CSS_LEVEL_2): (False, []),
-#            ('-x', '1', p.CSS_COLOR_LEVEL_3): (False, []),
+            ('color', 'red', None): (True, True, [p.CSS_LEVEL_2]),
+            ('color', 'red', p.CSS_LEVEL_2): (True, True,[p.CSS_LEVEL_2]),
+            ('color', 'red', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
+            ('color', 'rgba(0,0,0,0)', None): (True, True, [p.CSS3_COLOR]),
+            ('color', 'rgba(0,0,0,0)', p.CSS_LEVEL_2): (True, False, [p.CSS3_COLOR]),
+            ('color', 'rgba(0,0,0,0)', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
+            ('color', '1px', None): (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
+            ('color', '1px', p.CSS_LEVEL_2): (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
+            ('color', '1px', p.CSS3_COLOR): (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
+
+            ('opacity', '1', None): (True, True, [p.CSS3_COLOR]),
+            ('opacity', '1', p.CSS_LEVEL_2): (True, False, [p.CSS3_COLOR]),
+            ('opacity', '1', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
+            ('opacity', '1px', None): (False, False, [p.CSS3_COLOR]),
+            ('opacity', '1px', p.CSS_LEVEL_2): (False, False, [p.CSS3_COLOR]),
+            ('opacity', '1px', p.CSS3_COLOR): (False, False, [p.CSS3_COLOR]),
+
+            ('-x', '1', None): (False, False, []),
+            ('-x', '1', p.CSS_LEVEL_2): (False, False, []),
+            ('-x', '1', p.CSS3_COLOR): (False, False, []),
         }
         for test, r in tests.items():
             self.assertEqual(p.validate(test[0], test[1]), r[0])
             self.assertEqual(p.validateWithProfile(*test), r)
             
-        
-
     def test_propertiesByProfile(self):
         "Profiles.propertiesByProfile"
         self.assertEqual(['color', 'opacity'], 
                          list(cssutils.profile.propertiesByProfile(
-                                            cssutils.profile.CSS_COLOR_LEVEL_3)))
+                                            cssutils.profile.CSS3_COLOR)))
         
     def test_csscolorlevel3(self):
         "CSS Color Module Level 3"
         CSS2 = [cssutils.profile.CSS_LEVEL_2]
-        CM3 = [cssutils.profile.CSS_COLOR_LEVEL_3]
+        CM3 = [cssutils.profile.CSS3_COLOR]
         CSS2_CM3 = [CM3[0], CSS2[0]]
         
         # (propname, propvalue): (valid, validprofile)
