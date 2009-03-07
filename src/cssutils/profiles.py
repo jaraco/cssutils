@@ -16,7 +16,6 @@ __all__ = ['profiles']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
-#import cssutils
 import re
 
 properties = {}
@@ -190,6 +189,13 @@ properties['css2'] = {
     'z-index': r'auto|{integer}|inherit',
 }
 
+# CSS Box Module Level 3
+properties['css3box'] = {
+    'overflow': '{overflow}\s?{overflow}?|inherit',
+    'overflow-x': '{overflow}|inherit',
+    'overflow-y': '{overflow}|inherit'
+    }
+
 # CSS Color Module Level 3
 css3colormacros = {
     # orange and transparent in CSS 2.1
@@ -203,13 +209,6 @@ css3colormacros = {
 properties['css3color'] = {
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|inherit',
     'opacity': r'{num}|inherit'
-    }
-
-# CSS Box Module Level 3
-properties['css3box'] = {
-    'overflow': '{overflow}\s?{overflow}?|inherit',
-    'overflow-x': '{overflow}|inherit',
-    'overflow-y': '{overflow}|inherit'
     }
 
 # CSS3 Paged Media
@@ -227,8 +226,7 @@ properties['css3pagedmedia'] = {
     'page-break-after': '{pagebreak}|inherit',
     'page-break-inside': 'auto|avoid|inherit',
     'size': '{length}{w}{length}?|auto|{pagesize}{w}(?:portrait|landscape)',
-    'widows': r'{integer}|inherit',
-    
+    'widows': r'{integer}|inherit'
     }
 
 
