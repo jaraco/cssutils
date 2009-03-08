@@ -44,13 +44,13 @@ An additional per CSSStyleSheet setting of a profile may be added soon.
     single: macros
     single: properties
 
-``cssutils.profile.macros`` and ``cssutils.profile.properties``
-===============================================================
+``cssutils.profiles.macros`` and ``cssutils.profiles.properties``
+=================================================================
 Two dictionaries which contain macro and property definitions for the predefined property profiles.
 
 Both use the additional macros defined in ``Profiles._TOKEN_MACROS`` and ``Profiles._MACROS`` which contain basic macros for definition of new properties. Things like `ident`, `name` or `hexcolor` are defined there and may be used in any new property definition as these two macro sets defined in ``Profiles`` are added to any custom macro definition given. You may overwrite these basic macros with your own macros or simply define your own macros and use only these.
 
-Use ``cssutils.profile.macros`` if you need any other predefined macro or ``cssutils.profile.properties`` if you want to add any known property to your custom property profile.
+Use ``cssutils.profiles.macros`` if you need any other predefined macro or ``cssutils.profiles.properties`` if you want to add any known property to your custom property profile.
 
 
 ``cssutils.profiles.Profiles``
