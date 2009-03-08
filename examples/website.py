@@ -18,7 +18,7 @@ def profile():
     ...      'testvalue': 'x'
     ...      }
     >>> P1 = {
-    ...    '-test-tokenmacro': '{num}',
+    ...    '-test-tokenmacro': '({num}{w}){1,2}',
     ...    '-test-macro': '{ident}|{percentage}',
     ...    '-test-custommacro': '{testvalue}',
     ...    # custom validation function

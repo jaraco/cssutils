@@ -9,7 +9,7 @@ profiles
 ====================
 A global object ``cssutils.profile`` is used for validation of all properties. It is an instance of :class:`cssutils.profiles.Profiles`. Add or remove new profile definitions here.
 
-Most important method is :meth:`cssutils.profiles.Profiles.addProfile` to add new properties to cssutils and the setting of ``defaultProfiles``.
+Most important method is :meth:`cssutils.profiles.Profiles.addProfile` (use ``cssutils.profile.addProfile``) to add new properties to cssutils and the setting of ``defaultProfiles``.
 
 
 
@@ -23,7 +23,7 @@ Example of how to add a new profile::
     ...      'testvalue': 'x'
     ...      }
     >>> P1 = {
-    ...    '-test-tokenmacro': '{num}',
+    ...    '-test-tokenmacro': '({num}{w}){1,2}',
     ...    '-test-macro': '{ident}|{percentage}',
     ...    '-test-custommacro': '{testvalue}',
     ...    # custom validation function
@@ -41,10 +41,16 @@ An additional per CSSStyleSheet setting of a profile may be added soon.
 
 .. index::
     single: defaultProfiles
+    single: macros
+    single: properties
 
-``cssutils.profile.defaultProfiles``
-====================================
-`defaultProfiles` is used for validation. To use e.g. the CSS2 profile set ``cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2``
+``cssutils.profile.macros`` and ``cssutils.profile.properties``
+===============================================================
+Two dictionaries which contain macro and property definitions for the predefined property profiles.
+
+Both use the additional macros defined in ``Profiles._TOKEN_MACROS`` and ``Profiles._MACROS`` which contain basic macros for definition of new properties. Things like `ident`, `name` or `hexcolor` are defined there and may be used in any new property definition as these two macro sets defined in ``Profiles`` are added to any custom macro definition given. You may overwrite these basic macros with your own macros or simply define your own macros and use only these.
+
+Use ``cssutils.profile.macros`` if you need any other predefined macro or ``cssutils.profile.properties`` if you want to add any known property to your custom property profile.
 
 
 ``cssutils.profiles.Profiles``

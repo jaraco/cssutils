@@ -11,7 +11,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
           'testvalue': 'x'
           }
     P1 = {
-        '-test-tokenmacro': '{num}', 
+        '-test-tokenmacro': '({num}{w}){1,2}', 
         '-test-macro': '{ident}|{percentage}',
         '-test-custommacro': '{testvalue}',
         # custom validation function 
@@ -52,6 +52,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
         cssutils.log.raiseExceptions = False
         tests = {
             ('-test-tokenmacro', '1'): True,     
+            ('-test-tokenmacro', '1 -2'): True,     
+            ('-test-tokenmacro', '1 2 3'): False,     
             ('-test-tokenmacro', 'a'): False,     
             ('-test-macro', 'a'): True,     
             ('-test-macro', '0.1%'): True,
