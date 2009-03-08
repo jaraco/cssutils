@@ -10,18 +10,22 @@ cssutils.ser.prefs.useDefaults()
 
 def profile():
     """
-    >>> import cssutils, logging
-    >>> cssutils.log.setLevel(logging.FATAL)
-    >>> sheet = cssutils.parseString('x { -test-x: 1 }')
+    >>> import cssutils
+    >>> sheet = cssutils.parseString('x { -test-custommacro: x }')
     >>> print sheet.cssRules[0].style.getProperties()[0].valid
     False
+    >>> M1 = {
+    ...      'testvalue': 'x'
+    ...      }
     >>> P1 = {
-    ...    '-test-x': '{num}', 
-    ...    '-test-y': '{ident}|{percentage}',
-    ...    # custom validation function 
-    ...    '-test-z': lambda(v): int(v) > 0}
-    >>> cssutils.profile.addProfile('test', P1)
-    >>> sheet = cssutils.parseString('x { -test-x: 1 }')
+    ...    '-test-tokenmacro': '{num}',
+    ...    '-test-macro': '{ident}|{percentage}',
+    ...    '-test-custommacro': '{testvalue}',
+    ...    # custom validation function
+    ...    '-test-funcval': lambda(v): int(v) > 0
+    ...      }
+    >>> cssutils.profile.addProfile('test', P1, M1)
+    >>> sheet = cssutils.parseString('x { -test-custommacro: x }')
     >>> print sheet.cssRules[0].style.getProperties()[0].valid
     True
     """

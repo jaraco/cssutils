@@ -51,21 +51,26 @@
   <div class="section" id="profiles">
 <h1>profiles<a class="headerlink" href="#profiles" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cssutils-profile">
-<span id="index-31"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
+<span id="index-33"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
 <p>A global object <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is used for validation of all properties. It is an instance of <a title="cssutils.profiles.Profiles" class="reference internal" href="#cssutils.profiles.Profiles"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a>. Add or remove new profile definitions here.</p>
 <p>Most important method is <a title="cssutils.profiles.Profiles.addProfile" class="reference internal" href="#cssutils.profiles.Profiles.addProfile"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles.addProfile()</span></tt></a> to add new properties to cssutils and the setting of <tt class="docutils literal"><span class="pre">defaultProfiles</span></tt>.</p>
 <p>Example of how to add a new profile:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cssutils</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;x { -test-x: 1 }&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;x { -test-custommacro: x }&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">()[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">valid</span>
 <span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M1</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>     <span class="s">&#39;testvalue&#39;</span><span class="p">:</span> <span class="s">&#39;x&#39;</span>
+<span class="gp">... </span>     <span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">P1</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>   <span class="s">&#39;-test-x&#39;</span><span class="p">:</span> <span class="s">&#39;{num}&#39;</span><span class="p">,</span>
-<span class="gp">... </span>   <span class="s">&#39;-test-y&#39;</span><span class="p">:</span> <span class="s">&#39;{ident}|{percentage}&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s">&#39;-test-tokenmacro&#39;</span><span class="p">:</span> <span class="s">&#39;{num}&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s">&#39;-test-macro&#39;</span><span class="p">:</span> <span class="s">&#39;{ident}|{percentage}&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s">&#39;-test-custommacro&#39;</span><span class="p">:</span> <span class="s">&#39;{testvalue}&#39;</span><span class="p">,</span>
 <span class="gp">... </span>   <span class="c"># custom validation function</span>
-<span class="gp">... </span>   <span class="s">&#39;-test-z&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">(</span><span class="n">v</span><span class="p">):</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">addProfile</span><span class="p">(</span><span class="s">&#39;test&#39;</span><span class="p">,</span> <span class="n">P1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;x { -test-x: 1 }&#39;</span><span class="p">)</span>
+<span class="gp">... </span>   <span class="s">&#39;-test-funcval&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">(</span><span class="n">v</span><span class="p">):</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0</span>
+<span class="gp">... </span>     <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">addProfile</span><span class="p">(</span><span class="s">&#39;test&#39;</span><span class="p">,</span> <span class="n">P1</span><span class="p">,</span> <span class="n">M1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;x { -test-custommacro: x }&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">()[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">valid</span>
 <span class="go">True</span>
 </pre></div>
@@ -74,7 +79,7 @@
 <p><strong>Please note: This might change again, but only slightly as it has been refactored in 0.9.6a2.</strong></p>
 </div>
 <div class="section" id="cssutils-profile-defaultprofiles">
-<span id="index-32"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span></tt><a class="headerlink" href="#cssutils-profile-defaultprofiles" title="Permalink to this headline">¶</a></h2>
+<span id="index-34"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span></tt><a class="headerlink" href="#cssutils-profile-defaultprofiles" title="Permalink to this headline">¶</a></h2>
 <p><cite>defaultProfiles</cite> is used for validation. To use e.g. the CSS2 profile set <tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span> <span class="pre">=</span> <span class="pre">cssutils.profile.CSS_LEVEL_2</span></tt></p>
 </div>
 <div class="section" id="cssutils-profiles-profiles">
@@ -90,10 +95,12 @@ get a list of defined properties):</p>
 <dl class="docutils">
 <dt><tt class="xref docutils literal"><span class="pre">CSS_LEVEL_2</span></tt></dt>
 <dd>Properties defined by CSS2.1</dd>
-<dt><tt class="xref docutils literal"><span class="pre">CSS_COLOR_LEVEL_3</span></tt></dt>
+<dt><tt class="xref docutils literal"><span class="pre">CSS3_COLOR</span></tt></dt>
 <dd>CSS 3 color properties</dd>
-<dt><tt class="xref docutils literal"><span class="pre">CSS_BOX_LEVEL_3</span></tt></dt>
+<dt><tt class="xref docutils literal"><span class="pre">CSS3_BOX</span></tt></dt>
 <dd>Currently overflow related properties only</dd>
+<dt><tt class="xref docutils literal"><span class="pre">CSS3_PAGED_MEDIA</span></tt></dt>
+<dd>As defined at <a class="reference external" href="http://www.w3.org/TR/css3-page/">http://www.w3.org/TR/css3-page/</a> (at 090307)</dd>
 </dl>
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.addProfile">
@@ -120,7 +127,7 @@ is False so the exceptions would be logged only.</p>
 </li>
 <li><em>macros</em> &#8211; may be used in the given properties definitions. There are some
 predefined basic macros which may always be used in 
-<tt class="xref docutils literal"><span class="pre">Profiles.basicmacros</span></tt> and <tt class="xref docutils literal"><span class="pre">Profiles.generalmacros</span></tt>.</li>
+<tt class="xref docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="xref docutils literal"><span class="pre">Profiles._MACROS</span></tt>.</li>
 </ul>
 </td>
 </tr>
@@ -236,7 +243,7 @@ and <tt class="docutils literal"><span class="pre">profiles</span></tt> the prof
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">defaultProfiles</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">CSS_LEVEL_2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">validateWithProfile</span><span class="p">(</span><span class="s">&#39;color&#39;</span><span class="p">,</span> <span class="s">&#39;rgba(1,1,1,1)&#39;</span><span class="p">)</span>
-<span class="go">(True, False, Profiles.CSS_COLOR_LEVEL_3)</span>
+<span class="go">(True, False, Profiles.CSS3_COLOR)</span>
 </pre></div>
 </div>
 </dd></dl>
