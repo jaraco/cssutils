@@ -37,7 +37,7 @@ development version
 -----
 HEAD
 
-0.9.6a1 090308
+0.9.6a2 090308
     + **API CHANGE**: :class:`cssutils.profiles.Profiles` (introduced in 0.9.6a1) has been refactored:
 
         - ``cssutils.profile`` (a ``cssutils.profiles.Profiles`` object) is now preset and available used for all validation

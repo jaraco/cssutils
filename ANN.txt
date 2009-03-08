@@ -4,37 +4,22 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.6a1 is an alpha release.
+0.9.6a2 is an alpha release.
 
 main changes
 ------------
-0.9.6a1 090207
-    - **API CHANGE**: Known but invalid properties raise/log an ERROR instead of a WARNING now. Properties not expected in the current profile log an INFO. As the default profile is ``None`` even basic properties like ``color`` are logged now. You may want to change the default profile by setting e.g. ``cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_LEVEL_2`` (~ CSS 2.1) to prevent CSS 2.1 properties to be reported. Also other validation related output has been slightly changed.
+0.9.6a2 090308
+    + **API CHANGE**: :class:`cssutils.profiles.Profiles` (introduced in 0.9.6a1) has been refactored
 
-        **The way to change a defaultprofile may change again.**
+    + **CHANGE**: Reporting levels of properties have changed. Please see :meth:`cssutils.css.Property.validate` for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore. The log output has been changed too, context information is provided now (line, column and name of the relevant property)
 
-    - **API CHANGE**: ``cssutils.script.csscombine`` has **ONLY** keyword parameters now. Use ``csscombine(path=path[,...])`` for the old behaviour. New parameter ``url`` combines the sheet at URL now.
+    + **BUGFIX**: ``p.valid == False`` is now set for Properties not valid in the current profile even if they are valid in a different profile
+    + **BUGFIX**: Macros used when adding a new profile to ``cssutils.profile`` were polluted with ALL macros ever defined. They now correctly use the (always used) predefined macros ``Profiles._TOKEN_MACROS`` and ``PROFILES._MACROS`` in addition to the given macros (``cssutils.profile.addProfile(self, profile, properties, macros=None)``) only. If you want to use any macros defined in other profiles you need to add these to your own macros as seen in ``macros[Profiles.CSS3_BOX]``.
+    + BUGFIX: If ``cssutils.ser.prefs.validOnly == True`` serializer incorrectly put a single ``;`` for invalid properties out until now.
 
-    + **FEATURE**: Added **experimental** profiles handling. You may add new profiles with new properties and their validation and set a defaultprofile used for validation. The current default profile is ``None`` so all predefined profiles are used. Currently 3 profiles are defined:
+    - **IMPROVEMENT**: comments added by ``cssutils.resolveImports`` only use the @import rules' href and not the absolute href of the referenced sheets anymore (might have been a possible security hole when showing a full local path to a sheet in a combined but not minified sheet)
 
-      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2`
-            Properties defined by CSS2.1
-      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_COLOR_LEVEL_3`
-            CSS 3 color properties
-      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3`
-            Currently overflow related properties only
-
-      See the docs and source of the cssutils.profiles module for details.
-
-    + **FEATURE**:  ``cssutils.util._readUrl()`` allows fetchers to pre-decode CSS content and return `unicode` instances, with or without a specified source encoding (integrated from patch of Issue #19).
-
-    + **FEATURE**: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if ``import google.appengine`` is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.
-    + **FEATURE**: Function ``cssutils.resolveImports(sheet)`` returns a new stylesheet with all rules in given sheet but with all @import rules being pulled into the top sheet.
-    + FEATURE: CSSCombine script and helper function resolve nested imports now.
-    + FEATURE: Script ``csscombine`` has new option ``-u URL, --url=URL     URL to parse (path is ignored if URL given)`` now
-
-    + DOCUMENTATION: Changed documentation generation from Epydoc and home grown HTML generation to Sphinx. Not all is perfectly markup'd yet but not too bad either...
-
+    - IMPROVEMENT: IE specific `alpha` values like ``filter: alpha(opacity=80)`` are parsed and kept now.
 
 license
 -------
