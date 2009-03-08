@@ -7,19 +7,22 @@ import cssutils
 
 
 class ProfilesTestCase(basetest.BaseTestCase):
-
+    M1 = {
+          'testvalue': 'x'
+          }
     P1 = {
-        '-test-x': '{num}', 
-        '-test-y': '{ident}|{percentage}',
+        '-test-tokenmacro': '{num}', 
+        '-test-macro': '{ident}|{percentage}',
+        '-test-custommacro': '{testvalue}',
         # custom validation function 
-        '-test-z': lambda(v): int(v) > 0 
+        '-test-funcval': lambda(v): int(v) > 0 
         }  
 
     def test_knownNames(self):
         "Profiles.knownNames"
         p = cssutils.profiles.Profiles()
         p.removeProfile(all=True)
-        p.addProfile('test', self.P1)
+        p.addProfile('test', self.P1, self.M1)
         self.assertEqual(p.knownNames, self.P1.keys())
         p.removeProfile(all=True)
         self.assertEqual(p.knownNames, [])
@@ -28,7 +31,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         "Profiles.profiles"
         p = cssutils.profiles.Profiles()
         p.removeProfile(all=True)
-        p.addProfile('test', self.P1)
+        p.addProfile('test', self.P1, self.M1)
         self.assertEqual(p.profiles, ['test'])
         p.removeProfile(all=True)
         self.assertEqual(p.profiles, [])
@@ -40,7 +43,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
                           lambda: list(cssutils.profile.propertiesByProfile('NOTSET')) )
 
         # new profile
-        cssutils.profile.addProfile('test', self.P1)
+        cssutils.profile.addProfile('test', self.P1, self.M1)
         
         props = self.P1.keys()
         props.sort()
@@ -48,13 +51,16 @@ class ProfilesTestCase(basetest.BaseTestCase):
         
         cssutils.log.raiseExceptions = False
         tests = {
-            ('-test-x', '1'): True,     
-            ('-test-x', 'a'): False,     
-            ('-test-y', 'a'): True,     
-            ('-test-y', '0.1%'): True,     
-            ('-test-z', '1'): True,     
-            ('-test-z', '-1'): False,     
-            ('-test-z', 'x'): False     
+            ('-test-tokenmacro', '1'): True,     
+            ('-test-tokenmacro', 'a'): False,     
+            ('-test-macro', 'a'): True,     
+            ('-test-macro', '0.1%'): True,
+            ('-test-custommacro', 'x'): True,     
+            ('-test-custommacro', '1'): False,     
+            ('-test-custommacro', 'y'): False,     
+            ('-test-funcval', '1'): True,     
+            ('-test-funcval', '-1'): False,     
+            ('-test-funcval', 'x'): False     
             }
         for test, v in tests.items():
             self.assertEqual(v, cssutils.profile.validate(*test))
@@ -66,11 +72,13 @@ class ProfilesTestCase(basetest.BaseTestCase):
         # raises:
         if sys.version_info[0:2] == (2,4):
             # Python 2.4 has a different msg...
-            self.assertRaisesMsg(Exception, u"invalid literal for int(): x", 
-                                 cssutils.profile.validate, u'-test-z', u'x')
+            self.assertRaisesMsg(Exception, 
+                                 u"invalid literal for int(): x", 
+                                 cssutils.profile.validate, u'-test-funcval', u'x')
         else:
-            self.assertRaisesMsg(Exception, u"invalid literal for int() with base 10: 'x'", 
-                                 cssutils.profile.validate, u'-test-z', u'x')
+            self.assertRaisesMsg(Exception, 
+                                 u"invalid literal for int() with base 10: 'x'", 
+                                 cssutils.profile.validate, u'-test-funcval', u'x')
 
     def test_removeProfile(self):
         "Profiles.removeProfile()"
