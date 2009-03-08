@@ -19,7 +19,7 @@ except ImportError:
     pass
 
 sys.stdout.write(sys.version)
-print 
+print
 
 def save(name, string):
     f = open(name, 'w')
@@ -28,23 +28,23 @@ def save(name, string):
 
 
 if 1:
-    #print cssutils.profiles.profiles.knownnames
-    cssutils.log.setLevel(logging.DEBUG)
-    parser = cssutils.CSSParser()
-    cssutils.profiles.defaultprofile = cssutils.profiles.Profiles.CSS_COLOR_LEVEL_3
-    s = parser.parseString('a { color: 1px')
-    print s.cssText
+    P1 = {
+        'x': '({num}{w}){1,2}',
+        }
+    cssutils.profile.addProfile('test', P1)
+    sheet = cssutils.parseString('x { x: 1 1 }')
+    print sheet.cssRules[0].style.getProperties()[0]
 
     sys.exit(0)
 
-if 0:
+if 1:
     from cssutils.script import csscombine
-    a = csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
+    #a = csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
     print
     b = csscombine(r"E:\xampp\htdocs\css.css", targetencoding='iso-8859-1', minify=False)
-    print a
+    #print a
     print b
-    
+
     sys.exit(0)
 
 if 1:
@@ -166,14 +166,14 @@ if 1:
 
     sys.exit()
 
-    from cssutils.profiles import profiles
+#    from cssutils.profiles import profiles
     # TODO: better API
 #    cssutils.css.profiles.profiles.addProfile('x', {
 #        'color': '1',
 #        'x': '{int}'})
     cssutils.log.setLevel(logging.DEBUG)
 
-    print list(profiles.propertiesByProfile('profiles.CSS_COLOR_LEVEL_3'))
+    print list(profiles.propertiesByProfile('profiles.CSS3_COLOR'))
 
     print cssutils.parseString('''
         a { opacity: 0.9;

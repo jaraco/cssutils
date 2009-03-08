@@ -36,24 +36,26 @@ development version
 0.9.6
 -----
 HEAD
+
+0.9.6a1 090308
     + **API CHANGE**: :class:`cssutils.profiles.Profiles` (introduced in 0.9.6a1) has been refactored:
 
-        - a global ``cssutils.profiles.Profiles`` object is now preset as ``cssutils.profile`` and is used for all validation
-        - moved variable ``cssutils.profiles.defaultprofile`` to attribute ``cssutils.profile.defaultProfiles`` (attribute of the class of this object)
+        - ``cssutils.profile`` (a ``cssutils.profiles.Profiles`` object) is now preset and available used for all validation
+        - moved variable ``cssutils.profiles.defaultprofile`` to attribute ``Profiles.defaultProfiles`` (and so also available as ``cssutils.profile.defaultProfiles``)
         - renamed ``Profiles.CSS_BOX_LEVEL_3`` to ``Profiles.CSS3_BOX`` and ``Profiles.CSS_COLOR_LEVEL_3`` to ``Profiles.CSS3_COLOR``
-        - renamed ``Profiles.basicmacros`` to ``Profiles._TOKEN_MACROS`` and ``Profiles.generalmacros`` to ``Profiles._MACROS``. As these two are always added to you properties definitions there is no real usecase to use these predefined macro dictionaries in your code.
+        - renamed ``Profiles.basicmacros`` to ``Profiles._TOKEN_MACROS`` and ``Profiles.generalmacros`` to ``Profiles._MACROS``. As these two are always added to your property definitions there is no need to use these predefined macro dictionaries in your code.
         - renamed ``Profiles.knownnames`` to ``Profiles.knownNames``
         - ``Profiles.validateWithProfile`` returns ``valid, matching, profiles`` now
-        - renamed parameter in :meth:`cssutils.css.Property.validate(profile=None)` to ``profiles``
-        - ``cssutils.profiles.properties`` (and new ``cssutils.profiles.macros``) use as keys the predefined constants in Profiles, like e.g. ``Profiles.CSS_LEVEL_2`` now. If you want to use some of the predefind macros you may e.g. use ``cssutils.profiles.macros[Profiles.CSS3_BOX]`` (in addition to the always available ``Profiles._TOKEN_MACROS`` and  ``Profiles._MACROS``).
+        - renamed named parameter in :meth:`cssutils.css.Property.validate(profiles=None)` from ``profile`` to ``profiles``
+        - ``cssutils.profiles.properties`` (and new ``cssutils.profiles.macros``) use as keys the predefined constants in Profiles, like e.g. ``Profiles.CSS_LEVEL_2`` now. If you want to use some of the predefind macros you may e.g. use ``cssutils.profiles.macros[Profiles.CSS_LEVEL_2]['family-name']`` (in addition to the always available ``Profiles._TOKEN_MACROS`` and  ``Profiles._MACROS``).
 
     + **CHANGE**: Reporting levels of properties have changed. Please see :meth:`cssutils.css.Property.validate` for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore. The log output has been changed too, context information is provided now (line, column and name of the relevant property)
 
     - FEATURE: Added new properties as profile ``Profiles.CSS3_PAGED_MEDIA``: *fit*, *fit-position*, *image-orientation*, *page*, *size* and relevant properties already defined in ``Profiles.CSS_LEVEL_2``
 
     + **BUGFIX**: ``p.valid == False`` is now set for Properties not valid in the current profile even if they are valid in a different profile
-    + BUGFIX: If ``cssutils.ser.prefs.validOnly == True`` serializer incorrectly put a single ``;`` for invalid properties out until now.
     + **BUGFIX**: Macros used when adding a new profile to ``cssutils.profile`` were polluted with ALL macros ever defined. They now correctly use the (always used) predefined macros ``Profiles._TOKEN_MACROS`` and ``PROFILES._MACROS`` in addition to the given macros (``cssutils.profile.addProfile(self, profile, properties, macros=None)``) only. If you want to use any macros defined in other profiles you need to add these to your own macros as seen in ``macros[Profiles.CSS3_BOX]``.
+    + BUGFIX: If ``cssutils.ser.prefs.validOnly == True`` serializer incorrectly put a single ``;`` for invalid properties out until now.
 
     - **IMPROVEMENT**: comments added by ``cssutils.resolveImports`` only use the @import rules' href and not the absolute href of the referenced sheets anymore (might have been a possible security hole when showing a full local path to a sheet in a combined but not minified sheet)
 

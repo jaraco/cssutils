@@ -31,7 +31,16 @@ class Profiles(object):
         Currently overflow related properties only
     :attr:`~cssutils.profiles.Profiles.CSS3_PAGED_MEDIA`
         As defined at http://www.w3.org/TR/css3-page/ (at 090307)
-
+        
+    Predefined macros are:
+    
+    :attr:`~cssutils.profiles.Profiles._TOKEN_MACROS`
+        Macros containing the token values as defined to CSS2
+    :attr:`~cssutils.profiles.Profiles._MACROS`
+        Additional general macros.
+        
+    If you want to redefine any of these macros do this in your custom 
+    macros.
     """
     CSS_LEVEL_2 = 'CSS Level 2.1'
     CSS3_COLOR = CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
@@ -136,7 +145,10 @@ class Profiles(object):
         
     defaultProfiles = property(_getDefaultProfiles, 
                                _setDefaultProfiles,
-                               doc=u"Names of profiles to use for validation.")
+                               doc=u"Names of profiles to use for validation."
+                                   u"To use e.g. the CSS2 profile set "
+                                   u"``cssutils.profile.defaultProfiles = "
+                                   u"cssutils.profile.CSS_LEVEL_2``")
             
     profiles = property(lambda self: self._profileNames,
                         doc=u'Names of all profiles in order as defined.')
@@ -516,7 +528,7 @@ properties[Profiles.CSS3_PAGED_MEDIA] = {
     'page-break-before': '{pagebreak}|inherit',
     'page-break-after': '{pagebreak}|inherit',
     'page-break-inside': 'auto|avoid|inherit',
-    'size': '{length}{w}{length}?|auto|{pagesize}{w}(?:portrait|landscape)',
+    'size': '({length}{w}){1,2}|auto|{pagesize}{w}(?:portrait|landscape)',
     'widows': r'{integer}|inherit'
     }
 
