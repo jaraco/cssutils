@@ -1,6 +1,6 @@
-"""CSS profiles. 
+"""CSS profiles.
 
-Profiles is based on code by Kevin D. Smith, orginally used as cssvalues, 
+Profiles is based on code by Kevin D. Smith, orginally used as cssvalues,
 thanks!
 """
 __all__ = ['Profiles']
@@ -19,7 +19,7 @@ class Profiles(object):
     All profiles used for validation. ``cssutils.profile`` is a
     preset object of this class and used by all properties for validation.
 
-    Predefined profiles are (use 
+    Predefined profiles are (use
     :meth:`~cssutils.profiles.Profiles.propertiesByProfile` to
     get a list of defined properties):
 
@@ -31,22 +31,22 @@ class Profiles(object):
         Currently overflow related properties only
     :attr:`~cssutils.profiles.Profiles.CSS3_PAGED_MEDIA`
         As defined at http://www.w3.org/TR/css3-page/ (at 090307)
-        
+
     Predefined macros are:
-    
+
     :attr:`~cssutils.profiles.Profiles._TOKEN_MACROS`
         Macros containing the token values as defined to CSS2
     :attr:`~cssutils.profiles.Profiles._MACROS`
         Additional general macros.
-        
-    If you want to redefine any of these macros do this in your custom 
+
+    If you want to redefine any of these macros do this in your custom
     macros.
     """
     CSS_LEVEL_2 = 'CSS Level 2.1'
     CSS3_COLOR = CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
     CSS3_BOX = CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
     CSS3_PAGED_MEDIA = 'CSS3 Paged Media Module'
-    
+
     _TOKEN_MACROS = {
         'ident': r'[-]?{nmstart}{nmchar}*',
         'name': r'{nmchar}+',
@@ -82,25 +82,25 @@ class Profiles(object):
         }
 
     def __init__(self, log=None):
-        """A few known profiles are predefined."""            
+        """A few known profiles are predefined."""
         self._log = log
         self._profileNames = [] # to keep order, REFACTOR!
         self._profiles = {}
         self._defaultProfiles = None
-        
-        self.addProfile(self.CSS_LEVEL_2, 
-                        properties[self.CSS_LEVEL_2], 
+
+        self.addProfile(self.CSS_LEVEL_2,
+                        properties[self.CSS_LEVEL_2],
                         macros[self.CSS_LEVEL_2])
-        self.addProfile(self.CSS3_BOX, 
+        self.addProfile(self.CSS3_BOX,
                         properties[self.CSS3_BOX],
                         macros[self.CSS3_BOX])
-        self.addProfile(self.CSS3_COLOR, 
-                        properties[self.CSS3_COLOR], 
+        self.addProfile(self.CSS3_COLOR,
+                        properties[self.CSS3_COLOR],
                         macros[self.CSS3_COLOR])
-        self.addProfile(self.CSS3_PAGED_MEDIA, 
-                        properties[self.CSS3_PAGED_MEDIA], 
+        self.addProfile(self.CSS3_PAGED_MEDIA,
+                        properties[self.CSS3_PAGED_MEDIA],
                         macros[self.CSS3_PAGED_MEDIA])
-        
+
         self.__update_knownNames()
 
     def _expand_macros(self, dictionary, macros):
@@ -128,7 +128,7 @@ class Profiles(object):
         self._knownNames = []
         for properties in self._profiles.values():
             self._knownNames.extend(properties.keys())
-      
+
     def _getDefaultProfiles(self):
         "If not explicitly set same as Profiles.profiles but in reverse order."
         if not self._defaultProfiles:
@@ -142,14 +142,14 @@ class Profiles(object):
             self._defaultProfiles = (profiles,)
         else:
             self._defaultProfiles = profiles
-        
-    defaultProfiles = property(_getDefaultProfiles, 
+
+    defaultProfiles = property(_getDefaultProfiles,
                                _setDefaultProfiles,
                                doc=u"Names of profiles to use for validation."
                                    u"To use e.g. the CSS2 profile set "
                                    u"``cssutils.profile.defaultProfiles = "
                                    u"cssutils.profile.CSS_LEVEL_2``")
-            
+
     profiles = property(lambda self: self._profileNames,
                         doc=u'Names of all profiles in order as defined.')
 
@@ -177,7 +177,7 @@ class Profiles(object):
             is False so the exceptions would be logged only.
         :param macros:
             may be used in the given properties definitions. There are some
-            predefined basic macros which may always be used in 
+            predefined basic macros which may always be used in
             :attr:`Profiles._TOKEN_MACROS` and :attr:`Profiles._MACROS`.
         """
         if not macros:
@@ -188,12 +188,12 @@ class Profiles(object):
         properties = self._expand_macros(properties, m)
         self._profileNames.append(profile)
         self._profiles[profile] = self._compile_regexes(properties)
-        
+
         self.__update_knownNames()
 
     def removeProfile(self, profile=None, all=False):
         """Remove `profile` or remove `all` profiles.
-        
+
         :param profile:
             profile name to remove
         :param all:
@@ -217,7 +217,7 @@ class Profiles(object):
     def propertiesByProfile(self, profiles=None):
         """Generator: Yield property names, if no `profiles` is given all
         profile's properties are used.
-        
+
         :param profiles:
             a single profile name or a list of names.
         """
@@ -233,14 +233,14 @@ class Profiles(object):
             raise NoSuchProfileException(e)
 
     def validate(self, name, value):
-        """Check if `value` is valid for given property `name` using **any** 
+        """Check if `value` is valid for given property `name` using **any**
         profile.
-        
+
         :param name:
             a property name
         :param value:
             a CSS value (string)
-        :returns: 
+        :returns:
             if the `value` is valid for the given property `name` in any
             profile
         """
@@ -266,15 +266,15 @@ class Profiles(object):
             a CSS value (string)
         :param profiles:
             internal parameter used by Property.validate only
-        :returns: 
-            ``valid, matching, profiles`` where ``valid`` is if the `value` 
-            is valid for the given property `name` in any profile, 
+        :returns:
+            ``valid, matching, profiles`` where ``valid`` is if the `value`
+            is valid for the given property `name` in any profile,
             ``matching==True`` if it is valid in the given `profiles`
             and ``profiles`` the profile names for which the value is valid
             (or ``[]`` if not valid at all)
 
         Example::
-        
+
             >>> cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2
             >>> print cssutils.profile.validateWithProfile('color', 'rgba(1,1,1,1)')
             (True, False, Profiles.CSS3_COLOR)
@@ -285,7 +285,7 @@ class Profiles(object):
             if not profiles:
                 profiles = self.defaultProfiles
             elif isinstance(profiles, basestring):
-                profiles = (profiles, )  
+                profiles = (profiles, )
 
             for profilename in profiles:
                 # check given profiles
@@ -296,8 +296,8 @@ class Profiles(object):
                             return True, True, [profilename]
                     except Exception, e:
                         self._log.error(e, error=Exception)
-    
-            for profilename in (p for p in self._profileNames 
+
+            for profilename in (p for p in self._profileNames
                                 if p not in profiles):
                 # check remaining profiles as well
                 if name in self._profiles[profilename]:
@@ -307,7 +307,7 @@ class Profiles(object):
                             return True, False, [profilename]
                     except Exception, e:
                         self._log.error(e, error=Exception)
-            
+
             names = []
             for profilename, properties in self._profiles.items():
                 # return profile to which name belongs
@@ -330,7 +330,8 @@ macros[Profiles.CSS_LEVEL_2] = {
 
     'background-color': r'{color}|transparent|inherit',
     'background-image': r'{uri}|none|inherit',
-    'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right))|((left|center|right)\s*(top|center|bottom))|inherit',
+    #'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right))|((left|center|right)\s*(top|center|bottom))|inherit',
+    'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
 
@@ -491,7 +492,7 @@ properties[Profiles.CSS_LEVEL_2] = {
 
 # CSS Box Module Level 3
 macros[Profiles.CSS3_BOX] = {
-    'overflow': macros[Profiles.CSS_LEVEL_2]['overflow']                                 
+    'overflow': macros[Profiles.CSS_LEVEL_2]['overflow']
     }
 properties[Profiles.CSS3_BOX] = {
     'overflow': '{overflow}\s?{overflow}?|inherit',
