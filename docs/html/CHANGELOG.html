@@ -86,8 +86,12 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>HEAD</p>
 <dl class="docutils">
+<dt>HEAD</dt>
+<dd><ul class="first last simple">
+<li><strong>BUGFIX</strong>: Fixed issue #21 <a class="reference external" href="http://code.google.com/p/cssutils/issues/detail?id=21">http://code.google.com/p/cssutils/issues/detail?id=21</a>. Definition of valid values for property <cite>background-position</cite> was wrong. Still mixed values like <tt class="docutils literal"><span class="pre">background-position:</span> <span class="pre">0</span> <span class="pre">top</span></tt> are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.</li>
+</ul>
+</dd>
 <dt>0.9.6a2 090308</dt>
 <dd><ul class="first">
 <li><p class="first"><strong>API CHANGE</strong>: <a title="cssutils.profiles.Profiles" class="reference external" href="docs/profiles.html#cssutils.profiles.Profiles"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a> (introduced in 0.9.6a1) has been refactored:</p>

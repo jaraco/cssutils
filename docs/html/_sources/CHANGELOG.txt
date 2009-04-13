@@ -36,6 +36,8 @@ development version
 0.9.6
 -----
 HEAD
+    + **BUGFIX**: Fixed issue #21 http://code.google.com/p/cssutils/issues/detail?id=21. Definition of valid values for property `background-position` was wrong. Still mixed values like ``background-position: 0 top`` are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.
+
 
 0.9.6a2 090308
     + **API CHANGE**: :class:`cssutils.profiles.Profiles` (introduced in 0.9.6a1) has been refactored:

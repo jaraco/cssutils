@@ -51,7 +51,7 @@
   <div class="section" id="profiles">
 <h1>profiles<a class="headerlink" href="#profiles" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cssutils-profile">
-<span id="index-46"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
+<span id="index-50"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
 <p>A global object <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is used for validation of all properties. It is an instance of <a title="cssutils.profiles.Profiles" class="reference internal" href="#cssutils.profiles.Profiles"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a>. Add or remove new profile definitions here.</p>
 <p>Most important method is <a title="cssutils.profiles.Profiles.addProfile" class="reference internal" href="#cssutils.profiles.Profiles.addProfile"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles.addProfile()</span></tt></a> (use <tt class="docutils literal"><span class="pre">cssutils.profile.addProfile</span></tt>) to add new properties to cssutils and the setting of <tt class="docutils literal"><span class="pre">defaultProfiles</span></tt>.</p>
 <p>Example of how to add a new profile:</p>
@@ -79,7 +79,7 @@
 <p><strong>Please note: This might change again, but only slightly as it has been refactored in 0.9.6a2.</strong></p>
 </div>
 <div class="section" id="cssutils-profiles-macros-and-cssutils-profiles-properties">
-<span id="index-47"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt><a class="headerlink" href="#cssutils-profiles-macros-and-cssutils-profiles-properties" title="Permalink to this headline">¶</a></h2>
+<span id="index-51"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt><a class="headerlink" href="#cssutils-profiles-macros-and-cssutils-profiles-properties" title="Permalink to this headline">¶</a></h2>
 <p>Two dictionaries which contain macro and property definitions for the predefined property profiles.</p>
 <p>Both use the additional macros defined in <tt class="docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="docutils literal"><span class="pre">Profiles._MACROS</span></tt> which contain basic macros for definition of new properties. Things like <cite>ident</cite>, <cite>name</cite> or <cite>hexcolor</cite> are defined there and may be used in any new property definition as these two macro sets defined in <tt class="docutils literal"><span class="pre">Profiles</span></tt> are added to any custom macro definition given. You may overwrite these basic macros with your own macros or simply define your own macros and use only these.</p>
 <p>Use <tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> if you need any other predefined macro or <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt> if you want to add any known property to your custom property profile.</p>
@@ -91,7 +91,7 @@
 <!--[cssutils.profiles.Profiles]-->class <tt class="descclassname">cssutils.profiles.</tt><tt class="descname">Profiles</tt><big>(</big><em>log=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>All profiles used for validation. <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is a
 preset object of this class and used by all properties for validation.</p>
-<p>Predefined profiles are (use 
+<p>Predefined profiles are (use
 <a title="cssutils.profiles.Profiles.propertiesByProfile" class="reference internal" href="#cssutils.profiles.Profiles.propertiesByProfile"><tt class="xref docutils literal"><span class="pre">propertiesByProfile()</span></tt></a> to
 get a list of defined properties):</p>
 <dl class="docutils">
@@ -111,7 +111,7 @@ get a list of defined properties):</p>
 <dt><tt class="xref docutils literal"><span class="pre">_MACROS</span></tt></dt>
 <dd>Additional general macros.</dd>
 </dl>
-<p>If you want to redefine any of these macros do this in your custom 
+<p>If you want to redefine any of these macros do this in your custom
 macros.</p>
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.addProfile">
@@ -137,7 +137,7 @@ on cssutils.log.raiseExceptions which e.g during parsing normally
 is False so the exceptions would be logged only.</p>
 </li>
 <li><em>macros</em> &#8211; may be used in the given properties definitions. There are some
-predefined basic macros which may always be used in 
+predefined basic macros which may always be used in
 <tt class="xref docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="xref docutils literal"><span class="pre">Profiles._MACROS</span></tt>.</li>
 </ul>
 </td>
@@ -206,7 +206,7 @@ If given <cite>profile</cite> cannot be found.</li>
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.validate">
 <!--[cssutils.profiles.Profiles.validate]--><tt class="descname">validate</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if <cite>value</cite> is valid for given property <cite>name</cite> using <strong>any</strong> 
+<dd><p>Check if <cite>value</cite> is valid for given property <cite>name</cite> using <strong>any</strong>
 profile.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -242,8 +242,8 @@ profile</p>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">valid,</span> <span class="pre">matching,</span> <span class="pre">profiles</span></tt> where <tt class="docutils literal"><span class="pre">valid</span></tt> is if the <cite>value</cite> 
-is valid for the given property <cite>name</cite> in any profile, 
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">valid,</span> <span class="pre">matching,</span> <span class="pre">profiles</span></tt> where <tt class="docutils literal"><span class="pre">valid</span></tt> is if the <cite>value</cite>
+is valid for the given property <cite>name</cite> in any profile,
 <tt class="docutils literal"><span class="pre">matching==True</span></tt> if it is valid in the given <cite>profiles</cite>
 and <tt class="docutils literal"><span class="pre">profiles</span></tt> the profile names for which the value is valid
 (or <tt class="docutils literal"><span class="pre">[]</span></tt> if not valid at all)</p>
