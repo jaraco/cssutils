@@ -36,6 +36,8 @@ development version
 0.9.6
 -----
 HEAD
+    + **BUGFIX**: Fixed ``CSSStyleDeclaration.length`` for Python 2.6.2. Not sure if it an issue in cssutils or in Python itself but fixed it is anyway ;)
+
     + **BUGFIX**: Fixed issue #21 http://code.google.com/p/cssutils/issues/detail?id=21. Definition of valid values for property `background-position` was wrong. Still mixed values like ``background-position: 0 top`` are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.
 
 
