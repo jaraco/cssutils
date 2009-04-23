@@ -55,10 +55,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">0.8.3.1</p>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">0.9</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Author:</th><td class="field-body"><p class="first">Christof Hoeke, see <a class="reference external" href="http://cthedot.de/encutils/">http://cthedot.de/encutils/</a></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Contributor:</th><td class="field-body"><p class="first">Robert Siemer</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Copyright:</th><td class="field-body"><p class="first">2005-2009: Christof Hoeke</p>
@@ -135,7 +138,7 @@ supplies an <a title="encutils.EncodingInfo" class="reference internal" href="#e
 </dl>
 <dl class="function">
 <dt id="encutils.buildlog">
-<!--[encutils.buildlog]--><tt class="descclassname">encutils.</tt><tt class="descname">buildlog</tt><big>(</big><em>logname='encutils'</em>, <em>level='INFO'</em>, <em>stream=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x019430C0&gt;</em>, <em>filename=None</em>, <em>filemode='w'</em>, <em>format='%(levelname)st%(message)s'</em><big>)</big><a class="headerlink" href="#encutils.buildlog" title="Permalink to this definition">¶</a></dt>
+<!--[encutils.buildlog]--><tt class="descclassname">encutils.</tt><tt class="descname">buildlog</tt><big>(</big><em>logname='encutils'</em>, <em>level='INFO'</em>, <em>stream=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x019A30C0&gt;</em>, <em>filename=None</em>, <em>filemode='w'</em>, <em>format='%(levelname)st%(message)s'</em><big>)</big><a class="headerlink" href="#encutils.buildlog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper to build a basic log</p>
 <ul class="simple">
 <li>if <cite>filename</cite> is given returns a log logging to <cite>filename</cite> with
@@ -162,6 +165,11 @@ mode <cite>filemode</cite></li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>media_type</em> &#8211; a media type like &#8220;text/html&#8221;</li>
+</ul>
+</td>
+</tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a default encoding for given <cite>media_type</cite>. For example
 <tt class="docutils literal"><span class="pre">&quot;utf-8&quot;</span></tt> for <tt class="docutils literal"><span class="pre">media_type=&quot;application/xml&quot;</span></tt>.</p>
 <p>If no default encoding is available returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
@@ -179,10 +187,16 @@ mode <cite>filemode</cite></li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from the <cite>response</cite>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>response</em> &#8211; a HTTP response object</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from the <cite>response</cite>
 Content-Type HTTP header. (Case of headers is ignored.)
 May be <tt class="docutils literal"><span class="pre">(None,</span> <span class="pre">None)</span></tt> e.g. if no Content-Type header is
-available.</td>
+available.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -195,6 +209,11 @@ available.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>text</em> &#8211; a byte string</li>
+</ul>
+</td>
+</tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from (first)
 X/HTML Content-Type <tt class="docutils literal"><span class="pre">&lt;meta&gt;</span></tt> element if available in <cite>text</cite>.</p>
 <p>XHTML format:</p>
@@ -248,14 +267,15 @@ declaration and X/HTML <tt class="docutils literal"><span class="pre">&lt;meta&g
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>response</em> &#8211; HTTP response object, e.g. <tt class="docutils literal"><span class="pre">urllib.urlopen('url')</span></tt></li>
-<li><em>text</em> &#8211; to guess encoding for, might include XML prolog with encoding
-pseudo attribute or HTML meta element</li>
+<li><em>response</em> &#8211; HTTP response object, e.g. via <tt class="docutils literal"><span class="pre">urllib.urlopen('url')</span></tt></li>
+<li><em>text</em> &#8211; a byte string to guess encoding for. XML prolog with 
+encoding pseudo attribute or HTML meta element will be used to detect
+the encoding</li>
+<li><em>url</em> &#8211; When given fetches document at <cite>url</cite> and all needed information.
+No <cite>reponse</cite> or <cite>text</cite> parameters are needed in this case.</li>
 <li><em>log</em> &#8211; an optional logging logger to which messages may go, if
 no log given all log messages are available from resulting
 <tt class="docutils literal"><span class="pre">EncodingInfo</span></tt></li>
-<li><em>url</em> &#8211; When given fetches document at <cite>url</cite> and all needed information.
-No <cite>reponse</cite> or <cite>text</cite> are needed in this case.</li>
 </ul>
 </td>
 </tr>
@@ -296,18 +316,10 @@ and the character encoding is determined in the order:
 1. the encoding given in the charset parameter of the Content-Type HTTP
 header, or
 2. ascii.</p>
-<dl class="last docutils">
-<dt>Mismatch possibilities:</dt>
-<dd><ul class="first simple">
-<li>HTTP + XMLdecla</li>
-<li>HTTP + HTMLmeta</li>
-</ul>
-<dl class="last docutils">
-<dt>text/xhtml+xml</dt>
-<dd>XMLdecla + HTMLmeta</dd>
-</dl>
-</dd>
-</dl>
+<p>No mismatch possible.</p>
+<p>If no media type is given the XML encoding pseuso attribute is used
+if present.</p>
+<p class="last">No mismatch possible.</p>
 </dd>
 <dt>HTML</dt>
 <dd><dl class="first docutils">
@@ -343,11 +355,18 @@ text/css which has a default encoding of UTF-8.</dd>
 <dd><p>If installed uses chardet <a class="reference external" href="http://chardet.feedparser.org/">http://chardet.feedparser.org/</a> to detect
 encoding, else tries different encodings on <cite>text</cite> and returns the one
 that does not raise an exception which is not very advanced or may
-be totally wrong.</p>
+be totally wrong. The tried encoding are in order &#8216;ascii&#8217;, &#8216;iso-8859-1&#8217;,
+&#8216;windows-1252&#8217; (which probably will never happen as &#8216;iso-8859-1&#8217; can decode 
+these strings too) and lastly &#8216;utf-8&#8217;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>text</em> &#8211; a byte string</li>
+</ul>
+</td>
+</tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Working encoding or <tt class="xref docutils literal"><span class="pre">None</span></tt> if no encoding does work at all.</p>
 <p class="last">The returned encoding might nevertheless be not the one intended by
 the author as it is only checked if the text might be encoded in 
