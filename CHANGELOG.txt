@@ -35,8 +35,19 @@ development version
 
 0.9.6
 -----
+
+0.9.6a3 09042x
+
 HEAD
-    + **BUGFIX**: Fixed ``CSSStyleDeclaration.length`` for Python 2.6.2. Not sure if it an issue in cssutils or in Python itself but fixed it is anyway ;)
+    - **IMPROVEMENT**: Fixed ``CSSStyleDeclaration.length`` for Python 2.6.2 (due to a backport from Python 2.7 to 2.6.2 the reversed() iterator has no __length__ anymore which cssutils was using)
+
+    + **BUGFIX**: New version of encutils (0.9) with these fixes:
+        - invalid HTML (like ``< />``) does not stop the encoding detection anymore
+        - fixed ``tryEncodings`` if chardet is not installed
+        - mismatch is ``False`` now if mime-type is ``text/xml`` (or similar) and XML encoding pseudo attribute defines encoding as this is ignored completely!
+        - default encoding for CSS is UTF-8 now if not other HTTP info is given. @charset encoding information is **not** used by encutils!
+        - log output for mismatch uses ``!=`` instead of ``<>`` now
+        - fixed testcases which were not all tested :(most embarrissing)
 
     + **BUGFIX**: Fixed issue #21 http://code.google.com/p/cssutils/issues/detail?id=21. Definition of valid values for property `background-position` was wrong. Still mixed values like ``background-position: 0 top`` are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.
 
