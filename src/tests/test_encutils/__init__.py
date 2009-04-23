@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 tests for encutils.py
 """
@@ -27,6 +28,10 @@ class AutoEncodingTestCase(unittest.TestCase):
                 
             def info(self):
                 return self._info
+            
+            def read(self):
+                return content
+            
         return FakeRes(content)
 
     def test_getTextTypeByMediaType(self):
@@ -132,7 +137,19 @@ class AutoEncodingTestCase(unittest.TestCase):
             """<meta content="text/html;charset=ascii" http-equiv="Content-Type">""":
                 ('text/html', 'ascii'),
             """<meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":
-                ('text/html', 'ascii')
+                ('text/html', 'ascii'),
+            """raises exception: </ >""":
+                (None, None),
+            """<meta content="text/html;charset=ascii" http-equiv="cONTENT-type">
+                </ >""":
+                ('text/html', 'ascii'),
+            """</ >
+                <meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":
+                (None, None),
+            """<meta content="text/html" http-equiv="cONTENT-type">
+                </ >
+                <meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":
+                ('text/html', None)
             }
         for test, exp in tests.items():
             self.assertEqual(exp, encutils.getMetaInfo(test, log=log))
@@ -163,140 +180,219 @@ class AutoEncodingTestCase(unittest.TestCase):
             import chardet            
             tests = [
                 ('ascii', 'abc'),
-                ('windows-1252', u'\xf6'),
-                ('ascii', u'\u1111')
+                ('windows-1252', u'€'.encode('windows-1252')),
+                ('ascii', u'1'.encode('utf-8'))
                 ]
         except ImportError:
             tests = [
                 ('ascii', 'abc'),
-                ('iso-8859-1', u'\xf6'),
-                ('utf-8', u'\u1111')
+                ('windows-1252', u'€'.encode('windows-1252')),
+                ('iso-8859-1', u'äöüß'.encode('iso-8859-1')),
+                ('iso-8859-1', u'äöüß'.encode('windows-1252')),
+                #('utf-8', u'\u1111'.encode('utf-8'))
                 ]            
         for exp, test in tests:
             self.assertEqual(exp, encutils.tryEncodings(test))        
 
-    # (expectedencoding, expectedmismatch): (httpheader, filecontent)
-    fulltests = {
-        ('utf-8', False): (
-            '''NoContentType''', '''OnlyText'''),
-        
-        # --- application/xhtml+xml ---
-        # default enc
-        ('utf-8', False): (
-            '''Content-Type: application/xhtml+xml''',
-            '''<?xml version="1.0" ?>
-                <example>
-                    <meta http-equiv="Content-Type"
-                        content="application/xhtml+xml"/>
-                </example>'''),
-        # header enc
-        ('iso-h', True): (
-            '''Content-Type: application/xhtml+xml;charset=iso-H''',
-            '''<?xml version="1.0" ?>
-                <example>
-                    <meta http-equiv="Content-Type"
-                        content="application/xhtml+xml"/>
-                </example>'''),
-        # mismatch header - meta, meta ignored
-        ('iso-h', True): (
-            '''Content-Type: application/xhtml+xml;charset=iso-H''',
-            '''<?xml version="1.0" ?>
-                <example>
-                    <meta http-equiv="Content-Type"
-                        content="application/xhtml+xml;charset=iso_M"/>
-                </example>'''),
-        # mismatch XML - meta, meta ignored
-        ('iso-x', False): (
-            '''Content-Type: application/xhtml+xml''',
-            '''<?xml version="1.0" encoding="iso-X" ?>
-                <example>
-                    <meta http-equiv="Content-Type"
-                        content="application/xhtml+xml;charset=iso_M"/>
-                </example>'''),
-        # mismatch header and XML, header wins
-        ('iso-h', True): (
-            '''Content-Type: application/xhtml+xml;charset=iso-H''',
-            '''<?xml version="1.0" encoding="iso-X" ?>
-                <example/>'''),
-
-        # --- text/xml ---
-        # default enc
-        ('ascii', False): (
-            '''Content-Type: text/xml''',
-            '''<?xml version="1.0" ?>
-                <example>
-                    <meta http-equiv="Content-Type"
-                        content="text/xml"/>
-                </example>'''),
-        # header enc
-        ('iso-h', True): (
-            '''Content-Type: text/xml;charset=iso-H''',
-            '''<?xml version="1.0" ?>
-                <example>
-                    <meta http-equiv="Content-Type"
-                        content="text/xml"/>
-                </example>'''),
-        # mismatch header - meta, meta ignored
-        ('iso-h', True): (
-            '''Content-Type: text/xml;charset=iso-H''',
-            '''<?xml version="1.0" ?>
-                <example>
-                    <meta http-equiv="Content-Type"
-                        content="text/xml;charset=iso_M"/>
-                </example>'''),
-        # XML - meta, both ignored, use HTTP, meta completely ignored
-        ('ascii', False): (
-            '''Content-Type: text/xml''',
-            '''<?xml version="1.0" encoding="iso-X" ?>
-                <example>
-                    <meta http-equiv="Content-Type"
-                        content="text/xml;charset=iso_M"/>
-                </example>'''),
-        # mismatch header and XML, XML ignored
-        ('iso-h', True): (
-            '''Content-Type: text/xml;charset=iso-H''',
-            '''<?xml version="1.0" encoding="iso-X" ?>
-                <example/>'''),
-
-        # --- text/html ---
-        # no default enc
-        (None, False): ('Content-Type: text/html;',
-            '''<meta http-equiv="Content-Type"
-                content="text/html">'''),
-        # header enc
-        ('iso-h', True): ('Content-Type: text/html;charset=iso-H',
-            '''<meta http-equiv="Content-Type"
-                content="text/html">'''),   
-        # meta enc
-        ('iso-m', False): ('Content-Type: text/html',
-            '''<meta http-equiv="Content-Type"
-                content="text/html;charset=iso-m">'''),
-        # mismatch header - meta, header wins
-        ('iso-h', True): ('Content-Type: text/html;charset=iso-H',
-            '''<meta http-equiv="Content-Type"
-                content="text/html;charset=iso-m">'''),
-
-        # no header:
-        (None, False): (None,
-            '''<meta http-equiv="Content-Type"
-                content="text/html;charset=iso-m">'''),
-          (None, False): (None, '''text'''),
-          ('utf-8', False): (None, '''<?xml version='''),
-          ('utf-8', False): (None, '''<?xml version='''),
-          ('iso-x', False): (None, '''<?xml version="1.0" encoding="iso-X"?>''')
-        }
 
     def test_getEncodingInfo(self):
         "encutils.getEncodingInfo"
-        for exp, test in self.fulltests.items():
+        # (expectedencoding, expectedmismatch): (httpheader, filecontent)
+        tests = [
+
+            # --- application/xhtml+xml ---
+            
+            # header default and XML default
+            (('utf-8', False), (
+                '''Content-Type: application/xhtml+xml''',
+                '''<?xml version="1.0" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="application/xhtml+xml"/>
+                    </example>''')),
+            # XML default
+            (('utf-8', False), (
+                None,
+                '''<?xml version="1.0" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="application/xhtml+xml"/>
+                    </example>''')),
+            # meta is ignored!
+            (('utf-8', False), (
+                '''Content-Type: application/xhtml+xml''',
+                '''<?xml version="1.0" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="application/xhtml+xml;charset=iso_M"/>
+                    </example>''')),
+            
+            # header enc and XML default
+            (('iso-h', True), (
+                '''Content-Type: application/xhtml+xml;charset=iso-H''',
+                '''<?xml version="1.0" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="application/xhtml+xml"/>
+                    </example>''')),
+
+            # mismatch header and XML explicit, header wins
+            (('iso-h', True), (
+                '''Content-Type: application/xhtml+xml;charset=iso-H''',
+                '''<?xml version="1.0" encoding="iso-X" ?>
+                    <example/>''')),
+            
+            # header == XML, meta ignored!
+            (('iso-h', False), (
+                '''Content-Type: application/xhtml+xml;charset=iso-H''',
+                '''<?xml version="1.0" encoding="iso-h" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="application/xhtml+xml;charset=iso_M"/>
+                    </example>''')),
+                    
+            # XML only, meta ignored!
+            (('iso-x', False), (
+                '''Content-Type: application/xhtml+xml''',
+                '''<?xml version="1.0" encoding="iso-X" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="application/xhtml+xml;charset=iso_M"/>
+                    </example>''')),
+            
+
+            # no text or not enough text:
+            (('iso-h', False), ('Content-Type: application/xml;charset=iso-h', 
+                             '1')),
+            (('utf-8', False), ('Content-Type: application/xml', 
+                                None)),
+            ((None, False), ('Content-Type: application/xml', 
+                             '1')),
+    
+    
+            # --- text/xml ---
+            
+            # default enc
+            (('ascii', False), (
+                '''Content-Type: text/xml''',
+                '''<?xml version="1.0" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="text/xml"/>
+                    </example>''')),
+            # default as XML ignored and meta completely ignored
+            (('ascii', False), (
+                '''Content-Type: text/xml''',
+                '''<?xml version="1.0" encoding="iso-X" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="text/xml;charset=iso_M"/>
+                    </example>''')),
+            (('ascii', False), ('Content-Type: text/xml', 
+                                '1')),
+            (('ascii', False), ('Content-Type: text/xml', 
+                                None)),
+                    
+            # header enc
+            (('iso-h', False), (
+                '''Content-Type: text/xml;charset=iso-H''',
+                '''<?xml version="1.0" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="text/xml"/>
+                    </example>''')),
+                    
+            # header only, XML and meta ignored!
+            (('iso-h', False), (
+                '''Content-Type: text/xml;charset=iso-H''',
+                '''<?xml version="1.0" encoding="iso-X" ?>
+                    <example/>''')),
+            (('iso-h', False), (
+                '''Content-Type: text/xml;charset=iso-H''',
+                '''<?xml version="1.0"  encoding="iso-h" ?>
+                    <example>
+                        <meta http-equiv="Content-Type"
+                            content="text/xml;charset=iso_M"/>
+                    </example>''')),
+                    
+    
+            # --- text/html ---
+           
+            # default enc
+            (('iso-8859-1', False), ('Content-Type: text/html;',
+                                     '''<meta http-equiv="Content-Type"
+                                        content="text/html">''')),                            
+            (('iso-8859-1', False), ('Content-Type: text/html;', 
+                                     None)),
+            
+            # header enc
+            (('iso-h', False), ('Content-Type: text/html;charset=iso-H',
+                                '''<meta http-equiv="Content-Type"
+                                    content="text/html">''')),   
+            # meta enc
+            (('iso-m', False), ('Content-Type: text/html',
+                                '''<meta http-equiv="Content-Type"
+                                    content="text/html;charset=iso-m">''')),
+            
+            # mismatch header and meta, header wins
+            (('iso-h', True), ('Content-Type: text/html;charset=iso-H',
+                               '''<meta http-equiv="Content-Type"
+                                    content="text/html;charset=iso-m">''')),
+    
+            # no header:
+            ((None, False), (None,
+                             '''<meta http-equiv="Content-Type"
+                                content="text/html;charset=iso-m">''')),
+            # no encoding at all
+            ((None, False), (None,
+                             '''<meta http-equiv="Content-Type"
+                                content="text/html">''')),
+
+            
+            ((None, False), (None, 
+                             '''text''')),
+                             
+                             
+            # --- no header ---
+            
+            ((None, False), (None, '')),
+            (('iso-8859-1', False), ('''NoContentType''', 
+                                     '''OnlyText''')),
+            (('iso-8859-1', False), ('Content-Type: text/html;', 
+                                     None)),
+            (('iso-8859-1', False), ('Content-Type: text/html;', 
+                                     '1')),
+
+            # XML
+            (('utf-8', False), (None, 
+                                '''<?xml version=''')),
+            (('iso-x', False), (None, 
+                                '''<?xml version="1.0" encoding="iso-X"?>''')),
+            # meta ignored
+            (('utf-8', False), (None, 
+                                '''<?xml version="1.0" ?>
+                                    <html><meta http-equiv="Content-Type"
+                                    content="text/html;charset=iso-m"></html>''')),
+
+            (('utf-8', False), ('Content-Type: text/css;', 
+                                '1')),
+            (('iso-h', False), ('Content-Type: text/css;charset=iso-h', 
+                                '1')),
+            # only header is used by encutils
+            (('utf-8', False), ('Content-Type: text/css', 
+                                '@charset "ascii";')),
+
+        ]
+        for exp, test in tests:
             header, text = test
             if header:
                 res = encutils.getEncodingInfo(self._fakeRes(header), text)
             else:
                 res = encutils.getEncodingInfo(text=text)
+            
             res = (res.encoding, res.mismatch)
             self.assertEqual(exp, res)
-
+        
 
 if __name__ == '__main__':
     unittest.main()
