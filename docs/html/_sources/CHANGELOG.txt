@@ -35,7 +35,20 @@ development version
 
 0.9.6
 -----
+
+0.9.6a3 09042x
+
 HEAD
+    + **BUGFIX**: New version of encutils (0.9) with these fixes:
+        - invalid HTML (like ``< />``) does not stop the encoding detection anymore
+        - fixed ``tryEncodings`` if chardet is not installed
+        - mismatch is ``False`` now if mime-type is ``text/xml`` (or similar) and XML encoding pseudo attribute defines encoding as this is ignored completely!
+        - default encoding for CSS is UTF-8 now if not other HTTP info is given. @charset encoding information is **not** used by encutils!
+        - log output for mismatch uses ``!=`` instead of ``<>`` now
+        - fixed testcases which were not all tested :(most embarrissing)
+
+    + **BUGFIX**: Fixed ``CSSStyleDeclaration.length`` for Python 2.6.2 (due to a backport from Python 2.7 to 2.6.2 the reversed() iterator has no __length__ anymore which cssutils was using)
+
     + **BUGFIX**: Fixed issue #21 http://code.google.com/p/cssutils/issues/detail?id=21. Definition of valid values for property `background-position` was wrong. Still mixed values like ``background-position: 0 top`` are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.
 
 
@@ -386,7 +399,7 @@ stable version
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-03-08 13:26:00 +0100 (So, 08 Mrz 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1701 2009-03-08 12:26:00Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-04-18 17:49:17 +0200 (Sa, 18 Apr 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1711 2009-04-18 15:49:17Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
