@@ -28,13 +28,61 @@ def save(name, string):
 
 
 if 1:
-    P1 = {
-        'x': '({num}{w}){1,2}',
-        }
-    cssutils.profile.addProfile('test', P1)
-    sheet = cssutils.parseString('x { x: 1 1 }')
-    print sheet.cssRules[0].style.getProperties()[0]
+    import encutils, httplib, StringIO
+    def _fakeRes(content):
+        "build a fake HTTP response"
+        class FakeRes:
+            def __init__(self, content):
+                fp = StringIO.StringIO(content)
+                self._info = httplib.HTTPMessage(fp)
+                
+            def info(self):
+                return self._info
+        return FakeRes(content)
+    
+    res = encutils.getEncodingInfo(_fakeRes('''Content-Type: text/css;'''), 
+                                     '''Content-Type: text/css;''')
+    print (res.encoding, res.mismatch)
+    sys.exit(0)
 
+if 1:
+    import cssutils, pprint
+    # remove ALL predefined property profiles 
+    cssutils.profile.removeProfile(all=True)
+    
+    # add your custom profile, {num} is defined in Profile and always available
+    macros = {'myvalue': 'a|b|c'}
+    props = {'abc': '{myvalue}|{num}', 'color': 'red|blue'}
+    cssutils.profile.addProfile('my-profile', props, macros)
+    
+    # keep only valid properties (valid in given profile)
+    cssutils.ser.prefs.validOnly = True
+    
+    print cssutils.parseString('''a { 
+        color: green; 
+        color: red; 
+        abc: 1; 
+        abc: b;
+        abc: 1 a 
+    }''').cssText
+    
+#    import cssutils, pprint
+#    print "TOKEN_MACROS"
+#    pprint.pprint(cssutils.profile._TOKEN_MACROS)
+#    print "MACROS"
+#    pprint.pprint(cssutils.profile._MACROS)
+
+    from cssutils.profiles import macros as predef
+    from cssutils import profile
+    macros = {'my-font': predef[profile.CSS_LEVEL_2]['family-name'],
+              'identifier': predef[profile.CSS_LEVEL_2]['identifier']}
+    props = {'f': '{my-font}'}
+    cssutils.profile.addProfile('my-font-profile', props, macros)
+    print cssutils.parseString('''a { 
+        f: 1; /* 1 is invalid! */
+        f: Arial; 
+    }''').cssText
+    
     sys.exit(0)
 
 if 1:

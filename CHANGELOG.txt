@@ -36,9 +36,10 @@ development version
 0.9.6
 -----
 
-0.9.6a3 09042x
-
 HEAD
+
+
+0.9.6a3 090426
     - **IMPROVEMENT**: Fixed ``CSSStyleDeclaration.length`` for Python 2.6.2 (due to a backport from Python 2.7 to 2.6.2 the reversed() iterator has no __length__ anymore which cssutils was using)
 
     + **BUGFIX**: New version of encutils (0.9) with these fixes:

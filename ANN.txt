@@ -4,22 +4,16 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.6a2 is an alpha release.
+0.9.6a3 is an bugfix release.
 
 main changes
 ------------
-0.9.6a2 090308
-    + **API CHANGE**: :class:`cssutils.profiles.Profiles` (introduced in 0.9.6a1) has been refactored
+0.9.6a3 090426
+    - **IMPROVEMENT**: Fix for Python 2.6.2 (due to a backport from Python 2.7 to 2.6.2 the reversed() iterator has no __length__ anymore which cssutils was using)
 
-    + **CHANGE**: Reporting levels of properties have changed. Please see :meth:`cssutils.css.Property.validate` for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore. The log output has been changed too, context information is provided now (line, column and name of the relevant property)
+    + **BUGFIX**: New version of encutils (0.9)
 
-    + **BUGFIX**: ``p.valid == False`` is now set for Properties not valid in the current profile even if they are valid in a different profile
-    + **BUGFIX**: Macros used when adding a new profile to ``cssutils.profile`` were polluted with ALL macros ever defined. They now correctly use the (always used) predefined macros ``Profiles._TOKEN_MACROS`` and ``PROFILES._MACROS`` in addition to the given macros (``cssutils.profile.addProfile(self, profile, properties, macros=None)``) only. If you want to use any macros defined in other profiles you need to add these to your own macros as seen in ``macros[Profiles.CSS3_BOX]``.
-    + BUGFIX: If ``cssutils.ser.prefs.validOnly == True`` serializer incorrectly put a single ``;`` for invalid properties out until now.
-
-    - **IMPROVEMENT**: comments added by ``cssutils.resolveImports`` only use the @import rules' href and not the absolute href of the referenced sheets anymore (might have been a possible security hole when showing a full local path to a sheet in a combined but not minified sheet)
-
-    - IMPROVEMENT: IE specific `alpha` values like ``filter: alpha(opacity=80)`` are parsed and kept now.
+    + **BUGFIX**: Fixed issue #21
 
 license
 -------
@@ -31,7 +25,7 @@ download
 --------
 For download options see http://cthedot.de/cssutils/
 
-cssutils needs Python 2.4 or higher (tested with Python 2.6.1, 2.5.2 and 2.4.4 on Vista only)
+cssutils needs Python 2.4 or higher (tested with Python 2.6.2, 2.5.2 and 2.4.4 on Vista only)
 
 
 Bug reports (via Google code), comments, etc are very much appreciated! Thanks.
