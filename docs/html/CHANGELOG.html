@@ -86,10 +86,13 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>0.9.6a3 09042x</p>
+<p>HEAD</p>
 <dl class="docutils">
-<dt>HEAD</dt>
-<dd><ul class="first last">
+<dt>0.9.6a3 090426</dt>
+<dd><ul class="first simple">
+<li><strong>IMPROVEMENT</strong>: Fixed <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.length</span></tt> for Python 2.6.2 (due to a backport from Python 2.7 to 2.6.2 the reversed() iterator has no __length__ anymore which cssutils was using)</li>
+</ul>
+<ul class="last">
 <li><dl class="first docutils">
 <dt><strong>BUGFIX</strong>: New version of encutils (0.9) with these fixes:</dt>
 <dd><ul class="first last simple">
@@ -98,12 +101,10 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <li>mismatch is <tt class="xref docutils literal"><span class="pre">False</span></tt> now if mime-type is <tt class="docutils literal"><span class="pre">text/xml</span></tt> (or similar) and XML encoding pseudo attribute defines encoding as this is ignored completely!</li>
 <li>default encoding for CSS is UTF-8 now if not other HTTP info is given. &#64;charset encoding information is <strong>not</strong> used by encutils!</li>
 <li>log output for mismatch uses <tt class="docutils literal"><span class="pre">!=</span></tt> instead of <tt class="docutils literal"><span class="pre">&lt;&gt;</span></tt> now</li>
-<li>fixed testcases which were not all tested :(most embarrissing)</li>
+<li>fixed testcases which were not all tested :(most embarrassing)</li>
 </ul>
 </dd>
 </dl>
-</li>
-<li><p class="first"><strong>BUGFIX</strong>: Fixed <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.length</span></tt> for Python 2.6.2 (due to a backport from Python 2.7 to 2.6.2 the reversed() iterator has no __length__ anymore which cssutils was using)</p>
 </li>
 <li><p class="first"><strong>BUGFIX</strong>: Fixed issue #21 <a class="reference external" href="http://code.google.com/p/cssutils/issues/detail?id=21">http://code.google.com/p/cssutils/issues/detail?id=21</a>. Definition of valid values for property <cite>background-position</cite> was wrong. Still mixed values like <tt class="docutils literal"><span class="pre">background-position:</span> <span class="pre">0</span> <span class="pre">top</span></tt> are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.</p>
 </li>
@@ -536,7 +537,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-04-18</span> <span class="pre">17:49:17</span> <span class="pre">+0200</span> <span class="pre">(Sa,</span> <span class="pre">18</span> <span class="pre">Apr</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1711</span> <span class="pre">2009-04-18</span> <span class="pre">15:49:17Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-04-23</span> <span class="pre">14:46:03</span> <span class="pre">+0200</span> <span class="pre">(Do,</span> <span class="pre">23</span> <span class="pre">Apr</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1712</span> <span class="pre">2009-04-23</span> <span class="pre">12:46:03Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
