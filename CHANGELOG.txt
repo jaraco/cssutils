@@ -47,7 +47,7 @@ HEAD
         - mismatch is ``False`` now if mime-type is ``text/xml`` (or similar) and XML encoding pseudo attribute defines encoding as this is ignored completely!
         - default encoding for CSS is UTF-8 now if not other HTTP info is given. @charset encoding information is **not** used by encutils!
         - log output for mismatch uses ``!=`` instead of ``<>`` now
-        - fixed testcases which were not all tested :(most embarrissing)
+        - fixed testcases which were not all tested :(most embarrassing)
 
     + **BUGFIX**: Fixed issue #21 http://code.google.com/p/cssutils/issues/detail?id=21. Definition of valid values for property `background-position` was wrong. Still mixed values like ``background-position: 0 top`` are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.
 
