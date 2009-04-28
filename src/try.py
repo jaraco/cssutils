@@ -28,21 +28,29 @@ def save(name, string):
 
 
 if 1:
-    import encutils, httplib, StringIO
-    def _fakeRes(content):
-        "build a fake HTTP response"
-        class FakeRes:
-            def __init__(self, content):
-                fp = StringIO.StringIO(content)
-                self._info = httplib.HTTPMessage(fp)
-                
-            def info(self):
-                return self._info
-        return FakeRes(content)
+    # ISSUE #22
+    css = r"""body:after {
+     content: "\\";
+     background-image: url('javascript:alert(\'XSS\')');
+     background-color: red;
+     blahblah:novalidatinghere;
+     /*";/*
+     content: "";
+}"""
+    css = r"""x { 
+    /*";/*
+    content: "";"""
     
-    res = encutils.getEncodingInfo(_fakeRes('''Content-Type: text/css;'''), 
-                                     '''Content-Type: text/css;''')
-    print (res.encoding, res.mismatch)
+    t = cssutils.tokenize2.Tokenizer()
+    pp(list(t.tokenize(css)))
+    
+    s = cssutils.parseString(css)
+    print css
+    print s.cssText == css
+    print "parsed:"
+    print s.cssText
+    
+    #print s.cssRules[0].style
     sys.exit(0)
 
 if 1:
