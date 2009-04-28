@@ -39,19 +39,22 @@ if 1:
 }"""
     css = r"""x { 
     /*";/*
-    content: "";"""
-    
-    t = cssutils.tokenize2.Tokenizer()
-    pp(list(t.tokenize(css)))
-    
+    content: "";
+    }
+    """
     s = cssutils.parseString(css)
     print css
     print s.cssText == css
     print "parsed:"
     print s.cssText
+    s.cssText = css
+    print s.cssText
     
     #print s.cssRules[0].style
     sys.exit(0)
+
+
+
 
 if 1:
     import cssutils, pprint
