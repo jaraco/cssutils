@@ -302,10 +302,15 @@ class CSSParserTestCase(basetest.BaseTestCase):
             s = cssutils.parseString(css)
             self.assertEqual(validfromhere, s.cssText)
 
-        css = u'''a { font-family: "Courier
-                ; }'''
-        s = cssutils.parseString(css)
-        self.assertEqual(u'', s.cssText)
+        csss = (u'''a { font-family: "Courier
+                ; }''',
+                ur'''a { content: "\"; }
+                ''',
+                ur'''a { content: "\\\"; }
+                '''
+        )
+        for css in csss:
+            self.assertEqual(u'', cssutils.parseString(css).cssText)
 
     def test_invalid(self):
         "cssutils.parseString(INVALID_CSS)"
