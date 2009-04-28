@@ -1,6 +1,6 @@
 ﻿what is it
 ----------
-A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer  though!)
+A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer though!)
 
 about this release
 ------------------
