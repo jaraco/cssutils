@@ -37,6 +37,7 @@ development version
 -----
 
 HEAD
+    - **BUGFIX**: Fixed parsing of values like ``content: "\\"`` (issue #22)
 
 
 0.9.6a3 090426

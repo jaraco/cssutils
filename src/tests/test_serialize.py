@@ -558,6 +558,8 @@ a[href='"\a\22\27"'] {
     c: "\"";
     d: "\22";
     e: '\'';
+    f: "\\";
+    g: "2\\ 1\ 2\\";
     content: '\27';
     }'''
         exp = ur'''@import url("ABC\a ");
@@ -569,6 +571,8 @@ a[href="\"\a\22\27\""] {
     c: "\"";
     d: "\22";
     e: "'";
+    f: "\\";
+    g: "2\\ 1\ 2\\";
     content: "\27"
     }'''
         sheet = cssutils.parseString(css)
