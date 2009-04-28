@@ -36,8 +36,8 @@ development version
 0.9.6
 -----
 
-HEAD
-    - **BUGFIX**: Fixed parsing of values like ``content: "\\"`` (issue #22)
+HEAD (0.9.6a4)
+    - **BUGFIX**: Fixed issue #22 parsing or indeed reserializing of values like ``content: "\\"``
 
 
 0.9.6a3 090426
