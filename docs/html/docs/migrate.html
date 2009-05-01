@@ -1,15 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>version migration &mdash; cssutils v0.9.6a3 documentation</title>
+    <title>version migration &mdash; cssutils v0.9.6a4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6a3',
+        VERSION:     '0.9.6a4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -17,11 +19,9 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a3 documentation" href="../index.html" />
-    <link rel="next" title="implementation status" href="implementation.html" />
-    <link rel="prev" title="encutils module" href="encutils.html" /> 
+    <link rel="top" title="cssutils v0.9.6a4 documentation" href="../index.html" />
+    <link rel="next" title="parsing CSS" href="parse.html" />
+    <link rel="prev" title="﻿CHANGELOG" href="../CHANGELOG.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,32 +34,42 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="implementation.html" title="implementation status"
+          <a href="parse.html" title="parsing CSS"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="encutils.html" title="encutils module"
+          <a href="../CHANGELOG.html" title="﻿CHANGELOG"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
+
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
             
-  
   <div class="section" id="version-migration">
 <h1>version migration<a class="headerlink" href="#version-migration" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="incompatible-changes">
 <h2>0.9.6 incompatible changes<a class="headerlink" href="#incompatible-changes" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exception-handling-with-position-information">
 <h3>Exception handling with position information<a class="headerlink" href="#exception-handling-with-position-information" title="Permalink to this headline">¶</a></h3>
-<p><tt class="docutils literal"><span class="pre">xml.dom.DOMException</span></tt>s raised do now contain infos about the position where the exception occured. An exception might for example have been raised as:</p>
+<p><tt class="docutils literal"><span class="pre">xml.dom.DOMException</span></tt>s raised do now contain infos about the position where the exception occured.</p>
+<p><strong>THIS HAS BEEN CHANGED IN 0.9.6a4 again</strong>:</p>
+<dl class="docutils">
+<dt>until 0.9.6a3:</dt>
+<dd><blockquote class="first">
+<p>An exception might for example have been raised as:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">xml</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">SyntaxErr</span><span class="p">(</span><span class="s">&#39;the message&#39;</span><span class="p">,</span> <span class="mf">10</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
 </pre></div>
 </div>
+</blockquote>
 <p>(where 10 is the line and 5 the column of the offending text).</p>
-<p>Therefor you may <strong>not</strong> simply use <tt class="docutils literal"><span class="pre">str(e)</span></tt> to get the exception message but you have to use <tt class="docutils literal"><span class="pre">msg,</span> <span class="pre">line,</span> <span class="pre">col</span> <span class="pre">=</span> <span class="pre">e.args[0],</span> <span class="pre">e.args[1],</span> <span class="pre">e.args[2]</span></tt>. Additionally exceptions raised have attributes <tt class="docutils literal"><span class="pre">e.line</span></tt> and <tt class="docutils literal"><span class="pre">e.col</span></tt>.</p>
+<p class="last">Therefor you may <strong>not</strong> simply use <tt class="docutils literal"><span class="pre">str(e)</span></tt> to get the exception message but you have to use <tt class="docutils literal"><span class="pre">msg,</span> <span class="pre">line,</span> <span class="pre">col</span> <span class="pre">=</span> <span class="pre">e.args[0],</span> <span class="pre">e.args[1],</span> <span class="pre">e.args[2]</span></tt>. Additionally exceptions raised have attributes <tt class="docutils literal"><span class="pre">e.line</span></tt> and <tt class="docutils literal"><span class="pre">e.col</span></tt>.</p>
+</dd>
+<dt>from 0.9.6a4:</dt>
+<dd>in this version you have to use <tt class="docutils literal"><span class="pre">msg,</span> <span class="pre">line,</span> <span class="pre">col</span> <span class="pre">=</span> <span class="pre">e.args[0],</span> <span class="pre">e.line,</span> <span class="pre">e.col</span></tt>. <tt class="docutils literal"><span class="pre">str(e)</span></tt> does work again and contains the error message only!</dd>
+</dl>
 </div>
 <div class="section" id="cssvalue-property-has-been-rewritten">
 <h3>CSSValue / Property has been rewritten<a class="headerlink" href="#cssvalue-property-has-been-rewritten" title="Permalink to this headline">¶</a></h3>
@@ -267,19 +277,29 @@
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="encutils.html" title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">encutils</span></tt> module</a></p>
+            <p class="topless"><a href="../CHANGELOG.html"
+                                  title="previous chapter">﻿CHANGELOG</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="implementation.html" title="next chapter">implementation status</a></p>
+            <p class="topless"><a href="parse.html"
+                                  title="next chapter">parsing CSS</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/docs/migrate.txt">Show Source</a></li>
+              <li><a href="../_sources/docs/migrate.txt"
+                     rel="nofollow">Show Source</a></li>
             </ul>
-          <h3>Quick search</h3>
-            <form class="search" action="../search.html" method="get">
-              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
-              <input type="hidden" name="check_keywords" value="yes" />
-              <input type="hidden" name="area" value="default" />
-            </form>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -289,22 +309,22 @@
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
+             >index</a></li>
         <li class="right" >
           <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+             >modules</a> |</li>
         <li class="right" >
-          <a href="implementation.html" title="implementation status"
-             accesskey="N">next</a> |</li>
+          <a href="parse.html" title="parsing CSS"
+             >next</a> |</li>
         <li class="right" >
-          <a href="encutils.html" title="encutils module"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+          <a href="../CHANGELOG.html" title="﻿CHANGELOG"
+             >previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2009, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
   </body>
 </html>

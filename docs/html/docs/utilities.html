@@ -1,15 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>utilities &mdash; cssutils v0.9.6a3 documentation</title>
+    <title>utilities &mdash; cssutils v0.9.6a4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6a3',
+        VERSION:     '0.9.6a4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -17,9 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6a4 documentation" href="../index.html" />
     <link rel="next" title="scripts" href="scripts.html" />
     <link rel="prev" title="package cssutils.stylesheets" href="stylesheets.html" /> 
   </head>
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="stylesheets.html" title="package cssutils.stylesheets"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
+
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
             
-  
   <div class="section" id="utilities">
 <h1>utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h1>
 <p>A few utility functions which may help when working with CSS stylesheets.</p>
@@ -55,7 +55,7 @@
 <h2>getUrls<a class="headerlink" href="#geturls" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="cssutils.getUrls">
-<!--[cssutils.getUrls]--><tt class="descclassname">cssutils.</tt><tt class="descname">getUrls</tt><big>(</big><em>sheet</em><big>)</big><a class="headerlink" href="#cssutils.getUrls" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.</tt><tt class="descname">getUrls</tt><big>(</big><em>sheet</em><big>)</big><a class="headerlink" href="#cssutils.getUrls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values (in e.g.
 <a title="cssutils.css.CSSImportRule" class="reference external" href="css.html#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a> or <a title="cssutils.css.CSSValue" class="reference external" href="css.html#cssutils.css.CSSValue"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt></a>
 objects of given <cite>sheet</cite>.</p>
@@ -63,10 +63,7 @@ objects of given <cite>sheet</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>sheet</em> &#8211; <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object whose URLs are yielded</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>sheet</em> &#8211; <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object whose URLs are yielded</td>
 </tr>
 </tbody>
 </table>
@@ -79,7 +76,7 @@ objects of given <cite>sheet</cite>.</p>
 <h2>replaceUrls<a class="headerlink" href="#replaceurls" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="cssutils.replaceUrls">
-<!--[cssutils.replaceUrls]--><tt class="descclassname">cssutils.</tt><tt class="descname">replaceUrls</tt><big>(</big><em>sheet</em>, <em>replacer</em><big>)</big><a class="headerlink" href="#cssutils.replaceUrls" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.</tt><tt class="descname">replaceUrls</tt><big>(</big><em>sheet</em>, <em>replacer</em><big>)</big><a class="headerlink" href="#cssutils.replaceUrls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace all URLs in <a title="cssutils.css.CSSImportRule" class="reference external" href="css.html#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a> or
 <a title="cssutils.css.CSSValue" class="reference external" href="css.html#cssutils.css.CSSValue"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt></a> objects of given <cite>sheet</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -103,7 +100,7 @@ surrounding single or double quotes.</li>
 <h2>resolveImports<a class="headerlink" href="#resolveimports" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="cssutils.resolveImports">
-<!--[cssutils.resolveImports]--><tt class="descclassname">cssutils.</tt><tt class="descname">resolveImports</tt><big>(</big><em>sheet</em>, <em>target=None</em><big>)</big><a class="headerlink" href="#cssutils.resolveImports" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.</tt><tt class="descname">resolveImports</tt><big>(</big><em>sheet</em>, <em>target=None</em><big>)</big><a class="headerlink" href="#cssutils.resolveImports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recurcively combine all rules in given <cite>sheet</cite> into a <cite>target</cite> sheet.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -144,19 +141,29 @@ resolved and added to a resulting <em>flat</em> sheet.</li>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="stylesheets.html" title="previous chapter">package <tt class="docutils literal docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
+            <p class="topless"><a href="stylesheets.html"
+                                  title="previous chapter">package <tt class="docutils literal docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="scripts.html" title="next chapter">scripts</a></p>
+            <p class="topless"><a href="scripts.html"
+                                  title="next chapter">scripts</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/docs/utilities.txt">Show Source</a></li>
+              <li><a href="../_sources/docs/utilities.txt"
+                     rel="nofollow">Show Source</a></li>
             </ul>
-          <h3>Quick search</h3>
-            <form class="search" action="../search.html" method="get">
-              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
-              <input type="hidden" name="check_keywords" value="yes" />
-              <input type="hidden" name="area" value="default" />
-            </form>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -166,22 +173,22 @@ resolved and added to a resulting <em>flat</em> sheet.</li>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
+             >index</a></li>
         <li class="right" >
           <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+             >modules</a> |</li>
         <li class="right" >
           <a href="scripts.html" title="scripts"
-             accesskey="N">next</a> |</li>
+             >next</a> |</li>
         <li class="right" >
           <a href="stylesheets.html" title="package cssutils.stylesheets"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+             >previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2009, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
   </body>
 </html>

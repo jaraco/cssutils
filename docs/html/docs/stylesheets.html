@@ -1,15 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>package cssutils.stylesheets &mdash; cssutils v0.9.6a3 documentation</title>
+    <title>package cssutils.stylesheets &mdash; cssutils v0.9.6a4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6a3',
+        VERSION:     '0.9.6a4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -17,9 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6a4 documentation" href="../index.html" />
     <link rel="next" title="utilities" href="utilities.html" />
     <link rel="prev" title="package cssutils.css" href="css.html" /> 
   </head>
@@ -39,15 +39,15 @@
         <li class="right" >
           <a href="css.html" title="package cssutils.css"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
+
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
             
-  
   <div class="section" id="package-cssutils-stylesheets">
 <span id="module-cssutils.stylesheets"></span><h1>package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt><a class="headerlink" href="#package-cssutils-stylesheets" title="Permalink to this headline">¶</a></h1>
 <p>Classes implementing Document Object Model Level 2 Style Sheets <a class="reference external" href="http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927/stylesheets.html">http://www.w3.org/TR/2000/PR-DOM-Level-2-Style-20000927/stylesheets.html</a></p>
@@ -55,7 +55,8 @@
 <h2><tt class="docutils literal"><span class="pre">StyleSheet</span></tt><a class="headerlink" href="#stylesheet" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cssutils.stylesheets.StyleSheet">
-<!--[cssutils.stylesheets.StyleSheet]-->class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheet</tt><big>(</big><em>type='text/css'</em>, <em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>disabled=None</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheet" title="Permalink to this definition">¶</a></dt>
+<em class="property">
+class </em><tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheet</tt><big>(</big><em>type='text/css'</em>, <em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>disabled=None</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheet" title="Permalink to this definition">¶</a></dt>
 <dd><p>The StyleSheet interface is the abstract base interface
 for any type of style sheet. It represents a single style
 sheet associated with a structured document.</p>
@@ -67,27 +68,27 @@ an external style sheet, included via a style sheet
 processing instruction.</p>
 <dl class="attribute">
 <dt id="cssutils.stylesheets.StyleSheet.href">
-<!--[cssutils.stylesheets.StyleSheet.href]--><tt class="descname">href</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.href" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">href</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.href" title="Permalink to this definition">¶</a></dt>
 <dd>If the style sheet is a linked style sheet, the value of this attribute is its location. For inline style sheets, the value of this attribute is None. See the href attribute definition for the LINK element in HTML 4.0, and the href pseudo-attribute for the XML style sheet processing instruction.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.stylesheets.StyleSheet.ownerNode">
-<!--[cssutils.stylesheets.StyleSheet.ownerNode]--><tt class="descname">ownerNode</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.ownerNode" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">ownerNode</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.ownerNode" title="Permalink to this definition">¶</a></dt>
 <dd>Not used in cssutils yet.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.stylesheets.StyleSheet.parentStyleSheet">
-<!--[cssutils.stylesheets.StyleSheet.parentStyleSheet]--><tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
 <dd>For style sheet languages that support the concept of style sheet inclusion, this attribute represents the including style sheet, if one exists. If the style sheet is a top-level style sheet, or the style sheet language does not support inclusion, the value of this attribute is None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.stylesheets.StyleSheet.seq">
-<!--[cssutils.stylesheets.StyleSheet.seq]--><tt class="descname">seq</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.seq" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.seq" title="Permalink to this definition">¶</a></dt>
 <dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.stylesheets.StyleSheet.type">
-<!--[cssutils.stylesheets.StyleSheet.type]--><tt class="descname">type</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.type" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.type" title="Permalink to this definition">¶</a></dt>
 <dd>This specifies the style sheet language for this style sheet. The style sheet language is specified as a content type (e.g. <tt class="docutils literal"><span class="pre">text/css</span></tt>). The content type is often specified in the ownerNode. Also see the type attribute definition for the LINK element in HTML 4.0, and the type pseudo-attribute for the XML style sheet processing instruction. For CSS this is always <tt class="docutils literal"><span class="pre">text/css</span></tt>.</dd></dl>
 
 </dd></dl>
@@ -97,7 +98,8 @@ processing instruction.</p>
 <h2><tt class="docutils literal"><span class="pre">StyleSheetList</span></tt><a class="headerlink" href="#stylesheetlist" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cssutils.stylesheets.StyleSheetList">
-<!--[cssutils.stylesheets.StyleSheetList]-->class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheetList</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList" title="Permalink to this definition">¶</a></dt>
+<em class="property">
+class </em><tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheetList</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interface <cite>StyleSheetList</cite> (introduced in DOM Level 2)</p>
 <p>The <cite>StyleSheetList</cite> interface provides the abstraction of an ordered
 collection of <a title="cssutils.stylesheets.StyleSheet" class="reference internal" href="#cssutils.stylesheets.StyleSheet"><tt class="xref docutils literal"><span class="pre">StyleSheet</span></tt></a> objects.</p>
@@ -107,14 +109,14 @@ starting from 0.</p>
 allows <tt class="docutils literal"><span class="pre">examplelist[index]</span></tt> usage.</p>
 <dl class="method">
 <dt id="cssutils.stylesheets.StyleSheetList.item">
-<!--[cssutils.stylesheets.StyleSheetList.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.item" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.item" title="Permalink to this definition">¶</a></dt>
 <dd>Used to retrieve a style sheet by ordinal <cite>index</cite>. If <cite>index</cite> is
 greater than or equal to the number of style sheets in the list,
 this returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.stylesheets.StyleSheetList.length">
-<!--[cssutils.stylesheets.StyleSheetList.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.length" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">length</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheetList.length" title="Permalink to this definition">¶</a></dt>
 <dd>The number of <a title="cssutils.stylesheets.StyleSheet" class="reference internal" href="#cssutils.stylesheets.StyleSheet"><tt class="xref docutils literal"><span class="pre">StyleSheet</span></tt></a> objects in the list. The range  of valid child stylesheet indices is 0 to length-1 inclusive.</dd></dl>
 
 </dd></dl>
@@ -124,7 +126,8 @@ this returns <tt class="xref docutils literal"><span class="pre">None</span></tt
 <h2><tt class="docutils literal"><span class="pre">MediaQuery</span></tt><a class="headerlink" href="#mediaquery" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cssutils.stylesheets.MediaQuery">
-<!--[cssutils.stylesheets.MediaQuery]-->class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">MediaQuery</tt><big>(</big><em>mediaText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaQuery" title="Permalink to this definition">¶</a></dt>
+<em class="property">
+class </em><tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">MediaQuery</tt><big>(</big><em>mediaText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaQuery" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Media Query consists of one of <tt class="xref docutils literal"><span class="pre">MediaQuery.MEDIA_TYPES</span></tt>
 and one or more expressions involving media features.</p>
 <p>Format:</p>
@@ -146,12 +149,12 @@ media_feature: width | min-width | max-width
 </div>
 <dl class="attribute">
 <dt id="cssutils.stylesheets.MediaQuery.mediaText">
-<!--[cssutils.stylesheets.MediaQuery.mediaText]--><tt class="descname">mediaText</tt><a class="headerlink" href="#cssutils.stylesheets.MediaQuery.mediaText" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">mediaText</tt><a class="headerlink" href="#cssutils.stylesheets.MediaQuery.mediaText" title="Permalink to this definition">¶</a></dt>
 <dd>The parsable textual representation of the media list.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.stylesheets.MediaQuery.mediaType">
-<!--[cssutils.stylesheets.MediaQuery.mediaType]--><tt class="descname">mediaType</tt><a class="headerlink" href="#cssutils.stylesheets.MediaQuery.mediaType" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">mediaType</tt><a class="headerlink" href="#cssutils.stylesheets.MediaQuery.mediaType" title="Permalink to this definition">¶</a></dt>
 <dd>The media type of this MediaQuery (one of <tt class="xref docutils literal"><span class="pre">MEDIA_TYPES</span></tt>).</dd></dl>
 
 </dd></dl>
@@ -161,7 +164,8 @@ media_feature: width | min-width | max-width
 <h2><tt class="docutils literal"><span class="pre">MediaList</span></tt><a class="headerlink" href="#medialist" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cssutils.stylesheets.MediaList">
-<!--[cssutils.stylesheets.MediaList]-->class <tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">MediaList</tt><big>(</big><em>mediaText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList" title="Permalink to this definition">¶</a></dt>
+<em class="property">
+class </em><tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">MediaList</tt><big>(</big><em>mediaText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides the abstraction of an ordered collection of media,
 without defining or constraining how this collection is
 implemented.</p>
@@ -175,21 +179,19 @@ An empty list is the same as a list that contains the medium &#8220;all&#8221;.<
 </div>
 <dl class="method">
 <dt id="cssutils.stylesheets.MediaList.append">
-<!--[cssutils.stylesheets.MediaList.append]--><tt class="descname">append</tt><big>(</big><em>newMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.append" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">append</tt><big>(</big><em>newMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.append" title="Permalink to this definition">¶</a></dt>
 <dd>Same as <a title="cssutils.stylesheets.MediaList.appendMedium" class="reference internal" href="#cssutils.stylesheets.MediaList.appendMedium"><tt class="xref docutils literal"><span class="pre">appendMedium()</span></tt></a>.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.stylesheets.MediaList.appendMedium">
-<!--[cssutils.stylesheets.MediaList.appendMedium]--><tt class="descname">appendMedium</tt><big>(</big><em>newMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.appendMedium" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">appendMedium</tt><big>(</big><em>newMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.appendMedium" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the <cite>newMedium</cite> to the end of the list. 
 If the <cite>newMedium</cite> is already used, it is first removed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>newMedium</em> &#8211; a string or a <a title="cssutils.stylesheets.MediaQuery" class="reference internal" href="#cssutils.stylesheets.MediaQuery"><tt class="xref docutils literal"><span class="pre">MediaQuery</span></tt></a></li>
-</ul>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>newMedium</em> &#8211; a string or a <a title="cssutils.stylesheets.MediaQuery" class="reference internal" href="#cssutils.stylesheets.MediaQuery"><tt class="xref docutils literal"><span class="pre">MediaQuery</span></tt></a></p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Wellformedness of <cite>newMedium</cite>.</p>
@@ -215,15 +217,13 @@ Raised if this list is readonly.</li>
 
 <dl class="method">
 <dt id="cssutils.stylesheets.MediaList.deleteMedium">
-<!--[cssutils.stylesheets.MediaList.deleteMedium]--><tt class="descname">deleteMedium</tt><big>(</big><em>oldMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.deleteMedium" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">deleteMedium</tt><big>(</big><em>oldMedium</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.deleteMedium" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a medium from the list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>oldMedium</em> &#8211; delete this medium from the list.</li>
-</ul>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>oldMedium</em> &#8211; delete this medium from the list.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
@@ -240,19 +240,19 @@ Raised if this list is readonly.</li>
 
 <dl class="method">
 <dt id="cssutils.stylesheets.MediaList.item">
-<!--[cssutils.stylesheets.MediaList.item]--><tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.item" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList.item" title="Permalink to this definition">¶</a></dt>
 <dd>Return the mediaType of the <cite>index</cite>&#8216;th element in the list.
 If <cite>index</cite> is greater than or equal to the number of media in the
 list, returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.stylesheets.MediaList.length">
-<!--[cssutils.stylesheets.MediaList.length]--><tt class="descname">length</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.length" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">length</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.length" title="Permalink to this definition">¶</a></dt>
 <dd>The number of media in the list (DOM readonly).</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.stylesheets.MediaList.mediaText">
-<!--[cssutils.stylesheets.MediaList.mediaText]--><tt class="descname">mediaText</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.mediaText" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">mediaText</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.mediaText" title="Permalink to this definition">¶</a></dt>
 <dd>The parsable textual representation of the media list.</dd></dl>
 
 </dd></dl>
@@ -278,19 +278,29 @@ list, returns <tt class="xref docutils literal"><span class="pre">None</span></t
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="css.html" title="previous chapter">package <tt class="docutils literal docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
+            <p class="topless"><a href="css.html"
+                                  title="previous chapter">package <tt class="docutils literal docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="utilities.html" title="next chapter">utilities</a></p>
+            <p class="topless"><a href="utilities.html"
+                                  title="next chapter">utilities</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/docs/stylesheets.txt">Show Source</a></li>
+              <li><a href="../_sources/docs/stylesheets.txt"
+                     rel="nofollow">Show Source</a></li>
             </ul>
-          <h3>Quick search</h3>
-            <form class="search" action="../search.html" method="get">
-              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
-              <input type="hidden" name="check_keywords" value="yes" />
-              <input type="hidden" name="area" value="default" />
-            </form>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -300,22 +310,22 @@ list, returns <tt class="xref docutils literal"><span class="pre">None</span></t
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
+             >index</a></li>
         <li class="right" >
           <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+             >modules</a> |</li>
         <li class="right" >
           <a href="utilities.html" title="utilities"
-             accesskey="N">next</a> |</li>
+             >next</a> |</li>
         <li class="right" >
           <a href="css.html" title="package cssutils.css"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+             >previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2009, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
   </body>
 </html>
