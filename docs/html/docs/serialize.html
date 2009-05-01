@@ -1,15 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>serializing CSS &mdash; cssutils v0.9.6a3 documentation</title>
+    <title>serializing CSS &mdash; cssutils v0.9.6a4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6a3',
+        VERSION:     '0.9.6a4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -17,9 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6a4 documentation" href="../index.html" />
     <link rel="next" title="package cssutils.css" href="css.html" />
     <link rel="prev" title="parsing CSS" href="parse.html" /> 
   </head>
@@ -39,17 +39,17 @@
         <li class="right" >
           <a href="parse.html" title="parsing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
+
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
             
-  
   <span class="target" id="module-cssutils.serialize"></span><div class="section" id="serializing-css">
-<span id="index-48"></span><h1>serializing CSS<a class="headerlink" href="#serializing-css" title="Permalink to this headline">¶</a></h1>
+<span id="index-10"></span><h1>serializing CSS<a class="headerlink" href="#serializing-css" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cssserializer">
 <h2><tt class="docutils literal"><span class="pre">CSSSerializer</span></tt><a class="headerlink" href="#cssserializer" title="Permalink to this headline">¶</a></h2>
 <p>There is a single global serializer used throughout the library. You may configure it by setting specific <a class="reference internal" href="#preferences">Preferences</a> or completely replace it with your own.</p>
@@ -63,15 +63,16 @@
 <p>For most cases adjusting the <tt class="xref docutils literal"><span class="pre">cssutils.ser.prefs</span></tt> of the default serializer should be sufficient though.</p>
 <dl class="class">
 <dt id="cssutils.serialize.CSSSerializer">
-<!--[cssutils.serialize.CSSSerializer]-->class <tt class="descclassname">cssutils.serialize.</tt><tt class="descname">CSSSerializer</tt><big>(</big><em>prefs=None</em><big>)</big><a class="headerlink" href="#cssutils.serialize.CSSSerializer" title="Permalink to this definition">¶</a></dt>
+<em class="property">
+class </em><tt class="descclassname">cssutils.serialize.</tt><tt class="descname">CSSSerializer</tt><big>(</big><em>prefs=None</em><big>)</big><a class="headerlink" href="#cssutils.serialize.CSSSerializer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serialize a CSSStylesheet and its parts.</p>
 <p>To use your own serializing method the easiest is to subclass CSS
 Serializer and overwrite the methods you like to customize.</p>
 </dd></dl>
 
 <span class="target" id="preferences"></span></div>
-<div class="section" id="id1">
-<span id="index-49"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="index-11">
+<span id="id1"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#index-11" title="Permalink to this headline">¶</a></h2>
 <p>Quite a few preferences of the cssutils serializer may be tweaked.</p>
 <p>To set a preference use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">sheet</span> <span class="o">=</span> <span class="n">CSSStyleSheet</span><span class="p">()</span>
@@ -82,7 +83,8 @@ Serializer and overwrite the methods you like to customize.</p>
 <p>Preferences are always used <em>globally</em>, so for all stylesheets until preferences are set again.</p>
 <dl class="class">
 <dt id="cssutils.serialize.Preferences">
-<!--[cssutils.serialize.Preferences]-->class <tt class="descclassname">cssutils.serialize.</tt><tt class="descname">Preferences</tt><big>(</big><em>**initials</em><big>)</big><a class="headerlink" href="#cssutils.serialize.Preferences" title="Permalink to this definition">¶</a></dt>
+<em class="property">
+class </em><tt class="descclassname">cssutils.serialize.</tt><tt class="descname">Preferences</tt><big>(</big><em>**initials</em><big>)</big><a class="headerlink" href="#cssutils.serialize.Preferences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Control output of CSSSerializer.</p>
 <dl class="docutils">
 <dt>defaultAtKeyword = True</dt>
@@ -141,12 +143,12 @@ CSSOM defines a single space for this which is also the default in cssutils.</dd
 </dl>
 <dl class="method">
 <dt id="cssutils.serialize.Preferences.useDefaults">
-<!--[cssutils.serialize.Preferences.useDefaults]--><tt class="descname">useDefaults</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.serialize.Preferences.useDefaults" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">useDefaults</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.serialize.Preferences.useDefaults" title="Permalink to this definition">¶</a></dt>
 <dd>Reset all preference options to their default value.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.serialize.Preferences.useMinified">
-<!--[cssutils.serialize.Preferences.useMinified]--><tt class="descname">useMinified</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.serialize.Preferences.useMinified" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">useMinified</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.serialize.Preferences.useMinified" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set options resulting in a minified stylesheet.</p>
 <p>You may want to set preferences with this convenience method
 and set settings you want adjusted afterwards.</p>
@@ -167,25 +169,35 @@ and set settings you want adjusted afterwards.</p>
             <ul>
 <li><a class="reference external" href="">serializing CSS</a><ul>
 <li><a class="reference external" href="#cssserializer"><tt class="docutils literal"><span class="pre">CSSSerializer</span></tt></a></li>
-<li><a class="reference external" href="#id1"><tt class="docutils literal"><span class="pre">Preferences</span></tt></a></li>
+<li><a class="reference external" href="#index-11"><tt class="docutils literal"><span class="pre">Preferences</span></tt></a></li>
 </ul>
 </li>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="parse.html" title="previous chapter">parsing CSS</a></p>
+            <p class="topless"><a href="parse.html"
+                                  title="previous chapter">parsing CSS</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="css.html" title="next chapter">package <tt class="docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
+            <p class="topless"><a href="css.html"
+                                  title="next chapter">package <tt class="docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/docs/serialize.txt">Show Source</a></li>
+              <li><a href="../_sources/docs/serialize.txt"
+                     rel="nofollow">Show Source</a></li>
             </ul>
-          <h3>Quick search</h3>
-            <form class="search" action="../search.html" method="get">
-              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
-              <input type="hidden" name="check_keywords" value="yes" />
-              <input type="hidden" name="area" value="default" />
-            </form>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -195,22 +207,22 @@ and set settings you want adjusted afterwards.</p>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
+             >index</a></li>
         <li class="right" >
           <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+             >modules</a> |</li>
         <li class="right" >
           <a href="css.html" title="package cssutils.css"
-             accesskey="N">next</a> |</li>
+             >next</a> |</li>
         <li class="right" >
           <a href="parse.html" title="parsing CSS"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+             >previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2009, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
   </body>
 </html>

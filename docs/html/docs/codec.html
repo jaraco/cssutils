@@ -1,15 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CSS codec &mdash; cssutils v0.9.6a3 documentation</title>
+    <title>CSS codec &mdash; cssutils v0.9.6a4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6a3',
+        VERSION:     '0.9.6a4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -17,9 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6a4 documentation" href="../index.html" />
     <link rel="next" title="encutils module" href="encutils.html" />
     <link rel="prev" title="logging" href="logging.html" /> 
   </head>
@@ -39,21 +39,21 @@
         <li class="right" >
           <a href="logging.html" title="logging"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
+
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
             
-  
   <div class="section" id="module-cssutils.codec">
 <h1>CSS codec<a class="headerlink" href="#module-cssutils.codec" title="Permalink to this headline">¶</a></h1>
 <p>Python codec for CSS.</p>
 <dl class="function">
 <dt id="cssutils.codec.detectencoding_str">
-<!--[cssutils.codec.detectencoding_str]--><tt class="descclassname">cssutils.codec.</tt><tt class="descname">detectencoding_str</tt><big>(</big><em>input</em>, <em>final=False</em><big>)</big><a class="headerlink" href="#cssutils.codec.detectencoding_str" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.codec.</tt><tt class="descname">detectencoding_str</tt><big>(</big><em>input</em>, <em>final=False</em><big>)</big><a class="headerlink" href="#cssutils.codec.detectencoding_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect the encoding of the byte string <tt class="docutils literal"><span class="pre">input</span></tt>, which contains the
 beginning of a CSS file. This function returns the detected encoding (or
 <tt class="xref docutils literal"><span class="pre">None</span></tt> if it hasn&#8217;t got enough data), and a flag that indicates whether
@@ -69,7 +69,7 @@ not. If <tt class="docutils literal"><span class="pre">final</span></tt> is true
 
 <dl class="function">
 <dt id="cssutils.codec.detectencoding_unicode">
-<!--[cssutils.codec.detectencoding_unicode]--><tt class="descclassname">cssutils.codec.</tt><tt class="descname">detectencoding_unicode</tt><big>(</big><em>input</em>, <em>final=False</em><big>)</big><a class="headerlink" href="#cssutils.codec.detectencoding_unicode" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.codec.</tt><tt class="descname">detectencoding_unicode</tt><big>(</big><em>input</em>, <em>final=False</em><big>)</big><a class="headerlink" href="#cssutils.codec.detectencoding_unicode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect the encoding of the unicode string <tt class="docutils literal"><span class="pre">input</span></tt>, which contains the
 beginning of a CSS file. The encoding is detected from the charset rule
 at the beginning of <tt class="docutils literal"><span class="pre">input</span></tt>. If there is no charset rule, <tt class="docutils literal"><span class="pre">&quot;utf-8&quot;</span></tt>
@@ -88,19 +88,29 @@ specifies whether more data will be available in later calls or not. If
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <h4>Previous topic</h4>
-            <p class="topless"><a href="logging.html" title="previous chapter">logging</a></p>
+            <p class="topless"><a href="logging.html"
+                                  title="previous chapter">logging</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="encutils.html" title="next chapter"><tt class="docutils literal"><span class="pre">encutils</span></tt> module</a></p>
+            <p class="topless"><a href="encutils.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">encutils</span></tt> module</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/docs/codec.txt">Show Source</a></li>
+              <li><a href="../_sources/docs/codec.txt"
+                     rel="nofollow">Show Source</a></li>
             </ul>
-          <h3>Quick search</h3>
-            <form class="search" action="../search.html" method="get">
-              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
-              <input type="hidden" name="check_keywords" value="yes" />
-              <input type="hidden" name="area" value="default" />
-            </form>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -110,22 +120,22 @@ specifies whether more data will be available in later calls or not. If
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
+             >index</a></li>
         <li class="right" >
           <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+             >modules</a> |</li>
         <li class="right" >
           <a href="encutils.html" title="encutils module"
-             accesskey="N">next</a> |</li>
+             >next</a> |</li>
         <li class="right" >
           <a href="logging.html" title="logging"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+             >previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2009, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
   </body>
 </html>

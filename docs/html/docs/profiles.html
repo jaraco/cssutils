@@ -1,15 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>profiles &mdash; cssutils v0.9.6a3 documentation</title>
+    <title>profiles &mdash; cssutils v0.9.6a4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6a3',
+        VERSION:     '0.9.6a4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -17,9 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="cssutils v0.9.6a3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6a4 documentation" href="../index.html" />
     <link rel="next" title="logging" href="logging.html" />
     <link rel="prev" title="scripts" href="scripts.html" /> 
   </head>
@@ -39,19 +39,19 @@
         <li class="right" >
           <a href="scripts.html" title="scripts"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
+
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
             
-  
   <div class="section" id="profiles">
 <h1>profiles<a class="headerlink" href="#profiles" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cssutils-profile">
-<span id="index-50"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
+<span id="index-8"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
 <p>A global object <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is used for validation of all properties. It is an instance of <a title="cssutils.profiles.Profiles" class="reference internal" href="#cssutils.profiles.Profiles"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a>. Add or remove new profile definitions here.</p>
 <p>Most important method is <a title="cssutils.profiles.Profiles.addProfile" class="reference internal" href="#cssutils.profiles.Profiles.addProfile"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles.addProfile()</span></tt></a> (use <tt class="docutils literal"><span class="pre">cssutils.profile.addProfile</span></tt>) to add new properties to cssutils and the setting of <tt class="docutils literal"><span class="pre">defaultProfiles</span></tt>.</p>
 <p>Example of how to add a new profile:</p>
@@ -79,7 +79,7 @@
 <p><strong>Please note: This might change again, but only slightly as it has been refactored in 0.9.6a2.</strong></p>
 </div>
 <div class="section" id="cssutils-profiles-macros-and-cssutils-profiles-properties">
-<span id="index-51"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt><a class="headerlink" href="#cssutils-profiles-macros-and-cssutils-profiles-properties" title="Permalink to this headline">¶</a></h2>
+<span id="index-9"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt><a class="headerlink" href="#cssutils-profiles-macros-and-cssutils-profiles-properties" title="Permalink to this headline">¶</a></h2>
 <p>Two dictionaries which contain macro and property definitions for the predefined property profiles.</p>
 <p>Both use the additional macros defined in <tt class="docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="docutils literal"><span class="pre">Profiles._MACROS</span></tt> which contain basic macros for definition of new properties. Things like <cite>ident</cite>, <cite>name</cite> or <cite>hexcolor</cite> are defined there and may be used in any new property definition as these two macro sets defined in <tt class="docutils literal"><span class="pre">Profiles</span></tt> are added to any custom macro definition given. You may overwrite these basic macros with your own macros or simply define your own macros and use only these.</p>
 <p>Use <tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> if you need any other predefined macro or <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt> if you want to add any known property to your custom property profile.</p>
@@ -88,7 +88,8 @@
 <h2><tt class="docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt><a class="headerlink" href="#cssutils-profiles-profiles" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cssutils.profiles.Profiles">
-<!--[cssutils.profiles.Profiles]-->class <tt class="descclassname">cssutils.profiles.</tt><tt class="descname">Profiles</tt><big>(</big><em>log=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles" title="Permalink to this definition">¶</a></dt>
+<em class="property">
+class </em><tt class="descclassname">cssutils.profiles.</tt><tt class="descname">Profiles</tt><big>(</big><em>log=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>All profiles used for validation. <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is a
 preset object of this class and used by all properties for validation.</p>
 <p>Predefined profiles are (use
@@ -115,7 +116,7 @@ get a list of defined properties):</p>
 macros.</p>
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.addProfile">
-<!--[cssutils.profiles.Profiles.addProfile]--><tt class="descname">addProfile</tt><big>(</big><em>profile</em>, <em>properties</em>, <em>macros=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.addProfile" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">addProfile</tt><big>(</big><em>profile</em>, <em>properties</em>, <em>macros=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.addProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new profile with name <cite>profile</cite> (e.g. &#8216;CSS level 2&#8217;)
 and the given <cite>properties</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -148,32 +149,29 @@ predefined basic macros which may always be used in
 
 <dl class="attribute">
 <dt id="cssutils.profiles.Profiles.defaultProfiles">
-<!--[cssutils.profiles.Profiles.defaultProfiles]--><tt class="descname">defaultProfiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles.defaultProfiles" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">defaultProfiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles.defaultProfiles" title="Permalink to this definition">¶</a></dt>
 <dd>Names of profiles to use for validation.To use e.g. the CSS2 profile set <tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span> <span class="pre">=</span> <span class="pre">cssutils.profile.CSS_LEVEL_2</span></tt></dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.profiles.Profiles.knownNames">
-<!--[cssutils.profiles.Profiles.knownNames]--><tt class="descname">knownNames</tt><a class="headerlink" href="#cssutils.profiles.Profiles.knownNames" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">knownNames</tt><a class="headerlink" href="#cssutils.profiles.Profiles.knownNames" title="Permalink to this definition">¶</a></dt>
 <dd>All known property names of all profiles.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.profiles.Profiles.profiles">
-<!--[cssutils.profiles.Profiles.profiles]--><tt class="descname">profiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles.profiles" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">profiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles.profiles" title="Permalink to this definition">¶</a></dt>
 <dd>Names of all profiles in order as defined.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.propertiesByProfile">
-<!--[cssutils.profiles.Profiles.propertiesByProfile]--><tt class="descname">propertiesByProfile</tt><big>(</big><em>profiles=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.propertiesByProfile" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">propertiesByProfile</tt><big>(</big><em>profiles=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.propertiesByProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator: Yield property names, if no <cite>profiles</cite> is given all
 profile&#8217;s properties are used.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>profiles</em> &#8211; a single profile name or a list of names.</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>profiles</em> &#8211; a single profile name or a list of names.</td>
 </tr>
 </tbody>
 </table>
@@ -181,7 +179,7 @@ profile&#8217;s properties are used.</p>
 
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.removeProfile">
-<!--[cssutils.profiles.Profiles.removeProfile]--><tt class="descname">removeProfile</tt><big>(</big><em>profile=None</em>, <em>all=False</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.removeProfile" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">removeProfile</tt><big>(</big><em>profile=None</em>, <em>all=False</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.removeProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove <cite>profile</cite> or remove <cite>all</cite> profiles.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -205,7 +203,7 @@ If given <cite>profile</cite> cannot be found.</li>
 
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.validate">
-<!--[cssutils.profiles.Profiles.validate]--><tt class="descname">validate</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.validate" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">validate</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if <cite>value</cite> is valid for given property <cite>name</cite> using <strong>any</strong>
 profile.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -228,7 +226,7 @@ profile</p>
 
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.validateWithProfile">
-<!--[cssutils.profiles.Profiles.validateWithProfile]--><tt class="descname">validateWithProfile</tt><big>(</big><em>name</em>, <em>value</em>, <em>profiles=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.validateWithProfile" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">validateWithProfile</tt><big>(</big><em>name</em>, <em>value</em>, <em>profiles=None</em><big>)</big><a class="headerlink" href="#cssutils.profiles.Profiles.validateWithProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if <cite>value</cite> is valid for given property <cite>name</cite> returning
 <tt class="docutils literal"><span class="pre">(valid,</span> <span class="pre">profile)</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -281,19 +279,29 @@ and <tt class="docutils literal"><span class="pre">profiles</span></tt> the prof
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="scripts.html" title="previous chapter">scripts</a></p>
+            <p class="topless"><a href="scripts.html"
+                                  title="previous chapter">scripts</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="logging.html" title="next chapter">logging</a></p>
+            <p class="topless"><a href="logging.html"
+                                  title="next chapter">logging</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="../_sources/docs/profiles.txt">Show Source</a></li>
+              <li><a href="../_sources/docs/profiles.txt"
+                     rel="nofollow">Show Source</a></li>
             </ul>
-          <h3>Quick search</h3>
-            <form class="search" action="../search.html" method="get">
-              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
-              <input type="hidden" name="check_keywords" value="yes" />
-              <input type="hidden" name="area" value="default" />
-            </form>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -303,22 +311,22 @@ and <tt class="docutils literal"><span class="pre">profiles</span></tt> the prof
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
+             >index</a></li>
         <li class="right" >
           <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+             >modules</a> |</li>
         <li class="right" >
           <a href="logging.html" title="logging"
-             accesskey="N">next</a> |</li>
+             >next</a> |</li>
         <li class="right" >
           <a href="scripts.html" title="scripts"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+             >previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2009, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
   </body>
 </html>
