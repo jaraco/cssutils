@@ -1,8 +1,9 @@
 =============================================
 cssutils
 =============================================
-
+---------------------------------------------
 CSS Cascading Style Sheets library for Python
+---------------------------------------------
 
 :version release: |release|
 
@@ -12,25 +13,25 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-    <README>
-    <CHANGELOG>
+    README <README>
+    changelog <CHANGELOG>
+    version migration <docs/migrate.txt>
 
-    <docs/parse>
-    <docs/serialize>
-    <docs/css>
-    <docs/stylesheets>
-    <docs/utilities>
-    <docs/scripts>
+    parsing <docs/parse>
+    serializing <docs/serialize>
+    package `cssutils.css` <docs/css>
+    package `cssutils.stylesheets`<docs/stylesheets>
+    utilities <docs/utilities>
+    scripts <docs/scripts>
 
-    <docs/profiles>
-    <docs/logging>
+    profiles <docs/profiles>
+    logging <docs/logging>
 
-    <docs/codec>
-    <docs/encutils>
+    CSS codec <docs/codec>
+    `encutils` module <docs/encutils>
 
-    <docs/migrate.txt>
-    <docs/implementation>
-    <docs/backlog.txt>
+    implementation status <docs/implementation>
+    backlog <docs/backlog.txt>
 
 
 See also

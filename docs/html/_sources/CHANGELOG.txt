@@ -1,6 +1,6 @@
-﻿==================
-CHANGELOG
-==================
+﻿CHANGELOG
+__________
+
 
 known issues
 ============
@@ -36,7 +36,14 @@ development version
 0.9.6
 -----
 
-HEAD
+HEAD (0.9.6a4)
+    - **API CHANGE**: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use ``str(e)`` on any raised xml.dom.Exception ``e``. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as ``e.line, e.col``.
+
+    + **BUGFIX**: Fixed issue #22 parsing or indeed reserializing of values like ``content: "\\"``
+
+    - **IMPROVEMENT**: Fixed issue #23. The examples/style.py example renderer was reusing ``Property`` objects for each HTML element so they effectively overwrote each other.
+
+    + DOCUMENTATION: Using Sphinx 0.6.1 does seem to mess up the start page of these docs a bit. Need to look into that...
 
 
 0.9.6a3 090426
@@ -400,7 +407,7 @@ stable version
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-04-23 14:46:03 +0200 (Do, 23 Apr 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1712 2009-04-23 12:46:03Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-05-01 22:36:56 +0200 (Fr, 01 Mai 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1730 2009-05-01 20:36:56Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 

@@ -1,15 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.6a3 documentation</title>
+    <title>﻿CHANGELOG &mdash; cssutils v0.9.6a4 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.6a3',
+        VERSION:     '0.9.6a4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -17,10 +19,8 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="cssutils v0.9.6a3 documentation" href="index.html" />
-    <link rel="next" title="parsing CSS" href="docs/parse.html" />
+    <link rel="top" title="cssutils v0.9.6a4 documentation" href="index.html" />
+    <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
   <body>
@@ -34,22 +34,22 @@
           <a href="modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="docs/parse.html" title="parsing CSS"
+          <a href="docs/migrate.html" title="version migration"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
+
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
             
-  
   <div class="section" id="changelog">
-<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<h1>﻿CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="known-issues">
 <h2>known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
 <ul>
@@ -86,8 +86,21 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>HEAD</p>
 <dl class="docutils">
+<dt>HEAD (0.9.6a4)</dt>
+<dd><ul class="first simple">
+<li><strong>API CHANGE</strong>: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use <tt class="docutils literal"><span class="pre">str(e)</span></tt> on any raised xml.dom.Exception <tt class="docutils literal"><span class="pre">e</span></tt>. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as <tt class="docutils literal"><span class="pre">e.line,</span> <span class="pre">e.col</span></tt>.</li>
+</ul>
+<ul class="simple">
+<li><strong>BUGFIX</strong>: Fixed issue #22 parsing or indeed reserializing of values like <tt class="docutils literal"><span class="pre">content:</span> <span class="pre">&quot;\\&quot;</span></tt></li>
+</ul>
+<ul class="simple">
+<li><strong>IMPROVEMENT</strong>: Fixed issue #23. The examples/style.py example renderer was reusing <tt class="docutils literal"><span class="pre">Property</span></tt> objects for each HTML element so they effectively overwrote each other.</li>
+</ul>
+<ul class="last simple">
+<li>DOCUMENTATION: Using Sphinx 0.6.1 does seem to mess up the start page of these docs a bit. Need to look into that...</li>
+</ul>
+</dd>
 <dt>0.9.6a3 090426</dt>
 <dd><ul class="first simple">
 <li><strong>IMPROVEMENT</strong>: Fixed <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.length</span></tt> for Python 2.6.2 (due to a backport from Python 2.7 to 2.6.2 the reversed() iterator has no __length__ anymore which cssutils was using)</li>
@@ -537,7 +550,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-04-23</span> <span class="pre">14:46:03</span> <span class="pre">+0200</span> <span class="pre">(Do,</span> <span class="pre">23</span> <span class="pre">Apr</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1712</span> <span class="pre">2009-04-23</span> <span class="pre">12:46:03Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-05-01</span> <span class="pre">22:36:56</span> <span class="pre">+0200</span> <span class="pre">(Fr,</span> <span class="pre">01</span> <span class="pre">Mai</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1730</span> <span class="pre">2009-05-01</span> <span class="pre">20:36:56Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -1865,7 +1878,7 @@ first version to try if i can bring it to work at all</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">CHANGELOG</a><ul>
+<li><a class="reference external" href="">﻿CHANGELOG</a><ul>
 <li><a class="reference external" href="#known-issues">known issues</a></li>
 <li><a class="reference external" href="#development-version">development version</a><ul>
 <li><a class="reference external" href="#id1">0.9.6</a></li>
@@ -1890,19 +1903,29 @@ first version to try if i can bring it to work at all</p>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="README.html" title="previous chapter">README</a></p>
+            <p class="topless"><a href="README.html"
+                                  title="previous chapter">README</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="docs/parse.html" title="next chapter">parsing CSS</a></p>
+            <p class="topless"><a href="docs/migrate.html"
+                                  title="next chapter">version migration</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="_sources/CHANGELOG.txt">Show Source</a></li>
+              <li><a href="_sources/CHANGELOG.txt"
+                     rel="nofollow">Show Source</a></li>
             </ul>
-          <h3>Quick search</h3>
-            <form class="search" action="search.html" method="get">
-              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
-              <input type="hidden" name="check_keywords" value="yes" />
-              <input type="hidden" name="area" value="default" />
-            </form>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -1912,22 +1935,22 @@ first version to try if i can bring it to work at all</p>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
+             >index</a></li>
         <li class="right" >
           <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+             >modules</a> |</li>
         <li class="right" >
-          <a href="docs/parse.html" title="parsing CSS"
-             accesskey="N">next</a> |</li>
+          <a href="docs/migrate.html" title="version migration"
+             >next</a> |</li>
         <li class="right" >
           <a href="README.html" title="README"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6a3 documentation</a> &raquo;</li> 
+             >previous</a> |</li>
+        <li><a href="index.html">cssutils v0.9.6a4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2009, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
     </div>
   </body>
 </html>
