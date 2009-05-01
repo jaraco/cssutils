@@ -81,8 +81,8 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         try:
             s.cssText = '@import x;'
         except xml.dom.DOMException, e:
-            self.assertEqual(e.args, (u'CSSImportRule: Unexpected ident. [1:9: x]', 1, 9))
-            self.assertEqual(str(e), "(u'CSSImportRule: Unexpected ident. [1:9: x]', 1, 9)")
+            self.assertEqual(e.args, (u'CSSImportRule: Unexpected ident. [1:9: x]',))
+            self.assertEqual(str(e), 'CSSImportRule: Unexpected ident. [1:9: x]')
             self.assertEqual(e.line, 1)
             self.assertEqual(e.col, 9)
         
