@@ -6,7 +6,7 @@ The provided scripts are available as a standalone script which is installed in 
 
 ``CSSParse``
 ============
-Script version of ``cssutils.parseString()`` and ``cssutils.parseFile()``.
+Script version of ``cssutils.parseString()``, ``cssutils.parseFile()`` and ``cssutils.parseUrl()``.
 
 Usage: cssparse-script.py [options] filename1.css [filename2.css ...]
         [>filename_combined.css] [2>parserinfo.log]

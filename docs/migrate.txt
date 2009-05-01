@@ -7,14 +7,21 @@ version migration
 
 Exception handling with position information
 --------------------------------------------
-``xml.dom.DOMException``\ s raised do now contain infos about the position where the exception occured. An exception might for example have been raised as::
+``xml.dom.DOMException``\ s raised do now contain infos about the position where the exception occured.
 
-    raise xml.dom.SyntaxErr('the message', 10, 5)
+**THIS HAS BEEN CHANGED IN 0.9.6a4 again**:
 
-(where 10 is the line and 5 the column of the offending text).
+until 0.9.6a3:
+     An exception might for example have been raised as::
 
-Therefor you may **not** simply use ``str(e)`` to get the exception message but you have to use ``msg, line, col = e.args[0], e.args[1], e.args[2]``. Additionally exceptions raised have attributes ``e.line`` and ``e.col``.
+        raise xml.dom.SyntaxErr('the message', 10, 5)
 
+    (where 10 is the line and 5 the column of the offending text).
+
+    Therefor you may **not** simply use ``str(e)`` to get the exception message but you have to use ``msg, line, col = e.args[0], e.args[1], e.args[2]``. Additionally exceptions raised have attributes ``e.line`` and ``e.col``.
+
+from 0.9.6a4:
+    in this version you have to use ``msg, line, col = e.args[0], e.line, e.col``. ``str(e)`` does work again and contains the error message only!
 
 
 CSSValue / Property has been rewritten

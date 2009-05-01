@@ -11,7 +11,7 @@ Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/cs
 ``CSSStyleSheet``
 =================
 
-A CSSStyleSheet contains all rules. It consists of the different CSS ruleslike :class:`~cssutils.css.CSSImportRule`, :class:`~cssutils.css.CSSStyleRule` etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an :class:`~cssutils.css.CSSCharsetRule` rule or simpler with the :attr:`~cssutils.css.CSSStyleSheet.encoding` attribute. The serialized sheet may be obtained from :attr:`~cssutils.css.CSSStyleSheet.cssText`. All rules are present in :attr:`~cssutils.css.CSSStyleSheet.cssRules`, a stylesheet iterates on its rules so this might be easier. Namespaces are available via :attr:`~cssutils.css.CSSStyleSheet.namespaces` (do not rely on prefixes, see http://www.w3.org/TR/REC-xml-names/ how these work).
+A CSSStyleSheet contains all rules. It consists of the different CSS rules like :class:`~cssutils.css.CSSImportRule`, :class:`~cssutils.css.CSSStyleRule` etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an :class:`~cssutils.css.CSSCharsetRule` rule or simpler with the :attr:`~cssutils.css.CSSStyleSheet.encoding` attribute. The serialized sheet may be obtained from :attr:`~cssutils.css.CSSStyleSheet.cssText`. All rules are present in :attr:`~cssutils.css.CSSStyleSheet.cssRules`, a stylesheet iterates on its rules so this might be easier. Namespaces are available via :attr:`~cssutils.css.CSSStyleSheet.namespaces` (do not rely on prefixes, see http://www.w3.org/TR/REC-xml-names/ how these work).
 
 
 .. autoclass:: cssutils.css.CSSStyleSheet
