@@ -149,33 +149,33 @@ class ProfilesTestCase(basetest.BaseTestCase):
                              cssutils.profile.validateWithProfile('color', color))
         
         tests = {
-            # name, value: valid, matching, profile
+            # name, values: valid, matching, profile
             
             # PROPERTY background-position
-            ('background-position', 'inherit'): (True, True, CSS2),
-            ('background-position', '0'): (True, True, CSS2),
-            ('background-position', '1%'): (True, True, CSS2),
-            ('background-position', '1px'): (True, True, CSS2),
-            ('background-position', '0 0'): (True, True, CSS2),
-            ('background-position', '1% 1%'): (True, True, CSS2),
-            ('background-position', '1px 1px'): (True, True, CSS2),
-            ('background-position', '1px 1%'): (True, True, CSS2),
-            ('background-position', 'top'): (True, True, CSS2),
-            ('background-position', 'bottom'): (True, True, CSS2),
-            ('background-position', 'left'): (True, True, CSS2),
-            ('background-position', 'right'): (True, True, CSS2),
-            ('background-position', 'center'): (True, True, CSS2),
-            ('background-position', 'top left'): (True, True, CSS2),
-            ('background-position', 'top center'): (True, True, CSS2),
-            ('background-position', 'top right'): (True, True, CSS2),
-            ('background-position', 'bottom left'): (True, True, CSS2),
-            ('background-position', 'bottom center'): (True, True, CSS2),
-            ('background-position', 'bottom right'): (True, True, CSS2),
-            ('background-position', 'center left'): (True, True, CSS2),
-            ('background-position', 'center center'): (True, True, CSS2),
-            ('background-position', 'center right'): (True, True, CSS2),
-            ('background-position', '0 center'): (False, False, CSS2),
-            ('background-position', 'center 0'): (False, False, CSS2),
+            ('background-position', ('inherit',
+                                     '0',
+                                     '1%',
+                                     '1px',
+                                     '0 0',
+                                     '1% 1%',
+                                     '1px 1px',
+                                     '1px 1%',
+                                     'top', 'bottom',
+                                     'left', 'right',
+                                     'center center',
+                                     'center',
+                                     'top left', 'top center', 'top right',
+                                     'bottom left', 'bottom center', 'bottom right',
+                                     'center left', 'center center', 'center right',
+                                     '0 center', 'center 0',
+                                     '0 top', '10% bottom',
+                                     'left 0', 'right 10%',
+                                     '1% center', 'center 1%'
+                                     )): (True, True, CSS2),
+            ('background-position', ('0 left',
+                                     'top 0'
+                                     )): (False, False, CSS2),
+             
 
             # PROPERTY color
             ('color', 'inherit'): (True, True, CSS2),
@@ -232,28 +232,29 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('color', 'hsla(1,1,1%, 1)'): (False, False, CSS2_CM3), # %
             ('color', 'hsla(1,1%,1, 1)'): (False, False, CSS2_CM3), # %
             ('color', 'hsla(1,1%,1%, 1%)'): (False, False, CSS2_CM3), # %
+
+            # PROPERTY content
+            ('content', ('none', 
+                         'normal')): (True, True, CSS2),
             
             # PROPERTY opacity
-            ('opacity', 'inherit'): (True, True, CM3),
-            ('opacity', '0'): (True, True, CM3),
-            ('opacity', '0.0'): (True, True, CM3),
-            ('opacity', '0.42342'): (True, True, CM3),
-            ('opacity', '1'): (True, True, CM3),
-            ('opacity', '1.0'): (True, True, CM3),
-            # should be clipped but valid
-            ('opacity', '-0'): (True, True, CM3),
-            ('opacity', '-0.1'): (True, True, CM3),
-            ('opacity', '-10'): (True, True, CM3),
-            ('opacity', '2'): (True, True, CM3),
+            ('opacity', ('inherit',
+                         '0', '0.0', '0.42342', '1', '1.0',
+                         # should be clipped but valid
+                         '-0', '-0.1', '-10', '2'
+                         )): (True, True, CM3),
             # invalid
-            ('opacity', 'a'): (False, False, CM3),
-            ('opacity', '#000'): (False, False, CM3),
-            ('opacity', '+1'): (False, False, CM3),
+            ('opacity', ('a', '#000', '+1')): (False, False, CM3),
+
+        
         }
-        for test, (v, m, p) in tests.items():            
-            self.assertEqual(v, cssutils.profile.validate(*test))
-            self.assertEqual((v, m, p), 
-                             cssutils.profile.validateWithProfile(*test))
+        for (name, values), (v, m, p) in tests.items():            
+            if issubclass(type(values), basestring):
+                values = [values]
+            for value in values:
+                self.assertEqual(v, cssutils.profile.validate(name, value))
+                self.assertEqual((v, m, p), 
+                                 cssutils.profile.validateWithProfile(name, value))
 
         # not css2 but 3
         self.assertEqual((True, True, CM3), 
