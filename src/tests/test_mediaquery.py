@@ -16,6 +16,16 @@ class MediaQueryTestCase(basetest.BaseTestCase):
         "MediaQuery.mediaText"
         tests = {
             u'all': None,
+            u'braille': None,
+            u'embossed': None,
+            u'handheld': None,
+            u'print': None,
+            u'projection': None,
+            u'screen': None,
+            u'speech': None,
+            u'tty': None,
+            u'tv': None,
+            u'ALL': None,
             u'a\\ll': None,
             u'not tv': None,
             u'n\\ot t\\v': None,
@@ -35,6 +45,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             u'two values': xml.dom.SyntaxErr,
             u'or even three': xml.dom.SyntaxErr,
             u'print and(color)': xml.dom.SyntaxErr, # a function
+            u'aural': xml.dom.InvalidCharacterErr, # a dimension
             u'3d': xml.dom.InvalidCharacterErr, # a dimension
             }
         self.do_raise_r(tests, att='_setMediaText')        

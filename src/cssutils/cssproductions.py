@@ -18,8 +18,8 @@ __version__ = '$Id$'
 MACROS = {
     'nonascii': r'[^\0-\177]',
     'unicode': r'\\[0-9a-f]{1,6}(?:{nl}|{s})?',
-    # 'escape': r'{unicode}|\\[ -~\200-\4177777]',
-    'escape': r'{unicode}|\\[ -~\200-\777]',
+    #'escape': r'{unicode}|\\[ -~\200-\777]',
+    'escape': r'{unicode}|\\[^\n\r\f0-9a-f]',
     'nmstart': r'[_a-zA-Z]|{nonascii}|{escape}',
     'nmchar': r'[-_a-zA-Z0-9]|{nonascii}|{escape}',
     'string1': r'"([^\n\r\f\\"]|\\{nl}|{escape})*"',

@@ -41,6 +41,13 @@ HEAD (0.9.6a4)
 
     + **BUGFIX**: Fixed issue #22 parsing or indeed reserializing of values like ``content: "\\"``
 
+    - **FEATURE**: Updated some parts to http://www.w3.org/TR/2009/CR-CSS2-20090423/changes.html#new (most changes decribed here were already done in cssutils)
+        + updated tokenizer macro ``escape``
+        + replace ``aural`` media with ``speech``
+        + property ``content`` has allowed value ``none``
+        + property ``background-position`` allows mixed values like ``left 10%`` now
+
+
     - **IMPROVEMENT**: Fixed issue #23. The examples/style.py example renderer was reusing ``Property`` objects for each HTML element so they effectively overwrote each other.
 
     + DOCUMENTATION: Using Sphinx 0.6.1 does seem to mess up the start page of these docs a bit. Need to look into that...

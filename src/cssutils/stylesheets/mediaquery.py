@@ -21,8 +21,8 @@ class MediaQuery(cssutils.util.Base):
         media_query: [[only | not]? <media_type> [ and <expression> ]*]
           | <expression> [ and <expression> ]*
         expression: ( <media_feature> [: <value>]? )
-        media_type: all | aural | braille | handheld | print |
-          projection | screen | tty | tv | embossed
+        media_type: all | braille | handheld | print |
+          projection | speech | screen | tty | tv | embossed
         media_feature: width | min-width | max-width
           | height | min-height | max-height
           | device-width | min-device-width | max-device-width
@@ -35,8 +35,8 @@ class MediaQuery(cssutils.util.Base):
           | scan | grid
           
     """
-    MEDIA_TYPES = [u'all', u'aural', u'braille', u'embossed', u'handheld',
-        u'print', u'projection', u'screen', u'tty', u'tv']
+    MEDIA_TYPES = [u'all', u'braille', u'embossed', u'handheld',
+        u'print', u'projection', u'screen', u'speech', u'tty', u'tv']
 
     # From the HTML spec (see MediaQuery):
     # "[...] character that isn't a US ASCII letter [a-zA-Z] (Unicode

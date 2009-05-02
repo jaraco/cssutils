@@ -330,8 +330,8 @@ macros[Profiles.CSS_LEVEL_2] = {
 
     'background-color': r'{color}|transparent|inherit',
     'background-image': r'{uri}|none|inherit',
-    #'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right))|((left|center|right)\s*(top|center|bottom))|inherit',
-    'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
+    #'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
+    'background-position': r'({percentage}|{length}|left|center|right)(\s*({percentage}|{length}|top|center|bottom))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
 
@@ -407,7 +407,7 @@ properties[Profiles.CSS_LEVEL_2] = {
     'clear': r'none|left|right|both|inherit',
     'clip': r'{shape}|auto|inherit',
     'color': r'{color}|inherit',
-    'content': r'normal|{content}(\s+{content})*|inherit',
+    'content': r'none|normal|{content}(\s+{content})*|inherit',
     'counter-increment': r'({identifier}(\s+{integer})?)(\s+({identifier}(\s+{integer})))*|none|inherit',
     'counter-reset': r'({identifier}(\s+{integer})?)(\s+({identifier}(\s+{integer})))*|none|inherit',
     'cue-after': r'{uri}|none|inherit',
@@ -503,7 +503,7 @@ properties[Profiles.CSS3_BOX] = {
 # CSS Color Module Level 3
 macros[Profiles.CSS3_COLOR] = {
     # orange and transparent in CSS 2.1
-    'namedcolor': r'(currentcolor|transparent|orange|black|green|silver|lime|gray|olive|white|yellow|maroon|navy|red|blue|purple|teal|fuchsia|aqua)',
+    'namedcolor': r'(currentcolor|transparent|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow)',
                     # orange?
     'rgbacolor': r'rgba\({w}{int}{w},{w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgba\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',
     'hslcolor': r'hsl\({w}{int}{w},{w}{num}%{w},{w}{num}%{w}\)|hsla\({w}{int}{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',

@@ -12,9 +12,8 @@ A Python package to parse and build CSS Cascading Style Sheets. DOM only, not an
 
 Based upon and partly implementing the following specifications :
 
-`CSS 2.1 <http://www.w3.org/TR/CSS21/>`__
+`CSS 2.1rev1 <http://www.w3.org/TR/2009/CR-CSS2-20090423/>`__
     General CSS rules and properties are defined here
-`CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`__
     A few errata, mainly the definition of CHARSET_SYM tokens
 `CSS3 Module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
     Used in parts since cssutils 0.9.4. cssutils tries to use the features from CSS 2.1 and CSS 3 with preference to CSS3 but as this is not final yet some parts are from CSS 2.1
