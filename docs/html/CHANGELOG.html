@@ -94,8 +94,20 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <ul class="simple">
 <li><strong>BUGFIX</strong>: Fixed issue #22 parsing or indeed reserializing of values like <tt class="docutils literal"><span class="pre">content:</span> <span class="pre">&quot;\\&quot;</span></tt></li>
 </ul>
-<ul class="simple">
-<li><strong>IMPROVEMENT</strong>: Fixed issue #23. The examples/style.py example renderer was reusing <tt class="docutils literal"><span class="pre">Property</span></tt> objects for each HTML element so they effectively overwrote each other.</li>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>FEATURE</strong>: Updated some parts to <a class="reference external" href="http://www.w3.org/TR/2009/CR-CSS2-20090423/changes.html#new">http://www.w3.org/TR/2009/CR-CSS2-20090423/changes.html#new</a> (most changes decribed there were already done in cssutils)</dt>
+<dd><ul class="first last simple">
+<li>updated tokenizer macro <tt class="docutils literal"><span class="pre">escape</span></tt></li>
+<li>replace <tt class="docutils literal"><span class="pre">aural</span></tt> media with <tt class="docutils literal"><span class="pre">speech</span></tt></li>
+<li>property <tt class="docutils literal"><span class="pre">content</span></tt> has allowed value <tt class="docutils literal"><span class="pre">none</span></tt></li>
+<li>property <tt class="docutils literal"><span class="pre">background-position</span></tt> allows mixed values like <tt class="docutils literal"><span class="pre">left</span> <span class="pre">10%</span></tt> now</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>IMPROVEMENT</strong>: Fixed issue #23. The examples/style.py example renderer was reusing <tt class="docutils literal"><span class="pre">Property</span></tt> objects for each HTML element so they effectively overwrote each other.</p>
+</li>
 </ul>
 <ul class="last simple">
 <li>DOCUMENTATION: Using Sphinx 0.6.1 does seem to mess up the start page of these docs a bit. Need to look into that...</li>
