@@ -86,34 +86,44 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>HEAD</p>
 <dl class="docutils">
-<dt>HEAD (0.9.6a4)</dt>
+<dt>0.9.6a4 090509</dt>
 <dd><ul class="first simple">
 <li><strong>API CHANGE</strong>: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use <tt class="docutils literal"><span class="pre">str(e)</span></tt> on any raised xml.dom.Exception <tt class="docutils literal"><span class="pre">e</span></tt>. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as <tt class="docutils literal"><span class="pre">e.line,</span> <span class="pre">e.col</span></tt>.</li>
 </ul>
-<ul class="simple">
-<li><strong>BUGFIX</strong>: Fixed issue #22 parsing or indeed reserializing of values like <tt class="docutils literal"><span class="pre">content:</span> <span class="pre">&quot;\\&quot;</span></tt></li>
-<li><strong>BUGFIX</strong>: Unknown ATKEYWORD tokens in selectors make these invalid now, see example at <a class="reference external" href="http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues">http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues</a>: <tt class="docutils literal"><span class="pre">p</span> <span class="pre">&#64;here</span> <span class="pre">{color:</span> <span class="pre">red}</span></tt></li>
+<ul>
+<li><p class="first">BUGFIX: Fixed issue #22 parsing or actually reserializing of values like <tt class="docutils literal"><span class="pre">content:</span> <span class="pre">&quot;\\&quot;</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>BUGFIX: All examples at <a class="reference external" href="http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues">http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues</a> should work now as expected:</dt>
+<dd><ul class="first last simple">
+<li>Unknown ATKEYWORD tokens in selectors make these invalid now, see example : <tt class="docutils literal"><span class="pre">p</span> <span class="pre">&#64;here</span> <span class="pre">{color:</span> <span class="pre">red}</span></tt></li>
+<li>completion of incomplete &#64;media rule like <tt class="docutils literal"><span class="pre">&#64;media</span> <span class="pre">screen</span> <span class="pre">{</span> <span class="pre">p:before</span> <span class="pre">{</span> <span class="pre">content:</span> <span class="pre">'Hello</span></tt> does work now when parsing with a non raising parser</li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 <ul>
 <li><dl class="first docutils">
 <dt><strong>FEATURE</strong>: Updated some parts to <a class="reference external" href="http://www.w3.org/TR/2009/CR-CSS2-20090423/changes.html#new">http://www.w3.org/TR/2009/CR-CSS2-20090423/changes.html#new</a> (most changes decribed there were already done in cssutils)</dt>
 <dd><ul class="first last simple">
 <li>updated tokenizer macro <tt class="docutils literal"><span class="pre">escape</span></tt></li>
-<li>replace <tt class="docutils literal"><span class="pre">aural</span></tt> media with <tt class="docutils literal"><span class="pre">speech</span></tt></li>
-<li>property <tt class="docutils literal"><span class="pre">content</span></tt> has allowed value <tt class="docutils literal"><span class="pre">none</span></tt></li>
+<li>replaced media <tt class="docutils literal"><span class="pre">aural</span></tt> with <tt class="docutils literal"><span class="pre">speech</span></tt></li>
+<li>property <tt class="docutils literal"><span class="pre">content</span></tt> has allowed value <tt class="docutils literal"><span class="pre">none</span></tt> now</li>
 <li>property <tt class="docutils literal"><span class="pre">background-position</span></tt> allows mixed values like <tt class="docutils literal"><span class="pre">left</span> <span class="pre">10%</span></tt> now</li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><p class="first"><strong>FEATURE</strong>: New preference option <tt class="docutils literal"><span class="pre">keepUnkownAtRules</span> <span class="pre">=</span> <span class="pre">False</span></tt> which defines if unknown atrules like e.g. <tt class="docutils literal"><span class="pre">&#64;three-dee</span> <span class="pre">{...}</span></tt> are kept or not. Setting this pref to <tt class="xref docutils literal"><span class="pre">False</span></tt> in result removed unknown &#64;rules from the serialized sheet.</p>
+<li><p class="first"><strong>FEATURE</strong>: New preference option <tt class="docutils literal"><span class="pre">keepUnkownAtRules</span> <span class="pre">=</span> <span class="pre">False</span></tt> which defines if unknown atrules like e.g. <tt class="docutils literal"><span class="pre">&#64;three-dee</span> <span class="pre">{...}</span></tt> are kept or not. Setting this pref to <tt class="xref docutils literal"><span class="pre">False</span></tt> in result removes unknown &#64;rules from the serialized sheet which is the default for the minified settings.</p>
 </li>
 <li><p class="first"><strong>IMPROVEMENT</strong>: Fixed issue #23. The examples/style.py example renderer was reusing <tt class="docutils literal"><span class="pre">Property</span></tt> objects for each HTML element so they effectively overwrote each other.</p>
 </li>
 </ul>
 <ul class="last simple">
-<li>DOCUMENTATION: Using Sphinx 0.6.1 does seem to mess up the start page of these docs a bit. Need to look into that...</li>
+<li>DOCUMENTATION: Using Sphinx 0.6.1 now</li>
 </ul>
 </dd>
 <dt>0.9.6a3 090426</dt>
