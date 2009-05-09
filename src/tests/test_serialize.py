@@ -554,6 +554,20 @@ a, b {}'''
         self.assertEqual(s.cssText, u'left: x;\ntop: x')
         cssutils.ser.prefs.validOnly = True
         self.assertEqual(s.cssText, u'')
+
+        cssutils.ser.prefs.useDefaults()
+        cssutils.ser.prefs.keepComments = False
+        cssutils.ser.prefs.validOnly = True
+        tests = {
+            u'h1 { color: red; rotation: 70minutes }': 'h1 {\n    color: red;\n    }',
+            u'''img { float: left }       /* correct CSS 2.1 */
+img { float: left here }  /* "here" is not a value of 'float' */
+img { background: "red" } /* keywords cannot be quoted */
+img { border-width: 3 }   /* a unit must be specified for length values */''': 'img {\n    float: left\n    }'
+            
+        }
+        self.do_equal_p(tests, raising=False)
+
         
     def test_CSSStyleSheet(self):
         "CSSSerializer.do_CSSStyleSheet"

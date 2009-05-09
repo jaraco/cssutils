@@ -121,10 +121,25 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         cssutils.ser.prefs.keepEmptyRules = True
         tests = {
             u'a {': u'a {}', # no }
-            u'a { font-family: "arial sans': # no "
+            u'a { font-family: "arial sans': # no "}
                 u'a {\n    font-family: "arial sans"\n    }',
+            u'a { font-family: "arial sans";': # no }
+                u'a {\n    font-family: "arial sans"\n    }',
+            u'''p {
+                color: green;
+                font-family: 'Courier New Times
+                color: red;
+                color: green;
+                }''': u'''p {\n    color: green;\n    color: green\n    }''',
+            # no ;
+            u'''p {
+                color: green;
+                font-family: 'Courier New Times'
+                color: red;
+                color: green;
+                ''': u'''p {\n    color: green;\n    color: green\n    }'''
         }
-        self.do_equal_p(tests) # parse
+        self.do_equal_p(tests, raising=False) # parse
         cssutils.ser.prefs.useDefaults()
 
 # TODO:   def test_InvalidModificationErr(self):

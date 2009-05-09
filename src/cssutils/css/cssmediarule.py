@@ -131,8 +131,15 @@ class CSSMediaRule(cssrule.CSSRule):
                                                mediaendonly=True,
                                                separateEnd=True)
             nonetoken = self._nexttoken(tokenizer, None)
-            if (u'}' != self._tokenvalue(braceOrEOF) and 
-               'EOF' != self._type(braceOrEOF)):
+            if 'EOF' == self._type(braceOrEOF):
+                # HACK!!!
+                # TODO: Not complete, add EOF to rule and } to @media
+                cssrulestokens.append(braceOrEOF)
+                braceOrEOF = ('CHAR', '}', 0, 0)
+                self._log.debug(u'CSSMediaRule: Incomplete, adding "}".', 
+                                token=braceOrEOF, neverraise=True)
+
+            if u'}' != self._tokenvalue(braceOrEOF):
                 self._log.error(u'CSSMediaRule: No "}" found.', 
                                 token=braceOrEOF)
             elif nonetoken:

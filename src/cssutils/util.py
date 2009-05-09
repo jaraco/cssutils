@@ -307,7 +307,6 @@ class Base(_BaseClass):
                      bracket == parant == 0) and typ in endtypes:
                      # mediaqueryendonly with STRING
                     break
-
         if separateEnd:
             # TODO: use this method as generator, then this makes sense
             if resulttokens:
