@@ -321,7 +321,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
     }
 a {
     color: green
-    }'''
+    }''',
+            u'p @here {color: red} p {color: green}': u'p {\n    color: green\n    }'
             }
 
         for css in tests:

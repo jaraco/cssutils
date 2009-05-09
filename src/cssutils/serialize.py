@@ -58,6 +58,9 @@ class Preferences(object):
     keepEmptyRules = False
         defines if empty rules like e.g. ``a {}`` are kept in the resulting
         serialized sheet
+    keepUnkownAtRules = True
+        defines if unknown @rules like e.g. ``@three-dee {}`` are kept in the 
+        serialized sheet
     keepUsedNamespaceRulesOnly = False
         if True only namespace rules which are actually used are kept
         
@@ -116,6 +119,7 @@ class Preferences(object):
         self.keepAllProperties = True
         self.keepComments = True
         self.keepEmptyRules = False
+        self.keepUnkownAtRules = True
         self.keepUsedNamespaceRulesOnly = False
         self.lineNumbers = False
         self.lineSeparator = u'\n'
@@ -137,6 +141,7 @@ class Preferences(object):
         self.indent = u''
         self.keepComments = False
         self.keepEmptyRules = False
+        self.keepUnkownAtRules = False
         self.keepUsedNamespaceRulesOnly = True
         self.lineNumbers = False
         self.lineSeparator = u''
@@ -561,7 +566,7 @@ class CSSSerializer(object):
         anything until ";" or "{...}"
         + CSSComments
         """
-        if rule.wellformed:
+        if rule.wellformed and self.prefs.keepUnkownAtRules:
             out = Out(self)
             out.append(rule.atkeyword)  
                          

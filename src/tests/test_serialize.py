@@ -68,6 +68,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, True)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
+        self.assertEqual(cssutils.ser.prefs.keepUnkownAtRules, True)
         self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, False)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
         self.assertEqual(cssutils.ser.prefs.lineSeparator, u'\n')
@@ -126,6 +127,7 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, False)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
+        self.assertEqual(cssutils.ser.prefs.keepUnkownAtRules, False)
         self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, True)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
         self.assertEqual(cssutils.ser.prefs.lineSeparator, u'')
@@ -159,8 +161,13 @@ prefix|x, a + b > c ~ d, b {
     @x  x;
     '''
         s = cssutils.parseString(css)
+        cssutils.ser.prefs.keepUnkownAtRules = True
         self.assertEqual(s.cssText, 
             u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}@x x;''' 
+            )
+        cssutils.ser.prefs.keepUnkownAtRules = False
+        self.assertEqual(s.cssText, 
+            u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
             )
         # CSSValues
         valuetests = {
@@ -359,6 +366,39 @@ a {
         color: red
         }
     }''', s.cssText)
+
+    def test_keepUnkownAtRules(self):
+        "Preferences.keepUnkownAtRules"
+        cssutils.ser.prefs.useDefaults()
+        tests = {
+            u'''@three-dee {
+              @background-lighting {
+                azimuth: 30deg;
+                elevation: 190deg;
+              }
+              h1 { color: red }
+            }
+            h1 { color: blue }''': (u'''@three-dee {
+    @background-lighting {
+        azimuth: 30deg;
+        elevation: 190deg;
+        } h1 {
+        color: red
+        }
+    }
+h1 {
+    color: blue
+    }''', u'''h1 {
+    color: blue
+    }''')
+        }
+        for test in tests:
+            s = cssutils.parseString(test)
+            expwith, expwithout = tests[test]
+            cssutils.ser.prefs.keepUnkownAtRules = True
+            self.assertEqual(s.cssText, expwith)
+            cssutils.ser.prefs.keepUnkownAtRules = False
+            self.assertEqual(s.cssText, expwithout)
 
     def test_keepUsedNamespaceRulesOnly(self):
         "Preferences.keepUsedNamespaceRulesOnly"

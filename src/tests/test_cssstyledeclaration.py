@@ -102,7 +102,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
             # simple escape
             u'c\\olor: red; color:green': u'color: green',
             u'color:g\\reen': u'color: g\\reen',
-
+            # http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues
             u'color:green': u'color: green',
             u'color:green; color': u'color: green',
             u'color:red;   color; color:green': u'color: green',
