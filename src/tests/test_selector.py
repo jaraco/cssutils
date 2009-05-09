@@ -397,6 +397,10 @@ class SelectorTestCase(basetest.BaseTestCase):
             u',': xml.dom.InvalidModificationErr,
             u',a': xml.dom.InvalidModificationErr,
             u'a,': xml.dom.InvalidModificationErr,
+            
+            # @
+            u'p @here': xml.dom.SyntaxErr, # not allowed
+
             }
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
