@@ -41,12 +41,15 @@ HEAD (0.9.6a4)
 
     + **BUGFIX**: Fixed issue #22 parsing or indeed reserializing of values like ``content: "\\"``
 
+    + **BUGFIX**: Unknown ATKEYWORD tokens in selectors make these invalid now, see example at http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues: ``p @here {color: red}``
+
     - **FEATURE**: Updated some parts to http://www.w3.org/TR/2009/CR-CSS2-20090423/changes.html#new (most changes decribed there were already done in cssutils)
         + updated tokenizer macro ``escape``
         + replace ``aural`` media with ``speech``
         + property ``content`` has allowed value ``none``
         + property ``background-position`` allows mixed values like ``left 10%`` now
 
+    - **FEATURE**: New preference option ``keepUnkownAtRules = False`` which defines if unknown atrules like e.g. ``@three-dee {...}`` are kept or not. Setting this pref to ``False`` in result removed unknown @rules from the serialized sheet.
 
     - **IMPROVEMENT**: Fixed issue #23. The examples/style.py example renderer was reusing ``Property`` objects for each HTML element so they effectively overwrote each other.
 
@@ -414,7 +417,7 @@ stable version
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-05-01 22:36:56 +0200 (Fr, 01 Mai 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1730 2009-05-01 20:36:56Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-05-02 15:08:08 +0200 (Sa, 02 Mai 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1740 2009-05-02 13:08:08Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
