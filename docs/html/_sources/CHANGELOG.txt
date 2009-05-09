@@ -36,24 +36,28 @@ development version
 0.9.6
 -----
 
-HEAD (0.9.6a4)
+HEAD
+
+0.9.6a4 090509
     - **API CHANGE**: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use ``str(e)`` on any raised xml.dom.Exception ``e``. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as ``e.line, e.col``.
 
-    + **BUGFIX**: Fixed issue #22 parsing or indeed reserializing of values like ``content: "\\"``
+    + BUGFIX: Fixed issue #22 parsing or actually reserializing of values like ``content: "\\"``
 
-    + **BUGFIX**: Unknown ATKEYWORD tokens in selectors make these invalid now, see example at http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues: ``p @here {color: red}``
+    + BUGFIX: All examples at http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues should work now as expected:
+        - Unknown ATKEYWORD tokens in selectors make these invalid now, see example : ``p @here {color: red}``
+        - completion of incomplete @media rule like ``@media screen { p:before { content: 'Hello`` does work now when parsing with a non raising parser
 
     - **FEATURE**: Updated some parts to http://www.w3.org/TR/2009/CR-CSS2-20090423/changes.html#new (most changes decribed there were already done in cssutils)
         + updated tokenizer macro ``escape``
-        + replace ``aural`` media with ``speech``
-        + property ``content`` has allowed value ``none``
+        + replaced media ``aural`` with ``speech``
+        + property ``content`` has allowed value ``none`` now
         + property ``background-position`` allows mixed values like ``left 10%`` now
 
-    - **FEATURE**: New preference option ``keepUnkownAtRules = False`` which defines if unknown atrules like e.g. ``@three-dee {...}`` are kept or not. Setting this pref to ``False`` in result removed unknown @rules from the serialized sheet.
+    - **FEATURE**: New preference option ``keepUnkownAtRules = False`` which defines if unknown atrules like e.g. ``@three-dee {...}`` are kept or not. Setting this pref to ``False`` in result removes unknown @rules from the serialized sheet which is the default for the minified settings.
 
     - **IMPROVEMENT**: Fixed issue #23. The examples/style.py example renderer was reusing ``Property`` objects for each HTML element so they effectively overwrote each other.
 
-    + DOCUMENTATION: Using Sphinx 0.6.1 does seem to mess up the start page of these docs a bit. Need to look into that...
+    + DOCUMENTATION: Using Sphinx 0.6.1 now
 
 
 0.9.6a3 090426
