@@ -49,7 +49,7 @@
           <div class="body">
             
   <span class="target" id="module-cssutils.serialize"></span><div class="section" id="serializing-css">
-<span id="index-10"></span><h1>serializing CSS<a class="headerlink" href="#serializing-css" title="Permalink to this headline">¶</a></h1>
+<span id="index-14"></span><h1>serializing CSS<a class="headerlink" href="#serializing-css" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cssserializer">
 <h2><tt class="docutils literal"><span class="pre">CSSSerializer</span></tt><a class="headerlink" href="#cssserializer" title="Permalink to this headline">¶</a></h2>
 <p>There is a single global serializer used throughout the library. You may configure it by setting specific <a class="reference internal" href="#preferences">Preferences</a> or completely replace it with your own.</p>
@@ -71,8 +71,8 @@ Serializer and overwrite the methods you like to customize.</p>
 </dd></dl>
 
 <span class="target" id="preferences"></span></div>
-<div class="section" id="index-11">
-<span id="id1"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#index-11" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="index-15">
+<span id="id1"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#index-15" title="Permalink to this headline">¶</a></h2>
 <p>Quite a few preferences of the cssutils serializer may be tweaked.</p>
 <p>To set a preference use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">sheet</span> <span class="o">=</span> <span class="n">CSSStyleSheet</span><span class="p">()</span>
@@ -113,6 +113,9 @@ same name are kept!</dd>
 <dd>If <tt class="xref docutils literal"><span class="pre">False</span></tt> removes all CSSComments</dd>
 <dt>keepEmptyRules = False</dt>
 <dd>defines if empty rules like e.g. <tt class="docutils literal"><span class="pre">a</span> <span class="pre">{}</span></tt> are kept in the resulting
+serialized sheet</dd>
+<dt>keepUnkownAtRules = True</dt>
+<dd>defines if unknown &#64;rules like e.g. <tt class="docutils literal"><span class="pre">&#64;three-dee</span> <span class="pre">{}</span></tt> are kept in the 
 serialized sheet</dd>
 <dt>keepUsedNamespaceRulesOnly = False</dt>
 <dd>if True only namespace rules which are actually used are kept</dd>
@@ -169,7 +172,7 @@ and set settings you want adjusted afterwards.</p>
             <ul>
 <li><a class="reference external" href="">serializing CSS</a><ul>
 <li><a class="reference external" href="#cssserializer"><tt class="docutils literal"><span class="pre">CSSSerializer</span></tt></a></li>
-<li><a class="reference external" href="#index-11"><tt class="docutils literal"><span class="pre">Preferences</span></tt></a></li>
+<li><a class="reference external" href="#index-15"><tt class="docutils literal"><span class="pre">Preferences</span></tt></a></li>
 </ul>
 </li>
 </ul>
