@@ -4,16 +4,20 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.6a3 is an bugfix release.
+0.9.6a4 is an bugfix release.
 
 main changes
 ------------
-0.9.6a3 090426
-    - **IMPROVEMENT**: Fix for Python 2.6.2 (due to a backport from Python 2.7 to 2.6.2 the reversed() iterator has no __length__ anymore which cssutils was using)
+    - **API CHANGE**: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use ``str(e)`` on any raised xml.dom.Exception ``e``. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as ``e.line, e.col``.
 
-    + **BUGFIX**: New version of encutils (0.9)
+    + BUGFIX: Fixed issues #22 and #23
 
-    + **BUGFIX**: Fixed issue #21
+    + BUGFIX: All examples at http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues should work now as expected
+
+    - **FEATURE**: Updated some parts to http://www.w3.org/TR/2009/CR-CSS2-20090423/changes.html#new (most changes decribed there were already done in cssutils)
+
+    - **FEATURE**: New preference option ``keepUnkownAtRules = False`` which defines if unknown atrules like e.g. ``@three-dee {...}`` are kept or not. Setting this pref to ``False`` in result removes unknown @rules from the serialized sheet which is the default for the minified settings.
+
 
 license
 -------
