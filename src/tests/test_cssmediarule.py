@@ -286,8 +286,12 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
             u'@media all { @unknown;': # no }
                 u'@media all {\n    @unknown;\n    }',
-            u'@media all { a {x:1}': # no }
-                u'@media all {\n    a {\n        x: 1\n        }\n    }',
+            u'@media all { a {x:"1"}': # no }
+                u'@media all {\n    a {\n        x: "1"\n        }\n    }',
+            u'@media all { a {x:"1"': # no }}
+                u'@media all {\n    a {\n        x: "1"\n        }\n    }',
+            u'@media all { a {x:"1': # no "}}
+                u'@media all {\n    a {\n        x: "1"\n        }\n    }',
         }
         self.do_equal_p(tests) # parse
 
