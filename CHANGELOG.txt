@@ -37,12 +37,12 @@ development version
 -----
 
 HEAD
-    + BUGFIX: Fixed resetting ``CSSPageRule.selectorText = ''``
+    + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now
 
     + BUGFIX: Fixed several things for Jython 2.5RC3 because:
-        - exception messages sometimes do have a different format in Jython and Python >= 2.5 and also Python < 2.4
-        - Jython's ``xml.dom.Exception``s miss attribute ``args`` it seems
-        - Jython's path2url seems broken, added a workaround which is kind of naive and tested on Windows only yet.
+        - exception messages sometimes do have a different format in Jython and Python (also between Python versions >= 2.5 and < 2.4 ...)
+        - Jython's ``xml.dom.Exception``\ s miss attribute ``args`` it seems
+        - Jython's ``urllib.path2url`` seems broken, added a workaround which is kind of naive and tested on Windows only yet.
 
 
 0.9.6a4 090509
