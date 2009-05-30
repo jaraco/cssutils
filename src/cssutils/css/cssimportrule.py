@@ -320,7 +320,8 @@ class CSSImportRule(cssrule.CSSRule):
             parentHref = self.parentStyleSheet.href
             if parentHref is None:
                 # use cwd instead
-                parentHref = u'file:' + urllib.pathname2url(os.getcwd()) + '/'
+                #parentHref = u'file:' + urllib.pathname2url(os.getcwd()) + '/'
+                parentHref = cssutils.helper.path2url(os.getcwd()) + '/'
             href = urlparse.urljoin(parentHref, self.href)
 
             # all possible exceptions are ignored (styleSheet is None then)
