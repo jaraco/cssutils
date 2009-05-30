@@ -4,7 +4,7 @@ __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from helper import Deprecated
+from helper import Deprecated, path2url
 import codecs
 import cssutils
 import os
@@ -124,7 +124,8 @@ class CSSParser(object):
         """
         if not href:
             # prepend // for file URL, urllib does not do this?
-            href = u'file:' + urllib.pathname2url(os.path.abspath(filename))
+            #href = u'file:' + urllib.pathname2url(os.path.abspath(filename))          
+            href = path2url(filename)
 
         return self.parseString(open(filename, 'rb').read(),
                                 encoding=encoding, # read returns a str
