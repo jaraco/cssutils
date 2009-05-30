@@ -14,7 +14,6 @@ Based upon and partly implementing the following specifications :
 
 `CSS 2.1rev1 <http://www.w3.org/TR/2009/CR-CSS2-20090423/>`__
     General CSS rules and properties are defined here
-    A few errata, mainly the definition of CHARSET_SYM tokens
 `CSS3 Module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
     Used in parts since cssutils 0.9.4. cssutils tries to use the features from CSS 2.1 and CSS 3 with preference to CSS3 but as this is not final yet some parts are from CSS 2.1
 `MediaQueries <http://www.w3.org/TR/css3-mediaqueries/>`__

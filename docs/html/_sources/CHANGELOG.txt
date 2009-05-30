@@ -37,6 +37,13 @@ development version
 -----
 
 HEAD
+    + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now
+
+    + BUGFIX: Fixed several things for Jython 2.5RC3 because:
+        - exception messages sometimes do have a different format in Jython and Python (also between Python versions >= 2.5 and < 2.4 ...)
+        - Jython's ``xml.dom.Exception``\ s miss attribute ``args`` it seems
+        - Jython's ``urllib.path2url`` seems broken, added a workaround which is kind of naive and tested on Windows only yet.
+
 
 0.9.6a4 090509
     - **API CHANGE**: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use ``str(e)`` on any raised xml.dom.Exception ``e``. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as ``e.line, e.col``.
@@ -421,7 +428,7 @@ stable version
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-05-02 15:08:08 +0200 (Sa, 02 Mai 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1740 2009-05-02 13:08:08Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-05-09 22:33:15 +0200 (Sa, 09 Mai 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1743 2009-05-09 20:33:15Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
