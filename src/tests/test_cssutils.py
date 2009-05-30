@@ -6,8 +6,8 @@ import basetest
 import codecs
 import cssutils
 import os
+import sys
 import tempfile
-import urllib
 import xml.dom
 
 try:
@@ -47,7 +47,7 @@ a {
 
         href = os.path.join(os.path.dirname(__file__), 
                             '..', '..', 'sheets', 'import.css')
-        href = 'file:' + urllib.pathname2url(href)
+        href = cssutils.helper.path2url(href)
         s = cssutils.parseString(self.exp, 
                                  href=href)
         self.assertEqual(href, s.href)
@@ -70,12 +70,16 @@ a {
         # name if used with open, href used for @import resolving
         name = os.path.join(os.path.dirname(__file__), 
                             '..', '..', 'sheets', 'import.css')
-        href = 'file:' + urllib.pathname2url(name)
+        href = cssutils.helper.path2url(name)
         
         s = cssutils.parseFile(name, href=href, media='screen', title='from file')
         self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
-        # normally file:/// on win and file:/ on unix
-        self.assert_(s.href.startswith('file:/')) 
+        if sys.platform.startswith('java'):
+            # on Jython only file:
+            self.assert_(s.href.startswith('file:')) 
+        else:
+            # normally file:/// on win and file:/ on unix
+            self.assert_(s.href.startswith('file:/')) 
         self.assert_(s.href.endswith('/sheets/import.css'))
         self.assertEqual(u'utf-8', s.encoding)
         self.assertEqual(u'screen', s.media.mediaText)
@@ -96,7 +100,12 @@ a {
         
         s = cssutils.parseFile(name, media='screen', title='from file')
         self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
-        self.assert_(s.href.startswith('file:/'))
+        if sys.platform.startswith('java'):
+            # on Jython only file:
+            self.assert_(s.href.startswith('file:')) 
+        else:
+            # normally file:/// on win and file:/ on unix
+            self.assert_(s.href.startswith('file:/')) 
         self.assert_(s.href.endswith('/sheets/import.css'))
         self.assertEqual(u'utf-8', s.encoding)
         self.assertEqual(u'screen', s.media.mediaText)
@@ -145,13 +154,17 @@ a {
             UnicodeDecodeError, cssutils.parseFile, name, 'utf-8')
 
         # clean up
-        os.remove(name)
+        try:
+            os.remove(name)
+        except OSError, e:
+            pass
 
     def test_parseUrl(self):
         "cssutils.parseUrl()"
         href = os.path.join(os.path.dirname(__file__), 
                             '..', '..', 'sheets', 'import.css')
-        href = u'file:' + urllib.pathname2url(href)
+        #href = u'file:' + urllib.pathname2url(href)
+        href = cssutils.helper.path2url(href)
         #href = 'http://seewhatever.de/sheets/import.css'
         s = cssutils.parseUrl(href, 
                               media='tv, print', 

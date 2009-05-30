@@ -5,7 +5,6 @@ from cssutils.script import csscombine
 import basetest
 import cssutils
 import os
-import urllib
 
 class CSSCombine(basetest.BaseTestCase):
 
@@ -22,7 +21,7 @@ class CSSCombine(basetest.BaseTestCase):
         self.assertEqual(combined, '@charset "ascii";' + self.C)
 
         # url
-        cssurl = u'file:' + urllib.pathname2url(os.path.abspath(csspath))
+        cssurl = cssutils.helper.path2url(csspath)
         combined = csscombine(url=cssurl)
         self.assertEqual(combined, self.C)
         combined = csscombine(url=cssurl, targetencoding='ascii')
