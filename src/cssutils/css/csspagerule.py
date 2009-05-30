@@ -239,7 +239,7 @@ class CSSPageRule(cssrule.CSSRule):
 
         # may raise SYNTAX_ERR
         wellformed, newseq = self.__parseSelectorText(selectorText)
-        if wellformed and newseq:
+        if wellformed:
             self._selectorText = newseq
 
     selectorText = property(_getSelectorText, _setSelectorText,
