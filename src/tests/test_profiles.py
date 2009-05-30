@@ -72,15 +72,15 @@ class ProfilesTestCase(basetest.BaseTestCase):
         cssutils.log.raiseExceptions = True
         
         # raises:
+        expmsg = u"invalid literal for int() with base 10: 'x'"        
+        # Python upto 2.4 and Jython have different msg format...
         if sys.version_info[0:2] == (2,4):
-            # Python 2.4 has a different msg...
-            self.assertRaisesMsg(Exception, 
-                                 u"invalid literal for int(): x", 
-                                 cssutils.profile.validate, u'-test-funcval', u'x')
-        else:
-            self.assertRaisesMsg(Exception, 
-                                 u"invalid literal for int() with base 10: 'x'", 
-                                 cssutils.profile.validate, u'-test-funcval', u'x')
+            expmsg = u"invalid literal for int(): x" 
+        elif sys.platform.startswith('java'):
+            expmsg = u"invalid literal for int() with base 10: x"
+            
+        self.assertRaisesMsg(Exception, expmsg, 
+                             cssutils.profile.validate, u'-test-funcval', u'x')
 
     def test_removeProfile(self):
         "Profiles.removeProfile()"
