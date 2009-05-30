@@ -37,6 +37,13 @@ development version
 -----
 
 HEAD
+    + BUGFIX: Fixed resetting ``CSSPageRule.selectorText = ''``
+
+    + BUGFIX: Fixed several things for Jython 2.5RC3 because:
+        - exception messages sometimes do have a different format in Jython and Python >= 2.5 and also Python < 2.4
+        - Jython's ``xml.dom.Exception``s miss attribute ``args`` it seems
+        - Jython's path2url seems broken, added a workaround which is kind of naive and tested on Windows only yet.
+
 
 0.9.6a4 090509
     - **API CHANGE**: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use ``str(e)`` on any raised xml.dom.Exception ``e``. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as ``e.line, e.col``.
