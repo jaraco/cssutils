@@ -80,11 +80,12 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         s = cssutils.css.CSSStyleSheet()
         try:
             s.cssText = '@import x;'
-        except xml.dom.DOMException, e:
-            self.assertEqual(e.args, (u'CSSImportRule: Unexpected ident. [1:9: x]',))
+        except xml.dom.DOMException, e:                
             self.assertEqual(str(e), 'CSSImportRule: Unexpected ident. [1:9: x]')
             self.assertEqual(e.line, 1)
             self.assertEqual(e.col, 9)
+            if not sys.platform.startswith('java'):
+                self.assertEqual(e.args, (u'CSSImportRule: Unexpected ident. [1:9: x]',))
         
         cssutils.log.raiseExceptions = o
 
