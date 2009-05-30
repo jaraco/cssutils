@@ -104,7 +104,7 @@ class BaseTestCase(unittest.TestCase):
         try:
             callableObj(*args, **kwargs)
         except excClass, exc:
-            excMsg = unicode(exc.args[0]) #str(exc)
+            excMsg = unicode(exc)
             if not msg:
                 # No message provided: any message is fine.
                 return
