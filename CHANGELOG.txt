@@ -43,6 +43,9 @@ HEAD
         - exception messages sometimes do have a different format in Jython and Python (also between Python versions >= 2.5 and < 2.4 ...)
         - Jython's ``xml.dom.Exception``\ s miss attribute ``args`` it seems
         - Jython's ``urllib.path2url`` seems broken, added a workaround which is kind of naive and tested on Windows only yet.
+        - remaining 3 tests not running in Jython seem to be related to Jython's behaviour of unicode strings, e.g. ``'\xe4'.decode('utf-8')`` does raise UnicodeDecodeError in Python (and IronPython BTW) but simply returns ``u''`` in Jython. See also Jython bug #1368.
+
+    + BUGFIX (minor): Removed false references in a few modules' ``__all__`` list
 
 
 0.9.6a4 090509
