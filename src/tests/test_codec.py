@@ -152,7 +152,7 @@ class CodecTestCase(unittest.TestCase):
             self.assertEqual("".join(result), input.replace('"x"', '"%s"' % outputencoding))
 
         # Autodetectable encodings
-        #checkauto("utf-8-sig")
+        checkauto("utf-8-sig")
         checkauto("utf-16")
         checkauto("utf-16-le")
         checkauto("utf-16-be")
