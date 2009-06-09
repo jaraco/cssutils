@@ -52,16 +52,8 @@ def normalize(x):
         return x
 
 def path2url(path):
-    """
-    returns path
-    """
-    if sys.platform.startswith('java'):
-        # TODO: naive Jython see issue #1361
-        href = os.path.abspath(path)
-        href = href.replace('\\', '/') # NAIVE!
-        return 'file:'+href        
-    else:
-        return u'file:' + urllib.pathname2url(os.path.abspath(path))    
+    """Return file URL of `path`"""
+    return u'file:' + urllib.pathname2url(os.path.abspath(path))    
 
 def pushtoken(token, tokens):
     """Return new generator starting with token followed by all tokens in 
