@@ -6,7 +6,7 @@ cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
 :Copyright: 2004-2009 Christof Hoeke
 
-Overview
+overview
 ========
 A Python package to parse and build CSS Cascading Style Sheets. DOM only, not any rendering facilities!
 
@@ -39,6 +39,9 @@ Please visit http://cthedot.de/cssutils/ or http://code.google.com/p/cssutils/ f
 
 There is also a low-traffic `cssutils discussion group <http://groups.google.com/group/cssutils>`_.
 
+compatibility
+=============
+cssutils is developed on standard Python. On Jython 2.5 (from RC4 on) cssutils (from 0.9.6b1) also passes all tests.
 
 license
 =======
