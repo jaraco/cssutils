@@ -280,10 +280,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             (None, None, (None, u'a'.encode('ascii'))):
                 ('utf-8', 5, u'a'),
             (None, None, (None, u'ä'.encode('utf-8'))):
-                ('utf-8', 5, u'ä'), # read as utf-8
-                
-            # TODO: Fails in Jython as Jython does not raise UnicodeDecodeError
-            # see Jython Issue 1368
+                ('utf-8', 5, u'ä'), # read as utf-8                
             (None, None, (None, u'ä'.encode('iso-8859-1'))): # trigger UnicodeDecodeError!
                 ('utf-8', 5, None),
                 

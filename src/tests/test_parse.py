@@ -169,8 +169,6 @@ class CSSParserTestCase(basetest.BaseTestCase):
             (u'/*€*/'.encode('utf-16'), 'utf-8'),
             (u'/*ä*/'.encode('iso-8859-1'), 'ascii'),
             (u'/*€*/'.encode('utf-8'), 'ascii'), 
-            
-            # TODO: Jython does not raise UnicodeDecodeError see Jython Issue 1368
             (u'a'.encode('ascii'), 'utf-16'),
         ]
         for test in tests:
