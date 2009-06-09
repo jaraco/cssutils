@@ -37,6 +37,8 @@ development version
 -----
 
 HEAD
+
+0.9.6b1 090609
     + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now
 
     + BUGFIX (minor): Removed false references in a few modules' ``__all__`` list
