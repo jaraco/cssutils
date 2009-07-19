@@ -133,6 +133,8 @@ class PropertiesTestCase(basetest.BaseTestCase):
                                                r'a\ b',
                                                #TODO: 'a b'
                                                ]),
+            #'src': ('STRING',),
+                                               
             'font-weight': (['normal', 'bold', 'bolder', 'lighter', 'inherit', 
                              '100', '200', '300', '400', '500', '600', '700',
                              '800', '900'],),

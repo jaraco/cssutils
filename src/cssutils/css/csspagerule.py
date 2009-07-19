@@ -45,11 +45,12 @@ class CSSPageRule(cssrule.CSSRule):
             tempseq.append(self.selectorText, 'selectorText')
         else:
             self._selectorText = self._tempSeq()
+        
+        self._style = CSSStyleDeclaration(parentRule=self)
         if style:
             self.style = style
             tempseq.append(self.style, 'style')
-        else:
-            self._style = CSSStyleDeclaration(parentRule=self)
+
         self._setSeq(tempseq)
         
         self._readonly = readonly
@@ -251,13 +252,11 @@ class CSSPageRule(cssrule.CSSRule):
             a CSSStyleDeclaration or string
         """
         self._checkReadonly()
-        
         if isinstance(style, basestring):
             self._style.cssText = style
         else:
-            # cssText would be serialized with optional preferences
-            # so use seq!
-            self._style._seq = style.seq 
+            self._style._seq = style.seq
+            self._style.parentRule = self
 
     style = property(lambda self: self._style, _setStyle,
                      doc="(DOM) The declaration-block of this rule set, "

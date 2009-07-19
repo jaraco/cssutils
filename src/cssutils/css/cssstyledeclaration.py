@@ -275,10 +275,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                                        semicolon=True)
             if self._tokenvalue(tokens[-1]) == u';':
                 tokens.pop()
-            property = Property(_parent=self)
+            property = Property(parentStyle=self)
             property.cssText = tokens
             if property.wellformed:
-                seq.append(property, 'Property')
+                seq.append(property, 'Property')                
             else:
                 self._log.error(u'CSSStyleDeclaration: Syntax Error in Property: %s'
                                 % self._valuestr(tokens))
@@ -306,7 +306,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         # do not check wellformed as invalid things are removed anyway            
         #if wellformed: 
         self._setSeq(newseq)
-
+        
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) A parsable textual representation of the declaration\
         block excluding the surrounding curly braces.")
@@ -322,13 +322,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         """
         return cssutils.ser.do_css_CSSStyleDeclaration(self, separator)
 
-    def _getParentRule(self):
-        return self._parentRule
-
     def _setParentRule(self, parentRule):
         self._parentRule = parentRule
+        for x in self:
+            x.parentStyle = self
 
-    parentRule = property(_getParentRule, _setParentRule,
+    parentRule = property(lambda self: self._parentRule, _setParentRule,
         doc="(DOM) The CSS rule that contains this declaration block or "
             "None if this CSSStyleDeclaration is not attached to a CSSRule.")
 
@@ -564,7 +563,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             newp = name 
             name = newp.literalname
         else:
-            newp = Property(name, value, priority)
+            newp = Property(name, value, priority, parentStyle=self)
         if not newp.wellformed:
             self._log.warn(u'Invalid Property: %s: %s %s'
                     % (name, value, priority))

@@ -44,7 +44,7 @@ class Property(cssutils.util.Base):
 
     """
     def __init__(self, name=None, value=None, priority=u'', 
-                 _mediaQuery=False, _parent=None):
+                 _mediaQuery=False, parentStyle=None):
         """
         :param name:
             a property name string (will be normalized)
@@ -55,16 +55,15 @@ class Property(cssutils.util.Base):
             u'!important' or u'important'
         :param _mediaQuery:
             if ``True`` value is optional (used by MediaQuery)
-        :param _parent:
-            the parent object, normally a 
+        :param parentStyle:
+            the parentStyle object, normally a 
             :class:`cssutils.css.CSSStyleDeclaration`
         """
         super(Property, self).__init__()
-
         self.seqs = [[], None, []]
         self.wellformed = False
         self._mediaQuery = _mediaQuery
-        self._parent = _parent
+        self.parentStyle = parentStyle
 
         self.__nametoken = None
         self._name = u''
@@ -363,6 +362,14 @@ class Property(cssutils.util.Base):
     literalpriority = property(lambda self: self._literalpriority,
         doc="Readonly literal (not normalized) priority of this property")
 
+    def _setParentStyle(self, parentStyle):
+        self._parentStyle = parentStyle
+
+    parentStyle = property(lambda self: self._parentStyle, _setParentStyle,
+        doc="The CSSStyledeclaration that contains this Property or "
+            "None if this Property is not attached to a CSSStyledeclaration.")
+
+
     def validate(self):
         """Validate value against `profiles` which are checked dynamically.
         properties in e.g. @font-face rules are checked against 
@@ -425,7 +432,7 @@ class Property(cssutils.util.Base):
         profiles = None
         try:
             # if @font-face use that profile
-            rule = self._parent.parentRule
+            rule = self.parentStyle.parentRule
             if rule.type == rule.FONT_FACE_RULE:
                 profiles = [cssutils.profile.CSS3_FONT_FACE]
             #TODO: same for @page

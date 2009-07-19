@@ -36,13 +36,12 @@ class CSSFontFaceRule(cssrule.CSSRule):
         super(CSSFontFaceRule, self).__init__(parentRule=parentRule, 
                                               parentStyleSheet=parentStyleSheet)
         self._atkeyword = u'@font-face'
+        self._style = CSSStyleDeclaration(parentRule=self)
         if style:
             self.style = style
-        else:
-            self._style = CSSStyleDeclaration(parentRule=self)
         
         self._readonly = readonly
-
+        
     def __repr__(self):
         return "cssutils.css.%s(style=%r)" % (
                 self.__class__.__name__, self.style.cssText)
@@ -135,9 +134,10 @@ class CSSFontFaceRule(cssrule.CSSRule):
         """
         self._checkReadonly()
         if isinstance(style, basestring):
-            self._style = CSSStyleDeclaration(parentRule=self, cssText=style)
+            self._style.cssText = style
         else:
             self._style._seq = style.seq
+            self._style.parentRule = self
 
     style = property(lambda self: self._style, _setStyle,
                      doc="(DOM) The declaration-block of this rule set, "
