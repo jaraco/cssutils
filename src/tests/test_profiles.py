@@ -85,9 +85,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
     def test_removeProfile(self):
         "Profiles.removeProfile()"
         p = cssutils.profiles.Profiles()
-        self.assertEqual(5, len(p.profiles))
+        self.assertEqual(6, len(p.profiles))
         p.removeProfile(p.CSS_LEVEL_2)
-        self.assertEqual(4, len(p.profiles))
+        self.assertEqual(5, len(p.profiles))
         p.removeProfile(all=True)
         self.assertEqual(0, len(p.profiles))
 
