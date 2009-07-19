@@ -43,8 +43,9 @@ class Profiles(object):
     macros.
     """
     CSS_LEVEL_2 = 'CSS Level 2.1'
-    CSS3_COLOR = CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
     CSS3_BOX = CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
+    CSS3_COLOR = CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
+    CSS3_FONTS = 'CSS Fonts Module Level 3'
     CSS3_PAGED_MEDIA = 'CSS3 Paged Media Module'
 
     _TOKEN_MACROS = {
@@ -97,6 +98,9 @@ class Profiles(object):
         self.addProfile(self.CSS3_COLOR,
                         properties[self.CSS3_COLOR],
                         macros[self.CSS3_COLOR])
+        self.addProfile(self.CSS3_FONTS,
+                        properties[self.CSS3_FONTS],
+                        macros[self.CSS3_FONTS])
         self.addProfile(self.CSS3_PAGED_MEDIA,
                         properties[self.CSS3_PAGED_MEDIA],
                         macros[self.CSS3_PAGED_MEDIA])
@@ -514,6 +518,17 @@ properties[Profiles.CSS3_COLOR] = {
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|inherit',
     'opacity': r'{num}|inherit'
     }
+
+# CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
+macros[Profiles.CSS3_FONTS] = {
+    #'overflow': macros[Profiles.CSS_LEVEL_2]['overflow']
+    }
+properties[Profiles.CSS3_FONTS] = {
+    'font-stretch': r'normal|wider|narrower|ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded|inherit',
+    'font-size-adjust': r'{number}|none|inherit',
+    }
+
+
 
 # CSS3 Paged Media
 macros[Profiles.CSS3_PAGED_MEDIA] = {

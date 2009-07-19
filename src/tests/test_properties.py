@@ -14,9 +14,6 @@ class PropertiesTestCase(basetest.BaseTestCase):
     def setUp(self):
         "init test values"
         V = {
-            'AUTO': 'auto',
-            'INHERIT': 'inherit',
-            
             '0': ('0', '-0', '+0'),
             'NUMBER': ('0', '-0', '+0', '100.1', '-100.1', '+100.1'),
             'PERCENTAGE': ('0%', '-0%', '+0%', '100.1%', '-100.1%', '+100.1%'),
@@ -37,6 +34,8 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'STRING': ('"string"', "'STRING'"),
             'URI': ('url(x)', 'URL("x")', "url(')')"),
             'IDENT': ('ident', 'IDENT', '_IDENT', '_2', 'i-2'),
+            #'AUTO': 'auto', # explicit in list as an IDENT too
+            #'INHERIT': 'inherit', # explicit in list as an IDENT too
             'ATTR': ('attr(x)'),
             'RECT': ('rect(1,2,3,4)'),
             #?
@@ -103,7 +102,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
         notvalid = self._allvalues()
 
         for value in self._valuesofkeys(keys):
-            if debug == name:
+            if name == debug:
                 print '+True?', Property(name, value).valid, value
             self.assertEqual(True, Property(name, value).valid)
             if value in notvalid:
@@ -117,26 +116,56 @@ class PropertiesTestCase(basetest.BaseTestCase):
         "properties"
         tests = {
             # propname: key or [list of values]
-            'color': ('COLORS', 'INHERIT', ['red']),
-            'left': ('LENGTHS', 'PERCENTAGE', 'AUTO', 'INHERIT'),
-            # CSS3 COLOR
-            'opacity': ('NUMBER', 'INHERIT'),
-            # CSS3 PAGED MEDIA
+            'color': ('COLORS', ['inherit', 'red']),
+            
             'fit': (['fill', 'hidden', 'meet', 'slice'],),
-            'fit-position': ('AUTO', 'LENGTHS', 'PERCENTAGE', 
-                             ['top left', 
+            'fit-position': ('LENGTHS', 'PERCENTAGE', 
+                             ['auto',
+                              'top left', 
                               '0% 50%',
                               '1cm 5em',
                               'bottom']),
-            'image-orientation': ('AUTO', '0', 'ANGLES'),
-            'page': ('AUTO', 'IDENT', 'INHERIT'), # inherit is an IDENT?
-            'page-break-inside': ('AUTO', 'INHERIT', ['avoid']),
-            'size': ('AUTO', 'LENGTHS', ['1em 1em', 
-                                         'a4 portrait',
-                                         'b4 landscape',
-                                         'A5 PORTRAIT']),
-            'orphans': ('0', ['1', '99999'], 'INHERIT'),
-            'widows': ('0', ['1', '99999'], 'INHERIT')
+            'font-family': ('STRING', 'IDENT', ['a, b',
+                                               '"a", "b"',
+                                               'a, "b"',
+                                               '"a", b',
+                                               r'a\{b',
+                                               r'a\ b',
+                                               #TODO: 'a b'
+                                               ]),
+            'font-weight': (['normal', 'bold', 'bolder', 'lighter', 'inherit', 
+                             '100', '200', '300', '400', '500', '600', '700',
+                             '800', '900'],),
+            'font-stretch': (['normal', 'wider', 'narrower', 'ultra-condensed',
+                              'extra-condensed', 'condensed', 'semi-condensed',
+                              'semi-expanded', 'expanded', 'extra-expanded',
+                              'ultra-expanded', 'inherit'],),
+            'font-style': (['normal', 'italic', 'oblique', 'inherit'],),
+            'font-variant': (['normal', 'small-caps', 'inherit'],),
+            'font-size': ('LENGTHS', 'PERCENTAGE', ['xx-small', 'x-small',
+                                                   'small', 'medium', 'large', 
+                                                   'x-large', 'xx-large',
+                                                   'larger', 'smaller',
+                                                   '1em', '1%', 'inherit']),
+            'font-size-adjust': ('NUMBER', ['none', 'inherit']),
+            'font': (['italic small-caps bold 1px/3 a, "b", serif',
+                      'caption', 'icon', 'menu', 'message-box', 'small-caption',
+                      'status-bar', 'inherit'],),
+            
+            'image-orientation': ('0', 'ANGLES', ['auto']),
+            'left': ('LENGTHS', 'PERCENTAGE', ['inherit', 'auto']),
+            'opacity': ('NUMBER', ['inherit']),
+            
+            'orphans': ('0', ['1', '99999', 'inherit']),
+            'page': ('IDENT',), 
+            'page-break-inside': (['auto', 'inherit', 'avoid'],),
+            'size': ('LENGTHS', ['auto', 
+                                 '1em 1em', 
+                                 'a4 portrait',
+                                 'b4 landscape',
+                                 'A5 PORTRAIT']),
+            
+            'widows': ('0', ['1', '99999', 'inherit'])
         }
         for name, keys in tests.items():
             # keep track of valid keys
@@ -166,7 +195,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
 
 
 if __name__ == '__main__':
-    debug = 'fit-position'
+    debug = '' #'font-family'
     import logging
     import unittest
     cssutils.log.setLevel(logging.FATAL)

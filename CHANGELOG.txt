@@ -37,6 +37,10 @@ development version
 -----
 
 HEAD
+    - FEATURE: Added details from module Fonts http://www.w3.org/TR/css3-fonts/
+        + new properties: ``font-stretch``, ``font-size-adjust``
+        + TODO: fix ``font-family: b  b;``
+        + added tests for related properties and the new profile
 
 0.9.6b1 090609
     + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now
