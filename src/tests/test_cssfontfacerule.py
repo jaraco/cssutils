@@ -28,6 +28,30 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         # only possible to set @... similar name
         self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
 
+        def checkrefs(ff):
+            self.assertEqual(ff, ff.style.parentRule)
+            for p in ff.style:
+                self.assertEqual(ff.style, p.parentStyle)
+
+        checkrefs(cssutils.css.CSSFontFaceRule(
+                    style=cssutils.css.CSSStyleDeclaration('font-family: x')))
+        
+        r = cssutils.css.CSSFontFaceRule()
+        r.cssText = '@font-face { font-family: x }'
+        checkrefs(r)
+        
+        r = cssutils.css.CSSFontFaceRule()
+        r.style.setProperty('font-family', 'y')
+        checkrefs(r)
+
+        r = cssutils.css.CSSFontFaceRule()
+        r.style['font-family'] = 'z'
+        checkrefs(r)
+
+        r = cssutils.css.CSSFontFaceRule()
+        r.style.fontFamily = 'a'
+        checkrefs(r)
+
     def test_cssText(self):
         "CSSFontFaceRule.cssText"
         tests = {
@@ -75,6 +99,23 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     src: url(x)
     }'''
         self.assertEqual(exp, r.cssText)
+        
+        tests = {
+            'font-family': [('serif', True),
+                            ('x', True),
+                            ('"x"', True),
+                            ('x, y', False),
+                            ('"x", y', False),
+                            ('x, "y"', False),
+                            ('"x", "y"', False)
+                            ]
+            }
+        for n, t in tests.items():
+            for (v, valid) in t:
+                r = cssutils.css.CSSFontFaceRule()
+                r.style[n] = v
+                self.assertEqual(r.style.getProperty(n).parentStyle, r.style)
+                self.assertEqual(r.style.getProperty(n).valid, valid)
 
     def test_incomplete(self):
         "CSSFontFaceRule (incomplete)"

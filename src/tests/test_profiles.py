@@ -131,6 +131,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         CSS2 = [cssutils.profile.CSS_LEVEL_2]
         CM3 = [cssutils.profile.CSS3_COLOR]
         FM3 = [cssutils.profile.CSS3_FONTS]
+        FM3FF = [cssutils.profile.CSS3_FONT_FACE]
         CSS2_CM3 = [CM3[0], CSS2[0]]
         CSS2_FM3 = [FM3[0], CSS2[0]]
         
@@ -239,8 +240,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
                          )): (True, True, CSS2),
             
             # FONTS
-            ('font-family', (
-                             )): (False, False, CSS2), #CSS2_FM3),
+            ('font-family', ('serif, x'
+                             )): (True, True, CSS2), #CSS2_FM3),
                              
             ('font-family', ('inherit',
                              'a, b',

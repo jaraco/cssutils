@@ -29,6 +29,30 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         # only possible to set @... similar name
         self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
 
+        def checkrefs(ff):
+            self.assertEqual(ff, ff.style.parentRule)
+            for p in ff.style:
+                self.assertEqual(ff.style, p.parentStyle)
+                
+        checkrefs(cssutils.css.CSSPageRule(
+                    style=cssutils.css.CSSStyleDeclaration('font-family: x')))
+        
+        r = cssutils.css.CSSPageRule()
+        r.cssText = '@page { font-family: x }'
+        checkrefs(r)
+        
+        r = cssutils.css.CSSPageRule()
+        r.style.setProperty('font-family', 'y')
+        checkrefs(r)
+
+        r = cssutils.css.CSSPageRule()
+        r.style['font-family'] = 'z'
+        checkrefs(r)
+
+        r = cssutils.css.CSSPageRule()
+        r.style.fontFamily = 'a'
+        checkrefs(r)
+
     def test_InvalidModificationErr(self):
         "CSSPageRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@page')
