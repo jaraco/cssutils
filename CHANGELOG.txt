@@ -4,6 +4,10 @@ __________
 
 known issues
 ============
+- ``font-family: x y;`` (family names with spaces in them but not quoted) do not work yet in cssutils. Simply quote these just as the spec would like to have it too: ``font-family: "x y";``
+
+- cssutils currently permits negative lengh values for the ``font-size`` property which are illegal.
+
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
 
 - The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
@@ -27,7 +31,7 @@ known issues
 
 - Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` may be completely replaced/refactored with suggestions from CSSOM.
 
-- handling of comments does probable not work for all cases
+- handling of comments does probably not work for all cases
 
 
 development version
@@ -37,10 +41,16 @@ development version
 -----
 
 HEAD
-    - FEATURE: Added details from module Fonts http://www.w3.org/TR/css3-fonts/
+    - **FEATURE**: Added details from module Fonts http://www.w3.org/TR/css3-fonts/
         + new properties: ``font-stretch``, ``font-size-adjust``
         + TODO: fix ``font-family: b  b;``
         + added tests for related properties and the new profile
+        + @font-face rules use a different profile for validation now which uses the defined properties only (TODO: complete)
+
+    - API CHANGE (minor): Removed parameter ``profiles`` from  ``cssutils.css.Property.validate()``. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are @font-face (TODO: and @page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to ``properties[Profiles.CSS3_FONT_FACE]`` in module ``cssutils.profiles`` and reregister that profile.
+
+    - BUGFIX: ``CSSStyleDeclaration.parentRule`` was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.
+
 
 0.9.6b1 090609
     + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now
@@ -50,8 +60,7 @@ HEAD
     - IMPROVEMENT: Jython 2.5 (from RC4) runs all tests now but a few changes had to be done:
         - exception messages sometimes do have a different format in Jython and Python (but also between Python versions >= 2.5 and < 2.4 ...)
         - Jython's ``xml.dom.Exception`` misses attribute ``args`` it seems
-        - **UPDATE: Problem was fixed in Jython 2.5RC4.** Jython's ``urllib.path2url`` seems broken, added a workaround which is kind of naive and tested on Windows only yet.
-
+        - **UPDATE: Problem was fixed in Jython 2.5RC4.** (before Jython's ``urllib.path2url`` was broken.)
 
 
 0.9.6a4 090509
