@@ -663,6 +663,9 @@ class _Namespaces(object):
         self.parentStyleSheet = parentStyleSheet
         self._log = log
 
+    def __repr__(self):
+        return "%r" % self.namespaces
+
     def __contains__(self, prefix):
         return prefix in self.namespaces
 
