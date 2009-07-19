@@ -254,6 +254,20 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         s = sheet.cssRules[0]
         d = s.style
         self.assertEqual(s, d.parentRule)
+        
+        s = cssutils.parseString('''
+        @font-face {
+            font-weight: bold;
+            }
+        a {
+            font-weight: bolder;
+            }
+        @page {
+            font-weight: bolder;    
+            }
+        ''')
+        for r in s:
+            self.assertEqual(r.style.parentRule, r)
 
     def test_getProperty(self):
         "CSSStyleDeclaration.getProperty"
