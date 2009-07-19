@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>package cssutils.css &mdash; cssutils v0.9.6b1 documentation</title>
+    <title>package cssutils.css &mdash; cssutils v0.9.6b2 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6b1',
+        VERSION:     '0.9.6b2',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.6b1 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6b2 documentation" href="../index.html" />
     <link rel="next" title="package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6b1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6b2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -1585,17 +1585,10 @@ prio
 
 <dl class="method">
 <dt id="cssutils.css.Property.validate">
-<tt class="descname">validate</tt><big>(</big><em>profiles=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate value against <cite>profiles</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>profiles</em> &#8211; A list of profile names used for validating. If no <cite>profiles</cite>
-is given <tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span></tt> is used</td>
-</tr>
-</tbody>
-</table>
+<tt class="descname">validate</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.Property.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate value against <cite>profiles</cite> which are checked dynamically.
+properties in e.g. &#64;font-face rules are checked against 
+<tt class="docutils literal"><span class="pre">cssutils.profile.CSS3_FONT_FACE</span></tt> only.</p>
 <p>For each of the following cases a message is reported:</p>
 <ul>
 <li><dl class="first docutils">
@@ -2064,7 +2057,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6b1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6b2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

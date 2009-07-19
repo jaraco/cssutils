@@ -7,6 +7,22 @@
 ===============
 serializing CSS
 ===============
+To serialize any stylesheet use::
+
+	print sheet.cssText
+	
+Also most other objects have a similar property which contains the *text* content of each object. Some use a slightly different name (e.g. ``selectorText``) but all use the global serializer::
+
+	>>> sheet = cssutils.parseString('a, b { color: green }')
+	>>> print sheet.cssRules[0].cssText
+	a, b {
+	    color: green
+	    }
+	>>> print sheet.cssRules[0].selectorText
+	a, b
+	>>> print sheet.cssRules[0].selectorList[1].selectorText
+	b
+
 
 ``CSSSerializer``
 =================
@@ -18,6 +34,8 @@ To set a new serializer, use::
 
     sheet = CSSStyleSheet()
     sheet.setSerializer(newser)
+    # uses the new serializer:
+    print sheet.cssText 
 
 You may also set :attr:`cssutils.ser` directly but the above method is the preferred one.
 
