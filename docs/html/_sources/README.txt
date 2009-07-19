@@ -16,6 +16,8 @@ Based upon and partly implementing the following specifications :
     General CSS rules and properties are defined here
 `CSS3 Module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
     Used in parts since cssutils 0.9.4. cssutils tries to use the features from CSS 2.1 and CSS 3 with preference to CSS3 but as this is not final yet some parts are from CSS 2.1
+`CSS Fonts Module Level 3 <http://www.w3.org/TR/css3-fonts/>`__
+    Added changes and additional stuff (since cssutils v0.9.6)
 `MediaQueries <http://www.w3.org/TR/css3-mediaqueries/>`__
     MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
 `Namespaces <http://dev.w3.org/csswg/css3-namespace/>`__

@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>﻿CHANGELOG &mdash; cssutils v0.9.6b1 documentation</title>
+    <title>﻿CHANGELOG &mdash; cssutils v0.9.6b2 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.6b1',
+        VERSION:     '0.9.6b2',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.6b1 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.6b2 documentation" href="index.html" />
     <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6b1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.6b2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,6 +53,10 @@
 <div class="section" id="known-issues">
 <h2>known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
 <ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">font-family:</span> <span class="pre">x</span> <span class="pre">y;</span></tt> (family names with spaces in them but not quoted) do not work yet in cssutils. Simply quote these just as the spec would like to have it too: <tt class="docutils literal"><span class="pre">font-family:</span> <span class="pre">&quot;x</span> <span class="pre">y&quot;;</span></tt></p>
+</li>
+<li><p class="first">cssutils currently permits negative lengh values for the <tt class="docutils literal"><span class="pre">font-size</span></tt> property which are illegal.</p>
+</li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">CSSStyleSheet.cssText</span></tt> is a serialized byte string (<strong>not</strong> unicode string) currently. This may change in the future.</p>
 </li>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">seq</span></tt> attribute of most classes does not hinder you to add invalid items. It will probably become readonly. <strong>Never write to it!</strong></p>
@@ -78,7 +82,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </li>
 <li><p class="first">Some methods of <tt class="docutils literal"><span class="pre">css.CSSPrimitiveValue</span></tt> and subclasses <tt class="docutils literal"><span class="pre">Rect</span></tt>, <tt class="docutils literal"><span class="pre">Counter</span></tt> and <tt class="docutils literal"><span class="pre">RGBColor</span></tt> are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of <tt class="docutils literal"><span class="pre">CSSValue</span></tt>, <tt class="docutils literal"><span class="pre">CSSValueList</span></tt>, and <tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt> may be completely replaced/refactored with suggestions from CSSOM.</p>
 </li>
-<li><p class="first">handling of comments does probable not work for all cases</p>
+<li><p class="first">handling of comments does probably not work for all cases</p>
 </li>
 </ul>
 </div>
@@ -86,8 +90,26 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>HEAD</p>
 <dl class="docutils">
+<dt>HEAD</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt><strong>FEATURE</strong>: Added details from module Fonts <a class="reference external" href="http://www.w3.org/TR/css3-fonts/">http://www.w3.org/TR/css3-fonts/</a></dt>
+<dd><ul class="first last simple">
+<li>new properties: <tt class="docutils literal"><span class="pre">font-stretch</span></tt>, <tt class="docutils literal"><span class="pre">font-size-adjust</span></tt></li>
+<li>TODO: fix <tt class="docutils literal"><span class="pre">font-family:</span> <span class="pre">b</span>&nbsp; <span class="pre">b;</span></tt></li>
+<li>added tests for related properties and the new profile</li>
+<li>&#64;font-face rules use a different profile for validation now which uses the defined properties only (TODO: complete)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">API CHANGE (minor): Removed parameter <tt class="docutils literal"><span class="pre">profiles</span></tt> from  <tt class="docutils literal"><span class="pre">cssutils.css.Property.validate()</span></tt>. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are &#64;font-face (TODO: and &#64;page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to <tt class="docutils literal"><span class="pre">properties[Profiles.CSS3_FONT_FACE]</span></tt> in module <tt class="docutils literal"><span class="pre">cssutils.profiles</span></tt> and reregister that profile.</p>
+</li>
+<li><p class="first">BUGFIX: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.parentRule</span></tt> was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.</p>
+</li>
+</ul>
+</dd>
 <dt>0.9.6b1 090609</dt>
 <dd><ul class="first simple">
 <li>BUGFIX: Fixed <tt class="docutils literal"><span class="pre">CSSPageRule.selectorText</span> <span class="pre">=</span> <span class="pre">''</span></tt> which does reset the selector now</li>
@@ -99,7 +121,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <dd><ul class="first last simple">
 <li>exception messages sometimes do have a different format in Jython and Python (but also between Python versions &gt;= 2.5 and &lt; 2.4 ...)</li>
 <li>Jython&#8217;s <tt class="docutils literal"><span class="pre">xml.dom.Exception</span></tt> misses attribute <tt class="docutils literal"><span class="pre">args</span></tt> it seems</li>
-<li><strong>UPDATE: Problem was fixed in Jython 2.5RC4.</strong> Jython&#8217;s <tt class="docutils literal"><span class="pre">urllib.path2url</span></tt> seems broken, added a workaround which is kind of naive and tested on Windows only yet.</li>
+<li><strong>UPDATE: Problem was fixed in Jython 2.5RC4.</strong> (before Jython&#8217;s <tt class="docutils literal"><span class="pre">urllib.path2url</span></tt> was broken.)</li>
 </ul>
 </dd>
 </dl>
@@ -593,7 +615,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-06-06</span> <span class="pre">21:43:10</span> <span class="pre">+0200</span> <span class="pre">(Sa,</span> <span class="pre">06</span> <span class="pre">Jun</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1762</span> <span class="pre">2009-06-06</span> <span class="pre">19:43:10Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-06-09</span> <span class="pre">20:31:56</span> <span class="pre">+0200</span> <span class="pre">(Di,</span> <span class="pre">09</span> <span class="pre">Jun</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1768</span> <span class="pre">2009-06-09</span> <span class="pre">18:31:56Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -1988,7 +2010,7 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6b1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.6b2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
