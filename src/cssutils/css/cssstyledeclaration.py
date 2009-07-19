@@ -275,7 +275,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                                        semicolon=True)
             if self._tokenvalue(tokens[-1]) == u';':
                 tokens.pop()
-            property = Property()
+            property = Property(_parent=self)
             property.cssText = tokens
             if property.wellformed:
                 seq.append(property, 'Property')

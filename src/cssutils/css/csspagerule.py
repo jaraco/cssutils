@@ -192,7 +192,7 @@ class CSSPageRule(cssrule.CSSRule):
                 
             wellformed, newselectorseq = self.__parseSelectorText(selectortokens)
 
-            newstyle = CSSStyleDeclaration()
+            newstyle = CSSStyleDeclaration(parentRule=self)
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
                 wellformed = False

@@ -121,7 +121,7 @@ class CSSStyleRule(cssrule.CSSRule):
                                                          namespaces),
                                            parentRule=self)
 
-            newstyle = CSSStyleDeclaration()
+            newstyle = CSSStyleDeclaration(parentRule=self)
             if not styletokens:
                 wellformed = False
                 self._log.error(

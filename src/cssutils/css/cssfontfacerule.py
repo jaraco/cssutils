@@ -1,4 +1,7 @@
 """CSSFontFaceRule implements DOM Level 2 CSS CSSFontFaceRule.
+
+From cssutils 0.9.6 additions from CSS Fonts Module Level 3 are
+added http://www.w3.org/TR/css3-fonts/.
 """
 __all__ = ['CSSFontFaceRule']
 __docformat__ = 'restructuredtext'
@@ -112,7 +115,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self._log.error(u'CSSFontFaceRule: Trailing content found.',
                                 token=nonetoken)
 
-            newstyle = CSSStyleDeclaration()
+            newstyle = CSSStyleDeclaration(parentRule=self)
             if 'EOF' == typ:
                 # add again as style needs it
                 styletokens.append(braceorEOFtoken)
