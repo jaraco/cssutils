@@ -85,9 +85,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
     def test_removeProfile(self):
         "Profiles.removeProfile()"
         p = cssutils.profiles.Profiles()
-        self.assertEqual(4, len(p.profiles))
+        self.assertEqual(5, len(p.profiles))
         p.removeProfile(p.CSS_LEVEL_2)
-        self.assertEqual(3, len(p.profiles))
+        self.assertEqual(4, len(p.profiles))
         p.removeProfile(all=True)
         self.assertEqual(0, len(p.profiles))
 
@@ -130,7 +130,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
         "CSS Color Module Level 3"
         CSS2 = [cssutils.profile.CSS_LEVEL_2]
         CM3 = [cssutils.profile.CSS3_COLOR]
+        FM3 = [cssutils.profile.CSS3_FONTS]
         CSS2_CM3 = [CM3[0], CSS2[0]]
+        CSS2_FM3 = [FM3[0], CSS2[0]]
         
         # (propname, propvalue): (valid, validprofile)
         namedcolors = '''transparent, orange,
@@ -151,7 +153,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         tests = {
             # name, values: valid, matching, profile
             
-            # PROPERTY background-position
+            # background-position
             ('background-position', ('inherit',
                                      '0',
                                      '1%',
@@ -176,66 +178,119 @@ class ProfilesTestCase(basetest.BaseTestCase):
                                      'top 0'
                                      )): (False, False, CSS2),
              
-
-            # PROPERTY color
-            ('color', 'inherit'): (True, True, CSS2),
-            ('color', 'currentcolor'): (True, True, CM3),
-            # names
-            ('color', 'x'): (False, False, CSS2_CM3),
-            ('color', 'black'): (True, True, CSS2),
-            # hex
-            ('color', '#'): (False,False, CSS2_CM3),
-            ('color', '#0'): (False,False, CSS2_CM3),
-            ('color', '#00'): (False,False, CSS2_CM3),
-            ('color', '#0000'): (False,False, CSS2_CM3),
-            ('color', '#00000'): (False,False, CSS2_CM3),
-            ('color', '#0000000'): (False,False, CSS2_CM3),
-            ('color', '#00j'): (False,False, CSS2_CM3),
-            ('color', '#j00000'): (False,False, CSS2_CM3),
-            ('color', '#000'): (True, True, CSS2),
-            ('color', '#000000'): (True, True, CSS2),
-            # rgb
-            ('color', 'rgb(0,1,1)'): (True, True, CSS2),
-            ('color', 'rgb( 0 , 1 , 1 )'): (True, True, CSS2),
+            # color
+            ('color', ('x',
+                       '#',
+                       '#0',
+                       '#00',
+                       '#0000',
+                       '#00000',
+                       '#0000000',
+                       '#00j',
+                       '#j00000',
+                       'rgb(0.0,1,1)',
+                       'rgb(0)',
+                       'rgb(0, 1)',
+                       'rgb(0, 1, 1, 1)',
+                       'rgb(0, 1, 0%)',
+                       'rgba(0)',
+                       'rgba(0, 1, 1.0, 1)',
+                       'rgba(0, 1)',
+                       'rgba(0, 1, 1, 1, 1)',
+                       'rgba(100%, 0%, 0%, 1%)',
+                       'rgba(100%, 0%, 0, 1)',
+                       'hsl(1.5,1%,1%)',
+                       'hsl(1,1,1%)',
+                       'hsl(1,1%,1)',
+                       'hsla(1.5,1%,1%, 1)',
+                       'hsla(1,1,1%, 1)',
+                       'hsla(1,1%,1, 1)',
+                       'hsla(1,1%,1%, 1%)'
+                       )): (False,False, CSS2_CM3),
+            ('color', ('inherit',
+                       'black',
+                       '#000',
+                       '#000000',
+                       'rgb(0,1,1)',
+                       'rgb( 0 , 1 , 1 )',
+                       'rgb(-10,555,1)',
+                       'rgb(100%, 1.5%, 0%)',
+                       'rgb(150%, -20%, 0%)',
+                       )): (True, True, CSS2),
+            ('color', ('currentcolor',
+                       'rgba(1,1,1,1)',
+                       'rgba( 1 , 1 , 1 , 1 )',
+                       'rgba(100%, 0%, 0%, 1)',
+                       'hsl(1,1%,1%)',
+                       'hsl( 1 , 1% , 1% )',
+                       'hsl(-1000,555.5%,-61.5%)',
+                       'hsla(1,1%,1%,1)',
+                       'hsla( 1, 1% , 1% , 1 )',
+                       'hsla(-1000,555.5%,-61.5%, 0.5)'                      
+                       )): (True, True, CM3),
             # TODO?:
             #('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'): (True, True, CSS2),
-            ('color', 'rgb(-10,555,1)'): (True, True, CSS2), # should be clipped
-            ('color', 'rgb(100%, 1.5%, 0%)'): (True, True, CSS2),
-            ('color', 'rgb(150%, -20%, 0%)'): (True, True, CSS2), # should be clipped
-            ('color', 'rgb(0.0,1,1)'): (False,False, CSS2_CM3), # int!
-            ('color', 'rgb(0)'): (False,False, CSS2_CM3),
-            ('color', 'rgb(0, 1)'): (False,False, CSS2_CM3),
-            ('color', 'rgb(0, 1, 1, 1)'): (False,False, CSS2_CM3),
-            ('color', 'rgb(0, 1, 0%)'): (False, False, CSS2_CM3), # mix
-            # rgba
-            ('color', 'rgba(1,1,1,1)'): (True, True, CM3),
-            ('color', 'rgba( 1 , 1 , 1 , 1 )'): (True, True, CM3),
-            ('color', 'rgba(100%, 0%, 0%, 1)'): (True, True, CM3),
-            ('color', 'rgba(0, 1, 1.0, 1)'): (False, False, CSS2_CM3), # int
-            ('color', 'rgba(0)'): (False, False, CSS2_CM3),
-            ('color', 'rgba(0, 1)'): (False, False, CSS2_CM3),
-            ('color', 'rgba(0, 1, 1, 1, 1)'): (False, False, CSS2_CM3),
-            ('color', 'rgba(100%, 0%, 0%, 1%)'): (False, False, CSS2_CM3),
-            ('color', 'rgba(100%, 0%, 0, 1)'): (False, False, CSS2_CM3), # mix
-            # hsl
-            ('color', 'hsl(1,1%,1%)'): (True, True, CM3),
-            ('color', 'hsl( 1 , 1% , 1% )'): (True, True, CM3),
-            ('color', 'hsl(-1000,555.5%,-61.5%)'): (True, True, CM3),
-            ('color', 'hsl(1.5,1%,1%)'): (False, False, CSS2_CM3), # int
-            ('color', 'hsl(1,1,1%)'): (False, False, CSS2_CM3), # %
-            ('color', 'hsl(1,1%,1)'): (False, False, CSS2_CM3), # %
-            #hsla
-            ('color', 'hsla(1,1%,1%,1)'): (True, True, CM3),
-            ('color', 'hsla( 1, 1% , 1% , 1 )'): (True, True, CM3),
-            ('color', 'hsla(-1000,555.5%,-61.5%, 0.5)'): (True, True, CM3),
-            ('color', 'hsla(1.5,1%,1%, 1)'): (False, False, CSS2_CM3), # int
-            ('color', 'hsla(1,1,1%, 1)'): (False, False, CSS2_CM3), # %
-            ('color', 'hsla(1,1%,1, 1)'): (False, False, CSS2_CM3), # %
-            ('color', 'hsla(1,1%,1%, 1%)'): (False, False, CSS2_CM3), # %
 
-            # PROPERTY content
+            # content
             ('content', ('none', 
-                         'normal')): (True, True, CSS2),
+                         'normal',
+                         '""',
+                         "'x'",
+                         )): (True, True, CSS2),
+            
+            # FONTS
+            ('font-family', (
+                             )): (False, False, CSS2), #CSS2_FM3),
+                             
+            ('font-family', ('inherit',
+                             'a, b',
+                             'a,b,c',
+                             'a, "b", c',
+                             '"a", b, "c"',
+                             '"a", "b", "c"',
+                             '"x y"',
+                             'serif',
+                             '"serif"', # valid but CSS2: font with name serif, CSS3: same as `serif`
+                             #TODO: 'a  b', # valid: b b
+                             #TODO: 'a, b   b, d', # valid: b b
+                             )): (True, True, CSS2),
+
+            ('font-weight', ('normal', 'bold', 'bolder', 'lighter', 'inherit', 
+                             '100', '200', '300', '400', '500', '600', '700', '800', '900'
+                             )): (True, True, CSS2),
+
+            ('font-stretch', ('normal', 'wider', 'narrower', 'ultra-condensed',
+                              'extra-condensed', 'condensed', 'semi-condensed',
+                              'semi-expanded', 'expanded', 'extra-expanded',
+                              'ultra-expanded', 'inherit'                          
+                             )): (True, True, FM3),
+
+            ('font-style', ('normal', 'italic', 'oblique', 'inherit'
+                             )): (True, True, CSS2),
+
+            ('font-variant', ('normal', 'small-caps', 'inherit'
+                             )): (True, True, CSS2),
+            ('font-size', (#TODO: '-1em'
+                           )): (False, False, CSS2),
+            ('font-size', ('xx-small', 'x-small', 'small', 'medium', 'large', 
+                           'x-large', 'xx-large', 'larger', 'smaller', 
+                           '1em', '1%', 'inherit'
+                           )): (True, True, CSS2),
+
+            ('font-size-adjust', ('1.0', 
+                                  'none', 'inherit'
+                                  )): (True, True, FM3),
+
+            ('font', ('italic small-caps bold 1px/3 a, "b", serif',
+                      '12pt/14pt sans-serif',
+                      '80% sans-serif',
+                      'x-large/110% "new century schoolbook", serif',
+                      'bold italic large Palatino, serif',
+                      'normal small-caps 120%/120% fantasy',                     
+                      'oblique 12pt "Helvetica Nue", serif', 
+                      'caption', 'icon', 'menu', 'message-box', 'small-caption',
+                      'status-bar', 'inherit'
+                      )): (True, True, CSS2),
             
             # PROPERTY opacity
             ('opacity', ('inherit',
