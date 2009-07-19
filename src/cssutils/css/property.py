@@ -363,13 +363,11 @@ class Property(cssutils.util.Base):
     literalpriority = property(lambda self: self._literalpriority,
         doc="Readonly literal (not normalized) priority of this property")
 
-    def validate(self, profiles=None):
-        """Validate value against `profiles`.
+    def validate(self):
+        """Validate value against `profiles` which are checked dynamically.
+        properties in e.g. @font-face rules are checked against 
+        ``cssutils.profile.CSS3_FONT_FACE`` only. 
         
-        :param profiles:
-            A list of profile names used for validating. If no `profiles`
-            is given ``cssutils.profile.defaultProfiles`` is used
-            
         For each of the following cases a message is reported:
         
         - INVALID (so the property is known but not valid)
@@ -423,6 +421,16 @@ class Property(cssutils.util.Base):
             DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]            
         """
         valid = False
+        
+        profiles = None
+        try:
+            # if @font-face use that profile
+            rule = self._parent.parentRule
+            if rule.type == rule.FONT_FACE_RULE:
+                profiles = [cssutils.profile.CSS3_FONT_FACE]
+            #TODO: same for @page
+        except AttributeError:
+            pass
         
         if self.name and self.value:
 
