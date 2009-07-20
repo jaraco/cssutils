@@ -228,6 +228,8 @@ class CSSValue(cssutils.util._NewBase):
                             return cssutils.helper.string(item.value)
                         elif self._prods.URI == item.type:
                             return cssutils.helper.uri(item.value)
+                        elif self._prods.FUNCTION == item.type:
+                            return item.value.cssText
                         else:
                             return item.value
                     
