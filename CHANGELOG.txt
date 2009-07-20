@@ -4,10 +4,6 @@ __________
 
 known issues
 ============
-- ``font-family: x y;`` (family names with spaces in them but not quoted) do not work yet in cssutils. Simply quote these just as the spec would like to have it too: ``font-family: "x y";``
-
-- cssutils currently permits negative lengh values for the ``font-size`` property which are illegal.
-
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
 
 - The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
@@ -49,14 +45,15 @@ HEAD
             - ``src`` property new
             - **TODO**: ``unicode-range`` property new
 
-        + **TODO**: fix ``font-family: b  b;``
-
-
     - API CHANGE (minor): Removed parameter ``profiles`` from  ``cssutils.css.Property.validate()``. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are @font-face (TODO: and @page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to ``properties[Profiles.CSS3_FONT_FACE]`` in module ``cssutils.profiles`` and reregister that profile.
 
     - API CHANGE (minor): Added ``Property.parentStyle`` replacing the private ``._parent`` attribute used until now
 
     + **BUGFIX**: Parsing of CSSValues with unknown function names with a specific lenght of 4 or 7 chars would result in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.
+
+    + BUGFIX: Fixed validation problems:
+        - ``font-family: a   b`` (values with spaces in names without being quoted) are parsed now without emitting an ERROR. These are indeed valid but discouraged and you should use quotes (more than one space is compacted to a single space anyway so rather complicated without quotes)
+        - negative lengths for the ``font-size`` property are now properly reported as ERRORs
 
     + BUGFIX: ``CSSStyleDeclaration.parentRule`` was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.
 
@@ -69,8 +66,6 @@ HEAD
     - IMPROVEMENT: Jython 2.5 (from RC4) runs all tests now but a few changes had to be done:
         - exception messages sometimes do have a different format in Jython and Python (but also between Python versions >= 2.5 and < 2.4 ...)
         - Jython's ``xml.dom.Exception`` misses attribute ``args`` it seems
-        - **UPDATE: Problem was fixed in Jython 2.5RC4.** (before Jython's ``urllib.path2url`` was broken.)
-
 
 0.9.6a4 090509
     - **API CHANGE**: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use ``str(e)`` on any raised xml.dom.Exception ``e``. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as ``e.line, e.col``.

@@ -1516,7 +1516,7 @@ readonly.</li>
 <dl class="class">
 <dt id="cssutils.css.Property">
 <em class="property">
-class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>_mediaQuery=False</em>, <em>_parent=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
+class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>_mediaQuery=False</em>, <em>parentStyle=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
 <dd><p>A CSS property in a StyleDeclaration of a CSSStyleRule (cssutils).</p>
 <p>Format:</p>
 <div class="highlight-python"><pre>property = name
@@ -1572,6 +1572,11 @@ prio
 <dt id="cssutils.css.Property.name">
 <tt class="descname">name</tt><a class="headerlink" href="#cssutils.css.Property.name" title="Permalink to this definition">¶</a></dt>
 <dd>Name of this property.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.parentStyle">
+<tt class="descname">parentStyle</tt><a class="headerlink" href="#cssutils.css.Property.parentStyle" title="Permalink to this definition">¶</a></dt>
+<dd>The CSSStyledeclaration that contains this Property or None if this Property is not attached to a CSSStyledeclaration.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Property.priority">
