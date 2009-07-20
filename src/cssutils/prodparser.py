@@ -629,8 +629,8 @@ class PreDef(object):
     @staticmethod
     def hexcolor(toStore=None, toSeq=None, nextSor=False):
         return Prod(name='HEX color',
-                    match=lambda t, v: t == PreDef.types.HASH and
-                                       len(v) == 4 or len(v) == 7,
+                    match=lambda t, v: t == PreDef.types.HASH and (
+                                       len(v) == 4 or len(v) == 7),
                     toStore=toStore,
                     toSeq=toSeq,
                     nextSor=nextSor
