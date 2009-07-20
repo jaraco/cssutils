@@ -530,6 +530,8 @@ properties[Profiles.CSS3_COLOR] = {
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
     'family-name': r'{string}|{ident}',
+    #TODO: 
+    'font-face-name': 'local\({w}{ident}{w}\)',
     'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)'
     }
 properties[Profiles.CSS3_FONTS] = {
@@ -541,8 +543,8 @@ properties[Profiles.CSS3_FONT_FACE] = {
     'font-style': r'normal|italic|oblique',
     'font-weight': r'normal|bold|[1-9]00',
     'font-stretch': r'{font-stretch-names}',                                       
-    # [ <uri> [format(<string> [, <string>]*)] | <font-face-name> ]
-    #'src': r'{uri}{w}(format\({w}{string}{w}(,{w}{string}{w})*\)))?|{font-face-name})'#(,{uri}(format({string}(,{string}]*)) | {font-face-name})* ',
+    'src': r'({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name})({w},{w}({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name}))*',
+    #'unicode-range': 'TODO'
     }
 
 
