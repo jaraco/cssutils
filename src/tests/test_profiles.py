@@ -252,8 +252,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
                              '"x y"',
                              'serif',
                              '"serif"', # valid but CSS2: font with name serif, CSS3: same as `serif`
-                             #TODO: 'a  b', # valid: b b
-                             #TODO: 'a, b   b, d', # valid: b b
+                             'a  b', # should use quotes but valid
+                             'a, b   b, d',
                              )): (True, True, CSS2),
 
             ('font-weight', ('normal', 'bold', 'bolder', 'lighter', 'inherit', 
@@ -271,7 +271,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
 
             ('font-variant', ('normal', 'small-caps', 'inherit'
                              )): (True, True, CSS2),
-            ('font-size', (#TODO: '-1em'
+            ('font-size', ('-1em'
                            )): (False, False, CSS2),
             ('font-size', ('xx-small', 'x-small', 'small', 'medium', 'large', 
                            'x-large', 'xx-large', 'larger', 'smaller', 
