@@ -37,13 +37,12 @@ development version
 -----
 
 HEAD
-    - **FEATURE**: Added details from module Fonts http://www.w3.org/TR/css3-fonts/
+    - **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
         + new properties: ``font-stretch``, ``font-size-adjust``
-        + added tests for related properties and the new profile
-        + @font-face rules use a different profile for validation now which uses the defined properties only
-            - ``font-family`` property redefined
-            - ``src`` property new
-            - **TODO**: ``unicode-range`` property new
+        + @font-face rules use a different profile for validation now which uses the defined properties only:
+            - ``font-family font-style font-weight`` properties redefined
+            - added ``src`` and ``unicode-range`` properties
+        + Added ``CSSFontFaceRule.valid``. A @font-face rule is valid if all font descriptions properties are valid and properties ``font-family`` and ``src`` are set.
 
     - API CHANGE (minor): Removed parameter ``profiles`` from  ``cssutils.css.Property.validate()``. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are @font-face (TODO: and @page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to ``properties[Profiles.CSS3_FONT_FACE]`` in module ``cssutils.profiles`` and reregister that profile.
 
@@ -57,6 +56,11 @@ HEAD
 
     + BUGFIX: ``CSSStyleDeclaration.parentRule`` was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.
 
+    - IMPROVEMENT (minor): cssutils sets the HTTP header ``User-Agent`` now when fetching sheets over HTTP (with e.g. ``cssutils.parseUrl``).
+
+    + CHANGES:
+        - Refactored predefined ``Prod`` objects used for parsing of ``CSSValue``. Also added ``Predef.unicode_range`` and renamed ``CHAR`` to ``char``.
+        - Removed css3productions which were only used for tests only anyway and which were not up to date at all
 
 0.9.6b1 090609
     + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now
