@@ -509,7 +509,7 @@ macros[Profiles.CSS3_BOX] = {
     'overflow': macros[Profiles.CSS_LEVEL_2]['overflow']
     }
 properties[Profiles.CSS3_BOX] = {
-    'overflow': '{overflow}\s?{overflow}?|inherit',
+    'overflow': '{overflow}{w}{overflow}?|inherit',
     'overflow-x': '{overflow}|inherit',
     'overflow-y': '{overflow}|inherit'
     }
@@ -531,22 +531,22 @@ properties[Profiles.CSS3_COLOR] = {
 
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
-    'family-name': r'{string}|{ident}',
-    #TODO: 
+    'family-name': r'{string}|{ident}', # but STRING is effectively an IDENT??? 
     'font-face-name': 'local\({w}{ident}{w}\)',
-    'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)'
+    'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
+    'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'
     }
 properties[Profiles.CSS3_FONTS] = {
-    'font-stretch': r'normal|wider|narrower|{font-stretch-names}|inherit',
     'font-size-adjust': r'{number}|none|inherit',
+    'font-stretch': r'normal|wider|narrower|{font-stretch-names}|inherit'
     }
 properties[Profiles.CSS3_FONT_FACE] = {
     'font-family': '{family-name}',
+    'font-stretch': r'{font-stretch-names}',                                       
     'font-style': r'normal|italic|oblique',
     'font-weight': r'normal|bold|[1-9]00',
-    'font-stretch': r'{font-stretch-names}',                                       
     'src': r'({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name})({w},{w}({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name}))*',
-    #'unicode-range': 'TODO'
+    'unicode-range': '{unicode-range}({w},{w}{unicode-range})*'
     }
 
 
