@@ -156,19 +156,22 @@ class CSSValue(cssutils.util._NewBase):
                 item = seq[i]
                 if item.type == self._prods.S:
                     pass
-                elif item.value == u',' and item.type not in (self._prods.URI, self._prods.STRING):
-                    # counts as a single one
+
+                elif (item.value, item.type) == (u',', 'operator'):
+                    # , separared counts as a single STRING for now
+                    # URI or STRING value might be a single CHAR too!
                     newseq.appendItem(item)
-                    if firstvalue:
-                        # may be IDENT or STRING but with , it is always STRING
-                        firstvalue = firstvalue[0], 'STRING'
-                    # each comma separated list counts as a single one only
                     count -= 1
+                    if firstvalue:
+                        # list of IDENTs is handled as STRING!
+                        if firstvalue[1] == self._prods.IDENT:
+                            firstvalue = firstvalue[0], 'STRING'
+                    
                 elif item.value == u'/':
-                    # counts as a single one
+                    # / separated items count as one
                     newseq.appendItem(item)
                 
-                elif item.value == u'+' or item.value == u'-':
+                elif item.value == u'-' or item.value == u'+':
                     # combine +- and following number or other
                     i += 1
                     try:
@@ -257,7 +260,8 @@ class CSSValue(cssutils.util._NewBase):
                                          self._prods.NUMBER,
                                          self._prods.PERCENTAGE,
                                          self._prods.STRING,
-                                         self._prods.URI):
+                                         self._prods.URI,
+                                         self._prods.UNICODE_RANGE):
                             if nexttocommalist:
                                 # wait until complete
                                 commalist.append(itemValue(item))
@@ -357,6 +361,7 @@ class CSSPrimitiveValue(CSSValue):
     CSS_RGBCOLOR = 25
     # NOT OFFICIAL:
     CSS_RGBACOLOR = 26
+    CSS_UNICODE_RANGE = 27
 
     _floattypes = (CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS,
                    CSS_PX, CSS_CM, CSS_MM, CSS_IN, CSS_PT, CSS_PC,
@@ -430,9 +435,10 @@ class CSSPrimitiveValue(CSSValue):
                   'CSS_MS', 'CSS_S',
                   'CSS_HZ', 'CSS_KHZ',
                   'CSS_DIMENSION', 
-                  'CSS_STRING', 'CSS_URI', 'CSS_IDENT', 
+                  'CSS_STRING', 'CSS_URI', 'CSS_IDENT',
                   'CSS_ATTR', 'CSS_COUNTER', 'CSS_RECT',
                   'CSS_RGBCOLOR', 'CSS_RGBACOLOR',
+                  'CSS_UNICODE_RANGE'
                   ]
 
     _reNumDim = re.compile(ur'([+-]?\d*\.\d+|[+-]?\d+)(.*)$', re.I| re.U|re.X)
@@ -468,6 +474,7 @@ class CSSPrimitiveValue(CSSValue):
         __types.NUMBER: 'CSS_NUMBER',
         __types.PERCENTAGE: 'CSS_PERCENTAGE',
         __types.STRING: 'CSS_STRING',
+        __types.UNICODE_RANGE: 'CSS_UNICODE_RANGE',
         __types.URI: 'CSS_URI',
         __types.IDENT: 'CSS_IDENT',
         __types.HASH: 'CSS_RGBCOLOR',
@@ -478,7 +485,6 @@ class CSSPrimitiveValue(CSSValue):
     def __set_primitiveType(self):
         """primitiveType is readonly but is set lazy if accessed"""
         # TODO: check unary and font-family STRING a, b, "c"
-        
         val, type_ = self._value
         # try get by type_
         pt = self.__unitbytype.get(type_, 'CSS_UNKNOWN')
