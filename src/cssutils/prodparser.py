@@ -622,8 +622,9 @@ class PreDef(object):
     
     @staticmethod
     def unicode_range(nextSor=False):
-        "u+123456-abc"
+        "u+123456-abc normalized to lower `u`"
         return Prod(name='unicode-range',
                     match=lambda t, v: t == PreDef.types.UNICODE_RANGE,
+                    toSeq=lambda t, tokens: (t[0], t[1].lower()),
                     nextSor=nextSor
                     )
