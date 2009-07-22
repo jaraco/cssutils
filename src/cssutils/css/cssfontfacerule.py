@@ -24,6 +24,11 @@ class CSSFontFaceRule(cssrule.CSSRule):
           : FONT_FACE_SYM S*
             '{' S* declaration [ ';' S* declaration ]* '}' S*
           ;
+          
+    cssutils uses a :class:`~cssutils.css.CSSStyleDeclaration`  to
+    represent the font descriptions. For validation a specific profile
+    is used though were some properties have other valid values than
+    when used in e.g. a :class:`~cssutils.css.CSSStyleRule`.
     """
     def __init__(self, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
@@ -31,7 +36,8 @@ class CSSFontFaceRule(cssrule.CSSRule):
         If readonly allows setting of properties in constructor only.
 
         :param style:
-            CSSStyleDeclaration for this CSSStyleRule
+            CSSStyleDeclaration used to hold any font descriptions 
+            for this CSSFontFaceRule
         """
         super(CSSFontFaceRule, self).__init__(parentRule=parentRule, 
                                               parentStyleSheet=parentStyleSheet)
@@ -47,8 +53,9 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self.__class__.__name__, self.style.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object style=%r at 0x%x>" % (
-                self.__class__.__name__, self.style.cssText, id(self))
+        return "<cssutils.css.%s object style=%r valid=%r at 0x%x>" % (
+                self.__class__.__name__, self.style.cssText, self.valid, 
+                id(self))
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -147,5 +154,20 @@ class CSSFontFaceRule(cssrule.CSSRule):
                     doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
 
+    def _getValid(self):
+        needed = ['font-family', 'src']
+        for p in self.style.getProperties(all=True):
+            if not p.valid:
+                return False
+            try:
+                needed.remove(p.name)
+            except ValueError:
+                pass
+        return not bool(needed)
+
+    valid = property(_getValid, doc='CSSFontFace is valid if properties '
+                     '`font-family` and `src` are set and all properties are '
+                     'valid.')
+    
     # constant but needed:
     wellformed = property(lambda self: True)

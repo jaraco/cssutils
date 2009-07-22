@@ -439,7 +439,7 @@ ex2|SEL4, a, ex2|SELSR {
                '@import "x";',
                '@namespace p "u";',
                '@page {\n    left: 0\n    }',
-               '@font-face {\n    color: red\n    }',
+               '@font-face {\n    src: local(x)\n    }',
                '@media all {\n    a {\n        color: red\n        }\n    }',
                'a {\n    color: green\n    }',
                '/*comment*/',

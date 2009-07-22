@@ -55,15 +55,23 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_cssText(self):
         "CSSFontFaceRule.cssText"
         tests = {
-            u'@font-face{margin:0;}': u'@font-face {\n    margin: 0\n    }',
-            u'@font-face  {  margin:0;  }': u'@font-face {\n    margin: 0\n    }',
-            u'@f\\ont\\-face{margin:0;}': u'@font-face {\n    margin: 0\n    }',
+            u'''@font-face {
+    font-family: x;
+    src: url(../fonts/LateefRegAAT.ttf) format("truetype-aat"), url(../fonts/LateefRegOT.ttf) format("opentype");
+    font-style: italic;
+    font-weight: 500;
+    font-stretch: condensed;
+    unicode-range: u+1-ff, u+111
+    }''': None,
+            u'@font-face{font-family: x;}': u'@font-face {\n    font-family: x\n    }',
+            u'@font-face  {  font-family: x;  }': u'@font-face {\n    font-family: x\n    }',
+            u'@f\\ont\\-face{font-family : x;}': u'@font-face {\n    font-family: x\n    }',
             # comments
-            u'@font-face/*1*//*2*/{margin:0;}':
-                u'@font-face /*1*/ /*2*/ {\n    margin: 0\n    }',
+            u'@font-face/*1*//*2*/{font-family: x;}':
+                u'@font-face /*1*/ /*2*/ {\n    font-family: x\n    }',
             # WS
-            u'@font-face\n\t\f {\n\t\f margin:0;\n\t\f }': 
-                u'@font-face {\n    margin: 0\n    }',
+            u'@font-face\n\t\f {\n\t\f font-family:x;\n\t\f }': 
+                u'@font-face {\n    font-family: x\n    }',
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
@@ -124,8 +132,8 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
                 u'', # no } and no content
             u'@font-face { ':
                 u'', # no } and no content
-            u'@font-face { color: red':
-                u'@font-face {\n    color: red\n    }', # no }
+            u'@font-face { font-family: x':
+                u'@font-face {\n    font-family: x\n    }', # no }
         }
         self.do_equal_p(tests) # parse
 
@@ -136,6 +144,25 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@font-fac {}': xml.dom.InvalidModificationErr,
             }
         self.do_raise_r(tests)
+
+    def test_valid(self):
+        "CSSFontFaceRule.valid"
+        r = cssutils.css.CSSFontFaceRule()
+        self.assertEqual(False, r.valid)
+        N = 'font-family: x; src: local(x);'
+        tests = {
+            True: (N,
+                   N + 'font-style: italic; font-weight: bold',
+                   ),
+            False: ('',
+                    'font-family: x, y; src: local(x);',
+                    N + 'font-style: inherit',
+                    N + 'invalid: 1')
+            }
+        for valid, testlist in tests.items():
+            for test in testlist:
+                r.style.cssText = test
+                self.assertEqual(valid, r.valid)
 
     def test_reprANDstr(self):
         "CSSFontFaceRule.__repr__(), .__str__()"
