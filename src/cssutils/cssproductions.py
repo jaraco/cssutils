@@ -17,7 +17,7 @@ __version__ = '$Id$'
 # a complete list of css3 macros
 MACROS = {
     'nonascii': r'[^\0-\177]',
-    'unicode': r'\\[0-9a-f]{1,6}(?:{nl}|{s})?',
+    'unicode': r'\\[0-9A-Fa-f]{1,6}(?:{nl}|{s})?',
     #'escape': r'{unicode}|\\[ -~\200-\777]',
     'escape': r'{unicode}|\\[^\n\r\f0-9a-f]',
     'nmstart': r'[_a-zA-Z]|{nonascii}|{escape}',
@@ -71,6 +71,7 @@ PRODUCTIONS = [
     ('S', r'{s}+'), # 1st in list of general productions
     ('URI', r'{U}{R}{L}\({w}({string}|{url}*){w}\)'),
     ('FUNCTION', r'{ident}\('),
+    ('UNICODE-RANGE', r'{U}\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'),
     ('IDENT', r'{ident}'),
     ('STRING', r'{string}'),
     ('INVALID', r'{invalid}'), # from CSS2.1
@@ -80,8 +81,9 @@ PRODUCTIONS = [
     ('NUMBER', r'{num}'),
     # valid ony at start so not checked everytime
     #('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
+    # checked specially if fullsheet is parsed
+    ('COMMENT', r'{comment}'), #r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
     ('ATKEYWORD', r'@{ident}'), # other keywords are done in the tokenizer
-    #('UNICODE-RANGE', r'[0-9A-F?]{1,6}(\-[0-9A-F]{1,6})?'), #???
     ('CDO', r'\<\!\-\-'),
     ('CDC', r'\-\-\>'),
     ('INCLUDES', '\~\='),
@@ -89,8 +91,6 @@ PRODUCTIONS = [
     ('PREFIXMATCH', r'\^\='),
     ('SUFFIXMATCH', r'\$\='),
     ('SUBSTRINGMATCH', r'\*\='),
-    # checked specially if fullsheet is parsed
-    ('COMMENT', r'{comment}'), #r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
     ('CHAR', r'[^"\']') # MUST always be last
     ]
 
