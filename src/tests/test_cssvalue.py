@@ -140,10 +140,40 @@ class CSSValueTestCase(basetest.BaseTestCase):
             u'+1.0': u'1',
             u'-1.0': u'-1',
             
-            # string
-            # escaped nl is removed during tokenizing
+            # string, escaped nl is removed during tokenizing
+            u'"x"': u'"x"',
+            u"'x'": u'"x"',
+            #ur''' "1\'2" ''': u'''"1'2"''', #???
+            #ur"'x\"'": ur'"x\""', #???
             ur'''"x\
 y"''': u'''"xy"''', 
+
+            # hash and rgb/a
+            u'#112234': u'#112234',
+            u'#112233': u'#123',
+            u'rgb(1,2,3)': u'rgb(1, 2, 3)',
+            u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
+            u'rgb(-1,+2,0)': u'rgb(-1, 2, 0)',
+            u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
+            u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
+            u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
+            
+            # FUNCTION 
+            u'f(-1,+2)': u'f(-1, 2)',
+            u'fun(  -1  ,  +2  )': u'fun(-1, 2)',
+            u'local( x )': u'local(x)',
+            u'url(y)  format( "x" ,  "y" )': u'url(y) format("x", "y")',
+
+            # IE expression
+            ur'E\xpression()': u'expression()',
+            ur'expression(-1 < +2)': u'expression(-1< + 2)',
+            ur'expression(document.width == "1")': u'expression(document.width=="1")',
+            u'alpha(opacity=80)': u'alpha(opacity=80)',
+            u'alpha( opacity = 80 , x=2  )': u'alpha(opacity=80, x=2)',
+
+            # unicode-range
+            'u+f': 'u+f',
+            'U+ABCdef': 'u+abcdef',
 
             # url
             'url(a)': 'url(a)',
@@ -158,19 +188,6 @@ y"''': u'''"xy"''',
             '''url("'")''': '''url("'")''',
             '''url('"')''': '''url("\\"")''',
             '''url("'")''': '''url("'")''',
-            
-            # RGBColor
-            u'#112234': u'#112234',
-            u'#112233': u'#123',
-            u'rgb(1,2,3)': u'rgb(1, 2, 3)',
-            u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
-            u'rgb(-1,+2,0)': u'rgb(-1, 2, 0)',
-            u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
-            u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
-            u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
-            
-            # FUNCTION 
-            u'f(-1,+2)': u'f(-1, 2)',
             
             # operator
             '1': '1',
@@ -206,14 +223,11 @@ y"''': u'''"xy"''',
             '1  /*a*/  ,  /*b*/  2': '1 /*a*/, /*b*/ 2',
             
             # list
-            'a b1,b2,b3': 'a b1, b2, b3',
-            
-            # IE expression
-            ur'E\xpression()': u'expression()',
-            ur'expression(-1 < +2)': u'expression(-1< + 2)',
-            ur'expression(document.width == "1")': u'expression(document.width=="1")',
-            u'alpha(opacity=80)': u'alpha(opacity=80)',
-            u'alpha( opacity = 80 , x=2  )': u'alpha(opacity=80, x=2)'
+            'a b1,b2 b2,b3,b4': 'a b1, b2 b2, b3, b4',
+            'a b1  ,   b2   b2  ,  b3  ,   b4': 'a b1, b2 b2, b3, b4',
+            'u+1  ,   u+2-5': 'u+1, u+2-5',
+            u'local( x ),  url(y)  format( "x" ,  "y" )': 
+                u'local(x), url(y) format("x", "y")',
             }
         self.do_equal_r(tests)
 
@@ -372,7 +386,11 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
     def test_CSS_STRING_AND_OTHER(self):
         "CSSPrimitiveValue.CSS_STRING .. CSS_RGBCOLOR"
         defs = [
-                (('""', "''", '"some thing"', "' A\\ND '"), 'CSS_STRING'),
+                (('""', "''", '"some thing"', "' A\\ND '",
+                  # comma separated lists are STRINGS FOR NOW!
+                  'a, b',
+                  '"a", "b"',
+                  ), 'CSS_STRING'),
                 (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
                 (('some', 'or_anth-er'), 'CSS_IDENT'),            
                 (('attr(a)', 'attr(b)'), 'CSS_ATTR'),
@@ -381,7 +399,11 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                 (('rgb(1,2,3)', 'rgb(10%, 20%, 30%)', '#123', '#123456'),
                  'CSS_RGBCOLOR'),
                 (('rgba(1,2,3,4)','rgba(10%, 20%, 30%, 40%)', ),
-                 'CSS_RGBACOLOR')]
+                 'CSS_RGBACOLOR'),
+                (('U+0', 'u+ffffff', 'u+000000-f',
+                  'u+0-f, U+ee-ff'), 'CSS_UNICODE_RANGE')
+                ]
+
         for examples, name in defs:
             for x in examples:
                 v = cssutils.css.CSSPrimitiveValue(x)
@@ -431,7 +453,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             '1khz': (v.CSS_KHZ, 1),
             '1khz': (v.CSS_HZ, 1000),
 
-            '1DIMENSION': (v.CSS_DIMENSION, 1)
+            '1DIMENSION': (v.CSS_DIMENSION, 1),            
             }
         for cssText in tests:
             v.cssText = cssText
