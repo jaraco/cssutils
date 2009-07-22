@@ -165,13 +165,29 @@ def parse(*a, **k):
     return parseFile(*a, **k)
 parse.__doc__ = CSSParser.parse.__doc__
 
+def parseStyle(cssText, encoding='utf-8'):
+    """Parse given `cssText` which is assumed to be the content of
+    a HTML style attribute.
+    
+    :param cssText:
+        CSS string to parse
+    :param encoding:
+        It will be used to decode `cssText` if given as a (byte)
+        string.
+    :returns:
+        :class:`~cssutils.css.CSSStyleDeclaration`
+    """
+    if isinstance(cssText, str):
+        cssText = cssText.decode(encoding)
+    style = css.CSSStyleDeclaration()
+    style.cssText = cssText
+    return style
 
 # set "ser", default serializer
 def setSerializer(serializer):
     """Set the global serializer used by all class in cssutils."""
     global ser
     ser = serializer
-
 
 def getUrls(sheet):
     """Retrieve all ``url(urlstring)`` values (in e.g.
