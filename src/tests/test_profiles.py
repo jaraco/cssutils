@@ -5,6 +5,13 @@ import sys
 import basetest
 import cssutils
 
+CSS2 = (cssutils.profile.CSS_LEVEL_2,)
+CM3 = (cssutils.profile.CSS3_COLOR,)
+FM3 = (cssutils.profile.CSS3_FONTS,)
+FM3FF = (cssutils.profile.CSS3_FONT_FACE,)
+CSS2_CM3 = (CM3[0], CSS2[0])
+CSS2_FM3 = (FM3[0], CSS2[0])
+
 
 class ProfilesTestCase(basetest.BaseTestCase):
     M1 = {
@@ -128,13 +135,6 @@ class ProfilesTestCase(basetest.BaseTestCase):
         
     def test_csscolorlevel3(self):
         "CSS Color Module Level 3"
-        CSS2 = [cssutils.profile.CSS_LEVEL_2]
-        CM3 = [cssutils.profile.CSS3_COLOR]
-        FM3 = [cssutils.profile.CSS3_FONTS]
-        FM3FF = [cssutils.profile.CSS3_FONT_FACE]
-        CSS2_CM3 = [CM3[0], CSS2[0]]
-        CSS2_FM3 = [FM3[0], CSS2[0]]
-        
         # (propname, propvalue): (valid, validprofile)
         namedcolors = '''transparent, orange,
                          aqua, black, blue, fuchsia, gray, green, lime, maroon,
@@ -142,15 +142,17 @@ class ProfilesTestCase(basetest.BaseTestCase):
         for color in namedcolors.split(','):
             color = color.strip()            
             self.assertEqual(True, cssutils.profile.validate('color', color))
-            self.assertEqual((True, True, CSS2), 
+            self.assertEqual((True, True, list(CSS2)), 
                              cssutils.profile.validateWithProfile('color', color))
 
         uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'
         for color in uicolor.split('|'):
             self.assertEqual(True, cssutils.profile.validate('color', color))
-            self.assertEqual((True, True, CSS2), 
+            self.assertEqual((True, True, list(CSS2)), 
                              cssutils.profile.validateWithProfile('color', color))
         
+    def test_validate(self):
+        "Profiles.validate()"
         tests = {
             # name, values: valid, matching, profile
             
@@ -240,7 +242,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
                          )): (True, True, CSS2),
             
             # FONTS
-            ('font-family', ('serif, x'
+            ('font-family', ('serif, x',
                              )): (True, True, CSS2), #CSS2_FM3),
                              
             ('font-family', ('inherit',
@@ -271,7 +273,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
 
             ('font-variant', ('normal', 'small-caps', 'inherit'
                              )): (True, True, CSS2),
-            ('font-size', ('-1em'
+            ('font-size', ('-1em',
                            )): (False, False, CSS2),
             ('font-size', ('xx-small', 'x-small', 'small', 'medium', 'large', 
                            'x-large', 'xx-large', 'larger', 'smaller', 
@@ -302,19 +304,49 @@ class ProfilesTestCase(basetest.BaseTestCase):
             # invalid
             ('opacity', ('a', '#000', '+1')): (False, False, CM3),
 
+            ('src', ('url(  a  )',
+                     'local(  x  )',
+                     'url(../fonts/LateefRegAAT.ttf) format(  "truetype-aat"  )',
+                     'url(a) format(  "123x"  , "a"   )',
+                     'url(a) format( "123x"  , "a"   ), url(a) format( "123x"  , "a"   )',
+                     'local(HiraKakuPro-W3), local(Meiryo), local(IPAPGothic)',
+                     'local(Gentium), url(/fonts/Gentium.ttf)',
+                     'local(Futura-Medium), url(fonts.svg#MyGeometricModern) format("svg")',
+                    )): (True, True, FM3FF),
+
+            ('unicode-range', ('u+1', 'U+111111-ffffff',
+                               'u+123456  ,  U+1-f'
+                               )): (True, True, FM3FF),
         
         }
         for (name, values), (v, m, p) in tests.items():            
-            if issubclass(type(values), basestring):
-                values = [values]
             for value in values:
                 self.assertEqual(v, cssutils.profile.validate(name, value))
-                self.assertEqual((v, m, p), 
+                self.assertEqual((v, m, list(p)), 
                                  cssutils.profile.validateWithProfile(name, value))
 
-        # not css2 but 3
-        self.assertEqual((True, True, CM3), 
-                         cssutils.profile.validateWithProfile('opacity', '0'))
+    def test_validateByProfile(self):
+        "Profiles.validateByProfile()"
+        # testing for valid values overwritten in a profile
+        tests = {
+            (FM3FF, 'font-family', ('y', '"y"' # => name should be "y"!!!
+                                     )): (True, True, FM3FF),    
+            (FM3FF, 'font-family', ('"y", "a"', 'a, b', 'a a'
+                                     )): (True, False, CSS2),    
+            (FM3FF, 'font-stretch', ('normal', 'wider', 'narrower', 'inherit'
+                                     )): (True, False, FM3),    
+            (FM3FF, 'font-style', ('inherit',
+                                     )): (True, False, CSS2),    
+            (FM3FF, 'font-weight', ('bolder', 'lighter', 'inherit',
+                                     )): (True, False, CSS2),    
+            }
+        for (profiles, name, values), (v, m, p) in tests.items():            
+            for value in values:
+                self.assertEqual((v, m, list(p)), 
+                                 cssutils.profile.validateWithProfile(name, 
+                                                                      value, 
+                                                                      profiles))
+
 
 if __name__ == '__main__':
     import unittest

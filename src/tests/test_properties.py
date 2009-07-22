@@ -131,7 +131,8 @@ class PropertiesTestCase(basetest.BaseTestCase):
                                                '"a", b',
                                                r'a\{b',
                                                r'a\ b',
-                                               #TODO: 'a b'
+                                               'a b'
+                                               'a b, c  d  , e'
                                                ]),
             #'src': ('STRING',),
                                                
