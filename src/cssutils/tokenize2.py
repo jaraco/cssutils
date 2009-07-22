@@ -147,7 +147,8 @@ class Tokenizer(object):
                                         break
     
                         if name in ('DIMENSION', 'IDENT', 'STRING', 'URI', 
-                                    'HASH', 'COMMENT', 'FUNCTION', 'INVALID'):
+                                    'HASH', 'COMMENT', 'FUNCTION', 'INVALID',
+                                    'UNICODE-RANGE'):
                             # may contain unicode escape, replace with normal char
                             # but do not _normalize (?)
                             value = self.unicodesub(_repl, found)
@@ -166,7 +167,7 @@ class Tokenizer(object):
                                     name = self._atkeywords.get(_normalize(found), 'ATKEYWORD')
                                     
                             value = found # should not contain unicode escape (?)
-    
+
                         yield (name, value, line, col)
                         text = text[len(found):]
                         nls = found.count(self._linesep)
