@@ -81,6 +81,7 @@ class CSSValue(cssutils.util._NewBase):
                 [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
                   TIME S* | FREQ S* ]
               | STRING S* | IDENT S* | URI S* | hexcolor | function
+              | UNICODE-RANGE S*
               ;
             function
               : FUNCTION S* expr ')' S*
@@ -117,6 +118,7 @@ class CSSValue(cssutils.util._NewBase):
                       PreDef.ident(nextSor=nextSor),
                       PreDef.uri(nextSor=nextSor),
                       PreDef.hexcolor(nextSor=nextSor),
+                      PreDef.unicode_range(nextSor=nextSor),
                       # special case IE only expression
                       Prod(name='expression', 
                            match=lambda t, v: t == self._prods.FUNCTION and 
@@ -130,9 +132,9 @@ class CSSValue(cssutils.util._NewBase):
                                       toSeq=lambda t, tokens: ('FUNCTION', 
                                                                CSSFunction(cssutils.helper.pushtoken(t, 
                                                                                                      tokens)))))
-        operator = Choice(PreDef.S(optional=False, mayEnd=True),
-                          PreDef.CHAR('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
-                          PreDef.CHAR('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
+        operator = Choice(PreDef.S(),
+                          PreDef.char('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
+                          PreDef.char('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
                           optional=True)
         # CSSValue PRODUCTIONS
         valueprods = Sequence(term, 
@@ -187,12 +189,12 @@ class CSSValue(cssutils.util._NewBase):
                     if not firstvalue:
                         firstvalue = (item.value, item.type)
                     count += 1
-    
+
                 else:
                     newseq.appendItem(item)
                                         
                 i += 1
-                
+
             if not firstvalue:
                 self._log.error(
                         u'CSSValue: Unknown syntax or no value: %r.' %
@@ -201,7 +203,7 @@ class CSSValue(cssutils.util._NewBase):
                 # ok and set
                 self._setSeq(newseq)
                 self.wellformed = wellformed
-                                           
+
                 if hasattr(self, '_value'):
                     # only in case of CSSPrimitiveValue, else remove!
                     del self._value
