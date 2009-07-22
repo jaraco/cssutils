@@ -214,7 +214,49 @@ class TokenizerTestCase(basetest.BaseTestCase):
                   ('S', u' ', 1, 3)],
         }
 
-    tests3 = {  
+    tests3 = {     
+        # UNICODE-RANGE
+        u' u+0 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+0', 1, 2),
+                  ('S', u' ', 1, 5)],
+        u' u+01 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+01', 1, 2),
+                  ('S', u' ', 1, 6)],
+        u' u+012 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+012', 1, 2),
+                  ('S', u' ', 1, 7)],
+        u' u+0123 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+0123', 1, 2),
+                  ('S', u' ', 1, 8)],
+        u' u+01234 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+01234', 1, 2),
+                  ('S', u' ', 1, 9)],
+        u' u+012345 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+012345', 1, 2),
+                  ('S', u' ', 1, 10)],
+        u' u+0123456 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+012345', 1, 2),
+                  ('NUMBER', u'6', 1, 10),
+                  ('S', u' ', 1, 11)],
+        u' U+123456 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'U+123456', 1, 2),
+                  ('S', u' ', 1, 10)],
+        u' \\55+abcdef ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'U+abcdef', 1, 2),
+                  ('S', u' ', 1, 12)],
+        u' \\75+abcdef ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+abcdef', 1, 2),
+                  ('S', u' ', 1, 12)],
+        u' u+0-1 ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+0-1', 1, 2),
+                  ('S', u' ', 1, 7)],
+        u' u+0-1, u+123456-abcdef ': [('S', u' ', 1, 1),
+                  ('UNICODE-RANGE', u'u+0-1', 1, 2),
+                  ('CHAR', u',', 1, 7),
+                  ('S', u' ', 1, 8),
+                  ('UNICODE-RANGE', u'u+123456-abcdef', 1, 9),
+                  ('S', u' ', 1, 24)],
+ 
         # specials
         u'c\\olor': [('IDENT', u'c\\olor', 1, 1)],
         u'-1': [('CHAR', u'-', 1, 1), ('NUMBER', u'1', 1, 2)],
@@ -593,21 +635,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
             # EOF is added so -1
             self.assertEqual(len(tokens) - 1, len(tests[css]))
 
-
-    # not really needed
-    def test_tokenizeCSS3(self):
-        "CSS3 Tokenizer().tokenize()"
-        import cssutils.css3productions
-        tokenizer = Tokenizer(cssutils.css3productions.MACROS,
-                              cssutils.css3productions.PRODUCTIONS)
-        tests = {}
-        tests.update(self.testsall)
-        tests.update(self.tests3)
-        for css in tests:
-            tokens = tokenizer.tokenize(css)
-            for i, actual in enumerate(tokens):
-                expected = tests[css][i]
-                self.assertEqual(expected, actual)
 
     # --------------
 
