@@ -777,6 +777,10 @@ descriptions.</p>
     '{' S* declaration [ ';' S* declaration ]* '}' S*
   ;</pre>
 </div>
+<p>cssutils uses a <a title="cssutils.css.CSSStyleDeclaration" class="reference internal" href="#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>  to
+represent the font descriptions. For validation a specific profile
+is used though were some properties have other valid values than
+when used in e.g. a <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a>.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSFontFaceRule.atkeyword">
 <tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.atkeyword" title="Permalink to this definition">¶</a></dt>
@@ -816,6 +820,11 @@ descriptions.</p>
 <dt id="cssutils.css.CSSFontFaceRule.typeString">
 <tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.typeString" title="Permalink to this definition">¶</a></dt>
 <dd>Descriptive name of this rule&#8217;s type.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSFontFaceRule.valid">
+<tt class="descname">valid</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.valid" title="Permalink to this definition">¶</a></dt>
+<dd>CSSFontFace is valid if properties <cite>font-family</cite> and <cite>src</cite> are set and all properties are valid.</dd></dl>
 
 </dd></dl>
 

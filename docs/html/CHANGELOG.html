@@ -90,21 +90,20 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <dt>HEAD</dt>
 <dd><ul class="first">
 <li><dl class="first docutils">
-<dt><strong>FEATURE</strong>: Added details from module Fonts <a class="reference external" href="http://www.w3.org/TR/css3-fonts/">http://www.w3.org/TR/css3-fonts/</a></dt>
+<dt><strong>FEATURE</strong>: Added parsing support and new profile for details defined in module Fonts <a class="reference external" href="http://www.w3.org/TR/css3-fonts/">http://www.w3.org/TR/css3-fonts/</a></dt>
 <dd><ul class="first last">
 <li><p class="first">new properties: <tt class="docutils literal"><span class="pre">font-stretch</span></tt>, <tt class="docutils literal"><span class="pre">font-size-adjust</span></tt></p>
 </li>
-<li><p class="first">added tests for related properties and the new profile</p>
-</li>
 <li><dl class="first docutils">
-<dt>&#64;font-face rules use a different profile for validation now which uses the defined properties only</dt>
+<dt>&#64;font-face rules use a different profile for validation now which uses the defined properties only:</dt>
 <dd><ul class="first last simple">
-<li><tt class="docutils literal"><span class="pre">font-family</span></tt> property redefined</li>
-<li><tt class="docutils literal"><span class="pre">src</span></tt> property new</li>
-<li><strong>TODO</strong>: <tt class="docutils literal"><span class="pre">unicode-range</span></tt> property new</li>
+<li><tt class="docutils literal"><span class="pre">font-family</span> <span class="pre">font-style</span> <span class="pre">font-weight</span></tt> properties redefined</li>
+<li>added <tt class="docutils literal"><span class="pre">src</span></tt> and <tt class="docutils literal"><span class="pre">unicode-range</span></tt> properties</li>
 </ul>
 </dd>
 </dl>
+</li>
+<li><p class="first">Added <tt class="docutils literal"><span class="pre">CSSFontFaceRule.valid</span></tt>. A &#64;font-face rule is valid if all font descriptions properties are valid and properties <tt class="docutils literal"><span class="pre">font-family</span></tt> and <tt class="docutils literal"><span class="pre">src</span></tt> are set.</p>
 </li>
 </ul>
 </dd>
@@ -115,7 +114,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <li><p class="first">API CHANGE (minor): Added <tt class="docutils literal"><span class="pre">Property.parentStyle</span></tt> replacing the private <tt class="docutils literal"><span class="pre">._parent</span></tt> attribute used until now</p>
 </li>
 </ul>
-<ul class="last">
+<ul>
 <li><p class="first"><strong>BUGFIX</strong>: Parsing of CSSValues with unknown function names with a specific lenght of 4 or 7 chars would result in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.</p>
 </li>
 <li><dl class="first docutils">
@@ -128,6 +127,20 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </dl>
 </li>
 <li><p class="first">BUGFIX: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.parentRule</span></tt> was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.</p>
+</li>
+</ul>
+<ul class="simple">
+<li>IMPROVEMENT (minor): cssutils sets the HTTP header <tt class="docutils literal"><span class="pre">User-Agent</span></tt> now when fetching sheets over HTTP (with e.g. <tt class="docutils literal"><span class="pre">cssutils.parseUrl</span></tt>).</li>
+</ul>
+<ul class="last">
+<li><dl class="first docutils">
+<dt>CHANGES:</dt>
+<dd><ul class="first last simple">
+<li>Refactored predefined <tt class="docutils literal"><span class="pre">Prod</span></tt> objects used for parsing of <tt class="docutils literal"><span class="pre">CSSValue</span></tt>. Also added <tt class="docutils literal"><span class="pre">Predef.unicode_range</span></tt> and renamed <tt class="docutils literal"><span class="pre">CHAR</span></tt> to <tt class="docutils literal"><span class="pre">char</span></tt>.</li>
+<li>Removed css3productions which were only used for tests only anyway and which were not up to date at all</li>
+</ul>
+</dd>
+</dl>
 </li>
 </ul>
 </dd>
@@ -635,7 +648,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-07-19</span> <span class="pre">19:49:51</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">19</span> <span class="pre">Jul</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1785</span> <span class="pre">2009-07-19</span> <span class="pre">17:49:51Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-07-20</span> <span class="pre">22:53:15</span> <span class="pre">+0200</span> <span class="pre">(Mo,</span> <span class="pre">20</span> <span class="pre">Jul</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1791</span> <span class="pre">2009-07-20</span> <span class="pre">20:53:15Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
