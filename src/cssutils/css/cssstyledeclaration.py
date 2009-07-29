@@ -247,6 +247,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         """
         self.removeProperty(CSSName)
 
+    def children(self):
+        """Generator yielding any known child in this declaration including
+         *all* properties, comments or CSSUnknownrules.
+        """
+        for item in self._seq:
+            yield item.value
+
     def _getCssText(self):
         """Return serialized property cssText."""
         return cssutils.ser.do_css_CSSStyleDeclaration(self)
@@ -275,7 +282,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                                        semicolon=True)
             if self._tokenvalue(tokens[-1]) == u';':
                 tokens.pop()
-            property = Property(parentStyle=self)
+            property = Property(parent=self)
             property.cssText = tokens
             if property.wellformed:
                 seq.append(property, 'Property')                
@@ -301,10 +308,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             productions={'IDENT': ident},#, 'CHAR': char},
             default=unexpected)
         # wellformed set by parse
-        # post conditions
 
+        for item in newseq:
+            item.value._parent = self
+         
         # do not check wellformed as invalid things are removed anyway            
-        #if wellformed: 
         self._setSeq(newseq)
         
     cssText = property(_getCssText, _setCssText,
@@ -324,9 +332,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     def _setParentRule(self, parentRule):
         self._parentRule = parentRule
-        for x in self:
-            x.parentStyle = self
-
+        for x in self.children():
+            x.parent = self
+            
     parentRule = property(lambda self: self._parentRule, _setParentRule,
         doc="(DOM) The CSS rule that contains this declaration block or "
             "None if this CSSStyleDeclaration is not attached to a CSSRule.")
@@ -563,7 +571,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             newp = name 
             name = newp.literalname
         else:
-            newp = Property(name, value, priority, parentStyle=self)
+            newp = Property(name, value, priority)
         if not newp.wellformed:
             self._log.warn(u'Invalid Property: %s: %s %s'
                     % (name, value, priority))
@@ -580,6 +588,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                     property.priority = newp.priority
                     break
             else:
+                newp.parent = self
                 self.seq._readonly = False
                 self.seq.append(newp, 'Property')
                 self.seq._readonly = True
