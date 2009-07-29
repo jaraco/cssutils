@@ -52,6 +52,46 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual('a', s.selectorList.selectorText)
             self.assertEqual(style, s.style)
             self.assertEqual('1', s.style.getPropertyValue('x'))
+
+        # CHANGING 
+        s = cssutils.parseString(u'a {s1: 1}')
+        r = s.cssRules[0]
+        sel1 = r.selectorList        
+        st1 = r.style
+
+        # selectorList
+        r.selectorText = 'b'
+        self.assertEqual(sel1, r.selectorList)
+        self.assertEqual('b', r.selectorList.selectorText)
+        self.assertEqual('b', r.selectorText)
+        
+        sel1.selectorText = 'c'
+        self.assertEqual(sel1, r.selectorList)
+        self.assertEqual('c', r.selectorList.selectorText)
+        self.assertEqual('c', r.selectorText)
+        
+        sel2 = cssutils.css.SelectorList('sel2')
+        s.selectorList = sel2
+        self.assertEqual(sel2, s.selectorList)
+        self.assertEqual('sel2', s.selectorList.selectorText)
+        
+        sel2.selectorText = 'sel2b'
+        self.assertEqual('sel2b', sel2.selectorText)
+        self.assertEqual('sel2b', s.selectorList.selectorText)
+
+        s.selectorList.selectorText = 'sel2c'
+        self.assertEqual('sel2c', sel2.selectorText)
+        self.assertEqual('sel2c', s.selectorList.selectorText)
+        
+        # style        
+        r.style = 's1: 2'
+        self.assertEqual(st1, r.style)
+        self.assertEqual('s1: 2', r.style.cssText)
+        
+        st2 = cssutils.parseStyle(u's2: 1')
+        r.style = st2
+        self.assertEqual(st2, r.style)
+        self.assertEqual('s2: 1', r.style.cssText)
         
     def test_cssText(self):
         "CSSStyleRule.cssText"
@@ -141,8 +181,8 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.style = d
         self.assertEqual(d.cssText, self.r.style.cssText)
 
-        # check if parentRule of d is set -> SHOULD NOT!
-        self.assertEqual(None, d.parentRule)
+        # check if parentRule of d is set
+        self.assertEqual(self.r, d.parentRule)
 
     def test_incomplete(self):
         "CSSStyleRule (incomplete)"
