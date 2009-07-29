@@ -41,6 +41,9 @@ class _ErrorHandler(object):
             - False: Errors will be written to the log, this is the
               default behaviour when parsing
         """
+        # may be disabled during setting of known valid items
+        self.enabled = True
+        
         if log:
             self._log = log
         else:
@@ -74,26 +77,27 @@ class _ErrorHandler(object):
         handles all calls
         logs or raises exception
         """
-        line, col = None, None
-        if token:
-            if isinstance(token, tuple):
-                value, line, col = token[1], token[2], token[3]
+        if self.enabled:
+            line, col = None, None
+            if token:
+                if isinstance(token, tuple):
+                    value, line, col = token[1], token[2], token[3]
+                else:
+                    value, line, col = token.value, token.line, token.col
+                msg = u'%s [%s:%s: %s]' % (
+                    msg, line, col, value)
+    
+            if error and self.raiseExceptions and not neverraise:
+                if isinstance(error, urllib2.HTTPError) or isinstance(error, urllib2.URLError):
+                    raise
+                elif issubclass(error, xml.dom.DOMException): 
+                    error.line = line
+                    error.col = col
+    #                raise error(msg, line, col)
+    #            else:
+                raise error(msg)
             else:
-                value, line, col = token.value, token.line, token.col
-            msg = u'%s [%s:%s: %s]' % (
-                msg, line, col, value)
-
-        if error and self.raiseExceptions and not neverraise:
-            if isinstance(error, urllib2.HTTPError) or isinstance(error, urllib2.URLError):
-                raise
-            elif issubclass(error, xml.dom.DOMException): 
-                error.line = line
-                error.col = col
-#                raise error(msg, line, col)
-#            else:
-            raise error(msg)
-        else:
-            self._logcall(msg)
+                self._logcall(msg)
 
     def setLog(self, log):
         """set log of errorhandler's log"""
