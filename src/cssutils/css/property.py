@@ -44,7 +44,7 @@ class Property(cssutils.util.Base):
 
     """
     def __init__(self, name=None, value=None, priority=u'', 
-                 _mediaQuery=False, parentStyle=None):
+                 _mediaQuery=False, parent=None, parentStyle=None):
         """
         :param name:
             a property name string (will be normalized)
@@ -55,15 +55,17 @@ class Property(cssutils.util.Base):
             u'!important' or u'important'
         :param _mediaQuery:
             if ``True`` value is optional (used by MediaQuery)
-        :param parentStyle:
-            the parentStyle object, normally a 
+        :param parent:
+            the parent object, normally a 
             :class:`cssutils.css.CSSStyleDeclaration`
+        :param parentStyle:
+            DEPRECATED: Use ``parent`` instead
         """
         super(Property, self).__init__()
         self.seqs = [[], None, []]
         self.wellformed = False
         self._mediaQuery = _mediaQuery
-        self.parentStyle = parentStyle
+        self.parent = parent
 
         self.__nametoken = None
         self._name = u''
@@ -362,13 +364,12 @@ class Property(cssutils.util.Base):
     literalpriority = property(lambda self: self._literalpriority,
         doc="Readonly literal (not normalized) priority of this property")
 
-    def _setParentStyle(self, parentStyle):
-        self._parentStyle = parentStyle
+    def _setParent(self, parent):
+        self._parent = parent
 
-    parentStyle = property(lambda self: self._parentStyle, _setParentStyle,
-        doc="The CSSStyledeclaration that contains this Property or "
-            "None if this Property is not attached to a CSSStyledeclaration.")
-
+    parent = property(lambda self: self._parent, _setParent,
+        doc="The Parent Node (normally a CSSStyledeclaration) of this "
+            "Property")
 
     def validate(self):
         """Validate value against `profiles` which are checked dynamically.
@@ -432,7 +433,7 @@ class Property(cssutils.util.Base):
         profiles = None
         try:
             # if @font-face use that profile
-            rule = self.parentStyle.parentRule
+            rule = self.parent.parentRule
             if rule.type == rule.FONT_FACE_RULE:
                 profiles = [cssutils.profile.CSS3_FONT_FACE]
             #TODO: same for @page
@@ -482,3 +483,12 @@ class Property(cssutils.util.Base):
 
     valid = property(validate, doc="Check if value of this property is valid "
                                    "in the properties context.")
+
+
+    @Deprecated('Use ``parent`` attribute instead.')
+    def _getParentStyle(self):
+        return self._parent
+
+    parentStyle = property(_getParentStyle, _setParent,
+        doc="DEPRECATED: Use ``parent`` instead")
+
