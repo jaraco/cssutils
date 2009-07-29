@@ -25,6 +25,34 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
                          type(self.r.style))
         self.assertEqual(self.r, self.r.style.parentRule)
 
+    def test_refs(self):
+        "CSSStyleRule references"
+        s = cssutils.css.CSSStyleRule()
+        sel, style = s.selectorList, s.style
+
+        self.assertEqual(s, sel.parentRule)
+        self.assertEqual(s, style.parentRule)
+        
+        s.cssText = 'a { x:1 }'
+        self.assertEqual(sel, s.selectorList)
+        self.assertEqual('a', s.selectorList.selectorText)
+        self.assertEqual(style, s.style)
+        self.assertEqual('1', s.style.getPropertyValue('x'))
+        
+        invalids = ('/b { 2 }', # both invalid
+                    '$b { x:2 }', # invalid selector
+                    'c { $x3 }' # invalid style
+                    )
+        for invalid in invalids:
+            try:
+                s.cssText = invalid
+            except xml.dom.DOMException, e:
+                pass
+            self.assertEqual(sel, s.selectorList)
+            self.assertEqual('a', s.selectorList.selectorText)
+            self.assertEqual(style, s.style)
+            self.assertEqual('1', s.style.getPropertyValue('x'))
+        
     def test_cssText(self):
         "CSSStyleRule.cssText"
         tests = {
