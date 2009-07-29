@@ -169,11 +169,12 @@ class CSSStyleRule(cssrule.CSSRule):
 
     def _setSelectorList(self, selectorList):
         """
-        :param selectorList: selectorList, only content is used, not the actual
-            object
+        :param selectorList: A SelectorList which replaces the current 
+            selectorList object
         """
         self._checkReadonly()
-        self.selectorText = selectorList.selectorText
+        selectorList._parentRule = self
+        self._selectorList = selectorList
             
     selectorList = property(lambda self: self._selectorList, _setSelectorList,
         doc="The SelectorList of this rule.")
@@ -205,16 +206,15 @@ class CSSStyleRule(cssrule.CSSRule):
 
     def _setStyle(self, style):
         """
-        :param style: CSSStyleDeclaration or string, only the cssText of a 
-            declaration is used, not the actual object
+        :param style: A string or CSSStyleDeclaration which replaces the 
+            current style object.
         """
         self._checkReadonly()
         if isinstance(style, basestring):
             self._style.cssText = style
         else:
-            # cssText would be serialized with optional preferences
-            # so use _seq!
-            self._style._seq = style._seq 
+            style._parentRule = self
+            self._style = style
 
     style = property(lambda self: self._style, _setStyle,
                      doc="(DOM) The declaration-block of this rule set.")
