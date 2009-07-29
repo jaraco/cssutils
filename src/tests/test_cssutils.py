@@ -208,6 +208,24 @@ a {
         cssutils.ser = newser
         self.assertEqual(exp4, s.cssText)
 
+    def test_parseStyle(self):
+        "cssutils.parseStyle()"
+        s = cssutils.parseStyle('x:0; y:red')
+        self.assertEqual(type(s), cssutils.css.CSSStyleDeclaration)
+        self.assertRaises(xml.dom.SyntaxErr, cssutils.parseStyle, '@import "x";')
+
+        tests = [
+            (u'content: "ä"', 'iso-8859-1'),
+            (u'content: "€"', 'utf-8')
+        ]
+        for v, e in tests:
+            s = cssutils.parseStyle(v.encode(e), encoding=e)
+            self.assertEqual(s.cssText, v)
+
+        self.assertRaises(UnicodeDecodeError, cssutils.parseStyle, 
+                          u'content: "ä"'.encode('utf-8'), 'ascii')
+
+
     def test_getUrls(self):
         "cssutils.getUrls()"
         cssutils.ser.prefs.keepAllProperties = True

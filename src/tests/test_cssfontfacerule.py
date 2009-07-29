@@ -31,7 +31,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         def checkrefs(ff):
             self.assertEqual(ff, ff.style.parentRule)
             for p in ff.style:
-                self.assertEqual(ff.style, p.parentStyle)
+                self.assertEqual(ff.style, p.parent)
 
         checkrefs(cssutils.css.CSSFontFaceRule(
                     style=cssutils.css.CSSStyleDeclaration('font-family: x')))
@@ -122,7 +122,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             for (v, valid) in t:
                 r = cssutils.css.CSSFontFaceRule()
                 r.style[n] = v
-                self.assertEqual(r.style.getProperty(n).parentStyle, r.style)
+                self.assertEqual(r.style.getProperty(n).parent, r.style)
                 self.assertEqual(r.style.getProperty(n).valid, valid)
 
     def test_incomplete(self):

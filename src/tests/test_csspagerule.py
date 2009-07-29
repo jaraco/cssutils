@@ -32,7 +32,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         def checkrefs(ff):
             self.assertEqual(ff, ff.style.parentRule)
             for p in ff.style:
-                self.assertEqual(ff.style, p.parentStyle)
+                self.assertEqual(ff.style, p.parent)
                 
         checkrefs(cssutils.css.CSSPageRule(
                     style=cssutils.css.CSSStyleDeclaration('font-family: x')))
