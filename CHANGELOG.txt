@@ -37,16 +37,27 @@ development version
 -----
 
 HEAD
-    - **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
+    + **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
         + new properties: ``font-stretch``, ``font-size-adjust``
         + @font-face rules use a different profile for validation now which uses the defined properties only:
             - ``font-family font-style font-weight`` properties redefined
             - added ``src`` and ``unicode-range`` properties
         + Added ``CSSFontFaceRule.valid``. A @font-face rule is valid if all font descriptions properties are valid and properties ``font-family`` and ``src`` are set.
 
+    + **FEATURE**: Added ``cssutils.parseStyle(cssText, encoding='utf-8')`` convienience function which assumes that the given `cssText` is the content of an HTML style attribute. It returns the parsed properties as a :class:`~cssutils.css.CSSStyleDeclaration`.
+
+    + **FEATURE** (experimental, request from issue #27): Added ``css.CSSStyleDeclaration.children()`` which is a generator yielding any know
+    n children of a declaration including *all* properties, comments or CSSUnknownRules.
+
+    - API CHANGE: Added attribute ``parent`` to all CSSRules. It contains the Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.
+
+    - API CHANGE: Replaced attribute ``parentStyle`` if ``css.Property`` with ``parent`` (``parentStyle`` is DEPRECATED now).
+
     - API CHANGE (minor): Removed parameter ``profiles`` from  ``cssutils.css.Property.validate()``. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are @font-face (TODO: and @page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to ``properties[Profiles.CSS3_FONT_FACE]`` in module ``cssutils.profiles`` and reregister that profile.
 
     - API CHANGE (minor): Added ``Property.parentStyle`` replacing the private ``._parent`` attribute used until now
+
+    + **BUGFIX**: Improved child and parent node referencing.
 
     + **BUGFIX**: Parsing of CSSValues with unknown function names with a specific lenght of 4 or 7 chars would result in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.
 
