@@ -319,6 +319,11 @@ recognized by the parser. Unrecognized rules are represented using the
 <dd>(DOM) The parsable textual representation of the rule. This reflects the current state of the rule and not its initial value.</dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.CSSRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.CSSRule.parentRule">
 <tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSRule.parentRule" title="Permalink to this definition">¶</a></dt>
 <dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
@@ -395,6 +400,11 @@ CSSCharsetRule.</p>
 <dd>(DOM)The encoding information used in this &#64;charset rule.</dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.CSSCharsetRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSCharsetRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.CSSCharsetRule.parentRule">
 <tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSCharsetRule.parentRule" title="Permalink to this definition">¶</a></dt>
 <dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
@@ -441,6 +451,11 @@ class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSC
 <dt id="cssutils.css.CSSComment.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSComment.cssText" title="Permalink to this definition">¶</a></dt>
 <dd>The parsable textual representation of this rule.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSComment.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSComment.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSComment.parentRule">
@@ -505,6 +520,11 @@ namespace_prefix
 <dt id="cssutils.css.CSSNamespaceRule.namespaceURI">
 <tt class="descname">namespaceURI</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.namespaceURI" title="Permalink to this definition">¶</a></dt>
 <dd>URI (handled as simple string) of the defined namespace.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSNamespaceRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSNamespaceRule.parentRule">
@@ -577,6 +597,11 @@ is used to import style rules from other style sheets.</p>
 <dt id="cssutils.css.CSSImportRule.name">
 <tt class="descname">name</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.name" title="Permalink to this definition">¶</a></dt>
 <dd>An optional name for the imported sheet.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSImportRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.parentRule">
@@ -735,6 +760,11 @@ unparsable.</li>
 <dd>An optional name for this media rule.</dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.CSSMediaRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSMediaRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.parentRule">
 <tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSMediaRule.parentRule" title="Permalink to this definition">¶</a></dt>
 <dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
@@ -790,6 +820,11 @@ when used in e.g. a <a title="cssutils.css.CSSStyleRule" class="reference intern
 <dt id="cssutils.css.CSSFontFaceRule.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.cssText" title="Permalink to this definition">¶</a></dt>
 <dd>(DOM) The parsable textual representation of this rule.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSFontFaceRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSFontFaceRule.parentRule">
@@ -858,6 +893,11 @@ pseudo_page
 <dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.CSSPageRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSPageRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.parentRule">
 <tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSPageRule.parentRule" title="Permalink to this definition">¶</a></dt>
 <dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
@@ -918,6 +958,11 @@ LBRACE S* declaration [ ';' S* declaration ]* '}' S*
 <dt id="cssutils.css.CSSStyleRule.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSStyleRule.cssText" title="Permalink to this definition">¶</a></dt>
 <dd>(DOM) The parsable textual representation of this rule.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSStyleRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSStyleRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.parentRule">
@@ -1198,6 +1243,12 @@ DOM name, so e.g. <tt class="docutils literal"><span class="pre">fontStyle</span
 <p>Format:</p>
 <div class="highlight-python"><pre>[Property: Value Priority?;]* [Property: Value Priority?]?</pre>
 </div>
+<dl class="method">
+<dt id="cssutils.css.CSSStyleDeclaration.children">
+<tt class="descname">children</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.children" title="Permalink to this definition">¶</a></dt>
+<dd>Generator yielding any known child in this declaration including
+<em>all</em> properties, comments or CSSUnknownrules.</dd></dl>
+
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleDeclaration.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.cssText" title="Permalink to this definition">¶</a></dt>
@@ -1525,7 +1576,7 @@ readonly.</li>
 <dl class="class">
 <dt id="cssutils.css.Property">
 <em class="property">
-class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>_mediaQuery=False</em>, <em>parentStyle=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
+class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>_mediaQuery=False</em>, <em>parent=None</em>, <em>parentStyle=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
 <dd><p>A CSS property in a StyleDeclaration of a CSSStyleRule (cssutils).</p>
 <p>Format:</p>
 <div class="highlight-python"><pre>property = name
@@ -1583,9 +1634,14 @@ prio
 <dd>Name of this property.</dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.Property.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.Property.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node (normally a CSSStyledeclaration) of this Property</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.Property.parentStyle">
 <tt class="descname">parentStyle</tt><a class="headerlink" href="#cssutils.css.Property.parentStyle" title="Permalink to this definition">¶</a></dt>
-<dd>The CSSStyledeclaration that contains this Property or None if this Property is not attached to a CSSStyledeclaration.</dd></dl>
+<dd>DEPRECATED: Use <tt class="docutils literal"><span class="pre">parent</span></tt> instead</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Property.priority">

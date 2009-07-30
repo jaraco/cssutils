@@ -37,24 +37,34 @@ development version
 -----
 
 HEAD
-    - **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
+    + **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
         + new properties: ``font-stretch``, ``font-size-adjust``
         + @font-face rules use a different profile for validation now which uses the defined properties only:
             - ``font-family font-style font-weight`` properties redefined
             - added ``src`` and ``unicode-range`` properties
         + Added ``CSSFontFaceRule.valid``. A @font-face rule is valid if all font descriptions properties are valid and properties ``font-family`` and ``src`` are set.
 
+    + **FEATURE**: Added ``cssutils.parseStyle(cssText, encoding='utf-8')`` convienience function which assumes that the given `cssText` is the content of an HTML style attribute. It returns the parsed properties as a :class:`~cssutils.css.CSSStyleDeclaration`.
+
+    + **FEATURE** (experimental, request from issue #27): Added ``css.CSSStyleDeclaration.children()`` which is a generator yielding any known children of a declaration including *all* properties, comments or CSSUnknownRules.
+
+    - **API CHANGE**: Replaced attribute ``parentStyle`` if ``css.Property`` with ``parent`` (``parentStyle`` is DEPRECATED now).
+
+    - API CHANGE: Added attribute ``parent`` to all CSSRules. It contains the Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.
+
     - API CHANGE (minor): Removed parameter ``profiles`` from  ``cssutils.css.Property.validate()``. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are @font-face (TODO: and @page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to ``properties[Profiles.CSS3_FONT_FACE]`` in module ``cssutils.profiles`` and reregister that profile.
 
-    - API CHANGE (minor): Added ``Property.parentStyle`` replacing the private ``._parent`` attribute used until now
+    + **BUGFIX**: Improved child and parent node referencing.
+        - setting ``css.CSSStyleRule.selectorList`` with a ``css.SelectorList`` object uses this new object directly
+        - setting ``css.CSSStyleRule.style`` with a ``css.CSSStyleDeclaration`` object uses this new object directly
+        - ``CSSStyleDeclaration.parentRule`` was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.
 
-    + **BUGFIX**: Parsing of CSSValues with unknown function names with a specific lenght of 4 or 7 chars would result in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.
+
+    + **BUGFIX**: Parsing of CSSValues with unknown function names with a specific length of 4 or 7 chars were resulting in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.
 
     + BUGFIX: Fixed validation problems:
         - ``font-family: a   b`` (values with spaces in names without being quoted) are parsed now without emitting an ERROR. These are indeed valid but discouraged and you should use quotes (more than one space is compacted to a single space anyway so rather complicated without quotes)
         - negative lengths for the ``font-size`` property are now properly reported as ERRORs
-
-    + BUGFIX: ``CSSStyleDeclaration.parentRule`` was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.
 
     - IMPROVEMENT (minor): cssutils sets the HTTP header ``User-Agent`` now when fetching sheets over HTTP (with e.g. ``cssutils.parseUrl``).
 
@@ -454,7 +464,7 @@ stable version
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-07-20 22:53:15 +0200 (Mo, 20 Jul 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1791 2009-07-20 20:53:15Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-07-29 15:12:12 +0200 (Mi, 29 Jul 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1814 2009-07-29 13:12:12Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 

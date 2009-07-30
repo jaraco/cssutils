@@ -109,13 +109,28 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </dd>
 </dl>
 </li>
-<li><p class="first">API CHANGE (minor): Removed parameter <tt class="docutils literal"><span class="pre">profiles</span></tt> from  <tt class="docutils literal"><span class="pre">cssutils.css.Property.validate()</span></tt>. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are &#64;font-face (TODO: and &#64;page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to <tt class="docutils literal"><span class="pre">properties[Profiles.CSS3_FONT_FACE]</span></tt> in module <tt class="docutils literal"><span class="pre">cssutils.profiles</span></tt> and reregister that profile.</p>
+<li><p class="first"><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.parseStyle(cssText,</span> <span class="pre">encoding='utf-8')</span></tt> convienience function which assumes that the given <cite>cssText</cite> is the content of an HTML style attribute. It returns the parsed properties as a <a title="cssutils.css.CSSStyleDeclaration" class="reference external" href="docs/css.html#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</p>
 </li>
-<li><p class="first">API CHANGE (minor): Added <tt class="docutils literal"><span class="pre">Property.parentStyle</span></tt> replacing the private <tt class="docutils literal"><span class="pre">._parent</span></tt> attribute used until now</p>
+<li><p class="first"><strong>FEATURE</strong> (experimental, request from issue #27): Added <tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration.children()</span></tt> which is a generator yielding any known children of a declaration including <em>all</em> properties, comments or CSSUnknownRules.</p>
 </li>
 </ul>
+<ul class="simple">
+<li><strong>API CHANGE</strong>: Replaced attribute <tt class="docutils literal"><span class="pre">parentStyle</span></tt> if <tt class="docutils literal"><span class="pre">css.Property</span></tt> with <tt class="docutils literal"><span class="pre">parent</span></tt> (<tt class="docutils literal"><span class="pre">parentStyle</span></tt> is DEPRECATED now).</li>
+<li>API CHANGE: Added attribute <tt class="docutils literal"><span class="pre">parent</span></tt> to all CSSRules. It contains the Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</li>
+<li>API CHANGE (minor): Removed parameter <tt class="docutils literal"><span class="pre">profiles</span></tt> from  <tt class="docutils literal"><span class="pre">cssutils.css.Property.validate()</span></tt>. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are &#64;font-face (TODO: and &#64;page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to <tt class="docutils literal"><span class="pre">properties[Profiles.CSS3_FONT_FACE]</span></tt> in module <tt class="docutils literal"><span class="pre">cssutils.profiles</span></tt> and reregister that profile.</li>
+</ul>
 <ul>
-<li><p class="first"><strong>BUGFIX</strong>: Parsing of CSSValues with unknown function names with a specific lenght of 4 or 7 chars would result in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.</p>
+<li><dl class="first docutils">
+<dt><strong>BUGFIX</strong>: Improved child and parent node referencing.</dt>
+<dd><ul class="first last simple">
+<li>setting <tt class="docutils literal"><span class="pre">css.CSSStyleRule.selectorList</span></tt> with a <tt class="docutils literal"><span class="pre">css.SelectorList</span></tt> object uses this new object directly</li>
+<li>setting <tt class="docutils literal"><span class="pre">css.CSSStyleRule.style</span></tt> with a <tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration</span></tt> object uses this new object directly</li>
+<li><tt class="docutils literal"><span class="pre">CSSStyleDeclaration.parentRule</span></tt> was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>BUGFIX</strong>: Parsing of CSSValues with unknown function names with a specific length of 4 or 7 chars were resulting in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.</p>
 </li>
 <li><dl class="first docutils">
 <dt>BUGFIX: Fixed validation problems:</dt>
@@ -125,8 +140,6 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </ul>
 </dd>
 </dl>
-</li>
-<li><p class="first">BUGFIX: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.parentRule</span></tt> was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.</p>
 </li>
 </ul>
 <ul class="simple">
@@ -648,7 +661,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-07-20</span> <span class="pre">22:53:15</span> <span class="pre">+0200</span> <span class="pre">(Mo,</span> <span class="pre">20</span> <span class="pre">Jul</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1791</span> <span class="pre">2009-07-20</span> <span class="pre">20:53:15Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-07-29</span> <span class="pre">15:12:12</span> <span class="pre">+0200</span> <span class="pre">(Mi,</span> <span class="pre">29</span> <span class="pre">Jul</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1814</span> <span class="pre">2009-07-29</span> <span class="pre">13:12:12Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
