@@ -121,15 +121,22 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self._log.error(u'CSSFontFaceRule: Trailing content found.',
                                 token=nonetoken)
 
-            newstyle = CSSStyleDeclaration(parentRule=self)
+            teststyle = CSSStyleDeclaration(parentRule=self)
             if 'EOF' == typ:
                 # add again as style needs it
                 styletokens.append(braceorEOFtoken)
-            newstyle.cssText = styletokens
+            # may raise:
+            teststyle.cssText = styletokens
 
             if wellformed:
-                self.style = newstyle
-                self._setSeq(newseq) # contains (probably comments) upto { only
+                # contains probably comments only upto {
+                self._setSeq(newseq)
+                
+                # known as correct from before
+                cssutils.log.enabled = False
+                self.style.cssText = styletokens
+                cssutils.log.enabled = True
+                
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of this rule.")
@@ -143,7 +150,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
         if isinstance(style, basestring):
             self._style.cssText = style
         else:
-            self._style._seq = style.seq
+            self._style = style
             self._style.parentRule = self
 
     style = property(lambda self: self._style, _setStyle,
