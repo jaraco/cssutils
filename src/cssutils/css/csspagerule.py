@@ -193,7 +193,7 @@ class CSSPageRule(cssrule.CSSRule):
                 
             wellformed, newselectorseq = self.__parseSelectorText(selectortokens)
 
-            newstyle = CSSStyleDeclaration(parentRule=self)
+            teststyle = CSSStyleDeclaration(parentRule=self)
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
                 wellformed = False
@@ -204,13 +204,15 @@ class CSSPageRule(cssrule.CSSRule):
                 if 'EOF' == typ:
                     # add again as style needs it
                     styletokens.append(braceorEOFtoken)
-                newstyle.cssText = styletokens
+                teststyle.cssText = styletokens
 
             if wellformed:
-                self._selectorText = newselectorseq # already parsed
-                self.style = newstyle
-                self._setSeq(newselectorseq) # contains upto style only
-
+                # known as correct from before
+                cssutils.log.enabled = False
+                self._selectorText = newselectorseq # TODO: TEST and REFS
+                self.style.cssText = styletokens
+                cssutils.log.enabled = True
+                
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of this rule.")
 
@@ -255,13 +257,12 @@ class CSSPageRule(cssrule.CSSRule):
         if isinstance(style, basestring):
             self._style.cssText = style
         else:
-            self._style._seq = style.seq
+            self._style = style
             self._style.parentRule = self
 
     style = property(lambda self: self._style, _setStyle,
                      doc="(DOM) The declaration-block of this rule set, "
                          "a :class:`~cssutils.css.CSSStyleDeclaration`.")
-
 
     type = property(lambda self: self.PAGE_RULE, 
                     doc="The type of this rule, as defined by a CSSRule "
