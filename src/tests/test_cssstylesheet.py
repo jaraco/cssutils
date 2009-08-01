@@ -43,6 +43,63 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             self.assertEqual(rule, s.cssRules[i])
             self.assertEqual(rule.type, types[i])
 
+    def test_refs(self):
+        """CSSStylesheet references"""
+        s = cssutils.parseString('a {}')
+        rules = s.cssRules
+        self.assertEqual(s.cssRules[0].parentStyleSheet, s)
+        self.assertEqual(rules[0].parentStyleSheet, s)
+
+        # set cssText
+        s.cssText = 'b{}'
+        self.assertEqual(rules, s.cssRules)
+
+        # set cssRules 
+        s.cssRules = cssutils.parseString('''
+            @charset "ascii";
+            /**/
+            @import "x";
+            @namespace "http://example.com/ns0";
+            @media all {
+                a { color: green; }
+                }
+            @font-face {
+                font-family: x;
+                }
+            @page {
+                font-family: Arial;
+                }
+            @x;
+            b {}').cssRules''').cssRules
+        # new object
+        self.assertNotEqual(rules, s.cssRules)
+        for i, r in enumerate(s.cssRules):
+            self.assertEqual(r.parentStyleSheet, s)
+
+        # namespaces
+        s = cssutils.parseString('@namespace "http://example.com/ns1"; a {}')
+        namespaces = s.namespaces
+        self.assertEqual(s.namespaces.items(), [(u'', 'http://example.com/ns1')])
+        s.cssText = '@namespace x "http://example.com/ns2"; x|a {}'
+        self.assertEqual(namespaces, s.namespaces)
+        self.assertEqual(s.namespaces.items(), [(u'x', 'http://example.com/ns2')])
+
+    def test_cssRules(self):
+        "CSSStyleSheet.cssRules"
+        s = cssutils.parseString('/*1*/a {x:1}')
+        self.assertEqual(2, s.cssRules.length)
+        del s.cssRules[0]
+        self.assertEqual(1, s.cssRules.length)
+        s.cssRules.append('/*2*/')
+        self.assertEqual(2, s.cssRules.length)
+        s.cssRules.extend(cssutils.parseString('/*3*/x {y:2}').cssRules)
+        self.assertEqual(4, s.cssRules.length)
+        self.assertEqual(u'a {\n    x: 1\n    }\n/*2*/\n/*3*/\nx {\n    y: 2\n    }', 
+                         s.cssText)
+        
+        for r in s.cssRules:
+            self.assertEqual(r.parentStyleSheet, s)
+
     def test_cssText(self):
         "CSSStyleSheet.cssText"
         tests = {
@@ -593,6 +650,7 @@ ex2|SEL4, a, ex2|SELSR {
                 s = cssutils.css.CSSStyleSheet()
                 s.add(r)
                 s.add(rule) # never raises
+                self.assertEqual(s, r.parentStyleSheet)
 
             for r in anywhere:
                 s = cssutils.css.CSSStyleSheet()

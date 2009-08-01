@@ -51,6 +51,29 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual(rule, m.cssRules[i])
             self.assertEqual(rule.type, types[i])
             self.assertEqual(rule.parentRule, m)
+
+    def test_refs(self):
+        """CSSStylesheet references"""
+        s = cssutils.parseString('@media all {a {color: red}}')
+        r = s.cssRules[0]
+        rules = r.cssRules
+        self.assertEqual(r.cssRules[0].parentStyleSheet, s)
+        self.assertEqual(rules[0].parentStyleSheet, s)
+
+        # set cssText
+        r.cssText = '@media all {a {color: blue}}'
+        self.assertEqual(rules, r.cssRules)
+
+        # set cssRules 
+        r.cssRules = cssutils.parseString('''
+            /**/
+            @x;
+            b {}').cssRules''').cssRules
+        # new object
+        self.assertNotEqual(rules, r.cssRules)
+        for i, sr in enumerate(r.cssRules):
+            self.assertEqual(sr.parentStyleSheet, s)
+            self.assertEqual(sr.parentRule, r)
             
     def test_cssRules(self):
         "CSSMediaRule.cssRules"
@@ -61,6 +84,22 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual([sr], r.cssRules)
         ir = cssutils.css.CSSImportRule()
         self.assertRaises(xml.dom.HierarchyRequestErr, r.cssRules.append, ir)
+
+        s = cssutils.parseString('@media all { /*1*/a {x:1} }')
+        m = s.cssRules[0]
+        self.assertEqual(2, m.cssRules.length)
+        del m.cssRules[0]
+        self.assertEqual(1, m.cssRules.length)
+        m.cssRules.append('/*2*/')
+        self.assertEqual(2, m.cssRules.length)
+        m.cssRules.extend(cssutils.parseString('/*3*/x {y:2}').cssRules)
+        self.assertEqual(4, m.cssRules.length)
+        self.assertEqual(u'@media all {\n    a {\n        x: 1\n        }\n    /*2*/\n    /*3*/\n    x {\n        y: 2\n        }\n    }', 
+                         m.cssText)
+        
+        for rule in m.cssRules:
+            self.assertEqual(rule.parentStyleSheet, s)
+            self.assertEqual(rule.parentRule, m)
 
     def test_cssText(self):
         "CSSMediaRule.cssText"

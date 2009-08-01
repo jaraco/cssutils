@@ -91,6 +91,13 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(s.item(1), u'left')
         self.assertEqual(s.item(2), u'border')
         self.assertEqual(s.item(10), u'')
+
+    def test_keys(self):
+        "CSSStyleDeclaration.keys()"
+        s = cssutils.parseStyle('x:1; x:2; y:1')
+        self.assertEqual(['x', 'y'], s.keys())
+        self.assertEqual(s['x'], '2')
+        self.assertEqual(s['y'], '1')
             
     def test_parse(self):
         "CSSStyleDeclaration parse"
