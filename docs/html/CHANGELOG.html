@@ -109,13 +109,17 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </dd>
 </dl>
 </li>
-<li><p class="first"><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.parseStyle(cssText,</span> <span class="pre">encoding='utf-8')</span></tt> convienience function which assumes that the given <cite>cssText</cite> is the content of an HTML style attribute. It returns the parsed properties as a <a title="cssutils.css.CSSStyleDeclaration" class="reference external" href="docs/css.html#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</p>
+<li><p class="first"><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.parseStyle(cssText,</span> <span class="pre">encoding='utf-8')</span></tt> convienience function which assumes that the given <cite>cssText</cite> is the content of an HTML style attribute. It returns a <a title="cssutils.css.CSSStyleDeclaration" class="reference external" href="docs/css.html#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</p>
 </li>
 <li><p class="first"><strong>FEATURE</strong> (experimental, request from issue #27): Added <tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration.children()</span></tt> which is a generator yielding any known children of a declaration including <em>all</em> properties, comments or CSSUnknownRules.</p>
 </li>
+<li><p class="first">FEATURE: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.insertRule</span></tt> also accepts a <tt class="docutils literal"><span class="pre">CSSRuleList</span></tt> now (same as <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> which does this for some time now).</p>
+</li>
+<li><p class="first">FEATURE: Added <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.keys()</span></tt> method which analoguous to standard dict returns property names which are set in the declaration.</p>
+</li>
 </ul>
 <ul class="simple">
-<li><strong>API CHANGE</strong>: Replaced attribute <tt class="docutils literal"><span class="pre">parentStyle</span></tt> if <tt class="docutils literal"><span class="pre">css.Property</span></tt> with <tt class="docutils literal"><span class="pre">parent</span></tt> (<tt class="docutils literal"><span class="pre">parentStyle</span></tt> is DEPRECATED now).</li>
+<li><strong>API CHANGE</strong>: Replaced attribute <tt class="docutils literal"><span class="pre">css.Property.parentStyle</span></tt> with <tt class="docutils literal"><span class="pre">css.Property.parent</span></tt> (<tt class="docutils literal"><span class="pre">parentStyle</span></tt> is DEPRECATED now).</li>
 <li>API CHANGE: Added attribute <tt class="docutils literal"><span class="pre">parent</span></tt> to all CSSRules. It contains the Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</li>
 <li>API CHANGE (minor): Removed parameter <tt class="docutils literal"><span class="pre">profiles</span></tt> from  <tt class="docutils literal"><span class="pre">cssutils.css.Property.validate()</span></tt>. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are &#64;font-face (TODO: and &#64;page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to <tt class="docutils literal"><span class="pre">properties[Profiles.CSS3_FONT_FACE]</span></tt> in module <tt class="docutils literal"><span class="pre">cssutils.profiles</span></tt> and reregister that profile.</li>
 </ul>
@@ -123,6 +127,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <li><dl class="first docutils">
 <dt><strong>BUGFIX</strong>: Improved child and parent node referencing.</dt>
 <dd><ul class="first last simple">
+<li>setting <tt class="docutils literal"><span class="pre">CSSStyleSheet.cssRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSMediaRule.cssRules</span></tt> correctly update <tt class="docutils literal"><span class="pre">parentStyleSheet</span></tt> (and <tt class="docutils literal"><span class="pre">parentRule</span></tt>) of contained rules now. Also settings <tt class="docutils literal"><span class="pre">cssRules</span></tt> should now work as expected.</li>
 <li>setting <tt class="docutils literal"><span class="pre">css.CSSStyleRule.selectorList</span></tt> with a <tt class="docutils literal"><span class="pre">css.SelectorList</span></tt> object uses this new object directly</li>
 <li>setting <tt class="docutils literal"><span class="pre">css.CSSStyleRule.style</span></tt> with a <tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration</span></tt> object uses this new object directly</li>
 <li><tt class="docutils literal"><span class="pre">CSSStyleDeclaration.parentRule</span></tt> was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.</li>
@@ -145,7 +150,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <ul class="simple">
 <li>IMPROVEMENT (minor): cssutils sets the HTTP header <tt class="docutils literal"><span class="pre">User-Agent</span></tt> now when fetching sheets over HTTP (with e.g. <tt class="docutils literal"><span class="pre">cssutils.parseUrl</span></tt>).</li>
 </ul>
-<ul class="last">
+<ul>
 <li><dl class="first docutils">
 <dt>CHANGES:</dt>
 <dd><ul class="first last simple">
@@ -154,6 +159,21 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </ul>
 </dd>
 </dl>
+</li>
+</ul>
+<ul class="last">
+<li><p class="first"><em>FEATURE</em> (experimental): Added support to at least parse sheets with Microsoft only property values for <tt class="docutils literal"><span class="pre">filter</span></tt> which start with <tt class="docutils literal"><span class="pre">DXImageTransform.Microsoft.[...](</span></tt>. To enable these you need to set:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cssutils</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;DXImageTransform.Microsoft&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">ser</span><span class="o">.</span><span class="n">prefs</span><span class="o">.</span><span class="n">useMinified</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">text</span> <span class="o">=</span> <span class="s">&#39;a {filter: DXImageTransform.Microsoft.Alpha(a=1, b=&quot;2&quot;)}&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">cssText</span>
+<span class="go">a{filter:dximagetransform.microsoft.alpha(a=1,b=&quot;2&quot;)}</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p><strong>This currently is a major hack but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
+Also you cannot reset this change until you restart your program.</strong></p>
 </li>
 </ul>
 </dd>
@@ -661,7 +681,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-07-29</span> <span class="pre">15:12:12</span> <span class="pre">+0200</span> <span class="pre">(Mi,</span> <span class="pre">29</span> <span class="pre">Jul</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1814</span> <span class="pre">2009-07-29</span> <span class="pre">13:12:12Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-07-30</span> <span class="pre">22:25:02</span> <span class="pre">+0200</span> <span class="pre">(Do,</span> <span class="pre">30</span> <span class="pre">Jul</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1817</span> <span class="pre">2009-07-30</span> <span class="pre">20:25:02Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">

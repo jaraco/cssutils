@@ -26,6 +26,7 @@ Contents
 
     profiles <docs/profiles>
     logging <docs/logging>
+    experimental settings <docs/settings>
 
     CSS codec <docs/codec>
     `encutils` module <docs/encutils>
