@@ -1,0 +1,19 @@
+====================
+extra settings
+====================
+A single and **experimental** settings currently only.
+
+It is possible to at least parse sheets with Microsoft only property values for
+ ``filter`` which start with ``DXImageTransform.Microsoft.[...](``.
+To enable these you need to set::
+
+    >>> from cssutils import settings
+    >>> settings.set('DXImageTransform.Microsoft', True)
+    >>> cssutils.ser.prefs.useMinified()
+    >>> text = 'a {filter: DXImageTransform.Microsoft.Alpha(a=1, b="2")}'
+    >>> print cssutils.parseString(text).cssText
+    a{filter:dximagetransform.microsoft.alpha(a=1,b="2")}
+    >>>
+
+This currently is a **major hack** but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
+Also you cannot reset this change until you restart your program.
