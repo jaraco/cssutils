@@ -121,9 +121,10 @@ class CSSValue(cssutils.util._NewBase):
                       PreDef.unicode_range(nextSor=nextSor),
                       # special case IE only expression
                       Prod(name='expression', 
-                           match=lambda t, v: t == self._prods.FUNCTION and 
+                           match=lambda t, v: t == self._prods.FUNCTION and (
                                               cssutils.helper.normalize(v) in (u'expression(', 
-                                                                               u'alpha('),
+                                                                               u'alpha(') or
+                                              cssutils.helper.normalize(v).startswith(u'dximagetransform.microsoft.')                                 ),
                            nextSor=nextSor,
                            toSeq=lambda t, tokens: (ExpressionValue.name, 
                                                     ExpressionValue(cssutils.helper.pushtoken(t, 
