@@ -1,5 +1,4 @@
-"""CSSPageRule implements DOM Level 2 CSS CSSPageRule.
-"""
+"""CSSPageRule implements DOM Level 2 CSS CSSPageRule."""
 __all__ = ['CSSPageRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
