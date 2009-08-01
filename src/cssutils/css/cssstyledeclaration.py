@@ -127,6 +127,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             for name in self.__nnames():
                 yield self.getProperty(name)
         return properties()
+
+    def keys(self):
+        """Analoguous to standard dict returns property names which are set in
+        this declaration."""
+        return list(self.__nnames())
     
     def __getitem__(self, CSSName):
         """Retrieve the value of property ``CSSName`` from this declaration.
