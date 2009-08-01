@@ -25,7 +25,7 @@ a {
 /* import.css*/'''
 
     def test_VERSION(self):
-        self.assertEqual('0.9.6b2', cssutils.VERSION)
+        self.assertEqual('0.9.6b3', cssutils.VERSION)
 
     def test_parseString(self):
         "cssutils.parseString()"
