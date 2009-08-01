@@ -44,7 +44,7 @@ HEAD
             - added ``src`` and ``unicode-range`` properties
         + Added ``CSSFontFaceRule.valid``. A @font-face rule is valid if all font descriptions properties are valid and properties ``font-family`` and ``src`` are set.
 
-    + **FEATURE**: Added ``cssutils.parseStyle(cssText, encoding='utf-8')`` convienience function which assumes that the given `cssText` is the content of an HTML style attribute. It returns the parsed properties as a :class:`~cssutils.css.CSSStyleDeclaration`.
+    + **FEATURE**: Added ``cssutils.parseStyle(cssText, encoding='utf-8')`` convienience function which assumes that the given `cssText` is the content of an HTML style attribute. It returns a :class:`~cssutils.css.CSSStyleDeclaration`.
 
     + **FEATURE** (experimental, request from issue #27): Added ``css.CSSStyleDeclaration.children()`` which is a generator yielding any known children of a declaration including *all* properties, comments or CSSUnknownRules.
 
@@ -52,18 +52,17 @@ HEAD
 
     + FEATURE: Added ``CSSStyleDeclaration.keys()`` method which analoguous to standard dict returns property names which are set in the declaration.
 
-    - **API CHANGE**: Replaced attribute ``parentStyle`` if ``css.Property`` with ``parent`` (``parentStyle`` is DEPRECATED now).
+    - **API CHANGE**: Replaced attribute ``css.Property.parentStyle`` with ``css.Property.parent`` (``parentStyle`` is DEPRECATED now).
 
     - API CHANGE: Added attribute ``parent`` to all CSSRules. It contains the Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.
 
     - API CHANGE (minor): Removed parameter ``profiles`` from  ``cssutils.css.Property.validate()``. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are @font-face (TODO: and @page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to ``properties[Profiles.CSS3_FONT_FACE]`` in module ``cssutils.profiles`` and reregister that profile.
 
     + **BUGFIX**: Improved child and parent node referencing.
-        - setting ``CSSStyleSheet.cssRules`` correctly updates ``parentStyleSheet`` of contained rules now.
+        - setting ``CSSStyleSheet.cssRules`` and ``CSSMediaRule.cssRules`` correctly update ``parentStyleSheet`` (and ``parentRule``) of contained rules now. Also settings ``cssRules`` should now work as expected.
         - setting ``css.CSSStyleRule.selectorList`` with a ``css.SelectorList`` object uses this new object directly
         - setting ``css.CSSStyleRule.style`` with a ``css.CSSStyleDeclaration`` object uses this new object directly
         - ``CSSStyleDeclaration.parentRule`` was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.
-
 
     + **BUGFIX**: Parsing of CSSValues with unknown function names with a specific length of 4 or 7 chars were resulting in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.
 
@@ -76,6 +75,20 @@ HEAD
     + CHANGES:
         - Refactored predefined ``Prod`` objects used for parsing of ``CSSValue``. Also added ``Predef.unicode_range`` and renamed ``CHAR`` to ``char``.
         - Removed css3productions which were only used for tests only anyway and which were not up to date at all
+
+    - *FEATURE* (experimental): Added support to at least parse sheets with Microsoft only property values for ``filter`` which start with ``DXImageTransform.Microsoft.[...](``. To enable these you need to set::
+
+            >>> from cssutils import settings
+            >>> settings.set('DXImageTransform.Microsoft', True)
+            >>> cssutils.ser.prefs.useMinified()
+            >>> text = 'a {filter: DXImageTransform.Microsoft.Alpha(a=1, b="2")}'
+            >>> print cssutils.parseString(text).cssText
+            a{filter:dximagetransform.microsoft.alpha(a=1,b="2")}
+            >>>
+
+      **This currently is a major hack but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
+      Also you cannot reset this change until you restart your program.**
+
 
 0.9.6b1 090609
     + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now

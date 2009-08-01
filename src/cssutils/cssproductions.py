@@ -110,3 +110,9 @@ class CSSProductions(object):
 
 for i, t in enumerate(PRODUCTIONS):
     setattr(CSSProductions, t[0].replace('-', '_'), t[0])
+    
+
+# may be enabled by settings.set
+_DXImageTransform = ('FUNCTION', 
+                     r'[Dx][Xx][Ii]mage[Tt]ransform\.[Mm]icrosoft\..+\('
+                     )
