@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>extra settings &mdash; cssutils v0.9.6b2 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.6b2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="cssutils v0.9.6b2 documentation" href="../index.html" />
+    <link rel="next" title="CSS codec" href="codec.html" />
+    <link rel="prev" title="logging" href="logging.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="codec.html" title="CSS codec"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="logging.html" title="logging"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6b2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="extra-settings">
+<h1>extra settings<a class="headerlink" href="#extra-settings" title="Permalink to this headline">¶</a></h1>
+<p>A single and <strong>experimental</strong> settings currently only.</p>
+<dl class="docutils">
+<dt>It is possible to at least parse sheets with Microsoft only property values for</dt>
+<dd><tt class="docutils literal"><span class="pre">filter</span></tt> which start with <tt class="docutils literal"><span class="pre">DXImageTransform.Microsoft.[...](</span></tt>.</dd>
+</dl>
+<p>To enable these you need to set:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cssutils</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;DXImageTransform.Microsoft&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">ser</span><span class="o">.</span><span class="n">prefs</span><span class="o">.</span><span class="n">useMinified</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">text</span> <span class="o">=</span> <span class="s">&#39;a {filter: DXImageTransform.Microsoft.Alpha(a=1, b=&quot;2&quot;)}&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">cssText</span>
+<span class="go">a{filter:dximagetransform.microsoft.alpha(a=1,b=&quot;2&quot;)}</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>This currently is a <strong>major hack</strong> but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
+Also you cannot reset this change until you restart your program.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="logging.html"
+                                  title="previous chapter">logging</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="codec.html"
+                                  title="next chapter">CSS codec</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/docs/settings.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="codec.html" title="CSS codec"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="logging.html" title="logging"
+             >previous</a> |</li>
+        <li><a href="../index.html">cssutils v0.9.6b2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2004-2009, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+    </div>
+  </body>
+</html>
