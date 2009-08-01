@@ -48,6 +48,10 @@ HEAD
 
     + **FEATURE** (experimental, request from issue #27): Added ``css.CSSStyleDeclaration.children()`` which is a generator yielding any known children of a declaration including *all* properties, comments or CSSUnknownRules.
 
+    + FEATURE: ``CSSStyleDeclaration.insertRule`` also accepts a ``CSSRuleList`` now (same as ``CSSStyleSheet`` which does this for some time now).
+
+    + FEATURE: Added ``CSSStyleDeclaration.keys()`` method which analoguous to standard dict returns property names which are set in the declaration.
+
     - **API CHANGE**: Replaced attribute ``parentStyle`` if ``css.Property`` with ``parent`` (``parentStyle`` is DEPRECATED now).
 
     - API CHANGE: Added attribute ``parent`` to all CSSRules. It contains the Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.
@@ -55,6 +59,7 @@ HEAD
     - API CHANGE (minor): Removed parameter ``profiles`` from  ``cssutils.css.Property.validate()``. During validation each property checks which profiles to use which normally are all registered profiles in cssutils.profile. Exceptions are @font-face (TODO: and @page) rules which use their specific profile only. To add custom properties or values for the validation of these rules you need to add these to ``properties[Profiles.CSS3_FONT_FACE]`` in module ``cssutils.profiles`` and reregister that profile.
 
     + **BUGFIX**: Improved child and parent node referencing.
+        - setting ``CSSStyleSheet.cssRules`` correctly updates ``parentStyleSheet`` of contained rules now.
         - setting ``css.CSSStyleRule.selectorList`` with a ``css.SelectorList`` object uses this new object directly
         - setting ``css.CSSStyleRule.style`` with a ``css.CSSStyleDeclaration`` object uses this new object directly
         - ``CSSStyleDeclaration.parentRule`` was not properly set for CSSStyleRule, CSSPageRule and CSSFontFaceRule.
