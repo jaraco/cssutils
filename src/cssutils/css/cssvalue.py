@@ -109,7 +109,7 @@ class CSSValue(cssutils.util._NewBase):
         
         # used as operator is , / or S
         nextSor = u',/'
-        
+                
         term = Choice(Sequence(PreDef.unary(), 
                                Choice(PreDef.number(nextSor=nextSor), 
                                       PreDef.percentage(nextSor=nextSor),
@@ -124,11 +124,12 @@ class CSSValue(cssutils.util._NewBase):
                            match=lambda t, v: t == self._prods.FUNCTION and (
                                               cssutils.helper.normalize(v) in (u'expression(', 
                                                                                u'alpha(') or
-                                              cssutils.helper.normalize(v).startswith(u'dximagetransform.microsoft.')                                 ),
+                                              v.startswith(u'progid:DXImageTransform.Microsoft.')                                 ),
                            nextSor=nextSor,
                            toSeq=lambda t, tokens: (ExpressionValue.name, 
                                                     ExpressionValue(cssutils.helper.pushtoken(t, 
-                                                                                         tokens)))),
+                                                                                         tokens)))
+                      ),
                       PreDef.function(nextSor=nextSor,
                                       toSeq=lambda t, tokens: ('FUNCTION', 
                                                                CSSFunction(cssutils.helper.pushtoken(t, 
@@ -838,7 +839,7 @@ class CSSFunction(CSSPrimitiveValue):
                                                   types.PERCENTAGE,
                                                   types.STRING),
                          toSeq=lambda t, tokens: (t[0], CSSPrimitiveValue(t[1])))
-        
+                
         funcProds = Sequence(Prod(name='FUNC', 
                                   match=lambda t, v: t == types.FUNCTION, 
                                   toSeq=lambda t, tokens: (t[0], cssutils.helper.normalize(t[1]))),
@@ -980,23 +981,31 @@ class RGBColor(CSSPrimitiveValue):
 
 class ExpressionValue(CSSFunction):
     """Special IE only CSSFunction which may contain *anything*.
-    Used for expressions and ``alpha(opacity=100)`` currently"""
+    Used for expressions and ``alpha(opacity=100)`` currently."""
     name = u'Expression (IE only)'
     
     def _productiondefinition(self):
         """Return defintion used for parsing."""
         types = self._prods # rename!
+        
+        def toSeq(t, tokens):
+            "Do not normalize function name!"
+            return t[0], t[1]
+        
         funcProds = Sequence(Prod(name='expression', 
                                   match=lambda t, v: t == types.FUNCTION, 
-                                  toSeq=lambda t, tokens: (t[0], cssutils.helper.normalize(t[1]))),
+                                  toSeq=toSeq
+                             ),
                              Sequence(Choice(Prod(name='nested function', 
                                                   match=lambda t, v: t == self._prods.FUNCTION,
                                                   toSeq=lambda t, tokens: (CSSFunction.name, 
                                                                            CSSFunction(cssutils.helper.pushtoken(t, 
-                                                                                                                 tokens)))),
+                                                                                                                 tokens)))
+                                                  ),
                                              Prod(name='part', 
                                                   match=lambda t, v: v != u')',
-                                                  toSeq=lambda t, tokens: (t[0], t[1])),                                             ),
+                                                  toSeq=lambda t, tokens: (t[0], t[1])),                                 
+                                                  ),
                                       minmax=lambda: (0, None)),
                              PreDef.funcEnd(stop=True))
         return funcProds

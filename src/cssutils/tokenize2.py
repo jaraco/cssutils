@@ -167,7 +167,6 @@ class Tokenizer(object):
                                     name = self._atkeywords.get(_normalize(found), 'ATKEYWORD')
                                     
                             value = found # should not contain unicode escape (?)
-
                         yield (name, value, line, col)
                         text = text[len(found):]
                         nls = found.count(self._linesep)

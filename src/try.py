@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 __date__ = '$LastChangedDate::                            $:'
 
+
 from StringIO import StringIO
 from cssutils.prodparser import *
 from pprint import pprint as pp
 import codecs
 import cssutils
 import logging
+import os
 import re
 import sys
 import timeit
 import unicodedata
+import urllib
 import urlparse
 import xml
 try:
@@ -28,29 +31,143 @@ def save(name, string):
 
 
 if 1:
-    # ISSUE #22
-    css = r"""body:after {
-     content: "\\";
-     background-image: url('javascript:alert(\'XSS\')');
-     background-color: red;
-     blahblah:novalidatinghere;
-     /*";/*
-     content: "";
-}"""
-    css = r"""x { 
-    /*";/*
-    content: "";
-    }
-    """
-    s = cssutils.parseString(css)
-    print css
-    print s.cssText == css
-    print "parsed:"
+    from cssutils import settings
+    settings.set('DXImageTransform.Microsoft', True)
+    text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
+    s = cssutils.parseString(text)
     print s.cssText
-    s.cssText = css
-    print s.cssText
+    print s.cssRules[0].style.getPropertyCSSValue('filter').seq
     
-    #print s.cssRules[0].style
+
+
+    
+
+
+    sys.exit(1)
+
+if 1:
+    r = cssutils.parseString(r'''
+        @font-face {
+            font-family: a;
+            src: local(x)
+        }
+    ''').cssRules[0]
+    print r, r.valid
+    sys.exit(1)
+    for p in st.getProperties():
+        print p
+#        v = p.cssValue
+#        if v.cssValueType == v.CSS_VALUE_LIST:
+#            for i, x in enumerate(v):
+#                #print i, x
+#                #if x.primitiveType == x.CSS_STRING:
+#                #    print '\t', 111, x.getStringValue()
+#                print 
+#        print v
+    print st.cssText
+    print 
+    sys.exit(1)
+    s = cssutils.parseString('''
+    @font-face {
+        src: local(HiraKakuPro-W3), local(Meiryo), local(IPAPGothic);
+        src: local(Gentium), url(/fonts/Gentium.ttf);
+        src: local(Futura-Medium), 
+           url(fonts.svg#MyGeometricModern) format("svg");
+
+
+    
+        src: url(../fonts/LateefRegAAT.ttf) format("truetype-aat"), 
+             url(../fonts/LateefRegOT.ttf) format("opentype");
+
+        src: url(a) format( "123x"  , "a"   );
+        src: local(x);
+        src: url(a);
+        src: url(../fonts/LateefRegAAT.ttf) format("truetype-aat");
+        src: url(DoulosSILR.ttf) format("opentype","truetype-aat");
+
+
+        }
+        /*src: 'x'*/
+    /*a {
+        font-weight: bolder;
+        }
+    @page {
+        font-weight: bolder;    
+        }*/
+    ''')
+    for r in s:
+        if r.type != r.COMMENT:
+            for p in r.style.getProperties(all=True):
+                print p.valid, p
+
+if 1:
+    url = 'http://example.com/test.css'
+
+    def make_fetcher(r):
+        # normally r == encoding, content
+        def fetcher(url):
+            return r
+        return fetcher
+
+    sys.exit(0)
+
+def pathname2url(p):
+    """OS-specific conversion from a file system path to a relative URL
+    of the 'file' scheme; not recommended for general use."""
+    # e.g.
+    # C:\foo\bar\spam.foo
+    # becomes
+    # ///C|/foo/bar/spam.foo
+    import urllib
+    if not ':' in p:
+        # No drive specifier, just convert slashes and quote the name
+        if p[:2] == '\\\\':
+        # path is something like \\host\path\on\remote\host
+        # convert this to ////host/path/on/remote/host
+        # (notice doubling of slashes at the start of the path)
+            p = '\\\\' + p
+        components = p.split('\\')
+        return urllib.quote('/'.join(components))
+    comp = p.split(':')
+    if len(comp) != 2 or len(comp[0]) > 1:
+        error = 'Bad path: ' + p
+        raise IOError, error
+
+    drive = urllib.quote(comp[0].upper())
+    components = comp[1].split('\\')
+    path = '///' + drive + '|'
+    for comp in components:
+        if comp:
+            path = path + '/' + urllib.quote(comp)
+    return path
+
+
+if 0:
+    def jyhref(path):
+        href = os.path.abspath(path)
+        href = href.replace('\\', '/')
+        return 'file:'+href
+    
+    name = os.path.join(os.path.dirname(__file__), 
+                            '..', 'sheets', 'import.css')
+    
+    #href = 'file:' + urllib.pathname2url(name)
+    
+    from nturl2path import pathname2url
+    href = pathname2url(os.path.abspath(name))
+    href = href.replace('|', ':')
+    href = href[3:]
+    href = u'file:' + href
+    
+    href = jyhref(name)
+    href = None
+            
+    print name, href
+    s = cssutils.parseFile(name, href=href, media='screen', title='from file')
+
+    print 0, s
+    print 1, s.cssRules[0].styleSheet
+    print 2, s.cssRules[0].styleSheet.cssText
     sys.exit(0)
 
 

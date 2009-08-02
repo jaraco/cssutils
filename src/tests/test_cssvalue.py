@@ -165,7 +165,7 @@ y"''': u'''"xy"''',
             u'url(y)  format( "x" ,  "y" )': u'url(y) format("x", "y")',
 
             # IE expression
-            ur'E\xpression()': u'expression()',
+            ur'Expression()': u'Expression()',
             ur'expression(-1 < +2)': u'expression(-1< + 2)',
             ur'expression(document.width == "1")': u'expression(document.width=="1")',
             u'alpha(opacity=80)': u'alpha(opacity=80)',

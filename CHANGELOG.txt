@@ -35,8 +35,9 @@ development version
 
 0.9.6
 -----
-
 HEAD
+
+0.9.6b2 090802
     + **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
         + new properties: ``font-stretch``, ``font-size-adjust``
         + @font-face rules use a different profile for validation now which uses the defined properties only:
@@ -76,19 +77,23 @@ HEAD
         - Refactored predefined ``Prod`` objects used for parsing of ``CSSValue``. Also added ``Predef.unicode_range`` and renamed ``CHAR`` to ``char``.
         - Removed css3productions which were only used for tests only anyway and which were not up to date at all
 
-    - *FEATURE* (experimental): Added support to at least parse sheets with Microsoft only property values for ``filter`` which start with ``DXImageTransform.Microsoft.[...](``. To enable these you need to set::
+    - *FEATURE* (experimental): Added support to at least parse sheets with Microsoft only property values for ``filter`` which start with ``progid:DXImageTransform.Microsoft.[...](``. To enable these you need to set::
 
             >>> from cssutils import settings
             >>> settings.set('DXImageTransform.Microsoft', True)
             >>> cssutils.ser.prefs.useMinified()
-            >>> text = 'a {filter: DXImageTransform.Microsoft.Alpha(a=1, b="2")}'
+            >>> text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
             >>> print cssutils.parseString(text).cssText
-            a{filter:dximagetransform.microsoft.alpha(a=1,b="2")}
+            a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}
             >>>
 
-      **This currently is a major hack but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
-      Also you cannot reset this change until you restart your program.**
+      This currently is a **major hack** but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
+      Also you cannot reset this change until you restart your program.
 
+      These custom CSS FUNCTION names are not normalized at all. Also stuff like ``expression(...)`` which was normalized until now is not anymore.
+
+0.9.6b2
+    NO RELEASE
 
 0.9.6b1 090609
     + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now
