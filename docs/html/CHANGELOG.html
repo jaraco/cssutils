@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>﻿CHANGELOG &mdash; cssutils v0.9.6b2 documentation</title>
+    <title>﻿CHANGELOG &mdash; cssutils v0.9.6b3 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.6b2',
+        VERSION:     '0.9.6b3',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.6b2 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.6b3 documentation" href="index.html" />
     <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6b2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.6b3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -86,8 +86,9 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>HEAD</p>
 <dl class="docutils">
-<dt>HEAD</dt>
+<dt>0.9.6b3 090802</dt>
 <dd><ul class="first">
 <li><dl class="first docutils">
 <dt><strong>FEATURE</strong>: Added parsing support and new profile for details defined in module Fonts <a class="reference external" href="http://www.w3.org/TR/css3-fonts/">http://www.w3.org/TR/css3-fonts/</a></dt>
@@ -162,21 +163,24 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </li>
 </ul>
 <ul class="last">
-<li><p class="first"><em>FEATURE</em> (experimental): Added support to at least parse sheets with Microsoft only property values for <tt class="docutils literal"><span class="pre">filter</span></tt> which start with <tt class="docutils literal"><span class="pre">DXImageTransform.Microsoft.[...](</span></tt>. To enable these you need to set:</p>
+<li><p class="first"><em>FEATURE</em> (experimental): Added support to at least parse sheets with Microsoft only property values for <tt class="docutils literal"><span class="pre">filter</span></tt> which start with <tt class="docutils literal"><span class="pre">progid:DXImageTransform.Microsoft.[...](</span></tt>. To enable these you need to set:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cssutils</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;DXImageTransform.Microsoft&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">ser</span><span class="o">.</span><span class="n">prefs</span><span class="o">.</span><span class="n">useMinified</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">text</span> <span class="o">=</span> <span class="s">&#39;a {filter: DXImageTransform.Microsoft.Alpha(a=1, b=&quot;2&quot;)}&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">text</span> <span class="o">=</span> <span class="s">&#39;a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">cssText</span>
-<span class="go">a{filter:dximagetransform.microsoft.alpha(a=1,b=&quot;2&quot;)}</span>
+<span class="go">a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}</span>
 <span class="go">&gt;&gt;&gt;</span>
 </pre></div>
 </div>
-<p><strong>This currently is a major hack but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
-Also you cannot reset this change until you restart your program.</strong></p>
+<p>This currently is a <strong>major hack</strong> but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
+Also you cannot reset this change until you restart your program.</p>
+<p>These custom CSS FUNCTION names are not normalized at all. Also stuff like <tt class="docutils literal"><span class="pre">expression(...)</span></tt> which was normalized until now is not anymore.</p>
 </li>
 </ul>
 </dd>
+<dt>0.9.6b2</dt>
+<dd>NO RELEASE</dd>
 <dt>0.9.6b1 090609</dt>
 <dd><ul class="first simple">
 <li>BUGFIX: Fixed <tt class="docutils literal"><span class="pre">CSSPageRule.selectorText</span> <span class="pre">=</span> <span class="pre">''</span></tt> which does reset the selector now</li>
@@ -681,7 +685,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-07-30</span> <span class="pre">22:25:02</span> <span class="pre">+0200</span> <span class="pre">(Do,</span> <span class="pre">30</span> <span class="pre">Jul</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1817</span> <span class="pre">2009-07-30</span> <span class="pre">20:25:02Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-08-02</span> <span class="pre">14:20:21</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">02</span> <span class="pre">Aug</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1834</span> <span class="pre">2009-08-02</span> <span class="pre">12:20:21Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -2076,7 +2080,7 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6b2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.6b3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
