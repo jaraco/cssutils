@@ -37,7 +37,7 @@ development version
 -----
 HEAD
 
-0.9.6b2 090802
+0.9.6b3 090802
     + **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
         + new properties: ``font-stretch``, ``font-size-adjust``
         + @font-face rules use a different profile for validation now which uses the defined properties only:
