@@ -114,5 +114,5 @@ for i, t in enumerate(PRODUCTIONS):
 
 # may be enabled by settings.set
 _DXImageTransform = ('FUNCTION', 
-                     r'progid\:[Dx][Xx][Ii]mage[Tt]ransform\.[Mm]icrosoft\..+\('
+                     r'progid\:DXImageTransform\.Microsoft\..+\('
                      )
