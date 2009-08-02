@@ -2,6 +2,8 @@
 __date__ = '$LastChangedDate::                            $:'
 
 
+
+
 from StringIO import StringIO
 from cssutils.prodparser import *
 from pprint import pprint as pp
@@ -31,16 +33,21 @@ def save(name, string):
 
 
 if 1:
+    text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
     from cssutils import settings
     settings.set('DXImageTransform.Microsoft', True)
-    text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
+
+    s = cssutils.css.CSSStyleSheet()
+    #s.cssText = text
+    
     s = cssutils.parseString(text)
     print s.cssText
-    print s.cssRules[0].style.getPropertyCSSValue('filter').seq
-    
-
-
-    
+#    st = s.cssRules[0].style
+#    
+#    
+#    st['filter'] = 'progid:DXImageTransform.Microsoft.Basi()'
+#    print s.cssText
+#    
 
 
     sys.exit(1)
