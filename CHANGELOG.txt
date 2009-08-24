@@ -36,6 +36,8 @@ development version
 0.9.6
 -----
 HEAD
+    + BUGFIX: Issue #29 fixed. Double defined namespaces are replaced with a single (the last one) now.
+
 
 0.9.6b3 090802
     + **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/

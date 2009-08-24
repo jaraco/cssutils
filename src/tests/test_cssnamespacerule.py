@@ -106,7 +106,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@namespace\n\r\t\f p\n\r\t\f "str"\n\r\t\f ;': 
                 u'@namespace p "str";',
             u'@namespace\n\r\t\f "str"\n\r\t\f ;': 
-                u'@namespace "str";',
+                u'@namespace "str";'
             }
         self.do_equal_p(tests)
         #self.do_equal_r(tests) # cannot use here as always new r is needed

@@ -204,6 +204,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     token, xml.dom.HierarchyRequestErr)
             else:
                 if rule.wellformed:
+                    for i, r in enumerate(seq):
+                        if r.type == r.NAMESPACE_RULE and r.prefix == rule.prefix:
+                            # replace as doubled:
+                            seq[i] = rule
+                            self._log.info(
+                                u'CSSStylesheet: CSSNamespaceRule with same prefix found, replacing: %r'
+                                % r.cssText,
+                                token, neverraise=True)
                     seq.append(rule)
                     # temporary namespaces given to CSSStyleRule and @media
                     new['namespaces'][rule.prefix] = rule.namespaceURI
