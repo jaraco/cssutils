@@ -122,6 +122,19 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
                 u'@import "x";\n@namespace a "x";',
             u'@namespace a "x";\n@x;': None,
             u'@namespace a "x";\na {\n    x: 1\n    }': None,
+            u"""@namespace url("e1");
+                @namespace url("e2");
+                @namespace x url("x1");
+                @namespace x url("x2");
+                test{color: green}
+                x|test {color: green}""": """@namespace "e2";
+@namespace x "x2";
+test {
+    color: green
+    }
+x|test {
+    color: green
+    }"""
 #            ur'\1 { \2: \3 }': ur'''\x01 {
 #    \x02: \x03
 #    }''',
