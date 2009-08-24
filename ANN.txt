@@ -4,15 +4,44 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.6b1 is a bugfix release.
+0.9.6b3 adds a few minor feature and fixes quite a few bugs.
 
 
 main changes
 ------------
-    + BUGFIX: Fixed ``CSSPageRule.selectorText = ''`` which does reset the selector now
-    + BUGFIX (minor): Removed false references in a few modules' ``__all__`` list
+    + **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
 
-    - IMPROVEMENT: Jython 2.5 (from RC4) passes all tests now
+    + **FEATURE**: Added ``cssutils.parseStyle(cssText, encoding='utf-8')`` convienience function
+
+    + **FEATURE** (experimental, request from issue #27): Added ``css.CSSStyleDeclaration.children()`` which is a generator yielding any known children of a declaration including *all* properties, comments or CSSUnknownRules.
+
+    + FEATURE: ``CSSStyleDeclaration.insertRule`` also accepts a ``CSSRuleList`` now (same as ``CSSStyleSheet`` which does this for some time now).
+
+    + FEATURE: Added ``CSSStyleDeclaration.keys()`` method which analoguous to standard dict returns property names which are set in the declaration.
+
+    - **API CHANGE**: Replaced attribute ``css.Property.parentStyle`` with ``css.Property.parent`` (``parentStyle`` is DEPRECATED now).
+
+    + **BUGFIX**: Improved child and parent node referencing.
+
+    + **BUGFIX**: Parsing of CSSValues with unknown function names with a specific length of 4 or 7 chars were resulting in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.
+
+    + BUGFIX: Fixed validation problems:
+        - ``font-family: a   b`` (values with spaces in names without being quoted) are parsed now without emitting an ERROR. These are indeed valid but discouraged and you should use quotes (more than one space is compacted to a single space anyway so rather complicated without quotes)
+        - negative lengths for the ``font-size`` property are now properly reported as ERRORs
+
+    - IMPROVEMENT (minor): cssutils sets the HTTP header ``User-Agent`` now when fetching sheets over HTTP (with e.g. ``cssutils.parseUrl``).
+
+    - *FEATURE* (experimental): Added support to at least parse sheets with Microsoft only property values for ``filter`` which start with ``progid:DXImageTransform.Microsoft.[...](``. To enable these you need to set::
+
+            >>> from cssutils import settings
+            >>> settings.set('DXImageTransform.Microsoft', True)
+            >>> cssutils.ser.prefs.useMinified()
+            >>> text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
+            >>> print cssutils.parseString(text).cssText
+            a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}
+            >>>
+
+      This currently is a **major hack** but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
 
 license
 -------
@@ -24,7 +53,7 @@ download
 --------
 For download options see http://cthedot.de/cssutils/
 
-cssutils needs Python 2.4 or higher (tested with Python 2.6.2, 2.5.2, 2.4.4 and Jython 2.5RC4 on Vista only)
+cssutils needs Python 2.4 or higher (tested with Python 2.6.2, 2.5.2, 2.4.4 and Jython 2.5 on Vista only)
 
 
 Bug reports (via Google code), comments, etc are very much appreciated! Thanks.
