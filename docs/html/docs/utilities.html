@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>utilities &mdash; cssutils v0.9.6b3 documentation</title>
+    <title>utilities &mdash; cssutils v0.9.6b4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6b3',
+        VERSION:     '0.9.6b4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.6b3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.6b4 documentation" href="../index.html" />
     <link rel="next" title="scripts" href="scripts.html" />
     <link rel="prev" title="package cssutils.stylesheets" href="stylesheets.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="stylesheets.html" title="package cssutils.stylesheets"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6b4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -101,7 +101,13 @@ surrounding single or double quotes.</li>
 <dl class="function">
 <dt id="cssutils.resolveImports">
 <tt class="descclassname">cssutils.</tt><tt class="descname">resolveImports</tt><big>(</big><em>sheet</em>, <em>target=None</em><big>)</big><a class="headerlink" href="#cssutils.resolveImports" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recurcively combine all rules in given <cite>sheet</cite> into a <cite>target</cite> sheet.</p>
+<dd><p>Recurcively combine all rules in given <cite>sheet</cite> into a <cite>target</cite> sheet.
+&#64;import rules which use media information are tried to be wrapped into
+&#64;media rules so keeping the media information. This may not work in 
+all instances (if e.g. an &#64;import rule itself contains an &#64;import rule
+with different media infos or if it is contains rules which may not be 
+used inside an &#64;media block like &#64;namespace rules.). In these cases
+the &#64;import rule is kept as in the original sheet and a WARNING is issued.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -142,7 +148,7 @@ resolved and added to a resulting <em>flat</em> sheet.</li>
 
             <h4>Previous topic</h4>
             <p class="topless"><a href="stylesheets.html"
-                                  title="previous chapter">package <tt class="docutils literal docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
+                                  title="previous chapter">package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="scripts.html"
                                   title="next chapter">scripts</a></p>
@@ -183,7 +189,7 @@ resolved and added to a resulting <em>flat</em> sheet.</li>
         <li class="right" >
           <a href="stylesheets.html" title="package cssutils.stylesheets"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.6b4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
