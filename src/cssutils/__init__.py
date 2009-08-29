@@ -290,8 +290,22 @@ def resolveImports(sheet, target=None):
             log.info(u'Processing @import %r' % rule.href, neverraise=True)
             if rule.styleSheet:
                 target.add(css.CSSComment(cssText=u'/* START @import "%s" */' % rule.href))
-                resolveImports(rule.styleSheet, target)
-                target.add(css.CSSComment(cssText=u'/* END "%s" */' % rule.href))
+                if rule.media.mediaText == 'all':
+                    t = target
+                else:
+                    log.info(u'Replacing @import media with @media: %s' % 
+                             rule.media.mediaText, neverraise=True)
+                    t = css.CSSMediaRule(rule.media.mediaText)
+                try:
+                    resolveImports(rule.styleSheet, t)
+                except xml.dom.HierarchyRequestErr, e:
+                    log.warn(u'Cannot resolve @import: %s' % 
+                             e, neverraise=True)
+                    target.add(rule)
+                else:
+                    if t != target:
+                        target.add(t)
+                    t.add(css.CSSComment(cssText=u'/* END "%s" */' % rule.href))
             else:
                 log.error(u'Cannot get referenced stylesheet %r' %
                           rule.href, neverraise=True)

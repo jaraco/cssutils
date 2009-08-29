@@ -287,10 +287,12 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
             self.assertEqual(a, s.cssText)
             self.assertEqual(b, s.cssRules[1].styleSheet.cssText)
             c = cssutils.resolveImports(s)
-            self.assertEqual('\xc3\xa4{color:red}\xc3\xa4{color:green}', c.cssText)
+            self.assertEqual('\xc3\xa4{color:red}\xc3\xa4{color:green}', 
+                             c.cssText)
 
             c.encoding = 'ascii'
-            self.assertEqual(r'@charset "ascii";\E4 {color:red}\E4 {color:green}', c.cssText)
+            self.assertEqual(r'@charset "ascii";\E4 {color:red}\E4 {color:green}', 
+                             c.cssText)
 
             # b cannot be found
             mock("cssutils.util._defaultFetcher", 
@@ -300,9 +302,32 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
             self.assertEqual(a, s.cssText)
             self.assertEqual(None, s.cssRules[1].styleSheet)
             c = cssutils.resolveImports(s)
-            self.assertEqual('@import"b.css";\xc3\xa4{color:green}', c.cssText)
-            
+            self.assertEqual('@import"b.css";\xc3\xa4{color:green}', 
+                             c.cssText)
 
+            # @import with media
+            a = u'@import"b.css";@import"b.css" print, tv ;@import"b.css" all;'
+            b = u'a {color: red}'            
+            mock("cssutils.util._defaultFetcher", 
+                 mock_obj=self._make_fetcher(None, b))
+            s = cssutils.parseString(a)
+            restore()            
+            c = cssutils.resolveImports(s)
+            self.assertEqual('a{color:red}@media print,tv{a{color:red}}a{color:red}', 
+                             c.cssText)
+            
+            # cannot resolve with media => keep original
+            a = u'@import"b.css"print;'
+            b = u'@namespace "http://example.com";'            
+            mock("cssutils.util._defaultFetcher", 
+                 mock_obj=self._make_fetcher(None, b))
+            s = cssutils.parseString(a)
+            restore()            
+            c = cssutils.resolveImports(s)
+            self.assertEqual(a, c.cssText)
+
+
+            
         else:
             self.assertEqual(False, u'Minimock needed for this test')
 
