@@ -9,8 +9,9 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
-__version__ = '0.9.6b3'
+__version__ = '0.9.6b4'
 
+from cssutils import VERSION
 import codecs
 import os
 
@@ -28,7 +29,7 @@ long_description = u'\n' + read('README.txt') + u'\n'# + read('CHANGELOG.txt')
 
 setup(
     name='cssutils',
-    version=__version__,
+    version=VERSION,
     package_dir={'':'src'},
     packages=find_packages('src', exclude='tests'),
     test_suite='tests', #'nose.collector'

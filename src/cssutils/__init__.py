@@ -72,7 +72,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.6b3'
+VERSION = '0.9.6b4'
 
 __version__ = '%s $Id$' % VERSION
 
@@ -270,6 +270,12 @@ def replaceUrls(sheet, replacer):
 
 def resolveImports(sheet, target=None):
     """Recurcively combine all rules in given `sheet` into a `target` sheet.
+    @import rules which use media information are tried to be wrapped into
+    @media rules so keeping the media information. This may not work in 
+    all instances (if e.g. an @import rule itself contains an @import rule
+    with different media infos or if it is contains rules which may not be 
+    used inside an @media block like @namespace rules.). In these cases
+    the @import rule is kept as in the original sheet and a WARNING is issued.
 
     :param sheet:
         in this given :class:`cssutils.css.CSSStyleSheet` all import rules are

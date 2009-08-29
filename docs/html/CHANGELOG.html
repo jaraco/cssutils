@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>﻿CHANGELOG &mdash; cssutils v0.9.6b3 documentation</title>
+    <title>﻿CHANGELOG &mdash; cssutils v0.9.6b4 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.6b3',
+        VERSION:     '0.9.6b4',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.6b3 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.6b4 documentation" href="index.html" />
     <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6b3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.6b4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -86,10 +86,16 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.6<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>HEAD</p>
 <dl class="docutils">
-<dt>HEAD</dt>
-<dd><ul class="first last simple">
+<dt>0.9.6b4 090829</dt>
+<dd><ul class="first simple">
 <li>BUGFIX: Issue #29 fixed. Double defined namespaces are replaced with a single (the last one) now.</li>
+</ul>
+<ul class="last">
+<li><p class="first">IMPROVEMENT: <tt class="docutils literal"><span class="pre">cssutils.resolveImports</span></tt> now keeps media information when to be resolved &#64;import rule uses these. It wraps the imported rules in an &#64;media rule which uses the same media information from the &#64;media rule in the original sheet.</p>
+<p>An xml.dom.HierarchyRequestErr may occur if an imported sheet itself contains &#64;imports with media information or other rules which are not allowed in a &#64;media rule like &#64;namespace rules. In that case cssutils cannot resolve the &#64;import rule and logs a WARNING but keeps the original &#64;import.</p>
+</li>
 </ul>
 </dd>
 <dt>0.9.6b3 090802</dt>
@@ -2084,7 +2090,7 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6b3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.6b4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

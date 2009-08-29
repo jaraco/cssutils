@@ -4,44 +4,15 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.6b3 adds a few minor feature and fixes quite a few bugs.
-
+0.9.6b4 is a bugfix release.
 
 main changes
 ------------
-    + **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
++ BUGFIX: Issue #29 fixed. Double defined namespaces are replaced with a single (the last one) now.
 
-    + **FEATURE**: Added ``cssutils.parseStyle(cssText, encoding='utf-8')`` convienience function
+- IMPROVEMENT: ``cssutils.resolveImports`` now keeps media information when to be resolved @import rule uses these. It wraps the imported rules in an @media rule which uses the same media information from the @media rule in the original sheet.
 
-    + **FEATURE** (experimental, request from issue #27): Added ``css.CSSStyleDeclaration.children()`` which is a generator yielding any known children of a declaration including *all* properties, comments or CSSUnknownRules.
-
-    + FEATURE: ``CSSStyleDeclaration.insertRule`` also accepts a ``CSSRuleList`` now (same as ``CSSStyleSheet`` which does this for some time now).
-
-    + FEATURE: Added ``CSSStyleDeclaration.keys()`` method which analoguous to standard dict returns property names which are set in the declaration.
-
-    - **API CHANGE**: Replaced attribute ``css.Property.parentStyle`` with ``css.Property.parent`` (``parentStyle`` is DEPRECATED now).
-
-    + **BUGFIX**: Improved child and parent node referencing.
-
-    + **BUGFIX**: Parsing of CSSValues with unknown function names with a specific length of 4 or 7 chars were resulting in a SyntaxErr. Also parsing of comma separated list of CSS FUNCTION values works now.
-
-    + BUGFIX: Fixed validation problems:
-        - ``font-family: a   b`` (values with spaces in names without being quoted) are parsed now without emitting an ERROR. These are indeed valid but discouraged and you should use quotes (more than one space is compacted to a single space anyway so rather complicated without quotes)
-        - negative lengths for the ``font-size`` property are now properly reported as ERRORs
-
-    - IMPROVEMENT (minor): cssutils sets the HTTP header ``User-Agent`` now when fetching sheets over HTTP (with e.g. ``cssutils.parseUrl``).
-
-    - *FEATURE* (experimental): Added support to at least parse sheets with Microsoft only property values for ``filter`` which start with ``progid:DXImageTransform.Microsoft.[...](``. To enable these you need to set::
-
-            >>> from cssutils import settings
-            >>> settings.set('DXImageTransform.Microsoft', True)
-            >>> cssutils.ser.prefs.useMinified()
-            >>> text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
-            >>> print cssutils.parseString(text).cssText
-            a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}
-            >>>
-
-      This currently is a **major hack** but if you like to minimize sheets in the wild which use this kind of CSS cssutils at least can parse and reserialize them.
+  An xml.dom.HierarchyRequestErr may occur if an imported sheet itself contains @imports with media information or other rules which are not allowed in a @media rule like @namespace rules. In that case cssutils cannot resolve the @import rule and logs a WARNING but keeps the original @import.
 
 license
 -------
