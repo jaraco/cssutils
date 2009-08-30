@@ -38,6 +38,9 @@ development version
 HEAD
 
 
+0.9.6b5 090830
+    + BUGFIX: Issue #30 fixed. Setup from source did not work.
+
 0.9.6b4 090829
     + BUGFIX: Issue #29 fixed. Double defined namespaces are replaced with a single (the last one) now.
 
