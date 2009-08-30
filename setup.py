@@ -9,11 +9,12 @@ use EasyInstall or install with
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
-__version__ = '0.9.6b4'
 
-from cssutils import VERSION
 import codecs
 import os
+import sys
+sys.path.insert(0, "src")
+from cssutils import VERSION
 
 try:
     from setuptools import setup, find_packages

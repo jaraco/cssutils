@@ -4,15 +4,11 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.6b4 is a bugfix release.
+0.9.6b5 is a bugfix release.
 
 main changes
 ------------
-+ BUGFIX: Issue #29 fixed. Double defined namespaces are replaced with a single (the last one) now.
-
-- IMPROVEMENT: ``cssutils.resolveImports`` now keeps media information when to be resolved @import rule uses these. It wraps the imported rules in an @media rule which uses the same media information from the @media rule in the original sheet.
-
-  An xml.dom.HierarchyRequestErr may occur if an imported sheet itself contains @imports with media information or other rules which are not allowed in a @media rule like @namespace rules. In that case cssutils cannot resolve the @import rule and logs a WARNING but keeps the original @import.
++ BUGFIX: Issue #30 fixed. Setup from source did not work.
 
 license
 -------
