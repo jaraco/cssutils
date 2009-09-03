@@ -36,6 +36,7 @@ development version
 0.9.6
 -----
 HEAD
+    + BUGFIX: Definition of macro for `positivenum` in cssutils profiles actually did allow nagative numbers, fixed (thanks to Jason R. Coombs)
 
 
 0.9.6b5 090830
