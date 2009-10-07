@@ -33,6 +33,13 @@ known issues
 development version
 ===================
 
+0.9.7
+-----
+HEAD
+    + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
+
+
+
 0.9.6 091007
     + BUGFIX: Definition of macro for `positivenum` in cssutils profiles actually did allow nagative numbers, fixed (thanks to Jason R. Coombs)
 

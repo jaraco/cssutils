@@ -217,6 +217,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     new['namespaces'][rule.prefix] = rule.namespaceURI
             return 2
 
+        def variablesrule(expected, seq, token, tokenizer):
+            rule = cssutils.css.CSSVariablesRule(parentStyleSheet=self)
+            rule.cssText = self._tokensupto2(tokenizer, token)
+            if rule.wellformed:
+                seq.append(rule)
+            return 2
+
         def fontfacerule(expected, seq, token, tokenizer):
             rule = cssutils.css.CSSFontFaceRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
@@ -274,6 +281,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
              'NAMESPACE_SYM': namespacerule,
              'PAGE_SYM': pagerule,
              'MEDIA_SYM': mediarule,
+             'VARIABLES_SYM': variablesrule,
              'ATKEYWORD': unknownrule
              },
              default=ruleset)
@@ -503,14 +511,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             if inOrder:
                 index = 0
                 # always first and only
-                if (self._cssRules and self._cssRules[0].type == rule.CHARSET_RULE):
+                if (self._cssRules
+                    and self._cssRules[0].type == rule.CHARSET_RULE):
                     self._cssRules[0].encoding = rule.encoding
                 else:
                     self._cssRules.insert(0, rule)
             elif index != 0 or (self._cssRules and
                               self._cssRules[0].type == rule.CHARSET_RULE):
                 self._log.error(
-                    u'CSSStylesheet: @charset only allowed once at the beginning of a stylesheet.',
+                    u'CSSStylesheet: @charset only allowed once at the'
+                    ' beginning of a stylesheet.',
                     error=xml.dom.HierarchyRequestErr)
                 return
             else:
@@ -540,7 +550,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 else:
                     # find first point to insert
                     if self._cssRules and self._cssRules[0].type in (rule.CHARSET_RULE,
-                                                                   rule.COMMENT):
+                                                                     rule.COMMENT):
                         index = 1
                     else:
                         index = 0
@@ -552,12 +562,18 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         u'CSSStylesheet: Found @charset at index 0.',
                         error=xml.dom.HierarchyRequestErr)
                     return
-                # before @namespace, @page, @font-face, @media and stylerule
+                # before @namespace @variables @page @font-face @media stylerule
                 for r in self._cssRules[:index]:
-                    if r.type in (r.NAMESPACE_RULE, r.MEDIA_RULE, r.PAGE_RULE,
-                                  r.STYLE_RULE, r.FONT_FACE_RULE):
+                    if r.type in (r.NAMESPACE_RULE, 
+                                  r.VARIABLES_RULE, 
+                                  r.MEDIA_RULE, 
+                                  r.PAGE_RULE,
+                                  r.STYLE_RULE, 
+                                  r.FONT_FACE_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert @import here, found @namespace, @media, @page or CSSStyleRule before index %s.' %
+                            u'CSSStylesheet: Cannot insert @import here,'
+                             ' found @namespace, @variables, @media, @page or'
+                             ' CSSStyleRule before index %s.' %
                             index,
                             error=xml.dom.HierarchyRequestErr)
                         return
@@ -575,8 +591,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 else:
                     # find first point to insert
                     for i, r in enumerate(self._cssRules):
-                        if r.type in (r.MEDIA_RULE, r.PAGE_RULE, r.STYLE_RULE,
-                                      r.FONT_FACE_RULE, r.UNKNOWN_RULE, r.COMMENT):
+                        if r.type in (r.VARIABLES_RULE, r.MEDIA_RULE, 
+                                      r.PAGE_RULE, r.STYLE_RULE,
+                                      r.FONT_FACE_RULE, r.UNKNOWN_RULE, 
+                                      r.COMMENT):
                             index = i # before these
                             break
             else:
@@ -584,16 +602,22 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 for r in self._cssRules[index:]:
                     if r.type in (r.CHARSET_RULE, r.IMPORT_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert @namespace here, found @charset or @import after index %s.' %
+                            u'CSSStylesheet: Cannot insert @namespace here,'
+                            ' found @charset or @import after index %s.' %
                             index,
                             error=xml.dom.HierarchyRequestErr)
                         return
-                # before @media and stylerule
+                # before @variables @media @page @font-face and stylerule
                 for r in self._cssRules[:index]:
-                    if r.type in (r.MEDIA_RULE, r.PAGE_RULE, r.STYLE_RULE,
+                    if r.type in (r.VARIABLES_RULE, 
+                                  r.MEDIA_RULE, 
+                                  r.PAGE_RULE, 
+                                  r.STYLE_RULE, 
                                   r.FONT_FACE_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert @namespace here, found @media, @page or CSSStyleRule before index %s.' %
+                            u'CSSStylesheet: Cannot insert @namespace here,'
+                            ' found @variables, @media, @page or CSSStyleRule'
+                            ' before index %s.' %
                             index,
                             error=xml.dom.HierarchyRequestErr)
                         return
@@ -604,6 +628,56 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self._cssRules.insert(index, rule)
                 if _clean:
                     self._cleanNamespaces()
+
+
+        # @variables
+        elif rule.type == rule.VARIABLES_RULE:
+            if inOrder:
+                if rule.type in (r.type for r in self):
+                    # find last of this type
+                    for i, r in enumerate(reversed(self._cssRules)):
+                        if r.type == rule.type:
+                            index = len(self._cssRules) - i
+                            break
+                else:
+                    # find first point to insert
+                    for i, r in enumerate(self._cssRules):
+                        if r.type in (r.MEDIA_RULE, 
+                                      r.PAGE_RULE, 
+                                      r.STYLE_RULE,
+                                      r.FONT_FACE_RULE, 
+                                      r.UNKNOWN_RULE, 
+                                      r.COMMENT):
+                            index = i # before these
+                            break
+            else:
+                # after @charset @import @namespace
+                for r in self._cssRules[index:]:
+                    if r.type in (r.CHARSET_RULE, 
+                                  r.IMPORT_RULE, 
+                                  r.NAMESPACE_RULE):
+                        self._log.error(
+                            u'CSSStylesheet: Cannot insert @variables here,'
+                            ' found @charset, @import or @namespace after'
+                            ' index %s.' %
+                            index,
+                            error=xml.dom.HierarchyRequestErr)
+                        return
+                # before @media @page @font-face and stylerule
+                for r in self._cssRules[:index]:
+                    if r.type in (r.MEDIA_RULE, 
+                                  r.PAGE_RULE, 
+                                  r.STYLE_RULE, 
+                                  r.FONT_FACE_RULE):
+                        self._log.error(
+                            u'CSSStylesheet: Cannot insert @variables here,'
+                            ' found @media, @page or CSSStyleRule'
+                            ' before index %s.' %
+                            index,
+                            error=xml.dom.HierarchyRequestErr)
+                        return
+
+            self._cssRules.insert(index, rule)
 
         # all other where order is not important
         else:

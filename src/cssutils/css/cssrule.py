@@ -27,9 +27,11 @@ class CSSRule(cssutils.util.Base2):
     FONT_FACE_RULE = 5 #f
     PAGE_RULE = 6 #p
     NAMESPACE_RULE = 7 # CSSOM
+    VARIABLES_RULE = 8 # CSS Variables
 
     _typestrings = ['UNKNOWN_RULE', 'STYLE_RULE', 'CHARSET_RULE', 'IMPORT_RULE',
                      'MEDIA_RULE', 'FONT_FACE_RULE', 'PAGE_RULE', 'NAMESPACE_RULE',
+                     'VARIABLES_RULE',
                      'COMMENT']
 
     def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):

@@ -50,7 +50,7 @@ copyright = u'2004-2009, Christof Höke'
 # built documents.
 #
 # The short X.Y version.
-version = '0.9.6'
+version = '0.9.7'
 # The full version, including alpha/beta/rc tags.
 release = VERSION #'0.9.6b4'
 

@@ -20,7 +20,8 @@ class Tokenizer(object):
         u'@import': CSSProductions.IMPORT_SYM,
         u'@media': CSSProductions.MEDIA_SYM,        
         u'@namespace': CSSProductions.NAMESPACE_SYM,
-        u'@page': CSSProductions.PAGE_SYM
+        u'@page': CSSProductions.PAGE_SYM,
+        u'@variables': CSSProductions.VARIABLES_SYM
         }
     _linesep = u'\n'
     unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t|\r|\n|\f|\x20])?').sub

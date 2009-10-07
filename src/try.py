@@ -31,6 +31,25 @@ def save(name, string):
     f.write(string)
     f.close()
 
+if 1:
+    css = u'''
+    @variables {
+      c1: #0f0;
+      c2: #f00;
+    }
+    div.logoContainer {
+      /*color: var(c1);
+      color: var(c3);*/
+      }
+    '''
+    s = cssutils.parseString(css)
+    
+    var = s.cssRules[0]
+    print s.cssText
+    print var.variables['c1']
+    
+    sys.exit(1)
+
 
 if 1:
     css = u"""
