@@ -4,11 +4,11 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.6b5 is a bugfix release.
+0.9.6 is a full release.
 
 main changes
 ------------
-+ BUGFIX: Issue #30 fixed. Setup from source did not work.
++ BUGFIX: Definition of macro for `positivenum` in cssutils profiles actually did allow nagative numbers, fixed (thanks to Jason R. Coombs)
 
 license
 -------
@@ -20,7 +20,7 @@ download
 --------
 For download options see http://cthedot.de/cssutils/
 
-cssutils needs Python 2.4 or higher (tested with Python 2.6.2, 2.5.2, 2.4.4 and Jython 2.5 on Vista only)
+cssutils needs Python 2.4 or higher or Jython 2.5 and higher (tested with Python 2.6.3, 2.5.2, 2.4.4 and Jython 2.5.1 on Vista only)
 
 
 Bug reports (via Google code), comments, etc are very much appreciated! Thanks.
