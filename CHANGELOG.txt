@@ -33,11 +33,10 @@ known issues
 development version
 ===================
 
-0.9.6
------
-HEAD
+0.9.6 091007
     + BUGFIX: Definition of macro for `positivenum` in cssutils profiles actually did allow nagative numbers, fixed (thanks to Jason R. Coombs)
 
+    - distribution build with `distribute <http://pypi.python.org/pypi/distribute>`_ instead of setuptools
 
 0.9.6b5 090830
     + BUGFIX: Issue #30 fixed. Setup from source did not work.

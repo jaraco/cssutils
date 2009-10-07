@@ -43,7 +43,7 @@ There is also a low-traffic `cssutils discussion group <http://groups.google.com
 
 compatibility
 =============
-cssutils is developed on standard Python. On Jython 2.5 (from RC4 on) cssutils (from 0.9.6b1) also passes all tests.
+cssutils is developed on standard Python. 0.9.6 is the first release to pass all tests on Jython 2.5.1 too.
 
 license
 =======
@@ -60,9 +60,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 installation
 ============
-From 0.9.0 cssutils uses EasyInstall. Please find installation instructions and more information about EasyInstall from http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions.
+From 0.9.6 cssutils uses `Distribute <http://pypi.python.org/pypi/distribute>`_
 
-After installing EasyInstall simply use::
+After installing Distribute use::
 
     > easy_install cssutils
 
@@ -72,7 +72,7 @@ Alternatively download the provided source distribution. Expand the file and fro
 
     > python setup.py install
 
-Before using EasyInstall the first time or using the sdist please remove any old version which should be installed at PYTHONDIR/Lib/site-packages/cssutils.
+To uninstall remove any registrations of cssutils eggs with Distribute and remove the eggs which should be installed at PYTHONDIR/Lib/site-packages/cssutils too.
 
 
 kind request
@@ -82,5 +82,5 @@ cssutils is far from being perfect or even complete. If you find any bugs (espec
 
 thanks
 ======
-Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla and James Dobson for helpful suggestions and code patches.
+Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Jason R. Coombs, Cory Dodt, Tim Gerla and James Dobson for helpful suggestions and code patches.
 

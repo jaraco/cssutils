@@ -34,11 +34,45 @@ def save(name, string):
 
 if 1:
     css = u"""
-    @import "sheets/2resolve.css" print; 
+    .heading {
+          background: #729FCF -moz-linear-gradient(left top, left bottom,
+            from(rgba(255, 255, 255, 0.45)), to(rgba(255, 255, 255, 0.50)),
+            color-stop(0.4, rgba(255, 255, 255, 0.25)),
+            color-stop(0.6, rgba(255, 255, 255, 0.0)),
+            color-stop(0.9, rgba(255, 255, 255, 0.10)));
+          color: white;
+          height: 40px;
+        }
     """
-    s = cssutils.css.CSSStyleSheet()
-    s.cssText = css   
-    print cssutils.resolveImports(s).cssText
+    css = u'''
+    /* variables and calculations */
+    @variables {
+      CorporateLogoBGColor: #fe8d12;
+      left: 1px;
+    }
+    div.logoContainer {
+      background-color: var(CorporateLogoBGColor);
+      /* left: calc(var(left) * 2); */
+    }
+
+    /* define declarations to be used in another style declaration
+        possible with overriding */
+    @define colors {
+        color: red;
+        background: #fff;
+        }
+    @define margins {
+        top: 1;
+        /* left: var(left); */
+        }
+    a { 
+        @use colors, margins;
+        color: green;
+        }
+    
+    '''
+    s = cssutils.parseString(css)
+    print s.cssText
     sys.exit(1)
 
 if 1:
