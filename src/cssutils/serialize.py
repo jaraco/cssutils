@@ -384,6 +384,32 @@ class CSSSerializer(object):
         else:
             return u''
 
+    def do_CSSVariablesRule(self, rule):
+        """
+        serializes CSSVariablesRule
+
+        media
+            TODO
+        variables
+            CSSStyleDeclaration
+
+        + CSSComments
+        """
+        variablesText = self.do_css_CSSStyleDeclaration(rule.variables)
+
+        if variablesText and rule.wellformed:
+            out = Out(self)
+            out.append(self._atkeyword(rule, u'@variables'))   
+            for item in rule.seq:
+                # assume comments {
+                out.append(item.value, item.type)            
+            out.append(u'{')
+            out.append(u'%s%s}' % (variablesText, self.prefs.lineSeparator),
+                       indent=1)            
+            return out.value()            
+        else:
+            return u''
+        
     def do_CSSFontFaceRule(self, rule):
         """
         serializes CSSFontFaceRule
