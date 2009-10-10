@@ -38,6 +38,7 @@ development version
 HEAD
     + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
 
+    + FEATURE: Parameter `index` of ``CSSStyleSheet.deleteRule(index)`` and ``CSSMediaRule.deleteRule(index)`` may now also be a rule object to be removed from the contained cssRules list.
 
 
 0.9.6 091007

@@ -148,7 +148,7 @@ class CSSVariablesRule(cssrule.CSSRule):
                     doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
 
-    valid = property(doc='TODO')
+    valid = property(lambda self: True, doc='TODO')
     
     # constant but needed:
     wellformed = property(lambda self: True)

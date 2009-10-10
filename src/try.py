@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 __date__ = '$LastChangedDate::                            $:'
 
-
-
-
 from StringIO import StringIO
 from cssutils.prodparser import *
 from pprint import pprint as pp
@@ -32,21 +29,94 @@ def save(name, string):
     f.close()
 
 if 1:
+    v = cssutils.css.CSSVariablesDeclaration()
+    v.setVariable('a', '1')
+    print v.getVariableValue('a')
+
+    print 'a' in v
+
+    v['b'] = 2
+    print v['b']
+
+    print v
+    print 'keys', v.keys()
+    
+    for k in v:
+        print k, v[k]
+    for i in range(0, v.length):
+        print i, v.item(i), v.getVariableValue(v.item(i))
+        
+    v.removeVariable('a')
+    del v['b']
+    print v
+    print 'keys', v.keys()
+    
+    sys.exit(0)
+
+if 1:
     css = u'''
     @variables {
       c1: #0f0;
       c2: #f00;
     }
     div.logoContainer {
-      /*color: var(c1);
-      color: var(c3);*/
+      color: var(c1);
+      color: var(c3);
+      /*background: var(c1) no-repeat var(c2);*/
       }
     '''
-    s = cssutils.parseString(css)
+    #css = '@variables {} a { color: var(a);}'
     
-    var = s.cssRules[0]
+    s = cssutils.parseString(css)
+    varrule, stylerule = s.cssRules
+
     print s.cssText
-    print var.variables['c1']
+    print 
+#    p = stylerule.style.getProperty('color')
+#    print p
+#    print '3', id(p.cssValue), type(p.cssValue), p.cssValue
+    print 'c1 =', varrule.variables['c1']
+    print '\n--- RESOLVE var() and remove @variables ---'
+    
+    # replace vars (ALL!)
+    for p in stylerule.style.getProperties(all=True):
+        v = p.cssValue
+        #print 1, type(v), v
+            
+        if v.cssValueType == v.CSS_VALUE_LIST:
+            newvalue = []
+            for x in v:
+                #print 222, x
+                if x.cssValueType == x.CSS_VARIABLE:
+                    actual = x.value  
+                    if actual:
+                        print '+ CSSValueList: Replacing %r with %r' % (p.value,
+                                                                        actual)
+                        newvalue.append(actualvalue)
+                    else:
+                        print '- CSSValueList: No value found for %r' % x.cssText
+                        newvalue.append(x.cssText)
+                else:
+                    newvalue.append(x.cssText)
+                    
+            p.value = ' '.join(newvalue)
+                
+        elif v.cssValueType == v.CSS_VARIABLE:
+                #print 111, v
+                actual = v.value  
+                if actual:
+                    print '+ Replacing %r with %r' % (p.value, actual)
+                    p.value = v.value
+                else:
+                    print '- No value found for %r' % p.value
+                
+    # remove @variables
+    for r in s:
+        if r.VARIABLES_RULE == r.type:
+            s.deleteRule(r)
+    
+    print
+    print s.cssText
     
     sys.exit(1)
 
