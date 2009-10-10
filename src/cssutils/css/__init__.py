@@ -37,7 +37,7 @@ __all__ = [
     'CSSPageRule',
     'CSSStyleRule',
     'CSSUnknownRule',
-    'cssvariablesrule'
+    'CSSVariablesRule'
     'Selector', 'SelectorList',
     'CSSStyleDeclaration', 'Property',
     'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
@@ -61,5 +61,6 @@ from cssunknownrule import *
 from selector import *
 from selectorlist import *
 from cssstyledeclaration import *
+from cssvariablesdeclaration import *
 from property import *
 from cssvalue import *

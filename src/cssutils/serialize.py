@@ -893,7 +893,19 @@ class CSSSerializer(object):
                 out.append(val, type_)
                 
             return out.value() 
-            
+
+    def do_css_CSSVariable(self, variable):
+        """Serializes a CSSVariable"""
+        if not variable:
+            return u''
+        else:
+            out = Out(self)
+            for item in variable.seq:
+                type_, val = item.type, item.value
+                out.append(val, type_)
+
+            return out.value()
+          
     def do_css_RGBColor(self, cssvalue):
         """Serialize a RGBColor value"""
         if not cssvalue:
@@ -903,17 +915,6 @@ class CSSSerializer(object):
             unary = None
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
-                
-#                # prepare
-#                if 'CHAR' == type_ and val in u'+-':
-#                    # save - for next round                
-#                    if u'-' == val:
-#                        # omit +
-#                        unary = val
-#                    continue
-#                elif unary:
-#                    val = unary + val.cssText
-#                    unary = None
                     
                 out.append(val, type_)
             
