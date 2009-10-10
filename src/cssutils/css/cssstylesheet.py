@@ -13,6 +13,7 @@ __version__ = '$Id$'
 
 from cssutils.helper import Deprecated
 from cssutils.util import _Namespaces, _SimpleNamespaces, _readUrl
+from cssrule import CSSRule
 import cssutils.stylesheets
 import xml.dom
 
@@ -382,10 +383,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """Delete rule at `index` from the style sheet.
 
         :param index:
-            of the rule to remove in the StyleSheet's rule list. For an
-            `index` < 0 **no** :exc:`~xml.dom.IndexSizeErr` is raised but 
-            rules for normal Python lists are used. E.g. ``deleteRule(-1)`` 
-            removes the last rule in cssRules.
+            The `index` of the rule to be removed from the StyleSheet's rule
+            list. For an `index` < 0 **no** :exc:`~xml.dom.IndexSizeErr` is
+            raised but rules for normal Python lists are used. E.g. 
+            ``deleteRule(-1)`` removes the last rule in cssRules.
+            
+            `index` may also be a CSSRule object which will then be removed
+            from the StyleSheet.
+            
         :exceptions:
             - :exc:`~xml.dom.IndexSizeErr`:
               Raised if the specified index does not correspond to a rule in
@@ -396,6 +401,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
               Raised if this style sheet is readonly.
         """
         self._checkReadonly()
+
+        if isinstance(index, CSSRule):
+            for i, r in enumerate(self.cssRules):
+                if index == r:
+                    index = i
+                    break
+            else:
+                raise xml.dom.IndexSizeErr(u"CSSStyleSheet: Not a rule in"
+                                           " this sheets'a cssRules list: %s"
+                                           % index)
 
         try:
             rule = self._cssRules[index]

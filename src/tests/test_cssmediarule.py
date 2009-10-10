@@ -215,8 +215,8 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaises(xml.dom.SyntaxErr, r._setName, 0)
         self.assertRaises(xml.dom.SyntaxErr, r._setName, 123)
 
-    def test_deleteRule(self):
-        "CSSMediaRule.deleteRule"
+    def test_deleteRuleIndex(self):
+        "CSSMediaRule.deleteRule(index)"
         # see CSSStyleSheet.deleteRule
         m = cssutils.css.CSSMediaRule()
         m.cssText = u'''@media all {
@@ -251,6 +251,25 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         m.deleteRule(1)
         self.assertEqual(1, m.cssRules.length)
         self.assertEqual(u'@media all {\n    /* x */\n    }', m.cssText)
+
+    def test_deleteRule(self):
+        "CSSMediaRule.deleteRule(rule)"
+        m = cssutils.css.CSSMediaRule()
+        m.cssText='''@media all {
+            a { color: red; }
+            b { color: blue; }
+            c { color: green; }
+        }'''
+        s1, s2, s3 = m.cssRules
+        
+        r = cssutils.css.CSSStyleRule()
+        self.assertRaises(xml.dom.IndexSizeErr, m.deleteRule, r)
+
+        self.assertEqual(3, m.cssRules.length)
+        m.deleteRule(s2)
+        self.assertEqual(2, m.cssRules.length)
+        self.assertEqual(m.cssText, '@media all {\n    a {\n        color: red\n        }\n    c {\n        color: green\n        }\n    }')
+        self.assertRaises(xml.dom.IndexSizeErr, m.deleteRule, s2)
 
     def test_add(self):
         "CSSMediaRule.add()"
