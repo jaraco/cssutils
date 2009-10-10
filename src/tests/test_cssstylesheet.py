@@ -445,8 +445,8 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertRaisesMsg(xml.dom.NamespaceErr, "Prefix u'a' not found.", 
                              s._setCssText, 'a|a { color: red }')        
         
-    def test_deleteRule(self):
-        "CSSStyleSheet.deleteRule()"
+    def test_deleteRuleIndex(self):
+        "CSSStyleSheet.deleteRule(index)"
         self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {\n    x: 1\n    }@y;'
         self.assertEqual(5, self.s.cssRules.length)
 
@@ -474,6 +474,30 @@ ex2|SEL4, a, ex2|SELSR {
         self.s.deleteRule(1)
         self.assertEqual(1, self.s.cssRules.length)
         self.assertEqual(u'@import "x";', self.s.cssText)
+
+    def test_deleteRule(self):
+        "CSSStyleSheet.deleteRule(rule)"
+        s = cssutils.css.CSSStyleSheet()
+        s.cssText='''
+        @namespace x "http://example.com";
+        a { color: red; }
+        b { color: blue; }
+        c { color: green; }
+        '''
+        n, s1, s2, s3 = s.cssRules
+        
+        r = cssutils.css.CSSStyleRule()
+        self.assertRaises(xml.dom.IndexSizeErr, s.deleteRule, r)
+
+        self.assertEqual(4, s.cssRules.length)
+        s.deleteRule(n)
+        self.assertEqual(3, s.cssRules.length)
+        self.assertEqual(s.cssText, 'a {\n    color: red\n    }\nb {\n    color: blue\n    }\nc {\n    color: green\n    }')
+        self.assertRaises(xml.dom.IndexSizeErr, s.deleteRule, n)
+        s.deleteRule(s2)
+        self.assertEqual(2, s.cssRules.length)
+        self.assertEqual(s.cssText, 'a {\n    color: red\n    }\nc {\n    color: green\n    }')
+        self.assertRaises(xml.dom.IndexSizeErr, s.deleteRule, s2)
 
     def _gets(self):
         # complete

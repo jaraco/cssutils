@@ -243,7 +243,13 @@ class CSSMediaRule(cssrule.CSSRule):
         Delete the rule at `index` from the media block.
         
         :param index:
-            of the rule to remove within the media block's rule collection
+            The `index` of the rule to be removed from the media block's rule
+            list. For an `index` < 0 **no** :exc:`~xml.dom.IndexSizeErr` is
+            raised but rules for normal Python lists are used. E.g. 
+            ``deleteRule(-1)`` removes the last rule in cssRules.
+            
+            `index` may also be a CSSRule object which will then be removed
+            from the media block.
 
         :Exceptions:
             - :exc:`~xml.dom.IndexSizeErr`:
@@ -253,6 +259,16 @@ class CSSMediaRule(cssrule.CSSRule):
               Raised if this media rule is readonly.
         """
         self._checkReadonly()
+
+        if isinstance(index, cssrule.CSSRule):
+            for i, r in enumerate(self.cssRules):
+                if index == r:
+                    index = i
+                    break
+            else:
+                raise xml.dom.IndexSizeErr(u"CSSMediaRule: Not a rule in"
+                                           " this rule'a cssRules list: %s"
+                                           % index)
 
         try:
             self._cssRules[index]._parentRule = None # detach
