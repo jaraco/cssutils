@@ -301,7 +301,8 @@ class ProdParser(object):
         """
         if isinstance(text, basestring):
             # to tokenize strip space
-            tokens = self._tokenizer.tokenize(text.strip())
+            return  self._tokenizer.tokenize(text.strip())
+        
         elif isinstance(text, tuple):
             # (token, tokens) or a single token
             if len(text) == 2:
@@ -312,19 +313,20 @@ class ProdParser(object):
                     for t in tokens:
                         yield t
 
-                tokens = (t for t in gen(*text))
+                return (t for t in gen(*text))
 
             else:
                 # single token
-                tokens = (t for t in [text])
+                return  (t for t in [text])
+            
         elif isinstance(text, list):
             # generator from list
-            tokens = (t for t in text)
+            return (t for t in text)
+        
         else:
+            # NEW DEFAULT
             # already tokenized, assume generator
-            tokens = text
-
-        return tokens
+            return text
 
     def _SorTokens(self, tokens, until=',/'):
         """New tokens generator which has S tokens removed,
@@ -566,9 +568,10 @@ class PreDef(object):
                            stop=stop)
 
     @staticmethod
-    def ident(nextSor=False):
+    def ident(toStore=None, nextSor=False):
         return Prod(name=u'ident',
                     match=lambda t, v: t == PreDef.types.IDENT,
+                    toStore=toStore,
                     nextSor=nextSor)
 
     @staticmethod
@@ -628,3 +631,11 @@ class PreDef(object):
                     toSeq=lambda t, tokens: (t[0], t[1].lower()),
                     nextSor=nextSor
                     )
+        
+    @staticmethod
+    def variable(toSeq=None, nextSor=False):
+        return Prod(name=u'variable',
+                    match=lambda t, v: u'var(' == cssutils.helper.normalize(v),
+                    toSeq=toSeq,
+                    nextSor=nextSor)
+
