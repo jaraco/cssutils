@@ -62,6 +62,16 @@ class CSSVariablesRule(cssrule.CSSRule):
               style sheet.
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
+              
+        Format::
+        
+            variables
+            : VARIABLES_SYM S* medium [ COMMA S* medium ]* LBRACE S* variableset* '}' S*
+            ;
+            
+            variableset
+            : LBRACE S* vardeclaration [ ';' S* vardeclaration ]* '}' S*
+            ;
         """
         super(CSSVariablesRule, self)._setCssText(cssText)
 

@@ -40,6 +40,7 @@ HEAD
 
     + FEATURE: Parameter `index` of ``CSSStyleSheet.deleteRule(index)`` and ``CSSMediaRule.deleteRule(index)`` may now also be a rule object to be removed from the contained cssRules list.
 
+    - INTERNAL: Added ``tokenizer.push``. Prodparser uses a global tokenizer now.
 
 0.9.6 091007
     + BUGFIX: Definition of macro for `positivenum` in cssutils profiles actually did allow nagative numbers, fixed (thanks to Jason R. Coombs)

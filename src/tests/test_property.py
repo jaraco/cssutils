@@ -97,8 +97,10 @@ class PropertyTestCase(basetest.BaseTestCase):
                    u"Property: No CSS priority value: u'importantx'."),
             u'a:!important': (xml.dom.SyntaxErr,
                    u"CSSValue: Unknown syntax or no value: u''."),
-            u'a: 1;': (xml.dom.SyntaxErr,
-                   u'''CSSValue: No match: ('CHAR', u';', 1, 5)''')
+
+            # TODO?
+#            u'a: 1;': (xml.dom.SyntaxErr,
+#                   u'''CSSValue: No match: ('CHAR', u';', 1, 5)''')
             }
         for test in tests:
             ecp, msg = tests[test]

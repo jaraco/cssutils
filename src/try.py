@@ -29,7 +29,16 @@ def save(name, string):
     f.close()
 
 if 1:
-    v = cssutils.css.CSSVariablesDeclaration()
+    #b: #fff;
+    v = cssutils.css.CSSVariablesDeclaration(cssText='''
+    a: 1px;
+    /* 1 */
+    c: #f00;
+    a: 2px 2px
+    ''')
+    print v.cssText
+    sys.exit(1)
+    
     v.setVariable('a', '1')
     print v.getVariableValue('a')
 

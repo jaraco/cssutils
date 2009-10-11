@@ -152,18 +152,28 @@ class CSSValue(cssutils.util._NewBase):
                       )
         )
         operator = Choice(PreDef.S(),
-                          PreDef.char('comma', ',', toSeq=lambda t, tokens: ('operator', t[1])),
-                          PreDef.char('slash', '/', toSeq=lambda t, tokens: ('operator', t[1])),
+                          PreDef.char('comma', ',', 
+                                      toSeq=lambda t, tokens: ('operator', t[1])),
+                          PreDef.char('slash', '/', 
+                                      toSeq=lambda t, tokens: ('operator', t[1])),
                           optional=True)
         # CSSValue PRODUCTIONS
         valueprods = Sequence(term,
+                              # TODO: only when setting via other class
+                              PreDef.char('END', ';', 
+                                          stopAndKeep=True, 
+                                          optional=True),
                               Sequence(operator, # mayEnd this Sequence if whitespace
                                        term,
+                                       PreDef.char('END', ';', 
+                                                   stopAndKeep=True, 
+                                                   optional=True),
                                        minmax=lambda: (0, None))) 
         # parse
-        wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
-                                                                  u'CSSValue',
-                                                                  valueprods)
+        wellformed, seq, store, notused = ProdParser().parse(cssText,
+                                                             u'CSSValue',
+                                                             valueprods,
+                                                             keepS=True)
         if wellformed:
             # - count actual values and set firstvalue which is used later on
             # - combine comma separated list, e.g. font-family to a single item
@@ -881,7 +891,8 @@ class CSSFunction(CSSPrimitiveValue):
         # store: colorType, parts
         wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
                                                                   self._functionName,
-                                                                  self._productiondefinition())
+                                                                  self._productiondefinition(),
+                                                                  keepS=True)
         if wellformed:
             # combine +/- and following CSSPrimitiveValue, remove S
             newseq = self._tempSeq()
@@ -979,7 +990,8 @@ class RGBColor(CSSPrimitiveValue):
         wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
                                                             u'RGBColor',
                                                             colorprods,
-                                                            {'parts': []})
+                                                            keepS=True,
+                                                            store={'parts': []})
         
         if wellformed:
             self.wellformed = True
@@ -1077,7 +1089,8 @@ class CSSVariable(CSSValue):
         store = {'ident': None}
         wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
                                                                   u'CSSVariable',
-                                                                  funcProds)
+                                                                  funcProds,
+                                                                  keepS=True)
         if wellformed:
             self._name = store['ident'].value
             self._setSeq(seq)
