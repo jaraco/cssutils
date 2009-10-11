@@ -563,7 +563,7 @@ class Seq(object):
 
         return "<cssutils.%s.%s object length=%r values=%r readonly=%r at 0x%x>" % (
                 self.__module__, self.__class__.__name__, len(self),
-                u''.join(vals), self._readonly, id(self))
+                u', '.join(vals), self._readonly, id(self))
 
 class Item(object):
     """
