@@ -28,7 +28,22 @@ def save(name, string):
     f.write(string)
     f.close()
 
+
 if 1:
+    css = u'''
+    @variables {
+      c1: #0f0;
+      /*1*/
+      c2: #f00;
+      /* TODO @x; */
+      a : var(x)
+    }
+    '''
+    s = cssutils.parseString(css)
+    varrule = s.cssRules[0]
+    print varrule
+    print varrule.cssText
+
     #b: #fff;
     v = cssutils.css.CSSVariablesDeclaration(cssText='''
     a: 1px;

@@ -301,12 +301,13 @@ class Prod(object):
 # global tokenizer as there is only one!
 tokenizer = cssutils.tokenize2.Tokenizer()
 
-
 class ProdParser(object):
     """Productions parser."""
-    def __init__(self):
+    def __init__(self, clear=True):
         self.types = cssutils.cssproductions.CSSProductions
         self._log = cssutils.log
+        if clear:
+            tokenizer.clear()
 
     def _texttotokens(self, text):
         """Build a generator which is the only thing that is parsed!
