@@ -5,7 +5,7 @@ __all__ = ['CSSVariablesRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssfontfacerule.py 1818 2009-07-30 21:39:00Z cthedot $'
 
-from cssstyledeclaration import CSSStyleDeclaration
+from cssvariablesdeclaration import CSSVariablesDeclaration
 import cssrule
 import cssutils
 import xml.dom
@@ -15,7 +15,7 @@ class CSSVariablesRule(cssrule.CSSRule):
     The CSSVariablesRule interface represents a @variables rule within a CSS
     style sheet. The @variables rule is used to specify variables.
 
-    cssutils uses a :class:`~cssutils.css.CSSStyleDeclaration`  to
+    cssutils uses a :class:`~cssutils.css.CSSVariablesDeclaration`  to
     represent the variables.
     """
     def __init__(self, mediaText=None, variables=None, parentRule=None, 
@@ -28,7 +28,7 @@ class CSSVariablesRule(cssrule.CSSRule):
         self._atkeyword = u'@variables'
         self._media = cssutils.stylesheets.MediaList(mediaText, 
                                                      readonly=readonly)
-        self._variables = CSSStyleDeclaration(parentRule=self)
+        self._variables = CSSVariablesDeclaration(parentRule=self)
         if variables:
             self.variables = variables
 
@@ -118,7 +118,7 @@ class CSSVariablesRule(cssrule.CSSRule):
                 self._log.error(u'CSSVariablesRule: Trailing content found.',
                                 token=nonetoken)
 
-            testvariables = CSSStyleDeclaration(parentRule=self)
+            testvariables = CSSVariablesDeclaration(parentRule=self)
             if 'EOF' == typ:
                 # add again as variables needs it
                 variablestokens.append(braceorEOFtoken)
@@ -141,7 +141,7 @@ class CSSVariablesRule(cssrule.CSSRule):
     def _setVariables(self, variables):
         """
         :param variables:
-            a CSSStyleDeclaration or string
+            a CSSVariablesDeclaration or string
         """
         self._checkReadonly()
         if isinstance(variables, basestring):
@@ -152,7 +152,7 @@ class CSSVariablesRule(cssrule.CSSRule):
 
     variables = property(lambda self: self._variables, _setVariables,
                      doc="(DOM) The variables of this rule set, "
-                         "a :class:`~cssutils.css.CSSStyleDeclaration`.")
+                         "a :class:`~cssutils.css.CSSVariablesDeclaration`.")
 
     type = property(lambda self: self.VARIABLES_RULE, 
                     doc="The type of this rule, as defined by a CSSRule "

@@ -68,6 +68,9 @@ class Tokenizer(object):
         """Push back tokens which have been pulled but not processed."""
         self._pushed = itertools.chain(tokens, self._pushed)
 
+    def clear(self):
+        self._pushed = []
+
     def tokenize(self, text, fullsheet=False):
         """Generator: Tokenize text and yield tokens, each token is a tuple 
         of::

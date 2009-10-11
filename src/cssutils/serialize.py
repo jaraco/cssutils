@@ -395,7 +395,7 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        variablesText = self.do_css_CSSStyleDeclaration(rule.variables)
+        variablesText = rule.variables.cssText
 
         if variablesText and rule.wellformed:
             out = Out(self)
