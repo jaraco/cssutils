@@ -8,6 +8,7 @@ __version__ = '$Id: cssstyledeclaration.py 1819 2009-08-01 20:52:43Z cthedot $'
 from cssutils.prodparser import *
 from cssvalue import CSSValue
 import cssutils
+import itertools
 import xml.dom
 
 class CSSVariablesDeclaration(cssutils.util._NewBase):
@@ -72,7 +73,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
     
     def _getCssText(self):
         """Return serialized property cssText."""
-        return cssutils.ser.do_css_CSSStyleDeclaration(self)
+        return cssutils.ser.do_css_CSSVariablesDeclaration(self)
 
     def _setCssText(self, cssText):
         """Setting this attribute will result in the parsing of the new value
@@ -85,23 +86,67 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified CSS string value has a syntax error and
               is unparsable.
+
+        Format::
+        
+            variableset
+            : vardeclaration [ ';' S* vardeclaration ]*
+            ;
+            
+            vardeclaration
+            : varname ':' S* term
+            ;
+            
+            varname
+            : IDENT S*
+            ;
+            
+            expr
+            : [ VARCALL | term ] [ operator [ VARCALL | term ] ]*
+            ;
+
         """
         self._checkReadonly()
-        print "TODO"
-#        # [Property: Value;]* Property: Value?
-#        newseq = self._tempSeq()
-#        wellformed, expected = self._parse(expected=None,
-#            seq=newseq, tokenizer=tokenizer,
-#            productions={'IDENT': ident},#, 'CHAR': char},
-#            default=unexpected)
-#        # wellformed set by parse
-#
-#        for item in newseq:
-#            item.value._parent = self
-#         
-#        # do not check wellformed as invalid things are removed anyway            
-#        self._setSeq(newseq)
-        
+
+        vardeclaration = Sequence(
+            PreDef.ident(),
+            PreDef.char(u':', u':', toSeq=False),
+            #PreDef.S(toSeq=False, optional=True),
+            Prod(name=u'term', match=lambda t, v: True,
+                 toSeq=lambda t, tokens: (u'value', 
+                                          CSSValue(itertools.chain([t], 
+                                                                   tokens))
+                 )
+            ),
+            PreDef.char(u';', u';', toSeq=False, optional=True),
+        )
+        prods = Sequence(vardeclaration, minmax=lambda: (0, None))
+        # parse
+        wellformed, seq, store, notused = \
+            ProdParser().parse(cssText, 
+                               u'CSSVariableDeclaration',
+                               prods)
+        if wellformed:
+            newseq = self._tempSeq()
+
+            # seq contains only name: value pairs plus comments etc
+            lastname = None
+            for item in seq:
+                if u'IDENT' == item.type:
+                    lastname = item
+                    self._vars[lastname.value] = None
+                elif u'value' == item.type:
+                    self._vars[lastname.value] = item.value
+                    newseq.append((lastname.value, item.value), 
+                                  'var',
+                                  lastname.line, lastname.col)
+                else:
+                    newseq.appendItem(item)
+
+            self._setSeq(newseq)
+            self.wellformed = True
+
+                    
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) A parsable textual representation of the declaration\
         block excluding the surrounding curly braces.")

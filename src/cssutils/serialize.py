@@ -738,11 +738,40 @@ class CSSSerializer(object):
         else: 
             return u''
 
+    def do_css_CSSVariablesDeclaration(self, variables):
+        """Variables of CSSVariableRule."""
+        if not variables._vars:
+            return u''
+        else:
+            out = Out(self)
+            
+            lastitem = len(variables.seq) - 1
+            for i, item in enumerate(variables.seq):
+                type_, val = item.type, item.value
+                if u'var' == type_:
+                    name, cssvalue = val
+                    out.append(name)
+                    out.append(u':')
+                    out.append(cssvalue.cssText)
+                    if i < lastitem or not self.prefs.omitLastSemicolon:
+                        out.append(u';')
+                
+                elif isinstance(val, cssutils.css.CSSComment):
+                    # CSSComment
+                    out.append(val, 'COMMENT')
+                    out.append(self.prefs.lineSeparator)
+                else:
+                    out.append(val.cssText, type_)
+                    out.append(self.prefs.lineSeparator)
+
+                
+            return out.value() 
+
     def do_css_CSSStyleDeclaration(self, style, separator=None):
         """
         Style declaration of CSSStyleRule
         """
-#        # TODO: use Out()
+        # TODO: use Out()
         
         # may be comments only       
         if len(style.seq) > 0:

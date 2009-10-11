@@ -322,10 +322,24 @@ class ProdParserTestCase(basetest.BaseTestCase):
     def setUp(self):
         pass
 
-    def test_parse(self):
-        "ProdParser.parse()"      
+    def test_parse_keepS(self):
+        "ProdParser.parse(keepS)"  
+        p = ProdParser()
+            
         # text, name, productions, store=None
-        #p = ProdParser(text, name, productions, store=None)
+        prods = lambda: Sequence(PreDef.char(';', u';'),
+                                 PreDef.char(':', u':')
+                                 )       
+        
+        w, seq, store, unused = p.parse('; :', 'test', prods(), 
+                                                   keepS=True)
+        self.assertTrue(w)
+        self.assertEqual(3, len(seq))
+
+        w, seq, store, unused = p.parse('; :', 'test', prods(), 
+                                                   keepS=False)
+        self.assertTrue(w)
+        self.assertEqual(2, len(seq))
 
     def test_combi(self):
         "ProdParser.parse() 2"
