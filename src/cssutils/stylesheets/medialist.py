@@ -56,6 +56,13 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
                 self.__class__.__name__, self.mediaText, id(self))
 
+    def _absorb(self, other):
+        """Replace all own data with data from other object."""
+        #self._parentRule = other._parentRule
+        self.seq[:] = other.seq[:]
+        self._readonly = other._readonly
+
+
     length = property(lambda self: len(self),
         doc="The number of media in the list (DOM readonly).")
 

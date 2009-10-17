@@ -40,15 +40,17 @@ HEAD
 
     - API CHANGE (minor): Removed ``css.Property.parentStyle`` which was deprecated for some times now in favor of ``css.Property.parent``
 
+    + **IMPROVEMENT**: Massive speed improvement due to changes in internal parsing.
+
+      When tried in a real world situation (parsing the stylesheet for my own site inside a simple WSGI based CSS handler) the parser uses ~0.7-0.8s when using cssutils 0.9.6. With cssutils 0.9.7a0 it only needs ~0.21s so only about 1/3 to 1/4 the time...
+
+    **experimental and incomplete**
+
     + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
 
     + FEATURE: Parameter `index` of ``CSSStyleSheet.deleteRule(index)`` and ``CSSMediaRule.deleteRule(index)`` may now also be a rule object to be removed from the contained cssRules list.
 
-    - **IMPROVEMENT**: Massive speed improvement due to changes in internal parsing.
-
-      When using in a real world situation (parsing the stylesheet for my own site inside a simple WSGI based CSS handler) the parser uses ~0.7-0.8s when using cssutils 0.9.6. With cssutils 0.9.7a0 it only needs ~0.21s so only about 1/3 to 1/4 the time...
-
-    + INTERNAL: Added ``tokenizer.push``. Prodparser uses a global tokenizer now.
+    - INTERNAL: Added ``tokenizer.push()``. Prodparser uses a global tokenizer now.
 
 
 0.9.6
