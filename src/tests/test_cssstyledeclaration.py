@@ -172,20 +172,16 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         "CSSStyleDeclaration.children()"
         style = u'/*1*/color: red; color: green; @x;'
         types = [
-            (cssutils.css.CSSComment, None), 
-            (cssutils.css.Property, 'parentStyle'), #DEPRECATED
-            (cssutils.css.Property, 'parentStyle'), #DEPRECATED
-            (cssutils.css.CSSUnknownRule, None)
+            cssutils.css.CSSComment, 
+            cssutils.css.Property,
+            cssutils.css.Property,
+            cssutils.css.CSSUnknownRule
         ] 
         def t(s):
             for i, x in enumerate(s.children()):
-                self.assertEqual(types[i][0], type(x))
-                self.assertEqual(s, x.parent)
-                
-                if types[i][1]:
-                    #DEPRECATED
-                    self.assertEqual(s, getattr(x, types[i][1]))
-                    
+                self.assertEqual(types[i], type(x))
+                self.assertEqual(x.parent, s)
+                                    
         t(cssutils.parseStyle(style))
         t(cssutils.parseString(u'a {'+style+'}').cssRules[0].style)
         t(cssutils.parseString(u'@media all {a {'+style+'}}').cssRules[0].cssRules[0].style)

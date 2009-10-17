@@ -37,7 +37,7 @@ class SelectorListTestCase(basetest.BaseTestCase):
         def check(style):
             self.assertEqual(style, style.selectorList.parentRule)
             for sel in style.selectorList:
-                self.assertEqual(style.selectorList, sel.parentList)
+                self.assertEqual(style.selectorList, sel.parent)
         
         style = cssutils.css.CSSStyleRule('a, b')
         check(style)

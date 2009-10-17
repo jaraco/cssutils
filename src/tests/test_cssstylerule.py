@@ -39,9 +39,9 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(style, s.style)
         self.assertEqual('1', s.style.getPropertyValue('x'))
         
-        invalids = ('/b { 2 }', # both invalid
-                    '$b { x:2 }', # invalid selector
-                    'c { $x3 }' # invalid style
+        invalids = ('$b { x:2 }', # invalid selector
+                    'c { $x3 }', # invalid style
+                    '/b { 2 }' # both invalid
                     )
         for invalid in invalids:
             try:
@@ -49,9 +49,9 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             except xml.dom.DOMException, e:
                 pass
             self.assertEqual(sel, s.selectorList)
-            self.assertEqual('a', s.selectorList.selectorText)
+            self.assertEqual(u'a', s.selectorList.selectorText)
             self.assertEqual(style, s.style)
-            self.assertEqual('1', s.style.getPropertyValue('x'))
+            self.assertEqual(u'1', s.style.getPropertyValue('x'))
 
         # CHANGING 
         s = cssutils.parseString(u'a {s1: 1}')

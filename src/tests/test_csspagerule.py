@@ -131,6 +131,38 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             })
         self.do_raise_r(tests) # set cssText
 
+    def test_cssText2(self):
+        "CSSPageRule.cssText 2"
+        r = cssutils.css.CSSPageRule()
+        s = u'a:left'
+        r.selectorText = s 
+        self.assertEqual(r.selectorText, s)
+
+        st = 'size: a4'
+        r.style = st
+        self.assertEqual(r.style.cssText, st)
+
+        # invalid selector
+        self.assertRaises(xml.dom.SyntaxErr, r._setStyle, '$')
+        self.assertEqual(r.selectorText, s)
+        self.assertEqual(r.style.cssText, st)
+
+        self.assertRaises(xml.dom.SyntaxErr, r._setCssText, '@page $ { color: red }')
+        self.assertEqual(r.selectorText, s)
+        self.assertEqual(r.style.cssText, st)
+
+
+        # invalid style
+        self.assertRaises(xml.dom.SyntaxErr, r._setSelectorText, '$')
+        self.assertEqual(r.selectorText, s)
+        self.assertEqual(r.style.cssText, st)
+
+        self.assertRaises(xml.dom.SyntaxErr, r._setCssText, '@page b:right { x }')
+        self.assertEqual(r.selectorText, s)
+        self.assertEqual(r.style.cssText, st)
+
+        
+
     def test_selectorText(self):
         "CSSPageRule.selectorText"
         r = cssutils.css.CSSPageRule()
