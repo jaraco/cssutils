@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>package cssutils.css &mdash; cssutils v0.9.6 documentation</title>
+    <title>package cssutils.css &mdash; cssutils v0.9.7a0 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.6',
+        VERSION:     '0.9.7a0',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.6 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7a0 documentation" href="../index.html" />
     <link rel="next" title="package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -88,10 +88,13 @@ Same as <tt class="docutils literal"><span class="pre">insertRule(rule,</span> <
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>index</em> &#8211; of the rule to remove in the StyleSheet&#8217;s rule list. For an
-<cite>index</cite> &lt; 0 <strong>no</strong> <a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr"><tt class="xref docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is raised but 
-rules for normal Python lists are used. E.g. <tt class="docutils literal"><span class="pre">deleteRule(-1)</span></tt> 
-removes the last rule in cssRules.</p>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>index</em> &#8211; <p>The <cite>index</cite> of the rule to be removed from the StyleSheet&#8217;s rule
+list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr"><tt class="xref docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
+raised but rules for normal Python lists are used. E.g. 
+<tt class="docutils literal"><span class="pre">deleteRule(-1)</span></tt> removes the last rule in cssRules.</p>
+<p><cite>index</cite> may also be a CSSRule object which will then be removed
+from the StyleSheet.</p>
+</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
@@ -677,7 +680,13 @@ Same as <a title="cssutils.css.CSSMediaRule.insertRule" class="reference interna
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>index</em> &#8211; of the rule to remove within the media block&#8217;s rule collection</p>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>index</em> &#8211; <p>The <cite>index</cite> of the rule to be removed from the media block&#8217;s rule
+list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr"><tt class="xref docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
+raised but rules for normal Python lists are used. E.g. 
+<tt class="docutils literal"><span class="pre">deleteRule(-1)</span></tt> removes the last rule in cssRules.</p>
+<p><cite>index</cite> may also be a CSSRule object which will then be removed
+from the media block.</p>
+</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
@@ -1067,7 +1076,7 @@ a rule set.</dd></dl>
 <h3>Selector<a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.Selector">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Selector</tt><big>(</big><em>selectorText=None</em>, <em>parentList=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Selector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Selector</tt><big>(</big><em>selectorText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Selector" title="Permalink to this definition">¶</a></dt>
 <dd><p>(cssutils) a single selector in a <a title="cssutils.css.SelectorList" class="reference internal" href="#cssutils.css.SelectorList"><tt class="xref docutils literal"><span class="pre">SelectorList</span></tt></a> 
 of a <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a>.</p>
 <p>Format:</p>
@@ -1154,9 +1163,14 @@ negation_arg
 <dd>Effective element target of this selector.</dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.Selector.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.Selector.parent" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The SelectorList that contains this Selector or        None if this Selector is not attached to a SelectorList.</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.Selector.parentList">
 <tt class="descname">parentList</tt><a class="headerlink" href="#cssutils.css.Selector.parentList" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The SelectorList that contains this Selector or        None if this Selector is not attached to a SelectorList.</dd></dl>
+<dd>DEPRECATED, see property parent instead</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Selector.selectorText">
@@ -1567,7 +1581,7 @@ readonly.</li>
 <h3>Property<a class="headerlink" href="#property" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.Property">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>_mediaQuery=False</em>, <em>parent=None</em>, <em>parentStyle=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>_mediaQuery=False</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
 <dd><p>A CSS property in a StyleDeclaration of a CSSStyleRule (cssutils).</p>
 <p>Format:</p>
 <div class="highlight-python"><pre>property = name
@@ -1628,11 +1642,6 @@ prio
 <dt id="cssutils.css.Property.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.Property.parent" title="Permalink to this definition">¶</a></dt>
 <dd>The Parent Node (normally a CSSStyledeclaration) of this Property</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.Property.parentStyle">
-<tt class="descname">parentStyle</tt><a class="headerlink" href="#cssutils.css.Property.parentStyle" title="Permalink to this definition">¶</a></dt>
-<dd>DEPRECATED: Use <tt class="docutils literal"><span class="pre">parent</span></tt> instead</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Property.priority">
@@ -1728,7 +1737,7 @@ DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]           
 <h4>CSSValue<a class="headerlink" href="#cssvalue" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.CSSValue">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>The CSSValue interface represents a simple or a complex value.
 A CSSValue object only occurs in a context of a CSS property.</p>
 <dl class="attribute">
@@ -1942,7 +1951,7 @@ Raised if this property is readonly.</li>
 <h4>CSSValueList<a class="headerlink" href="#cssvaluelist" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.CSSValueList">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValueList</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValueList" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValueList</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValueList" title="Permalink to this definition">¶</a></dt>
 <dd><p>The CSSValueList interface provides the abstraction of an ordered
 collection of CSS values.</p>
 <p>Some properties allow an empty list into their syntax. In that case,
@@ -2113,7 +2122,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.6 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.6 documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7a0 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.6',
+        VERSION:     '0.9.7a0',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.6 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.7a0 documentation" href="index.html" />
     <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7a0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -84,6 +84,36 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </div>
 <div class="section" id="development-version">
 <h2>development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>HEAD</dt>
+<dd><ul class="first simple">
+<li><strong>API CHANGE</strong>: Replaced init parameter and attribute <tt class="docutils literal"><span class="pre">css.Selector.parentList</span></tt> with <tt class="docutils literal"><span class="pre">css.Selector.parent</span></tt></li>
+<li>API CHANGE (minor): Removed <tt class="docutils literal"><span class="pre">css.Property.parentStyle</span></tt> which was deprecated for some times now in favor of <tt class="docutils literal"><span class="pre">css.Property.parent</span></tt></li>
+</ul>
+<ul>
+<li><p class="first"><strong>IMPROVEMENT</strong>: Massive speed improvement due to changes in internal parsing.</p>
+<p>When tried in a real world situation (parsing the stylesheet for my own site inside a simple WSGI based CSS handler) the parser uses ~0.7-0.8s when using cssutils 0.9.6. With cssutils 0.9.7a0 it only needs ~0.21s so only about 1/3 to 1/4 the time...</p>
+</li>
+<li><p class="first">FEATURE: Parameter <cite>index</cite> of <tt class="docutils literal"><span class="pre">CSSStyleSheet.deleteRule(index)</span></tt> and <tt class="docutils literal"><span class="pre">CSSMediaRule.deleteRule(index)</span></tt> may now also be a rule object to be removed from the contained cssRules list.</p>
+</li>
+</ul>
+<ul class="simple">
+<li>INTERNAL: Added <tt class="docutils literal"><span class="pre">tokenizer.push()</span></tt>. Prodparser uses a global tokenizer now.</li>
+</ul>
+<p><strong>experimental and incomplete</strong></p>
+<ul class="last simple">
+<li>FEATURE: Started experimental implementation of <a class="reference external" href="http://disruptive-innovations.com/zoo/cssvariables/">CSS Variables</a></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="stable-version">
+<h2>stable version<a class="headerlink" href="#stable-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>0.9.6<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>0.9.6 091007</dt>
 <dd><ul class="first simple">
@@ -474,10 +504,11 @@ Also you cannot reset this change until you restart your program.</p>
 </dd>
 </dl>
 </div>
-<div class="section" id="stable-version">
-<h2>stable version<a class="headerlink" href="#stable-version" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>0.9.5<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="deprecated-versions">
+<h2>deprecated versions<a class="headerlink" href="#deprecated-versions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>0.9.5<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>0.9.5.1 080811</dt>
 <dd><ul class="first last simple">
@@ -704,7 +735,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-09-03</span> <span class="pre">21:28:04</span> <span class="pre">+0200</span> <span class="pre">(Do,</span> <span class="pre">03</span> <span class="pre">Sep</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1851</span> <span class="pre">2009-09-03</span> <span class="pre">19:28:04Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-10-11</span> <span class="pre">17:11:39</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">11</span> <span class="pre">Okt</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1864</span> <span class="pre">2009-10-11</span> <span class="pre">15:11:39Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -875,12 +906,6 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li>IMPROVEMENT: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> and some minor other parts refactored</li>
 </ul>
 </dd>
-</dl>
-</div>
-</div>
-<div class="section" id="deprecated-versions">
-<h2>deprecated versions<a class="headerlink" href="#deprecated-versions" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
 <dt>0.9.4b1 071229</dt>
 <dd><ul class="first simple">
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">csscombine</span></tt> script which currently resolves &#64;import rules into the input sheet. No nested &#64;imports are resolved yet and &#64;namespace rules do not work yet though!</li>
@@ -1628,6 +1653,7 @@ cssutils.setCSSSerializer(newserializer)</p>
 </ul>
 </dd>
 </dl>
+</div>
 <div class="section" id="x">
 <h3>0.8.x<a class="headerlink" href="#x" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
@@ -1748,8 +1774,8 @@ Should not be used directly anyway</li>
 </dd>
 </dl>
 </div>
-<div class="section" id="id2">
-<h3>0.6.x<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>0.6.x<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>0.61 - 050604</dt>
 <dd><dl class="first last docutils">
@@ -1766,8 +1792,8 @@ thanks to Kevin D. Smith</p>
 </dd>
 </dl>
 </div>
-<div class="section" id="id3">
-<h3>0.5.x<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>0.5.x<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>0.55_52 - 040517 bugfix bugfix release</dt>
 <dd>should do test first ;)
@@ -1888,8 +1914,8 @@ xml.dom.DOMExceptions when finding an error</p>
 </dd>
 </dl>
 </div>
-<div class="section" id="id4">
-<h3>0.4.x<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>0.4.x<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>0.41 - 040328</dt>
 <dd><p class="first">!cssnormalizer does not work in this version - on hold for 1.0</p>
@@ -1916,8 +1942,8 @@ MediaList class</p>
 </dd>
 </dl>
 </div>
-<div class="section" id="id5">
-<h3>0.3.x<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h3>0.3.x<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>0.31 - 040320</dt>
 <dd><p class="first">!cssnormalizer does not work in this version</p>
@@ -1960,8 +1986,8 @@ renamed some classes to (almost) DOM names, the CSS prefix of DOM names is ommit
 </dd>
 </dl>
 </div>
-<div class="section" id="id6">
-<h3>0.2.x<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>0.2.x<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>0.24_1 - 040214</dt>
 <dd>legal stuff: added licensing information
@@ -2013,8 +2039,8 @@ support build of a selector list in a rule</dd>
 <dd>complete rewrite with combination of parser and builder classes</dd>
 </dl>
 </div>
-<div class="section" id="id7">
-<h3>0.1.x<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id9">
+<h3>0.1.x<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <p>0.10 - 031221
 first version to try if i can bring it to work at all</p>
@@ -2034,19 +2060,23 @@ first version to try if i can bring it to work at all</p>
             <ul>
 <li><a class="reference external" href="">CHANGELOG</a><ul>
 <li><a class="reference external" href="#known-issues">known issues</a></li>
-<li><a class="reference external" href="#development-version">development version</a></li>
+<li><a class="reference external" href="#development-version">development version</a><ul>
+<li><a class="reference external" href="#id1">0.9.7</a></li>
+</ul>
+</li>
 <li><a class="reference external" href="#stable-version">stable version</a><ul>
-<li><a class="reference external" href="#id1">0.9.5</a></li>
+<li><a class="reference external" href="#id2">0.9.6</a></li>
 </ul>
 </li>
 <li><a class="reference external" href="#deprecated-versions">deprecated versions</a><ul>
+<li><a class="reference external" href="#id3">0.9.5</a></li>
 <li><a class="reference external" href="#x">0.8.x</a></li>
-<li><a class="reference external" href="#id2">0.6.x</a></li>
-<li><a class="reference external" href="#id3">0.5.x</a></li>
-<li><a class="reference external" href="#id4">0.4.x</a></li>
-<li><a class="reference external" href="#id5">0.3.x</a></li>
-<li><a class="reference external" href="#id6">0.2.x</a></li>
-<li><a class="reference external" href="#id7">0.1.x</a></li>
+<li><a class="reference external" href="#id4">0.6.x</a></li>
+<li><a class="reference external" href="#id5">0.5.x</a></li>
+<li><a class="reference external" href="#id6">0.4.x</a></li>
+<li><a class="reference external" href="#id7">0.3.x</a></li>
+<li><a class="reference external" href="#id8">0.2.x</a></li>
+<li><a class="reference external" href="#id9">0.1.x</a></li>
 </ul>
 </li>
 </ul>
@@ -2096,7 +2126,7 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.6 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7a0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
