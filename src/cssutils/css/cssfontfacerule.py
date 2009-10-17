@@ -85,12 +85,16 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
-            wellformed = True
+            # save if parse goes wrong
+            oldstyle = CSSStyleDeclaration()
+            oldstyle._absorb(self.style)
+            
+            ok = True
             beforetokens, brace = self._tokensupto2(tokenizer, 
                                                     blockstartonly=True,
                                                     separateEnd=True)            
             if self._tokenvalue(brace) != u'{':
-                wellformed = False
+                ok = False
                 self._log.error(
                     u'CSSFontFaceRule: No start { of style declaration found: %r' %
                     self._valuestr(cssText), brace)
@@ -102,7 +106,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             beforewellformed, expected = self._parse(expected=':',
                 seq=newseq, tokenizer=self._tokenize2(beforetokens),
                 productions={})
-            wellformed = wellformed and beforewellformed and new['wellformed']
+            ok = ok and beforewellformed and new['wellformed']
     
             styletokens, braceorEOFtoken = self._tokensupto2(tokenizer, 
                                                              blockendonly=True,
@@ -110,32 +114,30 @@ class CSSFontFaceRule(cssrule.CSSRule):
 
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
-                wellformed = False
+                ok = False
                 self._log.error(
                     u'CSSFontFaceRule: No "}" after style declaration found: %r' %
                     self._valuestr(cssText))
                 
             nonetoken = self._nexttoken(tokenizer)
             if nonetoken:
-                wellformed = False
+                ok = False
                 self._log.error(u'CSSFontFaceRule: Trailing content found.',
                                 token=nonetoken)
 
-            teststyle = CSSStyleDeclaration(parentRule=self)
             if 'EOF' == typ:
                 # add again as style needs it
                 styletokens.append(braceorEOFtoken)
-            # may raise:
-            teststyle.cssText = styletokens
 
-            if wellformed:
-                # contains probably comments only upto {
-                self._setSeq(newseq)
-                
-                # known as correct from before
-                cssutils.log.enabled = False
-                self.style.cssText = styletokens
-                cssutils.log.enabled = True
+            # SET, may raise:
+            self.style.cssText = styletokens
+
+            if ok:
+                # contains probably comments only (upto ``{``)
+                self._setSeq(newseq)                
+            else:
+                # RESET
+                self.style._absorb(oldstyle)
                 
 
     cssText = property(_getCssText, _setCssText,

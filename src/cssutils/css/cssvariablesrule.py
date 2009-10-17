@@ -82,12 +82,16 @@ class CSSVariablesRule(cssrule.CSSRule):
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
-            wellformed = True
+            # save if parse goes wrong
+            oldvariables = CSSVariablesDeclaration()
+            oldvariables._absorb(self.variables)
+            
+            ok = True
             beforetokens, brace = self._tokensupto2(tokenizer, 
                                                     blockstartonly=True,
                                                     separateEnd=True)            
             if self._tokenvalue(brace) != u'{':
-                wellformed = False
+                ok = False
                 self._log.error(
                     u'CSSVariablesRule: No start { of variable declaration found: %r' %
                     self._valuestr(cssText), brace)
@@ -99,7 +103,7 @@ class CSSVariablesRule(cssrule.CSSRule):
             beforewellformed, expected = self._parse(expected=':',
                 seq=newseq, tokenizer=self._tokenize2(beforetokens),
                 productions={})
-            wellformed = wellformed and beforewellformed and new['wellformed']
+            ok = ok and beforewellformed and new['wellformed']
     
             variablestokens, braceorEOFtoken = self._tokensupto2(tokenizer, 
                                                              blockendonly=True,
@@ -107,33 +111,29 @@ class CSSVariablesRule(cssrule.CSSRule):
 
             val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != u'}' and typ != 'EOF':
-                wellformed = False
+                ok = False
                 self._log.error(
                     u'CSSVariablesRule: No "}" after variables declaration found: %r' %
                     self._valuestr(cssText))
                 
             nonetoken = self._nexttoken(tokenizer)
             if nonetoken:
-                wellformed = False
+                ok = False
                 self._log.error(u'CSSVariablesRule: Trailing content found.',
                                 token=nonetoken)
 
-            testvariables = CSSVariablesDeclaration(parentRule=self)
             if 'EOF' == typ:
                 # add again as variables needs it
                 variablestokens.append(braceorEOFtoken)
             # may raise:
-            testvariables.cssText = variablestokens
+            self.variables.cssText = variablestokens
 
-            if wellformed:
+            if ok:
                 # contains probably comments only upto {
                 self._setSeq(newseq)
-                
-                # known as correct from before
-                cssutils.log.enabled = False
-                self.variables.cssText = variablestokens
-                cssutils.log.enabled = True
-                
+            else:
+                # RESET
+                self.variables._absorb(oldvariables)                
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of this rule.")
