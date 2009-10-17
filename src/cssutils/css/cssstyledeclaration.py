@@ -109,12 +109,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         self.cssText = cssText
         self._readonly = readonly
 
-    def _absorb(self, other):
-        """Replace all own data with data from other object."""
-        self._parentRule = other._parentRule
-        self.seq.absorb(other.seq)
-        self._readonly = other._readonly
-
     def __contains__(self, nameOrProperty):
         """Check if a property (or a property with given name) is in style.
         
@@ -206,6 +200,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             if isinstance(val, Property) and not val.name in names:
                 names.append(val.name)
         return reversed(names)    
+
+    def _absorb(self, other):
+        """Replace all own data with data from other object."""
+        self._parentRule = other._parentRule
+        self.seq.absorb(other.seq)
+        self._readonly = other._readonly
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
