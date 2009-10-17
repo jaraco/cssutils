@@ -28,6 +28,15 @@ def save(name, string):
     f.write(string)
     f.close()
 
+if 1:
+    v = cssutils.css.CSSVariablesDeclaration()
+    v.cssText = 'top 0'
+    print v
+    print v.cssText
+    
+    sys.exit(0)
+    
+
 
 if 1:
     css = u'''
@@ -143,6 +152,41 @@ if 1:
     print s.cssText
     
     sys.exit(1)
+
+if 0:
+    do = """
+    import cssutils
+    css = '''
+    a {
+ color: red;
+ background: 1px 2px 3px;
+ padding: 1px 1px 2px 5cm;
+ font: normal 1px/5em Arial, sans-serif;
+ color: red;
+ background: 1px 2px 3px;
+ padding: 1px 1px 2px 5cm;
+ font: normal 1px/5em Arial, sans-serif;
+ color: red;
+ background: 1px 2px 3px;
+ padding: 1px 1px 2px 5cm;
+ font: normal 1px/5em Arial, sans-serif;
+ color: red;
+ background: 1px 2px 3px;
+ padding: 1px 1px 2px 5cm;
+ font: normal 1px/5em Arial, sans-serif;
+ }    '''
+    cssutils.parseString(css)
+    """
+    print cssutils.VERSION
+    t = timeit.Timer(do)       # outside the try/except
+    try:
+        print t.timeit(100)    # or t.repeat(...)
+    except:
+        print t.print_exc()
+
+    sys.exit(0)
+
+
 
 
 if 1:
@@ -374,74 +418,6 @@ if 1:
     print s.cssText
     sys.exit(1)
 
-if 0:
-    do = """
-    import cssutils
-    css = '''
-    /* contains rules unsuitable for Netscape 4.x; simpler rules are in ns4_only.css. see <http://style.tigris.org/> */
-
-/* colors, backgrounds, borders, link indication */
-
-body {
- background: #fff;
- color: #000;
- }
-.app h3, .app h4, .tabs td, .tabs th, .functnbar {
- background-image: url(../images/nw_min.gif);
- background-repeat: no-repeat;
- }
-#toptabs td, #toptabs th {
- background-image: url(../images/nw_min_036.gif);
- }
-#navcolumn .body div, body.docs #toc li li  {
- background-image: url(../images/strich.gif);
- background-repeat: no-repeat;
- background-position: .5em .5em;
- }
-#search .body div, .body .heading  {
- background-image: none;
- }
-.app h3, .app h4 {
- color: #fff;
- }
-.app h3, #banner td {
- background-color: #036;
- color: #fff;
- }
-body #banner td a {
- color: #fff !important;
- }
-.app h4 {
- background-color: #888;
- }
-.a td {
- background: #ddd;
- }
-.b td {
- background: #efefef;
- }
-table, th, td {
- border: none
- }
-.mtb {
- border-top: solid 1px #ddd;
- }
-div.colbar {
- background: #bbb;
- }
-#banner {
- border-top: 1px solid #369;
- }    '''
-    cssutils.parseString(css)
-    """
-    print cssutils.VERSION
-    t = timeit.Timer(do)       # outside the try/except
-    try:
-        print t.timeit(100)    # or t.repeat(...)
-    except:
-        print t.print_exc()
-
-    sys.exit(0)
 
 
 if 1:
