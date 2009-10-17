@@ -47,24 +47,24 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         :param variableName:
             a string
         """
-        return variableName in self.keys()
+        return variableName.lower() in self.keys()
     
-    def __iter__(self):
-        """Iterator of names of set variables."""
-        for name in self.keys():
-            yield name
-
     def __getitem__(self, variableName):
         """Retrieve the value of variable ``variableName`` from this 
         declaration.
         """
-        return self.getVariableValue(variableName)
+        return self.getVariableValue(variableName.lower())
     
     def __setitem__(self, variableName, value):
-        self.setVariable(variableName, value)
+        self.setVariable(variableName.lower(), value)
 
     def __delitem__(self, variableName):
-        return self.removeVariable(variableName)
+        return self.removeVariable(variableName.lower())
+
+    def __iter__(self):
+        """Iterator of names of set variables."""
+        for name in self.keys():
+            yield name
 
     def _absorb(self, other):
         """Replace all own data with data from other object."""
@@ -140,9 +140,9 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             for item in seq:
                 if u'IDENT' == item.type:
                     lastname = item
-                    self._vars[lastname.value] = None
+                    self._vars[lastname.value.lower()] = None
                 elif u'value' == item.type:
-                    self._vars[lastname.value] = item.value
+                    self._vars[lastname.value.lower()] = item.value
                     newseq.append((lastname.value, item.value), 
                                   'var',
                                   lastname.line, lastname.col)
@@ -177,7 +177,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             variable has not been set.
         """
         try:
-            return self._vars[variableName]
+            return self._vars[variableName.lower()].cssText
         except KeyError, e:
             return u''
 
@@ -197,12 +197,19 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
               Raised if this declaration is readonly is readonly.
         """
         try:
-            r = self._vars[variableName]
+            r = self._vars[variableName.lower()]
         except KeyError, e:
             return u''
         else: 
-            del self._vars[variableName]
-            return r
+            self.seq._readonly = False
+            if variableName in self._vars:
+                for i, x in enumerate(self.seq):
+                    if x.value[0] == variableName:
+                        del self.seq[i]
+            self.seq._readonly = True
+            del self._vars[variableName.lower()]
+
+        return r.cssText
 
     def setVariable(self, variableName, value):
         """Used to set a variable value within this variable declaration block.
@@ -223,7 +230,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         self._checkReadonly()
                 
         # check name
-        wellformed, seq, store, unused = ProdParser().parse(variableName,
+        wellformed, seq, store, unused = ProdParser().parse(variableName.lower(),
                                                             u'variableName',
                                                             Sequence(PreDef.ident()
                                                                      ))
@@ -241,7 +248,23 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                 self._log.error(u'Invalid variable value: %r: %r'
                         % (variableName, value))
             else:
-                self._vars[variableName] = v.cssText
+                # update seq
+                self.seq._readonly = False
+                if variableName in self._vars:
+                    for i, x in enumerate(self.seq):
+                        if x.value[0] == variableName:
+                            x.replace(i, 
+                                      [variableName, v], 
+                                      x.type, 
+                                      x.line,
+                                      x.col)
+                            break
+                else:
+                    self.seq.append([variableName, v], 'var')                
+                self.seq._readonly = True
+                self._vars[variableName] = v
+                
+                    
 
     def item(self, index):
         """Used to retrieve the variables that have been explicitly set in
