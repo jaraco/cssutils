@@ -87,6 +87,7 @@ class CSSMediaRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
+        # media "name"? { cssRules }
         super(CSSMediaRule, self)._setCssText(cssText)
         
         # might be (cssText, namespaces)
@@ -104,7 +105,9 @@ class CSSMediaRule(cssrule.CSSRule):
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
-            # media "name"? { cssRules }
+            # save if parse goes wrong
+            oldmedia = cssutils.stylesheets.MediaList()
+            oldmedia._absorb(self.media)
             
             # media
             wellformed = True
@@ -112,8 +115,7 @@ class CSSMediaRule(cssrule.CSSRule):
                                             mediaqueryendonly=True,
                                             separateEnd=True)        
             if u'{' == self._tokenvalue(end) or self._prods.STRING == self._type(end):
-                newmedia = cssutils.stylesheets.MediaList()
-                newmedia.mediaText = mediatokens
+                self.media.mediaText = mediatokens
             
             # name (optional)
             name = None
@@ -209,14 +211,16 @@ class CSSMediaRule(cssrule.CSSRule):
                                                    new=new)
                 
                 # no post condition                    
-                if newmedia.wellformed and wellformed:
-                    # keep reference
-                    self._media.mediaText = newmedia.mediaText  
+                if self.media.wellformed and wellformed:
                     self.name = name
                     self._setSeq(nameseq)
                     del self._cssRules[:]
                     for r in newcssrules:
                         self._cssRules.append(r)
+                        
+                else:
+                    # RESET
+                    self.media._absorb(oldmedia)
         
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of this rule.")
