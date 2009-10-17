@@ -44,14 +44,18 @@ HEAD
 
       When tried in a real world situation (parsing the stylesheet for my own site inside a simple WSGI based CSS handler) the parser uses ~0.7-0.8s when using cssutils 0.9.6. With cssutils 0.9.7a0 it only needs ~0.21s so only about 1/3 to 1/4 the time...
 
-    **experimental and incomplete**
-
-    + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
-
     + FEATURE: Parameter `index` of ``CSSStyleSheet.deleteRule(index)`` and ``CSSMediaRule.deleteRule(index)`` may now also be a rule object to be removed from the contained cssRules list.
 
     - INTERNAL: Added ``tokenizer.push()``. Prodparser uses a global tokenizer now.
 
+    **experimental and incomplete**
+
+    + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
+
+
+
+stable version
+==============
 
 0.9.6
 -----
@@ -306,8 +310,8 @@ HEAD
         - minor changes due to deprecation in Py3k. cssutils is NOT Py3k compliant yet though and it will probably take a while until it will be...
 
 
-stable version
-==============
+deprecated versions
+===================
 
 0.9.5
 -----
@@ -664,9 +668,6 @@ stable version
     - CHANGE: ``CSSValueList`` does not emit warnings for shorthand properties anymore. Nevertheless these may be invalid!
 
     - IMPROVEMENT: ``CSSStyleDeclaration`` and some minor other parts refactored
-
-deprecated versions
-===================
 
 0.9.4b1 071229
     - **FEATURE**: Added ``csscombine`` script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!
