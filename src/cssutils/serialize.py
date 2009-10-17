@@ -740,9 +740,7 @@ class CSSSerializer(object):
 
     def do_css_CSSVariablesDeclaration(self, variables):
         """Variables of CSSVariableRule."""
-        if not variables._vars:
-            return u''
-        else:
+        if len(variables.seq) > 0:
             out = Out(self)
             
             lastitem = len(variables.seq) - 1
@@ -763,9 +761,11 @@ class CSSSerializer(object):
                 else:
                     out.append(val.cssText, type_)
                     out.append(self.prefs.lineSeparator)
+            
+            return out.value().strip() 
 
-                
-            return out.value() 
+        else:
+            return u''
 
     def do_css_CSSStyleDeclaration(self, style, separator=None):
         """
