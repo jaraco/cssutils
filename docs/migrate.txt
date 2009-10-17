@@ -2,6 +2,14 @@
 version migration
 =================
 
+0.9.7 incompatible changes
+==========================
+- Replaced init parameter and attribute ``css.Selector.parentList`` with ``css.Selector.parent``
+
+- Removed ``css.Property.parentStyle`` which was deprecated for some times now in favor of ``css.Property.parent``
+
+
+
 0.9.6 incompatible changes
 ==========================
 
