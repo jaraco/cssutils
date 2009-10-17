@@ -44,7 +44,7 @@ class Property(cssutils.util.Base):
 
     """
     def __init__(self, name=None, value=None, priority=u'', 
-                 _mediaQuery=False, parent=None, parentStyle=None):
+                 _mediaQuery=False, parent=None):
         """
         :param name:
             a property name string (will be normalized)
@@ -58,8 +58,6 @@ class Property(cssutils.util.Base):
         :param parent:
             the parent object, normally a 
             :class:`cssutils.css.CSSStyleDeclaration`
-        :param parentStyle:
-            DEPRECATED: Use ``parent`` instead
         """
         super(Property, self).__init__()
         self.seqs = [[], None, []]
@@ -480,12 +478,3 @@ class Property(cssutils.util.Base):
 
     valid = property(validate, doc="Check if value of this property is valid "
                                    "in the properties context.")
-
-
-    @Deprecated('Use ``parent`` attribute instead.')
-    def _getParentStyle(self):
-        return self._parent
-
-    parentStyle = property(_getParentStyle, _setParent,
-        doc="DEPRECATED: Use ``parent`` instead")
-

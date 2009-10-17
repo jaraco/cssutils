@@ -66,6 +66,12 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
     def __delitem__(self, variableName):
         return self.removeVariable(variableName)
 
+    def _absorb(self, other):
+        """Replace all own data with data from other object."""
+        self._parentRule = other._parentRule
+        self.seq.absorb(other.seq)
+        self._readonly = other._readonly
+        
     def keys(self):
         """Analoguous to standard dict returns variable names which are set in
         this declaration."""

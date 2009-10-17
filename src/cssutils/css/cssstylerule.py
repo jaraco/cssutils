@@ -104,28 +104,30 @@ class CSSStyleRule(cssrule.CSSRule):
             self._log.error(u'CSSStyleRule: No style rule: %r' %
                             self._valuestr(cssText),
                             error=xml.dom.InvalidModificationErr)
-        else:
-            wellformed = True
-            
-            testselectorlist, teststyle = None, None
+        else:            
+            # save if parse goes wrong
+            oldstyle = CSSStyleDeclaration()
+            oldstyle._absorb(self.style)
+            oldselector = SelectorList()
+            oldselector._absorb(self.selectorList)
+
+            ok = True
             
             bracetoken = selectortokens.pop()
             if self._tokenvalue(bracetoken) != u'{':
-                wellformed = False
+                ok = False
                 self._log.error(
                     u'CSSStyleRule: No start { of style declaration found: %r' %
                     self._valuestr(cssText), bracetoken)
             elif not selectortokens:
-                wellformed = False
+                ok = False
                 self._log.error(u'CSSStyleRule: No selector found: %r.' %
                             self._valuestr(cssText), bracetoken)
-                
-            testselectorlist = SelectorList(selectorText=(selectortokens, 
-                                                         namespaces),
-                                           parentRule=self)
-
+            # SET
+            self.selectorList.selectorText = (selectortokens, 
+                                              namespaces)
             if not styletokens:
-                wellformed = False
+                ok = False
                 self._log.error(
                     u'CSSStyleRule: No style declaration or "}" found: %r' %
                     self._valuestr(cssText))
@@ -133,7 +135,7 @@ class CSSStyleRule(cssrule.CSSRule):
                 braceorEOFtoken = styletokens.pop()
                 val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
                 if val != u'}' and typ != 'EOF':
-                    wellformed = False
+                    ok = False
                     self._log.error(
                         u'CSSStyleRule: No "}" after style declaration found: %r' %
                         self._valuestr(cssText))
@@ -141,14 +143,19 @@ class CSSStyleRule(cssrule.CSSRule):
                     if 'EOF' == typ:
                         # add again as style needs it
                         styletokens.append(braceorEOFtoken)
-                    teststyle = CSSStyleDeclaration(styletokens, parentRule=self)
+                    
+                    # SET
+                    try:
+                        self.style.cssText = styletokens
+                    except:
+                        # reset in case of error
+                        self.selectorList._absorb(oldselector)
+                        raise
 
-            if wellformed and testselectorlist and teststyle:
-                # known as correct from before
-                cssutils.log.enabled = False
-                self.style.cssText = styletokens
-                self.selectorList.selectorText=(selectortokens, namespaces)
-                cssutils.log.enabled = True
+            if not ok or not self.wellformed:
+                # reset as not ok
+                self.selectorList._absorb(oldselector)
+                self.style._absorb(oldstyle)
 
     cssText = property(_getCssText, _setCssText,
         doc="(DOM) The parsable textual representation of this rule.")
