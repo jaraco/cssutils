@@ -22,7 +22,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         s = cssutils.css.Selector('*')
         self.assertEqual((None, '*'), s.element)
         self.assertEqual({}, s._namespaces.namespaces)
-        self.assertEqual(None, s.parentList)
+        self.assertEqual(None, s.parent)
         self.assertEqual('*', s.selectorText)
         self.assertEqual((0,0,0,0), s.specificity)
         self.assertEqual(True, s.wellformed)
@@ -30,7 +30,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         s = cssutils.css.Selector(('p|b', {'p': 'URI'}) )
         self.assertEqual(('URI', 'b'), s.element)
         self.assertEqual({'p': 'URI'}, s._namespaces.namespaces)
-        self.assertEqual(None, s.parentList)
+        self.assertEqual(None, s.parent)
         self.assertEqual('p|b', s.selectorText)
         self.assertEqual((0,0,0,1), s.specificity)
         self.assertEqual(True, s.wellformed)
@@ -127,19 +127,19 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertEqual(sheet.cssText, 
                          u'@namespace p "default";\np|a[att] {\n    color: green\n    }')
     
-    def test_parentList(self):
-        "Selector.parentList"
+    def test_parent(self):
+        "Selector.parent"
         sl = cssutils.css.SelectorList('a, b')
         for sel in sl:
-            self.assertEqual(sl, sel.parentList)
+            self.assertEqual(sl, sel.parent)
             
         newsel = cssutils.css.Selector('x')
         sl.append(newsel)
-        self.assertEqual(sl, newsel.parentList)
+        self.assertEqual(sl, newsel.parent)
 
         newsel = cssutils.css.Selector('y')
         sl.appendSelector(newsel)
-        self.assertEqual(sl, newsel.parentList)
+        self.assertEqual(sl, newsel.parent)
 
     def test_selectorText(self):
         "Selector.selectorText"
