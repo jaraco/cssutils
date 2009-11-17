@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.7a0 documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7a1 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.7a0',
+        VERSION:     '0.9.7a1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a0 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.7a1 documentation" href="index.html" />
     <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7a1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -88,6 +88,11 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>HEAD</dt>
+<dd><ul class="first last simple">
+<li><strong>API CHANGE</strong>: Setting a style declarations&#8217; property to <tt class="xref docutils literal"><span class="pre">None</span></tt> or the empty string effectively removes this property from the declaration. See also Issue #32.</li>
+</ul>
+</dd>
+<dt>0.9.7a0</dt>
 <dd><ul class="first simple">
 <li><strong>API CHANGE</strong>: Replaced init parameter and attribute <tt class="docutils literal"><span class="pre">css.Selector.parentList</span></tt> with <tt class="docutils literal"><span class="pre">css.Selector.parent</span></tt></li>
 <li>API CHANGE (minor): Removed <tt class="docutils literal"><span class="pre">css.Property.parentStyle</span></tt> which was deprecated for some times now in favor of <tt class="docutils literal"><span class="pre">css.Property.parent</span></tt></li>
@@ -392,7 +397,7 @@ Also you cannot reset this change until you restart your program.</p>
 <dt>0.9.6a0 081214</dt>
 <dd><ul class="first">
 <li><p class="first"><strong>FEATURE</strong>: <tt class="docutils literal"><span class="pre">xml.dom.DOMException</span></tt>s raised do now contain infos about the position where the exception occured. An exception might for example have been raised as:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">xml</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">SyntaxErr</span><span class="p">(</span><span class="s">&#39;the message&#39;</span><span class="p">,</span> <span class="mf">10</span><span class="p">,</span> <span class="mf">5</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">xml</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">SyntaxErr</span><span class="p">(</span><span class="s">&#39;the message&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>(where 10 is the line and 5 the column of the offending text).</p>
@@ -576,7 +581,7 @@ Also you cannot reset this change until you restart your program.</p>
 <span class="go">ERROR   MediaList: Invalid MediaQuery:  tv INVALID</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c"># the actual rule exists but has default empty content, this may be</span>
 <span class="go">changed later as it can be seen as a bug itself</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">cssutils.css.CSSMediaRule(mediaText=u&#39;all&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span>
 <span class="go">&#39;&#39;</span>
@@ -584,7 +589,7 @@ Also you cannot reset this change until you restart your program.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c"># BUT: Unknown media type but as it is valid does parse:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;@media tv, UNKNOWN {a {top: 0;}}&#39;</span><span class="p">)</span>
 <span class="go">WARNING MediaQuery: Unknown media type &quot;UNKNOWN&quot;.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">cssutils.css.CSSMediaRule(mediaText=u&#39;tv, UNKNOWN&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span>
 <span class="go">&#39;@media tv, UNKNOWN {\n    a {\n        top: 0\n        }\n    }&#39;</span>
@@ -735,7 +740,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-10-11</span> <span class="pre">17:11:39</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">11</span> <span class="pre">Okt</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1864</span> <span class="pre">2009-10-11</span> <span class="pre">15:11:39Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-11-17</span> <span class="pre">21:35:13</span> <span class="pre">+0100</span> <span class="pre">(Di,</span> <span class="pre">17</span> <span class="pre">Nov</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1880</span> <span class="pre">2009-11-17</span> <span class="pre">20:35:13Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -1097,7 +1102,7 @@ The content is then decoded by cssutils using all encoding related data availabl
     <span class="c"># c\olor = blue</span>
     <span class="c"># left = 0 !important</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="n">style</span><span class="o">.</span><span class="n">length</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">style</span><span class="o">.</span><span class="n">length</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">cssValue</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">getPropertyCSSValue</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="n">priority</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">getPropertyPriority</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -1236,7 +1241,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <dd><ul class="first last">
 <li><p class="first">FEATURE: Partly Implemented css.CSS2Properties so you can now use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;a { font-style: italic; }&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="o">.</span><span class="n">style</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">style</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">style</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">style</span><span class="o">.</span><span class="n">fontStyle</span> <span class="o">=</span> <span class="s">&#39;normal&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">fontStyle</span>
 <span class="go">normal</span>
@@ -2126,7 +2131,7 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7a1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
