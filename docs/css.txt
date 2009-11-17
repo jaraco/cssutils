@@ -83,6 +83,13 @@ CSSStyleRule
    :members:
    :inherited-members:
 
+CSSVariablesRule
+----------------
+**BETA**
+
+.. autoclass:: cssutils.css.CSSVariablesRule
+   :members:
+   :inherited-members:
 
 
 Selector related classes: ``SelectorList`` and ``Selector``
@@ -189,6 +196,15 @@ ExpressionValue
 ~~~~~~~~~~~~~~~
 .. autoclass:: cssutils.css.cssvalue.ExpressionValue
     :members:
+
+
+CSSVariablesDeclaration
+-----------------------
+**BETA**
+
+.. autoclass:: cssutils.css.CSSVariablesDeclaration
+   :members:
+   :inherited-members:
 
 
 Additional Info
