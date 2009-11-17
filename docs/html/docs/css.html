@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>package cssutils.css &mdash; cssutils v0.9.7a0 documentation</title>
+    <title>package cssutils.css &mdash; cssutils v0.9.7a1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a0',
+        VERSION:     '0.9.7a1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a0 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7a1 documentation" href="../index.html" />
     <link rel="next" title="package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -1556,7 +1556,7 @@ readonly.</li>
 <span class="go">background: white url(paper.png) scroll;</span>
 <span class="go">background: white url(ledger.png) fixed;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c"># work with properties:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">proplist</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">(</span><span class="s">&#39;background&#39;</span><span class="p">,</span> <span class="n">all</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">proplist</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">getProperties</span><span class="p">(</span><span class="s">&#39;background&#39;</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">proplist</span>
 <span class="go">[cssutils.css.Property(name=&#39;background&#39;, value=u&#39;white url(paper.png) scroll&#39;, priority=u&#39;&#39;), cssutils.css.Property(name=&#39;background&#39;, value=u&#39;white url(ledger.png) fixed&#39;, priority=u&#39;&#39;)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">proplist</span><span class="p">:</span> <span class="k">print</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
@@ -1657,7 +1657,7 @@ prio
 <dt id="cssutils.css.Property.validate">
 <tt class="descname">validate</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.Property.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate value against <cite>profiles</cite> which are checked dynamically.
-properties in e.g. &#64;font-face rules are checked against 
+properties in e.g. &#64;font-face rules are checked against
 <tt class="docutils literal"><span class="pre">cssutils.profile.CSS3_FONT_FACE</span></tt> only.</p>
 <p>For each of the following cases a message is reported:</p>
 <ul>
@@ -1691,11 +1691,11 @@ properties in e.g. &#64;font-face rules are checked against
 <p>so for example:</p>
 <div class="highlight-python"><pre>cssutils.log.setLevel(logging.DEBUG)
 parser = cssutils.CSSParser()
-s = parser.parseString('''body { 
+s = parser.parseString('''body {
     unknown-property: x;
     color: 4;
     color: rgba(1,2,3,4);
-    color: red 
+    color: red
 }''')
 
 # Log output:
@@ -1707,11 +1707,11 @@ DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]</pre>
 </div>
 <p>and when setting an explicit default profile:</p>
 <div class="highlight-python"><pre>cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2
-s = parser.parseString('''body { 
+s = parser.parseString('''body {
     unknown-property: x;
     color: 4;
     color: rgba(1,2,3,4);
-    color: red 
+    color: red
 }''')
 
 # Log output:
@@ -1719,7 +1719,7 @@ s = parser.parseString('''body {
 WARNING Property: Unknown Property name. [2:9: unknown-property]
 ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 4 [3:9: color]
 WARNING Property: Not valid for profile "CSS Level 2.1" but valid "CSS Color Module Level 3" value: rgba(1, 2, 3, 4)  [4:9: color]
-DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]            </pre>
+DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]</pre>
 </div>
 </dd></dl>
 
@@ -1887,7 +1887,7 @@ a DOMException will be raised.</p>
 unit type</li>
 <li><em>floatValue</em> &#8211; <p>the new float value which does not have to be a float value but
 may simple be an int e.g. if setting:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">setFloatValue</span><span class="p">(</span><span class="n">CSS_PX</span><span class="p">,</span> <span class="mf">1</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">setFloatValue</span><span class="p">(</span><span class="n">CSS_PX</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -2122,7 +2122,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

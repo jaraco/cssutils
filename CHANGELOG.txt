@@ -36,7 +36,7 @@ development version
 0.9.7
 -----
 HEAD
-    - **API CHANGE**: Setting a style declarations property to ``None`` or the empty string it effectively removed this property from the declaration. See also Issue #32.
+    - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
 
 0.9.7a0
     - **API CHANGE**: Replaced init parameter and attribute ``css.Selector.parentList`` with ``css.Selector.parent``
