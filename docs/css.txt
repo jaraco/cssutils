@@ -85,7 +85,7 @@ CSSStyleRule
 
 CSSVariablesRule
 ----------------
-**BETA**
+**ALPHA STATUS**
 
 .. autoclass:: cssutils.css.CSSVariablesRule
    :members:
@@ -200,7 +200,7 @@ ExpressionValue
 
 CSSVariablesDeclaration
 -----------------------
-**BETA**
+**ALPHA STATUS**
 
 .. autoclass:: cssutils.css.CSSVariablesDeclaration
    :members:
