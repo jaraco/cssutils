@@ -581,6 +581,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         if isinstance(name, Property):
             newp = name 
             name = newp.literalname
+        elif not value:
+            # empty string or None effectively removed property
+            return self.removeProperty(name)
         else:
             newp = Property(name, value, priority)
         if not newp.wellformed:
