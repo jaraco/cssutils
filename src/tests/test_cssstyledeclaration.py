@@ -479,6 +479,11 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             self.assertEqual(exp, s.cssText)
             self.assertEqual(v, s.getPropertyValue(n))
             self.assertEqual(p, s.getPropertyPriority(n))
+            
+        s = cssutils.css.CSSStyleDeclaration()
+        self.assertEqual('', s.top)
+        self.assertRaises(xml.dom.SyntaxErr, s.setProperty, 'top', '')
+        self.assertEqual('', s.top)
 
     def test_length(self):
         "CSSStyleDeclaration.length"

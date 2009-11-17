@@ -41,6 +41,16 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual('top: 1px', p.cssText)
         p.cssValue = ''
         self.assertEqual('top', p.cssText)
+        
+        self.assertRaises(xml.dom.SyntaxErr, cssutils.css.property.Property, 'top', '')
+        self.assertRaises(xml.dom.SyntaxErr, cssutils.css.property.Property, 'top')
+        p = cssutils.css.property.Property('top', '0')
+        self.assertEqual('0', p.value)
+        self.assertEqual(True, p.wellformed)
+        self.assertRaises(xml.dom.SyntaxErr, p._setValue, '')
+        self.assertEqual('0', p.value)
+        self.assertEqual(True, p.wellformed)
+        
 #        self.assertEqual(True, p.valid)
 
 #    def test_valid(self):
@@ -90,7 +100,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'a:': (xml.dom.SyntaxErr,
                    u'''Property: No property value found: u'a:'. [1:2: :]'''),
             u'a: ': (xml.dom.SyntaxErr,
-                   u"CSSValue: Unknown syntax or no value: u' '."),
+                   u"CSSValue: Unknown syntax or no value: u''."),
             u'a: 1!': (xml.dom.SyntaxErr,
                    u'''Property: Invalid priority: u'!'.'''),
             u'a: 1!importantX': (xml.dom.SyntaxErr,
