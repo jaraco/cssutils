@@ -29,6 +29,54 @@ def save(name, string):
     f.close()
 
 if 1:
+    import cssutils.sac
+    
+    echo = cssutils.sac.EchoHandler()
+    p = cssutils.sac.Parser(echo)
+    p.parseString('''
+        /* 1 */
+        @namespace x "urlx";
+        a { color: red; background: url(/1.gif); }''')
+    
+    print '\n\n--------------'
+    print echo.out
+    
+    sys.exit(1)
+    
+    sheet =  []
+    for t in p.parseString('''a { color: red; background: url(/1.gif); }'''):
+        type_, text, line, col = t
+        if 'URI' == type_:
+            uri = cssutils.helper.urivalue(text)
+            if uri.startswith('/'):
+                text = cssutils.helper.uri('..' + uri)
+        
+        sheet.append(text)
+    
+    print u''.join(sheet)
+        
+    sys.exit(1)
+
+
+
+if 1:
+    s = cssutils.parseString('''a { color: red; top: 0; }''')
+    r = s.cssRules[0]
+    d = r.style
+    print 1, d.color
+    d.color = ''
+    print 2, d.color
+    print s.cssText 
+    
+    p = d.getProperty('top')
+    print 1, p
+    p.value = ''
+    print 2, p 
+    
+    sys.exit(0)
+
+
+if 1:
     v = cssutils.css.CSSVariablesDeclaration()
     v.cssText = 'top 0'
     print v
