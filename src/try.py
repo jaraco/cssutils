@@ -33,10 +33,21 @@ if 1:
     
     echo = cssutils.sac.EchoHandler()
     p = cssutils.sac.Parser(echo)
-    p.parseString('''
+    p.parseString('''@charset "ascii";
         /* 1 */
+        @import url("x");
         @namespace x "urlx";
-        a { color: red; background: url(/1.gif); }''')
+        @font-face {
+            font-family: Test;
+            }
+        @page {
+            margin: 0;
+            }
+        @media all {
+            a{}
+            }
+        @x 1;
+        html, x>y, .x {left:0;color:red ! /*1*/ important;}''')
     
     print '\n\n--------------'
     print echo.out
@@ -44,7 +55,10 @@ if 1:
     sys.exit(1)
     
     sheet =  []
-    for t in p.parseString('''a { color: red; background: url(/1.gif); }'''):
+    for t in p.parseString('''
+    a, b { 
+        color: red; 
+        background: url(/1.gif); }'''):
         type_, text, line, col = t
         if 'URI' == type_:
             uri = cssutils.helper.urivalue(text)
