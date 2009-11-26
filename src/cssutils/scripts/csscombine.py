@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-"""Combine sheets referred to by @import rules in a given CSS proxy sheet
+"""Combine all sheets referred to a given CSS *proxy* sheet
 into a single new sheet.
 
-- proxy currently is a path (no URI!)
+- no ``url()`` values are adjusted so currently when using relative references
+  for e.g. images it is best to have all sheets in a single folder 
 - in @import rules only relative paths do work for now but should be used
   anyway
-- currently no nested @imports are resolved
 - messages are send to stderr
 - output to stdout.
 
@@ -49,11 +49,6 @@ or without option -m::
         top: 3px
         }
 
-TODO
-    - URL or file hrefs? URI should be default
-    - no nested @imports are resolved yet
-    - maybe add a config file which is used?
-
 """
 __all__ = ['csscombine']
 __docformat__ = 'restructuredtext'
@@ -81,7 +76,7 @@ def main(args=None):
     options, path = parser.parse_args()
 
     if options.url:
-        print csscombine(url=options.url, 
+        print csscombine(url=options.url,
                          sourceencoding=options.sourceencoding, 
                          targetencoding=options.targetencoding,
                          minify=options.minify)
