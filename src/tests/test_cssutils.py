@@ -19,10 +19,10 @@ except ImportError:
 class CSSutilsTestCase(basetest.BaseTestCase):
 
     exp = u'''@import "import/import2.css";
-a {
-    background-image: url(test/x.gif)
-    }
-/* import.css*/'''
+.import {
+    /* ./import.css */
+    background-image: url(images/example.gif)
+    }'''
 
     def test_VERSION(self):
         self.assertEqual('0.9.7a1', cssutils.VERSION)
@@ -56,8 +56,7 @@ a {
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(u'''@import "../import3.css";
-/* sheets/import2.css */''', irs.cssText)
+        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(./../images/example.gif)\n    }')
 
         tests = {
                  'a {color: red}': u'a {\n    color: red\n    }',
@@ -90,8 +89,7 @@ a {
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(u'''@import "../import3.css";
-/* sheets/import2.css */''', irs.cssText)
+        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(./../images/example.gif)\n    }')
         
         # name is used for open and setting of href automatically
         # test needs to be relative to this test file!
@@ -116,8 +114,7 @@ a {
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(u'''@import "../import3.css";
-/* sheets/import2.css */''', irs.cssText)
+        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(./../images/example.gif)\n    }')
         
         # next test
         css = u'a:after { content: "羊蹄€\u2020" }'
@@ -178,18 +175,17 @@ a {
         
         sr = s.cssRules[1]
         img = sr.style.getProperty('background-image').cssValue.getStringValue()
-        self.assertEqual(img, 'test/x.gif')
+        self.assertEqual(img, 'images/example.gif')
         
         ir = s.cssRules[0]
         self.assertEqual(u'import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assertEqual(u'''@import "../import3.css";
-/* sheets/import2.css */''', irs.cssText)
+        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(./../images/example.gif)\n    }')
 
         ir2 = irs.cssRules[0]
         self.assertEqual(u'../import3.css', ir2.href)
         irs2 = ir2.styleSheet
-        self.assertEqual(u'/* import3 */', irs2.cssText)
+        self.assertEqual(irs2.cssText, '/* import3 */\n.import3 {\n    /* from ./import/../import3.css */\n    background: url(import/images2/../../images/example3.gif)\n    }')
 
     def test_setCSSSerializer(self):
         "cssutils.setSerializer() and cssutils.ser"
@@ -326,8 +322,6 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
             c = cssutils.resolveImports(s)
             self.assertEqual(a, c.cssText)
 
-
-            
         else:
             self.assertEqual(False, u'Minimock needed for this test')
 
