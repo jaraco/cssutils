@@ -195,14 +195,46 @@
 <div class="section" id="id1">
 <h3>programmatic use<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxypath</span> <span class="o">=</span> <span class="s">&#39;sheets/csscombine-proxy.css&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cssutils.script</span> <span class="kn">import</span> <span class="n">csscombine</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">csscombine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">proxypath</span><span class="p">,</span> <span class="n">sourceencoding</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">targetencoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">minify</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="go">Processing @import u&#39;sheets\\csscombine-1.css&#39;</span>
-<span class="go">Processing @import u&#39;sheets\\csscombine-2.css&#39;</span>
-<span class="go">Nested @imports are not combined: @import &quot;1.css&quot;;</span>
-<span class="go">Setting target encoding &#39;utf-8&#39;</span>
-<span class="go">&#39;@charset &quot;utf-8&quot;;@import&quot;1.css&quot;;@namespace s2&quot;uri&quot;;s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}&#39;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cssutils.script</span> <span class="kn">import</span> <span class="n">csscombine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">proxypath</span> <span class="o">=</span> <span class="s">&#39;sheets/import.css&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">csscombine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">proxypath</span><span class="p">,</span> <span class="n">sourceencoding</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">targetencoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">minify</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="go">INFO    Combining files from None</span>
+<span class="go">INFO    Processing @import u&#39;import/import2.css&#39;</span>
+<span class="go">INFO    Processing @import u&#39;../import3.css&#39;</span>
+<span class="go">INFO    @import: Adjusting paths for u&#39;../import3.css&#39;</span>
+<span class="go">INFO    Processing @import u&#39;import-impossible.css&#39;</span>
+<span class="go">INFO    @import: Adjusting paths for u&#39;import-impossible.css&#39;</span>
+<span class="go">WARNING Cannot combine imported sheet with given media as other rules then comments or stylerules found cssutils.css.CSSNamespaceRule(namespaceURI=u&#39;y&#39;, prefix=u&#39;&#39;), keeping u&#39;@import &quot;import-impossible.css&quot; print;&#39;</span>
+<span class="go">INFO    @import: Adjusting paths for u&#39;import/import2.css&#39;</span>
+<span class="go">INFO    Using target encoding: &#39;utf-8&#39;</span>
+<span class="go">@charset &quot;utf-8&quot;;</span>
+<span class="go">/* START @import &quot;import/import2.css&quot; */</span>
+<span class="go">@import &quot;import-impossible.css&quot; print;</span>
+<span class="go">/* START @import &quot;../import3.css&quot; */</span>
+<span class="go">/* import3 */</span>
+<span class="go">.import3 {</span>
+<span class="go">    /* from ./import/../import3.css */</span>
+<span class="go">    background: url(images/example3.gif);</span>
+<span class="go">    background: url(images/example3.gif);</span>
+<span class="go">    background: url(import/images2/example2.gif);</span>
+<span class="go">    background: url(import/images2/example2.gif);</span>
+<span class="go">    background: url(images/example3.gif)</span>
+<span class="go">    }</span>
+<span class="go">/* START @import &quot;import-impossible.css&quot; */</span>
+<span class="go">.import2 {</span>
+<span class="go">    /* sheets/import2.css */</span>
+<span class="go">    background: url(http://example.com/images/example.gif);</span>
+<span class="go">    background: url(//example.com/images/example.gif);</span>
+<span class="go">    background: url(/images/example.gif);</span>
+<span class="go">    background: url(import/images2/example.gif);</span>
+<span class="go">    background: url(import/images2/example.gif);</span>
+<span class="go">    background: url(images/example.gif);</span>
+<span class="go">    background: url(images/example.gif)</span>
+<span class="go">    }</span>
+<span class="go">.import {</span>
+<span class="go">    /* ./import.css */</span>
+<span class="go">    background-image: url(images/example.gif)</span>
+<span class="go">    }</span>
 </pre></div>
 </div>
 </div>
