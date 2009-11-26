@@ -88,8 +88,14 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
 <dt>HEAD</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first simple">
 <li><strong>API CHANGE</strong>: Setting a style declarations&#8217; property to <tt class="xref docutils literal"><span class="pre">None</span></tt> or the empty string effectively removes this property from the declaration. See also Issue #32.</li>
+</ul>
+<ul class="simple">
+<li><strong>BUGFIX</strong>: Fixed Issue 33: URL references (like <tt class="docutils literal"><span class="pre">url()</span></tt> values) in combined sheets are now adjusted even if sheets are not in the same folder. Only relative paths are adjusted.</li>
+</ul>
+<ul class="last simple">
+<li>FEATURE: Added parameter <tt class="docutils literal"><span class="pre">ignoreImportRules=False</span></tt> to <tt class="docutils literal"><span class="pre">cssutils.replaceUrls</span></tt> which when set to <tt class="xref docutils literal"><span class="pre">True</span></tt> no longer reports URLs from &#64;import rules but property values only (see Issue #33)</li>
 </ul>
 </dd>
 <dt>0.9.7a0</dt>

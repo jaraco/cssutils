@@ -38,6 +38,10 @@ development version
 HEAD
     - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
 
+    + **BUGFIX**: Fixed Issue 33: URL references (like ``url()`` values) in combined sheets are now adjusted even if sheets are not in the same folder. Only relative paths are adjusted.
+
+    - FEATURE: Added parameter ``ignoreImportRules=False`` to ``cssutils.replaceUrls`` which when set to ``True`` no longer reports URLs from @import rules but property values only (see Issue #33)
+
 0.9.7a0
     - **API CHANGE**: Replaced init parameter and attribute ``css.Selector.parentList`` with ``css.Selector.parent``
 
