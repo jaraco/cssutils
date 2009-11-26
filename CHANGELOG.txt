@@ -35,6 +35,11 @@ development version
 
 0.9.7
 -----
+**experimental and incomplete**
+
+    + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
+
+
 HEAD
     - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
 
@@ -55,9 +60,6 @@ HEAD
 
     - INTERNAL: Added ``tokenizer.push()``. Prodparser uses a global tokenizer now.
 
-    **experimental and incomplete**
-
-    + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
 
 
 
