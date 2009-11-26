@@ -76,7 +76,7 @@ objects of given <cite>sheet</cite>.</p>
 <h2>replaceUrls<a class="headerlink" href="#replaceurls" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="cssutils.replaceUrls">
-<tt class="descclassname">cssutils.</tt><tt class="descname">replaceUrls</tt><big>(</big><em>sheet</em>, <em>replacer</em><big>)</big><a class="headerlink" href="#cssutils.replaceUrls" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.</tt><tt class="descname">replaceUrls</tt><big>(</big><em>sheet</em>, <em>replacer</em>, <em>ignoreImportRules=False</em><big>)</big><a class="headerlink" href="#cssutils.replaceUrls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace all URLs in <a title="cssutils.css.CSSImportRule" class="reference external" href="css.html#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a> or
 <a title="cssutils.css.CSSValue" class="reference external" href="css.html#cssutils.css.CSSValue"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt></a> objects of given <cite>sheet</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -85,9 +85,10 @@ objects of given <cite>sheet</cite>.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><em>sheet</em> &#8211; <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> which is changed</li>
-<li><em>replacer</em> &#8211; a function which is called with a single argument <cite>urlstring</cite> which is
-the current value of each url() excluding <tt class="docutils literal"><span class="pre">url(</span></tt> and <tt class="docutils literal"><span class="pre">)</span></tt> and
+<li><em>replacer</em> &#8211; a function which is called with a single argument <cite>urlstring</cite> which 
+is the current value of each url() excluding <tt class="docutils literal"><span class="pre">url(</span></tt> and <tt class="docutils literal"><span class="pre">)</span></tt> and
 surrounding single or double quotes.</li>
+<li><em>ignoreImportRules</em> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> does not call <cite>replacer</cite> with URLs from &#64;import rules.</li>
 </ul>
 </td>
 </tr>
@@ -105,7 +106,7 @@ surrounding single or double quotes.</li>
 &#64;import rules which use media information are tried to be wrapped into
 &#64;media rules so keeping the media information. This may not work in 
 all instances (if e.g. an &#64;import rule itself contains an &#64;import rule
-with different media infos or if it is contains rules which may not be 
+with different media infos or if it contains rules which may not be 
 used inside an &#64;media block like &#64;namespace rules.). In these cases
 the &#64;import rule is kept as in the original sheet and a WARNING is issued.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -115,12 +116,13 @@ the &#64;import rule is kept as in the original sheet and a WARNING is issued.</
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><em>sheet</em> &#8211; in this given <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> all import rules are
 resolved and added to a resulting <em>flat</em> sheet.</li>
-<li><em>target</em> &#8211; A <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object which will be the resulting
-<em>flat</em> sheet if given</li>
+<li><em>target</em> &#8211; A <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object which will be the
+resulting <em>flat</em> sheet if given</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">given <cite>target</cite> or a new <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">given <cite>target</cite> or a new <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> 
+object</p>
 </td>
 </tr>
 </tbody>
@@ -148,7 +150,7 @@ resolved and added to a resulting <em>flat</em> sheet.</li>
 
             <h4>Previous topic</h4>
             <p class="topless"><a href="stylesheets.html"
-                                  title="previous chapter">package <tt class="docutils literal docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
+                                  title="previous chapter">package <tt class="docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="scripts.html"
                                   title="next chapter">scripts</a></p>
