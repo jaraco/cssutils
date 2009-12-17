@@ -40,10 +40,13 @@ development version
     + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
 
 
+
 HEAD
     - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
 
     + **BUGFIX**: Fixed Issue 33: URL references (like ``url()`` values) in combined sheets are now adjusted even if sheets are not in the same folder. Only relative paths are adjusted.
+
+    + **BUGFIX**: Fixed parsing of FUNCTIONS in CSSUnknownRule like ``@bottom { counter(page) }`` which raised a false error of a mismatch of parenthesis
 
     - FEATURE: Added parameter ``ignoreImportRules=False`` to ``cssutils.replaceUrls`` which when set to ``True`` no longer reports URLs from @import rules but property values only (see Issue #33)
 
