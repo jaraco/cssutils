@@ -64,6 +64,8 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@mediaAll{}': u'@mediaAll {\n    }',
             u'@namespacep"x";': u'@namespacep "x";',
             u'@pageX{}': u'@pageX {\n    }',
+            u'@bottom { content: counter(page) }': u'@bottom {\n    content: counter(page)\n    }', 
+            u'@bottom { content: "x" counter(page) "y"}': u'@bottom {\n    content: "x" counter(page) "y"\n    }' 
             }
         self.do_equal_p(tests)
         

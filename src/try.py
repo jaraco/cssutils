@@ -29,6 +29,14 @@ def save(name, string):
     f.close()
 
 if 1:
+    css = """
+        x:not(odd)::first-line { color: "x" counter(page) "y"; 
+            }
+    """
+    print cssutils.parseString(css).cssText
+    sys.exit(0)
+
+if 1:
     import cssutils.sac
     
     echo = cssutils.sac.EchoHandler()

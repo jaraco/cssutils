@@ -191,7 +191,6 @@ class Out(object):
             add ``*spacer`` except ``space=False``
         """
         prefspace = self.ser.prefs.spacer
-        
         if val or typ in ('STRING', 'URI'):
             # PRE
             if 'COMMENT' == typ:
@@ -230,7 +229,10 @@ class Out(object):
             if indent:
                 self.out.append(self.ser._indentblock(val, self.ser._level+1))
             else:
+                if val.endswith(u' '):
+                    self._remove_last_if_S()
                 self.out.append(val)
+                        
             # POST
             if lineSeparator:
                 # Property , ...
@@ -238,6 +240,10 @@ class Out(object):
             elif val in u'+>~': # enclose selector combinator
                 self.out.insert(-1, self.ser.prefs.selectorCombinatorSpacer)
                 self.out.append(self.ser.prefs.selectorCombinatorSpacer)
+            elif u')' == val and not keepS: # CHAR funcend 
+                # TODO: pref?
+                print locals()
+                self.out.append(u' ')
             elif u',' == val: # list
                 self.out.append(self.ser.prefs.listItemSpacer)
             elif u':' == val: # prop
