@@ -242,7 +242,6 @@ class Out(object):
                 self.out.append(self.ser.prefs.selectorCombinatorSpacer)
             elif u')' == val and not keepS: # CHAR funcend 
                 # TODO: pref?
-                print locals()
                 self.out.append(u' ')
             elif u',' == val: # list
                 self.out.append(self.ser.prefs.listItemSpacer)
