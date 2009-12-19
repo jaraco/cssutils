@@ -322,6 +322,60 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
             c = cssutils.resolveImports(s)
             self.assertEqual(a, c.cssText)
 
+            # urls are adjusted too, layout:
+            # a.css
+            # c.css
+            # img/img.gif
+            # b/
+            #     b.css
+            #     subimg/subimg.gif
+            a = u'''
+                 @import"b/b.css";
+                 a {
+                     x: url(/img/abs.gif); 
+                     y: url(img/img.gif); 
+                     z: url(b/subimg/subimg.gif); 
+                     }''' 
+            def fetcher(url):
+                c = {
+                     'b.css': u'''
+                         @import"../c.css";
+                         b {
+                             x: url(/img/abs.gif); 
+                             y: url(../img/img.gif); 
+                             z: url(subimg/subimg.gif); 
+                             }''',
+                     'c.css': u'''
+                         c {
+                             x: url(/img/abs.gif); 
+                             y: url(./img/img.gif); 
+                             z: url(./b/subimg/subimg.gif); 
+                             }''' 
+                     }
+                return 'utf-8', c[os.path.split(url)[1]]  
+
+            mock("cssutils.util._defaultFetcher", 
+                 mock_obj=fetcher)
+            s = cssutils.parseString(a)
+            r = cssutils.resolveImports(s)
+            restore()            
+            cssutils.ser.prefs.useDefaults()
+            cssutils.ser.prefs.keepComments = False
+            self.assertEqual(u'''c {
+    x: url(/img/abs.gif);
+    y: url(img/img.gif);
+    z: url(b/subimg/subimg.gif)
+    }
+b {
+    x: url(/img/abs.gif);
+    y: url(img/img.gif);
+    z: url(b/subimg/subimg.gif)
+    }
+a {
+    x: url(/img/abs.gif);
+    y: url(img/img.gif);
+    z: url(b/subimg/subimg.gif)
+    }''', r.cssText)
         else:
             self.assertEqual(False, u'Minimock needed for this test')
 
