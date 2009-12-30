@@ -19,7 +19,7 @@ pause
 python examples\testutil.py
 pause
 
-rem python epydoc -o doc --name cssutils --url http://cthedot.de/cssutils/ src/cssutils --show-imports
+rem sphinx
 rem pause
 
 rem python setup.py sdist bdist_egg
