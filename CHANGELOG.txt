@@ -42,7 +42,7 @@ development version
 
 HEAD
 
-0.9.7a2
+0.9.7a2 091230
     - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
 
     + **BUGFIX/FEATURE**: Fixed Issue 33: URL references (like ``url()`` values) in combined sheets are now adjusted even if sheets are not in the same folder. Only relative paths are adjusted.
