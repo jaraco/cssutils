@@ -29,12 +29,67 @@ def save(name, string):
     f.close()
 
 if 1:
-    css = """
-        x:not(odd)::first-line { color: "x" counter(page) "y"; 
+    prince = """
+/*x:not(odd)::first-line { color: "x" counter(page) "y";*/
+x { content: counter("src", url) }
+picture { content: attr("src", url) }
+div.example1 h4::before { 
+    content: counter(h4, lower-alpha);
+    content: counters(list-item, ".", decimal);
+
+}
+
+ 
             }
     """
-    print cssutils.parseString(css).cssText
+    print cssutils.parseString(prince).cssText
     sys.exit(0)
+
+
+if 1:
+    css3 = """
+.radius2 {
+    border-radius: 3px 6px 8px 10px;
+    -moz-border-radius: 3px 6px 8px 10px;
+    -webkit-border-radius: 3px 6px 8px 10px;
+}
+.caption { background: rgba(255, 255, 255, .5); }
+.multi-bg {
+    background: url(/image/css3-multi-top.png) no-repeat,
+    url(/image/css3-multi-bottom.png) no-repeat 0 100%,
+    url(/image/css3-multi-repeat.png) repeat-y;
+    background-color: #516ac4;
+}
+.box-shadow {
+    box-shadow: 6px 6px 4px #cecece;
+    -moz-box-shadow: 6px 6px 4px #cecece;
+    -webkit-box-shadow: 6px 6px 4px #cecece;
+}
+.text-shadow {
+    text-shadow: 1px 2px 3px #1a1a1a;
+}
+.columns {
+    -moz-column-count: 3;
+    -moz-column-gap: 1em;
+    -moz-column-rule: 1px solid black;
+    -moz-column-width: 200px;
+    -webkit-column-count: 3;
+    -webkit-column-gap: 1em;
+    -webkit-column-rule: 1px solid black;
+    -webkit-column-width: 200px;
+}
+.border-img {
+    background-color: #516ac4;
+    border: 10px solid;
+    border-image: url(/image/css3-border-img.png) 10 10 10 10 repeat repeat;
+    -moz-border-image: url(/image/css3-border-img.png) 10 10 10 10 repeat repeat;
+    -webkit-border-image: url(/image/css3-border-img.png) 10 10 10 10 repeat repeat;
+}            
+    """
+    print cssutils.parseString(css3).cssText
+    sys.exit(0)
+
+
 
 if 1:
     import cssutils.sac
