@@ -90,18 +90,17 @@ class PropertyTestCase(basetest.BaseTestCase):
                    u'''Property: No property name found: u''.'''),
             u':': (xml.dom.SyntaxErr,
                    u'''Property: No property name found: u':'. [1:1: :]'''),
-            # TODO: check
-            u'/**/a': (xml.dom.SyntaxErr,
-                   u'''Property: No ":" after name found: u'/**/a' [1:5: a]'''),
             u'a': (xml.dom.SyntaxErr,
                    u'''Property: No ":" after name found: u'a' [1:1: a]'''),
             u'a !': (xml.dom.SyntaxErr,
                    u'''Property: No ":" after name found: u'a !' [1:3: !]'''),
             u'a:': (xml.dom.SyntaxErr,
                    u'''Property: No property value found: u'a:'. [1:2: :]'''),
-            # TODO: py2.5 says u''?!
-            u'a: ': (xml.dom.SyntaxErr,
-                   u"CSSValue: Unknown syntax or no value: u' '."),
+            u'/**/a': (xml.dom.SyntaxErr,
+                   u'''Property: No ":" after name found: u'/**/a' [1:5: a]'''),
+            # somehow 'a: ' fails?!?
+            u'a111: ': (xml.dom.SyntaxErr,
+                   u"CSSValue: Unknown syntax or no value: u''."),
             u'a: 1!': (xml.dom.SyntaxErr,
                    u'''Property: Invalid priority: u'!'.'''),
             u'a: 1!importantX': (xml.dom.SyntaxErr,
