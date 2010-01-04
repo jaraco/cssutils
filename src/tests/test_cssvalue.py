@@ -228,7 +228,12 @@ y"''': u'''"xy"''',
             'u+1  ,   u+2-5': 'u+1, u+2-5',
             u'local( x ),  url(y)  format( "x" ,  "y" )': 
                 u'local(x), url(y) format("x", "y")',
+            # FUNCTION
+            u'attr( href )': u'attr(href)',
+            # PrinceXML extende FUNC syntax with nested FUNC
+            u'target-counter(attr(href),page)': u'target-counter(attr(href), page)'
             }
+
         self.do_equal_r(tests)
 
         tests = {
@@ -263,6 +268,7 @@ y"''': u'''"xy"''',
             u"'": xml.dom.SyntaxErr,
             # function 
             u'f(-)': xml.dom.SyntaxErr,
+            u'f(x))': xml.dom.SyntaxErr
             }
         self.do_raise_r(tests)
 

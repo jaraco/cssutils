@@ -41,6 +41,7 @@ development version
 
 
 HEAD
+    - **BUGFIX/IMPROVEMENT**: Parser now handles FUNCTION values which themselves contain another FUNCTION as used by PrinceXML CSS like e.g. ``prince-link: target-counter(attr(href), page)``
 
 0.9.7a2 091230
     - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
