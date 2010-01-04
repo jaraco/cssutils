@@ -29,8 +29,16 @@ def save(name, string):
     f.close()
 
 if 1:
+    #prince-link: target-counter(a, page);
     prince = """
-/*x:not(odd)::first-line { color: "x" counter(page) "y";*/
+        a {
+            prince-link: target-counter(attr(href), page)
+
+        }
+    """
+    x = """
+    
+/*x:not(odd)::first-line { color: "x" counter(page) "y";
 x { content: counter("src", url) }
 picture { content: attr("src", url) }
 div.example1 h4::before { 
@@ -40,7 +48,7 @@ div.example1 h4::before {
 }
 
  
-            }
+            }*/
     """
     print cssutils.parseString(prince).cssText
     sys.exit(0)
