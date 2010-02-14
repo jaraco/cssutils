@@ -47,7 +47,7 @@ class CSSValue(cssutils.util._NewBase):
             defaults to False
         """
         super(CSSValue, self).__init__()
-
+        
         self._cssValueType = None
         self.wellformed = False
         self.parent = parent
@@ -128,6 +128,9 @@ class CSSValue(cssutils.util._NewBase):
                       Prod(name='expression',
                            match=lambda t, v: t == self._prods.FUNCTION and (
                               cssutils.helper.normalize(v) in (u'expression(',
+                                                               u'blur(',
+                                                               u'shadow(',                                                               
+                                                               u'dropshadow(',
                                                                u'alpha(') or
                               v.startswith(u'progid:DXImageTransform.Microsoft.')                                 
                            ),

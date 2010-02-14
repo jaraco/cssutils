@@ -39,8 +39,9 @@ development version
 
     + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
 
-
 HEAD
+    + FEATURE (strange): IE specific values like ``DropShadow(color=#eee, offX=2, offY=1)`` (and ``Blur``, ``Shadow``) *should* be parsed and serialized now as an ``Expression`` value. I have not tested this deeply and there may be problems but for some common cases theses values should at least survive a parse/serialize with cssutils.
+
     - **BUGFIX/IMPROVEMENT**: Parser now handles FUNCTION values which themselves contain another FUNCTION as used by PrinceXML CSS like e.g. ``prince-link: target-counter(attr(href), page)``
 
 0.9.7a2 091230
