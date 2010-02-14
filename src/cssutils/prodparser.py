@@ -428,7 +428,7 @@ class ProdParser(object):
             except StopIteration:
                 break
             type_, val, line, col = token
-            
+           
             # default productions
             if type_ == self.types.COMMENT:
                 # always append COMMENT

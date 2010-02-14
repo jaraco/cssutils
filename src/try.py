@@ -28,29 +28,32 @@ def save(name, string):
     f.write(string)
     f.close()
 
+if 0:
+    cssutils.cssproductions.PRODUCTIONS.insert(1,('EXPRESSION',
+        r'\(?\s*function\s*\(({ident},?\s*)*\)\s*\{(\s|\S)*\}\s*\)?\((({ident}|\.),?\s*)*\)'))
+
+    css = """
+    selector {
+x:expression((function(ele){ele.style.behavior=''})(this));
+}
+    """
+    s =  cssutils.parseString(css)
+#    p = s.cssRules[0].style.getPropertyCSSValue('x')
+#    print p
+#    p.cssText = u'expression((function(ele){ele.style.behavior="none";})(this))'
+
+    #p = cssutils.css.CSSPrimitiveValue(u'expression((function(ele){ele.style.behavior="none";})(this))')
+    
+    sys.exit(1)
+
 if 1:
     #prince-link: target-counter(a, page);
-    prince = """
+    s = """
         a {
-            prince-link: target-counter(attr(href), page)
-
+            filter:  DropShadow(color=#eee, offX=2, offY=1)
         }
     """
-    x = """
-    
-/*x:not(odd)::first-line { color: "x" counter(page) "y";
-x { content: counter("src", url) }
-picture { content: attr("src", url) }
-div.example1 h4::before { 
-    content: counter(h4, lower-alpha);
-    content: counters(list-item, ".", decimal);
-
-}
-
- 
-            }*/
-    """
-    print cssutils.parseString(prince).cssText
+    print cssutils.parseString(s).cssText
     sys.exit(0)
 
 
