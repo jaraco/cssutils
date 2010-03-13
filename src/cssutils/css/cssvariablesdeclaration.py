@@ -121,7 +121,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             Prod(name=u'term', match=lambda t, v: True,
                  toSeq=lambda t, tokens: (u'value', 
                                           CSSValue(itertools.chain([t], 
-                                                                   tokens))
+                                                                   tokens), parent=self)
                  )
             ),
             PreDef.char(u';', u';', toSeq=False, optional=True),
@@ -242,7 +242,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             if isinstance(value, CSSValue):
                 v = value 
             else:
-                v = CSSValue(cssText=value)
+                v = CSSValue(cssText=value, parent=self)
                                 
             if not v.wellformed:
                 self._log.error(u'Invalid variable value: %r: %r'

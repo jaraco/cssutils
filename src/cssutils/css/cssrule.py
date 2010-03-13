@@ -18,7 +18,6 @@ class CSSRule(cssutils.util.Base2):
     CSSRule type constants.
     An integer indicating which type of rule this is.
     """
-    COMMENT = -1 # cssutils only
     UNKNOWN_RULE = 0 #u
     STYLE_RULE = 1 #s
     CHARSET_RULE = 2 #c
@@ -26,13 +25,21 @@ class CSSRule(cssutils.util.Base2):
     MEDIA_RULE = 4 #m
     FONT_FACE_RULE = 5 #f
     PAGE_RULE = 6 #p
-    NAMESPACE_RULE = 7 # CSSOM
-    VARIABLES_RULE = 8 # CSS Variables
+    NAMESPACE_RULE = 8 # CSSOM was 7 before (until 2/2010)
+    COMMENT = 1001 # was -1, cssutils only
+    VARIABLES_RULE = 1008 # CSS Variables, was 8 but not officially
 
-    _typestrings = ['UNKNOWN_RULE', 'STYLE_RULE', 'CHARSET_RULE', 'IMPORT_RULE',
-                     'MEDIA_RULE', 'FONT_FACE_RULE', 'PAGE_RULE', 'NAMESPACE_RULE',
-                     'VARIABLES_RULE',
-                     'COMMENT']
+    _typestrings = {UNKNOWN_RULE: u'UNKNOWN_RULE', 
+                    STYLE_RULE: u'STYLE_RULE',
+                    CHARSET_RULE: u'CHARSET_RULE', 
+                    IMPORT_RULE: u'IMPORT_RULE',
+                    MEDIA_RULE: u'MEDIA_RULE', 
+                    FONT_FACE_RULE: u'FONT_FACE_RULE', 
+                    PAGE_RULE: u'PAGE_RULE',                     
+                    NAMESPACE_RULE: u'NAMESPACE_RULE',
+                    COMMENT: u'COMMENT',
+                    VARIABLES_RULE: u'VARIABLES_RULE'
+                    }
 
     def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):
         """Set common attributes for all rules."""
@@ -46,12 +53,12 @@ class CSSRule(cssutils.util.Base2):
 
     def _setAtkeyword(self, akw):
         """Check if new keyword fits the rule it is used for."""
-        if not self.atkeyword or (self._normalize(akw) == 
+        if not self.atkeyword or (self._normalize(akw) ==
                                   self._normalize(self.atkeyword)):
             self._atkeyword = akw
         else:
-            self._log.error(u'%s: Invalid atkeyword for this rule: %r' % 
-                            (self._normalize(self.atkeyword), akw), 
+            self._log.error(u'%s: Invalid atkeyword for this rule: %r' %
+                            (self._normalize(self.atkeyword), akw),
                             error=xml.dom.InvalidModificationErr)
 
     atkeyword = property(lambda self: self._atkeyword, _setAtkeyword,
@@ -83,8 +90,8 @@ class CSSRule(cssutils.util.Base2):
 
     parent = property(lambda self: self._parent,
                       doc="The Parent Node of this CSSRule (currently if a "
-                          "CSSStyleDeclaration only!) or None.")    
-    
+                          "CSSStyleDeclaration only!) or None.")
+
     parentRule = property(lambda self: self._parentRule,
                                 doc="If this rule is contained inside "
                                     "another rule (e.g. a style rule inside "
@@ -95,12 +102,12 @@ class CSSRule(cssutils.util.Base2):
     parentStyleSheet = property(lambda self: self._parentStyleSheet,
                           doc="The style sheet that contains this rule.")
 
-    type = property(lambda self: self.UNKNOWN_RULE, 
+    type = property(lambda self: self.UNKNOWN_RULE,
                     doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
 
-    typeString = property(lambda self: CSSRule._typestrings[self.type], 
+    typeString = property(lambda self: CSSRule._typestrings[self.type],
                           doc="Descriptive name of this rule's type.")
 
-    wellformed = property(lambda self: False, 
+    wellformed = property(lambda self: False,
                           doc=u"If the rule is wellformed.")
