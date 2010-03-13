@@ -100,7 +100,7 @@ class PropertyTestCase(basetest.BaseTestCase):
                    u'''Property: No ":" after name found: u'/**/a' [1:5: a]'''),
             # somehow 'a: ' fails?!?
             u'a111: ': (xml.dom.SyntaxErr,
-                   u"CSSValue: Unknown syntax or no value: u''."),
+                   u"CSSValue: Unknown syntax or no value: u' '."),
             u'a: 1!': (xml.dom.SyntaxErr,
                    u'''Property: Invalid priority: u'!'.'''),
             u'a: 1!importantX': (xml.dom.SyntaxErr,

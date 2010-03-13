@@ -243,12 +243,18 @@ class Property(cssutils.util.Base):
         if self._mediaQuery and not cssText:
             self.seqs[1] = CSSValue(parent=self)
         else:
-            oldvalue = self.seqs[1].cssText
+            #oldvalue = self.seqs[1].cssText
             try:
                 self.seqs[1].cssText = cssText
-            except:
-                self.seqs[1].cssText = oldvalue
-                raise
+            except xml.dom.SyntaxErr, e:
+                # try parsing for CSSValue (simply raise if not)
+                self.seqs[1] = CSSValue(cssText, parent=self)
+                
+#                v = CSSValue(parent=self)
+#                v.cssText = cssText
+#                self.seqs[1] = v
+#                # TODO: check why needs to be set after init?!
+                
             
             self.wellformed = self.wellformed and self.seqs[1].wellformed
 

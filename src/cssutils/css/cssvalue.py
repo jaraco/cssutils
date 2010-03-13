@@ -51,7 +51,6 @@ class CSSValue(cssutils.util._NewBase):
         self._cssValueType = None
         self.wellformed = False
         self.parent = parent
-
         if cssText is not None: # may be 0
             if type(cssText) in (int, float):
                 cssText = unicode(cssText) # if it is a number
@@ -143,14 +142,16 @@ class CSSValue(cssutils.util._NewBase):
                       PreDef.variable(nextSor=nextSor,
                                       toSeq=lambda t, tokens: ('CSSVariable',
                                                                CSSVariable(
-                                        cssutils.helper.pushtoken(t, tokens))
+                                        cssutils.helper.pushtoken(t, tokens), 
+                                        parent=self)
                                                                )
                       ),
                       # other functions like rgb( etc
                       PreDef.function(nextSor=nextSor,
                                       toSeq=lambda t, tokens: ('FUNCTION',
                                                                CSSFunction(
-                                        cssutils.helper.pushtoken(t, tokens))
+                                        cssutils.helper.pushtoken(t, tokens),
+                                        parent=self)
                                                                )
                       )
         )
@@ -294,6 +295,10 @@ class CSSValue(cssutils.util._NewBase):
                             del commalist[:]
                         
                     for i, item in enumerate(self._seq):
+                        if issubclass(type(item.value), CSSValue):
+                            # set parent of CSSValueList items to the lists parent
+                            item.value.parent = self.parent
+                            
                         if item.type in (self._prods.DIMENSION,
                                          self._prods.FUNCTION,
                                          self._prods.HASH,
@@ -457,9 +462,10 @@ class CSSPrimitiveValue(CSSValue):
         # TODO: convert deg <-> rad <-> grad
     }
 
-    def __init__(self, cssText=None, readonly=False):
+    def __init__(self, cssText=None, parent=None, readonly=False):
         """See CSSPrimitiveValue.__init__()"""
         super(CSSPrimitiveValue, self).__init__(cssText=cssText,
+                                                parent=parent,
                                                 readonly=readonly)
 
     def __str__(self):
@@ -843,7 +849,7 @@ class CSSFunction(CSSPrimitiveValue):
     _functionName = u'CSSFunction'
     primitiveType = CSSPrimitiveValue.CSS_UNKNOWN
     
-    def __init__(self, cssText=None, readonly=False):
+    def __init__(self, cssText=None, parent=None, readonly=False):
         """
         Init a new CSSFunction
 
@@ -852,7 +858,7 @@ class CSSFunction(CSSPrimitiveValue):
         :param readonly:
             defaults to False
         """
-        super(CSSFunction, self).__init__()
+        super(CSSFunction, self).__init__(parent=parent)
         self._funcType = None
         self.valid = False
         self.wellformed = False
@@ -1066,7 +1072,7 @@ class ExpressionValue(CSSFunction):
 class CSSVariable(CSSValue):
     """The CSSVariable represents a call to CSS Variable."""
         
-    def __init__(self, cssText=None, readonly=False):
+    def __init__(self, cssText=None, parent=None, readonly=False):
         """Init a new CSSVariable.
         
         :param cssText:
@@ -1076,7 +1082,8 @@ class CSSVariable(CSSValue):
         """
         self._name = None
         super(CSSVariable, self).__init__(cssText=cssText,
-                                       readonly=readonly)
+                                          parent=parent,
+                                          readonly=readonly)
         
     def __repr__(self):
         return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
@@ -1120,15 +1127,14 @@ class CSSVariable(CSSValue):
     def _getValue(self):
         "Find contained sheet and @variables there"
         # TODO: imports!
-        
-        # property:
         if self.parent:
-            # styleDeclaration:
+            # CSSValueList or Property:
             if self.parent.parent: 
-                # styleRule:
+                # styleDeclaration:
                 if self.parent.parent.parentRule:
-                    # stylesheet
+                    # styleRule:
                     if self.parent.parent.parentRule.parentStyleSheet:
+                        # stylesheet
                         sheet = self.parent.parent.parentRule.parentStyleSheet
                         for r in sheet.cssRules:
                             if r.VARIABLES_RULE == r.type and r.variables:
