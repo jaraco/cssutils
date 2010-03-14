@@ -90,7 +90,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.7a3'
+VERSION = '0.9.7dev4'
 
 __version__ = '%s $Id$' % VERSION
 
