@@ -42,6 +42,9 @@ development version
 
 
 HEAD
+
+
+0.9.7a3 100314
     - **API CHANGE**: ``CSSRule.NAMESPACE_RULE`` actual value has been changed from 7 to 8 (according to the change in the spec). Also ``CSSRule.COMMENT`` has a value of ``1001`` (was ``-1``) and ``CSSRule.VARIABLES_RULE`` has a value of ``1008`` (was ``8``) now (being not in the official spec yet anyway but values are now in the open valuespace above 1000). The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
 
     + FEATURE: Added ``CSSRuleList.rulesOfType(type)`` which return and iterator the rules of the given type only. May be used on both ``CSSStyleSheet.cssRules`` or ``CSSMediaRule.cssRules``. ``type`` is one of the constants defined in ``css.CSSRule`` like e.g. ``css.CSSRule.STYLE_RULE``.
@@ -49,7 +52,6 @@ HEAD
     + FEATURE (strange): IE specific values like ``DropShadow(color=#eee, offX=2, offY=1)`` (and ``Blur``, ``Shadow``) *should* be parsed and serialized now as an ``Expression`` value. I have not tested this deeply and there may be problems but for some common cases theses values should at least survive a parse/serialize with cssutils.
 
     - **BUGFIX/IMPROVEMENT**: Parser now handles FUNCTION values which themselves contain another FUNCTION as used by PrinceXML CSS like e.g. ``prince-link: target-counter(attr(href), page)``
-
 
 0.9.7a2 091230
     - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
