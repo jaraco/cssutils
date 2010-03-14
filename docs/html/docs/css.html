@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>package cssutils.css &mdash; cssutils v0.9.7a2 documentation</title>
+    <title>package cssutils.css &mdash; cssutils v0.9.7dev documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a2',
+        VERSION:     '0.9.7dev',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a2 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7dev documentation" href="../index.html" />
     <link rel="next" title="package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -290,6 +290,12 @@ Raises ValueError if the value is not present.</dd></dl>
 <dd>L.reverse() &#8211; reverse <em>IN PLACE</em></dd></dl>
 
 <dl class="method">
+<dt id="cssutils.css.CSSRuleList.rulesOfType">
+<tt class="descname">rulesOfType</tt><big>(</big><em>type</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.rulesOfType" title="Permalink to this definition">¶</a></dt>
+<dd>Yield only the rules which have the given <cite>type</cite>, one of the 
+constants defined in <a title="cssutils.css.CSSRule" class="reference internal" href="#cssutils.css.CSSRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSRule</span></tt></a>.</dd></dl>
+
+<dl class="method">
 <dt id="cssutils.css.CSSRuleList.sort">
 <tt class="descname">sort</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.sort" title="Permalink to this definition">¶</a></dt>
 <dd>L.sort(cmp=None, key=None, reverse=False) &#8211; stable sort <em>IN PLACE</em>;
@@ -308,6 +314,59 @@ both rule sets and at-rules. An implementation is expected to preserve
 all rules specified in a CSS style sheet, even if the rule is not
 recognized by the parser. Unrecognized rules are represented using the
 <tt class="xref docutils literal"><span class="pre">CSSUnknownRule</span></tt> interface.</p>
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.CHARSET_RULE">
+<tt class="descname">CHARSET_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.CHARSET_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSCharsetRule</span></tt></a>, not in the official spec anymore</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.COMMENT">
+<tt class="descname">COMMENT</tt><a class="headerlink" href="#cssutils.css.CSSRule.COMMENT" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSComment" class="reference internal" href="#cssutils.css.CSSComment"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSComment</span></tt></a> - not in the offical spec,
+Value has changed in 0.9.7a3</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.FONT_FACE_RULE">
+<tt class="descname">FONT_FACE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.FONT_FACE_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSFontFaceRule" class="reference internal" href="#cssutils.css.CSSFontFaceRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSFontFaceRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.IMPORT_RULE">
+<tt class="descname">IMPORT_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.IMPORT_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.MEDIA_RULE">
+<tt class="descname">MEDIA_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.MEDIA_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSMediaRule" class="reference internal" href="#cssutils.css.CSSMediaRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSMediaRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.NAMESPACE_RULE">
+<tt class="descname">NAMESPACE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.NAMESPACE_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSNamespaceRule" class="reference internal" href="#cssutils.css.CSSNamespaceRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSNamespaceRule</span></tt></a>,
+Value has changed in 0.9.7a3 due to a change in the CSSOM spec.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.PAGE_RULE">
+<tt class="descname">PAGE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.PAGE_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSPageRule" class="reference internal" href="#cssutils.css.CSSPageRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSPageRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.STYLE_RULE">
+<tt class="descname">STYLE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.STYLE_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.UNKNOWN_RULE">
+<tt class="descname">UNKNOWN_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.UNKNOWN_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSUnknownRule</span></tt></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.VARIABLES_RULE">
+<tt class="descname">VARIABLES_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.VARIABLES_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSVariablesRule" class="reference internal" href="#cssutils.css.CSSVariablesRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesRule</span></tt></a> - experimental rule
+not in the offical spec</dd></dl>
+
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.atkeyword">
 <tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSRule.atkeyword" title="Permalink to this definition">¶</a></dt>
@@ -1830,7 +1889,7 @@ A CSSValue object only occurs in a context of a CSS property.</p>
 <h4>CSSPrimitiveValue<a class="headerlink" href="#cssprimitivevalue" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.CSSPrimitiveValue">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSPrimitiveValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSPrimitiveValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a single CSS Value.  May be used to determine the value of a
 specific style property currently set in a block or to set a specific
 style property explicitly within the block. Might be obtained from the
@@ -2057,7 +2116,7 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 <h4>CSSFunction<a class="headerlink" href="#cssfunction" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.cssvalue.CSSFunction">
-<em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">CSSFunction</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.CSSFunction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">CSSFunction</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.CSSFunction" title="Permalink to this definition">¶</a></dt>
 <dd>A CSS function value like rect() etc.</dd></dl>
 
 </div>
@@ -2065,7 +2124,7 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 <h4>ExpressionValue<a class="headerlink" href="#expressionvalue" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.cssvalue.ExpressionValue">
-<em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">ExpressionValue</tt><big>(</big><em>cssText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">ExpressionValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Special IE only CSSFunction which may contain <em>anything</em>.
 Used for expressions and <tt class="docutils literal"><span class="pre">alpha(opacity=100)</span></tt> currently.</p>
 <dl class="attribute">
@@ -2320,11 +2379,11 @@ readonly.</li>
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2004-2009, Christof Höke.
+      &copy; Copyright 2004-2010, Christof Höke.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
     </div>
   </body>
