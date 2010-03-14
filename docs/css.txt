@@ -31,8 +31,8 @@ CSSRuleList
 CSSRule
 -------
 .. autoclass:: cssutils.css.CSSRule
-   :members:
-   :inherited-members:
+    :members:
+    :inherited-members:
 
 
 CSSCharsetRule
