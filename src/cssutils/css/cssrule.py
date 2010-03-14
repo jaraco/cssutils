@@ -18,16 +18,29 @@ class CSSRule(cssutils.util.Base2):
     CSSRule type constants.
     An integer indicating which type of rule this is.
     """
-    UNKNOWN_RULE = 0 #u
-    STYLE_RULE = 1 #s
-    CHARSET_RULE = 2 #c
-    IMPORT_RULE = 3 #i
-    MEDIA_RULE = 4 #m
-    FONT_FACE_RULE = 5 #f
-    PAGE_RULE = 6 #p
-    NAMESPACE_RULE = 8 # CSSOM was 7 before (until 2/2010)
+    UNKNOWN_RULE = 0 
+    ":class:`cssutils.css.CSSUnknownRule`"
+    STYLE_RULE = 1
+    ":class:`cssutils.css.CSSStyleRule`"
+    CHARSET_RULE = 2
+    ":class:`cssutils.css.CSSCharsetRule`, not in the official spec anymore"
+    IMPORT_RULE = 3
+    ":class:`cssutils.css.CSSImportRule`"
+    MEDIA_RULE = 4
+    ":class:`cssutils.css.CSSMediaRule`"
+    FONT_FACE_RULE = 5
+    ":class:`cssutils.css.CSSFontFaceRule`"
+    PAGE_RULE = 6
+    ":class:`cssutils.css.CSSPageRule`"
+    NAMESPACE_RULE = 8
+    """:class:`cssutils.css.CSSNamespaceRule`, 
+    Value has changed in 0.9.7a3 due to a change in the CSSOM spec."""
     COMMENT = 1001 # was -1, cssutils only
-    VARIABLES_RULE = 1008 # CSS Variables, was 8 but not officially
+    """:class:`cssutils.css.CSSComment` - not in the offical spec,
+    Value has changed in 0.9.7a3"""
+    VARIABLES_RULE = 1008 
+    """:class:`cssutils.css.CSSVariablesRule` - experimental rule
+    not in the offical spec"""
 
     _typestrings = {UNKNOWN_RULE: u'UNKNOWN_RULE', 
                     STYLE_RULE: u'STYLE_RULE',
