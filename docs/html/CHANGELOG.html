@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.7a2 documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7dev documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.7a2',
+        VERSION:     '0.9.7dev',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a2 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.7dev documentation" href="index.html" />
     <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -88,12 +88,30 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p><strong>experimental and incomplete</strong></p>
 <blockquote>
-<ul class="simple">
-<li>FEATURE: Started experimental implementation of <a class="reference external" href="http://disruptive-innovations.com/zoo/cssvariables/">CSS Variables</a></li>
+<ul>
+<li><dl class="first docutils">
+<dt>FEATURE: Started experimental implementation of <a class="reference external" href="http://disruptive-innovations.com/zoo/cssvariables/">CSS Variables</a></dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">cssutils.ser.pref.resolveVariables</span> <span class="pre">==</span> <span class="pre">False</span></tt>: If set to <tt class="xref docutils literal"><span class="pre">True</span></tt> tries to resolve all variable references and removes any CSSVariablesRules.</li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 </blockquote>
-<p>HEAD</p>
 <dl class="docutils">
+<dt>HEAD</dt>
+<dd><ul class="first simple">
+<li><strong>API CHANGE</strong>: <tt class="docutils literal"><span class="pre">CSSRule.NAMESPACE_RULE</span></tt> actual value has been changed from 7 to 8 (according to the change in the spec). Also <tt class="docutils literal"><span class="pre">CSSRule.COMMENT</span></tt> has a value of <tt class="docutils literal"><span class="pre">1001</span></tt> (was <tt class="docutils literal"><span class="pre">-1</span></tt>) and <tt class="docutils literal"><span class="pre">CSSRule.VARIABLES_RULE</span></tt> has a value of <tt class="docutils literal"><span class="pre">1008</span></tt> (was <tt class="docutils literal"><span class="pre">8</span></tt>) now (being not in the official spec yet anyway but values are now in the open valuespace above 1000). The actual integer values <strong>SHOULD NOT</strong> be used anyway! <strong>Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!</strong></li>
+</ul>
+<ul class="simple">
+<li>FEATURE: Added <tt class="docutils literal"><span class="pre">CSSRuleList.rulesOfType(type)</span></tt> which return and iterator the rules of the given type only. May be used on both <tt class="docutils literal"><span class="pre">CSSStyleSheet.cssRules</span></tt> or <tt class="docutils literal"><span class="pre">CSSMediaRule.cssRules</span></tt>. <tt class="docutils literal"><span class="pre">type</span></tt> is one of the constants defined in <tt class="docutils literal"><span class="pre">css.CSSRule</span></tt> like e.g. <tt class="docutils literal"><span class="pre">css.CSSRule.STYLE_RULE</span></tt>.</li>
+<li>FEATURE (strange): IE specific values like <tt class="docutils literal"><span class="pre">DropShadow(color=#eee,</span> <span class="pre">offX=2,</span> <span class="pre">offY=1)</span></tt> (and <tt class="docutils literal"><span class="pre">Blur</span></tt>, <tt class="docutils literal"><span class="pre">Shadow</span></tt>) <em>should</em> be parsed and serialized now as an <tt class="docutils literal"><span class="pre">Expression</span></tt> value. I have not tested this deeply and there may be problems but for some common cases theses values should at least survive a parse/serialize with cssutils.</li>
+</ul>
+<ul class="last simple">
+<li><strong>BUGFIX/IMPROVEMENT</strong>: Parser now handles FUNCTION values which themselves contain another FUNCTION as used by PrinceXML CSS like e.g. <tt class="docutils literal"><span class="pre">prince-link:</span> <span class="pre">target-counter(attr(href),</span> <span class="pre">page)</span></tt></li>
+</ul>
+</dd>
 <dt>0.9.7a2 091230</dt>
 <dd><ul class="first simple">
 <li><strong>API CHANGE</strong>: Setting a style declarations&#8217; property to <tt class="xref docutils literal"><span class="pre">None</span></tt> or the empty string effectively removes this property from the declaration. See also Issue #32.</li>
@@ -757,7 +775,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2009-12-17</span> <span class="pre">23:09:06</span> <span class="pre">+0100</span> <span class="pre">(Do,</span> <span class="pre">17</span> <span class="pre">Dez</span> <span class="pre">2009)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1897</span> <span class="pre">2009-12-17</span> <span class="pre">22:09:06Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-03-14</span> <span class="pre">18:50:53</span> <span class="pre">+0100</span> <span class="pre">(So,</span> <span class="pre">14</span> <span class="pre">Mrz</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1913</span> <span class="pre">2010-03-14</span> <span class="pre">17:50:53Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -2148,11 +2166,11 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2004-2009, Christof Höke.
+      &copy; Copyright 2004-2010, Christof Höke.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
     </div>
   </body>
