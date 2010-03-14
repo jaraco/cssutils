@@ -40,7 +40,7 @@ if 0:
     
 
 
-if 1:
+if 0:
     css = u'''
     @variables {
       c1: #0f0;
@@ -49,6 +49,8 @@ if 1:
       /* TODO @x; */
       a : var(x)
     }
+    a {
+    color: red}
     '''
     s = cssutils.parseString(css)
     varrule = s.cssRules[0]
@@ -80,7 +82,7 @@ if 1:
     for k in v:
         print k, v[k]
     for i in range(0, v.length):
-        print i, v.item(i), v.getVariableValue(v.item(i))
+        print i, v.item(i), v.getVariableValue(v.item(i))                      
         
     v.removeVariable('a')
     del v['b']
@@ -95,16 +97,30 @@ if 1:
       c1: #0f0;
       c2: scroll;
     }
+    @media all {
+        a {
+            color: var(c1);
+            };
+    }
     div.logoContainer {
+        color:red;
       color: var(c1);
       color: var(c3);
       background: var(c1) no-repeat var(c2) var(c3);
       }
     '''
     s = cssutils.parseString(css)
-    varrule, stylerule = s.cssRules
+    
+    varrule, mediarule, stylerule = s.cssRules
 
+    #cssutils.ser.prefs.resolveVariables = True
     print s.cssText
+    #print 20*'-'
+    #print cssutils.resolveVariables(s).cssText
+    
+    
+    sys.exit(1)
+    
     print 
 #    p = stylerule.style.getProperty('color')
 #    print p
