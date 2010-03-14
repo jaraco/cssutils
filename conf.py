@@ -43,7 +43,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'cssutils'
-copyright = u'2004-2009, Christof Höke'
+copyright = u'2004-2010, Christof Höke'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

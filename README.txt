@@ -4,7 +4,7 @@ README
 -------------------------------------------------------
 cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
-:Copyright: 2004-2009 Christof Hoeke
+:Copyright: 2004-2010 Christof Hoeke
 
 overview
 ========
@@ -24,6 +24,8 @@ Based upon and partly implementing the following specifications :
     Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version
 `Selectors <http://www.w3.org/TR/css3-selectors/>`__
     The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
+`Variables <http://disruptive-innovations.com/zoo/cssvariables/>`__
+    Experimental specification of CSS Variables. Currently in development in cssutils.
 
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
     DOM for package css
@@ -47,7 +49,7 @@ cssutils is developed on standard Python. 0.9.6 is the first release to pass all
 
 license
 =======
-Copyright 2005 - 2009 Christof Hoeke
+Copyright 2005 - 2010 Christof Hoeke
 
 cssutils is published under the LGPL 3 or later
 
