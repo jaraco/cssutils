@@ -5,8 +5,8 @@
 - CSSValueList implements DOM Level 2 CSS CSSValueList
 
 """
-__all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList',
-           'CSSVariable', 'RGBColor']
+__all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor',
+           'CSSVariable']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
@@ -1127,20 +1127,16 @@ class CSSVariable(CSSValue):
     def _getValue(self):
         "Find contained sheet and @variables there"
         # TODO: imports!
-        if self.parent:
-            # CSSValueList or Property:
-            if self.parent.parent: 
-                # styleDeclaration:
-                if self.parent.parent.parentRule:
-                    # styleRule:
-                    if self.parent.parent.parentRule.parentStyleSheet:
-                        # stylesheet
-                        sheet = self.parent.parent.parentRule.parentStyleSheet
-                        for r in sheet.cssRules:
-                            if r.VARIABLES_RULE == r.type and r.variables:
-                                try:
-                                    return r.variables[self.name]
-                                except KeyError:
-                                    return None
+        try:
+            sheet = self.parent.parent.parentRule.parentStyleSheet.cssRules
+        except AttributeError:
+            return None
+        else:
+            for r in sheet:
+                if r.VARIABLES_RULE == r.type and r.variables:
+                    try:
+                        return r.variables[self.name]
+                    except KeyError:
+                        return None
         
     value = property(_getValue)

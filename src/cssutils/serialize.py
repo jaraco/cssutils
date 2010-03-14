@@ -130,6 +130,9 @@ class Preferences(object):
         self.selectorCombinatorSpacer = u' '
         self.spacer = u' '
         self.validOnly = False # should not be changed currently!!!
+
+        # experimental
+        self.resolveVariables = False
         
     def useMinified(self):
         """Set options resulting in a minified stylesheet.
@@ -402,7 +405,7 @@ class CSSSerializer(object):
         """
         variablesText = rule.variables.cssText
 
-        if variablesText and rule.wellformed:
+        if variablesText and rule.wellformed and not self.prefs.resolveVariables:
             out = Out(self)
             out.append(self._atkeyword(rule, u'@variables'))   
             for item in rule.seq:
@@ -934,9 +937,17 @@ class CSSSerializer(object):
             return u''
         else:
             out = Out(self)
-            for item in variable.seq:
-                type_, val = item.type, item.value
-                out.append(val, type_)
+            
+            if not self.prefs.resolveVariables or not variable.value:
+#                if not variable.value:
+#                    cssutils.log.warn('No value for variable "%s" found, keeping variable.' % variable.name,
+#                                      neverraise=True)
+                for item in variable.seq:
+                    type_, val = item.type, item.value
+                    out.append(val, type_)
+                    
+            else:
+                out.append(variable.value)
 
             return out.value()
           

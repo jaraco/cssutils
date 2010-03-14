@@ -5,56 +5,45 @@ __version__ = '$Id$'
 import basetest
 import cssutils
 
-class CSSSerializerTestCase(basetest.BaseTestCase):
-    """
-    testcases for cssutils.CSSSerializer
-    """
-#    def test_init(self):
-#        "CSSSerializer.__init__()"
 
-    def test_canonical(self):
-        tests = {
-            u'''1''': u'''1''',
-            # => remove +
-            u'''+1''': u'''1''',
-            # 0 => remove unit
-            u'''0''': u'''0''',
-            u'''+0''': u'''0''',
-            u'''-0''': u'''0''',
-            u'''0.0''': u'''0''',
-            u'''00.0''': u'''0''',
-            u'''00.0px''': u'''0''',
-            u'''00.0pc''': u'''0''',
-            u'''00.0em''': u'''0''',
-            u'''00.0ex''': u'''0''',
-            u'''00.0cm''': u'''0''',
-            u'''00.0mm''': u'''0''',
-            u'''00.0in''': u'''0''',
-            # 0 => keep unit
-            u'''00.0%''': u'''0%''',
-            u'''00.0ms''': u'''0ms''',
-            u'''00.0s''': u'''0s''',
-            u'''00.0khz''': u'''0khz''',
-            u'''00.0hz''': u'''0hz''',
-            u'''00.0khz''': u'''0khz''',
-            u'''00.0deg''': u'''0deg''',
-            u'''00.0rad''': u'''0rad''',
-            u'''00.0grad''': u'''0grad''',
-            u'''00.0xx''': u'''0xx''',
-            # 11. 
-            u'''a, 'b"', serif''': ur'''a, "b\"", serif''',
-            # SHOULD: \[ => [ but keep!
-            ur"""url('h)i') '\[\]'""": ur'''url("h)i") "\[\]"''',
-            u'''rgb(18, 52, 86)''': u'''rgb(18, 52, 86)''',
-            u'''#123456''': u'''#123456''',
-            # SHOULD => #112233
-            u'''#112233''': u'''#123''',
-            # SHOULD => #000000
-#            u'rgba(000001, 0, 0, 1)': u'#000'
+class PreferencesTestCase(basetest.BaseTestCase):
+    """
+    testcases for cssutils.serialize.Preferences
+    """
+    def test_resolveVariables(self):
+        "Preferences.resolveVariables"
+        self.assertEqual(cssutils.ser.prefs.resolveVariables, False)
+        
+        vars = u'''
+            @variables {
+                c1: red;
+                c2: #0f0;
+                px: 1px 2px;
             }
+        '''
+        tests = {
+            u'''a {\n    color: var(c1)\n    }''': 
+            u'''a {\n    color: red\n    }''',
+            u'''a {\n    color: var(c1)\n; color: var(  c2   )    }''': 
+            u'''a {\n    color: red;\n    color: #0f0\n    }''',
+            u'''a {\n    margin: var(px)\n    }''': 
+            u'''a {\n    margin: 1px 2px\n    }''',
+            u'''@media all {
+                a {
+                    margin: var(px) var(px);
+                    color: var(c1);
+                    left: var(unknown)
+                    }
+            }''': 
+            u'''@media all {\n    a {\n        margin: 1px 2px 1px 2px;\n        color: red;\n        left: var(unknown)\n        }\n    }''',
+        }
+        cssutils.ser.prefs.resolveVariables = True
+        
         for test, exp in tests.items():
-            v = cssutils.css.CSSValue(test)
-            self.assertEqual(exp, v.cssText)
+            s = cssutils.parseString(vars + test)
+            self.assertEqual(exp, s.cssText)
+            
+        cssutils.ser.prefs.useDefaults()
 
     def test_useDefaults(self):
         "Preferences.useDefaults()"
@@ -191,6 +180,9 @@ prefix|x, a + b > c ~ d, b {
         for test, exp in valuetests.items():
             s = cssutils.parseString(u'a{x:%s}' % test)
             self.assertEqual(u'a{x:%s}' % exp, s.cssText)
+            
+        cssutils.ser.prefs.useDefaults()
+
 
     def test_defaultAtKeyword(self):
         "Preferences.defaultAtKeyword"
@@ -202,6 +194,8 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(u'@import "x";', s.cssText)
         cssutils.ser.prefs.defaultAtKeyword = False
         self.assertEqual(u'@im\\port "x";', s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_defaultPropertyName(self):
         "Preferences.defaultPropertyName"
@@ -224,6 +218,8 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(u'a {\n    c\\olor: green\n    }', s.cssText)
         cssutils.ser.prefs.defaultPropertyName = True
         self.assertEqual(u'a {\n    color: green\n    }', s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_defaultPropertyPriority(self):
         "Preferences.defaultPropertyPriority"
@@ -234,6 +230,8 @@ prefix|x, a + b > c ~ d, b {
                          u'''a {\n    color: green !important\n    }''')
         cssutils.ser.prefs.defaultPropertyPriority = False
         self.assertEqual(s.cssText, css)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_importHrefFormat(self):
         "Preferences.importHrefFormat"
@@ -257,6 +255,8 @@ prefix|x, a + b > c ~ d, b {
         cssutils.ser.prefs.importHrefFormat = 'not defined'
         self.assertEqual(u'@import url(not);', r0.cssText)
         self.assertEqual(u'@import "str";', r1.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_indent(self):
         "Preferences.ident"
@@ -273,6 +273,8 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(exp1, s.cssText)
         cssutils.ser.prefs.indent = 4* ' '
         self.assertEqual(exp4, s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_keepAllProperties(self):
         "Preferences.keepAllProperties"
@@ -291,6 +293,8 @@ prefix|x, a + b > c ~ d, b {
         # keep all
         cssutils.ser.prefs.keepAllProperties = True
         self.assertEqual(u'a {\n    color: pink;\n    color: red;\n    c\olor: blue;\n    c\olor: green\n    }', s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_keepComments(self):
         "Preferences.keepComments"
@@ -301,6 +305,8 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual('', s.cssText)
         cssutils.ser.prefs.keepEmptyRules = True
         self.assertEqual('a {}', s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_keepEmptyRules(self):
         "Preferences.keepEmptyRules"
@@ -366,6 +372,8 @@ a {
         color: red
         }
     }''', s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_keepUnkownAtRules(self):
         "Preferences.keepUnkownAtRules"
@@ -399,6 +407,8 @@ h1 {
             self.assertEqual(s.cssText, expwith)
             cssutils.ser.prefs.keepUnkownAtRules = False
             self.assertEqual(s.cssText, expwithout)
+            
+        cssutils.ser.prefs.useDefaults()
 
     def test_keepUsedNamespaceRulesOnly(self):
         "Preferences.keepUsedNamespaceRulesOnly"
@@ -436,6 +446,8 @@ h1 {
             cssutils.ser.prefs.keepUsedNamespaceRulesOnly = True
             self.assertEqual(s.cssText, expwithout)
         
+        cssutils.ser.prefs.useDefaults()
+        
     def test_lineNumbers(self):
         "Preferences.lineNumbers"
         cssutils.ser.prefs.useDefaults()
@@ -455,6 +467,8 @@ h1 {
         self.assertEqual(True, cssutils.ser.prefs.lineNumbers)
         self.assertEqual(exp1, s.cssText)
 
+        cssutils.ser.prefs.useDefaults()
+
     def test_lineSeparator(self):
         "Preferences.lineSeparator"
         cssutils.ser.prefs.useDefaults()
@@ -468,6 +482,8 @@ h1 {
         cssutils.ser.prefs.lineSeparator = u'XXX'
         self.assertEqual('a {XXX    x: 1;XXX    y: 2XXX    }', s.cssText)
 
+        cssutils.ser.prefs.useDefaults()
+        
     def test_listItemSpacer(self):
         "Preferences.listItemSpacer"
         cssutils.ser.prefs.useDefaults()
@@ -480,6 +496,8 @@ a, b {}'''
         self.assertEqual(u'@import "x" print, tv;\na, b {}', s.cssText)
         cssutils.ser.prefs.listItemSpacer = u''
         self.assertEqual(u'@import "x" print,tv;\na,b {}', s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_omitLastSemicolon(self):
         "Preferences.omitLastSemicolon"
@@ -490,6 +508,8 @@ a, b {}'''
         self.assertEqual(u'a {\n    x: 1;\n    y: 2\n    }', s.cssText)
         cssutils.ser.prefs.omitLastSemicolon = False
         self.assertEqual(u'a {\n    x: 1;\n    y: 2;\n    }', s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_paranthesisSpacer(self):
         "Preferences.paranthesisSpacer"
@@ -500,6 +520,8 @@ a, b {}'''
         cssutils.ser.prefs.paranthesisSpacer = u''
         self.assertEqual(u'a{\n    x: 1;\n    y: 2\n    }', s.cssText)
         
+        cssutils.ser.prefs.useDefaults()
+        
     def test_propertyNameSpacer(self):
         "Preferences.propertyNameSpacer"
         cssutils.ser.prefs.useDefaults()
@@ -508,6 +530,8 @@ a, b {}'''
         self.assertEqual(u'a {\n    x: 1;\n    y: 2\n    }', s.cssText)
         cssutils.ser.prefs.propertyNameSpacer = u''
         self.assertEqual(u'a {\n    x:1;\n    y:2\n    }', s.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_selectorCombinatorSpacer(self):
         "Preferences.selectorCombinatorSpacer"
@@ -516,6 +540,8 @@ a, b {}'''
         self.assertEqual(u'a + b > c ~ d e', s.selectorText)
         cssutils.ser.prefs.selectorCombinatorSpacer = u''
         self.assertEqual(u'a+b>c~d e', s.selectorText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_spacer(self):
         cssutils.ser.prefs.useDefaults()
@@ -532,6 +558,8 @@ a, b {}'''
             }
         for css, exp in tests.items():
             self.assertEqual(exp, cssutils.parseString(css).cssText)
+            
+        cssutils.ser.prefs.useDefaults()
 
     def test_validOnly(self):
         "Preferences.validOnly"
@@ -567,8 +595,62 @@ img { border-width: 3 }   /* a unit must be specified for length values */''': '
             
         }
         self.do_equal_p(tests, raising=False)
-
         
+        cssutils.ser.prefs.useDefaults()
+        
+
+class CSSSerializerTestCase(basetest.BaseTestCase):
+    """
+    testcases for cssutils.CSSSerializer
+    """
+#    def test_init(self):
+#        "CSSSerializer.__init__()"
+
+    def test_canonical(self):
+        tests = {
+            u'''1''': u'''1''',
+            # => remove +
+            u'''+1''': u'''1''',
+            # 0 => remove unit
+            u'''0''': u'''0''',
+            u'''+0''': u'''0''',
+            u'''-0''': u'''0''',
+            u'''0.0''': u'''0''',
+            u'''00.0''': u'''0''',
+            u'''00.0px''': u'''0''',
+            u'''00.0pc''': u'''0''',
+            u'''00.0em''': u'''0''',
+            u'''00.0ex''': u'''0''',
+            u'''00.0cm''': u'''0''',
+            u'''00.0mm''': u'''0''',
+            u'''00.0in''': u'''0''',
+            # 0 => keep unit
+            u'''00.0%''': u'''0%''',
+            u'''00.0ms''': u'''0ms''',
+            u'''00.0s''': u'''0s''',
+            u'''00.0khz''': u'''0khz''',
+            u'''00.0hz''': u'''0hz''',
+            u'''00.0khz''': u'''0khz''',
+            u'''00.0deg''': u'''0deg''',
+            u'''00.0rad''': u'''0rad''',
+            u'''00.0grad''': u'''0grad''',
+            u'''00.0xx''': u'''0xx''',
+            # 11. 
+            u'''a, 'b"', serif''': ur'''a, "b\"", serif''',
+            # SHOULD: \[ => [ but keep!
+            ur"""url('h)i') '\[\]'""": ur'''url("h)i") "\[\]"''',
+            u'''rgb(18, 52, 86)''': u'''rgb(18, 52, 86)''',
+            u'''#123456''': u'''#123456''',
+            # SHOULD => #112233
+            u'''#112233''': u'''#123''',
+            # SHOULD => #000000
+#            u'rgba(000001, 0, 0, 1)': u'#000'
+            }
+        for test, exp in tests.items():
+            v = cssutils.css.CSSValue(test)
+            self.assertEqual(exp, v.cssText)
+
+
     def test_CSSStyleSheet(self):
         "CSSSerializer.do_CSSStyleSheet"
         css = u'/* κουρος */'
@@ -581,6 +663,8 @@ img { border-width: 3 }   /* a unit must be specified for length values */''': '
         sheet.cssRules[0].encoding = 'ascii'
         self.assertEqual('@charset "ascii";\n/* \\3BA \\3BF \\3C5 \\3C1 \\3BF \\3C2  */', 
                          sheet.cssText)
+        
+        cssutils.ser.prefs.useDefaults()
 
     def test_Property(self):
         "CSSSerializer.do_Property"
