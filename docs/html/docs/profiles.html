@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>profiles &mdash; cssutils v0.9.7dev documentation</title>
+    <title>profiles &mdash; cssutils v0.9.7a3 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7dev',
+        VERSION:     '0.9.7a3',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7dev documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7a3 documentation" href="../index.html" />
     <link rel="next" title="logging" href="logging.html" />
     <link rel="prev" title="scripts" href="scripts.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="scripts.html" title="scripts"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,7 +51,7 @@
   <div class="section" id="profiles">
 <h1>profiles<a class="headerlink" href="#profiles" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cssutils-profile">
-<span id="index-16"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
+<span id="index-23"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
 <p>A global object <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is used for validation of all properties. It is an instance of <a title="cssutils.profiles.Profiles" class="reference internal" href="#cssutils.profiles.Profiles"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a>. Add or remove new profile definitions here.</p>
 <p>Most important method is <a title="cssutils.profiles.Profiles.addProfile" class="reference internal" href="#cssutils.profiles.Profiles.addProfile"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles.addProfile()</span></tt></a> (use <tt class="docutils literal"><span class="pre">cssutils.profile.addProfile</span></tt>) to add new properties to cssutils and the setting of <tt class="docutils literal"><span class="pre">defaultProfiles</span></tt>.</p>
 <p>Example of how to add a new profile:</p>
@@ -79,7 +79,7 @@
 <p><strong>Please note: This might change again, but only slightly as it has been refactored in 0.9.6a2.</strong></p>
 </div>
 <div class="section" id="cssutils-profiles-macros-and-cssutils-profiles-properties">
-<span id="index-17"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt><a class="headerlink" href="#cssutils-profiles-macros-and-cssutils-profiles-properties" title="Permalink to this headline">¶</a></h2>
+<span id="index-24"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt><a class="headerlink" href="#cssutils-profiles-macros-and-cssutils-profiles-properties" title="Permalink to this headline">¶</a></h2>
 <p>Two dictionaries which contain macro and property definitions for the predefined property profiles.</p>
 <p>Both use the additional macros defined in <tt class="docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="docutils literal"><span class="pre">Profiles._MACROS</span></tt> which contain basic macros for definition of new properties. Things like <cite>ident</cite>, <cite>name</cite> or <cite>hexcolor</cite> are defined there and may be used in any new property definition as these two macro sets defined in <tt class="docutils literal"><span class="pre">Profiles</span></tt> are added to any custom macro definition given. You may overwrite these basic macros with your own macros or simply define your own macros and use only these.</p>
 <p>Use <tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> if you need any other predefined macro or <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt> if you want to add any known property to your custom property profile.</p>
@@ -320,7 +320,7 @@ and <tt class="docutils literal"><span class="pre">profiles</span></tt> the prof
         <li class="right" >
           <a href="scripts.html" title="scripts"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
