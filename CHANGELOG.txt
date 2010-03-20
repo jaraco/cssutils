@@ -38,7 +38,9 @@ development version
 **experimental and incomplete**
 
     + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
-        - ``cssutils.ser.pref.resolveVariables == False``: If set to ``True`` tries to resolve all variable references and removes any CSSVariablesRules.
+        - ``cssutils.ser.prefs.resolveVariables == False``: If set to ``True`` tries to resolve all variable references and removes any CSSVariablesRules.
+        - ``cssutils.ser.prefs.normalizedVarNames==True``: Defines if variable names should be serialized normalized (they are
+        used as being normalized anyway)
 
 
 HEAD
@@ -47,6 +49,8 @@ HEAD
     - FEATURE: Added new options to ``cssutils.script.csscombine``:
         + ``cssText=None`` and ``href=None`` to start combination from a css string, which normally needs ``href`` to be able to resolve any imports.
         + ``resolveVariables=False`` which resolves any variables if given the value ``True``
+
+    - BUGFIX: Improved parsing of CSS variable declarations (space before ending semicolon does not raise an Error anymore).
 
 
 0.9.7a3 100314

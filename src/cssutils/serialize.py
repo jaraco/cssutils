@@ -5,6 +5,7 @@ __all__ = ['CSSSerializer', 'Preferences']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+from cssutils.helper import normalize
 import codecs
 import cssutils
 import helper
@@ -72,6 +73,9 @@ class Preferences(object):
     listItemSpacer = u' '
         string which is used in ``css.SelectorList``, ``css.CSSValue`` and
         ``stylesheets.MediaList`` after the comma
+    normalizedVarNames = True
+        defines if variable names should be serialized normalized (they are 
+        used as being normalized anyway)
     omitLastSemicolon = True
         If ``True`` omits ; after last property of CSSStyleDeclaration
     paranthesisSpacer = u' '
@@ -128,6 +132,7 @@ class Preferences(object):
         self.lineNumbers = False
         self.lineSeparator = u'\n'
         self.listItemSpacer = u' '
+        self.normalizedVarNames = True
         self.omitLastSemicolon = True
         self.paranthesisSpacer = u' '
         self.propertyNameSpacer = u' '
@@ -758,6 +763,8 @@ class CSSSerializer(object):
                 type_, val = item.type, item.value
                 if u'var' == type_:
                     name, cssvalue = val
+                    if self.prefs.normalizedVarNames:
+                        name = normalize(name)
                     out.append(name)
                     out.append(u':')
                     out.append(cssvalue.cssText)

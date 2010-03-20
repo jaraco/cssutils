@@ -11,7 +11,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         super(CSSVariablesRuleTestCase, self).setUp()
         self.r = cssutils.css.CSSVariablesRule()
         self.rRO = cssutils.css.CSSVariablesRule(readonly=True)
-        self.r_type = cssutils.css.CSSPageRule.VARIABLES_RULE#
+        self.r_type = cssutils.css.CSSPageRule.VARIABLES_RULE
         self.r_typeString = 'VARIABLES_RULE'
 
     def test_init(self):
@@ -62,9 +62,9 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSVariablesRule"
         EXP = u'@variables {\n    margin: 0\n    }'
         tests = {
-            u'@variables {}': u'',
-            u'@variables     {margin:0;}': EXP,
-            u'@VaRIables {margin:0;}': EXP,
+             u'@variables {}': u'',
+             u'@variables     {margin:0;}': EXP,
+             u'@VaRIables {margin:0;}': EXP,
             u'@\\VaRIables {margin:0;}': EXP,
 
             # comments

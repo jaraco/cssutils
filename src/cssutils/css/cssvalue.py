@@ -163,15 +163,15 @@ class CSSValue(cssutils.util._NewBase):
                           optional=True)
         # CSSValue PRODUCTIONS
         valueprods = Sequence(term,
-                              # TODO: only when setting via other class
-                              PreDef.char('END', ';',
-                                          stopAndKeep=True,
-                                          optional=True),
                               Sequence(operator, # mayEnd this Sequence if whitespace
-                                       term,
+                                                                             
+                                       # TODO: only when setting via other class
+                                       # used by variabledeclaration currently
                                        PreDef.char('END', ';',
                                                    stopAndKeep=True,
                                                    optional=True),
+                                       
+                                       term,
                                        minmax=lambda: (0, None))) 
         # parse
         wellformed, seq, store, notused = ProdParser().parse(cssText,
