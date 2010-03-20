@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>README &mdash; cssutils v0.9.7a3 documentation</title>
+    <title>README &mdash; cssutils v0.9.7a4dev1 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.7a3',
+        VERSION:     '0.9.7a4dev1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,8 +19,8 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a3 documentation" href="index.html" />
-    <link rel="next" title="CHANGELOG" href="CHANGELOG.html" />
+    <link rel="top" title="cssutils v0.9.7a4dev1 documentation" href="index.html" />
+    <link rel="next" title="parsing CSS" href="docs/parse.html" />
     <link rel="prev" title="cssutils" href="index.html" /> 
   </head>
   <body>
@@ -34,12 +34,12 @@
           <a href="modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="CHANGELOG.html" title="CHANGELOG"
+          <a href="docs/parse.html" title="parsing CSS"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="cssutils"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,7 +61,7 @@
 </tbody>
 </table>
 <div class="section" id="overview">
-<h3>overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
+<h3>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
 <p>A Python package to parse and build CSS Cascading Style Sheets. DOM only, not any rendering facilities!</p>
 <p>Based upon and partly implementing the following specifications :</p>
 <dl class="docutils">
@@ -92,11 +92,11 @@
 <p>There is also a low-traffic <a class="reference external" href="http://groups.google.com/group/cssutils">cssutils discussion group</a>.</p>
 </div>
 <div class="section" id="compatibility">
-<h3>compatibility<a class="headerlink" href="#compatibility" title="Permalink to this headline">¶</a></h3>
-<p>cssutils is developed on standard Python. 0.9.6 is the first release to pass all tests on Jython 2.5.1 too.</p>
+<h3>Compatibility<a class="headerlink" href="#compatibility" title="Permalink to this headline">¶</a></h3>
+<p>cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (2.5.1) too.</p>
 </div>
 <div class="section" id="license">
-<h3>license<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
+<h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
 <p>Copyright 2005 - 2010 Christof Hoeke</p>
 <p>cssutils is published under the LGPL 3 or later</p>
 <p>cssutils is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
@@ -104,7 +104,7 @@
 <p>You should have received a copy of the GNU Lesser General Public License along with cssutils. If not, see <a class="reference external" href="http://www.gnu.org/licenses">http://www.gnu.org/licenses</a>.</p>
 </div>
 <div class="section" id="installation">
-<h3>installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
 <p>From 0.9.6 cssutils uses <a class="reference external" href="http://pypi.python.org/pypi/distribute">Distribute</a></p>
 <p>After installing Distribute use:</p>
 <div class="highlight-python"><pre>&gt; easy_install cssutils</pre>
@@ -116,11 +116,11 @@
 <p>To uninstall remove any registrations of cssutils eggs with Distribute and remove the eggs which should be installed at PYTHONDIR/Lib/site-packages/cssutils too.</p>
 </div>
 <div class="section" id="kind-request">
-<h3>kind request<a class="headerlink" href="#kind-request" title="Permalink to this headline">¶</a></h3>
+<h3>Kind Request<a class="headerlink" href="#kind-request" title="Permalink to this headline">¶</a></h3>
 <p>cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the <a class="reference external" href="http://code.google.com/p/cssutils/issues/list">Issue Tracker</a> at Google.</p>
 </div>
 <div class="section" id="thanks">
-<h3>thanks<a class="headerlink" href="#thanks" title="Permalink to this headline">¶</a></h3>
+<h3>Thanks<a class="headerlink" href="#thanks" title="Permalink to this headline">¶</a></h3>
 <p>Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Jason R. Coombs, Cory Dodt, Tim Gerla and James Dobson for helpful suggestions and code patches.</p>
 </div>
 </div>
@@ -136,12 +136,12 @@
             <ul>
 <li><a class="reference external" href="">README</a><ul>
 <li><a class="reference external" href="#cssutils-css-cascading-style-sheets-library-for-python">cssutils: CSS Cascading Style Sheets library for Python</a><ul>
-<li><a class="reference external" href="#overview">overview</a></li>
-<li><a class="reference external" href="#compatibility">compatibility</a></li>
-<li><a class="reference external" href="#license">license</a></li>
-<li><a class="reference external" href="#installation">installation</a></li>
-<li><a class="reference external" href="#kind-request">kind request</a></li>
-<li><a class="reference external" href="#thanks">thanks</a></li>
+<li><a class="reference external" href="#overview">Overview</a></li>
+<li><a class="reference external" href="#compatibility">Compatibility</a></li>
+<li><a class="reference external" href="#license">License</a></li>
+<li><a class="reference external" href="#installation">Installation</a></li>
+<li><a class="reference external" href="#kind-request">Kind Request</a></li>
+<li><a class="reference external" href="#thanks">Thanks</a></li>
 </ul>
 </li>
 </ul>
@@ -152,8 +152,8 @@
             <p class="topless"><a href="index.html"
                                   title="previous chapter">cssutils</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="CHANGELOG.html"
-                                  title="next chapter">CHANGELOG</a></p>
+            <p class="topless"><a href="docs/parse.html"
+                                  title="next chapter">parsing CSS</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="_sources/README.txt"
@@ -186,12 +186,12 @@
           <a href="modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="CHANGELOG.html" title="CHANGELOG"
+          <a href="docs/parse.html" title="parsing CSS"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="cssutils"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
