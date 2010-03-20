@@ -14,6 +14,7 @@ __version__ = '$Id$'
 from cssutils.helper import Deprecated
 from cssutils.util import _Namespaces, _SimpleNamespaces, _readUrl
 from cssrule import CSSRule
+from cssvariablesdeclaration import CSSVariablesDeclaration
 import cssutils.stylesheets
 import xml.dom
 
@@ -372,6 +373,26 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
     namespaces = property(lambda self: self._namespaces,
                           doc="All Namespaces used in this CSSStyleSheet.")
+
+    def _getVariables(self):
+        "Returns CSSVariablesDeclaration of all variables available."
+        vars = CSSVariablesDeclaration()
+        
+        for r in self.cssRules.rulesOfType(CSSRule.IMPORT_RULE):
+            for vr in r.styleSheet.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
+                for var in vr.variables:
+                    vars.setVariable(var, vr.variables[var])
+        for vr in self.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
+            for var in vr.variables:
+                vars.setVariable(var, vr.variables[var])
+        
+        return vars
+
+    variables = property(_getVariables,
+                         doc=u"A :class:css.CSSVariablesDeclaration "
+                         u"containing all available variables in this "
+                         u"CSSStyleSheet including the ones defined in "
+                         u"imported sheets.")
 
     def add(self, rule):
         """Add `rule` to style sheet at appropriate position.
