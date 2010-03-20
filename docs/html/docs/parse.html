@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>parsing CSS &mdash; cssutils v0.9.7a3 documentation</title>
+    <title>parsing CSS &mdash; cssutils v0.9.7a4dev1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a3',
+        VERSION:     '0.9.7a4dev1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,9 +19,9 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7a4dev1 documentation" href="../index.html" />
     <link rel="next" title="serializing CSS" href="serialize.html" />
-    <link rel="prev" title="version migration" href="migrate.html" /> 
+    <link rel="prev" title="README" href="../README.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,9 +37,9 @@
           <a href="serialize.html" title="serializing CSS"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="migrate.html" title="version migration"
+          <a href="../README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,7 +50,7 @@
             
   <div class="section" id="parsing-css">
 <span id="module-cssutils.parse"></span><h1>parsing CSS<a class="headerlink" href="#parsing-css" title="Permalink to this headline">¶</a></h1>
-<p>Options to parse a given stylesheet: Get an instance of <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> and use the provided <tt class="docutils literal"><span class="pre">parse*</span></tt> methods or for simpler parsing use the <tt class="docutils literal"><span class="pre">parse*</span></tt> <a class="reference internal" href="#shortcut-functions">shortcut functions</a>.</p>
+<p>Options to parse a given stylesheet: Get an instance of <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> and use the provided <tt class="docutils literal"><span class="pre">parse*</span></tt> methods or for simpler parsing use the <tt class="docutils literal"><span class="pre">parse*</span></tt> <a class="reference internal" href="#convienience-functions">convienience functions</a>.</p>
 <div class="section" id="cssparser">
 <h2><tt class="docutils literal"><span class="pre">CSSParser</span></tt><a class="headerlink" href="#cssparser" title="Permalink to this headline">¶</a></h2>
 <p>The parser is reusable.</p>
@@ -185,8 +185,8 @@ to use its default function.</p>
 
 </dd></dl>
 
-<div class="section" id="custom-url-fetcher">
-<h3>custom URL Fetcher<a class="headerlink" href="#custom-url-fetcher" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="the-url-fetcher">
+<h3>The URL Fetcher<a class="headerlink" href="#the-url-fetcher" title="Permalink to this headline">¶</a></h3>
 <p>If you want to control how imported stylesheets are read you may define a custom URL fetcher (e.g. would be needed on Google AppEngine as urllib2, which is normally used, is not available. A GAE specific fetcher is included in cssutils from 0.9.5a1 though.)</p>
 <p>A custom URL fetcher may be used during parsing via <tt class="docutils literal"><span class="pre">CSSParser.setFetcher(fetcher)</span></tt> (or as an init parameter). The so customized parser is reusable. The fetcher is called when an <tt class="docutils literal"><span class="pre">&#64;import</span></tt> rule is found and the referenced stylesheet is about to be retrieved.</p>
 <p>Example:</p>
@@ -209,8 +209,8 @@ to use its default function.</p>
 <p>You may also define a fetcher which overrides the internal encoding for imported sheets with a fetcher that returns a (normally HTTP) encoding depending e.g on the URL.</p>
 </div>
 </div>
-<div class="section" id="shortcut-functions">
-<h2>shortcut functions<a class="headerlink" href="#shortcut-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="convienience-functions">
+<h2>Convienience Functions<a class="headerlink" href="#convienience-functions" title="Permalink to this headline">¶</a></h2>
 <p>Shortcuts for initializing a new <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> and use its <tt class="docutils literal"><span class="pre">parse*</span></tt> methods. Parsing a stylesheet this way does not raise any exceptions if an error occurs but parses CSS as defined in the specifications. If you need advanced parser handline use <a title="cssutils.CSSParser" class="reference internal" href="#cssutils.CSSParser"><tt class="xref docutils literal"><span class="pre">cssutils.CSSParser</span></tt></a> directly.</p>
 <dl class="function">
 <dt id="cssutils.parse.cssutils.parseString">
@@ -240,17 +240,17 @@ to use its default function.</p>
             <ul>
 <li><a class="reference external" href="">parsing CSS</a><ul>
 <li><a class="reference external" href="#cssparser"><tt class="docutils literal"><span class="pre">CSSParser</span></tt></a><ul>
-<li><a class="reference external" href="#custom-url-fetcher">custom URL Fetcher</a></li>
+<li><a class="reference external" href="#the-url-fetcher">The URL Fetcher</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#shortcut-functions">shortcut functions</a></li>
+<li><a class="reference external" href="#convienience-functions">Convienience Functions</a></li>
 </ul>
 </li>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="migrate.html"
-                                  title="previous chapter">version migration</a></p>
+            <p class="topless"><a href="../README.html"
+                                  title="previous chapter">README</a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="serialize.html"
                                   title="next chapter">serializing CSS</a></p>
@@ -289,9 +289,9 @@ to use its default function.</p>
           <a href="serialize.html" title="serializing CSS"
              >next</a> |</li>
         <li class="right" >
-          <a href="migrate.html" title="version migration"
+          <a href="../README.html" title="README"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

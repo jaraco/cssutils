@@ -102,8 +102,7 @@ class CSSRule(cssutils.util.Base2):
                            "and not its initial value.")
 
     parent = property(lambda self: self._parent,
-                      doc="The Parent Node of this CSSRule (currently if a "
-                          "CSSStyleDeclaration only!) or None.")
+                      doc="The Parent Node of this CSSRule or None.")
 
     parentRule = property(lambda self: self._parentRule,
                                 doc="If this rule is contained inside "

@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>package cssutils.css &mdash; cssutils v0.9.7a3 documentation</title>
+    <title>Package cssutils.css &mdash; cssutils v0.9.7a4dev1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a3',
+        VERSION:     '0.9.7a4dev1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,8 +19,8 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a3 documentation" href="../index.html" />
-    <link rel="next" title="package cssutils.stylesheets" href="stylesheets.html" />
+    <link rel="top" title="cssutils v0.9.7a4dev1 documentation" href="../index.html" />
+    <link rel="next" title="Package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
   <body>
@@ -34,12 +34,12 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="stylesheets.html" title="package cssutils.stylesheets"
+          <a href="stylesheets.html" title="Package cssutils.stylesheets"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,11 +49,11 @@
           <div class="body">
             
   <div class="section" id="module-cssutils.css">
-<h1>package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt><a class="headerlink" href="#module-cssutils.css" title="Permalink to this headline">¶</a></h1>
+<h1>Package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt><a class="headerlink" href="#module-cssutils.css" title="Permalink to this headline">¶</a></h1>
 <p>Classes implementing <a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 CSS</a> and <a class="reference external" href="http://www.w3.org/TR/css3-namespace/">CSS Module: Namespaces (W3C Working Draft 28 August 2006)</a></p>
 <div class="section" id="cssstylesheet">
 <h2><tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt><a class="headerlink" href="#cssstylesheet" title="Permalink to this headline">¶</a></h2>
-<p>A CSSStyleSheet contains all rules. It consists of the different CSS rules like <a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">CSSImportRule</span></tt></a>, <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a> etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an <a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> rule or simpler with the <a title="cssutils.css.CSSStyleSheet.encoding" class="reference internal" href="#cssutils.css.CSSStyleSheet.encoding"><tt class="xref docutils literal"><span class="pre">encoding</span></tt></a> attribute. The serialized sheet may be obtained from <a title="cssutils.css.CSSStyleSheet.cssText" class="reference internal" href="#cssutils.css.CSSStyleSheet.cssText"><tt class="xref docutils literal"><span class="pre">cssText</span></tt></a>. All rules are present in <tt class="xref docutils literal"><span class="pre">cssRules</span></tt>, a stylesheet iterates on its rules so this might be easier. Namespaces are available via <a title="cssutils.css.CSSStyleSheet.namespaces" class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces"><tt class="xref docutils literal"><span class="pre">namespaces</span></tt></a> (do not rely on prefixes, see <a class="reference external" href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a> how these work).</p>
+<p>A CSSStyleSheet contains all rules. It consists of the different CSS rules like <a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">CSSImportRule</span></tt></a>, <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a> etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an <a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> rule or simpler with the <a title="cssutils.css.CSSStyleSheet.encoding" class="reference internal" href="#cssutils.css.CSSStyleSheet.encoding"><tt class="xref docutils literal"><span class="pre">encoding</span></tt></a> attribute. The serialized sheet may be obtained from <a title="cssutils.css.CSSStyleSheet.cssText" class="reference internal" href="#cssutils.css.CSSStyleSheet.cssText"><tt class="xref docutils literal"><span class="pre">cssText</span></tt></a>. All rules are present in <tt class="xref docutils literal"><span class="pre">cssRules</span></tt>, a stylesheet iterates on its rules so this might be easier. Namespaces are available via <a title="cssutils.css.CSSStyleSheet.namespaces" class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces"><tt class="xref docutils literal"><span class="pre">namespaces</span></tt></a> (do not rely on prefixes, see <a class="reference external" href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a> how these work). Variables are available via <a title="cssutils.css.CSSStyleSheet.variables" class="reference internal" href="#cssutils.css.CSSStyleSheet.variables"><tt class="xref docutils literal"><span class="pre">variables</span></tt></a> which is a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a> and contains <strong>all</strong> available variables including the ones defined in imported style sheets. Changes to this object do NOT change the parent sheet!</p>
 <dl class="class">
 <dt id="cssutils.css.CSSStyleSheet">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleSheet</tt><big>(</big><em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>disabled=None</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em>, <em>ownerRule=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleSheet" title="Permalink to this definition">¶</a></dt>
@@ -211,13 +211,129 @@ preferences to be set.</dd></dl>
 <tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.type" title="Permalink to this definition">¶</a></dt>
 <dd>This specifies the style sheet language for this style sheet. The style sheet language is specified as a content type (e.g. <tt class="docutils literal"><span class="pre">text/css</span></tt>). The content type is often specified in the ownerNode. Also see the type attribute definition for the LINK element in HTML 4.0, and the type pseudo-attribute for the XML style sheet processing instruction. For CSS this is always <tt class="docutils literal"><span class="pre">text/css</span></tt>.</dd></dl>
 
+<dl class="attribute">
+<dt id="cssutils.css.CSSStyleSheet.variables">
+<tt class="descname">variables</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.variables" title="Permalink to this definition">¶</a></dt>
+<dd>A <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a> containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</dd></dl>
+
 </dd></dl>
 
 </div>
-<div class="section" id="css-rules-rules-and-cssstylerule">
-<h2>CSS rules: &#64;rules and <tt class="docutils literal"><span class="pre">CSSStyleRule</span></tt><a class="headerlink" href="#css-rules-rules-and-cssstylerule" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="css-rules">
+<h2>CSS rules<a class="headerlink" href="#css-rules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cssrule">
+<h3><tt class="docutils literal"><span class="pre">CSSRule</span></tt><a class="headerlink" href="#cssrule" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cssutils.css.CSSRule">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSRule</tt><big>(</big><em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base interface for any type of CSS statement. This includes
+both rule sets and at-rules. An implementation is expected to preserve
+all rules specified in a CSS style sheet, even if the rule is not
+recognized by the parser. Unrecognized rules are represented using the
+<tt class="xref docutils literal"><span class="pre">CSSUnknownRule</span></tt> interface.</p>
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.CHARSET_RULE">
+<tt class="descname">CHARSET_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.CHARSET_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSCharsetRule</span></tt></a> (not used in CSSOM anymore)</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.COMMENT">
+<tt class="descname">COMMENT</tt><a class="headerlink" href="#cssutils.css.CSSRule.COMMENT" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSComment" class="reference internal" href="#cssutils.css.CSSComment"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSComment</span></tt></a> - not in the offical spec,
+Value has changed in 0.9.7a3</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.FONT_FACE_RULE">
+<tt class="descname">FONT_FACE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.FONT_FACE_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSFontFaceRule" class="reference internal" href="#cssutils.css.CSSFontFaceRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSFontFaceRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.IMPORT_RULE">
+<tt class="descname">IMPORT_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.IMPORT_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.MEDIA_RULE">
+<tt class="descname">MEDIA_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.MEDIA_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSMediaRule" class="reference internal" href="#cssutils.css.CSSMediaRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSMediaRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.NAMESPACE_RULE">
+<tt class="descname">NAMESPACE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.NAMESPACE_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSNamespaceRule" class="reference internal" href="#cssutils.css.CSSNamespaceRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSNamespaceRule</span></tt></a>,
+Value has changed in 0.9.7a3 due to a change in the CSSOM spec.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.PAGE_RULE">
+<tt class="descname">PAGE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.PAGE_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSPageRule" class="reference internal" href="#cssutils.css.CSSPageRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSPageRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.STYLE_RULE">
+<tt class="descname">STYLE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.STYLE_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleRule</span></tt></a></dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.UNKNOWN_RULE">
+<tt class="descname">UNKNOWN_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.UNKNOWN_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSUnknownRule</span></tt> (not used in CSSOM anymore)</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.VARIABLES_RULE">
+<tt class="descname">VARIABLES_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.VARIABLES_RULE" title="Permalink to this definition">¶</a></dt>
+<dd><a title="cssutils.css.CSSVariablesRule" class="reference internal" href="#cssutils.css.CSSVariablesRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesRule</span></tt></a> - experimental rule
+not in the offical spec</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.atkeyword">
+<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSRule.atkeyword" title="Permalink to this definition">¶</a></dt>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSRule.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The parsable textual representation of the rule. This reflects the current state of the rule and not its initial value.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.parentRule">
+<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSRule.parentRule" title="Permalink to this definition">¶</a></dt>
+<dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.parentStyleSheet">
+<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
+<dd>The style sheet that contains this rule.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSRule.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSRule.type" title="Permalink to this definition">¶</a></dt>
+<dd>The type of this rule, as defined by a CSSRule type constant.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.typeString">
+<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSRule.typeString" title="Permalink to this definition">¶</a></dt>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSRule.wellformed">
+<tt class="descname">wellformed</tt><a class="headerlink" href="#cssutils.css.CSSRule.wellformed" title="Permalink to this definition">¶</a></dt>
+<dd>If the rule is wellformed.</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="cssrulelist">
-<h3>CSSRuleList<a class="headerlink" href="#cssrulelist" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">CSSRuleList</span></tt><a class="headerlink" href="#cssrulelist" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSRuleList">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSRuleList</tt><big>(</big><em>*ignored</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList" title="Permalink to this definition">¶</a></dt>
@@ -304,119 +420,8 @@ cmp(x, y) -&gt; -1, 0, 1</dd></dl>
 </dd></dl>
 
 </div>
-<div class="section" id="cssrule">
-<h3>CSSRule<a class="headerlink" href="#cssrule" title="Permalink to this headline">¶</a></h3>
-<dl class="class">
-<dt id="cssutils.css.CSSRule">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSRule</tt><big>(</big><em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Abstract base interface for any type of CSS statement. This includes
-both rule sets and at-rules. An implementation is expected to preserve
-all rules specified in a CSS style sheet, even if the rule is not
-recognized by the parser. Unrecognized rules are represented using the
-<tt class="xref docutils literal"><span class="pre">CSSUnknownRule</span></tt> interface.</p>
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.CHARSET_RULE">
-<tt class="descname">CHARSET_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.CHARSET_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSCharsetRule</span></tt></a>, not in the official spec anymore</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.COMMENT">
-<tt class="descname">COMMENT</tt><a class="headerlink" href="#cssutils.css.CSSRule.COMMENT" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSComment" class="reference internal" href="#cssutils.css.CSSComment"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSComment</span></tt></a> - not in the offical spec,
-Value has changed in 0.9.7a3</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.FONT_FACE_RULE">
-<tt class="descname">FONT_FACE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.FONT_FACE_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSFontFaceRule" class="reference internal" href="#cssutils.css.CSSFontFaceRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSFontFaceRule</span></tt></a></dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.IMPORT_RULE">
-<tt class="descname">IMPORT_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.IMPORT_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a></dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.MEDIA_RULE">
-<tt class="descname">MEDIA_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.MEDIA_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSMediaRule" class="reference internal" href="#cssutils.css.CSSMediaRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSMediaRule</span></tt></a></dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.NAMESPACE_RULE">
-<tt class="descname">NAMESPACE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.NAMESPACE_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSNamespaceRule" class="reference internal" href="#cssutils.css.CSSNamespaceRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSNamespaceRule</span></tt></a>,
-Value has changed in 0.9.7a3 due to a change in the CSSOM spec.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.PAGE_RULE">
-<tt class="descname">PAGE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.PAGE_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSPageRule" class="reference internal" href="#cssutils.css.CSSPageRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSPageRule</span></tt></a></dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.STYLE_RULE">
-<tt class="descname">STYLE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.STYLE_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleRule</span></tt></a></dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.UNKNOWN_RULE">
-<tt class="descname">UNKNOWN_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.UNKNOWN_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSUnknownRule</span></tt></dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.VARIABLES_RULE">
-<tt class="descname">VARIABLES_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.VARIABLES_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSVariablesRule" class="reference internal" href="#cssutils.css.CSSVariablesRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesRule</span></tt></a> - experimental rule
-not in the offical spec</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.atkeyword">
-<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSRule.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSRule.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The parsable textual representation of the rule. This reflects the current state of the rule and not its initial value.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.parentRule">
-<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSRule.parentRule" title="Permalink to this definition">¶</a></dt>
-<dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.parentStyleSheet">
-<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
-<dd>The style sheet that contains this rule.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.seq">
-<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSRule.seq" title="Permalink to this definition">¶</a></dt>
-<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.type">
-<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSRule.type" title="Permalink to this definition">¶</a></dt>
-<dd>The type of this rule, as defined by a CSSRule type constant.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.typeString">
-<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSRule.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSRule.wellformed">
-<tt class="descname">wellformed</tt><a class="headerlink" href="#cssutils.css.CSSRule.wellformed" title="Permalink to this definition">¶</a></dt>
-<dd>If the rule is wellformed.</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="csscharsetrule">
-<h3>CSSCharsetRule<a class="headerlink" href="#csscharsetrule" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt><a class="headerlink" href="#csscharsetrule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSCharsetRule">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSCharsetRule</tt><big>(</big><em>encoding=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSCharsetRule" title="Permalink to this definition">¶</a></dt>
@@ -460,7 +465,7 @@ CSSCharsetRule.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSCharsetRule.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSCharsetRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSCharsetRule.parentRule">
@@ -490,133 +495,79 @@ CSSCharsetRule.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="csscomment">
-<h3>CSSComment<a class="headerlink" href="#csscomment" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="cssfontfacerule">
+<h3><tt class="docutils literal"><span class="pre">CSSFontFaceRule</span></tt><a class="headerlink" href="#cssfontfacerule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="cssutils.css.CSSComment">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSComment</tt><big>(</big><em>cssText=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSComment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents a CSS comment (cssutils only).</p>
+<dt id="cssutils.css.CSSFontFaceRule">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSFontFaceRule</tt><big>(</big><em>style=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSFontFaceRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSFontFaceRule interface represents a &#64;font-face rule in a CSS
+style sheet. The &#64;font-face rule is used to hold a set of font 
+descriptions.</p>
 <p>Format:</p>
-<div class="highlight-python"><pre>/*...*/</pre>
-</div>
-<dl class="attribute">
-<dt id="cssutils.css.CSSComment.atkeyword">
-<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSComment.atkeyword" title="Permalink to this definition">¶</a></dt>
-<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSComment.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSComment.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>The parsable textual representation of this rule.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSComment.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSComment.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSComment.parentRule">
-<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSComment.parentRule" title="Permalink to this definition">¶</a></dt>
-<dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSComment.parentStyleSheet">
-<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSComment.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
-<dd>The style sheet that contains this rule.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSComment.seq">
-<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSComment.seq" title="Permalink to this definition">¶</a></dt>
-<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSComment.type">
-<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSComment.type" title="Permalink to this definition">¶</a></dt>
-<dd>The type of this rule, as defined by a CSSRule type constant.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSComment.typeString">
-<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSComment.typeString" title="Permalink to this definition">¶</a></dt>
-<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="cssnamespacerule">
-<h3>CSSNamespaceRule<a class="headerlink" href="#cssnamespacerule" title="Permalink to this headline">¶</a></h3>
-<dl class="class">
-<dt id="cssutils.css.CSSNamespaceRule">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSNamespaceRule</tt><big>(</big><em>namespaceURI=None</em>, <em>prefix=None</em>, <em>cssText=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSNamespaceRule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents an &#64;namespace rule within a CSS style sheet.</p>
-<p>The &#64;namespace at-rule declares a namespace prefix and associates
-it with a given namespace (a string). This namespace prefix can then be
-used in namespace-qualified names such as those described in the
-Selectors Module [SELECT] or the Values and Units module [CSS3VAL].</p>
-<p>Dealing with these rules directly is not needed anymore, easier is 
-the use of <a title="cssutils.css.CSSStyleSheet.namespaces" class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet.namespaces</span></tt></a>.</p>
-<p>Format:</p>
-<div class="highlight-python"><pre>namespace
-  : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
-  ;
-namespace_prefix
-  : IDENT
+<div class="highlight-python"><pre>font_face
+  : FONT_FACE_SYM S*
+    '{' S* declaration [ ';' S* declaration ]* '}' S*
   ;</pre>
 </div>
+<p>cssutils uses a <a title="cssutils.css.CSSStyleDeclaration" class="reference internal" href="#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>  to
+represent the font descriptions. For validation a specific profile
+is used though were some properties have other valid values than
+when used in e.g. a <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a>.</p>
 <dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.atkeyword">
-<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.atkeyword" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSFontFaceRule.atkeyword">
+<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.atkeyword" title="Permalink to this definition">¶</a></dt>
 <dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.cssText" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSFontFaceRule.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.cssText" title="Permalink to this definition">¶</a></dt>
 <dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.namespaceURI">
-<tt class="descname">namespaceURI</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.namespaceURI" title="Permalink to this definition">¶</a></dt>
-<dd>URI (handled as simple string) of the defined namespace.</dd></dl>
+<dt id="cssutils.css.CSSFontFaceRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.parentRule">
-<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.parentRule" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSFontFaceRule.parentRule">
+<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.parentRule" title="Permalink to this definition">¶</a></dt>
 <dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.parentStyleSheet">
-<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSFontFaceRule.parentStyleSheet">
+<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
 <dd>The style sheet that contains this rule.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.prefix">
-<tt class="descname">prefix</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.prefix" title="Permalink to this definition">¶</a></dt>
-<dd>Prefix used for the defined namespace.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.seq">
-<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.seq" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSFontFaceRule.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.seq" title="Permalink to this definition">¶</a></dt>
 <dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.type">
-<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.type" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSFontFaceRule.style">
+<tt class="descname">style</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.style" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The declaration-block of this rule set, a <a title="cssutils.css.CSSStyleDeclaration" class="reference internal" href="#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSFontFaceRule.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.type" title="Permalink to this definition">¶</a></dt>
 <dd>The type of this rule, as defined by a CSSRule type constant.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSNamespaceRule.typeString">
-<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.typeString" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSFontFaceRule.typeString">
+<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.typeString" title="Permalink to this definition">¶</a></dt>
 <dd>Descriptive name of this rule&#8217;s type.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSFontFaceRule.valid">
+<tt class="descname">valid</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.valid" title="Permalink to this definition">¶</a></dt>
+<dd>CSSFontFace is valid if properties <cite>font-family</cite> and <cite>src</cite> are set and all properties are valid.</dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="cssimportrule">
-<h3>CSSImportRule<a class="headerlink" href="#cssimportrule" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">CSSImportRule</span></tt><a class="headerlink" href="#cssimportrule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSImportRule">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSImportRule</tt><big>(</big><em>href=None</em>, <em>mediaText=u'all'</em>, <em>name=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSImportRule" title="Permalink to this definition">¶</a></dt>
@@ -656,7 +607,7 @@ is used to import style rules from other style sheets.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSImportRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSImportRule.parentRule">
@@ -697,7 +648,7 @@ is used to import style rules from other style sheets.</p>
 
 </div>
 <div class="section" id="cssmediarule">
-<h3>CSSMediaRule<a class="headerlink" href="#cssmediarule" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt><a class="headerlink" href="#cssmediarule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSMediaRule">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSMediaRule</tt><big>(</big><em>mediaText='all'</em>, <em>name=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSMediaRule" title="Permalink to this definition">¶</a></dt>
@@ -822,7 +773,7 @@ unparsable.</li>
 <dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSMediaRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSMediaRule.parentRule">
@@ -852,79 +803,81 @@ unparsable.</li>
 </dd></dl>
 
 </div>
-<div class="section" id="cssfontfacerule">
-<h3>CSSFontFaceRule<a class="headerlink" href="#cssfontfacerule" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="cssnamespacerule">
+<h3><tt class="docutils literal"><span class="pre">CSSNamespaceRule</span></tt><a class="headerlink" href="#cssnamespacerule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="cssutils.css.CSSFontFaceRule">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSFontFaceRule</tt><big>(</big><em>style=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSFontFaceRule" title="Permalink to this definition">¶</a></dt>
-<dd><p>The CSSFontFaceRule interface represents a &#64;font-face rule in a CSS
-style sheet. The &#64;font-face rule is used to hold a set of font 
-descriptions.</p>
+<dt id="cssutils.css.CSSNamespaceRule">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSNamespaceRule</tt><big>(</big><em>namespaceURI=None</em>, <em>prefix=None</em>, <em>cssText=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSNamespaceRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an &#64;namespace rule within a CSS style sheet.</p>
+<p>The &#64;namespace at-rule declares a namespace prefix and associates
+it with a given namespace (a string). This namespace prefix can then be
+used in namespace-qualified names such as those described in the
+Selectors Module [SELECT] or the Values and Units module [CSS3VAL].</p>
+<p>Dealing with these rules directly is not needed anymore, easier is 
+the use of <a title="cssutils.css.CSSStyleSheet.namespaces" class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet.namespaces</span></tt></a>.</p>
 <p>Format:</p>
-<div class="highlight-python"><pre>font_face
-  : FONT_FACE_SYM S*
-    '{' S* declaration [ ';' S* declaration ]* '}' S*
+<div class="highlight-python"><pre>namespace
+  : NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*
+  ;
+namespace_prefix
+  : IDENT
   ;</pre>
 </div>
-<p>cssutils uses a <a title="cssutils.css.CSSStyleDeclaration" class="reference internal" href="#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>  to
-represent the font descriptions. For validation a specific profile
-is used though were some properties have other valid values than
-when used in e.g. a <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a>.</p>
 <dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.atkeyword">
-<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.atkeyword" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSNamespaceRule.atkeyword">
+<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.atkeyword" title="Permalink to this definition">¶</a></dt>
 <dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.cssText" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSNamespaceRule.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.cssText" title="Permalink to this definition">¶</a></dt>
 <dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+<dt id="cssutils.css.CSSNamespaceRule.namespaceURI">
+<tt class="descname">namespaceURI</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.namespaceURI" title="Permalink to this definition">¶</a></dt>
+<dd>URI (handled as simple string) of the defined namespace.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.parentRule">
-<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.parentRule" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSNamespaceRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSNamespaceRule.parentRule">
+<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.parentRule" title="Permalink to this definition">¶</a></dt>
 <dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.parentStyleSheet">
-<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSNamespaceRule.parentStyleSheet">
+<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
 <dd>The style sheet that contains this rule.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.seq">
-<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.seq" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSNamespaceRule.prefix">
+<tt class="descname">prefix</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.prefix" title="Permalink to this definition">¶</a></dt>
+<dd>Prefix used for the defined namespace.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSNamespaceRule.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.seq" title="Permalink to this definition">¶</a></dt>
 <dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.style">
-<tt class="descname">style</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.style" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The declaration-block of this rule set, a <a title="cssutils.css.CSSStyleDeclaration" class="reference internal" href="#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.type">
-<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.type" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSNamespaceRule.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.type" title="Permalink to this definition">¶</a></dt>
 <dd>The type of this rule, as defined by a CSSRule type constant.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.typeString">
-<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.typeString" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSNamespaceRule.typeString">
+<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSNamespaceRule.typeString" title="Permalink to this definition">¶</a></dt>
 <dd>Descriptive name of this rule&#8217;s type.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSFontFaceRule.valid">
-<tt class="descname">valid</tt><a class="headerlink" href="#cssutils.css.CSSFontFaceRule.valid" title="Permalink to this definition">¶</a></dt>
-<dd>CSSFontFace is valid if properties <cite>font-family</cite> and <cite>src</cite> are set and all properties are valid.</dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="csspagerule">
-<h3>CSSPageRule<a class="headerlink" href="#csspagerule" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">CSSPageRule</span></tt><a class="headerlink" href="#csspagerule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSPageRule">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSPageRule</tt><big>(</big><em>selectorText=None</em>, <em>style=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPageRule" title="Permalink to this definition">¶</a></dt>
@@ -953,7 +906,7 @@ pseudo_page
 <dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSPageRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSPageRule.parentRule">
@@ -994,7 +947,7 @@ pseudo_page
 
 </div>
 <div class="section" id="cssstylerule">
-<h3>CSSStyleRule<a class="headerlink" href="#cssstylerule" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">CSSStyleRule</span></tt><a class="headerlink" href="#cssstylerule" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSStyleRule">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleRule</tt><big>(</big><em>selectorText=None</em>, <em>style=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleRule" title="Permalink to this definition">¶</a></dt>
@@ -1019,7 +972,7 @@ LBRACE S* declaration [ ';' S* declaration ]* '}' S*
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSStyleRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleRule.parentRule">
@@ -1064,65 +1017,54 @@ LBRACE S* declaration [ ';' S* declaration ]* '}' S*
 </dd></dl>
 
 </div>
-<div class="section" id="cssvariablesrule">
-<h3>CSSVariablesRule<a class="headerlink" href="#cssvariablesrule" title="Permalink to this headline">¶</a></h3>
-<p><strong>ALPHA STATUS</strong></p>
+<div class="section" id="csscomment">
+<h3><tt class="docutils literal"><span class="pre">CSSComment</span></tt><a class="headerlink" href="#csscomment" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="cssutils.css.CSSVariablesRule">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSVariablesRule</tt><big>(</big><em>mediaText=None</em>, <em>variables=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesRule" title="Permalink to this definition">¶</a></dt>
-<dd><p>The CSSVariablesRule interface represents a &#64;variables rule within a CSS
-style sheet. The &#64;variables rule is used to specify variables.</p>
-<p>cssutils uses a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a>  to
-represent the variables.</p>
+<dt id="cssutils.css.CSSComment">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSComment</tt><big>(</big><em>cssText=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSComment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a CSS comment (cssutils only).</p>
+<p>Format:</p>
+<div class="highlight-python"><pre>/*...*/</pre>
+</div>
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.atkeyword">
-<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.atkeyword" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSComment.atkeyword">
+<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSComment.atkeyword" title="Permalink to this definition">¶</a></dt>
 <dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
+<dt id="cssutils.css.CSSComment.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSComment.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parent" title="Permalink to this definition">¶</a></dt>
-<dd>The Parent Node of this CSSRule (currently if a CSSStyleDeclaration only!) or None.</dd></dl>
+<dt id="cssutils.css.CSSComment.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSComment.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.parentRule">
-<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parentRule" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSComment.parentRule">
+<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSComment.parentRule" title="Permalink to this definition">¶</a></dt>
 <dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.parentStyleSheet">
-<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSComment.parentStyleSheet">
+<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSComment.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
 <dd>The style sheet that contains this rule.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.seq">
-<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.seq" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSComment.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSComment.seq" title="Permalink to this definition">¶</a></dt>
 <dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.type">
-<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.type" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSComment.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSComment.type" title="Permalink to this definition">¶</a></dt>
 <dd>The type of this rule, as defined by a CSSRule type constant.</dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.typeString">
-<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.typeString" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.CSSComment.typeString">
+<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSComment.typeString" title="Permalink to this definition">¶</a></dt>
 <dd>Descriptive name of this rule&#8217;s type.</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.valid">
-<tt class="descname">valid</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.valid" title="Permalink to this definition">¶</a></dt>
-<dd>TODO</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSVariablesRule.variables">
-<tt class="descname">variables</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.variables" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The variables of this rule set, a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a>.</dd></dl>
 
 </dd></dl>
 
@@ -1131,7 +1073,7 @@ represent the variables.</p>
 <div class="section" id="selector-related-classes-selectorlist-and-selector">
 <h2>Selector related classes: <tt class="docutils literal"><span class="pre">SelectorList</span></tt> and <tt class="docutils literal"><span class="pre">Selector</span></tt><a class="headerlink" href="#selector-related-classes-selectorlist-and-selector" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="selectorlist">
-<h3>SelectorList<a class="headerlink" href="#selectorlist" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">SelectorList</span></tt><a class="headerlink" href="#selectorlist" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.SelectorList">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">SelectorList</tt><big>(</big><em>selectorText=None</em>, <em>parentRule=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.SelectorList" title="Permalink to this definition">¶</a></dt>
@@ -1195,7 +1137,7 @@ a rule set.</dd></dl>
 
 </div>
 <div class="section" id="selector">
-<h3>Selector<a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">Selector</span></tt><a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.Selector">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Selector</tt><big>(</big><em>selectorText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Selector" title="Permalink to this definition">¶</a></dt>
@@ -1328,7 +1270,7 @@ Tuple of (a, b, c, d) where:</p>
 <div class="section" id="style-related-classes-cssstyledeclaration-property-cssvalue-etc">
 <h2>Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc<a class="headerlink" href="#style-related-classes-cssstyledeclaration-property-cssvalue-etc" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="cssstyledeclaration">
-<h3>CSSStyleDeclaration<a class="headerlink" href="#cssstyledeclaration" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt><a class="headerlink" href="#cssstyledeclaration" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSStyleDeclaration">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleDeclaration</tt><big>(</big><em>cssText=u''</em>, <em>parentRule=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration" title="Permalink to this definition">¶</a></dt>
@@ -1700,7 +1642,7 @@ readonly.</li>
 </div>
 </div>
 <div class="section" id="property">
-<h3>Property<a class="headerlink" href="#property" title="Permalink to this headline">¶</a></h3>
+<h3><tt class="docutils literal"><span class="pre">Property</span></tt><a class="headerlink" href="#property" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.Property">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Property</tt><big>(</big><em>name=None</em>, <em>value=None</em>, <em>priority=u''</em>, <em>_mediaQuery=False</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#cssutils.css.Property" title="Permalink to this definition">¶</a></dt>
@@ -1856,7 +1798,7 @@ DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]</pre>
 <div class="section" id="values">
 <h3>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="cssvalue">
-<h4>CSSValue<a class="headerlink" href="#cssvalue" title="Permalink to this headline">¶</a></h4>
+<h4><tt class="docutils literal"><span class="pre">CSSValue</span></tt><a class="headerlink" href="#cssvalue" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.CSSValue">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValue" title="Permalink to this definition">¶</a></dt>
@@ -1886,7 +1828,7 @@ A CSSValue object only occurs in a context of a CSS property.</p>
 
 </div>
 <div class="section" id="cssprimitivevalue">
-<h4>CSSPrimitiveValue<a class="headerlink" href="#cssprimitivevalue" title="Permalink to this headline">¶</a></h4>
+<h4><tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt><a class="headerlink" href="#cssprimitivevalue" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.CSSPrimitiveValue">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSPrimitiveValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue" title="Permalink to this definition">¶</a></dt>
@@ -2070,7 +2012,7 @@ Raised if this property is readonly.</li>
 
 </div>
 <div class="section" id="cssvaluelist">
-<h4>CSSValueList<a class="headerlink" href="#cssvaluelist" title="Permalink to this headline">¶</a></h4>
+<h4><tt class="docutils literal"><span class="pre">CSSValueList</span></tt><a class="headerlink" href="#cssvaluelist" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.CSSValueList">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValueList</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValueList" title="Permalink to this definition">¶</a></dt>
@@ -2113,7 +2055,7 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 
 </div>
 <div class="section" id="cssfunction">
-<h4>CSSFunction<a class="headerlink" href="#cssfunction" title="Permalink to this headline">¶</a></h4>
+<h4><tt class="docutils literal"><span class="pre">CSSFunction</span></tt><a class="headerlink" href="#cssfunction" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.cssvalue.CSSFunction">
 <em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">CSSFunction</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.CSSFunction" title="Permalink to this definition">¶</a></dt>
@@ -2121,7 +2063,7 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 
 </div>
 <div class="section" id="expressionvalue">
-<h4>ExpressionValue<a class="headerlink" href="#expressionvalue" title="Permalink to this headline">¶</a></h4>
+<h4><tt class="docutils literal"><span class="pre">ExpressionValue</span></tt><a class="headerlink" href="#expressionvalue" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
 <dt id="cssutils.css.cssvalue.ExpressionValue">
 <em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">ExpressionValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue" title="Permalink to this definition">¶</a></dt>
@@ -2136,9 +2078,90 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
 
 </div>
 </div>
+</div>
+<div class="section" id="css-variables-alpha">
+<h2>CSS Variables (ALPHA)<a class="headerlink" href="#css-variables-alpha" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cssvariablesrule">
+<h3><tt class="docutils literal"><span class="pre">CSSVariablesRule</span></tt><a class="headerlink" href="#cssvariablesrule" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cssutils.css.CSSVariablesRule">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSVariablesRule</tt><big>(</big><em>mediaText=None</em>, <em>variables=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSVariablesRule interface represents a &#64;variables rule within a CSS
+style sheet. The &#64;variables rule is used to specify variables.</p>
+<p>cssutils uses a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a>  to
+represent the variables.</p>
+<p>Format:</p>
+<div class="highlight-python"><pre>variables
+    VARIABLES_SYM S* medium [ COMMA S* medium ]* LBRACE S* 
+    variableset* '}' S*
+    ;</pre>
+</div>
+<p>for variableset see <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a></p>
+<p><strong>Media are not yet implemented!</strong></p>
+<p>Example:</p>
+<div class="highlight-python"><pre>@variables {
+  CorporateLogoBGColor: #fe8d12;
+}
+
+div.logoContainer {
+  background-color: var(CorporateLogoBGColor);
+}</pre>
+</div>
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.atkeyword">
+<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.atkeyword" title="Permalink to this definition">¶</a></dt>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.parentRule">
+<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parentRule" title="Permalink to this definition">¶</a></dt>
+<dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.parentStyleSheet">
+<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
+<dd>The style sheet that contains this rule.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.type" title="Permalink to this definition">¶</a></dt>
+<dd>The type of this rule, as defined by a CSSRule type constant.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.typeString">
+<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.typeString" title="Permalink to this definition">¶</a></dt>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.valid">
+<tt class="descname">valid</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.valid" title="Permalink to this definition">¶</a></dt>
+<dd>TODO</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.variables">
+<tt class="descname">variables</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.variables" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The variables of this rule set, a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a>.</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="cssvariablesdeclaration">
-<h3>CSSVariablesDeclaration<a class="headerlink" href="#cssvariablesdeclaration" title="Permalink to this headline">¶</a></h3>
-<p><strong>ALPHA STATUS</strong></p>
+<h3><tt class="docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt><a class="headerlink" href="#cssvariablesdeclaration" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cssutils.css.CSSVariablesDeclaration">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSVariablesDeclaration</tt><big>(</big><em>cssText=u''</em>, <em>parentRule=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration" title="Permalink to this definition">¶</a></dt>
@@ -2269,6 +2292,25 @@ readonly.</li>
 </dd></dl>
 
 </div>
+<div class="section" id="cssvariable">
+<h3><tt class="docutils literal"><span class="pre">CSSVariable</span></tt><a class="headerlink" href="#cssvariable" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cssutils.css.cssvalue.CSSVariable">
+<em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">CSSVariable</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.CSSVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSVariable represents a call to CSS Variable.</p>
+<dl class="attribute">
+<dt id="cssutils.css.cssvalue.CSSVariable.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.cssvalue.CSSVariable.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>A string representation of the current variable.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.cssvalue.CSSVariable.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.cssvalue.CSSVariable.value" title="Permalink to this definition">¶</a></dt>
+<dd>Find contained sheet and &#64;variables there</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 <div class="section" id="additional-info">
 <h2>Additional Info<a class="headerlink" href="#additional-info" title="Permalink to this headline">¶</a></h2>
@@ -2296,39 +2338,43 @@ readonly.</li>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt></a><ul>
+<li><a class="reference external" href="">Package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt></a><ul>
 <li><a class="reference external" href="#cssstylesheet"><tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt></a></li>
-<li><a class="reference external" href="#css-rules-rules-and-cssstylerule">CSS rules: &#64;rules and <tt class="docutils literal"><span class="pre">CSSStyleRule</span></tt></a><ul>
-<li><a class="reference external" href="#cssrulelist">CSSRuleList</a></li>
-<li><a class="reference external" href="#cssrule">CSSRule</a></li>
-<li><a class="reference external" href="#csscharsetrule">CSSCharsetRule</a></li>
-<li><a class="reference external" href="#csscomment">CSSComment</a></li>
-<li><a class="reference external" href="#cssnamespacerule">CSSNamespaceRule</a></li>
-<li><a class="reference external" href="#cssimportrule">CSSImportRule</a></li>
-<li><a class="reference external" href="#cssmediarule">CSSMediaRule</a></li>
-<li><a class="reference external" href="#cssfontfacerule">CSSFontFaceRule</a></li>
-<li><a class="reference external" href="#csspagerule">CSSPageRule</a></li>
-<li><a class="reference external" href="#cssstylerule">CSSStyleRule</a></li>
-<li><a class="reference external" href="#cssvariablesrule">CSSVariablesRule</a></li>
+<li><a class="reference external" href="#css-rules">CSS rules</a><ul>
+<li><a class="reference external" href="#cssrule"><tt class="docutils literal"><span class="pre">CSSRule</span></tt></a></li>
+<li><a class="reference external" href="#cssrulelist"><tt class="docutils literal"><span class="pre">CSSRuleList</span></tt></a></li>
+<li><a class="reference external" href="#csscharsetrule"><tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt></a></li>
+<li><a class="reference external" href="#cssfontfacerule"><tt class="docutils literal"><span class="pre">CSSFontFaceRule</span></tt></a></li>
+<li><a class="reference external" href="#cssimportrule"><tt class="docutils literal"><span class="pre">CSSImportRule</span></tt></a></li>
+<li><a class="reference external" href="#cssmediarule"><tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt></a></li>
+<li><a class="reference external" href="#cssnamespacerule"><tt class="docutils literal"><span class="pre">CSSNamespaceRule</span></tt></a></li>
+<li><a class="reference external" href="#csspagerule"><tt class="docutils literal"><span class="pre">CSSPageRule</span></tt></a></li>
+<li><a class="reference external" href="#cssstylerule"><tt class="docutils literal"><span class="pre">CSSStyleRule</span></tt></a></li>
+<li><a class="reference external" href="#csscomment"><tt class="docutils literal"><span class="pre">CSSComment</span></tt></a></li>
 </ul>
 </li>
 <li><a class="reference external" href="#selector-related-classes-selectorlist-and-selector">Selector related classes: <tt class="docutils literal"><span class="pre">SelectorList</span></tt> and <tt class="docutils literal"><span class="pre">Selector</span></tt></a><ul>
-<li><a class="reference external" href="#selectorlist">SelectorList</a></li>
-<li><a class="reference external" href="#selector">Selector</a></li>
+<li><a class="reference external" href="#selectorlist"><tt class="docutils literal"><span class="pre">SelectorList</span></tt></a></li>
+<li><a class="reference external" href="#selector"><tt class="docutils literal"><span class="pre">Selector</span></tt></a></li>
 </ul>
 </li>
 <li><a class="reference external" href="#style-related-classes-cssstyledeclaration-property-cssvalue-etc">Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc</a><ul>
-<li><a class="reference external" href="#cssstyledeclaration">CSSStyleDeclaration</a></li>
-<li><a class="reference external" href="#property">Property</a></li>
+<li><a class="reference external" href="#cssstyledeclaration"><tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a></li>
+<li><a class="reference external" href="#property"><tt class="docutils literal"><span class="pre">Property</span></tt></a></li>
 <li><a class="reference external" href="#values">Values</a><ul>
-<li><a class="reference external" href="#cssvalue">CSSValue</a></li>
-<li><a class="reference external" href="#cssprimitivevalue">CSSPrimitiveValue</a></li>
-<li><a class="reference external" href="#cssvaluelist">CSSValueList</a></li>
-<li><a class="reference external" href="#cssfunction">CSSFunction</a></li>
-<li><a class="reference external" href="#expressionvalue">ExpressionValue</a></li>
+<li><a class="reference external" href="#cssvalue"><tt class="docutils literal"><span class="pre">CSSValue</span></tt></a></li>
+<li><a class="reference external" href="#cssprimitivevalue"><tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt></a></li>
+<li><a class="reference external" href="#cssvaluelist"><tt class="docutils literal"><span class="pre">CSSValueList</span></tt></a></li>
+<li><a class="reference external" href="#cssfunction"><tt class="docutils literal"><span class="pre">CSSFunction</span></tt></a></li>
+<li><a class="reference external" href="#expressionvalue"><tt class="docutils literal"><span class="pre">ExpressionValue</span></tt></a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#cssvariablesdeclaration">CSSVariablesDeclaration</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#css-variables-alpha">CSS Variables (ALPHA)</a><ul>
+<li><a class="reference external" href="#cssvariablesrule"><tt class="docutils literal"><span class="pre">CSSVariablesRule</span></tt></a></li>
+<li><a class="reference external" href="#cssvariablesdeclaration"><tt class="docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a></li>
+<li><a class="reference external" href="#cssvariable"><tt class="docutils literal"><span class="pre">CSSVariable</span></tt></a></li>
 </ul>
 </li>
 <li><a class="reference external" href="#additional-info">Additional Info</a></li>
@@ -2341,7 +2387,7 @@ readonly.</li>
                                   title="previous chapter">serializing CSS</a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="stylesheets.html"
-                                  title="next chapter">package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
+                                  title="next chapter">Package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/css.txt"
@@ -2374,12 +2420,12 @@ readonly.</li>
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="stylesheets.html" title="package cssutils.stylesheets"
+          <a href="stylesheets.html" title="Package cssutils.stylesheets"
              >next</a> |</li>
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
