@@ -8,6 +8,7 @@ version migration
 
 - Removed ``css.Property.parentStyle`` which was deprecated for some times now in favor of ``css.Property.parent``
 
+- ``CSSRule`` constants have been changed due to a change in the CSSOM spec. The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
 
 
 0.9.6 incompatible changes

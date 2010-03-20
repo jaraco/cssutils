@@ -1,5 +1,5 @@
 ========================
-package ``cssutils.css``
+Package ``cssutils.css``
 ========================
 
 
@@ -11,83 +11,71 @@ Classes implementing `DOM Level 2 CSS <http://www.w3.org/TR/DOM-Level-2-Style/cs
 
 ``CSSStyleSheet``
 =================
-
-A CSSStyleSheet contains all rules. It consists of the different CSS rules like :class:`~cssutils.css.CSSImportRule`, :class:`~cssutils.css.CSSStyleRule` etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an :class:`~cssutils.css.CSSCharsetRule` rule or simpler with the :attr:`~cssutils.css.CSSStyleSheet.encoding` attribute. The serialized sheet may be obtained from :attr:`~cssutils.css.CSSStyleSheet.cssText`. All rules are present in :attr:`~cssutils.css.CSSStyleSheet.cssRules`, a stylesheet iterates on its rules so this might be easier. Namespaces are available via :attr:`~cssutils.css.CSSStyleSheet.namespaces` (do not rely on prefixes, see http://www.w3.org/TR/REC-xml-names/ how these work).
-
+A CSSStyleSheet contains all rules. It consists of the different CSS rules like :class:`~cssutils.css.CSSImportRule`, :class:`~cssutils.css.CSSStyleRule` etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an :class:`~cssutils.css.CSSCharsetRule` rule or simpler with the :attr:`~cssutils.css.CSSStyleSheet.encoding` attribute. The serialized sheet may be obtained from :attr:`~cssutils.css.CSSStyleSheet.cssText`. All rules are present in :attr:`~cssutils.css.CSSStyleSheet.cssRules`, a stylesheet iterates on its rules so this might be easier. Namespaces are available via :attr:`~cssutils.css.CSSStyleSheet.namespaces` (do not rely on prefixes, see http://www.w3.org/TR/REC-xml-names/ how these work). Variables are available via :attr:`~cssutils.css.CSSStyleSheet.variables` which is a :class:`~cssutils.css.CSSVariablesDeclaration` and contains **all** available variables including the ones defined in imported style sheets. Changes to this object do NOT change the parent sheet!
 
 .. autoclass:: cssutils.css.CSSStyleSheet
    :members:
    :inherited-members:
 
-CSS rules: @rules and ``CSSStyleRule``
-======================================
-
-CSSRuleList
+CSS rules
+=========
+``CSSRule``
 -----------
-.. autoclass:: cssutils.css.CSSRuleList
-   :members:
-   :inherited-members:
-
-CSSRule
--------
 .. autoclass:: cssutils.css.CSSRule
     :members:
     :inherited-members:
 
+``CSSRuleList``
+---------------
+.. autoclass:: cssutils.css.CSSRuleList
+   :members:
+   :inherited-members:
 
-CSSCharsetRule
---------------
+``CSSCharsetRule``
+------------------
 .. autoclass:: cssutils.css.CSSCharsetRule
    :members:
    :inherited-members:
 
-CSSComment
-----------
-.. autoclass:: cssutils.css.CSSComment
-   :members:
-   :inherited-members:
-
-CSSNamespaceRule
-----------------
-.. autoclass:: cssutils.css.CSSNamespaceRule
-   :members:
-   :inherited-members:
-
-CSSImportRule
--------------
-.. autoclass:: cssutils.css.CSSImportRule
-   :members:
-   :inherited-members:
-
-CSSMediaRule
-------------
-.. autoclass:: cssutils.css.CSSMediaRule
-   :members:
-   :inherited-members:
-
-CSSFontFaceRule
----------------
+``CSSFontFaceRule``
+-------------------
 .. autoclass:: cssutils.css.CSSFontFaceRule
    :members:
    :inherited-members:
 
-CSSPageRule
------------
+``CSSImportRule``
+-----------------
+.. autoclass:: cssutils.css.CSSImportRule
+   :members:
+   :inherited-members:
+
+``CSSMediaRule``
+----------------
+.. autoclass:: cssutils.css.CSSMediaRule
+   :members:
+   :inherited-members:
+
+``CSSNamespaceRule``
+--------------------
+.. autoclass:: cssutils.css.CSSNamespaceRule
+   :members:
+   :inherited-members:
+
+``CSSPageRule``
+---------------
 .. autoclass:: cssutils.css.CSSPageRule
    :members:
    :inherited-members:
 
-CSSStyleRule
-------------
+``CSSStyleRule``
+----------------
 .. autoclass:: cssutils.css.CSSStyleRule
    :members:
    :inherited-members:
 
-CSSVariablesRule
-----------------
-**ALPHA STATUS**
-
-.. autoclass:: cssutils.css.CSSVariablesRule
+``CSSComment``
+--------------
+.. autoclass:: cssutils.css.CSSComment
    :members:
    :inherited-members:
 
@@ -95,14 +83,14 @@ CSSVariablesRule
 Selector related classes: ``SelectorList`` and ``Selector``
 ===========================================================
 
-SelectorList
-------------
+``SelectorList``
+----------------
 .. autoclass:: cssutils.css.SelectorList
    :members:
    :inherited-members:
 
-Selector
---------
+``Selector``
+------------
 .. autoclass:: cssutils.css.Selector
    :members:
    :inherited-members:
@@ -111,10 +99,8 @@ Selector
 
 Style related classes: ``CSSStyleDeclaration``, ``Property``, ``CSSValue`` etc
 ==============================================================================================
-
-
-CSSStyleDeclaration
--------------------
+``CSSStyleDeclaration``
+-----------------------
 .. autoclass:: cssutils.css.CSSStyleDeclaration
    :members:
    :inherited-members:
@@ -151,8 +137,8 @@ The official DOM provides no method to obtain all values set for a property. Css
     background: red !important;
 
 
-Property
---------
+``Property``
+------------
 .. autoclass:: cssutils.css.Property
    :members:
    :inherited-members:
@@ -161,27 +147,27 @@ Property
 Values
 ------
 
-CSSValue
-~~~~~~~~
+``CSSValue``
+~~~~~~~~~~~~
 .. autoclass:: cssutils.css.CSSValue
     :members:
     :inherited-members:
 
-CSSPrimitiveValue
-~~~~~~~~~~~~~~~~~
+``CSSPrimitiveValue``
+~~~~~~~~~~~~~~~~~~~~~
 .. autoclass:: cssutils.css.CSSPrimitiveValue
     :members:
     :inherited-members:
 
-CSSValueList
-~~~~~~~~~~~~
+``CSSValueList``
+~~~~~~~~~~~~~~~~
 .. autoclass:: cssutils.css.CSSValueList
     :members:
     :inherited-members:
 
 
-CSSFunction
-~~~~~~~~~~~
+``CSSFunction``
+~~~~~~~~~~~~~~~
 .. autoclass:: cssutils.css.cssvalue.CSSFunction
     :members:
 
@@ -192,19 +178,30 @@ CSSFunction
         :members:
         :inherited-members:
 
-ExpressionValue
-~~~~~~~~~~~~~~~
+``ExpressionValue``
+~~~~~~~~~~~~~~~~~~~
 .. autoclass:: cssutils.css.cssvalue.ExpressionValue
     :members:
 
 
-CSSVariablesDeclaration
------------------------
-**ALPHA STATUS**
+CSS Variables (ALPHA)
+=====================
+``CSSVariablesRule``
+--------------------
+.. autoclass:: cssutils.css.CSSVariablesRule
+   :members:
+   :inherited-members:
 
+``CSSVariablesDeclaration``
+---------------------------
 .. autoclass:: cssutils.css.CSSVariablesDeclaration
    :members:
    :inherited-members:
+
+``CSSVariable``
+--------------------
+.. autoclass:: cssutils.css.cssvalue.CSSVariable
+    :members:
 
 
 Additional Info

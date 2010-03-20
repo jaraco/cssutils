@@ -4,14 +4,14 @@ utilities
 A few utility functions which may help when working with CSS stylesheets.
 
 
-getUrls
--------
+``getUrls``
+-----------
 .. autofunction:: cssutils.getUrls
 
-replaceUrls
------------
+``replaceUrls``
+---------------
 .. autofunction:: cssutils.replaceUrls
 
-resolveImports
---------------
+``resolveImports``
+------------------
 .. autofunction:: cssutils.resolveImports
