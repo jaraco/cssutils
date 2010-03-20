@@ -39,10 +39,9 @@ Development Version
     + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
         Related details:
 
-        - added ``cssutils.css.CSSStyleSheet.variables`` which is a :class:css.CSSVariablesDeclaration containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.
+        - added ``cssutils.css.CSSStyleSheet.variables`` which is a :class:`cssutils.css.CSSVariablesDeclaration` containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.
         - ``cssutils.ser.prefs.resolveVariables == False``: If set to ``True`` tries to resolve all variable references and removes any CSSVariablesRules.
-        - ``cssutils.ser.prefs.normalizedVarNames==True``: Defines if variable names should be serialized normalized (they are
-        used as being normalized anyway)
+        - ``cssutils.ser.prefs.normalizedVarNames==True``: Defines if variable names should be serialized normalized (they are used as being normalized anyway)
 
 
 HEAD

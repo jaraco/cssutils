@@ -92,12 +92,11 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <li><dl class="first docutils">
 <dt>FEATURE: Started experimental implementation of <a class="reference external" href="http://disruptive-innovations.com/zoo/cssvariables/">CSS Variables</a></dt>
 <dd><p class="first">Related details:</p>
-<ul class="simple">
-<li>added <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleSheet.variables</span></tt> which is a :class:css.CSSVariablesDeclaration containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</li>
+<ul class="last simple">
+<li>added <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleSheet.variables</span></tt> which is a <a title="cssutils.css.CSSVariablesDeclaration" class="reference external" href="docs/css.html#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a> containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</li>
 <li><tt class="docutils literal"><span class="pre">cssutils.ser.prefs.resolveVariables</span> <span class="pre">==</span> <span class="pre">False</span></tt>: If set to <tt class="xref docutils literal"><span class="pre">True</span></tt> tries to resolve all variable references and removes any CSSVariablesRules.</li>
-<li><tt class="docutils literal"><span class="pre">cssutils.ser.prefs.normalizedVarNames==True</span></tt>: Defines if variable names should be serialized normalized (they are</li>
+<li><tt class="docutils literal"><span class="pre">cssutils.ser.prefs.normalizedVarNames==True</span></tt>: Defines if variable names should be serialized normalized (they are used as being normalized anyway)</li>
 </ul>
-<p class="last">used as being normalized anyway)</p>
 </dd>
 </dl>
 </li>
