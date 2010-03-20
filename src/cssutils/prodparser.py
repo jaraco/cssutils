@@ -419,6 +419,7 @@ class ProdParser(object):
 
         # while no real token is found any S are ignored
         started = False
+        stopall = False
         prod = None
         # flag if default S handling should be done
         defaultS = True
@@ -428,7 +429,7 @@ class ProdParser(object):
             except StopIteration:
                 break
             type_, val, line, col = token
-           
+            
             # default productions
             if type_ == self.types.COMMENT:
                 # always append COMMENT
@@ -480,7 +481,7 @@ class ProdParser(object):
                     wellformed = False
                     self._log.error(u'%s: %s: %r' % (name, e, token))
                     break
-                else:
+                else:                    
                     # process prod
                     if prod.toSeq and not prod.stopAndKeep:
                         type_, val = prod.toSeq(token, tokens)
@@ -497,6 +498,7 @@ class ProdParser(object):
                         # stop here and ignore following tokens
                         # but keep this token for next run
                         tokenizer.push(token)
+                        stopall = True
                         break
                     
                     if prod.nextSor:
@@ -508,43 +510,46 @@ class ProdParser(object):
                         defaultS = True
 
         lastprod = prod
-        while True:
-            # all productions exhausted?
-            try:
-                prod = prods[-1].nextProd(token=None)
-            except Done, e:
-                # ok
-                prod = None
-
-            except Missing, e:
-                prod = None
-                # last was a S operator which may End a Sequence, then ok
-                if hasattr(lastprod, 'mayEnd') and not lastprod.mayEnd:
+        
+        if not stopall:
+            # stop immediately
+            while True:
+                # all productions exhausted?
+                try:
+                    prod = prods[-1].nextProd(token=None)
+                except Done, e:
+                    # ok
+                    prod = None
+    
+                except Missing, e:
+                    prod = None
+                    # last was a S operator which may End a Sequence, then ok
+                    if hasattr(lastprod, 'mayEnd') and not lastprod.mayEnd:
+                        wellformed = False
+                        self._log.error(u'%s: %s' % (name, e))
+    
+                except ParseError, e:
+                    prod = None
                     wellformed = False
                     self._log.error(u'%s: %s' % (name, e))
-
-            except ParseError, e:
-                prod = None
-                wellformed = False
-                self._log.error(u'%s: %s' % (name, e))
-
-            else:
-                if prods[-1].optional:
-                    prod = None
-                elif prod and prod.optional:
-                    # ignore optional
-                    continue
-
-            if prod and not prod.optional:
-                wellformed = False
-                self._log.error(u'%s: Missing token for production %r'
-                                % (name, str(prod)))
-                break
-            elif len(prods) > 1:
-                # nested exhausted, next in parent
-                prods.pop()
-            else:
-                break
+    
+                else:
+                    if prods[-1].optional:
+                        prod = None
+                    elif prod and prod.optional:
+                        # ignore optional
+                        continue
+    
+                if prod and not prod.optional:
+                    wellformed = False
+                    self._log.error(u'%s: Missing token for production %r'
+                                    % (name, str(prod)))
+                    break
+                elif len(prods) > 1:
+                    # nested exhausted, next in parent
+                    prods.pop()
+                else:
+                    break
 
         # trim S from end
         seq.rstrip()
@@ -618,8 +623,8 @@ class PreDef(object):
                     nextSor=nextSor)
 
     @staticmethod
-    def S(toSeq=None, optional=False):
-        return Prod(name=u'whitespace',
+    def S(name=u'whitespace', toSeq=None, optional=False):
+        return Prod(name=name,
                     match=lambda t, v: t == PreDef.types.S,
                     toSeq=toSeq,
                     optional=optional,

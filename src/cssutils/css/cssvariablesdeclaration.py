@@ -6,6 +6,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssstyledeclaration.py 1819 2009-08-01 20:52:43Z cthedot $'
 
 from cssutils.prodparser import *
+from cssutils.helper import normalize
 from cssvalue import CSSValue
 import cssutils
 import itertools
@@ -24,6 +25,20 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             None if this CSSVariablesDeclaration is not attached to a CSSRule.
         :param readonly:
             defaults to False
+            
+        Format::
+        
+            variableset
+                : vardeclaration [ ';' S* vardeclaration ]* S*
+                ;
+            
+            vardeclaration
+                : varname ':' S* term
+                ;
+            
+            varname
+                : IDENT S*
+                ;
         """
         super(CSSVariablesDeclaration, self).__init__()
         self._parentRule = parentRule
@@ -47,19 +62,19 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         :param variableName:
             a string
         """
-        return variableName.lower() in self.keys()
+        return normalize(variableName) in self.keys()
     
     def __getitem__(self, variableName):
         """Retrieve the value of variable ``variableName`` from this 
         declaration.
         """
-        return self.getVariableValue(variableName.lower())
+        return self.getVariableValue(normalize(variableName))
     
     def __setitem__(self, variableName, value):
-        self.setVariable(variableName.lower(), value)
+        self.setVariable(normalize(variableName), value)
 
     def __delitem__(self, variableName):
-        return self.removeVariable(variableName.lower())
+        return self.removeVariable(normalize(variableName))
 
     def __iter__(self):
         """Iterator of names of set variables."""
@@ -121,12 +136,19 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             Prod(name=u'term', match=lambda t, v: True,
                  toSeq=lambda t, tokens: (u'value', 
                                           CSSValue(itertools.chain([t], 
-                                                                   tokens), parent=self)
+                                                   tokens), parent=self)
                  )
-            ),
-            PreDef.char(u';', u';', toSeq=False, optional=True),
+            )            
         )
-        prods = Sequence(vardeclaration, minmax=lambda: (0, None))
+        prods = Sequence(vardeclaration,                         
+                         Sequence(PreDef.S(optional=True),
+                                  PreDef.char(u';', u';', toSeq=False),
+                                  PreDef.S(optional=True),
+                                  vardeclaration,
+                                  minmax=lambda: (0, None)),
+                         PreDef.S(optional=True),
+                         PreDef.char(u';', u';', toSeq=False, optional=True) 
+                         )
         # parse
         wellformed, seq, store, notused = \
             ProdParser().parse(cssText, 
@@ -134,22 +156,40 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                                prods)
         if wellformed:
             newseq = self._tempSeq()
+            newvars = {}
 
             # seq contains only name: value pairs plus comments etc
-            lastname = None
+            nameitem = None
             for item in seq:
                 if u'IDENT' == item.type:
-                    lastname = item
-                    self._vars[lastname.value.lower()] = None
+                    nameitem = item
                 elif u'value' == item.type:
-                    self._vars[lastname.value.lower()] = item.value
-                    newseq.append((lastname.value, item.value), 
-                                  'var',
-                                  lastname.line, lastname.col)
+                    nname = normalize(nameitem.value)
+                    if nname in newvars:
+                        # replace var with same name
+                        for i, it in enumerate(newseq):
+                            if normalize(it.value[0]) == nname:
+                                newseq.replace(i,
+                                               (nameitem.value, item.value),
+                                               'var',
+                                               nameitem.line, nameitem.col)
+                    else: 
+                        # saved non normalized name for reserialization
+                        newseq.append((nameitem.value, item.value), 
+                                      'var',
+                                      nameitem.line, nameitem.col)
+
+#                    newseq.append((nameitem.value, item.value), 
+#                                  'var',
+#                                  nameitem.line, nameitem.col)
+                    
+                    newvars[nname] = item.value
+                    
                 else:
                     newseq.appendItem(item)
 
             self._setSeq(newseq)
+            self._vars = newvars
             self.wellformed = True
 
                     
@@ -177,7 +217,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             variable has not been set.
         """
         try:
-            return self._vars[variableName.lower()].cssText
+            return self._vars[normalize(variableName)].cssText
         except KeyError, e:
             return u''
 
@@ -197,7 +237,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
               Raised if this declaration is readonly is readonly.
         """
         try:
-            r = self._vars[variableName.lower()]
+            r = self._vars[normalize(variableName)]
         except KeyError, e:
             return u''
         else: 
@@ -207,7 +247,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                     if x.value[0] == variableName:
                         del self.seq[i]
             self.seq._readonly = True
-            del self._vars[variableName.lower()]
+            del self._vars[normalize(variableName)]
 
         return r.cssText
 
@@ -230,7 +270,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         self._checkReadonly()
                 
         # check name
-        wellformed, seq, store, unused = ProdParser().parse(variableName.lower(),
+        wellformed, seq, store, unused = ProdParser().parse(normalize(variableName),
                                                             u'variableName',
                                                             Sequence(PreDef.ident()
                                                                      ))
@@ -250,10 +290,13 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             else:
                 # update seq
                 self.seq._readonly = False
+                
+                variableName = normalize(variableName)
+                
                 if variableName in self._vars:
                     for i, x in enumerate(self.seq):
                         if x.value[0] == variableName:
-                            x.replace(i, 
+                            self.seq.replace(i, 
                                       [variableName, v], 
                                       x.type, 
                                       x.line,

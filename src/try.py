@@ -30,12 +30,23 @@ def save(name, string):
 
 
 
-if 0:
-    v = cssutils.css.CSSVariablesDeclaration()
-    v.cssText = 'top 0'
-    print v
-    print v.cssText
+if 1:
+#    s = cssutils.parseString('@VaRIables {margin:0;}')
+#    print s.cssText
+
+    r = cssutils.css.CSSVariablesRule()
+    r.cssText = '@VaRIables {margin:0;}'
+    print 1, r.cssText
+    r.cssText = '@VaRIables {margin:0;}'
+    print 2, r.cssText
     
+    
+#    v = cssutils.css.CSSVariablesDeclaration('x:1')
+#    
+#    print v._vars
+#    print v.seq
+#    print v.cssText
+#    
     sys.exit(0)
     
 
