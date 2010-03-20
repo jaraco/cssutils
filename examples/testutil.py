@@ -73,6 +73,8 @@ def main():
     mod(parse)
     import selectors_tolower
     mod(selectors_tolower)
+    import minify
+    mod(minify)
     
     print 
     print 70*'-' 

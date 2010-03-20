@@ -14,11 +14,16 @@ except ImportError:
     print "install minimock with ``easy_install minimock`` to run all tests"
 
 class CSSParserTestCase(basetest.BaseTestCase):
-
+    
+    def setUp(self):
+        self._saved = cssutils.log.raiseExceptions
+    
+    def tearDown(self):
+        cssutils.log.raiseExceptions = self._saved
+    
     def test_init(self):
         "CSSParser.__init__()"
         self.assertEqual(True, cssutils.log.raiseExceptions)        
-        _saved = cssutils.log.raiseExceptions
         
         # also the default:
         cssutils.log.raiseExceptions = True
@@ -53,8 +58,6 @@ class CSSParserTestCase(basetest.BaseTestCase):
         s.__setattr__('cssText', '$')
         self.assertEqual(s.cssText, '')
 
-        # RESET cssutils.log.raiseExceptions
-        cssutils.log.raiseExceptions = _saved
 
 #    def test_parseFile(self):
 #        "CSSParser.parseFile()"

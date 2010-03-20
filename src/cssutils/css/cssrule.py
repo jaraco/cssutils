@@ -19,11 +19,11 @@ class CSSRule(cssutils.util.Base2):
     An integer indicating which type of rule this is.
     """
     UNKNOWN_RULE = 0 
-    ":class:`cssutils.css.CSSUnknownRule`"
+    ":class:`cssutils.css.CSSUnknownRule` (not used in CSSOM anymore)"
     STYLE_RULE = 1
     ":class:`cssutils.css.CSSStyleRule`"
     CHARSET_RULE = 2
-    ":class:`cssutils.css.CSSCharsetRule`, not in the official spec anymore"
+    ":class:`cssutils.css.CSSCharsetRule` (not used in CSSOM anymore)"
     IMPORT_RULE = 3
     ":class:`cssutils.css.CSSImportRule`"
     MEDIA_RULE = 4
@@ -32,7 +32,7 @@ class CSSRule(cssutils.util.Base2):
     ":class:`cssutils.css.CSSFontFaceRule`"
     PAGE_RULE = 6
     ":class:`cssutils.css.CSSPageRule`"
-    NAMESPACE_RULE = 8
+    NAMESPACE_RULE = 10
     """:class:`cssutils.css.CSSNamespaceRule`, 
     Value has changed in 0.9.7a3 due to a change in the CSSOM spec."""
     COMMENT = 1001 # was -1, cssutils only
