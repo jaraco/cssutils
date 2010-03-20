@@ -389,7 +389,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         return vars
 
     variables = property(_getVariables,
-                         doc=u"A :class:css.CSSVariablesDeclaration "
+                         doc=u"A :class:`cssutils.css.CSSVariablesDeclaration` "
                          u"containing all available variables in this "
                          u"CSSStyleSheet including the ones defined in "
                          u"imported sheets.")

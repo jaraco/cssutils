@@ -1,8 +1,7 @@
 ﻿CHANGELOG
 __________
 
-
-known issues
+Known Issues
 ============
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
 
@@ -30,7 +29,7 @@ known issues
 - handling of comments does probably not work for all cases
 
 
-development version
+Development Version
 ===================
 
 0.9.7
@@ -90,8 +89,8 @@ HEAD
 
 
 
-stable version
-==============
+Last Stable Version
+===================
 
 0.9.6
 -----
@@ -346,8 +345,9 @@ stable version
         - minor changes due to deprecation in Py3k. cssutils is NOT Py3k compliant yet though and it will probably take a while until it will be...
 
 
-deprecated versions
-===================
+
+Archived Versions
+=================
 
 0.9.5
 -----

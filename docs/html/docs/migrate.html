@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>version migration &mdash; cssutils v0.9.7a3 documentation</title>
+    <title>version migration &mdash; cssutils v0.9.7a4dev1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a3',
+        VERSION:     '0.9.7a4dev1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,9 +19,9 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7a4dev1 documentation" href="../index.html" />
     <link rel="next" title="parsing CSS" href="parse.html" />
-    <link rel="prev" title="CHANGELOG" href="../CHANGELOG.html" /> 
+    <link rel="prev" title="implementation status" href="implementation.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,9 +37,9 @@
           <a href="parse.html" title="parsing CSS"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../CHANGELOG.html" title="CHANGELOG"
+          <a href="implementation.html" title="implementation status"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,6 +55,7 @@
 <ul class="simple">
 <li>Replaced init parameter and attribute <tt class="docutils literal"><span class="pre">css.Selector.parentList</span></tt> with <tt class="docutils literal"><span class="pre">css.Selector.parent</span></tt></li>
 <li>Removed <tt class="docutils literal"><span class="pre">css.Property.parentStyle</span></tt> which was deprecated for some times now in favor of <tt class="docutils literal"><span class="pre">css.Property.parent</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">CSSRule</span></tt> constants have been changed due to a change in the CSSOM spec. The actual integer values <strong>SHOULD NOT</strong> be used anyway! <strong>Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!</strong></li>
 </ul>
 </div>
 <div class="section" id="id1">
@@ -272,8 +273,8 @@
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="../CHANGELOG.html"
-                                  title="previous chapter">CHANGELOG</a></p>
+            <p class="topless"><a href="implementation.html"
+                                  title="previous chapter">implementation status</a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="parse.html"
                                   title="next chapter">parsing CSS</a></p>
@@ -312,9 +313,9 @@
           <a href="parse.html" title="parsing CSS"
              >next</a> |</li>
         <li class="right" >
-          <a href="../CHANGELOG.html" title="CHANGELOG"
+          <a href="implementation.html" title="implementation status"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

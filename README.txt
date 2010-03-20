@@ -6,7 +6,7 @@ cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
 :Copyright: 2004-2010 Christof Hoeke
 
-overview
+Overview
 ========
 A Python package to parse and build CSS Cascading Style Sheets. DOM only, not any rendering facilities!
 
@@ -43,11 +43,13 @@ Please visit http://cthedot.de/cssutils/ or http://code.google.com/p/cssutils/ f
 
 There is also a low-traffic `cssutils discussion group <http://groups.google.com/group/cssutils>`_.
 
-compatibility
-=============
-cssutils is developed on standard Python. 0.9.6 is the first release to pass all tests on Jython 2.5.1 too.
 
-license
+Compatibility
+=============
+cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (2.5.1) too.
+
+
+License
 =======
 Copyright 2005 - 2010 Christof Hoeke
 
@@ -60,7 +62,7 @@ cssutils is distributed in the hope that it will be useful, but WITHOUT ANY WARR
 You should have received a copy of the GNU Lesser General Public License along with cssutils. If not, see http://www.gnu.org/licenses.
 
 
-installation
+Installation
 ============
 From 0.9.6 cssutils uses `Distribute <http://pypi.python.org/pypi/distribute>`_
 
@@ -77,12 +79,12 @@ Alternatively download the provided source distribution. Expand the file and fro
 To uninstall remove any registrations of cssutils eggs with Distribute and remove the eggs which should be installed at PYTHONDIR/Lib/site-packages/cssutils too.
 
 
-kind request
+Kind Request
 ============
 cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the `Issue Tracker <http://code.google.com/p/cssutils/issues/list>`_ at Google.
 
 
-thanks
+Thanks
 ======
 Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Jason R. Coombs, Cory Dodt, Tim Gerla and James Dobson for helpful suggestions and code patches.
 

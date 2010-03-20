@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>backlog &mdash; cssutils v0.9.7a3 documentation</title>
+    <title>backlog &mdash; cssutils v0.9.7a4dev1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a3',
+        VERSION:     '0.9.7a4dev1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,8 +19,8 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a3 documentation" href="../index.html" />
-    <link rel="prev" title="implementation status" href="implementation.html" /> 
+    <link rel="top" title="cssutils v0.9.7a4dev1 documentation" href="../index.html" />
+    <link rel="prev" title="profiles" href="profiles.html" /> 
   </head>
   <body>
     <div class="related">
@@ -33,9 +33,9 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="implementation.html" title="implementation status"
+          <a href="profiles.html" title="profiles"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,23 +46,8 @@
             
   <div class="section" id="backlog">
 <h1>backlog<a class="headerlink" href="#backlog" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="improvements">
-<h2>improvements<a class="headerlink" href="#improvements" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="validation">
-<h3>Validation<a class="headerlink" href="#validation" title="Permalink to this headline">¶</a></h3>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">1</td>
-</tr>
-</tbody>
-</table>
-<p>CSS2.1 and CSS3 properties should be added completely and validation has to be redefined.
-Possibility to add custom validation and register new properties?</p>
-</div>
 <div class="section" id="css3-color-module">
-<h3>CSS3 color module<a class="headerlink" href="#css3-color-module" title="Permalink to this headline">¶</a></h3>
+<h2>CSS3 color module<a class="headerlink" href="#css3-color-module" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -101,7 +86,7 @@ Fuchsia = #FF00FF       Aqua = #00FFFF</pre>
 </ul>
 </div>
 <div class="section" id="selector">
-<h3>Selector<a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h3>
+<h2>Selector<a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -126,45 +111,8 @@ Fuchsia = #FF00FF       Aqua = #00FFFF</pre>
 </li>
 </ul>
 </div>
-<div class="section" id="test-improvements">
-<h3>test improvements<a class="headerlink" href="#test-improvements" title="Permalink to this headline">¶</a></h3>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">1</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><p class="first">Token.EOF handle in all classes for end of stylesheet</p>
-<blockquote>
-<p>User agents must close all open constructs (for example: blocks, parentheses, brackets, rules, strings, and comments) at the end of the style sheet.</p>
-</blockquote>
-</li>
-<li><p class="first">line/col reporting tests</p>
-</li>
-<li><p class="first">tests with almost all details with comments</p>
-</li>
-<li><p class="first">check escape handling:</p>
-<div class="highlight-python"><pre>\\@a \\{ \\: : \\; ; \\} }
-.\1 is valid selector</pre>
-</div>
-</li>
-<li><p class="first">csshack tests, see online tables (comment hack?)</p>
-</li>
-<li><p class="first">test tigris.css</p>
-</li>
-<li><p class="first">implement testsuite on HTML? <a class="reference external" href="http://www.w3.org/Style/CSS/Test/CSS3/Selectors/current/xhtml/index.html">http://www.w3.org/Style/CSS/Test/CSS3/Selectors/current/xhtml/index.html</a></p>
-</li>
-<li><p class="first">CSSStyleSheet.setSerializer()</p>
-</li>
-<li><p class="first">CSSStyleSheet.setSerializerPref()</p>
-</li>
-</ul>
-</div>
 <div class="section" id="cssvalue">
-<h3>CSSValue<a class="headerlink" href="#cssvalue" title="Permalink to this headline">¶</a></h3>
+<h2>CSSValue<a class="headerlink" href="#cssvalue" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -176,7 +124,7 @@ Fuchsia = #FF00FF       Aqua = #00FFFF</pre>
 <p><strong>this feature may be implemented later as CSSOM defines the complete thing differently</strong></p>
 <p>implement RGBColor, Rect and Counter</p>
 <div class="section" id="serializer">
-<h4>serializer<a class="headerlink" href="#serializer" title="Permalink to this headline">¶</a></h4>
+<h3>serializer<a class="headerlink" href="#serializer" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p class="first">add preference option how color values should be serializer:</p>
 <dl class="docutils">
@@ -214,7 +162,7 @@ also for rgba()</p>
 </div>
 </div>
 <div class="section" id="css2properties">
-<h3>CSS2Properties<a class="headerlink" href="#css2properties" title="Permalink to this headline">¶</a></h3>
+<h2>CSS2Properties<a class="headerlink" href="#css2properties" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -226,7 +174,7 @@ also for rgba()</p>
 <p>needs to be implemented fully, setting of margin: 1px sets actually marginTop, marginLeft etc</p>
 </div>
 <div class="section" id="performance">
-<h3>performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h3>
+<h2>performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -240,7 +188,7 @@ also for rgba()</p>
 </ul>
 </div>
 <div class="section" id="id1">
-<h3>serializer<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h2>serializer<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -255,20 +203,8 @@ also for rgba()</p>
 <li>different coding styles?</li>
 </ul>
 </div>
-<div class="section" id="properties">
-<h3>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h3>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">3</td>
-</tr>
-</tbody>
-</table>
-<p>Set styledeclaration properties with list of tuples? (dict done in 0.9.5)</p>
-</div>
 <div class="section" id="linkstyle-documentstyle">
-<h3>LinkStyle, DocumentStyle<a class="headerlink" href="#linkstyle-documentstyle" title="Permalink to this headline">¶</a></h3>
+<h2>LinkStyle, DocumentStyle<a class="headerlink" href="#linkstyle-documentstyle" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -288,7 +224,6 @@ interface DocumentStyle {
 </div>
 </div>
 </div>
-</div>
 
 
           </div>
@@ -299,11 +234,8 @@ interface DocumentStyle {
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="">backlog</a><ul>
-<li><a class="reference external" href="#improvements">improvements</a><ul>
-<li><a class="reference external" href="#validation">Validation</a></li>
 <li><a class="reference external" href="#css3-color-module">CSS3 color module</a></li>
 <li><a class="reference external" href="#selector">Selector</a></li>
-<li><a class="reference external" href="#test-improvements">test improvements</a></li>
 <li><a class="reference external" href="#cssvalue">CSSValue</a><ul>
 <li><a class="reference external" href="#serializer">serializer</a></li>
 </ul>
@@ -311,17 +243,14 @@ interface DocumentStyle {
 <li><a class="reference external" href="#css2properties">CSS2Properties</a></li>
 <li><a class="reference external" href="#performance">performance</a></li>
 <li><a class="reference external" href="#id1">serializer</a></li>
-<li><a class="reference external" href="#properties">Properties</a></li>
 <li><a class="reference external" href="#linkstyle-documentstyle">LinkStyle, DocumentStyle</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="implementation.html"
-                                  title="previous chapter">implementation status</a></p>
+            <p class="topless"><a href="profiles.html"
+                                  title="previous chapter">profiles</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/backlog.txt"
@@ -354,9 +283,9 @@ interface DocumentStyle {
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="implementation.html" title="implementation status"
+          <a href="profiles.html" title="profiles"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
