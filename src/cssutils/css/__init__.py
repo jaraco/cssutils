@@ -20,6 +20,8 @@ currently implemented
     - CSSValue
     - CSSPrimitiveValue
     - CSSValueList
+    - CSSVariablesRule
+    - CSSVariablesDeclaration
 
 todo
     - RGBColor, Rect, Counter
@@ -37,7 +39,8 @@ __all__ = [
     'CSSPageRule',
     'CSSStyleRule',
     'CSSUnknownRule',
-    'CSSVariablesRule'
+    'CSSVariablesRule',
+    'CSSVariablesDeclaration',
     'Selector', 'SelectorList',
     'CSSStyleDeclaration', 'Property',
     'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'

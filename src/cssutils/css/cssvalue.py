@@ -1128,15 +1128,13 @@ class CSSVariable(CSSValue):
         "Find contained sheet and @variables there"
         # TODO: imports!
         try:
-            sheet = self.parent.parent.parentRule.parentStyleSheet.cssRules
+            variables = self.parent.parent.parentRule.parentStyleSheet.variables
         except AttributeError:
             return None
         else:
-            for r in sheet:
-                if r.VARIABLES_RULE == r.type and r.variables:
-                    try:
-                        return r.variables[self.name]
-                    except KeyError:
-                        return None
+            try:
+                return variables[self.name]
+            except KeyError:
+                return None
         
     value = property(_getValue)

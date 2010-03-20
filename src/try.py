@@ -31,14 +31,21 @@ def save(name, string):
 
 
 if 1:
-#    s = cssutils.parseString('@VaRIables {margin:0;}')
-#    print s.cssText
+    s = cssutils.parseFile('sheets/vars.css')
+    print s.cssRules[0].styleSheet.cssText
+    print 20*'-'
+    print s.cssText
 
-    r = cssutils.css.CSSVariablesRule()
-    r.cssText = '@VaRIables {margin:0;}'
-    print 1, r.cssText
-    r.cssText = '@VaRIables {margin:0;}'
-    print 2, r.cssText
+    cssutils.ser.prefs.resolveVariables = True
+
+    print 40*'#'
+    print s.cssRules[0].styleSheet.cssText
+    print 20*'-'
+    print s.cssText
+
+    print 40*'#'
+    s2 = cssutils.resolveImports(s)
+    print s2.cssText
     
     
 #    v = cssutils.css.CSSVariablesDeclaration('x:1')
