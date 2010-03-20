@@ -11,28 +11,25 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
-    README <README>
-    changelog <CHANGELOG>
-    version migration <docs/migrate.txt>
+    About <README>
 
+    CSS Codec <docs/codec>
     parsing <docs/parse>
+    Experimental Settings <docs/settings>
     serializing <docs/serialize>
-    package `cssutils.css` <docs/css>
-    package `cssutils.stylesheets`<docs/stylesheets>
-    utilities <docs/utilities>
-    scripts <docs/scripts>
+    Package `cssutils.css` <docs/css>
+    Package `cssutils.stylesheets`<docs/stylesheets>
+    Module `encutils` <docs/encutils>
+    Utilities <docs/utilities>
+    Profiles <docs/profiles>
+    Logging <docs/logging>
+    Scripts <docs/scripts>
 
-    profiles <docs/profiles>
-    logging <docs/logging>
-    experimental settings <docs/settings>
-
-    CSS codec <docs/codec>
-    `encutils` module <docs/encutils>
-
-    implementation status <docs/implementation>
-    backlog <docs/backlog.txt>
+    Changelog <CHANGELOG>
+    Version Migration <docs/migrate.txt>
+    Backlog <docs/backlog.txt>
 
 
 See also

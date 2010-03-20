@@ -1,8 +1,7 @@
 ﻿CHANGELOG
 __________
 
-
-known issues
+Known Issues
 ============
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
 
@@ -30,12 +29,86 @@ known issues
 - handling of comments does probably not work for all cases
 
 
-development version
+Development Version
+===================
+
+0.9.7
+-----
+**experimental and incomplete**
+
+    + FEATURE: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
+        Related details:
+
+        - added ``cssutils.css.CSSStyleSheet.variables`` which is a :class:css.CSSVariablesDeclaration containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.
+        - ``cssutils.ser.prefs.resolveVariables == False``: If set to ``True`` tries to resolve all variable references and removes any CSSVariablesRules.
+        - ``cssutils.ser.prefs.normalizedVarNames==True``: Defines if variable names should be serialized normalized (they are
+        used as being normalized anyway)
+
+
+HEAD
+    - **API CHANGE**: ``CSSRule.NAMESPACE_RULE`` actual value has been changed from 8 to 10 (according to the change in the CSSOM spec). The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
+
+    - FEATURE: Added new options to ``cssutils.script.csscombine``:
+        + ``cssText=None`` and ``href=None`` to start combination from a css string, which normally needs ``href`` to be able to resolve any imports.
+        + ``resolveVariables=False`` which resolves any variables if given the value ``True``
+
+0.9.7a3 100314
+    - **API CHANGE**: ``CSSRule.NAMESPACE_RULE`` actual value has been changed from 7 to 8 (according to the change in the spec). Also ``CSSRule.COMMENT`` has a value of ``1001`` (was ``-1``) and ``CSSRule.VARIABLES_RULE`` has a value of ``1008`` (was ``8``) now (being not in the official spec yet anyway but values are now in the open valuespace above 1000). The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
+
+    + FEATURE: Added ``CSSRuleList.rulesOfType(type)`` which return and iterator the rules of the given type only. May be used on both ``CSSStyleSheet.cssRules`` or ``CSSMediaRule.cssRules``. ``type`` is one of the constants defined in ``css.CSSRule`` like e.g. ``css.CSSRule.STYLE_RULE``.
+
+    + FEATURE (strange): IE specific values like ``DropShadow(color=#eee, offX=2, offY=1)`` (and ``Blur``, ``Shadow``) *should* be parsed and serialized now as an ``Expression`` value. I have not tested this deeply and there may be problems but for some common cases theses values should at least survive a parse/serialize with cssutils.
+
+    - **BUGFIX/IMPROVEMENT**: Parser now handles FUNCTION values which themselves contain another FUNCTION as used by PrinceXML CSS like e.g. ``prince-link: target-counter(attr(href), page)``
+
+0.9.7a2 091230
+    - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
+
+    + **BUGFIX/FEATURE**: Fixed Issue 33: URL references (like ``url()`` values) in combined sheets are now adjusted even if sheets are not in the same folder. Only relative paths are adjusted.
+
+    - **BUGFIX**: Fixed parsing of FUNCTIONS in CSSUnknownRule like ``@bottom { counter(page) }`` which raised a false error of a mismatch of parenthesis
+
+    + FEATURE: Added parameter ``ignoreImportRules=False`` to ``cssutils.replaceUrls`` which when set to ``True`` no longer reports URLs from @import rules but property values only (see Issue #33)
+
+0.9.7a1
+    - test release only
+
+0.9.7a0
+    - **API CHANGE**: Replaced init parameter and attribute ``css.Selector.parentList`` with ``css.Selector.parent``
+
+    - API CHANGE (minor): Removed ``css.Property.parentStyle`` which was deprecated for some times now in favor of ``css.Property.parent``
+
+    + **IMPROVEMENT**: Massive speed improvement due to changes in internal parsing.
+
+      When tried in a real world situation (parsing the stylesheet for my own site inside a simple WSGI based CSS handler) the parser uses ~0.7-0.8s when using cssutils 0.9.6. With cssutils 0.9.7a0 it only needs ~0.21s so only about 1/3 to 1/4 the time...
+
+    + FEATURE: Parameter `index` of ``CSSStyleSheet.deleteRule(index)`` and ``CSSMediaRule.deleteRule(index)`` may now also be a rule object to be removed from the contained cssRules list.
+
+    - INTERNAL: Added ``tokenizer.push()``. Prodparser uses a global tokenizer now.
+
+
+
+
+Last Stable Version
 ===================
 
 0.9.6
 -----
-HEAD
+0.9.6 091007
+    + BUGFIX: Definition of macro for `positivenum` in cssutils profiles actually did allow nagative numbers, fixed (thanks to Jason R. Coombs)
+
+    - distribution build with `distribute <http://pypi.python.org/pypi/distribute>`_ instead of setuptools
+
+0.9.6b5 090830
+    + BUGFIX: Issue #30 fixed. Setup from source did not work.
+
+0.9.6b4 090829
+    + BUGFIX: Issue #29 fixed. Double defined namespaces are replaced with a single (the last one) now.
+
+    - IMPROVEMENT: ``cssutils.resolveImports`` now keeps media information when to be resolved @import rule uses these. It wraps the imported rules in an @media rule which uses the same media information from the @media rule in the original sheet.
+
+      An xml.dom.HierarchyRequestErr may occur if an imported sheet itself contains @imports with media information or other rules which are not allowed in a @media rule like @namespace rules. In that case cssutils cannot resolve the @import rule and logs a WARNING but keeps the original @import.
+
 
 0.9.6b3 090802
     + **FEATURE**: Added parsing support and new profile for details defined in module Fonts http://www.w3.org/TR/css3-fonts/
@@ -272,8 +345,9 @@ HEAD
         - minor changes due to deprecation in Py3k. cssutils is NOT Py3k compliant yet though and it will probably take a while until it will be...
 
 
-stable version
-==============
+
+Archived Versions
+=================
 
 0.9.5
 -----
@@ -487,7 +561,7 @@ stable version
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2009-08-02 14:20:21 +0200 (So, 02 Aug 2009) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1834 2009-08-02 12:20:21Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-03-21 00:36:45 +0100 (So, 21 Mrz 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1929 2010-03-20 23:36:45Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
@@ -630,9 +704,6 @@ stable version
     - CHANGE: ``CSSValueList`` does not emit warnings for shorthand properties anymore. Nevertheless these may be invalid!
 
     - IMPROVEMENT: ``CSSStyleDeclaration`` and some minor other parts refactored
-
-deprecated versions
-===================
 
 0.9.4b1 071229
     - **FEATURE**: Added ``csscombine`` script which currently resolves @import rules into the input sheet. No nested @imports are resolved yet and @namespace rules do not work yet though!
