@@ -17,6 +17,27 @@ class CSSVariablesRule(cssrule.CSSRule):
 
     cssutils uses a :class:`~cssutils.css.CSSVariablesDeclaration`  to
     represent the variables.
+    
+    Format::
+    
+        variables
+            VARIABLES_SYM S* medium [ COMMA S* medium ]* LBRACE S* 
+            variableset* '}' S*
+            ;
+        
+    for variableset see :class:`cssutils.css.CSSVariablesDeclaration`
+         
+    **Media are not yet implemented!**
+    
+    Example::
+    
+        @variables {
+          CorporateLogoBGColor: #fe8d12;
+        }
+        
+        div.logoContainer {
+          background-color: var(CorporateLogoBGColor);
+        }
     """
     def __init__(self, mediaText=None, variables=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
@@ -151,7 +172,7 @@ class CSSVariablesRule(cssrule.CSSRule):
             self._variables.parentRule = self
 
     variables = property(lambda self: self._variables, _setVariables,
-                     doc="(DOM) The variables of this rule set, "
+                         doc="(DOM) The variables of this rule set, "
                          "a :class:`~cssutils.css.CSSVariablesDeclaration`.")
 
     type = property(lambda self: self.VARIABLES_RULE, 
