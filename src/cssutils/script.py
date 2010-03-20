@@ -307,33 +307,39 @@ class CSSCapture(object):
                 sf.write(sheet.cssText)
             sf.close()
 
-def csscombine(path=None, url=None,
+def csscombine(path=None, url=None, cssText=None, href=None,
                sourceencoding=None, targetencoding=None, 
-               minify=True):
+               minify=True, resolveVariables=False):
     """Combine sheets referred to by @import rules in given CSS proxy sheet
     into a single new sheet.
 
     :returns: combined cssText, normal or minified
     :Parameters:
-        `path` or `url`
-            path  or URL to a CSSStyleSheet which imports other sheets which
-            are then combined into one sheet
-        `sourceencoding`
-            explicit encoding of the source proxysheet, default 'utf-8'
+        `path` or `url` or `cssText` + `href`
+            path or URL to a CSSStyleSheet or a cssText of a sheet which imports
+            other sheets which are then combined into one sheet.
+            `cssText` normally needs `href` to be able to resolve relative
+            imports.
+        `sourceencoding` = 'utf-8'
+            explicit encoding of the source proxysheet
         `targetencoding`
-            encoding of the combined stylesheet, default 'utf-8'
-        `minify`
-            defines if the combined sheet should be minified, default True
+            encoding of the combined stylesheet
+        `minify` = True
+            defines if the combined sheet should be minified
+        `resolveVariables` = False
+            defined if variables in combined should be resolved
     """
     cssutils.log.info(u'Combining files from %r' % url, 
                       neverraise=True)
     if sourceencoding is not None:
         cssutils.log.info(u'Using source encoding %r' % sourceencoding,
                           neverraise=True)
-    if path:
+    if path and not cssText:
         src = cssutils.parseFile(path, encoding=sourceencoding)
     elif url:
         src = cssutils.parseUrl(url, encoding=sourceencoding)
+    elif cssText:
+        src = cssutils.parseString(cssText, href=href, encoding=sourceencoding)
     else:
         sys.exit('Path or URL must be given')
 
@@ -346,9 +352,13 @@ def csscombine(path=None, url=None,
         oldser = cssutils.ser
         cssutils.setSerializer(cssutils.serialize.CSSSerializer())
         cssutils.ser.prefs.useMinified()
+        cssutils.ser.prefs.resolveVariables = resolveVariables
         cssText = result.cssText
         cssutils.setSerializer(oldser)
     else:
+        rv = cssutils.ser.prefs.resolveVariables
+        cssutils.ser.prefs.resolveVariables = resolveVariables
         cssText = result.cssText
+        cssutils.ser.prefs.resolveVariables = rv
     
     return cssText

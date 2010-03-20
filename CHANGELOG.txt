@@ -42,6 +42,11 @@ development version
 
 
 HEAD
+    - **API CHANGE**: ``CSSRule.NAMESPACE_RULE`` actual value has been changed from 8 to 10 (according to the change in the CSSOM spec). The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
+
+    - FEATURE: Added new options to ``cssutils.script.csscombine``:
+        + ``cssText=None`` and ``href=None`` to start combination from a css string, which normally needs ``href`` to be able to resolve any imports.
+        + ``resolveVariables=False`` which resolves any variables if given the value ``True``
 
 
 0.9.7a3 100314
