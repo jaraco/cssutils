@@ -207,6 +207,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
                  u'@namespace "x";'
                  u'@page {}',
                  u'@unknown;',
+                 u'@variables;',
                  u'a style rule {}'
                  )
         for test in tests:
