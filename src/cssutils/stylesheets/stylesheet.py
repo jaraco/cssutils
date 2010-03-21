@@ -24,9 +24,10 @@ class StyleSheet(cssutils.util.Base2):
                  href=None,
                  media=None,
                  title=u'',
-                 disabled=None,
                  ownerNode=None,
-                 parentStyleSheet=None):
+                 parentStyleSheet=None,
+                 alternate=False,
+                 disabled=None):
         """
         type
             readonly
@@ -66,9 +67,14 @@ class StyleSheet(cssutils.util.Base2):
             included by other style sheets, the value of this
             attribute is None.
         parentStyleSheet: of type StyleSheet, readonly
+            a StyleSheet or None
+        alternate = False
+            a flag stating if a style sheet is an alternate one or not.
+            Currently not used in cssutils
         """
         super(StyleSheet, self).__init__()
         
+        self._alternate = alternate
         self._href = href
         self._ownerNode = ownerNode
         self._parentStyleSheet = parentStyleSheet 
@@ -78,6 +84,9 @@ class StyleSheet(cssutils.util.Base2):
         self.media = media
         self.title = title
     
+    alternate = property(lambda self: self._alternate, 
+                         doc="Not used in cssutils yet.")
+
     href = property(lambda self: self._href,
         doc="If the style sheet is a linked style sheet, the value "
             "of this attribute is its location. For inline style "
