@@ -184,26 +184,6 @@ Values
     :members:
 
 
-CSS Variables (ALPHA)
-=====================
-``CSSVariablesRule``
---------------------
-.. autoclass:: cssutils.css.CSSVariablesRule
-   :members:
-   :inherited-members:
-
-``CSSVariablesDeclaration``
----------------------------
-.. autoclass:: cssutils.css.CSSVariablesDeclaration
-   :members:
-   :inherited-members:
-
-``CSSVariable``
---------------------
-.. autoclass:: cssutils.css.cssvalue.CSSVariable
-    :members:
-
-
 Additional Info
 ===============
 Some classes in this package support standard Python idioms like iteration on certain attributes::

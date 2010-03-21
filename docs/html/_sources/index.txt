@@ -20,6 +20,7 @@ Contents
     Experimental Settings <docs/settings>
     serializing <docs/serialize>
     Package `cssutils.css` <docs/css>
+    CSS Variables in `cssutils.css` <docs/variables>
     Package `cssutils.stylesheets`<docs/stylesheets>
     Module `encutils` <docs/encutils>
     Utilities <docs/utilities>

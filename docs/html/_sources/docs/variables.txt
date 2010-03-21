@@ -1,0 +1,22 @@
+========================
+CSS Variables
+========================
+.. module:: cssutils.css
+
+
+``CSSVariablesRule``
+--------------------
+.. autoclass:: cssutils.css.CSSVariablesRule
+   :members:
+   :inherited-members:
+
+``CSSVariablesDeclaration``
+---------------------------
+.. autoclass:: cssutils.css.CSSVariablesDeclaration
+   :members:
+   :inherited-members:
+
+``CSSVariable``
+--------------------
+.. autoclass:: cssutils.css.cssvalue.CSSVariable
+    :members:

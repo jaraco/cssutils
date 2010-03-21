@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="cssutils v0.9.7a4dev1 documentation" href="../index.html" />
-    <link rel="next" title="utilities" href="utilities.html" />
-    <link rel="prev" title="Package cssutils.css" href="css.html" /> 
+    <link rel="next" title="encutils module" href="encutils.html" />
+    <link rel="prev" title="CSS Variables" href="variables.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,10 +34,10 @@
           <a href="../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="utilities.html" title="utilities"
+          <a href="encutils.html" title="encutils module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="css.html" title="Package cssutils.css"
+          <a href="variables.html" title="CSS Variables"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
@@ -55,7 +55,7 @@
 <h2><tt class="docutils literal"><span class="pre">StyleSheet</span></tt><a class="headerlink" href="#stylesheet" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cssutils.stylesheets.StyleSheet">
-<em class="property">class </em><tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheet</tt><big>(</big><em>type='text/css'</em>, <em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>disabled=None</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">StyleSheet</tt><big>(</big><em>type='text/css'</em>, <em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em>, <em>alternate=False</em>, <em>disabled=None</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.StyleSheet" title="Permalink to this definition">¶</a></dt>
 <dd><p>The StyleSheet interface is the abstract base interface
 for any type of style sheet. It represents a single style
 sheet associated with a structured document.</p>
@@ -65,6 +65,11 @@ or an inline STYLE element (also an &#64;import stylesheet?).</p>
 <p>In XML, this interface represents
 an external style sheet, included via a style sheet
 processing instruction.</p>
+<dl class="attribute">
+<dt id="cssutils.stylesheets.StyleSheet.alternate">
+<tt class="descname">alternate</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.alternate" title="Permalink to this definition">¶</a></dt>
+<dd>Not used in cssutils yet.</dd></dl>
+
 <dl class="attribute">
 <dt id="cssutils.stylesheets.StyleSheet.href">
 <tt class="descname">href</tt><a class="headerlink" href="#cssutils.stylesheets.StyleSheet.href" title="Permalink to this definition">¶</a></dt>
@@ -274,11 +279,11 @@ list, returns <tt class="xref docutils literal"><span class="pre">None</span></t
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="css.html"
-                                  title="previous chapter">Package <tt class="docutils literal docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
+            <p class="topless"><a href="variables.html"
+                                  title="previous chapter">CSS Variables</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="utilities.html"
-                                  title="next chapter">utilities</a></p>
+            <p class="topless"><a href="encutils.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">encutils</span></tt> module</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/stylesheets.txt"
@@ -311,10 +316,10 @@ list, returns <tt class="xref docutils literal"><span class="pre">None</span></t
           <a href="../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utilities.html" title="utilities"
+          <a href="encutils.html" title="encutils module"
              >next</a> |</li>
         <li class="right" >
-          <a href="css.html" title="Package cssutils.css"
+          <a href="variables.html" title="CSS Variables"
              >previous</a> |</li>
         <li><a href="../index.html">cssutils v0.9.7a4dev1 documentation</a> &raquo;</li> 
       </ul>
