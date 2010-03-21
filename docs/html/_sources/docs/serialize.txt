@@ -24,26 +24,6 @@ Also most other objects have a similar property which contains the *text* conten
 	b
 
 
-``CSSSerializer``
-=================
-There is a single global serializer used throughout the library. You may configure it by setting specific Preferences_ or completely replace it with your own.
-
-A custom serializer must implement all methods the default one provides. Easiest would be to subclass :class:`cssutils.serialize.CSSSerializer`.
-
-To set a new serializer, use::
-
-    sheet = CSSStyleSheet()
-    sheet.setSerializer(newser)
-    # uses the new serializer:
-    print sheet.cssText 
-
-You may also set :attr:`cssutils.ser` directly but the above method is the preferred one.
-
-For most cases adjusting the :attr:`cssutils.ser.prefs` of the default serializer should be sufficient though.
-
-.. autoclass:: cssutils.serialize.CSSSerializer
-
-
 .. _Preferences:
 
 .. index::
@@ -67,4 +47,26 @@ Preferences are always used *globally*, so for all stylesheets until preferences
 .. autoclass:: cssutils.serialize.Preferences
    :members:
    :inherited-members:
+
+
+
+``CSSSerializer``
+=================
+There is a single global serializer used throughout the library. You may configure it by setting specific Preferences_ or completely replace it with your own.
+
+A custom serializer must implement all methods the default one provides. Easiest would be to subclass :class:`cssutils.serialize.CSSSerializer`.
+
+To set a new serializer, use::
+
+    sheet = CSSStyleSheet()
+    sheet.setSerializer(newser)
+    # uses the new serializer:
+    print sheet.cssText 
+
+You may also set :attr:`cssutils.ser` directly but the above method is the preferred one.
+
+For most cases adjusting the :attr:`cssutils.ser.prefs` of the default serializer should be sufficient though.
+
+.. autoclass:: cssutils.serialize.CSSSerializer
+
 
