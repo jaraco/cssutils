@@ -27,7 +27,9 @@ class CSSVariablesRule(cssrule.CSSRule):
         
     for variableset see :class:`cssutils.css.CSSVariablesDeclaration`
          
-    **Media are not yet implemented!**
+    **Media are not implemented. Reason is that cssutils is using CSS
+    variables in a kind of preprocessing and therefor no media information
+    is available at this stage. For now do not use media!**
     
     Example::
     
