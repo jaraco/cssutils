@@ -25,9 +25,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(
             cssutils.stylesheets.MediaList, type(self.r.media))
         self.assertEqual(None, self.r.name)
-        self.assertEqual(None, self.r.styleSheet)
+        self.assertEqual(cssutils.css.CSSStyleSheet, type(self.r.styleSheet))
+        self.assertEqual(0, self.r.styleSheet.cssRules.length)
         self.assertEqual(u'', self.r.cssText)
-        self.assertEqual(None, self.r.styleSheet)
 
         # all
         r = cssutils.css.CSSImportRule(href='href', mediaText='tv', name='name')
@@ -40,7 +40,8 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('name', r.name)
         self.assertEqual(None, r.parentRule) # see CSSRule
         self.assertEqual(None, r.parentStyleSheet) # see CSSRule
-        self.assertEqual(None, r.styleSheet)
+        self.assertEqual(cssutils.css.CSSStyleSheet, type(self.r.styleSheet))
+        self.assertEqual(0, self.r.styleSheet.cssRules.length)
         
         # href
         r = cssutils.css.CSSImportRule(u'x')
@@ -276,9 +277,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_name(self):
         "CSSImportRule.name"
-        r = cssutils.css.CSSImportRule('x', name='0')
-        self.assertEqual('0', r.name)
-        self.assertEqual(u'@import url(x) "0";', r.cssText)
+        r = cssutils.css.CSSImportRule('x', name='a000000')
+        self.assertEqual('a000000', r.name)
+        self.assertEqual(u'@import url(x) "a000000";', r.cssText)
 
         r.name = "n"
         self.assertEqual('n', r.name)
@@ -324,7 +325,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(ir.styleSheet.encoding, 'ascii')
         self.assertEqual(ir.styleSheet.ownerRule, ir)
         self.assertEqual(ir.styleSheet.media.mediaText, 'tv')
-        self.assertEqual(ir.styleSheet.parentStyleSheet, sheet)
+        self.assertEqual(ir.styleSheet.parentStyleSheet, None) # sheet
         self.assertEqual(ir.styleSheet.title, 'title')
         self.assertEqual(ir.styleSheet.cssText, 
                          '@charset "ascii";\n@import "level2/css.css" "title2";')
@@ -336,7 +337,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(ir2.styleSheet.encoding, 'ascii')
         self.assertEqual(ir2.styleSheet.ownerRule, ir2)
         self.assertEqual(ir2.styleSheet.media.mediaText, 'all')
-        self.assertEqual(ir2.styleSheet.parentStyleSheet, ir.styleSheet)
+        self.assertEqual(ir2.styleSheet.parentStyleSheet, None) #ir.styleSheet
         self.assertEqual(ir2.styleSheet.title, 'title2')
         self.assertEqual(ir2.styleSheet.cssText, 
                          '@charset "ascii";\na {\n    color: red\n    }')
@@ -344,7 +345,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         sheet = cssutils.parseString('@import "CANNOT-FIND.css";')
         ir = sheet.cssRules[0]
         self.assertEqual(ir.href, "CANNOT-FIND.css")
-        self.assertEqual(ir.styleSheet, None)
+        self.assertEqual(type(ir.styleSheet), cssutils.css.CSSStyleSheet)
 
         def fetcher(url):
             if url.endswith('level1.css'): 
