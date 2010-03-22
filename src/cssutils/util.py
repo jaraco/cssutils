@@ -807,14 +807,15 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         If given this encoding is used and all other encoding information is
         ignored (HTTP, BOM etc)
     ``parentEncoding``
-        Encoding of parent stylesheet (while e.g. reading @import references sheets)
-        or document if available.
+        Encoding of parent stylesheet (while e.g. reading @import references 
+        sheets) or document if available.
 
     Priority or encoding information
     --------------------------------
     **cssutils only**: 0. overrideEncoding
 
-    1. An HTTP "charset" parameter in a "Content-Type" field (or similar parameters in other protocols)
+    1. An HTTP "charset" parameter in a "Content-Type" field (or similar
+       parameters in other protocols)
     2. BOM and/or @charset (see below)
     3. <link charset=""> or other metadata from the linking mechanism (if any)
     4. charset of referring style sheet or document (if any)

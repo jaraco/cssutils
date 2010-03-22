@@ -43,7 +43,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assertEqual(None, irs)
+        self.assertEqual(cssutils.css.CSSStyleSheet, type(irs))
 
         href = os.path.join(os.path.dirname(__file__), 
                             '..', '..', 'sheets', 'import.css')
@@ -296,7 +296,8 @@ background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
             s = cssutils.parseString(a)
             restore()            
             self.assertEqual(a, s.cssText)
-            self.assertEqual(None, s.cssRules[1].styleSheet)
+            self.assertEqual(cssutils.css.CSSStyleSheet, 
+                             type(s.cssRules[1].styleSheet))
             c = cssutils.resolveImports(s)
             self.assertEqual('@import"b.css";\xc3\xa4{color:green}', 
                              c.cssText)

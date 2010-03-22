@@ -339,7 +339,7 @@ def resolveImports(sheet, target=None):
         elif rule.type == rule.IMPORT_RULE:
             log.info(u'Processing @import %r' % rule.href, neverraise=True)
             
-            if rule.styleSheet:
+            if rule.hrefFound:
                 # add all rules of @import to current sheet        
                 target.add(css.CSSComment(cssText=u'/* START @import "%s" */'
                                           % rule.href))
