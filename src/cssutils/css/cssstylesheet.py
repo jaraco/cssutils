@@ -181,6 +181,12 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule = cssutils.css.CSSImportRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
 
+            try:
+                # remove as only used temporarily but may not be set at all
+                del self.__newEncoding
+            except AttributeError, e:
+                pass
+            
             if expected > 1:
                 self._log.error(
                     u'CSSStylesheet: CSSImportRule not allowed here.',
@@ -188,12 +194,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             else:
                 if rule.wellformed:
                     seq.append(rule)
-
-            try:
-                # remove as only used temporarily but may not be set at all
-                del self.__newEncoding
-            except AttributeError, e:
-                pass
 
             return 1
 
@@ -305,6 +305,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         try:
             # only available during parsing of a complete sheet
             parentEncoding = self.__newEncoding
+            
         except AttributeError:
             try:
                 # explicit @charset
@@ -312,7 +313,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             except (IndexError, AttributeError):
                 # default not UTF-8 but None!
                 parentEncoding = None
-
+                
+        
         return _readUrl(url, fetcher=self._fetcher,
                         overrideEncoding=self.__encodingOverride,
                         parentEncoding=parentEncoding)
@@ -328,9 +330,12 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             # encoding during resolving of @import
             self.__encodingOverride = encodingOverride
 
-        self.__newEncoding = encoding # save for nested @import
+        if encoding:
+            # save for nested @import
+            self.__newEncoding = encoding 
+            
         self.cssText = cssText
-
+        
         if encodingOverride:
             # set encodingOverride explicit again!
             self.encoding = self.__encodingOverride
@@ -339,6 +344,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         elif encoding:
             # may e.g. be httpEncoding
             self.encoding = encoding
+            try:
+                del self.__newEncoding
+            except AttributeError, e:
+                pass 
 
     def _setFetcher(self, fetcher=None):
         """Set @import URL loader, if None the default is used."""
@@ -512,7 +521,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                                       ownerRule=self.ownerRule)
             tempsheet._ownerNode = self.ownerNode
             tempsheet._fetcher = self._fetcher
-
             # prepend encoding if in this sheet to be able to use it in
             # @import rules encoding resolution
             # do not add if new rule startswith "@charset" (which is exact!)
@@ -536,6 +544,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             # TODO:
             #tempsheet._namespaces = self._namespaces
+            #variables?
 
         elif isinstance(rule, cssutils.css.CSSRuleList):
             # insert all rules
@@ -743,7 +752,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         rule._parentStyleSheet = self
         if rule.MEDIA_RULE == rule.type:
             for r in rule:
-                r._parentStyleSheet = self
+                r._parentStyleSheet = self        
         
         elif rule.IMPORT_RULE == rule.type and not rule.hrefFound:
             # try loading the import sheet which has relative href now

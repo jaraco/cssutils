@@ -273,7 +273,7 @@ class CSSImportRule(cssrule.CSSRule):
         # set styleSheet
         if href and self.parentStyleSheet:
             # loading errors are all catched!
-            
+
             # relative href
             parentHref = self.parentStyleSheet.href
             if parentHref is None:
@@ -281,7 +281,6 @@ class CSSImportRule(cssrule.CSSRule):
                 parentHref = cssutils.helper.path2url(os.getcwd()) + '/'
                 
             fullhref = urlparse.urljoin(parentHref, self.href)
-
 
             # all possible exceptions are ignored
             try:

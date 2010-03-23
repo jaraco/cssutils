@@ -591,7 +591,6 @@ ex2|SEL4, a, ex2|SELSR {
         p = cssutils.CSSParser(fetcher=lambda url: (None, '/**/')) 
 
         cssrulessheet = p.parseString('@import "example.css";')
-        cssrulessheet.cssRules[0]._styleSheet = None
         imports = (
             '@import "example.css";', # string
             cssutils.css.CSSImportRule(href="example.css"), # CSSRule
@@ -607,11 +606,10 @@ ex2|SEL4, a, ex2|SELSR {
             self.assertEqual(u'/**/', added.styleSheet.cssText)
 
         cssrulessheet = p.parseString('@import "example.css";')
-        cssrulessheet.cssRules[0]._styleSheet = None
         imports = (
-            # different encodings as only 1st is parsed!
             ('@import "example.css";', 'ascii'), # string
-            (cssutils.css.CSSImportRule(href="example.css"), 'utf-8'), # CSSRule
+            (cssutils.css.CSSImportRule(href="example.css"), 'ascii'), # CSSRule
+            # got encoding from old parent already
             (cssrulessheet.cssRules, 'utf-8') # CSSRuleList
             )
         for imp, enc in imports:
