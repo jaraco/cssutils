@@ -31,29 +31,21 @@ def save(name, string):
 
 
 if 1:
-    s = cssutils.parseFile('sheets/vars.css')
-    print s.cssRules[0].styleSheet.cssText
-    print 20*'-'
-    print s.cssText
-
-    cssutils.ser.prefs.resolveVariables = True
-
-    print 40*'#'
-    print s.cssRules[0].styleSheet.cssText
-    print 20*'-'
-    print s.cssText
-
-    print 40*'#'
-    s2 = cssutils.resolveImports(s)
-    print s2.cssText
+    def f(url):
+        return (None, '/*%s*/' % url)
+    p = cssutils.CSSParser(fetcher=f) 
     
+    cssrulessheet = p.parseString('@import "x";')
+    imp = cssutils.css.CSSImportRule(href="imp.css")
+    sheet = p.parseString('@charset "ascii";', href='http://example.com')
+    sheet.add(cssrulessheet.cssRules[0])
+    added = sheet.cssRules[1]
+    print sheet == added.parentStyleSheet
+    print 'x' == added.href
+    print added.styleSheet.encoding# == u'utf-8'
+    print 1, cssrulessheet.cssText
+    print 2, added.styleSheet.cssText # == u'/**/'
     
-#    v = cssutils.css.CSSVariablesDeclaration('x:1')
-#    
-#    print v._vars
-#    print v.seq
-#    print v.cssText
-#    
     sys.exit(0)
     
 
