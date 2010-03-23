@@ -745,9 +745,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             for r in rule:
                 r._parentStyleSheet = self
         
-        # TODO: results in href loaded again but without proper encoding! 
-#        elif rule.IMPORT_RULE == rule.type:
-#            rule.href = rule.href # try to reload stylesheet
+        elif rule.IMPORT_RULE == rule.type and not rule.hrefFound:
+            # try loading the import sheet which has relative href now
+            rule.href = rule.href
 
         return index
 
