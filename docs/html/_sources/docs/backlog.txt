@@ -2,16 +2,6 @@
 backlog
 ========
 
-improvements
-============
-
-Validation
-----------
-:prio: 1
-
-CSS2.1 and CSS3 properties should be added completely and validation has to be redefined.
-Possibility to add custom validation and register new properties?
-
 CSS3 color module
 -----------------
 :prio: 1
@@ -47,30 +37,6 @@ Selector
 - **add query functionality**
     + specificity DONE
     + cascade
-
-
-test improvements
------------------
-:prio: 1
-
-- Token.EOF handle in all classes for end of stylesheet
-
-    User agents must close all open constructs (for example: blocks, parentheses, brackets, rules, strings, and comments) at the end of the style sheet.
-
-- line/col reporting tests
-- tests with almost all details with comments
-- check escape handling::
-
-    \\@a \\{ \\: : \\; ; \\} }
-    .\1 is valid selector
-
-- csshack tests, see online tables (comment hack?)
-- test tigris.css
-- implement testsuite on HTML? http://www.w3.org/Style/CSS/Test/CSS3/Selectors/current/xhtml/index.html
-
-- CSSStyleSheet.setSerializer()
-- CSSStyleSheet.setSerializerPref()
-
 
 
 CSSValue
@@ -127,12 +93,6 @@ serializer
 - prettyprint convinience serializer?
 - XML serializer to be able to handle CSS with XSLT, schemas etc?
 - different coding styles?
-
-Properties
-----------
-:prio: 3
-
-Set styledeclaration properties with list of tuples? (dict done in 0.9.5)
 
 
 LinkStyle, DocumentStyle

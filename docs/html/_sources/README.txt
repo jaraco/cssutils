@@ -4,9 +4,9 @@ README
 -------------------------------------------------------
 cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
-:Copyright: 2004-2009 Christof Hoeke
+:Copyright: 2004-2010 Christof Hoeke
 
-overview
+Overview
 ========
 A Python package to parse and build CSS Cascading Style Sheets. DOM only, not any rendering facilities!
 
@@ -24,6 +24,8 @@ Based upon and partly implementing the following specifications :
     Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version
 `Selectors <http://www.w3.org/TR/css3-selectors/>`__
     The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
+`Variables <http://disruptive-innovations.com/zoo/cssvariables/>`__
+    Experimental specification of CSS Variables. Currently in development in cssutils.
 
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
     DOM for package css
@@ -41,13 +43,15 @@ Please visit http://cthedot.de/cssutils/ or http://code.google.com/p/cssutils/ f
 
 There is also a low-traffic `cssutils discussion group <http://groups.google.com/group/cssutils>`_.
 
-compatibility
-=============
-cssutils is developed on standard Python. On Jython 2.5 (from RC4 on) cssutils (from 0.9.6b1) also passes all tests.
 
-license
+Compatibility
+=============
+cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (2.5.1) too.
+
+
+License
 =======
-Copyright 2005 - 2009 Christof Hoeke
+Copyright 2005 - 2010 Christof Hoeke
 
 cssutils is published under the LGPL 3 or later
 
@@ -58,11 +62,11 @@ cssutils is distributed in the hope that it will be useful, but WITHOUT ANY WARR
 You should have received a copy of the GNU Lesser General Public License along with cssutils. If not, see http://www.gnu.org/licenses.
 
 
-installation
+Installation
 ============
-From 0.9.0 cssutils uses EasyInstall. Please find installation instructions and more information about EasyInstall from http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions.
+From 0.9.6 cssutils uses `Distribute <http://pypi.python.org/pypi/distribute>`_
 
-After installing EasyInstall simply use::
+After installing Distribute use::
 
     > easy_install cssutils
 
@@ -72,15 +76,15 @@ Alternatively download the provided source distribution. Expand the file and fro
 
     > python setup.py install
 
-Before using EasyInstall the first time or using the sdist please remove any old version which should be installed at PYTHONDIR/Lib/site-packages/cssutils.
+To uninstall remove any registrations of cssutils eggs with Distribute and remove the eggs which should be installed at PYTHONDIR/Lib/site-packages/cssutils too.
 
 
-kind request
+Kind Request
 ============
 cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the `Issue Tracker <http://code.google.com/p/cssutils/issues/list>`_ at Google.
 
 
-thanks
+Thanks
 ======
-Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla and James Dobson for helpful suggestions and code patches.
+Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Jason R. Coombs, Cory Dodt, Tim Gerla and James Dobson for helpful suggestions and code patches.
 

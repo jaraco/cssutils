@@ -97,29 +97,35 @@ class CSSRule(cssutils.util.Base2):
         self._checkReadonly()
 
     cssText = property(lambda self: u'', _setCssText,
-                       doc="(DOM) The parsable textual representation of the "
-                           "rule. This reflects the current state of the rule "
-                           "and not its initial value.")
+                       doc=u"(DOM) The parsable textual representation of the "
+                           u"rule. This reflects the current state of the rule "
+                           u"and not its initial value.")
 
     parent = property(lambda self: self._parent,
-                      doc="The Parent Node of this CSSRule or None.")
+                      doc=u"The Parent Node of this CSSRule or None.")
 
     parentRule = property(lambda self: self._parentRule,
-                                doc="If this rule is contained inside "
-                                    "another rule (e.g. a style rule inside "
-                                    "an @media block), this is the containing "
-                                    "rule. If this rule is not nested inside "
-                                    "any other rules, this returns None.")
+                          doc=u"If this rule is contained inside another rule "
+                          u"(e.g. a style rule inside an @media block), this "
+                          u"is the containing rule. If this rule is not nested "
+                          u"inside any other rules, this returns None.")
 
-    parentStyleSheet = property(lambda self: self._parentStyleSheet,
-                          doc="The style sheet that contains this rule.")
+    def _getParentStyleSheet(self):
+        # rules contained in other rules (@media) use that rules parent
+        if (self.parentRule):
+            return self.parentRule._parentStyleSheet
+        else:
+            return self._parentStyleSheet
+
+    parentStyleSheet = property(_getParentStyleSheet,
+                          doc=u"The style sheet that contains this rule.")
 
     type = property(lambda self: self.UNKNOWN_RULE,
-                    doc="The type of this rule, as defined by a CSSRule "
+                    doc=u"The type of this rule, as defined by a CSSRule "
                         "type constant.")
 
     typeString = property(lambda self: CSSRule._typestrings[self.type],
-                          doc="Descriptive name of this rule's type.")
+                          doc=u"Descriptive name of this rule's type.")
 
     wellformed = property(lambda self: False,
                           doc=u"If the rule is wellformed.")

@@ -208,7 +208,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             else:
                 if rule.wellformed:
                     for i, r in enumerate(seq):
-                        if r.type == r.NAMESPACE_RULE and r.prefix == rule.prefix:
+                        if r.type == r.NAMESPACE_RULE and\
+                           r.prefix == rule.prefix:
                             # replace as doubled:
                             seq[i] = rule
                             self._log.info(
@@ -324,7 +325,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """Set `cssText` but use `encodingOverride` to overwrite detected
         encoding. This is used by parse and @import during setting of cssText.
 
-        If `encoding` is given use this but do not save it as `encodingOverride`.
+        If `encoding` is given use this but do not save as `encodingOverride`.
         """
         if encodingOverride:
             # encoding during resolving of @import
@@ -600,8 +601,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                             break
                 else:
                     # find first point to insert
-                    if self._cssRules and self._cssRules[0].type in (rule.CHARSET_RULE,
-                                                                     rule.COMMENT):
+                    if self._cssRules and\
+                       self._cssRules[0].type in (rule.CHARSET_RULE,
+                                                  rule.COMMENT):
                         index = 1
                     else:
                         index = 0
@@ -748,21 +750,18 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         return
                 self._cssRules.insert(index, rule)
 
-        # post settings, TODO: for other rules which contain @rules
+        # post settings
         rule._parentStyleSheet = self
-        if rule.MEDIA_RULE == rule.type:
-            for r in rule:
-                r._parentStyleSheet = self        
         
-        elif rule.IMPORT_RULE == rule.type and not rule.hrefFound:
-            # try loading the import sheet which has relative href now
+        if rule.IMPORT_RULE == rule.type and not rule.hrefFound:
+            # try loading the imported sheet which has new relative href now
             rule.href = rule.href
 
         return index
 
     ownerRule = property(lambda self: self._ownerRule,
                          doc=u'A ref to an @import rule if it is imported, '
-                         u'else ``None``.')
+                             u'else ``None``.')
 
 
     @Deprecated(u'Use ``cssutils.setSerializer(serializer)`` instead.')

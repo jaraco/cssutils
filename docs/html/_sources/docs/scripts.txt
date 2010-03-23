@@ -2,6 +2,7 @@
 scripts
 ====================
 
+
 The provided scripts are available as a standalone script which is installed in the default PYTHONHOME/scripts directory. Additionally an API for the functionality of the scripts is provided for use in programs.
 
 ``CSSParse``
@@ -113,14 +114,47 @@ programmatic use
 ----------------
 example::
 
-    >>> proxypath = 'sheets/csscombine-proxy.css'
-    >>> from cssutils.script import csscombine
-    >>> print csscombine(path=proxypath, sourceencoding=None, targetencoding='utf-8', minify=True)
-    Processing @import u'sheets\\csscombine-1.css'
-    Processing @import u'sheets\\csscombine-2.css'
-    Nested @imports are not combined: @import "1.css";
-    Setting target encoding 'utf-8'
-    '@charset "utf-8";@import"1.css";@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}'
+	>>> from cssutils.script import csscombine
+	>>> proxypath = 'sheets/import.css'
+	>>> print csscombine(path=proxypath, sourceencoding=None, targetencoding='utf-8', minify=False)
+	INFO    Combining files from None
+	INFO    Processing @import u'import/import2.css'
+	INFO    Processing @import u'../import3.css'
+	INFO    @import: Adjusting paths for u'../import3.css'
+	INFO    Processing @import u'import-impossible.css'
+	INFO    @import: Adjusting paths for u'import-impossible.css'
+	WARNING Cannot combine imported sheet with given media as other rules then comments or stylerules found cssutils.css.CSSNamespaceRule(namespaceURI=u'y', prefix=u''), keeping u'@import "import-impossible.css" print;'
+	INFO    @import: Adjusting paths for u'import/import2.css'
+	INFO    Using target encoding: 'utf-8'
+	@charset "utf-8";
+	/* START @import "import/import2.css" */
+	@import "import-impossible.css" print;
+	/* START @import "../import3.css" */
+	/* import3 */
+	.import3 {
+	    /* from ./import/../import3.css */
+	    background: url(images/example3.gif);
+	    background: url(images/example3.gif);
+	    background: url(import/images2/example2.gif);
+	    background: url(import/images2/example2.gif);
+	    background: url(images/example3.gif)
+	    }
+	/* START @import "import-impossible.css" */
+	.import2 {
+	    /* sheets/import2.css */
+	    background: url(http://example.com/images/example.gif);
+	    background: url(//example.com/images/example.gif);
+	    background: url(/images/example.gif);
+	    background: url(import/images2/example.gif);
+	    background: url(import/images2/example.gif);
+	    background: url(images/example.gif);
+	    background: url(images/example.gif)
+	    }
+	.import {
+	    /* ./import.css */
+	    background-image: url(images/example.gif)
+	    }
+
 
 script use
 ----------
