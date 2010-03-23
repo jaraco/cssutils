@@ -2,26 +2,25 @@
 version migration
 =================
 
+0.9.7 incompatible changes
+==========================
+- Replaced init parameter and attribute ``css.Selector.parentList`` with ``css.Selector.parent``
+
+- Removed ``css.Property.parentStyle`` which was deprecated for some times now in favor of ``css.Property.parent``
+
+- ``CSSRule`` constants have been changed due to a change in the CSSOM spec. The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
+
+
 0.9.6 incompatible changes
 ==========================
 
 Exception handling with position information
 --------------------------------------------
+This actually is **not** an incompatible change (but was during some alpha releases):
+
 ``xml.dom.DOMException``\ s raised do now contain infos about the position where the exception occured.
 
-**THIS HAS BEEN CHANGED IN 0.9.6a4 again**:
-
-until 0.9.6a3:
-     An exception might for example have been raised as::
-
-        raise xml.dom.SyntaxErr('the message', 10, 5)
-
-    (where 10 is the line and 5 the column of the offending text).
-
-    Therefor you may **not** simply use ``str(e)`` to get the exception message but you have to use ``msg, line, col = e.args[0], e.args[1], e.args[2]``. Additionally exceptions raised have attributes ``e.line`` and ``e.col``.
-
-from 0.9.6a4:
-    in this version you have to use ``msg, line, col = e.args[0], e.line, e.col``. ``str(e)`` does work again and contains the error message only!
+You may access these infos with ``msg, line, col = e.args[0], e.line, e.col``. ``str(e)`` does work as expected and contains the error message only.
 
 
 CSSValue / Property has been rewritten

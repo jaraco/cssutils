@@ -77,8 +77,8 @@ class CSSComment(cssrule.CSSRule):
         doc=u"The parsable textual representation of this rule.")
 
     type = property(lambda self: self.COMMENT, 
-                    doc="The type of this rule, as defined by a CSSRule "
-                        "type constant.")
+                    doc=u"The type of this rule, as defined by a CSSRule "
+                        u"type constant.")
     
     # constant but needed:
     wellformed = property(lambda self: True)

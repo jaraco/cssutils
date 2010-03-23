@@ -55,7 +55,7 @@ class CSSMediaRule(cssrule.CSSRule):
         cssRules.extend = self.insertRule
         cssRules.__delitem__ == self.deleteRule
         for rule in cssRules:
-            rule._parentStyleSheet = self.parentStyleSheet
+            rule._parentStyleSheet = None
             rule._parentRule = self
         self._cssRules = cssRules
 
@@ -159,7 +159,7 @@ class CSSMediaRule(cssrule.CSSRule):
                                 token=nonetoken)
             else:                
                 # for closures: must be a mutable
-                newcssrules = [] #cssutils.css.CSSRuleList()
+                newcssrules = []
                 new = {'wellformed': True }
                 
                 def ruleset(expected, seq, token, tokenizer):
@@ -167,7 +167,7 @@ class CSSMediaRule(cssrule.CSSRule):
                     rule.cssText = (self._tokensupto2(tokenizer, token), 
                                     namespaces)
                     if rule.wellformed:
-                        rule._parentStyleSheet=self.parentStyleSheet
+                        #rule._parentStyleSheet=self.parentStyleSheet
                         seq.append(rule)
                     return expected
         
@@ -216,6 +216,7 @@ class CSSMediaRule(cssrule.CSSRule):
                     self._setSeq(nameseq)
                     del self._cssRules[:]
                     for r in newcssrules:
+                        r._parentRule = self
                         self._cssRules.append(r)
                         
                 else:

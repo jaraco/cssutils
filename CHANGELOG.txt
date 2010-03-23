@@ -34,14 +34,22 @@ Development Version
 
 0.9.7
 -----
-**experimental and incomplete**
-
 HEAD
+
+0.9.7a4 100323
     - **API CHANGE**: ``CSSRule.NAMESPACE_RULE`` actual value has been changed from 8 to 10 (according to the change in the CSSOM spec). The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
 
     - **API CHANGE**: ``CSSStyleSheet.setSerializer`` and ``CSSStyleSheet.setSerializerPref`` have been DEPRECATED. Use ``cssutils.setSerializer(serializer)`` or set pref in ``cssutils.ser.prefs`` instead.
 
+    - **IMPROVEMENT/CHANGE**: Did some minor changes to improve compliance to http://dev.w3.org/csswg/cssom
+        + **MAJOR**: :class:`cssutils.css.CSSImportRule.styleSheet` always references a CSSStyleSheet now. ``parentStyleSheet`` of this sheet is ``None`` now
+        + MINOR: added property ``alternate`` to :class:`cssutils.stylesheets.StyleSheet`, which for now is always ``False``
+        + improved handling of encodings during imports (edge cases hopefully not found in the wild ;)
+
     + **FEATURE**: Started experimental implementation of `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
+
+        **experimental and incomplete**
+
         Related details:
 
         - added ``cssutils.css.CSSStyleSheet.variables`` which is a :class:`cssutils.css.CSSVariablesDeclaration` containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.
@@ -52,9 +60,8 @@ HEAD
         + ``cssText=None`` and ``href=None`` to start combination from a css string, which normally needs ``href`` to be able to resolve any imports.
         + ``resolveVariables=False`` which resolves any variables if given the value ``True``
 
-    - IMPROVEMENT: Did some minor changes to improve compliance to http://dev.w3.org/csswg/cssom
-        + **MAJOR**: :class:`cssutils.css.CSSImportRule.styleSheet` always references a CSSStyleSheet now. ``parentStyleSheet`` of this sheet is ``None`` now
-        + MINOR: added property ``alternate`` to :class:`cssutils.stylesheets.StyleSheet`, which for now is always ``False``
+
+    + DOCUMENTATION: Reordered and cleared docs up a bit
 
 0.9.7a3 100314
     - **API CHANGE**: ``CSSRule.NAMESPACE_RULE`` actual value has been changed from 7 to 8 (according to the change in the spec). Also ``CSSRule.COMMENT`` has a value of ``1001`` (was ``-1``) and ``CSSRule.VARIABLES_RULE`` has a value of ``1008`` (was ``8``) now (being not in the official spec yet anyway but values are now in the open valuespace above 1000). The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
