@@ -35,6 +35,7 @@ class TestUtil(object):
 
         ok = (out == expo and err == expe)
         if not ok:
+            print
             if out != expo:
                 print '### out:\n%r\n### != expout:\n%r\n' % (out, expo)
             else:
@@ -53,6 +54,7 @@ def mod(module):
     if not ok:
         errors += 1
     print '---', ok, ':', os.path.basename(module.__file__)
+    print 
           
 def main():
     print "DOCTESTS:::::::::::::"
@@ -69,6 +71,8 @@ def main():
     mod(cssencodings)
     import customlog
     mod(customlog)
+    import imports
+    mod(imports) 
     import parse
     mod(parse)
     import selectors_tolower
