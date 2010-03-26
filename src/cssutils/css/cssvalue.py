@@ -59,13 +59,15 @@ class CSSValue(cssutils.util._NewBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (
-                self.__class__.__name__, self.cssText)
+        return u"cssutils.css.%s(%r)" % (self.__class__.__name__,
+                                         self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object cssValueTypeString=%r cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssValueTypeString,
-                self.cssText, id(self))
+        return u"<cssutils.css.%s object cssValueTypeString=%r cssText=%r at "\
+               u"0x%x>" % (self.__class__.__name__, 
+                           self.cssValueTypeString,
+                           self.cssText, 
+                           id(self))
 
     def _setCssText(self, cssText):
         """
@@ -82,8 +84,8 @@ class CSSValue(cssutils.util._NewBase):
               ;
             term
               : unary_operator?
-                [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
-                  TIME S* | FREQ S* ]
+                [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | 
+                  ANGLE S* | TIME S* | FREQ S* ]
               | STRING S* | IDENT S* | URI S* | hexcolor | function
               | UNICODE-RANGE S*
               ;
@@ -104,8 +106,9 @@ class CSSValue(cssutils.util._NewBase):
               Raised if the specified CSS string value has a syntax error
               (according to the attached property) or is unparsable.
             - :exc:`~xml.dom.InvalidModificationErr`:
-              TODO: Raised if the specified CSS string value represents a different
-              type of values than the values allowed by the CSS property.
+              TODO: Raised if the specified CSS string value represents a 
+              different type of values than the values allowed by the CSS 
+              property.
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this value is readonly.
         """
@@ -296,7 +299,8 @@ class CSSValue(cssutils.util._NewBase):
                         
                     for i, item in enumerate(self._seq):
                         if issubclass(type(item.value), CSSValue):
-                            # set parent of CSSValueList items to the lists parent
+                            # set parent of CSSValueList items to the lists
+                            # parent
                             item.value.parent = self.parent
                             
                         if item.type in (self._prods.DIMENSION,
@@ -321,7 +325,8 @@ class CSSValue(cssutils.util._NewBase):
                                                   item.line, item.col)
 
                                 else:
-                                    newseq.append(CSSPrimitiveValue(itemValue(item)),
+                                    newseq.append(CSSPrimitiveValue(
+                                                        itemValue(item)),
                                                   CSSPrimitiveValue,
                                                   item.line, item.col)
 
@@ -469,9 +474,11 @@ class CSSPrimitiveValue(CSSValue):
                                                 readonly=readonly)
 
     def __str__(self):
-        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.primitiveTypeString,
-                self.cssText, id(self))
+        return u"<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>"\
+               % (self.__class__.__name__, 
+                  self.primitiveTypeString,
+                  self.cssText,
+                  id(self))
 
     _unitnames = ['CSS_UNKNOWN',
                   'CSS_NUMBER', 'CSS_PERCENTAGE',
@@ -821,9 +828,12 @@ class CSSValueList(CSSValue):
             yield item.value
 
     def __str__(self):
-        return "<cssutils.css.%s object cssValueType=%r cssText=%r length=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssValueTypeString,
-                self.cssText, self.length, id(self))
+        return u"<cssutils.css.%s object cssValueType=%r cssText=%r length=%r "\
+               u"at 0x%x>" % (self.__class__.__name__,
+                              self.cssValueTypeString,
+                              self.cssText,
+                              self.length,
+                              id(self))
 
     def __items(self):
         return [item for item in self._seq 
@@ -841,7 +851,8 @@ class CSSValueList(CSSValue):
             return None
 
     length = property(lambda self: len(self.__items()),
-                doc="(DOM attribute) The number of CSSValues in the list.")
+                      doc=u"(DOM attribute) The number of CSSValues in the "
+                          u"list.")
             
 
 class CSSFunction(CSSPrimitiveValue):
@@ -968,11 +979,14 @@ class RGBColor(CSSPrimitiveValue):
         self._readonly = readonly
     
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return u"cssutils.css.%s(%r)" % (self.__class__.__name__,
+                                         self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object colorType=%r cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.colorType, self.cssText,
+        return u"<cssutils.css.%s object colorType=%r cssText=%r at 0x%x>" % (
+                self.__class__.__name__,
+                self.colorType,
+                self.cssText,
                 id(self))
     
     def _setCssText(self, cssText):
@@ -1066,7 +1080,7 @@ class ExpressionValue(CSSFunction):
         return super(ExpressionValue, self)._setCssText(cssText)
     
     cssText = property(_getCssText, _setCssText,
-                       doc="A string representation of the current value.")
+                       doc=u"A string representation of the current value.")
 
 
 class CSSVariable(CSSValue):
@@ -1086,11 +1100,13 @@ class CSSVariable(CSSValue):
                                           readonly=readonly)
         
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return u"cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object name=%r value=%r at 0x%x>" % (
-                self.__class__.__name__, self.name, self.value,
+        return u"<cssutils.css.%s object name=%r value=%r at 0x%x>" % (
+                self.__class__.__name__,
+                self.name,
+                self.value,
                 id(self)) 
     
     def _setCssText(self, cssText):
@@ -1117,7 +1133,7 @@ class CSSVariable(CSSValue):
             
     cssText = property(lambda self: cssutils.ser.do_css_CSSVariable(self),
                        _setCssText,
-                       doc="A string representation of the current variable.")
+                       doc=u"A string representation of the current variable.")
 
     cssValueType = CSSValue.CSS_VARIABLE
 
@@ -1126,7 +1142,6 @@ class CSSVariable(CSSValue):
 
     def _getValue(self):
         "Find contained sheet and @variables there"
-        # TODO: imports!
         try:
             variables = self.parent.parent.parentRule.parentStyleSheet.variables
         except AttributeError:

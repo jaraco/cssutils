@@ -30,16 +30,6 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaises(xml.dom.InvalidModificationErr, 
                           self.r._setAtkeyword, 'x')
 
-        def checkref(r):
-            self.assertEqual(r, r.variables.parentRule)
-                
-        checkref(cssutils.css.CSSVariablesRule(
-                 variables=cssutils.css.CSSVariablesDeclaration('x: 1')))
-        
-        r = cssutils.css.CSSVariablesRule()
-        r.cssText = '@variables { x: 1 }'
-        checkref(r)
-        
     def test_InvalidModificationErr(self):
         "CSSVariablesRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@variables')
@@ -64,8 +54,12 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
              u'@variables {}': u'',
              u'@variables     {margin:0;}': EXP,
-             u'@VaRIables {margin:0;}': EXP,
-            u'@\\VaRIables {margin:0;}': EXP,
+             u'@variables     {margin:0}': EXP,
+             u'@VaRIables {   margin    :   0   ;    }': EXP,
+            u'@\\VaRIables {    margin : 0    }': EXP,
+
+            u'@variables {a:1;b:2}': 
+                u'@variables {\n    a: 1;\n    b: 2\n    }',
 
             # comments
             u'@variables   /*1*/   {margin:0;}': 
@@ -76,6 +70,73 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_equal_r(tests)
         self.do_equal_p(tests)
 
+    def test_media(self):
+        "CSSVariablesRule.media"
+        r = cssutils.css.CSSVariablesRule()
+        self.assertRaises(AttributeError, r.__getattribute__, 'media')
+        self.assertRaises(AttributeError, r.__setattr__, 'media', '?')
+        
+    def test_variables(self):
+        "CSSVariablesRule.variables"                
+        r = cssutils.css.CSSVariablesRule(
+                 variables=cssutils.css.CSSVariablesDeclaration('x: 1'))
+        self.assertEqual(r, r.variables.parentRule)
+
+        # cssText
+        r = cssutils.css.CSSVariablesRule()
+        r.cssText = u'@variables { x: 1 }'
+        vars1 = r.variables
+        self.assertEqual(r, r.variables.parentRule)
+        self.assertEqual(vars1, r.variables)
+        self.assertEqual(r.variables.cssText, u'x: 1')
+        self.assertEqual(r.cssText, u'@variables {\n    x: 1\n    }')
+        
+        r.cssText = u'@variables {y:2}'
+        self.assertEqual(r, r.variables.parentRule)
+        self.failIfEqual(vars1, r.variables)
+        self.assertEqual(r.variables.cssText, u'y: 2')
+        self.assertEqual(r.cssText, u'@variables {\n    y: 2\n    }')
+
+        vars2 = r.variables
+        
+        # fail
+        try:
+            r.cssText = u'@variables {$:1}'
+        except xml.dom.DOMException, e:
+            pass
+
+        self.assertEqual(vars2, r.variables)
+        self.assertEqual(r.variables.cssText, u'y: 2')
+        self.assertEqual(r.cssText, u'@variables {\n    y: 2\n    }')
+
+        # var decl
+        vars3 = cssutils.css.CSSVariablesDeclaration('z: 3')
+        r.variables = vars3
+
+        self.assertEqual(r, r.variables.parentRule)
+        self.assertEqual(vars3, r.variables)
+        self.assertEqual(r.variables.cssText, u'z: 3')
+        self.assertEqual(r.cssText, u'@variables {\n    z: 3\n    }')
+
+        # string
+        r.variables = 'a: x'
+        self.failIfEqual(vars3, r.variables)
+        self.assertEqual(r, r.variables.parentRule)
+        self.assertEqual(r.variables.cssText, u'a: x')
+        self.assertEqual(r.cssText, u'@variables {\n    a: x\n    }')
+        vars4 = r.variables
+
+        # string fail
+        try:
+            r.variables = '$: x'
+        except xml.dom.DOMException, e:
+            pass
+        self.assertEqual(vars4, r.variables)
+        self.assertEqual(r, r.variables.parentRule)
+        self.assertEqual(r.variables.cssText, u'a: x')
+        self.assertEqual(r.cssText, u'@variables {\n    a: x\n    }')
+        
+        
     def test_reprANDstr(self):
         "CSSVariablesRule.__repr__(), .__str__()"
         r = cssutils.css.CSSVariablesRule()

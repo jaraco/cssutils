@@ -49,23 +49,31 @@ class CSSVariablesRule(cssrule.CSSRule):
         super(CSSVariablesRule, self).__init__(parentRule=parentRule, 
                                               parentStyleSheet=parentStyleSheet)
         self._atkeyword = u'@variables'
+        
+        # dummy
         self._media = cssutils.stylesheets.MediaList(mediaText, 
                                                      readonly=readonly)
-        self._variables = CSSVariablesDeclaration(parentRule=self)
+        
         if variables:
             self.variables = variables
+        else: 
+            self.variables = CSSVariablesDeclaration(parentRule=self)
 
         self._readonly = readonly
         
     def __repr__(self):
-        return "cssutils.css.%s(mediaText=%r, variables=%r)" % (
+        return u"cssutils.css.%s(mediaText=%r, variables=%r)" % (
                 self.__class__.__name__, 
-                self._media.mediaText, self.variables.cssText)
+                self._media.mediaText,
+                self.variables.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object mediaText=%r variables=%r valid=%r at 0x%x>" % (
-                self.__class__.__name__, self._media.mediaText, 
-                self.variables.cssText, self.valid, id(self))
+        return u"<cssutils.css.%s object mediaText=%r variables=%r valid=%r " \
+               u"at 0x%x>" % (self.__class__.__name__,
+                              self._media.mediaText,
+                              self.variables.cssText,
+                              self.valid,
+                              id(self))
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -89,7 +97,8 @@ class CSSVariablesRule(cssrule.CSSRule):
         Format::
         
             variables
-            : VARIABLES_SYM S* medium [ COMMA S* medium ]* LBRACE S* variableset* '}' S*
+            : VARIABLES_SYM S* medium [ COMMA S* medium ]* LBRACE S* 
+              variableset* '}' S*
             ;
             
             variableset
@@ -102,22 +111,20 @@ class CSSVariablesRule(cssrule.CSSRule):
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.VARIABLES_SYM:
             self._log.error(u'CSSVariablesRule: No CSSVariablesRule found: %s' %
-                self._valuestr(cssText),
-                error=xml.dom.InvalidModificationErr)
+                            self._valuestr(cssText),
+                            error=xml.dom.InvalidModificationErr)
         else:
-            # save if parse goes wrong
-            oldvariables = CSSVariablesDeclaration()
-            oldvariables._absorb(self.variables)
-            
+            newVariables = CSSVariablesDeclaration(parentRule=self)
             ok = True
+            
             beforetokens, brace = self._tokensupto2(tokenizer, 
                                                     blockstartonly=True,
                                                     separateEnd=True)            
             if self._tokenvalue(brace) != u'{':
                 ok = False
-                self._log.error(
-                    u'CSSVariablesRule: No start { of variable declaration found: %r' %
-                    self._valuestr(cssText), brace)
+                self._log.error(u'CSSVariablesRule: No start { of variable '
+                                u'declaration found: %r' 
+                                % self._valuestr(cssText), brace)
             
             # parse stuff before { which should be comments and S only
             new = {'wellformed': True}
@@ -132,12 +139,13 @@ class CSSVariablesRule(cssrule.CSSRule):
                                                              blockendonly=True,
                                                              separateEnd=True)
 
-            val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
-            if val != u'}' and typ != 'EOF':
+            val, type_ = self._tokenvalue(braceorEOFtoken), \
+                         self._type(braceorEOFtoken)
+            if val != u'}' and type_ != 'EOF':
                 ok = False
-                self._log.error(
-                    u'CSSVariablesRule: No "}" after variables declaration found: %r' %
-                    self._valuestr(cssText))
+                self._log.error(u'CSSVariablesRule: No "}" after variables '
+                                u'declaration found: %r'
+                                % self._valuestr(cssText))
                 
             nonetoken = self._nexttoken(tokenizer)
             if nonetoken:
@@ -145,21 +153,23 @@ class CSSVariablesRule(cssrule.CSSRule):
                 self._log.error(u'CSSVariablesRule: Trailing content found.',
                                 token=nonetoken)
 
-            if 'EOF' == typ:
+            if 'EOF' == type_:
                 # add again as variables needs it
                 variablestokens.append(braceorEOFtoken)
-            # may raise:
-            self.variables.cssText = variablestokens
+            # SET but may raise:
+            newVariables.cssText = variablestokens
 
             if ok:
                 # contains probably comments only upto {
                 self._setSeq(newseq)
-            else:
-                # RESET
-                self.variables._absorb(oldvariables)                
+                self.variables = newVariables
 
     cssText = property(_getCssText, _setCssText,
-        doc="(DOM) The parsable textual representation of this rule.")
+                       doc=u"(DOM) The parsable textual representation of this "
+                           u"rule.")
+
+    media = property(doc=u"NOT IMPLEMENTED! As cssutils resolves variables "\
+                         u"during serializing media information is lost.")
 
     def _setVariables(self, variables):
         """
@@ -168,20 +178,21 @@ class CSSVariablesRule(cssrule.CSSRule):
         """
         self._checkReadonly()
         if isinstance(variables, basestring):
-            self._variables.cssText = variables
+            self._variables = CSSVariablesDeclaration(cssText=variables, 
+                                                      parentRule=self)
         else:
+            variables._parentRule = self
             self._variables = variables
-            self._variables.parentRule = self
 
     variables = property(lambda self: self._variables, _setVariables,
-                         doc="(DOM) The variables of this rule set, "
-                         "a :class:`~cssutils.css.CSSVariablesDeclaration`.")
+                         doc=u"(DOM) The variables of this rule set, a"
+                             u":class:`~cssutils.css.CSSVariablesDeclaration`.")
 
     type = property(lambda self: self.VARIABLES_RULE, 
-                    doc="The type of this rule, as defined by a CSSRule "
-                        "type constant.")
+                    doc=u"The type of this rule, as defined by a CSSRule "
+                        u"type constant.")
 
-    valid = property(lambda self: True, doc='TODO')
+    valid = property(lambda self: True, doc='NOT IMPLEMTED REALLY (TODO)')
     
     # constant but needed:
     wellformed = property(lambda self: True)

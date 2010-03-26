@@ -49,13 +49,15 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return "cssutils.css.%s(selectorText=%r)" % (
-                self.__class__.__name__, st)
+        return u"cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__, 
+                                                      st)
 
     def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r _namespaces=%r at 0x%x>" % (
-                self.__class__.__name__, self.selectorText, self._namespaces,
-                id(self))
+        return u"<cssutils.css.%s object selectorText=%r _namespaces=%r at " \
+               u"0x%x>" % (self.__class__.__name__,
+                           self.selectorText,
+                           self._namespaces,
+                           id(self))
 
     def __setitem__(self, index, newSelector):
         """Overwrite ListSeq.__setitem__
@@ -79,7 +81,9 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             return newSelector
 
     def __getNamespaces(self):
-        "Use children namespaces if not attached to a sheet, else the sheet's ones."
+        """Use children namespaces if not attached to a sheet, else the sheet's
+        ones.
+        """
         try:
             return self.parentRule.parentStyleSheet.namespaces
         except AttributeError:
@@ -88,12 +92,6 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 namespaces.update(selector._namespaces)
             return namespaces
 
-    def _absorb(self, other):
-        """Replace all own data with data from other object."""
-        self._parentRule = other._parentRule
-        self.seq[:] = other.seq[:]
-        self._readonly = other._readonly
-        
     def _getUsedUris(self):
         "Used by CSSStyleSheet to check if @namespace rules are needed"
         uris = set()
@@ -220,15 +218,17 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             self.seq = newseq
 
     selectorText = property(_getSelectorText, _setSelectorText,
-        doc="""(cssutils) The textual representation of the selector for
-            a rule set.""")
+                            doc=u"(cssutils) The textual representation of the "
+                                u"selector for a rule set.")
 
     length = property(lambda self: len(self),
-        doc="The number of :class:`~cssutils.css.Selector` objects in the list.")
+                      doc=u"The number of :class:`~cssutils.css.Selector` "
+                          u"objects in the list.")
 
     parentRule = property(lambda self: self._parentRule,
-        doc="(DOM) The CSS rule that contains this SelectorList or "
-            "``None`` if this SelectorList is not attached to a CSSRule.")
+                          doc=u"(DOM) The CSS rule that contains this "
+                              u"SelectorList or ``None`` if this SelectorList "
+                              u"is not attached to a CSSRule.")
 
     wellformed = property(lambda self: bool(len(self.seq)))
 

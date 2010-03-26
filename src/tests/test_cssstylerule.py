@@ -34,10 +34,12 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(s, style.parentRule)
         
         s.cssText = 'a { x:1 }'
-        self.assertEqual(sel, s.selectorList)
+        self.failIfEqual(sel, s.selectorList)
         self.assertEqual('a', s.selectorList.selectorText)
-        self.assertEqual(style, s.style)
+        self.failIfEqual(style, s.style)
         self.assertEqual('1', s.style.getPropertyValue('x'))
+        
+        sel, style = s.selectorList, s.style
         
         invalids = ('$b { x:2 }', # invalid selector
                     'c { $x3 }', # invalid style
@@ -61,12 +63,13 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # selectorList
         r.selectorText = 'b'
-        self.assertEqual(sel1, r.selectorList)
+        self.failIfEqual(sel1, r.selectorList)
         self.assertEqual('b', r.selectorList.selectorText)
         self.assertEqual('b', r.selectorText)
+        sel1b = r.selectorList
         
-        sel1.selectorText = 'c'
-        self.assertEqual(sel1, r.selectorList)
+        sel1b.selectorText = 'c'
+        self.assertEqual(sel1b, r.selectorList)
         self.assertEqual('c', r.selectorList.selectorText)
         self.assertEqual('c', r.selectorText)
         
@@ -85,13 +88,27 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         # style        
         r.style = 's1: 2'
-        self.assertEqual(st1, r.style)
+        self.failIfEqual(st1, r.style)
         self.assertEqual('s1: 2', r.style.cssText)
         
         st2 = cssutils.parseStyle(u's2: 1')
         r.style = st2
         self.assertEqual(st2, r.style)
         self.assertEqual('s2: 1', r.style.cssText)
+
+        # cssText
+        sl, st = r.selectorList, r.style
+        # fails
+        try:
+            r.cssText = '$ {content: "new"}'
+        except xml.dom.SyntaxErr, e:
+            pass
+        self.assertEqual(sl, r.selectorList)
+        self.assertEqual(st, r.style)
+
+        r.cssText = 'a {content: "new"}'
+        self.failIfEqual(sl, r.selectorList)
+        self.failIfEqual(st, r.style)
         
     def test_cssText(self):
         "CSSStyleRule.cssText"

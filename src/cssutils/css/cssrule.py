@@ -118,11 +118,11 @@ class CSSRule(cssutils.util.Base2):
             return self._parentStyleSheet
 
     parentStyleSheet = property(_getParentStyleSheet,
-                          doc=u"The style sheet that contains this rule.")
+                                doc=u"The style sheet that contains this rule.")
 
     type = property(lambda self: self.UNKNOWN_RULE,
                     doc=u"The type of this rule, as defined by a CSSRule "
-                        "type constant.")
+                        u"type constant.")
 
     typeString = property(lambda self: CSSRule._typestrings[self.type],
                           doc=u"Descriptive name of this rule's type.")

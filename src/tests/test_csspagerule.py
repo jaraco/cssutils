@@ -161,8 +161,6 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.selectorText, s)
         self.assertEqual(r.style.cssText, st)
 
-        
-
     def test_selectorText(self):
         "CSSPageRule.selectorText"
         r = cssutils.css.CSSPageRule()
@@ -205,28 +203,30 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         # set rule.cssText
         r.cssText = '@page { font-family: x1 }'
-        self.assertEqual(r.style, s1)
-        self.assertEqual(r, s1.parentRule)
+        self.failIfEqual(r.style, s1)
+        self.assertEqual(r, r.style.parentRule)
         self.assertEqual(r.cssText, u'@page {\n    font-family: x1\n    }')
-        self.assertEqual(s1.cssText, u'font-family: x1')
         self.assertEqual(r.style.cssText, u'font-family: x1')
+        self.assertEqual(s1.cssText, u'')
+        s2 = r.style
+        
         # set invalid rule.cssText
         try: 
             r.cssText = '@page { $ }'
         except xml.dom.SyntaxErr, e:
             pass
-        self.assertEqual(r.style, s1)
-        self.assertEqual(r, s1.parentRule)
+        self.assertEqual(r.style, s2)
+        self.assertEqual(r, r.style.parentRule)
         self.assertEqual(r.cssText, u'@page {\n    font-family: x1\n    }')
-        self.assertEqual(s1.cssText, u'font-family: x1')
         self.assertEqual(r.style.cssText, u'font-family: x1')
+        self.assertEqual(s2.cssText, u'font-family: x1')
+        s3 = r.style
 
         # set rule.style.cssText
         r.style.cssText = 'font-family: x2'
-        self.assertEqual(r.style, s1)
-        self.assertEqual(r, s1.parentRule)
+        self.assertEqual(r.style, s3)
+        self.assertEqual(r, r.style.parentRule)
         self.assertEqual(r.cssText, u'@page {\n    font-family: x2\n    }')
-        self.assertEqual(s1.cssText, u'font-family: x2')
         self.assertEqual(r.style.cssText, u'font-family: x2')
 
         # set new style object s2
@@ -234,34 +234,32 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         r.style = s2
         self.assertEqual(r.style, s2)
         self.assertEqual(r, s2.parentRule)
-        self.assertEqual(s1.cssText, u'font-family: x2') # old
         self.assertEqual(r.cssText, u'@page {\n    font-family: y1\n    }')
         self.assertEqual(s2.cssText, u'font-family: y1')
         self.assertEqual(r.style.cssText, u'font-family: y1')
+        self.assertEqual(s3.cssText, u'font-family: x2') # old
 
         # set s2.cssText
         s2.cssText = 'font-family: y2'
         self.assertEqual(r.style, s2)
-        self.assertEqual(s1.cssText, u'font-family: x2') # old
         self.assertEqual(r.cssText, u'@page {\n    font-family: y2\n    }')
         self.assertEqual(r.style.cssText, u'font-family: y2')
+        self.assertEqual(s3.cssText, u'font-family: x2') # old
         # set invalid s2.cssText
         try: 
             s2.cssText = '$'
         except xml.dom.SyntaxErr, e:
             pass
         self.assertEqual(r.style, s2)
-        self.assertEqual(s1.cssText, u'font-family: x2') # old
         self.assertEqual(r.cssText, u'@page {\n    font-family: y2\n    }')
         self.assertEqual(r.style.cssText, u'font-family: y2')
+        self.assertEqual(s3.cssText, u'font-family: x2') # old
 
         # set r.style with text
         r.style = 'font-family: z'
-        self.assertEqual(r.style, s2)
+        self.failIfEqual(r.style, s2)
         self.assertEqual(r.cssText, u'@page {\n    font-family: z\n    }')
         self.assertEqual(r.style.cssText, u'font-family: z')
-        self.assertEqual(s2.cssText, u'font-family: z')
-        self.assertEqual(s1.cssText, u'font-family: x2') # old
 
     def test_properties(self):
         "CSSPageRule.style properties"

@@ -31,12 +31,15 @@ class CSSComment(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__, self.cssText)
+        return u"cssutils.css.%s(cssText=%r)" % (
+                self.__class__.__name__, 
+                self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
-                self.__class__.__name__, self.cssText, id(self))
+        return u"<cssutils.css.%s object cssText=%r at 0x%x>" % (
+                self.__class__.__name__, 
+                self.cssText, 
+                id(self))
 
     def _getCssText(self):
         """Return serialized property cssText."""

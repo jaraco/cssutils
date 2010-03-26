@@ -43,10 +43,10 @@ class CSSRuleList(list):
             return None
 
     length = property(lambda self: len(self),
-        doc="(DOM) The number of CSSRules in the list.")
+                      doc=u"(DOM) The number of CSSRules in the list.")
 
     def rulesOfType(self, type):
-        """Yield only the rules which have the given `type`, one of the 
+        """Yield the rules which have the given `type` only, one of the 
         constants defined in :class:`cssutils.css.CSSRule`."""
         for r in self:
             if r.type == type:
