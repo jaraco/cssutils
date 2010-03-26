@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CSS Variables &mdash; cssutils v0.9.7a4 documentation</title>
+    <title>CSS Variables &mdash; cssutils v0.9.7a5dev documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a4',
+        VERSION:     '0.9.7a5dev',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a4 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7a5dev documentation" href="../index.html" />
     <link rel="next" title="Package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="Package cssutils.css" href="css.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="css.html" title="Package cssutils.css"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a5dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,6 +50,7 @@
             
   <div class="section" id="module-cssutils.css">
 <h1>CSS Variables<a class="headerlink" href="#module-cssutils.css" title="Permalink to this headline">¶</a></h1>
+<p>See <a title="cssutils.serialize.Preferences" class="reference external" href="serialize.html#cssutils.serialize.Preferences"><tt class="xref docutils literal"><span class="pre">cssutils.serialize.Preferences</span></tt></a> about a way to replace all variable references with their actual values while serializing. As CSSVariables are not implemented in any (?) browser or other user agent cssutils preprocesses these. So you are able to use variables in your stylesheets without having to worry about UA support.</p>
 <div class="section" id="cssvariablesrule">
 <h2><tt class="docutils literal"><span class="pre">CSSVariablesRule</span></tt><a class="headerlink" href="#cssvariablesrule" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -89,6 +90,11 @@ div.logoContainer {
 <dd>(DOM) The parsable textual representation of this rule.</dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.media">
+<tt class="descname">media</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.media" title="Permalink to this definition">¶</a></dt>
+<dd>NOT IMPLEMENTED! As cssutils resolves variables during serializing media information is lost.</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.CSSVariablesRule.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parent" title="Permalink to this definition">¶</a></dt>
 <dd>The Parent Node of this CSSRule or None.</dd></dl>
@@ -121,12 +127,12 @@ div.logoContainer {
 <dl class="attribute">
 <dt id="cssutils.css.CSSVariablesRule.valid">
 <tt class="descname">valid</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.valid" title="Permalink to this definition">¶</a></dt>
-<dd>TODO</dd></dl>
+<dd>NOT IMPLEMTED REALLY (TODO)</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSVariablesRule.variables">
 <tt class="descname">variables</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.variables" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The variables of this rule set, a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a>.</dd></dl>
+<dd>(DOM) The variables of this rule set, a:class:<cite>~cssutils.css.CSSVariablesDeclaration</cite>.</dd></dl>
 
 </dd></dl>
 
@@ -141,7 +147,7 @@ variable declarations.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSVariablesDeclaration.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) A parsable textual representation of the declaration        block excluding the surrounding curly braces.</dd></dl>
+<dd>(DOM) A parsable textual representation of the declaration block excluding the surrounding curly braces.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSVariablesDeclaration.getVariableValue">
@@ -343,7 +349,7 @@ readonly.</li>
         <li class="right" >
           <a href="css.html" title="Package cssutils.css"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a5dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
