@@ -22,8 +22,8 @@ class Property(cssutils.util.Base):
           ;
         term
           : unary_operator?
-            [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
-              TIME S* | FREQ S* | function ]
+            [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | 
+              ANGLE S* | TIME S* | FREQ S* | function ]
           | STRING S* | IDENT S* | URI S* | hexcolor
           ;
         function
@@ -79,15 +79,21 @@ class Property(cssutils.util.Base):
             self.priority = priority
 
     def __repr__(self):
-        return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
+        return u"cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
                 self.__class__.__name__,
-                self.literalname, self.cssValue.cssText, self.priority)
+                self.literalname,
+                self.cssValue.cssText,
+                self.priority)
 
     def __str__(self):
-        return "<%s.%s object name=%r value=%r priority=%r valid=%r at 0x%x>" % (
-                self.__class__.__module__, self.__class__.__name__,
-                self.name, self.cssValue.cssText, self.priority,
-                self.valid, id(self))
+        return u"<%s.%s object name=%r value=%r priority=%r valid=%r at 0x%x>" \
+               % (self.__class__.__module__,
+                  self.__class__.__name__,
+                  self.name,
+                  self.cssValue.cssText,
+                  self.priority,
+                  self.valid,
+                  id(self))
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -287,14 +293,16 @@ class Property(cssutils.util.Base):
               Raised if the specified priority has a syntax error and is
               unparsable.
               In this case a priority not equal to None, "" or "!{w}important".
-              As CSSOM defines CSSStyleDeclaration.getPropertyPriority resulting in
-              u'important' this value is also allowed to set a Properties priority
+              As CSSOM defines CSSStyleDeclaration.getPropertyPriority resulting
+              in u'important' this value is also allowed to set a Properties
+              priority
         """
         if self._mediaQuery:
             self._priority = u''
             self._literalpriority = u''
             if priority:
-                self._log.error(u'Property: No priority in a MediaQuery - ignored.')
+                self._log.error(u'Property: No priority in a MediaQuery - '
+                                u'ignored.')
             return
 
         if isinstance(priority, basestring) and\
@@ -475,5 +483,5 @@ class Property(cssutils.util.Base):
 
         return valid
 
-    valid = property(validate, doc="Check if value of this property is valid "
-                                   "in the properties context.")
+    valid = property(validate, doc=u"Check if value of this property is valid "
+                                   u"in the properties context.")

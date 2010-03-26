@@ -68,17 +68,23 @@ class CSSImportRule(cssrule.CSSRule):
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
+        return u"cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
                 self.__class__.__name__,
-                self.href, self.media.mediaText, self.name)
+                self.href, 
+                self.media.mediaText, 
+                self.name)
 
     def __str__(self):
         if self._usemedia:
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "<cssutils.css.%s object href=%r mediaText=%r name=%r at 0x%x>" % (
-                self.__class__.__name__, self.href, mediaText, self.name, id(self))
+        return u"<cssutils.css.%s object href=%r mediaText=%r name=%r at 0x%x>"\
+               % (self.__class__.__name__, 
+                  self.href, 
+                  mediaText, 
+                  self.name, 
+                  id(self))
 
     _usemedia = property(lambda self: self.media.mediaText not in (u'', u'all'),
                          doc="if self._media is used (or simply empty)")
@@ -107,8 +113,8 @@ class CSSImportRule(cssrule.CSSRule):
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.IMPORT_SYM:
             self._log.error(u'CSSImportRule: No CSSImportRule found: %s' %
-                self._valuestr(cssText),
-                error=xml.dom.InvalidModificationErr)
+                            self._valuestr(cssText),
+                            error=xml.dom.InvalidModificationErr)
         else:
             # save if parse goes wrong
             oldmedia = cssutils.stylesheets.MediaList()
@@ -193,8 +199,7 @@ class CSSImportRule(cssrule.CSSRule):
                         return 'EOF' # ';' is token "last"
                 else:
                     new['wellformed'] = False
-                    self._log.error(
-                        u'CSSImportRule: Unexpected ident.', token)
+                    self._log.error(u'CSSImportRule: Unexpected ident.', token)
                     return expected
 
             def _char(expected, seq, token, tokenizer=None):
@@ -247,11 +252,6 @@ class CSSImportRule(cssrule.CSSRule):
                 self.href = new['href']
 
                 self._setSeq(newseq)
-
-#                if self.styleSheet:
-#                    # title is set by href
-#                    #self.styleSheet._href = self.href
-#                    self.styleSheet._parentStyleSheet = self.parentStyleSheet
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation of this rule.")
@@ -359,11 +359,12 @@ class CSSImportRule(cssrule.CSSRule):
                     doc=u"An optional name for the imported sheet.")
 
     styleSheet = property(lambda self: self._styleSheet,
-                          doc="(readonly) The style sheet referred to by this rule.")
+                          doc=u"(readonly) The style sheet referred to by this "
+                              u"rule.")
 
     type = property(lambda self: self.IMPORT_RULE, 
-                    doc="The type of this rule, as defined by a CSSRule "
-                        "type constant.")
+                    doc=u"The type of this rule, as defined by a CSSRule "
+                        u"type constant.")
 
     def _getWellformed(self):
         "Depending on if media is used at all."

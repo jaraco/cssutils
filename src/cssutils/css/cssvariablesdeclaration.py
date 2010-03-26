@@ -49,12 +49,14 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__, self.cssText)
+        return u"cssutils.css.%s(cssText=%r)" % (self.__class__.__name__,
+                                                 self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object length=%r at 0x%x>" % (
-                self.__class__.__name__, self.length, id(self))
+        return u"<cssutils.css.%s object length=%r at 0x%x>" % (
+                self.__class__.__name__,
+                self.length,
+                id(self))
         
     def __contains__(self, variableName):
         """Check if a variable is in variable declaration block.
@@ -81,12 +83,6 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         for name in self.keys():
             yield name
 
-    def _absorb(self, other):
-        """Replace all own data with data from other object."""
-        self._parentRule = other._parentRule
-        self.seq.absorb(other.seq)
-        self._readonly = other._readonly
-        
     def keys(self):
         """Analoguous to standard dict returns variable names which are set in
         this declaration."""
@@ -192,18 +188,17 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             self._vars = newvars
             self.wellformed = True
 
-                    
     cssText = property(_getCssText, _setCssText,
-        doc="(DOM) A parsable textual representation of the declaration\
-        block excluding the surrounding curly braces.")
+        doc=u"(DOM) A parsable textual representation of the declaration "
+            u"block excluding the surrounding curly braces.")
 
     def _setParentRule(self, parentRule):
         self._parentRule = parentRule
     
     parentRule = property(lambda self: self._parentRule, _setParentRule,
-                          doc="(DOM) The CSS rule that contains this"
-                              " declaration block or None if this block"
-                              " is not attached to a CSSRule.")
+                          doc=u"(DOM) The CSS rule that contains this"
+                              u" declaration block or None if this block"
+                              u" is not attached to a CSSRule.")
 
     def getVariableValue(self, variableName):
         """Used to retrieve the value of a variable if it has been explicitly
@@ -270,13 +265,13 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         self._checkReadonly()
                 
         # check name
-        wellformed, seq, store, unused = ProdParser().parse(normalize(variableName),
-                                                            u'variableName',
-                                                            Sequence(PreDef.ident()
-                                                                     ))
+        wellformed, seq, store, unused = \
+            ProdParser().parse(normalize(variableName),
+                               u'variableName',
+                               Sequence(PreDef.ident()))
         if not wellformed:
             self._log.error(u'Invalid variableName: %r: %r'
-                    % (variableName, value))
+                            % (variableName, value))
         else:
             # check value
             if isinstance(value, CSSValue):
@@ -286,7 +281,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                                 
             if not v.wellformed:
                 self._log.error(u'Invalid variable value: %r: %r'
-                        % (variableName, value))
+                                % (variableName, value))
             else:
                 # update seq
                 self.seq._readonly = False
@@ -307,8 +302,6 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                 self.seq._readonly = True
                 self._vars[variableName] = v
                 
-                    
-
     def item(self, index):
         """Used to retrieve the variables that have been explicitly set in
         this variable declaration block. The order of the variables
@@ -330,6 +323,6 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             return u''
 
     length = property(lambda self: len(self._vars),
-        doc="The number of variables that have been explicitly set in this"
-            " variable declaration block. The range of valid indices is 0"
-            " to length-1 inclusive.")
+        doc=u"The number of variables that have been explicitly set in this"
+            u" variable declaration block. The range of valid indices is 0"
+            u" to length-1 inclusive.")

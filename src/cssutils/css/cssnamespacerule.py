@@ -1,4 +1,5 @@
-"""CSSNamespaceRule currently implements http://dev.w3.org/csswg/css3-namespace/"""
+"""CSSNamespaceRule currently implements http://dev.w3.org/csswg/css3-namespace/
+"""
 __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -73,6 +74,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             tempseq.append(self.prefix, 'prefix')
             tempseq.append(self.namespaceURI, 'namespaceURI')
             self._setSeq(tempseq)
+            
         elif cssText is not None:
             self.cssText = cssText
 
@@ -82,12 +84,17 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
-                self.__class__.__name__, self.namespaceURI, self.prefix)
+        return u"cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
+                self.__class__.__name__,
+                self.namespaceURI,
+                self.prefix)
 
     def __str__(self):
-        return "<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
-                self.__class__.__name__, self.namespaceURI, self.prefix, id(self))
+        return u"<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
+                self.__class__.__name__,
+                self.namespaceURI,
+                self.prefix,
+                id(self))
 
     def _getCssText(self):
         """Return serialized property cssText"""
@@ -114,8 +121,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.NAMESPACE_SYM:
             self._log.error(u'CSSNamespaceRule: No CSSNamespaceRule found: %s' %
-                self._valuestr(cssText),
-                error=xml.dom.InvalidModificationErr)
+                            self._valuestr(cssText),
+                            error=xml.dom.InvalidModificationErr)
         else:
             # for closures: must be a mutable
             new = {'keyword': self._tokenvalue(attoken),
@@ -189,13 +196,13 @@ class CSSNamespaceRule(cssrule.CSSRule):
             # post conditions
             if new['uri'] is None:
                 wellformed = False
-                self._log.error(u'CSSNamespaceRule: No namespace URI found: %s' %
-                    self._valuestr(cssText))
+                self._log.error(u'CSSNamespaceRule: No namespace URI found: %s'
+                                % self._valuestr(cssText))
 
             if expected != 'EOF':
                 wellformed = False
                 self._log.error(u'CSSNamespaceRule: No ";" found: %s' %
-                    self._valuestr(cssText))
+                                self._valuestr(cssText))
 
             # set all
             if wellformed:
@@ -205,7 +212,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 self._setSeq(newseq)
 
     cssText = property(fget=_getCssText, fset=_setCssText,
-        doc="(DOM) The parsable textual representation of this rule.")
+                       doc=u"(DOM) The parsable textual representation of this "
+                           u"rule.")
 
     def _setNamespaceURI(self, namespaceURI):
         """
@@ -247,8 +255,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
             prefixtoken = self._nexttoken(tokenizer, None)
             if not prefixtoken or self._type(prefixtoken) != self._prods.IDENT:
                 self._log.error(u'CSSNamespaceRule: No valid prefix "%s".' %
-                    self._valuestr(prefix),
-                    error=xml.dom.SyntaxErr)
+                                self._valuestr(prefix),
+                                error=xml.dom.SyntaxErr)
                 return
             else:
                 prefix = self._tokenvalue(prefixtoken)
@@ -265,18 +273,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._prefix = prefix
 
     prefix = property(lambda self: self._prefix, _setPrefix,
-        doc="Prefix used for the defined namespace.")
-
-#    def _setParentStyleSheet(self, parentStyleSheet):
-#        self._parentStyleSheet = parentStyleSheet
-#
-#    parentStyleSheet = property(lambda self: self._parentStyleSheet, 
-#                                _setParentStyleSheet,
-#                                doc=u"Containing CSSStyleSheet.")
+                      doc=u"Prefix used for the defined namespace.")
 
     type = property(lambda self: self.NAMESPACE_RULE, 
-                    doc="The type of this rule, as defined by a CSSRule "
-                        "type constant.")
+                    doc=u"The type of this rule, as defined by a CSSRule "
+                        u"type constant.")
     
     wellformed = property(lambda self: self.namespaceURI is not None)
     

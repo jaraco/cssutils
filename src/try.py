@@ -30,7 +30,53 @@ def save(name, string):
 
 
 
+if 0:
+    print cssutils.parseString('@page x:a{size:a3 landscape}').cssText
+    
+    
+    sd = cssutils.css.CSSPageRule(selectorText=':left', style="size: a4 landscape")
+    print sd
+    print sd.cssText
+    
+    
+    sys.exit(0)
+
 if 1:
+    do = """
+    import cssutils
+    css = '''
+    a {
+ color: red;
+ background: 1px 2px 3px;
+ padding: 1px 1px 2px 5cm;
+ font: normal 1px/5em Arial, sans-serif;
+ color: red;
+ background: 1px 2px 3px;
+ padding: 1px 1px 2px 5cm;
+ font: normal 1px/5em Arial, sans-serif;
+ color: red;
+ background: 1px 2px 3px;
+ padding: 1px 1px 2px 5cm;
+ font: normal 1px/5em Arial, sans-serif;
+ color: red;
+ background: 1px 2px 3px;
+ padding: 1px 1px 2px 5cm;
+ font: normal 1px/5em Arial, sans-serif;
+ }    '''
+    cssutils.parseString(css)
+    """
+    print cssutils.VERSION
+    t = timeit.Timer(do)       # outside the try/except
+    try:
+        print t.timeit(100)    # or t.repeat(...)
+    except:
+        print t.print_exc()
+
+    sys.exit(0)
+
+
+if 1:
+    
     def f(url):
         return (None, '/*%s*/' % url)
     p = cssutils.CSSParser(fetcher=f) 
@@ -308,38 +354,6 @@ if 1:
 
 
 
-if 0:
-    do = """
-    import cssutils
-    css = '''
-    a {
- color: red;
- background: 1px 2px 3px;
- padding: 1px 1px 2px 5cm;
- font: normal 1px/5em Arial, sans-serif;
- color: red;
- background: 1px 2px 3px;
- padding: 1px 1px 2px 5cm;
- font: normal 1px/5em Arial, sans-serif;
- color: red;
- background: 1px 2px 3px;
- padding: 1px 1px 2px 5cm;
- font: normal 1px/5em Arial, sans-serif;
- color: red;
- background: 1px 2px 3px;
- padding: 1px 1px 2px 5cm;
- font: normal 1px/5em Arial, sans-serif;
- }    '''
-    cssutils.parseString(css)
-    """
-    print cssutils.VERSION
-    t = timeit.Timer(do)       # outside the try/except
-    try:
-        print t.timeit(100)    # or t.repeat(...)
-    except:
-        print t.print_exc()
-
-    sys.exit(0)
 
 
 

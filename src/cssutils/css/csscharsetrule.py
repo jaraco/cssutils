@@ -48,19 +48,24 @@ class CSSCharsetRule(cssrule.CSSRule):
         super(CSSCharsetRule, self).__init__(parentRule=parentRule, 
                                              parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@charset'
-        self._encoding = None
+        
         if encoding:
             self.encoding = encoding
+        else:
+            self._encoding = None
 
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(encoding=%r)" % (
-                self.__class__.__name__, self.encoding)
+        return u"cssutils.css.%s(encoding=%r)" % (
+                self.__class__.__name__, 
+                self.encoding)
 
     def __str__(self):
-        return "<cssutils.css.%s object encoding=%r at 0x%x>" % (
-                self.__class__.__name__, self.encoding, id(self))
+        return u"<cssutils.css.%s object encoding=%r at 0x%x>" % (
+                self.__class__.__name__, 
+                self.encoding, 
+                id(self))
 
     def _getCssText(self):
         """The parsable textual representation."""
@@ -112,7 +117,7 @@ class CSSCharsetRule(cssrule.CSSRule):
             self.encoding = encoding
             
     cssText = property(fget=_getCssText, fset=_setCssText,
-        doc="(DOM) The parsable textual representation.")
+                       doc=u"(DOM) The parsable textual representation.")
 
     def _setEncoding(self, encoding):
         """
@@ -131,28 +136,24 @@ class CSSCharsetRule(cssrule.CSSRule):
         encodingtoken = self._nexttoken(tokenizer)
         unexpected = self._nexttoken(tokenizer)
 
-        valid = True
         if not encodingtoken or unexpected or\
            self._prods.IDENT != self._type(encodingtoken):
-            valid = False
-            self._log.error(
-                'CSSCharsetRule: Syntax Error in encoding value %r.' %
-                encoding)
+            self._log.error(u'CSSCharsetRule: Syntax Error in encoding value '
+                            u'%r.' % encoding)
         else:
             try:
                 codecs.lookup(encoding)
             except LookupError:
-                valid = False
-                self._log.error('CSSCharsetRule: Unknown (Python) encoding %r.' %
-                          encoding)
+                self._log.error(u'CSSCharsetRule: Unknown (Python) encoding %r.'
+                                % encoding)
             else:
                 self._encoding = encoding.lower()
 
     encoding = property(lambda self: self._encoding, _setEncoding,
-        doc="(DOM)The encoding information used in this @charset rule.")
+        doc=u"(DOM)The encoding information used in this @charset rule.")
 
     type = property(lambda self: self.CHARSET_RULE, 
-                    doc="The type of this rule, as defined by a CSSRule "
-                        "type constant.")
+                    doc=u"The type of this rule, as defined by a CSSRule "
+                        u"type constant.")
 
     wellformed = property(lambda self: bool(self.encoding))

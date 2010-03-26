@@ -177,18 +177,21 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         if n in known:
             super(CSSStyleDeclaration, self).__setattr__(n, v)
         else:
-            raise AttributeError(
-                'Unknown CSS Property, ``CSSStyleDeclaration.setProperty("%s", ...)`` MUST be used.'
-                % n)
+            raise AttributeError(u'Unknown CSS Property, '
+                                 u'``CSSStyleDeclaration.setProperty("%s", '
+                                 u'...)`` MUST be used.' % n)
 
     def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__, self.getCssText(separator=u' '))
+        return u"cssutils.css.%s(cssText=%r)" % (
+                self.__class__.__name__,
+                self.getCssText(separator=u' '))
 
     def __str__(self):
-        return "<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
-                self.__class__.__name__, self.length,
-                len(self.getProperties(all=True)), id(self))
+        return u"<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
+                self.__class__.__name__,
+                self.length,
+                len(self.getProperties(all=True)),
+                id(self))
 
     def __nnames(self):
         """Return iterator for all different names in order as set
@@ -200,12 +203,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             if isinstance(val, Property) and not val.name in names:
                 names.append(val.name)
         return reversed(names)    
-
-    def _absorb(self, other):
-        """Replace all own data with data from other object."""
-        self._parentRule = other._parentRule
-        self.seq.absorb(other.seq)
-        self._readonly = other._readonly
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
@@ -298,17 +295,18 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             if property.wellformed:
                 seq.append(property, 'Property')                
             else:
-                self._log.error(u'CSSStyleDeclaration: Syntax Error in Property: %s'
-                                % self._valuestr(tokens))
+                self._log.error(u'CSSStyleDeclaration: Syntax Error in '
+                                u'Property: %s' % self._valuestr(tokens))
             # does not matter in this case
             return expected 
 
         def unexpected(expected, seq, token, tokenizer=None):
             # error, find next ; or } to omit upto next property
             ignored = self._tokenvalue(token) + self._valuestr(
-                                self._tokensupto2(tokenizer, propertyvalueendonly=True))
-            self._log.error(u'CSSStyleDeclaration: Unexpected token, ignoring upto %r.' %
-                            ignored,token)
+                                self._tokensupto2(tokenizer, 
+                                                  propertyvalueendonly=True))
+            self._log.error(u'CSSStyleDeclaration: Unexpected token, ignoring '
+                            'upto %r.' % ignored,token)
             # does not matter in this case
             return expected
 
@@ -327,8 +325,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         self._setSeq(newseq)
         
     cssText = property(_getCssText, _setCssText,
-        doc="(DOM) A parsable textual representation of the declaration\
-        block excluding the surrounding curly braces.")
+                       doc=u"(DOM) A parsable textual representation of the "
+                           u"declaration block excluding the surrounding curly "
+                           u"braces.")
 
     def getCssText(self, separator=None):
         """
@@ -343,8 +342,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     def _setParentRule(self, parentRule):
         self._parentRule = parentRule
-        for x in self.children():
-            x.parent = self
+#        for x in self.children():
+#            x.parent = self
             
     parentRule = property(lambda self: self._parentRule, _setParentRule,
         doc="(DOM) The CSS rule that contains this declaration block or "
@@ -423,8 +422,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             if ``True`` (DEFAULT) name will be normalized (lowercase, no simple
             escapes) so "color", "COLOR" or "C\olor" will all be equivalent
 
-            If ``False`` may return **NOT** the effective value but the effective
-            for the unnormalized name.
+            If ``False`` may return **NOT** the effective value but the 
+            effective for the unnormalized name.
         :returns:
             :class:`~cssutils.css.CSSValue`, the value of the effective
             property if it has been explicitly set for this declaration block. 
@@ -447,9 +446,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         """
         nname = self._normalize(name)
         if nname in self._SHORTHANDPROPERTIES:
-            self._log.info(
-                u'CSSValue for shorthand property "%s" should be None, this may be implemented later.' %
-                nname, neverraise=True)
+            self._log.info(u'CSSValue for shorthand property "%s" should be '
+                           u'None, this may be implemented later.' % 
+                           nname, neverraise=True)
 
         p = self.getProperty(name, normalize)
         if p:
@@ -535,12 +534,14 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             # remove all properties with name == nname
             nname = self._normalize(name)
             for item in self.seq:
-                if not (isinstance(item.value, Property) and item.value.name == nname):
+                if not (isinstance(item.value, Property) 
+                        and item.value.name == nname):
                     newseq.appendItem(item)
         else:
             # remove all properties with literalname == name
             for item in self.seq:
-                if not (isinstance(item.value, Property) and item.value.literalname == name):
+                if not (isinstance(item.value, Property) 
+                        and item.value.literalname == name):
                     newseq.appendItem(item)
         self._setSeq(newseq)
         return r
@@ -588,7 +589,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             newp = Property(name, value, priority)
         if not newp.wellformed:
             self._log.warn(u'Invalid Property: %s: %s %s'
-                    % (name, value, priority))
+                           % (name, value, priority))
         else:
             nname = self._normalize(name)
             properties = self.getProperties(name, all=(not normalize))
@@ -636,7 +637,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             return u''
 
     length = property(lambda self: len(list(self.__nnames())),
-        doc="(DOM) The number of distinct properties that have been explicitly "
-            "in this declaration block. The range of valid indices is 0 to "
-            "length-1 inclusive. These are properties with a different ``name`` "
-            "only. :meth:`item` and :attr:`length` work on the same set here.")
+                      doc=u"(DOM) The number of distinct properties that have "
+                          u"been explicitly in this declaration block. The "
+                          u"range of valid indices is 0 to length-1 inclusive. "
+                          u"These are properties with a different ``name`` "
+                          u"only. :meth:`item` and :attr:`length` work on the "
+                          u"same set here.")
