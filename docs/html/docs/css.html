@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Package cssutils.css &mdash; cssutils v0.9.7a4 documentation</title>
+    <title>Package cssutils.css &mdash; cssutils v0.9.7a5dev documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a4',
+        VERSION:     '0.9.7a5dev',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a4 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7a5dev documentation" href="../index.html" />
     <link rel="next" title="CSS Variables" href="variables.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a5dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -414,7 +414,7 @@ Raises ValueError if the value is not present.</dd></dl>
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.rulesOfType">
 <tt class="descname">rulesOfType</tt><big>(</big><em>type</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.rulesOfType" title="Permalink to this definition">¶</a></dt>
-<dd>Yield only the rules which have the given <cite>type</cite>, one of the 
+<dd>Yield the rules which have the given <cite>type</cite> only, one of the 
 constants defined in <a title="cssutils.css.CSSRule" class="reference internal" href="#cssutils.css.CSSRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSRule</span></tt></a>.</dd></dl>
 
 <dl class="method">
@@ -731,8 +731,8 @@ Raised if this media rule is readonly.</li>
 sets this contains both the selector and the style declaration. 
 For at-rules, this specifies both the at-identifier and the rule
 content.</p>
-<p>cssutils also allows rule to be a valid <a title="cssutils.css.CSSRule" class="reference internal" href="#cssutils.css.CSSRule"><tt class="xref docutils literal"><span class="pre">CSSRule</span></tt></a>
-object.</p>
+<p>cssutils also allows rule to be a valid 
+<a title="cssutils.css.CSSRule" class="reference internal" href="#cssutils.css.CSSRule"><tt class="xref docutils literal"><span class="pre">CSSRule</span></tt></a> object.</p>
 </li>
 <li><em>index</em> &#8211; before the specified <cite>rule</cite> will be inserted. 
 If the specified <cite>index</cite> is
@@ -892,11 +892,11 @@ sheet. The &#64;page rule is used to specify the dimensions, orientation,
 margins, etc. of a page box for paged media.</p>
 <p>Format:</p>
 <div class="highlight-python"><pre>page
-  : PAGE_SYM S* pseudo_page? S*
-    LBRACE S* declaration [ ';' S* declaration ]* '}' S*
+  PAGE_SYM S* IDENT? pseudo_page? S* 
+    '{' S* declaration [ ';' S* declaration ]* '}' S*
   ;
 pseudo_page
-  : ':' IDENT # :first, :left, :right in CSS 2.1
+  ':' [ "left" | "right" | "first" ]
   ;</pre>
 </div>
 <dl class="attribute">
@@ -1136,8 +1136,7 @@ Raised if this rule is readonly.</li>
 <dl class="attribute">
 <dt id="cssutils.css.SelectorList.selectorText">
 <tt class="descname">selectorText</tt><a class="headerlink" href="#cssutils.css.SelectorList.selectorText" title="Permalink to this definition">¶</a></dt>
-<dd>(cssutils) The textual representation of the selector for
-a rule set.</dd></dl>
+<dd>(cssutils) The textual representation of the selector for a rule set.</dd></dl>
 
 </dd></dl>
 
@@ -1235,7 +1234,7 @@ negation_arg
 <dl class="attribute">
 <dt id="cssutils.css.Selector.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.Selector.parent" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) The SelectorList that contains this Selector or        None if this Selector is not attached to a SelectorList.</dd></dl>
+<dd>(DOM) The SelectorList that contains this Selector or None if this Selector is not attached to a SelectorList.</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.Selector.parentList">
@@ -1259,7 +1258,8 @@ negation_arg
 Tuple of (a, b, c, d) where:</p>
 <dl class="docutils">
 <dt>a</dt>
-<dd>presence of style in document, always 0 if not used on a document</dd>
+<dd>presence of style in document, always 0 if not used on a 
+document</dd>
 <dt>b</dt>
 <dd>number of ID selectors</dd>
 <dt>c </dt>
@@ -1322,7 +1322,7 @@ DOM name, so e.g. <tt class="docutils literal"><span class="pre">fontStyle</span
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleDeclaration.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSStyleDeclaration.cssText" title="Permalink to this definition">¶</a></dt>
-<dd>(DOM) A parsable textual representation of the declaration        block excluding the surrounding curly braces.</dd></dl>
+<dd>(DOM) A parsable textual representation of the declaration block excluding the surrounding curly braces.</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSStyleDeclaration.getCssText">
@@ -1406,8 +1406,8 @@ effective for the unnormalized name.</p>
 <li><em>name</em> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
 <li><em>normalize</em> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the effective
-for the unnormalized name.</p>
+<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
+effective for the unnormalized name.</p>
 </li>
 </ul>
 </td>
@@ -1663,8 +1663,8 @@ expr = value
   ;
 term
   : unary_operator?
-    [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
-      TIME S* | FREQ S* | function ]
+    [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | 
+      ANGLE S* | TIME S* | FREQ S* | function ]
   | STRING S* | IDENT S* | URI S* | hexcolor
   ;
 function
@@ -2192,7 +2192,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a5dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
