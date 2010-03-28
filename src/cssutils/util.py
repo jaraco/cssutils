@@ -524,10 +524,6 @@ class Seq(object):
     def __len__(self):
         return len(self._seq)
 
-    def absorb(self, other):
-        "Replace own data with data from other seq"
-        self._seq = other._seq
-
     def append(self, val, typ, line=None, col=None):
         "If not readonly add new Item()"
         if self._readonly:
