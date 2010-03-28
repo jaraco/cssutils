@@ -260,7 +260,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 return
             else:
                 prefix = self._tokenvalue(prefixtoken)
-        # update seg
+        # update seq
         for i, x in enumerate(self._seq):
             if x == self._prefix:
                 self._seq[i] = (prefix, 'prefix', None, None)

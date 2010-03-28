@@ -49,7 +49,7 @@ class CSSPageRule(cssrule.CSSRule):
         if style:
             self.style = style
         else:
-            self.style = CSSStyleDeclaration(parentRule=self)
+            self.style = CSSStyleDeclaration()
         
         tempseq.append(self.style, 'style')
 
