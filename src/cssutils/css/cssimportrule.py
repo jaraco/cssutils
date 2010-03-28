@@ -22,7 +22,7 @@ class CSSImportRule(cssrule.CSSRule):
           [STRING|URI] S* [ medium [ COMMA S* medium]* ]? S* STRING? S* ';' S*
           ;
     """
-    def __init__(self, href=None, mediaText=u'all', name=None,
+    def __init__(self, href=None, mediaText=None, name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """
         If readonly allows setting of properties in constructor only
@@ -40,24 +40,24 @@ class CSSImportRule(cssrule.CSSRule):
         self._atkeyword = u'@import'
         self._styleSheet = None
 
-        # 1. media 
-        self._media = cssutils.stylesheets.MediaList()
-        if mediaText:
-            self._media.mediaText = mediaText
+        # string or uri used for reserialization
+        self.hreftype = None
 
         # prepare seq
         seq = self._tempSeq()
         seq.append(None, 'href')
-        seq.append(self._media, 'media')
+        #seq.append(None, 'media')
         seq.append(None, 'name')            
         self._setSeq(seq)
 
+        # 1. media 
+        if mediaText:
+            self.media = mediaText
+        else:
+            # must be all for @import
+            self.media = cssutils.stylesheets.MediaList(mediaText=u'all')
         # 2. name
         self.name = name
-      
-        # string or uri used for reserialization
-        self.hreftype = None
-
         # 3. href and styleSheet
         self.href = href
 
@@ -87,7 +87,7 @@ class CSSImportRule(cssrule.CSSRule):
                   id(self))
 
     _usemedia = property(lambda self: self.media.mediaText not in (u'', u'all'),
-                         doc="if self._media is used (or simply empty)")
+                         doc="if self.media is used (or simply empty)")
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -116,10 +116,6 @@ class CSSImportRule(cssrule.CSSRule):
                             self._valuestr(cssText),
                             error=xml.dom.InvalidModificationErr)
         else:
-            # save if parse goes wrong
-            oldmedia = cssutils.stylesheets.MediaList()
-            oldmedia._absorb(self.media)
-            
             # for closures: must be a mutable
             new = {'keyword': self._tokenvalue(attoken),
                    'href': None,
@@ -180,14 +176,12 @@ class CSSImportRule(cssrule.CSSRule):
                         self._log.error(u'CSSImportRule: No ";" found: %s' %
                                         self._valuestr(cssText), token=token)
 
-                    #media = cssutils.stylesheets.MediaList()
-                    self.media.mediaText = mediatokens
-                    if self.media.wellformed:
-                        new['media'] = self.media
-                        seq.append(self.media, 'media')
+                    newMedia = cssutils.stylesheets.MediaList(parentRule=self)
+                    newMedia.mediaText = mediatokens
+                    if newMedia.wellformed:
+                        new['media'] = newMedia
+                        seq.append(newMedia, 'media')
                     else:
-                        # RESET
-                        self.media._absorb(oldmedia)
                         new['wellformed'] = False
                         self._log.error(u'CSSImportRule: Invalid MediaList: %s' %
                                         self._valuestr(cssText), token=token)
@@ -227,31 +221,35 @@ class CSSImportRule(cssrule.CSSRule):
                 new=new)
 
             # wellformed set by parse
-            wellformed = wellformed and new['wellformed']
+            ok = wellformed and new['wellformed']
 
             # post conditions
             if not new['href']:
-                wellformed = False
+                ok = False
                 self._log.error(u'CSSImportRule: No href found: %s' %
                     self._valuestr(cssText))
 
             if expected != 'EOF':
-                wellformed = False
+                ok = False
                 self._log.error(u'CSSImportRule: No ";" found: %s' %
                     self._valuestr(cssText))
 
             # set all
-            if wellformed:
+            if ok:
+                self._setSeq(newseq)
+                
                 self.atkeyword = new['keyword']
                 self.hreftype = new['hreftype']
-                if not new['media']:
-                    # reset media to base media 
-                    self.media.mediaText = u'all'
-                    newseq.append(self.media, 'media')
                 self.name = new['name']
-                self.href = new['href']
+                
+                if new['media']:
+                    self.media = new['media']
+                else:
+                    # must be all for @import
+                    self.media = cssutils.stylesheets.MediaList(mediaText=u'all')
 
-                self._setSeq(newseq)
+                # needs new self.media
+                self.href = new['href']
 
     cssText = property(fget=_getCssText, fset=_setCssText,
         doc="(DOM) The parsable textual representation of this rule.")
@@ -265,7 +263,7 @@ class CSSImportRule(cssrule.CSSRule):
             if 'href' == type_:
                 self._seq[i] = (href, type_, item.line, item.col)
                 break
-        
+
         importedSheet = cssutils.css.CSSStyleSheet(media=self.media,
                                                    ownerRule=self,
                                                    title=self.name)
@@ -327,11 +325,37 @@ class CSSImportRule(cssrule.CSSRule):
     href = property(lambda self: self._href, _setHref,
                     doc=u"Location of the style sheet to be imported.")
 
-    media = property(lambda self: self._media,
-                     doc=u"(DOM readonly) A list of media types for this rule "
+    def _setMedia(self, media):
+        """
+        :param media:
+            a :class:`~cssutils.stylesheets.MediaList` or string
+        """
+        self._checkReadonly()
+        if isinstance(media, basestring):
+            self._media = cssutils.stylesheets.MediaList(mediaText=media, 
+                                                         parentRule=self)
+        else:
+            media._parentRule = self
+            self._media = media
+        
+        # update seq
+        ihref = 0
+        for i, item in enumerate(self.seq):
+            if item.type == 'href':
+                ihref = i
+            elif item.type == 'media':
+                self.seq[i] = (self._media, 'media', None, None)
+                break
+        else:
+            # if no media until now add after href
+            self.seq.insert(ihref+1, 
+                            self._media, 'media', None, None)
+        
+    media = property(lambda self: self._media, _setMedia,
+                     doc=u"(DOM) A list of media types for this rule "
                          u"of type :class:`~cssutils.stylesheets.MediaList`.")
 
-    def _setName(self, name):
+    def _setName(self, name=u''):
         """Raises xml.dom.SyntaxErr if name is not a string."""
         if name is None or isinstance(name, basestring):
             # "" or '' handled as None

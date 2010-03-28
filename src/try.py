@@ -30,14 +30,9 @@ def save(name, string):
 
 
 
-if 0:
-    print cssutils.parseString('@page x:a{size:a3 landscape}').cssText
-    
-    
-    sd = cssutils.css.CSSPageRule(selectorText=':left', style="size: a4 landscape")
-    print sd
-    print sd.cssText
-    
+if 1:
+    r = cssutils.css.CSSMediaRule(mediaText='print', name='name')
+    print r.cssText
     
     sys.exit(0)
 

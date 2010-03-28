@@ -313,8 +313,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
                 return None, 'a { color: red }'
             
         parser = cssutils.CSSParser(fetcher=fetcher)
-        sheet = parser.parseString('@charset "ascii";@import "level1/anything.css" tv "title";', 
-                                     href='/root/')
+        sheet = parser.parseString('''@charset "ascii";
+                                   @import "level1/anything.css" tv "title";''', 
+                                   href='/root/')
         
         self.assertEqual(sheet.href, '/root/')
         

@@ -41,7 +41,7 @@ class CSSStyleRule(cssrule.CSSRule):
         if style:
             self.style = style
         else:
-            self.style = CSSStyleDeclaration(parentRule=self)
+            self.style = CSSStyleDeclaration()
 
         self._readonly = readonly
 

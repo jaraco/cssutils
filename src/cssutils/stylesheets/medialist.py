@@ -29,11 +29,13 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 
         <media_query> [, <media_query> ]*
     """
-    def __init__(self, mediaText=None, readonly=False):
+    def __init__(self, mediaText=None, parentRule=None, readonly=False):
         """
         :param mediaText:
             Unicodestring of parsable comma separared media
             or a (Python) list of media.
+        :param parentRule:
+            CSSRule this medialist is used in, e.g. an @import or @media.
         :param readonly:
             Not used yet.
         """
@@ -45,6 +47,8 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 
         if mediaText:
             self.mediaText = mediaText
+            
+        self._parentRule = parentRule
 
         self._readonly = readonly
 
@@ -55,13 +59,6 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
     def __str__(self):
         return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
                 self.__class__.__name__, self.mediaText, id(self))
-
-    def _absorb(self, other):
-        """Replace all own data with data from other object."""
-        #self._parentRule = other._parentRule
-        self.seq[:] = other.seq[:]
-        self._readonly = other._readonly
-
 
     length = property(lambda self: len(self),
         doc="The number of media in the list (DOM readonly).")
@@ -179,12 +176,13 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
                 if h:
                     self.append(h)
             elif u'all' in mts:
+
                 if u'handheld' == newmt:
                     self.seq.append(newMedium)
-                    self._log.warn(u'MediaList: Already specified "all" but still setting new medium: %r' %
+                    self._log.info(u'MediaList: Already specified "all" but still setting new medium: %r' %
                                    newMedium, error=xml.dom.InvalidModificationErr, neverraise=True)
                 else:
-                    self._log.warn(u'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
+                    self._log.info(u'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
                                    newMedium, error=xml.dom.InvalidModificationErr)
             else:
                 self.seq.append(newMedium)
@@ -230,4 +228,8 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         except IndexError:
             return None
 
+    parentRule = property(lambda self: self._parentRule,
+                          doc=u"The CSSRule (e.g. an @media or @import rule "
+                              u"this list is part of or None")
+    
     wellformed = property(lambda self: self._wellformed)

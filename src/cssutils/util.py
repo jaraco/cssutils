@@ -542,6 +542,10 @@ class Seq(object):
         else:
             self._seq.append(item)
 
+    def insert(self, index, val, typ, line=None, col=None):
+        "Insert new Item() at index # even if readony!? TODO!"
+        self._seq.insert(index, Item(val, typ, line, col))
+
     def replace(self, index=-1, val=None, typ=None, line=None, col=None):
         """
         if not readonly replace Item at index with new Item or

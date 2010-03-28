@@ -30,8 +30,13 @@ class CSSMediaRule(cssrule.CSSRule):
         super(CSSMediaRule, self).__init__(parentRule=parentRule, 
                                            parentStyleSheet=parentStyleSheet)
         self._atkeyword = u'@media'
-        self._media = cssutils.stylesheets.MediaList(mediaText, 
-                                                     readonly=readonly)
+        
+        # 1. media 
+        if mediaText:
+            self.media = mediaText
+        else:
+            self.media = cssutils.stylesheets.MediaList()
+
         self.name = name
         self.cssRules = cssutils.css.cssrulelist.CSSRuleList()
         self._readonly = readonly
@@ -109,17 +114,17 @@ class CSSMediaRule(cssrule.CSSRule):
                 error=xml.dom.InvalidModificationErr)
         else:
             # save if parse goes wrong
-            oldmedia = cssutils.stylesheets.MediaList()
-            oldmedia._absorb(self.media)
-            
+            newMedia = cssutils.stylesheets.MediaList()
+            ok = True
+
             # media
-            wellformed = True
             mediatokens, end = self._tokensupto2(tokenizer, 
                                             mediaqueryendonly=True,
                                             separateEnd=True)        
             if u'{' == self._tokenvalue(end)\
                or self._prods.STRING == self._type(end):
-                self.media.mediaText = mediatokens
+                newMedia.mediaText = mediatokens
+                ok = ok and newMedia.wellformed
             
             # name (optional)
             name = None
@@ -135,6 +140,7 @@ class CSSMediaRule(cssrule.CSSRule):
                                                    nametokens, 
                                                    {})
                 if not wellformed:
+                    ok = False
                     self._log.error(u'CSSMediaRule: Syntax Error: %s' % 
                                     self._valuestr(cssText))
                     
@@ -183,7 +189,7 @@ class CSSMediaRule(cssrule.CSSRule):
                     tokens = self._tokensupto2(tokenizer, token)
                     atval = self._tokenvalue(token)
                     if atval in ('@charset ', '@font-face', '@import', 
-                                 '@namespace', '@page', '@media'):
+                                 '@namespace', '@page', '@media', '@variables'):
                         self._log.error(u'CSSMediaRule: This rule is not '
                                         u'allowed in CSSMediaRule - ignored: '
                                         u'%s.' % self._valuestr(tokens),
@@ -216,19 +222,18 @@ class CSSMediaRule(cssrule.CSSRule):
                                                    }, 
                                                    default=ruleset,
                                                    new=new)
+                ok = ok and wellformed
                 
                 # no post condition                    
-                if self.media.wellformed and wellformed:
+                if ok:
+                    self.media = newMedia
                     self.name = name
                     self._setSeq(nameseq)
+                    
                     del self._cssRules[:]
                     for r in newcssrules:
                         r._parentRule = self
                         self._cssRules.append(r)
-                        
-                else:
-                    # RESET
-                    self.media._absorb(oldmedia)
         
     cssText = property(_getCssText, _setCssText,
                        doc=u"(DOM) The parsable textual representation of this "
@@ -246,11 +251,35 @@ class CSSMediaRule(cssrule.CSSRule):
 
     name = property(lambda self: self._name, _setName,
                     doc=u"An optional name for this media rule.")
-    
-    media = property(lambda self: self._media,
-                     doc=u"(DOM readonly) A list of media types for this rule "
-                         u"of type :class:`~cssutils.stylesheets.MediaList`.")
 
+    def _setMedia(self, media):
+        """
+        :param media:
+            a :class:`~cssutils.stylesheets.MediaList` or string
+        """
+        self._checkReadonly()
+        if isinstance(media, basestring):
+            self._media = cssutils.stylesheets.MediaList(mediaText=media, 
+                                                         parentRule=self)
+        else:
+            media._parentRule = self
+            self._media = media
+        
+        # NOT IN @media seq at all?!
+#        # update seq
+#        for i, item in enumerate(self.seq):
+#            if item.type == 'media':
+#                self._seq[i] = (self._media, 'media', None, None)
+#                break
+#        else:
+#            # insert after @media if not in seq at all
+#            self.seq.insert(0, 
+#                             self._media, 'media', None, None)
+            
+    media = property(lambda self: self._media, _setMedia,
+                     doc=u"(DOM) A list of media types for this rule "
+                         u"of type :class:`~cssutils.stylesheets.MediaList`.")
+    
     def deleteRule(self, index):
         """
         Delete the rule at `index` from the media block.
