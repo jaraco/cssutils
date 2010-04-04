@@ -31,8 +31,19 @@ def save(name, string):
 
 
 if 1:
-    r = cssutils.css.CSSMediaRule(mediaText='print', name='name')
-    print r.cssText
+    def fetcher(url):
+        if url == "/1/2.css": 
+            return None, '''@variables {
+                color: red;
+            }'''
+        else:
+            return None, 'a { color: red }'
+        
+    parser = cssutils.CSSParser(fetcher=fetcher)
+    sheet = parser.parseString('''@import "2.css" tv "title";''', 
+                               href='/1/')
+        
+    print sheet.cssText
     
     sys.exit(0)
 
