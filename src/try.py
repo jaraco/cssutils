@@ -28,8 +28,6 @@ def save(name, string):
     f.write(string)
     f.close()
 
-
-
 if 1:
     def fetcher(url):
         if url == "/1/2.css": 
