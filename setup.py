@@ -32,8 +32,9 @@ setup(
     name='cssutils',
     version=VERSION,
     package_dir={'':'src'},
-    packages=find_packages('src', exclude='tests'),
+    packages=('cssutils', 'encutils'),
     test_suite='tests', #'nose.collector'
+    tests_require='minimock',
     entry_points={
         'console_scripts': [
             'csscapture = cssutils.scripts.csscapture:main',
