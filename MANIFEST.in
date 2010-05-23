@@ -1,17 +1,13 @@
-include doc/*.*
 include examples/*.py
 include COPYING
 include COPYING.LESSER
 exclude ANN.txt
-exclude PLAN.txt
+exclude index.txt
+exclude docs/*.txt
+exclude conf.py
 exclude MANIFEST.in
+exclude setup.cfg
 exclude *.bat
 exclude dist/*.*
-exclude lib/*.*
-exclude restserver/*.*
 exclude src/try.py
-exclude src/_old/*.*
-exclude src/*/_old/*.*
-exclude src/_todo/*.*
-exclude src/*/_todo/*.*
-include showdocs.bat
+
