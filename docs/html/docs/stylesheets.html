@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Package cssutils.stylesheets &mdash; cssutils v0.9.7a5dev documentation</title>
+    <title>Package cssutils.stylesheets &mdash; cssutils v0.9.7a5 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a5dev',
+        VERSION:     '0.9.7a5',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a5dev documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7a5 documentation" href="../index.html" />
     <link rel="next" title="encutils module" href="encutils.html" />
     <link rel="prev" title="CSS Variables" href="variables.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="variables.html" title="CSS Variables"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a5dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -166,7 +166,7 @@ media_feature: width | min-width | max-width
 <h2><tt class="docutils literal"><span class="pre">MediaList</span></tt><a class="headerlink" href="#medialist" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cssutils.stylesheets.MediaList">
-<em class="property">class </em><tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">MediaList</tt><big>(</big><em>mediaText=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.stylesheets.</tt><tt class="descname">MediaList</tt><big>(</big><em>mediaText=None</em>, <em>parentRule=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.stylesheets.MediaList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides the abstraction of an ordered collection of media,
 without defining or constraining how this collection is
 implemented.</p>
@@ -256,6 +256,11 @@ list, returns <tt class="xref docutils literal"><span class="pre">None</span></t
 <tt class="descname">mediaText</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.mediaText" title="Permalink to this definition">¶</a></dt>
 <dd>The parsable textual representation of the media list.</dd></dl>
 
+<dl class="attribute">
+<dt id="cssutils.stylesheets.MediaList.parentRule">
+<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.stylesheets.MediaList.parentRule" title="Permalink to this definition">¶</a></dt>
+<dd>The CSSRule (e.g. an &#64;media or &#64;import rule this list is part of or None</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -269,7 +274,7 @@ list, returns <tt class="xref docutils literal"><span class="pre">None</span></t
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">Package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a><ul>
+<li><a class="reference external" href="#">Package <tt class="docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a><ul>
 <li><a class="reference external" href="#stylesheet"><tt class="docutils literal"><span class="pre">StyleSheet</span></tt></a></li>
 <li><a class="reference external" href="#stylesheetlist"><tt class="docutils literal"><span class="pre">StyleSheetList</span></tt></a></li>
 <li><a class="reference external" href="#mediaquery"><tt class="docutils literal"><span class="pre">MediaQuery</span></tt></a></li>
@@ -321,12 +326,12 @@ list, returns <tt class="xref docutils literal"><span class="pre">None</span></t
         <li class="right" >
           <a href="variables.html" title="CSS Variables"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a5dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7a5 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
   </body>
 </html>

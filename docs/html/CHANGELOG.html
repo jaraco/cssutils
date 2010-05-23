@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.7a5dev documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7a5 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.9.7a5dev',
+        URL_ROOT:    '#',
+        VERSION:     '0.9.7a5',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a5dev documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.7a5 documentation" href="index.html" />
     <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="scripts" href="docs/scripts.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="docs/scripts.html" title="scripts"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a5dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7a5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -86,21 +86,27 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>Development Version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>HEAD</p>
 <dl class="docutils">
-<dt>HEAD</dt>
+<dt>0.9.7a5 100523</dt>
 <dd><ul class="first">
 <li><p class="first"><strong>API CHANGE (major)</strong>: When setting an objects <tt class="docutils literal"><span class="pre">cssText</span></tt> (or <tt class="docutils literal"><span class="pre">selectorText</span></tt> etc) property the underlying object is replaced with a new one now. E.g. if setting <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleRule.selectorText</span></tt> the underlying <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleRule.selectorList</span></tt> object is swapped to a new <tt class="docutils literal"><span class="pre">SelectorList</span></tt> object. This should be expected but cssutils until now kept the exact same object and changed its content <em>in-place</em>. Please be aware! (Also the strange <tt class="docutils literal"><span class="pre">_absorb</span></tt> method of some objects is gone which was used for this.)</p>
+</li>
+<li><p class="first"><strong>API CHANGE (minor)</strong>: Renamed <tt class="docutils literal"><span class="pre">cssutils.ser.prefs.keepUnkownAtRules</span></tt> to <tt class="docutils literal"><span class="pre">cssutils.ser.prefs.keepUnkownAtRules</span></tt> due to misspelling, see Issue #37. A DeprecationWarning is issued on use.</p>
 </li>
 <li><dl class="first docutils">
 <dt>API CHANGES (minor):</dt>
 <dd><ul class="first last simple">
-<li>changed <tt class="docutils literal"><span class="pre">str(cssutils.css.CSSStyleRule)</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">cssutils.css.CSSImportRule.media</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.css.CSSMediaRule.media</span></tt> are now writable (setting with a string or <tt class="docutils literal"><span class="pre">cssutils.stylesheets.MediaList</span></tt>)</li>
+<li>msg level when setting <tt class="docutils literal"><span class="pre">cssutils.stylesheets.MediaList.appendMedium</span></tt> changed to INFO (was WARNING)</li>
+<li><tt class="docutils literal"><span class="pre">str(cssutils.css.CSSStyleRule)</span></tt> slightly changed</li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
 <ul class="last simple">
+<li><strong>IMPROVEMENT/BUGFIX</strong>: Improved distribution: Egg release should no longer include the tests package, source release still should. Also added dependency package for tests (minimock) and removed documenation txt files from distribution (HTML still included of course). This also fixes Issue #36.</li>
 <li>IMPROVEMENT: cssutils issues a warning if a page selector is not one of the defined in the spec (<tt class="docutils literal"><span class="pre">:first</span></tt>, <tt class="docutils literal"><span class="pre">:left</span></tt>, <tt class="docutils literal"><span class="pre">:right</span></tt>).</li>
 <li>IMPROVEMENT: Refactored quite a lot and added a few tests for variables</li>
 </ul>
@@ -822,7 +828,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-03-26</span> <span class="pre">23:16:33</span> <span class="pre">+0100</span> <span class="pre">(Fr,</span> <span class="pre">26</span> <span class="pre">Mrz</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1949</span> <span class="pre">2010-03-26</span> <span class="pre">22:16:33Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-03-28</span> <span class="pre">20:06:56</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">28</span> <span class="pre">Mrz</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1951</span> <span class="pre">2010-03-28</span> <span class="pre">18:06:56Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -2145,7 +2151,7 @@ first version to try if i can bring it to work at all</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">CHANGELOG</a><ul>
+<li><a class="reference external" href="#">CHANGELOG</a><ul>
 <li><a class="reference external" href="#known-issues">Known Issues</a></li>
 <li><a class="reference external" href="#development-version">Development Version</a><ul>
 <li><a class="reference external" href="#id1">0.9.7</a></li>
@@ -2213,12 +2219,12 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="docs/scripts.html" title="scripts"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a5dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7a5 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
     </div>
   </body>
 </html>
