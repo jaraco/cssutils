@@ -32,7 +32,7 @@ setup(
     name='cssutils',
     version=VERSION,
     package_dir={'':'src'},
-    packages=('cssutils', 'encutils'),
+    packages=find_packages('src', exclude=('tests*',)),
     test_suite='tests', #'nose.collector'
     tests_require='minimock',
     entry_points={
