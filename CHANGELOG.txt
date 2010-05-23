@@ -36,7 +36,7 @@ Development Version
 -----
 HEAD
 
-0.9.7a5 100323
+0.9.7a5 100523
     + **API CHANGE (major)**: When setting an objects ``cssText`` (or ``selectorText`` etc) property the underlying object is replaced with a new one now. E.g. if setting ``cssutils.css.CSSStyleRule.selectorText`` the underlying ``cssutils.css.CSSStyleRule.selectorList`` object is swapped to a new ``SelectorList`` object. This should be expected but cssutils until now kept the exact same object and changed its content *in-place*. Please be aware! (Also the strange ``_absorb`` method of some objects is gone which was used for this.)
 
     + **API CHANGE (minor)**: Renamed ``cssutils.ser.prefs.keepUnkownAtRules`` to ``cssutils.ser.prefs.keepUnkownAtRules`` due to misspelling, see Issue #37. A DeprecationWarning is issued on use.
@@ -45,6 +45,8 @@ HEAD
         - ``cssutils.css.CSSImportRule.media`` and ``cssutils.css.CSSMediaRule.media`` are now writable (setting with a string or ``cssutils.stylesheets.MediaList``)
         - msg level when setting ``cssutils.stylesheets.MediaList.appendMedium`` changed to INFO (was WARNING)
         - ``str(cssutils.css.CSSStyleRule)`` slightly changed
+
+    - **IMPROVEMENT/BUGFIX**: Improved distribution: Egg release should no longer include the tests package, source release still should. Also added dependency package for tests (minimock) and removed documenation txt files from distribution (HTML still included of course). This also fixes Issue #36.
 
     - IMPROVEMENT: cssutils issues a warning if a page selector is not one of the defined in the spec (``:first``, ``:left``, ``:right``).
 
