@@ -4,6 +4,7 @@ __version__ = '$Id$'
 
 import basetest
 import cssutils
+import sys
 
 
 class PreferencesTestCase(basetest.BaseTestCase):
@@ -15,6 +16,19 @@ class PreferencesTestCase(basetest.BaseTestCase):
     
     def tearDown(self):
         cssutils.ser.prefs.useDefaults()
+    
+#    def testkeepUnkownAtRules(self):
+#        "Preferences.keepUnkownAtRules"
+#        # py >=2.6 only
+#        # v = sys.version_info; if v[0]*10+v[1] >= 26:
+#        from warnings import catch_warnings
+#        with catch_warnings(record=True) as log:
+#            x = cssutils.ser.prefs.keepUnkownAtRules
+#        
+#        if log:
+#            # unpack the only member of log
+#            warning, = log
+#            self.assertEqual(warning.category, DeprecationWarning)
     
     def test_resolveVariables(self):
         "Preferences.resolveVariables"
@@ -61,7 +75,7 @@ class PreferencesTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, True)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
-        self.assertEqual(cssutils.ser.prefs.keepUnkownAtRules, True)
+        self.assertEqual(cssutils.ser.prefs.keepUnknownAtRules, True)
         self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, False)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
         self.assertEqual(cssutils.ser.prefs.lineSeparator, u'\n')
@@ -120,7 +134,7 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, False)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
-        self.assertEqual(cssutils.ser.prefs.keepUnkownAtRules, False)
+        self.assertEqual(cssutils.ser.prefs.keepUnknownAtRules, False)
         self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, True)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
         self.assertEqual(cssutils.ser.prefs.lineSeparator, u'')
@@ -154,11 +168,11 @@ prefix|x, a + b > c ~ d, b {
     @x  x;
     '''
         s = cssutils.parseString(css)
-        cssutils.ser.prefs.keepUnkownAtRules = True
+        cssutils.ser.prefs.keepUnknownAtRules = True
         self.assertEqual(s.cssText, 
             u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}@x x;''' 
             )
-        cssutils.ser.prefs.keepUnkownAtRules = False
+        cssutils.ser.prefs.keepUnknownAtRules = False
         self.assertEqual(s.cssText, 
             u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
             )
@@ -348,8 +362,8 @@ a {
         }
     }''', s.cssText)
         
-    def test_keepUnkownAtRules(self):
-        "Preferences.keepUnkownAtRules"
+    def test_keepUnknownAtRules(self):
+        "Preferences.keepUnknownAtRules"
         tests = {
             u'''@three-dee {
               @background-lighting {
@@ -375,9 +389,9 @@ h1 {
         for test in tests:
             s = cssutils.parseString(test)
             expwith, expwithout = tests[test]
-            cssutils.ser.prefs.keepUnkownAtRules = True
+            cssutils.ser.prefs.keepUnknownAtRules = True
             self.assertEqual(s.cssText, expwith)
-            cssutils.ser.prefs.keepUnkownAtRules = False
+            cssutils.ser.prefs.keepUnknownAtRules = False
             self.assertEqual(s.cssText, expwithout)
             
     def test_keepUsedNamespaceRulesOnly(self):

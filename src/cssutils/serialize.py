@@ -5,7 +5,7 @@ __all__ = ['CSSSerializer', 'Preferences']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssutils.helper import normalize
+from cssutils.helper import Deprecated, normalize
 import codecs
 import cssutils
 import helper
@@ -59,7 +59,7 @@ class Preferences(object):
     keepEmptyRules = False
         defines if empty rules like e.g. ``a {}`` are kept in the resulting
         serialized sheet
-    keepUnkownAtRules = True
+    keepUnknownAtRules = True
         defines if unknown @rules like e.g. ``@three-dee {}`` are kept in the 
         serialized sheet
     keepUsedNamespaceRulesOnly = False
@@ -127,7 +127,7 @@ class Preferences(object):
         self.keepAllProperties = True
         self.keepComments = True
         self.keepEmptyRules = False
-        self.keepUnkownAtRules = True
+        self.keepUnknownAtRules = True
         self.keepUsedNamespaceRulesOnly = False
         self.lineNumbers = False
         self.lineSeparator = u'\n'
@@ -151,7 +151,7 @@ class Preferences(object):
         self.indent = u''
         self.keepComments = False
         self.keepEmptyRules = False
-        self.keepUnkownAtRules = False
+        self.keepUnknownAtRules = False
         self.keepUsedNamespaceRulesOnly = True
         self.lineNumbers = False
         self.lineSeparator = u''
@@ -163,6 +163,12 @@ class Preferences(object):
         self.spacer = u''
         self.validOnly = False
 
+    @Deprecated(u'Use keepUnknownAtRules instead - ignored.')
+    def __keepUnkownAtRules(self, ignored=None):
+        pass
+        
+    keepUnkownAtRules = property(__keepUnkownAtRules, __keepUnkownAtRules,
+                                  doc=u'Use keepUnknownAtRules instead!')
 
 class Out(object):
     """A simple class which makes appended items available as a combined string"""
@@ -607,7 +613,7 @@ class CSSSerializer(object):
         anything until ";" or "{...}"
         + CSSComments
         """
-        if rule.wellformed and self.prefs.keepUnkownAtRules:
+        if rule.wellformed and self.prefs.keepUnknownAtRules:
             out = Out(self)
             out.append(rule.atkeyword)  
                          
