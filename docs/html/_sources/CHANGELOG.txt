@@ -36,10 +36,10 @@ Development Version
 -----
 HEAD
 
-0.9.7a5 100523
+0.9.7a6 100523
     + **API CHANGE (major)**: When setting an objects ``cssText`` (or ``selectorText`` etc) property the underlying object is replaced with a new one now. E.g. if setting ``cssutils.css.CSSStyleRule.selectorText`` the underlying ``cssutils.css.CSSStyleRule.selectorList`` object is swapped to a new ``SelectorList`` object. This should be expected but cssutils until now kept the exact same object and changed its content *in-place*. Please be aware! (Also the strange ``_absorb`` method of some objects is gone which was used for this.)
 
-    + **API CHANGE (minor)**: Renamed ``cssutils.ser.prefs.keepUnkownAtRules`` to ``cssutils.ser.prefs.keepUnkownAtRules`` due to misspelling, see Issue #37. A DeprecationWarning is issued on use.
+    + **API CHANGE (minor)**: Renamed ``cssutils.ser.prefs.keepUnkownAtRules`` to ``cssutils.ser.prefs.keepUnknownAtRules`` due to misspelling, see Issue #37. A DeprecationWarning is issued on use.
 
     + API CHANGES (minor):
         - ``cssutils.css.CSSImportRule.media`` and ``cssutils.css.CSSMediaRule.media`` are now writable (setting with a string or ``cssutils.stylesheets.MediaList``)
@@ -52,6 +52,8 @@ HEAD
 
     - IMPROVEMENT: Refactored quite a lot and added a few tests for variables
 
+0.9.7a6 100523
+    - same changes as 0.9.7a6 but release was incomplete :(
 
 0.9.7a4 100323
     - **API CHANGE**: ``CSSRule.NAMESPACE_RULE`` actual value has been changed from 8 to 10 (according to the change in the CSSOM spec). The actual integer values **SHOULD NOT** be used anyway! **Please do always use the ``CSSRule`` constants which are present in ALL CSSRule and subclass objects like CSSStyleRule, CSSImportRule etc.!**
@@ -589,7 +591,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-03-28 20:06:56 +0200 (So, 28 Mrz 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1951 2010-03-28 18:06:56Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-05-23 20:59:14 +0200 (So, 23 Mai 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1964 2010-05-23 18:59:14Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
