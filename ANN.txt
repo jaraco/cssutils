@@ -4,24 +4,28 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.7a2 is an alpha release.
+0.9.7a5 is an alpha release but quite stable now I guess...
 
 main changes
 ------------
 0.9.7 is quite a bit faster than 0.9.6.
 
-0.9.7a2 091230
-    - **API CHANGE**: Setting a style declarations' property to      	
-      ``None`` or the empty string effectively removes this property 
-      from the declaration. See also Issue #32.
+0.9.7a5 100523
+    + **API CHANGE (major)**: When setting an objects ``cssText`` (or ``selectorText`` etc) property the underlying object is replaced with a new one now. E.g. if setting ``cssutils.css.CSSStyleRule.selectorText`` the underlying ``cssutils.css.CSSStyleRule.selectorList`` object is swapped to a new ``SelectorList`` object. This should be expected but cssutils until now kept the exact same object and changed its content *in-place*. Please be aware! (Also the strange ``_absorb`` method of some objects is gone which was used for this.)
 
-    + **BUGFIX/FEATURE**: Fixed Issue 33: URL references (like ``url()``
-      values) in combined sheets are now adjusted even if sheets are 
-      not in the same folder. Only relative paths are adjusted.
+    + **API CHANGE (minor)**: Renamed ``cssutils.ser.prefs.keepUnkownAtRules`` to ``cssutils.ser.prefs.keepUnkownAtRules`` due to misspelling, see Issue #37. A DeprecationWarning is issued on use.
 
-    - **BUGFIX**: Fixed parsing of FUNCTIONS in CSSUnknownRule like 
-      ``@bottom { counter(page) }`` which raised a false error of a 
-      mismatch of parenthesis
+    + API CHANGES (minor):
+        - ``cssutils.css.CSSImportRule.media`` and ``cssutils.css.CSSMediaRule.media`` are now writable (setting with a string or ``cssutils.stylesheets.MediaList``)
+        - msg level when setting ``cssutils.stylesheets.MediaList.appendMedium`` changed to INFO (was WARNING)
+        - ``str(cssutils.css.CSSStyleRule)`` slightly changed
+
+    - **IMPROVEMENT/BUGFIX**: Improved distribution: Egg release should no longer include the tests package, source release still should. Also added dependency package for tests (minimock) and removed documenation txt files from distribution (HTML still included of course). This also fixes Issue #36.
+
+    - IMPROVEMENT: cssutils issues a warning if a page selector is not one of the defined in the spec (``:first``, ``:left``, ``:right``).
+
+    - IMPROVEMENT: Refactored quite a lot and added a few tests for variables
+
 
 license
 -------
@@ -33,7 +37,7 @@ download
 --------
 For download options see http://cthedot.de/cssutils/
 
-cssutils needs Python 2.4 or higher or Jython 2.5 and higher (tested with Python 2.6.4(64), 2.5.4(64), 2.4.4 and Jython 2.5.1 on Win 7 64bit only)
+cssutils needs Python 2.4 or higher or Jython 2.5 and higher (tested with Python 2.6.5(x64), 2.5.4(x32), 2.4.4(x32) and Jython 2.5.1 on Win7 64 only)
 
 
 Bug reports (via Google code), comments, etc are very much appreciated! Thanks.
