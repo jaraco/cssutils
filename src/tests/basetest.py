@@ -2,11 +2,15 @@
 __version__ = '$Id$'
 
 import logging
-import unittest
+import os
 import sys
 import StringIO
+import unittest
 import urllib2
 from email import message_from_string, message_from_file
+
+# add src to PYTHONPATH
+sys.path.append(os.path.join(os.path.abspath('.'), '..'))
 
 import cssutils
 try:
