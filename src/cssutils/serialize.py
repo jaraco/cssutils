@@ -86,7 +86,7 @@ class Preferences(object):
     resolveVariables = False
         if ``True`` all variable references are tried to resolved and
         all CSSVariablesRules are removed from the output.
-        Any variable reference not resolvable is simple kept untouched.
+        Any variable reference not resolvable is simply kept untouched.
     selectorCombinatorSpacer = u' '
         string which is used before and after a Selector combinator like +, > or ~.
         CSSOM defines a single space for this which is also the default in cssutils.
