@@ -532,7 +532,7 @@ properties[Profiles.CSS3_COLOR] = {
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
     'family-name': r'{string}|{ident}', # but STRING is effectively an IDENT??? 
-    'font-face-name': 'local\({w}{ident}{w}\)',
+    'font-face-name': 'local\({w}{family-name}{w}\)',
     'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
     'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'
     }
