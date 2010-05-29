@@ -436,13 +436,21 @@ class Property(cssutils.util.Base):
         try:
             # if @font-face use that profile
             rule = self.parent.parentRule
-            if rule.type == rule.FONT_FACE_RULE:
-                profiles = [cssutils.profile.CSS3_FONT_FACE]
-            #TODO: same for @page
         except AttributeError:
             pass
+        else:
+            if rule is not None:
+                if rule.type == rule.FONT_FACE_RULE:
+                    profiles = [cssutils.profile.CSS3_FONT_FACE]
+                #TODO: same for @page
 
         if self.name and self.value:
+            
+            cv = self.cssValue
+            if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
+                # TODO: false alarms too! 
+                cssutils.log.warn(u'No value for variable "%s" found, keeping '
+                                  u'variable.' % cv.name, neverraise=True)
 
             if self.name in cssutils.profile.knownNames:
                 # add valid, matching, validprofiles...
