@@ -70,13 +70,13 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         """Retrieve the value of variable ``variableName`` from this 
         declaration.
         """
-        return self.getVariableValue(normalize(variableName))
+        return self.getVariableValue(variableName)
     
     def __setitem__(self, variableName, value):
-        self.setVariable(normalize(variableName), value)
+        self.setVariable(variableName, value)
 
     def __delitem__(self, variableName):
-        return self.removeVariable(normalize(variableName))
+        return self.removeVariable(variableName)
 
     def __iter__(self):
         """Iterator of names of set variables."""
@@ -231,18 +231,19 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this declaration is readonly is readonly.
         """
+        normalname = variableName
         try:
-            r = self._vars[normalize(variableName)]
+            r = self._vars[normalname]
         except KeyError, e:
             return u''
         else: 
             self.seq._readonly = False
-            if variableName in self._vars:
+            if normalname in self._vars:
                 for i, x in enumerate(self.seq):
                     if x.value[0] == variableName:
                         del self.seq[i]
             self.seq._readonly = True
-            del self._vars[normalize(variableName)]
+            del self._vars[normalname]
 
         return r.cssText
 
