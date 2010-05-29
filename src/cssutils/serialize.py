@@ -956,7 +956,8 @@ class CSSSerializer(object):
             if not self.prefs.resolveVariables or not v:
                 # keep var(NAME)
                 if not v:
-                    cssutils.log.error('No value for variable "%s" found, keeping variable.' % variable.name,
+                    # should be error really
+                    cssutils.log.warn('No value for variable "%s" found, keeping variable.' % variable.name,
                                       neverraise=True)
                 for item in variable.seq:
                     type_, val = item.type, item.value
