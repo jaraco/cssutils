@@ -47,6 +47,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._namespaces = _Namespaces(parentStyleSheet=self, log=self._log)
         self._readonly = readonly
 
+        self._variables = CSSVariablesDeclaration()
         # used only during setting cssText by parse*()
         self.__encodingOverride = None
         self._fetcher = None
@@ -387,21 +388,19 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     namespaces = property(lambda self: self._namespaces,
                           doc="All Namespaces used in this CSSStyleSheet.")
 
-    def _getVariables(self):
-        "Returns CSSVariablesDeclaration of all variables available."
-        vars = CSSVariablesDeclaration()
-        
+    def _updateVariables(self):
+        """Updates self._variables, called when @import or @variables rules 
+        is added to sheet.
+        """
         for r in self.cssRules.rulesOfType(CSSRule.IMPORT_RULE):
             for vr in r.styleSheet.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
                 for var in vr.variables:
-                    vars.setVariable(var, vr.variables[var])
+                    self._variables.setVariable(var, vr.variables[var])
         for vr in self.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
             for var in vr.variables:
-                vars.setVariable(var, vr.variables[var])
+                self._variables.setVariable(var, vr.variables[var])
         
-        return vars
-
-    variables = property(_getVariables,
+    variables = property(lambda self: self._variables,
                          doc=u"A :class:`cssutils.css.CSSVariablesDeclaration` "
                          u"containing all available variables in this "
                          u"CSSStyleSheet including the ones defined in "
@@ -631,6 +630,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                             error=xml.dom.HierarchyRequestErr)
                         return
             self._cssRules.insert(index, rule)
+            self._updateVariables()
 
         # @namespace
         elif rule.type == rule.NAMESPACE_RULE:
@@ -731,6 +731,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         return
 
             self._cssRules.insert(index, rule)
+            self._updateVariables()
 
         # all other where order is not important
         else:

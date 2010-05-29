@@ -35,6 +35,7 @@ Development Version
 0.9.7
 -----
 HEAD
+    + **IMPROVEMENT**: Massive speed improvement of handling of CSSVariables of a stylesheet which due to naive implementation was unbelievable slow when using a lot of vars... Should now scale a lot better, about factor 5-20 depending of amount of variables used.
 
 0.9.7a6 100523
     + **API CHANGE (major)**: When setting an objects ``cssText`` (or ``selectorText`` etc) property the underlying object is replaced with a new one now. E.g. if setting ``cssutils.css.CSSStyleRule.selectorText`` the underlying ``cssutils.css.CSSStyleRule.selectorList`` object is swapped to a new ``SelectorList`` object. This should be expected but cssutils until now kept the exact same object and changed its content *in-place*. Please be aware! (Also the strange ``_absorb`` method of some objects is gone which was used for this.)
