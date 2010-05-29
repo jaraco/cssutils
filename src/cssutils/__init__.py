@@ -90,7 +90,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.7a6'
+VERSION = '0.9.7a7dev'
 
 __version__ = '%s $Id$' % VERSION
 
@@ -189,7 +189,7 @@ parse.__doc__ = CSSParser.parse.__doc__
 def parseStyle(cssText, encoding='utf-8'):
     """Parse given `cssText` which is assumed to be the content of
     a HTML style attribute.
-    
+
     :param cssText:
         CSS string to parse
     :param encoding:
@@ -258,7 +258,7 @@ def replaceUrls(sheet, replacer, ignoreImportRules=False):
     :param sheet:
         :class:`cssutils.css.CSSStyleSheet` which is changed
     :param replacer:
-        a function which is called with a single argument `urlstring` which 
+        a function which is called with a single argument `urlstring` which
         is the current value of each url() excluding ``url(`` and ``)`` and
         surrounding single or double quotes.
     :param ignoreImportRules:
@@ -295,9 +295,9 @@ def replaceUrls(sheet, replacer, ignoreImportRules=False):
 def resolveImports(sheet, target=None):
     """Recurcively combine all rules in given `sheet` into a `target` sheet.
     @import rules which use media information are tried to be wrapped into
-    @media rules so keeping the media information. This may not work in 
+    @media rules so keeping the media information. This may not work in
     all instances (if e.g. an @import rule itself contains an @import rule
-    with different media infos or if it contains rules which may not be 
+    with different media infos or if it contains rules which may not be
     used inside an @media block like @namespace rules.). In these cases
     the @import rule is kept as in the original sheet and a WARNING is issued.
 
@@ -307,12 +307,12 @@ def resolveImports(sheet, target=None):
     :param target:
         A :class:`cssutils.css.CSSStyleSheet` object which will be the
         resulting *flat* sheet if given
-    :returns: given `target` or a new :class:`cssutils.css.CSSStyleSheet` 
+    :returns: given `target` or a new :class:`cssutils.css.CSSStyleSheet`
         object
     """
     if not target:
-        target = css.CSSStyleSheet(href=sheet.href, 
-                                   media=sheet.media, 
+        target = css.CSSStyleSheet(href=sheet.href,
+                                   media=sheet.media,
                                    title=sheet.title)
 
     def getReplacer(targetbase):
@@ -330,7 +330,7 @@ def resolveImports(sheet, target=None):
             else:
                 # keep anything absolute
                 return url
-        
+
         return replacer
 
     for rule in sheet.cssRules:
@@ -338,9 +338,9 @@ def resolveImports(sheet, target=None):
             pass
         elif rule.type == rule.IMPORT_RULE:
             log.info(u'Processing @import %r' % rule.href, neverraise=True)
-            
+
             if rule.hrefFound:
-                # add all rules of @import to current sheet        
+                # add all rules of @import to current sheet
                 target.add(css.CSSComment(cssText=u'/* START @import "%s" */'
                                           % rule.href))
 
@@ -352,23 +352,23 @@ def resolveImports(sheet, target=None):
                              % e, neverraise=True)
                     target.add(rule)
                 else:
-                    # adjust relative URI references 
-                    log.info(u'@import: Adjusting paths for %r' % rule.href, 
+                    # adjust relative URI references
+                    log.info(u'@import: Adjusting paths for %r' % rule.href,
                              neverraise=True)
-                    replaceUrls(importedSheet, 
-                                getReplacer(rule.href), 
+                    replaceUrls(importedSheet,
+                                getReplacer(rule.href),
                                 ignoreImportRules=True)
-                    
+
                     # might have to wrap rules in @media if media given
                     if rule.media.mediaText == u'all':
                         mediaproxy = None
                     else:
                         keepimport = False
                         for r in importedSheet:
-                            # check if rules present which may not be 
+                            # check if rules present which may not be
                             # combined with media
-                            if r.type not in (r.COMMENT, 
-                                              r.STYLE_RULE, 
+                            if r.type not in (r.COMMENT,
+                                              r.STYLE_RULE,
                                               r.IMPORT_RULE):
                                 keepimport = True
                                 break
@@ -377,55 +377,55 @@ def resolveImports(sheet, target=None):
                                      u' given media as other rules then'
                                      u' comments or stylerules found %r,'
                                      u' keeping %r' % (r,
-                                                       rule.cssText), 
+                                                       rule.cssText),
                                      neverraise=True)
                             target.add(rule)
                             continue
-                             
+
                         # wrap in @media if media is not `all`
                         log.info(u'@import: Wrapping some rules in @media '
-                                 u' to keep media: %s' 
+                                 u' to keep media: %s'
                                  % rule.media.mediaText, neverraise=True)
                         mediaproxy = css.CSSMediaRule(rule.media.mediaText)
-                        
+
                     for r in importedSheet:
                         if mediaproxy:
                             mediaproxy.add(r)
                         else:
                             # add to top sheet directly but are difficult anyway
                             target.add(r)
-                            
+
                     if mediaproxy:
                         target.add(mediaproxy)
-                        
+
             else:
                 # keep @import as it is
                 log.error(u'Cannot get referenced stylesheet %r, keeping rule'
                           % rule.href, neverraise=True)
                 target.add(rule)
-                
-                
+
+
 
         else:
             target.add(rule)
-    
+
     return target
 
 
 #def resolveVariables(sheet):
-#    """Replace all variable references with values defined in   
-#    :class:`cssutils.css.CSSVariablesRule`. If no value can be found the 
+#    """Replace all variable references with values defined in
+#    :class:`cssutils.css.CSSVariablesRule`. If no value can be found the
 #    variable reference is kept.
 #
 #    :param sheet:
 #        in this given :class:`cssutils.css.CSSStyleSheet` all variables
 #        are resolved.
 #    :returns: the sheet
-#    """        
+#    """
 #    def resolve(r):
 #        for p in r.style.getProperties(all=True):
 #            v = p.cssValue
-#            
+#
 #            if v.cssValueType == v.CSS_VALUE_LIST:
 #                newvalue = []
 #                for vi in v:
@@ -435,30 +435,30 @@ def resolveImports(sheet, target=None):
 #                                     (vi.name, vi.value), neverraise=True)
 #                            newvalue.append(vi.value)
 #                        else:
-#                            log.error(u'No value found for variable "%s"' % 
+#                            log.error(u'No value found for variable "%s"' %
 #                                     vi.name, neverraise=True)
 #                            newvalue.append(vi.cssText)
 #                    else:
 #                        newvalue.append(vi.cssText)
-#                        
+#
 #                p.value = ' '.join(newvalue)
-#                    
+#
 #            elif v.cssValueType == v.CSS_VARIABLE:
 #                if v.value:
-#                    log.info(u'Replacing variable "%s" with %r' % 
-#                              (v.name, v.value), neverraise=True)                
+#                    log.info(u'Replacing variable "%s" with %r' %
+#                              (v.name, v.value), neverraise=True)
 #                    p.value = v.value
 #                else:
 #                    log.error(u'No value found for variable "%s"' %
 #                             v.name, neverraise=True)
-#              
+#
 #    for m in sheet.cssRules.rulesOfType(css.CSSRule.MEDIA_RULE):
 #        for r in m.cssRules.rulesOfType(css.CSSRule.STYLE_RULE):
 #            resolve(r)
-#            
+#
 #    for r in sheet.cssRules.rulesOfType(css.CSSRule.STYLE_RULE):
 #        resolve(r)
-#                
+#
 #    # remove @variables rules
 #    for r in sheet.cssRules.rulesOfType(css.CSSRule.VARIABLES_RULE):
 #        sheet.deleteRule(r)
