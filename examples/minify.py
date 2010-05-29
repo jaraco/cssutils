@@ -1,7 +1,7 @@
 import logging, StringIO
 
 EXPOUT = "@variables{c:#0f0}a{color:var(c)}\na{color:#0f0}\n"
-EXPERR = u"""Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: var(c) [6:9: color]\n"""
+EXPERR = u'No value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nProperty: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: var(c) [6:9: color]\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\nNo value for variable "c" found, keeping variable.\n'
 
 def main():
     import cssutils
