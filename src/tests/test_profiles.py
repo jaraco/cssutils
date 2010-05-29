@@ -306,11 +306,14 @@ class ProfilesTestCase(basetest.BaseTestCase):
 
             ('src', ('url(  a  )',
                      'local(  x  )',
+                     'local("x")',
+                     'local(  "x"  )',
                      'url(../fonts/LateefRegAAT.ttf) format(  "truetype-aat"  )',
                      'url(a) format(  "123x"  , "a"   )',
                      'url(a) format( "123x"  , "a"   ), url(a) format( "123x"  , "a"   )',
                      'local(HiraKakuPro-W3), local(Meiryo), local(IPAPGothic)',
                      'local(Gentium), url(/fonts/Gentium.ttf)',
+                     'local("Gentium"), url("/fonts/Gentium.ttf")',
                      'local(Futura-Medium), url(fonts.svg#MyGeometricModern) format("svg")',
                     )): (True, True, FM3FF),
 
