@@ -953,19 +953,15 @@ class CSSSerializer(object):
         else:
             out = Out(self)
             v = variable.value
-            if not self.prefs.resolveVariables or not v:
+            if self.prefs.resolveVariables and v:
+                # resolve variable
+                out.append(v)
+
+            else:
                 # keep var(NAME)
-                if not v:
-                    # should be error really
-                    cssutils.log.warn('No value for variable "%s" found, keeping variable.' % variable.name,
-                                      neverraise=True)
                 for item in variable.seq:
                     type_, val = item.type, item.value
                     out.append(val, type_)
-
-            else:
-                # resolve variable
-                out.append(v)
 
             return out.value()
 
