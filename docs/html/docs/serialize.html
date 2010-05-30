@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>serializing CSS &mdash; cssutils v0.9.7a6 documentation</title>
+    <title>serializing CSS &mdash; cssutils v0.9.7b1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a6',
+        VERSION:     '0.9.7b1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,9 +19,9 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a6 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7b1 documentation" href="../index.html" />
     <link rel="next" title="Package cssutils.css" href="css.html" />
-    <link rel="prev" title="extra settings" href="settings.html" /> 
+    <link rel="prev" title="CSS codec" href="codec.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,9 +37,9 @@
           <a href="css.html" title="Package cssutils.css"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="settings.html" title="extra settings"
+          <a href="codec.html" title="CSS codec"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a6 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -70,11 +70,9 @@
 <span id="id1"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#index-14" title="Permalink to this headline">¶</a></h2>
 <p>Quite a few preferences of the cssutils serializer may be tweaked.</p>
 <p>To set a preference use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">sheet</span> <span class="o">=</span> <span class="n">CSSStyleSheet</span><span class="p">()</span>
-<span class="n">sheet</span><span class="o">.</span><span class="n">setSerializerPref</span><span class="p">(</span><span class="n">pref</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cssutils</span><span class="o">.</span><span class="n">ser</span><span class="o">.</span><span class="n">prefs</span><span class="o">.</span><span class="n">PREFNAME</span> <span class="o">=</span> <span class="n">NEWVALUE</span>
 </pre></div>
 </div>
-<p>You may also set <tt class="docutils literal"><span class="pre">cssutils.ser.prefs.PREFNAME</span> <span class="pre">=</span> <span class="pre">NEWVALUE</span></tt> directly.</p>
 <p>Preferences are always used <em>globally</em>, so for all stylesheets until preferences are set again.</p>
 <dl class="class">
 <dt id="cssutils.serialize.Preferences">
@@ -100,7 +98,7 @@ format <tt class="docutils literal"><span class="pre">url(URI)</span></tt> if <t
 <dt>indentSpecificities = False</dt>
 <dd>Indent rules with subset of Selectors and higher Specitivity</dd>
 <dt>keepAllProperties = True</dt>
-<dd>If <tt class="xref docutils literal"><span class="pre">True</span></tt> all properties set in the original CSSStylesheet 
+<dd>If <tt class="xref docutils literal"><span class="pre">True</span></tt> all properties set in the original CSSStylesheet
 are kept meaning even properties set twice with the exact same
 same name are kept!</dd>
 <dt>keepComments = True</dt>
@@ -109,32 +107,32 @@ same name are kept!</dd>
 <dd>defines if empty rules like e.g. <tt class="docutils literal"><span class="pre">a</span> <span class="pre">{}</span></tt> are kept in the resulting
 serialized sheet</dd>
 <dt>keepUnknownAtRules = True</dt>
-<dd>defines if unknown &#64;rules like e.g. <tt class="docutils literal"><span class="pre">&#64;three-dee</span> <span class="pre">{}</span></tt> are kept in the 
+<dd>defines if unknown &#64;rules like e.g. <tt class="docutils literal"><span class="pre">&#64;three-dee</span> <span class="pre">{}</span></tt> are kept in the
 serialized sheet</dd>
 <dt>keepUsedNamespaceRulesOnly = False</dt>
 <dd>if True only namespace rules which are actually used are kept</dd>
 <dt>lineNumbers = False</dt>
 <dd>Only used if a complete CSSStyleSheet is serialized.</dd>
 <dt>lineSeparator = u&#8217;n&#8217;</dt>
-<dd>How to end a line. This may be set to e.g. u&#8217;&#8217; for serializing of 
+<dd>How to end a line. This may be set to e.g. u&#8217;&#8217; for serializing of
 CSSStyleDeclarations usable in HTML style attribute.</dd>
 <dt>listItemSpacer = u&#8217; &#8216;</dt>
 <dd>string which is used in <tt class="docutils literal"><span class="pre">css.SelectorList</span></tt>, <tt class="docutils literal"><span class="pre">css.CSSValue</span></tt> and
 <tt class="docutils literal"><span class="pre">stylesheets.MediaList</span></tt> after the comma</dd>
 <dt>normalizedVarNames = True</dt>
-<dd>defines if variable names should be serialized normalized (they are 
+<dd>defines if variable names should be serialized normalized (they are
 used as being normalized anyway)</dd>
 <dt>omitLastSemicolon = True</dt>
 <dd>If <tt class="xref docutils literal"><span class="pre">True</span></tt> omits ; after last property of CSSStyleDeclaration</dd>
 <dt>paranthesisSpacer = u&#8217; &#8216;</dt>
-<dd>string which is used before an opening paranthesis like in a 
+<dd>string which is used before an opening paranthesis like in a
 <tt class="docutils literal"><span class="pre">css.CSSMediaRule</span></tt> or <tt class="docutils literal"><span class="pre">css.CSSStyleRule</span></tt></dd>
 <dt>propertyNameSpacer = u&#8217; &#8216;</dt>
 <dd>string which is used after a Property name colon</dd>
 <dt>resolveVariables = False</dt>
 <dd>if <tt class="xref docutils literal"><span class="pre">True</span></tt> all variable references are tried to resolved and
 all CSSVariablesRules are removed from the output.
-Any variable reference not resolvable is simple kept untouched.</dd>
+Any variable reference not resolvable is simply kept untouched.</dd>
 <dt>selectorCombinatorSpacer = u&#8217; &#8216;</dt>
 <dd>string which is used before and after a Selector combinator like +, &gt; or ~.
 CSSOM defines a single space for this which is also the default in cssutils.</dd>
@@ -171,10 +169,7 @@ and set settings you want adjusted afterwards.</p>
 <p>There is a single global serializer used throughout the library. You may configure it by setting specific <a class="reference internal" href="#preferences">Preferences</a> or completely replace it with your own.</p>
 <p>A custom serializer must implement all methods the default one provides. Easiest would be to subclass <a title="cssutils.serialize.CSSSerializer" class="reference internal" href="#cssutils.serialize.CSSSerializer"><tt class="xref docutils literal"><span class="pre">cssutils.serialize.CSSSerializer</span></tt></a>.</p>
 <p>To set a new serializer, use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">sheet</span> <span class="o">=</span> <span class="n">CSSStyleSheet</span><span class="p">()</span>
-<span class="n">sheet</span><span class="o">.</span><span class="n">setSerializer</span><span class="p">(</span><span class="n">newser</span><span class="p">)</span>
-<span class="c"># uses the new serializer:</span>
-<span class="k">print</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cssutils</span><span class="o">.</span><span class="n">setSerializer</span><span class="p">(</span><span class="n">serializer</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You may also set <tt class="xref docutils literal"><span class="pre">cssutils.ser</span></tt> directly but the above method is the preferred one.</p>
@@ -206,11 +201,11 @@ Serializer and overwrite the methods you like to customize.</p>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="settings.html"
-                                  title="previous chapter">extra settings</a></p>
+            <p class="topless"><a href="codec.html"
+                                  title="previous chapter">CSS codec</a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="css.html"
-                                  title="next chapter">Package <tt class="docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
+                                  title="next chapter">Package <tt class="docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../_sources/docs/serialize.txt"
@@ -246,14 +241,14 @@ Serializer and overwrite the methods you like to customize.</p>
           <a href="css.html" title="Package cssutils.css"
              >next</a> |</li>
         <li class="right" >
-          <a href="settings.html" title="extra settings"
+          <a href="codec.html" title="CSS codec"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a6 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
     </div>
   </body>
 </html>

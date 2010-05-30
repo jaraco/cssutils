@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Package cssutils.css &mdash; cssutils v0.9.7a6 documentation</title>
+    <title>Package cssutils.css &mdash; cssutils v0.9.7b1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7a6',
+        VERSION:     '0.9.7b1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a6 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7b1 documentation" href="../index.html" />
     <link rel="next" title="CSS Variables" href="variables.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a6 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,7 +53,7 @@
 <p>Classes implementing <a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 CSS</a> and <a class="reference external" href="http://www.w3.org/TR/css3-namespace/">CSS Module: Namespaces (W3C Working Draft 28 August 2006)</a></p>
 <div class="section" id="cssstylesheet">
 <h2><tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt><a class="headerlink" href="#cssstylesheet" title="Permalink to this headline">¶</a></h2>
-<p>A CSSStyleSheet contains all rules. It consists of the different CSS rules like <a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">CSSImportRule</span></tt></a>, <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a> etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an <a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> rule or simpler with the <a title="cssutils.css.CSSStyleSheet.encoding" class="reference internal" href="#cssutils.css.CSSStyleSheet.encoding"><tt class="xref docutils literal"><span class="pre">encoding</span></tt></a> attribute. The serialized sheet may be obtained from <a title="cssutils.css.CSSStyleSheet.cssText" class="reference internal" href="#cssutils.css.CSSStyleSheet.cssText"><tt class="xref docutils literal"><span class="pre">cssText</span></tt></a>. All rules are present in <tt class="xref docutils literal"><span class="pre">cssRules</span></tt>, a stylesheet iterates on its rules so this might be easier. Namespaces are available via <a title="cssutils.css.CSSStyleSheet.namespaces" class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces"><tt class="xref docutils literal"><span class="pre">namespaces</span></tt></a> (do not rely on prefixes, see <a class="reference external" href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a> how these work). Variables are available via <a title="cssutils.css.CSSStyleSheet.variables" class="reference internal" href="#cssutils.css.CSSStyleSheet.variables"><tt class="xref docutils literal"><span class="pre">variables</span></tt></a> which is a <a title="cssutils.css.CSSVariablesDeclaration" class="reference external" href="variables.html#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a> and contains <strong>all</strong> available variables including the ones defined in imported style sheets. Changes to this object do NOT change the parent sheet!</p>
+<p>A CSSStyleSheet contains all rules. It consists of the different CSS rules like <a title="cssutils.css.CSSImportRule" class="reference internal" href="#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">CSSImportRule</span></tt></a>, <a title="cssutils.css.CSSStyleRule" class="reference internal" href="#cssutils.css.CSSStyleRule"><tt class="xref docutils literal"><span class="pre">CSSStyleRule</span></tt></a> etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an <a title="cssutils.css.CSSCharsetRule" class="reference internal" href="#cssutils.css.CSSCharsetRule"><tt class="xref docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> rule or simpler with the <a title="cssutils.css.CSSStyleSheet.encoding" class="reference internal" href="#cssutils.css.CSSStyleSheet.encoding"><tt class="xref docutils literal"><span class="pre">encoding</span></tt></a> attribute. The serialized sheet may be obtained from <a title="cssutils.css.CSSStyleSheet.cssText" class="reference internal" href="#cssutils.css.CSSStyleSheet.cssText"><tt class="xref docutils literal"><span class="pre">cssText</span></tt></a>. All rules are present in <tt class="xref docutils literal"><span class="pre">cssRules</span></tt>, a stylesheet iterates on its rules so this might be easier. Namespaces are available via <a title="cssutils.css.CSSStyleSheet.namespaces" class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces"><tt class="xref docutils literal"><span class="pre">namespaces</span></tt></a> (do not rely on prefixes, see <a class="reference external" href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a> how these work). Variables are available via <a title="cssutils.css.CSSStyleSheet.variables" class="reference internal" href="#cssutils.css.CSSStyleSheet.variables"><tt class="xref docutils literal"><span class="pre">variables</span></tt></a> which is a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a> and contains <strong>all</strong> available variables including the ones defined in imported style sheets. Changes to this object do NOT change the parent sheet!</p>
 <dl class="class">
 <dt id="cssutils.css.CSSStyleSheet">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleSheet</tt><big>(</big><em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>disabled=None</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em>, <em>ownerRule=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleSheet" title="Permalink to this definition">¶</a></dt>
@@ -220,7 +220,7 @@ preferences to be set.</dd></dl>
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleSheet.variables">
 <tt class="descname">variables</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.variables" title="Permalink to this definition">¶</a></dt>
-<dd>A <a title="cssutils.css.CSSVariablesDeclaration" class="reference external" href="variables.html#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a> containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</dd></dl>
+<dd>A <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a> containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</dd></dl>
 
 </dd></dl>
 
@@ -287,7 +287,7 @@ Value has changed in 0.9.7a3 due to a change in the CSSOM spec.</dd></dl>
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.VARIABLES_RULE">
 <tt class="descname">VARIABLES_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.VARIABLES_RULE" title="Permalink to this definition">¶</a></dt>
-<dd><a title="cssutils.css.CSSVariablesRule" class="reference external" href="variables.html#cssutils.css.CSSVariablesRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesRule</span></tt></a> - experimental rule
+<dd><a title="cssutils.css.CSSVariablesRule" class="reference internal" href="#cssutils.css.CSSVariablesRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesRule</span></tt></a> - experimental rule
 not in the offical spec</dd></dl>
 
 <dl class="attribute">
@@ -1023,6 +1023,92 @@ LBRACE S* declaration [ ';' S* declaration ]* '}' S*
 </dd></dl>
 
 </div>
+<div class="section" id="cssvariablesrule">
+<h3><tt class="docutils literal"><span class="pre">CSSVariablesRule</span></tt><a class="headerlink" href="#cssvariablesrule" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cssutils.css.CSSVariablesRule">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSVariablesRule</tt><big>(</big><em>mediaText=None</em>, <em>variables=None</em>, <em>parentRule=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSVariablesRule interface represents a &#64;variables rule within a CSS
+style sheet. The &#64;variables rule is used to specify variables.</p>
+<p>cssutils uses a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a>  to
+represent the variables.</p>
+<p>Format:</p>
+<div class="highlight-python"><pre>variables
+    VARIABLES_SYM S* medium [ COMMA S* medium ]* LBRACE S* 
+    variableset* '}' S*
+    ;</pre>
+</div>
+<p>for variableset see <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a></p>
+<p><strong>Media are not implemented. Reason is that cssutils is using CSS
+variables in a kind of preprocessing and therefor no media information
+is available at this stage. For now do not use media!</strong></p>
+<p>Example:</p>
+<div class="highlight-python"><pre>@variables {
+  CorporateLogoBGColor: #fe8d12;
+}
+
+div.logoContainer {
+  background-color: var(CorporateLogoBGColor);
+}</pre>
+</div>
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.atkeyword">
+<tt class="descname">atkeyword</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.atkeyword" title="Permalink to this definition">¶</a></dt>
+<dd>Literal keyword of an &#64;rule (e.g. <tt class="docutils literal"><span class="pre">&#64;IMport</span></tt>).</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The parsable textual representation of this rule.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.media">
+<tt class="descname">media</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.media" title="Permalink to this definition">¶</a></dt>
+<dd>NOT IMPLEMENTED! As cssutils resolves variables during serializing media information is lost.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parent" title="Permalink to this definition">¶</a></dt>
+<dd>The Parent Node of this CSSRule or None.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.parentRule">
+<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parentRule" title="Permalink to this definition">¶</a></dt>
+<dd>If this rule is contained inside another rule (e.g. a style rule inside an &#64;media block), this is the containing rule. If this rule is not nested inside any other rules, this returns None.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.parentStyleSheet">
+<tt class="descname">parentStyleSheet</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.parentStyleSheet" title="Permalink to this definition">¶</a></dt>
+<dd>The style sheet that contains this rule.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.type" title="Permalink to this definition">¶</a></dt>
+<dd>The type of this rule, as defined by a CSSRule type constant.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.typeString">
+<tt class="descname">typeString</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.typeString" title="Permalink to this definition">¶</a></dt>
+<dd>Descriptive name of this rule&#8217;s type.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.valid">
+<tt class="descname">valid</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.valid" title="Permalink to this definition">¶</a></dt>
+<dd>NOT IMPLEMTED REALLY (TODO)</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesRule.variables">
+<tt class="descname">variables</tt><a class="headerlink" href="#cssutils.css.CSSVariablesRule.variables" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The variables of this rule set, a <a title="cssutils.css.CSSVariablesDeclaration" class="reference internal" href="#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a>.</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="csscomment">
 <h3><tt class="docutils literal"><span class="pre">CSSComment</span></tt><a class="headerlink" href="#csscomment" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
@@ -1275,6 +1361,138 @@ document</dd>
 </div>
 <div class="section" id="style-related-classes-cssstyledeclaration-property-cssvalue-etc">
 <h2>Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc<a class="headerlink" href="#style-related-classes-cssstyledeclaration-property-cssvalue-etc" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cssvariablesdeclaration">
+<h3><tt class="docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt><a class="headerlink" href="#cssvariablesdeclaration" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cssutils.css.CSSVariablesDeclaration">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSVariablesDeclaration</tt><big>(</big><em>cssText=u''</em>, <em>parentRule=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSVariablesDeclaration interface represents a single block of
+variable declarations.</p>
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesDeclaration.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) A parsable textual representation of the declaration block excluding the surrounding curly braces.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSVariablesDeclaration.getVariableValue">
+<tt class="descname">getVariableValue</tt><big>(</big><em>variableName</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.getVariableValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to retrieve the value of a variable if it has been explicitly
+set within this variable declaration block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>variableName</em> &#8211; The name of the variable.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">the value of the variable if it has been explicitly set in this
+variable declaration block. Returns the empty string if the
+variable has not been set.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSVariablesDeclaration.item">
+<tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to retrieve the variables that have been explicitly set in
+this variable declaration block. The order of the variables
+retrieved using this method does not have to be the order in which
+they were set. This method can be used to iterate over all variables
+in this variable declaration block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>index</em> &#8211; of the variable name to retrieve, negative values behave like
+negative indexes on Python lists, so -1 is the last element</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The name of the variable at this ordinal position. The empty
+string if no variable exists at this position.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSVariablesDeclaration.keys">
+<tt class="descname">keys</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.keys" title="Permalink to this definition">¶</a></dt>
+<dd>Analoguous to standard dict returns variable names which are set in
+this declaration.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesDeclaration.length">
+<tt class="descname">length</tt><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.length" title="Permalink to this definition">¶</a></dt>
+<dd>The number of variables that have been explicitly set in this variable declaration block. The range of valid indices is 0 to length-1 inclusive.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesDeclaration.parentRule">
+<tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.parentRule" title="Permalink to this definition">¶</a></dt>
+<dd>(DOM) The CSS rule that contains this declaration block or None if this block is not attached to a CSSRule.</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSVariablesDeclaration.removeVariable">
+<tt class="descname">removeVariable</tt><big>(</big><em>variableName</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.removeVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to remove a variable if it has been explicitly set within this
+variable declaration block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>variableName</em> &#8211; The name of the variable.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the value of the variable if it has been explicitly set for this
+variable declaration block. Returns the empty string if the
+variable has not been set.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+Raised if this declaration is readonly is readonly.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariablesDeclaration.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.css.CSSVariablesDeclaration.setVariable">
+<tt class="descname">setVariable</tt><big>(</big><em>variableName</em>, <em>value</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariablesDeclaration.setVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to set a variable value within this variable declaration block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>variableName</em> &#8211; The name of the CSS variable.</li>
+<li><em>value</em> &#8211; The new value of the variable, may also be a CSSValue object.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr"><tt class="xref docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+Raised if the specified value has a syntax error and is
+unparsable.</li>
+<li><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr"><tt class="xref docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+Raised if this declaration is readonly or the property is
+readonly.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="cssstyledeclaration">
 <h3><tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt><a class="headerlink" href="#cssstyledeclaration" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
@@ -2068,6 +2286,35 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 <dd>A CSS function value like rect() etc.</dd></dl>
 
 </div>
+<div class="section" id="cssvariable">
+<h4><tt class="docutils literal"><span class="pre">CSSVariable</span></tt><a class="headerlink" href="#cssvariable" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.CSSVariable">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSVariable</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CSSVariable represents a call to CSS Variable.</p>
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariable.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSVariable.cssText" title="Permalink to this definition">¶</a></dt>
+<dd>A string representation of the current variable.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariable.cssValueTypeString">
+<tt class="descname">cssValueTypeString</tt><a class="headerlink" href="#cssutils.css.CSSVariable.cssValueTypeString" title="Permalink to this definition">¶</a></dt>
+<dd>(readonly) Name of cssValueType.</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariable.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSVariable.seq" title="Permalink to this definition">¶</a></dt>
+<dd>Internal readonly attribute, <strong>DO NOT USE</strong>!</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSVariable.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.CSSVariable.value" title="Permalink to this definition">¶</a></dt>
+<dd>Find contained sheet and &#64;variables there</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="expressionvalue">
 <h4><tt class="docutils literal"><span class="pre">ExpressionValue</span></tt><a class="headerlink" href="#expressionvalue" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
@@ -2123,6 +2370,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
 <li><a class="reference external" href="#cssnamespacerule"><tt class="docutils literal"><span class="pre">CSSNamespaceRule</span></tt></a></li>
 <li><a class="reference external" href="#csspagerule"><tt class="docutils literal"><span class="pre">CSSPageRule</span></tt></a></li>
 <li><a class="reference external" href="#cssstylerule"><tt class="docutils literal"><span class="pre">CSSStyleRule</span></tt></a></li>
+<li><a class="reference external" href="#cssvariablesrule"><tt class="docutils literal"><span class="pre">CSSVariablesRule</span></tt></a></li>
 <li><a class="reference external" href="#csscomment"><tt class="docutils literal"><span class="pre">CSSComment</span></tt></a></li>
 </ul>
 </li>
@@ -2132,6 +2380,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
 </ul>
 </li>
 <li><a class="reference external" href="#style-related-classes-cssstyledeclaration-property-cssvalue-etc">Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc</a><ul>
+<li><a class="reference external" href="#cssvariablesdeclaration"><tt class="docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a></li>
 <li><a class="reference external" href="#cssstyledeclaration"><tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a></li>
 <li><a class="reference external" href="#property"><tt class="docutils literal"><span class="pre">Property</span></tt></a></li>
 <li><a class="reference external" href="#values">Values</a><ul>
@@ -2139,6 +2388,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
 <li><a class="reference external" href="#cssprimitivevalue"><tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt></a></li>
 <li><a class="reference external" href="#cssvaluelist"><tt class="docutils literal"><span class="pre">CSSValueList</span></tt></a></li>
 <li><a class="reference external" href="#cssfunction"><tt class="docutils literal"><span class="pre">CSSFunction</span></tt></a></li>
+<li><a class="reference external" href="#cssvariable"><tt class="docutils literal"><span class="pre">CSSVariable</span></tt></a></li>
 <li><a class="reference external" href="#expressionvalue"><tt class="docutils literal"><span class="pre">ExpressionValue</span></tt></a></li>
 </ul>
 </li>
@@ -2192,12 +2442,12 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7a6 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
     </div>
   </body>
 </html>

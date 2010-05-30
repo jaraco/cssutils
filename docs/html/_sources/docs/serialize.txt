@@ -36,10 +36,7 @@ Quite a few preferences of the cssutils serializer may be tweaked.
 
 To set a preference use::
 
-    sheet = CSSStyleSheet()
-    sheet.setSerializerPref(pref, value)
-
-You may also set ``cssutils.ser.prefs.PREFNAME = NEWVALUE`` directly.
+    cssutils.ser.prefs.PREFNAME = NEWVALUE
 
 Preferences are always used *globally*, so for all stylesheets until preferences are set again.
 
@@ -58,10 +55,7 @@ A custom serializer must implement all methods the default one provides. Easiest
 
 To set a new serializer, use::
 
-    sheet = CSSStyleSheet()
-    sheet.setSerializer(newser)
-    # uses the new serializer:
-    print sheet.cssText 
+    cssutils.setSerializer(serializer)
 
 You may also set :attr:`cssutils.ser` directly but the above method is the preferred one.
 
