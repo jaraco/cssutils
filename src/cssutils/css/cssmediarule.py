@@ -38,7 +38,7 @@ class CSSMediaRule(cssrule.CSSRule):
             self.media = cssutils.stylesheets.MediaList()
 
         self.name = name
-        self.cssRules = cssutils.css.cssrulelist.CSSRuleList()
+        self.cssRules = cssutils.css.CSSRuleList()
         self._readonly = readonly
 
     def __iter__(self):
@@ -62,9 +62,11 @@ class CSSMediaRule(cssrule.CSSRule):
         cssRules.append = self.insertRule
         cssRules.extend = self.insertRule
         cssRules.__delitem__ == self.deleteRule
+        
         for rule in cssRules:
-            rule._parentStyleSheet = None
+            rule._parentStyleSheet = None #self.parentStyleSheet?
             rule._parentRule = self
+            
         self._cssRules = cssRules
 
     cssRules = property(lambda self: self._cssRules, _setCssRules,
@@ -100,6 +102,7 @@ class CSSMediaRule(cssrule.CSSRule):
         
         # might be (cssText, namespaces)
         cssText, namespaces = self._splitNamespacesOff(cssText)
+        
         try:
             # use parent style sheet ones if available
             namespaces = self.parentStyleSheet.namespaces
@@ -112,19 +115,27 @@ class CSSMediaRule(cssrule.CSSRule):
             self._log.error(u'CSSMediaRule: No CSSMediaRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
-        else:
+        
+        else:            
             # save if parse goes wrong
-            newMedia = cssutils.stylesheets.MediaList()
+            oldMedia = self._media
+            oldName = self._name
+            oldCssRules = self._cssRules
+            
             ok = True
 
             # media
             mediatokens, end = self._tokensupto2(tokenizer, 
-                                            mediaqueryendonly=True,
-                                            separateEnd=True)        
+                                                 mediaqueryendonly=True,
+                                                 separateEnd=True)        
             if u'{' == self._tokenvalue(end)\
                or self._prods.STRING == self._type(end):
-                newMedia.mediaText = mediatokens
-                ok = ok and newMedia.wellformed
+                self.media = cssutils.stylesheets.MediaList(parentRule=self)
+                # TODO: remove special case
+                self.media.mediaText = mediatokens
+                ok = ok and self.media.wellformed
+            else:
+                ok = False
             
             # name (optional)
             name = None
@@ -133,8 +144,8 @@ class CSSMediaRule(cssrule.CSSRule):
                 name = self._stringtokenvalue(end)
                 # TODO: for now comments are lost after name
                 nametokens, end = self._tokensupto2(tokenizer, 
-                                                blockstartonly=True,
-                                                separateEnd=True)
+                                                    blockstartonly=True,
+                                                    separateEnd=True)
                 wellformed, expected = self._parse(None, 
                                                    nameseq, 
                                                    nametokens, 
@@ -172,16 +183,20 @@ class CSSMediaRule(cssrule.CSSRule):
                                 token=nonetoken)
             else:                
                 # for closures: must be a mutable
-                newcssrules = []
                 new = {'wellformed': True }
-                
+                                   
+                def COMMENT(expected, seq, token, tokenizer=None):
+                    self.insertRule(cssutils.css.CSSComment([token],
+                                                            parentRule=self,
+                                                            parentStyleSheet=self.parentStyleSheet))
+                    return expected
+
                 def ruleset(expected, seq, token, tokenizer):
-                    rule = cssutils.css.CSSStyleRule(parentRule=self)
-                    rule.cssText = (self._tokensupto2(tokenizer, token), 
-                                    namespaces)
+                    rule = cssutils.css.CSSStyleRule(parentRule=self,
+                                                     parentStyleSheet=self.parentStyleSheet)
+                    rule.cssText = self._tokensupto2(tokenizer, token)
                     if rule.wellformed:
-                        #rule._parentStyleSheet=self.parentStyleSheet
-                        seq.append(rule)
+                        self.insertRule(rule)
                     return expected
         
                 def atrule(expected, seq, token, tokenizer):
@@ -196,20 +211,22 @@ class CSSMediaRule(cssrule.CSSRule):
                                         token = token, 
                                         error=xml.dom.HierarchyRequestErr)
                     else:
-                        rule = cssutils.css.CSSUnknownRule(parentRule=self, 
+                        rule = cssutils.css.CSSUnknownRule(tokens,
+                                                           parentRule=self, 
                                         parentStyleSheet=self.parentStyleSheet)
-                        rule.cssText = tokens
                         if rule.wellformed:
-                            seq.append(rule)
+                            self.insertRule(rule)
                     return expected
                 
-                def COMMENT(expected, seq, token, tokenizer=None):
-                    seq.append(cssutils.css.CSSComment([token]))
-                    return expected
+                # save for possible reset
+                oldCssRules = self.cssRules
+                
+                self.cssRules = cssutils.css.CSSRuleList()
+                seq = [] # not used really
                 
                 tokenizer = (t for t in cssrulestokens) # TODO: not elegant!
                 wellformed, expected = self._parse(braceOrEOF, 
-                                                   newcssrules, 
+                                                   seq, 
                                                    tokenizer, {
                                                      'COMMENT': COMMENT,
                                                      'CHARSET_SYM': atrule,
@@ -224,17 +241,13 @@ class CSSMediaRule(cssrule.CSSRule):
                                                    new=new)
                 ok = ok and wellformed
                 
-                # no post condition                    
-                if ok:
-                    self.media = newMedia
-                    self.name = name
-                    self._setSeq(nameseq)
-                    
-                    del self._cssRules[:]
-                    for r in newcssrules:
-                        r._parentRule = self
-                        self._cssRules.append(r)
-        
+            if ok:
+                self.name = name
+                self._setSeq(nameseq)
+            else:
+                self._media = oldMedia
+                self._cssRules = oldCssRules
+                                            
     cssText = property(_getCssText, _setCssText,
                        doc=u"(DOM) The parsable textual representation of this "
                            u"rule.")

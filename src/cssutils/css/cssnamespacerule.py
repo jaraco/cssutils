@@ -237,6 +237,19 @@ class CSSNamespaceRule(cssrule.CSSRule):
     namespaceURI = property(lambda self: self._namespaceURI, _setNamespaceURI,
         doc="URI (handled as simple string) of the defined namespace.")
 
+    def _replaceNamespaceURI(self, namespaceURI):
+        """Used during parse of new sheet only!
+        
+        :param namespaceURI: the new value for this rules namespaceURI
+        """
+        self._namespaceURI = namespaceURI
+        for i, x in enumerate(self._seq):
+            if 'namespaceURI' == x.type:
+                self._seq._readonly = False 
+                self._seq.replace(i, namespaceURI, 'namespaceURI')
+                self._seq._readonly = True
+                break
+
     def _setPrefix(self, prefix=None):
         """
         :param prefix: the new prefix 

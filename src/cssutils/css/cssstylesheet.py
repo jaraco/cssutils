@@ -45,9 +45,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._ownerRule = ownerRule
         self.cssRules = cssutils.css.CSSRuleList()
         self._namespaces = _Namespaces(parentStyleSheet=self, log=self._log)
+        self._variables = CSSVariablesDeclaration()
         self._readonly = readonly
 
-        self._variables = CSSVariablesDeclaration()
         # used only during setting cssText by parse*()
         self.__encodingOverride = None
         self._fetcher = None
@@ -78,8 +78,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 id(self))
 
     def _cleanNamespaces(self):
-        "Remove all namespace rules with same namespaceURI but last one set."
-        rules = self._cssRules
+        "Remove all namespace rules with same namespaceURI but last."
+        rules = self.cssRules
         namespaceitems = self.namespaces.items()
         i = 0
         while i < len(rules):
@@ -106,14 +106,16 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         "Set new cssRules and update contained rules refs."
         cssRules.append = self.insertRule
         cssRules.extend = self.insertRule
-        cssRules.__delitem__ == self.deleteRule
+        cssRules.__delitem__ = self.deleteRule
+
         for rule in cssRules:
             rule._parentStyleSheet = self
+            
         self._cssRules = cssRules
 
     cssRules = property(lambda self: self._cssRules, _setCssRules,
-            "All Rules in this style sheet, a "
-            ":class:`~cssutils.css.CSSRuleList`.")
+                        u"All Rules in this style sheet, a "
+                        u":class:`~cssutils.css.CSSRuleList`.")
 
     def _getCssText(self):
         "Textual representation of the stylesheet (a byte string)."
@@ -136,52 +138,47 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._checkReadonly()
         
         cssText, namespaces = self._splitNamespacesOff(cssText)
-        if not namespaces:
-            namespaces = _SimpleNamespaces(log=self._log)
 
         tokenizer = self._tokenize2(cssText)
-        newseq = [] #cssutils.css.CSSRuleList()
 
         # for closures: must be a mutable
-        new = {'encoding': None, # needed for setting encoding of @import rules
-               'namespaces': namespaces}
+        new = {'encoding': None}
+        # needed for setting encoding of @import rules?!
+        
         def S(expected, seq, token, tokenizer=None):
             # @charset must be at absolute beginning of style sheet
-            if expected == 0:
-                return 1
-            else:
-                return expected
+            return max(1, expected)
 
         def COMMENT(expected, seq, token, tokenizer=None):
             "special: sets parent*"
-            comment = cssutils.css.CSSComment([token],
-                                parentStyleSheet=self.parentStyleSheet)
-            seq.append(comment)
-            return expected
+            self.insertRule(cssutils.css.CSSComment([token],
+                            parentStyleSheet=self))
+            return max(1, expected)
 
         def charsetrule(expected, seq, token, tokenizer):
+            # parse and consume tokens in any case
             rule = cssutils.css.CSSCharsetRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
-            if expected > 0 or len(seq) > 0:
-                self._log.error(
-                    u'CSSStylesheet: CSSCharsetRule only allowed at beginning '
-                    u'of stylesheet.',
-                    token, xml.dom.HierarchyRequestErr)
-            else:
-                if rule.wellformed:
-                    seq.append(rule)
-                    new['encoding'] = rule.encoding
-            return 1
 
+            if expected > 0:
+                self._log.error(u'CSSStylesheet: CSSCharsetRule only allowed '
+                                u'at beginning of stylesheet.',
+                                token, xml.dom.HierarchyRequestErr)
+                return expected
+            elif rule.wellformed:
+                self.insertRule(rule)
+                new['encoding'] = rule.encoding
+
+            return 1
+        
         def importrule(expected, seq, token, tokenizer):
+            # parse and consume tokens in any case
             if new['encoding']:
                 # set temporarily as used by _resolveImport
                 # save newEncoding which have been set by resolveImport
-                self.__newEncoding = new['encoding']
-
+                self.__newEncoding = new['encoding']    
             rule = cssutils.css.CSSImportRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
-
             try:
                 # remove as only used temporarily but may not be set at all
                 del self.__newEncoding
@@ -192,90 +189,109 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self._log.error(
                     u'CSSStylesheet: CSSImportRule not allowed here.',
                     token, xml.dom.HierarchyRequestErr)
-            else:
-                if rule.wellformed:
-                    seq.append(rule)
-
+                return expected
+            elif rule.wellformed:
+                self.insertRule(rule)
+        
             return 1
 
         def namespacerule(expected, seq, token, tokenizer):
+            # parse and consume tokens in any case
             rule = cssutils.css.CSSNamespaceRule(
-                                cssText=self._tokensupto2(tokenizer, token),
-                                parentStyleSheet=self)
+                                            cssText=self._tokensupto2(tokenizer,
+                                                                      token),
+                                            parentStyleSheet=self)
+            
             if expected > 2:
-                self._log.error(
-                    u'CSSStylesheet: CSSNamespaceRule not allowed here.',
-                    token, xml.dom.HierarchyRequestErr)
-            else:
-                if rule.wellformed:
-                    for i, r in enumerate(seq):
-                        if r.type == r.NAMESPACE_RULE and\
-                           r.prefix == rule.prefix:
-                            # replace as doubled:
-                            seq[i] = rule
-                            self._log.info(
-                                u'CSSStylesheet: CSSNamespaceRule with same '
-                                u'prefix found, replacing: %r'
-                                % r.cssText,
-                                token, neverraise=True)
-                    seq.append(rule)
-                    # temporary namespaces given to CSSStyleRule and @media
-                    new['namespaces'][rule.prefix] = rule.namespaceURI
+                self._log.error(u'CSSStylesheet: CSSNamespaceRule not allowed '
+                                u'here.', token, xml.dom.HierarchyRequestErr)
+                return expected
+            elif rule.wellformed:
+                if rule.prefix not in self.namespaces:
+                    # add new if not same prefix
+                    self.insertRule(rule, _clean=False)
+                else:
+                    # same prefix => replace namespaceURI
+                    for r in self.cssRules.rulesOfType(rule.NAMESPACE_RULE):
+                        if r.prefix == rule.prefix:
+                            r._replaceNamespaceURI(rule.namespaceURI)
+                
+                self._namespaces[rule.prefix] = rule.namespaceURI
+            
             return 2
 
         def variablesrule(expected, seq, token, tokenizer):
+            # parse and consume tokens in any case
             rule = cssutils.css.CSSVariablesRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
-            if rule.wellformed:
-                seq.append(rule)
+            
+            if expected > 2:
+                self._log.error(u'CSSStylesheet: CSSVariablesRule not allowed '
+                                u'here.', token, xml.dom.HierarchyRequestErr)
+                return expected
+            elif rule.wellformed:
+                self.insertRule(rule)
+                self._updateVariables()
+        
             return 2
 
         def fontfacerule(expected, seq, token, tokenizer):
+            # parse and consume tokens in any case
             rule = cssutils.css.CSSFontFaceRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.wellformed:
-                seq.append(rule)
+                self.insertRule(rule)
             return 3
 
         def mediarule(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSMediaRule()
-            rule.cssText = (self._tokensupto2(tokenizer, token),
-                            new['namespaces'])
+            # parse and consume tokens in any case
+            rule = cssutils.css.CSSMediaRule(parentStyleSheet=self)
+            rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.wellformed:
-                rule._parentStyleSheet=self
-                for r in rule:
-                    r._parentStyleSheet=self
-                seq.append(rule)
+                self.insertRule(rule)
             return 3
 
         def pagerule(expected, seq, token, tokenizer):
+            # parse and consume tokens in any case
             rule = cssutils.css.CSSPageRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.wellformed:
-                seq.append(rule)
+                self.insertRule(rule)
             return 3
 
         def unknownrule(expected, seq, token, tokenizer):
-            self._log.warn(
-                    u'CSSStylesheet: Unknown @rule found.',
-                    token, neverraise=True)
-            rule = cssutils.css.CSSUnknownRule(parentStyleSheet=self)
-            rule.cssText = self._tokensupto2(tokenizer, token)
+            # parse and consume tokens in any case
+            self._log.warn(u'CSSStylesheet: Unknown @rule found.',
+                           token, neverraise=True)
+            rule = cssutils.css.CSSUnknownRule(self._tokensupto2(tokenizer, 
+                                                                 token),
+                                               parentStyleSheet=self)
             if rule.wellformed:
-                seq.append(rule)
-            return expected
+                self.insertRule(rule)
+                
+            return max(1, expected)
 
         def ruleset(expected, seq, token, tokenizer):
-            rule = cssutils.css.CSSStyleRule()
-            rule.cssText = (self._tokensupto2(tokenizer, token),
-                            new['namespaces'])
+            # parse and consume tokens in any case
+            rule = cssutils.css.CSSStyleRule(parentStyleSheet=self)
+            rule.cssText = self._tokensupto2(tokenizer, token)
             if rule.wellformed:
-                rule._parentStyleSheet=self
-                seq.append(rule)
+                self.insertRule(rule)
             return 3
 
-        # expected:
-        # ['CHARSET', 'IMPORT', 'NAMESPACE', ('PAGE', 'MEDIA', ruleset)]
+        # save for possible reset
+        oldCssRules = self.cssRules
+        oldNamespaces = self._namespaces
+        
+        self.cssRules = cssutils.css.CSSRuleList()
+        # simple during parse
+        self._namespaces = namespaces
+        self._variables = CSSVariablesDeclaration()
+
+        # not used?!
+        newseq = []
+
+        # ['CHARSET', 'IMPORT', ('VAR', NAMESPACE'), ('PAGE', 'MEDIA', ruleset)]
         wellformed, expected = self._parse(0, newseq, tokenizer,
             {'S': S,
              'COMMENT': COMMENT,
@@ -291,11 +307,17 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
              'ATKEYWORD': unknownrule
              },
              default=ruleset)
-
+        
         if wellformed:
-            del self._cssRules[:]
-            for rule in newseq:
-                self.insertRule(rule, _clean=False)
+            # use proper namespace object
+            self._namespaces = _Namespaces(parentStyleSheet=self, log=self._log)
+            self._cleanNamespaces()
+            
+        else:
+            # reset
+            self._cssRules = oldCssRules
+            self._namespaces = oldNamespaces
+            self._updateVariables()
             self._cleanNamespaces()
 
     cssText = property(_getCssText, _setCssText,
@@ -534,7 +556,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             # parse the new rule(s)
             tempsheet.cssText = (rule, self._namespaces)
-
+            
             if len(tempsheet.cssRules) != newrulescount or (not isinstance(
                tempsheet.cssRules[newruleindex], cssutils.css.CSSRule)):
                 self._log.error(u'CSSStyleSheet: Not a CSSRule: %s' % rule)
