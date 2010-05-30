@@ -45,11 +45,11 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         if isinstance(mediaText, list):
             mediaText = u','.join(mediaText)
 
+        self._parentRule = parentRule
+        
         if mediaText:
             self.mediaText = mediaText
             
-        self._parentRule = parentRule
-
         self._readonly = readonly
 
     def __repr__(self):
