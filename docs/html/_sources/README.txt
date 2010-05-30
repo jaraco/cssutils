@@ -22,18 +22,19 @@ Based upon and partly implementing the following specifications :
     MediaQueries are part of ``stylesheets.MediaList`` since v0.9.4, used in @import and @media rules.
 `Namespaces <http://dev.w3.org/csswg/css3-namespace/>`__
     Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version
+`CSS3 Module: Pages Media <`http://www.w3.org/TR/css3-page/>`__
+    Most properties of this spec are implemented and the additional @rules should at least parse (as ``CSSUnknownRule``)
 `Selectors <http://www.w3.org/TR/css3-selectors/>`__
     The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
 `Variables <http://disruptive-innovations.com/zoo/cssvariables/>`__
-    Experimental specification of CSS Variables. Currently in development in cssutils.
+    Experimental specification of CSS Variables which cssutils implements partly. Media specific variables are not supported.
 
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
     DOM for package css
 `DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`__
     DOM for package stylesheets
 `CSSOM <http://dev.w3.org/csswg/cssom/>`__
-    A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...
-
+    A few details (mainly the NamespaceRule DOM) are taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...
 
 The cssutils tokenizer is a customized implementation of `CSS3 Module: Syntax (W3C Working Draft 13 August 2003) <http://www.w3.org/TR/css3-syntax/>`_ which itself is based on the CSS 2.1 tokenizer. It tries to be as compliant as possible but uses some (helpful) parts of the CSS 2.1 tokenizer.
 
@@ -46,7 +47,7 @@ There is also a low-traffic `cssutils discussion group <http://groups.google.com
 
 Compatibility
 =============
-cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (2.5.1) too.
+cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (from v2.5.1) too.
 
 
 License

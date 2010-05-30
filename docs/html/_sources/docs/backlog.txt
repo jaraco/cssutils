@@ -83,8 +83,6 @@ performance
 -----------
 :prio: 3
 
-- profile.py
-
 
 serializer
 ----------

@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.7a6 documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7b1 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
-        VERSION:     '0.9.7a6',
+        URL_ROOT:    '',
+        VERSION:     '0.9.7b1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,9 +19,9 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a6 documentation" href="index.html" />
-    <link rel="next" title="version migration" href="docs/migrate.html" />
-    <link rel="prev" title="scripts" href="docs/scripts.html" /> 
+    <link rel="top" title="cssutils v0.9.7b1 documentation" href="index.html" />
+    <link rel="next" title="parsing CSS" href="docs/parse.html" />
+    <link rel="prev" title="README" href="README.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,12 +34,12 @@
           <a href="modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="docs/migrate.html" title="version migration"
+          <a href="docs/parse.html" title="parsing CSS"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="docs/scripts.html" title="scripts"
+          <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a6 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -88,6 +88,27 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>HEAD</p>
 <dl class="docutils">
+<dt>0.9.7b1 100530</dt>
+<dd><ul class="first last">
+<li><p class="first"><strong>API CHANGE</strong>: Child objects like the <tt class="docutils literal"><span class="pre">cssRules</span></tt> of a <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> or <tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt> are no longer kept after resetting the complete contents of an object (setting <tt class="docutils literal"><span class="pre">cssText</span></tt>). This should not be expected anyway but if you relied on something like the following please beware:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;a { color: red}&#39;</span><span class="p">)</span>
+<span class="n">initial_rules</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span>
+<span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span> <span class="o">=</span> <span class="s">&#39;b { color: green}&#39;</span>
+<span class="c"># true until 0.9.6a6: assert sheet.cssRules == initial_rules, but now:</span>
+<span class="k">assert</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssRules</span> <span class="o">!=</span> <span class="n">initial_rules</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>IMPROVEMENT</strong>: Massive speed improvement of handling of CSSVariables of a stylesheet which due to naive implementation was unbelievable slow when using a lot of vars... Should now scale a lot better, about factor 5-20 depending of amount of variables used.</p>
+</li>
+<li><p class="first">IMPROVEMENT: Fair amount of refactoring resulting in a bit speed improvement generally too</p>
+</li>
+<li><p class="first">CHANGE: If a CSS variable should be resolved (<tt class="docutils literal"><span class="pre">cssutils.ser.prefs.resolveVariables</span> <span class="pre">==</span> <span class="pre">true</span></tt>) but no value can be found a WARNING is logged now. Should be an ERROR actually but as currently lots of &#8220;fake&#8221; errors are reported would probably hurt more than help. A future release might improve this.</p>
+</li>
+<li><p class="first">BUGFIX: Syntax of value of CSS Fonts Module Level 3 <tt class="docutils literal"><span class="pre">src</span></tt> property now validates if local font name is given with a quoted name, e.g.: <tt class="docutils literal"><span class="pre">src:</span> <span class="pre">local('Yanone</span> <span class="pre">Kaffeesatz')</span></tt></p>
+</li>
+</ul>
+</dd>
 <dt>0.9.7a6 100523</dt>
 <dd><ul class="first">
 <li><p class="first"><strong>API CHANGE (major)</strong>: When setting an objects <tt class="docutils literal"><span class="pre">cssText</span></tt> (or <tt class="docutils literal"><span class="pre">selectorText</span></tt> etc) property the underlying object is replaced with a new one now. E.g. if setting <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleRule.selectorText</span></tt> the underlying <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleRule.selectorList</span></tt> object is swapped to a new <tt class="docutils literal"><span class="pre">SelectorList</span></tt> object. This should be expected but cssutils until now kept the exact same object and changed its content <em>in-place</em>. Please be aware! (Also the strange <tt class="docutils literal"><span class="pre">_absorb</span></tt> method of some objects is gone which was used for this.)</p>
@@ -111,7 +132,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <li>IMPROVEMENT: Refactored quite a lot and added a few tests for variables</li>
 </ul>
 </dd>
-<dt>0.9.7a6 100523</dt>
+<dt>0.9.7a5 100523</dt>
 <dd><ul class="first last simple">
 <li>same changes as 0.9.7a6 but release was incomplete :(</li>
 </ul>
@@ -833,7 +854,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-05-23</span> <span class="pre">20:59:14</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">23</span> <span class="pre">Mai</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1964</span> <span class="pre">2010-05-23</span> <span class="pre">18:59:14Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-05-30</span> <span class="pre">14:08:53</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">30</span> <span class="pre">Mai</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1984</span> <span class="pre">2010-05-30</span> <span class="pre">12:08:53Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -2182,11 +2203,11 @@ first version to try if i can bring it to work at all</p>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="docs/scripts.html"
-                                  title="previous chapter">scripts</a></p>
+            <p class="topless"><a href="README.html"
+                                  title="previous chapter">README</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="docs/migrate.html"
-                                  title="next chapter">version migration</a></p>
+            <p class="topless"><a href="docs/parse.html"
+                                  title="next chapter">parsing CSS</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="_sources/CHANGELOG.txt"
@@ -2219,17 +2240,17 @@ first version to try if i can bring it to work at all</p>
           <a href="modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="docs/migrate.html" title="version migration"
+          <a href="docs/parse.html" title="parsing CSS"
              >next</a> |</li>
         <li class="right" >
-          <a href="docs/scripts.html" title="scripts"
+          <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a6 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
     </div>
   </body>
 </html>

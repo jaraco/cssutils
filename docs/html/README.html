@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>README &mdash; cssutils v0.9.7a6 documentation</title>
+    <title>README &mdash; cssutils v0.9.7b1 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
-        VERSION:     '0.9.7a6',
+        URL_ROOT:    '',
+        VERSION:     '0.9.7b1',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,8 +19,8 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7a6 documentation" href="index.html" />
-    <link rel="next" title="CSS codec" href="docs/codec.html" />
+    <link rel="top" title="cssutils v0.9.7b1 documentation" href="index.html" />
+    <link rel="next" title="CHANGELOG" href="CHANGELOG.html" />
     <link rel="prev" title="cssutils" href="index.html" /> 
   </head>
   <body>
@@ -34,12 +34,12 @@
           <a href="modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="docs/codec.html" title="CSS codec"
+          <a href="CHANGELOG.html" title="CHANGELOG"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="cssutils"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a6 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -75,16 +75,18 @@
 <dd>MediaQueries are part of <tt class="docutils literal"><span class="pre">stylesheets.MediaList</span></tt> since v0.9.4, used in &#64;import and &#64;media rules.</dd>
 <dt><a class="reference external" href="http://dev.w3.org/csswg/css3-namespace/">Namespaces</a></dt>
 <dd>Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version</dd>
+<dt><a class="reference external" href="`http://www.w3.org/TR/css3-page/">CSS3 Module: Pages Media</a></dt>
+<dd>Most properties of this spec are implemented and the additional &#64;rules should at least parse (as <tt class="docutils literal"><span class="pre">CSSUnknownRule</span></tt>)</dd>
 <dt><a class="reference external" href="http://www.w3.org/TR/css3-selectors/">Selectors</a></dt>
 <dd>The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (<em>should</em> mind though ;) )</dd>
 <dt><a class="reference external" href="http://disruptive-innovations.com/zoo/cssvariables/">Variables</a></dt>
-<dd>Experimental specification of CSS Variables. Currently in development in cssutils.</dd>
+<dd>Experimental specification of CSS Variables which cssutils implements partly. Media specific variables are not supported.</dd>
 <dt><a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/css.html">DOM Level 2 Style CSS</a></dt>
 <dd>DOM for package css</dd>
 <dt><a class="reference external" href="http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html">DOM Level 2 Style Stylesheets</a></dt>
 <dd>DOM for package stylesheets</dd>
 <dt><a class="reference external" href="http://dev.w3.org/csswg/cssom/">CSSOM</a></dt>
-<dd>A few details (mainly the NamespaceRule DOM) is taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...</dd>
+<dd>A few details (mainly the NamespaceRule DOM) are taken from here. Plan is to move implementation to the stuff defined here which is newer but still no REC so might change anytime...</dd>
 </dl>
 <p>The cssutils tokenizer is a customized implementation of <a class="reference external" href="http://www.w3.org/TR/css3-syntax/">CSS3 Module: Syntax (W3C Working Draft 13 August 2003)</a> which itself is based on the CSS 2.1 tokenizer. It tries to be as compliant as possible but uses some (helpful) parts of the CSS 2.1 tokenizer.</p>
 <p>I guess cssutils is neither CSS 2.1 nor CSS 3 compliant but tries to at least be able to parse both grammars including some more real world cases (some CSS hacks are actually parsed and serialized). Both official grammars are not final nor bugfree but still feasible. cssutils aim is not to be fully compliant to any CSS specification (the specifications seem to be in a constant flow anyway) but cssutils <em>should</em> be able to read and write as many as possible CSS stylesheets &#8220;in the wild&#8221; while at the same time implement the official APIs which are well documented. Some minor extensions are provided as well.</p>
@@ -93,7 +95,7 @@
 </div>
 <div class="section" id="compatibility">
 <h3>Compatibility<a class="headerlink" href="#compatibility" title="Permalink to this headline">¶</a></h3>
-<p>cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (2.5.1) too.</p>
+<p>cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (from v2.5.1) too.</p>
 </div>
 <div class="section" id="license">
 <h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
@@ -152,8 +154,8 @@
             <p class="topless"><a href="index.html"
                                   title="previous chapter">cssutils</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="docs/codec.html"
-                                  title="next chapter">CSS codec</a></p>
+            <p class="topless"><a href="CHANGELOG.html"
+                                  title="next chapter">CHANGELOG</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="_sources/README.txt"
@@ -186,17 +188,17 @@
           <a href="modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="docs/codec.html" title="CSS codec"
+          <a href="CHANGELOG.html" title="CHANGELOG"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="cssutils"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7a6 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
     </div>
   </body>
 </html>
