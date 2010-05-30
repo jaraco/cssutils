@@ -186,9 +186,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 pass
             
             if expected > 1:
-                self._log.error(
-                    u'CSSStylesheet: CSSImportRule not allowed here.',
-                    token, xml.dom.HierarchyRequestErr)
+                self._log.error(u'CSSStylesheet: CSSImportRule not allowed '
+                                u'here.', token, xml.dom.HierarchyRequestErr)
                 return expected
             elif rule.wellformed:
                 self.insertRule(rule)
@@ -197,10 +196,9 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def namespacerule(expected, seq, token, tokenizer):
             # parse and consume tokens in any case
-            rule = cssutils.css.CSSNamespaceRule(
-                                            cssText=self._tokensupto2(tokenizer,
-                                                                      token),
-                                            parentStyleSheet=self)
+            rule = cssutils.css.CSSNamespaceRule(cssText=self._tokensupto2(tokenizer,
+                                                                           token),
+                                                 parentStyleSheet=self)
             
             if expected > 2:
                 self._log.error(u'CSSStylesheet: CSSNamespaceRule not allowed '
