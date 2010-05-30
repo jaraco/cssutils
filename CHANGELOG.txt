@@ -47,7 +47,7 @@ HEAD
 
     + **IMPROVEMENT**: Massive speed improvement of handling of CSSVariables of a stylesheet which due to naive implementation was unbelievable slow when using a lot of vars... Should now scale a lot better, about factor 5-20 depending of amount of variables used.
     + IMPROVEMENT: Fair amount of refactoring resulting in a bit speed improvement generally too
-    + CHANGE: If a CSS variable should be resolved (``cssutils.ser.prefs.resolveVariables == true``) but no value can be found en WARNING is logged now. Should be an ERROR actually but as currently lots of "fake" errors are reported would probably hurt more than help. A future release might improve this.
+    + CHANGE: If a CSS variable should be resolved (``cssutils.ser.prefs.resolveVariables == true``) but no value can be found a WARNING is logged now. Should be an ERROR actually but as currently lots of "fake" errors are reported would probably hurt more than help. A future release might improve this.
     + BUGFIX: Syntax of value of CSS Fonts Module Level 3 ``src`` property now validates if local font name is given with a quoted name, e.g.: ``src: local('Yanone Kaffeesatz')``
 
 

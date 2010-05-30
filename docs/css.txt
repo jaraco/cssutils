@@ -73,6 +73,12 @@ CSS rules
    :members:
    :inherited-members:
 
+``CSSVariablesRule``
+----------------
+.. autoclass:: cssutils.css.CSSVariablesRule
+   :members:
+   :inherited-members:
+
 ``CSSComment``
 --------------
 .. autoclass:: cssutils.css.CSSComment
@@ -99,6 +105,12 @@ Selector related classes: ``SelectorList`` and ``Selector``
 
 Style related classes: ``CSSStyleDeclaration``, ``Property``, ``CSSValue`` etc
 ==============================================================================================
+``CSSVariablesDeclaration``
+---------------------------
+.. autoclass:: cssutils.css.CSSVariablesDeclaration
+   :members:
+   :inherited-members:
+
 ``CSSStyleDeclaration``
 -----------------------
 .. autoclass:: cssutils.css.CSSStyleDeclaration
@@ -136,7 +148,6 @@ The official DOM provides no method to obtain all values set for a property. Css
     >>> print style.cssText
     background: red !important;
 
-
 ``Property``
 ------------
 .. autoclass:: cssutils.css.Property
@@ -165,7 +176,6 @@ Values
     :members:
     :inherited-members:
 
-
 ``CSSFunction``
 ~~~~~~~~~~~~~~~
 .. autoclass:: cssutils.css.cssvalue.CSSFunction
@@ -178,10 +188,17 @@ Values
         :members:
         :inherited-members:
 
+``CSSVariable``
+~~~~~~~~~~~~~~~~
+.. autoclass:: cssutils.css.CSSVariable
+    :members:
+    :inherited-members:
+
 ``ExpressionValue``
 ~~~~~~~~~~~~~~~~~~~
 .. autoclass:: cssutils.css.cssvalue.ExpressionValue
     :members:
+
 
 
 Additional Info

@@ -4,28 +4,25 @@ A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer 
 
 about this release
 ------------------
-0.9.7a6 is an alpha release but quite stable now I guess...
+0.9.7b1 is a beta release but quite stable now I guess...
 
 main changes
 ------------
-0.9.7 is quite a bit faster than 0.9.6.
+0.9.7b1 optimizes handling speed of CSSVariables *a lot*...
 
-0.9.7a6 100523
-    + **API CHANGE (major)**: When setting an objects ``cssText`` (or ``selectorText`` etc) property the underlying object is replaced with a new one now. E.g. if setting ``cssutils.css.CSSStyleRule.selectorText`` the underlying ``cssutils.css.CSSStyleRule.selectorList`` object is swapped to a new ``SelectorList`` object. This should be expected but cssutils until now kept the exact same object and changed its content *in-place*. Please be aware! (Also the strange ``_absorb`` method of some objects is gone which was used for this.)
+changes
+    + **API CHANGE**: Child objects like the ``cssRules`` of a ``CSSStyleSheet`` or ``CSSMediaRule`` are no longer kept after resetting the complete contents of an object (setting ``cssText``). This should not be expected anyway but if you relied on something like the following please beware::
 
-    + **API CHANGE (minor)**: Renamed ``cssutils.ser.prefs.keepUnkownAtRules`` to ``cssutils.ser.prefs.keepUnkownAtRules`` due to misspelling, see Issue #37. A DeprecationWarning is issued on use.
+            sheet = cssutils.parseString('a { color: red}')
+            initial_rules = sheet.cssRules
+            sheet.cssText = 'b { color: green}'
+            # true until 0.9.6a6: assert sheet.cssRules == initial_rules, but now:
+            assert sheet.cssRules != initial_rules
 
-    + API CHANGES (minor):
-        - ``cssutils.css.CSSImportRule.media`` and ``cssutils.css.CSSMediaRule.media`` are now writable (setting with a string or ``cssutils.stylesheets.MediaList``)
-        - msg level when setting ``cssutils.stylesheets.MediaList.appendMedium`` changed to INFO (was WARNING)
-        - ``str(cssutils.css.CSSStyleRule)`` slightly changed
-
-    - **IMPROVEMENT/BUGFIX**: Improved distribution: Egg release should no longer include the tests package, source release still should. Also added dependency package for tests (minimock) and removed documenation txt files from distribution (HTML still included of course). This also fixes Issue #36.
-
-    - IMPROVEMENT: cssutils issues a warning if a page selector is not one of the defined in the spec (``:first``, ``:left``, ``:right``).
-
-    - IMPROVEMENT: Refactored quite a lot and added a few tests for variables
-
+    + **IMPROVEMENT**: Massive speed improvement of handling of CSSVariables of a stylesheet which due to naive implementation was unbelievable slow when using a lot of vars... Should now scale a lot better, about factor 5-20 depending of amount of variables used.
+    + IMPROVEMENT: Fair amount of refactoring resulting in a bit speed improvement generally too
+    + CHANGE: If a CSS variable should be resolved (``cssutils.ser.prefs.resolveVariables == true``) but no value can be found a WARNING is logged now. Should be an ERROR actually but as currently lots of "fake" errors are reported would probably hurt more than help. A future release might improve this.
+    + BUGFIX: Syntax of value of CSS Fonts Module Level 3 ``src`` property now validates if local font name is given with a quoted name, e.g.: ``src: local('Yanone Kaffeesatz')``
 
 license
 -------
