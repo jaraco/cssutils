@@ -138,12 +138,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._checkReadonly()
         
         cssText, namespaces = self._splitNamespacesOff(cssText)
-
         tokenizer = self._tokenize2(cssText)
-
-        # for closures: must be a mutable
-        new = {'encoding': None}
-        # needed for setting encoding of @import rules?!
         
         def S(expected, seq, token, tokenizer=None):
             # @charset must be at absolute beginning of style sheet
@@ -167,23 +162,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 return expected
             elif rule.wellformed:
                 self.insertRule(rule)
-                new['encoding'] = rule.encoding
 
             return 1
         
         def importrule(expected, seq, token, tokenizer):
             # parse and consume tokens in any case
-            if new['encoding']:
-                # set temporarily as used by _resolveImport
-                # save newEncoding which have been set by resolveImport
-                self.__newEncoding = new['encoding']    
             rule = cssutils.css.CSSImportRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
-            try:
-                # remove as only used temporarily but may not be set at all
-                del self.__newEncoding
-            except AttributeError, e:
-                pass
             
             if expected > 1:
                 self._log.error(u'CSSStylesheet: CSSImportRule not allowed '
