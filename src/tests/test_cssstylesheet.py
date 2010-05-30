@@ -52,7 +52,9 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
 
         # set cssText
         s.cssText = 'b{}'
-        self.assertEqual(rules, s.cssRules)
+        
+        # NOT ANYMORE:
+        #self.assertEqual(rules, s.cssRules)
 
         # set cssRules 
         s.cssRules = cssutils.parseString('''
@@ -72,7 +74,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
             @x;
             b {}').cssRules''').cssRules
         # new object
-        self.assertNotEqual(rules, s.cssRules)
+        #self.assertNotEqual(rules, s.cssRules)
         for i, r in enumerate(s.cssRules):
             self.assertEqual(r.parentStyleSheet, s)
 
@@ -81,7 +83,8 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         namespaces = s.namespaces
         self.assertEqual(s.namespaces.items(), [(u'', 'http://example.com/ns1')])
         s.cssText = '@namespace x "http://example.com/ns2"; x|a {}'
-        self.assertEqual(namespaces, s.namespaces)
+        # not anymore!
+        #self.assertEqual(namespaces, s.namespaces)
         self.assertEqual(s.namespaces.items(), [(u'x', 'http://example.com/ns2')])
 
     def test_cssRules(self):

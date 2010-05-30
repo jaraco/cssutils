@@ -62,7 +62,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # set cssText
         r.cssText = '@media all {a {color: blue}}'
-        self.assertEqual(rules, r.cssRules)
+        # not anymore: self.assertEqual(rules, r.cssRules)
 
         # set cssRules 
         r.cssRules = cssutils.parseString('''
