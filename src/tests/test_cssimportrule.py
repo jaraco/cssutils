@@ -21,6 +21,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         # no init param
         self.assertEqual(None, self.r.href)
         self.assertEqual(None, self.r.hreftype)
+        self.assertEqual(False, self.r.hrefFound)
         self.assertEqual(u'all', self.r.media.mediaText)
         self.assertEqual(
             cssutils.stylesheets.MediaList, type(self.r.media))
@@ -211,6 +212,30 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         self.r.hreftype = 'NOT VALID' # using default
         self.assertEqual(u'@import url(")");', self.r.cssText)
+
+    def test_hrefFound(self):
+        "CSSImportRule.hrefFound"
+        def fetcher(url):
+            if url == u'http://example.com/yes': 
+                return None, u'/**/'
+            else:
+                return None, None
+            
+        parser = cssutils.CSSParser(fetcher=fetcher)
+        sheet = parser.parseString(u'@import "http://example.com/yes" "name"')
+        
+        r = sheet.cssRules[0]
+        self.assertEqual(u'/**/', r.styleSheet.cssText)
+        self.assertEqual(True, r.hrefFound)
+        self.assertEqual(u'name', r.name)
+        
+        r.cssText = '@import url(http://example.com/none) "name2";'
+        self.assertEqual(u'', r.styleSheet.cssText)
+        self.assertEqual(False, r.hrefFound)
+        self.assertEqual(u'name2', r.name)
+
+        sheet.cssText = '@import url(http://example.com/none);'
+        self.assertNotEqual(r, sheet.cssRules[0])
 
     def test_hreftype(self):
         "CSSImportRule.hreftype"

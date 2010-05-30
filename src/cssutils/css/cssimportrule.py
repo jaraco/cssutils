@@ -267,7 +267,7 @@ class CSSImportRule(cssrule.CSSRule):
         importedSheet = cssutils.css.CSSStyleSheet(media=self.media,
                                                    ownerRule=self,
                                                    title=self.name)
-    
+        self.hrefFound = False  
         # set styleSheet
         if href and self.parentStyleSheet:
             # loading errors are all catched!
@@ -315,11 +315,7 @@ class CSSImportRule(cssrule.CSSRule):
                 # used by resolveImports if to keep unprocessed href 
                 self.hrefFound = True
             
-            self._styleSheet = importedSheet   
-        
-        else:
-            self._styleSheet = importedSheet
-            self.hrefFound = False   
+        self._styleSheet = importedSheet   
 
     _href = None # needs to be set 
     href = property(lambda self: self._href, _setHref,
