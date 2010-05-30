@@ -156,32 +156,17 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(u'', v.getVariableValue('x'))
         self.assertEqual(u'', v.cssText)
         
-#    def test_parentRule(self):
-#        "CSSStyleDeclaration.parentRule"
-#        s = cssutils.css.CSSStyleDeclaration()
-#        sheet = cssutils.css.CSSStyleRule()
-#        s.parentRule = sheet
-#        self.assertEqual(sheet, s.parentRule)
-#
-#        sheet = cssutils.parseString(u'a{x:1}')
-#        s = sheet.cssRules[0]
-#        d = s.style
-#        self.assertEqual(s, d.parentRule)
-#        
-#        s = cssutils.parseString('''
-#        @font-face {
-#            font-weight: bold;
-#            }
-#        a {
-#            font-weight: bolder;
-#            }
-#        @page {
-#            font-weight: bolder;    
-#            }
-#        ''')
-#        for r in s:
-#            self.assertEqual(r.style.parentRule, r)
-
+    def test_parentRule(self):
+        "CSSVariablesDeclaration.parentRule"
+        s = cssutils.parseString(u'@variables { a:1}')
+        r = s.cssRules[0]
+        d = r.variables 
+        self.assertEqual(r, d.parentRule)
+        
+        d2 = cssutils.css.CSSVariablesDeclaration('b: 2')
+        r.variables = d2
+        self.assertEqual(r, d2.parentRule)
+        
     def test_reprANDstr(self):
         "CSSVariablesDeclaration.__repr__(), .__str__()"
         s = cssutils.css.CSSVariablesDeclaration(cssText='a:1;b:2')

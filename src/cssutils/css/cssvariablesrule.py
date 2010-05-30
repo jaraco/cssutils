@@ -185,8 +185,8 @@ class CSSVariablesRule(cssrule.CSSRule):
             self._variables = variables
 
     variables = property(lambda self: self._variables, _setVariables,
-                         doc=u"(DOM) The variables of this rule set, a"
-                             u":class:`~cssutils.css.CSSVariablesDeclaration`.")
+                         doc=u"(DOM) The variables of this rule set, a "
+                             u":class:`cssutils.css.CSSVariablesDeclaration`.")
 
     type = property(lambda self: self.VARIABLES_RULE, 
                     doc=u"The type of this rule, as defined by a CSSRule "

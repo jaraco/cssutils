@@ -163,7 +163,7 @@ class Preferences(object):
         self.spacer = u''
         self.validOnly = False
 
-    @Deprecated(u'Use keepUnknownAtRules instead - ignored.')
+    @Deprecated(u'Use ``keepUnknownAtRules`` (note the typo) instead - ignored.')
     def __keepUnkownAtRules(self, ignored=None):
         pass
 

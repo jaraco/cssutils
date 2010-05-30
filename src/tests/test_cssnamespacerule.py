@@ -142,17 +142,20 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSNamespaceRule.namespaceURI"
         # set only initially
         r = cssutils.css.CSSNamespaceRule(namespaceURI='x')
-        self.assertEqual('x' , r.namespaceURI)
+        self.assertEqual(u'x' , r.namespaceURI)
         self.assertEqual(u'@namespace "x";', r.cssText)
 
         r = cssutils.css.CSSNamespaceRule(namespaceURI='"')
         self.assertEqual(u'@namespace "\\"";', r.cssText)
         
         self.assertRaises(xml.dom.NoModificationAllowedErr, 
-                          r._setNamespaceURI, 'x')
+                          r._setNamespaceURI, u'x')
 
         self.assertRaises(xml.dom.NoModificationAllowedErr, 
-                          r._setCssText, '@namespace "u";')
+                          r._setCssText, u'@namespace "u";')
+        
+        r._replaceNamespaceURI(u'http://example.com/new')
+        self.assertEqual(u'http://example.com/new' , r.namespaceURI)
 
     def test_prefix(self):
         "CSSNamespaceRule.prefix"
