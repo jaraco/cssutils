@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.7b1 documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7b2dev documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.7b1',
+        VERSION:     '0.9.7b2dev',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b1 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.7b2dev documentation" href="index.html" />
     <link rel="next" title="parsing CSS" href="docs/parse.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b2dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -86,8 +86,14 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>Development Version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>HEAD</p>
 <dl class="docutils">
+<dt>HEAD</dt>
+<dd><ul class="first last simple">
+<li>BUGFIX: Fixed CSSFunction values using HASH parameter values like <tt class="docutils literal"><span class="pre">-moz-linear-gradient(1,2,#fff</span> <span class="pre">55%,</span> <span class="pre">#444)</span></tt>, see Issue #38</li>
+</ul>
+</dd>
+<dt>0.9.7b2</dt>
+<dd>TODO</dd>
 <dt>0.9.7b1 100530</dt>
 <dd><ul class="first last">
 <li><p class="first"><strong>API CHANGE</strong>: Child objects like the <tt class="docutils literal"><span class="pre">cssRules</span></tt> of a <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> or <tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt> are no longer kept after resetting the complete contents of an object (setting <tt class="docutils literal"><span class="pre">cssText</span></tt>). This should not be expected anyway but if you relied on something like the following please beware:</p>
@@ -160,7 +166,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <p><strong>experimental and incomplete</strong></p>
 <p>Related details:</p>
 <ul class="simple">
-<li>added <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleSheet.variables</span></tt> which is a <a title="cssutils.css.CSSVariablesDeclaration" class="reference external" href="docs/variables.html#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a> containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</li>
+<li>added <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleSheet.variables</span></tt> which is a <a title="cssutils.css.CSSVariablesDeclaration" class="reference external" href="docs/css.html#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a> containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</li>
 <li><tt class="docutils literal"><span class="pre">cssutils.ser.prefs.resolveVariables</span> <span class="pre">==</span> <span class="pre">False</span></tt>: If set to <tt class="xref docutils literal"><span class="pre">True</span></tt> tries to resolve all variable references and removes any CSSVariablesRules.</li>
 <li><tt class="docutils literal"><span class="pre">cssutils.ser.prefs.normalizedVarNames==True</span></tt>: Defines if variable names should be serialized normalized (they are used as being normalized anyway)</li>
 </ul>
@@ -854,7 +860,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-05-30</span> <span class="pre">14:08:53</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">30</span> <span class="pre">Mai</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1984</span> <span class="pre">2010-05-30</span> <span class="pre">12:08:53Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-05-30</span> <span class="pre">18:51:45</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">30</span> <span class="pre">Mai</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1989</span> <span class="pre">2010-05-30</span> <span class="pre">16:51:45Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -2245,7 +2251,7 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7b1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b2dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
