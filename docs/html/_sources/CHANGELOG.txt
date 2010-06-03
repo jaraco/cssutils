@@ -35,6 +35,10 @@ Development Version
 0.9.7
 -----
 HEAD
+    + BUGFIX: Fixed CSSFunction values using HASH parameter values like ``-moz-linear-gradient(1,2,#fff 55%, #444)``, see Issue #38
+
+0.9.7b2
+    TODO
 
 0.9.7b1 100530
     + **API CHANGE**: Child objects like the ``cssRules`` of a ``CSSStyleSheet`` or ``CSSMediaRule`` are no longer kept after resetting the complete contents of an object (setting ``cssText``). This should not be expected anyway but if you relied on something like the following please beware::
@@ -606,7 +610,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-05-30 14:08:53 +0200 (So, 30 Mai 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1984 2010-05-30 12:08:53Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-05-30 18:51:45 +0200 (So, 30 Mai 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1989 2010-05-30 16:51:45Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
