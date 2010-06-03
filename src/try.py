@@ -28,6 +28,49 @@ def save(name, string):
     f.write(string)
     f.close()
 
+if 1:
+    css = '''.button { 
+        background: -moz-linear-gradient(1,2,#fff 55%, #444); 
+        }'''
+    css = '''
+        
+        .button {
+  background: -moz-linear-gradient(top,#fff,#f1f2f2 1%,#d6d9dd 50%,#c7cacf 51%,#d7d9dd);
+  background: -webkit-gradient(linear,left top, left bottom,from(#fff),to(#d7d9dd),color-stop(0.1, #f1f2f2),color-
+stop(0.5, #d6d9dd),color-stop(0.51, #c7cacf));
+}
+'''
+    css = '''a {test: func(  -1,  -2px,-y()  )}'''
+    sheet = cssutils.parseString(css)
+    print 10*'-'
+    print sheet.cssText
+    sys.exit(0)
+
+if 1:
+    import cssutils.script
+    #p = r'sheets\vars\vars.css'
+    p = r'sheets\var\start.css'
+
+    do = '''import cssutils.script
+p = 'sheets/var/start.css'
+#p = 'sheets/vars/vars.css'
+print cssutils.script.csscombine(p,
+                                 resolveVariables=True)
+    '''
+    
+    t = timeit.Timer(do)       # outside the try/except
+    try:
+        print t.timeit(5)    # or t.repeat(...)
+    except:
+        print t.print_exc()
+
+#    print cssutils.script.csscombine(p,
+#                                     resolveVariables=True)
+#    cssutils.ser.prefs.resolveVariables = True
+#    s = cssutils.parseFile(p)
+#    print s.cssRules
+#    print s.cssText
+    sys.exit(1)
 
 if 1:
     print cssutils.ser.prefs.keepUnkownAtRules
