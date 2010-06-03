@@ -159,10 +159,18 @@ y"''': u'''"xy"''',
             u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
             
             # FUNCTION 
+            u'f(1,2)': u'f(1, 2)',
+            u'f(  1  ,  2  )': u'f(1, 2)',
             u'f(-1,+2)': u'f(-1, 2)',
+            u'f(  -1  ,  +2  )': u'f(-1, 2)',
             u'fun(  -1  ,  +2  )': u'fun(-1, 2)',
             u'local( x )': u'local(x)',
+            u'test(1px, #111, y, 1, 1%, "1", y(), var(x))': 
+                u'test(1px, #111, y, 1, 1%, "1", y(), var(x))',
+            u'test(-1px, #111, y, -1, -1%, "1", -y())': 
+                u'test(-1px, #111, y, -1, -1%, "1", -y())',
             u'url(y)  format( "x" ,  "y" )': u'url(y) format("x", "y")',
+            u'f(1 2,3 4)': u'f(1 2, 3 4)',
 
             # IE expression
             ur'Expression()': u'Expression()',

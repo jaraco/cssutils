@@ -881,35 +881,37 @@ class CSSFunction(CSSPrimitiveValue):
     def _productiondefinition(self):
         """Return defintion used for parsing."""
         types = self._prods # rename!
-        valueOrFunc = Choice(Prod(name='PrimitiveValue',
-                                  match=lambda t, v: t in (types.DIMENSION,
-                                                           types.IDENT,
-                                                           types.NUMBER,
-                                                           types.PERCENTAGE,
-                                                           types.STRING),
-                                  toSeq=lambda t, tokens: (t[0], CSSPrimitiveValue(t[1]))
-                                  ),
+        
+        value = Sequence(PreDef.unary(),
+                         Prod(name='PrimitiveValue',
+                              match=lambda t, v: t in (types.DIMENSION,
+                                                       types.HASH,
+                                                       types.IDENT,
+                                                       types.NUMBER,
+                                                       types.PERCENTAGE,
+                                                       types.STRING),
+                              toSeq=lambda t, tokens: (t[0], CSSPrimitiveValue(t[1]))
+                         )
+                )
+        valueOrFunc = Choice(value,
                              # FUNC is actually not in spec but used in e.g. Prince
                              PreDef.function(toSeq=lambda t, 
                                                           tokens: ('FUNCTION',
                                                                    CSSFunction(
                                                                    cssutils.helper.pushtoken(t, tokens))
                                                                    )
-                                                          )
                              )
-                
+                      )
         funcProds = Sequence(Prod(name='FUNC',
                                   match=lambda t, v: t == types.FUNCTION,
                                   toSeq=lambda t, tokens: (t[0], cssutils.helper.normalize(t[1]))),
-                             Choice(Sequence(PreDef.unary(),
-                                             valueOrFunc,
+                             Choice(Sequence(valueOrFunc,
                                              # more values starting with Comma
                                              # should use store where colorType is saved to 
                                              # define min and may, closure?
                                              Sequence(PreDef.comma(),
-                                                      PreDef.unary(),
                                                       valueOrFunc,
-                                                      minmax=lambda: (0, 3)),
+                                                      minmax=lambda: (0, None)),
                                              PreDef.funcEnd(stop=True)),
                                     PreDef.funcEnd(stop=True))
          )
