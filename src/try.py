@@ -29,18 +29,7 @@ def save(name, string):
     f.close()
 
 if 1:
-    css = '''.button { 
-        background: -moz-linear-gradient(1,2,#fff 55%, #444); 
-        }'''
-    css = '''
-        
-        .button {
-  background: -moz-linear-gradient(top,#fff,#f1f2f2 1%,#d6d9dd 50%,#c7cacf 51%,#d7d9dd);
-  background: -webkit-gradient(linear,left top, left bottom,from(#fff),to(#d7d9dd),color-stop(0.1, #f1f2f2),color-
-stop(0.5, #d6d9dd),color-stop(0.51, #c7cacf));
-}
-'''
-    css = '''a {test: func(  -1,  -2px,-y()  )}'''
+    css = '''a {background-image: url(logos.png#xywh=10,30,60,20) }'''
     sheet = cssutils.parseString(css)
     print 10*'-'
     print sheet.cssText

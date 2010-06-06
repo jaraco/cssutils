@@ -35,10 +35,12 @@ Development Version
 0.9.7
 -----
 HEAD
-    + BUGFIX: Fixed CSSFunction values using HASH parameter values like ``-moz-linear-gradient(1,2,#fff 55%, #444)``, see Issue #38
 
-0.9.7b2
-    TODO
+0.9.7b2 100606
+    + IMPROVEMENT/BUGFIX: CSSFunction value parameters may contain HASH values like ``#fff`` now. These are used in experimental properties like ``-moz-linear-gradient(top,#fff,#fff 55%,#e4e4e4)``. Fixes issue #38.
+
+    + API CHANGE: ``cssutils.ser.prefs.resolveVariables == True`` is the default from 0.9.7b2 as CSSVariables are not in any official specification yet and better reflects what you probably want after serializing a stylesheet...
+
 
 0.9.7b1 100530
     + **API CHANGE**: Child objects like the ``cssRules`` of a ``CSSStyleSheet`` or ``CSSMediaRule`` are no longer kept after resetting the complete contents of an object (setting ``cssText``). This should not be expected anyway but if you relied on something like the following please beware::
