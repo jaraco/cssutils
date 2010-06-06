@@ -36,10 +36,10 @@ Development Version
 -----
 HEAD
 
-0.9.7b1 100606
+0.9.7b2 100606
     + IMPROVEMENT/BUGFIX: CSSFunction value parameters may contain HASH values like ``#fff`` now. These are used in experimental properties like ``-moz-linear-gradient(top,#fff,#fff 55%,#e4e4e4)``. Fixes issue #38.
 
-    + API CHANGE: ``cssutils.ser.prefs.resolveVariables == True`` is the default from 0.9.7b2 as CSSVariables are not in any official specification yet and probably what you want after serializing stylesheet.
+    + API CHANGE: ``cssutils.ser.prefs.resolveVariables == True`` is the default from 0.9.7b2 as CSSVariables are not in any official specification yet and better reflects what you probably want after serializing a stylesheet...
 
 
 0.9.7b1 100530

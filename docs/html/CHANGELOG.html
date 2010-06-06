@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.7b2dev documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7b2 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.7b2dev',
+        VERSION:     '0.9.7b2',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b2dev documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.7b2 documentation" href="index.html" />
     <link rel="next" title="parsing CSS" href="docs/parse.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7b2dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -86,14 +86,14 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>Development Version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>HEAD</p>
 <dl class="docutils">
-<dt>HEAD</dt>
+<dt>0.9.7b2 100606</dt>
 <dd><ul class="first last simple">
-<li>BUGFIX: Fixed CSSFunction values using HASH parameter values like <tt class="docutils literal"><span class="pre">-moz-linear-gradient(1,2,#fff</span> <span class="pre">55%,</span> <span class="pre">#444)</span></tt>, see Issue #38</li>
+<li>IMPROVEMENT/BUGFIX: CSSFunction value parameters may contain HASH values like <tt class="docutils literal"><span class="pre">#fff</span></tt> now. These are used in experimental properties like <tt class="docutils literal"><span class="pre">-moz-linear-gradient(top,#fff,#fff</span> <span class="pre">55%,#e4e4e4)</span></tt>. Fixes issue #38.</li>
+<li>API CHANGE: <tt class="docutils literal"><span class="pre">cssutils.ser.prefs.resolveVariables</span> <span class="pre">==</span> <span class="pre">True</span></tt> is the default from 0.9.7b2 as CSSVariables are not in any official specification yet and better reflects what you probably want after serializing a stylesheet...</li>
 </ul>
 </dd>
-<dt>0.9.7b2</dt>
-<dd>TODO</dd>
 <dt>0.9.7b1 100530</dt>
 <dd><ul class="first last">
 <li><p class="first"><strong>API CHANGE</strong>: Child objects like the <tt class="docutils literal"><span class="pre">cssRules</span></tt> of a <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> or <tt class="docutils literal"><span class="pre">CSSMediaRule</span></tt> are no longer kept after resetting the complete contents of an object (setting <tt class="docutils literal"><span class="pre">cssText</span></tt>). This should not be expected anyway but if you relied on something like the following please beware:</p>
@@ -2251,7 +2251,7 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7b2dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
