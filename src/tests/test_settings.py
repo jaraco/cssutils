@@ -22,6 +22,18 @@ class Settings(test_cssrule.CSSRuleTestCase):
         
         cssutils.ser.prefs.useDefaults()
 
+#    def test_parseComments(self):
+#        "settings.parseComments()"
+#        text = '/*1*/ /*2'        
+#        self.assertEqual(cssutils.parseString(text).cssText, '/*1*/\n/*2*/')
+#
+#        cssutils.settings.parseComments(False)
+#        text = '/*1*/ /*2'        
+#        self.assertEqual(cssutils.parseString(text).cssText, '')
+#        
+#        # reset
+#        cssutils.settings.parseComments(True)
+
 if __name__ == '__main__':
     import unittest
     unittest.main()

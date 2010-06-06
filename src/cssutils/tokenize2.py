@@ -11,6 +11,9 @@ from helper import normalize
 import itertools
 import re
 
+# not used yet
+parseComments = True
+
 class Tokenizer(object):
     """
     generates a list of Token tuples:
@@ -137,7 +140,7 @@ class Tokenizer(object):
                         # before CHAR production test for incomplete comment
                         possiblecomment = u'%s*/' % text
                         match = self.commentmatcher(possiblecomment)
-                        if match:
+                        if match and parseComments:
                             yield ('COMMENT', possiblecomment, line, col)
                             text = None # eats all remaining text 
                             break 
@@ -183,7 +186,11 @@ class Tokenizer(object):
                                     name = self._atkeywords.get(_normalize(found), 'ATKEYWORD')
                                     
                             value = found # should not contain unicode escape (?)
-                        yield (name, value, line, col)
+                        
+                        if parseComments or (not parseComments
+                                             and name == 'COMMENT'):
+                            yield (name, value, line, col)
+                        
                         text = text[len(found):]
                         nls = found.count(self._linesep)
                         line += nls

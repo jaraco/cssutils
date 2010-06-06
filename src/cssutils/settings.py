@@ -11,3 +11,8 @@ def set(key, value):
         import cssproductions
         cssproductions.PRODUCTIONS.insert(1, cssproductions._DXImageTransform)
     
+#def parseComments(value):
+#    """If `value` is False comments are not parsed at all."""
+#    if not value:
+#        import cssproductions
+#        cssproductions.parseComments = False
