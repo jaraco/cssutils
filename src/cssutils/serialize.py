@@ -83,7 +83,7 @@ class Preferences(object):
         ``css.CSSMediaRule`` or ``css.CSSStyleRule``
     propertyNameSpacer = u' '
         string which is used after a Property name colon
-    resolveVariables = False
+    resolveVariables = True
         if ``True`` all variable references are tried to resolved and
         all CSSVariablesRules are removed from the output.
         Any variable reference not resolvable is simply kept untouched.
@@ -136,7 +136,7 @@ class Preferences(object):
         self.omitLastSemicolon = True
         self.paranthesisSpacer = u' '
         self.propertyNameSpacer = u' '
-        self.resolveVariables = False
+        self.resolveVariables = True
         self.selectorCombinatorSpacer = u' '
         self.spacer = u' '
         self.validOnly = False # should not be changed currently!!!

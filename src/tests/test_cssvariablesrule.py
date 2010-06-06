@@ -13,6 +13,8 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.rRO = cssutils.css.CSSVariablesRule(readonly=True)
         self.r_type = cssutils.css.CSSPageRule.VARIABLES_RULE
         self.r_typeString = 'VARIABLES_RULE'
+        
+        cssutils.ser.prefs.resolveVariables = False
 
     def test_init(self):
         "CSSVariablesRule.__init__()"
