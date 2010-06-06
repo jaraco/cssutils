@@ -32,7 +32,9 @@ class PreferencesTestCase(basetest.BaseTestCase):
     
     def test_resolveVariables(self):
         "Preferences.resolveVariables"
-        self.assertEqual(cssutils.ser.prefs.resolveVariables, False)
+        self.assertEqual(cssutils.ser.prefs.resolveVariables, True)
+        
+        cssutils.ser.prefs.resolveVariables = False
         
         vars = u'''
             @variables {
@@ -62,6 +64,9 @@ class PreferencesTestCase(basetest.BaseTestCase):
         for test, exp in tests.items():
             s = cssutils.parseString(vars + test)
             self.assertEqual(exp, s.cssText)
+            
+        cssutils.ser.prefs.resolveVariables = True
+
             
     def test_useDefaults(self):
         "Preferences.useDefaults()"
@@ -480,11 +485,15 @@ a, b {}'''
         
     def test_normalizedVarNames(self):
         "Preferences.normalizedVarNames"
+        cssutils.ser.prefs.resolveVariables = False
+        
         css = '@variables { A: 1 }'
         s = cssutils.parseString(css)
         self.assertEqual(u'@variables {\n    a: 1\n    }', s.cssText)
         cssutils.ser.prefs.normalizedVarNames = False
         self.assertEqual(u'@variables {\n    A: 1\n    }', s.cssText)        
+
+        cssutils.ser.prefs.resolveVariables = True
 
     def test_paranthesisSpacer(self):
         "Preferences.paranthesisSpacer"
