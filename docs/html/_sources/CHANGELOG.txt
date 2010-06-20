@@ -36,6 +36,16 @@ Development Version
 -----
 HEAD
 
+0.9.7b3 100620
+    + API CHANGE: Changed parameters of script/utility function ``csscombine``.
+            - parameter ``resolveVariables=True`` now (default was ``False`` before)
+            - ``minify = True`` will not parse Comments at all. This is not really a change as comments were not kept in a minified stylesheet anyway but this may speed up stylesheet combination a bit
+
+    + **PERFORMANCE/IMPROVEMENT**: Added parameter ``parseComments=True`` to CSSParser. If parsing with ``parser = cssutils.CSSParser(parseComments=False).parse...`` comments in a given stylesheet are simple omitted from the resulting stylesheet DOM.
+
+    + **PERFORMANCE**: Compiled productions in cssutils tokenizer are cached now (to clear it use ``cssutils.tokenize2._TOKENIZER_CACHE.clear()``) which results in a slight performance improvement. Thanks to moscovich!
+
+
 0.9.7b2 100606
     + IMPROVEMENT/BUGFIX: CSSFunction value parameters may contain HASH values like ``#fff`` now. These are used in experimental properties like ``-moz-linear-gradient(top,#fff,#fff 55%,#e4e4e4)``. Fixes issue #38.
 
@@ -612,7 +622,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-05-30 18:51:45 +0200 (So, 30 Mai 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1989 2010-05-30 16:51:45Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-06-06 15:40:22 +0200 (So, 06 Jun 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1999 2010-06-06 13:40:22Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 

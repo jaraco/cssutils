@@ -5,6 +5,7 @@ A single and **experimental** setting currently only:
 
 It is possible to at least parse sheets with Microsoft only property values for
  ``filter`` which start with ``progid:DXImageTransform.Microsoft.[...](``.
+ 
 To enable these you need to set::
 
     >>> from cssutils import settings

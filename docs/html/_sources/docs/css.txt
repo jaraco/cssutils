@@ -74,7 +74,7 @@ CSS rules
    :inherited-members:
 
 ``CSSVariablesRule``
-----------------
+--------------------
 .. autoclass:: cssutils.css.CSSVariablesRule
    :members:
    :inherited-members:
