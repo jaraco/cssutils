@@ -11,9 +11,6 @@ from helper import normalize
 import itertools
 import re
 
-# not used yet
-_parseComments = True
-
 _TOKENIZER_CACHE = {}
 
 class Tokenizer(object):
@@ -33,8 +30,7 @@ class Tokenizer(object):
     unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t|\r|\n|\f|\x20])?').sub
     cleanstring = re.compile(r'\\((\r\n)|[\n|\r|\f])').sub
 
-    
-    def __init__(self, macros=None, productions=None):
+    def __init__(self, macros=None, productions=None, doComments=True):
         """
         inits tokenizer with given macros and productions which default to
         cssutils own macros and productions
@@ -60,7 +56,8 @@ class Tokenizer(object):
         self.tokenmatches = tokenmatches
         self.commentmatcher = commentmatcher
         self.urimatcher = urimatcher
-
+        
+        self._doComments = doComments
         self._pushed = []
 
     def _expand_macros(self, macros, productions):
@@ -136,26 +133,25 @@ class Tokenizer(object):
             col += len(found)
         
         while text:
-            
+            # do pushed tokens before new ones 
             for pushed in self._pushed:
-                # do pushed tokens before new ones 
                 yield pushed
 
             # speed test for most used CHARs
             c = text[0]
-            if c in '{}:;,':
+            if c in u'{}:;,':
                 yield ('CHAR', c, line, col)
                 col += 1
                 text = text[1:]
                 
-            else:
+            else:                
                 # check all other productions, at least CHAR must match
                 for name, matcher in productions:
                     if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
                         # before CHAR production test for incomplete comment
                         possiblecomment = u'%s*/' % text
                         match = self.commentmatcher(possiblecomment)
-                        if match and _parseComments:
+                        if match and self._doComments:
                             yield ('COMMENT', possiblecomment, line, col)
                             text = None # ate all remaining text 
                             break 
@@ -202,8 +198,8 @@ class Tokenizer(object):
                                     
                             value = found # should not contain unicode escape (?)
                         
-                        if _parseComments or (not _parseComments
-                                             and name == 'COMMENT'):
+                        if self._doComments or (not self._doComments and 
+                                              name != 'COMMENT'):
                             yield (name, value, line, col)
                         
                         text = text[len(found):]

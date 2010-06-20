@@ -24,18 +24,20 @@ class CSSParser(object):
         print sheet.cssText
     """
     def __init__(self, log=None, loglevel=None, raiseExceptions=None,
-                 fetcher=None):
+                 fetcher=None, parseComments=True):
         """
-        log
+        :param log:
             logging object
-        loglevel
+        :param loglevel:
             logging loglevel
-        raiseExceptions
+        :param raiseExceptions:
             if log should simply log (default) or raise errors during
             parsing. Later while working with the resulting sheets
             the setting used in cssutils.log.raiseExeptions is used
-        fetcher
+        :param fetcher:
             see ``setFetcher(fetcher)``
+        :param parseComments:
+            if comments should be added to CSS DOM or simply omitted
         """
         if log is not None:
             cssutils.log.setLog(log)
@@ -50,7 +52,7 @@ class CSSParser(object):
             # DEFAULT during parse
             self.__parseRaising = False
 
-        self.__tokenizer = tokenize2.Tokenizer()
+        self.__tokenizer = tokenize2.Tokenizer(doComments=parseComments)
         self.setFetcher(fetcher)
 
     def __parseSetting(self, parse):

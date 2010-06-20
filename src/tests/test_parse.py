@@ -58,7 +58,17 @@ class CSSParserTestCase(basetest.BaseTestCase):
         s.__setattr__('cssText', '$')
         self.assertEqual(s.cssText, '')
 
-
+    def test_parseComments(self):
+        "cssutils.CSSParser(parseComments=False)"
+        css = u'/*1*/ a { color: /*2*/ red; }'
+        
+        p = cssutils.CSSParser(parseComments=False)
+        self.assertEqual(p.parseString(css).cssText,
+                         u'a {\n    color: red\n    }')
+        p = cssutils.CSSParser(parseComments=True)
+        self.assertEqual(p.parseString(css).cssText,
+                         u'/*1*/\na {\n    color: /*2*/ red\n    }')
+        
 #    def test_parseFile(self):
 #        "CSSParser.parseFile()"
 #        # see test_cssutils
