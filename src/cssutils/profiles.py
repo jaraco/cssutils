@@ -549,8 +549,6 @@ properties[Profiles.CSS3_FONT_FACE] = {
     'unicode-range': '{unicode-range}({w},{w}{unicode-range})*'
     }
 
-
-
 # CSS3 Paged Media
 macros[Profiles.CSS3_PAGED_MEDIA] = {
     'pagesize': 'a5|a4|a3|b5|b4|letter|legal|ledger',
