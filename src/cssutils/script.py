@@ -309,7 +309,7 @@ class CSSCapture(object):
 
 def csscombine(path=None, url=None, cssText=None, href=None,
                sourceencoding=None, targetencoding=None, 
-               minify=True, resolveVariables=False):
+               minify=True, resolveVariables=True):
     """Combine sheets referred to by @import rules in given CSS proxy sheet
     into a single new sheet.
 
@@ -325,21 +325,25 @@ def csscombine(path=None, url=None, cssText=None, href=None,
         `targetencoding`
             encoding of the combined stylesheet
         `minify` = True
-            defines if the combined sheet should be minified
-        `resolveVariables` = False
-            defined if variables in combined should be resolved
+            defines if the combined sheet should be minified, in this case
+            comments are not parsed at all!
+        `resolveVariables` = True
+            defines if variables in combined sheet should be resolved
     """
     cssutils.log.info(u'Combining files from %r' % url, 
                       neverraise=True)
     if sourceencoding is not None:
         cssutils.log.info(u'Using source encoding %r' % sourceencoding,
                           neverraise=True)
+        
+    parser = cssutils.CSSParser(parseComments=not minify)
+        
     if path and not cssText:
-        src = cssutils.parseFile(path, encoding=sourceencoding)
+        src = parser.parseFile(path, encoding=sourceencoding)
     elif url:
-        src = cssutils.parseUrl(url, encoding=sourceencoding)
+        src = parser.parseUrl(url, encoding=sourceencoding)
     elif cssText:
-        src = cssutils.parseString(cssText, href=href, encoding=sourceencoding)
+        src = parser.parseString(cssText, href=href, encoding=sourceencoding)
     else:
         sys.exit('Path or URL must be given')
 
@@ -347,18 +351,12 @@ def csscombine(path=None, url=None, cssText=None, href=None,
     result.encoding = targetencoding
     cssutils.log.info(u'Using target encoding: %r' % targetencoding, neverraise=True)
 
+    oldser = cssutils.ser
+    cssutils.setSerializer(cssutils.serialize.CSSSerializer())
     if minify:
-        # save old setting and use own serializer
-        oldser = cssutils.ser
-        cssutils.setSerializer(cssutils.serialize.CSSSerializer())
         cssutils.ser.prefs.useMinified()
-        cssutils.ser.prefs.resolveVariables = resolveVariables
-        cssText = result.cssText
-        cssutils.setSerializer(oldser)
-    else:
-        rv = cssutils.ser.prefs.resolveVariables
-        cssutils.ser.prefs.resolveVariables = resolveVariables
-        cssText = result.cssText
-        cssutils.ser.prefs.resolveVariables = rv
+    cssutils.ser.prefs.resolveVariables = resolveVariables
+    cssText = result.cssText
+    cssutils.setSerializer(oldser)
     
     return cssText
