@@ -5,6 +5,7 @@ parsing CSS
 ===========
 Options to parse a given stylesheet: Get an instance of :class:`cssutils.CSSParser` and use the provided ``parse*`` methods or for simpler parsing use the ``parse*`` `convienience functions`_.
 
+
 ``CSSParser``
 =============
 The parser is reusable.
