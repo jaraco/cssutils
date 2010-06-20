@@ -12,7 +12,9 @@ import itertools
 import re
 
 # not used yet
-parseComments = True
+_parseComments = True
+
+_TOKENIZER_CACHE = {}
 
 class Tokenizer(object):
     """
@@ -30,22 +32,35 @@ class Tokenizer(object):
     _linesep = u'\n'
     unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t|\r|\n|\f|\x20])?').sub
     cleanstring = re.compile(r'\\((\r\n)|[\n|\r|\f])').sub
+
     
     def __init__(self, macros=None, productions=None):
         """
         inits tokenizer with given macros and productions which default to
         cssutils own macros and productions
         """
-        if not macros:
-            macros = MACROS
-        if not productions:
-            productions = PRODUCTIONS
-        self.tokenmatches = self._compile_productions(
-                self._expand_macros(macros, 
-                                    productions))
-        self.commentmatcher = [x[1] for x in self.tokenmatches if x[0] == 'COMMENT'][0]
-        self.urimatcher = [x[1] for x in self.tokenmatches if x[0] == 'URI'][0]
-        
+        if type(macros)==type({}):
+            macros_hash_key = sorted(macros.items()) 
+        else:
+            macros_hash_key = macros
+        hash_key = str((macros_hash_key, productions))
+        if hash_key in _TOKENIZER_CACHE:
+            (tokenmatches, commentmatcher, urimatcher) = _TOKENIZER_CACHE[hash_key]
+        else:
+            if not macros:
+                macros = MACROS
+            if not productions:
+                productions = PRODUCTIONS
+            tokenmatches = self._compile_productions(self._expand_macros(macros,
+                                                                         productions))
+            commentmatcher = [x[1] for x in tokenmatches if x[0] == 'COMMENT'][0]
+            urimatcher = [x[1] for x in tokenmatches if x[0] == 'URI'][0]
+            _TOKENIZER_CACHE[hash_key] = (tokenmatches, commentmatcher, urimatcher)
+
+        self.tokenmatches = tokenmatches
+        self.commentmatcher = commentmatcher
+        self.urimatcher = urimatcher
+
         self._pushed = []
 
     def _expand_macros(self, macros, productions):
@@ -140,9 +155,9 @@ class Tokenizer(object):
                         # before CHAR production test for incomplete comment
                         possiblecomment = u'%s*/' % text
                         match = self.commentmatcher(possiblecomment)
-                        if match and parseComments:
+                        if match and _parseComments:
                             yield ('COMMENT', possiblecomment, line, col)
-                            text = None # eats all remaining text 
+                            text = None # ate all remaining text 
                             break 
     
                     match = matcher(text) # if no match try next production
@@ -187,7 +202,7 @@ class Tokenizer(object):
                                     
                             value = found # should not contain unicode escape (?)
                         
-                        if parseComments or (not parseComments
+                        if _parseComments or (not _parseComments
                                              and name == 'COMMENT'):
                             yield (name, value, line, col)
                         
