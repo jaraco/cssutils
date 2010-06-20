@@ -35,6 +35,8 @@ Development Version
 0.9.7
 -----
 HEAD
+    + IMPROVEMENT: Compiled productions in cssutils tokenizer are cached now (to clear it use ``cssutils.tokenize2._TOKENIZER_CACHE.clear()``) which results in a slight performance improvement. Thanks to moscovich!
+
 
 0.9.7b2 100606
     + IMPROVEMENT/BUGFIX: CSSFunction value parameters may contain HASH values like ``#fff`` now. These are used in experimental properties like ``-moz-linear-gradient(top,#fff,#fff 55%,#e4e4e4)``. Fixes issue #38.
