@@ -6,13 +6,10 @@ def set(key, value):
     ('DXImageTransform.Microsoft', True)
         enable support for parsing special MS only filter values
     
+    Clears the tokenizer cache which holds the compiled productions!
     """
     if key == 'DXImageTransform.Microsoft' and value == True:
         import cssproductions
+        import tokenize2
+        tokenize2._TOKENIZER_CACHE.clear()
         cssproductions.PRODUCTIONS.insert(1, cssproductions._DXImageTransform)
-    
-#def parseComments(value):
-#    """If `value` is False comments are not parsed at all."""
-#    if not value:
-#        import cssproductions
-#        cssproductions.parseComments = False
