@@ -54,18 +54,19 @@ class CSSCombine(basetest.BaseTestCase):
         }
         '''
         # default minify
-        self.assertEqual(csscombine(cssText=cssText),
+        self.assertEqual(csscombine(cssText=cssText,
+                                    resolveVariables=False),
                          '@variables{c:#0f0}a{color:var(c)}')
-        self.assertEqual(csscombine(cssText=cssText, 
-                                    resolveVariables=True),
+        self.assertEqual(csscombine(cssText=cssText),
                          'a{color:#0f0}')
 
         # no minify
-        self.assertEqual(csscombine(cssText=cssText, minify=False),
+        self.assertEqual(csscombine(cssText=cssText, 
+                                    minify=False,
+                                    resolveVariables=False),
                          '@variables {\n    c: #0f0\n    }\n'
                          'a {\n    color: var(c)\n    }')
-        self.assertEqual(csscombine(cssText=cssText, minify=False,  
-                                    resolveVariables=True),
+        self.assertEqual(csscombine(cssText=cssText, minify=False),
                          'a {\n    color: #0f0\n    }')
         
 
