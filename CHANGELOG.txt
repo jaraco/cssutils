@@ -37,6 +37,8 @@ Development Version
 HEAD
     + IMPROVEMENT: ``CSSStyleSheet.variables`` now contains all availble variable values (from all imported sheets as well as in sheet defined itself)
 
+    + EXPERIMENTAL: CSS function values using ``calc(...)`` should be partly parsable now (as experimental ExpressionValues currently)
+
 
 0.9.7b3 100620
     + API CHANGE: Changed parameters of script/utility function ``csscombine``.

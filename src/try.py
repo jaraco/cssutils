@@ -29,6 +29,28 @@ def save(name, string):
     f.close()
 
 if 1:
+#   /*filter:  progid:DXImageTransform.Microsoft.gradient(startColorStr='#99B4B490',EndColorStr='#99B4B490');
+#   filter:  progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', 
+#                     M11=0.9914448613738104, M12=-0.13052619222005157, M21=0.13052619222005157, M22=0.9914448613738104);*/
+    css = """section {
+  width: calc(100% / 3  -  0px + 0%  *  1em   +      2*1px+1px mod 0.0);
+  color: rgb(1,2,0.0);
+  x: 0.0 0% 0em 0px;
+}
+"""
+    css = """a {
+        x: calc(0.0 + 0px - 0% / 0cm);
+    }"""
+#        x: 0.0 0px 0% 0cm
+
+    import cssutils.settings
+    cssutils.settings.set('DXImageTransform.Microsoft', True)
+    s = cssutils.parseString(css)
+    print
+    print s.cssText
+    sys.exit(0)
+
+if 1:
     def fetcher(url):
         url = url.replace('\\', '/')
         url = url[url.rfind('/')+1:]
