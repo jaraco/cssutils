@@ -35,6 +35,8 @@ Development Version
 0.9.7
 -----
 HEAD
+    + IMPROVEMENT: ``CSSStyleSheet.variables`` now contains all availble variable values (from all imported sheets as well as in sheet defined itself)
+
 
 0.9.7b3 100620
     + API CHANGE: Changed parameters of script/utility function ``csscombine``.
@@ -43,7 +45,7 @@ HEAD
 
     + **PERFORMANCE/IMPROVEMENT**: Added parameter ``parseComments=True`` to CSSParser. If parsing with ``parser = cssutils.CSSParser(parseComments=False).parse...`` comments in a given stylesheet are simple omitted from the resulting stylesheet DOM.
 
-    + **PERFORMANCE**: Compiled productions in cssutils tokenizer are cached now (to clear it use ``cssutils.tokenize2._TOKENIZER_CACHE.clear()``) which results in a slight performance improvement. Thanks to moscovich!
+    + **PERFORMANCE**: Compiled productions in cssutils tokenizer are cached now (to clear it use ``cssutils.tokenize2._TOKENIZER_CACHE.clear()``) which results in a slight performance improvement. Thanks to Amit Moscovich!
 
 
 0.9.7b2 100606

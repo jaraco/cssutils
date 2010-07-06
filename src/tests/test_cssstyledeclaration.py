@@ -25,7 +25,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         s = cssutils.css.CSSStyleDeclaration(parentRule=sheet)
         self.assertEqual(sheet, s.parentRule)
 
-        # should not be used but ordered paramter test 
+        # should not be used but ordered parameter test 
         s = cssutils.css.CSSStyleDeclaration('top: 0', sheet)
         self.assertEqual(u'top: 0', s.cssText)
         self.assertEqual(sheet, s.parentRule)

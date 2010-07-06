@@ -29,13 +29,90 @@ def save(name, string):
     f.close()
 
 if 1:
-    css = '''p { background: 40% url("chess.png") / 10em gray
-       round fixed border-box; }
-'''
-    p = cssutils.CSSParser(parseComments=False)
-    sheet = p.parseString(css)
-    print 10*'-'
-    print sheet.cssText
+    def fetcher(url):
+        url = url.replace('\\', '/')
+        url = url[url.rfind('/')+1:]
+        return (None, {
+            '3.css': '''
+                @variables {
+                    over3-2-1-0: 3;
+                    over3-2-1: 3;
+                    over3-2: 3;
+                    over3-2-0: 3;
+                    over3-1: 3;
+                    over3-1-0: 3;
+                    over3-0: 3;
+                    local3: 3;
+                }
+            
+            ''',
+            '2.css': '''
+                @variables {
+                    over3-2-1-0: 2;
+                    over3-2-1: 2;
+                    over3-2-0: 2;
+                    over3-2: 2;
+                    over2-1: 2;
+                    over2-1-0: 2;
+                    over2-0: 2;
+                    local2: 2;
+                }
+            
+            ''',
+            '1.css': '''
+                @import "3.css";
+                @import "2.css";
+                @variables {
+                    over3-2-1-0: 1;
+                    over3-2-1: 1;
+                    over3-1: 1;
+                    over3-1-0: 1;
+                    over2-1: 1;
+                    over2-1-0: 1;
+                    over1-0: 1;
+                    local1: 1;
+                }
+            
+            '''
+            }[url])
+    
+    css = '''
+        @import "1.css";
+        @variables {
+            over3-2-1-0: 0;
+            over3-2-0: 0;
+            over3-1-0: 0;
+            over2-1-0: 0;
+            over3-0: 0;
+            over2-0: 0;
+            over1-0: 0;
+            local0: 0;
+        }
+        a {
+            local0: var(local0);
+            local1: var(local1);
+            local2: var(local2);
+            local3: var(local3);
+            over1-0: var(over1-0);
+            over2-0: var(over2-0);
+            over3-0: var(over3-0);
+            over2-1: var(over2-1);
+            over3-1: var(over3-1);
+            over3-2: var(over3-2);
+            over2-1-0: var(over2-1-0);
+            over3-2-0: var(over3-2-0);
+            over3-2-1: var(over3-2-1);
+            over3-2-1-0: var(over3-2-1-0);
+        }
+    '''
+    cssutils.ser.prefs.resolveVariables = False
+    p = cssutils.CSSParser(fetcher=fetcher)
+    s = p.parseString(css)
+    #print s.cssText
+    print 
+    s = cssutils.resolveImports(s)
+    print sorted(s.variables.keys())
+    
     sys.exit(0)
 
 if 1:
