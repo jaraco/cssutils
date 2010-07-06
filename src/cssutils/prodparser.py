@@ -563,6 +563,13 @@ class PreDef(object):
     types = cssutils.cssproductions.CSSProductions
 
     @staticmethod
+    def calc(toSeq=None, nextSor=False):
+        return Prod(name=u'calcfunction',
+                    match=lambda t, v: u'calc(' == cssutils.helper.normalize(v),
+                    toSeq=toSeq,
+                    nextSor=nextSor)
+
+    @staticmethod
     def char(name='char', char=u',', toSeq=None, 
              stop=False, stopAndKeep=False,
              optional=True, nextSor=False):
@@ -668,4 +675,3 @@ class PreDef(object):
                     match=lambda t, v: u'var(' == cssutils.helper.normalize(v),
                     toSeq=toSeq,
                     nextSor=nextSor)
-

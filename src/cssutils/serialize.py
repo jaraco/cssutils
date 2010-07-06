@@ -354,6 +354,23 @@ class CSSSerializer(object):
         else:
             return val
 
+    def _possiblezero(self, cssvalue, type_, val):
+        """
+        Formats to "0" is possible/allowed. 
+        """
+        if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
+            n, d = cssvalue._getNumDim(val)
+            if 0 == n:
+                if cssvalue.primitiveType in cssvalue._lengthtypes:
+                    # 0 if zero value
+                    val = u'0'
+                else:
+                    val = u'0' + d
+            else:
+                val = unicode(n) + d
+                
+        return val
+
     def _valid(self, x):
         "checks items valid property and prefs.validOnly"
         return not self.prefs.validOnly or (self.prefs.validOnly and
@@ -932,17 +949,43 @@ class CSSSerializer(object):
             out = Out(self)
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
-                if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
-                    n, d = cssvalue._getNumDim(val)
-                    if 0 == n:
-                        if cssvalue.primitiveType in cssvalue._lengthtypes:
-                            # 0 if zero value
-                            val = u'0'
-                        else:
-                            val = u'0' + d
-                    else:
-                        val = unicode(n) + d
+                val = self._possiblezero(cssvalue, type_, val)
                 out.append(val, type_)
+
+            return out.value()
+
+    def do_css_CalcValue(self, cssvalue):
+        """Serialize a CalcValue."""
+        return self.do_css_CSSPrimitiveValue(cssvalue)
+
+    def do_css_FunctionValue(self, cssvalue):
+        """Serialize a CSS function value"""
+        if not cssvalue:
+            return u''
+        else:
+            out = Out(self)
+            for item in cssvalue.seq:
+                type_, val = item.type, item.value
+                out.append(val, type_)
+
+            return out.value()
+
+    def do_css_RGBColor(self, cssvalue):
+        """Serialize a RGBColor value"""
+        return self.do_css_FunctionValue(cssvalue)
+
+    def do_css_ExpressionValue(self, cssvalue):
+        """Serialize an ExpressionValue (IE only),
+        should at least keep the original syntax"""
+        if not cssvalue:
+            return u''
+        else:
+            out = Out(self)
+            for item in cssvalue.seq:
+                type_, val = item.type, item.value
+                val = self._possiblezero(cssvalue, type_, val)
+                # do no send type_ so no special cases!
+                out.append(val, None, space=False)
 
             return out.value()
 
@@ -962,20 +1005,6 @@ class CSSSerializer(object):
                 for item in variable.seq:
                     type_, val = item.type, item.value
                     out.append(val, type_)
-
-            return out.value()
-
-    def do_css_RGBColor(self, cssvalue):
-        """Serialize a RGBColor value"""
-        if not cssvalue:
-            return u''
-        else:
-            out = Out(self)
-            unary = None
-            for item in cssvalue.seq:
-                type_, val = item.type, item.value
-
-                out.append(val, type_)
 
             return out.value()
 
@@ -1009,28 +1038,3 @@ class CSSSerializer(object):
             return u' '.join(out)
         else:
             return u''
-
-
-    def do_css_ExpressionValue(self, cssvalue):
-        """Serialize an ExpressionValue (IE only),
-        should at least keep the original syntax"""
-        if not cssvalue:
-            return u''
-        else:
-            out = Out(self)
-            for item in cssvalue.seq:
-                type_, val = item.type, item.value
-                if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
-                    n, d = cssvalue._getNumDim(val)
-                    if 0 == n:
-                        if cssvalue.primitiveType in cssvalue._lengthtypes:
-                            # 0 if zero value
-                            val = u'0'
-                        else:
-                            val = u'0' + d
-                    else:
-                        val = unicode(n) + d
-                # do no send type_ so no special cases!
-                out.append(val, None, space=False)
-
-            return out.value()
