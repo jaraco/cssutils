@@ -21,14 +21,10 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(u'x: 0', v.cssText)
         self.assertEqual('0', v.getVariableValue('x'))
 
-#        sheet = cssutils.css.CSSStyleRule()
-#        s = cssutils.css.CSSStyleDeclaration(parentRule=sheet)
-#        self.assertEqual(sheet, s.parentRule)
-#
-#        # should not be used but ordered paramter test 
-#        s = cssutils.css.CSSStyleDeclaration('top: 0', sheet)
-#        self.assertEqual(u'top: 0', s.cssText)
-#        self.assertEqual(sheet, s.parentRule)
+        rule = cssutils.css.CSSVariablesRule()
+        v = cssutils.css.CSSVariablesDeclaration(cssText='x: 0',
+                                                 parentRule=rule)
+        self.assertEqual(rule, v.parentRule)
 
     def test__contains__(self):
         "CSSVariablesDeclaration.__contains__(name)"
@@ -155,7 +151,172 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(u'', v.removeVariable('x'))
         self.assertEqual(u'', v.getVariableValue('x'))
         self.assertEqual(u'', v.cssText)
+
+
+    def test_imports(self):
+        "CSSVariables imports"
+        def fetcher(url):
+            url = url.replace('\\', '/')
+            url = url[url.rfind('/')+1:]
+            return (None, {
+                '3.css': '''
+                    @variables {
+                        over3-2-1-0: 3;
+                        over3-2-1: 3;
+                        over3-2: 3;
+                        over3-2-0: 3;
+                        over3-1: 3;
+                        over3-1-0: 3;
+                        over3-0: 3;
+                        local3: 3;
+                    }
+                
+                ''',
+                '2.css': '''
+                    @variables {
+                        over3-2-1-0: 2;
+                        over3-2-1: 2;
+                        over3-2-0: 2;
+                        over3-2: 2;
+                        over2-1: 2;
+                        over2-1-0: 2;
+                        over2-0: 2;
+                        local2: 2;
+                    }
+                
+                ''',
+                '1.css': '''
+                    @import "3.css";
+                    @import "2.css";
+                    @variables {
+                        over3-2-1-0: 1;
+                        over3-2-1: 1;
+                        over3-1: 1;
+                        over3-1-0: 1;
+                        over2-1: 1;
+                        over2-1-0: 1;
+                        over1-0: 1;
+                        local1: 1;
+                    }
+                
+                '''
+                }[url])
         
+        css = '''
+            @import "1.css";
+            @variables {
+                over3-2-1-0: 0;
+                over3-2-0: 0;
+                over3-1-0: 0;
+                over2-1-0: 0;
+                over3-0: 0;
+                over2-0: 0;
+                over1-0: 0;
+                local0: 0;
+            }
+            a {
+                local0: var(local0);
+                local1: var(local1);
+                local2: var(local2);
+                local3: var(local3);
+                over1-0: var(over1-0);
+                over2-0: var(over2-0);
+                over3-0: var(over3-0);
+                over2-1: var(over2-1);
+                over3-1: var(over3-1);
+                over3-2: var(over3-2);
+                over2-1-0: var(over2-1-0);
+                over3-2-0: var(over3-2-0);
+                over3-2-1: var(over3-2-1);
+                over3-2-1-0: var(over3-2-1-0);
+            }
+        '''
+        p = cssutils.CSSParser(fetcher=fetcher)
+        s = p.parseString(css)
+
+        # only these in rule of this sheet        
+        self.assertEqual(s.cssRules[1].variables.length, 8)
+        # but all vars in s available!
+        self.assertEqual(s.variables.length, 15)
+        self.assertEqual([u'local0', u'local1', u'local2', u'local3', 
+                          u'over1-0', u'over2-0', u'over2-1', u'over2-1-0', 
+                          u'over3-0', u'over3-1', u'over3-1-0', u'over3-2', 
+                          u'over3-2-0', u'over3-2-1', u'over3-2-1-0'],
+                          sorted(s.variables.keys()))
+        
+        
+        # test with variables rule
+        cssutils.ser.prefs.resolveVariables = False
+        self.assertEqual(s.cssText, '''@import "1.css";
+@variables {
+    over3-2-1-0: 0;
+    over3-2-0: 0;
+    over3-1-0: 0;
+    over2-1-0: 0;
+    over3-0: 0;
+    over2-0: 0;
+    over1-0: 0;
+    local0: 0
+    }
+a {
+    local0: var(local0);
+    local1: var(local1);
+    local2: var(local2);
+    local3: var(local3);
+    over1-0: var(over1-0);
+    over2-0: var(over2-0);
+    over3-0: var(over3-0);
+    over2-1: var(over2-1);
+    over3-1: var(over3-1);
+    over3-2: var(over3-2);
+    over2-1-0: var(over2-1-0);
+    over3-2-0: var(over3-2-0);
+    over3-2-1: var(over3-2-1);
+    over3-2-1-0: var(over3-2-1-0)
+    }''')
+        
+        # test with resolved vars
+        cssutils.ser.prefs.resolveVariables = True
+        self.assertEqual(s.cssText, '''@import "1.css";
+a {
+    local0: 0;
+    local1: 1;
+    local2: 2;
+    local3: 3;
+    over1-0: 0;
+    over2-0: 0;
+    over3-0: 0;
+    over2-1: 1;
+    over3-1: 1;
+    over3-2: 2;
+    over2-1-0: 0;
+    over3-2-0: 0;
+    over3-2-1: 1;
+    over3-2-1-0: 0
+    }''')
+        
+
+        s = cssutils.resolveImports(s)
+        self.assertEqual(s.cssText, '''/* START @import "1.css" */
+/* START @import "3.css" */
+/* START @import "2.css" */
+a {
+    local0: 0;
+    local1: 1;
+    local2: 2;
+    local3: 3;
+    over1-0: 0;
+    over2-0: 0;
+    over3-0: 0;
+    over2-1: 1;
+    over3-1: 1;
+    over3-2: 2;
+    over2-1-0: 0;
+    over3-2-0: 0;
+    over3-2-1: 1;
+    over3-2-1-0: 0
+    }''')
+    
     def test_parentRule(self):
         "CSSVariablesDeclaration.parentRule"
         s = cssutils.parseString(u'@variables { a:1}')

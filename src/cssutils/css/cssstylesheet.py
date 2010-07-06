@@ -398,9 +398,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         is added to sheet.
         """
         for r in self.cssRules.rulesOfType(CSSRule.IMPORT_RULE):
-            for vr in r.styleSheet.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
-                for var in vr.variables:
-                    self._variables.setVariable(var, vr.variables[var])
+            s = r.styleSheet
+            if s:
+                for var in s.variables:
+                    self._variables.setVariable(var, s.variables[var])
+#        for r in self.cssRules.rulesOfType(CSSRule.IMPORT_RULE):
+#            for vr in r.styleSheet.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
+#                for var in vr.variables:
+#                    self._variables.setVariable(var, vr.variables[var])
         for vr in self.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
             for var in vr.variables:
                 self._variables.setVariable(var, vr.variables[var])
