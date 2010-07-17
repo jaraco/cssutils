@@ -93,7 +93,7 @@ class Base(_BaseClass):
     # format: shorthand: [(propname, mandatorycheck?)*]
     _SHORTHANDPROPERTIES = {
             u'background': [],
-            u'background-position': [],
+            #u'background-position': [], # list of 2 values!
             u'border': [],
             u'border-left': [],
             u'border-right': [],
