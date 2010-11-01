@@ -35,9 +35,15 @@ Development Version
 0.9.7
 -----
 HEAD
-    + IMPROVEMENT: ``CSSStyleSheet.variables`` now contains all availble variable values (from all imported sheets as well as in sheet defined itself)
 
-    + EXPERIMENTAL: CSS function values using ``calc(...)`` should be partly parsable now (as experimental ExpressionValues currently)
+
+0.9.7b4 101101
+    + *EXPERIMENTAL*: CSS function values using ``calc(...)`` should be partly parsable now (as experimental ExpressionValues currently)
+
+    - BUGFIX: MS specific values are parsed a bit more reliable if parsing of these values is activated (they probable are syntactically invalid!). E.g. ``top: expression(eval(document.documentElement.scrollTop))`` and also a few values for the MS specific ``filter`` property are parsed and reserialized now.
+
+    + IMPROVEMENT: ``CSSStyleSheet.variables`` now contains all available variable values (from all imported sheets as well as in sheet defined itself)
+
 
 
 0.9.7b3 100620
