@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -5,21 +7,22 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.7b3 documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7b4 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.7b3',
-        COLLAPSE_MODINDEX: false,
+        VERSION:     '0.9.7b4',
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b3 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.7b4 documentation" href="index.html" />
     <link rel="next" title="parsing CSS" href="docs/parse.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -31,15 +34,15 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="docs/parse.html" title="parsing CSS"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -88,6 +91,17 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>HEAD</p>
 <dl class="docutils">
+<dt>0.9.7b4 101101</dt>
+<dd><ul class="first simple">
+<li><em>EXPERIMENTAL</em>: CSS function values using <tt class="docutils literal"><span class="pre">calc(...)</span></tt> should be partly parsable now (as experimental ExpressionValues currently)</li>
+</ul>
+<ul class="simple">
+<li>BUGFIX: MS specific values are parsed a bit more reliable if parsing of these values is activated (they probable are syntactically invalid!). E.g. <tt class="docutils literal"><span class="pre">top:</span> <span class="pre">expression(eval(document.documentElement.scrollTop))</span></tt> and also a few values for the MS specific <tt class="docutils literal"><span class="pre">filter</span></tt> property are parsed and reserialized now.</li>
+</ul>
+<ul class="last simple">
+<li>IMPROVEMENT: <tt class="docutils literal"><span class="pre">CSSStyleSheet.variables</span></tt> now contains all available variable values (from all imported sheets as well as in sheet defined itself)</li>
+</ul>
+</dd>
 <dt>0.9.7b3 100620</dt>
 <dd><ul class="first last">
 <li><dl class="first docutils">
@@ -101,7 +115,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </li>
 <li><p class="first"><strong>PERFORMANCE/IMPROVEMENT</strong>: Added parameter <tt class="docutils literal"><span class="pre">parseComments=True</span></tt> to CSSParser. If parsing with <tt class="docutils literal"><span class="pre">parser</span> <span class="pre">=</span> <span class="pre">cssutils.CSSParser(parseComments=False).parse...</span></tt> comments in a given stylesheet are simple omitted from the resulting stylesheet DOM.</p>
 </li>
-<li><p class="first"><strong>PERFORMANCE</strong>: Compiled productions in cssutils tokenizer are cached now (to clear it use <tt class="docutils literal"><span class="pre">cssutils.tokenize2._TOKENIZER_CACHE.clear()</span></tt>) which results in a slight performance improvement. Thanks to moscovich!</p>
+<li><p class="first"><strong>PERFORMANCE</strong>: Compiled productions in cssutils tokenizer are cached now (to clear it use <tt class="docutils literal"><span class="pre">cssutils.tokenize2._TOKENIZER_CACHE.clear()</span></tt>) which results in a slight performance improvement. Thanks to Amit Moscovich!</p>
 </li>
 </ul>
 </dd>
@@ -169,8 +183,8 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <li><dl class="first docutils">
 <dt><strong>IMPROVEMENT/CHANGE</strong>: Did some minor changes to improve compliance to <a class="reference external" href="http://dev.w3.org/csswg/cssom">http://dev.w3.org/csswg/cssom</a></dt>
 <dd><ul class="first last simple">
-<li><strong>MAJOR</strong>: <a title="cssutils.css.CSSImportRule.styleSheet" class="reference external" href="docs/css.html#cssutils.css.CSSImportRule.styleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule.styleSheet</span></tt></a> always references a CSSStyleSheet now. <tt class="docutils literal"><span class="pre">parentStyleSheet</span></tt> of this sheet is <tt class="xref docutils literal"><span class="pre">None</span></tt> now</li>
-<li>MINOR: added property <tt class="docutils literal"><span class="pre">alternate</span></tt> to <a title="cssutils.stylesheets.StyleSheet" class="reference external" href="docs/stylesheets.html#cssutils.stylesheets.StyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.stylesheets.StyleSheet</span></tt></a>, which for now is always <tt class="xref docutils literal"><span class="pre">False</span></tt></li>
+<li><strong>MAJOR</strong>: <a class="reference internal" href="docs/css.html#cssutils.css.CSSImportRule.styleSheet" title="cssutils.css.CSSImportRule.styleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSImportRule.styleSheet</span></tt></a> always references a CSSStyleSheet now. <tt class="docutils literal"><span class="pre">parentStyleSheet</span></tt> of this sheet is <tt class="xref docutils literal"><span class="pre">None</span></tt> now</li>
+<li>MINOR: added property <tt class="docutils literal"><span class="pre">alternate</span></tt> to <a class="reference internal" href="docs/stylesheets.html#cssutils.stylesheets.StyleSheet" title="cssutils.stylesheets.StyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.stylesheets.StyleSheet</span></tt></a>, which for now is always <tt class="xref docutils literal"><span class="pre">False</span></tt></li>
 <li>improved handling of encodings during imports (edge cases hopefully not found in the wild ;)</li>
 </ul>
 </dd>
@@ -183,7 +197,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <p><strong>experimental and incomplete</strong></p>
 <p>Related details:</p>
 <ul class="simple">
-<li>added <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleSheet.variables</span></tt> which is a <a title="cssutils.css.CSSVariablesDeclaration" class="reference external" href="docs/css.html#cssutils.css.CSSVariablesDeclaration"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a> containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</li>
+<li>added <tt class="docutils literal"><span class="pre">cssutils.css.CSSStyleSheet.variables</span></tt> which is a <a class="reference internal" href="docs/css.html#cssutils.css.CSSVariablesDeclaration" title="cssutils.css.CSSVariablesDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a> containing all available variables in this CSSStyleSheet including the ones defined in imported sheets.</li>
 <li><tt class="docutils literal"><span class="pre">cssutils.ser.prefs.resolveVariables</span> <span class="pre">==</span> <span class="pre">False</span></tt>: If set to <tt class="xref docutils literal"><span class="pre">True</span></tt> tries to resolve all variable references and removes any CSSVariablesRules.</li>
 <li><tt class="docutils literal"><span class="pre">cssutils.ser.prefs.normalizedVarNames==True</span></tt>: Defines if variable names should be serialized normalized (they are used as being normalized anyway)</li>
 </ul>
@@ -302,7 +316,7 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </dd>
 </dl>
 </li>
-<li><p class="first"><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.parseStyle(cssText,</span> <span class="pre">encoding='utf-8')</span></tt> convienience function which assumes that the given <cite>cssText</cite> is the content of an HTML style attribute. It returns a <a title="cssutils.css.CSSStyleDeclaration" class="reference external" href="docs/css.html#cssutils.css.CSSStyleDeclaration"><tt class="xref docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</p>
+<li><p class="first"><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.parseStyle(cssText,</span> <span class="pre">encoding='utf-8')</span></tt> convienience function which assumes that the given <cite>cssText</cite> is the content of an HTML style attribute. It returns a <a class="reference internal" href="docs/css.html#cssutils.css.CSSStyleDeclaration" title="cssutils.css.CSSStyleDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a>.</p>
 </li>
 <li><p class="first"><strong>FEATURE</strong> (experimental, request from issue #27): Added <tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration.children()</span></tt> which is a generator yielding any known children of a declaration including <em>all</em> properties, comments or CSSUnknownRules.</p>
 </li>
@@ -452,7 +466,7 @@ Also you cannot reset this change until you restart your program.</p>
 </dd>
 <dt>0.9.6a2 090308</dt>
 <dd><ul class="first">
-<li><p class="first"><strong>API CHANGE</strong>: <a title="cssutils.profiles.Profiles" class="reference external" href="docs/profiles.html#cssutils.profiles.Profiles"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a> (introduced in 0.9.6a1) has been refactored:</p>
+<li><p class="first"><strong>API CHANGE</strong>: <a class="reference internal" href="docs/profiles.html#cssutils.profiles.Profiles" title="cssutils.profiles.Profiles"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a> (introduced in 0.9.6a1) has been refactored:</p>
 <blockquote>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> (a <tt class="docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt> object) is now preset and available used for all validation</li>
@@ -461,12 +475,12 @@ Also you cannot reset this change until you restart your program.</p>
 <li>renamed <tt class="docutils literal"><span class="pre">Profiles.basicmacros</span></tt> to <tt class="docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="docutils literal"><span class="pre">Profiles.generalmacros</span></tt> to <tt class="docutils literal"><span class="pre">Profiles._MACROS</span></tt>. As these two are always added to your property definitions there is no need to use these predefined macro dictionaries in your code.</li>
 <li>renamed <tt class="docutils literal"><span class="pre">Profiles.knownnames</span></tt> to <tt class="docutils literal"><span class="pre">Profiles.knownNames</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">Profiles.validateWithProfile</span></tt> returns <tt class="docutils literal"><span class="pre">valid,</span> <span class="pre">matching,</span> <span class="pre">profiles</span></tt> now</li>
-<li>renamed named parameter in <tt class="xref docutils literal"><span class="pre">cssutils.css.Property.validate(profiles=None)()</span></tt> from <tt class="docutils literal"><span class="pre">profile</span></tt> to <tt class="docutils literal"><span class="pre">profiles</span></tt></li>
+<li>renamed named parameter in <tt class="xref py py-meth docutils literal"><span class="pre">cssutils.css.Property.validate(profiles=None)()</span></tt> from <tt class="docutils literal"><span class="pre">profile</span></tt> to <tt class="docutils literal"><span class="pre">profiles</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt> (and new <tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt>) use as keys the predefined constants in Profiles, like e.g. <tt class="docutils literal"><span class="pre">Profiles.CSS_LEVEL_2</span></tt> now. If you want to use some of the predefind macros you may e.g. use <tt class="docutils literal"><span class="pre">cssutils.profiles.macros[Profiles.CSS_LEVEL_2]['family-name']</span></tt> (in addition to the always available <tt class="docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and  <tt class="docutils literal"><span class="pre">Profiles._MACROS</span></tt>).</li>
 </ul>
 </blockquote>
 </li>
-<li><p class="first"><strong>CHANGE</strong>: Reporting levels of properties have changed. Please see <a title="cssutils.css.Property.validate" class="reference external" href="docs/css.html#cssutils.css.Property.validate"><tt class="xref docutils literal"><span class="pre">cssutils.css.Property.validate()</span></tt></a> for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore. The log output has been changed too, context information is provided now (line, column and name of the relevant property)</p>
+<li><p class="first"><strong>CHANGE</strong>: Reporting levels of properties have changed. Please see <a class="reference internal" href="docs/css.html#cssutils.css.Property.validate" title="cssutils.css.Property.validate"><tt class="xref py py-meth docutils literal"><span class="pre">cssutils.css.Property.validate()</span></tt></a> for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore. The log output has been changed too, context information is provided now (line, column and name of the relevant property)</p>
 </li>
 </ul>
 <ul class="simple">
@@ -495,13 +509,13 @@ Also you cannot reset this change until you restart your program.</p>
 <ul>
 <li><p class="first"><strong>FEATURE</strong>: Added <strong>experimental</strong> profiles handling. You may add new profiles with new properties and their validation and set a defaultprofile used for validation. The current default profile is <tt class="xref docutils literal"><span class="pre">None</span></tt> so all predefined profiles are used. Currently 3 profiles are defined:</p>
 <dl class="docutils">
-<dt><tt class="xref docutils literal"><span class="pre">CSS_LEVEL_2</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">CSS_LEVEL_2</span></tt></dt>
 <dd><p class="first last">Properties defined by CSS2.1</p>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">CSS_COLOR_LEVEL_3</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">CSS_COLOR_LEVEL_3</span></tt></dt>
 <dd><p class="first last">CSS 3 color properties</p>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">CSS_BOX_LEVEL_3</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">CSS_BOX_LEVEL_3</span></tt></dt>
 <dd><p class="first last">Currently overflow related properties only</p>
 </dd>
 </dl>
@@ -877,7 +891,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-06-06</span> <span class="pre">15:40:22</span> <span class="pre">+0200</span> <span class="pre">(So,</span> <span class="pre">06</span> <span class="pre">Jun</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">1999</span> <span class="pre">2010-06-06</span> <span class="pre">13:40:22Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-07-06</span> <span class="pre">22:49:41</span> <span class="pre">+0200</span> <span class="pre">(Di,</span> <span class="pre">06</span> <span class="pre">Jul</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">2016</span> <span class="pre">2010-07-06</span> <span class="pre">20:49:41Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -1254,7 +1268,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 </li>
 <li><p class="first">FEATURE (<strong>experimental</strong>): added <tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt> which may be used to adjust all &#8220;url()&#8221; values in a style sheet (currently in CSSStyleDeclaration and CSSImportRules).</p>
 </li>
-<li><p class="first">FEATURE: added <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getCssText(separator=None)</span></tt> which returns serialized property cssText, each property separated by given <tt class="docutils literal"><span class="pre">separator</span></tt> which may e.g. be u&#8217;&#8217; to be able to use cssText directly in an HTML style attribute. &#8220;;&#8221; is always part of each property (except the last one) and can <strong>not</strong> be set with separator!</p>
+<li><p class="first">FEATURE: added <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getCssText(separator=None)</span></tt> which returns serialized property cssText, each property separated by given <tt class="docutils literal"><span class="pre">separator</span></tt> which may e.g. be u&#8217;&#8217; to be able to use cssText directly in an HTML style attribute. &#8221;;&#8221; is always part of each property (except the last one) and can <strong>not</strong> be set with separator!</p>
 </li>
 <li><p class="first">FEATURE: <tt class="docutils literal"><span class="pre">href</span></tt> and <tt class="docutils literal"><span class="pre">media</span></tt> arguments can now be passed to <tt class="docutils literal"><span class="pre">parse()</span></tt> and <tt class="docutils literal"><span class="pre">parseString()</span></tt> functions and methods. This sets the appropriate attributes on the generated stylesheet objects.</p>
 </li>
@@ -1362,7 +1376,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li>API CHANGE (minor): removed <tt class="docutils literal"><span class="pre">getFormatted</span></tt> and <tt class="docutils literal"><span class="pre">`pprint</span></tt> from various classes which were both DEPRECATED for some time anyway</li>
 <li>API CHANGE (minor): _Property.value is DEPRECATED, use _Property.cssValue.cssText instead, _Property is defined as private anyway so should not be used directly</li>
 <li>API CHANGE (minor): removed <tt class="docutils literal"><span class="pre">Tokenizer.tokensupto</span></tt> which was used internally only</li>
-<li>CHANGE: Numbers and Dimensions starting with &#8220;.&#8221; like &#8220;.1em&#8221; in the original stylesheet will be output as &#8220;0.1em&#8221; with a proceding 0 now.</li>
+<li>CHANGE: Numbers and Dimensions starting with &#8221;.&#8221; like &#8221;.1em&#8221; in the original stylesheet will be output as &#8220;0.1em&#8221; with a proceding 0 now.</li>
 <li>CHANGE: Report of parsing errors have a slightly different syntax now.</li>
 <li>FEATURE: New <tt class="docutils literal"><span class="pre">Preferences.omitLastSemicolon</span></tt> option. If <tt class="xref docutils literal"><span class="pre">True</span></tt> omits ; after last property of CSSStyleDeclaration</li>
 <li>BUGFIX: The css validator definition for &#8220;num&#8221; was wrong, so values like <tt class="docutils literal"><span class="pre">-5.5em</span></tt> would issue a warning but should be correct</li>
@@ -1739,7 +1753,7 @@ cssutils.setCSSSerializer(newserializer)</p>
 <dt>prefs[&#8216;CSSImportrule.href format&#8217;] may be set to</dt>
 <dd><ul class="first last simple">
 <li>&#8216;uri&#8217;: renders url(...) (default)</li>
-<li>&#8216;string&#8217;: renders &#8220;...&#8221;</li>
+<li>&#8216;string&#8217;: renders &#8221;...&#8221;</li>
 <li>None: renders as set in CSSImportRule.hreftype</li>
 </ul>
 </dd>
@@ -2198,57 +2212,57 @@ first version to try if i can bring it to work at all</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">CHANGELOG</a><ul>
-<li><a class="reference external" href="#known-issues">Known Issues</a></li>
-<li><a class="reference external" href="#development-version">Development Version</a><ul>
-<li><a class="reference external" href="#id1">0.9.7</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#known-issues">Known Issues</a></li>
+<li><a class="reference internal" href="#development-version">Development Version</a><ul>
+<li><a class="reference internal" href="#id1">0.9.7</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#last-stable-version">Last Stable Version</a><ul>
-<li><a class="reference external" href="#id2">0.9.6</a></li>
+<li><a class="reference internal" href="#last-stable-version">Last Stable Version</a><ul>
+<li><a class="reference internal" href="#id2">0.9.6</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#archived-versions">Archived Versions</a><ul>
-<li><a class="reference external" href="#id3">0.9.5</a></li>
-<li><a class="reference external" href="#x">0.8.x</a></li>
-<li><a class="reference external" href="#id4">0.6.x</a></li>
-<li><a class="reference external" href="#id5">0.5.x</a></li>
-<li><a class="reference external" href="#id6">0.4.x</a></li>
-<li><a class="reference external" href="#id7">0.3.x</a></li>
-<li><a class="reference external" href="#id8">0.2.x</a></li>
-<li><a class="reference external" href="#id9">0.1.x</a></li>
+<li><a class="reference internal" href="#archived-versions">Archived Versions</a><ul>
+<li><a class="reference internal" href="#id3">0.9.5</a></li>
+<li><a class="reference internal" href="#x">0.8.x</a></li>
+<li><a class="reference internal" href="#id4">0.6.x</a></li>
+<li><a class="reference internal" href="#id5">0.5.x</a></li>
+<li><a class="reference internal" href="#id6">0.4.x</a></li>
+<li><a class="reference internal" href="#id7">0.3.x</a></li>
+<li><a class="reference internal" href="#id8">0.2.x</a></li>
+<li><a class="reference internal" href="#id9">0.1.x</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="README.html"
-                                  title="previous chapter">README</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="docs/parse.html"
-                                  title="next chapter">parsing CSS</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/CHANGELOG.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="README.html"
+                        title="previous chapter">README</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="docs/parse.html"
+                        title="next chapter">parsing CSS</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/CHANGELOG.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -2260,7 +2274,7 @@ first version to try if i can bring it to work at all</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="docs/parse.html" title="parsing CSS"
@@ -2268,12 +2282,12 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+        &copy; Copyright 2004-2010, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

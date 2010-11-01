@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -5,21 +7,22 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>encutils module &mdash; cssutils v0.9.7b3 documentation</title>
+    <title>encutils module &mdash; cssutils v0.9.7b4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7b3',
-        COLLAPSE_MODINDEX: false,
+        VERSION:     '0.9.7b4',
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7b4 documentation" href="../index.html" />
     <link rel="next" title="version migration" href="migrate.html" />
     <link rel="prev" title="CSS codec" href="codec.html" /> 
   </head>
@@ -31,15 +34,15 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="migrate.html" title="version migration"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="codec.html" title="CSS codec"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,7 +52,7 @@
           <div class="body">
             
   <div class="section" id="module-encutils">
-<h1><tt class="docutils literal"><span class="pre">encutils</span></tt> module<a class="headerlink" href="#module-encutils" title="Permalink to this headline">¶</a></h1>
+<span id="encutils-module"></span><h1><tt class="docutils literal"><span class="pre">encutils</span></tt> module<a class="headerlink" href="#module-encutils" title="Permalink to this headline">¶</a></h1>
 <p>encutils - encoding detection collection for Python</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -89,9 +92,9 @@ along with encutils.  If not, see &lt;<a class="reference external" href="http:/
 </tbody>
 </table>
 <p>A collection of helper functions to detect encodings of text files (like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP, file or string.</p>
-<p><a title="encutils.getEncodingInfo" class="reference internal" href="#encutils.getEncodingInfo"><tt class="xref docutils literal"><span class="pre">getEncodingInfo()</span></tt></a> is probably the main function of interest which uses
+<p><a class="reference internal" href="#encutils.getEncodingInfo" title="encutils.getEncodingInfo"><tt class="xref py py-func docutils literal"><span class="pre">getEncodingInfo()</span></tt></a> is probably the main function of interest which uses
 other supplied functions itself and gathers all information together and
-supplies an <a title="encutils.EncodingInfo" class="reference internal" href="#encutils.EncodingInfo"><tt class="xref docutils literal"><span class="pre">EncodingInfo</span></tt></a> object.</p>
+supplies an <a class="reference internal" href="#encutils.EncodingInfo" title="encutils.EncodingInfo"><tt class="xref py py-class docutils literal"><span class="pre">EncodingInfo</span></tt></a> object.</p>
 <p>example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">encutils</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">encutils</span><span class="o">.</span><span class="n">getEncodingInfo</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&#39;http://cthedot.de/encutils/&#39;</span><span class="p">)</span>
@@ -99,7 +102,7 @@ supplies an <a title="encutils.EncodingInfo" class="reference internal" href="#e
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">info</span> <span class="c"># = str(info)</span>
 <span class="go">utf-8</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">info</span><span class="p">)</span> <span class="c"># doctest:+ELLIPSIS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">info</span><span class="p">)</span> 
 <span class="go">&lt;encutils.EncodingInfo object encoding=&#39;utf-8&#39; mismatch=False at...&gt;</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">info</span><span class="o">.</span><span class="n">logtext</span>
@@ -136,7 +139,7 @@ supplies an <a title="encutils.EncodingInfo" class="reference internal" href="#e
 </dl>
 <dl class="function">
 <dt id="encutils.buildlog">
-<tt class="descclassname">encutils.</tt><tt class="descname">buildlog</tt><big>(</big><em>logname='encutils'</em>, <em>level='INFO'</em>, <em>stream=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x0000000001C8F1E0&gt;</em>, <em>filename=None</em>, <em>filemode='w'</em>, <em>format='%(levelname)s\t%(message)s'</em><big>)</big><a class="headerlink" href="#encutils.buildlog" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">encutils.</tt><tt class="descname">buildlog</tt><big>(</big><em>logname='encutils'</em>, <em>level='INFO'</em>, <em>stream=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x0000000001D7E1E0&gt;</em>, <em>filename=None</em>, <em>filemode='w'</em>, <em>format='%(levelname)s\t%(message)s'</em><big>)</big><a class="headerlink" href="#encutils.buildlog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper to build a basic log</p>
 <ul class="simple">
 <li>if <cite>filename</cite> is given returns a log logging to <cite>filename</cite> with
@@ -163,13 +166,16 @@ mode <cite>filemode</cite></li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>media_type</em> &#8211; a media type like &#8220;text/html&#8221;</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>media_type</strong> &#8211; a media type like &#8220;text/html&#8221;</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a default encoding for given <cite>media_type</cite>. For example
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>a default encoding for given <cite>media_type</cite>. For example
 <tt class="docutils literal"><span class="pre">&quot;utf-8&quot;</span></tt> for <tt class="docutils literal"><span class="pre">media_type=&quot;application/xml&quot;</span></tt>.</p>
 <p>If no default encoding is available returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
-<p class="last">Refers to RFC 3023 and HTTP MIME specification.</p>
+<p>Refers to RFC 3023 and HTTP MIME specification.</p>
+</p>
 </td>
 </tr>
 </tbody>
@@ -183,12 +189,16 @@ mode <cite>filemode</cite></li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>response</em> &#8211; a HTTP response object</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>response</strong> &#8211; a HTTP response object</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from the <cite>response</cite>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from the <cite>response</cite>
 Content-Type HTTP header. (Case of headers is ignored.)
 May be <tt class="docutils literal"><span class="pre">(None,</span> <span class="pre">None)</span></tt> e.g. if no Content-Type header is
-available.</td>
+available.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -201,15 +211,18 @@ available.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>text</em> &#8211; a byte string</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> &#8211; a byte string</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from (first)
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p><tt class="docutils literal"><span class="pre">(media_type,</span> <span class="pre">encoding)</span></tt> information from (first)
 X/HTML Content-Type <tt class="docutils literal"><span class="pre">&lt;meta&gt;</span></tt> element if available in <cite>text</cite>.</p>
 <p>XHTML format:</p>
-<div class="last highlight-python"><pre>&lt;meta http-equiv="Content-Type" 
+<div class="highlight-python"><pre>&lt;meta http-equiv="Content-Type" 
       content="media_type;charset=encoding" /&gt;</pre>
 </div>
+</p>
 </td>
 </tr>
 </tbody>
@@ -230,7 +243,7 @@ which itself is based on Paul Prescotts recipe:
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
 <li>if detection of the BOM succeeds, the codec name of the
 corresponding unicode charset is returned</li>
 <li>if BOM detection fails, the xml declaration is searched for
@@ -257,19 +270,19 @@ declaration and X/HTML <tt class="docutils literal"><span class="pre">&lt;meta&g
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>response</em> &#8211; HTTP response object, e.g. via <tt class="docutils literal"><span class="pre">urllib.urlopen('url')</span></tt></li>
-<li><em>text</em> &#8211; a byte string to guess encoding for. XML prolog with 
+<li><strong>response</strong> &#8211; HTTP response object, e.g. via <tt class="docutils literal"><span class="pre">urllib.urlopen('url')</span></tt></li>
+<li><strong>text</strong> &#8211; a byte string to guess encoding for. XML prolog with 
 encoding pseudo attribute or HTML meta element will be used to detect
 the encoding</li>
-<li><em>url</em> &#8211; When given fetches document at <cite>url</cite> and all needed information.
+<li><strong>url</strong> &#8211; When given fetches document at <cite>url</cite> and all needed information.
 No <cite>reponse</cite> or <cite>text</cite> parameters are needed in this case.</li>
-<li><em>log</em> &#8211; an optional logging logger to which messages may go, if
+<li><strong>log</strong> &#8211; an optional logging logger to which messages may go, if
 no log given all log messages are available from resulting
 <tt class="docutils literal"><span class="pre">EncodingInfo</span></tt></li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">instance of <a title="encutils.EncodingInfo" class="reference internal" href="#encutils.EncodingInfo"><tt class="xref docutils literal"><span class="pre">EncodingInfo</span></tt></a>.</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">instance of <a class="reference internal" href="#encutils.EncodingInfo" title="encutils.EncodingInfo"><tt class="xref py py-class docutils literal"><span class="pre">EncodingInfo</span></tt></a>.</p>
 </td>
 </tr>
 </tbody>
@@ -352,14 +365,17 @@ these strings too) and lastly &#8216;utf-8&#8217;.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><p class="first"><em>text</em> &#8211; a byte string</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> &#8211; a byte string</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Working encoding or <tt class="xref docutils literal"><span class="pre">None</span></tt> if no encoding does work at all.</p>
-<p class="last">The returned encoding might nevertheless be not the one intended by
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>Working encoding or <tt class="xref docutils literal"><span class="pre">None</span></tt> if no encoding does work at all.</p>
+<p>The returned encoding might nevertheless be not the one intended by
 the author as it is only checked if the text might be encoded in 
 that encoding. Some texts might be working in &#8220;iso-8859-1&#8221; <em>and</em>
 &#8220;windows-1252&#8221; <em>and</em> &#8220;ascii&#8221; <em>and</em> &#8220;utf-8&#8221; and ...</p>
+</p>
 </td>
 </tr>
 </tbody>
@@ -369,7 +385,7 @@ that encoding. Some texts might be working in &#8220;iso-8859-1&#8221; <em>and</
 <dl class="class">
 <dt id="encutils.EncodingInfo">
 <em class="property">class </em><tt class="descclassname">encutils.</tt><tt class="descname">EncodingInfo</tt><a class="headerlink" href="#encutils.EncodingInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>All encoding related information, returned by <a title="encutils.getEncodingInfo" class="reference internal" href="#encutils.getEncodingInfo"><tt class="xref docutils literal"><span class="pre">getEncodingInfo()</span></tt></a>.</p>
+<dd><p>All encoding related information, returned by <a class="reference internal" href="#encutils.getEncodingInfo" title="encutils.getEncodingInfo"><tt class="xref py py-func docutils literal"><span class="pre">getEncodingInfo()</span></tt></a>.</p>
 <dl class="docutils">
 <dt>Attributes filled:</dt>
 <dd><ul class="first last">
@@ -432,30 +448,30 @@ For details see the specifications.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="codec.html"
-                                  title="previous chapter">CSS codec</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="migrate.html"
-                                  title="next chapter">version migration</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/docs/encutils.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="codec.html"
+                        title="previous chapter">CSS codec</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="migrate.html"
+                        title="next chapter">version migration</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/docs/encutils.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -467,7 +483,7 @@ For details see the specifications.</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="migrate.html" title="version migration"
@@ -475,12 +491,12 @@ For details see the specifications.</p>
         <li class="right" >
           <a href="codec.html" title="CSS codec"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+        &copy; Copyright 2004-2010, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

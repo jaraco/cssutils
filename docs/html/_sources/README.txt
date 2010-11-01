@@ -87,5 +87,5 @@ cssutils is far from being perfect or even complete. If you find any bugs (espec
 
 Thanks
 ======
-Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Jason R. Coombs, Cory Dodt, Tim Gerla and James Dobson for helpful suggestions and code patches.
+Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Jason R. Coombs, Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches.
 

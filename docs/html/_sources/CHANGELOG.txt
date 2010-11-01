@@ -36,6 +36,16 @@ Development Version
 -----
 HEAD
 
+
+0.9.7b4 101101
+    + *EXPERIMENTAL*: CSS function values using ``calc(...)`` should be partly parsable now (as experimental ExpressionValues currently)
+
+    - BUGFIX: MS specific values are parsed a bit more reliable if parsing of these values is activated (they probable are syntactically invalid!). E.g. ``top: expression(eval(document.documentElement.scrollTop))`` and also a few values for the MS specific ``filter`` property are parsed and reserialized now.
+
+    + IMPROVEMENT: ``CSSStyleSheet.variables`` now contains all available variable values (from all imported sheets as well as in sheet defined itself)
+
+
+
 0.9.7b3 100620
     + API CHANGE: Changed parameters of script/utility function ``csscombine``.
             - parameter ``resolveVariables=True`` now (default was ``False`` before)
@@ -43,7 +53,7 @@ HEAD
 
     + **PERFORMANCE/IMPROVEMENT**: Added parameter ``parseComments=True`` to CSSParser. If parsing with ``parser = cssutils.CSSParser(parseComments=False).parse...`` comments in a given stylesheet are simple omitted from the resulting stylesheet DOM.
 
-    + **PERFORMANCE**: Compiled productions in cssutils tokenizer are cached now (to clear it use ``cssutils.tokenize2._TOKENIZER_CACHE.clear()``) which results in a slight performance improvement. Thanks to moscovich!
+    + **PERFORMANCE**: Compiled productions in cssutils tokenizer are cached now (to clear it use ``cssutils.tokenize2._TOKENIZER_CACHE.clear()``) which results in a slight performance improvement. Thanks to Amit Moscovich!
 
 
 0.9.7b2 100606
@@ -622,7 +632,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-06-06 15:40:22 +0200 (So, 06 Jun 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 1999 2010-06-06 13:40:22Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-07-06 22:49:41 +0200 (Di, 06 Jul 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2016 2010-07-06 20:49:41Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
