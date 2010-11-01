@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -5,21 +7,22 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>serializing CSS &mdash; cssutils v0.9.7b3 documentation</title>
+    <title>serializing CSS &mdash; cssutils v0.9.7b4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7b3',
-        COLLAPSE_MODINDEX: false,
+        VERSION:     '0.9.7b4',
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7b4 documentation" href="../index.html" />
     <link rel="next" title="Package cssutils.css" href="css.html" />
     <link rel="prev" title="extra settings" href="settings.html" /> 
   </head>
@@ -31,15 +34,15 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="css.html" title="Package cssutils.css"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="settings.html" title="extra settings"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,7 +52,7 @@
           <div class="body">
             
   <span class="target" id="module-cssutils.serialize"></span><div class="section" id="serializing-css">
-<span id="index-35"></span><h1>serializing CSS<a class="headerlink" href="#serializing-css" title="Permalink to this headline">¶</a></h1>
+<span id="index-0"></span><h1>serializing CSS<a class="headerlink" href="#serializing-css" title="Permalink to this headline">¶</a></h1>
 <p>To serialize any stylesheet use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span>
 </pre></div>
@@ -66,8 +69,8 @@
 <span class="go">b</span>
 </pre></div>
 </div>
-<span class="target" id="preferences"></span><div class="section" id="index-36">
-<span id="id1"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#index-36" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="preferences"></span><div class="section" id="index-1">
+<span id="id1"></span><h2><tt class="docutils literal"><span class="pre">Preferences</span></tt><a class="headerlink" href="#index-1" title="Permalink to this headline">¶</a></h2>
 <p>Quite a few preferences of the cssutils serializer may be tweaked.</p>
 <p>To set a preference use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">cssutils</span><span class="o">.</span><span class="n">ser</span><span class="o">.</span><span class="n">prefs</span><span class="o">.</span><span class="n">PREFNAME</span> <span class="o">=</span> <span class="n">NEWVALUE</span>
@@ -146,12 +149,14 @@ CSSOM defines a single space for this which is also the default in cssutils.</dd
 <dl class="attribute">
 <dt id="cssutils.serialize.Preferences.keepUnkownAtRules">
 <tt class="descname">keepUnkownAtRules</tt><a class="headerlink" href="#cssutils.serialize.Preferences.keepUnkownAtRules" title="Permalink to this definition">¶</a></dt>
-<dd>Use keepUnknownAtRules instead!</dd></dl>
+<dd><p>Use keepUnknownAtRules instead!</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.serialize.Preferences.useDefaults">
 <tt class="descname">useDefaults</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.serialize.Preferences.useDefaults" title="Permalink to this definition">¶</a></dt>
-<dd>Reset all preference options to their default value.</dd></dl>
+<dd><p>Reset all preference options to their default value.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.serialize.Preferences.useMinified">
@@ -167,13 +172,13 @@ and set settings you want adjusted afterwards.</p>
 <div class="section" id="cssserializer">
 <h2><tt class="docutils literal"><span class="pre">CSSSerializer</span></tt><a class="headerlink" href="#cssserializer" title="Permalink to this headline">¶</a></h2>
 <p>There is a single global serializer used throughout the library. You may configure it by setting specific <a class="reference internal" href="#preferences">Preferences</a> or completely replace it with your own.</p>
-<p>A custom serializer must implement all methods the default one provides. Easiest would be to subclass <a title="cssutils.serialize.CSSSerializer" class="reference internal" href="#cssutils.serialize.CSSSerializer"><tt class="xref docutils literal"><span class="pre">cssutils.serialize.CSSSerializer</span></tt></a>.</p>
+<p>A custom serializer must implement all methods the default one provides. Easiest would be to subclass <a class="reference internal" href="#cssutils.serialize.CSSSerializer" title="cssutils.serialize.CSSSerializer"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.serialize.CSSSerializer</span></tt></a>.</p>
 <p>To set a new serializer, use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">cssutils</span><span class="o">.</span><span class="n">setSerializer</span><span class="p">(</span><span class="n">serializer</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You may also set <tt class="xref docutils literal"><span class="pre">cssutils.ser</span></tt> directly but the above method is the preferred one.</p>
-<p>For most cases adjusting the <tt class="xref docutils literal"><span class="pre">cssutils.ser.prefs</span></tt> of the default serializer should be sufficient though.</p>
+<p>You may also set <tt class="xref py py-attr docutils literal"><span class="pre">cssutils.ser</span></tt> directly but the above method is the preferred one.</p>
+<p>For most cases adjusting the <tt class="xref py py-attr docutils literal"><span class="pre">cssutils.ser.prefs</span></tt> of the default serializer should be sufficient though.</p>
 <dl class="class">
 <dt id="cssutils.serialize.CSSSerializer">
 <em class="property">class </em><tt class="descclassname">cssutils.serialize.</tt><tt class="descname">CSSSerializer</tt><big>(</big><em>prefs=None</em><big>)</big><a class="headerlink" href="#cssutils.serialize.CSSSerializer" title="Permalink to this definition">¶</a></dt>
@@ -191,39 +196,39 @@ Serializer and overwrite the methods you like to customize.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">serializing CSS</a><ul>
-<li><a class="reference external" href="#index-36"><tt class="docutils literal"><span class="pre">Preferences</span></tt></a></li>
-<li><a class="reference external" href="#cssserializer"><tt class="docutils literal"><span class="pre">CSSSerializer</span></tt></a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">serializing CSS</a><ul>
+<li><a class="reference internal" href="#index-1"><tt class="docutils literal"><span class="pre">Preferences</span></tt></a></li>
+<li><a class="reference internal" href="#cssserializer"><tt class="docutils literal"><span class="pre">CSSSerializer</span></tt></a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="settings.html"
-                                  title="previous chapter">extra settings</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="css.html"
-                                  title="next chapter">Package <tt class="docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/docs/serialize.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="settings.html"
+                        title="previous chapter">extra settings</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="css.html"
+                        title="next chapter">Package <tt class="docutils literal docutils literal"><span class="pre">cssutils.css</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/docs/serialize.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -235,7 +240,7 @@ Serializer and overwrite the methods you like to customize.</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="css.html" title="Package cssutils.css"
@@ -243,12 +248,12 @@ Serializer and overwrite the methods you like to customize.</p>
         <li class="right" >
           <a href="settings.html" title="extra settings"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+        &copy; Copyright 2004-2010, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

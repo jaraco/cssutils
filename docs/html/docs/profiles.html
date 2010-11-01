@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -5,21 +7,22 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>profiles &mdash; cssutils v0.9.7b3 documentation</title>
+    <title>profiles &mdash; cssutils v0.9.7b4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7b3',
-        COLLAPSE_MODINDEX: false,
+        VERSION:     '0.9.7b4',
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7b4 documentation" href="../index.html" />
     <link rel="next" title="CSS Variables" href="variables.html" />
     <link rel="prev" title="Package cssutils.stylesheets" href="stylesheets.html" /> 
   </head>
@@ -31,15 +34,15 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="variables.html" title="CSS Variables"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="stylesheets.html" title="Package cssutils.stylesheets"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,9 +54,9 @@
   <div class="section" id="profiles">
 <h1>profiles<a class="headerlink" href="#profiles" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cssutils-profile">
-<span id="index-33"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
-<p>A global object <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is used for validation of all properties. It is an instance of <a title="cssutils.profiles.Profiles" class="reference internal" href="#cssutils.profiles.Profiles"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a>. Add or remove new profile definitions here.</p>
-<p>Most important method is <a title="cssutils.profiles.Profiles.addProfile" class="reference internal" href="#cssutils.profiles.Profiles.addProfile"><tt class="xref docutils literal"><span class="pre">cssutils.profiles.Profiles.addProfile()</span></tt></a> (use <tt class="docutils literal"><span class="pre">cssutils.profile.addProfile</span></tt>) to add new properties to cssutils and the setting of <tt class="docutils literal"><span class="pre">defaultProfiles</span></tt>.</p>
+<span id="index-0"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt><a class="headerlink" href="#cssutils-profile" title="Permalink to this headline">¶</a></h2>
+<p>A global object <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is used for validation of all properties. It is an instance of <a class="reference internal" href="#cssutils.profiles.Profiles" title="cssutils.profiles.Profiles"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a>. Add or remove new profile definitions here.</p>
+<p>Most important method is <a class="reference internal" href="#cssutils.profiles.Profiles.addProfile" title="cssutils.profiles.Profiles.addProfile"><tt class="xref py py-meth docutils literal"><span class="pre">cssutils.profiles.Profiles.addProfile()</span></tt></a> (use <tt class="docutils literal"><span class="pre">cssutils.profile.addProfile</span></tt>) to add new properties to cssutils and the setting of <tt class="docutils literal"><span class="pre">defaultProfiles</span></tt>.</p>
 <p>Example of how to add a new profile:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cssutils</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;x { -test-custommacro: x }&#39;</span><span class="p">)</span>
@@ -79,7 +82,7 @@
 <p><strong>Please note: This might change again, but only slightly as it has been refactored in 0.9.6a2.</strong></p>
 </div>
 <div class="section" id="cssutils-profiles-macros-and-cssutils-profiles-properties">
-<span id="index-34"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt><a class="headerlink" href="#cssutils-profiles-macros-and-cssutils-profiles-properties" title="Permalink to this headline">¶</a></h2>
+<span id="index-1"></span><h2><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt><a class="headerlink" href="#cssutils-profiles-macros-and-cssutils-profiles-properties" title="Permalink to this headline">¶</a></h2>
 <p>Two dictionaries which contain macro and property definitions for the predefined property profiles.</p>
 <p>Both use the additional macros defined in <tt class="docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="docutils literal"><span class="pre">Profiles._MACROS</span></tt> which contain basic macros for definition of new properties. Things like <cite>ident</cite>, <cite>name</cite> or <cite>hexcolor</cite> are defined there and may be used in any new property definition as these two macro sets defined in <tt class="docutils literal"><span class="pre">Profiles</span></tt> are added to any custom macro definition given. You may overwrite these basic macros with your own macros or simply define your own macros and use only these.</p>
 <p>Use <tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> if you need any other predefined macro or <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt> if you want to add any known property to your custom property profile.</p>
@@ -92,23 +95,23 @@
 <dd><p>All profiles used for validation. <tt class="docutils literal"><span class="pre">cssutils.profile</span></tt> is a
 preset object of this class and used by all properties for validation.</p>
 <p>Predefined profiles are (use
-<a title="cssutils.profiles.Profiles.propertiesByProfile" class="reference internal" href="#cssutils.profiles.Profiles.propertiesByProfile"><tt class="xref docutils literal"><span class="pre">propertiesByProfile()</span></tt></a> to
+<a class="reference internal" href="#cssutils.profiles.Profiles.propertiesByProfile" title="cssutils.profiles.Profiles.propertiesByProfile"><tt class="xref py py-meth docutils literal"><span class="pre">propertiesByProfile()</span></tt></a> to
 get a list of defined properties):</p>
 <dl class="docutils">
-<dt><tt class="xref docutils literal"><span class="pre">CSS_LEVEL_2</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">CSS_LEVEL_2</span></tt></dt>
 <dd>Properties defined by CSS2.1</dd>
-<dt><tt class="xref docutils literal"><span class="pre">CSS3_COLOR</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">CSS3_COLOR</span></tt></dt>
 <dd>CSS 3 color properties</dd>
-<dt><tt class="xref docutils literal"><span class="pre">CSS3_BOX</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">CSS3_BOX</span></tt></dt>
 <dd>Currently overflow related properties only</dd>
-<dt><tt class="xref docutils literal"><span class="pre">CSS3_PAGED_MEDIA</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">CSS3_PAGED_MEDIA</span></tt></dt>
 <dd>As defined at <a class="reference external" href="http://www.w3.org/TR/css3-page/">http://www.w3.org/TR/css3-page/</a> (at 090307)</dd>
 </dl>
 <p>Predefined macros are:</p>
 <dl class="docutils">
-<dt><tt class="xref docutils literal"><span class="pre">_TOKEN_MACROS</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">_TOKEN_MACROS</span></tt></dt>
 <dd>Macros containing the token values as defined to CSS2</dd>
-<dt><tt class="xref docutils literal"><span class="pre">_MACROS</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">_MACROS</span></tt></dt>
 <dd>Additional general macros.</dd>
 </dl>
 <p>If you want to redefine any of these macros do this in your custom
@@ -123,8 +126,8 @@ and the given <cite>properties</cite>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>profile</em> &#8211; the new <cite>profile</cite>&#8216;s name</li>
-<li><em>properties</em> &#8211; <p>a dictionary of <tt class="docutils literal"><span class="pre">{</span> <span class="pre">property-name:</span> <span class="pre">propery-value</span> <span class="pre">}</span></tt> items where
+<li><strong>profile</strong> &#8211; the new <cite>profile</cite>&#8216;s name</li>
+<li><strong>properties</strong> &#8211; <p>a dictionary of <tt class="docutils literal"><span class="pre">{</span> <span class="pre">property-name:</span> <span class="pre">propery-value</span> <span class="pre">}</span></tt> items where
 property-value is a regex which may use macros defined in given
 <tt class="docutils literal"><span class="pre">macros</span></tt> or the standard macros Profiles.tokens and
 Profiles.generalvalues.</p>
@@ -136,9 +139,9 @@ are reported or raised as all other cssutils exceptions depending
 on cssutils.log.raiseExceptions which e.g during parsing normally
 is False so the exceptions would be logged only.</p>
 </li>
-<li><em>macros</em> &#8211; may be used in the given properties definitions. There are some
+<li><strong>macros</strong> &#8211; may be used in the given properties definitions. There are some
 predefined basic macros which may always be used in
-<tt class="xref docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="xref docutils literal"><span class="pre">Profiles._MACROS</span></tt>.</li>
+<tt class="xref py py-attr docutils literal"><span class="pre">Profiles._TOKEN_MACROS</span></tt> and <tt class="xref py py-attr docutils literal"><span class="pre">Profiles._MACROS</span></tt>.</li>
 </ul>
 </td>
 </tr>
@@ -149,17 +152,20 @@ predefined basic macros which may always be used in
 <dl class="attribute">
 <dt id="cssutils.profiles.Profiles.defaultProfiles">
 <tt class="descname">defaultProfiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles.defaultProfiles" title="Permalink to this definition">¶</a></dt>
-<dd>Names of profiles to use for validation.To use e.g. the CSS2 profile set <tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span> <span class="pre">=</span> <span class="pre">cssutils.profile.CSS_LEVEL_2</span></tt></dd></dl>
+<dd><p>Names of profiles to use for validation.To use e.g. the CSS2 profile set <tt class="docutils literal"><span class="pre">cssutils.profile.defaultProfiles</span> <span class="pre">=</span> <span class="pre">cssutils.profile.CSS_LEVEL_2</span></tt></p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.profiles.Profiles.knownNames">
 <tt class="descname">knownNames</tt><a class="headerlink" href="#cssutils.profiles.Profiles.knownNames" title="Permalink to this definition">¶</a></dt>
-<dd>All known property names of all profiles.</dd></dl>
+<dd><p>All known property names of all profiles.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.profiles.Profiles.profiles">
 <tt class="descname">profiles</tt><a class="headerlink" href="#cssutils.profiles.Profiles.profiles" title="Permalink to this definition">¶</a></dt>
-<dd>Names of all profiles in order as defined.</dd></dl>
+<dd><p>Names of all profiles in order as defined.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="cssutils.profiles.Profiles.propertiesByProfile">
@@ -170,7 +176,10 @@ profile&#8217;s properties are used.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>profiles</em> &#8211; a single profile name or a list of names.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>profiles</strong> &#8211; a single profile name or a list of names.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -185,13 +194,13 @@ profile&#8217;s properties are used.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>profile</em> &#8211; profile name to remove</li>
-<li><em>all</em> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> removes all profiles to start with a clean state</li>
+<li><strong>profile</strong> &#8211; profile name to remove</li>
+<li><strong>all</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> removes all profiles to start with a clean state</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
-<li><tt class="xref docutils literal"><span class="pre">cssutils.profiles.NoSuchProfileException</span></tt>:
+<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><tt class="xref py py-exc docutils literal"><span class="pre">cssutils.profiles.NoSuchProfileException</span></tt>:
 If given <cite>profile</cite> cannot be found.</li>
 </ul>
 </td>
@@ -210,8 +219,8 @@ profile.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>name</em> &#8211; a property name</li>
-<li><em>value</em> &#8211; a CSS value (string)</li>
+<li><strong>name</strong> &#8211; a property name</li>
+<li><strong>value</strong> &#8211; a CSS value (string)</li>
 </ul>
 </td>
 </tr>
@@ -233,9 +242,9 @@ profile</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>name</em> &#8211; a property name</li>
-<li><em>value</em> &#8211; a CSS value (string)</li>
-<li><em>profiles</em> &#8211; internal parameter used by Property.validate only</li>
+<li><strong>name</strong> &#8211; a property name</li>
+<li><strong>value</strong> &#8211; a CSS value (string)</li>
+<li><strong>profiles</strong> &#8211; internal parameter used by Property.validate only</li>
 </ul>
 </td>
 </tr>
@@ -267,40 +276,40 @@ and <tt class="docutils literal"><span class="pre">profiles</span></tt> the prof
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">profiles</a><ul>
-<li><a class="reference external" href="#cssutils-profile"><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt></a></li>
-<li><a class="reference external" href="#cssutils-profiles-macros-and-cssutils-profiles-properties"><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt></a></li>
-<li><a class="reference external" href="#cssutils-profiles-profiles"><tt class="docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">profiles</a><ul>
+<li><a class="reference internal" href="#cssutils-profile"><tt class="docutils literal"><span class="pre">cssutils.profile</span></tt></a></li>
+<li><a class="reference internal" href="#cssutils-profiles-macros-and-cssutils-profiles-properties"><tt class="docutils literal"><span class="pre">cssutils.profiles.macros</span></tt> and <tt class="docutils literal"><span class="pre">cssutils.profiles.properties</span></tt></a></li>
+<li><a class="reference internal" href="#cssutils-profiles-profiles"><tt class="docutils literal"><span class="pre">cssutils.profiles.Profiles</span></tt></a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="stylesheets.html"
-                                  title="previous chapter">Package <tt class="docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="variables.html"
-                                  title="next chapter">CSS Variables</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/docs/profiles.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="stylesheets.html"
+                        title="previous chapter">Package <tt class="docutils literal docutils literal"><span class="pre">cssutils.stylesheets</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="variables.html"
+                        title="next chapter">CSS Variables</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/docs/profiles.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -312,7 +321,7 @@ and <tt class="docutils literal"><span class="pre">profiles</span></tt> the prof
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="variables.html" title="CSS Variables"
@@ -320,12 +329,12 @@ and <tt class="docutils literal"><span class="pre">profiles</span></tt> the prof
         <li class="right" >
           <a href="stylesheets.html" title="Package cssutils.stylesheets"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+        &copy; Copyright 2004-2010, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -5,21 +7,22 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>utilities &mdash; cssutils v0.9.7b3 documentation</title>
+    <title>utilities &mdash; cssutils v0.9.7b4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7b3',
-        COLLAPSE_MODINDEX: false,
+        VERSION:     '0.9.7b4',
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b3 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.7b4 documentation" href="../index.html" />
     <link rel="next" title="logging" href="logging.html" />
     <link rel="prev" title="CSS Variables" href="variables.html" /> 
   </head>
@@ -31,15 +34,15 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="logging.html" title="logging"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="variables.html" title="CSS Variables"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -57,13 +60,16 @@
 <dt id="cssutils.getUrls">
 <tt class="descclassname">cssutils.</tt><tt class="descname">getUrls</tt><big>(</big><em>sheet</em><big>)</big><a class="headerlink" href="#cssutils.getUrls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values (in e.g.
-<a title="cssutils.css.CSSImportRule" class="reference external" href="css.html#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a> or <a title="cssutils.css.CSSValue" class="reference external" href="css.html#cssutils.css.CSSValue"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt></a>
+<a class="reference internal" href="css.html#cssutils.css.CSSImportRule" title="cssutils.css.CSSImportRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a> or <a class="reference internal" href="css.html#cssutils.css.CSSValue" title="cssutils.css.CSSValue"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt></a>
 objects of given <cite>sheet</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>sheet</em> &#8211; <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object whose URLs are yielded</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sheet</strong> &#8211; <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object whose URLs are yielded</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -77,18 +83,18 @@ objects of given <cite>sheet</cite>.</p>
 <dl class="function">
 <dt id="cssutils.replaceUrls">
 <tt class="descclassname">cssutils.</tt><tt class="descname">replaceUrls</tt><big>(</big><em>sheet</em>, <em>replacer</em>, <em>ignoreImportRules=False</em><big>)</big><a class="headerlink" href="#cssutils.replaceUrls" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replace all URLs in <a title="cssutils.css.CSSImportRule" class="reference external" href="css.html#cssutils.css.CSSImportRule"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a> or
-<a title="cssutils.css.CSSValue" class="reference external" href="css.html#cssutils.css.CSSValue"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt></a> objects of given <cite>sheet</cite>.</p>
+<dd><p>Replace all URLs in <a class="reference internal" href="css.html#cssutils.css.CSSImportRule" title="cssutils.css.CSSImportRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a> or
+<a class="reference internal" href="css.html#cssutils.css.CSSValue" title="cssutils.css.CSSValue"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt></a> objects of given <cite>sheet</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>sheet</em> &#8211; <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> which is changed</li>
-<li><em>replacer</em> &#8211; a function which is called with a single argument <cite>urlstring</cite> which
+<li><strong>sheet</strong> &#8211; <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> which is changed</li>
+<li><strong>replacer</strong> &#8211; a function which is called with a single argument <cite>urlstring</cite> which
 is the current value of each url() excluding <tt class="docutils literal"><span class="pre">url(</span></tt> and <tt class="docutils literal"><span class="pre">)</span></tt> and
 surrounding single or double quotes.</li>
-<li><em>ignoreImportRules</em> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> does not call <cite>replacer</cite> with URLs from &#64;import rules.</li>
+<li><strong>ignoreImportRules</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> does not call <cite>replacer</cite> with URLs from &#64;import rules.</li>
 </ul>
 </td>
 </tr>
@@ -114,14 +120,14 @@ the &#64;import rule is kept as in the original sheet and a WARNING is issued.</
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>sheet</em> &#8211; in this given <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> all import rules are
+<li><strong>sheet</strong> &#8211; in this given <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> all import rules are
 resolved and added to a resulting <em>flat</em> sheet.</li>
-<li><em>target</em> &#8211; A <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object which will be the
+<li><strong>target</strong> &#8211; A <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> object which will be the
 resulting <em>flat</em> sheet if given</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">given <cite>target</cite> or a new <a title="cssutils.css.CSSStyleSheet" class="reference external" href="css.html#cssutils.css.CSSStyleSheet"><tt class="xref docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">given <cite>target</cite> or a new <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a>
 object</p>
 </td>
 </tr>
@@ -138,40 +144,40 @@ object</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">utilities</a><ul>
-<li><a class="reference external" href="#geturls"><tt class="docutils literal"><span class="pre">getUrls</span></tt></a></li>
-<li><a class="reference external" href="#replaceurls"><tt class="docutils literal"><span class="pre">replaceUrls</span></tt></a></li>
-<li><a class="reference external" href="#resolveimports"><tt class="docutils literal"><span class="pre">resolveImports</span></tt></a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">utilities</a><ul>
+<li><a class="reference internal" href="#geturls"><tt class="docutils literal"><span class="pre">getUrls</span></tt></a></li>
+<li><a class="reference internal" href="#replaceurls"><tt class="docutils literal"><span class="pre">replaceUrls</span></tt></a></li>
+<li><a class="reference internal" href="#resolveimports"><tt class="docutils literal"><span class="pre">resolveImports</span></tt></a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="variables.html"
-                                  title="previous chapter">CSS Variables</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="logging.html"
-                                  title="next chapter">logging</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/docs/utilities.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="variables.html"
+                        title="previous chapter">CSS Variables</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="logging.html"
+                        title="next chapter">logging</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/docs/utilities.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -183,7 +189,7 @@ object</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="logging.html" title="logging"
@@ -191,12 +197,12 @@ object</p>
         <li class="right" >
           <a href="variables.html" title="CSS Variables"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+        &copy; Copyright 2004-2010, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>
