@@ -7,7 +7,7 @@ __version__ = '$Id: cssstyledeclaration.py 1819 2009-08-01 20:52:43Z cthedot $'
 
 from cssutils.prodparser import *
 from cssutils.helper import normalize
-from cssvalue import CSSValue
+from value import PropertyValue
 import cssutils
 import itertools
 import xml.dom
@@ -131,8 +131,9 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             #PreDef.S(toSeq=False, optional=True),
             Prod(name=u'term', match=lambda t, v: True,
                  toSeq=lambda t, tokens: (u'value', 
-                                          CSSValue(itertools.chain([t], 
-                                                   tokens), parent=self)
+                                          PropertyValue(itertools.chain([t], 
+                                                                        tokens), 
+                                          parent=self)
                  )
             )            
         )
@@ -253,7 +254,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         :param variableName:
             The name of the CSS variable. 
         :param value:
-            The new value of the variable, may also be a CSSValue object.
+            The new value of the variable, may also be a PropertyValue object.
 
         :exceptions:
             - :exc:`~xml.dom.SyntaxErr`:
@@ -275,10 +276,10 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                             % (variableName, value))
         else:
             # check value
-            if isinstance(value, CSSValue):
+            if isinstance(value, PropertyValue):
                 v = value 
             else:
-                v = CSSValue(cssText=value, parent=self)
+                v = PropertyValue(cssText=value, parent=self)
                                 
             if not v.wellformed:
                 self._log.error(u'Invalid variable value: %r: %r'

@@ -33,12 +33,20 @@ class PropertyValue(cssutils.util._NewBase):
         super(PropertyValue, self).__init__()
         
         self.parent = parent
+        self.wellformed = False
+        
         if cssText is not None: # may be 0
             self.cssText = cssText
 
         self._readonly = readonly
     
     
+    def __iter__(self):
+        "Generator which iterates over cssRules."
+        for item in self.seq:
+            if item.type == 'Value':
+                yield item.value
+            
     def __repr__(self):
         return u"cssutils.css.%s(%r)" % (self.__class__.__name__,
                                          self.cssText)
@@ -48,7 +56,7 @@ class PropertyValue(cssutils.util._NewBase):
                u"0x%x>" % (self.__class__.__name__, 
                            self.cssText, 
                            id(self))
-               
+        
     def _setCssText(self, cssText):
         if type(cssText) in (int, float):
                 cssText = unicode(cssText) # if it is a number
@@ -196,13 +204,17 @@ class PropertyValue(cssutils.util._NewBase):
                                                     u'PropertyValue',
                                                     prods)
         if ok:
-            print seq[0].value
             self._setSeq(seq)
             self.wellformed = ok
     
     cssText = property(lambda self: cssutils.ser.do_css_PropertyValue(self),
                        _setCssText,
                        doc="A string representation of the current value.")
+
+    value = property(lambda self: cssutils.ser.do_css_PropertyValue(self, 
+                                                                    valuesOnly=True),
+                       doc=u"A string representation of the current value "
+                           u"without any comments used for validation.")
 
 
 class Value(cssutils.util._NewBase):

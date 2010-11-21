@@ -43,7 +43,8 @@ __all__ = [
     'CSSVariablesDeclaration',
     'Selector', 'SelectorList',
     'CSSStyleDeclaration', 'Property',
-    'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
+    #'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
+    'PropertyValue', 'Value'
     ]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -66,4 +67,5 @@ from selectorlist import *
 from cssstyledeclaration import *
 from cssvariablesdeclaration import *
 from property import *
-from cssvalue import *
+#from cssvalue import *
+from value import *

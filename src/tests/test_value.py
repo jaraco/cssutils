@@ -1,24 +1,98 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 __version__ = '$Id$'
-#
-## from decimal import Decimal # maybe for later tests?
-#import xml.dom
-#import basetest
-#import cssutils
-#import types
-#
-#class CSSValueTestCase(basetest.BaseTestCase):
-#
-#    def setUp(self):
-#        self.r = cssutils.css.CSSValue() # needed for tests
-#
-#    def test_init(self):
-#        "CSSValue.__init__()"
-#        v = cssutils.css.CSSValue()
-#        self.assert_(u'' == v.cssText)
-#        self.assert_(None is  v.cssValueType)
-#        self.assert_(None == v.cssValueTypeString)
-#
+
+# from decimal import Decimal # maybe for later tests?
+import xml.dom
+import basetest
+import cssutils
+import types
+
+
+class ValueTestCase(basetest.BaseTestCase):
+
+    def setUp(self):
+        self.r = cssutils.css.Value() # needed for tests
+
+    def test_init(self):
+        "Value.__init__()"
+        v = cssutils.css.Value()
+        self.assert_(u'' == v.cssText)
+        self.assert_(u'' == v.value)
+        self.assert_(None is  v.dimension)
+        self.assert_(None is  v.type)
+
+    def test_cssText(self):
+        """
+        _supported = ('DIMENSION', 'HASH', 'IDENT', 'NUMBER', 'PERCENTAGE', 
+                  'STRING', 'UNICODE-RANGE', 'URI')
+        """
+        tests = {
+                 u'0px': (u'0', 0, u'px', u'DIMENSION'),
+                 u'1px': (u'1px', 1, u'px', u'DIMENSION'),
+                 u'1.1px': (u'1.1px', 1.1, u'px', u'DIMENSION'),
+                 u'-1px': (u'-1px', -1, u'px', u'DIMENSION'),
+                 u'-1.1px': (u'-1.1px', -1.1, u'px', u'DIMENSION'),
+                 u'+1px': (u'1px', 1, u'px', u'DIMENSION'),
+
+                 u'#123': (u'#123', u'#123', None, u'HASH'),
+                 u'#123456': (u'#123456', u'#123456', None, u'HASH'),
+                 u'#112233': (u'#123', u'#112233', None, u'HASH'),
+                 
+                 u'red': (u'red', u'red', None, u'IDENT'),
+
+                 u'0': (u'0', 0, None, u'NUMBER'),
+                 u'-0': (u'0', 0, None, u'NUMBER'),
+                 u'-0.0': (u'-0.0', -0.0, None, u'NUMBER'),
+
+                 u'1': (u'1', 1, None, u'NUMBER'),
+                 u'1.1': (u'1.1', 1.1, None, u'NUMBER'),
+                 u'-1': (u'-1', -1, None, u'NUMBER'),
+                 u'+1': (u'1', 1, None, u'NUMBER'),
+                 
+                 u'0%': (u'0', 0, u'%', u'PERCENTAGE'),
+                 u'1%': (u'1%', 1, u'%', u'PERCENTAGE'),
+                 u'1.1%': (u'1.1%', 1.1, u'%', u'PERCENTAGE'),
+                 u'-1%': (u'-1%', -1, u'%', u'PERCENTAGE'),
+                 u'-1.1%': (u'-1.1%', -1.1, u'%', u'PERCENTAGE'),
+                 u'+1%': (u'1%', 1, u'%', u'PERCENTAGE'),
+                 
+                 u'"red"': (u'"red"', u'red', None, u'STRING'),
+                 
+                 u'url(some.gif)': (u'url(some.gif)', u'some.gif', None, 
+                                    u'URI'),                                    
+                 u'url(   some.gif  )': (u'url(some.gif)', u'some.gif', None, 
+                                    u'URI'),                                    
+                 }
+        for (p, (r, n, d, t)) in tests.items():
+            v = cssutils.css.Value(p)
+            self.assertEqual(r, v.cssText)
+            self.assertEqual(t, v.type)
+            self.assertEqual(n, v.value)
+            self.assertEqual(d, v.dimension)
+             
+
+
+
+
+
+
+
+
+
+
+
+class CSSValueTestCase(basetest.BaseTestCase):
+
+    def setUp(self):
+        self.r = cssutils.css.CSSValue() # needed for tests
+
+    def test_init(self):
+        "CSSValue.__init__()"
+        v = cssutils.css.CSSValue()
+        self.assert_(u'' == v.cssText)
+        self.assert_(None is  v.cssValueType)
+        self.assert_(None == v.cssValueTypeString)
+
 #    def test_escapes(self):
 #        "CSSValue Escapes"
 #        v = cssutils.css.CSSValue()
@@ -812,8 +886,8 @@ __version__ = '$Id$'
 #
 #        # not "eval()"able!
 #        #s2 = eval(repr(s))
-#
-#
-#if __name__ == '__main__':
-#    import unittest
-#    unittest.main()
+
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()
