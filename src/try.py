@@ -28,15 +28,37 @@ def save(name, string):
     f.write(string)
     f.close()
 
-if 0:
-    v = cssutils.css.CSSValue('90deg')
-    print v.getFloatValue()
-    print v.getFloatValue(v.CSS_RAD)
-    print
-    v = cssutils.css.CSSValue(str(v.getFloatValue(v.CSS_RAD))+'rad')
-    print v.getFloatValue()
-    print v.getFloatValue(v.CSS_DEG)
+
+if 1:
+    css = """
+    @font-face {
+  font-family: "Your typeface";
+  src: url("type/filename.eot");
+  src: /*local("☺"),*/
+    url("type/filename.woff") red,
+    url("type/filename.woff") blue
+    /*url("type/filename.otf") format("opentype"),
+    url("type/filename.svg#filename") format("svg");*/
+}
+    """
+    css = "body { color: black /* some comment */; }"
+
+    s = cssutils.parseString(css)
+    print s.cssRules[0].style.getProperty('color').propertyValue.value
+    print s.cssText
+    
     sys.exit(1)
+
+if 1:
+    v = cssutils.css.PropertyValue('bold -1px / -2  "arial" ,  sans-serif')
+    #v = cssutils.css.Value('url( 1.gif   )   1')
+    print v
+    print v.cssText
+    for x in v._seq:
+        print x
+    
+    sys.exit(1)
+
 
 if 1:
     css = """

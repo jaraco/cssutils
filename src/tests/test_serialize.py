@@ -181,7 +181,7 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(s.cssText, 
             u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
             )
-        # CSSValues
+        # Values
         valuetests = {
             u'  a  a1  a-1  a-1a  ': 'a a1 a-1 a-1a',
             u'a b 1 c 1em d -1em e': u'a b 1 c 1em d -1em e',
@@ -617,7 +617,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 #            u'rgba(000001, 0, 0, 1)': u'#000'
             }
         for test, exp in tests.items():
-            v = cssutils.css.CSSValue(test)
+            v = cssutils.css.PropertyValue(test)
             self.assertEqual(exp, v.cssText)
 
 

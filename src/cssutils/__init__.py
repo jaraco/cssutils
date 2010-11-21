@@ -226,8 +226,9 @@ def getUrls(sheet):
 
     def getUrl(v):
         if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
-           v.CSS_URI == v.primitiveType:
-                return v.getStringValue()
+           u'URI' == v.type:
+            # TODO: .uri
+            return v.value
 
     def styleDeclarations(base):
         "recursive generator to find all CSSStyleDeclarations"
@@ -240,16 +241,11 @@ def getUrls(sheet):
 
     for style in styleDeclarations(sheet):
         for p in style.getProperties(all=True):
-            v = p.cssValue
-            if v.CSS_VALUE_LIST == v.cssValueType:
-                for item in v:
-                    u = getUrl(item)
-                    if u is not None:
-                        yield u
-            elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
-                u = getUrl(v)
-                if u is not None:
-                    yield u
+            pv = p.propertyValue
+            for v in pv:
+                if v.type == u'URI':
+                    # TODO: .uri
+                    yield v.value
 
 def replaceUrls(sheet, replacer, ignoreImportRules=False):
     """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
@@ -410,60 +406,6 @@ def resolveImports(sheet, target=None):
             target.add(rule)
 
     return target
-
-
-#def resolveVariables(sheet):
-#    """Replace all variable references with values defined in
-#    :class:`cssutils.css.CSSVariablesRule`. If no value can be found the
-#    variable reference is kept.
-#
-#    :param sheet:
-#        in this given :class:`cssutils.css.CSSStyleSheet` all variables
-#        are resolved.
-#    :returns: the sheet
-#    """
-#    def resolve(r):
-#        for p in r.style.getProperties(all=True):
-#            v = p.cssValue
-#
-#            if v.cssValueType == v.CSS_VALUE_LIST:
-#                newvalue = []
-#                for vi in v:
-#                    if vi.cssValueType == vi.CSS_VARIABLE:
-#                        if vi.value:
-#                            log.info(u'Replacing variable "%s" with %r' %
-#                                     (vi.name, vi.value), neverraise=True)
-#                            newvalue.append(vi.value)
-#                        else:
-#                            log.error(u'No value found for variable "%s"' %
-#                                     vi.name, neverraise=True)
-#                            newvalue.append(vi.cssText)
-#                    else:
-#                        newvalue.append(vi.cssText)
-#
-#                p.value = ' '.join(newvalue)
-#
-#            elif v.cssValueType == v.CSS_VARIABLE:
-#                if v.value:
-#                    log.info(u'Replacing variable "%s" with %r' %
-#                              (v.name, v.value), neverraise=True)
-#                    p.value = v.value
-#                else:
-#                    log.error(u'No value found for variable "%s"' %
-#                             v.name, neverraise=True)
-#
-#    for m in sheet.cssRules.rulesOfType(css.CSSRule.MEDIA_RULE):
-#        for r in m.cssRules.rulesOfType(css.CSSRule.STYLE_RULE):
-#            resolve(r)
-#
-#    for r in sheet.cssRules.rulesOfType(css.CSSRule.STYLE_RULE):
-#        resolve(r)
-#
-#    # remove @variables rules
-#    for r in sheet.cssRules.rulesOfType(css.CSSRule.VARIABLES_RULE):
-#        sheet.deleteRule(r)
-#
-#    return sheet
 
 
 if __name__ == '__main__':

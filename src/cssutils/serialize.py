@@ -872,7 +872,7 @@ class CSSSerializer(object):
 
         out = []
         if property.seqs[0] and property.wellformed and self._valid(property):
-            nameseq, cssvalue, priorityseq = property.seqs
+            nameseq, value, priorityseq = property.seqs
 
             #name
             for part in nameseq:
@@ -884,13 +884,13 @@ class CSSSerializer(object):
                     out.append(part)
 
             if out and (not property._mediaQuery or
-                        property._mediaQuery and cssvalue.cssText):
+                        property._mediaQuery and value.cssText):
                 # MediaQuery may consist of name only
                 out.append(u':')
                 out.append(self.prefs.propertyNameSpacer)
 
             # value
-            out.append(cssvalue.cssText)
+            out.append(value.cssText)
 
             # priority
             if out and priorityseq:
@@ -922,15 +922,49 @@ class CSSSerializer(object):
                 out.append(part)
         return u''.join(out).strip()
 
-    def do_css_CSSValue(self, cssvalue):
-        """Serializes a CSSValue"""
-        if not cssvalue:
+#    def do_css_CSSValue(self, cssvalue):
+#        """Serializes a CSSValue"""
+#        if not cssvalue:
+#            return u''
+#        else:
+#            out = Out(self)
+#            for item in cssvalue.seq:
+#                type_, val = item.type, item.value
+#                if hasattr(val, 'cssText'):
+#                    # RGBColor or CSSValue if a CSSValueList
+#                    out.append(val.cssText, type_)
+#                else:
+#                    if val and val[0] == val[-1] and val[0] in '\'"':
+#                        val = helper.string(val[1:-1])
+#                    # S must be kept! in between values but no extra space
+#                    out.append(val, type_)
+#
+#            return out.value()
+#
+#    def do_css_CSSPrimitiveValue(self, cssvalue):
+#        """Serialize a CSSPrimitiveValue"""
+#        if not cssvalue:
+#            return u''
+#        else:
+#            out = Out(self)
+#            for item in cssvalue.seq:
+#                type_, val = item.type, item.value
+#                val = self._possiblezero(cssvalue, type_, val)
+#                out.append(val, type_)
+#
+#            return out.value()
+
+    def do_css_PropertyValue(self, value, valuesOnly=False):
+        """Serializes a PropertyValue"""
+        if not value:
             return u''
         else:
             out = Out(self)
-            for item in cssvalue.seq:
+            for item in value.seq:
                 type_, val = item.type, item.value
-                if hasattr(val, 'cssText'):
+                if valuesOnly and type_ == cssutils.css.CSSComment:
+                    continue
+                elif hasattr(val, 'cssText'):
                     # RGBColor or CSSValue if a CSSValueList
                     out.append(val.cssText, type_)
                 else:
@@ -941,18 +975,29 @@ class CSSSerializer(object):
 
             return out.value()
 
-    def do_css_CSSPrimitiveValue(self, cssvalue):
-        """Serialize a CSSPrimitiveValue"""
-        if not cssvalue:
+    def do_css_Value(self, value):
+        """Serializes a Value"""
+        if not value:
             return u''
         else:
             out = Out(self)
-            for item in cssvalue.seq:
-                type_, val = item.type, item.value
-                val = self._possiblezero(cssvalue, type_, val)
-                out.append(val, type_)
+            
+            if value.type in (u'DIMENSION', u'NUMBER', u'PERCENTAGE'):
+                dim = value.dimension or u''
+                if value.value == 0:
+                    val = u'0'
+                    if value.dimension in ('cm', 'mm', 'in', 'px', 'pc', 'pt',
+                                           'em', 'ex'):
+                        dim = u''
+                else:
+                    val = unicode(value.value)
 
-            return out.value()
+                out.append(val + dim, value.type)
+        
+            else:
+                out.append(value.value, value.type)
+                
+        return out.value()            
 
     def do_css_CalcValue(self, cssvalue):
         """Serialize a CalcValue."""
@@ -1008,6 +1053,7 @@ class CSSSerializer(object):
 
             return out.value()
 
+
     def do_stylesheets_medialist(self, medialist):
         """
         comma-separated list of media, default is 'all'
@@ -1038,3 +1084,6 @@ class CSSSerializer(object):
             return u' '.join(out)
         else:
             return u''
+
+# ----
+

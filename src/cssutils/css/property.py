@@ -4,7 +4,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 from cssutils.helper import Deprecated
-from cssvalue import CSSValue
+from value import PropertyValue
 import cssutils
 import xml.dom
 
@@ -68,10 +68,11 @@ class Property(cssutils.util.Base):
         self.__nametoken = None
         self._name = u''
         self._literalname = u''
-        self.seqs[1] = CSSValue(parent=self)
+        self.seqs[1] = PropertyValue(parent=self)
         if name:
             self.name = name
-            self.cssValue = value
+            self.propertyValue = value
+            #self.cssValue = value
 
         self._priority = u''
         self._literalpriority = u''
@@ -82,7 +83,7 @@ class Property(cssutils.util.Base):
         return u"cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
                 self.__class__.__name__,
                 self.literalname,
-                self.cssValue.cssText,
+                self.propertyValue.cssText,
                 self.priority)
 
     def __str__(self):
@@ -90,7 +91,7 @@ class Property(cssutils.util.Base):
                % (self.__class__.__module__,
                   self.__class__.__name__,
                   self.name,
-                  self.cssValue.cssText,
+                  self.propertyValue.cssText,
                   self.priority,
                   self.valid,
                   id(self))
@@ -122,7 +123,7 @@ class Property(cssutils.util.Base):
             if self._mediaQuery and not valuetokens:
                 # MediaQuery may consist of name only
                 self.name = nametokens
-                self.cssValue = None
+                self.propertyValue = None
                 self.priority = None
                 return
 
@@ -149,7 +150,7 @@ class Property(cssutils.util.Base):
             if wellformed:
                 self.wellformed = True
                 self.name = nametokens
-                self.cssValue = valuetokens
+                self.propertyValue = valuetokens
                 self.priority = prioritytokens
 
                 # also invalid values are set!
@@ -218,9 +219,9 @@ class Property(cssutils.util.Base):
             else:
                 pass
 #                self.valid = True
-#                if self.cssValue:
-#                    self.cssValue._propertyName = self._name
-#                    #self.valid = self.cssValue.valid
+#                if self.propertyValue:
+#                    self.propertyValue._propertyName = self._name
+#                    #self.valid = self.propertyValue.valid
         else:
             self.wellformed = False
 
@@ -231,12 +232,9 @@ class Property(cssutils.util.Base):
                            doc="Readonly literal (not normalized) name "
                                "of this property")
 
-    def _getCSSValue(self):
-        return self.seqs[1]
-
-    def _setCSSValue(self, cssText):
+    def _setPropertyValue(self, cssText):
         """
-        See css.CSSValue
+        See css.PropertyValze
 
         :exceptions:
         - :exc:`~xml.dom.SyntaxErr`:
@@ -247,33 +245,34 @@ class Property(cssutils.util.Base):
           type of values than the values allowed by the CSS property.
         """
         if self._mediaQuery and not cssText:
-            self.seqs[1] = CSSValue(parent=self)
+            self.seqs[1] = PropertyValue(parent=self)
         else:
             try:
                 self.seqs[1].cssText = cssText
             except xml.dom.SyntaxErr, e:
-                v = CSSValue(parent=self)
-                # try parsing for CSSValue (simply raise if not)
+                v = PropertyValue(cssText, parent=self)
+                # try parsing for PropertyValue (simply raise if not)
                 # might have been e.g. a CSSVariable before
-                v.cssText = cssText
                 self.seqs[1] = v
-                            
             self.wellformed = self.wellformed and self.seqs[1].wellformed
+    
+    propertyValue = property(lambda self: self.seqs[1], 
+                             _setPropertyValue,
+                             u"(cssutils) PropertyValue object of property")
 
-    cssValue = property(_getCSSValue, _setCSSValue,
-        doc="(cssutils) CSSValue object of this property")
-
+    
     def _getValue(self):
-        if self.cssValue:
-            return self.cssValue.cssText
+        if self.propertyValue:
+            # value without comments
+            return self.propertyValue.value
         else:
             return u''
 
     def _setValue(self, value):
-        self._setCSSValue(value)
+        self._setPropertyValue(value)
 
     value = property(_getValue, _setValue,
-                     doc="The textual value of this Properties cssValue.")
+                     doc="The textual value of this Properties propertyValue.")
 
     def _setPriority(self, priority):
         """
@@ -446,11 +445,12 @@ class Property(cssutils.util.Base):
 
         if self.name and self.value:
             
-            cv = self.cssValue
-            if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
-                # TODO: false alarms too! 
-                cssutils.log.warn(u'No value for variable "%s" found, keeping '
-                                  u'variable.' % cv.name, neverraise=True)
+            cv = self.propertyValue
+            # TODO
+#            if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
+#                # TODO: false alarms too! 
+#                cssutils.log.warn(u'No value for variable "%s" found, keeping '
+#                                  u'variable.' % cv.name, neverraise=True)
 
             if self.name in cssutils.profile.knownNames:
                 # add valid, matching, validprofiles...
@@ -493,3 +493,16 @@ class Property(cssutils.util.Base):
 
     valid = property(validate, doc=u"Check if value of this property is valid "
                                    u"in the properties context.")
+
+
+    @Deprecated(u'Use ``property.propertyValue`` instead.')
+    def _getCSSValue(self):
+        return self.propertyValue
+        
+    @Deprecated(u'Use ``property.propertyValue`` instead.')
+    def _setCSSValue(self, cssText):
+        self._setPropertyValue(cssText)
+
+    cssValue = property(_getCSSValue, _setCSSValue,
+                   doc="(DEPRECATED) Use ``property.propertyValue`` instead.")
+

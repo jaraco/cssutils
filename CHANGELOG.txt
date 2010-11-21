@@ -35,6 +35,27 @@ Development Version
 0.9.7
 -----
 HEAD
+    + **API CHANGE (major)**
+        replace CSSValue with PropertyValue, Value and other classes.
+
+        NEW CLASSES:
+            PropertyValue (replaces CSSValue and CSSValueList)
+                .cssText
+                .value
+
+                - is iterable (iterates over all single Value objects which in soruce CSS might be separated by "," "/" or " "
+                - a comma separated list of IDENT values is no longer handled as a single String (e.g. ``Arial, sans-serif``)
+
+            Value (replaced CSSPrimitiveValue)
+                .value
+                .dimension
+                .type
+
+                - keeps separate value, dimension and type info (value is typed, so e.g. string for e.g. STRING, IDENT or URI values, int or float)
+
+        FIXES issue #45, #46
+
+        Property.value returns value without any comments now, else use Property.cssText
 
 
 0.9.7b4 101101
