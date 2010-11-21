@@ -583,10 +583,11 @@ class PreDef(object):
         return PreDef.char(u'comma', u',')
 
     @staticmethod
-    def dimension(nextSor=False):
+    def dimension(nextSor=False, stop=False):
         return Prod(name=u'dimension',
                     match=lambda t, v: t == PreDef.types.DIMENSION,
                     toSeq=lambda t, tokens: (t[0], cssutils.helper.normalize(t[1])),
+                    stop=stop,
                     nextSor=nextSor)
 
     @staticmethod
@@ -603,30 +604,43 @@ class PreDef(object):
                            stop=stop)
 
     @staticmethod
-    def ident(toStore=None, nextSor=False):
+    def hexcolor(stop=False, nextSor=False):
+        "#123 or #123456"
+        return Prod(name='HEX color',
+                    match=lambda t, v: t == PreDef.types.HASH and (
+                                       len(v) == 4 or len(v) == 7),
+                    stop=stop,
+                    nextSor=nextSor)
+    
+    @staticmethod
+    def ident(stop=False, toStore=None, nextSor=False):
         return Prod(name=u'ident',
                     match=lambda t, v: t == PreDef.types.IDENT,
+                    stop=stop,
                     toStore=toStore,
                     nextSor=nextSor)
 
     @staticmethod
-    def number(nextSor=False):
+    def number(stop=False, nextSor=False):
         return Prod(name=u'number',
                     match=lambda t, v: t == PreDef.types.NUMBER,
+                    stop=stop, 
                     nextSor=nextSor)
 
     @staticmethod
-    def string(nextSor=False):
+    def string(stop=False, nextSor=False):
         "string delimiters are removed by default"
         return Prod(name=u'string',
                     match=lambda t, v: t == PreDef.types.STRING,
                     toSeq=lambda t, tokens: (t[0], cssutils.helper.stringvalue(t[1])),
+                    stop=stop,
                     nextSor=nextSor)
 
     @staticmethod
-    def percentage(nextSor=False):
+    def percentage(stop=False, nextSor=False):
         return Prod(name=u'percentage',
                     match=lambda t, v: t == PreDef.types.PERCENTAGE,
+                    stop=stop,
                     nextSor=nextSor)
 
     @staticmethod
@@ -644,34 +658,28 @@ class PreDef(object):
                     optional=True)
 
     @staticmethod
-    def uri(nextSor=False):
+    def uri(stop=False, nextSor=False):
         "'url(' and ')' are removed and URI is stripped"
         return Prod(name=u'URI',
                     match=lambda t, v: t == PreDef.types.URI,
                     toSeq=lambda t, tokens: (t[0], cssutils.helper.urivalue(t[1])),
+                    stop=stop,
                     nextSor=nextSor)
 
     @staticmethod
-    def hexcolor(nextSor=False):
-        "#123456"
-        return Prod(name='HEX color',
-                    match=lambda t, v: t == PreDef.types.HASH and (
-                                       len(v) == 4 or len(v) == 7),
-                    nextSor=nextSor
-                    )
-    
-    @staticmethod
-    def unicode_range(nextSor=False):
+    def unicode_range(stop=False, nextSor=False):
         "u+123456-abc normalized to lower `u`"
         return Prod(name='unicode-range',
                     match=lambda t, v: t == PreDef.types.UNICODE_RANGE,
                     toSeq=lambda t, tokens: (t[0], t[1].lower()),
+                    stop=stop,
                     nextSor=nextSor
                     )
         
     @staticmethod
-    def variable(toSeq=None, nextSor=False):
+    def variable(toSeq=None, stop=False, nextSor=False):
         return Prod(name=u'variable',
                     match=lambda t, v: u'var(' == cssutils.helper.normalize(v),
                     toSeq=toSeq,
+                    stop=stop,
                     nextSor=nextSor)
