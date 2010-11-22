@@ -919,7 +919,7 @@ class CSSFunction(CSSPrimitiveValue):
         self._readonly = readonly
     
     def _productiondefinition(self):
-        """Return defintion used for parsing."""
+        """Return definition used for parsing."""
         types = self._prods # rename!
         
         value = Sequence(PreDef.unary(),
