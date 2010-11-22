@@ -1,15 +1,12 @@
-"""CSSValue related classes
+"""Value related classes. 
 
-- CSSValue implements DOM Level 2 CSS CSSValue
-- CSSPrimitiveValue implements DOM Level 2 CSS CSSPrimitiveValue
-- CSSValueList implements DOM Level 2 CSS CSSValueList
-
+DOM Level 2 CSS CSSValue, CSSPrimitiveValue and CSSValueList are **no longer**
+supported and are replaced by these new classes.
 """
 __all__ = ['PropertyValue',
-           'Value', 
-#           'CSSValue', 
-#           'RGBColor',
-#           'CSSVariable'
+           'Value',
+           'CSSFunction', 
+           'CSSVariable'
            ]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -21,8 +18,18 @@ import math
 import re
 import xml.dom
 
-
 class PropertyValue(cssutils.util._NewBase):
+    """
+    - iterates over all contained Value objects (not the separators like ``,``,
+    ``/`` or `` `` though
+    - supports ``PropertyValue.item(index)`` and ``PropertyValue[index]`` access
+    - supports ``PropertyValue.length`` or ``len(PropertyValue)``
+    - property ``PropertyValue.cssText`` contains a string of this property 
+    value
+    - property ``PropertyValue.value`` contains a string of all values without
+    comments etc
+    """
+    
     def __init__(self, cssText=None, parent=None, readonly=False):
         """
         :param cssText:
@@ -39,11 +46,19 @@ class PropertyValue(cssutils.util._NewBase):
             self.cssText = cssText
 
         self._readonly = readonly
+
+    def __len__(self):
+        return len(list(self.__items()))
     
-    
+    def __getitem__(self, index):
+        try:
+            return list(self.__items())[index]
+        except IndexError:
+            return None
+            
     def __iter__(self):
         "Generator which iterates over cssRules."
-        for item in self.seq:
+        for item in self.__items():
             if item.type == 'Value':
                 yield item.value
             
@@ -57,6 +72,10 @@ class PropertyValue(cssutils.util._NewBase):
                            self.cssText, 
                            id(self))
         
+    def __items(self):
+        "a generator of Value obects only, no , / or ' '"
+        return (x.value for x in self.seq if isinstance(x.value, Value))
+    
     def _setCssText(self, cssText):
         if type(cssText) in (int, float):
                 cssText = unicode(cssText) # if it is a number
@@ -106,18 +125,11 @@ class PropertyValue(cssutils.util._NewBase):
         
         # used as operator is , / or S
         nextSor = u',/'
-        term = Choice(Prod(name='Value',
-                           match=lambda t, v: t in Value._supported or
-                                              v in u'+-',
-                           nextSor = nextSor,
-                           toSeq=lambda t, tokens: ('Value',
-                                    Value(cssutils.helper.pushtoken(t, 
-                                                                    tokens),
-                                          parent=self))
-                      ),
+        term = Choice(# TODO: split value in length, percentage, URI, color etc
+                      _ValueProd(self, nextSor),
                       
                       # special case IE only expression
-                      Prod(name='expression',
+                      Prod(name='MSFilter',
                            match=lambda t, v: t == self._prods.FUNCTION and (
                               cssutils.helper.normalize(v) in (u'expression(',
                                                                u'alpha(',
@@ -136,28 +148,17 @@ class PropertyValue(cssutils.util._NewBase):
                               v.startswith(u'progid:DXImageTransform.Microsoft.')                               
                            ),
                            nextSor=nextSor,
-                           toSeq=lambda t, tokens: (ExpressionValue._functionName,
-                                                    ExpressionValue(
-                                            cssutils.helper.pushtoken(t, tokens),
-                                            parent=self)
+                           toSeq=lambda t, tokens: (MSFilter._functionName,
+                                                    MSFilter(
+                                cssutils.helper.pushtoken(t, tokens),
+                                parent=self)
                                                     )
-                      ),
-                      # calc(
-                      PreDef.calc(nextSor=nextSor,
-                                  toSeq=lambda t, tokens: (CalcValue._functionName,
-                                                           CalcValue(
-                                        cssutils.helper.pushtoken(t, tokens), 
-                                        parent=self)
-                                                           )
-                      ),
-                      # CSS Variable var(
-                      PreDef.variable(nextSor=nextSor,
-                                      toSeq=lambda t, tokens: ('CSSVariable',
-                                                               CSSVariable(
-                                        cssutils.helper.pushtoken(t, tokens), 
-                                        parent=self)
-                                                               )
-                      ),
+                           ),
+                      _CalcValueProd(self, nextSor),
+                      _CSSVariableProd(self, nextSor),
+                      # all other functions
+                      _CSSFunctionProd(self, nextSor)
+                      
 # TODO:
 #                      # rgb/rgba(
 #                      Prod(name='RGBColor',
@@ -174,13 +175,13 @@ class PropertyValue(cssutils.util._NewBase):
 #                                                           )
 #                      ),
                       # other functions like rgb( etc
-                      PreDef.function(nextSor=nextSor,
-                                      toSeq=lambda t, tokens: ('FUNCTION',
-                                                               CSSFunction(
-                                        cssutils.helper.pushtoken(t, tokens),
-                                        parent=self)
-                                                               )
-                      )
+#                      PreDef.function(nextSor=nextSor,
+#                                      toSeq=lambda t, tokens: ('FUNCTION',
+#                                                               CSSFunction(
+#                                        cssutils.helper.pushtoken(t, tokens),
+#                                        parent=self)
+#                                                               )
+#                      )
         )
         operator = Choice(PreDef.S(toSeq=False),
                           PreDef.char('comma', ',',
@@ -210,6 +211,12 @@ class PropertyValue(cssutils.util._NewBase):
     cssText = property(lambda self: cssutils.ser.do_css_PropertyValue(self),
                        _setCssText,
                        doc="A string representation of the current value.")
+
+    def item(self, index):
+        return self[index]
+
+    length = property(lambda self: len(self),
+                      doc=u'Number of values set.')
 
     value = property(lambda self: cssutils.ser.do_css_PropertyValue(self, 
                                                                     valuesOnly=True),
@@ -313,3 +320,156 @@ class Value(cssutils.util._NewBase):
 
     dimension = property(lambda self: self._dimension, #_setValue, 
                      u'Dimension if a DIMENSION or PERCENTAGE value')
+
+
+
+
+
+class CSSFunction(Value):
+    """A function value"""
+    type = 'FUNCTION'
+    _functionName = 'FUNCTION'
+    #type = 'FUNCTION'
+    
+    def _productions(self):
+        """Return definition used for parsing."""
+        types = self._prods # rename!
+        
+        itemProd = Choice(_ValueProd(self),
+                          _CalcValueProd(self),
+                          _CSSVariableProd(self),
+                          _CSSFunctionProd(self)
+                          )
+        funcProds = Sequence(Prod(name='FUNCTION',
+                                  match=lambda t, v: t == types.FUNCTION,
+                                  toSeq=lambda t, tokens: (t[0], 
+                                                           cssutils.helper.normalize(t[1]))),
+                             Choice(Sequence(itemProd,
+                                             Sequence(PreDef.comma(),
+                                                      itemProd,
+                                                      minmax=lambda: (0, None)),
+                                             PreDef.funcEnd(stop=True)),
+                                    PreDef.funcEnd(stop=True))
+         )
+        return funcProds
+    
+    
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+
+        ok, seq, store, unused = ProdParser().parse(cssText, 
+                                                    self.type,
+                                                    self._productions())
+        if ok:
+            for x in seq:
+                print seq
+                        
+            self._setSeq(seq)
+            self.wellformed = ok
+                            
+    cssText = property(lambda self: cssutils.ser.do_css_CSSFunction(self), 
+                       _setCssText, 
+                       u'String value of this value')
+
+class CalcValue(CSSFunction):
+    _functionName = 'Calc'
+
+class MSFilter(CSSFunction):
+    _functionName = 'MSFilter'
+
+
+class CSSVariable(CSSFunction):
+    """The CSSVariable represents a CSS variables like ``var(varname)``.
+    
+    A variable has a (nonnormalized!) `name` and a `value` which is
+    tried to be resolved from any available CSSVariablesRule definition.
+    """
+    _functionName = 'CSSVariable'
+    _name = None
+                
+    def __str__(self):
+        return u"<cssutils.css.%s object name=%r value=%r at 0x%x>" % (
+                self.__class__.__name__, self.name, self.value, id(self)) 
+    
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+
+        types = self._prods # rename!
+        prods = Sequence(Prod(name='var',
+                                  match=lambda t, v: t == types.FUNCTION and
+                                        cssutils.helper.normalize(v) == u'var(' 
+                             ),
+                             PreDef.ident(toStore='ident'),
+                             PreDef.funcEnd(stop=True))
+        
+        # store: name of variable
+        store = {'ident': None}
+        ok, seq, store, unused = ProdParser().parse(cssText, 
+                                                    u'CSSVariable',
+                                                    prods)
+        if ok:
+            self._name = store['ident'].value
+            self._setSeq(seq)
+            self.wellformed = ok
+            
+    cssText = property(lambda self: cssutils.ser.do_css_CSSVariable(self),
+                       _setCssText,
+                       doc=u"A string representation of the current variable.")
+
+    # TODO: writable? check if var (value) available?
+    name = property(lambda self: self._name)
+
+    def _getValue(self):
+        "Find contained sheet and @variables there"
+        try:
+            variables = self.parent.parent.parentRule.parentStyleSheet.variables
+        except AttributeError:
+            return None
+        else:
+            try:
+                return variables[self.name]
+            except KeyError:
+                return None
+        
+    value = property(_getValue, doc=u'Resolved value or None.')
+
+
+# helper for productions
+def _ValueProd(parent, nextSor=False):
+    return Prod(name='Value',
+                match=lambda t, v: t in Value._supported or
+                                   v in u'+-',
+                nextSor = nextSor,
+                toSeq=lambda t, tokens: ('Value',
+                                         Value(cssutils.helper.pushtoken(t, 
+                                                                         tokens),
+                                         parent=parent)
+                                         )
+                )
+
+def _CSSFunctionProd(parent, nextSor=False):
+    return PreDef.function(nextSor=nextSor,
+                           toSeq=lambda t, tokens: (CSSFunction._functionName, 
+                                                    CSSFunction(
+                                cssutils.helper.pushtoken(t, tokens),
+                                parent=parent)
+                                )
+                           )
+
+def _CSSVariableProd(parent, nextSor=False):
+    return PreDef.variable(nextSor=nextSor,
+                           toSeq=lambda t, tokens: (CSSVariable._functionName, 
+                                                    CSSVariable(
+                                cssutils.helper.pushtoken(t, tokens), 
+                                parent=parent)
+                                                    )
+                           )
+    
+def _CalcValueProd(parent, nextSor=False):
+    return PreDef.calc(nextSor=nextSor,
+                       toSeq=lambda t, tokens: (CalcValue._functionName,
+                                                CalcValue(
+                            cssutils.helper.pushtoken(t, tokens), 
+                            parent=parent)
+                                                )
+                       )

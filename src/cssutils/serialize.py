@@ -1003,7 +1003,7 @@ class CSSSerializer(object):
         """Serialize a CalcValue."""
         return self.do_css_CSSPrimitiveValue(cssvalue)
 
-    def do_css_FunctionValue(self, cssvalue):
+    def do_css_CSSFunction(self, cssvalue):
         """Serialize a CSS function value"""
         if not cssvalue:
             return u''
@@ -1036,7 +1036,7 @@ class CSSSerializer(object):
 
     def do_css_CSSVariable(self, variable):
         """Serializes a CSSVariable"""
-        if not variable:
+        if not variable or not variable.name:
             return u''
         else:
             out = Out(self)
@@ -1047,9 +1047,9 @@ class CSSSerializer(object):
 
             else:
                 # keep var(NAME)
-                for item in variable.seq:
-                    type_, val = item.type, item.value
-                    out.append(val, type_)
+                out.append(u'var(', 'FUNCTION')
+                out.append(variable.name, 'IDENT')
+                out.append(u')')
 
             return out.value()
 
