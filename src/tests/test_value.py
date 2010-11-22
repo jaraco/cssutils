@@ -8,10 +8,52 @@ import cssutils
 import types
 
 
-class ValueTestCase(basetest.BaseTestCase):
+class PropertyValueTestCase(basetest.BaseTestCase):
 
-    def setUp(self):
-        self.r = cssutils.css.Value() # needed for tests
+    def test_init(self):
+        "PropertyValue.__init__() .item() .length"
+        pv = cssutils.css.PropertyValue()
+        self.assertEqual(u'', pv.cssText)
+        self.assertEqual(0, pv.length)
+        self.assertEqual(u'', pv.value)
+
+        cssText = u'0, 0/0 1px var(x) url(x)' 
+        pv = cssutils.css.PropertyValue(cssText)
+        self.assertEqual(cssText, pv.cssText)
+        self.assertEqual(6, len(pv))
+        self.assertEqual(6, pv.length)
+        items = [u'0', u'0', u'0', u'1px', u'var(x)', 'url(x)']
+        for i, item in enumerate(items):
+            self.assertEqual(item, pv[i].cssText)
+            self.assertEqual(item, pv.item(i).cssText)
+
+    def test_cssText(self):
+        "PropertyValue.cssText"
+        tests = {
+                 u'0': (None, 1, None),
+                 u'0 0': (None, 2, None),
+                 u'0, 0': (None, 2, None),
+                 u'0,0': (u'0, 0', 2, None),
+                 u'0  ,   0': (u'0, 0', 2, None),
+                 u'0/0': (None, 2, None),
+                 u'/**/ 0 /**/': (None, 1, u'0'),
+                 u'0 /**/ 0 /**/ 0': (None, 3, u'0 0 0'),
+                 u'0, /**/ 0, /**/ 0': (None, 3, u'0, 0, 0'),
+                 u'0//**/ 0//**/ 0': (None, 3, u'0/0/0'),
+                 }
+        for (cssText, (c, l, v)) in tests.items():
+            if c is None:
+                c = cssText
+            if v is None:
+                v = c
+                
+            pv = cssutils.css.PropertyValue(cssText)
+            self.assertEqual(c, pv.cssText)
+            self.assertEqual(l, pv.length)
+            self.assertEqual(v, pv.value)
+
+
+class ValueTestCase(basetest.BaseTestCase):
 
     def test_init(self):
         "Value.__init__()"
@@ -42,14 +84,14 @@ class ValueTestCase(basetest.BaseTestCase):
 
                  u'0': (u'0', 0, None, u'NUMBER'),
                  u'-0': (u'0', 0, None, u'NUMBER'),
-                 u'-0.0': (u'-0.0', -0.0, None, u'NUMBER'),
+                 u'-0.0': (u'0', -0.0, None, u'NUMBER'),
 
                  u'1': (u'1', 1, None, u'NUMBER'),
                  u'1.1': (u'1.1', 1.1, None, u'NUMBER'),
                  u'-1': (u'-1', -1, None, u'NUMBER'),
                  u'+1': (u'1', 1, None, u'NUMBER'),
                  
-                 u'0%': (u'0', 0, u'%', u'PERCENTAGE'),
+                 u'0%': (u'0%', 0, u'%', u'PERCENTAGE'),
                  u'1%': (u'1%', 1, u'%', u'PERCENTAGE'),
                  u'1.1%': (u'1.1%', 1.1, u'%', u'PERCENTAGE'),
                  u'-1%': (u'-1%', -1, u'%', u'PERCENTAGE'),
@@ -61,7 +103,7 @@ class ValueTestCase(basetest.BaseTestCase):
                  u'url(some.gif)': (u'url(some.gif)', u'some.gif', None, 
                                     u'URI'),                                    
                  u'url(   some.gif  )': (u'url(some.gif)', u'some.gif', None, 
-                                    u'URI'),                                    
+                                    u'URI'),  
                  }
         for (p, (r, n, d, t)) in tests.items():
             v = cssutils.css.Value(p)
@@ -71,27 +113,48 @@ class ValueTestCase(basetest.BaseTestCase):
             self.assertEqual(d, v.dimension)
              
 
-
-
-
-
-
-
-
-
-
-
-class CSSValueTestCase(basetest.BaseTestCase):
-
-    def setUp(self):
-        self.r = cssutils.css.CSSValue() # needed for tests
+class CSSVariableTestCase(basetest.BaseTestCase):
 
     def test_init(self):
-        "CSSValue.__init__()"
-        v = cssutils.css.CSSValue()
-        self.assert_(u'' == v.cssText)
-        self.assert_(None is  v.cssValueType)
-        self.assert_(None == v.cssValueTypeString)
+        "CSSVariable.__init__()"
+        v = cssutils.css.CSSVariable()
+        self.assertEqual(u'', v.cssText)
+        self.assertEqual(u'FUNCTION', v.type)
+        self.assert_(None is v.name)
+        self.assert_(None is v.value)
+
+    def test_cssText(self):
+        "CSSVariable.cssText"
+        tests = {
+                 u'var(x)': (u'var(x)', 'x'),
+                 u'VAR(  X  )': (u'var(X)', 'X')
+                 }
+        for (var, (cssText, name)) in tests.items():
+            v = cssutils.css.CSSVariable(var)
+            self.assertEqual(cssText, v.cssText)
+            self.assertEqual(name, v.name)
+
+
+
+
+
+
+
+
+
+
+
+#class CSSValueTestCase(basetest.BaseTestCase):
+#
+#    def setUp(self):
+#        self.r = cssutils.css.CSSValue() # needed for tests
+#
+#    def test_init(self):
+#        "CSSValue.__init__()"
+#        v = cssutils.css.CSSValue()
+#        self.assert_(u'' == v.cssText)
+#        self.assert_(None is  v.cssValueType)
+#        self.assert_(None == v.cssValueTypeString)
 
 #    def test_escapes(self):
 #        "CSSValue Escapes"
