@@ -222,11 +222,11 @@ class Out(object):
                 return
             elif 'S' == typ and keepS:
                 val = u' '
-            elif typ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == '0':
-                # remove sign + or - if value is zero
-                # TODO: only for lenghts!
-                if self.out and self.out[-1] in u'+-':
-                    del self.out[-1]
+#            elif typ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == u'0':
+#                # remove sign + or - if value is zero
+#                # TODO: only for lenghts!
+#                if self.out and self.out[-1] in u'+-':
+#                    del self.out[-1]
             elif 'STRING' == typ:
                 # may be empty but MUST not be None
                 if val is None:
@@ -946,7 +946,13 @@ class CSSSerializer(object):
                 else:
                     val = unicode(value.value)
 
-                out.append(val + dim, value.type)
+                # keep '+' if given
+                if value.value != 0 and value._sign == u'+':
+                    sign = u'+'
+                else:
+                    sign = u''
+                    
+                out.append(sign + val + dim, value.type)
         
             else:
                 out.append(value.value, value.type)
@@ -962,27 +968,26 @@ class CSSSerializer(object):
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
                 out.append(val, type_)
-
             return out.value()
 
     def do_css_RGBColor(self, cssvalue):
         """Serialize a RGBColor value"""
         return self.do_css_FunctionValue(cssvalue)
 
-#    def do_css_MSValue(self, cssvalue):
-#        """Serialize an ExpressionValue (IE only),
-#        should at least keep the original syntax"""
-#        if not cssvalue:
-#            return u''
-#        else:
-#            out = Out(self)
-#            for item in cssvalue.seq:
-#                type_, val = item.type, item.value
-#                val = self._possiblezero(cssvalue, type_, val)
-#                # do no send type_ so no special cases!
-#                out.append(val, None, space=False)
-#
-#            return out.value()
+    def do_css_MSValue(self, cssvalue):
+        """Serialize an ExpressionValue (IE only),
+        should at least keep the original syntax"""
+        if not cssvalue:
+            return u''
+        else:
+            out = Out(self)
+            for item in cssvalue.seq:
+                type_, val = item.type, item.value
+                #val = self._possiblezero(cssvalue, type_, val)
+                # do no send type_ so no special cases!
+                out.append(val, None, space=False)
+
+            return out.value()
 
     def do_css_CSSVariable(self, variable):
         """Serializes a CSSVariable"""

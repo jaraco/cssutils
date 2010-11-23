@@ -200,6 +200,8 @@ class Value(cssutils.util._NewBase):
     NUMBER = u'NUMBER'
     PERCENTAGE = u'PERCENTAGE' 
     
+    FUNCTION = u'FUNCTION'
+    
     def __init__(self, cssText=None, parent=None, readonly=False):
         super(Value, self).__init__()
         
@@ -257,6 +259,7 @@ class DimensionValue(Value):
     """
     __reNumDim = re.compile(ur'^(\d*\.\d+|\d+)(.*)$', re.I | re.U | re.X)
     _dimension = None
+    _sign = None
     
     def __str__(self):
         return u"<cssutils.css.%s object value=%r dimension=%s type=%s cssText=%r at 0x%x>"\
@@ -296,11 +299,12 @@ class DimensionValue(Value):
                         val = int(sign + v)
                     if d:
                         dim = d
-                                                    
-            self._dimension = dim
-            self._type = type_            
+
+            self._sign = sign                                                    
             self._value = val
-            
+            self._dimension = dim
+            self._type = type_
+
             self._setSeq(seq)
             self.wellformed = ok
     
@@ -380,6 +384,12 @@ class MSValue(CSSFunction):
                              PreDef.funcEnd(stop=True)
                              )
         return funcProds
+    
+    def _setCssText(self, cssText):
+        super(MSValue, self)._setCssText(cssText)
+    
+    cssText = property(lambda self: cssutils.ser.do_css_MSValue(self), 
+                       _setCssText, u'String value of this value.')
 
 
 class CSSVariable(CSSFunction):
@@ -463,7 +473,7 @@ def _DimensionProd(parent, nextSor=False):
                                          u'NUMBER', 
                                          u'PERCENTAGE') or v in u'+-',
                 nextSor = nextSor,
-                toSeq=lambda t, tokens: ('Dimension', DimensionValue(
+                toSeq=lambda t, tokens: (t[0],  DimensionValue(
                                             cssutils.helper.pushtoken(t, 
                                                                       tokens),
                                          parent=parent)
