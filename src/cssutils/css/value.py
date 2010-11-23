@@ -5,8 +5,10 @@ supported and are replaced by these new classes.
 """
 __all__ = ['PropertyValue',
            'Value',
+           'DimensionValue',
            'CSSFunction', 
-           'CSSVariable'
+           'CSSVariable',
+           'MSValue'
            ]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
@@ -43,8 +45,10 @@ class PropertyValue(cssutils.util._NewBase):
         self.wellformed = False
         
         if cssText is not None: # may be 0
+            if type(cssText) in (int, float):
+                cssText = unicode(cssText) # if it is a number
             self.cssText = cssText
-
+        
         self._readonly = readonly
 
     def __len__(self):
@@ -59,8 +63,7 @@ class PropertyValue(cssutils.util._NewBase):
     def __iter__(self):
         "Generator which iterates over cssRules."
         for item in self.__items():
-            if item.type == 'Value':
-                yield item.value
+            yield item
             
     def __repr__(self):
         return u"cssutils.css.%s(%r)" % (self.__class__.__name__,
@@ -72,9 +75,11 @@ class PropertyValue(cssutils.util._NewBase):
                            self.cssText, 
                            id(self))
         
-    def __items(self):
+    def __items(self, seq=None):
         "a generator of Value obects only, no , / or ' '"
-        return (x.value for x in self.seq if isinstance(x.value, Value))
+        if seq is None:
+            seq = self.seq
+        return (x.value for x in seq if isinstance(x.value, Value))
     
     def _setCssText(self, cssText):
         if type(cssText) in (int, float):
@@ -125,64 +130,16 @@ class PropertyValue(cssutils.util._NewBase):
         
         # used as operator is , / or S
         nextSor = u',/'
-        term = Choice(# TODO: split value in length, percentage, URI, color etc
+        term = Choice(_DimensionProd(self, nextSor),
                       _ValueProd(self, nextSor),
-                      
-                      # special case IE only expression
-                      Prod(name='MSFilter',
-                           match=lambda t, v: t == self._prods.FUNCTION and (
-                              cssutils.helper.normalize(v) in (u'expression(',
-                                                               u'alpha(',
-                                                               u'blur(',
-                                                               u'chroma(',
-                                                               u'dropshadow(',
-                                                               u'fliph(',
-                                                               u'flipv(',
-                                                               u'glow(',
-                                                               u'gray(',
-                                                               u'invert(',
-                                                               u'mask(',
-                                                               u'shadow(',                                                               
-                                                               u'wave(',
-                                                               u'xray(') or
-                              v.startswith(u'progid:DXImageTransform.Microsoft.')                               
-                           ),
-                           nextSor=nextSor,
-                           toSeq=lambda t, tokens: (MSFilter._functionName,
-                                                    MSFilter(
-                                cssutils.helper.pushtoken(t, tokens),
-                                parent=self)
-                                                    )
-                           ),
-                      _CalcValueProd(self, nextSor),
-                      _CSSVariableProd(self, nextSor),
+#                      _CalcValueProd(self, nextSor),
+#                      _RGBColord(self, nextSor),
+#                      _Rect(self, nextSor),
                       # all other functions
-                      _CSSFunctionProd(self, nextSor)
-                      
-# TODO:
-#                      # rgb/rgba(
-#                      Prod(name='RGBColor',
-#                           match=lambda t, v: t == self._prods.FUNCTION and (
-#                              cssutils.helper.normalize(v) in (u'rgb(',
-#                                                               u'rgba('
-#                                                               )                               
-#                           ),
-#                           nextSor=nextSor,
-#                                  toSeq=lambda t, tokens: (RGBColor._functionName,
-#                                                           RGBColor(
-#                                        cssutils.helper.pushtoken(t, tokens), 
-#                                        parent=self)
-#                                                           )
-#                      ),
-                      # other functions like rgb( etc
-#                      PreDef.function(nextSor=nextSor,
-#                                      toSeq=lambda t, tokens: ('FUNCTION',
-#                                                               CSSFunction(
-#                                        cssutils.helper.pushtoken(t, tokens),
-#                                        parent=self)
-#                                                               )
-#                      )
-        )
+                      _CSSVariableProd(self, nextSor),
+                      _MSValueProd(self, nextSor),
+                      _CSSFunctionProd(self, nextSor)                      
+                      )
         operator = Choice(PreDef.S(toSeq=False),
                           PreDef.char('comma', ',',
                                       toSeq=lambda t, tokens: ('operator', t[1])),
@@ -204,9 +161,14 @@ class PropertyValue(cssutils.util._NewBase):
         ok, seq, store, unused = ProdParser().parse(cssText,
                                                     u'PropertyValue',
                                                     prods)
+        # must be at least one value!
+        ok = ok and len(list(self.__items(seq))) > 0
         if ok:
             self._setSeq(seq)
-            self.wellformed = ok
+            self.wellformed = True
+        else:
+            self._log.error(u'PropertyValue: Unknown syntax or no value: %r.' % 
+                            self._valuestr(cssText))
     
     cssText = property(lambda self: cssutils.ser.do_css_PropertyValue(self),
                        _setCssText,
@@ -226,22 +188,24 @@ class PropertyValue(cssutils.util._NewBase):
 
 class Value(cssutils.util._NewBase):
     """
-    Any simple value like ``1px``, ``red`` or ``url(some.png)``
+    HASH, IDENT, STRING, UNICODE-RANGE or URI values
+    """    
+    HASH = u'HASH'
+    IDENT = u'IDENT'
+    STRING = u'STRING'
+    UNICODE_RANGE = u'UNICODE-RANGE'
+    URI = u'URI'
     
-    Supported types are listed in Value._supported
-    """
-    __reNumDim = re.compile(ur'^(\d*\.\d+|\d+)(.*)$', re.I | re.U | re.X)
-    
-    _supported = ('DIMENSION', 'HASH', 'IDENT', 'NUMBER', 'PERCENTAGE', 
-                  'STRING', 'UNICODE-RANGE', 'URI')
+    DIMENSION = u'DIMENSION'
+    NUMBER = u'NUMBER'
+    PERCENTAGE = u'PERCENTAGE' 
     
     def __init__(self, cssText=None, parent=None, readonly=False):
-        """See CSSPrimitiveValue.__init__()"""
         super(Value, self).__init__()
-
+        
         self._type = None
-        self._dimension = None
         self._value = u''
+        self.parent = parent
         
         if cssText:
             self.cssText = cssText
@@ -250,6 +214,50 @@ class Value(cssutils.util._NewBase):
         return u"cssutils.css.%s(%r)" % (self.__class__.__name__,
                                          self.cssText)
 
+    def __str__(self):
+        return u"<cssutils.css.%s object value=%r type=%s cssText=%r at 0x%x>"\
+               % (self.__class__.__name__, 
+                  self.value, self.type, self.cssText,
+                  id(self))
+
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+
+        prods = Choice(PreDef.hexcolor(stop=True),
+                       PreDef.ident(stop=True),
+                       PreDef.string(stop=True),
+                       PreDef.uri(stop=True),
+                       PreDef.unicode_range(stop=True),
+                       )
+        ok, seq, store, unused = ProdParser().parse(cssText, u'Value', prods)
+        if ok:
+            self._type = seq[0].type
+            self._value = seq[0].value
+                        
+            self._setSeq(seq)
+            self.wellformed = ok
+                                        
+    cssText = property(lambda self: cssutils.ser.do_css_Value(self), 
+                       _setCssText, u'String value of this value.')
+
+    type = property(lambda self: self._type, #_setType, 
+                     u'Type of this value.')
+
+    def _setValue(self, value):
+        # TODO: check!
+        self._value = value
+
+    value = property(lambda self: self._value, _setValue, 
+                     u'Typed value, string, int or float.')
+
+
+class DimensionValue(Value):
+    """
+    DIMENSION, PERCENTAGE or NUMBER values.
+    """
+    __reNumDim = re.compile(ur'^(\d*\.\d+|\d+)(.*)$', re.I | re.U | re.X)
+    _dimension = None
+    
     def __str__(self):
         return u"<cssutils.css.%s object value=%r dimension=%s type=%s cssText=%r at 0x%x>"\
                % (self.__class__.__name__, 
@@ -261,17 +269,13 @@ class Value(cssutils.util._NewBase):
 
         prods = Sequence(PreDef.unary(),
                          Choice(PreDef.dimension(stop=True),
-                                PreDef.hexcolor(stop=True),
-                                PreDef.ident(stop=True),
                                 PreDef.number(stop=True),
-                                PreDef.percentage(stop=True),
-                                PreDef.string(stop=True),
-                                PreDef.uri(stop=True),
-                                PreDef.unicode_range(stop=True),
+                                PreDef.percentage(stop=True)
                                 )
                          )     
-        # store: colorType, parts
-        ok, seq, store, unused = ProdParser().parse(cssText, u'Value', prods)
+        ok, seq, store, unused = ProdParser().parse(cssText, 
+                                                    u'DimensionValue', 
+                                                    prods)
         if ok:
             sign = val = u''
             dim = type_ = None
@@ -283,60 +287,42 @@ class Value(cssutils.util._NewBase):
                 else:
                     type_ = item.type
                     
-                    if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
-                        # number + optional dim
-                        v, d = self.__reNumDim.findall(
-                                    cssutils.helper.normalize(item.value))[0]
-                        if u'.' in v:
-                            val = float(sign + v)
-                        else:
-                            val = int(sign + v)
-                        if d:
-                            dim = d
-
+                    # number + optional dim
+                    v, d = self.__reNumDim.findall(
+                                cssutils.helper.normalize(item.value))[0]
+                    if u'.' in v:
+                        val = float(sign + v)
                     else:
-                        val = item.value
-                        
+                        val = int(sign + v)
+                    if d:
+                        dim = d
+                                                    
+            self._dimension = dim
+            self._type = type_            
+            self._value = val
+            
             self._setSeq(seq)
             self.wellformed = ok
-                            
-            self._type = type_
-            
-            self._value = val
-            self._dimension = dim
-            
-    cssText = property(lambda self: cssutils.ser.do_css_Value(self), 
-                       _setCssText, 
-                       u'String value of this value')
     
-    type = property(lambda self: self._type, #_setType, 
-                     u'Type of this value')
-
-#    def _setValue(self, value):
-#        self._value = value
+    cssText = property(lambda self: cssutils.ser.do_css_Value(self), 
+                       _setCssText, u'String value of this value.')
         
-    value = property(lambda self: self._value, #_setValue, 
-                     u'Typed value, string, int or float.')
-
     dimension = property(lambda self: self._dimension, #_setValue, 
-                     u'Dimension if a DIMENSION or PERCENTAGE value')
-
-
-
-
+                     u'Dimension if a DIMENSION or PERCENTAGE value, else None')
+        
 
 class CSSFunction(Value):
     """A function value"""
     type = 'FUNCTION'
     _functionName = 'FUNCTION'
-    #type = 'FUNCTION'
     
     def _productions(self):
         """Return definition used for parsing."""
         types = self._prods # rename!
         
-        itemProd = Choice(_ValueProd(self),
-                          _CalcValueProd(self),
+        itemProd = Choice(_DimensionProd(self),
+                          _ValueProd(self),
+                          #_CalcValueProd(self),
                           _CSSVariableProd(self),
                           _CSSFunctionProd(self)
                           )
@@ -353,29 +339,47 @@ class CSSFunction(Value):
          )
         return funcProds
     
-    
     def _setCssText(self, cssText):
         self._checkReadonly()
-
         ok, seq, store, unused = ProdParser().parse(cssText, 
                                                     self.type,
                                                     self._productions())
         if ok:
-            for x in seq:
-                print seq
-                        
             self._setSeq(seq)
             self.wellformed = ok
                             
     cssText = property(lambda self: cssutils.ser.do_css_CSSFunction(self), 
-                       _setCssText, 
-                       u'String value of this value')
+                       _setCssText, u'String value of this value.')
 
-class CalcValue(CSSFunction):
-    _functionName = 'Calc'
 
-class MSFilter(CSSFunction):
-    _functionName = 'MSFilter'
+class MSValue(CSSFunction):
+    "An IE specific Microsoft only function value."
+    type = _functionName = 'MSValue'
+    
+    def _productions(self):
+        """Return definition used for parsing."""
+        types = self._prods # rename!
+        
+        funcProds = Sequence(Prod(name='FUNCTION',
+                                  match=lambda t, v: t == types.FUNCTION,
+                                  toSeq=lambda t, tokens: (t[0], t[1])
+                                  ),
+                             Sequence(Choice(_DimensionProd(self),
+                                             _ValueProd(self),
+                                             _MSValueProd(self),
+                                             #_CalcValueProd(self),
+                                             _CSSVariableProd(self),
+                                             _CSSFunctionProd(self),
+                                             Prod(name='MSValuePart',
+                                                  match=lambda t, v: v != u')',
+                                                  toSeq=lambda t, tokens: (t[0], t[1])
+                                                  )
+                                             ),
+                                      minmax=lambda: (0, None)
+                                      ),
+                             PreDef.funcEnd(stop=True)
+                             )
+        return funcProds
 
 
 class CSSVariable(CSSFunction):
@@ -386,7 +390,7 @@ class CSSVariable(CSSFunction):
     """
     _functionName = 'CSSVariable'
     _name = None
-                
+
     def __str__(self):
         return u"<cssutils.css.%s object name=%r value=%r at 0x%x>" % (
                 self.__class__.__name__, self.name, self.value, id(self)) 
@@ -413,16 +417,22 @@ class CSSVariable(CSSFunction):
             self.wellformed = ok
             
     cssText = property(lambda self: cssutils.ser.do_css_CSSVariable(self),
-                       _setCssText,
-                       doc=u"A string representation of the current variable.")
+                       _setCssText, doc=u"String representation of variable.")
 
     # TODO: writable? check if var (value) available?
     name = property(lambda self: self._name)
 
     def _getValue(self):
         "Find contained sheet and @variables there"
+        rel = self
+        while True:
+            # find node which has parentRule to get to StyleSheet
+            if hasattr(rel, 'parent'):
+                rel = rel.parent
+            else:
+                break 
         try:
-            variables = self.parent.parent.parentRule.parentStyleSheet.variables
+            variables = rel.parentRule.parentStyleSheet.variables
         except AttributeError:
             return None
         else:
@@ -437,12 +447,25 @@ class CSSVariable(CSSFunction):
 # helper for productions
 def _ValueProd(parent, nextSor=False):
     return Prod(name='Value',
-                match=lambda t, v: t in Value._supported or
-                                   v in u'+-',
+                match=lambda t, v: t in ('HASH', 'IDENT', 'STRING', 
+                                         'UNICODE-RANGE', 'URI'),
                 nextSor = nextSor,
-                toSeq=lambda t, tokens: ('Value',
-                                         Value(cssutils.helper.pushtoken(t, 
-                                                                         tokens),
+                toSeq=lambda t, tokens: ('Value', Value(
+                                            cssutils.helper.pushtoken(t, 
+                                                                      tokens),
+                                         parent=parent)
+                                         )
+                )
+    
+def _DimensionProd(parent, nextSor=False):
+    return Prod(name='Dimension',
+                match=lambda t, v: t in (u'DIMENSION', 
+                                         u'NUMBER', 
+                                         u'PERCENTAGE') or v in u'+-',
+                nextSor = nextSor,
+                toSeq=lambda t, tokens: ('Dimension', DimensionValue(
+                                            cssutils.helper.pushtoken(t, 
+                                                                      tokens),
                                          parent=parent)
                                          )
                 )
@@ -463,13 +486,33 @@ def _CSSVariableProd(parent, nextSor=False):
                                 cssutils.helper.pushtoken(t, tokens), 
                                 parent=parent)
                                                     )
-                           )
+                           )  
     
-def _CalcValueProd(parent, nextSor=False):
-    return PreDef.calc(nextSor=nextSor,
-                       toSeq=lambda t, tokens: (CalcValue._functionName,
-                                                CalcValue(
-                            cssutils.helper.pushtoken(t, tokens), 
-                            parent=parent)
-                                                )
-                       )
+def _MSValueProd(parent, nextSor=False):
+    return Prod(name=MSValue._functionName,
+                match=lambda t, v: (#t == self._prods.FUNCTION and (
+                    cssutils.helper.normalize(v) in (u'expression(',
+                                                 u'alpha(',
+                                                 u'blur(',
+                                                 u'chroma(',
+                                                 u'dropshadow(',
+                                                 u'fliph(',
+                                                 u'flipv(',
+                                                 u'glow(',
+                                                 u'gray(',
+                                                 u'invert(',
+                                                 u'mask(',
+                                                 u'shadow(',                                                               
+                                                 u'wave(',
+                                                 u'xray(') or
+                    v.startswith(u'progid:DXImageTransform.Microsoft.')                               
+                    ),
+                nextSor=nextSor,
+                toSeq=lambda t, tokens: (MSValue._functionName, 
+                                         MSValue(cssutils.helper.pushtoken(t, 
+                                                                           tokens
+                                                                           ),
+                                                 parent=parent
+                                                 )
+                                         )
+                )

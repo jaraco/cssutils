@@ -224,12 +224,6 @@ def getUrls(sheet):
     for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
         yield importrule.href
 
-    def getUrl(v):
-        if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
-           u'URI' == v.type:
-            # TODO: .uri
-            return v.value
-
     def styleDeclarations(base):
         "recursive generator to find all CSSStyleDeclarations"
         if hasattr(base, 'cssRules'):
@@ -264,12 +258,6 @@ def replaceUrls(sheet, replacer, ignoreImportRules=False):
         for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
             importrule.href = replacer(importrule.href)
 
-    def setProperty(v):
-        if v.CSS_PRIMITIVE_VALUE == v.cssValueType and\
-           v.CSS_URI == v.primitiveType:
-                v.setStringValue(v.CSS_URI,
-                                 replacer(v.getStringValue()))
-
     def styleDeclarations(base):
         "recursive generator to find all CSSStyleDeclarations"
         if hasattr(base, 'cssRules'):
@@ -281,12 +269,10 @@ def replaceUrls(sheet, replacer, ignoreImportRules=False):
 
     for style in styleDeclarations(sheet):
         for p in style.getProperties(all=True):
-            v = p.cssValue
-            if v.CSS_VALUE_LIST == v.cssValueType:
-                for item in v:
-                    setProperty(item)
-            elif v.CSS_PRIMITIVE_VALUE == v.cssValueType:
-                setProperty(v)
+            pv = p.propertyValue
+            for v in pv:
+                if v.type == v.URI:
+                    v.value = replacer(v.value)
 
 def resolveImports(sheet, target=None):
     """Recurcively combine all rules in given `sheet` into a `target` sheet.

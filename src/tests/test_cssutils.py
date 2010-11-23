@@ -174,7 +174,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual('from url', s.title)
         
         sr = s.cssRules[1]
-        img = sr.style.getProperty('background-image').cssValue.getStringValue()
+        img = sr.style.getProperty('background-image').propertyValue[0].value
         self.assertEqual(img, 'images/example.gif')
         
         ir = s.cssRules[0]

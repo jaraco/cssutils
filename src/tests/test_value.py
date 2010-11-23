@@ -18,11 +18,17 @@ class PropertyValueTestCase(basetest.BaseTestCase):
         self.assertEqual(u'', pv.value)
 
         cssText = u'0, 0/0 1px var(x) url(x)' 
+        items = [u'0', u'0', u'0', u'1px', u'var(x)', 'url(x)']
         pv = cssutils.css.PropertyValue(cssText)
         self.assertEqual(cssText, pv.cssText)
         self.assertEqual(6, len(pv))
         self.assertEqual(6, pv.length)
-        items = [u'0', u'0', u'0', u'1px', u'var(x)', 'url(x)']
+        
+        # __iter__
+        for i, x in enumerate(pv):
+            self.assertEqual(x.cssText, items[i])
+            
+        # cssText
         for i, item in enumerate(items):
             self.assertEqual(item, pv[i].cssText)
             self.assertEqual(item, pv.item(i).cssText)
@@ -60,33 +66,62 @@ class ValueTestCase(basetest.BaseTestCase):
         v = cssutils.css.Value()
         self.assert_(u'' == v.cssText)
         self.assert_(u'' == v.value)
-        self.assert_(None is  v.dimension)
         self.assert_(None is  v.type)
 
     def test_cssText(self):
-        """
-        _supported = ('DIMENSION', 'HASH', 'IDENT', 'NUMBER', 'PERCENTAGE', 
-                  'STRING', 'UNICODE-RANGE', 'URI')
-        """
+        "Value.cssText"
+        # HASH IDENT STRING UNICODE-RANGE URI
+        tests = {
+                 u'#123': (u'#123', u'#123', u'HASH'),
+                 u'#123456': (u'#123456', u'#123456', u'HASH'),
+                 u'#112233': (u'#123', u'#112233', u'HASH'),
+                 u'  #112233  ': (u'#123', u'#112233', u'HASH'),
+                 
+                 u'red': (u'red', u'red', u'IDENT'),
+                 u'  red  ': (u'red', u'red', u'IDENT'),
+
+                 u'"red"': (u'"red"', u'red', u'STRING'),
+                 u'  "red"  ': (u'"red"', u'red', u'STRING'),
+                 
+                 u'url(some.gif)': (u'url(some.gif)', u'some.gif', u'URI'),                                    
+                 u'  url(some.gif)  ': (u'url(some.gif)', u'some.gif', u'URI'),                                    
+                 u'url(   some.gif  )': (u'url(some.gif)', u'some.gif', u'URI'),  
+                 }
+        for (p, (r, n, t)) in tests.items():
+            v = cssutils.css.Value(p)
+            self.assertEqual(r, v.cssText)
+            self.assertEqual(t, v.type)
+            self.assertEqual(n, v.value)
+
+            
+class DimensionValueTestCase(basetest.BaseTestCase):
+
+    def test_init(self):
+        "DimensionValue.__init__()"
+        v = cssutils.css.DimensionValue()
+        self.assert_(u'' == v.cssText)
+        self.assert_(u'' == v.value)
+        self.assert_(None is  v.type)
+        self.assert_(None is  v.dimension)
+
+    def test_cssText(self):
+        "DimensionValue.cssText"
+        # DIMENSION NUMBER PERCENTAGE
         tests = {
                  u'0px': (u'0', 0, u'px', u'DIMENSION'),
                  u'1px': (u'1px', 1, u'px', u'DIMENSION'),
+                 u'1.0px': (u'1px', 1.0, u'px', u'DIMENSION'),
                  u'1.1px': (u'1.1px', 1.1, u'px', u'DIMENSION'),
                  u'-1px': (u'-1px', -1, u'px', u'DIMENSION'),
                  u'-1.1px': (u'-1.1px', -1.1, u'px', u'DIMENSION'),
                  u'+1px': (u'1px', 1, u'px', u'DIMENSION'),
-
-                 u'#123': (u'#123', u'#123', None, u'HASH'),
-                 u'#123456': (u'#123456', u'#123456', None, u'HASH'),
-                 u'#112233': (u'#123', u'#112233', None, u'HASH'),
-                 
-                 u'red': (u'red', u'red', None, u'IDENT'),
 
                  u'0': (u'0', 0, None, u'NUMBER'),
                  u'-0': (u'0', 0, None, u'NUMBER'),
                  u'-0.0': (u'0', -0.0, None, u'NUMBER'),
 
                  u'1': (u'1', 1, None, u'NUMBER'),
+                 u'1.0': (u'1', 1.0, None, u'NUMBER'),
                  u'1.1': (u'1.1', 1.1, None, u'NUMBER'),
                  u'-1': (u'-1', -1, None, u'NUMBER'),
                  u'+1': (u'1', 1, None, u'NUMBER'),
@@ -96,17 +131,10 @@ class ValueTestCase(basetest.BaseTestCase):
                  u'1.1%': (u'1.1%', 1.1, u'%', u'PERCENTAGE'),
                  u'-1%': (u'-1%', -1, u'%', u'PERCENTAGE'),
                  u'-1.1%': (u'-1.1%', -1.1, u'%', u'PERCENTAGE'),
-                 u'+1%': (u'1%', 1, u'%', u'PERCENTAGE'),
-                 
-                 u'"red"': (u'"red"', u'red', None, u'STRING'),
-                 
-                 u'url(some.gif)': (u'url(some.gif)', u'some.gif', None, 
-                                    u'URI'),                                    
-                 u'url(   some.gif  )': (u'url(some.gif)', u'some.gif', None, 
-                                    u'URI'),  
+                 u'+1%': (u'1%', 1, u'%', u'PERCENTAGE'),                 
                  }
         for (p, (r, n, d, t)) in tests.items():
-            v = cssutils.css.Value(p)
+            v = cssutils.css.DimensionValue(p)
             self.assertEqual(r, v.cssText)
             self.assertEqual(t, v.type)
             self.assertEqual(n, v.value)
@@ -144,91 +172,6 @@ class CSSVariableTestCase(basetest.BaseTestCase):
 
 
 
-#class CSSValueTestCase(basetest.BaseTestCase):
-#
-#    def setUp(self):
-#        self.r = cssutils.css.CSSValue() # needed for tests
-#
-#    def test_init(self):
-#        "CSSValue.__init__()"
-#        v = cssutils.css.CSSValue()
-#        self.assert_(u'' == v.cssText)
-#        self.assert_(None is  v.cssValueType)
-#        self.assert_(None == v.cssValueTypeString)
-
-#    def test_escapes(self):
-#        "CSSValue Escapes"
-#        v = cssutils.css.CSSValue()
-#        v.cssText = u'1px'
-#        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-#        self.assert_(v.CSS_PX == v.primitiveType)
-#        self.assert_(u'1px' == v.cssText)
-#
-#        v.cssText = u'1PX'
-#        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-#        self.assert_(v.CSS_PX == v.primitiveType)
-#        self.assert_(u'1px' == v.cssText)
-#        
-#        v.cssText = u'1p\\x'
-#        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-#        self.assert_(v.CSS_PX == v.primitiveType)
-#        self.assert_(u'1px' == v.cssText)
-#
-#    def test_cssText(self):
-#        "CSSValue.cssText"
-#        v = cssutils.css.CSSValue()
-#        v.cssText = u'1px'
-#        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-#        self.assert_(v.CSS_PX == v.primitiveType)
-#        self.assert_(u'1px' == v.cssText)
-#
-#        v = cssutils.css.CSSValue()
-#        v.cssText = u'1px'
-#        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-#        self.assert_(v.CSS_PX == v.primitiveType)
-#        self.assert_(u'1px' == v.cssText)
-#
-#        v = cssutils.css.CSSValue()
-#        v.cssText = u'a  ,b,  c  ,"d or d", "e, " '
-#        self.assertEqual(v.CSS_PRIMITIVE_VALUE, v.cssValueType)
-#        self.assertEqual(v.CSS_STRING, v.primitiveType)
-#        self.assertEqual(u'a, b, c, "d or d", "e, "', v.cssText)
-#
-#        v.cssText = u'  1   px    '
-#        self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
-#        self.assert_('1 px' == v.cssText)
-#
-#        v.cssText = u'  normal 1px a, b, "c" end   '
-#        self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
-#        self.assertEqual('normal 1px a, b, "c" end', v.cssText)
-#
-#        for i, x in enumerate(v):
-#            self.assertEqual(x.CSS_PRIMITIVE_VALUE, x.cssValueType)
-#            if x == 0:
-#                self.assertEqual(x.CSS_IDENT, x.primitiveType)
-#                self.assertEqual(u'normal', x.cssText)
-#            elif x == 1:
-#                self.assertEqual(x.CSS_PX, x.primitiveType)
-#                self.assertEqual(u'1px', x.cssText)
-#            if x == 2:
-#                self.assertEqual(x.CSS_STRING, x.primitiveType)
-#                self.assertEqual(u'a, b, "c"', x.cssText)
-#            if x == 3:
-#                self.assertEqual(x.CSS_IDENT, x.primitiveType)
-#                self.assertEqual(u'end', x.cssText)
-#
-#
-#        v = cssutils.css.CSSValue()
-#        v.cssText = u'  1   px    '
-#        self.assert_(v.CSS_VALUE_LIST == v.cssValueType)
-#        self.assert_(u'1 px' == v.cssText)
-#
-#        v.cssText = u'expression(document.body.clientWidth > 972 ? "1014px": "100%" )'
-#        self.assert_(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-#        self.assert_(v.CSS_UNKNOWN == v.primitiveType)
-#        self.assertEqual(u'expression(document.body.clientWidth > 972?"1014px": "100%")',
-#                         v.cssText)
-#
 #    def test_cssText2(self):
 #        "CSSValue.cssText 2"
 #        tests = {

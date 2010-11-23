@@ -72,7 +72,6 @@ class Property(cssutils.util.Base):
         if name:
             self.name = name
             self.propertyValue = value
-            #self.cssValue = value
 
         self._priority = u''
         self._literalpriority = u''
@@ -247,13 +246,7 @@ class Property(cssutils.util.Base):
         if self._mediaQuery and not cssText:
             self.seqs[1] = PropertyValue(parent=self)
         else:
-            try:
-                self.seqs[1].cssText = cssText
-            except xml.dom.SyntaxErr, e:
-                v = PropertyValue(cssText, parent=self)
-                # try parsing for PropertyValue (simply raise if not)
-                # might have been e.g. a CSSVariable before
-                self.seqs[1] = v
+            self.seqs[1].cssText = cssText
             self.wellformed = self.wellformed and self.seqs[1].wellformed
     
     propertyValue = property(lambda self: self.seqs[1], 
