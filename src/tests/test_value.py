@@ -55,8 +55,8 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                  u'red/**/': (u'red /**/', 1, u'red'),
                  
                  u'a()1,-1,+1,1%,-1%,1px,-1px,"a",a,url(a),#aabb44': (
-                 u'a()1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4',
-                    12, u'a()1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4')
+                 u'a() 1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4',
+                    12, u'a() 1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4')
                  }
         for (cssText, (c, l, v)) in tests.items():
             if c is None:
@@ -77,17 +77,16 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                 u'-1px red "x"': (None, 3),
                 u'a, b c': (None, 3),
                 u'1px1 2% 3': (u'1px1 2% 3', 3),
-                # TODO
-#                u'f(+1pX, -2, 5%) 1': (u'f(1px, -2, 5%) 1', 2),
-#                u'0 f()0': (u'0 f() 0', 3),
-#                u'f()0': (u'f() 0', 2),
-#                u'f()1%': (u'f() 1%', 2),
-#                u'f()1px': (u'f() 1px', 2),
-#                u'f()"str"': (u'f() "str"', 2),
-#                u'f()ident': (u'f() ident', 2),
-#                u'f()#123': (u'f() #123', 2),
-#                u'f()url()': (u'f() url()', 2),
-#                u'f()f()': (u'f() f()', 2),
+                u'f(+1pX, -2, 5%) 1': (u'f(+1px, -2, 5%) 1', 2),
+                u'0 f()0': (u'0 f() 0', 3),
+                u'f()0': (u'f() 0', 2),
+                u'f()1%': (u'f() 1%', 2),
+                u'f()1px': (u'f() 1px', 2),
+                u'f()"str"': (u'f() "str"', 2),
+                u'f()ident': (u'f() ident', 2),
+                u'f()#123': (u'f() #123', 2),
+                u'f()url()': (u'f() url()', 2),
+                u'f()f()': (u'f() f()', 2),
                 u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
                 u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
                 }
@@ -123,7 +122,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             u'url(y)  format( "x" ,  "y" )': u'url(y) format("x", "y")',
             u'f(1 2,3 4)': u'f(1 2, 3 4)',
                  
-#            # IE expression
+            # IE expression
             ur'Expression()': u'Expression()',
             ur'expression(-1 < +2)': u'expression(-1<+2)',
             ur'expression(document.width == "1")': u'expression(document.width=="1")',
