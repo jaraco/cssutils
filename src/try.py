@@ -29,7 +29,7 @@ def save(name, string):
     f.close()
 
 
-if 1:
+if 0:
     css = """
     @font-face {
   font-family: "Your typeface";
@@ -41,22 +41,37 @@ if 1:
     url("type/filename.svg#filename") format("svg");*/
 }
     """
-    css = "body { color: black /* some comment */; }"
-
+    css = """
+    @import "im1";
+        @import url(im2);
+        @import url( im3 );
+        @import url( "im4" );
+        @import url( 'im5' );
+        a {
+            background-image: url(c) !important;
+            background-\image: url(b);
+            background: url(a) no-repeat !important;
+            }
+    """
     s = cssutils.parseString(css)
-    print s.cssRules[0].style.getProperty('color').propertyValue.value
+    print set(cssutils.getUrls(s))
     print s.cssText
     
     sys.exit(1)
 
 if 1:
-    v = cssutils.css.PropertyValue('bold -1px / -2  "arial" ,  sans-serif')
-    #v = cssutils.css.Value('url( 1.gif   )   1')
-    print v
+    css = 'bold -1px / -2  "arial" ,  sans-serif'
+    css = 'rgb(1  ,   px   , hsl(    0 0) 2 Var(X) calc(1+2) alpha(opacity=50)'
+    css = 'f(0) 1px'
+    #css = 'url(0) 1px'
+    v = cssutils.css.PropertyValue(css)
+#    v = cssutils.css.Value(css)
+    #v = cssutils.css.CSSFunction(css)
+
+#    print v
+#    for i, x in enumerate(v.seq):
+#        print i, x.value
     print v.cssText
-    for x in v._seq:
-        print x
-    
     sys.exit(1)
 
 

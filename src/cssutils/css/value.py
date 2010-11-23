@@ -318,7 +318,7 @@ class DimensionValue(Value):
 class CSSFunction(Value):
     """A function value"""
     type = 'FUNCTION'
-    _functionName = 'FUNCTION'
+    _functionName = 'Function'
     
     def _productions(self):
         """Return definition used for parsing."""
