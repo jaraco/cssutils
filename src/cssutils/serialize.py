@@ -238,7 +238,7 @@ class Out(object):
                 val = helper.uri(val)
             elif 'HASH' == typ:
                 val = self.ser._hash(val)
-            elif val in u'+>~,:{;)]/':
+            elif val in u'+>~,:{;)]/=':
                 self._remove_last_if_S()
 
             # APPEND
@@ -268,7 +268,7 @@ class Out(object):
                 self.out.append(self.ser.prefs.lineSeparator)
             elif u';' == val: # end or prop or block
                 self.out.append(self.ser.prefs.lineSeparator)
-            elif val not in u'}[]()/' and typ != 'FUNCTION' and space:
+            elif val not in u'}[]()/=' and typ != 'FUNCTION' and space:
                 self.out.append(self.ser.prefs.spacer)
                 if typ != 'STRING' and not self.ser.prefs.spacer and \
                    self.out and not self.out[-1].endswith(u' '):
@@ -353,23 +353,6 @@ class CSSSerializer(object):
             return u'#%s%s%s' % (val[1], val[3], val[5])
         else:
             return val
-
-    def _possiblezero(self, cssvalue, type_, val):
-        """
-        Formats to "0" is possible/allowed. 
-        """
-        if type_ in ('DIMENSION', 'NUMBER', 'PERCENTAGE'):
-            n, d = cssvalue._getNumDim(val)
-            if 0 == n:
-                if cssvalue.primitiveType in cssvalue._lengthtypes:
-                    # 0 if zero value
-                    val = u'0'
-                else:
-                    val = u'0' + d
-            else:
-                val = unicode(n) + d
-                
-        return val
 
     def _valid(self, x):
         "checks items valid property and prefs.validOnly"
@@ -922,38 +905,6 @@ class CSSSerializer(object):
                 out.append(part)
         return u''.join(out).strip()
 
-#    def do_css_CSSValue(self, cssvalue):
-#        """Serializes a CSSValue"""
-#        if not cssvalue:
-#            return u''
-#        else:
-#            out = Out(self)
-#            for item in cssvalue.seq:
-#                type_, val = item.type, item.value
-#                if hasattr(val, 'cssText'):
-#                    # RGBColor or CSSValue if a CSSValueList
-#                    out.append(val.cssText, type_)
-#                else:
-#                    if val and val[0] == val[-1] and val[0] in '\'"':
-#                        val = helper.string(val[1:-1])
-#                    # S must be kept! in between values but no extra space
-#                    out.append(val, type_)
-#
-#            return out.value()
-#
-#    def do_css_CSSPrimitiveValue(self, cssvalue):
-#        """Serialize a CSSPrimitiveValue"""
-#        if not cssvalue:
-#            return u''
-#        else:
-#            out = Out(self)
-#            for item in cssvalue.seq:
-#                type_, val = item.type, item.value
-#                val = self._possiblezero(cssvalue, type_, val)
-#                out.append(val, type_)
-#
-#            return out.value()
-
     def do_css_PropertyValue(self, value, valuesOnly=False):
         """Serializes a PropertyValue"""
         if not value:
@@ -989,6 +940,9 @@ class CSSSerializer(object):
                     if value.dimension in ('cm', 'mm', 'in', 'px', 'pc', 'pt',
                                            'em', 'ex'):
                         dim = u''
+                elif value.value == int(value.value):
+                    # cut off after . which is zero anyway
+                    val = unicode(int(value.value))
                 else:
                     val = unicode(value.value)
 
@@ -998,10 +952,6 @@ class CSSSerializer(object):
                 out.append(value.value, value.type)
                 
         return out.value()            
-
-    def do_css_CalcValue(self, cssvalue):
-        """Serialize a CalcValue."""
-        return self.do_css_CSSPrimitiveValue(cssvalue)
 
     def do_css_CSSFunction(self, cssvalue):
         """Serialize a CSS function value"""
@@ -1019,20 +969,20 @@ class CSSSerializer(object):
         """Serialize a RGBColor value"""
         return self.do_css_FunctionValue(cssvalue)
 
-    def do_css_ExpressionValue(self, cssvalue):
-        """Serialize an ExpressionValue (IE only),
-        should at least keep the original syntax"""
-        if not cssvalue:
-            return u''
-        else:
-            out = Out(self)
-            for item in cssvalue.seq:
-                type_, val = item.type, item.value
-                val = self._possiblezero(cssvalue, type_, val)
-                # do no send type_ so no special cases!
-                out.append(val, None, space=False)
-
-            return out.value()
+#    def do_css_MSValue(self, cssvalue):
+#        """Serialize an ExpressionValue (IE only),
+#        should at least keep the original syntax"""
+#        if not cssvalue:
+#            return u''
+#        else:
+#            out = Out(self)
+#            for item in cssvalue.seq:
+#                type_, val = item.type, item.value
+#                val = self._possiblezero(cssvalue, type_, val)
+#                # do no send type_ so no special cases!
+#                out.append(val, None, space=False)
+#
+#            return out.value()
 
     def do_css_CSSVariable(self, variable):
         """Serializes a CSSVariable"""
@@ -1084,6 +1034,3 @@ class CSSSerializer(object):
             return u' '.join(out)
         else:
             return u''
-
-# ----
-

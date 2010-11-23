@@ -23,7 +23,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual(True, p.wellformed)
         
         self.assertEqual([u'top'], p.seqs[0])
-        self.assertEqual(type(cssutils.css.CSSPrimitiveValue(cssText="2px")), type(p.seqs[1]))
+        self.assertEqual(type(cssutils.css.PropertyValue(cssText="2px")), type(p.seqs[1]))
         self.assertEqual([], p.seqs[2])
 
         self.assertEqual(True, p.valid)
@@ -100,13 +100,13 @@ class PropertyTestCase(basetest.BaseTestCase):
                    u'''Property: No ":" after name found: u'/**/a' [1:5: a]'''),
             # somehow 'a: ' fails?!?
             u'a111: ': (xml.dom.SyntaxErr,
-                   u"CSSValue: Unknown syntax or no value: u' '."),
+                   u"PropertyValue: Unknown syntax or no value: u' '."),
             u'a: 1!': (xml.dom.SyntaxErr,
                    u'''Property: Invalid priority: u'!'.'''),
             u'a: 1!importantX': (xml.dom.SyntaxErr,
                    u"Property: No CSS priority value: u'importantx'."),
             u'a:!important': (xml.dom.SyntaxErr,
-                   u"CSSValue: Unknown syntax or no value: u''."),
+                   u"PropertyValue: Unknown syntax or no value: u''."),
 
             # TODO?
 #            u'a: 1;': (xml.dom.SyntaxErr,
