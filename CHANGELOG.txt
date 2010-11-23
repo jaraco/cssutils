@@ -55,6 +55,9 @@ HEAD
 
         FIXES issue #45, #46
 
+    + CHANGE: explicit `+` of any dimension, percentage of number value is kept now
+
+
         Property.value returns value without any comments now, else use Property.cssText
 
 

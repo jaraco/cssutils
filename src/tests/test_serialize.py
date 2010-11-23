@@ -192,13 +192,13 @@ prefix|x, a + b > c ~ d, b {
             u'a  0px  a  .0px  a  0.0px  a  -0px  a  -.0px  a  -0.0px  a  +0px  a  +.0px  a  +0.0px ': 
                 u'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0', 
             u'a  1  a  .1  a  1.0  a  0.1  a  -1  a  -.1  a  -1.0  a  -0.1  a  +1  a  +.1  a  +1.0': 
-                u'a 1 a 0.1 a 1 a 0.1 a -1 a -0.1 a -1 a -0.1 a 1 a 0.1 a 1',
+                u'a 1 a 0.1 a 1 a 0.1 a -1 a -0.1 a -1 a -0.1 a +1 a +0.1 a +1',
             u'  url(x)  f()': 'url(x) f()', 
             u'#112233': '#123', 
             u'#112234': '#112234', 
             u'#123': '#123', 
             u'#123 url() f()': '#123 url() f()',
-            u'1 +2 +3 -4': u'1 2 3 -4' # ?  
+            u'1 +2 +3 -4': u'1 +2 +3 -4' # ?  
         }
         for test, exp in valuetests.items():
             s = cssutils.parseString(u'a{x:%s}' % test)
@@ -580,7 +580,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         tests = {
             u'''1''': u'''1''',
             # => remove +
-            u'''+1''': u'''1''',
+            u'''+1''': u'''+1''',
             # 0 => remove unit
             u'''0''': u'''0''',
             u'''+0''': u'''0''',
