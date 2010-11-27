@@ -157,6 +157,13 @@ The official DOM provides no method to obtain all values set for a property. Css
 
 Values
 ------
+**The following classes will probably not be supported in the next version
+of cssutils.** cssutils 0.9.8 will feature a new and hopefully simplified but
+more consistent API which also will hopefully be more stable in API and code. 
+Please check out the development, alpha and beta versions of release 0.9.8 and 
+report any shortcomings you may see or any special API requests you'd like to
+see in the new API. 
+
 
 ``CSSValue``
 ~~~~~~~~~~~~

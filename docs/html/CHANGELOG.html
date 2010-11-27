@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.7b4 documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.7 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.7b4',
+        VERSION:     '0.9.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b4 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.7 documentation" href="index.html" />
     <link rel="next" title="parsing CSS" href="docs/parse.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -79,18 +79,20 @@
 <strong>These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!</strong>
 In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.</p>
 </li>
-<li><p class="first">Some methods of <tt class="docutils literal"><span class="pre">css.CSSPrimitiveValue</span></tt> and subclasses <tt class="docutils literal"><span class="pre">Rect</span></tt>, <tt class="docutils literal"><span class="pre">Counter</span></tt> and <tt class="docutils literal"><span class="pre">RGBColor</span></tt> are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of <tt class="docutils literal"><span class="pre">CSSValue</span></tt>, <tt class="docutils literal"><span class="pre">CSSValueList</span></tt>, and <tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt> may be completely replaced/refactored with suggestions from CSSOM.</p>
-</li>
 <li><p class="first">handling of comments does probably not work for all cases</p>
 </li>
 </ul>
 </div>
-<div class="section" id="development-version">
-<h2>Development Version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="last-stable-version">
+<h2>Last Stable Version<a class="headerlink" href="#last-stable-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.7<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>HEAD</p>
 <dl class="docutils">
+<dt>0.9.7final 101127</dt>
+<dd><ul class="first last simple">
+<li><strong>FUTURE CHANGE</strong>: CSSValue and subclasses will most certain not be supported in the next cssutils 0.9.8 version. A simpler and hopefully more robust API is in development. So the next version will have incompatible changes so you might wanna use 0.9.8 from the start if you do anything fancy with CSSValue and related classes.</li>
+</ul>
+</dd>
 <dt>0.9.7b4 101101</dt>
 <dd><ul class="first simple">
 <li><em>EXPERIMENTAL</em>: CSS function values using <tt class="docutils literal"><span class="pre">calc(...)</span></tt> should be partly parsable now (as experimental ExpressionValues currently)</li>
@@ -266,8 +268,8 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </dl>
 </div>
 </div>
-<div class="section" id="last-stable-version">
-<h2>Last Stable Version<a class="headerlink" href="#last-stable-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="archived-versions">
+<h2>Archived Versions<a class="headerlink" href="#archived-versions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id2">
 <h3>0.9.6<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
@@ -660,9 +662,6 @@ Also you cannot reset this change until you restart your program.</p>
 </dd>
 </dl>
 </div>
-</div>
-<div class="section" id="archived-versions">
-<h2>Archived Versions<a class="headerlink" href="#archived-versions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id3">
 <h3>0.9.5<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <dl class="docutils">
@@ -891,7 +890,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-07-06</span> <span class="pre">22:49:41</span> <span class="pre">+0200</span> <span class="pre">(Di,</span> <span class="pre">06</span> <span class="pre">Jul</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">2016</span> <span class="pre">2010-07-06</span> <span class="pre">20:49:41Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-11-01</span> <span class="pre">16:51:24</span> <span class="pre">+0100</span> <span class="pre">(Mo,</span> <span class="pre">01</span> <span class="pre">Nov</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">2018</span> <span class="pre">2010-11-01</span> <span class="pre">15:51:24Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -2216,15 +2215,12 @@ first version to try if i can bring it to work at all</p>
   <ul>
 <li><a class="reference internal" href="#">CHANGELOG</a><ul>
 <li><a class="reference internal" href="#known-issues">Known Issues</a></li>
-<li><a class="reference internal" href="#development-version">Development Version</a><ul>
+<li><a class="reference internal" href="#last-stable-version">Last Stable Version</a><ul>
 <li><a class="reference internal" href="#id1">0.9.7</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#last-stable-version">Last Stable Version</a><ul>
-<li><a class="reference internal" href="#id2">0.9.6</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#archived-versions">Archived Versions</a><ul>
+<li><a class="reference internal" href="#id2">0.9.6</a></li>
 <li><a class="reference internal" href="#id3">0.9.5</a></li>
 <li><a class="reference internal" href="#x">0.8.x</a></li>
 <li><a class="reference internal" href="#id4">0.6.x</a></li>
@@ -2282,7 +2278,7 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.7 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
