@@ -24,18 +24,17 @@ Known Issues
   **These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!**
   In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
-- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` may be completely replaced/refactored with suggestions from CSSOM.
-
 - handling of comments does probably not work for all cases
 
 
-Development Version
+Last Stable Version
 ===================
 
 0.9.7
 -----
-HEAD
 
+0.9.7final 101127
+    + **FUTURE CHANGE**: CSSValue and subclasses will most certain not be supported in the next cssutils 0.9.8 version. A simpler and hopefully more robust API is in development. So the next version will have incompatible changes so you might wanna use 0.9.8 from the start if you do anything fancy with CSSValue and related classes.
 
 0.9.7b4 101101
     + *EXPERIMENTAL*: CSS function values using ``calc(...)`` should be partly parsable now (as experimental ExpressionValues currently)
@@ -158,10 +157,8 @@ HEAD
     - INTERNAL: Added ``tokenizer.push()``. Prodparser uses a global tokenizer now.
 
 
-
-
-Last Stable Version
-===================
+Archived Versions
+=================
 
 0.9.6
 -----
@@ -416,9 +413,6 @@ Last Stable Version
         - minor changes due to deprecation in Py3k. cssutils is NOT Py3k compliant yet though and it will probably take a while until it will be...
 
 
-
-Archived Versions
-=================
 
 0.9.5
 -----
