@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>version migration &mdash; cssutils v0.9.7b4 documentation</title>
+    <title>version migration &mdash; cssutils v0.9.8dev documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7b4',
+        VERSION:     '0.9.8dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,9 +22,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b4 documentation" href="../index.html" />
-    <link rel="next" title="backlog" href="backlog.html" />
-    <link rel="prev" title="encutils module" href="encutils.html" /> 
+    <link rel="top" title="cssutils v0.9.8dev documentation" href="../index.html" />
+    <link rel="next" title="parsing CSS" href="parse.html" />
+    <link rel="prev" title="CHANGELOG" href="../CHANGELOG.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,12 +37,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="backlog.html" title="backlog"
+          <a href="parse.html" title="parsing CSS"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="encutils.html" title="encutils module"
+          <a href="../CHANGELOG.html" title="CHANGELOG"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,8 +53,30 @@
             
   <div class="section" id="version-migration">
 <h1>version migration<a class="headerlink" href="#version-migration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="from-last">
+<h2>from last<a class="headerlink" href="#from-last" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="incompatible-changes">
-<h2>0.9.7 incompatible changes<a class="headerlink" href="#incompatible-changes" title="Permalink to this headline">¶</a></h2>
+<h3>0.9.8 incompatible changes<a class="headerlink" href="#incompatible-changes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="css-values">
+<h4>CSS Values<a class="headerlink" href="#css-values" title="Permalink to this headline">¶</a></h4>
+<p>0.9.8 deprecates or better removes support for <tt class="docutils literal"><span class="pre">css.Value</span></tt>, <tt class="docutils literal"><span class="pre">css.ValueList</span></tt>, <tt class="docutils literal"><span class="pre">css.PrimitiveValue</span></tt> and subclasses. They are all replaced by <tt class="docutils literal"><span class="pre">css.PropertyValue</span></tt>, which contains a list of <tt class="docutils literal"><span class="pre">css.Value</span></tt> objects. See docs for these for details.</p>
+<p>Changes in more detail:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">css.CSSStyleDeclaration.getCSSValue</span></tt> return <tt class="docutils literal"><span class="pre">css.Property.propertyValue</span></tt> now!</li>
+<li>added <tt class="docutils literal"><span class="pre">css.Property.propertyValue</span></tt></li>
+<li>deprecated <tt class="docutils literal"><span class="pre">css.Property.cssValue</span></tt> which now is more or less <tt class="docutils literal"><span class="pre">css.Property.propertyValue</span></tt></li>
+<li>removed <tt class="docutils literal"><span class="pre">css.Value</span></tt>, <tt class="docutils literal"><span class="pre">css.ValueList</span></tt>, <tt class="docutils literal"><span class="pre">css.PrimitiveValue</span></tt></li>
+<li>added <tt class="docutils literal"><span class="pre">css.PropertyValue</span></tt> which contains a list of <tt class="docutils literal"><span class="pre">css.Value</span></tt> or more specific subclass objects like <tt class="docutils literal"><span class="pre">css.DimensionValue</span></tt>, <tt class="docutils literal"><span class="pre">css.CSSFunction</span></tt> etc</li>
+<li>renamed <tt class="docutils literal"><span class="pre">css.ExpressionValue</span></tt> to <tt class="docutils literal"><span class="pre">css.MSValue</span></tt> as it contains Microsoft IE specific values only anyway</li>
+<li><tt class="docutils literal"><span class="pre">css.CSSFunction</span></tt>, <tt class="docutils literal"><span class="pre">css.CSSVariable</span></tt>, <tt class="docutils literal"><span class="pre">css.MSValue</span></tt> are now subclasses of <tt class="docutils literal"><span class="pre">css.Value</span></tt></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="archive">
+<h2>archive<a class="headerlink" href="#archive" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>0.9.7 incompatible changes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Replaced init parameter and attribute <tt class="docutils literal"><span class="pre">css.Selector.parentList</span></tt> with <tt class="docutils literal"><span class="pre">css.Selector.parent</span></tt></li>
 <li>Removed <tt class="docutils literal"><span class="pre">css.Property.parentStyle</span></tt> which was deprecated for some times now in favor of <tt class="docutils literal"><span class="pre">css.Property.parent</span></tt></li>
@@ -62,16 +84,16 @@
 <li>Renamed <tt class="docutils literal"><span class="pre">cssutils.ser.prefs.keepUnkownAtRules</span></tt> to <tt class="docutils literal"><span class="pre">cssutils.ser.prefs.keepUnkownAtRules</span></tt> due to misspelling, see Issue #37. A DeprecationWarning is issued on use.</li>
 </ul>
 </div>
-<div class="section" id="id1">
-<h2>0.9.6 incompatible changes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>0.9.6 incompatible changes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="exception-handling-with-position-information">
-<h3>Exception handling with position information<a class="headerlink" href="#exception-handling-with-position-information" title="Permalink to this headline">¶</a></h3>
+<h4>Exception handling with position information<a class="headerlink" href="#exception-handling-with-position-information" title="Permalink to this headline">¶</a></h4>
 <p>This actually is <strong>not</strong> an incompatible change (but was during some alpha releases):</p>
 <p><tt class="docutils literal"><span class="pre">xml.dom.DOMException</span></tt>s raised do now contain infos about the position where the exception occured.</p>
 <p>You may access these infos with <tt class="docutils literal"><span class="pre">msg,</span> <span class="pre">line,</span> <span class="pre">col</span> <span class="pre">=</span> <span class="pre">e.args[0],</span> <span class="pre">e.line,</span> <span class="pre">e.col</span></tt>. <tt class="docutils literal"><span class="pre">str(e)</span></tt> does work as expected and contains the error message only.</p>
 </div>
 <div class="section" id="cssvalue-property-has-been-rewritten">
-<h3>CSSValue / Property has been rewritten<a class="headerlink" href="#cssvalue-property-has-been-rewritten" title="Permalink to this headline">¶</a></h3>
+<h4>CSSValue / Property has been rewritten<a class="headerlink" href="#cssvalue-property-has-been-rewritten" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li>moved validating of a property from <tt class="docutils literal"><span class="pre">CSSValue</span></tt> to <tt class="docutils literal"><span class="pre">Property</span></tt></li>
 <li>removed <tt class="docutils literal"><span class="pre">CSSValue.valid</span></tt> as it does not make sense anymore</li>
@@ -79,7 +101,7 @@
 </ul>
 </div>
 <div class="section" id="minor-api-changes">
-<h3>minor API changes<a class="headerlink" href="#minor-api-changes" title="Permalink to this headline">¶</a></h3>
+<h4>minor API changes<a class="headerlink" href="#minor-api-changes" title="Permalink to this headline">¶</a></h4>
 <ul>
 <li><p class="first">moved <tt class="docutils literal"><span class="pre">cssutils.css.cssproperties.cssvalues</span></tt> to <tt class="docutils literal"><span class="pre">cssutils.profiles.css2</span></tt></p>
 </li>
@@ -107,11 +129,11 @@
 </div>
 </div>
 <hr class="docutils" />
-<div class="section" id="id2">
-<h2>0.9.5 incompatible changes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>0.9.5 incompatible changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>cssutils 0.9.5 introduced some minor incompatible API changes. Reason for most changes is that for most cases the new default behaviour makes more sense.</p>
 <div class="section" id="logging-versus-raising">
-<h3>logging versus raising<a class="headerlink" href="#logging-versus-raising" title="Permalink to this headline">¶</a></h3>
+<h4>logging versus raising<a class="headerlink" href="#logging-versus-raising" title="Permalink to this headline">¶</a></h4>
 <p>Upto 0.9.5rc1 any sheet resulting from parsing via any <tt class="docutils literal"><span class="pre">parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser(raiseExceptions=False)</span></tt> (which is also the default) resulted in the library simply logging any later exceptions and not raising them. 0.9.5rc2 fixes this. Until now the global setting of <tt class="docutils literal"><span class="pre">cssutils.log.raiseExceptions=True</span></tt> (the default) was overwritten with the value of the CSSParser <tt class="docutils literal"><span class="pre">raiseExceptions</span></tt> setting which is normally <tt class="xref docutils literal"><span class="pre">False</span></tt> any time a <tt class="docutils literal"><span class="pre">cssutils.parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser.parse*</span></tt> method was used. So</p>
 <p>until 0.9.5rc1:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># does not raise during parse</span>
@@ -140,15 +162,15 @@
 <p><strong>This should only be done in specific cases</strong> as normal raising of exceptions in methods or functions with the CSS DOM is the expected behaviour.</p>
 </div>
 <div class="section" id="parsing">
-<h3>parsing<a class="headerlink" href="#parsing" title="Permalink to this headline">¶</a></h3>
+<h4>parsing<a class="headerlink" href="#parsing" title="Permalink to this headline">¶</a></h4>
 <p><tt class="docutils literal"><span class="pre">parse()</span></tt> is <em>DEPRECATED</em> in favour of <tt class="docutils literal"><span class="pre">parseFile()</span></tt>. Both methods are still available but <tt class="docutils literal"><span class="pre">parse</span></tt> will be removed for cssutils 1.0.</p>
 <p>All <tt class="docutils literal"><span class="pre">parse*</span></tt> functions (or <tt class="docutils literal"><span class="pre">CSSParser.parse*</span></tt> methods) do raise errors from 0.9.5final.</p>
 </div>
 <div class="section" id="iterating-over-cssstyledeclaration">
-<h3>iterating over <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt><a class="headerlink" href="#iterating-over-cssstyledeclaration" title="Permalink to this headline">¶</a></h3>
+<h4>iterating over <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt><a class="headerlink" href="#iterating-over-cssstyledeclaration" title="Permalink to this headline">¶</a></h4>
 <p>Iterating over <tt class="docutils literal"><span class="pre">css.CSSStyleDelcaration</span></tt> now yields <em>effective</em> properties only and not <em>all</em> properties set in the declaration. To retrieve <em>all</em> properties use <tt class="docutils literal"><span class="pre">CSSStyleDeclaration.getProperties(all=True)</span></tt>.</p>
 <div class="section" id="example">
-<h4>example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<h5>example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h5>
 <p>iterating over a CSSStyleDeclaration with <tt class="docutils literal"><span class="pre">cssText='color:</span> <span class="pre">red;</span> <span class="pre">c\olor:</span> <span class="pre">green'</span></tt></p>
 <dl class="docutils">
 <dt>OLD:</dt>
@@ -159,10 +181,10 @@
 </div>
 </div>
 <div class="section" id="property-name-attribute">
-<h3><tt class="docutils literal"><span class="pre">Property.name</span></tt> attribute<a class="headerlink" href="#property-name-attribute" title="Permalink to this headline">¶</a></h3>
+<h4><tt class="docutils literal"><span class="pre">Property.name</span></tt> attribute<a class="headerlink" href="#property-name-attribute" title="Permalink to this headline">¶</a></h4>
 <p><tt class="docutils literal"><span class="pre">Property.name</span></tt> until now hold the <em>literal</em> value (e.g. <tt class="docutils literal"><span class="pre">c\olor</span></tt> of a properties name. Now it holds the <em>normalized</em> name. <tt class="docutils literal"><span class="pre">Property.normalname</span></tt> is therefor <em>DEPRECATED</em>. To access the unnormalized (literal) name use the new readonly property <tt class="docutils literal"><span class="pre">Property.literalname</span></tt>.</p>
-<div class="section" id="id3">
-<h4>example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id4">
+<h5>example<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h5>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s">ur&#39;c\olor&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -183,11 +205,11 @@
 </div>
 </div>
 <div class="section" id="property-priority-attribute">
-<h3><tt class="docutils literal"><span class="pre">Property.priority</span></tt> attribute<a class="headerlink" href="#property-priority-attribute" title="Permalink to this headline">¶</a></h3>
+<h4><tt class="docutils literal"><span class="pre">Property.priority</span></tt> attribute<a class="headerlink" href="#property-priority-attribute" title="Permalink to this headline">¶</a></h4>
 <p>The value of <tt class="docutils literal"><span class="pre">Property.priority</span></tt> (or <tt class="docutils literal"><span class="pre">CSSStyleDeclatation.getPropertyPriority(p)</span></tt>) is now <tt class="docutils literal"><span class="pre">important</span></tt> without a leading <tt class="docutils literal"><span class="pre">!</span></tt> as defined in the CSS specs.</p>
 <p>(<tt class="docutils literal"><span class="pre">Property._normalpriority</span></tt> has been removed, the normalized value that was available here is now in <tt class="docutils literal"><span class="pre">Property.priority</span></tt>. The literal priority value is available in <tt class="docutils literal"><span class="pre">Property.literalproperty</span></tt> now (analog to <tt class="docutils literal"><span class="pre">Property.literalname</span></tt>). All these values probably should not be used by client code anyway but may be helpful when using CSS hacks.)</p>
-<div class="section" id="id4">
-<h4>example<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id5">
+<h5>example<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h5>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s">u&#39;color&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">u&#39;!IMPOR</span><span class="se">\\</span><span class="s">TANT&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -208,10 +230,10 @@
 </div>
 </div>
 <div class="section" id="cssstylesheet-replaceurls-replacer">
-<h3><tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt><a class="headerlink" href="#cssstylesheet-replaceurls-replacer" title="Permalink to this headline">¶</a></h3>
+<h4><tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt><a class="headerlink" href="#cssstylesheet-replaceurls-replacer" title="Permalink to this headline">¶</a></h4>
 <p>Since 0.9.5b1 <tt class="docutils literal"><span class="pre">replaceUrls</span></tt> has been moved from a method of <tt class="docutils literal"><span class="pre">CSSStyleSheet</span></tt> to a utility function in cssutils directly.</p>
-<div class="section" id="id5">
-<h4>example<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id6">
+<h5>example<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h5>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">replacer</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="s">&quot;returns new URL&quot;</span>
 
@@ -234,6 +256,7 @@
 </div>
 </div>
 </div>
+</div>
 
 
           </div>
@@ -244,14 +267,22 @@
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">version migration</a><ul>
-<li><a class="reference internal" href="#incompatible-changes">0.9.7 incompatible changes</a></li>
-<li><a class="reference internal" href="#id1">0.9.6 incompatible changes</a><ul>
+<li><a class="reference internal" href="#from-last">from last</a><ul>
+<li><a class="reference internal" href="#incompatible-changes">0.9.8 incompatible changes</a><ul>
+<li><a class="reference internal" href="#css-values">CSS Values</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#archive">archive</a><ul>
+<li><a class="reference internal" href="#id1">0.9.7 incompatible changes</a></li>
+<li><a class="reference internal" href="#id2">0.9.6 incompatible changes</a><ul>
 <li><a class="reference internal" href="#exception-handling-with-position-information">Exception handling with position information</a></li>
 <li><a class="reference internal" href="#cssvalue-property-has-been-rewritten">CSSValue / Property has been rewritten</a></li>
 <li><a class="reference internal" href="#minor-api-changes">minor API changes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">0.9.5 incompatible changes</a><ul>
+<li><a class="reference internal" href="#id3">0.9.5 incompatible changes</a><ul>
 <li><a class="reference internal" href="#logging-versus-raising">logging versus raising</a></li>
 <li><a class="reference internal" href="#parsing">parsing</a></li>
 <li><a class="reference internal" href="#iterating-over-cssstyledeclaration">iterating over <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a><ul>
@@ -259,15 +290,17 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#property-name-attribute"><tt class="docutils literal"><span class="pre">Property.name</span></tt> attribute</a><ul>
-<li><a class="reference internal" href="#id3">example</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#property-priority-attribute"><tt class="docutils literal"><span class="pre">Property.priority</span></tt> attribute</a><ul>
 <li><a class="reference internal" href="#id4">example</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cssstylesheet-replaceurls-replacer"><tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt></a><ul>
+<li><a class="reference internal" href="#property-priority-attribute"><tt class="docutils literal"><span class="pre">Property.priority</span></tt> attribute</a><ul>
 <li><a class="reference internal" href="#id5">example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cssstylesheet-replaceurls-replacer"><tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt></a><ul>
+<li><a class="reference internal" href="#id6">example</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -277,11 +310,11 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="encutils.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">encutils</span></tt> module</a></p>
+  <p class="topless"><a href="../CHANGELOG.html"
+                        title="previous chapter">CHANGELOG</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="backlog.html"
-                        title="next chapter">backlog</a></p>
+  <p class="topless"><a href="parse.html"
+                        title="next chapter">parsing CSS</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/docs/migrate.txt"
@@ -314,12 +347,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="backlog.html" title="backlog"
+          <a href="parse.html" title="parsing CSS"
              >next</a> |</li>
         <li class="right" >
-          <a href="encutils.html" title="encutils module"
+          <a href="../CHANGELOG.html" title="CHANGELOG"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

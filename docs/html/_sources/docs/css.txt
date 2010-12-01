@@ -103,7 +103,7 @@ Selector related classes: ``SelectorList`` and ``Selector``
 
 
 
-Style related classes: ``CSSStyleDeclaration``, ``Property``, ``CSSValue`` etc
+Style related classes: ``CSSStyleDeclaration``, ``Property``, values etc
 ==============================================================================================
 ``CSSVariablesDeclaration``
 ---------------------------
@@ -155,38 +155,70 @@ The official DOM provides no method to obtain all values set for a property. Css
    :inherited-members:
 
 
+
 Values
 ------
+cssutils 0.9.8 features a new and hopefully simplified but
+more consistent API which also will hopefully be more stable in API and code.
+Please check out the development, alpha and beta versions of release 0.9.8 and
+report any shortcomings you may see or any special API requests you'd like to
+see in the new API.
 
-``CSSValue``
+A simple example:
+    >>> css = 'normal 1em/5 Arial, sans-serif, url(example.gif), func(1,2/*comm*/)'
+    >>> pv = cssutils.css.PropertyValue(css)
+    >>> print pv.cssText
+    >>> for i, v in enumerate(pv):
+    >>>     print i, v
+    normal 1em/5 Arial, sans-serif, url(example.gif), func(1, 2 /*comm*/)
+    0 <cssutils.css.Value object type=IDENT value='normal' cssText=u'normal' at ...>
+    1 <cssutils.css.DimensionValue object type=DIMENSION value=1 dimension='em' cssText=u'1em' at ...>
+    2 <cssutils.css.DimensionValue object type=NUMBER value=5 dimension=None cssText=u'5' at ...>
+    3 <cssutils.css.Value object type=IDENT value='Arial' cssText=u'Arial' at ...>
+    4 <cssutils.css.Value object type=IDENT value='sans-serif' cssText=u'sans-serif' at...>
+    5 <cssutils.css.URIValue object type=URI value='example.gif' uri='example.gif' cssText=u'url(example.gif)' at ...>
+    6 <cssutils.css.CSSFunction object type=FUNCTION value=u'func(1, 2)' cssText=u'func(1, 2 /*comm*/)' at ...>
+
+
+``PropertyValue``
+~~~~~~~~~~~~~~~~~
+.. autoclass:: cssutils.css.PropertyValue
+    :members:
+    :inherited-members:
+
+``Value``
 ~~~~~~~~~~~~
-.. autoclass:: cssutils.css.CSSValue
+.. autoclass:: cssutils.css.Value
     :members:
     :inherited-members:
 
-``CSSPrimitiveValue``
-~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: cssutils.css.CSSPrimitiveValue
+``DimensionValue``
+~~~~~~~~~~~~~~~~~~
+.. autoclass:: cssutils.css.DimensionValue
     :members:
     :inherited-members:
 
-``CSSValueList``
-~~~~~~~~~~~~~~~~
-.. autoclass:: cssutils.css.CSSValueList
+
+``URIValue``
+~~~~~~~~~~~~~~~
+.. autoclass:: cssutils.css.URIValue
     :members:
     :inherited-members:
 
 ``CSSFunction``
 ~~~~~~~~~~~~~~~
-.. autoclass:: cssutils.css.cssvalue.CSSFunction
+.. autoclass:: cssutils.css.CSSFunction
     :members:
+    :inherited-members:
 
-..
-    RGBColor
-    ~~~~~~~~
-    .. autoclass:: cssutils.css.RGBColor
-        :members:
-        :inherited-members:
+``MSValue``
+~~~~~~~~~~~~~~~~~~~
+was ``ExpressionValue`` until 0.9.7.
+
+.. autoclass:: cssutils.css.MSValue
+    :members:
+    :inherited-members:
+
 
 ``CSSVariable``
 ~~~~~~~~~~~~~~~~
@@ -194,10 +226,12 @@ Values
     :members:
     :inherited-members:
 
-``ExpressionValue``
-~~~~~~~~~~~~~~~~~~~
-.. autoclass:: cssutils.css.cssvalue.ExpressionValue
-    :members:
+
+removed classes
+---------------
+- ``CSSValue``
+- ``CSSPrimitiveValue``
+- ``CSSValueList``
 
 
 

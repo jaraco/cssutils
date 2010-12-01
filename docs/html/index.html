@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cssutils &mdash; cssutils v0.9.7b4 documentation</title>
+    <title>cssutils &mdash; cssutils v0.9.8dev documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.7b4',
+        VERSION:     '0.9.8dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b4 documentation" href="#" />
+    <link rel="top" title="cssutils v0.9.8dev documentation" href="#" />
     <link rel="next" title="README" href="README.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="N">next</a> |</li>
-        <li><a href="#">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
+        <li><a href="#">cssutils v0.9.8dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,7 +56,7 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name" colspan="2">version release:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body">0.9.7b4</td>
+<tr><td>&nbsp;</td><td class="field-body">0.9.8dev</td>
 </tr>
 </tbody>
 </table>
@@ -79,22 +79,36 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html"> Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#known-issues">Known Issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#development-version">Development Version</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id1">0.9.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id1">0.9.8</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#last-stable-version">Last Stable Version</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id2">0.9.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id2">0.9.7</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#archived-versions">Archived Versions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id3">0.9.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id3">0.9.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id4">0.9.5</a></li>
 <li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#x">0.8.x</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id4">0.6.x</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id5">0.5.x</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id6">0.4.x</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id7">0.3.x</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id8">0.2.x</a></li>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id9">0.1.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id5">0.6.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id6">0.5.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id7">0.4.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id8">0.3.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id9">0.2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#id10">0.1.x</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/migrate.html">     Migration from older version</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/migrate.html#from-last">from last</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#incompatible-changes">0.9.8 incompatible changes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="docs/migrate.html#archive">archive</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#id1">0.9.7 incompatible changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#id2">0.9.6 incompatible changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#id3">0.9.5 incompatible changes</a></li>
 </ul>
 </li>
 </ul>
@@ -134,11 +148,12 @@
 <li class="toctree-l3"><a class="reference internal" href="docs/css.html#selector"><tt class="docutils literal"><span class="pre">Selector</span></tt></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="docs/css.html#style-related-classes-cssstyledeclaration-property-cssvalue-etc">Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/css.html#style-related-classes-cssstyledeclaration-property-values-etc">Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, values etc</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="docs/css.html#cssvariablesdeclaration"><tt class="docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/css.html#cssstyledeclaration"><tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/css.html#property"><tt class="docutils literal"><span class="pre">Property</span></tt></a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/css.html#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docs/css.html#removed-classes">removed classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="docs/css.html#additional-info">Additional Info</a></li>
@@ -181,25 +196,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs/codec.html"> CSS Codec</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/encutils.html"> `encutils` module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/migrate.html">     Migration from older version</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/migrate.html#incompatible-changes">0.9.7 incompatible changes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/migrate.html#id1">0.9.6 incompatible changes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#exception-handling-with-position-information">Exception handling with position information</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#cssvalue-property-has-been-rewritten">CSSValue / Property has been rewritten</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#minor-api-changes">minor API changes</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="docs/migrate.html#id2">0.9.5 incompatible changes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#logging-versus-raising">logging versus raising</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#parsing">parsing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#iterating-over-cssstyledeclaration">iterating over <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#property-name-attribute"><tt class="docutils literal"><span class="pre">Property.name</span></tt> attribute</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#property-priority-attribute"><tt class="docutils literal"><span class="pre">Property.priority</span></tt> attribute</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/migrate.html#cssstylesheet-replaceurls-replacer"><tt class="docutils literal"><span class="pre">CSSStyleSheet.replaceUrls(replacer)</span></tt></a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="docs/backlog.html">     Backlog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="docs/backlog.html#css3-color-module">CSS3 color module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docs/backlog.html#selector">Selector</a></li>
@@ -293,7 +289,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              >next</a> |</li>
-        <li><a href="#">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
+        <li><a href="#">cssutils v0.9.8dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Package cssutils.css &mdash; cssutils v0.9.7b4 documentation</title>
+    <title>Package cssutils.css &mdash; cssutils v0.9.8dev documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.7b4',
+        VERSION:     '0.9.8dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.7b4 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.8dev documentation" href="../index.html" />
     <link rel="next" title="Package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -1514,8 +1514,8 @@ document</dd>
 
 </div>
 </div>
-<div class="section" id="style-related-classes-cssstyledeclaration-property-cssvalue-etc">
-<h2>Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc<a class="headerlink" href="#style-related-classes-cssstyledeclaration-property-cssvalue-etc" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="style-related-classes-cssstyledeclaration-property-values-etc">
+<h2>Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, values etc<a class="headerlink" href="#style-related-classes-cssstyledeclaration-property-values-etc" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="cssvariablesdeclaration">
 <h3><tt class="docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt><a class="headerlink" href="#cssvariablesdeclaration" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
@@ -1642,7 +1642,7 @@ Raised if this declaration is readonly is readonly.</li>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>variableName</strong> &#8211; The name of the CSS variable.</li>
-<li><strong>value</strong> &#8211; The new value of the variable, may also be a CSSValue object.</li>
+<li><strong>value</strong> &#8211; The new value of the variable, may also be a PropertyValue object.</li>
 </ul>
 </td>
 </tr>
@@ -1802,7 +1802,7 @@ effective for the unnormalized name.</p>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#cssutils.css.CSSValue" title="cssutils.css.CSSValue"><tt class="xref py py-class docutils literal"><span class="pre">CSSValue</span></tt></a>, the value of the effective
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">CSSValue</span></tt>, the value of the effective
 property if it has been explicitly set for this declaration block.</p>
 </td>
 </tr>
@@ -2090,7 +2090,7 @@ prio
 <dl class="attribute">
 <dt id="cssutils.css.Property.cssValue">
 <tt class="descname">cssValue</tt><a class="headerlink" href="#cssutils.css.Property.cssValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(cssutils) CSSValue object of this property</p>
+<dd><p>(DEPRECATED) Use <tt class="docutils literal"><span class="pre">property.propertyValue</span></tt> instead.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2121,6 +2121,12 @@ prio
 <dt id="cssutils.css.Property.priority">
 <tt class="descname">priority</tt><a class="headerlink" href="#cssutils.css.Property.priority" title="Permalink to this definition">¶</a></dt>
 <dd><p>Priority of this property.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Property.propertyValue">
+<tt class="descname">propertyValue</tt><a class="headerlink" href="#cssutils.css.Property.propertyValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>(cssutils) PropertyValue object of property</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2202,7 +2208,7 @@ DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]</pre>
 <dl class="attribute">
 <dt id="cssutils.css.Property.value">
 <tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.Property.value" title="Permalink to this definition">¶</a></dt>
-<dd><p>The textual value of this Properties cssValue.</p>
+<dd><p>The textual value of this Properties propertyValue.</p>
 </dd></dl>
 
 </dd></dl>
@@ -2210,223 +2216,69 @@ DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]</pre>
 </div>
 <div class="section" id="values">
 <h3>Values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="cssvalue">
-<h4><tt class="docutils literal"><span class="pre">CSSValue</span></tt><a class="headerlink" href="#cssvalue" title="Permalink to this headline">¶</a></h4>
-<dl class="class">
-<dt id="cssutils.css.CSSValue">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>The CSSValue interface represents a simple or a complex value.
-A CSSValue object only occurs in a context of a CSS property.</p>
-<dl class="attribute">
-<dt id="cssutils.css.CSSValue.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSValue.cssText" title="Permalink to this definition">¶</a></dt>
-<dd><p>A string representation of the current value.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSValue.cssValueType">
-<tt class="descname">cssValueType</tt><a class="headerlink" href="#cssutils.css.CSSValue.cssValueType" title="Permalink to this definition">¶</a></dt>
-<dd><p>A (readonly) code defining the type of the value.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSValue.cssValueTypeString">
-<tt class="descname">cssValueTypeString</tt><a class="headerlink" href="#cssutils.css.CSSValue.cssValueTypeString" title="Permalink to this definition">¶</a></dt>
-<dd><p>(readonly) Name of cssValueType.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSValue.seq">
-<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSValue.seq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="cssprimitivevalue">
-<h4><tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt><a class="headerlink" href="#cssprimitivevalue" title="Permalink to this headline">¶</a></h4>
-<dl class="class">
-<dt id="cssutils.css.CSSPrimitiveValue">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSPrimitiveValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents a single CSS Value.  May be used to determine the value of a
-specific style property currently set in a block or to set a specific
-style property explicitly within the block. Might be obtained from the
-getPropertyCSSValue method of CSSStyleDeclaration.</p>
-<p>Conversions are allowed between absolute values (from millimeters to
-centimeters, from degrees to radians, and so on) but not between
-relative values. (For example, a pixel value cannot be converted to a
-centimeter value.) Percentage values can&#8217;t be converted since they are
-relative to the parent value (or another property value). There is one
-exception for color percentage values: since a color percentage value
-is relative to the range 0-255, a color percentage value can be
-converted to a number; (see also the RGBColor interface).</p>
-<dl class="attribute">
-<dt id="cssutils.css.CSSPrimitiveValue.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.cssText" title="Permalink to this definition">¶</a></dt>
-<dd><p>A string representation of the current value.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSPrimitiveValue.cssValueTypeString">
-<tt class="descname">cssValueTypeString</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.cssValueTypeString" title="Permalink to this definition">¶</a></dt>
-<dd><p>(readonly) Name of cssValueType.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cssutils.css.CSSPrimitiveValue.getCounterValue">
-<tt class="descname">getCounterValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getCounterValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) This method is used to get the Counter value. If
-this CSS value doesn&#8217;t contain a counter value, a DOMException
-is raised. Modification to the corresponding style property
-can be achieved using the Counter interface.</p>
-<p><strong>Not implemented.</strong></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cssutils.css.CSSPrimitiveValue.getFloatValue">
-<tt class="descname">getFloatValue</tt><big>(</big><em>unitType=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getFloatValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) This method is used to get a float value in a
-specified unit. If this CSS value doesn&#8217;t contain a float value
-or can&#8217;t be converted into the specified unit, a DOMException
-is raised.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>unitType</strong> &#8211; to get the float value. The unit code can only be a float unit type
-(i.e. CSS_NUMBER, CSS_PERCENTAGE, CSS_EMS, CSS_EXS, CSS_PX, CSS_CM,
-CSS_MM, CSS_IN, CSS_PT, CSS_PC, CSS_DEG, CSS_RAD, CSS_GRAD, CSS_MS,
-CSS_S, CSS_HZ, CSS_KHZ, CSS_DIMENSION) or None in which case
-the current dimension is used.</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>not necessarily a float but some cases just an integer
-e.g. if the value is <tt class="docutils literal"><span class="pre">1px</span></tt> it return <tt class="docutils literal"><span class="pre">1</span></tt> and <strong>not</strong> <tt class="docutils literal"><span class="pre">1.0</span></tt></p>
-<p>Conversions might return strange values like 1.000000000001</p>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="cssutils.css.CSSPrimitiveValue.getRGBColorValue">
-<tt class="descname">getRGBColorValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getRGBColorValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) This method is used to get the RGB color. If this
-CSS value doesn&#8217;t contain a RGB color value, a DOMException
-is raised. Modification to the corresponding style property
-can be achieved using the RGBColor interface.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cssutils.css.CSSPrimitiveValue.getRectValue">
-<tt class="descname">getRectValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getRectValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) This method is used to get the Rect value. If this CSS
-value doesn&#8217;t contain a rect value, a DOMException is raised.
-Modification to the corresponding style property can be achieved
-using the Rect interface.</p>
-<p><strong>Not implemented.</strong></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cssutils.css.CSSPrimitiveValue.getStringValue">
-<tt class="descname">getStringValue</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.getStringValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) This method is used to get the string value. If the
-CSS value doesn&#8217;t contain a string value, a DOMException is raised.</p>
-<p>Some properties (like &#8216;font-family&#8217; or &#8216;voice-family&#8217;)
-convert a whitespace separated list of idents to a string.</p>
-<p>Only the actual value is returned so e.g. all the following return the
-actual value <tt class="docutils literal"><span class="pre">a</span></tt>: url(a), attr(a), &#8220;a&#8221;, &#8216;a&#8217;</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSPrimitiveValue.primitiveType">
-<tt class="descname">primitiveType</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.primitiveType" title="Permalink to this definition">¶</a></dt>
-<dd><p>(readonly) The type of the value as defined by the constants in this class.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSPrimitiveValue.primitiveTypeString">
-<tt class="descname">primitiveTypeString</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.primitiveTypeString" title="Permalink to this definition">¶</a></dt>
-<dd><p>Name of primitive type of this value.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSPrimitiveValue.seq">
-<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.seq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cssutils.css.CSSPrimitiveValue.setFloatValue">
-<tt class="descname">setFloatValue</tt><big>(</big><em>unitType</em>, <em>floatValue</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.setFloatValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) A method to set the float value with a specified unit.
-If the property attached with this value can not accept the
-specified unit or the float value, the value will be unchanged and
-a DOMException will be raised.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>unitType</strong> &#8211; a unit code as defined above. The unit code can only be a float
-unit type</li>
-<li><strong>floatValue</strong> &#8211; <p>the new float value which does not have to be a float value but
-may simple be an int e.g. if setting:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">setFloatValue</span><span class="p">(</span><span class="n">CSS_PX</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<p>cssutils 0.9.8 features a new and hopefully simplified but
+more consistent API which also will hopefully be more stable in API and code.
+Please check out the development, alpha and beta versions of release 0.9.8 and
+report any shortcomings you may see or any special API requests you&#8217;d like to
+see in the new API.</p>
+<dl class="docutils">
+<dt>A simple example:</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">css</span> <span class="o">=</span> <span class="s">&#39;normal 1em/5 Arial, sans-serif, url(example.gif), func(1,2/*comm*/)&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pv</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">css</span><span class="o">.</span><span class="n">PropertyValue</span><span class="p">(</span><span class="n">css</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pv</span><span class="o">.</span><span class="n">cssText</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pv</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">print</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span>
+<span class="go">normal 1em/5 Arial, sans-serif, url(example.gif), func(1, 2 /*comm*/)</span>
+<span class="go">0 &lt;cssutils.css.Value object type=IDENT value=&#39;normal&#39; cssText=u&#39;normal&#39; at ...&gt;</span>
+<span class="go">1 &lt;cssutils.css.DimensionValue object type=DIMENSION value=1 dimension=&#39;em&#39; cssText=u&#39;1em&#39; at ...&gt;</span>
+<span class="go">2 &lt;cssutils.css.DimensionValue object type=NUMBER value=5 dimension=None cssText=u&#39;5&#39; at ...&gt;</span>
+<span class="go">3 &lt;cssutils.css.Value object type=IDENT value=&#39;Arial&#39; cssText=u&#39;Arial&#39; at ...&gt;</span>
+<span class="go">4 &lt;cssutils.css.Value object type=IDENT value=&#39;sans-serif&#39; cssText=u&#39;sans-serif&#39; at...&gt;</span>
+<span class="go">5 &lt;cssutils.css.URIValue object type=URI value=&#39;example.gif&#39; uri=&#39;example.gif&#39; cssText=u&#39;url(example.gif)&#39; at ...&gt;</span>
+<span class="go">6 &lt;cssutils.css.CSSFunction object type=FUNCTION value=u&#39;func(1, 2)&#39; cssText=u&#39;func(1, 2 /*comm*/)&#39; at ...&gt;</span>
 </pre></div>
 </div>
-</li>
+</dd>
+</dl>
+<div class="section" id="propertyvalue">
+<h4><tt class="docutils literal"><span class="pre">PropertyValue</span></tt><a class="headerlink" href="#propertyvalue" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.PropertyValue">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">PropertyValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.PropertyValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>An unstructured list like holder for all values defined for a 
+<a class="reference internal" href="#cssutils.css.Property" title="cssutils.css.Property"><tt class="xref py py-class docutils literal"><span class="pre">Property</span></tt></a>. Contains <a class="reference internal" href="#cssutils.css.Value" title="cssutils.css.Value"><tt class="xref py py-class docutils literal"><span class="pre">Value</span></tt></a> 
+or subclass objects. Currently there is no access to the combinators of
+the defined values which might simply be space or comma or slash.</p>
+<p>You may:</p>
+<ul class="simple">
+<li>iterate over all contained Value objects (not the separators like <tt class="docutils literal"><span class="pre">,</span></tt>, 
+<tt class="docutils literal"><span class="pre">/</span></tt> or `` `` though!)</li>
+<li>get a Value item by index or use <tt class="docutils literal"><span class="pre">PropertyValue[index]</span></tt></li>
+<li>find out the number of values defined (unstructured)</li>
 </ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.InvalidAccessErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">InvalidAccessErr</span></tt></a>:
-Raised if the attached property doesn&#8217;t
-support the float value or the unit type.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
-Raised if this property is readonly.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt id="cssutils.css.PropertyValue.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.PropertyValue.cssText" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string representation of the current value.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="cssutils.css.CSSPrimitiveValue.setStringValue">
-<tt class="descname">setStringValue</tt><big>(</big><em>stringType</em>, <em>stringValue</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSPrimitiveValue.setStringValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) A method to set the string value with the specified
-unit. If the property attached to this value can&#8217;t accept the
-specified unit or the string value, the value will be unchanged and
-a DOMException will be raised.</p>
+<dt id="cssutils.css.PropertyValue.item">
+<tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.PropertyValue.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>The value at position <cite>index</cite>. Alternatively simple use 
+<tt class="docutils literal"><span class="pre">PropertyValue[index]</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>stringType</strong> &#8211; a string code as defined above. The string code can only be a
-string unit type (i.e. CSS_STRING, CSS_URI, CSS_IDENT, and
-CSS_ATTR).</li>
-<li><strong>stringValue</strong> &#8211; the new string value
-Only the actual value is expected so for (CSS_URI, &#8220;a&#8221;) the
-new value will be <tt class="docutils literal"><span class="pre">url(a)</span></tt>. For (CSS_STRING, &#8220;&#8216;a&#8217;&#8221;)
-the new value will be <tt class="docutils literal"><span class="pre">&quot;\'a\'&quot;</span></tt> as the surrounding <tt class="docutils literal"><span class="pre">'</span></tt> are
-not part of the string value</li>
+<li><strong>index</strong> &#8211; the parsable cssText of the value</li>
 </ul>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.InvalidAccessErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">InvalidAccessErr</span></tt></a>: 
-Raised if the CSS value doesn&#8217;t contain a
-string value or if the string value can&#8217;t be converted into
-the specified unit.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
-Raised if this property is readonly.</li>
+<li><a class="reference external" href="http://docs.python.org/dev/library/exceptions.html#IndexError" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexError</span></tt></a>:
+Raised if index if out of bounds</li>
 </ul>
 </td>
 </tr>
@@ -2434,52 +2286,137 @@ Raised if this property is readonly.</li>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="cssutils.css.PropertyValue.length">
+<tt class="descname">length</tt><a class="headerlink" href="#cssutils.css.PropertyValue.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of values set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.PropertyValue.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.PropertyValue.seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.PropertyValue.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.PropertyValue.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string representation of the current value without any comments used for validation.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
-<div class="section" id="cssvaluelist">
-<h4><tt class="docutils literal"><span class="pre">CSSValueList</span></tt><a class="headerlink" href="#cssvaluelist" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="value">
+<h4><tt class="docutils literal"><span class="pre">Value</span></tt><a class="headerlink" href="#value" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
-<dt id="cssutils.css.CSSValueList">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSValueList</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValueList" title="Permalink to this definition">¶</a></dt>
-<dd><p>The CSSValueList interface provides the abstraction of an ordered
-collection of CSS values.</p>
-<p>Some properties allow an empty list into their syntax. In that case,
-these properties take the none identifier. So, an empty list means
-that the property has the value none.</p>
-<p>The items in the CSSValueList are accessible via an integral index,
-starting from 0.</p>
+<dt id="cssutils.css.Value">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Value</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a single CSS value. For now simple values of
+HASH, IDENT, STRING, or UNICODE-RANGE values are represented directly
+as Value objects. Other values like e.g. FUNCTIONs are represented by
+subclasses with an extended API.</p>
 <dl class="attribute">
-<dt id="cssutils.css.CSSValueList.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSValueList.cssText" title="Permalink to this definition">¶</a></dt>
-<dd><p>A string representation of the current value.</p>
+<dt id="cssutils.css.Value.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.Value.cssText" title="Permalink to this definition">¶</a></dt>
+<dd><p>String value of this value.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSValueList.cssValueTypeString">
-<tt class="descname">cssValueTypeString</tt><a class="headerlink" href="#cssutils.css.CSSValueList.cssValueTypeString" title="Permalink to this definition">¶</a></dt>
-<dd><p>(readonly) Name of cssValueType.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cssutils.css.CSSValueList.item">
-<tt class="descname">item</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSValueList.item" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) Retrieve a CSSValue by ordinal <cite>index</cite>. The
-order in this collection represents the order of the values in the
-CSS style property. If <cite>index</cite> is greater than or equal to the number
-of values in the list, this returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSValueList.length">
-<tt class="descname">length</tt><a class="headerlink" href="#cssutils.css.CSSValueList.length" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM attribute) The number of CSSValues in the list.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cssutils.css.CSSValueList.seq">
-<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSValueList.seq" title="Permalink to this definition">¶</a></dt>
+<dt id="cssutils.css.Value.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.Value.seq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Value.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.Value.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of this value, for now the production type like e.g. <cite>DIMENSION</cite> or <cite>STRING</cite>. All types are defined as constants in <a class="reference internal" href="#cssutils.css.Value" title="cssutils.css.Value"><tt class="xref py py-class docutils literal"><span class="pre">Value</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.Value.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.Value.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual value if possible: An int or float or else  a string</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dimensionvalue">
+<h4><tt class="docutils literal"><span class="pre">DimensionValue</span></tt><a class="headerlink" href="#dimensionvalue" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.DimensionValue">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">DimensionValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.DimensionValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numerical value with an optional dimenstion like e.g. &#8220;px&#8221; or &#8220;%&#8221;.</p>
+<p>Covers DIMENSION, PERCENTAGE or NUMBER values.</p>
+<dl class="attribute">
+<dt id="cssutils.css.DimensionValue.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.DimensionValue.cssText" title="Permalink to this definition">¶</a></dt>
+<dd><p>String value of this value including dimension.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.DimensionValue.dimension">
+<tt class="descname">dimension</tt><a class="headerlink" href="#cssutils.css.DimensionValue.dimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dimension if a DIMENSION or PERCENTAGE value, else None</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.DimensionValue.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.DimensionValue.seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.DimensionValue.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.DimensionValue.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of this value, for now the production type like e.g. <cite>DIMENSION</cite> or <cite>STRING</cite>. All types are defined as constants in <a class="reference internal" href="#cssutils.css.Value" title="cssutils.css.Value"><tt class="xref py py-class docutils literal"><span class="pre">Value</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.DimensionValue.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.DimensionValue.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual value if possible: An int or float or else  a string</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="urivalue">
+<h4><tt class="docutils literal"><span class="pre">URIValue</span></tt><a class="headerlink" href="#urivalue" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.URIValue">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">URIValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.URIValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>An URI value like <tt class="docutils literal"><span class="pre">url(example.png)</span></tt>.</p>
+<dl class="attribute">
+<dt id="cssutils.css.URIValue.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.URIValue.cssText" title="Permalink to this definition">¶</a></dt>
+<dd><p>String value of this value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.URIValue.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.URIValue.seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.URIValue.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.URIValue.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of this value, for now the production type like e.g. <cite>DIMENSION</cite> or <cite>STRING</cite>. All types are defined as constants in <a class="reference internal" href="#cssutils.css.Value" title="cssutils.css.Value"><tt class="xref py py-class docutils literal"><span class="pre">Value</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.URIValue.uri">
+<tt class="descname">uri</tt><a class="headerlink" href="#cssutils.css.URIValue.uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual URL without delimiters or the empty string</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.URIValue.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.URIValue.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual value if possible: An int or float or else  a string</p>
 </dd></dl>
 
 </dd></dl>
@@ -2488,9 +2425,68 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 <div class="section" id="cssfunction">
 <h4><tt class="docutils literal"><span class="pre">CSSFunction</span></tt><a class="headerlink" href="#cssfunction" title="Permalink to this headline">¶</a></h4>
 <dl class="class">
-<dt id="cssutils.css.cssvalue.CSSFunction">
-<em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">CSSFunction</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.CSSFunction" title="Permalink to this definition">¶</a></dt>
-<dd><p>A CSS function value like rect() etc.</p>
+<dt id="cssutils.css.CSSFunction">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSFunction</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function value.</p>
+<dl class="attribute">
+<dt id="cssutils.css.CSSFunction.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSFunction.cssText" title="Permalink to this definition">¶</a></dt>
+<dd><p>String value of this value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSFunction.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.CSSFunction.seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSFunction.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSFunction.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type is fixed to Value.FUNCTION.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.CSSFunction.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.CSSFunction.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as cssText but without comments.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="msvalue">
+<h4><tt class="docutils literal"><span class="pre">MSValue</span></tt><a class="headerlink" href="#msvalue" title="Permalink to this headline">¶</a></h4>
+<p>was <tt class="docutils literal"><span class="pre">ExpressionValue</span></tt> until 0.9.7.</p>
+<dl class="class">
+<dt id="cssutils.css.MSValue">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">MSValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.MSValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>An IE specific Microsoft only function value which is much looser 
+in what is syntactically allowed.</p>
+<dl class="attribute">
+<dt id="cssutils.css.MSValue.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.MSValue.cssText" title="Permalink to this definition">¶</a></dt>
+<dd><p>String value of this value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.MSValue.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.MSValue.seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.MSValue.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.MSValue.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type is fixed to Value.FUNCTION.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.MSValue.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.MSValue.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as cssText but without comments.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -2499,17 +2495,19 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 <dl class="class">
 <dt id="cssutils.css.CSSVariable">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSVariable</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSVariable" title="Permalink to this definition">¶</a></dt>
-<dd><p>The CSSVariable represents a call to CSS Variable.</p>
+<dd><p>The CSSVariable represents a CSS variables like <tt class="docutils literal"><span class="pre">var(varname)</span></tt>.</p>
+<p>A variable has a (nonnormalized!) <cite>name</cite> and a <cite>value</cite> which is
+tried to be resolved from any available CSSVariablesRule definition.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSVariable.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.CSSVariable.cssText" title="Permalink to this definition">¶</a></dt>
-<dd><p>A string representation of the current variable.</p>
+<dd><p>String representation of variable.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="cssutils.css.CSSVariable.cssValueTypeString">
-<tt class="descname">cssValueTypeString</tt><a class="headerlink" href="#cssutils.css.CSSVariable.cssValueTypeString" title="Permalink to this definition">¶</a></dt>
-<dd><p>(readonly) Name of cssValueType.</p>
+<dt id="cssutils.css.CSSVariable.name">
+<tt class="descname">name</tt><a class="headerlink" href="#cssutils.css.CSSVariable.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name identifier of this variable referring to a value in a <a class="reference internal" href="#cssutils.css.CSSVariablesDeclaration" title="cssutils.css.CSSVariablesDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSVariablesDeclaration</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2519,30 +2517,28 @@ of values in the list, this returns <tt class="xref docutils literal"><span clas
 </dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.CSSVariable.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.CSSVariable.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type is fixed to Value.VARIABLE.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.CSSVariable.value">
 <tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.CSSVariable.value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find contained sheet and &#64;variables there</p>
+<dd><p>The resolved actual value or None.</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="expressionvalue">
-<h4><tt class="docutils literal"><span class="pre">ExpressionValue</span></tt><a class="headerlink" href="#expressionvalue" title="Permalink to this headline">¶</a></h4>
-<dl class="class">
-<dt id="cssutils.css.cssvalue.ExpressionValue">
-<em class="property">class </em><tt class="descclassname">cssutils.css.cssvalue.</tt><tt class="descname">ExpressionValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Special IE only CSSFunction which may contain <em>anything</em>.
-Used for expressions and <tt class="docutils literal"><span class="pre">alpha(opacity=100)</span></tt> currently.</p>
-<dl class="attribute">
-<dt id="cssutils.css.cssvalue.ExpressionValue.cssText">
-<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.cssvalue.ExpressionValue.cssText" title="Permalink to this definition">¶</a></dt>
-<dd><p>A string representation of the current value.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
+<div class="section" id="removed-classes">
+<h3>removed classes<a class="headerlink" href="#removed-classes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">CSSValue</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">CSSValueList</span></tt></li>
+</ul>
 </div>
 </div>
 <div class="section" id="additional-info">
@@ -2559,7 +2555,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
 <span class="go">s=&lt;cssutils.util._Namespaces object at 0x02CE7B30&gt; at 0x2ce7d3</span>
 </pre></div>
 </div>
-<p><tt class="docutils literal"><span class="pre">for</span> <span class="pre">in</span></tt> is supported by <a class="reference internal" href="#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a> and  <a class="reference internal" href="#cssutils.css.CSSMediaRule" title="cssutils.css.CSSMediaRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSMediaRule</span></tt></a> (iterating over the contained <a class="reference internal" href="#cssutils.css.CSSRule" title="cssutils.css.CSSRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSRule</span></tt></a> objects, <a class="reference internal" href="#cssutils.css.CSSStyleDeclaration" title="cssutils.css.CSSStyleDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a> (over the names of the contained <a class="reference internal" href="#cssutils.css.Property" title="cssutils.css.Property"><tt class="xref py py-class docutils literal"><span class="pre">Property</span></tt></a> objects), <a class="reference internal" href="#cssutils.css.CSSValueList" title="cssutils.css.CSSValueList"><tt class="xref py py-class docutils literal"><span class="pre">CSSValueList</span></tt></a> (over the <a class="reference internal" href="#cssutils.css.CSSValue" title="cssutils.css.CSSValue"><tt class="xref py py-class docutils literal"><span class="pre">CSSValue</span></tt></a> objects in the list).</p>
+<p><tt class="docutils literal"><span class="pre">for</span> <span class="pre">in</span></tt> is supported by <a class="reference internal" href="#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a> and  <a class="reference internal" href="#cssutils.css.CSSMediaRule" title="cssutils.css.CSSMediaRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSMediaRule</span></tt></a> (iterating over the contained <a class="reference internal" href="#cssutils.css.CSSRule" title="cssutils.css.CSSRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSRule</span></tt></a> objects, <a class="reference internal" href="#cssutils.css.CSSStyleDeclaration" title="cssutils.css.CSSStyleDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a> (over the names of the contained <a class="reference internal" href="#cssutils.css.Property" title="cssutils.css.Property"><tt class="xref py py-class docutils literal"><span class="pre">Property</span></tt></a> objects), <tt class="xref py py-class docutils literal"><span class="pre">CSSValueList</span></tt> (over the <tt class="xref py py-class docutils literal"><span class="pre">CSSValue</span></tt> objects in the list).</p>
 </div>
 </div>
 
@@ -2592,19 +2588,21 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
 <li><a class="reference internal" href="#selector"><tt class="docutils literal"><span class="pre">Selector</span></tt></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#style-related-classes-cssstyledeclaration-property-cssvalue-etc">Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, <tt class="docutils literal"><span class="pre">CSSValue</span></tt> etc</a><ul>
+<li><a class="reference internal" href="#style-related-classes-cssstyledeclaration-property-values-etc">Style related classes: <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt>, <tt class="docutils literal"><span class="pre">Property</span></tt>, values etc</a><ul>
 <li><a class="reference internal" href="#cssvariablesdeclaration"><tt class="docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a></li>
 <li><a class="reference internal" href="#cssstyledeclaration"><tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a></li>
 <li><a class="reference internal" href="#property"><tt class="docutils literal"><span class="pre">Property</span></tt></a></li>
 <li><a class="reference internal" href="#values">Values</a><ul>
-<li><a class="reference internal" href="#cssvalue"><tt class="docutils literal"><span class="pre">CSSValue</span></tt></a></li>
-<li><a class="reference internal" href="#cssprimitivevalue"><tt class="docutils literal"><span class="pre">CSSPrimitiveValue</span></tt></a></li>
-<li><a class="reference internal" href="#cssvaluelist"><tt class="docutils literal"><span class="pre">CSSValueList</span></tt></a></li>
+<li><a class="reference internal" href="#propertyvalue"><tt class="docutils literal"><span class="pre">PropertyValue</span></tt></a></li>
+<li><a class="reference internal" href="#value"><tt class="docutils literal"><span class="pre">Value</span></tt></a></li>
+<li><a class="reference internal" href="#dimensionvalue"><tt class="docutils literal"><span class="pre">DimensionValue</span></tt></a></li>
+<li><a class="reference internal" href="#urivalue"><tt class="docutils literal"><span class="pre">URIValue</span></tt></a></li>
 <li><a class="reference internal" href="#cssfunction"><tt class="docutils literal"><span class="pre">CSSFunction</span></tt></a></li>
+<li><a class="reference internal" href="#msvalue"><tt class="docutils literal"><span class="pre">MSValue</span></tt></a></li>
 <li><a class="reference internal" href="#cssvariable"><tt class="docutils literal"><span class="pre">CSSVariable</span></tt></a></li>
-<li><a class="reference internal" href="#expressionvalue"><tt class="docutils literal"><span class="pre">ExpressionValue</span></tt></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#removed-classes">removed classes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#additional-info">Additional Info</a></li>
@@ -2655,7 +2653,7 @@ Used for expressions and <tt class="docutils literal"><span class="pre">alpha(op
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.7b4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
