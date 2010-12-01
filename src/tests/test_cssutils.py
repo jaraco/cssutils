@@ -25,7 +25,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
     }'''
 
     def test_VERSION(self):
-        self.assertEqual('0.9.7b5dev', cssutils.VERSION)
+        self.assertEqual('0.9.8a1', cssutils.VERSION)
 
     def test_parseString(self):
         "cssutils.parseString()"
