@@ -1,25 +1,22 @@
 ﻿what is it
 ----------
-A Python package to parse and build CSS Cascading Style Sheets. (Not a renderer though!)
+A Python package to parse and build CSS Cascading Style Sheets.
+(Not a renderer though!)
 
 about this release
 ------------------
-0.9.7b3 is a beta release but quite stable.
+0.9.7 is the final 0.9.7 release. Work on 0.9.8 has begun.
 
 main changes
 ------------
-0.9.7b3 100620
-    + API CHANGE: Changed parameters of script/utility function ``csscombine``.
-            - parameter ``resolveVariables=True`` now (default was ``False`` before)
-            - ``minify = True`` will not parse Comments at all. This is not really a change as comments were not kept in a minified stylesheet anyway but this may speed up stylesheet combination a bit
-
-    + **PERFORMANCE/IMPROVEMENT**: Added parameter ``parseComments=True`` to CSSParser. If parsing with ``parser = cssutils.CSSParser(parseComments=False).parse...`` comments in a given stylesheet are simple omitted from the resulting stylesheet DOM.
-
-    + **PERFORMANCE**: Compiled productions in cssutils tokenizer are cached now (to clear it use ``cssutils.tokenize2._TOKENIZER_CACHE.clear()``) which results in a slight performance improvement. Thanks to moscovich!
+No real change but CSSValue and related classes will not be supported in 0.9.8
+anymore. 0.9.8 will feature a simplified API. Please follow its development if
+you need any currently supported or new feature. Thanks!
 
 license
 -------
-cssutils is published under the LGPL version 3 or later, see http://cthedot.de/cssutils/
+cssutils is published under the LGPL version 3 or later, see
+http://cthedot.de/cssutils/
 
 If you have other licensing needs please let me know.
 
@@ -27,7 +24,9 @@ download
 --------
 For download options see http://cthedot.de/cssutils/
 
-cssutils needs Python 2.4 or higher or Jython 2.5 and higher (tested with Python 2.6.5(x64), 2.5.4(x32), 2.4.4(x32) and Jython 2.5.1 on Win7 64 only)
+cssutils needs Python 2.4 and higher or Jython 2.5 and higher (tested with
+Python 2.7(x64), 2.6.5(x64), 2.5.4(x32), 2.4.4(x32) and Jython 2.5.1 on Win7x64
+only)
 
 
 Bug reports (via Google code), comments, etc are very much appreciated! Thanks.
