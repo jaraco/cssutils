@@ -13,6 +13,7 @@ Contents
 
     About <README>
     Changelog <CHANGELOG>
+	Migration from older version <docs/migrate.txt>
 
     parsing <docs/parse>
     Experimental Settings <docs/settings>
@@ -27,7 +28,6 @@ Contents
     CSS Codec <docs/codec>
     `encutils` module <docs/encutils>
 
-	Migration from older version <docs/migrate.txt>
 	Backlog <docs/backlog.txt>
 
 

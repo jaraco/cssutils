@@ -24,18 +24,51 @@ Known Issues
   **These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!**
   In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
-- Some methods of ``css.CSSPrimitiveValue`` and subclasses ``Rect``, ``Counter`` and ``RGBColor`` are not implemented. As CSSOM defines a completely different DOM for Property values they may never be implemented as defined in DOM Level 2. Actually the current implementation of ``CSSValue``, ``CSSValueList``, and ``CSSPrimitiveValue`` may be completely replaced/refactored with suggestions from CSSOM.
-
 - handling of comments does probably not work for all cases
 
 
 Development Version
 ===================
 
-0.9.7
+0.9.8
 -----
 HEAD
+    + **API CHANGE (major)**
+        replace CSSValue with PropertyValue, Value and other classes.
 
+        NEW CLASSES:
+            :class:`cssutils.css.PropertyValue`
+                replaces CSSValue and CSSValueList
+
+                - is iterable (iterates over all single Value objects which in soruce CSS might be separated by "," "/" or " "
+                - a comma separated list of IDENT values is no longer handled as a single String (e.g. ``Arial, sans-serif``)
+
+            :class:`cssutils.css.Value`
+                replaces CSSPrimitiveValue
+
+            :class:`cssutils.css.DimensionValue` and other subclasses
+                replaces CSSPrimitiveValue
+
+                - keeps separate value, dimension and type info (value is typed, so e.g. string for e.g. STRING, IDENT or URI values, int or float)
+
+            renamed ``ExpressionValue`` to :class:`cssutils.css.MSValue` with new API
+
+    - BUGFIX: fixes issue #45, #46
+        PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
+
+    + CHANGE: explicit `+` of any dimension, percentage of number value is kept now
+
+
+
+
+Last Stable Version
+===================
+
+0.9.7
+-----
+
+0.9.7final 101127
+    + **FUTURE CHANGE**: CSSValue and subclasses will most certain not be supported in the next cssutils 0.9.8 version. A simpler and hopefully more robust API is in development. So the next version will have incompatible changes so you might wanna use 0.9.8 from the start if you do anything fancy with CSSValue and related classes.
 
 0.9.7b4 101101
     + *EXPERIMENTAL*: CSS function values using ``calc(...)`` should be partly parsable now (as experimental ExpressionValues currently)
@@ -158,10 +191,8 @@ HEAD
     - INTERNAL: Added ``tokenizer.push()``. Prodparser uses a global tokenizer now.
 
 
-
-
-Last Stable Version
-===================
+Archived Versions
+=================
 
 0.9.6
 -----
@@ -417,9 +448,6 @@ Last Stable Version
 
 
 
-Archived Versions
-=================
-
 0.9.5
 -----
 0.9.5.1 080811
@@ -632,7 +660,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-07-06 22:49:41 +0200 (Di, 06 Jul 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2016 2010-07-06 20:49:41Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-12-01 18:07:40 +0100 (Mi, 01 Dez 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2037 2010-12-01 17:07:40Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
