@@ -28,20 +28,31 @@ def save(name, string):
     f.write(string)
     f.close()
 
-
 if 0:
+    #ISSUE #45
+    sheet = cssutils.parseString('body { color: black /* some comment */; }')
+    print sheet.cssRules[0].style.getProperties()[0].value
+    sys.exit(1)
+    
+if 1:
+    #ISSUE #46
     css = """
     @font-face {
-  font-family: "Your typeface";
-  src: url("type/filename.eot");
-  src: /*local("☺"),*/
-    url("type/filename.woff") red,
-    url("type/filename.woff") blue
-    /*url("type/filename.otf") format("opentype"),
-    url("type/filename.svg#filename") format("svg");*/
-}
+      font-family: "Your typeface";
+      src: url("type/filename.eot");
+      src: local("☺"),
+        url("type/filename.woff") format("woff"),
+        url("type/filename.otf") format("opentype"),
+        url("type/filename.svg#filename") format("svg");
+    }
+
     """
-    css = """
+    
+    s = cssutils.parseString(css)
+    print list(cssutils.getUrls(s))
+    print s.cssText
+
+    css1 = """
     @import "im1";
         @import url(im2);
         @import url( im3 );
@@ -52,26 +63,24 @@ if 0:
             background-\image: url(b);
             background: url(a) no-repeat !important;
             }
-    """
-    s = cssutils.parseString(css)
-    print set(cssutils.getUrls(s))
-    print s.cssText
-    
+    """    
     sys.exit(1)
 
 if 1:
     css = 'bold -1px / -2  "arial" ,  sans-serif'
     css = 'rgb(1  ,   px   , hsl(    0 0) 2 Var(X) calc(1+2) alpha(opacity=50)'
     css = 'f(0) 1px'
-    #css = 'url(0) 1px'
-    v = cssutils.css.PropertyValue(css)
+    css = 'normal 1em/5 Arial, sans-serif, url(example.gif), func(1,2/*comm*/)'
+    pv = cssutils.css.PropertyValue(css)
+    print pv.cssText
+    for i, v in enumerate(pv):
+        print i, v
 #    v = cssutils.css.Value(css)
     #v = cssutils.css.CSSFunction(css)
 
 #    print v
 #    for i, x in enumerate(v.seq):
 #        print i, x.value
-    print v.cssText
     sys.exit(1)
 
 
