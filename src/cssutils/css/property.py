@@ -251,7 +251,7 @@ class Property(cssutils.util.Base):
     
     propertyValue = property(lambda self: self.seqs[1], 
                              _setPropertyValue,
-                             u"(cssutils) PropertyValue object of property")
+                             doc=u"(cssutils) PropertyValue object of property")
 
     
     def _getValue(self):
