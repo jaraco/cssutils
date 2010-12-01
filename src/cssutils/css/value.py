@@ -6,6 +6,7 @@ supported and are replaced by these new classes.
 __all__ = ['PropertyValue',
            'Value',
            'DimensionValue',
+           'URIValue',
            'CSSFunction', 
            'CSSVariable',
            'MSValue'
@@ -22,16 +23,18 @@ import xml.dom
 
 class PropertyValue(cssutils.util._NewBase):
     """
-    - iterates over all contained Value objects (not the separators like ``,``,
-    ``/`` or `` `` though
-    - supports ``PropertyValue.item(index)`` and ``PropertyValue[index]`` access
-    - supports ``PropertyValue.length`` or ``len(PropertyValue)``
-    - property ``PropertyValue.cssText`` contains a string of this property 
-    value
-    - property ``PropertyValue.value`` contains a string of all values without
-    comments etc
-    """
+    An unstructured list like holder for all values defined for a 
+    :class:`~cssutils.css.Property`. Contains :class:`~cssutils.css.Value` 
+    or subclass objects. Currently there is no access to the combinators of
+    the defined values which might simply be space or comma or slash. 
     
+    You may:
+    
+    - iterate over all contained Value objects (not the separators like ``,``, 
+      ``/`` or `` `` though!)
+    - get a Value item by index or use ``PropertyValue[index]``
+    - find out the number of values defined (unstructured)
+    """
     def __init__(self, cssText=None, parent=None, readonly=False):
         """
         :param cssText:
@@ -131,6 +134,7 @@ class PropertyValue(cssutils.util._NewBase):
         # used as operator is , / or S
         nextSor = u',/'
         term = Choice(_DimensionProd(self, nextSor),
+                      _URIProd(self, nextSor),
                       _ValueProd(self, nextSor),
 #                      _CalcValueProd(self, nextSor),
 #                      _RGBColord(self, nextSor),
@@ -175,10 +179,20 @@ class PropertyValue(cssutils.util._NewBase):
                        doc="A string representation of the current value.")
 
     def item(self, index):
+        """
+        The value at position `index`. Alternatively simple use 
+        ``PropertyValue[index]``.
+        
+        :param index:
+            the parsable cssText of the value
+        :exceptions:
+            - :exc:`~IndexError`:
+              Raised if index if out of bounds
+        """
         return self[index]
 
     length = property(lambda self: len(self),
-                      doc=u'Number of values set.')
+                      doc=u"Number of values set.")
 
     value = property(lambda self: cssutils.ser.do_css_PropertyValue(self, 
                                                                     valuesOnly=True),
@@ -188,7 +202,10 @@ class PropertyValue(cssutils.util._NewBase):
 
 class Value(cssutils.util._NewBase):
     """
-    HASH, IDENT, STRING, UNICODE-RANGE or URI values
+    Represents a single CSS value. For now simple values of
+    HASH, IDENT, STRING, or UNICODE-RANGE values are represented directly
+    as Value objects. Other values like e.g. FUNCTIONs are represented by
+    subclasses with an extended API.
     """    
     HASH = u'HASH'
     IDENT = u'IDENT'
@@ -201,6 +218,7 @@ class Value(cssutils.util._NewBase):
     PERCENTAGE = u'PERCENTAGE' 
     
     FUNCTION = u'FUNCTION'
+    VARIABLE = u'VARIABLE'
     
     def __init__(self, cssText=None, parent=None, readonly=False):
         super(Value, self).__init__()
@@ -217,9 +235,9 @@ class Value(cssutils.util._NewBase):
                                          self.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object value=%r type=%s cssText=%r at 0x%x>"\
+        return u"<cssutils.css.%s object type=%s value=%r cssText=%r at 0x%x>"\
                % (self.__class__.__name__, 
-                  self.value, self.type, self.cssText,
+                  self.type, self.value, self.cssText,
                   id(self))
 
     def _setCssText(self, cssText):
@@ -228,11 +246,11 @@ class Value(cssutils.util._NewBase):
         prods = Choice(PreDef.hexcolor(stop=True),
                        PreDef.ident(stop=True),
                        PreDef.string(stop=True),
-                       PreDef.uri(stop=True),
                        PreDef.unicode_range(stop=True),
                        )
         ok, seq, store, unused = ProdParser().parse(cssText, u'Value', prods)
         if ok:
+            # only 1 value anyway!
             self._type = seq[0].type
             self._value = seq[0].value
                         
@@ -240,31 +258,37 @@ class Value(cssutils.util._NewBase):
             self.wellformed = ok
                                         
     cssText = property(lambda self: cssutils.ser.do_css_Value(self), 
-                       _setCssText, u'String value of this value.')
+                       _setCssText, 
+                       doc=u'String value of this value.')
 
     type = property(lambda self: self._type, #_setType, 
-                     u'Type of this value.')
+                    doc=u"Type of this value, for now the production type "
+                        u"like e.g. `DIMENSION` or `STRING`. All types are "
+                        u"defined as constants in :class:`~cssutils.css.Value`.")
 
     def _setValue(self, value):
         # TODO: check!
         self._value = value
 
     value = property(lambda self: self._value, _setValue, 
-                     u'Typed value, string, int or float.')
+                     doc=u"Actual value if possible: An int or float or else "
+                         u" a string")
 
 
 class DimensionValue(Value):
     """
-    DIMENSION, PERCENTAGE or NUMBER values.
+    A numerical value with an optional dimenstion like e.g. "px" or "%".
+    
+    Covers DIMENSION, PERCENTAGE or NUMBER values.
     """
     __reNumDim = re.compile(ur'^(\d*\.\d+|\d+)(.*)$', re.I | re.U | re.X)
     _dimension = None
     _sign = None
     
     def __str__(self):
-        return u"<cssutils.css.%s object value=%r dimension=%s type=%s cssText=%r at 0x%x>"\
+        return u"<cssutils.css.%s object type=%s value=%r dimension=%r cssText=%r at 0x%x>"\
                % (self.__class__.__name__, 
-                  self.value, self.dimension, self.type, self.cssText,
+                  self.type, self.value, self.dimension, self.cssText,
                   id(self))
 
     def _setCssText(self, cssText):
@@ -309,15 +333,52 @@ class DimensionValue(Value):
             self.wellformed = ok
     
     cssText = property(lambda self: cssutils.ser.do_css_Value(self), 
-                       _setCssText, u'String value of this value.')
+                       _setCssText, 
+                       doc=u"String value of this value including dimension.")
         
     dimension = property(lambda self: self._dimension, #_setValue, 
-                     u'Dimension if a DIMENSION or PERCENTAGE value, else None')
-        
+                         doc=u"Dimension if a DIMENSION or PERCENTAGE value, "
+                             u"else None")
+class URIValue(Value):
+    """
+    An URI value like ``url(example.png)``.
+    """
+    _uri = u''
+    
+    def __str__(self):
+        return u"<cssutils.css.%s object type=%s value=%r uri=%r cssText=%r at 0x%x>"\
+               % (self.__class__.__name__, 
+                  self.type, self.value, self.uri, self.cssText,
+                  id(self))
 
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+
+        prods = Sequence(PreDef.uri(stop=True))
+                       
+        ok, seq, store, unused = ProdParser().parse(cssText, u'URIValue', prods)
+        if ok:
+            # only 1 value only anyway
+            self._type = seq[0].type
+            self._value = self._uri = seq[0].value
+                        
+            self._setSeq(seq)
+            self.wellformed = ok
+                                        
+    cssText = property(lambda self: cssutils.ser.do_css_Value(self), 
+                       _setCssText, 
+                       doc=u'String value of this value.')
+    
+    def _setUri(self, uri):
+        self._uri = uri
+        
+    uri = property(lambda self: self._uri, _setUri, 
+                         doc=u"Actual URL without delimiters or the empty string")
+             
 class CSSFunction(Value):
-    """A function value"""
-    type = 'FUNCTION'
+    """
+    A function value.
+    """
     _functionName = 'Function'
     
     def _productions(self):
@@ -325,6 +386,7 @@ class CSSFunction(Value):
         types = self._prods # rename!
         
         itemProd = Choice(_DimensionProd(self),
+                          _URIProd(self),
                           _ValueProd(self),
                           #_CalcValueProd(self),
                           _CSSVariableProd(self),
@@ -353,12 +415,19 @@ class CSSFunction(Value):
             self.wellformed = ok
                             
     cssText = property(lambda self: cssutils.ser.do_css_CSSFunction(self), 
-                       _setCssText, u'String value of this value.')
+                       _setCssText, 
+                       doc=u"String value of this value.")
+    
+    value = property(lambda self: cssutils.ser.do_css_CSSFunction(self, True), 
+                     doc=u'Same as cssText but without comments.')
 
+    type = property(lambda self: Value.FUNCTION,
+                    doc=u"Type is fixed to Value.FUNCTION.")
 
 class MSValue(CSSFunction):
-    "An IE specific Microsoft only function value."
-    type = _functionName = 'MSValue'
+    """An IE specific Microsoft only function value which is much looser 
+    in what is syntactically allowed."""
+    _functionName = 'MSValue'
     
     def _productions(self):
         """Return definition used for parsing."""
@@ -369,6 +438,7 @@ class MSValue(CSSFunction):
                                   toSeq=lambda t, tokens: (t[0], t[1])
                                   ),
                              Sequence(Choice(_DimensionProd(self),
+                                             _URIProd(self),
                                              _ValueProd(self),
                                              _MSValueProd(self),
                                              #_CalcValueProd(self),
@@ -389,7 +459,8 @@ class MSValue(CSSFunction):
         super(MSValue, self)._setCssText(cssText)
     
     cssText = property(lambda self: cssutils.ser.do_css_MSValue(self), 
-                       _setCssText, u'String value of this value.')
+                       _setCssText, 
+                       doc=u"String value of this value.")
 
 
 class CSSVariable(CSSFunction):
@@ -430,7 +501,13 @@ class CSSVariable(CSSFunction):
                        _setCssText, doc=u"String representation of variable.")
 
     # TODO: writable? check if var (value) available?
-    name = property(lambda self: self._name)
+    name = property(lambda self: self._name, 
+                    doc=u"The name identifier of this variable referring to "
+                        u"a value in a "
+                        u":class:`cssutils.css.CSSVariablesDeclaration`.")
+
+    type = property(lambda self: Value.VARIABLE,
+                    doc=u"Type is fixed to Value.VARIABLE.")
 
     def _getValue(self):
         "Find contained sheet and @variables there"
@@ -451,16 +528,28 @@ class CSSVariable(CSSFunction):
             except KeyError:
                 return None
         
-    value = property(_getValue, doc=u'Resolved value or None.')
+    value = property(_getValue, 
+                     doc=u'The resolved actual value or None.')
 
 
 # helper for productions
 def _ValueProd(parent, nextSor=False):
     return Prod(name='Value',
                 match=lambda t, v: t in ('HASH', 'IDENT', 'STRING', 
-                                         'UNICODE-RANGE', 'URI'),
+                                         'UNICODE-RANGE'),
                 nextSor = nextSor,
                 toSeq=lambda t, tokens: ('Value', Value(
+                                            cssutils.helper.pushtoken(t, 
+                                                                      tokens),
+                                         parent=parent)
+                                         )
+                )
+
+def _URIProd(parent, nextSor=False):
+    return Prod(name='URIValue',
+                match=lambda t, v: t == 'URI',
+                nextSor = nextSor,
+                toSeq=lambda t, tokens: ('URIValue', URIValue(
                                             cssutils.helper.pushtoken(t, 
                                                                       tokens),
                                          parent=parent)
