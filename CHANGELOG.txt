@@ -53,11 +53,10 @@ HEAD
 
             renamed ``ExpressionValue`` to :class:`cssutils.css.MSValue` with new API
 
-    - BUGFIX: fixes issue #45, #46
+    - BUGFIX: fixes issue #41, #42, #45, #46
         PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
 
-    + CHANGE: explicit `+` of any dimension, percentage of number value is kept now
-
+    + CHANGE: explicit `+` of any dimension, percentage of number value is kept now instead of being stripped as if put explicitly in the author SHOULD have meant something ;)
 
 
 

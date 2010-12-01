@@ -28,6 +28,35 @@ def save(name, string):
     f.write(string)
     f.close()
 
+
+
+if 1:
+    # ISSUE 35
+    css = """div.one {color: expression((function(ele){ele.style.behavior="none";})(this));}   """
+    css = """div.one {color: expression(function(ele){ele.style.behavior="none";})(this);}   """
+    sheet = cssutils.parseString(css)
+    print sheet.cssText    
+
+    sys.exit(1)
+
+if 1:
+    # ISSUE 41
+    css = """div.one {color: rgb(255, 0, 0);}   """
+    sheet = cssutils.parseString(css)    
+    print sheet.cssRules[0].style.getProperty('color').propertyValue[0]
+
+    sys.exit(1)
+
+if 1:
+    #ISSUE #42
+    sheet = cssutils.parseString('body { font-family: "New Century Schoolbook", serif }')
+    pv = sheet.cssRules[0].style.getProperty('font-family').propertyValue
+    for v in pv:
+        print v.value
+    print pv.cssText
+    sys.exit(1)
+
+
 if 0:
     #ISSUE #45
     sheet = cssutils.parseString('body { color: black /* some comment */; }')
