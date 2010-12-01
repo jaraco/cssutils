@@ -959,7 +959,7 @@ class CSSSerializer(object):
                 
         return out.value()            
 
-    def do_css_CSSFunction(self, cssvalue):
+    def do_css_CSSFunction(self, cssvalue, valuesOnly=False):
         """Serialize a CSS function value"""
         if not cssvalue:
             return u''
@@ -967,14 +967,16 @@ class CSSSerializer(object):
             out = Out(self)
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
+                if valuesOnly and type_ == cssutils.css.CSSComment:
+                    continue
                 out.append(val, type_)
             return out.value()
 
-    def do_css_RGBColor(self, cssvalue):
+    def do_css_RGBColor(self, cssvalue, valuesOnly=False):
         """Serialize a RGBColor value"""
         return self.do_css_FunctionValue(cssvalue)
 
-    def do_css_MSValue(self, cssvalue):
+    def do_css_MSValue(self, cssvalue, valuesOnly=False):
         """Serialize an ExpressionValue (IE only),
         should at least keep the original syntax"""
         if not cssvalue:
@@ -983,13 +985,15 @@ class CSSSerializer(object):
             out = Out(self)
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
+                if valuesOnly and type_ == cssutils.css.CSSComment:
+                    continue
                 #val = self._possiblezero(cssvalue, type_, val)
                 # do no send type_ so no special cases!
                 out.append(val, None, space=False)
 
             return out.value()
 
-    def do_css_CSSVariable(self, variable):
+    def do_css_CSSVariable(self, variable, IGNORED=False):
         """Serializes a CSSVariable"""
         if not variable or not variable.name:
             return u''
