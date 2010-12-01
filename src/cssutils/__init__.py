@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """cssutils - CSS Cascading Style Sheets library for Python
 
-    Copyright (C) 2004-2009 Christof Hoeke
+    Copyright (C) 2004-2010 Christof Hoeke
 
     cssutils is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,8 @@ Based upon and partly implementing the following specifications :
     with cssutils (*should* mind though ;) )
 
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
-    DOM for package css
+    DOM for package css. 0.9.8 removes support for CSSValue and related API, 
+    see PropertyValue and Value API for now
 `DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`__
     DOM for package stylesheets
 `CSSOM <http://dev.w3.org/csswg/cssom/>`__
@@ -90,7 +91,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.7b5dev'
+VERSION = '0.9.8dev'
 
 __version__ = '%s $Id$' % VERSION
 
