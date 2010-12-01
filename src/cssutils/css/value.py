@@ -64,7 +64,7 @@ class PropertyValue(cssutils.util._NewBase):
             return None
             
     def __iter__(self):
-        "Generator which iterates over cssRules."
+        "Generator which iterates over values."
         for item in self.__items():
             yield item
             
@@ -73,10 +73,9 @@ class PropertyValue(cssutils.util._NewBase):
                                          self.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object cssText=%r at "\
+        return u"<cssutils.css.%s object length=%r cssText=%r at "\
                u"0x%x>" % (self.__class__.__name__, 
-                           self.cssText, 
-                           id(self))
+                           self.length, self.cssText, id(self))
         
     def __items(self, seq=None):
         "a generator of Value obects only, no , / or ' '"
@@ -591,19 +590,19 @@ def _MSValueProd(parent, nextSor=False):
     return Prod(name=MSValue._functionName,
                 match=lambda t, v: (#t == self._prods.FUNCTION and (
                     cssutils.helper.normalize(v) in (u'expression(',
-                                                 u'alpha(',
-                                                 u'blur(',
-                                                 u'chroma(',
-                                                 u'dropshadow(',
-                                                 u'fliph(',
-                                                 u'flipv(',
-                                                 u'glow(',
-                                                 u'gray(',
-                                                 u'invert(',
-                                                 u'mask(',
-                                                 u'shadow(',                                                               
-                                                 u'wave(',
-                                                 u'xray(') or
+                                                     u'alpha(',
+                                                     u'blur(',
+                                                     u'chroma(',
+                                                     u'dropshadow(',
+                                                     u'fliph(',
+                                                     u'flipv(',
+                                                     u'glow(',
+                                                     u'gray(',
+                                                     u'invert(',
+                                                     u'mask(',
+                                                     u'shadow(',                                                               
+                                                     u'wave(',
+                                                     u'xray(') or
                     v.startswith(u'progid:DXImageTransform.Microsoft.')                               
                     ),
                 nextSor=nextSor,
