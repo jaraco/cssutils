@@ -2,6 +2,32 @@
 version migration
 =================
 
+---------
+from last
+---------
+
+0.9.8 incompatible changes
+==========================
+
+CSS Values
+----------
+0.9.8 deprecates or better removes support for ``css.Value``, ``css.ValueList``, ``css.PrimitiveValue`` and subclasses. They are all replaced by ``css.PropertyValue``, which contains a list of ``css.Value`` objects. See docs for these for details.
+
+Changes in more detail:
+
+- ``css.CSSStyleDeclaration.getCSSValue`` return ``css.Property.propertyValue`` now!
+- added ``css.Property.propertyValue``
+- deprecated ``css.Property.cssValue`` which now is more or less ``css.Property.propertyValue``
+- removed ``css.Value``, ``css.ValueList``, ``css.PrimitiveValue``
+- added ``css.PropertyValue`` which contains a list of ``css.Value`` or more specific subclass objects like ``css.DimensionValue``, ``css.CSSFunction`` etc
+- renamed ``css.ExpressionValue`` to ``css.MSValue`` as it contains Microsoft IE specific values only anyway
+- ``css.CSSFunction``, ``css.CSSVariable``, ``css.MSValue`` are now subclasses of ``css.Value``
+
+
+-------
+archive
+-------
+
 0.9.7 incompatible changes
 ==========================
 - Replaced init parameter and attribute ``css.Selector.parentList`` with ``css.Selector.parent``

@@ -30,7 +30,7 @@ Based upon and partly implementing the following specifications :
     Experimental specification of CSS Variables which cssutils implements partly. Media specific variables are not supported.
 
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
-    DOM for package css
+    DOM for package css. 0.9.8 removes support for CSSValue and related API, see PropertyValue and Value API for now
 `DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`__
     DOM for package stylesheets
 `CSSOM <http://dev.w3.org/csswg/cssom/>`__
