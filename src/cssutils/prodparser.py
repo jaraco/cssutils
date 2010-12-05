@@ -621,10 +621,19 @@ class PreDef(object):
                     nextSor=nextSor)
 
     @staticmethod
-    def number(stop=False, nextSor=False):
+    def number(stop=False, toSeq=None, nextSor=False):
         return Prod(name=u'number',
                     match=lambda t, v: t == PreDef.types.NUMBER,
                     stop=stop, 
+                    toSeq=toSeq,
+                    nextSor=nextSor)
+
+    @staticmethod
+    def percentage(stop=False, toSeq=None, nextSor=False):
+        return Prod(name=u'percentage',
+                    match=lambda t, v: t == PreDef.types.PERCENTAGE,
+                    stop=stop,
+                    toSeq=toSeq,
                     nextSor=nextSor)
 
     @staticmethod
@@ -633,13 +642,6 @@ class PreDef(object):
         return Prod(name=u'string',
                     match=lambda t, v: t == PreDef.types.STRING,
                     toSeq=lambda t, tokens: (t[0], cssutils.helper.stringvalue(t[1])),
-                    stop=stop,
-                    nextSor=nextSor)
-
-    @staticmethod
-    def percentage(stop=False, nextSor=False):
-        return Prod(name=u'percentage',
-                    match=lambda t, v: t == PreDef.types.PERCENTAGE,
                     stop=stop,
                     nextSor=nextSor)
 

@@ -926,8 +926,8 @@ class CSSSerializer(object):
 
             return out.value()
 
-    def do_css_Value(self, value):
-        """Serializes a Value"""
+    def do_css_Value(self, value, valuesOnly=None):
+        """Serializes a Value, valuesOnly is ignored"""
         if not value:
             return u''
         else:
@@ -959,6 +959,16 @@ class CSSSerializer(object):
                 
         return out.value()            
 
+    def do_css_ColorValue(self, value, valuesOnly=False):
+        """Serialize a ColorValue, a HASH simple value or FUNCTION"""
+        try:
+            return {'FUNCTION': self.do_css_CSSFunction,
+                    'HASH': self.do_css_Value
+                    }[value.type](value, 
+                                  valuesOnly=valuesOnly)
+        except KeyError, e:
+            return u''
+
     def do_css_CSSFunction(self, cssvalue, valuesOnly=False):
         """Serialize a CSS function value"""
         if not cssvalue:
@@ -971,10 +981,6 @@ class CSSSerializer(object):
                     continue
                 out.append(val, type_)
             return out.value()
-
-    def do_css_RGBColor(self, cssvalue, valuesOnly=False):
-        """Serialize a RGBColor value"""
-        return self.do_css_FunctionValue(cssvalue)
 
     def do_css_MSValue(self, cssvalue, valuesOnly=False):
         """Serialize an ExpressionValue (IE only),

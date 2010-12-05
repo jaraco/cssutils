@@ -103,10 +103,12 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             u'#112233': u'#123',
             u'rgb(1,2,3)': u'rgb(1, 2, 3)',
             u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
-            u'rgb(-1,+2,0)': u'rgb(-1, +2, 0)',
             u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
             u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
-            u'rgba(-1,+2,0, 0)': u'rgba(-1, +2, 0, 0)',
+            # TODO
+             
+#            u'rgb(-1,+2,0)': u'rgb(-1, +2, 0)',
+#            u'rgba(-1,+2,0, 0)': u'rgba(-1, +2, 0, 0)',
             
             # FUNCTION 
             u'f(1,2)': u'f(1, 2)',

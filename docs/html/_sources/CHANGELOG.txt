@@ -53,11 +53,10 @@ HEAD
 
             renamed ``ExpressionValue`` to :class:`cssutils.css.MSValue` with new API
 
-    - BUGFIX: fixes issue #45, #46
+    - BUGFIX: fixes issue #41, #42, #45, #46
         PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
 
-    + CHANGE: explicit `+` of any dimension, percentage of number value is kept now
-
+    + CHANGE: explicit `+` of any dimension, percentage of number value is kept now instead of being stripped as if put explicitly in the author SHOULD have meant something ;)
 
 
 
@@ -660,7 +659,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-12-01 18:07:40 +0100 (Mi, 01 Dez 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2037 2010-12-01 17:07:40Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-12-01 22:09:10 +0100 (Mi, 01 Dez 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2046 2010-12-01 21:09:10Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 

@@ -5,6 +5,7 @@ supported and are replaced by these new classes.
 """
 __all__ = ['PropertyValue',
            'Value',
+           'ColorValue',
            'DimensionValue',
            'URIValue',
            'CSSFunction', 
@@ -132,11 +133,12 @@ class PropertyValue(cssutils.util._NewBase):
         
         # used as operator is , / or S
         nextSor = u',/'
-        term = Choice(_DimensionProd(self, nextSor),
+        term = Choice(
+                      _ColorProd(self, nextSor),
+                      _DimensionProd(self, nextSor),
                       _URIProd(self, nextSor),
                       _ValueProd(self, nextSor),
 #                      _CalcValueProd(self, nextSor),
-#                      _RGBColord(self, nextSor),
 #                      _Rect(self, nextSor),
                       # all other functions
                       _CSSVariableProd(self, nextSor),
@@ -202,19 +204,21 @@ class PropertyValue(cssutils.util._NewBase):
 class Value(cssutils.util._NewBase):
     """
     Represents a single CSS value. For now simple values of
-    HASH, IDENT, STRING, or UNICODE-RANGE values are represented directly
+    IDENT, STRING, or UNICODE-RANGE values are represented directly
     as Value objects. Other values like e.g. FUNCTIONs are represented by
     subclasses with an extended API.
     """    
-    HASH = u'HASH'
     IDENT = u'IDENT'
     STRING = u'STRING'
     UNICODE_RANGE = u'UNICODE-RANGE'
     URI = u'URI'
-    
+
     DIMENSION = u'DIMENSION'
     NUMBER = u'NUMBER'
     PERCENTAGE = u'PERCENTAGE' 
+    
+    COLOR_VALUE = u'COLOR_VALUE'
+    HASH = u'HASH'
     
     FUNCTION = u'FUNCTION'
     VARIABLE = u'VARIABLE'
@@ -273,6 +277,120 @@ class Value(cssutils.util._NewBase):
                      doc=u"Actual value if possible: An int or float or else "
                          u" a string")
 
+
+class ColorValue(Value):
+    """
+    A color value like rgb(), rgba(), hsl(), hsla() or #rgb, #rrggbb
+    
+    TODO: Color Keywords
+    """
+    type = Value.COLOR_VALUE
+    # hexcolor, FUNCTION?
+    _colorType = None
+    _red = 0
+    _green = 0
+    _blue = 0
+    _alpha = 1
+    
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+        types = self._prods # rename!
+        
+        _number = PreDef.number(toSeq=lambda t, tokens: (t[0], 
+                      DimensionValue(cssutils.helper.pushtoken(t, tokens),
+                                     parent=self)
+                                     ))
+        _percentage = PreDef.percentage(toSeq=lambda t, tokens: (t[0], 
+                          DimensionValue(cssutils.helper.pushtoken(t, tokens),
+                                         parent=self)
+                                         ))
+        _rgb = Choice(Sequence(_number,
+                               Sequence(PreDef.comma(), 
+                                        _number,
+                                        minmax=lambda: (2, 2)
+                                        )
+                               ),
+                               Sequence(_percentage,
+                                        Sequence(PreDef.comma(), 
+                                                 _percentage,
+                                                 minmax=lambda: (2, 2)
+                                                 )
+                                        )
+                               )
+        _noalpha = Sequence(Prod(name='RGB',
+                                 match=lambda t, v: t == types.FUNCTION and
+                                                    v in (u'rgb(', u'hsl('),
+                                 toSeq=lambda t, tokens: (t[0], 
+                                           cssutils.helper.normalize(t[1]))
+                                 ),
+                            _rgb,
+                            PreDef.funcEnd(stop=True)
+                            )
+        _withalpha = Sequence(Prod(name='RGBA',
+                                   match=lambda t, v: t == types.FUNCTION and
+                                                      v in (u'rgba(', u'hsla('),
+                                   toSeq=lambda t, tokens: (t[0], 
+                                             cssutils.helper.normalize(t[1]))
+                                   ),
+                             _rgb,
+                             # alpha:
+                             PreDef.comma(),
+                             _number, 
+                             PreDef.funcEnd(stop=True)
+                             )
+        prods = Choice(PreDef.hexcolor(stop=True),
+                       _noalpha, _withalpha)
+        ok, seq, store, unused = ProdParser().parse(cssText, 
+                                                    self.type,
+                                                    prods)
+        if ok:
+            t, v = seq[0].type, seq[0].value
+            if u'HASH' == t:
+                if len(v) == 4:
+                    # HASH #rgb
+                    rgba = (int(2*v[1], 16),
+                            int(2*v[1], 16),
+                            int(2*v[1], 16), 
+                            1.0)
+                else:
+                    # HASH #rrggbb
+                    rgba = (int(v[1:2], 16),
+                            int(v[3:4], 16),
+                            int(v[5:6], 16), 
+                            1.0)
+            elif u'FUNCTION' == t:
+                rgba = []
+                for item in seq:
+                    if item.type == Value.NUMBER:
+                        rgba.append(item.value.value)
+                    elif item.type == Value.PERCENTAGE:
+                        rgba.append(int(255 * item.value.value / 100))
+                        
+                if len(rgba) < 4:
+                    rgba.append(1.0)
+                        
+            self._red, self._green, self._blue, self._alpha = tuple(rgba)
+            self._setSeq(seq)
+            self.wellformed = ok
+    
+    cssText = property(lambda self: cssutils.ser.do_css_ColorValue(self), 
+                       _setCssText, 
+                       doc=u"String value of this value.")
+    
+    value = property(lambda self: cssutils.ser.do_css_CSSFunction(self, True), 
+                     doc=u'Same as cssText but without comments.')
+
+    type = property(lambda self: Value.FUNCTION,
+                    doc=u"Type is fixed to Value.COLOR_VALUE.")
+
+    red = property(lambda self: self._red,
+                   doc=u'red part as integer between 0 and 255')
+    green = property(lambda self: self._green,
+                     doc=u'green part as integer between 0 and 255')
+    blue = property(lambda self: self._blue,
+                    doc=u'blue part as integer between 0 and 255')
+    alpha = property(lambda self: self._alpha,
+                     doc=u'alpha part as float between 0.0 and 1.0')
 
 class DimensionValue(Value):
     """
@@ -373,7 +491,9 @@ class URIValue(Value):
         
     uri = property(lambda self: self._uri, _setUri, 
                          doc=u"Actual URL without delimiters or the empty string")
-             
+
+
+      
 class CSSFunction(Value):
     """
     A function value.
@@ -384,7 +504,8 @@ class CSSFunction(Value):
         """Return definition used for parsing."""
         types = self._prods # rename!
         
-        itemProd = Choice(_DimensionProd(self),
+        itemProd = Choice(_ColorProd(self),
+                          _DimensionProd(self),
                           _URIProd(self),
                           _ValueProd(self),
                           #_CalcValueProd(self),
@@ -436,7 +557,8 @@ class MSValue(CSSFunction):
                                   match=lambda t, v: t == types.FUNCTION,
                                   toSeq=lambda t, tokens: (t[0], t[1])
                                   ),
-                             Sequence(Choice(_DimensionProd(self),
+                             Sequence(Choice(_ColorProd(self),
+                                             _DimensionProd(self),
                                              _URIProd(self),
                                              _ValueProd(self),
                                              _MSValueProd(self),
@@ -534,10 +656,23 @@ class CSSVariable(CSSFunction):
 # helper for productions
 def _ValueProd(parent, nextSor=False):
     return Prod(name='Value',
-                match=lambda t, v: t in ('HASH', 'IDENT', 'STRING', 
-                                         'UNICODE-RANGE'),
+                match=lambda t, v: t in ('IDENT', 'STRING', 'UNICODE-RANGE'),
                 nextSor = nextSor,
                 toSeq=lambda t, tokens: ('Value', Value(
+                                            cssutils.helper.pushtoken(t, 
+                                                                      tokens),
+                                         parent=parent)
+                                         )
+                )
+
+    
+def _DimensionProd(parent, nextSor=False):
+    return Prod(name='Dimension',
+                match=lambda t, v: t in (u'DIMENSION', 
+                                         u'NUMBER', 
+                                         u'PERCENTAGE') or v in u'+-',
+                nextSor = nextSor,
+                toSeq=lambda t, tokens: (t[0], DimensionValue(
                                             cssutils.helper.pushtoken(t, 
                                                                       tokens),
                                          parent=parent)
@@ -555,19 +690,21 @@ def _URIProd(parent, nextSor=False):
                                          )
                 )
     
-def _DimensionProd(parent, nextSor=False):
-    return Prod(name='Dimension',
-                match=lambda t, v: t in (u'DIMENSION', 
-                                         u'NUMBER', 
-                                         u'PERCENTAGE') or v in u'+-',
+def _ColorProd(parent, nextSor=False):
+    return Prod(name='ColorValue',
+                match=lambda t, v: t == 'HASH' or 
+                                  (t == 'FUNCTION' and v in (u'rgb(', 
+                                                             u'rgba(',
+                                                             u'hsl(', 
+                                                             u'hsla(')),
                 nextSor = nextSor,
-                toSeq=lambda t, tokens: (t[0],  DimensionValue(
+                toSeq=lambda t, tokens: ('ColorValue', ColorValue(
                                             cssutils.helper.pushtoken(t, 
                                                                       tokens),
                                          parent=parent)
                                          )
                 )
-
+    
 def _CSSFunctionProd(parent, nextSor=False):
     return PreDef.function(nextSor=nextSor,
                            toSeq=lambda t, tokens: (CSSFunction._functionName, 
