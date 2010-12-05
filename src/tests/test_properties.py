@@ -46,10 +46,10 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'HEX6': '#123abc',
             'RGB': 'rgb(1,2,3)',
             'RGB100': 'rgb(1%,2%,100%)',
-            'RGBA': 'rgb(1,2,3, 1)',
-            'RGBA100': 'rgb(1%,2%,100%, 0)',
+            'RGBA': 'rgba(1,2,3, 1)',
+            'RGBA100': 'rgba(1%,2%,100%, 0)',
             'HSL': 'hsl(1,2,3)',
-            'HSLA': 'hsl(1,2,3, 1)'            
+            'HSLA': 'hsla(1,2,3, 1)'            
              }        
         def expanded(*keys):
             r = []

@@ -2313,7 +2313,7 @@ Raised if index if out of bounds</li>
 <dt id="cssutils.css.Value">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">Value</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.Value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a single CSS value. For now simple values of
-HASH, IDENT, STRING, or UNICODE-RANGE values are represented directly
+IDENT, STRING, or UNICODE-RANGE values are represented directly
 as Value objects. Other values like e.g. FUNCTIONs are represented by
 subclasses with an extended API.</p>
 <dl class="attribute">
@@ -2338,6 +2338,64 @@ subclasses with an extended API.</p>
 <dt id="cssutils.css.Value.value">
 <tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.Value.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actual value if possible: An int or float or else  a string</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="colorvalue">
+<h4><tt class="docutils literal"><span class="pre">ColorValue</span></tt><a class="headerlink" href="#colorvalue" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="cssutils.css.ColorValue">
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">ColorValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.ColorValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A color value like rgb(), rgba(), hsl(), hsla() or #rgb, #rrggbb</p>
+<p>TODO: Color Keywords</p>
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.alpha">
+<tt class="descname">alpha</tt><a class="headerlink" href="#cssutils.css.ColorValue.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>alpha part as float between 0.0 and 1.0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.blue">
+<tt class="descname">blue</tt><a class="headerlink" href="#cssutils.css.ColorValue.blue" title="Permalink to this definition">¶</a></dt>
+<dd><p>blue part as integer between 0 and 255</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.cssText">
+<tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.ColorValue.cssText" title="Permalink to this definition">¶</a></dt>
+<dd><p>String value of this value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.green">
+<tt class="descname">green</tt><a class="headerlink" href="#cssutils.css.ColorValue.green" title="Permalink to this definition">¶</a></dt>
+<dd><p>green part as integer between 0 and 255</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.red">
+<tt class="descname">red</tt><a class="headerlink" href="#cssutils.css.ColorValue.red" title="Permalink to this definition">¶</a></dt>
+<dd><p>red part as integer between 0 and 255</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.seq">
+<tt class="descname">seq</tt><a class="headerlink" href="#cssutils.css.ColorValue.seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal readonly attribute, <strong>DO NOT USE</strong>!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.type">
+<tt class="descname">type</tt><a class="headerlink" href="#cssutils.css.ColorValue.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type is fixed to Value.COLOR_VALUE.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.value">
+<tt class="descname">value</tt><a class="headerlink" href="#cssutils.css.ColorValue.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as cssText but without comments.</p>
 </dd></dl>
 
 </dd></dl>
@@ -2595,6 +2653,7 @@ tried to be resolved from any available CSSVariablesRule definition.</p>
 <li><a class="reference internal" href="#values">Values</a><ul>
 <li><a class="reference internal" href="#propertyvalue"><tt class="docutils literal"><span class="pre">PropertyValue</span></tt></a></li>
 <li><a class="reference internal" href="#value"><tt class="docutils literal"><span class="pre">Value</span></tt></a></li>
+<li><a class="reference internal" href="#colorvalue"><tt class="docutils literal"><span class="pre">ColorValue</span></tt></a></li>
 <li><a class="reference internal" href="#dimensionvalue"><tt class="docutils literal"><span class="pre">DimensionValue</span></tt></a></li>
 <li><a class="reference internal" href="#urivalue"><tt class="docutils literal"><span class="pre">URIValue</span></tt></a></li>
 <li><a class="reference internal" href="#cssfunction"><tt class="docutils literal"><span class="pre">CSSFunction</span></tt></a></li>
