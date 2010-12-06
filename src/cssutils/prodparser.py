@@ -654,10 +654,13 @@ class PreDef(object):
                     mayEnd=True)
 
     @staticmethod
-    def unary():
+    def unary(stop=False, toSeq=None, nextSor=False):
         "+ or -"
         return Prod(name=u'unary +-', match=lambda t, v: v in (u'+', u'-'),
-                    optional=True)
+                    optional=True,
+                    stop=stop, 
+                    toSeq=toSeq,
+                    nextSor=nextSor)
 
     @staticmethod
     def uri(stop=False, nextSor=False):

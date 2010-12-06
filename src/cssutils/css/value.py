@@ -295,87 +295,47 @@ class ColorValue(Value):
     def _setCssText(self, cssText):
         self._checkReadonly()
         types = self._prods # rename!
-        
-        # n
-        _number = PreDef.number(toSeq=lambda t, tokens: (t[0], 
-                      DimensionValue(cssutils.helper.pushtoken(t, tokens),
-                                     parent=self)
-                                     ))
-        # p
-        _percentage = PreDef.percentage(toSeq=lambda t, tokens: (t[0], 
-                          DimensionValue(cssutils.helper.pushtoken(t, tokens),
-                                         parent=self)
-                                         ))
-        # n,n,n OR p,p,p
-        _rgb = Choice(Sequence(_number,
-                               Sequence(PreDef.comma(), 
-                                        _number,
-                                        minmax=lambda: (2, 2)
-                                        )
-                               ),
-                               Sequence(_percentage,
-                                        Sequence(PreDef.comma(), 
-                                                 _percentage,
-                                                 minmax=lambda: (2, 2)
-                                                 )
-                                        )
-                               )
-        # n, p, p
-        _hsl = Sequence(_number,
-                        Sequence(PreDef.comma(), 
-                                 _percentage,
-                                 minmax=lambda: (2, 2)
-                                 )
-                        )
-        # rgb( rgb )
-        _rgbprod = Sequence(Prod(name='RGB',
-                                 match=lambda t, v: t == types.FUNCTION and
-                                                    v == u'rgb(',
-                                 toSeq=lambda t, tokens: (t[0], 
-                                           cssutils.helper.normalize(t[1]))
-                                 ),
-                            _rgb,
-                            PreDef.funcEnd(stop=True)
-                            )
-        # rgb( rgb, a )
-        _rgbaprod = Sequence(Prod(name='RGBA',
-                                   match=lambda t, v: t == types.FUNCTION and
-                                                      v == u'rgba(',
-                                   toSeq=lambda t, tokens: (t[0], 
-                                             cssutils.helper.normalize(t[1]))
+
+        component = Choice(PreDef.unary(toSeq=lambda t, tokens: (t[0], 
+                            DimensionValue(cssutils.helper.pushtoken(t, tokens),
+                            parent=self)
+                           )),
+                           PreDef.number(toSeq=lambda t, tokens: (t[0], 
+                            DimensionValue(cssutils.helper.pushtoken(t, tokens),
+                            parent=self)
+                           )),
+                           PreDef.percentage(toSeq=lambda t, tokens: (t[0], 
+                            DimensionValue(cssutils.helper.pushtoken(t, tokens),
+                            parent=self)
+                           ))
+                   )
+        noalp = Sequence(Prod(name='FUNCTION',
+                              match=lambda t, v: t == types.FUNCTION and
+                                                 v in (u'rgb(', u'hsl('),
+                              toSeq=lambda t, tokens: (t[0], 
+                                 cssutils.helper.normalize(t[1]))
+                              ),
+                          component,
+                          Sequence(PreDef.comma(), 
+                                   component,
+                                   minmax=lambda: (2, 2)
                                    ),
-                             _rgb,
-                             # alpha:
-                             PreDef.comma(),
-                             _number, 
-                             PreDef.funcEnd(stop=True)
-                             )
-        # hsl( hsl )
-        _hslprod = Sequence(Prod(name='HSL',
-                                 match=lambda t, v: t == types.FUNCTION and
-                                                    v == u'hsl(',
-                                 toSeq=lambda t, tokens: (t[0], 
-                                           cssutils.helper.normalize(t[1]))
-                                 ),
-                            _hsl,
-                            PreDef.funcEnd(stop=True)
-                            )
-        # hsl( hsl, a )
-        _hslaprod = Sequence(Prod(name='HSLA',
-                                 match=lambda t, v: t == types.FUNCTION and
-                                                    v == u'hsla(',
-                                 toSeq=lambda t, tokens: (t[0], 
-                                           cssutils.helper.normalize(t[1]))
-                                 ),
-                            _hsl,
-                            # alpha:
-                            PreDef.comma(),
-                            _number, 
-                            PreDef.funcEnd(stop=True)
-                            )
-        
-        prods = Choice(PreDef.hexcolor(stop=True),
-                       _rgbprod, _rgbaprod, _hslprod, _hslaprod)
+                          PreDef.funcEnd(stop=True)
+                          )
+        witha = Sequence(Prod(name='FUNCTION',
+                              match=lambda t, v: t == types.FUNCTION and
+                                                 v in (u'rgba(', u'hsla('),
+                              toSeq=lambda t, tokens: (t[0], 
+                                 cssutils.helper.normalize(t[1]))
+                              ),
+                          component,
+                          Sequence(PreDef.comma(), 
+                                   component,
+                                   minmax=lambda: (3, 3)
+                                   ),
+                          PreDef.funcEnd(stop=True)
+                          )
+        prods = Choice(PreDef.hexcolor(stop=True), noalp, witha)
         
         ok, seq, store, unused = ProdParser().parse(cssText, 
                                                     self.type,
@@ -395,17 +355,40 @@ class ColorValue(Value):
                             int(v[3:4], 16),
                             int(v[5:6], 16), 
                             1.0)
+                    
             elif u'FUNCTION' == t:
-                rgba = []
+                functiontype, rgba, check = None, [], u''
                 for item in seq:
-                    if item.type == Value.NUMBER:
+                    try:
+                        type_ = item.value.type
+                    except AttributeError, e:
+                        # type of function, e.g. rgb(
+                        if item.type == 'FUNCTION':
+                            functiontype = item.value
+                        continue
+
+                    # save components                    
+                    if type_ == Value.NUMBER:
                         rgba.append(item.value.value)
-                    elif item.type == Value.PERCENTAGE:
+                        check += u'N'
+                    elif type_ == Value.PERCENTAGE:
                         rgba.append(int(255 * item.value.value / 100))
+                        check += u'P'
                         
+                # validate
+                checks = {u'rgb(': ('NNN', 'PPP'),
+                         u'rgba(': ('NNNN', 'PPPN'),
+                         u'hsl(': ('NPP',),
+                         u'hsla(': ('NPPN',)
+                         }
+                if check not in checks[functiontype]:
+                    self._log.warn(u'ColorValue has invalid %s) parameters: '
+                                    u'%s (N=Number, P=Percentage)' % 
+                                    (functiontype, check), neverraise=True)
+                    
                 if len(rgba) < 4:
                     rgba.append(1.0)
-                        
+            
             self._red, self._green, self._blue, self._alpha = tuple(rgba)
             self._setSeq(seq)
             self.wellformed = ok
