@@ -296,14 +296,17 @@ class ColorValue(Value):
         self._checkReadonly()
         types = self._prods # rename!
         
+        # n
         _number = PreDef.number(toSeq=lambda t, tokens: (t[0], 
                       DimensionValue(cssutils.helper.pushtoken(t, tokens),
                                      parent=self)
                                      ))
+        # p
         _percentage = PreDef.percentage(toSeq=lambda t, tokens: (t[0], 
                           DimensionValue(cssutils.helper.pushtoken(t, tokens),
                                          parent=self)
                                          ))
+        # n,n,n OR p,p,p
         _rgb = Choice(Sequence(_number,
                                Sequence(PreDef.comma(), 
                                         _number,
@@ -317,18 +320,27 @@ class ColorValue(Value):
                                                  )
                                         )
                                )
-        _noalpha = Sequence(Prod(name='RGB',
+        # n, p, p
+        _hsl = Sequence(_number,
+                        Sequence(PreDef.comma(), 
+                                 _percentage,
+                                 minmax=lambda: (2, 2)
+                                 )
+                        )
+        # rgb( rgb )
+        _rgbprod = Sequence(Prod(name='RGB',
                                  match=lambda t, v: t == types.FUNCTION and
-                                                    v in (u'rgb(', u'hsl('),
+                                                    v == u'rgb(',
                                  toSeq=lambda t, tokens: (t[0], 
                                            cssutils.helper.normalize(t[1]))
                                  ),
                             _rgb,
                             PreDef.funcEnd(stop=True)
                             )
-        _withalpha = Sequence(Prod(name='RGBA',
+        # rgb( rgb, a )
+        _rgbaprod = Sequence(Prod(name='RGBA',
                                    match=lambda t, v: t == types.FUNCTION and
-                                                      v in (u'rgba(', u'hsla('),
+                                                      v == u'rgba(',
                                    toSeq=lambda t, tokens: (t[0], 
                                              cssutils.helper.normalize(t[1]))
                                    ),
@@ -338,8 +350,33 @@ class ColorValue(Value):
                              _number, 
                              PreDef.funcEnd(stop=True)
                              )
+        # hsl( hsl )
+        _hslprod = Sequence(Prod(name='HSL',
+                                 match=lambda t, v: t == types.FUNCTION and
+                                                    v == u'hsl(',
+                                 toSeq=lambda t, tokens: (t[0], 
+                                           cssutils.helper.normalize(t[1]))
+                                 ),
+                            _hsl,
+                            PreDef.funcEnd(stop=True)
+                            )
+        # hsl( hsl, a )
+        _hslaprod = Sequence(Prod(name='HSLA',
+                                 match=lambda t, v: t == types.FUNCTION and
+                                                    v == u'hsla(',
+                                 toSeq=lambda t, tokens: (t[0], 
+                                           cssutils.helper.normalize(t[1]))
+                                 ),
+                            _hsl,
+                            # alpha:
+                            PreDef.comma(),
+                            _number, 
+                            PreDef.funcEnd(stop=True)
+                            )
+        
         prods = Choice(PreDef.hexcolor(stop=True),
-                       _noalpha, _withalpha)
+                       _rgbprod, _rgbaprod, _hslprod, _hslaprod)
+        
         ok, seq, store, unused = ProdParser().parse(cssText, 
                                                     self.type,
                                                     prods)
