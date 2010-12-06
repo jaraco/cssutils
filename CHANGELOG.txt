@@ -53,7 +53,7 @@ HEAD
 
             renamed ``ExpressionValue`` to :class:`cssutils.css.MSValue` with new API
 
-    - IMPROVEMENT/CHANGE: Validation of color values is much tighter now. Values like ``hsl(1, 2, 3)`` do not validate as it must be ``hsl(1, 2%, 3%)``. This mostly effects HSL/A and RGB/A notation.
+    - IMPROVEMENT/CHANGE: Validation of color values is tighter now. Values like ``hsl(1, 2, 3)`` do not validate as it must be ``hsl(1, 2%, 3%)``. This mostly effects HSL/A and RGB/A notation. Parsing does not stop but a WARNING is emitted.
 
     - BUGFIX: fixes issue #41, #42, #45, #46
         PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
