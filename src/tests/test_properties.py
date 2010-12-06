@@ -48,8 +48,8 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'RGB100': 'rgb(1%,2%,100%)',
             'RGBA': 'rgba(1,2,3, 1)',
             'RGBA100': 'rgba(1%,2%,100%, 0)',
-            'HSL': 'hsl(1,2,3)',
-            'HSLA': 'hsla(1,2,3, 1)'            
+            'HSL': 'hsl(1,2%,3%)',
+            'HSLA': 'hsla(1,2%,3%, 1)'            
              }        
         def expanded(*keys):
             r = []
@@ -116,7 +116,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
         "properties"
         tests = {
             # propname: key or [list of values]
-            'color': ('COLORS', ['inherit', 'red']),
+            'color': ('COLORS', 'COLORS3', ['inherit', 'red']),
             
             'fit': (['fill', 'hidden', 'meet', 'slice'],),
             'fit-position': ('LENGTHS', 'PERCENTAGE', 
