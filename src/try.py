@@ -15,6 +15,7 @@ import unicodedata
 import urllib
 import urlparse
 import xml
+import xml.dom
 try:
     from minimock import mock, restore
 except ImportError:
@@ -30,7 +31,7 @@ def save(name, string):
 
 
 
-if 1:
+if 0:
     # ISSUE 35
     css = """div.one {color: expression((function(ele){ele.style.behavior="none";})(this));}   """
     css = """div.one {color: expression(function(ele){ele.style.behavior="none";})(this);}   """
@@ -39,71 +40,21 @@ if 1:
 
     sys.exit(1)
 
-if 1:
-    # ISSUE 41
-    css = """div.one {color: rgb(255, 0, 0);}   """
-    sheet = cssutils.parseString(css)    
-    print sheet.cssRules[0].style.getProperty('color').propertyValue[0]
-
-    sys.exit(1)
 
 if 1:
-    #ISSUE #42
-    sheet = cssutils.parseString('body { font-family: "New Century Schoolbook", serif }')
-    pv = sheet.cssRules[0].style.getProperty('font-family').propertyValue
-    for v in pv:
-        print v.value
-    print pv.cssText
-    sys.exit(1)
-
-
-if 0:
-    #ISSUE #45
-    sheet = cssutils.parseString('body { color: black /* some comment */; }')
-    print sheet.cssRules[0].style.getProperties()[0].value
-    sys.exit(1)
-    
-if 1:
-    #ISSUE #46
-    css = """
-    @font-face {
-      font-family: "Your typeface";
-      src: url("type/filename.eot");
-      src: local("☺"),
-        url("type/filename.woff") format("woff"),
-        url("type/filename.otf") format("opentype"),
-        url("type/filename.svg#filename") format("svg");
-    }
-
-    """
-    
-    s = cssutils.parseString(css)
-    print list(cssutils.getUrls(s))
+    s = cssutils.parseString('a {x: rgb(1,1,1%)')
     print s.cssText
-
-    css1 = """
-    @import "im1";
-        @import url(im2);
-        @import url( im3 );
-        @import url( "im4" );
-        @import url( 'im5' );
-        a {
-            background-image: url(c) !important;
-            background-\image: url(b);
-            background: url(a) no-repeat !important;
-            }
-    """    
     sys.exit(1)
-
-if 1:
-    css = 'bold -1px / -2  "arial" ,  sans-serif'
-    css = 'rgb(1  ,   px   , hsl(    0 0) 2 Var(X) calc(1+2) alpha(opacity=50)'
-    css = 'f(0) 1px'
-    css = 'normal 1em/5 Arial, sans-serif, url(example.gif), func(1,2/*comm*/)'
-    pv = cssutils.css.PropertyValue(css)
+    
+    css = 'rgba(-1%,1%,-1%, 1)'
+    p = cssutils.css.Property('color', css)
+    print p
+    print
+    pv = p.propertyValue
     print pv.cssText
-    for i, v in enumerate(pv):
-        print i, v
+#    for i, v in enumerate(pv):
+#        print i, v
+#        print 'RGBA', v.red, v.green, v.blue, v.alpha
 #    v = cssutils.css.Value(css)
     #v = cssutils.css.CSSFunction(css)
 
@@ -115,20 +66,39 @@ if 1:
 
 if 1:
     css = """
-    a {
-      _top: expression(eval(document.documentElement.scrollTop));
-    }
-    """
-    
-    sheet = cssutils.parseString(css)
-    rule1 = sheet.cssRules[0]
-    print sheet.cssText
-    
+    .content div:after,
+.content div .ieafter { content: ""; position: absolute; z-index: -1;
+                        left: 0; top: 0; right: -1px; bottom: -9999px;
+                        background: inherit; }
+ 
+/* IE 6/7/8 fixes */
+* html .content       { height: 1%; /* IE6 hasLayout */ }
+.content div          { -ieafter: expression(this.ieAfter ? 0 : (function(el) {
+                        el.ieAfter = document.createElement('span'); el.ieAfter.className = 'ieafter'; 
+                        el.appendChild(el.ieAfter); })(this)); }
+.ieafter              { width: expression(parseInt(parentNode.offsetWidth) + 1 + 'px');
+                        height: expression(parseInt(parentNode.parentNode.offsetHeight) + 'px');
+                        background-color: expression(parentNode.currentStyle.backgroundColor);
+                        background-image: expression(parentNode.currentStyle.backgroundImage);
+                        background-repeat: expression(parentNode.currentStyle.backgroundRepeat); }
+                    """
+    s = cssutils.parseString(css)
+    print s.cssText
+    sys.exit(1)
 
-    #print style1.cssValue.primitiveTypeString
-    #print style1.cssValue.getRGBColorValue()
 
-    sys.exit(0)
+if 0:
+    # Issue 34
+    try:
+        raise xml.dom.SyntaxErr('msg')
+    except Exception, e:
+        print e
+    sys.exit(1)
+
+
+
+
+
 
 if 1:
     def fetcher(url):

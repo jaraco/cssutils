@@ -105,10 +105,8 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             u'rgb(  1  ,  2  ,  3  )': u'rgb(1, 2, 3)',
             u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
             u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
-            # TODO
-             
-#            u'rgb(-1,+2,0)': u'rgb(-1, +2, 0)',
-#            u'rgba(-1,+2,0, 0)': u'rgba(-1, +2, 0, 0)',
+            u'rgb(-1,+2,0)': u'rgb(-1, +2, 0)',
+            u'rgba(-1,+2,0, 0)': u'rgba(-1, +2, 0, 0)',
             
             # FUNCTION 
             u'f(1,2)': u'f(1, 2)',
@@ -130,6 +128,11 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             ur'expression(document.width == "1")': u'expression(document.width=="1")',
             u'alpha(opacity=80)': u'alpha(opacity=80)',
             u'alpha( opacity = 80 , x=2  )': u'alpha(opacity=80, x=2)',
+            u'expression(eval(document.documentElement.scrollTop))':
+                u'expression(eval(document.documentElement.scrollTop))',
+            #TODO
+#            u'expression((function(ele){ele.style.behavior="none";})(this))':
+#                u'expression((function(ele){ele.style.behavior="none";})(this))', 
 
             # unicode-range
             'u+f': 'u+f',
@@ -229,6 +232,47 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                     u'f(x))': xml.dom.SyntaxErr
                     }
         self.do_raise_r(tests)
+
+    def test_list(self):
+        "PropertyValue[index]"
+        # issue #41
+        css = """div.one {color: rgb(255, 0, 0);}   """
+        sheet = cssutils.parseString(css)    
+        pv = sheet.cssRules[0].style.getProperty('color').propertyValue
+        self.assertEqual(pv.value, 'rgb(255, 0, 0)')
+        self.assertEqual(pv[0].value, 'rgb(255, 0, 0)')
+        
+        # issue #42
+        sheet = cssutils.parseString('body { font-family: "A", b, serif }')
+        pv = sheet.cssRules[0].style.getProperty('font-family').propertyValue
+        self.assertEqual(3, pv.length)
+        self.assertEqual(pv[0].value, 'A')
+        self.assertEqual(pv[1].value, 'b')
+        self.assertEqual(pv[2].value, 'serif')
+
+    def test_comments(self):
+        "PropertyValue with comment"
+        # issue #45
+        for t in (u'green',
+                  u'green /* comment */',
+                  u'/* comment */green',
+                  u'/* comment */green/* comment */',
+                  u'/* comment */  green  /* comment */',
+                  u'/* comment *//**/  green  /* comment *//**/',
+                  ):
+            sheet = cssutils.parseString('body {color: %s; }' % t)
+            p = sheet.cssRules[0].style.getProperties()[0]
+            self.assertEqual(p.valid, True)
+        for t in (u'gree',
+                  u'gree /* comment */',
+                  u'/* comment */gree',
+                  u'/* comment */gree/* comment */',
+                  u'/* comment */  gree  /* comment */',
+                  u'/* comment *//**/  gree  /* comment *//**/',
+                  ):
+            sheet = cssutils.parseString('body {color: %s; }' % t)
+            p = sheet.cssRules[0].style.getProperties()[0]
+            self.assertEqual(p.valid, False)
 
     def test_incomplete(self):
         "PropertyValue (incomplete)"
