@@ -573,6 +573,18 @@ class MSValue(CSSFunction):
         """Return definition used for parsing."""
         types = self._prods # rename!
         
+        func = Prod(name='MSValue-Sub',
+                    match=lambda t, v: t == self._prods.FUNCTION,
+                    toSeq=lambda t, tokens: (MSValue._functionName, 
+                                     MSValue(cssutils.helper.pushtoken(t, 
+                                                                       tokens
+                                                                       ),
+                                            parent=self
+                                            )
+                                         )
+                    )
+        
+        
         funcProds = Sequence(Prod(name='FUNCTION',
                                   match=lambda t, v: t == types.FUNCTION,
                                   toSeq=lambda t, tokens: (t[0], t[1])
@@ -584,7 +596,8 @@ class MSValue(CSSFunction):
                                              _MSValueProd(self),
                                              #_CalcValueProd(self),
                                              _CSSVariableProd(self),
-                                             _CSSFunctionProd(self),
+                                             func,
+                                             #_CSSFunctionProd(self),
                                              Prod(name='MSValuePart',
                                                   match=lambda t, v: v != u')',
                                                   toSeq=lambda t, tokens: (t[0], t[1])
