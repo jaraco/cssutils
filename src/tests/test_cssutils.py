@@ -233,15 +233,19 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         @import url( "im4" );
         @import url( 'im5' );
         a {
-            background-image: url(c) !important;
+            background-image: url(a) !important;
             background-\image: url(b);
-            background: url(a) no-repeat !important;
+            background: url(c) no-repeat !important;
+            /* issue #46 */
+            src: local("xx"),
+                 url("f.woff") format("woff"),
+                 url("f.otf") format("opentype"),
+                 url("f.svg#f") format("svg");
             }'''
-        s = cssutils.parseString(css)
-        urls = set(cssutils.getUrls(s))
+        urls = set(cssutils.getUrls(cssutils.parseString(css)))
         self.assertEqual(urls, set(["im1", "im2", "im3", "im4", "im5", 
-                                    "c", "b", "a"]))
-
+                                    "a", "b", "c",
+                                    u'f.woff', u'f.svg#f', u'f.otf']))
         cssutils.ser.prefs.keepAllProperties = False
 
     def test_replaceUrls(self):
