@@ -84,7 +84,9 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
             self.assertEqual(str(e), 'CSSImportRule: Unexpected ident. [1:9: x]')
             self.assertEqual(e.line, 1)
             self.assertEqual(e.col, 9)
-            if not sys.platform.startswith('java'):
+            if sys.platform.startswith('java'):
+                self.assertEqual(e.msg, u'CSSImportRule: Unexpected ident. [1:9: x]')
+            else:
                 self.assertEqual(e.args, (u'CSSImportRule: Unexpected ident. [1:9: x]',))
         
         cssutils.log.raiseExceptions = o
