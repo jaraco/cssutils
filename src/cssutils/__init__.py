@@ -201,8 +201,7 @@ def parseStyle(cssText, encoding='utf-8'):
     """
     if isinstance(cssText, str):
         cssText = cssText.decode(encoding)
-    style = css.CSSStyleDeclaration()
-    style.cssText = cssText
+    style = css.CSSStyleDeclaration(cssText)
     return style
 
 # set "ser", default serializer
@@ -236,27 +235,26 @@ def getUrls(sheet):
 
     for style in styleDeclarations(sheet):
         for p in style.getProperties(all=True):
-            pv = p.propertyValue
-            for v in pv:
+            for v in p.propertyValue:
                 if v.type == u'URI':
-                    # TODO: .uri
-                    yield v.value
+                    yield v.uri
 
-def replaceUrls(sheet, replacer, ignoreImportRules=False):
+def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
-    :class:`cssutils.css.CSSValue` objects of given `sheet`.
+    :class:`cssutils.css.CSSValue` objects of given `sheetOrStyle`.
 
-    :param sheet:
-        :class:`cssutils.css.CSSStyleSheet` which is changed
+    :param sheetOrStyle:
+        a :class:`cssutils.css.CSSStyleSheet` or a
+        :class:`cssutils.css.CSSStyleDeclaration` which is changed in place
     :param replacer:
-        a function which is called with a single argument `urlstring` which
-        is the current value of each url() excluding ``url(`` and ``)`` and
-        surrounding single or double quotes.
+        a function which is called with a single argument `url` which
+        is the current value of each url() excluding ``url(``, ``)`` and
+        surrounding (single or double) quotes.
     :param ignoreImportRules:
         if ``True`` does not call `replacer` with URLs from @import rules.
     """
-    if not ignoreImportRules:
-        for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
+    if not ignoreImportRules and (type(sheetOrStyle) != css.CSSStyleDeclaration):
+        for importrule in (r for r in sheetOrStyle if r.type == r.IMPORT_RULE):
             importrule.href = replacer(importrule.href)
 
     def styleDeclarations(base):
@@ -267,13 +265,15 @@ def replaceUrls(sheet, replacer, ignoreImportRules=False):
                     yield s
         elif hasattr(base, 'style'):
             yield base.style
+        elif type(sheetOrStyle) == css.CSSStyleDeclaration:
+            # base is a style already
+            yield base
 
-    for style in styleDeclarations(sheet):
+    for style in styleDeclarations(sheetOrStyle):
         for p in style.getProperties(all=True):
-            pv = p.propertyValue
-            for v in pv:
+            for v in p.propertyValue:
                 if v.type == v.URI:
-                    v.value = replacer(v.value)
+                    v.uri = replacer(v.uri)
 
 def resolveImports(sheet, target=None):
     """Recurcively combine all rules in given `sheet` into a `target` sheet.
@@ -303,8 +303,8 @@ def resolveImports(sheet, target=None):
         basesch, baseloc, basepath, basequery, basefrag = urlparse.urlsplit(targetbase)
         basepath, basepathfilename = os.path.split(basepath)
 
-        def replacer(url):
-            scheme, location, path, query, fragment = urlparse.urlsplit(url)
+        def replacer(uri):
+            scheme, location, path, query, fragment = urlparse.urlsplit(uri)
             if not scheme and not location and not path.startswith(u'/'):
                 # relative
                 path, filename = os.path.split(path)
@@ -312,7 +312,7 @@ def resolveImports(sheet, target=None):
                 return urllib.pathname2url(combined)
             else:
                 # keep anything absolute
-                return url
+                return uri
 
         return replacer
 
@@ -386,8 +386,6 @@ def resolveImports(sheet, target=None):
                 log.error(u'Cannot get referenced stylesheet %r, keeping rule'
                           % rule.href, neverraise=True)
                 target.add(rule)
-
-
 
         else:
             target.add(rule)

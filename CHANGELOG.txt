@@ -57,8 +57,21 @@ HEAD
 
     - IMPROVEMENT/CHANGE: Validation of color values is tighter now. Values like ``hsl(1, 2, 3)`` do not validate as it must be ``hsl(1, 2%, 3%)``. This mostly effects HSL/A and RGB/A notation. Parsing does not stop but a WARNING is emitted.
 
-    - BUGFIX: fixes issue #41, #42, #45, #46
+    - **IMPROVEMENT**: New Value parsing and API accelerate parsing of style declarations which take about 20-30% less time now. Of course this depends on the complexity of your styles.
+
+
+    + BUGFIX: fixes issue #41, #42, #45, #46
         PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
+
+    - FEATURE: ``cssutils.replaceUrls()`` accepts as first argument a `cssutils.css.CSSStyleSheet` but now also a
+        :class:`cssutils.css.CSSStyleDeclaration` object, so may be used like the following which is useful when you work with HTML style attributes::
+
+                >>> style = cssutils.parseStyle("background-image: url(1.png), url('2.png')")
+                >>> cssutils.replaceUrls(style, lambda url: 'prefix/'+url)
+                >>> print style.cssText
+                background-image: url(prefix/1.png), url(prefix/2.png)
+
+        (I omitted the validation error message as more than one background-image is not yet defined in the cssutils validator but does parse through without problems)
 
     + CHANGE: explicit `+` of any dimension, percentage of number value is kept now instead of being stripped as if put explicitly in the author SHOULD have meant something ;)
 
