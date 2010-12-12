@@ -269,6 +269,16 @@ background-\\image: url(NEWb);
 background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
 
         cssutils.ser.prefs.keepAllProperties = False
+        
+        # CSSStyleDeclaration
+        style = cssutils.parseStyle(u'''color: red;
+                                        background-image: 
+                                            url(1.png), 
+                                            url('2.png')''')
+        cssutils.replaceUrls(style, lambda url: 'prefix/'+url)
+        self.assertEqual(style.cssText, u'''color: red;
+background-image: url(prefix/1.png), url(prefix/2.png)''')
+
 
     def test_resolveImports(self):
         "cssutils.resolveImports(sheet)"
