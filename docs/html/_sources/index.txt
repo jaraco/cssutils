@@ -16,19 +16,20 @@ Contents
 	Migration from older version <docs/migrate.txt>
 
     parsing <docs/parse>
+    utilities <docs/utilities>
     Experimental Settings <docs/settings>
     serializing <docs/serialize>
     `cssutils.css` package <docs/css>
     `cssutils.stylesheets` package <docs/stylesheets>
     CSS properties profiles (used for validation) <docs/profiles>
     CSS variables <docs/variables>
-    Utilities <docs/utilities>
     Logging <docs/logging>
     Scripts <docs/scripts>
     CSS Codec <docs/codec>
     `encutils` module <docs/encutils>
 
 	Backlog <docs/backlog.txt>
+
 
 
 See also

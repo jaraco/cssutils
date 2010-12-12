@@ -3,6 +3,8 @@ __________
 
 Known Issues
 ============
+- when PyXML is installed not all tests may run through (see issue #34 for details) as PyXMLs implementation of ``xml.dom.DOMException`` differs from the default (minidom and I guess others) implemtation. Nothing really to worry about...
+
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
 
 - The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
@@ -53,8 +55,23 @@ HEAD
 
             renamed ``ExpressionValue`` to :class:`cssutils.css.MSValue` with new API
 
-    - BUGFIX: fixes issue #41, #42, #45, #46
+    - IMPROVEMENT/CHANGE: Validation of color values is tighter now. Values like ``hsl(1, 2, 3)`` do not validate as it must be ``hsl(1, 2%, 3%)``. This mostly effects HSL/A and RGB/A notation. Parsing does not stop but a WARNING is emitted.
+
+    - **IMPROVEMENT**: New Value parsing and API accelerate parsing of style declarations which take about 20-30% less time now. Of course this depends on the complexity of your styles.
+
+
+    + BUGFIX: fixes issue #41, #42, #45, #46
         PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
+
+    - FEATURE: ``cssutils.replaceUrls()`` accepts as first argument a `cssutils.css.CSSStyleSheet` but now also a
+        :class:`cssutils.css.CSSStyleDeclaration` object, so may be used like the following which is useful when you work with HTML style attributes::
+
+                >>> style = cssutils.parseStyle("background-image: url(1.png), url('2.png')")
+                >>> cssutils.replaceUrls(style, lambda url: 'prefix/'+url)
+                >>> print style.cssText
+                background-image: url(prefix/1.png), url(prefix/2.png)
+
+        (I omitted the validation error message as more than one background-image is not yet defined in the cssutils validator but does parse through without problems)
 
     + CHANGE: explicit `+` of any dimension, percentage of number value is kept now instead of being stripped as if put explicitly in the author SHOULD have meant something ;)
 
@@ -659,7 +676,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-12-01 22:09:10 +0100 (Mi, 01 Dez 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2046 2010-12-01 21:09:10Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-12-07 23:08:38 +0100 (Di, 07 Dez 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2053 2010-12-07 22:08:38Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 

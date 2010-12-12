@@ -82,18 +82,19 @@ objects of given <cite>sheet</cite>.</p>
 <h2><tt class="docutils literal"><span class="pre">replaceUrls</span></tt><a class="headerlink" href="#replaceurls" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="cssutils.replaceUrls">
-<tt class="descclassname">cssutils.</tt><tt class="descname">replaceUrls</tt><big>(</big><em>sheet</em>, <em>replacer</em>, <em>ignoreImportRules=False</em><big>)</big><a class="headerlink" href="#cssutils.replaceUrls" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.</tt><tt class="descname">replaceUrls</tt><big>(</big><em>sheetOrStyle</em>, <em>replacer</em>, <em>ignoreImportRules=False</em><big>)</big><a class="headerlink" href="#cssutils.replaceUrls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace all URLs in <a class="reference internal" href="css.html#cssutils.css.CSSImportRule" title="cssutils.css.CSSImportRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a> or
-<tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt> objects of given <cite>sheet</cite>.</p>
+<tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSValue</span></tt> objects of given <cite>sheetOrStyle</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>sheet</strong> &#8211; <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> which is changed</li>
-<li><strong>replacer</strong> &#8211; a function which is called with a single argument <cite>urlstring</cite> which
-is the current value of each url() excluding <tt class="docutils literal"><span class="pre">url(</span></tt> and <tt class="docutils literal"><span class="pre">)</span></tt> and
-surrounding single or double quotes.</li>
+<li><strong>sheetOrStyle</strong> &#8211; a <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleSheet</span></tt></a> or a
+<a class="reference internal" href="css.html#cssutils.css.CSSStyleDeclaration" title="cssutils.css.CSSStyleDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleDeclaration</span></tt></a> which is changed in place</li>
+<li><strong>replacer</strong> &#8211; a function which is called with a single argument <cite>url</cite> which
+is the current value of each url() excluding <tt class="docutils literal"><span class="pre">url(</span></tt>, <tt class="docutils literal"><span class="pre">)</span></tt> and
+surrounding (single or double) quotes.</li>
 <li><strong>ignoreImportRules</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> does not call <cite>replacer</cite> with URLs from &#64;import rules.</li>
 </ul>
 </td>
