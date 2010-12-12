@@ -35,6 +35,8 @@ Development Version
 0.9.8
 -----
 HEAD
+
+0.9.8a1 101212
     + **API CHANGE (major)**
         replace CSSValue with PropertyValue, Value and other classes.
 
@@ -46,19 +48,27 @@ HEAD
                 - a comma separated list of IDENT values is no longer handled as a single String (e.g. ``Arial, sans-serif``)
 
             :class:`cssutils.css.Value`
-                replaces CSSPrimitiveValue
+                replaces CSSPrimitiveValue with separate ``value`` and ``type`` info (value is typed, so e.g. string for e.g. STRING, IDENT or URI values, int or float) and is base class for more specific values like:
 
-            :class:`cssutils.css.DimensionValue` and other subclasses
-                replaces CSSPrimitiveValue
+            :class:`cssutils.css.URIValue`
+                replaces CSSPrimitiveValue, additional attribute ``uri``
 
-                - keeps separate value, dimension and type info (value is typed, so e.g. string for e.g. STRING, IDENT or URI values, int or float)
+            :class:`cssutils.css.DimensionValue`
+                replaces CSSPrimitiveValue, additional attribute ``dimension``
 
-            renamed ``ExpressionValue`` to :class:`cssutils.css.MSValue` with new API
+            :class:`cssutils.css.ColorValue`
+                replaces CSSPrimitiveValue, additional attribute ``red``, ``green``, ``blue`` and ``alpha``
 
-    - IMPROVEMENT/CHANGE: Validation of color values is tighter now. Values like ``hsl(1, 2, 3)`` do not validate as it must be ``hsl(1, 2%, 3%)``. This mostly effects HSL/A and RGB/A notation. Parsing does not stop but a WARNING is emitted.
+                **TODO: Not yet complete, only rgb, rgba, hsl, hsla and has values use this object and color and alpha information no done yet!**
+
+            :class:`cssutils.css.CSSFunction`
+                replaces CSSPrimitiveValue function, not complete yet
+
+            also renamed ``ExpressionValue`` to :class:`cssutils.css.MSValue` with new API
+
+    - IMPROVEMENT/CHANGE: Validation of color values is tighter now. Values like ``hsl(1, 2, 3)`` do not validate as it must be ``hsl(1, 2%, 3%)``. This mostly effects HSL/A and RGB/A notation.
 
     - **IMPROVEMENT**: New Value parsing and API accelerate parsing of style declarations which take about 20-30% less time now. Of course this depends on the complexity of your styles.
-
 
     + BUGFIX: fixes issue #41, #42, #45, #46
         PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
