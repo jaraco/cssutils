@@ -44,7 +44,14 @@ __all__ = [
     'Selector', 'SelectorList',
     'CSSStyleDeclaration', 'Property',
     #'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
-    'PropertyValue', 'Value'
+    'PropertyValue',
+           'Value',
+           'ColorValue',
+           'DimensionValue',
+           'URIValue',
+           'CSSFunction', 
+           'CSSVariable',
+           'MSValue'
     ]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
