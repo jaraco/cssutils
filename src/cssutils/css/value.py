@@ -497,7 +497,7 @@ class URIValue(Value):
         if ok:
             # only 1 value only anyway
             self._type = seq[0].type
-            self._value = self._uri = seq[0].value
+            self._value = seq[0].value
                         
             self._setSeq(seq)
             self.wellformed = ok
@@ -507,11 +507,11 @@ class URIValue(Value):
                        doc=u'String value of this value.')
     
     def _setUri(self, uri):
-        self._uri = uri
+        # TODO: check
+        self._value = uri
         
-    uri = property(lambda self: self._uri, _setUri, 
+    uri = property(lambda self: self._value, _setUri, 
                          doc=u"Actual URL without delimiters or the empty string")
-
 
       
 class CSSFunction(Value):
