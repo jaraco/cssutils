@@ -932,7 +932,6 @@ class CSSSerializer(object):
             return u''
         else:
             out = Out(self)
-            
             if value.type in (u'DIMENSION', u'NUMBER', u'PERCENTAGE'):
                 dim = value.dimension or u''
                 if value.value == 0:
@@ -955,6 +954,7 @@ class CSSSerializer(object):
                 out.append(sign + val + dim, value.type)
         
             else:
+                # e.g. URI
                 out.append(value.value, value.type)
                 
         return out.value()            
