@@ -348,14 +348,104 @@ y"''': (u'"xy"', u'xy', u'STRING'),
             self.assertEqual(t, v.type)
             self.assertEqual(n, v.value)
 
+
+class ColorValueTestCase(basetest.BaseTestCase):
+
+    def test_init(self):
+        "ColorValue.__init__()"
+        v = cssutils.css.ColorValue()
+        self.assertEqual(v.FUNCTION, v.type)
+        self.assert_(u'' == v.cssText)
+        self.assert_(u'' == v.value)
+        
+    def test_cssText(self):
+        "ColorValue.cssText"
+        tests = {
+                 # HASH
+                 u'#123': (u'#123',),
+                 u'#112233': (u'#123',),
+                 # rgb
+                 u'rgb(1,2,3)': (u'rgb(1, 2, 3)',),
+                 u'rgb(1%,2%,3%)': (u'rgb(1%, 2%, 3%)',),
+                 u'rgb(-1,-1,-1)': (u'rgb(-1, -1, -1)',),
+                 u'rgb(-1%,-2%,-3%)': (u'rgb(-1%, -2%, -3%)',),
+                 # rgba
+                 u'rgba(1,2,3, 0)': (u'rgba(1, 2, 3, 0)',),
+                 # hsl
+                 u'hsl(1,2%,3%)': (u'hsl(1, 2%, 3%)',),
+                 u'hsla(1,2%,3%, 1.0)': (u'hsla(1, 2%, 3%, 1)',),
+                 
+                 }
+        for (p, (r, )) in tests.items():
+            v = cssutils.css.ColorValue(p)
+            self.assertEqual(v.FUNCTION, v.type)
+            self.assertEqual(r, v.cssText)
+            self.assertEqual(r, v.value)
+
+            v = cssutils.css.ColorValue()
+            v.cssText = p
+            self.assertEqual(v.FUNCTION, v.type)
+            self.assertEqual(r, v.cssText)
+            self.assertEqual(r, v.value)
+            
+        tests = {
+             u'1': xml.dom.SyntaxErr,
+             u'a': xml.dom.SyntaxErr,
+             
+             u'#12': xml.dom.SyntaxErr,
+             u'#1234': xml.dom.SyntaxErr,
+             u'#1234567': xml.dom.SyntaxErr,
+             u'#12345678': xml.dom.SyntaxErr,
+             
+             u'rgb(1,1%,1%)': xml.dom.SyntaxErr,
+             u'rgb(1%,1,1)': xml.dom.SyntaxErr,
+             u'rgb(-1,-1%,-1%)': xml.dom.SyntaxErr,
+             u'rgb(-1%,-1,-1)': xml.dom.SyntaxErr,
+
+             u'rgb(1,1,1, 0)': xml.dom.SyntaxErr,
+             u'rgb(1%,1%,1%, 0)': xml.dom.SyntaxErr,
+             u'rgba(1,1,1)': xml.dom.SyntaxErr,
+             u'rgba(1%,1%,1%)': xml.dom.SyntaxErr,
+             u'rgba(1,1,1, 0%)': xml.dom.SyntaxErr,
+             u'rgba(1%,1%,1%, 0%)': xml.dom.SyntaxErr,
+
+             u'hsl(1,2%,3%, 1)': xml.dom.SyntaxErr,
+             u'hsla(1,2%,3%)': xml.dom.SyntaxErr,
+
+             u'hsl(1,2,3)': xml.dom.SyntaxErr,
+             u'hsl(1%,2,3)': xml.dom.SyntaxErr,
+             u'hsl(1%,2,3%)': xml.dom.SyntaxErr,
+             u'hsl(1%,2%,3)': xml.dom.SyntaxErr,
+
+             u'hsla(1,2%,3%, 0%)': xml.dom.SyntaxErr,
+             u'hsla(1,2,3, 0.0)': xml.dom.SyntaxErr,
+             u'hsla(1%,2,3, 0.0)': xml.dom.SyntaxErr,
+             u'hsla(1%,2,3%, 0.0)': xml.dom.SyntaxErr,
+             u'hsla(1%,2%,3, 0.0)': xml.dom.SyntaxErr,
+        }
+        self.r = cssutils.css.ColorValue()
+        self.do_raise_r(tests)           
+
+
 class URIValueTestCase(basetest.BaseTestCase):
 
     def test_init(self):
         "URIValue.__init__()"
         v = cssutils.css.URIValue()
-        self.assert_(u'' == v.cssText)
+        self.assert_(u'url()' == v.cssText)
         self.assert_(u'' == v.value)
-        self.assert_(None is  v.type)
+        self.assert_(u'' == v.uri)
+        self.assert_(v.URI is  v.type)
+        
+        v.uri = '1'
+        self.assert_(u'1' == v.value)
+        self.assert_(u'1' == v.uri)
+        self.assertEqual(u'url(1)', v.cssText)
+
+        v.value = '2'
+        self.assert_(u'2' == v.value)
+        self.assert_(u'2' == v.uri)
+        self.assertEqual(u'url(2)', v.cssText)
 
     def test_cssText(self):
         "URIValue.cssText"
@@ -376,7 +466,23 @@ class URIValueTestCase(basetest.BaseTestCase):
             self.assertEqual(t, v.type)
             self.assertEqual(n, v.value)
             self.assertEqual(n, v.uri)
-           
+
+            v = cssutils.css.URIValue()
+            v.cssText = p
+            self.assertEqual(r, v.cssText)
+            self.assertEqual(t, v.type)
+            self.assertEqual(n, v.value)
+            self.assertEqual(n, v.uri)
+            
+        tests = {
+             u'a()': xml.dom.SyntaxErr,
+             u'1': xml.dom.SyntaxErr,
+             u'url(': xml.dom.SyntaxErr,
+             u'url("': xml.dom.SyntaxErr,
+             u'url(\'': xml.dom.SyntaxErr,
+             }
+        self.r = cssutils.css.URIValue()
+        self.do_raise_r(tests)           
             
 class DimensionValueTestCase(basetest.BaseTestCase):
 

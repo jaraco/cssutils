@@ -223,11 +223,12 @@ class Value(cssutils.util._NewBase):
     FUNCTION = u'FUNCTION'
     VARIABLE = u'VARIABLE'
     
+    _type = None
+    _value = u''
+    
     def __init__(self, cssText=None, parent=None, readonly=False):
         super(Value, self).__init__()
         
-        self._type = None
-        self._value = u''
         self.parent = parent
         
         if cssText:
@@ -382,9 +383,9 @@ class ColorValue(Value):
                          u'hsla(': ('NPPN',)
                          }
                 if check not in checks[functiontype]:
-                    self._log.warn(u'ColorValue has invalid %s) parameters: '
+                    self._log.error(u'ColorValue has invalid %s) parameters: '
                                     u'%s (N=Number, P=Percentage)' % 
-                                    (functiontype, check), neverraise=True)
+                                    (functiontype, check))
                     
                 if len(rgba) < 4:
                     rgba.append(1.0)
@@ -480,7 +481,8 @@ class URIValue(Value):
     """
     An URI value like ``url(example.png)``.
     """
-    _uri = u''
+    _type = Value.URI
+    _uri = Value._value
     
     def __str__(self):
         return u"<cssutils.css.%s object type=%s value=%r uri=%r cssText=%r at 0x%x>"\
@@ -507,7 +509,7 @@ class URIValue(Value):
                        doc=u'String value of this value.')
     
     def _setUri(self, uri):
-        # TODO: check
+        # TODO: check?
         self._value = uri
         
     uri = property(lambda self: self._value, _setUri, 
