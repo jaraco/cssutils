@@ -56,6 +56,8 @@
 <div class="section" id="known-issues">
 <h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
 <ul>
+<li><p class="first">when PyXML is installed not all tests may run through (see issue #34 for details) as PyXMLs implementation of <tt class="docutils literal"><span class="pre">xml.dom.DOMException</span></tt> differs from the default (minidom and I guess others) implemtation. Nothing really to worry about...</p>
+</li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">CSSStyleSheet.cssText</span></tt> is a serialized byte string (<strong>not</strong> unicode string) currently. This may change in the future.</p>
 </li>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">seq</span></tt> attribute of most classes does not hinder you to add invalid items. It will probably become readonly. <strong>Never write to it!</strong></p>
@@ -120,10 +122,29 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 </dl>
 </li>
 </ul>
+<ul class="simple">
+<li>IMPROVEMENT/CHANGE: Validation of color values is tighter now. Values like <tt class="docutils literal"><span class="pre">hsl(1,</span> <span class="pre">2,</span> <span class="pre">3)</span></tt> do not validate as it must be <tt class="docutils literal"><span class="pre">hsl(1,</span> <span class="pre">2%,</span> <span class="pre">3%)</span></tt>. This mostly effects HSL/A and RGB/A notation. Parsing does not stop but a WARNING is emitted.</li>
+<li><strong>IMPROVEMENT</strong>: New Value parsing and API accelerate parsing of style declarations which take about 20-30% less time now. Of course this depends on the complexity of your styles.</li>
+</ul>
 <ul>
 <li><dl class="first docutils">
 <dt>BUGFIX: fixes issue #41, #42, #45, #46</dt>
 <dd><p class="first last">PropertyValue.value returns value without any comments now, else use PropertyValue.cssText</p>
+</dd>
+</dl>
+</li>
+</ul>
+<ul>
+<li><dl class="first docutils">
+<dt>FEATURE: <tt class="docutils literal"><span class="pre">cssutils.replaceUrls()</span></tt> accepts as first argument a <cite>cssutils.css.CSSStyleSheet</cite> but now also a</dt>
+<dd><p class="first"><a class="reference internal" href="docs/css.html#cssutils.css.CSSStyleDeclaration" title="cssutils.css.CSSStyleDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleDeclaration</span></tt></a> object, so may be used like the following which is useful when you work with HTML style attributes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">style</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseStyle</span><span class="p">(</span><span class="s">&quot;background-image: url(1.png), url(&#39;2.png&#39;)&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cssutils</span><span class="o">.</span><span class="n">replaceUrls</span><span class="p">(</span><span class="n">style</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">url</span><span class="p">:</span> <span class="s">&#39;prefix/&#39;</span><span class="o">+</span><span class="n">url</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">cssText</span>
+<span class="go">background-image: url(prefix/1.png), url(prefix/2.png)</span>
+</pre></div>
+</div>
+<p class="last">(I omitted the validation error message as more than one background-image is not yet defined in the cssutils validator but does parse through without problems)</p>
 </dd>
 </dl>
 </li>
@@ -942,7 +963,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-12-01</span> <span class="pre">22:09:10</span> <span class="pre">+0100</span> <span class="pre">(Mi,</span> <span class="pre">01</span> <span class="pre">Dez</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">2046</span> <span class="pre">2010-12-01</span> <span class="pre">21:09:10Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-12-07</span> <span class="pre">23:08:38</span> <span class="pre">+0100</span> <span class="pre">(Di,</span> <span class="pre">07</span> <span class="pre">Dez</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">2053</span> <span class="pre">2010-12-07</span> <span class="pre">22:08:38Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
