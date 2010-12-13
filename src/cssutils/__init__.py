@@ -253,7 +253,8 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     :param ignoreImportRules:
         if ``True`` does not call `replacer` with URLs from @import rules.
     """
-    if not ignoreImportRules and (type(sheetOrStyle) != css.CSSStyleDeclaration):
+    if not ignoreImportRules and not isinstance(sheetOrStyle, 
+                                                css.CSSStyleDeclaration):
         for importrule in (r for r in sheetOrStyle if r.type == r.IMPORT_RULE):
             importrule.href = replacer(importrule.href)
 
@@ -265,7 +266,7 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
                     yield s
         elif hasattr(base, 'style'):
             yield base.style
-        elif type(sheetOrStyle) == css.CSSStyleDeclaration:
+        elif isinstance(sheetOrStyle, css.CSSStyleDeclaration):
             # base is a style already
             yield base
 
