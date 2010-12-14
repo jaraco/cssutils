@@ -26,8 +26,8 @@ Based upon and partly implementing the following specifications :
     Most properties of this spec are implemented and the additional @rules should at least parse (as ``CSSUnknownRule``)
 `Selectors <http://www.w3.org/TR/css3-selectors/>`__
     The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
-`CSS Backgrounds and Borders Module Level 3 <http://www.w3.org/TR/css3-background/>`__, `CSS3 Basic User Interface Module <http://www.w3.org/TR/css3-ui/#resize>`__, `<CSS Text Level 3 http://www.w3.org/TR/css3-text/>`__
-    Some validation for properties included, mainly  `cursor`, `outline`, `resize`,`box-shadow`, `text-shadow`
+`CSS Backgrounds and Borders Module Level 3 <http://www.w3.org/TR/css3-background/>`__, `CSS3 Basic User Interface Module <http://www.w3.org/TR/css3-ui/#resize>`__, `CSS Text Level 3 <http://www.w3.org/TR/css3-text/>`__
+    Some validation for properties included, mainly  `cursor`, `outline`, `resize`, `box-shadow`, `text-shadow`
 `Variables <http://disruptive-innovations.com/zoo/cssvariables/>`__
     Experimental specification of CSS Variables which cssutils implements partly. Media specific variables are not supported.
 
