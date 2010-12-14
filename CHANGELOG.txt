@@ -35,8 +35,8 @@ Development Version
 0.9.8
 -----
 HEAD
-    - IMPROVEMENT: Added validation profiles for some properties from `CSS Backgrounds and Borders Module Level 3 <http://www.w3.org/TR/css3-background/>`__, `CSS3 Basic User Interface Module <http://www.w3.org/TR/css3-ui/#resize>`__, `<CSS Text Level 3 http://www.w3.org/TR/css3-text/>`__
-    mainly  `cursor`, `outline`, `resize`,`box-shadow`, `text-shadow`
+    - IMPROVEMENT: Added validation profiles for some properties from `CSS Backgrounds and Borders Module Level 3 <http://www.w3.org/TR/css3-background/>`__, `CSS3 Basic User Interface Module <http://www.w3.org/TR/css3-ui/#resize>`__, `CSS Text Level 3 <http://www.w3.org/TR/css3-text/>`__
+        mainly  `cursor`, `outline`, `resize`, `box-shadow`, `text-shadow`
 
 
 0.9.8a1 101212

@@ -354,17 +354,12 @@ Define some regular expression fragments that will be used as
 macros within the CSS property value regular expressions.
 """
 macros[Profiles.CSS_LEVEL_2] = {
-    'border-style': 'none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset',
-    'border-color': '{color}',
-    'border-width': '{length}|thin|medium|thick',
-
     'background-color': r'{color}|transparent|inherit',
     'background-image': r'{uri}|none|inherit',
     #'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-position': r'({percentage}|{length}|left|center|right)(\s*({percentage}|{length}|top|center|bottom))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
-
     'shape': r'rect\(({w}({length}|auto}){w},){3}{w}({length}|auto){w}\)',
     'counter': r'counter\({w}{identifier}{w}(?:,{w}{list-style-type}{w})?\)',
     'identifier': r'{ident}',
@@ -386,7 +381,6 @@ macros[Profiles.CSS_LEVEL_2] = {
     'specific-voice': r'{identifier}',
     'generic-voice': r'male|female|child',
     'content': r'{string}|{uri}|{counter}|attr\({w}{identifier}{w}\)|open-quote|close-quote|no-open-quote|no-close-quote',
-    'border-attrs': r'{border-width}|{border-style}|{border-color}',
     'background-attrs': r'{background-color}|{background-image}|{background-repeat}|{background-attachment}|{background-position}',
     'list-attrs': r'{list-style-type}|{list-style-position}|{list-style-image}',
     'font-attrs': r'{font-style}|{font-variant}|{font-weight}',
@@ -407,27 +401,7 @@ properties[Profiles.CSS_LEVEL_2] = {
     # Each piece should only be allowed one time
     'background': r'{background-attrs}(\s+{background-attrs})*|inherit',
     'border-collapse': r'collapse|separate|inherit',
-    'border-color': r'({border-color}|transparent)(\s+({border-color}|transparent)){0,3}|inherit',
     'border-spacing': r'{length}(\s+{length})?|inherit',
-    'border-style': r'{border-style}(\s+{border-style}){0,3}|inherit',
-    'border-top': r'{border-attrs}(\s+{border-attrs})*|inherit',
-    'border-right': r'{border-attrs}(\s+{border-attrs})*|inherit',
-    'border-bottom': r'{border-attrs}(\s+{border-attrs})*|inherit',
-    'border-left': r'{border-attrs}(\s+{border-attrs})*|inherit',
-    'border-top-color': r'{border-color}|transparent|inherit',
-    'border-right-color': r'{border-color}|transparent|inherit',
-    'border-bottom-color': r'{border-color}|transparent|inherit',
-    'border-left-color': r'{border-color}|transparent|inherit',
-    'border-top-style': r'{border-style}|inherit',
-    'border-right-style': r'{border-style}|inherit',
-    'border-bottom-style': r'{border-style}|inherit',
-    'border-left-style': r'{border-style}|inherit',
-    'border-top-width': r'{border-width}|inherit',
-    'border-right-width': r'{border-width}|inherit',
-    'border-bottom-width': r'{border-width}|inherit',
-    'border-left-width': r'{border-width}|inherit',
-    'border-width': r'{border-width}(\s+{border-width}){0,3}|inherit',
-    'border': r'{border-attrs}(\s+{border-attrs})*|inherit',
     'bottom': r'{length}|{percentage}|auto|inherit',
     'caption-side': r'top|bottom|inherit',
     'clear': r'none|left|right|both|inherit',
@@ -514,15 +488,50 @@ properties[Profiles.CSS_LEVEL_2] = {
 
 
 macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
+    'border-style': 'none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset',
+    'border-width': '{length}|thin|medium|thick',
+    'b1': r'{border-width}?({w}{border-style})?({w}{color})?',
+    'b2': r'{border-width}?({w}{color})?({w}{border-style})?',
+    'b3': r'{border-style}?({w}{border-width})?({w}{color})?',
+    'b4': r'{border-style}?({w}{color})?({w}{border-width})?',
+    'b5': r'{color}?({w}{border-style})?({w}{border-width})?',
+    'b6': r'{color}?({w}{border-width})?({w}{border-style})?',
+    'border-attrs': r'{b1}|{b2}|{b3}|{b4}|{b5}|{b6}',
+    'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?'                                                    
     }
-properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
+properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {                                                     
+    'border-color': r'({color}|transparent)(\s+({color}|transparent)){0,3}|inherit',
+    'border-style': r'{border-style}(\s+{border-style}){0,3}|inherit',
+    'border-top': r'{border-attrs}|inherit',
+    'border-right': r'{border-attrs}|inherit',
+    'border-bottom': r'{border-attrs}|inherit',
+    'border-left': r'{border-attrs}|inherit',
+    'border-top-color': r'{color}|transparent|inherit',
+    'border-right-color': r'{color}|transparent|inherit',
+    'border-bottom-color': r'{color}|transparent|inherit',
+    'border-left-color': r'{color}|transparent|inherit',
+    'border-top-style': r'{border-style}|inherit',
+    'border-right-style': r'{border-style}|inherit',
+    'border-bottom-style': r'{border-style}|inherit',
+    'border-left-style': r'{border-style}|inherit',
+    'border-top-width': r'{border-width}|inherit',
+    'border-right-width': r'{border-width}|inherit',
+    'border-bottom-width': r'{border-width}|inherit',
+    'border-left-width': r'{border-width}|inherit',
+    'border-width': r'{border-width}(\s+{border-width}){0,3}|inherit',
+    'border': r'{border-attrs}|inherit',
+    'border-top-right-radius': '{border-radius-part}', 
+    'border-bottom-right-radius': '{border-radius-part}', 
+    'border-bottom-left-radius': '{border-radius-part}', 
+    'border-top-left-radius': '{border-radius-part}',
+    'border-radius': '({length}{w}|{percentage}{w}){1,4}(/{w}({length}{w}|{percentage}{w}){1,4})?',
     'box-shadow': 'none|{shadow}({w},{w}{shadow})*', 
     }
 
 # CSS3 Basic User Interface Module
 macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
-    'border-style': macros[Profiles.CSS_LEVEL_2]['border-style'],
-    'border-width': macros[Profiles.CSS_LEVEL_2]['border-width'],
+    'border-style': macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS]['border-style'],
+    'border-width': macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS]['border-width'],
     'outline-attrs': r'{outline-color}|{outline-style}|{outline-width}',
     'outline-color': r'{color}|invert|inherit',
     'outline-style': r'auto|{border-style}|inherit',
