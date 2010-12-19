@@ -963,9 +963,10 @@ class CSSSerializer(object):
         """Serialize a ColorValue, a HASH simple value or FUNCTION"""
         try:
             return {'FUNCTION': self.do_css_CSSFunction,
-                    'HASH': self.do_css_Value
-                    }[value.type](value, 
-                                  valuesOnly=valuesOnly)
+                    'HASH': self.do_css_Value,
+                    'IDENT': self.do_css_Value
+                    }[value.colorType](value, 
+                                       valuesOnly=valuesOnly)
         except KeyError, e:
             return u''
 
