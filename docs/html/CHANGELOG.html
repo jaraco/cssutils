@@ -97,13 +97,15 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <ul>
 <li><dl class="first docutils">
 <dt><strong>API CHANGE (major)</strong></dt>
-<dd><p class="first last">(Known) names colors are parsed as ColorValue objects now. These are the 16 simple colors (black, white, etc) and <cite>transparent</cite> but not all Extended color keywords yet. Also changed <tt class="docutils literal"><span class="pre">ColorValue.type</span></tt> to <tt class="docutils literal"><span class="pre">Value.COLOR_VALUE</span></tt>. ColorValue has additional properties <tt class="docutils literal"><span class="pre">red,</span> <span class="pre">green,</span> <span class="pre">blue,</span> <span class="pre">alpha</span></tt> and <tt class="docutils literal"><span class="pre">colorType</span></tt> which is one of IDENT, HASH or FUNCTION for now.</p>
+<dd><p class="first last">(Known) named colors are parsed as ColorValue objects now. These are the 16 simple colors (black, white, etc) and <cite>transparent</cite> but not all Extended color keywords yet. Also changed <tt class="docutils literal"><span class="pre">ColorValue.type</span></tt> to <tt class="docutils literal"><span class="pre">Value.COLOR_VALUE</span></tt>. ColorValue has additional properties <tt class="docutils literal"><span class="pre">red,</span> <span class="pre">green,</span> <span class="pre">blue,</span> <span class="pre">alpha</span></tt> and <tt class="docutils literal"><span class="pre">colorType</span></tt> which is one of IDENT, HASH or FUNCTION for now.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>API CHANGE (minor)</dt>
-<dd><p class="first last">Removed already DEPRECATED <tt class="docutils literal"><span class="pre">cssutils.parse</span></tt> and <tt class="docutils literal"><span class="pre">CSSParser.parse</span></tt>. Use the more specific functions/methods <tt class="docutils literal"><span class="pre">parseFile</span> <span class="pre">parseString</span> <span class="pre">parseUrl</span></tt> instead.</p>
+<dd><p class="first">Removed already DEPRECATED <tt class="docutils literal"><span class="pre">cssutils.parse</span></tt> and <tt class="docutils literal"><span class="pre">CSSParser.parse</span></tt>. Use the more specific functions/methods <tt class="docutils literal"><span class="pre">parseFile</span> <span class="pre">parseString</span> <span class="pre">parseUrl</span></tt> instead.</p>
+<p>Removed already DEPRECATED  <tt class="docutils literal"><span class="pre">cssutils.log.setlog</span></tt> and <tt class="docutils literal"><span class="pre">.setloglevel</span></tt>. Use <tt class="docutils literal"><span class="pre">.setLog</span></tt> and <tt class="docutils literal"><span class="pre">.setLevel</span></tt> instead.</p>
+<p class="last">Removed already DEPRECATED  <tt class="docutils literal"><span class="pre">cssutils.ser.keepUnkownAtRules</span></tt> (note the typo). Use <tt class="docutils literal"><span class="pre">.keepUnknownAtRules</span></tt> instead.</p>
 </dd>
 </dl>
 </li>
