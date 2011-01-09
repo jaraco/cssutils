@@ -9,8 +9,8 @@ __all__ = ['Selector']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssutils.util import _SimpleNamespaces
 from cssutils.helper import Deprecated
+from cssutils.util import _SimpleNamespaces
 import cssutils
 import xml.dom
 

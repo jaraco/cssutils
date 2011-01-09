@@ -102,7 +102,6 @@ import urlparse
 import xml.dom
 
 # order of imports is important (partly circular)
-from helper import Deprecated
 import errorhandler
 log = errorhandler.ErrorHandler()
 

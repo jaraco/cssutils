@@ -4,7 +4,7 @@ __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from helper import Deprecated, path2url
+from helper import path2url
 import codecs
 import cssutils
 import os
