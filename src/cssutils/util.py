@@ -802,7 +802,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
     - decodedCssText
 
     ``fetcher``
-        see cssutils.registerFetchUrl for details
+        see cssutils.CSSParser.setFetcher for details
     ``overrideEncoding``
         If given this encoding is used and all other encoding information is
         ignored (HTTP, BOM etc)
@@ -826,6 +826,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
 
     if not fetcher:
         fetcher = _defaultFetcher
+
     r = fetcher(url)
     if r and len(r) == 2 and r[1] is not None:
         httpEncoding, content = r
