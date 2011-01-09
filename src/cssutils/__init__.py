@@ -182,11 +182,6 @@ def parseUrl(*a, **k):
     return CSSParser().parseUrl(*a, **k)
 parseUrl.__doc__ = CSSParser.parseUrl.__doc__
 
-@Deprecated('Use cssutils.parseFile() instead.')
-def parse(*a, **k):
-    return parseFile(*a, **k)
-parse.__doc__ = CSSParser.parse.__doc__
-
 def parseStyle(cssText, encoding='utf-8'):
     """Parse given `cssText` which is assumed to be the content of
     a HTML style attribute.
