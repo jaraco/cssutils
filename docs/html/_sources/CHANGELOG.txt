@@ -37,6 +37,8 @@ Development Version
 HEAD
     - BUGFIX/IMPROVEMENT: Fixed Issue #48. ``CSSParser.parseUrl()`` uses the defined fetcher of this parser *for the initial stylesheet* at url too and not just the imported sheets *from* this sheet.
 
+    - BUGFIX: Fixed Issue #50 which prevented cssutils parsing the acid2.css file correctly. Problem were selectors starting directly with ``[class]`` (an attribute selector).
+
     + **API CHANGE (major)**
         (Known) named colors are parsed as ColorValue objects now. These are the 16 simple colors (black, white, etc) and `transparent` but not all Extended color keywords yet. Also changed ``ColorValue.type`` to ``Value.COLOR_VALUE``. ColorValue has additional properties ``red, green, blue, alpha`` and ``colorType`` which is one of IDENT, HASH or FUNCTION for now.
 
@@ -701,7 +703,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-12-19 19:23:03 +0100 (So, 19 Dez 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2073 2010-12-19 18:23:03Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2011-01-09 11:27:58 +0100 (So, 09 Jan 2011) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2081 2011-01-09 10:27:58Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 

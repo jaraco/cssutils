@@ -101,7 +101,7 @@ Same as <tt class="docutils literal"><span class="pre">insertRule(rule,</span> <
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the StyleSheet&#8217;s rule
 list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
-raised but rules for normal Python lists are used. E.g. 
+raised but rules for normal Python lists are used. E.g.
 <tt class="docutils literal"><span class="pre">deleteRule(-1)</span></tt> removes the last rule in cssRules.</p>
 <p><cite>index</cite> may also be a CSSRule object which will then be removed
 from the StyleSheet.</p>
@@ -146,7 +146,7 @@ becomes part of the cascade.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>rule</strong> &#8211; a parsable DOMString, in cssutils also a 
+<li><strong>rule</strong> &#8211; a parsable DOMString, in cssutils also a
 <a class="reference internal" href="#cssutils.css.CSSRule" title="cssutils.css.CSSRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSRule</span></tt></a> or <a class="reference internal" href="#cssutils.css.CSSRuleList" title="cssutils.css.CSSRuleList"><tt class="xref py py-class docutils literal"><span class="pre">CSSRuleList</span></tt></a></li>
 <li><strong>index</strong> &#8211; of the rule before the new rule will be inserted.
 If the specified <cite>index</cite> is equal to the length of the
@@ -155,7 +155,7 @@ of the style sheet.
 If <cite>index</cite> is not given or <tt class="xref docutils literal"><span class="pre">None</span></tt> rule will be appended to rule
 list.</li>
 <li><strong>inOrder</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> the rule will be put to a proper location while
-ignoring <cite>index</cite> and without raising 
+ignoring <cite>index</cite> and without raising
 <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>.
 The resulting index is returned nevertheless.</li>
 </ul>
