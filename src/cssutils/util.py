@@ -18,7 +18,7 @@ try:
     from _fetchgae import _defaultFetcher
 except ImportError, e:
     from _fetch import _defaultFetcher
-    
+
 log = errorhandler.ErrorHandler()
 
 class _BaseClass(object):
@@ -277,12 +277,21 @@ class Base(_BaseClass):
         resulttokens = []
         if starttoken:
             resulttokens.append(starttoken)
+            val = starttoken[1]
+            if u'[' == val:
+                bracket += 1
+            elif u'{' == val:
+                brace += 1
+            elif u'(' == val:
+                parant += 1
+
         if tokenizer:
             for token in tokenizer:
                 typ, val, line, col = token
                 if 'EOF' == typ:
                     resulttokens.append(token)
                     break
+
                 if u'{' == val:
                     brace += 1
                 elif u'}' == val:
@@ -807,7 +816,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         If given this encoding is used and all other encoding information is
         ignored (HTTP, BOM etc)
     ``parentEncoding``
-        Encoding of parent stylesheet (while e.g. reading @import references 
+        Encoding of parent stylesheet (while e.g. reading @import references
         sheets) or document if available.
 
     Priority or encoding information
@@ -837,8 +846,8 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         elif httpEncoding:
             enctype = 1 # 1. HTTP
             encoding = httpEncoding
-        else:  
-            if isinstance(content, unicode): 
+        else:
+            if isinstance(content, unicode):
                 # no need to check content as unicode so no BOM
                 explicit = False
             else:
