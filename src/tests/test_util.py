@@ -91,7 +91,9 @@ class BaseTestCase(basetest.BaseTestCase):
             ('selectorattendonly', u'[a[()]{()}([()]{()}())] NOT',
                 u'[a[()]{()}([()]{()}())]', False),
             ('selectorattendonly', u'[a[()]{()}([()]{()}())] NOT',
-                u'[a[func()]{func()}func([func()]{func()}func())]', True)
+                u'[a[func()]{func()}func([func()]{func()}func())]', True),
+            # issue 50
+            ('withstarttoken [', u'a];x', u'[a];', False)
             ]
 
         for typ, values, exp, paransasfunc in tests:
@@ -123,6 +125,8 @@ class BaseTestCase(basetest.BaseTestCase):
             elif 'selectorattendonly' == typ:
                 restokens = b._tokensupto2(
                     tokens, selectorattendonly=True)
+            elif 'withstarttoken [' == typ:
+                restokens = b._tokensupto2(tokens, ('CHAR', '[', 0, 0))
 
             res = u''.join([t[1] for t in restokens])
             self.assertEqual(exp, res)
@@ -280,10 +284,10 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             (None, None, (None, u'a'.encode('ascii'))):
                 ('utf-8', 5, u'a'),
             (None, None, (None, u'ä'.encode('utf-8'))):
-                ('utf-8', 5, u'ä'), # read as utf-8                
+                ('utf-8', 5, u'ä'), # read as utf-8
             (None, None, (None, u'ä'.encode('iso-8859-1'))): # trigger UnicodeDecodeError!
                 ('utf-8', 5, None),
-                
+
 
         }
         for (override, parent, r), exp in tests.items():
