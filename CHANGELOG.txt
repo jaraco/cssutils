@@ -37,6 +37,8 @@ Development Version
 HEAD
     - BUGFIX/IMPROVEMENT: Fixed Issue #48. ``CSSParser.parseUrl()`` uses the defined fetcher of this parser *for the initial stylesheet* at url too and not just the imported sheets *from* this sheet.
 
+    - BUGFIX: Fixed Issue #50 which prevented cssutils parsing the acid2.css file correctly. Problem were selectors starting directly with ``[class]`` (an attribute selector).
+
     + **API CHANGE (major)**
         (Known) named colors are parsed as ColorValue objects now. These are the 16 simple colors (black, white, etc) and `transparent` but not all Extended color keywords yet. Also changed ``ColorValue.type`` to ``Value.COLOR_VALUE``. ColorValue has additional properties ``red, green, blue, alpha`` and ``colorType`` which is one of IDENT, HASH or FUNCTION for now.
 
