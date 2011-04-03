@@ -30,28 +30,45 @@ def save(name, string):
     f.close()
 
 
+def maketokens(valuelist):
+                # returns list of tuples
+                return [('TYPE', v, 0, 0) for v in valuelist]
 
-if 0:
-    # ISSUE 35
-    css = """div.one {color: expression((function(ele){ele.style.behavior="none";})(this));}   """
-    css = """div.one {color: expression(function(ele){ele.style.behavior="none";})(this);}   """
-    sheet = cssutils.parseString(css)
-    print sheet.cssText    
-
+if 1:
+    b = cssutils.util.Base()
+    tokens = maketokens(list('];x'))
+    ts = b._tokensupto2(tokens, (0,'[', 0, 0))
+    print ts
     sys.exit(1)
+    
+    #issue 50
+    #s = cssutils.parseString('[a]{color: green}')
+    s = cssutils.parseFile('sheets/acid2.css')
+    print s
+    print s.cssText
+
 
 
 if 1:
-    s = cssutils.parseString('a {x: rgb(1,1,1%)')
+    href = os.path.join(os.path.dirname(__file__),
+                        '..', 'sheets', 'import.css')
+    href = cssutils.helper.path2url(href)
+    #href = 'http://seewhatever.de/sheets/import.css'
+    s = cssutils.parseUrl(href,
+                          media='tv, print',
+                          title='from url')
     print s.cssText
-    sys.exit(1)
-    
-    css = 'rgba(-1%,1%,-1%, 1)'
+    sys.exit(0)
+
+if 1:
+    css = '\\ReD white transparent, navy #ff0000 #f0f #ff00ff #00ff00'
     p = cssutils.css.Property('color', css)
     print p
     print
     pv = p.propertyValue
-    print pv.cssText
+    for c in pv:
+        print c
+        #print c.name, c.colorType, c.red, c.green, c.blue, c.alpha
 #    for i, v in enumerate(pv):
 #        print i, v
 #        print 'RGBA', v.red, v.green, v.blue, v.alpha
@@ -64,17 +81,197 @@ if 1:
     sys.exit(1)
 
 
+
+if 1:
+    import cssutils.script
+    #p = r'sheets\vars\vars.css'
+    p = r'sheets\var\start.css'
+
+    do = """
+    import cssutils
+    t = cssutils.tokenize2.Tokenizer()
+    css='''
+    @page {}
+    @media {}
+    @media {}
+    @media {}
+    @media {}
+    @media {}
+    @media {}
+    /* basic styles
+ * $Id$
+ */
+html,body,h1,h2,h3,h4,h5,h6,p,form,iframe,pre,blockquote,ul,ol,li,dd,dl,fieldset,hr {
+    margin: 0;
+    padding: 0;
+    }
+body {
+    font: normal 75%/1.5 sans-serif;
+    color: #000;
+    background-color: #fff;
+    }
+a {
+    text-decoration: none;
+    }
+img {
+    border: 0;
+    }
+textarea {
+    resize: vertical;
+    }
+*>body sup,
+*>body sub {
+    vertical-align: baseline;
+    position: relative;
+    }
+    *>body sup {
+        top: -0.4em;
+        }
+    *>body sub {
+        bottom: -0.2em;
+        }
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    }
+    tr {
+        vertical-align: top;
+        }
+    caption, th {
+        text-align: left;
+        }
+ul, ol, li, dd {
+    margin-left:20px
+    }
+    li {
+        line-height: 1.25em;
+        }
+.inline {
+    list-style: none;
+    margin-left: 0;
+    }
+    .inline li {
+        display: inline;
+        margin-left: 0;
+        }
+    .inline dt {
+        clear: left;
+        float: left;
+        }
+        .inline dd {
+            margin-left: 0;
+            }
+
+/* useful for and shown by JS */
+.jsblock, .jsinline {
+    display: none;
+    }
+
+/* add to floating elements which shall clear floating after themselves */
+* html .clearfix {
+    height: 1%; /* IE5-6 */
+    }
+*+html .clearfix {
+    display: inline-block; /* IE7not8 */
+    }
+.clearfix:after { /* FF, IE8, O, S, etc. */
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+    }
+    }
+    '''
+    list(t.tokenize(css))
+
+#    c = {}
+#    for x in t.tokenize(css):
+#        n = x[0]
+#        try:
+#            c[n] += 1
+#        except KeyError:
+#            c[n] = 1
+#    print c
+    """
+    t = cssutils.tokenize2.Tokenizer()
+
+
+    t = timeit.Timer(do)       # outside the try/except
+    try:
+        print t.timeit(100)    # or t.repeat(...)
+    except:
+        print t.print_exc()
+
+#    print cssutils.script.csscombine(p,
+#                                     resolveVariables=True)
+#    cssutils.ser.prefs.resolveVariables = True
+#    s = cssutils.parseFile(p)
+#    print s.cssRules
+#    print s.cssText
+    sys.exit(1)
+
+
+if 1:
+    css='''
+    a {
+        border: red 1px solid;
+        border-radius: 1px  2px /   4px;
+        border-top-right-radius: 1%;
+        border-top-right-radius: 1% 2%;
+        behavior: url(css3pie.htc);
+        color: rgba(1,2,3, 0.0);
+        margin: 1px 2px 3px;
+        padding: 1px 2px;
+        background: black;
+        background-color: #fff;
+        content: "string";
+    }
+    '''
+    t = cssutils.tokenize2.Tokenizer()
+    for x in t.tokenize(css):
+        print x
+#
+#    v = cssutils.css.URIValue(u'url(/**/1)')
+#    print v.cssText
+#    v.uri = 'uri'
+#    print v.cssText
+#    v.value = 'value'
+#    print v.cssText
+
+    sys.exit(1)
+
+if 1:
+    # request by Walter
+    style = cssutils.parseStyle("background-image: url(1.png), url('2.png')")
+    cssutils.replaceUrls(style, lambda url: 'prefix/'+url)
+    print style.cssText
+
+    sys.exit(1)
+
+if 0:
+    # ISSUE 35
+    css = """div.one {color: expression((function(ele){ele.style.behavior="none";})(this));}   """
+    css = """div.one {color: expression(function(ele){ele.style.behavior="none";})(this);}   """
+    sheet = cssutils.parseString(css)
+    print sheet.cssText
+
+    sys.exit(1)
+
+
+
+
 if 1:
     css = """
     .content div:after,
 .content div .ieafter { content: ""; position: absolute; z-index: -1;
                         left: 0; top: 0; right: -1px; bottom: -9999px;
                         background: inherit; }
- 
+
 /* IE 6/7/8 fixes */
 * html .content       { height: 1%; /* IE6 hasLayout */ }
 .content div          { -ieafter: expression(this.ieAfter ? 0 : (function(el) {
-                        el.ieAfter = document.createElement('span'); el.ieAfter.className = 'ieafter'; 
+                        el.ieAfter = document.createElement('span'); el.ieAfter.className = 'ieafter';
                         el.appendChild(el.ieAfter); })(this)); }
 .ieafter              { width: expression(parseInt(parentNode.offsetWidth) + 1 + 'px');
                         height: expression(parseInt(parentNode.parentNode.offsetHeight) + 'px');
@@ -116,7 +313,7 @@ if 1:
                     over3-0: 3;
                     local3: 3;
                 }
-            
+
             ''',
             '2.css': '''
                 @variables {
@@ -129,7 +326,7 @@ if 1:
                     over2-0: 2;
                     local2: 2;
                 }
-            
+
             ''',
             '1.css': '''
                 @import "3.css";
@@ -144,10 +341,10 @@ if 1:
                     over1-0: 1;
                     local1: 1;
                 }
-            
+
             '''
             }[url])
-    
+
     css = '''
         @import "1.css";
         @variables {
@@ -181,62 +378,13 @@ if 1:
     p = cssutils.CSSParser(fetcher=fetcher)
     s = p.parseString(css)
     #print s.cssText
-    print 
+    print
     s = cssutils.resolveImports(s)
     print sorted(s.variables.keys())
-    
+
     sys.exit(0)
 
-if 1:
-    import cssutils.script
-    #p = r'sheets\vars\vars.css'
-    p = r'sheets\var\start.css'
 
-    do = '''import cssutils.script
-p = 'sheets/var/start.css'
-#p = 'sheets/vars/vars.css'
-print cssutils.script.csscombine(p,
-                                 resolveVariables=True)
-    '''
-    do = """
-    import cssutils
-    css = '''
-    a {
- /**//**//**//**//**//**//**//**/
- /**//**//**//**//**//**//**//**/
- color: red;
- background: 1px 2px 3px;
- padding: 1px 1px 2px 5cm;
- font: normal 1px/5em Arial, sans-serif;
- color: red;
- background: 1px 2px 3px;
- padding: 1px 1px 2px 5cm;
- font: normal 1px/5em Arial, sans-serif;
- color: red;
- background: 1px 2px 3px;
- padding: 1px 1px 2px 5cm;
- font: normal 1px/5em Arial, sans-serif;
- color: red;
- background: 1px 2px 3px;
- padding: 1px 1px 2px 5cm;
- font: normal 1px/5em Arial, sans-serif;
- }    '''
-    p = cssutils.CSSParser(parseComments=False)
-    sheet = p.parseString(css)
-    """
-    t = timeit.Timer(do)       # outside the try/except
-    try:
-        print t.timeit(20)    # or t.repeat(...)
-    except:
-        print t.print_exc()
-
-#    print cssutils.script.csscombine(p,
-#                                     resolveVariables=True)
-#    cssutils.ser.prefs.resolveVariables = True
-#    s = cssutils.parseFile(p)
-#    print s.cssRules
-#    print s.cssText
-    sys.exit(1)
 
 if 1:
     print cssutils.ser.prefs.keepUnkownAtRules
@@ -478,10 +626,10 @@ if 1:
     url(/image/css3-multi-repeat.png) repeat-y;
     background-color: #516ac4;
 }
-.box-shadow {
-    box-shadow: 6px 6px 4px #cecece;
-    -moz-box-shadow: 6px 6px 4px #cecece;
-    -webkit-box-shadow: 6px 6px 4px #cecece;
+.text-shadow {
+    text-shadow: 6px 6px 4px #cecece;
+    -moz-text-shadow: 6px 6px 4px #cecece;
+    -webkit-text-shadow: 6px 6px 4px #cecece;
 }
 .text-shadow {
     text-shadow: 1px 2px 3px #1a1a1a;
@@ -539,7 +687,7 @@ if 1:
     for t in p.parseString('''
     a, b {
         color: red;
-        background: url(/1.gif); }'''):
+        background: url(/1.png); }'''):
         type_, text, line, col = t
         if 'URI' == type_:
             uri = cssutils.helper.urivalue(text)
