@@ -13,8 +13,24 @@ __date__ = '$LastChangedDate::                            $:'
 import codecs
 import os
 import sys
-sys.path.insert(0, "src")
-from cssutils import VERSION
+
+# For Python 2.4, 2.5
+try:
+    next
+except NameError:
+    next = lambda iter: iter.next
+
+# extract the version without importing the module
+lines = open('src/cssutils/__init__.py')
+is_ver_line = lambda line: line.startswith('VERSION = ')
+line = next(line for line in lines if is_ver_line(line))
+exec(line, locals(), globals())
+
+# use the build_py_2to3 if we're building on Python 3
+try:
+    from distutils.command.build_py import build_py_2to3 as build_py
+except ImportError:
+    from distutils.command.build_py import build_py
 
 try:
     from setuptools import setup, find_packages
@@ -26,7 +42,7 @@ except ImportError:
 def read(*rnames):
     return codecs.open(os.path.join(*rnames), encoding='utf-8').read()
 
-long_description = u'\n' + read('README.txt') + u'\n'# + read('CHANGELOG.txt')
+long_description = '\n' + read('README.txt') + '\n'# + read('CHANGELOG.txt')
 
 setup(
     name='cssutils',
@@ -51,6 +67,10 @@ setup(
     license='LGPL 2.1 or later, see also http://cthedot.de/cssutils/',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
     platforms='Python 2.4 and later.',
+    cmdclass=dict(
+        # specify the build_py command imported earlier
+        build_py=build_py,
+    ),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
@@ -58,6 +78,8 @@ setup(
         'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML'
