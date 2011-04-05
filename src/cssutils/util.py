@@ -6,7 +6,7 @@ __version__ = '$Id$'
 
 from helper import normalize
 from itertools import ifilter
-import css
+import cssutils
 import codec
 import codecs
 import errorhandler
@@ -339,7 +339,7 @@ class Base(_BaseClass):
             "default impl for unexpected @rule"
             if expected != 'EOF':
                 # TODO: parentStyleSheet=self
-                rule = css.CSSUnknownRule()
+                rule = cssutils.css.CSSUnknownRule()
                 rule.cssText = self._tokensupto2(tokenizer, token)
                 if rule.wellformed:
                     seq.append(rule)
@@ -351,7 +351,7 @@ class Base(_BaseClass):
 
         def COMMENT(expected, seq, token, tokenizer=None):
             "default implementation for COMMENT token adds CSSCommentRule"
-            seq.append(css.CSSComment([token]))
+            seq.append(cssutils.css.CSSComment([token]))
             return expected
 
         def S(expected, seq, token, tokenizer=None):
@@ -442,10 +442,10 @@ class Base2(Base, _NewBase):
             "default impl for unexpected @rule"
             if expected != 'EOF':
                 # TODO: parentStyleSheet=self
-                rule = css.CSSUnknownRule()
+                rule = cssutils.css.CSSUnknownRule()
                 rule.cssText = self._tokensupto2(tokenizer, token)
                 if rule.wellformed:
-                    seq.append(rule, css.CSSRule.UNKNOWN_RULE,
+                    seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE,
                                line=token[2], col=token[3])
                 return expected
             else:
@@ -458,7 +458,7 @@ class Base2(Base, _NewBase):
             if expected == 'EOF':
                 new['wellformed'] = False
                 self._log.error(u'Expected EOF but found comment.', token=token)
-            seq.append(css.CSSComment([token]), 'COMMENT')
+            seq.append(cssutils.css.CSSComment([token]), 'COMMENT')
             return expected
 
         def S(expected, seq, token, tokenizer=None):
@@ -613,7 +613,7 @@ class Item(object):
 class ListSeq(object):
     """
     (EXPERIMENTAL)
-    A base class used for list classes like css.SelectorList or
+    A base class used for list classes like cssutils.css.SelectorList or
     stylesheets.MediaList
 
     adds list like behaviour running on inhering class' property ``seq``
@@ -719,7 +719,7 @@ class _Namespaces(object):
             prefix = u'' # None or ''
         rule = self.__findrule(prefix)
         if not rule:
-            self.parentStyleSheet.insertRule(css.CSSNamespaceRule(
+            self.parentStyleSheet.insertRule(cssutils.css.CSSNamespaceRule(
                                                     prefix=prefix,
                                                     namespaceURI=namespaceURI),
                                   inOrder=True)

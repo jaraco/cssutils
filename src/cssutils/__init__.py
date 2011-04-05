@@ -102,12 +102,12 @@ import urlparse
 import xml.dom
 
 # order of imports is important (partly circular)
+from . import util
 import errorhandler
 log = errorhandler.ErrorHandler()
 
 import css
 import stylesheets
-import util
 from parse import CSSParser
 
 from serialize import CSSSerializer
