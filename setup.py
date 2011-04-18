@@ -48,7 +48,7 @@ setup(
     name='cssutils',
     version=VERSION,
     package_dir={'':'src'},
-    packages=find_packages('src', exclude=('tests*',)),
+    packages=find_packages('src'),
     test_suite='tests', #'nose.collector'
     tests_require='minimock',
     entry_points={

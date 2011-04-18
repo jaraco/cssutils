@@ -284,19 +284,19 @@ class CodecTestCase(unittest.TestCase):
             return reader.read()
 
         for d in (decodeall, incdecode, streamdecode):
-            input = '@charset "utf-8"; \xc3\xbf'
+            input = b'@charset "utf-8"; \xc3\xbf'
             output = u'@charset "utf-8"; \xff'
             self.assertEqual(d(input), output)
 
-            input = '@charset "utf-8"; \xc3\xbf'
+            input = b'@charset "utf-8"; \xc3\xbf'
             output = u'@charset "iso-8859-1"; \xc3\xbf'
             self.assertEqual(d(input, encoding="iso-8859-1", force=True), output)
 
-            input = '\xc3\xbf'
+            input = b'\xc3\xbf'
             output = u'\xc3\xbf'
             self.assertEqual(d(input, encoding="iso-8859-1", force=True), output)
 
-            input = '@charset "utf-8"; \xc3\xbf'
+            input = b'@charset "utf-8"; \xc3\xbf'
             output = u'@charset "utf-8"; \xff'
             self.assertEqual(d(input, encoding="iso-8859-1", force=False), output)
 
