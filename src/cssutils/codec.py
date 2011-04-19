@@ -4,6 +4,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Walter Doerwald'
 __version__ = '$Id: util.py 1114 2008-03-05 13:22:59Z cthedot $'
 
+import sys
 import codecs
 import marshal
 
@@ -23,6 +24,13 @@ import marshal
 # UTF-32-BE   x00  x00  x00   @
 # CHARSET      @    c    h    a  ...
 
+
+if sys.version_info < (3,):
+    def chars(bytestring):
+        return bytestring
+else:
+    def chars(bytestring):
+        return ''.join(chr(byte) for byte in bytestring)
 
 def detectencoding_str(input, final=False):
     """
@@ -54,6 +62,7 @@ def detectencoding_str(input, final=False):
 
     candidates = 1023 # all candidates
 
+    input = chars(input)
     li = len(input)
     if li>=1:
         # Check first byte
