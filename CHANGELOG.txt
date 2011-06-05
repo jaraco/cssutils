@@ -35,6 +35,8 @@ Development Version
 0.9.8
 -----
 HEAD
+    - BUGFIX: Fixed Issue #59 which showed a rather strange problem with longer space separated lists of font-family values being so slow to actually stop parsing.
+
     - BUGFIX/IMPROVEMENT: Fixed Issue #48. ``CSSParser.parseUrl()`` uses the defined fetcher of this parser *for the initial stylesheet* at url too and not just the imported sheets *from* this sheet.
 
     - BUGFIX: Fixed Issue #50 which prevented cssutils parsing the acid2.css file correctly. Problem were selectors starting directly with ``[class]`` (an attribute selector).
