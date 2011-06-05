@@ -316,7 +316,6 @@ class Profiles(object):
                 profiles = self.defaultProfiles
             elif isinstance(profiles, basestring):
                 profiles = (profiles, )
-
             for profilename in profiles:
                 # check given profiles
                 if name in self._profiles[profilename]:
@@ -367,7 +366,9 @@ macros[Profiles.CSS_LEVEL_2] = {
     'generic-family': r'serif|sans-serif|cursive|fantasy|monospace',
     'absolute-size': r'(x?x-)?(small|large)|medium',
     'relative-size': r'smaller|larger',
-    'font-family': r'(({family-name}|{generic-family}){w},{w})*({family-name}|{generic-family})|inherit',
+    
+    'font-family': r'(({family-name}|{generic-family})({w},{w}({family-name}|{generic-family}))*)|inherit',
+    
     'font-size': r'{absolute-size}|{relative-size}|{positivelength}|{percentage}|inherit',
     'font-style': r'normal|italic|oblique|inherit',
     'font-variant': r'normal|small-caps|inherit',
