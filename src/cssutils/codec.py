@@ -30,7 +30,9 @@ if sys.version_info < (3,):
         return bytestring
 else:
     def chars(bytestring):
-        return ''.join(chr(byte) for byte in bytestring)
+        # TODO: does not work as expected?!
+        #return ''.join(chr(byte) for byte in bytestring)
+        return bytestring
 
 def detectencoding_str(input, final=False):
     """
@@ -211,7 +213,13 @@ def decode(input, errors="strict", encoding=None, force=True):
             raise ValueError("css not allowed as encoding name")
         if (explicit and not force) or encoding is None: # Take the encoding from the input
             encoding = _encoding
-    (input, consumed) = codecs.getdecoder(encoding)(input, errors)
+            
+    if sys.version_info < (3,):
+        (input, consumed) = codecs.getdecoder(encoding)(input, errors)
+    else:
+        # TODO: does this make sense at all?
+        (input, consumed) = codecs.getdecoder(encoding)(bytes(input, encoding), errors)
+    
     return (_fixencoding(input, unicode(encoding), True), consumed)
 
 

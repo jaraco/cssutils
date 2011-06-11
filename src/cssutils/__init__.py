@@ -230,7 +230,7 @@ def getUrls(sheet):
     for style in styleDeclarations(sheet):
         for p in style.getProperties(all=True):
             for v in p.propertyValue:
-                if v.type == u'URI':
+                if v.type == 'URI':
                     yield v.uri
 
 def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
