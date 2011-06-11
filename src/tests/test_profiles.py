@@ -6,8 +6,11 @@ import basetest
 import cssutils
 
 CSS2 = (cssutils.profile.CSS_LEVEL_2,)
+C3BUI = (cssutils.profile.CSS3_BASIC_USER_INTERFACE,)
+C3BB = (cssutils.profile.CSS3_BACKGROUNDS_AND_BORDERS,)
 CM3 = (cssutils.profile.CSS3_COLOR,)
 FM3 = (cssutils.profile.CSS3_FONTS,)
+C3T = (cssutils.profile.CSS3_TEXT,)
 FM3FF = (cssutils.profile.CSS3_FONT_FACE,)
 CSS2_CM3 = (CM3[0], CSS2[0])
 CSS2_FM3 = (FM3[0], CSS2[0])
@@ -92,9 +95,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
     def test_removeProfile(self):
         "Profiles.removeProfile()"
         p = cssutils.profiles.Profiles()
-        self.assertEqual(6, len(p.profiles))
+        self.assertEqual(9, len(p.profiles))
         p.removeProfile(p.CSS_LEVEL_2)
-        self.assertEqual(5, len(p.profiles))
+        self.assertEqual(8, len(p.profiles))
         p.removeProfile(all=True)
         self.assertEqual(0, len(p.profiles))
 
@@ -180,7 +183,62 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('background-position', ('0 left',
                                      'top 0'
                                      )): (False, False, CSS2),
-             
+
+
+            ('border-top-right-radius', ('1px',
+                                         '1%',
+                                         '1% -1px',
+                                         '1% 0',
+                                         )): (True, True, C3BB),
+            ('border-top-right-radius', ('1px 2px 2px', 
+                                         '/ 1px',
+                                         'black')): (False, False, C3BB),
+
+            ('border-radius', ('1px',
+                               '1%',
+                               '0',
+                               '1px 1px', 
+                               '1px/ 1px', 
+                               '1px /1px', 
+                               '1px  /  1px', 
+                               '1px 1px 1px 1px',
+                               '1px 1px 1px 1px / 1px 1px 1px 1px',
+                               )): (True, True, C3BB),
+            ('border-radius', ('1px /', 
+                               '/ 1px',
+                               '1px / 1px / 1px',
+                               '1px 1px 1px 1px 1px',
+                               '1px / 1px 1px 1px 1px 1px',
+                               'black')): (False, False, C3BB),
+
+            ('border', ('1px',
+                        'solid',
+                        'red',
+                        '1px solid red',
+                        '1px red solid',
+                        'red 1px solid',
+                        'red solid 1px',
+                        'solid 1px red',
+                        'solid red 1px',
+                               )): (True, True, C3BB),
+            ('border', ('1px 1px', 
+                        'red red 1px',
+                        )): (False, False, C3BB),
+            
+            ('box-shadow', ('none',
+                            '1px 1px', 
+                            '1px 1px 1px',
+                            '1px 1px 1px 1px',
+                            '1px 1px 1px 1px red',
+                            'inset 1px 1px',
+                            'inset 1px 1px 1px 1px black')): (True, True, C3BB),
+            ('box-shadow', ('1px', 
+                            '1px 1px 1px 1px 1px',
+                            'x 1px 1px',
+                            'inset',
+                            '1px black',
+                            'black')): (False, False, C3BB),
+            
             # color
             ('color', ('x',
                        '#',
@@ -240,6 +298,15 @@ class ProfilesTestCase(basetest.BaseTestCase):
                          '""',
                          "'x'",
                          )): (True, True, CSS2),
+
+            ('cursor', ('url(1), auto', 
+                        'url(1) 2 3, help',
+                        'wait',
+                        'inherit',
+                        'none')): (True, True, C3BUI),
+            ('cursor', ('url(1), auto, wait', 
+                        'url(1) 2, help',
+                        '1')): (False, False, C3BUI),
             
             # FONTS
             ('font-family', ('serif, x',
@@ -304,6 +371,19 @@ class ProfilesTestCase(basetest.BaseTestCase):
             # invalid
             ('opacity', ('a', '#000', '+1')): (False, False, CM3),
 
+            ('nav-index', ('1', 'auto', 'inherit')): (True, True, C3BUI),
+            ('nav-index', ('x', '1 2', '1px')): (False, False, C3BUI),
+
+            ('resize', ('none', 
+                        'both', 
+                        'horizontal', 
+                        'vertical',
+                        'inherit')): (True, True, C3BUI),
+            ('resize', ('1', 
+                        'auto', 
+                        '1px', 
+                        '2%')): (False, False, C3BUI),
+
             ('src', ('url(  a  )',
                      'local(  x  )',
                      'local("x")',
@@ -316,6 +396,21 @@ class ProfilesTestCase(basetest.BaseTestCase):
                      'local("Gentium"), url("/fonts/Gentium.ttf")',
                      'local(Futura-Medium), url(fonts.svg#MyGeometricModern) format("svg")',
                     )): (True, True, FM3FF),
+
+
+            ('text-shadow', ('none',
+                            '1px 1px', 
+                            '1px 1px 1px',
+                            '1px 1px 1px 1px',
+                            '1px 1px 1px 1px red',
+                            'inset 1px 1px',
+                            'inset 1px 1px 1px 1px black')): (True, True, C3T),
+            ('text-shadow', ('1px', 
+                            '1px 1px 1px 1px 1px',
+                            'x 1px 1px',
+                            'inset',
+                            '1px black',
+                            'black')): (False, False, C3T),
 
             ('unicode-range', ('u+1', 'U+111111-ffffff',
                                'u+123456  ,  U+1-f'

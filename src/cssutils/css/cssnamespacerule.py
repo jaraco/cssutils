@@ -4,7 +4,6 @@ __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssutils.helper import Deprecated
 import cssrule
 import cssutils
 import xml.dom

@@ -18,7 +18,6 @@ __all__ = ['ErrorHandler']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from helper import Deprecated
 import logging
 import urllib2
 import xml.dom
@@ -100,14 +99,6 @@ class _ErrorHandler(object):
     def setLog(self, log):
         """set log of errorhandler's log"""
         self._log = log
-
-    @Deprecated('Use setLog() instead.')
-    def setlog(self, log):
-        self.setLog(log)
-
-    @Deprecated('Use setLevel() instead.')
-    def setloglevel(self, level):
-        self.setLevel(level)
 
 
 class ErrorHandler(_ErrorHandler):

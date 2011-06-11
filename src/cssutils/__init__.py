@@ -91,7 +91,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.8a1'
+VERSION = '0.9.8dev'
 
 __version__ = '%s $Id$' % VERSION
 
@@ -102,7 +102,6 @@ import urlparse
 import xml.dom
 
 # order of imports is important (partly circular)
-from helper import Deprecated
 import errorhandler
 log = errorhandler.ErrorHandler()
 
@@ -182,11 +181,6 @@ def parseUrl(*a, **k):
     return CSSParser().parseUrl(*a, **k)
 parseUrl.__doc__ = CSSParser.parseUrl.__doc__
 
-@Deprecated('Use cssutils.parseFile() instead.')
-def parse(*a, **k):
-    return parseFile(*a, **k)
-parse.__doc__ = CSSParser.parse.__doc__
-
 def parseStyle(cssText, encoding='utf-8'):
     """Parse given `cssText` which is assumed to be the content of
     a HTML style attribute.
@@ -253,7 +247,8 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     :param ignoreImportRules:
         if ``True`` does not call `replacer` with URLs from @import rules.
     """
-    if not ignoreImportRules and (type(sheetOrStyle) != css.CSSStyleDeclaration):
+    if not ignoreImportRules and not isinstance(sheetOrStyle, 
+                                                css.CSSStyleDeclaration):
         for importrule in (r for r in sheetOrStyle if r.type == r.IMPORT_RULE):
             importrule.href = replacer(importrule.href)
 
@@ -265,7 +260,7 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
                     yield s
         elif hasattr(base, 'style'):
             yield base.style
-        elif type(sheetOrStyle) == css.CSSStyleDeclaration:
+        elif isinstance(sheetOrStyle, css.CSSStyleDeclaration):
             # base is a style already
             yield base
 

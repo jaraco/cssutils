@@ -25,10 +25,12 @@ class Profiles(object):
 
     :attr:`~cssutils.profiles.Profiles.CSS_LEVEL_2`
         Properties defined by CSS2.1
-    :attr:`~cssutils.profiles.Profiles.CSS3_COLOR`
-        CSS 3 color properties
+    :attr:`~cssutils.profiles.Profiles.CSS3_BASIC_USER_INTERFACE`
+        Currently resize and outline properties only
     :attr:`~cssutils.profiles.Profiles.CSS3_BOX`
         Currently overflow related properties only
+    :attr:`~cssutils.profiles.Profiles.CSS3_COLOR`
+        CSS 3 color properties
     :attr:`~cssutils.profiles.Profiles.CSS3_PAGED_MEDIA`
         As defined at http://www.w3.org/TR/css3-page/ (at 090307)
 
@@ -42,12 +44,15 @@ class Profiles(object):
     If you want to redefine any of these macros do this in your custom
     macros.
     """
-    CSS_LEVEL_2 = 'CSS Level 2.1'
-    CSS3_BOX = CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
-    CSS3_COLOR = CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
-    CSS3_FONTS = 'CSS Fonts Module Level 3'
-    CSS3_FONT_FACE = 'CSS Fonts Module Level 3 @font-face properties'
-    CSS3_PAGED_MEDIA = 'CSS3 Paged Media Module'
+    CSS_LEVEL_2 = u'CSS Level 2.1'
+    CSS3_BACKGROUNDS_AND_BORDERS = u'CSS Backgrounds and Borders Module Level 3'
+    CSS3_BASIC_USER_INTERFACE = u'CSS3 Basic User Interface Module'
+    CSS3_BOX = CSS_BOX_LEVEL_3 = u'CSS Box Module Level 3'
+    CSS3_COLOR = CSS_COLOR_LEVEL_3 = u'CSS Color Module Level 3'
+    CSS3_FONTS = u'CSS Fonts Module Level 3'
+    CSS3_FONT_FACE = u'CSS Fonts Module Level 3 @font-face properties'
+    CSS3_PAGED_MEDIA = u'CSS3 Paged Media Module'
+    CSS3_TEXT = u'CSS Text Level 3'
 
     _TOKEN_MACROS = {
         'ident': r'[-]?{nmstart}{nmchar}*',
@@ -83,6 +88,7 @@ class Profiles(object):
         'time': r'0|{num}m?s',
         'frequency': r'0|{num}k?Hz',
         'percentage': r'{num}%',
+        'shadow': '(inset)?{w}{length}{w}{length}{w}{length}?{w}{length}?{w}{color}?'
         }
 
     def __init__(self, log=None):
@@ -95,6 +101,12 @@ class Profiles(object):
         self.addProfile(self.CSS_LEVEL_2,
                         properties[self.CSS_LEVEL_2],
                         macros[self.CSS_LEVEL_2])
+        self.addProfile(self.CSS3_BACKGROUNDS_AND_BORDERS,
+                        properties[self.CSS3_BACKGROUNDS_AND_BORDERS],
+                        macros[self.CSS3_BACKGROUNDS_AND_BORDERS])
+        self.addProfile(self.CSS3_BASIC_USER_INTERFACE,
+                        properties[self.CSS3_BASIC_USER_INTERFACE],
+                        macros[self.CSS3_BASIC_USER_INTERFACE])
         self.addProfile(self.CSS3_BOX,
                         properties[self.CSS3_BOX],
                         macros[self.CSS3_BOX])
@@ -114,6 +126,10 @@ class Profiles(object):
         self.addProfile(self.CSS3_PAGED_MEDIA,
                         properties[self.CSS3_PAGED_MEDIA],
                         macros[self.CSS3_PAGED_MEDIA])
+        
+        self.addProfile(self.CSS3_TEXT,
+                        properties[self.CSS3_TEXT],
+                        macros[self.CSS3_TEXT])
 
         self.__update_knownNames()
 
@@ -300,7 +316,6 @@ class Profiles(object):
                 profiles = self.defaultProfiles
             elif isinstance(profiles, basestring):
                 profiles = (profiles, )
-
             for profilename in profiles:
                 # check given profiles
                 if name in self._profiles[profilename]:
@@ -338,17 +353,12 @@ Define some regular expression fragments that will be used as
 macros within the CSS property value regular expressions.
 """
 macros[Profiles.CSS_LEVEL_2] = {
-    'border-style': 'none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset',
-    'border-color': '{color}',
-    'border-width': '{length}|thin|medium|thick',
-
     'background-color': r'{color}|transparent|inherit',
     'background-image': r'{uri}|none|inherit',
     #'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-position': r'({percentage}|{length}|left|center|right)(\s*({percentage}|{length}|top|center|bottom))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
-
     'shape': r'rect\(({w}({length}|auto}){w},){3}{w}({length}|auto){w}\)',
     'counter': r'counter\({w}{identifier}{w}(?:,{w}{list-style-type}{w})?\)',
     'identifier': r'{ident}',
@@ -356,7 +366,9 @@ macros[Profiles.CSS_LEVEL_2] = {
     'generic-family': r'serif|sans-serif|cursive|fantasy|monospace',
     'absolute-size': r'(x?x-)?(small|large)|medium',
     'relative-size': r'smaller|larger',
-    'font-family': r'(({family-name}|{generic-family}){w},{w})*({family-name}|{generic-family})|inherit',
+    
+    'font-family': r'(({family-name}|{generic-family})({w},{w}({family-name}|{generic-family}))*)|inherit',
+    
     'font-size': r'{absolute-size}|{relative-size}|{positivelength}|{percentage}|inherit',
     'font-style': r'normal|italic|oblique|inherit',
     'font-variant': r'normal|small-caps|inherit',
@@ -366,18 +378,13 @@ macros[Profiles.CSS_LEVEL_2] = {
     'list-style-position': r'inside|outside|inherit',
     'list-style-type': r'disc|circle|square|decimal|decimal-leading-zero|lower-roman|upper-roman|lower-greek|lower-(latin|alpha)|upper-(latin|alpha)|armenian|georgian|none|inherit',
     'margin-width': r'{length}|{percentage}|auto',
-    'outline-color': r'{color}|invert|inherit',
-    'outline-style': r'{border-style}|inherit',
-    'outline-width': r'{border-width}|inherit',
     'padding-width': r'{length}|{percentage}',
     'specific-voice': r'{identifier}',
     'generic-voice': r'male|female|child',
     'content': r'{string}|{uri}|{counter}|attr\({w}{identifier}{w}\)|open-quote|close-quote|no-open-quote|no-close-quote',
-    'border-attrs': r'{border-width}|{border-style}|{border-color}',
     'background-attrs': r'{background-color}|{background-image}|{background-repeat}|{background-attachment}|{background-position}',
     'list-attrs': r'{list-style-type}|{list-style-position}|{list-style-image}',
     'font-attrs': r'{font-style}|{font-variant}|{font-weight}',
-    'outline-attrs': r'{outline-color}|{outline-style}|{outline-width}',
     'text-attrs': r'underline|overline|line-through|blink',
     'overflow': r'visible|hidden|scroll|auto|inherit',
 }
@@ -395,27 +402,7 @@ properties[Profiles.CSS_LEVEL_2] = {
     # Each piece should only be allowed one time
     'background': r'{background-attrs}(\s+{background-attrs})*|inherit',
     'border-collapse': r'collapse|separate|inherit',
-    'border-color': r'({border-color}|transparent)(\s+({border-color}|transparent)){0,3}|inherit',
     'border-spacing': r'{length}(\s+{length})?|inherit',
-    'border-style': r'{border-style}(\s+{border-style}){0,3}|inherit',
-    'border-top': r'{border-attrs}(\s+{border-attrs})*|inherit',
-    'border-right': r'{border-attrs}(\s+{border-attrs})*|inherit',
-    'border-bottom': r'{border-attrs}(\s+{border-attrs})*|inherit',
-    'border-left': r'{border-attrs}(\s+{border-attrs})*|inherit',
-    'border-top-color': r'{border-color}|transparent|inherit',
-    'border-right-color': r'{border-color}|transparent|inherit',
-    'border-bottom-color': r'{border-color}|transparent|inherit',
-    'border-left-color': r'{border-color}|transparent|inherit',
-    'border-top-style': r'{border-style}|inherit',
-    'border-right-style': r'{border-style}|inherit',
-    'border-bottom-style': r'{border-style}|inherit',
-    'border-left-style': r'{border-style}|inherit',
-    'border-top-width': r'{border-width}|inherit',
-    'border-right-width': r'{border-width}|inherit',
-    'border-bottom-width': r'{border-width}|inherit',
-    'border-left-width': r'{border-width}|inherit',
-    'border-width': r'{border-width}(\s+{border-width}){0,3}|inherit',
-    'border': r'{border-attrs}(\s+{border-attrs})*|inherit',
     'bottom': r'{length}|{percentage}|auto|inherit',
     'caption-side': r'top|bottom|inherit',
     'clear': r'none|left|right|both|inherit',
@@ -427,7 +414,7 @@ properties[Profiles.CSS_LEVEL_2] = {
     'cue-after': r'{uri}|none|inherit',
     'cue-before': r'{uri}|none|inherit',
     'cue': r'({uri}|none|inherit){1,2}|inherit',
-    'cursor': r'((({uri}{w},{w})*)?(auto|crosshair|default|pointer|move|(e|ne|nw|n|se|sw|s|w)-resize|text|wait|help|progress))|inherit',
+    #'cursor': r'((({uri}{w},{w})*)?(auto|crosshair|default|pointer|move|(e|ne|nw|n|se|sw|s|w)-resize|text|wait|help|progress))|inherit',
     'direction': r'ltr|rtl|inherit',
     'display': r'inline|block|list-item|run-in|inline-block|table|inline-table|table-row-group|table-header-group|table-footer-group|table-row|table-column-group|table-column|table-cell|table-caption|none|inherit',
     'elevation': r'{angle}|below|level|above|higher|lower|inherit',
@@ -457,10 +444,6 @@ properties[Profiles.CSS_LEVEL_2] = {
     'min-height': r'{length}|{percentage}|none|inherit',
     'min-width': r'{length}|{percentage}|none|inherit',
     'orphans': r'{integer}|inherit',
-    'outline-color': r'{outline-color}',
-    'outline-style': r'{outline-style}',
-    'outline-width': r'{outline-width}',
-    'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
     'overflow': r'{overflow}',
     'padding-top': r'{padding-width}|inherit',
     'padding-right': r'{padding-width}|inherit',
@@ -503,6 +486,66 @@ properties[Profiles.CSS_LEVEL_2] = {
     'word-spacing': r'normal|{length}|inherit',
     'z-index': r'auto|{integer}|inherit',
 }
+
+
+macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
+    'border-style': 'none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset',
+    'border-width': '{length}|thin|medium|thick',
+    'b1': r'{border-width}?({w}{border-style})?({w}{color})?',
+    'b2': r'{border-width}?({w}{color})?({w}{border-style})?',
+    'b3': r'{border-style}?({w}{border-width})?({w}{color})?',
+    'b4': r'{border-style}?({w}{color})?({w}{border-width})?',
+    'b5': r'{color}?({w}{border-style})?({w}{border-width})?',
+    'b6': r'{color}?({w}{border-width})?({w}{border-style})?',
+    'border-attrs': r'{b1}|{b2}|{b3}|{b4}|{b5}|{b6}',
+    'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?'                                                    
+    }
+properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {                                                     
+    'border-color': r'({color}|transparent)(\s+({color}|transparent)){0,3}|inherit',
+    'border-style': r'{border-style}(\s+{border-style}){0,3}|inherit',
+    'border-top': r'{border-attrs}|inherit',
+    'border-right': r'{border-attrs}|inherit',
+    'border-bottom': r'{border-attrs}|inherit',
+    'border-left': r'{border-attrs}|inherit',
+    'border-top-color': r'{color}|transparent|inherit',
+    'border-right-color': r'{color}|transparent|inherit',
+    'border-bottom-color': r'{color}|transparent|inherit',
+    'border-left-color': r'{color}|transparent|inherit',
+    'border-top-style': r'{border-style}|inherit',
+    'border-right-style': r'{border-style}|inherit',
+    'border-bottom-style': r'{border-style}|inherit',
+    'border-left-style': r'{border-style}|inherit',
+    'border-top-width': r'{border-width}|inherit',
+    'border-right-width': r'{border-width}|inherit',
+    'border-bottom-width': r'{border-width}|inherit',
+    'border-left-width': r'{border-width}|inherit',
+    'border-width': r'{border-width}(\s+{border-width}){0,3}|inherit',
+    'border': r'{border-attrs}|inherit',
+    'border-top-right-radius': '{border-radius-part}', 
+    'border-bottom-right-radius': '{border-radius-part}', 
+    'border-bottom-left-radius': '{border-radius-part}', 
+    'border-top-left-radius': '{border-radius-part}',
+    'border-radius': '({length}{w}|{percentage}{w}){1,4}(/{w}({length}{w}|{percentage}{w}){1,4})?',
+    'box-shadow': 'none|{shadow}({w},{w}{shadow})*', 
+    }
+
+# CSS3 Basic User Interface Module
+macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
+    'border-style': macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS]['border-style'],
+    'border-width': macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS]['border-width'],
+    'outline-attrs': r'{outline-color}|{outline-style}|{outline-width}',
+    'outline-color': r'{color}|invert|inherit',
+    'outline-style': r'auto|{border-style}|inherit',
+    'outline-width': r'{border-width}|inherit',
+    }
+properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
+    'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit',    'outline-style': r'{outline-style}',
+    'nav-index': r'auto|{number}|inherit',
+    'outline-width': r'{outline-width}',
+    'outline-offset': r'{length}|inherit',
+    'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
+    'resize': 'none|both|horizontal|vertical|inherit',
+    }
 
 # CSS Box Module Level 3
 macros[Profiles.CSS3_BOX] = {
@@ -565,6 +608,12 @@ properties[Profiles.CSS3_PAGED_MEDIA] = {
     'page-break-inside': 'auto|avoid|inherit',
     'size': '({length}{w}){1,2}|auto|{pagesize}{w}(?:portrait|landscape)',
     'widows': r'{integer}|inherit'
+    }
+
+macros[Profiles.CSS3_TEXT] = {
+    }
+properties[Profiles.CSS3_TEXT] = {
+    'text-shadow': 'none|{shadow}({w},{w}{shadow})*', 
     }
 
 
