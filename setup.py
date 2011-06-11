@@ -24,7 +24,12 @@ except NameError:
 lines = open('src/cssutils/__init__.py')
 is_ver_line = lambda line: line.startswith('VERSION = ')
 line = next(line for line in lines if is_ver_line(line))
-exec(line, locals(), globals())
+
+# For Python 2.4, 2.5
+try:
+    exec(line, locals(), globals())
+except TypeError:
+    exec(line(), locals(), globals())
 
 # use the build_py_2to3 if we're building on Python 3
 try:
