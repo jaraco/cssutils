@@ -35,6 +35,32 @@ Development Version
 0.9.8
 -----
 HEAD
+	- compatibility to Python 3.x is currently in development. At the same time
+	  compatibility for Python 2.4 and Python 2.5 will probably be lost...
+	  
+	  0.9.8 will be the last version to support Python 2.4 and Python 2.5.
+	  
+
+0.9.8a2 110611
+    - BUGFIX: Fixed Issue #59 which showed a rather strange problem with longer space separated lists of font-family values being so slow to actually stop parsing.
+
+    - BUGFIX/IMPROVEMENT: Fixed Issue #48. ``CSSParser.parseUrl()`` uses the defined fetcher of this parser *for the initial stylesheet* at url too and not just the imported sheets *from* this sheet.
+
+    - BUGFIX: Fixed Issue #50 which prevented cssutils parsing the acid2.css file correctly. Problem were selectors starting directly with ``[class]`` (an attribute selector).
+
+    + **API CHANGE (major)**
+        (Known) named colors are parsed as ColorValue objects now. These are the 16 simple colors (black, white, etc) and `transparent` but not all Extended color keywords yet. Also changed ``ColorValue.type`` to ``Value.COLOR_VALUE``. ColorValue has additional properties ``red, green, blue, alpha`` and ``colorType`` which is one of IDENT, HASH or FUNCTION for now.
+
+    + API CHANGE (minor)
+        Removed already DEPRECATED ``cssutils.parse`` and ``CSSParser.parse``. Use the more specific functions/methods ``parseFile parseString parseUrl`` instead.
+
+        Removed already DEPRECATED  ``cssutils.log.setlog`` and ``.setloglevel``. Use ``.setLog`` and ``.setLevel`` instead.
+
+        Removed already DEPRECATED  ``cssutils.ser.keepUnkownAtRules`` (note the typo). Use ``.keepUnknownAtRules`` instead.
+
+    - IMPROVEMENT: Added validation profiles for some properties from `CSS Backgrounds and Borders Module Level 3 <http://www.w3.org/TR/css3-background/>`__, `CSS3 Basic User Interface Module <http://www.w3.org/TR/css3-ui/#resize>`__, `CSS Text Level 3 <http://www.w3.org/TR/css3-text/>`__
+        mainly  `cursor`, `outline`, `resize`, `box-shadow`, `text-shadow`
+
 
 0.9.8a1 101212
     + **API CHANGE (major)**
@@ -686,7 +712,7 @@ Archived Versions
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2010-12-12 13:43:52 +0100 (So, 12 Dez 2010) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2058 2010-12-12 12:43:52Z cthedot $`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate: 2011-06-11 18:54:21 +0200 (Sa, 11 Jun 2011) $`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id: CHANGELOG.txt 2099 2011-06-11 16:54:21Z cthedot $`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 

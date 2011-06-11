@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CHANGELOG &mdash; cssutils v0.9.8a1 documentation</title>
+    <title>CHANGELOG &mdash; cssutils v0.9.8a2 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.8a1',
+        VERSION:     '0.9.8a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.8a1 documentation" href="index.html" />
+    <link rel="top" title="cssutils v0.9.8a2 documentation" href="index.html" />
     <link rel="next" title="version migration" href="docs/migrate.html" />
     <link rel="prev" title="README" href="README.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.8a1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.8a2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -89,8 +89,46 @@ In almost any case it is possible to use at least syntactically valid CSS while 
 <h2>Development Version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id1">
 <h3>0.9.8<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>HEAD</p>
 <dl class="docutils">
+<dt>HEAD</dt>
+<dd><ul class="first last">
+<li><p class="first">compatibility to Python 3.x is currently in development. At the same time
+compatibility for Python 2.4 and Python 2.5 will probably be lost...</p>
+<p>0.9.8 will be the last version to support Python 2.4 and Python 2.5.</p>
+</li>
+</ul>
+</dd>
+<dt>0.9.8a2 110611</dt>
+<dd><ul class="first simple">
+<li>BUGFIX: Fixed Issue #59 which showed a rather strange problem with longer space separated lists of font-family values being so slow to actually stop parsing.</li>
+<li>BUGFIX/IMPROVEMENT: Fixed Issue #48. <tt class="docutils literal"><span class="pre">CSSParser.parseUrl()</span></tt> uses the defined fetcher of this parser <em>for the initial stylesheet</em> at url too and not just the imported sheets <em>from</em> this sheet.</li>
+<li>BUGFIX: Fixed Issue #50 which prevented cssutils parsing the acid2.css file correctly. Problem were selectors starting directly with <tt class="docutils literal"><span class="pre">[class]</span></tt> (an attribute selector).</li>
+</ul>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>API CHANGE (major)</strong></dt>
+<dd><p class="first last">(Known) named colors are parsed as ColorValue objects now. These are the 16 simple colors (black, white, etc) and <cite>transparent</cite> but not all Extended color keywords yet. Also changed <tt class="docutils literal"><span class="pre">ColorValue.type</span></tt> to <tt class="docutils literal"><span class="pre">Value.COLOR_VALUE</span></tt>. ColorValue has additional properties <tt class="docutils literal"><span class="pre">red,</span> <span class="pre">green,</span> <span class="pre">blue,</span> <span class="pre">alpha</span></tt> and <tt class="docutils literal"><span class="pre">colorType</span></tt> which is one of IDENT, HASH or FUNCTION for now.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>API CHANGE (minor)</dt>
+<dd><p class="first">Removed already DEPRECATED <tt class="docutils literal"><span class="pre">cssutils.parse</span></tt> and <tt class="docutils literal"><span class="pre">CSSParser.parse</span></tt>. Use the more specific functions/methods <tt class="docutils literal"><span class="pre">parseFile</span> <span class="pre">parseString</span> <span class="pre">parseUrl</span></tt> instead.</p>
+<p>Removed already DEPRECATED  <tt class="docutils literal"><span class="pre">cssutils.log.setlog</span></tt> and <tt class="docutils literal"><span class="pre">.setloglevel</span></tt>. Use <tt class="docutils literal"><span class="pre">.setLog</span></tt> and <tt class="docutils literal"><span class="pre">.setLevel</span></tt> instead.</p>
+<p class="last">Removed already DEPRECATED  <tt class="docutils literal"><span class="pre">cssutils.ser.keepUnkownAtRules</span></tt> (note the typo). Use <tt class="docutils literal"><span class="pre">.keepUnknownAtRules</span></tt> instead.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<ul class="last">
+<li><dl class="first docutils">
+<dt>IMPROVEMENT: Added validation profiles for some properties from <a class="reference external" href="http://www.w3.org/TR/css3-background/">CSS Backgrounds and Borders Module Level 3</a>, <a class="reference external" href="http://www.w3.org/TR/css3-ui/#resize">CSS3 Basic User Interface Module</a>, <a class="reference external" href="http://www.w3.org/TR/css3-text/">CSS Text Level 3</a></dt>
+<dd><p class="first last">mainly  <cite>cursor</cite>, <cite>outline</cite>, <cite>resize</cite>, <cite>box-shadow</cite>, <cite>text-shadow</cite></p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
 <dt>0.9.8a1 101212</dt>
 <dd><ul class="first">
 <li><dl class="first docutils">
@@ -971,7 +1009,7 @@ The content is then decoded by cssutils using all encoding related data availabl
 <li><strong>FEATURE</strong>: Referenced stylesheet in an &#64;import rule is read and parsed now if possible. Therefor the <tt class="docutils literal"><span class="pre">href</span></tt> given during parsing (parameter <tt class="docutils literal"><span class="pre">href</span></tt> to the <tt class="docutils literal"><span class="pre">parse*</span></tt> functions is used. It is also properly set on imported rules. The <tt class="docutils literal"><span class="pre">name</span></tt> property of the &#64;import rule is set as the imported sheets <tt class="docutils literal"><span class="pre">title</span></tt> property.</li>
 <li><strong>FEATURE</strong>: Added <tt class="docutils literal"><span class="pre">cssutils.getUrls(sheet)</span></tt> utility method to get all <tt class="docutils literal"><span class="pre">url(urlstring)</span></tt> values in <tt class="docutils literal"><span class="pre">CSSImportRules</span></tt> and <tt class="docutils literal"><span class="pre">CSSStyleDeclaration</span></tt> objects (properties). As this function and the above mentioned <tt class="docutils literal"><span class="pre">replaceUrls(sheet,</span> <span class="pre">replacer)</span></tt> are useful not only for a single sheet but (later) also for a stylesheet list they are not methods of CSSStyleSheet anymore (also because they are not part of the official DOM spec). (patch by doerwalter)</li>
 <li>FEATURE: Added <tt class="docutils literal"><span class="pre">cssutils.parseURL(url,</span> <span class="pre">encoding=None,</span> <span class="pre">...)</span></tt></li>
-<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2010-12-12</span> <span class="pre">13:43:52</span> <span class="pre">+0100</span> <span class="pre">(So,</span> <span class="pre">12</span> <span class="pre">Dez</span> <span class="pre">2010)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">2058</span> <span class="pre">2010-12-12</span> <span class="pre">12:43:52Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
+<li>BUGFIX: Fixes Issue #10, using full <tt class="docutils literal"><span class="pre">$LastChangedDate:</span> <span class="pre">2011-06-11</span> <span class="pre">18:54:21</span> <span class="pre">+0200</span> <span class="pre">(Sa,</span> <span class="pre">11</span> <span class="pre">Jun</span> <span class="pre">2011)</span> <span class="pre">$</span></tt> in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files <tt class="docutils literal"><span class="pre">$Id:</span> <span class="pre">CHANGELOG.txt</span> <span class="pre">2099</span> <span class="pre">2011-06-11</span> <span class="pre">16:54:21Z</span> <span class="pre">cthedot</span> <span class="pre">$</span></tt> is used which also includes simple but sufficient date information.</li>
 <li><strong>BUGFIX/IMPROVEMENT</strong>: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is <tt class="docutils literal"><span class="pre">CSSCharsetRule</span></tt> where no comments are allowed at all.</li>
 </ul>
 <ul class="simple">
@@ -2363,12 +2401,12 @@ first version to try if i can bring it to work at all</p>
         <li class="right" >
           <a href="README.html" title="README"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.8a1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils v0.9.8a2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
   </body>
 </html>
