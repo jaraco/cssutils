@@ -14,7 +14,7 @@ import codecs
 import os
 import sys
 
-# For Python 2.4, 2.5
+# For Python 2.5
 try:
     next
 except NameError:
@@ -25,7 +25,7 @@ lines = open('src/cssutils/__init__.py')
 is_ver_line = lambda line: line.startswith('VERSION = ')
 line = next(line for line in lines if is_ver_line(line))
 
-# For Python 2.4, 2.5
+# For Python 2.5
 try:
     exec(line, locals(), globals())
 except TypeError:
@@ -71,7 +71,7 @@ setup(
     download_url='http://code.google.com/p/cssutils/downloads/list',
     license='LGPL 2.1 or later, see also http://cthedot.de/cssutils/',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
-    platforms='Python 2.4 and later.',
+    platforms='Python 2.5 and later.',
     cmdclass=dict(
         # specify the build_py command imported earlier
         build_py=build_py,
