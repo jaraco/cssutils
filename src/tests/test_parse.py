@@ -96,14 +96,14 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 ('', None): (False, None, None), 
                 ('1', None): (False, None, None), 
                 ('mailto:a@bb.cd', None): (False, None, None), 
-                ('http://example.com/x.css', None): (False, None, None), 
-                ('http://example.com/x.css', ''): (True, u'utf-8', u''), 
-                ('http://example.com/x.css', 'a'): (True, u'utf-8', u''), 
-                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
+                ('http://cthedot.de/test.css', None): (False, None, None), 
+                ('http://cthedot.de/test.css', ''): (True, u'utf-8', u''), 
+                ('http://cthedot.de/test.css', 'a'): (True, u'utf-8', u''), 
+                ('http://cthedot.de/test.css', 'a {color: red}'): (True, u'utf-8', 
                                                                  u'a {\n    color: red\n    }'), 
-                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
+                ('http://cthedot.de/test.css', 'a {color: red}'): (True, u'utf-8', 
                                                                  u'a {\n    color: red\n    }'), 
-                ('http://example.com/x.css', '@charset "ascii";a {color: red}'): (True, u'ascii', 
+                ('http://cthedot.de/test.css', '@charset "ascii";a {color: red}'): (True, u'ascii', 
                                                                  u'@charset "ascii";\na {\n    color: red\n    }'), 
             }
             override = 'iso-8859-1'
@@ -132,7 +132,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
             parser.setFetcher(None)
 
             self.assertRaises(ValueError, parser.parseUrl, '../not-valid-in-urllib')
-            self.assertRaises(urllib2.HTTPError, parser.parseUrl, 'http://example.com/not-present.css')
+            self.assertRaises(urllib2.HTTPError, parser.parseUrl, 'http://cthedot.de/not-present.css')
 
     def test_parseString(self):
         "CSSParser.parseString()"
