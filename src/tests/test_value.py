@@ -354,9 +354,11 @@ class ColorValueTestCase(basetest.BaseTestCase):
     def test_init(self):
         "ColorValue.__init__()"
         v = cssutils.css.ColorValue()
-        self.assertEqual(v.FUNCTION, v.type)
+        self.assertEqual(v.COLOR_VALUE, v.type)
         self.assert_(u'' == v.cssText)
         self.assert_(u'' == v.value)
+        self.assertEqual(u'transparent', v.name)
+        self.assertEqual(None, v.colorType)
         
     def test_cssText(self):
         "ColorValue.cssText"
@@ -378,13 +380,13 @@ class ColorValueTestCase(basetest.BaseTestCase):
                  }
         for (p, (r, )) in tests.items():
             v = cssutils.css.ColorValue(p)
-            self.assertEqual(v.FUNCTION, v.type)
+            self.assertEqual(v.COLOR_VALUE, v.type)
             self.assertEqual(r, v.cssText)
             self.assertEqual(r, v.value)
 
             v = cssutils.css.ColorValue()
             v.cssText = p
-            self.assertEqual(v.FUNCTION, v.type)
+            self.assertEqual(v.COLOR_VALUE, v.type)
             self.assertEqual(r, v.cssText)
             self.assertEqual(r, v.value)
             

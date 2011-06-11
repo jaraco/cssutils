@@ -5,7 +5,7 @@ __all__ = ['CSSSerializer', 'Preferences']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssutils.helper import Deprecated, normalize
+from cssutils.helper import normalize
 import codecs
 import cssutils
 import helper
@@ -163,12 +163,6 @@ class Preferences(object):
         self.spacer = u''
         self.validOnly = False
 
-    @Deprecated(u'Use ``keepUnknownAtRules`` (note the typo) instead - ignored.')
-    def __keepUnkownAtRules(self, ignored=None):
-        pass
-
-    keepUnkownAtRules = property(__keepUnkownAtRules, __keepUnkownAtRules,
-                                  doc=u'Use keepUnknownAtRules instead!')
 
 class Out(object):
     """A simple class which makes appended items available as a combined string"""
@@ -963,9 +957,10 @@ class CSSSerializer(object):
         """Serialize a ColorValue, a HASH simple value or FUNCTION"""
         try:
             return {'FUNCTION': self.do_css_CSSFunction,
-                    'HASH': self.do_css_Value
-                    }[value.type](value, 
-                                  valuesOnly=valuesOnly)
+                    'HASH': self.do_css_Value,
+                    'IDENT': self.do_css_Value
+                    }[value.colorType](value, 
+                                       valuesOnly=valuesOnly)
         except KeyError, e:
             return u''
 

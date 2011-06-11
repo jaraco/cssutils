@@ -98,22 +98,20 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 ('mailto:a@bb.cd', None): (False, None, None), 
                 ('http://example.com/x.css', None): (False, None, None), 
                 ('http://example.com/x.css', ''): (True, u'utf-8', u''), 
-               # ('http://example.com/x.css', 'a'): (True, u'utf-8', u''), 
-#                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
-#                                                                 u'a {\n    color: red\n    }'), 
-#                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
-#                                                                 u'a {\n    color: red\n    }'), 
-#                ('http://example.com/x.css', '@charset "ascii";a {color: red}'): (True, u'ascii', 
-#                                                                 u'@charset "ascii";\na {\n    color: red\n    }'), 
+                ('http://example.com/x.css', 'a'): (True, u'utf-8', u''), 
+                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
+                                                                 u'a {\n    color: red\n    }'), 
+                ('http://example.com/x.css', 'a {color: red}'): (True, u'utf-8', 
+                                                                 u'a {\n    color: red\n    }'), 
+                ('http://example.com/x.css', '@charset "ascii";a {color: red}'): (True, u'ascii', 
+                                                                 u'@charset "ascii";\na {\n    color: red\n    }'), 
             }
             override = 'iso-8859-1'
             overrideprefix = u'@charset "iso-8859-1";'
             httpencoding = None
             
-            for (url, content), (isSheet, expencoding, cssText) in tests.items():
-                mock("cssutils.util._defaultFetcher", 
-                     mock_obj=self._make_fetcher(httpencoding, content))
-                #parser.setFetcher(self._make_fetcher(httpencoding, content))
+            for (url, content), (isSheet, expencoding, cssText) in tests.items():                
+                parser.setFetcher(self._make_fetcher(httpencoding, content))
                 sheet1 = parser.parseUrl(url)
                 sheet2 = parser.parseUrl(url, encoding=override)
                 restore()
@@ -130,6 +128,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 else:
                     self.assertEqual(sheet1, None)
                     self.assertEqual(sheet2, None)
+
+            parser.setFetcher(None)
 
             self.assertRaises(ValueError, parser.parseUrl, '../not-valid-in-urllib')
             self.assertRaises(urllib2.HTTPError, parser.parseUrl, 'http://example.com/not-present.css')

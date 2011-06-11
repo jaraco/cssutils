@@ -4,7 +4,7 @@ __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from helper import Deprecated, path2url
+from helper import path2url
 import codecs
 import cssutils
 import os
@@ -148,10 +148,11 @@ class CSSParser(object):
         :returns:
             :class:`~cssutils.css.CSSStyleSheet`.
         """
-        encoding, enctype, text = cssutils.util._readUrl(href,
+        encoding, enctype, text = cssutils.util._readUrl(href, 
+                                                         fetcher=self.__fetcher,
                                                          overrideEncoding=encoding)
         if enctype == 5:
-            # do not used if defaulting to UTF-8
+            # do not use if defaulting to UTF-8
             encoding = None
             
         if text is not None:
@@ -181,7 +182,3 @@ class CSSParser(object):
         """
         self.__fetcher = fetcher
 
-    @Deprecated('Use cssutils.CSSParser().parseFile() instead.')
-    def parse(self, filename, encoding=None,
-              href=None, media=None, title=None):
-        self.parseFile(filename, encoding, href, media, title)
