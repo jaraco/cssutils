@@ -5,49 +5,30 @@ A Python package to parse and build CSS Cascading Style Sheets.
 
 about this release
 ------------------
-0.9.8a1 is an early alpha release.
+0.9.8a2 is a bugfix release.
+
+Compatibility to Python 3.x is currently in development. At the same time
+Python 2.4 and Python 2.5 compatibility will probably be lost...
+
+0.9.8 will be the last version to support Python 2.4 and Python 2.5.
 
 main changes
 ------------
+- BUGFIX: Fixed Issue #59 which showed a rather strange problem with longer space separated lists of font-family values being so slow to actually stop parsing.
+- BUGFIX/IMPROVEMENT: Fixed Issue #48. ``CSSParser.parseUrl()`` uses the defined fetcher of this parser *for the initial stylesheet* at url too and not just the imported sheets *from* this sheet.
+- BUGFIX: Fixed Issue #50 which prevented cssutils parsing the acid2.css file correctly. Problem were selectors starting directly with ``[class]`` (an attribute selector).
+
 + **API CHANGE (major)**
-    replace CSSValue with PropertyValue, Value and other classes.
+    (Known) named colors are parsed as ColorValue objects now. These are the 16 simple colors (black, white, etc) and `transparent` but not all Extended color keywords yet. Also changed ``ColorValue.type`` to ``Value.COLOR_VALUE``. ColorValue has additional properties ``red, green, blue, alpha`` and ``colorType`` which is one of IDENT, HASH or FUNCTION for now.
++ API CHANGE (minor)
+    Removed already DEPRECATED ``cssutils.parse`` and ``CSSParser.parse``. Use the more specific functions/methods ``parseFile parseString parseUrl`` instead.
 
-    NEW CLASSES:
-        :class:`cssutils.css.PropertyValue`
-            replaces CSSValue and CSSValueList
+    Removed already DEPRECATED  ``cssutils.log.setlog`` and ``.setloglevel``. Use ``.setLog`` and ``.setLevel`` instead.
 
-            - is iterable (iterates over all single Value objects which in soruce CSS might be separated by "," "/" or " "
-            - a comma separated list of IDENT values is no longer handled as a single String (e.g. ``Arial, sans-serif``)
+    Removed already DEPRECATED  ``cssutils.ser.keepUnkownAtRules`` (note the typo). Use ``.keepUnknownAtRules`` instead.
 
-        :class:`cssutils.css.Value`
-            replaces CSSPrimitiveValue with separate ``value`` and ``type`` info (value is typed, so e.g. string for e.g. STRING, IDENT or URI values, int or float) and is base class for more specific values like:
-
-        :class:`cssutils.css.URIValue`
-            replaces CSSPrimitiveValue, additional attribute ``uri``
-
-        :class:`cssutils.css.DimensionValue`
-            replaces CSSPrimitiveValue, additional attribute ``dimension``
-
-        :class:`cssutils.css.ColorValue`
-            replaces CSSPrimitiveValue, additional attribute ``red``, ``green``, ``blue`` and ``alpha``
-
-            **TODO: Not yet complete, only rgb, rgba, hsl, hsla and has values use this object and color and alpha information no done yet!**
-
-        :class:`cssutils.css.CSSFunction`
-            replaces CSSPrimitiveValue function, not complete yet
-
-        also renamed ``ExpressionValue`` to :class:`cssutils.css.MSValue` with new API
-
-- IMPROVEMENT/CHANGE: Validation of color values is tighter now. Values like ``hsl(1, 2, 3)`` do not validate as it must be ``hsl(1, 2%, 3%)``. This mostly effects HSL/A and RGB/A notation.
-
-- **IMPROVEMENT**: New Value parsing and API accelerate parsing of style declarations which take about 20-30% less time now. Of course this depends on the complexity of your styles.
-
-+ BUGFIX: fixes issue #41, #42, #45, #46
-    PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
-
-- FEATURE: ``cssutils.replaceUrls()`` accepts as first argument a `cssutils.css.CSSStyleSheet` but now also a
-    :class:`cssutils.css.CSSStyle
-
+- IMPROVEMENT: Added validation profiles for some properties from `CSS Backgrounds and Borders Module Level 3 <http://www.w3.org/TR/css3-background/>`__, `CSS3 Basic User Interface Module <http://www.w3.org/TR/css3-ui/#resize>`__, `CSS Text Level 3 <http://www.w3.org/TR/css3-text/>`__
+    mainly  `cursor`, `outline`, `resize`, `box-shadow`, `text-shadow`
 
 license
 -------

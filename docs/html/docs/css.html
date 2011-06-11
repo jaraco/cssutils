@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Package cssutils.css &mdash; cssutils v0.9.8a1 documentation</title>
+    <title>Package cssutils.css &mdash; cssutils v0.9.8a2 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.8a1',
+        VERSION:     '0.9.8a2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.8a1 documentation" href="../index.html" />
+    <link rel="top" title="cssutils v0.9.8a2 documentation" href="../index.html" />
     <link rel="next" title="Package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8a1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.8a2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -99,24 +99,22 @@ Same as <tt class="docutils literal"><span class="pre">insertRule(rule,</span> <
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the StyleSheet&#8217;s rule
-list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
-raised but rules for normal Python lists are used. E.g. 
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the StyleSheet&#8217;s rule
+list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
+raised but rules for normal Python lists are used. E.g.
 <tt class="docutils literal"><span class="pre">deleteRule(-1)</span></tt> removes the last rule in cssRules.</p>
 <p><cite>index</cite> may also be a CSSRule object which will then be removed
 from the StyleSheet.</p>
-</li>
-</ul>
+</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified index does not correspond to a rule in
 the style sheet&#8217;s rule list.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
 Raised if removing this rule would result in an invalid StyleSheet</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this style sheet is readonly.</li>
 </ul>
 </td>
@@ -148,7 +146,7 @@ becomes part of the cascade.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>rule</strong> &#8211; a parsable DOMString, in cssutils also a 
+<li><strong>rule</strong> &#8211; a parsable DOMString, in cssutils also a
 <a class="reference internal" href="#cssutils.css.CSSRule" title="cssutils.css.CSSRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSRule</span></tt></a> or <a class="reference internal" href="#cssutils.css.CSSRuleList" title="cssutils.css.CSSRuleList"><tt class="xref py py-class docutils literal"><span class="pre">CSSRuleList</span></tt></a></li>
 <li><strong>index</strong> &#8211; of the rule before the new rule will be inserted.
 If the specified <cite>index</cite> is equal to the length of the
@@ -157,8 +155,8 @@ of the style sheet.
 If <cite>index</cite> is not given or <tt class="xref docutils literal"><span class="pre">None</span></tt> rule will be appended to rule
 list.</li>
 <li><strong>inOrder</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> the rule will be put to a proper location while
-ignoring <cite>index</cite> and without raising 
-<a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>.
+ignoring <cite>index</cite> and without raising
+<a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>.
 The resulting index is returned nevertheless.</li>
 </ul>
 </td>
@@ -167,15 +165,15 @@ The resulting index is returned nevertheless.</li>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
 Raised if the rule cannot be inserted at the specified <cite>index</cite>
 e.g. if an &#64;import rule is inserted after a standard rule set
 or other at-rule.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified <cite>index</cite> is not a valid insertion point.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this style sheet is readonly.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified rule has a syntax error and is
 unparsable.</li>
 </ul>
@@ -780,22 +778,20 @@ Same as <a class="reference internal" href="#cssutils.css.CSSMediaRule.insertRul
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the media block&#8217;s rule
-list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the media block&#8217;s rule
+list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
 raised but rules for normal Python lists are used. E.g. 
 <tt class="docutils literal"><span class="pre">deleteRule(-1)</span></tt> removes the last rule in cssRules.</p>
 <p><cite>index</cite> may also be a CSSRule object which will then be removed
 from the media block.</p>
-</li>
-</ul>
+</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified index does not correspond to a rule in
 the media rule list.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this media rule is readonly.</li>
 </ul>
 </td>
@@ -834,15 +830,15 @@ newly inserted rule.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
 Raised if the <cite>rule</cite> cannot be inserted at the specified <cite>index</cite>,
 e.g., if an &#64;import rule is inserted after a standard rule set
 or other at-rule.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified <cite>index</cite> is not a valid insertion point.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this media rule is readonly.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified <cite>rule</cite> has a syntax error and is
 unparsable.</li>
 </ul>
@@ -1330,10 +1326,8 @@ of a <a class="reference internal" href="#cssutils.css.CSSStyleRule" title="cssu
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>newSelector</strong> &#8211; comma-separated list of selectors (as a single string) or a tuple of
-<cite>(newSelector, dict-of-namespaces)</cite></li>
-</ul>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>newSelector</strong> &#8211; comma-separated list of selectors (as a single string) or a tuple of
+<cite>(newSelector, dict-of-namespaces)</cite></p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New <a class="reference internal" href="#cssutils.css.Selector" title="cssutils.css.Selector"><tt class="xref py py-class docutils literal"><span class="pre">Selector</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt> if 
@@ -1341,13 +1335,13 @@ of a <a class="reference internal" href="#cssutils.css.CSSStyleRule" title="cssu
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
 Raised if the specified selector uses an unknown namespace
 prefix.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified CSS string value has a syntax error
 and is unparsable.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this rule is readonly.</li>
 </ul>
 </td>
@@ -1538,15 +1532,11 @@ set within this variable declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>variableName</strong> &#8211; The name of the variable.</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variableName</strong> &#8211; The name of the variable.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the value of the variable if it has been explicitly set in this
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">the value of the variable if it has been explicitly set in this
 variable declaration block. Returns the empty string if the
-variable has not been set.</p>
-</td>
+variable has not been set.</td>
 </tr>
 </tbody>
 </table>
@@ -1564,15 +1554,11 @@ in this variable declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> &#8211; of the variable name to retrieve, negative values behave like
-negative indexes on Python lists, so -1 is the last element</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> &#8211; of the variable name to retrieve, negative values behave like
+negative indexes on Python lists, so -1 is the last element</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The name of the variable at this ordinal position. The empty
-string if no variable exists at this position.</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The name of the variable at this ordinal position. The empty
+string if no variable exists at this position.</td>
 </tr>
 </tbody>
 </table>
@@ -1606,9 +1592,7 @@ variable declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>variableName</strong> &#8211; The name of the variable.</li>
-</ul>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>variableName</strong> &#8211; The name of the variable.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the value of the variable if it has been explicitly set for this
@@ -1617,7 +1601,7 @@ variable has not been set.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly is readonly.</li>
 </ul>
 </td>
@@ -1647,10 +1631,10 @@ Raised if this declaration is readonly is readonly.</li>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified value has a syntax error and is
 unparsable.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly or the property is
 readonly.</li>
 </ul>
@@ -1888,15 +1872,11 @@ declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> &#8211; of the property to retrieve, negative values behave like
-negative indexes on Python lists, so -1 is the last element</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> &#8211; of the property to retrieve, negative values behave like
+negative indexes on Python lists, so -1 is the last element</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the name of the property at this ordinal position. The
-empty string if no property exists at this position.</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">the name of the property at this ordinal position. The
+empty string if no property exists at this position.</td>
 </tr>
 </tbody>
 </table>
@@ -1956,7 +1936,7 @@ known CSS property</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly or the property is
 readonly.</li>
 </ul>
@@ -1998,10 +1978,10 @@ escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified value has a syntax error and is
 unparsable.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly or the property is
 readonly.</li>
 </ul>
@@ -2271,13 +2251,11 @@ the defined values which might simply be space or comma or slash.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> &#8211; the parsable cssText of the value</li>
-</ul>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; the parsable cssText of the value</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/exceptions.html#IndexError" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexError</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/exceptions.html#IndexError" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexError</span></tt></a>:
 Raised if index if out of bounds</li>
 </ul>
 </td>
@@ -2363,6 +2341,12 @@ subclasses with an extended API.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="cssutils.css.ColorValue.colorType">
+<tt class="descname">colorType</tt><a class="headerlink" href="#cssutils.css.ColorValue.colorType" title="Permalink to this definition">¶</a></dt>
+<dd><p>IDENT (red), HASH (#f00) or FUNCTION (rgb(255, 0, 0).</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="cssutils.css.ColorValue.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.ColorValue.cssText" title="Permalink to this definition">¶</a></dt>
 <dd><p>String value of this value.</p>
@@ -2372,6 +2356,12 @@ subclasses with an extended API.</p>
 <dt id="cssutils.css.ColorValue.green">
 <tt class="descname">green</tt><a class="headerlink" href="#cssutils.css.ColorValue.green" title="Permalink to this definition">¶</a></dt>
 <dd><p>green part as integer between 0 and 255</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cssutils.css.ColorValue.name">
+<tt class="descname">name</tt><a class="headerlink" href="#cssutils.css.ColorValue.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the color if known (in ColorValue.COLORS) else None</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2712,12 +2702,12 @@ tried to be resolved from any available CSSVariablesRule definition.</p>
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8a1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils v0.9.8a2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
   </body>
 </html>
