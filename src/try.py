@@ -34,19 +34,66 @@ def maketokens(valuelist):
                 # returns list of tuples
                 return [('TYPE', v, 0, 0) for v in valuelist]
 
-if 1:
-    b = cssutils.util.Base()
-    tokens = maketokens(list('];x'))
-    ts = b._tokensupto2(tokens, (0,'[', 0, 0))
-    print ts
-    sys.exit(1)
-    
-    #issue 50
-    #s = cssutils.parseString('[a]{color: green}')
-    s = cssutils.parseFile('sheets/acid2.css')
-    print s
-    print s.cssText
 
+if 1:
+   
+    def hsl2rgb(h, s, l): 
+       
+        def hue2rgb(m1, m2, h): 
+           if h<0: h += 1 #PUT h+1 IN h
+           if h>1: h -= 1 #PUT h-1 IN h
+           if h*6<1: return m1+(m2-m1)*6*h
+           if h*2<1: return m2
+           if h*3<2: return m1+(m2-m1)*((2.0/3.0)-h)*6
+           return m1
+       
+        if l<=0.5: 
+            m2 = l*(s+1)
+        else: 
+            m2 = l+s-l*s
+           
+        m1 = l*2-m2
+        r = hue2rgb(m1, m2, h+(1.0/3.0))
+        g = hue2rgb(m1, m2, h)
+        b = hue2rgb(m1, m2, h-(1.0/3.0)) 
+        return r, g, b
+    
+    
+
+    #print '=', hsl2rgb(0.5, 1.0, 0.5)
+    cc = 'hsla(120, 100%, 50%, 1.0)'
+    print cc
+    c = cssutils.css.ColorValue(cc)
+    print 'rgb', c.red, c.green, c.blue
+        
+#    import colorsys
+#    raw = [0, 100, 50] 
+#    
+#    def frac(x, base):
+#        return (x) / float(base)
+#    
+#    print 'raw=', raw
+#    h, s, l = (frac(raw[0], 255), 
+#               frac(raw[1], 100), 
+#               frac(raw[2], 100))
+#    print 'hsl=', h, s, l
+#    r, g, b = colorsys.hls_to_rgb(h, l, s) # ORDER h l s !!!
+#    print 'rgb=', r, g, b
+#    rgba = [int(r*255), int(g*255), int(b*255)]
+#    print rgba
+    sys.exit(0)
+
+if 1:
+    #cssutils.ser.prefs.indentClosingBrace = False
+    css = '''
+    @media all {x {left: 0}}
+    
+    a {
+    outline: red;
+    }'''
+    print cssutils.parseString(css).cssText
+    sys.exit(0)
+    
 
 
 if 1:

@@ -426,7 +426,32 @@ class ColorValueTestCase(basetest.BaseTestCase):
              u'hsla(1%,2%,3, 0.0)': xml.dom.SyntaxErr,
         }
         self.r = cssutils.css.ColorValue()
-        self.do_raise_r(tests)           
+        self.do_raise_r(tests) 
+
+    def test_rgb(self):
+        "ColorValue.red .green .blue"
+        tests = {
+            (u'#0A0AD2', 'rgb(10, 10, 210)' ): (10, 10, 210, 1.0),
+            # TODO: Fix rounding?
+            (u'hsl(240, 91%, 43%)', ): (10, 10, 209, 1.0),
+            (u'#ff8800', u'#f80', 
+             'rgb(255, 136, 0)', 'rgba(255, 136, 0, 1.0)'): (255, 136, 0, 1.0),
+            (u'red', u'#ff0000', u'#f00', 
+             u'hsl(0, 100%, 50%)', u'hsla(0, 100%, 50%, 1.0)'): 
+                (255, 0, 0, 1.0),
+            (u'lime', u'#00ff00', u'#0f0', u'hsl(120, 100%, 50%)'): 
+                (0, 255, 0, 1.0),
+            (u'rgba(255, 127, 0, .1)', u'rgba(100%, 50%, 0%, .1)'): 
+                (255, 127, 0, 0.1),
+            (u'transparent', u'rgba(0, 0, 0, 0)'): (0, 0, 0, 0),
+        }
+        for colors, rgba in tests.items():
+            for color in colors:
+                c = cssutils.css.ColorValue(color);
+                self.assertEquals(c.red, rgba[0])         
+                self.assertEquals(c.green, rgba[1])         
+                self.assertEquals(c.blue, rgba[2])         
+                self.assertEquals(c.alpha, rgba[3])
 
 
 class URIValueTestCase(basetest.BaseTestCase):
