@@ -81,6 +81,7 @@ class PreferencesTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, True)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
+        self.assertEqual(cssutils.ser.prefs.keepLeadingZero, True)
         self.assertEqual(cssutils.ser.prefs.keepUnknownAtRules, True)
         self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, False)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
@@ -128,6 +129,16 @@ prefix|x, a + b > c ~ d, b {
     }'''
         s = cssutils.parseString(css)
         self.assertEqual(s.cssText, parsedcss)
+        
+        tests = {
+            u'0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% +.1% -0.1 -.1 -0.1px -.1px -0.1% -.1%': 
+            u'0.1 0.1 0.1px 0.1px 0.1% 0.1% +0.1 +0.1 +0.1px +0.1px +0.1% +0.1% -0.1 -0.1 -0.1px -0.1px -0.1% -0.1%' 
+        }
+        cssutils.ser.prefs.useDefaults()
+        for test, exp in tests.items():
+            s = cssutils.parseString(u'a{x:%s}' % test)
+            self.assertEqual(u'a {\n    x: %s\n    }' % exp, s.cssText)
+
 
     def test_useMinified(self):
         "Preferences.useMinified()"
@@ -140,6 +151,7 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, False)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
+        self.assertEqual(cssutils.ser.prefs.keepLeadingZero, False)
         self.assertEqual(cssutils.ser.prefs.keepUnknownAtRules, False)
         self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, True)
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
@@ -193,17 +205,21 @@ prefix|x, a + b > c ~ d, b {
             u'a  0px  a  .0px  a  0.0px  a  -0px  a  -.0px  a  -0.0px  a  +0px  a  +.0px  a  +0.0px ': 
                 u'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0', 
             u'a  1  a  .1  a  1.0  a  0.1  a  -1  a  -.1  a  -1.0  a  -0.1  a  +1  a  +.1  a  +1.0': 
-                u'a 1 a 0.1 a 1 a 0.1 a -1 a -0.1 a -1 a -0.1 a +1 a +0.1 a +1',
+                u'a 1 a .1 a 1 a .1 a -1 a -.1 a -1 a -.1 a +1 a +.1 a +1',
             u'  url(x)  f()': 'url(x) f()', 
             u'#112233': '#123', 
             u'#112234': '#112234', 
             u'#123': '#123', 
             u'#123 url() f()': '#123 url() f()',
-            u'1 +2 +3 -4': u'1 +2 +3 -4' # ?  
+            u'1 +2 +3 -4': u'1 +2 +3 -4', # ?
+            u'0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% +.1% -0.1 -.1 -0.1px -.1px -0.1% -.1%': 
+            u'.1 .1 .1px .1px .1% .1% +.1 +.1 +.1px +.1px +.1% +.1% -.1 -.1 -.1px -.1px -.1% -.1%' 
         }
         for test, exp in valuetests.items():
             s = cssutils.parseString(u'a{x:%s}' % test)
             self.assertEqual(u'a{x:%s}' % exp, s.cssText)
+
+        
             
     def test_defaultAtKeyword(self):
         "Preferences.defaultAtKeyword"
