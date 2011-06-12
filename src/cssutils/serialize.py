@@ -47,7 +47,10 @@ class Preferences(object):
         format ``url(URI)`` if ``'uri'``
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
-    indentSpecificities = False
+    indentClosingBrace = True
+        Defines if closing brace of block is indented to match indentation 
+        of the block (default) oder match indentation of selector.
+    indentSpecificities = False (**EXPERIMENTAL**)
         Indent rules with subset of Selectors and higher Specitivity
 
     keepAllProperties = True
@@ -123,6 +126,7 @@ class Preferences(object):
         self.defaultPropertyPriority = True
         self.importHrefFormat = None
         self.indent = 4 * u' '
+        self.indentClosingBrace = True
         self.indentSpecificities = False
         self.keepAllProperties = True
         self.keepComments = True
@@ -564,7 +568,8 @@ class CSSSerializer(object):
         out.extend(rulesout)
 
         #     }
-        out.append(u'%s}' % ((self._level + 1) * self.prefs.indent))
+        out.append(u'%s}' % ((self._level + int(self.prefs.indentClosingBrace)) 
+                             * self.prefs.indent))
 
         return u''.join(out)
 
@@ -694,7 +699,8 @@ class CSSSerializer(object):
                     self.prefs.lineSeparator,
                     self._indentblock(styleText, self._level + 1),
                     self.prefs.lineSeparator,
-                    (self._level + 1) * self.prefs.indent),
+                    (self._level + int(self.prefs.indentClosingBrace)) 
+                    * self.prefs.indent),
                 self._selectorlevel)
 
     def do_css_SelectorList(self, selectorlist):
