@@ -22,7 +22,7 @@ any rendering facilities!
 
 Based upon and partly implementing the following specifications :
 
-`CSS 2.1 <http://www.w3.org/TR/CSS21/>`__
+`CSS 2.1 <http://www.w3.org/TR/CSS2/>`__
     General CSS rules and properties are defined here
 `CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`__
     A few errata, mainly the definition of CHARSET_SYM tokens
@@ -91,7 +91,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.8dev'
+VERSION = '0.9.8dev3'
 
 __version__ = '%s $Id$' % VERSION
 
