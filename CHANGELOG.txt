@@ -34,12 +34,17 @@ Development Version
 
 0.9.8
 -----
-HEAD
-	- compatibility to Python 3.x is currently in development. At the same time compatibility for Python 2.4 and Python 2.5 will probably be lost...
+Compatibility to Python 3.x is currently in development. At the same time compatibility for Python 2.4 and Python 2.5 will probably be lost...
 
-	  0.9.8 will be the last version to support Python 2.4 and Python 2.5.
-	  
+0.9.8 will be the last version to support Python 2.4 (and maybe Python 2.5).
+
+
+HEAD
 	- Source control has moved to bitbucket https://bitbucket.org/cthedot/cssutils
+      Issues are currently still at Google Code.
+
+	- Fixed Issue #56 (thanks to Simon Sapin)
+    - Issue #53 feature request: Added new Preference option ``cssutils.ser.prefs.indentClosingBrace``. Defines if closing brace of block is indented to match indentation of the block (default) oder match indentation of selector.
 
 
 0.9.8a2 110611
