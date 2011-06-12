@@ -362,18 +362,42 @@ class ProfilesTestCase(basetest.BaseTestCase):
                       'status-bar', 'inherit'
                       )): (True, True, CSS2),
             
-            # PROPERTY opacity
+            ('nav-index', ('1', 'auto', 'inherit')): (True, True, C3BUI),
+            ('nav-index', ('x', '1 2', '1px')): (False, False, C3BUI),
+            
             ('opacity', ('inherit',
                          '0', '0.0', '0.42342', '1', '1.0',
                          # should be clipped but valid
                          '-0', '-0.1', '-10', '2'
                          )): (True, True, CM3),
-            # invalid
             ('opacity', ('a', '#000', '+1')): (False, False, CM3),
 
-            ('nav-index', ('1', 'auto', 'inherit')): (True, True, C3BUI),
-            ('nav-index', ('x', '1 2', '1px')): (False, False, C3BUI),
-
+            ('outline', ('red dotted 1px', 
+                         'dotted 1px red',
+                         '1px red dotted',
+                         'red', '1px', 'dotted',
+                         'red 1px', '1px dotted', 'red dotted',
+                         'inherit'
+                               )): (True, True, C3BUI),
+            ('outline', ('red #fff', 'solid dotted', 'Url(x)', '1px 1px'
+                               )): (False, False, C3BUI),
+            ('outline-color', ('red', '#fff', 'inherit'
+                               )): (True, True, C3BUI),
+            ('outline-color', ('0', '1em'
+                               )): (False, False, C3BUI),
+            ('outline-offset', ('0', '1em', 'inherit'
+                               )): (True, True, C3BUI),
+            ('outline-offset', ('1%', 'red'
+                               )): (False, False, C3BUI),
+            ('outline-style', ('auto', 'dotted', 'inherit'
+                               )): (True, True, C3BUI),
+            ('outline-style', ('0', '1em', 'red'
+                               )): (False, False, C3BUI),
+            ('outline-width', ('0', '1em', 'inherit'
+                               )): (True, True, C3BUI),
+            ('outline-width', ('auto', 'red', 'dotted'
+                               )): (False, False, C3BUI),
+            
             ('resize', ('none', 
                         'both', 
                         'horizontal', 
@@ -417,10 +441,10 @@ class ProfilesTestCase(basetest.BaseTestCase):
                                )): (True, True, FM3FF),
         
         }
-        for (name, values), (v, m, p) in tests.items():            
+        for (name, values), (valid, matching, profile) in tests.items(): 
             for value in values:
-                self.assertEqual(v, cssutils.profile.validate(name, value))
-                self.assertEqual((v, m, list(p)), 
+                self.assertEqual(valid, cssutils.profile.validate(name, value))
+                self.assertEqual((valid, matching, list(profile)), 
                                  cssutils.profile.validateWithProfile(name, value))
 
     def test_validateByProfile(self):

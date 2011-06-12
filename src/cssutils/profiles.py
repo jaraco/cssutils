@@ -533,17 +533,25 @@ properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
 macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'border-style': macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS]['border-style'],
     'border-width': macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS]['border-width'],
-    'outline-attrs': r'{outline-color}|{outline-style}|{outline-width}',
+    'outline-1': r'{outline-color}(\s+{outline-style})?(\s+{outline-width})?',
+    'outline-2': r'{outline-color}(\s+{outline-width})?(\s+{outline-style})?',
+    'outline-3': r'{outline-style}(\s+{outline-color})?(\s+{outline-width})?',
+    'outline-4': r'{outline-style}(\s+{outline-width})?(\s+{outline-color})?',
+    'outline-5': r'{outline-width}(\s+{outline-color})?(\s+{outline-style})?',
+    'outline-6': r'{outline-width}(\s+{outline-style})?(\s+{outline-color})?',
     'outline-color': r'{color}|invert|inherit',
     'outline-style': r'auto|{border-style}|inherit',
     'outline-width': r'{border-width}|inherit',
     }
 properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
-    'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit',    'outline-style': r'{outline-style}',
+    'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit',    
     'nav-index': r'auto|{number}|inherit',
+    'outline-color': r'{outline-color}',
+    'outline-style': r'{outline-style}',
     'outline-width': r'{outline-width}',
     'outline-offset': r'{length}|inherit',
-    'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
+    #'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
+    'outline': r'{outline-1}|{outline-2}|{outline-3}|{outline-4}|{outline-5}|{outline-6}|inherit',
     'resize': 'none|both|horizontal|vertical|inherit',
     }
 
