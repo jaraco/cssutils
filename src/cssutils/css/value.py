@@ -18,6 +18,7 @@ __version__ = '$Id$'
 from cssutils.prodparser import *
 import cssutils
 from cssutils.helper import normalize, pushtoken
+import colorsys
 import math
 import re
 import xml.dom
@@ -382,8 +383,8 @@ class ColorValue(Value):
                 if len(v) == 4:
                     # HASH #rgb
                     rgba = (int(2*v[1], 16),
-                            int(2*v[1], 16),
-                            int(2*v[1], 16), 
+                            int(2*v[2], 16),
+                            int(2*v[3], 16), 
                             1.0)
                 else:
                     # HASH #rrggbb
@@ -393,7 +394,9 @@ class ColorValue(Value):
                             1.0)
                     
             elif u'FUNCTION' == t:
-                functiontype, rgba, check = None, [], u''
+                functiontype, raw, check = None, [], u''
+                HSL = False
+                
                 for item in seq:
                     try:
                         type_ = item.value.type
@@ -401,16 +404,43 @@ class ColorValue(Value):
                         # type of function, e.g. rgb(
                         if item.type == 'FUNCTION':
                             functiontype = item.value
+                            HSL = functiontype in (u'hsl(', u'hsla(')
                         continue
 
                     # save components                    
                     if type_ == Value.NUMBER:
-                        rgba.append(item.value.value)
+                        raw.append(item.value.value)
                         check += u'N'
                     elif type_ == Value.PERCENTAGE:
-                        rgba.append(int(255 * item.value.value / 100))
+                        if HSL:
+                            # save as percentage fraction
+                            raw.append(item.value.value / 100.0)
+                        else:
+                            # save as real value of percentage of 255
+                            raw.append(int(255 * item.value.value / 100))
                         check += u'P'
                         
+                if HSL:
+                    # convert to rgb
+                    # h is 360 based (circle)
+                    h, s, l = raw[0] / 360.0, raw[1], raw[2]
+                    # ORDER h l s !!!
+                    r, g, b = colorsys.hls_to_rgb(h, l, s)
+                    # back to 255 based
+                    rgba = [int(round(r*255)), 
+                            int(round(g*255)), 
+                            int(round(b*255))]
+                    
+                    if len(raw) > 3:
+                        rgba.append(raw[3])
+                        
+                else:
+                    # rgb, rgba
+                    rgba = raw
+
+                if len(rgba) < 4:
+                    rgba.append(1.0)
+                    
                 # validate
                 checks = {u'rgb(': ('NNN', 'PPP'),
                          u'rgba(': ('NNNN', 'PPPN'),
@@ -421,9 +451,6 @@ class ColorValue(Value):
                     self._log.error(u'ColorValue has invalid %s) parameters: '
                                     u'%s (N=Number, P=Percentage)' % 
                                     (functiontype, check))
-                    
-                if len(rgba) < 4:
-                    rgba.append(1.0)
             
             self._colorType = t
             self._red, self._green, self._blue, self._alpha = tuple(rgba)
