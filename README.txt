@@ -4,7 +4,7 @@ README
 -------------------------------------------------------
 cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
-:Copyright: 2004-2010 Christof Hoeke
+:Copyright: 2004-2011 Christof Hoeke
 
 Overview
 ========
@@ -12,7 +12,7 @@ A Python package to parse and build CSS Cascading Style Sheets. DOM only, not an
 
 Based upon and partly implementing the following specifications :
 
-`CSS 2.1rev1 <http://www.w3.org/TR/2009/CR-CSS2-20090423/>`__
+`CSS 2.1rev1 <http://www.w3.org/TR/CSS2/>`__
     General CSS rules and properties are defined here
 `CSS3 Module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
     Used in parts since cssutils 0.9.4. cssutils tries to use the features from CSS 2.1 and CSS 3 with preference to CSS3 but as this is not final yet some parts are from CSS 2.1
@@ -54,7 +54,7 @@ cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (
 
 License
 =======
-Copyright 2005 - 2010 Christof Hoeke
+Copyright 2005 - 2011 Christof Hoeke
 
 cssutils is published under the LGPL 3 or later
 
@@ -89,5 +89,5 @@ cssutils is far from being perfect or even complete. If you find any bugs (espec
 
 Thanks
 ======
-Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Jason R. Coombs, Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches.
+Thanks to Jason R. Coombs, Simon Sapin and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches.
 
