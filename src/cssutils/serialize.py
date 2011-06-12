@@ -62,6 +62,8 @@ class Preferences(object):
     keepEmptyRules = False
         defines if empty rules like e.g. ``a {}`` are kept in the resulting
         serialized sheet
+    keepLeadingZero = True
+        defines if values between -1 and 1 should omit the 0, like ``.5px``
     keepUnknownAtRules = True
         defines if unknown @rules like e.g. ``@three-dee {}`` are kept in the
         serialized sheet
@@ -131,6 +133,7 @@ class Preferences(object):
         self.keepAllProperties = True
         self.keepComments = True
         self.keepEmptyRules = False
+        self.keepLeadingZero = True
         self.keepUnknownAtRules = True
         self.keepUsedNamespaceRulesOnly = False
         self.lineNumbers = False
@@ -155,6 +158,7 @@ class Preferences(object):
         self.indent = u''
         self.keepComments = False
         self.keepEmptyRules = False
+        self.keepLeadingZero = False
         self.keepUnknownAtRules = False
         self.keepUsedNamespaceRulesOnly = True
         self.lineNumbers = False
@@ -942,6 +946,13 @@ class CSSSerializer(object):
                 elif value.value == int(value.value):
                     # cut off after . which is zero anyway
                     val = unicode(int(value.value))
+                elif not self.prefs.keepLeadingZero and -1 < value.value < 1:
+                    v = unicode(value.value)
+                    val = v
+                    if value._sign == u'-':
+                        val = v[0] + v[2:]
+                    else:
+                        val = v[1:]
                 else:
                     val = unicode(value.value)
 
