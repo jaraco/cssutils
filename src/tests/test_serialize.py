@@ -77,6 +77,7 @@ class PreferencesTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.defaultPropertyPriority, True)
         self.assertEqual(cssutils.ser.prefs.importHrefFormat, None)
         self.assertEqual(cssutils.ser.prefs.indent, 4 * u' ')
+        self.assertEqual(cssutils.ser.prefs.indentClosingBrace, True)
         self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
         self.assertEqual(cssutils.ser.prefs.keepComments, True)
         self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
@@ -277,6 +278,30 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(exp1, s.cssText)
         cssutils.ser.prefs.indent = 4* ' '
         self.assertEqual(exp4, s.cssText)
+
+    def test_indentClosingBrace(self):
+        "Preferences.indentClosingBrace"
+        s = cssutils.parseString(u'@media all {a {left: 0}} b { top: 0 }')
+        expT = u'''@media all {
+    a {
+        left: 0
+        }
+    }
+b {
+    top: 0
+    }'''
+        expF = u'''@media all {
+    a {
+        left: 0
+    }
+}
+b {
+    top: 0
+}'''
+        cssutils.ser.prefs.useDefaults()
+        self.assertEqual(expT, s.cssText)
+        cssutils.ser.prefs.indentClosingBrace = False
+        self.assertEqual(expF, s.cssText)
         
     def test_keepAllProperties(self):
         "Preferences.keepAllProperties"
