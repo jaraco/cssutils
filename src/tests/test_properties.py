@@ -49,7 +49,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'RGBA': 'rgba(1,2,3, 1)',
             'RGBA100': 'rgba(1%,2%,100%, 0)',
             'HSL': 'hsl(1,2%,3%)',
-            'HSLA': 'hsla(1,2%,3%, 1)'            
+            'HSLA': 'hsla(1,2%,3%, 1.0)'            
              }        
         def expanded(*keys):
             r = []
@@ -151,9 +151,9 @@ class PropertiesTestCase(basetest.BaseTestCase):
                                                    'larger', 'smaller',
                                                    '1em', '1%', 'inherit']),
             'font-size-adjust': ('NUMBER', ['none', 'inherit']),
-            'font': (['italic small-caps bold 1px/3 a, "b", serif',
-                      'caption', 'icon', 'menu', 'message-box', 'small-caption',
-                      'status-bar', 'inherit'],),
+#            'font': (['italic small-caps bold 1px/3 a, "b", serif',
+#                      'caption', 'icon', 'menu', 'message-box', 'small-caption',
+#                      'status-bar', 'inherit'],),
             
             'image-orientation': ('0', 'ANGLES', ['auto']),
             'left': ('LENGTHS', 'PERCENTAGE', ['inherit', 'auto']),
@@ -198,7 +198,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
 
 
 if __name__ == '__main__':
-    debug = '' #'font-family'
+    debug = 'font-family'
     import logging
     import unittest
     cssutils.log.setLevel(logging.FATAL)

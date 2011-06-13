@@ -139,8 +139,8 @@ class Preferences(object):
         self.lineSeparator = u'\n'
         self.listItemSpacer = u' '
         self.normalizedVarNames = True
-        self.omitLeadingZero = False
         self.omitLastSemicolon = True
+        self.omitLeadingZero = False
         self.paranthesisSpacer = u' '
         self.propertyNameSpacer = u' '
         self.resolveVariables = True
@@ -163,8 +163,8 @@ class Preferences(object):
         self.lineNumbers = False
         self.lineSeparator = u''
         self.listItemSpacer = u''
-        self.omitLeadingZero = True
         self.omitLastSemicolon = True
+        self.omitLeadingZero = True
         self.paranthesisSpacer = u''
         self.propertyNameSpacer = u''
         self.selectorCombinatorSpacer = u''

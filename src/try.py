@@ -37,27 +37,15 @@ def maketokens(valuelist):
 
 
 if 1:
-    #cssutils.ser.prefs.indentClosingBrace = False
-    css = '''
-    a {
-        left: .0;
-        left: 0.0;
-        left: .5;
-        top: 0.6;
-        top: -.5;
-        top: +.5;
-        left: .5px;
-        top: 0.6px;
-        top: -.5px;
-        top: +.5px;
-        left: .5%;
-        top: 0.6%;
-        top: -.5%;
-        top: +.5%;
-    }'''
-    print cssutils.parseString(css).cssText
-    cssutils.ser.prefs.keepLeadingZero = False
-    print cssutils.parseString(css).cssText
+    #p = cssutils.css.Property('font-family', 'a," b"')
+    #print p
+    
+    
+    
+    s = cssutils.parseFile('sheets/sample_5.css')
+    #print s.cssText
+    #s = cssutils.parseFile('sheets/sample_7.css')
+    #print s.cssText
     sys.exit(0)
     
 

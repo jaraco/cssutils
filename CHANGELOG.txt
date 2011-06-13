@@ -52,6 +52,8 @@ HEAD
 
     - Feature request: Added new Preference option ``cssutils.ser.prefs.omitLeadingZero``. Defines if values between -1 and 1 should omit the 0, like ``.5px``. Minified settings do this, else 0 is kept by default.
 
+    - **IMPROVEMENT**: Parsing of longer (and probably invalid) ``font`` or ``font-family`` values was *extremely* slow due to a very complex regex. This has been changed and parsing of specific stylesheets using these values should be much faster now. (``macros[Profiles.CSS_LEVEL_2]['font-family']`` is gone so if you used this in your own validation modules you need to check the source in `profiles.py`.)
+
 
 0.9.8a2 110611
     - BUGFIX: Fixed Issue #59 which showed a rather strange problem with longer space separated lists of font-family values being so slow to actually stop parsing.
