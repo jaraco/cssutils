@@ -8,6 +8,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
 import re
+import types
 
 class NoSuchProfileException(Exception):
     """Raised if no profile with given name is found"""
@@ -148,7 +149,9 @@ class Profiles(object):
     def _compile_regexes(self, dictionary):
         """Compile all regular expressions into callable objects"""
         for key, value in dictionary.items():
-            if not hasattr(value, '__call__'):
+            # might be a function (font-family) as regex is too slow
+            if not hasattr(value, '__call__') and not isinstance(value, 
+                                                                 types.FunctionType):
                 value = re.compile('^(?:%s)$' % value, re.I).match
             dictionary[key] = value
 
@@ -348,6 +351,40 @@ class Profiles(object):
 
 properties = {}
 macros = {}
+
+def _fontFamilyValidator(families):
+    """Check if ``font-family`` value is valid, regex is too slow.
+    
+    Splits on ``,`` and checks each family separately. 
+    Somehow naive as font-family name could contain a "," but this is unlikely.
+    Still should be a TODO.
+    """
+    match = properties[Profiles.CSS_LEVEL_2]['__FONT_FAMILY_SINGLE']
+    for f in families.split(u','):
+        if not match(f.strip()):
+            return False
+    return True
+
+def _fontValidator(font):
+    """Check if font value is valid, regex is too slow.
+    
+    Checks everything before ``,`` on basic font value. Everything after should
+    be a valid font-family value.
+    """
+    if u',' in font:
+        # split off until 1st family
+        font1, families2 = font.split(u',', 1)
+    else:
+        font1, families2 = font, None 
+                
+    if not properties[Profiles.CSS_LEVEL_2]['__FONT_WITH_1_FAMILY'](font1.strip()):
+        return False
+    
+    if families2 and not _fontFamilyValidator(families2):
+        return False
+    
+    return True
+
 """
 Define some regular expression fragments that will be used as
 macros within the CSS property value regular expressions.
@@ -360,14 +397,17 @@ macros[Profiles.CSS_LEVEL_2] = {
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
     'shape': r'rect\(({w}({length}|auto}){w},){3}{w}({length}|auto){w}\)',
-    'counter': r'counter\({w}{identifier}{w}(?:,{w}{list-style-type}{w})?\)',
+    'counter': r'counter\({w}{ident}{w}(?:,{w}{list-style-type}{w})?\)',
     'identifier': r'{ident}',
-    'family-name': r'{string}|{identifier}({w}{identifier})*',
+    'family-name': r'{string}|{ident}({w}{ident})*',
     'generic-family': r'serif|sans-serif|cursive|fantasy|monospace',
     'absolute-size': r'(x?x-)?(small|large)|medium',
     'relative-size': r'smaller|larger',
     
-    'font-family': r'(({family-name}|{generic-family})({w},{w}({family-name}|{generic-family}))*)|inherit',
+    #[[ <family-name> | <generic-family> ] [, <family-name>| <generic-family>]* ] | inherit
+    #'font-family': r'(({family-name}|{generic-family})({w},{w}({family-name}|{generic-family}))*)|inherit',
+    # EXTREMELY SLOW REGEX
+    #'font-family': r'({family-name}({w},{w}{family-name})*)|inherit',
     
     'font-size': r'{absolute-size}|{relative-size}|{positivelength}|{percentage}|inherit',
     'font-style': r'normal|italic|oblique|inherit',
@@ -379,9 +419,9 @@ macros[Profiles.CSS_LEVEL_2] = {
     'list-style-type': r'disc|circle|square|decimal|decimal-leading-zero|lower-roman|upper-roman|lower-greek|lower-(latin|alpha)|upper-(latin|alpha)|armenian|georgian|none|inherit',
     'margin-width': r'{length}|{percentage}|auto',
     'padding-width': r'{length}|{percentage}',
-    'specific-voice': r'{identifier}',
+    'specific-voice': r'{ident}',
     'generic-voice': r'male|female|child',
-    'content': r'{string}|{uri}|{counter}|attr\({w}{identifier}{w}\)|open-quote|close-quote|no-open-quote|no-close-quote',
+    'content': r'{string}|{uri}|{counter}|attr\({w}{ident}{w}\)|open-quote|close-quote|no-open-quote|no-close-quote',
     'background-attrs': r'{background-color}|{background-image}|{background-repeat}|{background-attachment}|{background-position}',
     'list-attrs': r'{list-style-type}|{list-style-position}|{list-style-image}',
     'font-attrs': r'{font-style}|{font-variant}|{font-weight}',
@@ -409,8 +449,8 @@ properties[Profiles.CSS_LEVEL_2] = {
     'clip': r'{shape}|auto|inherit',
     'color': r'{color}|inherit',
     'content': r'none|normal|{content}(\s+{content})*|inherit',
-    'counter-increment': r'({identifier}(\s+{integer})?)(\s+({identifier}(\s+{integer})))*|none|inherit',
-    'counter-reset': r'({identifier}(\s+{integer})?)(\s+({identifier}(\s+{integer})))*|none|inherit',
+    'counter-increment': r'({ident}(\s+{integer})?)(\s+({ident}(\s+{integer})))*|none|inherit',
+    'counter-reset': r'({ident}(\s+{integer})?)(\s+({ident}(\s+{integer})))*|none|inherit',
     'cue-after': r'{uri}|none|inherit',
     'cue-before': r'{uri}|none|inherit',
     'cue': r'({uri}|none|inherit){1,2}|inherit',
@@ -420,12 +460,22 @@ properties[Profiles.CSS_LEVEL_2] = {
     'elevation': r'{angle}|below|level|above|higher|lower|inherit',
     'empty-cells': r'show|hide|inherit',
     'float': r'left|right|none|inherit',
-    'font-family': r'{font-family}',
+    
+    # regex too slow:
+    # 'font-family': r'{font-family}', 
+    'font-family': _fontFamilyValidator,
+    '__FONT_FAMILY_SINGLE': r'{family-name}',
+    
     'font-size': r'{font-size}',
     'font-style': r'{font-style}',
     'font-variant': r'{font-variant}',
     'font-weight': r'{font-weight}',
-    'font': r'({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{font-family}|caption|icon|menu|message-box|small-caption|status-bar|inherit',
+    
+    # regex too slow and wrong too:
+    # 'font': r'({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{font-family}|caption|icon|menu|message-box|small-caption|status-bar|inherit',
+    'font': _fontValidator,
+    '__FONT_WITH_1_FAMILY': r'(({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{family-name})|caption|icon|menu|message-box|small-caption|status-bar|inherit',
+
     'height': r'{length}|{percentage}|auto|inherit',
     'left': r'{length}|{percentage}|auto|inherit',
     'letter-spacing': r'normal|{length}|inherit',
@@ -582,7 +632,7 @@ properties[Profiles.CSS3_COLOR] = {
 
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
-    'family-name': r'{string}|{ident}', # but STRING is effectively an IDENT??? 
+    'family-name': r'{string}|{ident}', 
     'font-face-name': 'local\({w}{family-name}{w}\)',
     'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
     'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'

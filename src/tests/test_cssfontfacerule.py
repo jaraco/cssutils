@@ -170,13 +170,13 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(exp, r.cssText)
         
         tests = {
-            'font-family': [('serif', True),
-                            ('x', True),
-                            ('"x"', True),
+            'font-family': [#('serif', True),
+#                            ('x', True),
+#                            ('"x"', True),
                             ('x, y', False),
                             ('"x", y', False),
                             ('x, "y"', False),
-                            ('"x", "y"', False)
+#                            ('"x", "y"', False)
                             ]
             }
         for n, t in tests.items():
