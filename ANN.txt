@@ -61,7 +61,7 @@ download
 For download options see http://cthedot.de/cssutils/
 
 cssutils needs Python 2.4 and higher or Jython 2.5 and higher (tested with
-Python 2.7.1(x64), 2.6.5(x64), 2.5.4(x32), 2.4.4(x32) and Jython 2.5.1 on Win7x64
+Python 2.7.2(x64), 2.6.5(x64), 2.5.4(x32), 2.4.4(x32) and Jython 2.5.1 on Win7x64
 only)
 
 
