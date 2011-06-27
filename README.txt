@@ -82,6 +82,11 @@ Alternatively download the provided source distribution. Expand the file and fro
 To uninstall remove any registrations of cssutils eggs with Distribute and remove the eggs which should be installed at PYTHONDIR/Lib/site-packages/cssutils too.
 
 
+Documentation
+=============
+The current documenation can be found at http://packages.python.org/cssutils/
+
+
 Kind Request
 ============
 cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the `Issue Tracker <http://code.google.com/p/cssutils/issues/list>`_ at Google.
