@@ -10,7 +10,7 @@ class Settings(test_cssrule.CSSRuleTestCase):
     def test_set(self):
         "settings.set()"
         cssutils.ser.prefs.useMinified()
-        text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
+        text = u'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
         
         self.assertEqual(cssutils.parseString(text).cssText, '')
         

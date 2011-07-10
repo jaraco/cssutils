@@ -225,12 +225,12 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         sheet = parser.parseString(u'@import "http://example.com/yes" "name"')
         
         r = sheet.cssRules[0]
-        self.assertEqual(u'/**/', r.styleSheet.cssText)
+        self.assertEqual(u'/**/'.encode(), r.styleSheet.cssText)
         self.assertEqual(True, r.hrefFound)
         self.assertEqual(u'name', r.name)
         
         r.cssText = '@import url(http://example.com/none) "name2";'
-        self.assertEqual(u'', r.styleSheet.cssText)
+        self.assertEqual(u''.encode(), r.styleSheet.cssText)
         self.assertEqual(False, r.hrefFound)
         self.assertEqual(u'name2', r.name)
 
@@ -354,7 +354,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(ir.styleSheet.parentStyleSheet, None) # sheet
         self.assertEqual(ir.styleSheet.title, 'title')
         self.assertEqual(ir.styleSheet.cssText, 
-                         '@charset "ascii";\n@import "level2/css.css" "title2";')
+                         '@charset "ascii";\n@import "level2/css.css" "title2";'.encode())
 
         ir2 = ir.styleSheet.cssRules[1]
         self.assertEqual(ir2.href, 'level2/css.css')
@@ -366,7 +366,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(ir2.styleSheet.parentStyleSheet, None) #ir.styleSheet
         self.assertEqual(ir2.styleSheet.title, 'title2')
         self.assertEqual(ir2.styleSheet.cssText, 
-                         '@charset "ascii";\na {\n    color: red\n    }')
+                         '@charset "ascii";\na {\n    color: red\n    }'.encode())
 
         sheet = cssutils.parseString('@import "CANNOT-FIND.css";')
         ir = sheet.cssRules[0]
