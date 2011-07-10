@@ -162,7 +162,8 @@ class Base(_BaseClass):
         "returns next token in generator tokenizer or the default value"
         try:
             return tokenizer.next()
-        except (StopIteration, AttributeError):
+        # TypeError for py3
+        except (StopIteration, AttributeError, TypeError):
             return default
 
     def _type(self, token):

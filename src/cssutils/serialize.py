@@ -381,9 +381,10 @@ class CSSSerializer(object):
         try:
             encoding = stylesheet.cssRules[0].encoding
         except (IndexError, AttributeError):
-            encoding = 'UTF-8'
+            encoding = u'UTF-8'
 
-        return text.encode(encoding, 'escapecss')
+        # TODO: py3 return b str but tests use unicode?
+        return text.encode(encoding, u'escapecss')
 
     def do_CSSComment(self, rule):
         """

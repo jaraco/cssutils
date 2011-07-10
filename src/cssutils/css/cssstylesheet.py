@@ -142,13 +142,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         def S(expected, seq, token, tokenizer=None):
             # @charset must be at absolute beginning of style sheet
-            return max(1, expected)
+            # or 0 for py3
+            return max(1, expected or 0)
 
         def COMMENT(expected, seq, token, tokenizer=None):
             "special: sets parent*"
             self.insertRule(cssutils.css.CSSComment([token],
                             parentStyleSheet=self))
-            return max(1, expected)
+            # or 0 for py3
+            return max(1, expected or 0)
 
         def charsetrule(expected, seq, token, tokenizer):
             # parse and consume tokens in any case
@@ -252,7 +254,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             if rule.wellformed:
                 self.insertRule(rule)
 
-            return max(1, expected)
+            # or 0 for py3
+            return max(1, expected or 0)
 
         def ruleset(expected, seq, token, tokenizer):
             # parse and consume tokens in any case

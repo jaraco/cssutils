@@ -95,6 +95,10 @@ VERSION = '0.9.8dev3'
 
 __version__ = '%s $Id$' % VERSION
 
+import sys
+if sys.version_info < (2,6):
+    bytes = str
+
 import codec
 import os.path
 import urllib
@@ -193,7 +197,7 @@ def parseStyle(cssText, encoding='utf-8'):
     :returns:
         :class:`~cssutils.css.CSSStyleDeclaration`
     """
-    if isinstance(cssText, str):
+    if isinstance(cssText, bytes):
         cssText = cssText.decode(encoding)
     style = css.CSSStyleDeclaration(cssText)
     return style
