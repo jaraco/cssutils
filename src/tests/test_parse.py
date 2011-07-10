@@ -31,31 +31,31 @@ class CSSParserTestCase(basetest.BaseTestCase):
         # default non raising parser
         p = cssutils.CSSParser()
         s = p.parseString('$')
-        self.assertEqual(s.cssText, '')
+        self.assertEqual(s.cssText, u'')
         
         # explicit raiseExceptions=False
         p = cssutils.CSSParser(raiseExceptions=False)
         s = p.parseString('$')
-        self.assertEqual(s.cssText, '')
+        self.assertEqual(s.cssText, u'')
 
         # working with sheet does raise though! 
-        self.assertRaises(xml.dom.DOMException, s.__setattr__, 'cssText', '$')
+        self.assertRaises(xml.dom.DOMException, s.__setattr__, u'cssText', u'$')
 
         # ---- 
         
         # raiseExceptions=True
         p = cssutils.CSSParser(raiseExceptions=True)
-        self.assertRaises(xml.dom.SyntaxErr, p.parseString, '$')
+        self.assertRaises(xml.dom.SyntaxErr, p.parseString, u'$')
         
         # working with a sheet does raise too
         s = cssutils.css.CSSStyleSheet()
-        self.assertRaises(xml.dom.DOMException, s.__setattr__, 'cssText', '$')
+        self.assertRaises(xml.dom.DOMException, s.__setattr__, u'cssText', u'$')
 
         # RESET cssutils.log.raiseExceptions
         cssutils.log.raiseExceptions = False
         s = cssutils.css.CSSStyleSheet()
         # does not raise!
-        s.__setattr__('cssText', '$')
+        s.__setattr__(u'cssText', u'$')
         self.assertEqual(s.cssText, '')
 
     def test_parseComments(self):
@@ -85,10 +85,10 @@ class CSSParserTestCase(basetest.BaseTestCase):
                                     title='test')
             restore()
             #self.assertEqual(sheet, 1)
-            self.assertEqual(sheet.href, 'http://example.com')
-            self.assertEqual(sheet.encoding, 'utf-8')
-            self.assertEqual(sheet.media.mediaText, 'tv, print')
-            self.assertEqual(sheet.title, 'test')
+            self.assertEqual(sheet.href, u'http://example.com')
+            self.assertEqual(sheet.encoding, u'utf-8')
+            self.assertEqual(sheet.media.mediaText, u'tv, print')
+            self.assertEqual(sheet.title, u'test')
             
             # URL and content tests
             tests = {
@@ -138,35 +138,35 @@ class CSSParserTestCase(basetest.BaseTestCase):
         "CSSParser.parseString()"
         tests = {
             # (byte) string, encoding: encoding, cssText
-            ('/*a*/', None): ('utf-8', u'/*a*/'),
-            ('/*a*/', 'ascii'): ('ascii', '@charset "ascii";\n/*a*/'),
-            ('/*\xc3\xa4*/', None): ('utf-8', '/*\xc3\xa4*/'),  
-            ('/*\xc3\xa4*/', 'utf-8'): ('utf-8', '@charset "utf-8";\n/*\xc3\xa4*/'),  
-            ('@charset "ascii";/*a*/', None): ('ascii', u'@charset "ascii";\n/*a*/'),
-            ('@charset "utf-8";/*a*/', None): ('utf-8', u'@charset "utf-8";\n/*a*/'),
-            ('@charset "iso-8859-1";/*a*/', None): ('iso-8859-1', u'@charset "iso-8859-1";\n/*a*/'),
+            ('/*a*/', None): (u'utf-8', '/*a*/'),
+            ('/*a*/', 'ascii'): (u'ascii', '@charset "ascii";\n/*a*/'),
+            ('/*\xc3\xa4*/', None): (u'utf-8', '/*\xc3\xa4*/'),  
+            ('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', '@charset "utf-8";\n/*\xc3\xa4*/'),  
+            ('@charset "ascii";/*a*/', None): (u'ascii', '@charset "ascii";\n/*a*/'),
+            ('@charset "utf-8";/*a*/', None): (u'utf-8', '@charset "utf-8";\n/*a*/'),
+            ('@charset "iso-8859-1";/*a*/', None): (u'iso-8859-1', '@charset "iso-8859-1";\n/*a*/'),
             
             # unicode string, no encoding: encoding, cssText
             (u'/*€*/', None): (
-               'utf-8', u'/*€*/'.encode('utf-8')),  
+               u'utf-8', u'/*€*/'.encode('utf-8')),  
             (u'@charset "iso-8859-1";/*ä*/', None): (
-                'iso-8859-1', u'@charset "iso-8859-1";\n/*ä*/'.encode('iso-8859-1')),  
+               u'iso-8859-1', u'@charset "iso-8859-1";\n/*ä*/'.encode('iso-8859-1')),  
             (u'@charset "utf-8";/*€*/', None): (
-                'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
+               u'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
             (u'@charset "utf-16";/**/', None): (
-                'utf-16', u'@charset "utf-16";\n/**/'.encode('utf-16')),  
+               u'utf-16', u'@charset "utf-16";\n/**/'.encode('utf-16')),  
             # unicode string, encoding utf-8: encoding, cssText            
             (u'/*€*/', 'utf-8'): ('utf-8', 
                u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
             (u'@charset "iso-8859-1";/*ä*/', 'utf-8'): (
-                'utf-8', u'@charset "utf-8";\n/*ä*/'.encode('utf-8')),  
+               u'utf-8', u'@charset "utf-8";\n/*ä*/'.encode('utf-8')),  
             (u'@charset "utf-8";/*€*/', 'utf-8'): (
-                'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
+               u'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
             (u'@charset "utf-16";/**/', 'utf-8'): (
-                'utf-8', u'@charset "utf-8";\n/**/'.encode('utf-8')),
+               u'utf-8', u'@charset "utf-8";\n/**/'.encode('utf-8')),
             # probably not what is wanted but does not raise:  
             (u'/*€*/', 'ascii'): (
-               'ascii', u'@charset "ascii";\n/*\\20AC */'.encode('utf-8')),  
+               u'ascii', u'@charset "ascii";\n/*\\20AC */'.encode('utf-8')),  
             (u'/*€*/', 'iso-8859-1'): (
                'iso-8859-1', u'@charset "iso-8859-1";\n/*\\20AC */'.encode('utf-8')),  
         }

@@ -108,7 +108,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(2, s.cssRules.length)
         s.cssRules.extend(cssutils.parseString('/*3*/x {y:2}').cssRules)
         self.assertEqual(4, s.cssRules.length)
-        self.assertEqual(u'a {\n    x: 1\n    }\n/*2*/\n/*3*/\nx {\n    y: 2\n    }', 
+        self.assertEqual(u'a {\n    x: 1\n    }\n/*2*/\n/*3*/\nx {\n    y: 2\n    }'.encode(), 
                          s.cssText)
         
         for r in s.cssRules:
@@ -256,7 +256,7 @@ ex2|x {
     top: 0
     }'''
         s.cssText = css
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
         self.assertEqual(s.namespaces.namespaces,
                          { u'': u'default', u'ex2': u'example'})
 
@@ -306,7 +306,7 @@ ex2|x {
         css = '@namespace n "new";'
         # doubles will be removed
         s.insertRule(css + css)
-        self.assertEqual(css, s.cssText)
+        self.assertEqual(s.cssText, css.encode())
         r = cssutils.css.CSSNamespaceRule(prefix='ex2', namespaceURI='example')
         s.insertRule(r)
         r = cssutils.css.CSSNamespaceRule(namespaceURI='default')
@@ -315,26 +315,26 @@ ex2|x {
         expcss = '''@namespace n "new";
 @namespace ex2 "example";
 @namespace "default";'''
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
         r.prefix = 'DEFAULT'
         expcss = '''@namespace n "new";
 @namespace ex2 "example";
 @namespace DEFAULT "default";'''
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
 
         # CSSMediaRule
         self.assertRaises(xml.dom.NamespaceErr, s.add, '@media all {x|a {left: 0}}')
         mcss = '@media all {\n    ex2|SEL1 {\n        left: 0\n        }\n    }'
         s.add(mcss)
         expcss += '\n' + mcss
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
 
         # CSSStyleRule
         self.assertRaises(xml.dom.NamespaceErr, s.add, 'x|a {top: 0}')
         scss = 'n|SEL2 {\n    top: 0\n    }'
         s.add(scss)
         expcss += '\n' + scss
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
         
         mr = s.cssRules[3]
         sr = s.cssRules[4]
@@ -345,14 +345,14 @@ ex2|x {
         oldsel, newsel = mr.cssRules[0].selectorText, 'n|SEL3, a'
         mr.cssRules[0].selectorText = newsel
         expcss = expcss.replace(oldsel, newsel)
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
         # SelectorList stylerule
         self.assertRaises(xml.dom.NamespaceErr, 
                           sr._setSelectorText, 'x|b')
         oldsel, newsel = sr.selectorText, 'ex2|SEL4, a'
         sr.selectorText = newsel
         expcss = expcss.replace(oldsel, newsel)
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
 
         # Selector @media
         self.assertRaises(xml.dom.NamespaceErr, 
@@ -360,14 +360,14 @@ ex2|x {
         oldsel, newsel = mr.cssRules[0].selectorText, 'ex2|SELMR'
         mr.cssRules[0].selectorList.append(newsel)
         expcss = expcss.replace(oldsel, oldsel + ', ' + newsel)
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
         # Selector stylerule
         self.assertRaises(xml.dom.NamespaceErr, 
                           sr.selectorList.append, 'x|b')
         oldsel, newsel = sr.selectorText, 'ex2|SELSR'
         sr.selectorList.append(newsel)
         expcss = expcss.replace(oldsel, oldsel + ', ' + newsel)
-        self.assertEqual(s.cssText, expcss)
+        self.assertEqual(s.cssText, expcss.encode())
         
         self.assertEqual(s.cssText, u'''@namespace n "new";
 @namespace ex2 "example";
@@ -379,7 +379,7 @@ ex2|x {
     }
 ex2|SEL4, a, ex2|SELSR {
     top: 0
-    }''')
+    }'''.encode())
 
     def test_namespaces3(self):
         "CSSStyleSheet.namespaces 3"
@@ -394,7 +394,7 @@ ex2|SEL4, a, ex2|SELSR {
         r = cssutils.css.CSSStyleRule()
         r.cssText = ((css, {'h': 'html'}))
         s.add(r) # uses x as set before! h is temporary only
-        self.assertEqual(s.cssText, '@namespace x "html";\nx|a {\n    top: 0\n    }')
+        self.assertEqual(s.cssText, '@namespace x "html";\nx|a {\n    top: 0\n    }'.encode())
 
         # prefix is now "x"!
         self.assertRaises(xml.dom.NamespaceErr, r.selectorList.append, 'h|b')
@@ -402,22 +402,22 @@ ex2|SEL4, a, ex2|SELSR {
         s.namespaces['y'] = 'html'
         r.selectorList.append('y|b')
         self.assertEqual(s.cssText,
-            u'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }')
+            u'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'.encode())
 
         self.assertRaises(xml.dom.NoModificationAllowedErr, 
                           s.namespaces.__delitem__, 'y')
         self.assertEqual(s.cssText,
-            u'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }')
+            u'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'.encode())
         
         s.cssRules[0].prefix = ''
         self.assertEqual(s.cssText,
-            u'@namespace "html";\na, b {\n    top: 0\n    }')
+            u'@namespace "html";\na, b {\n    top: 0\n    }'.encode())
 
         # remove need of namespace
         s.cssRules[0].prefix = 'x'
         s.cssRules[1].selectorText = 'a, b'
         self.assertEqual(s.cssText,
-            u'@namespace x "html";\na, b {\n    top: 0\n    }')
+            u'@namespace x "html";\na, b {\n    top: 0\n    }'.encode())
 
 
     def test_namespaces4(self):
@@ -453,7 +453,7 @@ ex2|SEL4, a, ex2|SELSR {
         "CSSStyleSheet.namespaces 5"
         # unknown namespace
         s = cssutils.parseString('a|a { color: red }')
-        self.assertEqual(u'', s.cssText)
+        self.assertEqual(s.cssText, ''.encode())
         
         s = cssutils.css.CSSStyleSheet()
         self.assertRaisesMsg(xml.dom.NamespaceErr, "Prefix u'a' not found.", 
@@ -475,19 +475,19 @@ ex2|SEL4, a, ex2|SELSR {
 
         self.assertEqual(4, self.s.cssRules.length)
         self.assertEqual(
-            u'@charset "ascii";\n@import "x";\n@x;\na {\n    x: 1\n    }', self.s.cssText)
+            u'@charset "ascii";\n@import "x";\n@x;\na {\n    x: 1\n    }'.encode(), self.s.cssText)
         # beginning
         self.s.deleteRule(0)
         self.assertEqual(3, self.s.cssRules.length)
-        self.assertEqual(u'@import "x";\n@x;\na {\n    x: 1\n    }', self.s.cssText)
+        self.assertEqual(u'@import "x";\n@x;\na {\n    x: 1\n    }'.encode(), self.s.cssText)
         # middle
         self.s.deleteRule(1)
         self.assertEqual(2, self.s.cssRules.length)
-        self.assertEqual(u'@import "x";\na {\n    x: 1\n    }', self.s.cssText)
+        self.assertEqual(u'@import "x";\na {\n    x: 1\n    }'.encode(), self.s.cssText)
         # end
         self.s.deleteRule(1)
         self.assertEqual(1, self.s.cssRules.length)
-        self.assertEqual(u'@import "x";', self.s.cssText)
+        self.assertEqual(u'@import "x";'.encode(), self.s.cssText)
 
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule(rule)"
@@ -506,11 +506,11 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertEqual(4, s.cssRules.length)
         s.deleteRule(n)
         self.assertEqual(3, s.cssRules.length)
-        self.assertEqual(s.cssText, 'a {\n    color: red\n    }\nb {\n    color: blue\n    }\nc {\n    color: green\n    }')
+        self.assertEqual(s.cssText, 'a {\n    color: red\n    }\nb {\n    color: blue\n    }\nc {\n    color: green\n    }'.encode())
         self.assertRaises(xml.dom.IndexSizeErr, s.deleteRule, n)
         s.deleteRule(s2)
         self.assertEqual(2, s.cssRules.length)
-        self.assertEqual(s.cssText, 'a {\n    color: red\n    }\nc {\n    color: green\n    }')
+        self.assertEqual(s.cssText, 'a {\n    color: red\n    }\nc {\n    color: green\n    }'.encode())
         self.assertRaises(xml.dom.IndexSizeErr, s.deleteRule, s2)
 
     def _gets(self):
@@ -536,7 +536,7 @@ ex2|SEL4, a, ex2|SELSR {
         s.insertRule(self.mr) # 5
         s.insertRule(self.pr) # 6
         s.insertRule(self.sr) # 7
-        self.assertEqual(u'@charset "ascii";\n@import url(x);\n@namespace p "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }', s.cssText)
+        self.assertEqual(u'@charset "ascii";\n@import url(x);\n@namespace p "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }'.encode(), s.cssText)
         return s, s.cssRules.length
 
     def test_add(self):
@@ -566,14 +566,14 @@ ex2|SEL4, a, ex2|SELSR {
             index = sheet.add(line)
             if i < 3:
                 # specific insertion point
-                self.assertEqual(fullcss, sheet.cssText)
+                self.assertEqual(fullcss.encode(), sheet.cssText)
                 self.assertEqual(i, index)
             else:
                 # end of sheet
                 expected = before
                 expected.extend(after)
                 expected.append(line)
-                self.assertEqual(u'\n'.join(expected), sheet.cssText)
+                self.assertEqual(u'\n'.join(expected).encode(), sheet.cssText)
                 self.assertEqual(len(expected)-1, index) # no same rule present
 
             # sheet with the same ruletype
@@ -583,7 +583,7 @@ ex2|SEL4, a, ex2|SELSR {
             full.cssText = fullcss
             index = full.add(line)
             if i < 1:
-                self.assertEqual(fullcss, sheet.cssText)
+                self.assertEqual(fullcss.encode(), sheet.cssText)
                 self.assertEqual(i, index) # no same rule present
             else:
                 if i < 3:
@@ -617,7 +617,7 @@ ex2|SEL4, a, ex2|SELSR {
             self.assertEqual(sheet, added.parentStyleSheet)
             self.assertEqual(u'example.css', added.href)
             self.assertEqual(u'utf-8', added.styleSheet.encoding)
-            self.assertEqual(u'/**/', added.styleSheet.cssText)
+            self.assertEqual(u'/**/'.encode(), added.styleSheet.cssText)
 
         cssrulessheet = p.parseString('@import "example.css";')
         imports = (
@@ -634,9 +634,9 @@ ex2|SEL4, a, ex2|SELSR {
             self.assertEqual(u'example.css', added.href)
             self.assertEqual(enc, added.styleSheet.encoding)
             if enc == 'ascii':
-                self.assertEqual(u'@charset "ascii";\n/**/', added.styleSheet.cssText)
+                self.assertEqual(u'@charset "ascii";\n/**/'.encode(), added.styleSheet.cssText)
             else:
-                self.assertEqual(u'/**/', added.styleSheet.cssText)
+                self.assertEqual(u'/**/'.encode(), added.styleSheet.cssText)
             
         # if styleSheet is already there encoding is not set new
         impsheet = p.parseString('@import "example.css";')
@@ -647,7 +647,7 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertEqual(sheet, added.parentStyleSheet)
         self.assertEqual(u'example.css', added.href)
         self.assertEqual(u'utf-8', added.styleSheet.encoding)
-        self.assertEqual(u'/**/', added.styleSheet.cssText)
+        self.assertEqual(u'/**/'.encode(), added.styleSheet.cssText)
 
     def test_insertRule(self):
         "CSSStyleSheet.insertRule()"
@@ -773,7 +773,7 @@ body {
     color: pink
     }'''
         sheet = cssutils.parseString(css)
-        self.assertEqual(sheet.cssText, exp)
+        self.assertEqual(sheet.cssText, exp.encode())
 
     def test_incomplete(self):
         "CSSStyleRule (incomplete)"
