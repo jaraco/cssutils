@@ -8,8 +8,12 @@ from helper import path2url
 import codecs
 import cssutils
 import os
+import sys
 import tokenize2
 import urllib
+
+if sys.version_info < (2,6):
+    bytes = str
 
 class CSSParser(object):
     """Parse a CSS StyleSheet from URL, string or file and return a DOM Level 2
@@ -90,7 +94,8 @@ class CSSParser(object):
             :class:`~cssutils.css.CSSStyleSheet`.
         """
         self.__parseSetting(True)
-        if isinstance(cssText, str):
+        # TODO: py3 needs bytes here!
+        if isinstance(cssText, bytes):
             cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
 
         sheet = cssutils.css.CSSStyleSheet(href=href,
