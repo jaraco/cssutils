@@ -652,7 +652,11 @@ properties[Profiles.CSS3_FONT_FACE] = {
 
 # CSS3 Paged Media
 macros[Profiles.CSS3_PAGED_MEDIA] = {
-    'pagesize': 'a5|a4|a3|b5|b4|letter|legal|ledger',
+    'page-size': 'a5|a4|a3|b5|b4|letter|legal|ledger',
+    'page-orientation': 'portrait|landscape',
+    'page-1': '{page-size}(?:{w}{page-orientation})?',
+    'page-2': '{page-orientation}(?:{w}{page-size})?',
+    'page-size-orientation': '{page-1}|{page-2}',
     'pagebreak': 'auto|always|avoid|left|right'
     }
 properties[Profiles.CSS3_PAGED_MEDIA] = {
@@ -664,7 +668,7 @@ properties[Profiles.CSS3_PAGED_MEDIA] = {
     'page-break-before': '{pagebreak}|inherit',
     'page-break-after': '{pagebreak}|inherit',
     'page-break-inside': 'auto|avoid|inherit',
-    'size': '({length}{w}){1,2}|auto|{pagesize}{w}(?:portrait|landscape)',
+    'size': '({length}{w}){1,2}|auto|{page-size-orientation}',
     'widows': r'{integer}|inherit'
     }
 
