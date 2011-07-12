@@ -22,6 +22,7 @@ import colorsys
 import math
 import re
 import xml.dom
+import urlparse
 
 class PropertyValue(cssutils.util._NewBase):
     """
@@ -589,6 +590,14 @@ class URIValue(Value):
         
     uri = property(lambda self: self._value, _setUri, 
                          doc=u"Actual URL without delimiters or the empty string")
+    
+    def absolute_uri(self):
+        """Actual URL, made absolute."""
+        # Ancestry: PropertyValue, Property, CSSStyleDeclaration, CSSStyleRule,
+        # CSSStyleSheet
+        styleSheet = self.parent.parent.parent.parentRule.parentStyleSheet
+        return urlparse.urljoin(styleSheet.href, self.uri)
+    absolute_uri = property(absolute_uri, doc=absolute_uri.__doc__)
 
       
 class CSSFunction(Value):
