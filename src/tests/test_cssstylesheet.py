@@ -117,26 +117,83 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
     def test_cssText(self):
         "CSSStyleSheet.cssText"
         tests = {
-            u'': None,
+            '': ''.encode(),
             # @charset
-            u'@charset "ascii";\n@import "x";': None,
-            u'@charset "ascii";\n@media all {}': u'@charset "ascii";',
-            u'@charset "ascii";\n@x;': None,
-            u'@charset "ascii";\na {\n    x: 1\n    }': None,
+            '@charset "ascii";\n@import "x";': 
+                '@charset "ascii";\n@import "x";'.encode(),
+            '@charset "ascii";\n@media all {}': '@charset "ascii";'.encode(),
+            '@charset "ascii";\n@x;': '@charset "ascii";\n@x;'.encode(),
+            '@charset "ascii";\na {\n    x: 1\n    }': 
+                '@charset "ascii";\na {\n    x: 1\n    }'.encode(),
             # @import
-            u'@x;\n@import "x";': None,
-            u'@import "x";\n@import "y";': None,
-            u'@import "x";\n@media all {}': u'@import "x";',
-            u'@import "x";\n@x;': None,
-            u'@import "x";\na {\n    x: 1\n    }': None,
+            '@x;\n@import "x";': '@x;\n@import "x";'.encode(),
+            '@import "x";\n@import "y";': '@import "x";\n@import "y";'.encode(),
+            '@import "x";\n@media all {}': '@import "x";'.encode(),
+            '@import "x";\n@x;': '@import "x";\n@x;'.encode(),
+            '@import "x";\na {\n    x: 1\n    }': 
+                '@import "x";\na {\n    x: 1\n    }'.encode(),
             # @namespace
-            u'@x;\n@namespace a "x";': None,
-            u'@namespace a "x";\n@namespace b "y";': None,
-            u'@import "x";\n@namespace a "x";\n@media all {}': 
-                u'@import "x";\n@namespace a "x";',
-            u'@namespace a "x";\n@x;': None,
-            u'@namespace a "x";\na {\n    x: 1\n    }': None,
-            u"""@namespace url("e1");
+            '@x;\n@namespace a "x";': '@x;\n@namespace a "x";'.encode(),
+            '@namespace a "x";\n@namespace b "y";': 
+                '@namespace a "x";\n@namespace b "y";'.encode(),
+            '@import "x";\n@namespace a "x";\n@media all {}': 
+                '@import "x";\n@namespace a "x";'.encode(),
+            '@namespace a "x";\n@x;': '@namespace a "x";\n@x;'.encode(),
+            '@namespace a "x";\na {\n    x: 1\n    }': 
+                '@namespace a "x";\na {\n    x: 1\n    }'.encode(),
+            """@namespace url("e1");
+                @namespace url("e2");
+                @namespace x url("x1");
+                @namespace x url("x2");
+                test{color: green}
+                x|test {color: green}""": """@namespace "e2";
+@namespace x "x2";
+test {
+    color: green
+    }
+x|test {
+    color: green
+    }""".encode()
+#            ur'\1 { \2: \3 }': ur'''\x01 {
+#    \x02: \x03
+#    }''',
+#            ur'''
+#            \@ { \@: \@ }
+#            \1 { \2: \3 }
+#            \{{\::\;;}
+#            ''': ur'''\@ {
+#    \@: \@
+#    }
+#\1 {
+#    \2: \3
+#    }
+#\{
+#    {\:: \;
+#    }'''
+            }
+        self.do_equal_r(tests)
+        
+        tests = {
+            '': None,
+            # @charset
+            '@charset "ascii";\n@import "x";': None,
+            '@charset "ascii";\n@media all {}': '@charset "ascii";',
+            '@charset "ascii";\n@x;': None,
+            '@charset "ascii";\na {\n    x: 1\n    }': None,
+            # @import
+            '@x;\n@import "x";': None,
+            '@import "x";\n@import "y";': None,
+            '@import "x";\n@media all {}': '@import "x";',
+            '@import "x";\n@x;': None,
+            '@import "x";\na {\n    x: 1\n    }': None,
+            # @namespace
+            '@x;\n@namespace a "x";': None,
+            '@namespace a "x";\n@namespace b "y";': None,
+            '@import "x";\n@namespace a "x";\n@media all {}': 
+                '@import "x";\n@namespace a "x";',
+            '@namespace a "x";\n@x;': None,
+            '@namespace a "x";\na {\n    x: 1\n    }': None,
+            """@namespace url("e1");
                 @namespace url("e2");
                 @namespace x url("x1");
                 @namespace x url("x2");
@@ -166,7 +223,6 @@ x|test {
 #    {\:: \;
 #    }'''
             }
-        self.do_equal_r(tests)
         self.do_equal_p(tests)
 
         s = cssutils.css.CSSStyleSheet()
@@ -556,7 +612,7 @@ ex2|SEL4, a, ex2|SELSR {
                
         fullcss = u'\n'.join(css)
         full.cssText = fullcss
-        self.assertEqual(full.cssText, fullcss)
+        self.assertEqual(full.cssText, fullcss.encode())
         for i, line in enumerate(css):
             # sheet without same ruletype
             before = css[:i]
@@ -598,7 +654,7 @@ ex2|SEL4, a, ex2|SELSR {
                     expected.append(line)
                     expectedindex = len(expected) - 1
 
-                self.assertEqual(u'\n'.join(expected), full.cssText)
+                self.assertEqual(u'\n'.join(expected).encode(), full.cssText)
                 self.assertEqual(expectedindex, index) # no same rule present
 
     def test_addimport(self):
