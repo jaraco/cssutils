@@ -273,7 +273,7 @@ a {
     over3-2-0: var(over3-2-0);
     over3-2-1: var(over3-2-1);
     over3-2-1-0: var(over3-2-1-0)
-    }''')
+    }'''.encode())
         
         # test with resolved vars
         cssutils.ser.prefs.resolveVariables = True
@@ -293,7 +293,7 @@ a {
     over3-2-0: 0;
     over3-2-1: 1;
     over3-2-1-0: 0
-    }''')
+    }'''.encode())
         
 
         s = cssutils.resolveImports(s)
@@ -315,7 +315,7 @@ a {
     over3-2-0: 0;
     over3-2-1: 1;
     over3-2-1-0: 0
-    }''')
+    }'''.encode())
     
     def test_parentRule(self):
         "CSSVariablesDeclaration.parentRule"

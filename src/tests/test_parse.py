@@ -31,12 +31,12 @@ class CSSParserTestCase(basetest.BaseTestCase):
         # default non raising parser
         p = cssutils.CSSParser()
         s = p.parseString('$')
-        self.assertEqual(s.cssText, u'')
+        self.assertEqual(s.cssText, u''.encode())
         
         # explicit raiseExceptions=False
         p = cssutils.CSSParser(raiseExceptions=False)
         s = p.parseString('$')
-        self.assertEqual(s.cssText, u'')
+        self.assertEqual(s.cssText, u''.encode())
 
         # working with sheet does raise though! 
         self.assertRaises(xml.dom.DOMException, s.__setattr__, u'cssText', u'$')
@@ -56,7 +56,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
         s = cssutils.css.CSSStyleSheet()
         # does not raise!
         s.__setattr__(u'cssText', u'$')
-        self.assertEqual(s.cssText, '')
+        self.assertEqual(s.cssText, ''.encode())
 
     def test_parseComments(self):
         "cssutils.CSSParser(parseComments=False)"
@@ -64,10 +64,10 @@ class CSSParserTestCase(basetest.BaseTestCase):
         
         p = cssutils.CSSParser(parseComments=False)
         self.assertEqual(p.parseString(css).cssText,
-                         u'a {\n    color: red\n    }')
+                         u'a {\n    color: red\n    }'.encode())
         p = cssutils.CSSParser(parseComments=True)
         self.assertEqual(p.parseString(css).cssText,
-                         u'/*1*/\na {\n    color: /*2*/ red\n    }')
+                         u'/*1*/\na {\n    color: /*2*/ red\n    }'.encode())
         
 #    def test_parseFile(self):
 #        "CSSParser.parseFile()"
@@ -286,14 +286,14 @@ class CSSParserTestCase(basetest.BaseTestCase):
         sheet = cssutils.parseString(css)
         self.assertEqual(sheet.cssText, ur'''C\x {
     c\x: C\x !important
-    }''')
+    }'''.encode())
 
         css = ur'\ x{\ x :\ x ;y:1} '
         sheet = cssutils.parseString(css)
         self.assertEqual(sheet.cssText, ur'''\ x {
     \ x: \ x;
     y: 1
-    }''')
+    }'''.encode())
 
     def test_invalidstring(self):
         "cssutils.parseString(INVALID_STRING)"
@@ -313,7 +313,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 ;''' + validfromhere)
         for css in csss:
             s = cssutils.parseString(css)
-            self.assertEqual(validfromhere, s.cssText)
+            self.assertEqual(validfromhere.encode(), s.cssText)
 
         csss = (u'''a { font-family: "Courier
                 ; }''',
@@ -323,7 +323,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 '''
         )
         for css in csss:
-            self.assertEqual(u'', cssutils.parseString(css).cssText)
+            self.assertEqual(u''.encode(), cssutils.parseString(css).cssText)
 
     def test_invalid(self):
         "cssutils.parseString(INVALID_CSS)"
@@ -343,7 +343,7 @@ a {
             if exp == None:
                 exp = css
             s = cssutils.parseString(css)
-            self.assertEqual(exp, s.cssText)
+            self.assertEqual(exp.encode(), s.cssText)
 
     def test_nesting(self):
         "cssutils.parseString nesting"
@@ -360,7 +360,7 @@ a {
             '@1 { [ } ] div{color:red}div{color:green}': u'div {\n    color: green\n    }', 
              }
         for css, exp in tests.items():
-            self.assertEqual(exp, cssutils.parseString(css).cssText)
+            self.assertEqual(exp.encode(), cssutils.parseString(css).cssText)
 
     def test_specialcases(self):
         "cssutils.parseString(special_case)"
@@ -376,7 +376,7 @@ o very long title"] {/*...*/}''': u'''a[title="a not so very long title"] {
             if exp == None:
                 exp = css
             s = cssutils.parseString(css)
-            self.assertEqual(exp, s.cssText)
+            self.assertEqual(exp.encode(), s.cssText)
 
     def test_iehack(self):
         "IEhack: $property (not since 0.9.5b3)"

@@ -121,11 +121,11 @@ class SelectorTestCase(basetest.BaseTestCase):
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = css
         self.assertEqual(sheet.cssText, 
-                         u'@namespace "default";\na[att] {\n    color: green\n    }')
+                         u'@namespace "default";\na[att] {\n    color: green\n    }'.encode())
         # use a prefix for default namespace, does not goes for atts!
         sheet.namespaces['p'] = 'default' 
         self.assertEqual(sheet.cssText, 
-                         u'@namespace p "default";\np|a[att] {\n    color: green\n    }')
+                         u'@namespace p "default";\np|a[att] {\n    color: green\n    }'.encode())
     
     def test_parent(self):
         "Selector.parent"

@@ -188,11 +188,11 @@ prefix|x, a + b > c ~ d, b {
         s = cssutils.parseString(css)
         cssutils.ser.prefs.keepUnknownAtRules = True
         self.assertEqual(s.cssText, 
-            u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}@x x;''' 
+            u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}@x x;'''.encode() 
             )
         cssutils.ser.prefs.keepUnknownAtRules = False
         self.assertEqual(s.cssText, 
-            u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}''' 
+            u'''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}'''.encode()
             )
         # Values
         valuetests = {
@@ -217,7 +217,7 @@ prefix|x, a + b > c ~ d, b {
         }
         for test, exp in valuetests.items():
             s = cssutils.parseString(u'a{x:%s}' % test)
-            self.assertEqual(u'a{x:%s}' % exp, s.cssText)
+            self.assertEqual((u'a{x:%s}' % exp).encode(), s.cssText)
 
         
             

@@ -43,7 +43,7 @@ if sys.version_info >= (3,0):
     
         def test_detectencoding_str(self):
             "codec.detectencoding_str()"
-            self.assertEqual(codec.detectencoding_str(b''), (None, False))
+            self.assertEqual(codec.detectencoding_str(''.encode()), (None, False))
             self.assertEqual(codec.detectencoding_str(b'\xef'), (None, False))
             self.assertEqual(codec.detectencoding_str(b'\xef\x33'), ("utf-8", False))
             self.assertEqual(codec.detectencoding_str(b'\xef\xbb'), (None, False))
