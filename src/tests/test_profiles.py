@@ -10,6 +10,7 @@ C3BUI = (cssutils.profile.CSS3_BASIC_USER_INTERFACE,)
 C3BB = (cssutils.profile.CSS3_BACKGROUNDS_AND_BORDERS,)
 CM3 = (cssutils.profile.CSS3_COLOR,)
 FM3 = (cssutils.profile.CSS3_FONTS,)
+C3PM = (cssutils.profile.CSS3_PAGED_MEDIA,)
 C3T = (cssutils.profile.CSS3_TEXT,)
 FM3FF = (cssutils.profile.CSS3_FONT_FACE,)
 CSS2_CM3 = (CM3[0], CSS2[0])
@@ -407,6 +408,20 @@ class ProfilesTestCase(basetest.BaseTestCase):
                         'auto', 
                         '1px', 
                         '2%')): (False, False, C3BUI),
+
+            ('size', ('1cm',
+                      '1mm 20cm',
+                      'auto',
+                      'landscape letter', 
+                      'a4 portrait', 
+                      'landscape', 
+                      'a5', 
+                      #'inherit'
+                      )): (True, True, C3PM),
+            ('size', ( 
+                      'portrait landscape', 
+                      'a5 letter', 
+                      '2%')): (False, False, C3PM),
 
             ('src', ('url(  a  )',
                      'local(  x  )',
