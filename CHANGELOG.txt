@@ -44,6 +44,10 @@ HEAD
 
       Issues are currently still at Google Code though.
 
+    - Fixed validation of ``size`` property (thanks to Simon Sapin)
+
+    - Added ``URIValue.absoluteUri`` (thanks to Simon Sapin)
+
     - Issue #53 feature request: Added new Preference option ``cssutils.ser.prefs.indentClosingBrace``. Defines if closing brace of block is indented to match indentation of the block (default) oder match indentation of selector.
 
 	- Fixed Issue #54 (thanks to Simon Sapin): Short hand like `#f80` color value object have correct red, green and blue property values now. Also ``hsl()`` and ``hsla()`` colors report (almost) correct values (due to rounding problems).
