@@ -474,6 +474,17 @@ class URIValueTestCase(basetest.BaseTestCase):
         self.assert_(u'2' == v.uri)
         self.assertEqual(u'url(2)', v.cssText)
 
+    def test_absoluteUri(self):
+        "URIValue.absoluteUri"
+        s = cssutils.parseString('a { background-image: url(x.gif)}', href="/path/to/x.css")
+        v = s.cssRules[0].style.getProperty('background-image').propertyValue[0]
+        self.assertEqual(u'x.gif', v.uri)
+        self.assertEqual(u'/path/to/x.gif', v.absoluteUri)
+
+        v = cssutils.css.URIValue(u'url(x.gif)')
+        self.assertEqual(u'x.gif', v.uri)
+        self.assertEqual(u'x.gif', v.absoluteUri)
+        
     def test_cssText(self):
         "URIValue.cssText"
         tests = {

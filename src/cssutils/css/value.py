@@ -591,13 +591,19 @@ class URIValue(Value):
     uri = property(lambda self: self._value, _setUri, 
                          doc=u"Actual URL without delimiters or the empty string")
     
-    def absolute_uri(self):
-        """Actual URL, made absolute."""
+    def absoluteUri(self):
+        """Actual URL, made absolute if possible, else same as `uri`."""
         # Ancestry: PropertyValue, Property, CSSStyleDeclaration, CSSStyleRule,
         # CSSStyleSheet
-        styleSheet = self.parent.parent.parent.parentRule.parentStyleSheet
-        return urlparse.urljoin(styleSheet.href, self.uri)
-    absolute_uri = property(absolute_uri, doc=absolute_uri.__doc__)
+        try:
+            # TODO: better way?
+            styleSheet = self.parent.parent.parent.parentRule.parentStyleSheet
+        except AttributeError, e:
+            return self.uri
+        else:
+            return urlparse.urljoin(styleSheet.href, self.uri)
+    
+    absoluteUri = property(absoluteUri, doc=absoluteUri.__doc__)
 
       
 class CSSFunction(Value):
