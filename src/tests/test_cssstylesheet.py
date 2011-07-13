@@ -502,7 +502,7 @@ ex2|SEL4, a, ex2|SELSR {
         del s.namespaces.namespaces['p'] 
         self.assertEqual({u'p': 'uri'}, s.namespaces.namespaces)
         
-        self.assertRaisesMsg(xml.dom.NamespaceErr, u"Prefix 'undefined' not found.", 
+        self.assertRaisesMsg(xml.dom.NamespaceErr, u"Prefix undefined not found.", 
                              s.namespaces.__delitem__, 'undefined')
         
     def test_namespaces5(self):
@@ -512,7 +512,7 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertEqual(s.cssText, ''.encode())
         
         s = cssutils.css.CSSStyleSheet()
-        self.assertRaisesMsg(xml.dom.NamespaceErr, "Prefix u'a' not found.", 
+        self.assertRaisesMsg(xml.dom.NamespaceErr, "Prefix a not found.", 
                              s._setCssText, 'a|a { color: red }')        
         
     def test_deleteRuleIndex(self):

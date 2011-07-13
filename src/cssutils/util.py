@@ -698,14 +698,14 @@ class _Namespaces(object):
                 self.parentStyleSheet.deleteRule(i)
                 return
 
-        self._log.error('Prefix %r not found.' % prefix,
+        self._log.error('Prefix %s not found.' % prefix,
                         error=xml.dom.NamespaceErr)
 
     def __getitem__(self, prefix):
         try:
             return self.namespaces[prefix]
         except KeyError, e:
-            self._log.error('Prefix %r not found.' % prefix,
+            self._log.error('Prefix %s not found.' % prefix,
                             error=xml.dom.NamespaceErr)
 
     def __iter__(self):
@@ -769,7 +769,7 @@ class _Namespaces(object):
         for prefix, uri in self.namespaces.items():
             if uri == namespaceURI:
                 return prefix
-        raise IndexError(u'NamespaceURI %r not found.' % namespaceURI)
+        raise IndexError(u'NamespaceURI %s not found.' % namespaceURI)
 
     def __str__(self):
         return u"<cssutils.util.%s object parentStyleSheet=%r at 0x%x>" % (
