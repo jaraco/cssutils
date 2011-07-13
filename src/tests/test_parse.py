@@ -26,7 +26,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
     
     def test_init(self):
         "CSSParser.__init__()"
-        self.assertEqual(True, cssutils.log.raiseExceptions)        
+        self.assertEqual(True, cssutils.log.raiseExceptions)
         
         # also the default:
         cssutils.log.raiseExceptions = True
@@ -113,7 +113,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
             overrideprefix = u'@charset "iso-8859-1";'
             httpencoding = None
             
-            for (url, content), (isSheet, expencoding, cssText) in tests.items():                
+            for (url, content), (isSheet, expencoding, cssText) in tests.items():
                 parser.setFetcher(self._make_fetcher(httpencoding, content))
                 sheet1 = parser.parseUrl(url)
                 sheet2 = parser.parseUrl(url, encoding=override)
@@ -145,10 +145,10 @@ class CSSParserTestCase(basetest.BaseTestCase):
             ('/*a*/', 'ascii'): (u'ascii', u'@charset "ascii";\n/*a*/'.encode('ascii')),
 
             # TODO: py 2.7
-            ('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xe4*/'.encode('utf-8')),  
+            ('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xe4*/'.encode('utf-8')),
             ('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xe4*/'.encode('utf-8')),
             # TODO: py 3.x ?
-            #('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xc3\xa4*/'.encode('utf-8')),  
+            #('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xc3\xa4*/'.encode('utf-8')),
             #('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xc3\xa4*/'.encode('utf-8')),
                  
             ('@charset "ascii";/*a*/', None): (u'ascii', u'@charset "ascii";\n/*a*/'.encode('ascii')),
@@ -157,27 +157,27 @@ class CSSParserTestCase(basetest.BaseTestCase):
             
             # unicode string, no encoding: encoding, cssText
             (u'/*€*/', None): (
-               u'utf-8', u'/*€*/'.encode('utf-8')),  
+               u'utf-8', u'/*€*/'.encode('utf-8')),
             (u'@charset "iso-8859-1";/*ä*/', None): (
-               u'iso-8859-1', u'@charset "iso-8859-1";\n/*ä*/'.encode('iso-8859-1')),  
+               u'iso-8859-1', u'@charset "iso-8859-1";\n/*ä*/'.encode('iso-8859-1')),
             (u'@charset "utf-8";/*€*/', None): (
-               u'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
+               u'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),
             (u'@charset "utf-16";/**/', None): (
-               u'utf-16', u'@charset "utf-16";\n/**/'.encode('utf-16')),  
-            # unicode string, encoding utf-8: encoding, cssText            
-            (u'/*€*/', 'utf-8'): ('utf-8', 
-               u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
+               u'utf-16', u'@charset "utf-16";\n/**/'.encode('utf-16')),
+            # unicode string, encoding utf-8: encoding, cssText
+            (u'/*€*/', 'utf-8'): ('utf-8',
+               u'@charset "utf-8";\n/*€*/'.encode('utf-8')),
             (u'@charset "iso-8859-1";/*ä*/', 'utf-8'): (
-               u'utf-8', u'@charset "utf-8";\n/*ä*/'.encode('utf-8')),  
+               u'utf-8', u'@charset "utf-8";\n/*ä*/'.encode('utf-8')),
             (u'@charset "utf-8";/*€*/', 'utf-8'): (
-               u'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),  
+               u'utf-8', u'@charset "utf-8";\n/*€*/'.encode('utf-8')),
             (u'@charset "utf-16";/**/', 'utf-8'): (
                u'utf-8', u'@charset "utf-8";\n/**/'.encode('utf-8')),
-            # probably not what is wanted but does not raise:  
+            # probably not what is wanted but does not raise:
             (u'/*€*/', 'ascii'): (
-               u'ascii', u'@charset "ascii";\n/*\\20AC */'.encode('utf-8')),  
+               u'ascii', u'@charset "ascii";\n/*\\20AC */'.encode('utf-8')),
             (u'/*€*/', 'iso-8859-1'): (
-               u'iso-8859-1', u'@charset "iso-8859-1";\n/*\\20AC */'.encode('utf-8')),  
+               u'iso-8859-1', u'@charset "iso-8859-1";\n/*\\20AC */'.encode('utf-8')),
         }
         for test in tests:
             css, encoding = test
@@ -187,10 +187,10 @@ class CSSParserTestCase(basetest.BaseTestCase):
             self.assertEqual(cssText, sheet.cssText)
 
         tests = [
-            # encoded css, overiding encoding 
+            # encoded css, overiding encoding
             (u'/*€*/'.encode('utf-16'), 'utf-8'),
             (u'/*ä*/'.encode('iso-8859-1'), 'ascii'),
-            (u'/*€*/'.encode('utf-8'), 'ascii'), 
+            (u'/*€*/'.encode('utf-8'), 'ascii'),
             (u'a'.encode('ascii'), 'utf-16'),
         ]
         for test in tests:
@@ -211,7 +211,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
         """
         tests = {
             # css, encoding, (mimetype, encoding, importcss):
-            #    encoding, importIndex, importEncoding, importText            
+            #    encoding, importIndex, importEncoding, importText
 
             # 0/0 override/override => ASCII/ASCII
             (u'@charset "utf-16"; @import "x";', 'ASCII', ('iso-8859-1', 
@@ -266,13 +266,13 @@ class CSSParserTestCase(basetest.BaseTestCase):
             self.assertEqual(sheet.encoding, sheetencoding)
             self.assertEqual(sheet2.encoding, sheetencoding)
             # imported sheet
-            self.assertEqual(sheet.cssRules[importIndex].styleSheet.encoding, 
+            self.assertEqual(sheet.cssRules[importIndex].styleSheet.encoding,
                              importEncoding)
-            self.assertEqual(sheet2.cssRules[importIndex].styleSheet.encoding, 
-                             importEncoding)            
-            self.assertEqual(sheet.cssRules[importIndex].styleSheet.cssText, 
+            self.assertEqual(sheet2.cssRules[importIndex].styleSheet.encoding,
+                             importEncoding)
+            self.assertEqual(sheet.cssRules[importIndex].styleSheet.cssText,
                              importText)
-            self.assertEqual(sheet2.cssRules[importIndex].styleSheet.cssText, 
+            self.assertEqual(sheet2.cssRules[importIndex].styleSheet.cssText,
                              importText)
 
     def test_roundtrip(self):
@@ -348,7 +348,7 @@ a {
             }
 
         for css in tests:
-            exp = tests[css] 
+            exp = tests[css]
             if exp == None:
                 exp = css
             s = cssutils.parseString(css)
@@ -381,7 +381,7 @@ o very long title"] {/*...*/}''': u'''a[title="a not so very long title"] {
     }'''
         }
         for css in tests:
-            exp = tests[css] 
+            exp = tests[css]
             if exp == None:
                 exp = css
             s = cssutils.parseString(css)
