@@ -377,9 +377,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         def fetcher(url):
             if url.endswith('level1.css'): 
-                return None, '@charset "ascii"; @import "level2.css";'
+                return None, u'@charset "ascii"; @import "level2.css";'.encode()
             else:
-                return None, 'a { color: red }'
+                return None, u'a { color: red }'.encode()
             
         parser = cssutils.CSSParser(fetcher=fetcher)
         
