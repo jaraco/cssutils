@@ -2,6 +2,7 @@
 """Tests for parsing which does not raise Exceptions normally"""
 __version__ = '$Id$'
 
+import sys
 import xml.dom
 import basetest
 import cssutils
@@ -12,6 +13,8 @@ try:
 except ImportError:
     mock = None 
     print "install minimock with ``easy_install minimock`` to run all tests"
+
+PY2x = sys.version_info < (3,0)
 
 class CSSParserTestCase(basetest.BaseTestCase):
     
@@ -138,13 +141,19 @@ class CSSParserTestCase(basetest.BaseTestCase):
         "CSSParser.parseString()"
         tests = {
             # (byte) string, encoding: encoding, cssText
-            ('/*a*/', None): (u'utf-8', '/*a*/'),
-            ('/*a*/', 'ascii'): (u'ascii', '@charset "ascii";\n/*a*/'),
-            ('/*\xc3\xa4*/', None): (u'utf-8', '/*\xc3\xa4*/'),  
-            ('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', '@charset "utf-8";\n/*\xc3\xa4*/'),  
-            ('@charset "ascii";/*a*/', None): (u'ascii', '@charset "ascii";\n/*a*/'),
-            ('@charset "utf-8";/*a*/', None): (u'utf-8', '@charset "utf-8";\n/*a*/'),
-            ('@charset "iso-8859-1";/*a*/', None): (u'iso-8859-1', '@charset "iso-8859-1";\n/*a*/'),
+            ('/*a*/', None): (u'utf-8', u'/*a*/'.encode('utf-8')),
+            ('/*a*/', 'ascii'): (u'ascii', u'@charset "ascii";\n/*a*/'.encode('ascii')),
+
+            # TODO: py 2.7
+            ('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xe4*/'.encode('utf-8')),  
+            ('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xe4*/'.encode('utf-8')),
+            # TODO: py 3.x ?
+            #('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xc3\xa4*/'.encode('utf-8')),  
+            #('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xc3\xa4*/'.encode('utf-8')),
+                 
+            ('@charset "ascii";/*a*/', None): (u'ascii', u'@charset "ascii";\n/*a*/'.encode('ascii')),
+            ('@charset "utf-8";/*a*/', None): (u'utf-8', u'@charset "utf-8";\n/*a*/'.encode('utf-8')),
+            ('@charset "iso-8859-1";/*a*/', None): (u'iso-8859-1', u'@charset "iso-8859-1";\n/*a*/'.encode('iso-8859-1')),
             
             # unicode string, no encoding: encoding, cssText
             (u'/*€*/', None): (
@@ -168,7 +177,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
             (u'/*€*/', 'ascii'): (
                u'ascii', u'@charset "ascii";\n/*\\20AC */'.encode('utf-8')),  
             (u'/*€*/', 'iso-8859-1'): (
-               'iso-8859-1', u'@charset "iso-8859-1";\n/*\\20AC */'.encode('utf-8')),  
+               u'iso-8859-1', u'@charset "iso-8859-1";\n/*\\20AC */'.encode('utf-8')),  
         }
         for test in tests:
             css, encoding = test
@@ -260,7 +269,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
             self.assertEqual(sheet.cssRules[importIndex].styleSheet.encoding, 
                              importEncoding)
             self.assertEqual(sheet2.cssRules[importIndex].styleSheet.encoding, 
-                             importEncoding)
+                             importEncoding)            
             self.assertEqual(sheet.cssRules[importIndex].styleSheet.cssText, 
                              importText)
             self.assertEqual(sheet2.cssRules[importIndex].styleSheet.cssText, 
