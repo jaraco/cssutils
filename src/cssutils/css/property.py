@@ -130,11 +130,11 @@ class Property(cssutils.util.Base):
             colontoken = nametokens.pop()
             if self._tokenvalue(colontoken) != u':':
                 wellformed = False
-                self._log.error(u'Property: No ":" after name found: %r' %
+                self._log.error(u'Property: No ":" after name found: %s' %
                                 self._valuestr(cssText), colontoken)
             elif not nametokens:
                 wellformed = False
-                self._log.error(u'Property: No property name found: %r.' %
+                self._log.error(u'Property: No property name found: %s' %
                             self._valuestr(cssText), colontoken)
 
             if valuetokens:
@@ -143,7 +143,7 @@ class Property(cssutils.util.Base):
                     prioritytokens.insert(0, valuetokens.pop(-1))
             else:
                 wellformed = False
-                self._log.error(u'Property: No property value found: %r.' %
+                self._log.error(u'Property: No property value found: %s' %
                                 self._valuestr(cssText), colontoken)
 
             if wellformed:
@@ -156,7 +156,7 @@ class Property(cssutils.util.Base):
                 self.validate()
 
         else:
-            self._log.error(u'Property: No property name found: %r.' %
+            self._log.error(u'Property: No property name found: %s' %
                             self._valuestr(cssText))
 
     cssText = property(fget=_getCssText, fset=_setCssText,
@@ -201,7 +201,7 @@ class Property(cssutils.util.Base):
 
         if not new['literalname']:
             wellformed = False
-            self._log.error(u'Property: No name found: %r' %
+            self._log.error(u'Property: No name found: %s' %
                 self._valuestr(name), token=token)
 
         if wellformed:
@@ -339,7 +339,7 @@ class Property(cssutils.util.Base):
         # post conditions
         if priority and not new['literalpriority']:
             wellformed = False
-            self._log.info(u'Property: Invalid priority: %r.' %
+            self._log.info(u'Property: Invalid priority: %s' %
                            self._valuestr(priority))
 
         if wellformed:
@@ -349,7 +349,7 @@ class Property(cssutils.util.Base):
             self.seqs[2] = newseq
             # validate priority
             if self._priority not in (u'', u'important'):
-                self._log.error(u'Property: No CSS priority value: %r.' %
+                self._log.error(u'Property: No CSS priority value: %s' %
                                 self._priority)
 
     priority = property(lambda self: self._priority, _setPriority,

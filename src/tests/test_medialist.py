@@ -24,7 +24,7 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(u'print, screen', ml.mediaText)
         
         self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
-                             '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).''', 
+                             basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''), 
                              ml._setMediaText, u' print , all  , tv ')
         
         self.assertEqual(u'all', ml.mediaText)
@@ -86,7 +86,7 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(u'all', ml.mediaText)
 
         self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
-                             '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).''', 
+                             basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''), 
                              ml.appendMedium, 'tv')
         self.assertEqual(1, ml.length)
         self.assertEqual(u'all', ml.mediaText)
@@ -98,7 +98,7 @@ class MediaListTestCase(basetest.BaseTestCase):
         ml = cssutils.stylesheets.MediaList()
         ml.appendMedium(u'all')
         self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
-                             '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'print') as already specified "all" (set ``mediaText`` instead).''', 
+                             basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'print') as already specified "all" (set ``mediaText`` instead).'''), 
                              ml.appendMedium, 'print')
         
         sheet = cssutils.parseString('@media all, print { /**/ }')
@@ -137,7 +137,7 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(u'all, handheld', ml.mediaText)
         
         self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
-                             '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).''', 
+                             basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''), 
                              ml._setMediaText, u' handheld , all  , tv ')
         
     def test_mediaText(self):

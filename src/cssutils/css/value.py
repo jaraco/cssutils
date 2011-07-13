@@ -173,7 +173,7 @@ class PropertyValue(cssutils.util._NewBase):
             self._setSeq(seq)
             self.wellformed = True
         else:
-            self._log.error(u'PropertyValue: Unknown syntax or no value: %r.' % 
+            self._log.error(u'PropertyValue: Unknown syntax or no value: %s' % 
                             self._valuestr(cssText))
     
     cssText = property(lambda self: cssutils.ser.do_css_PropertyValue(self),

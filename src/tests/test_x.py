@@ -15,7 +15,7 @@ class XTestCase(basetest.BaseTestCase):
     def test_prioriy(self):
         "Property.priority"
         s = cssutils.parseString(u'a { color: red }')
-        self.assertEqual(s.cssText, 'a {\n    color: red\n    }')
+        self.assertEqual(s.cssText, u'a {\n    color: red\n    }'.encode())
 #        self.assertEqual(u'', s.cssRules[0].style.getPropertyPriority('color'))
 #
 #        s = cssutils.parseString('a { color: red !important }')

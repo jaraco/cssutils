@@ -42,19 +42,18 @@ Compatibility to Python 3.x is currently in development. At the same time compat
 HEAD
 	- **Source control has moved to bitbucket https://bitbucket.org/cthedot/cssutils**
 
-      Issues are currently still at Google Code though.
+      Older Issues are currently still at Google Code, newer at Bitbucket. Please do not use Google Code for new issue reports anymore!
 
-    - Fixed validation of ``size`` property (thanks to Simon Sapin)
+    - CHANGE (minor): Some error messages have slightly changed due to a simpler compatibility to Python 3. Problem are any ``u'...'`` texts inside error messages which now are simplified, some without and quotes. Changed are e.g. error messages by ``Property``.
 
-    - Added ``URIValue.absoluteUri`` (thanks to Simon Sapin)
+    - BUGFIX: Fixed validation of ``size`` property (thanks to Simon Sapin)
+	- BUGFIX: Fixed Issue #55 (thanks to Simon Sapin): `outline-color` property was missing from validation.
 
-    - Issue #53 feature request: Added new Preference option ``cssutils.ser.prefs.indentClosingBrace``. Defines if closing brace of block is indented to match indentation of the block (default) oder match indentation of selector.
+    - FEATURE: Added ``URIValue.absoluteUri`` (thanks to Simon Sapin)
+    - FEATURE: Issue #53 feature request: Added new Preference option ``cssutils.ser.prefs.indentClosingBrace``. Defines if closing brace of block is indented to match indentation of the block (default) oder match indentation of selector.
+    - FEATURE: Feature request: Added new Preference option ``cssutils.ser.prefs.omitLeadingZero``. Defines if values between -1 and 1 should omit the 0, like ``.5px``. Minified settings do this, else 0 is kept by default.
 
-	- Fixed Issue #54 (thanks to Simon Sapin): Short hand like `#f80` color value object have correct red, green and blue property values now. Also ``hsl()`` and ``hsla()`` colors report (almost) correct values (due to rounding problems).
-
-	- Fixed Issue #55 (thanks to Simon Sapin): `outline-color` property was missing from validation.
-
-    - Feature request: Added new Preference option ``cssutils.ser.prefs.omitLeadingZero``. Defines if values between -1 and 1 should omit the 0, like ``.5px``. Minified settings do this, else 0 is kept by default.
+	- IMPROVEMENT: Fixed Issue #54 (thanks to Simon Sapin): Short hand like `#f80` color value object have correct red, green and blue property values now. Also ``hsl()`` and ``hsla()`` colors report (almost) correct values (due to rounding problems).
 
     - **IMPROVEMENT**: Parsing of longer (and probably invalid) ``font`` or ``font-family`` values was *extremely* slow due to a very complex regex. This has been changed and parsing of specific stylesheets using these values should be much faster now. (``macros[Profiles.CSS_LEVEL_2]['font-family']`` is gone so if you used this in your own validation modules you need to check the source in `profiles.py`.)
 
