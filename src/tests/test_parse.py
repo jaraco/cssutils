@@ -144,13 +144,13 @@ class CSSParserTestCase(basetest.BaseTestCase):
             ('/*a*/', None): (u'utf-8', u'/*a*/'.encode('utf-8')),
             ('/*a*/', 'ascii'): (u'ascii', u'@charset "ascii";\n/*a*/'.encode('ascii')),
 
-            # TODO: py 2.7
-            ('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xe4*/'.encode('utf-8')),
-            ('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xe4*/'.encode('utf-8')),
-            # TODO: py 3.x ?
+            # org
             #('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xc3\xa4*/'.encode('utf-8')),
             #('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xc3\xa4*/'.encode('utf-8')),
-                 
+            # new for 2.x and 3.x
+            (u'/*\xe4*/'.encode('utf-8'), None): (u'utf-8', u'/*\xe4*/'.encode('utf-8')),
+            (u'/*\xe4*/'.encode('utf-8'), 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xe4*/'.encode('utf-8')),
+                            
             ('@charset "ascii";/*a*/', None): (u'ascii', u'@charset "ascii";\n/*a*/'.encode('ascii')),
             ('@charset "utf-8";/*a*/', None): (u'utf-8', u'@charset "utf-8";\n/*a*/'.encode('utf-8')),
             ('@charset "iso-8859-1";/*a*/', None): (u'iso-8859-1', u'@charset "iso-8859-1";\n/*a*/'.encode('iso-8859-1')),
