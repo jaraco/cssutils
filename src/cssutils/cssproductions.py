@@ -68,7 +68,8 @@ MACROS = {
 # used by cssutils, a mix of CSS3 and some CSS2.1 productions.
 # The productions are **ordered**:
 PRODUCTIONS = [
-    ('BOM', r'\xFEFF'), # will only be checked at beginning of CSS
+    # UTF8_BOM or UTF8_BOM_SIG will only be checked at beginning of CSS
+    ('BOM', '\xfe\xff|\xef\xbb\xbf'), 
     
     ('S', r'{s}+'), # 1st in list of general productions
     ('URI', r'{U}{R}{L}\({w}({string}|{url}*){w}\)'),
