@@ -3,6 +3,15 @@ __version__ = '$Id: test_codec.py 2094 2011-04-18 23:57:38Z jaracosan $'
 
 import codecs
 import unittest
+import sys
+
+PY2x = sys.version_info < (3,0)
+if PY2x:
+    import StringIO
+    iostream = StringIO.StringIO
+else:
+    import io
+    iostream = io.BytesIO 
 
 from cssutils import codec
 
@@ -19,15 +28,22 @@ class Queue(object):
     queue: write bytes at one end, read bytes from the other end
     """
     def __init__(self):
-        self._buffer = ""
+        self._buffer = "".encode()
 
     def write(self, chars):
+        # TODO ???
+        if not PY2x:
+            if isinstance(chars, str):
+                chars = chars.encode()
+            elif isinstance(chars, int):
+                chars = chr(chars).encode()
+            
         self._buffer += chars
 
     def read(self, size=-1):
         if size<0:
             s = self._buffer
-            self._buffer = ""
+            self._buffer = "".encode()
             return s
         else:
             s = self._buffer[:size]
@@ -139,6 +155,7 @@ class CodecTestCase(unittest.TestCase):
             q = Queue()
             sr = codecs.getreader("css")(q)
             result = []
+            # TODO: py3 only???
             for c in input.encode(encoding):
                 q.write(c)
                 result.append(sr.read())
@@ -239,7 +256,7 @@ class CodecTestCase(unittest.TestCase):
             # Check stream writer with encoding autodetection
             q = Queue()
             sw = codecs.getwriter("css")(q)
-            for c in inputdecl:
+            for c in inputdecl:#.encode(outputencoding): # TODO: .encode()???
                 sw.write(c)
             self.assertEqual(q.read().decode(encoding), input.replace('"x"', '"%s"' % outputencoding))
 
@@ -280,8 +297,7 @@ class CodecTestCase(unittest.TestCase):
             return decoder.decode(input)
 
         def streamdecode(input, **kwargs):
-            import StringIO
-            stream = StringIO.StringIO(input) # py3 .decode('utf-8') but still error?!
+            stream = iostream(input) # py3 .decode('utf-8') but still error?!
             reader = info.streamreader(stream, **kwargs)
             return reader.read()
 
