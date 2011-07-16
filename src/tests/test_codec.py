@@ -3,7 +3,7 @@ __version__ = '$Id: test_codec.py 2094 2011-04-18 23:57:38Z jaracosan $'
 
 import codecs
 import unittest
-        
+
 from cssutils import codec
 
 try:
@@ -52,22 +52,25 @@ class CodecTestCase(unittest.TestCase):
         self.assertEqual(codec.detectencoding_str(u'\xff\xfe\x33'.encode("utf-16")), ("utf-16", True))
         self.assertEqual(codec.detectencoding_str(u'\xff\xfe\x00'.encode("latin1")), (None, False))
         self.assertEqual(codec.detectencoding_str(u'\xff\xfe\x00\x33'.encode("utf-16")), ("utf-16", True))
-        self.assertEqual(codec.detectencoding_str(u'\xff\xfe\x00\x00'.encode("utf-32")), ("utf-32", True))
+        if haveutf32:
+            self.assertEqual(codec.detectencoding_str(u'\xff\xfe\x00\x00'.encode("utf-32")), ("utf-32", True))
         self.assertEqual(codec.detectencoding_str(u'\x00'.encode()), (None, False))
         self.assertEqual(codec.detectencoding_str(u'\x00\x33'.encode()), ("utf-8", False))
         self.assertEqual(codec.detectencoding_str(u'\x00\x00'.encode()), (None, False))
         self.assertEqual(codec.detectencoding_str(u'\x00\x00\x33'.encode()), ("utf-8", False))
         self.assertEqual(codec.detectencoding_str(u'\x00\x00\xfe'.encode('latin1')), (None, False))
         self.assertEqual(codec.detectencoding_str(u'\x00\x00\x00\x33'.encode()), ("utf-8", False))
-        self.assertEqual(codec.detectencoding_str(u'\x00\x00\x00@'.encode()), ("utf-32-be", False))
-        self.assertEqual(codec.detectencoding_str(u'\x00\x00\xfe\xff'.encode('utf-32')), ("utf-32", True))
+        if haveutf32:
+            self.assertEqual(codec.detectencoding_str(u'\x00\x00\x00@'.encode()), ("utf-32-be", False))
+            self.assertEqual(codec.detectencoding_str(u'\x00\x00\xfe\xff'.encode('utf-32')), ("utf-32", True))
         self.assertEqual(codec.detectencoding_str(u'@'.encode()), (None, False))
         self.assertEqual(codec.detectencoding_str(u'@\x33'.encode()), ("utf-8", False))
         self.assertEqual(codec.detectencoding_str(u'@\x00'.encode()), (None, False))
         self.assertEqual(codec.detectencoding_str(u'@\x00\x33'.encode()), ("utf-8", False))
         self.assertEqual(codec.detectencoding_str(u'@\x00\x00'.encode()), (None, False))
         self.assertEqual(codec.detectencoding_str(u'@\x00\x00\x33'.encode()), ("utf-8", False))
-        self.assertEqual(codec.detectencoding_str(u'@\x00\x00\x00'.encode()), ("utf-32-le", False))
+        if haveutf32:
+            self.assertEqual(codec.detectencoding_str(u'@\x00\x00\x00'.encode()), ("utf-32-le", False))
         self.assertEqual(codec.detectencoding_str(u'@c'.encode()), (None, False))
         self.assertEqual(codec.detectencoding_str(u'@ch'.encode()), (None, False))
         self.assertEqual(codec.detectencoding_str(u'@cha'.encode()), (None, False))
@@ -269,7 +272,7 @@ class CodecTestCase(unittest.TestCase):
         info = codecs.lookup("css")
 
         def decodeall(input, **kwargs):
-            # Py 2.5: info.decode('@charset "utf-8"; x') 
+            # Py 2.5: info.decode('@charset "utf-8"; x')
             return info[1](input, **kwargs)[0]
 
         def incdecode(input, **kwargs):
@@ -278,7 +281,7 @@ class CodecTestCase(unittest.TestCase):
 
         def streamdecode(input, **kwargs):
             import StringIO
-            stream = StringIO.StringIO(input) # py3 .decode('utf-8') but still error?! 
+            stream = StringIO.StringIO(input) # py3 .decode('utf-8') but still error?!
             reader = info.streamreader(stream, **kwargs)
             return reader.read()
 
