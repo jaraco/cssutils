@@ -314,12 +314,21 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'*==': [('SUBSTRINGMATCH', u'*=', 1, 1), ('CHAR', u'=', 1, 3)],
 
         # BOM only at start
-        u'\xFEFF ': [('BOM', u'\xfeFF', 1, 1),
+#        u'\xFEFF ': [('BOM', u'\xfeFF', 1, 1),
+#                  ('S', u' ', 1, 1)],
+#        u' \xFEFF ': [('S', u' ', 1, 1),
+#                  ('IDENT', u'\xfeFF', 1, 2),
+#                  ('S', u' ', 1, 5)],
+        u'\xfe\xff ': [('BOM', u'\xfe\xff', 1, 1),
                   ('S', u' ', 1, 1)],
-        u' \xFEFF ': [('S', u' ', 1, 1),
-                  ('IDENT', u'\xfeFF', 1, 2),
-                  ('S', u' ', 1, 5)],
-        }
+        u' \xfe\xff ': [('S', u' ', 1, 1),
+                  ('IDENT', u'\xfe\xff', 1, 2),
+                  ('S', u' ', 1, 4)],
+        u'\xef\xbb\xbf ': [('BOM', u'\xef\xbb\xbf', 1, 1),
+                  ('S', u' ', 1, 1)],
+        u' \xef\xbb\xbf ': [('S', u' ', 1, 1),
+                  ('IDENT', u'\xef\xbb\xbf', 1, 2),
+                  ('S', u' ', 1, 5)],        }
 
     tests2 = {
         # escapes work not for a-f!
