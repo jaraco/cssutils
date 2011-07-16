@@ -1,3 +1,4 @@
+.. -*- restructuredtext -*-
 ======
 README
 ======
