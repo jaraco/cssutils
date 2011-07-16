@@ -9,13 +9,15 @@ from StringIO import StringIO
 import sys
 import unittest
 
+PY2x = sys.version_info < (3,0)
+
 try:
     import cssutils.encutils as encutils
 except ImportError:
     import encutils
 
 # helper log
-log = encutils.buildlog(stream=StringIO())    
+log = encutils.buildlog(stream=StringIO())
 
 class AutoEncodingTestCase(unittest.TestCase):
 
@@ -23,15 +25,25 @@ class AutoEncodingTestCase(unittest.TestCase):
         "build a fake HTTP response"
         class FakeRes:
             def __init__(self, content):
-                fp = StringIO(content)
-                self._info = httplib.HTTPMessage(fp)
-                
+                if PY2x:
+                    fp = StringIO(content)
+                    self._info = httplib.HTTPMessage(fp)
+                else:
+                    self._info = httplib.HTTPMessage()
+                    # Adjust to testdata.
+                    l = content.split(':')
+                    if len(l) > 1:
+                        # Get the type by just
+                        # using the data at the end.
+                        t = l[-1].strip()
+                        self._info.set_type(t)
+
             def info(self):
                 return self._info
-            
+
             def read(self):
                 return content
-            
+
         return FakeRes(content)
 
     def test_getTextTypeByMediaType(self):
@@ -48,7 +60,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'text/css': encutils._TEXT_UTF8,
             'text/plain': encutils._TEXT_TYPE,
             'x/x': encutils._OTHER_TYPE,
-            'ANYTHING': encutils._OTHER_TYPE 
+            'ANYTHING': encutils._OTHER_TYPE
             }
         for test, exp in tests.items():
             self.assertEqual(
@@ -69,11 +81,11 @@ class AutoEncodingTestCase(unittest.TestCase):
             u'\xFF\xFEanything': encutils._OTHER_TYPE,
             u'\xef\xbb\xbfanything': encutils._OTHER_TYPE,
             u'x/x': encutils._OTHER_TYPE,
-            u'ANYTHING': encutils._OTHER_TYPE 
+            u'ANYTHING': encutils._OTHER_TYPE
             }
         for test, exp in tests.items():
             self.assertEqual(
-                exp, encutils._getTextType(test, log=log))        
+                exp, encutils._getTextType(test, log=log))
 
     def test_encodingByMediaType(self):
         "encutils.encodingByMediaType"
@@ -94,7 +106,7 @@ class AutoEncodingTestCase(unittest.TestCase):
         for test, exp in tests.items():
             self.assertEqual(exp,
                              encutils.encodingByMediaType(test, log=log))
-   
+
     def test_getMetaInfo(self):
         "encutils.getMetaInfo"
         tests = {
@@ -164,35 +176,35 @@ class AutoEncodingTestCase(unittest.TestCase):
             ('utf_16_le'): u'\xFF\xFEanything',
             ('utf-8'): u'\xef\xbb\xbfanything',
             # encoding=
-            ('ascii'): '<?xml version="1.0" encoding="ascii" ?>', 
-            ('ascii'): "<?xml version='1.0' encoding='ascii' ?>", 
+            ('ascii'): '<?xml version="1.0" encoding="ascii" ?>',
+            ('ascii'): "<?xml version='1.0' encoding='ascii' ?>",
             ('iso-8859-1'): "<?xml version='1.0' encoding='iso-8859-1' ?>",
             # default
-            ('utf-8'): '<?xml version="1.0" ?>', 
+            ('utf-8'): '<?xml version="1.0" ?>',
             ('utf-8'): '<?xml version="1.0"?><x encoding="ascii"/>'
             }
         for exp, test in tests.items():
-            self.assertEqual(exp, encutils.detectXMLEncoding(test, log=log))        
+            self.assertEqual(exp, encutils.detectXMLEncoding(test, log=log))
 
     def test_tryEncodings(self):
         "encutils.tryEncodings"
         try:
-            import chardet            
+            import chardet
             tests = [
-                ('ascii', 'abc'),
+                ('ascii', u'abc'.encode('ascii')),
                 ('windows-1252', u'€'.encode('windows-1252')),
                 ('ascii', u'1'.encode('utf-8'))
                 ]
         except ImportError:
             tests = [
-                ('ascii', 'abc'),
+                ('ascii', u'abc'.encode('ascii')),
                 ('windows-1252', u'€'.encode('windows-1252')),
                 ('iso-8859-1', u'äöüß'.encode('iso-8859-1')),
                 ('iso-8859-1', u'äöüß'.encode('windows-1252')),
                 #('utf-8', u'\u1111'.encode('utf-8'))
-                ]            
+                ]
         for exp, test in tests:
-            self.assertEqual(exp, encutils.tryEncodings(test))        
+            self.assertEqual(exp, encutils.tryEncodings(test))
 
 
     def test_getEncodingInfo(self):
@@ -201,7 +213,7 @@ class AutoEncodingTestCase(unittest.TestCase):
         tests = [
 
             # --- application/xhtml+xml ---
-            
+
             # header default and XML default
             (('utf-8', False), (
                 '''Content-Type: application/xhtml+xml''',
@@ -226,7 +238,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                         <meta http-equiv="Content-Type"
                             content="application/xhtml+xml;charset=iso_M"/>
                     </example>''')),
-            
+
             # header enc and XML default
             (('iso-h', True), (
                 '''Content-Type: application/xhtml+xml;charset=iso-H''',
@@ -241,7 +253,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                 '''Content-Type: application/xhtml+xml;charset=iso-H''',
                 '''<?xml version="1.0" encoding="iso-X" ?>
                     <example/>''')),
-            
+
             # header == XML, meta ignored!
             (('iso-h', False), (
                 '''Content-Type: application/xhtml+xml;charset=iso-H''',
@@ -250,7 +262,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                         <meta http-equiv="Content-Type"
                             content="application/xhtml+xml;charset=iso_M"/>
                     </example>''')),
-                    
+
             # XML only, meta ignored!
             (('iso-x', False), (
                 '''Content-Type: application/xhtml+xml''',
@@ -259,19 +271,19 @@ class AutoEncodingTestCase(unittest.TestCase):
                         <meta http-equiv="Content-Type"
                             content="application/xhtml+xml;charset=iso_M"/>
                     </example>''')),
-            
+
 
             # no text or not enough text:
-            (('iso-h', False), ('Content-Type: application/xml;charset=iso-h', 
+            (('iso-h', False), ('Content-Type: application/xml;charset=iso-h',
                              '1')),
-            (('utf-8', False), ('Content-Type: application/xml', 
+            (('utf-8', False), ('Content-Type: application/xml',
                                 None)),
-            ((None, False), ('Content-Type: application/xml', 
+            ((None, False), ('Content-Type: application/xml',
                              '1')),
-    
-    
+
+
             # --- text/xml ---
-            
+
             # default enc
             (('ascii', False), (
                 '''Content-Type: text/xml''',
@@ -288,11 +300,11 @@ class AutoEncodingTestCase(unittest.TestCase):
                         <meta http-equiv="Content-Type"
                             content="text/xml;charset=iso_M"/>
                     </example>''')),
-            (('ascii', False), ('Content-Type: text/xml', 
+            (('ascii', False), ('Content-Type: text/xml',
                                 '1')),
-            (('ascii', False), ('Content-Type: text/xml', 
+            (('ascii', False), ('Content-Type: text/xml',
                                 None)),
-                    
+
             # header enc
             (('iso-h', False), (
                 '''Content-Type: text/xml;charset=iso-H''',
@@ -301,7 +313,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                         <meta http-equiv="Content-Type"
                             content="text/xml"/>
                     </example>''')),
-                    
+
             # header only, XML and meta ignored!
             (('iso-h', False), (
                 '''Content-Type: text/xml;charset=iso-H''',
@@ -314,31 +326,31 @@ class AutoEncodingTestCase(unittest.TestCase):
                         <meta http-equiv="Content-Type"
                             content="text/xml;charset=iso_M"/>
                     </example>''')),
-                    
-    
+
+
             # --- text/html ---
-           
+
             # default enc
             (('iso-8859-1', False), ('Content-Type: text/html;',
                                      '''<meta http-equiv="Content-Type"
-                                        content="text/html">''')),                            
-            (('iso-8859-1', False), ('Content-Type: text/html;', 
+                                        content="text/html">''')),
+            (('iso-8859-1', False), ('Content-Type: text/html;',
                                      None)),
-            
+
             # header enc
             (('iso-h', False), ('Content-Type: text/html;charset=iso-H',
                                 '''<meta http-equiv="Content-Type"
-                                    content="text/html">''')),   
+                                    content="text/html">''')),
             # meta enc
             (('iso-m', False), ('Content-Type: text/html',
                                 '''<meta http-equiv="Content-Type"
                                     content="text/html;charset=iso-m">''')),
-            
+
             # mismatch header and meta, header wins
             (('iso-h', True), ('Content-Type: text/html;charset=iso-H',
                                '''<meta http-equiv="Content-Type"
                                     content="text/html;charset=iso-m">''')),
-    
+
             # no header:
             ((None, False), (None,
                              '''<meta http-equiv="Content-Type"
@@ -348,38 +360,38 @@ class AutoEncodingTestCase(unittest.TestCase):
                              '''<meta http-equiv="Content-Type"
                                 content="text/html">''')),
 
-            
-            ((None, False), (None, 
+
+            ((None, False), (None,
                              '''text''')),
-                             
-                             
+
+
             # --- no header ---
-            
+
             ((None, False), (None, '')),
-            (('iso-8859-1', False), ('''NoContentType''', 
+            (('iso-8859-1', False), ('''NoContentType''',
                                      '''OnlyText''')),
-            (('iso-8859-1', False), ('Content-Type: text/html;', 
+            (('iso-8859-1', False), ('Content-Type: text/html;',
                                      None)),
-            (('iso-8859-1', False), ('Content-Type: text/html;', 
+            (('iso-8859-1', False), ('Content-Type: text/html;',
                                      '1')),
 
             # XML
-            (('utf-8', False), (None, 
+            (('utf-8', False), (None,
                                 '''<?xml version=''')),
-            (('iso-x', False), (None, 
+            (('iso-x', False), (None,
                                 '''<?xml version="1.0" encoding="iso-X"?>''')),
             # meta ignored
-            (('utf-8', False), (None, 
+            (('utf-8', False), (None,
                                 '''<?xml version="1.0" ?>
                                     <html><meta http-equiv="Content-Type"
                                     content="text/html;charset=iso-m"></html>''')),
 
-            (('utf-8', False), ('Content-Type: text/css;', 
+            (('utf-8', False), ('Content-Type: text/css;',
                                 '1')),
-            (('iso-h', False), ('Content-Type: text/css;charset=iso-h', 
+            (('iso-h', False), ('Content-Type: text/css;charset=iso-h',
                                 '1')),
             # only header is used by encutils
-            (('utf-8', False), ('Content-Type: text/css', 
+            (('utf-8', False), ('Content-Type: text/css',
                                 '@charset "ascii";')),
 
         ]
@@ -389,10 +401,10 @@ class AutoEncodingTestCase(unittest.TestCase):
                 res = encutils.getEncodingInfo(self._fakeRes(header), text)
             else:
                 res = encutils.getEncodingInfo(text=text)
-            
+
             res = (res.encoding, res.mismatch)
             self.assertEqual(exp, res)
-        
+
 
 if __name__ == '__main__':
     unittest.main()
