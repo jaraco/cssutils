@@ -475,8 +475,13 @@ class StreamWriter(codecs.StreamWriter):
 
     def _seterrors(self, errors):
         # Setting ``errors`` must be done on the streamwriter too
-        if self.streamwriter is not None:
-            self.streamwriter.errors = errors
+        try:
+            if self.streamwriter is not None:
+                self.streamwriter.errors = errors
+        except AttributeError as e:
+            # TODO: py3 only exception?
+            pass
+        
         self._errors = errors
     errors = property(_geterrors, _seterrors)
 
@@ -517,8 +522,13 @@ class StreamReader(codecs.StreamReader):
 
     def _seterrors(self, errors):
         # Setting ``errors`` must be done on the streamreader too
-        if self.streamreader is not None:
-            self.streamreader.errors = errors
+        try:
+            if self.streamreader is not None:
+                self.streamreader.errors = errors
+        except AttributeError as e:
+            # TODO: py3 only exception?
+            pass
+        
         self._errors = errors
     errors = property(_geterrors, _seterrors)
 
