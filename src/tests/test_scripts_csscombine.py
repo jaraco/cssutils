@@ -35,7 +35,8 @@ class CSSCombine(basetest.BaseTestCase):
         self.assertEqual(combined, ('@charset "ascii";' + self.C).encode())
 
         # cssText
-        cssText=open(csspath).read()
+        # TODO: really need binary or can handle str too?
+        cssText=open(csspath, mode="rb").read()
         combined = csscombine(cssText=cssText, href=cssurl)
         self.assertEqual(combined, self.C.encode())
         combined = csscombine(cssText=cssText, href=cssurl, 
