@@ -44,6 +44,9 @@ HEAD
 
       Older Issues are currently still at Google Code, newer at Bitbucket. Please do not use Google Code for new issue reports anymore!
 
+
+    - **IMPROVEMENT**: Python 3 support. Almost all tests are running now. Both encutils (with support by Fredrik Hedman, thanks!) and cssutils (thanks to Jaraco seem to work with Python 3 (tested on Python 3.2.1 Win64)
+
     - CHANGE (minor): Some error messages have slightly changed due to a simpler compatibility to Python 3. Problem are any ``u'...'`` texts inside error messages which now are simplified, some without and quotes. Changed are e.g. error messages by ``Property``.
 
     - BUGFIX: Fixed validation of ``size`` property (thanks to Simon Sapin)
