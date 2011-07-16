@@ -848,20 +848,21 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
             enctype = 1 # 1. HTTP
             encoding = httpEncoding
         else:
+            # BOM or @charset
             if isinstance(content, unicode):
-                # no need to check content as unicode so no BOM
-                explicit = False
+                contentEncoding, explicit = codec.detectencoding_unicode(content)
             else:
-                # check content
                 contentEncoding, explicit = codec.detectencoding_str(content)
-
+            
             if explicit:
                 enctype = 2 # 2. BOM/@charset: explicitly
                 encoding = contentEncoding
+                
             elif parentEncoding:
                 enctype = 4 # 4. parent stylesheet or document
                 # may also be None in which case 5. is used in next step anyway
                 encoding = parentEncoding
+                
             else:
                 enctype = 5 # 5. assume UTF-8
                 encoding = 'utf-8'
