@@ -34,9 +34,9 @@ Development Version
 
 0.9.8
 -----
-Compatibility to Python 3.x is currently in development. At the same time compatibility for Python 2.4 (and Python 2.5) will probably be lost...
+Compatibility to Python 3.x is currently in development. At the same time compatibility for Python 2.4 will probably be lost...
 
-0.9.8 will be the last version to support Python 2.4 (and maybe Python 2.5 too).
+0.9.8 will be the last version to support Python 2.4 but as a compensation the first to support Python 3.x.
 
 
 HEAD
@@ -48,6 +48,8 @@ HEAD
 
     - BUGFIX: Fixed validation of ``size`` property (thanks to Simon Sapin)
 	- BUGFIX: Fixed Issue #55 (thanks to Simon Sapin): `outline-color` property was missing from validation.
+    - BUGFIX: Fixed resolution of encoding detection of a stylesheet which did not use @charset in certain circumstances (mainly when imported sheets use different encoding than importing one which should be quite rare actually).
+    - BUGFIX: Fixed tests for BOM which were silly. Also UTF8_BOM_SIG is handled now
 
     - FEATURE: Added ``URIValue.absoluteUri`` (thanks to Simon Sapin)
     - FEATURE: Issue #53 feature request: Added new Preference option ``cssutils.ser.prefs.indentClosingBrace``. Defines if closing brace of block is indented to match indentation of the block (default) oder match indentation of selector.
