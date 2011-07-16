@@ -1,7 +1,8 @@
-.. -*- restructuredtext -*-
 ======
 README
 ======
+.. -*- restructuredtext -*-
+
 -------------------------------------------------------
 cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
