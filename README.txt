@@ -50,8 +50,8 @@ There is also a low-traffic `cssutils discussion group <http://groups.google.com
 
 Compatibility
 =============
-cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (from v2.5.1) too.
-
+cssutils is developed on standard Python but works under Python 2.x (from 2.5), 3.x (3.2.1 tested) and Jython (from 2.5.1).
+Python 2.4 and older are not supported since cssutils 0.9.8 anymore.
 
 License
 =======
@@ -95,5 +95,5 @@ cssutils is far from being perfect or even complete. If you find any bugs (espec
 
 Thanks
 ======
-Thanks to Jason R. Coombs, Simon Sapin and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches.
+Thanks to Jason R. Coombs, Simon Sapin and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches. Thanks to Fredrik Hedman for help on port of encutils to Python 3.
 
