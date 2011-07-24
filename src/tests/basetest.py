@@ -13,11 +13,6 @@ from email import message_from_string, message_from_file
 sys.path.append(os.path.join(os.path.abspath('.'), '..'))
 
 import cssutils
-try:
-    from minimock import mock, restore
-except ImportError:
-    mock = None 
-    print "install minimock with ``easy_install minimock`` to run all tests"
 
 
 PY2x = sys.version_info < (3,0)
@@ -40,12 +35,6 @@ class BaseTestCase(unittest.TestCase):
     def _restoreSer(self):
         "Restore the default ser."
         cssutils.ser = self._ser
-
-    def _make_fetcher(self, encoding, content):
-        "make an URL fetcher with specified data"
-        def fetcher(url):
-            return encoding, content            
-        return fetcher
 
     def setUp(self):
         # a raising parser!!!
@@ -178,40 +167,3 @@ class BaseTestCase(unittest.TestCase):
             if debug:
                 print '"%s"' % test
             self.assertRaises(expected, self.r.__getattribute__(att), test)
-
-
-    # methods to test HTTP traffic
-    def _urlopen(self, url, text=None, error=None):
-        # return an mock which returns parameterized Response
-        def x(*ignored):
-            return _Response(url, text=text, error=error)
-        return x
-    
-
-class _Response(object):
-    """urllib2.Reponse mock"""
-    def __init__(self, url, text=u'', error=None):
-        self.url = url
-        self.text = text
-        self.error = error
-
-    def geturl(self):
-        return self.url
-
-    def info(self):
-        class Info(object):
-            def gettype(self):
-                return 'text/css'
-            def getparam(self, name):
-                return 'UTF-8'
-
-        return Info()
-
-    def read(self):
-        if self.error:
-            raise Exception(self.error)
-        else:
-            return self.text
-
-
-
