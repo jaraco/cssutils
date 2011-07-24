@@ -55,7 +55,7 @@ setup(
     package_dir={'':'src3'},
     packages=find_packages('src3'),
     test_suite='tests', #'nose.collector'
-    tests_require='minimock',
+    tests_require='mock',
     entry_points={
         'console_scripts': [
             'csscapture = cssutils.scripts.csscapture:main',
