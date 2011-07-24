@@ -1,5 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 """Testcases for cssutils.util"""
+from __future__ import with_statement
+
 __version__ = '$Id$'
 
 import cgi
@@ -10,10 +12,10 @@ import urllib2
 import xml.dom
 
 try:
-    from minimock import mock, restore
+    import mock
 except ImportError:
     mock = None
-    print "install minimock with ``easy_install minimock`` to run all tests"
+    print "install mock library to run all tests"
 
 import basetest
 import encutils
@@ -350,6 +352,8 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                                         exception=exception, args=args)
                 return x
 
+            urlopenpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.urlopen' 
+
             # positive tests
             tests = {
                 # content-type, contentstr: encoding, contentstr
@@ -362,15 +366,19 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             }
             url = 'http://example.com/test.css'
             for (contenttype, content), exp in tests.items():
-
-                mock("urllib2.urlopen", mock_obj=urlopen(url, contenttype, content))
-
-                #print url, exp == _readUrl(url, encoding), exp, _readUrl(url, encoding)
-                self.assertEqual(exp, _defaultFetcher(url))
+                @mock.patch(urlopenpatch, new=urlopen(url, contenttype, content))
+                def do(url):
+                    return _defaultFetcher(url)
+                
+                self.assertEqual(exp, do(url))
 
             # wrong mimetype
-            mock("urllib2.urlopen", mock_obj=urlopen(url, 'text/html', 'a'))
-            self.assertRaises(ValueError, _defaultFetcher, url)
+            @mock.patch(urlopenpatch, new=urlopen(url, 'text/html', 'a'))
+            def do(url):
+                return _defaultFetcher(url)
+            
+            self.assertRaises(ValueError, do, url)
+            
 
             # calling url results in fake exception
             tests = {
@@ -384,12 +392,15 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 'http://x': (urllib2.URLError, ['ioerror']),
             }
             for url, (exception, args) in tests.items():
-                mock("urllib2.urlopen",
-                        mock_obj=urlopen(url, exception=exception, args=args))
-                self.assertRaises(exception, _defaultFetcher, url)
+                @mock.patch(urlopenpatch, new=urlopen(url, exception=exception, args=args))
+                def do(url):
+                    return _defaultFetcher(url)
+                
+                self.assertRaises(exception, do, url)
 
-            restore()
-
+        
+        else:
+            self.assertEqual(False, u'Mock needed for this test')
 
 if __name__ == '__main__':
     import unittest

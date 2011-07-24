@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Tests for parsing which does not raise Exceptions normally"""
+from __future__ import with_statement
+
 __version__ = '$Id$'
 
 import sys
@@ -9,13 +11,19 @@ import cssutils
 import urllib2
 
 try:
-    from minimock import mock, restore
+    import mock
 except ImportError:
     mock = None
-    print "install minimock with ``easy_install minimock`` to run all tests"
+    print "install mock library to run all tests"
 
 
 class CSSParserTestCase(basetest.BaseTestCase):
+
+    def _make_fetcher(self, encoding, content):
+        "make an URL fetcher with specified data"
+        def fetcher(url):
+            return encoding, content            
+        return fetcher
 
     def setUp(self):
         self._saved = cssutils.log.raiseExceptions
@@ -80,13 +88,13 @@ class CSSParserTestCase(basetest.BaseTestCase):
         if mock:
             # parseUrl(self, href, encoding=None, media=None, title=None):
             parser = cssutils.CSSParser()
-            mock("cssutils.util._defaultFetcher",
-                 mock_obj=self._make_fetcher(None, u''))
-            sheet = parser.parseUrl('http://example.com',
-                                    media='tv,print',
-                                    title='test')
-            restore()
-            #self.assertEqual(sheet, 1)
+            m = mock.Mock()
+            with mock.patch('cssutils.util._defaultFetcher', m):
+                m.return_value = (None, '')                 
+                sheet = parser.parseUrl('http://example.com',
+                                        media='tv,print',
+                                        title='test')
+                
             self.assertEqual(sheet.href, u'http://example.com')
             self.assertEqual(sheet.encoding, u'utf-8')
             self.assertEqual(sheet.media.mediaText, u'tv, print')
@@ -116,17 +124,16 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 parser.setFetcher(self._make_fetcher(httpencoding, content))
                 sheet1 = parser.parseUrl(url)
                 sheet2 = parser.parseUrl(url, encoding=override)
-                restore()
                 if isSheet:
                     self.assertEqual(sheet1.encoding, expencoding)
-                    self.assertEqual(sheet1.cssText, cssText)
+                    self.assertEqual(sheet1.cssText, cssText.encode())
                     self.assertEqual(sheet2.encoding, override)
-                    if sheet1.cssText and sheet1.cssText.startswith('@charset'):
-                        self.assertEqual(sheet2.cssText, cssText.replace('ascii', override))
+                    if sheet1.cssText and cssText.startswith('@charset'):
+                        self.assertEqual(sheet2.cssText, (cssText.replace('ascii', override).encode()))
                     elif sheet1.cssText:
-                        self.assertEqual(sheet2.cssText, overrideprefix + '\n' + cssText)
+                        self.assertEqual(sheet2.cssText, (overrideprefix + '\n' + cssText).encode())
                     else:
-                        self.assertEqual(sheet2.cssText, overrideprefix + cssText)
+                        self.assertEqual(sheet2.cssText, (overrideprefix + cssText).encode())
                 else:
                     self.assertEqual(sheet1, None)
                     self.assertEqual(sheet2, None)
@@ -135,6 +142,9 @@ class CSSParserTestCase(basetest.BaseTestCase):
 
             self.assertRaises(ValueError, parser.parseUrl, '../not-valid-in-urllib')
             self.assertRaises(urllib2.HTTPError, parser.parseUrl, 'http://cthedot.de/not-present.css')
+
+        else:
+            self.assertEqual(False, u'Mock needed for this test')
 
     def test_parseString(self):
         "CSSParser.parseString()"
