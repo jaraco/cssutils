@@ -289,83 +289,66 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
             self._tempSer()
             cssutils.ser.prefs.useMinified()
 
-            a = u'@charset "iso-8859-1";@import"b.css";ä{color:green}'.encode('iso-8859-1')
-            b = u'@charset "ascii";\E4 {color:red}'.encode('ascii')
+            a = u'@charset "iso-8859-1";@import"b.css";\xe4{color:green}'.encode('iso-8859-1')
+            b = u'@charset "ascii";\\E4 {color:red}'.encode('ascii')
             
             # normal
-#            mock("cssutils.util._defaultFetcher", 
-#                 mock_obj=self._make_fetcher(None, b))
-#            s = cssutils.parseString(a)
-#            restore()
             m = mock.Mock()
             with mock.patch('cssutils.util._defaultFetcher', m):
                 m.return_value = (None, b)                 
                 s = cssutils.parseString(a)   
             
-            # py3 TODO   
-            self.assertEqual(a, s.cssText)
-            self.assertEqual(b, s.cssRules[1].styleSheet.cssText)
-            
-            c = cssutils.resolveImports(s)
-            # py3 TODO
-            self.assertEqual('\xc3\xa4{color:red}\xc3\xa4{color:green}', 
-                             c.cssText)
-
-            c.encoding = 'ascii'
-            self.assertEqual(r'@charset "ascii";\E4 {color:red}\E4 {color:green}'.encode(), 
-                             c.cssText)
+                # py3 TODO   
+                self.assertEqual(a, s.cssText)
+                self.assertEqual(b, s.cssRules[1].styleSheet.cssText)
+                
+                c = cssutils.resolveImports(s)
+                
+                # py3 TODO
+                self.assertEqual(u'\xc3\xa4{color:red}\xc3\xa4{color:green}'.encode('iso-8859-1'), 
+                                 c.cssText)
+    
+                c.encoding = 'ascii'
+                self.assertEqual(ur'@charset "ascii";\E4 {color:red}\E4 {color:green}'.encode(), 
+                                 c.cssText)
 
             # b cannot be found
-#            mock("cssutils.util._defaultFetcher", 
-#                 mock_obj=self._make_fetcher(None, None))
-#            s = cssutils.parseString(a)
-#            restore()
             m = mock.Mock()
             with mock.patch('cssutils.util._defaultFetcher', m):
-                m.return_value = (None, None)                 
-                s = cssutils.parseString(a)    
+                m.return_value = (None, None)
+                s = cssutils.parseString(a)
                   
-            # py3 TODO
-            self.assertEqual(a, s.cssText)
-            self.assertEqual(cssutils.css.CSSStyleSheet, 
-                             type(s.cssRules[1].styleSheet))
-            c = cssutils.resolveImports(s)
-            # py3 TODO
-            self.assertEqual('@import"b.css";\xc3\xa4{color:green}', 
-                             c.cssText)
-
+                # py3 TODO
+                self.assertEqual(a, s.cssText)
+                self.assertEqual(cssutils.css.CSSStyleSheet,
+                                 type(s.cssRules[1].styleSheet))
+                c = cssutils.resolveImports(s)
+                # py3 TODO
+                self.assertEqual(u'@import"b.css";\xc3\xa4{color:green}'.encode('iso-8859-1'), 
+                                 c.cssText)
+    
             # @import with media
             a = u'@import"b.css";@import"b.css" print, tv ;@import"b.css" all;'
             b = u'a {color: red}' 
-                       
-#            mock("cssutils.util._defaultFetcher", 
-#                 mock_obj=self._make_fetcher(None, b))
-#            s = cssutils.parseString(a)
-#            restore()
             m = mock.Mock()
             with mock.patch('cssutils.util._defaultFetcher', m):
-                m.return_value = (None, b)                 
-                s = cssutils.parseString(a)   
-                        
-            c = cssutils.resolveImports(s)
-            self.assertEqual('a{color:red}@media print,tv{a{color:red}}a{color:red}'.encode(), 
-                             c.cssText)
+                m.return_value = (None, b)
+                s = cssutils.parseString(a)
+
+                c = cssutils.resolveImports(s)
+                
+                self.assertEqual('a{color:red}@media print,tv{a{color:red}}a{color:red}'.encode(), 
+                                 c.cssText)
             
             # cannot resolve with media => keep original
             a = u'@import"b.css"print;'
-            b = u'@namespace "http://example.com";' 
-          
-#            mock("cssutils.util._defaultFetcher", 
-#                 mock_obj=self._make_fetcher(None, b))
-#            s = cssutils.parseString(a)
-#            restore()
+            b = u'@namespace "http://example.com";'
             m = mock.Mock()
             with mock.patch('cssutils.util._defaultFetcher', m):
-                m.return_value = (None, b)                 
-                s = cssutils.parseString(a)   
-                        
-            c = cssutils.resolveImports(s)
-            self.assertEqual(a.encode(), c.cssText)
+                m.return_value = (None, b)
+                s = cssutils.parseString(a)
+                c = cssutils.resolveImports(s)
+                self.assertEqual(a.encode(), c.cssText)
 
             # urls are adjusted too, layout:
             # a.css
@@ -398,12 +381,6 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
                              }''' 
                      }
                 return 'utf-8', c[os.path.split(url)[1]]  
-
-#            mock("cssutils.util._defaultFetcher", 
-#                 mock_obj=fetcher)
-#            s = cssutils.parseString(a)
-#            r = cssutils.resolveImports(s)
-#            restore()
                           
             @mock.patch.object(cssutils.util, '_defaultFetcher', 
                                new=fetcher)

@@ -135,7 +135,7 @@ class BaseTestCase(basetest.BaseTestCase):
 
 
 class _readUrl_TestCase(basetest.BaseTestCase):
-    """needs minimock install with easy_install minimock"""
+    """needs mock"""
 
     def test_readUrl(self):
         """util._readUrl()"""
@@ -325,11 +325,17 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 def info(self):
                     mimetype, charset = self.mimetype, self.charset
                     class Info(object):
+                        
+                        # py2x
                         def gettype(self):
                             return mimetype
-                        def getparam(self, name):
+                        def getparam(self, name=None):
                             return charset
-
+                        
+                        # py 3x
+                        get_content_type = gettype
+                        get_content_charset = getparam # here always charset!  
+                        
                     return Info()
 
                 def read(self):
