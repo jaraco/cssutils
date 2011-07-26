@@ -11,18 +11,42 @@ __all__ = ['TestUtil']
 
 import logging
 import os
-from StringIO import StringIO
+import StringIO
 import sys
 
 import cssutils
 
+PY2x = sys.version_info < (3,0)
+
+class OutReplacement(object):
+    "io.StringIO does not work somehow?!"
+    def __init__(self):
+        self.t = ''
+        
+    def write(self, t):
+        if not PY2x:
+            # py3 hack
+            if t.startswith('b') and t.endswith("'"):
+                t = t[2:-1]
+                
+        self.t += t
+        
+    def getvalue(self):
+        if not PY2x:
+            # py3 hack
+            self.t = self.t.replace('\\n', '\n')
+            self.t = self.t.replace('\\\\', '\\')
+            
+        return self.t
+    
+
 class TestUtil(object):
     def __init__(self):
         "init out and err to catch both"
-        self._out = StringIO()
+        self._out = OutReplacement()#StringIO()
         sys.stdout = self._out
         
-        self._err = StringIO()
+        self._err = StringIO.StringIO()
         hdlr = logging.StreamHandler(self._err)
         cssutils.log._log.addHandler(hdlr)
                 
@@ -62,13 +86,15 @@ def main():
     import website
     import doctest
     doctest.testmod(website)
-    
+    print 
+    print 80*'-' 
+    print 
+    print 
+
     global modules, errors
     
     import build
     mod(build)
-    import cssencodings
-    mod(cssencodings)
     import customlog
     mod(customlog)
     import imports
@@ -79,9 +105,12 @@ def main():
     mod(selectors_tolower)
     import minify
     mod(minify)
+
+    import cssencodings
+    mod(cssencodings)
     
     print 
-    print 70*'-' 
+    print 80*'-' 
     print 'Ran %i tests (%i errors).' % (modules, errors)  
     
 if __name__ == '__main__':
