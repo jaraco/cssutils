@@ -81,15 +81,16 @@ def mod(module):
     print 
           
 def main():
-    print "DOCTESTS:::::::::::::"
-    # doctests
-    import website
-    import doctest
-    doctest.testmod(website)
-    print 
-    print 80*'-' 
-    print 
-    print 
+    if PY2x:
+        print "DOCTESTS:::::::::::::"
+        # doctests
+        import website
+        import doctest
+        doctest.testmod(website)
+        print 
+        print 80*'-' 
+        print 
+        print 
 
     global modules, errors
     
@@ -111,7 +112,12 @@ def main():
     
     print 
     print 80*'-' 
-    print 'Ran %i tests (%i errors).' % (modules, errors)  
+    print 'Ran %i tests (%i errors).' % (modules, errors)
+    if PY2x:
+        print '**Check doctest results above!**'
+    else:
+        print 'doctests do not work in Python 3 (yet?)!'
+          
     
 if __name__ == '__main__':
     main()
