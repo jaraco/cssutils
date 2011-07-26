@@ -2,8 +2,6 @@
 """Testcases for cssutils.util"""
 from __future__ import with_statement
 
-__version__ = '$Id$'
-
 import cgi
 from email import message_from_string, message_from_file
 import StringIO
@@ -385,13 +383,11 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             
             self.assertRaises(ValueError, do, url)
             
-
             # calling url results in fake exception
+                            
+            # py2 ~= py3 raises error earlier than urlopen!
             tests = {
                 '1': (ValueError, ['invalid value for url']),
-                'e2': (urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
-                #_readUrl('http://cthedot.de/__UNKNOWN__.css')
-                'e3': (urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
                 #_readUrl('mailto:a.css')
                 'mailto:e4': (urllib2.URLError, ['urlerror']),
                 # cannot resolve x, IOError
@@ -404,7 +400,20 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 
                 self.assertRaises(exception, do, url)
 
-        
+            # py2 != py3 raises error earlier than urlopen!
+            urlrequestpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.Request' 
+            tests = {
+                #_readUrl('http://cthedot.de/__UNKNOWN__.css')
+                'e2': (urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
+                'e3': (urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
+            }
+            for url, (exception, args) in tests.items():
+                @mock.patch(urlrequestpatch, new=urlopen(url, exception=exception, args=args))
+                def do(url):
+                    return _defaultFetcher(url)
+                
+                self.assertRaises(exception, do, url)
+
         else:
             self.assertEqual(False, u'Mock needed for this test')
 
