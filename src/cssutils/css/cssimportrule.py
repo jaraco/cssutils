@@ -308,7 +308,7 @@ class CSSImportRule(cssrule.CSSRule):
 
             except (OSError, IOError, ValueError), e:
                 self._log.warn(u'CSSImportRule: While processing imported '
-                               u'style sheet href=%r: %r'
+                               u'style sheet href=%s: %r'
                                % (self.href, e), neverraise=True)
                 
             else:

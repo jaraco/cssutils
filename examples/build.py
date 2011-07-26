@@ -26,7 +26,7 @@ def main():
     import logging
     cssutils.log.setLevel(logging.DEBUG)
     
-    css = u'''/* a comment with umlaut ä */ 
+    css = u'''/* a comment with umlaut ä */
          @namespace html "http://www.w3.org/1999/xhtml";
          @variables { BG: #fff }
          html|a { color:red; background: var(BG) }'''
@@ -37,7 +37,7 @@ def main():
             # find property
             for property in rule.style:
                 if property.name == 'color':
-                    property.value = 'green' 
+                    property.value = 'green'
                     property.priority = 'IMPORTANT'
                     break
             # or simply:

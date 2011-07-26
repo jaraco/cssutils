@@ -30,7 +30,7 @@ def _defaultFetcher(url):
         log.warn(u'ValueError, %s' % e.args[0], error=ValueError)
     except urllib2.HTTPError, e:
         # http error, e.g. 404, e can be raised
-        log.warn(u'HTTPError opening url=%r: %s %s' % 
+        log.warn(u'HTTPError opening url=%s: %s %s' % 
                           (url, e.code, e.msg), error=e)
     except urllib2.URLError, e:
         # URLError like mailto: or other IO errors, e can be raised
