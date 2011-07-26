@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
-__version__ = '$Id$'
 
 import re
 import xml.dom

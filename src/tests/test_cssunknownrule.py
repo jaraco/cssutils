@@ -1,5 +1,4 @@
 """testcases for cssutils.css.CSSUnkownRule"""
-__version__ = '$Id$'
 
 import xml.dom
 import test_cssrule

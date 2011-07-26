@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Testcases for cssutils.CSSSerializer"""
-__version__ = '$Id$'
 
 import basetest
 import cssutils

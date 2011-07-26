@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSImportRule"""
-__version__ = '$Id$'
 
 import xml.dom
 import test_cssrule

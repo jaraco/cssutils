@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.DOMImplementation"""
-__version__ = '$Id$'
 
 import xml.dom
 import unittest

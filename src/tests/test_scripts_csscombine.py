@@ -1,5 +1,4 @@
 """Testcases for cssutils.scripts.csscombine"""
-__version__ = '$Id$'
 
 from cssutils.script import csscombine
 import basetest

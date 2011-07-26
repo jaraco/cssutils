@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.property._Property."""
-__version__ = '$Id$'
 
 import xml.dom
 import basetest

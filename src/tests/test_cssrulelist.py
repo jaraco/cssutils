@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSRuleList"""
-__version__ = '$Id$'
 
 import basetest
 import cssutils

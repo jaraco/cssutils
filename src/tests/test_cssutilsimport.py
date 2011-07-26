@@ -1,5 +1,4 @@
 """Testcase for cssutils imports"""
-__version__ = '$Id$'
 
 before = len(locals()) # to check is only exp amount is imported
 from cssutils import *

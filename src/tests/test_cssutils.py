@@ -2,8 +2,6 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
 from __future__ import with_statement
 
-__version__ = '$Id$'
-
 import basetest
 import codecs
 import cssutils

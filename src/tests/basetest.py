@@ -1,5 +1,4 @@
 """Base class for all tests"""
-__version__ = '$Id$'
 
 import logging
 import os
