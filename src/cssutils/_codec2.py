@@ -247,7 +247,7 @@ if hasattr(codecs, "IncrementalDecoder"):
             # Store ``errors`` somewhere else,
             # because we have to hide it in a property
             self._errors = errors
-            self.buffer = ""
+            self.buffer = u"".encode()
             self.headerfixed = False
 
         def iterdecode(self, input):
@@ -299,7 +299,7 @@ if hasattr(codecs, "IncrementalDecoder"):
         def reset(self):
             codecs.IncrementalDecoder.reset(self)
             self.decoder = None
-            self.buffer = ""
+            self.buffer = u"".encode()
             self.headerfixed = False
 
         def _geterrors(self):
@@ -461,6 +461,7 @@ class StreamWriter(codecs.StreamWriter):
         if self.streamwriter is not None:
             self.streamwriter.errors = errors
         self._errors = errors
+        
     errors = property(_geterrors, _seterrors)
 
 
@@ -503,6 +504,7 @@ class StreamReader(codecs.StreamReader):
         if self.streamreader is not None:
             self.streamreader.errors = errors
         self._errors = errors
+        
     errors = property(_geterrors, _seterrors)
 
 
