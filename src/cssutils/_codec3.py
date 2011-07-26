@@ -204,6 +204,12 @@ def _fixencoding(input, encoding, final=False):
 
 
 def decode(input, errors="strict", encoding=None, force=True):
+    try:
+        # py 3 only, memory?! object to bytes
+        input = input.tobytes()
+    except AttributeError as e:
+        pass
+    
     if encoding is None or not force:
         (_encoding, explicit) = detectencoding_str(input, True)
         if _encoding == "css":
@@ -213,13 +219,6 @@ def decode(input, errors="strict", encoding=None, force=True):
             
     # NEEDS: change in parse.py (str to bytes!)
     (input, consumed) = codecs.getdecoder(encoding)(input, errors)
-    
-#    if sys.version_info < (3,):
-#        (input, consumed) = codecs.getdecoder(encoding)(input, errors)
-#    else:
-#        # TODO: does this make sense at all?
-#        #(input, consumed) = codecs.getdecoder(encoding)(bytes(input, encoding), errors)
-    
     return (_fixencoding(input, str(encoding), True), consumed)
 
 
