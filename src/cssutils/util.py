@@ -148,7 +148,7 @@ class Base(_BaseClass):
             # needs to be tokenized
             return self.__tokenizer2.tokenize(
                  textortokens)
-        elif types.GeneratorType == type(textortokens):
+        elif isinstance(textortokens, types.GeneratorType):
             # already tokenized
             return textortokens
         elif isinstance(textortokens, tuple):
@@ -510,7 +510,7 @@ class Seq(object):
         for v in self:
             if isinstance(v.value, basestring):
                 vals.append(v.value)
-            elif type(v) == tuple:
+            elif isinstance(v, tuple):
                 vals.append(v.value[1])
             else:
                 vals.append(str(v))

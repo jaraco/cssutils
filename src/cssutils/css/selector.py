@@ -144,7 +144,7 @@ class Selector(cssutils.util.Base2):
         for item in self.seq:
             type_, val = item.type, item.value
             if type_.endswith(u'-selector') or type_ == u'universal' and \
-               type(val) == tuple and val[0] not in (None, u'*'):
+               isinstance(val, tuple) and val[0] not in (None, u'*'):
                 uris.add(val[0])
         return uris
 

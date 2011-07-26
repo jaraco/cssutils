@@ -53,7 +53,7 @@ class CSSValue(cssutils.util._NewBase):
         self.wellformed = False
         self.parent = parent
         if cssText is not None: # may be 0
-            if type(cssText) in (int, float):
+            if isinstance(cssText, (int, float)):
                 cssText = unicode(cssText) # if it is a number
             self.cssText = cssText
 
