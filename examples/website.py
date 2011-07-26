@@ -53,11 +53,11 @@ def logging():
     >>> h.setFormatter(logging.Formatter('%(levelname)s %(message)s'))
     >>> cssutils.log.addHandler(h)
     >>> cssutils.log.setLevel(logging.INFO)
-    >>> sheet = cssutils.parseString('a { x: 1; } @import "http://example.com/x";')
+    >>> sheet = cssutils.parseString('a { x: 1; } @import "http://cthedot.de/not-present.css";')
     >>> print mylog.getvalue()
     WARNING Property: Unknown Property name. [1:5: x]
-    WARNING HTTPError opening url=u'http://example.com/x': 404 Not Found
-    WARNING CSSImportRule: While processing imported style sheet href=u'http://example.com/x': IOError('Cannot read Stylesheet.',)
+    WARNING HTTPError opening url=http://cthedot.de/not-present.css: 404 Not Found
+    WARNING CSSImportRule: While processing imported style sheet href=http://cthedot.de/not-present.css: IOError('Cannot read Stylesheet.',)
     ERROR CSSStylesheet: CSSImportRule not allowed here. [1:13: @import]
     <BLANKLINE>
     """
