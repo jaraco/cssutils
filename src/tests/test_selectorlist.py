@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.selectorlist.SelectorList."""
-__version__ = '$Id$'
 
 import xml.dom
 import basetest

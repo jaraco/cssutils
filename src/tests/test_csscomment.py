@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Testcases for cssutils.css.CSSComment"""
-__version__ = '$Id$'
 
 import xml
 import test_cssrule

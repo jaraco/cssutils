@@ -2,7 +2,6 @@
 """Tests for parsing which does not raise Exceptions normally"""
 from __future__ import with_statement
 
-__version__ = '$Id$'
 
 import sys
 import xml.dom

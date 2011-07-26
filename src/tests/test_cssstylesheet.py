@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Tests for css.CSSStyleSheet"""
-__version__ = '$Id$'
 
 import xml.dom
 import basetest

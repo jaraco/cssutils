@@ -1,6 +1,5 @@
 # -*- coding: iso-8859-1 -*-
 """Testcases for cssutils.stylesheets.MediaList"""
-__version__ = '$Id$'
 
 import xml.dom
 import basetest

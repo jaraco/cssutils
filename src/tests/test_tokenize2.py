@@ -3,7 +3,6 @@
 
 TODO: old tests as new ones are **not complete**!
 """
-__version__ = '$Id$'
 
 import xml.dom
 import basetest

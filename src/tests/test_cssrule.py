@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSRule"""
-__version__ = '$Id$'
 
 import xml.dom
 import basetest

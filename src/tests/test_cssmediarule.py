@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSMediaRule"""
-__version__ = '$Id$'
 
 import xml.dom
 import test_cssrule

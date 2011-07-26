@@ -6,8 +6,6 @@ what should happen here?
         does not validate but works in IE>5 and FF, does it???
 
 """
-__version__ = '$Id$'
-
 import xml.dom
 import basetest
 import cssutils
