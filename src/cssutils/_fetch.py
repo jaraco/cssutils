@@ -17,10 +17,10 @@ def _defaultFetcher(url):
 
     Returns ``(encoding, string)`` or ``None``
     """
-    request = urllib2.Request(url)
-    request.add_header('User-agent', 
-                       'cssutils %s (http://www.cthedot.de/cssutils/)' % VERSION)
     try:        
+        request = urllib2.Request(url)
+        request.add_header('User-agent', 
+                           'cssutils %s (http://www.cthedot.de/cssutils/)' % VERSION)
         res = urllib2.urlopen(request)
     except OSError, e:
         # e.g if file URL and not found
