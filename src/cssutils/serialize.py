@@ -740,7 +740,7 @@ class CSSSerializer(object):
             DEFAULTURI = selector._namespaces.get('', None)
             for item in selector.seq:
                 typ, val = item.type, item.value
-                if type(val) == tuple:
+                if isinstance(val, tuple):
                     # namespaceURI|name (element or attribute)
                     namespaceURI, name = val
                     if DEFAULTURI == namespaceURI or (not DEFAULTURI and

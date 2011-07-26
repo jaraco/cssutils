@@ -147,7 +147,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         ``CSSName`` will be always normalized.
         """
         priority = None
-        if type(value) == tuple:
+        if isinstance(value, tuple):
             value, priority = value
 
         return self.setProperty(CSSName, value, priority)

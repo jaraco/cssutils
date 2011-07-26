@@ -35,7 +35,7 @@ class Tokenizer(object):
         inits tokenizer with given macros and productions which default to
         cssutils own macros and productions
         """
-        if type(macros)==type({}):
+        if isinstance(macros, dict):
             macros_hash_key = sorted(macros.items()) 
         else:
             macros_hash_key = macros

@@ -51,7 +51,7 @@ class PropertyValue(cssutils.util._NewBase):
         self.wellformed = False
         
         if cssText is not None: # may be 0
-            if type(cssText) in (int, float):
+            if isinstance(cssText, (int, float)):
                 cssText = unicode(cssText) # if it is a number
             self.cssText = cssText
         
@@ -87,8 +87,8 @@ class PropertyValue(cssutils.util._NewBase):
         return (x.value for x in seq if isinstance(x.value, Value))
     
     def _setCssText(self, cssText):
-        if type(cssText) in (int, float):
-                cssText = unicode(cssText) # if it is a number
+        if isinstance(cssText, (int, float)):
+            cssText = unicode(cssText) # if it is a number
         """
         Format::
 
