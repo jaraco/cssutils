@@ -36,7 +36,7 @@ class Queue(object):
             if isinstance(chars, str):
                 chars = chars.encode()
             elif isinstance(chars, int):
-                chars = chr(chars).encode()
+                chars = bytes([chars])
             
         self._buffer += chars
 
@@ -226,7 +226,7 @@ class CodecTestCase(unittest.TestCase):
         checkdecl("cp1252")
 
         # No recursion
-        self.assertRaises(ValueError, '@charset "css";div{}'.decode, "css")
+        self.assertRaises(ValueError, u'@charset "css";div{}'.encode().decode, "css")
 
     def test_encoder(self):
         "codec.encoder"
