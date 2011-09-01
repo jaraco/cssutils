@@ -27,8 +27,8 @@ class Tokenizer(object):
         u'@variables': CSSProductions.VARIABLES_SYM
         }
     _linesep = u'\n'
-    unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t|\r|\n|\f|\x20])?').sub
-    cleanstring = re.compile(r'\\((\r\n)|[\n|\r|\f])').sub
+    unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t\r\n\f\x20])?').sub
+    cleanstring = re.compile(r'\\((\r\n)|[\n\r\f])').sub
 
     def __init__(self, macros=None, productions=None, doComments=True):
         """
