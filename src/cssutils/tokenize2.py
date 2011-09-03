@@ -21,7 +21,7 @@ class Tokenizer(object):
     _atkeywords = {
         u'@font-face': CSSProductions.FONT_FACE_SYM,
         u'@import': CSSProductions.IMPORT_SYM,
-        u'@media': CSSProductions.MEDIA_SYM,        
+        u'@media': CSSProductions.MEDIA_SYM,
         u'@namespace': CSSProductions.NAMESPACE_SYM,
         u'@page': CSSProductions.PAGE_SYM,
         u'@variables': CSSProductions.VARIABLES_SYM
@@ -36,7 +36,7 @@ class Tokenizer(object):
         cssutils own macros and productions
         """
         if isinstance(macros, dict):
-            macros_hash_key = sorted(macros.items()) 
+            macros_hash_key = sorted(macros.items())
         else:
             macros_hash_key = macros
         hash_key = str((macros_hash_key, productions))
@@ -56,7 +56,7 @@ class Tokenizer(object):
         self.tokenmatches = tokenmatches
         self.commentmatcher = commentmatcher
         self.urimatcher = urimatcher
-        
+
         self._doComments = doComments
         self._pushed = []
 
@@ -87,12 +87,12 @@ class Tokenizer(object):
         self._pushed = []
 
     def tokenize(self, text, fullsheet=False):
-        """Generator: Tokenize text and yield tokens, each token is a tuple 
+        """Generator: Tokenize text and yield tokens, each token is a tuple
         of::
-        
+
             (name, value, line, col)
-        
-        The token value will contain a normal string, meaning CSS unicode 
+
+        The token value will contain a normal string, meaning CSS unicode
         escapes have been resolved to normal characters. The serializer
         escapes needed characters back to unicode escapes depending on
         the stylesheet target encoding.
@@ -116,7 +116,7 @@ class Tokenizer(object):
             return normalize(self.unicodesub(_repl, value))
 
         line = col = 1
-        
+
         # check for BOM first as it should only be max one at the start
         (BOM, matcher), productions = self.tokenmatches[0], self.tokenmatches[1:]
         match = matcher(text)
@@ -131,9 +131,9 @@ class Tokenizer(object):
             yield (CSSProductions.CHARSET_SYM, found, line, col)
             text = text[len(found):]
             col += len(found)
-        
+
         while text:
-            # do pushed tokens before new ones 
+            # do pushed tokens before new ones
             for pushed in self._pushed:
                 yield pushed
 
@@ -143,30 +143,30 @@ class Tokenizer(object):
                 yield ('CHAR', c, line, col)
                 col += 1
                 text = text[1:]
-                
+
             else:
                 # check all other productions, at least CHAR must match
                 for name, matcher in productions:
-                    
-                    # TODO: USE bad comment? 
+
+                    # TODO: USE bad comment?
                     if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
                         # before CHAR production test for incomplete comment
                         possiblecomment = u'%s*/' % text
                         match = self.commentmatcher(possiblecomment)
                         if match and self._doComments:
                             yield ('COMMENT', possiblecomment, line, col)
-                            text = None # ate all remaining text 
-                            break 
-    
+                            text = None # ate all remaining text
+                            break
+
                     match = matcher(text) # if no match try next production
                     if match:
                         found = match.group(0) # needed later for line/col
-                        if fullsheet:                        
+                        if fullsheet:
                             # check if found may be completed into a full token
                             if 'INVALID' == name and text == found:
                                 # complete INVALID to STRING with start char " or '
                                 name, found = 'STRING', '%s%s' % (found, found[0])
-                            
+
                             elif 'FUNCTION' == name and\
                                  u'url(' == _normalize(found):
                                 # url( is a FUNCTION if incomplete sheet
@@ -177,17 +177,17 @@ class Tokenizer(object):
                                     if match:
                                         name, found = 'URI', match.group(0)
                                         break
-    
-                        if name in ('DIMENSION', 'IDENT', 'STRING', 'URI', 
+
+                        if name in ('DIMENSION', 'IDENT', 'STRING', 'URI',
                                     'HASH', 'COMMENT', 'FUNCTION', 'INVALID',
                                     'UNICODE-RANGE'):
-                            # may contain unicode escape, replace with normal 
+                            # may contain unicode escape, replace with normal
                             # char but do not _normalize (?)
                             value = self.unicodesub(_repl, found)
                             if name in ('STRING', 'INVALID'): #'URI'?
                                 # remove \ followed by nl (so escaped) from string
                                 value = self.cleanstring('', found)
-    
+
                         else:
                             if 'ATKEYWORD' == name:
                                 try:
@@ -201,13 +201,13 @@ class Tokenizer(object):
                                         found += u' '
                                     else:
                                         name = 'ATKEYWORD'
-                                    
+
                             value = found # should not contain unicode escape (?)
-                        
-                        if self._doComments or (not self._doComments and 
+
+                        if self._doComments or (not self._doComments and
                                                 name != 'COMMENT'):
                             yield (name, value, line, col)
-                        
+
                         text = text[len(found):]
                         nls = found.count(self._linesep)
                         line += nls
@@ -215,7 +215,7 @@ class Tokenizer(object):
                             col = len(found[found.rfind(self._linesep):])
                         else:
                             col += len(found)
-                            
+
                         break
 
         if fullsheet:
