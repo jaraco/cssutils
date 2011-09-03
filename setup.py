@@ -68,10 +68,10 @@ setup(
     author='Christof Hoeke',
     author_email='c@cthedot.de',
     url='http://cthedot.de/cssutils/',
-    download_url='http://code.google.com/p/cssutils/downloads/list',
+    download_url='https://bitbucket.org/cthedot/cssutils/downloads',
     license='LGPL 2.1 or later, see also http://cthedot.de/cssutils/',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
-    platforms='Python 2.5 and later.',
+    platforms='Python 2.5 and later. Python 3.2 and later. Jython 2.5.1 and later.',
     cmdclass=dict(
         # specify the build_py command imported earlier
         build_py=build_py,
@@ -83,8 +83,10 @@ setup(
         'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 2.5',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.2',
         'Topic :: Internet',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML'
