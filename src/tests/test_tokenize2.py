@@ -34,7 +34,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                     ('S', u' ', 1, 5),
                     ('IDENT', u'a', 1, 6)],
         # TODO:
-        # Note that this means that a "real" space after the escape sequence 
+        # Note that this means that a "real" space after the escape sequence
         # must itself either be escaped or doubled:
         u'\\44\ x': [('IDENT', u'D\\ x', 1, 1)],
         u'\\44  ': [('IDENT', u'D', 1, 1),
@@ -90,6 +90,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u"'\\\r'": [('STRING', u"''", 1, 1)],
         u"'1\\\n2'": [('STRING', u"'12'", 1, 1)],
         u"'1\\\r\n2'": [('STRING', u"'12'", 1, 1)],
+        ur'"\0020|\0020"': [('STRING', u'"\\0020|\\0020"', 1, 1)],
 
         # HASH
         u' #a ': [('S', u' ', 1, 1),
@@ -213,7 +214,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                   ('S', u' ', 1, 3)],
         }
 
-    tests3 = {     
+    tests3 = {
         # UNICODE-RANGE
         u' u+0 ': [('S', u' ', 1, 1),
                   ('UNICODE-RANGE', u'u+0', 1, 2),
@@ -255,7 +256,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                   ('S', u' ', 1, 8),
                   ('UNICODE-RANGE', u'u+123456-abcdef', 1, 9),
                   ('S', u' ', 1, 24)],
- 
+
         # specials
         u'c\\olor': [('IDENT', u'c\\olor', 1, 1)],
         u'-1': [('CHAR', u'-', 1, 1), ('NUMBER', u'1', 1, 2)],
@@ -514,7 +515,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'ur\\l(a)': [('URI', u'ur\\l(a)', 1, 1)],
         u'url(a)': [('URI', u'url(a)', 1, 1)],
         u'\\55r\\4c(a)': [('URI', u'UrL(a)', 1, 1)],
-        u'\\75r\\6c(a)': [('URI', u'url(a)', 1, 1)],        
+        u'\\75r\\6c(a)': [('URI', u'url(a)', 1, 1)],
         u' url())': [('S', u' ', 1, 1),
                  ('URI', u'url()', 1, 2),
                  ('CHAR', u')', 1, 7)],
@@ -552,7 +553,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         # COMMENT incomplete
         u'/*': [('COMMENT', u'/**/', 1, 1)],
 
-#        # INVALID incomplete => STRING 
+#        # INVALID incomplete => STRING
         u' " ': [('S', u' ', 1, 1),
                  ('STRING', u'" "', 1, 2)],
         u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
@@ -585,9 +586,9 @@ class TokenizerTestCase(basetest.BaseTestCase):
 #                    x = True
 #                r.append(t[1])
 #            return ''.join(r)
-#    
-#        # push reinserts token into token stream, so x is doubled 
-#        self.assertEqual('1 xx 2 3', do()) 
+#
+#        # push reinserts token into token stream, so x is doubled
+#        self.assertEqual('1 xx 2 3', do())
 
 #    def test_linenumbers(self):
 #        "Tokenizer line + col"
