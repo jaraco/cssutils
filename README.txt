@@ -83,6 +83,56 @@ Alternatively download the provided source distribution. Expand the file and fro
 To uninstall remove any registrations of cssutils eggs with Distribute and remove the eggs which should be installed at PYTHONDIR/Lib/site-packages/cssutils too.
 
 
+Example
+=======
+::
+
+    # -*- coding: utf-8 -*-
+    import cssutils
+
+    css = u'''/* a comment with umlaut ä */
+         @namespace html "http://www.w3.org/1999/xhtml";
+         @variables { BG: #fff }
+         html|a { color:red; background: var(BG) }'''
+    sheet = cssutils.parseString(css)
+
+    for rule in sheet:
+        if rule.type == rule.STYLE_RULE:
+            # find property
+            for property in rule.style:
+                if property.name == 'color':
+                    property.value = 'green'
+                    property.priority = 'IMPORTANT'
+                    break
+            # or simply:
+            rule.style['margin'] = '01.0eM' # or: ('1em', 'important')
+
+    sheet.encoding = 'ascii'
+    sheet.namespaces['xhtml'] = 'http://www.w3.org/1999/xhtml'
+    sheet.namespaces['atom'] = 'http://www.w3.org/2005/Atom'
+    sheet.add('atom|title {color: #000000 !important}')
+    sheet.add('@import "sheets/import.css";')
+
+    # cssutils.ser.prefs.resolveVariables == True since 0.9.7b2
+    print sheet.cssText
+
+results in::
+
+	@charset "ascii";
+	@import "sheets/import.css";
+	/* a comment with umlaut \E4  */
+	@namespace xhtml "http://www.w3.org/1999/xhtml";
+	@namespace atom "http://www.w3.org/2005/Atom";
+	xhtml|a {
+	    color: green !important;
+	    background: #fff;
+	    margin: 1em
+	    }
+	atom|title {
+	    color: #000 !important
+	    }
+
+
 Documentation
 =============
 The current documenation can be found at http://packages.python.org/cssutils/
@@ -90,7 +140,7 @@ The current documenation can be found at http://packages.python.org/cssutils/
 
 Kind Request
 ============
-cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the `Issue Tracker <http://code.google.com/p/cssutils/issues/list>`_ at Google.
+cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the `Issue Tracker <https://bitbucket.org/cthedot/cssutils/issues>`_ at Bitbucket.
 
 
 Thanks
