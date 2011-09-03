@@ -35,7 +35,9 @@ Development Version
 0.9.8
 -----
 
-deva4
+0.9.8deva4
+    + BUGFIX: Fix for unicode replacements by Denis Bilenko, thanks!  https://bitbucket.org/cthedot/cssutils/pull-request/1/fix-a-bug-in-regex-which-accidentally
+
 
 
 0.9.8a3 110727
