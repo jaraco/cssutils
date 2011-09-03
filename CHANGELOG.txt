@@ -34,12 +34,11 @@ Development Version
 
 0.9.8
 -----
-Compatibility to Python 3.x is currently in development. At the same time compatibility for Python 2.4 will probably be lost...
 
-0.9.8 will be the last version to support Python 2.4 but as a compensation the first to support Python 3.x.
+deva4
 
 
-deva3
+0.9.8a3 110727
     + BUGFIX: Fixed validation of ``size`` property (thanks to Simon Sapin)
 	+ BUGFIX: Fixed Issue #55 (thanks to Simon Sapin): `outline-color` property was missing from validation.
     + BUGFIX: Fixed resolution of encoding detection of a stylesheet which did not use @charset in certain circumstances (mainly when imported sheets use different encoding than importing one which should be quite rare actually).
@@ -56,10 +55,7 @@ deva3
 
     - IMPROVEMENT: Fixed Issue #54 (thanks to Simon Sapin): Short hand like `#f80` color value object have correct red, green and blue property values now. Also ``hsl()`` and ``hsla()`` colors report (almost) correct values (due to rounding problems).
 
-	- **Source control has moved to bitbucket https://bitbucket.org/cthedot/cssutils**
-
-      Older Issues are currently still at Google Code, newer at Bitbucket. Please do not use Google Code for new issue reports anymore!
-
+    - **Source control has moved to bitbucket https://bitbucket.org/cthedot/cssutils**. Older Issues are currently still at Google Code, newer at Bitbucket. Please do not use Google Code for new issue reports anymore!
 
 
 0.9.8a2 110611
