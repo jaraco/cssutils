@@ -12,6 +12,8 @@ import sys
 import tokenize2
 import urllib
 
+from cssutils import css
+
 if sys.version_info < (2,6):
     bytes = str
 
@@ -68,6 +70,26 @@ class CSSParser(object):
         else:
             cssutils.log.raiseExceptions = self.__globalRaising
 
+    def parseStyle(self, cssText, encoding='utf-8'):
+        """Parse given `cssText` which is assumed to be the content of
+        a HTML style attribute.
+
+        :param cssText:
+            CSS string to parse
+        :param encoding:
+            It will be used to decode `cssText` if given as a (byte)
+            string.
+        :returns:
+            :class:`~cssutils.css.CSSStyleDeclaration`
+        """
+        self.__parseSetting(True)
+        if isinstance(cssText, bytes):
+            # TODO: use codecs.getdecoder('css') here?
+            cssText = cssText.decode(encoding)
+        style = css.CSSStyleDeclaration(cssText)
+        self.__parseSetting(False)
+        return style
+
     def parseString(self, cssText, encoding=None, href=None, media=None,
                     title=None):
         """Parse `cssText` as :class:`~cssutils.css.CSSStyleSheet`.
@@ -113,7 +135,7 @@ class CSSParser(object):
                   href=None, media=None, title=None):
         """Retrieve content from `filename` and parse it. Errors may be raised
         (e.g. IOError).
-        
+
         :param filename:
             of the CSS file to parse, if no `href` is given filename is
             converted to a (file:) URL and set as ``href`` of resulting
@@ -131,7 +153,7 @@ class CSSParser(object):
         """
         if not href:
             # prepend // for file URL, urllib does not do this?
-            #href = u'file:' + urllib.pathname2url(os.path.abspath(filename))          
+            #href = u'file:' + urllib.pathname2url(os.path.abspath(filename))
             href = path2url(filename)
 
         return self.parseString(open(filename, 'rb').read(),
@@ -141,7 +163,7 @@ class CSSParser(object):
     def parseUrl(self, href, encoding=None, media=None, title=None):
         """Retrieve content from URL `href` and parse it. Errors may be raised
         (e.g. URLError).
-        
+
         :param href:
             URL of the CSS file to parse, will also be set as ``href`` of
             resulting stylesheet
@@ -153,31 +175,31 @@ class CSSParser(object):
         :returns:
             :class:`~cssutils.css.CSSStyleSheet`.
         """
-        encoding, enctype, text = cssutils.util._readUrl(href, 
+        encoding, enctype, text = cssutils.util._readUrl(href,
                                                          fetcher=self.__fetcher,
                                                          overrideEncoding=encoding)
         if enctype == 5:
             # do not use if defaulting to UTF-8
             encoding = None
-            
+
         if text is not None:
             return self.parseString(text, encoding=encoding,
                                     href=href, media=media, title=title)
 
     def setFetcher(self, fetcher=None):
         """Replace the default URL fetch function with a custom one.
-        
+
         :param fetcher:
             A function which gets a single parameter
 
             ``url``
                 the URL to read
 
-            and must return ``(encoding, content)`` where ``encoding`` is the 
+            and must return ``(encoding, content)`` where ``encoding`` is the
             HTTP charset normally given via the Content-Type header (which may
-            simply omit the charset in which case ``encoding`` would be 
+            simply omit the charset in which case ``encoding`` would be
             ``None``) and ``content`` being the string (or unicode) content.
-            
+
             The Mimetype should be 'text/css' but this has to be checked by the
             fetcher itself (the default fetcher emits a warning if encountering
             a different mimetype).
@@ -186,4 +208,3 @@ class CSSParser(object):
             to use its default function.
         """
         self.__fetcher = fetcher
-
