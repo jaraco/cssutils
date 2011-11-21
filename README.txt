@@ -51,7 +51,7 @@ There is also a low-traffic `cssutils discussion group <http://groups.google.com
 
 Compatibility
 =============
-cssutils is developed on standard Python but works under Python 2.x (from 2.5, v2.5.4 tested), 3.x (v3.2.1 tested) and Jython (from 2.5.1). IronPython has not been tested yet but might work? Python 2.4 and older are not supported since cssutils 0.9.8 anymore.
+cssutils is developed on standard Python but works under Python 2.x (from 2.5, v2.5.4 tested), 3.x (v3.2.2 tested) and Jython (from 2.5.1). IronPython has not been tested yet but might work? Python 2.4 and older are not supported since cssutils 0.9.8 anymore.
 
 License
 =======
@@ -90,7 +90,7 @@ Example
     # -*- coding: utf-8 -*-
     import cssutils
 
-    css = u'''/* a comment with umlaut ä */
+    css = u'''/* a comment with umlaut &auml; */
          @namespace html "http://www.w3.org/1999/xhtml";
          @variables { BG: #fff }
          html|a { color:red; background: var(BG) }'''
