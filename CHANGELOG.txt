@@ -3,15 +3,7 @@ __________
 
 Known Issues
 ============
-- when PyXML is installed not all tests may run through (see issue #34 for details) as PyXMLs implementation of ``xml.dom.DOMException`` differs from the default (minidom and I guess others) implemtation. Nothing really to worry about...
-
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
-
-- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
-
-   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
-
-- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. Prefer to use ``style['property']`` over ``style.property``.
 
 - although cssutils tries to preserve CSS hacks not all are (and some - mainly syntactically invalid ones - will probably never be). The following hacks are known to **not** be preserved:
 
@@ -28,6 +20,15 @@ Known Issues
 
 - handling of comments does probably not work for all cases
 
+- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
+
+   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
+
+- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. Prefer to use ``style['property']`` over ``style.property``.
+
+
+- when PyXML is installed not all tests may run through (see issue #34 for details) as PyXMLs implementation of ``xml.dom.DOMException`` differs from the default (minidom and I guess others) implemtation. Nothing really to worry about...
+
 
 Development Version
 ===================
@@ -35,7 +36,10 @@ Development Version
 0.9.8
 -----
 
-deva4
+0.9.8deva4
+    + BUGFIX: Fix for unicode replacements by Denis Bilenko, thanks!  https://bitbucket.org/cthedot/cssutils/pull-request/1/fix-a-bug-in-regex-which-accidentally
+
+    + IMPROVEMENT: ``parseStyle`` moved to CSSParser, thanks to Simon Sapin
 
 
 0.9.8a3 110727
