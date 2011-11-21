@@ -209,8 +209,12 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         "cssutils.parseStyle()"
         s = cssutils.parseStyle('x:0; y:red')
         self.assertEqual(type(s), cssutils.css.CSSStyleDeclaration)
-        self.assertRaises(xml.dom.SyntaxErr, cssutils.parseStyle, '@import "x";')
+        self.assertEqual(s.cssText,  u'x: 0;\ny: red')
 
+        s = cssutils.parseStyle('@import "x";')
+        self.assertEqual(type(s), cssutils.css.CSSStyleDeclaration)
+        self.assertEqual(s.cssText, u'')
+        
         tests = [
             (u'content: "ä"', 'iso-8859-1'),
             (u'content: "€"', 'utf-8')
