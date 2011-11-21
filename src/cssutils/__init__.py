@@ -41,7 +41,7 @@ Based upon and partly implementing the following specifications :
     with cssutils (*should* mind though ;) )
 
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
-    DOM for package css. 0.9.8 removes support for CSSValue and related API, 
+    DOM for package css. 0.9.8 removes support for CSSValue and related API,
     see PropertyValue and Value API for now
 `DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`__
     DOM for package stylesheets
@@ -185,22 +185,9 @@ def parseUrl(*a, **k):
     return CSSParser().parseUrl(*a, **k)
 parseUrl.__doc__ = CSSParser.parseUrl.__doc__
 
-def parseStyle(cssText, encoding='utf-8'):
-    """Parse given `cssText` which is assumed to be the content of
-    a HTML style attribute.
-
-    :param cssText:
-        CSS string to parse
-    :param encoding:
-        It will be used to decode `cssText` if given as a (byte)
-        string.
-    :returns:
-        :class:`~cssutils.css.CSSStyleDeclaration`
-    """
-    if isinstance(cssText, bytes):
-        cssText = cssText.decode(encoding)
-    style = css.CSSStyleDeclaration(cssText)
-    return style
+def parseStyle(*a, **k):
+    return CSSParser().parseStyle(*a, **k)
+parseStyle.__doc__ = CSSParser.parseStyle.__doc__
 
 # set "ser", default serializer
 def setSerializer(serializer):
@@ -251,7 +238,7 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     :param ignoreImportRules:
         if ``True`` does not call `replacer` with URLs from @import rules.
     """
-    if not ignoreImportRules and not isinstance(sheetOrStyle, 
+    if not ignoreImportRules and not isinstance(sheetOrStyle,
                                                 css.CSSStyleDeclaration):
         for importrule in (r for r in sheetOrStyle if r.type == r.IMPORT_RULE):
             importrule.href = replacer(importrule.href)
