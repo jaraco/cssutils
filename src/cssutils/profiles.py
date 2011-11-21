@@ -114,20 +114,20 @@ class Profiles(object):
         self.addProfile(self.CSS3_COLOR,
                         properties[self.CSS3_COLOR],
                         macros[self.CSS3_COLOR])
-        
+
         self.addProfile(self.CSS3_FONTS,
                         properties[self.CSS3_FONTS],
                         macros[self.CSS3_FONTS])
-        
+
         # new object for font-face only?
         self.addProfile(self.CSS3_FONT_FACE,
                         properties[self.CSS3_FONT_FACE],
                         macros[self.CSS3_FONTS]) # same
-        
+
         self.addProfile(self.CSS3_PAGED_MEDIA,
                         properties[self.CSS3_PAGED_MEDIA],
                         macros[self.CSS3_PAGED_MEDIA])
-        
+
         self.addProfile(self.CSS3_TEXT,
                         properties[self.CSS3_TEXT],
                         macros[self.CSS3_TEXT])
@@ -150,7 +150,7 @@ class Profiles(object):
         """Compile all regular expressions into callable objects"""
         for key, value in dictionary.items():
             # might be a function (font-family) as regex is too slow
-            if not hasattr(value, '__call__') and not isinstance(value, 
+            if not hasattr(value, '__call__') and not isinstance(value,
                                                                  types.FunctionType):
                 value = re.compile('^(?:%s)$' % value, re.I).match
             dictionary[key] = value
@@ -354,8 +354,8 @@ macros = {}
 
 def _fontFamilyValidator(families):
     """Check if ``font-family`` value is valid, regex is too slow.
-    
-    Splits on ``,`` and checks each family separately. 
+
+    Splits on ``,`` and checks each family separately.
     Somehow naive as font-family name could contain a "," but this is unlikely.
     Still should be a TODO.
     """
@@ -367,7 +367,7 @@ def _fontFamilyValidator(families):
 
 def _fontValidator(font):
     """Check if font value is valid, regex is too slow.
-    
+
     Checks everything before ``,`` on basic font value. Everything after should
     be a valid font-family value.
     """
@@ -375,14 +375,14 @@ def _fontValidator(font):
         # split off until 1st family
         font1, families2 = font.split(u',', 1)
     else:
-        font1, families2 = font, None 
-                
+        font1, families2 = font, None
+
     if not properties[Profiles.CSS_LEVEL_2]['__FONT_WITH_1_FAMILY'](font1.strip()):
         return False
-    
+
     if families2 and not _fontFamilyValidator(families2):
         return False
-    
+
     return True
 
 """
@@ -403,12 +403,12 @@ macros[Profiles.CSS_LEVEL_2] = {
     'generic-family': r'serif|sans-serif|cursive|fantasy|monospace',
     'absolute-size': r'(x?x-)?(small|large)|medium',
     'relative-size': r'smaller|larger',
-    
+
     #[[ <family-name> | <generic-family> ] [, <family-name>| <generic-family>]* ] | inherit
     #'font-family': r'(({family-name}|{generic-family})({w},{w}({family-name}|{generic-family}))*)|inherit',
     # EXTREMELY SLOW REGEX
     #'font-family': r'({family-name}({w},{w}{family-name})*)|inherit',
-    
+
     'font-size': r'{absolute-size}|{relative-size}|{positivelength}|{percentage}|inherit',
     'font-style': r'normal|italic|oblique|inherit',
     'font-variant': r'normal|small-caps|inherit',
@@ -460,17 +460,17 @@ properties[Profiles.CSS_LEVEL_2] = {
     'elevation': r'{angle}|below|level|above|higher|lower|inherit',
     'empty-cells': r'show|hide|inherit',
     'float': r'left|right|none|inherit',
-    
+
     # regex too slow:
-    # 'font-family': r'{font-family}', 
+    # 'font-family': r'{font-family}',
     'font-family': _fontFamilyValidator,
     '__FONT_FAMILY_SINGLE': r'{family-name}',
-    
+
     'font-size': r'{font-size}',
     'font-style': r'{font-style}',
     'font-variant': r'{font-variant}',
     'font-weight': r'{font-weight}',
-    
+
     # regex too slow and wrong too:
     # 'font': r'({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{font-family}|caption|icon|menu|message-box|small-caption|status-bar|inherit',
     'font': _fontValidator,
@@ -548,9 +548,9 @@ macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'b5': r'{color}?({w}{border-style})?({w}{border-width})?',
     'b6': r'{color}?({w}{border-width})?({w}{border-style})?',
     'border-attrs': r'{b1}|{b2}|{b3}|{b4}|{b5}|{b6}',
-    'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?'                                                    
+    'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?'
     }
-properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {                                                     
+properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'border-color': r'({color}|transparent)(\s+({color}|transparent)){0,3}|inherit',
     'border-style': r'{border-style}(\s+{border-style}){0,3}|inherit',
     'border-top': r'{border-attrs}|inherit',
@@ -571,12 +571,12 @@ properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'border-left-width': r'{border-width}|inherit',
     'border-width': r'{border-width}(\s+{border-width}){0,3}|inherit',
     'border': r'{border-attrs}|inherit',
-    'border-top-right-radius': '{border-radius-part}', 
-    'border-bottom-right-radius': '{border-radius-part}', 
-    'border-bottom-left-radius': '{border-radius-part}', 
+    'border-top-right-radius': '{border-radius-part}',
+    'border-bottom-right-radius': '{border-radius-part}',
+    'border-bottom-left-radius': '{border-radius-part}',
     'border-top-left-radius': '{border-radius-part}',
     'border-radius': '({length}{w}|{percentage}{w}){1,4}(/{w}({length}{w}|{percentage}{w}){1,4})?',
-    'box-shadow': 'none|{shadow}({w},{w}{shadow})*', 
+    'box-shadow': 'none|{shadow}({w},{w}{shadow})*',
     }
 
 # CSS3 Basic User Interface Module
@@ -594,7 +594,8 @@ macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'outline-width': r'{border-width}|inherit',
     }
 properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
-    'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit',    
+    'box-sizing': r'content-box|border-box',
+    'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit',
     'nav-index': r'auto|{number}|inherit',
     'outline-color': r'{outline-color}',
     'outline-style': r'{outline-style}',
@@ -632,7 +633,7 @@ properties[Profiles.CSS3_COLOR] = {
 
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
-    'family-name': r'{string}|{ident}', 
+    'family-name': r'{string}|{ident}',
     'font-face-name': 'local\({w}{family-name}{w}\)',
     'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
     'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'
@@ -643,7 +644,7 @@ properties[Profiles.CSS3_FONTS] = {
     }
 properties[Profiles.CSS3_FONT_FACE] = {
     'font-family': '{family-name}',
-    'font-stretch': r'{font-stretch-names}',                                       
+    'font-stretch': r'{font-stretch-names}',
     'font-style': r'normal|italic|oblique',
     'font-weight': r'normal|bold|[1-9]00',
     'src': r'({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name})({w},{w}({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name}))*',
@@ -675,7 +676,5 @@ properties[Profiles.CSS3_PAGED_MEDIA] = {
 macros[Profiles.CSS3_TEXT] = {
     }
 properties[Profiles.CSS3_TEXT] = {
-    'text-shadow': 'none|{shadow}({w},{w}{shadow})*', 
+    'text-shadow': 'none|{shadow}({w},{w}{shadow})*',
     }
-
-
