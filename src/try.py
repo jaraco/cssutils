@@ -8,6 +8,7 @@ import codecs
 import cssutils
 import logging
 import os
+import pprint
 import re
 import sys
 import timeit
@@ -37,17 +38,29 @@ def maketokens(valuelist):
 
 
 if 1:
-    #p = cssutils.css.Property('font-family', 'a," b"')
-    #print p
+    sel = [
+           'E[foo="bar"], E[foo~="bar"], E[foo^="bar"], E[foo$="bar"], E[foo*="bar"], E[foo|="bar"]',
+           'E:dir(ltr), E:lang(fr), E:any-link, E:local-link, E:local-link(0), E:target, E:scope',
+           'E:not(s1, s2)',
+           'E:matches(s1, s2)',
+           'E[foo="bar" i]',
+           'E /foo/ F',
+           '$E > F',
+    ]
+
+        
+#    t = cssutils.tokenize2.Tokenizer()
+#    pprint.pprint(list(t.tokenize(x)))
+#    print
     
-    
-    
-    s = cssutils.parseFile('sheets/sample_5.css')
-    #print s.cssText
-    #s = cssutils.parseFile('sheets/sample_7.css')
-    #print s.cssText
+    for i, s in enumerate(sel):
+        print i, s
+        sheet = cssutils.parseString(s + '{color: green}')
+        print sheet.cssText
+        print
+        
     sys.exit(0)
-    
+
 
 
 if 1:
