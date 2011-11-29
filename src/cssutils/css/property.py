@@ -153,7 +153,8 @@ class Property(cssutils.util.Base):
                 self.priority = prioritytokens
 
                 # also invalid values are set!
-                self.validate()
+                if not cssutils.profile.skipValidation:
+                    self.validate()
 
         else:
             self._log.error(u'Property: No property name found: %s' %
