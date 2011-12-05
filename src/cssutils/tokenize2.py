@@ -186,7 +186,7 @@ class Tokenizer(object):
                             value = self.unicodesub(_repl, found)
                             if name in ('STRING', 'INVALID'): #'URI'?
                                 # remove \ followed by nl (so escaped) from string
-                                value = self.cleanstring('', found)
+                                value = self.cleanstring('', value)
 
                         else:
                             if 'ATKEYWORD' == name:
