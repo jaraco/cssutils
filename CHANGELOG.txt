@@ -35,6 +35,10 @@ Development Version
 
 0.9.8
 -----
+    + BUGFIX: Fixed #5 Unicode escaping inside strings thanks to Simon Sapin
+
+    - FEATURE: Feature Request (#4) to be able to disable validation of a stylesheet has been implemented. Add Parameter ``validate=False`` for parsing (only for parsing of stylesheets not single styledeclarations yet).
+
 
 0.9.8deva4
     + BUGFIX: Fix for unicode replacements by Denis Bilenko, thanks!  https://bitbucket.org/cthedot/cssutils/pull-request/1/fix-a-bug-in-regex-which-accidentally
