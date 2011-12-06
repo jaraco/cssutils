@@ -16,7 +16,7 @@ def main():
     a:before {
        content: "ä";
         }'''
-    
+
     p = CSSParser()
     sheet = p.parseString(css)
     
