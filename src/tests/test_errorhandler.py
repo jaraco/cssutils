@@ -113,6 +113,20 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         self.assertEqual(s.getvalue()[:38],
                          u'ERROR    Expected "text/css" mime type')
 
+    def test_parsevalidation(self):
+        t = 'a { color: 1 }'
+        
+        cssutils.log.setLevel(logging.DEBUG)
+        
+        s = self._setHandler()
+        cssutils.parseString(t)
+        self.assertNotEqual(len(s.getvalue()), 0)
+        
+        s = self._setHandler()
+        cssutils.parseString(t, validate=False)
+        self.assertEqual(s.getvalue(), '')
+               
+
 if __name__ == '__main__':
     import unittest
     unittest.main()

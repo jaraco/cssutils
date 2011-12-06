@@ -30,7 +30,8 @@ class CSSParser(object):
         print sheet.cssText
     """
     def __init__(self, log=None, loglevel=None, raiseExceptions=None,
-                 fetcher=None, parseComments=True):
+                 fetcher=None, parseComments=True, 
+                 validate=True):
         """
         :param log:
             logging object
@@ -44,6 +45,8 @@ class CSSParser(object):
             see ``setFetcher(fetcher)``
         :param parseComments:
             if comments should be added to CSS DOM or simply omitted
+        :param validate:
+            if parsing should validate, may be overwritten in parse methods
         """
         if log is not None:
             cssutils.log.setLog(log)
@@ -60,6 +63,8 @@ class CSSParser(object):
 
         self.__tokenizer = tokenize2.Tokenizer(doComments=parseComments)
         self.setFetcher(fetcher)
+        
+        self._validate = validate
 
     def __parseSetting(self, parse):
         """during parse exceptions may be handled differently depending on
@@ -91,7 +96,8 @@ class CSSParser(object):
         return style
 
     def parseString(self, cssText, encoding=None, href=None, media=None,
-                    title=None):
+                    title=None, 
+                    validate=None):
         """Parse `cssText` as :class:`~cssutils.css.CSSStyleSheet`.
         Errors may be raised (e.g. UnicodeDecodeError).
 
@@ -112,6 +118,9 @@ class CSSParser(object):
             (may be a MediaList, list or a string).
         :param title:
             The ``title`` attribute to assign to the parsed style sheet.
+        :param validate:
+            If given defines if validation is used. Uses CSSParser settings as
+            fallback
         :returns:
             :class:`~cssutils.css.CSSStyleSheet`.
         """
@@ -120,9 +129,13 @@ class CSSParser(object):
         if isinstance(cssText, bytes):
             cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
 
+        if validate is None:
+            validate = self._validate
+            
         sheet = cssutils.css.CSSStyleSheet(href=href,
                                            media=cssutils.stylesheets.MediaList(media),
-                                           title=title)
+                                           title=title,
+                                           validating=validate)
         sheet._setFetcher(self.__fetcher)
         # tokenizing this ways closes open constructs and adds EOF
         sheet._setCssTextWithEncodingOverride(self.__tokenizer.tokenize(cssText,
@@ -132,7 +145,8 @@ class CSSParser(object):
         return sheet
 
     def parseFile(self, filename, encoding=None,
-                  href=None, media=None, title=None):
+                  href=None, media=None, title=None,
+                  validate=None):
         """Retrieve content from `filename` and parse it. Errors may be raised
         (e.g. IOError).
 
@@ -158,9 +172,11 @@ class CSSParser(object):
 
         return self.parseString(open(filename, 'rb').read(),
                                 encoding=encoding, # read returns a str
-                                href=href, media=media, title=title)
+                                href=href, media=media, title=title,
+                                validate=validate)
 
-    def parseUrl(self, href, encoding=None, media=None, title=None):
+    def parseUrl(self, href, encoding=None, media=None, title=None,
+                 validate=None):
         """Retrieve content from URL `href` and parse it. Errors may be raised
         (e.g. URLError).
 
@@ -184,7 +200,8 @@ class CSSParser(object):
 
         if text is not None:
             return self.parseString(text, encoding=encoding,
-                                    href=href, media=media, title=title)
+                                    href=href, media=media, title=title,
+                                    validate=validate)
 
     def setFetcher(self, fetcher=None):
         """Replace the default URL fetch function with a custom one.

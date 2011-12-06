@@ -90,7 +90,8 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u"'\\\r'": [('STRING', u"''", 1, 1)],
         u"'1\\\n2'": [('STRING', u"'12'", 1, 1)],
         u"'1\\\r\n2'": [('STRING', u"'12'", 1, 1)],
-        ur'"\0020|\0020"': [('STRING', u'"\\0020|\\0020"', 1, 1)],
+        #ur'"\0020|\0020"': [('STRING', u'"\\0020|\\0020"', 1, 1)],
+        ur'"\61|\0061"': [('STRING', u'"a|a"', 1, 1)],
 
         # HASH
         u' #a ': [('S', u' ', 1, 1),

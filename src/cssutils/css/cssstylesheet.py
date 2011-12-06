@@ -34,13 +34,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     """
     def __init__(self, href=None, media=None, title=u'', disabled=None,
                  ownerNode=None, parentStyleSheet=None, readonly=False,
-                 ownerRule=None):
+                 ownerRule=None,
+                 validating=True):
         """
         For parameters see :class:`~cssutils.stylesheets.StyleSheet`
         """
         super(CSSStyleSheet, self).__init__(
                 'text/css', href, media, title, disabled,
-                ownerNode, parentStyleSheet)
+                ownerNode, parentStyleSheet, 
+                validating=validating)
 
         self._ownerRule = ownerRule
         self.cssRules = cssutils.css.CSSRuleList()
