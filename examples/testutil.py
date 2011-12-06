@@ -104,11 +104,12 @@ def main():
     mod(parse)
     import selectors_tolower
     mod(selectors_tolower)
-    import minify
-    mod(minify)
 
     import cssencodings
     mod(cssencodings)
+    
+    import minify
+    mod(minify)
     
     print 
     print 80*'-' 
