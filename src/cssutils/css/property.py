@@ -153,7 +153,14 @@ class Property(cssutils.util.Base):
                 self.priority = prioritytokens
 
                 # also invalid values are set!
-                if not cssutils.profile.skipValidation:
+                                
+                try:
+                    # parser sets validating prop of sheet
+                    doVal = self.parent.parentRule.parentStyleSheet.validating
+                except AttributeError, e:
+                    doVal = True
+                    
+                if doVal:
                     self.validate()
 
         else:

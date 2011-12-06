@@ -27,7 +27,8 @@ class StyleSheet(cssutils.util.Base2):
                  ownerNode=None,
                  parentStyleSheet=None,
                  alternate=False,
-                 disabled=None):
+                 disabled=None,
+                 validating=True):
         """
         type
             readonly
@@ -71,8 +72,14 @@ class StyleSheet(cssutils.util.Base2):
         alternate = False
             a flag stating if a style sheet is an alternate one or not.
             Currently not used in cssutils
+            
+        validating = True
+            a flag defining if this sheet should be validate on change. 
+        
         """
         super(StyleSheet, self).__init__()
+        
+        self.validating = validating
         
         self._alternate = alternate
         self._href = href

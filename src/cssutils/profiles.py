@@ -45,8 +45,6 @@ class Profiles(object):
     If you want to redefine any of these macros do this in your custom
     macros.
     """
-    skipValidation = False
-
     CSS_LEVEL_2 = u'CSS Level 2.1'
     CSS3_BACKGROUNDS_AND_BORDERS = u'CSS Backgrounds and Borders Module Level 3'
     CSS3_BASIC_USER_INTERFACE = u'CSS3 Basic User Interface Module'

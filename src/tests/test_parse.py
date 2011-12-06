@@ -205,6 +205,57 @@ class CSSParserTestCase(basetest.BaseTestCase):
             #self.assertEqual(None, cssutils.parseString(css, encoding=encoding))
             self.assertRaises(UnicodeDecodeError, cssutils.parseString, test[0], test[1])
 
+    def test_validate(self):
+        """CSSParser(validate)"""
+        t = 'a {color: red}'
+
+        # helper
+        s = cssutils.parseString(t)
+        self.assertEqual(s.validating, True)
+        s = cssutils.parseString(t, validate=False)
+        self.assertEqual(s.validating, False)
+        s = cssutils.parseString(t, validate=True)
+        self.assertEqual(s.validating, True)
+
+        # parser
+        p = cssutils.CSSParser()
+        s = p.parseString(t)
+        self.assertEqual(s.validating, True)
+        s = p.parseString(t, validate=False)
+        self.assertEqual(s.validating, False)
+        s = p.parseString(t, validate=True)
+        self.assertEqual(s.validating, True)
+
+        p = cssutils.CSSParser(validate=True)
+        s = p.parseString(t)
+        self.assertEqual(s.validating, True)
+        s = p.parseString(t, validate=False)
+        self.assertEqual(s.validating, False)
+        s = p.parseString(t, validate=True)
+        self.assertEqual(s.validating, True)
+
+        p = cssutils.CSSParser(validate=False)
+        s = p.parseString(t)
+        self.assertEqual(s.validating, False)
+        s = p.parseString(t, validate=False)
+        self.assertEqual(s.validating, False)
+        s = p.parseString(t, validate=True)
+        self.assertEqual(s.validating, True)
+
+        # url        
+        p = cssutils.CSSParser(validate=False)
+        p.setFetcher(self._make_fetcher('utf-8', t))
+        u = 'url'
+        s = p.parseUrl(u)
+        self.assertEqual(s.validating, False)
+        s = p.parseUrl(u, validate=False)
+        self.assertEqual(s.validating, False)
+        s = p.parseUrl(u, validate=True)
+        self.assertEqual(s.validating, True)
+
+        # check if it raises see log test
+
+
     def test_fetcher(self):
         """CSSParser.fetcher
 
