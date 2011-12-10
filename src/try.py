@@ -36,6 +36,17 @@ def maketokens(valuelist):
                 return [('TYPE', v, 0, 0) for v in valuelist]
 
 
+if 1:
+    t = u'''
+    color: rgba(1,1,1,0);
+    background: rgba(1,1,1,0);'''
+        
+    p = cssutils.CSSParser()
+    sheet = p.parseString(t)
+    print sheet.cssText
+    
+    sys.exit(0)
+
 
 if 1:
     sel = [

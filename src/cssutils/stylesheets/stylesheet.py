@@ -72,7 +72,6 @@ class StyleSheet(cssutils.util.Base2):
         alternate = False
             a flag stating if a style sheet is an alternate one or not.
             Currently not used in cssutils
-            
         validating = True
             a flag defining if this sheet should be validate on change. 
         

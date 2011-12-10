@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>backlog &mdash; cssutils v0.9.8dev documentation</title>
+    <title>backlog &mdash; cssutils 0.9.8 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.8dev',
+        VERSION:     '0.9.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.8dev documentation" href="../index.html" />
+    <link rel="top" title="cssutils 0.9.8 documentation" href="../index.html" />
     <link rel="prev" title="encutils module" href="encutils.html" /> 
   </head>
   <body>
@@ -38,7 +41,7 @@
         <li class="right" >
           <a href="encutils.html" title="encutils module"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,11 +58,10 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">1</td>
+<tr class="field-odd field"><th class="field-name">prio:</th><td class="field-body">1</td>
 </tr>
 </tbody>
 </table>
-<p>implement rgba()</p>
 <ul>
 <li><p class="first">named colors:</p>
 <div class="highlight-python"><pre>Black = #000000         Green = #008000
@@ -74,19 +76,16 @@ Fuchsia = #FF00FF       Aqua = #00FFFF</pre>
 </li>
 <li><p class="first">&#8220;transparent&#8221;</p>
 </li>
-<li><p class="first">rgba(R, G, B, opacity): opacity in range (0,1)</p>
-</li>
-<li><p class="first">hsl(), hsla() ?</p>
-</li>
 <li><p class="first">SVG colors?</p>
 </li>
 <li><p class="first">&#8220;currentColor&#8221;</p>
 </li>
-<li><p class="first">System Colors are DEPRECATED!</p>
-</li>
 <li><p class="first">&#8220;flavor&#8221;?</p>
 </li>
+<li><p class="first">System Colors are DEPRECATED!</p>
+</li>
 </ul>
+<p>Fix profile.</p>
 </div>
 <div class="section" id="selector">
 <h2>Selector<a class="headerlink" href="#selector" title="Permalink to this headline">¶</a></h2>
@@ -94,7 +93,7 @@ Fuchsia = #FF00FF       Aqua = #00FFFF</pre>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">1</td>
+<tr class="field-odd field"><th class="field-name">prio:</th><td class="field-body">1</td>
 </tr>
 </tbody>
 </table>
@@ -120,7 +119,7 @@ Fuchsia = #FF00FF       Aqua = #00FFFF</pre>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">3</td>
+<tr class="field-odd field"><th class="field-name">prio:</th><td class="field-body">3</td>
 </tr>
 </tbody>
 </table>
@@ -170,7 +169,7 @@ also for rgba()</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">3</td>
+<tr class="field-odd field"><th class="field-name">prio:</th><td class="field-body">3</td>
 </tr>
 </tbody>
 </table>
@@ -182,7 +181,7 @@ also for rgba()</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">3</td>
+<tr class="field-odd field"><th class="field-name">prio:</th><td class="field-body">3</td>
 </tr>
 </tbody>
 </table>
@@ -193,7 +192,7 @@ also for rgba()</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">2</td>
+<tr class="field-odd field"><th class="field-name">prio:</th><td class="field-body">2</td>
 </tr>
 </tbody>
 </table>
@@ -209,7 +208,7 @@ also for rgba()</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">prio:</th><td class="field-body">3</td>
+<tr class="field-odd field"><th class="field-name">prio:</th><td class="field-body">3</td>
 </tr>
 </tbody>
 </table>
@@ -259,7 +258,7 @@ interface DocumentStyle {
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -285,12 +284,12 @@ interface DocumentStyle {
         <li class="right" >
           <a href="encutils.html" title="encutils module"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
+        &copy; Copyright 2004-2011, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

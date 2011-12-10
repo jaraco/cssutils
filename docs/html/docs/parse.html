@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>parsing CSS &mdash; cssutils v0.9.8dev documentation</title>
+    <title>parsing CSS &mdash; cssutils 0.9.8 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.8dev',
+        VERSION:     '0.9.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.8dev documentation" href="../index.html" />
+    <link rel="top" title="cssutils 0.9.8 documentation" href="../index.html" />
     <link rel="next" title="utilities" href="utilities.html" />
     <link rel="prev" title="version migration" href="migrate.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="migrate.html" title="version migration"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,16 +64,16 @@
 <h3><tt class="docutils literal"><span class="pre">parseString</span></tt><a class="headerlink" href="#parsestring" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="cssutils.parseString">
-<tt class="descclassname">cssutils.</tt><tt class="descname">parseString</tt><big>(</big><em>cssText</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.parseString" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.</tt><tt class="descname">parseString</tt><big>(</big><em>cssText</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em>, <em>validate=None</em><big>)</big><a class="headerlink" href="#cssutils.parseString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse <cite>cssText</cite> as <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.
 Errors may be raised (e.g. UnicodeDecodeError).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>cssText</strong> &#8211; CSS string to parse</li>
-<li><strong>encoding</strong> &#8211; If <tt class="xref docutils literal"><span class="pre">None</span></tt> the encoding will be read from BOM or an &#64;charset
+<li><strong>encoding</strong> &#8211; If <tt class="docutils literal"><span class="pre">None</span></tt> the encoding will be read from BOM or an &#64;charset
 rule or defaults to UTF-8.
 If given overrides any found encoding including the ones for
 imported sheets.
@@ -81,10 +84,12 @@ Used to resolve other urls in the parsed sheet like &#64;import hrefs.</li>
 <li><strong>media</strong> &#8211; The <tt class="docutils literal"><span class="pre">media</span></tt> attribute to assign to the parsed style sheet
 (may be a MediaList, list or a string).</li>
 <li><strong>title</strong> &#8211; The <tt class="docutils literal"><span class="pre">title</span></tt> attribute to assign to the parsed style sheet.</li>
+<li><strong>validate</strong> &#8211; If given defines if validation is used. Uses CSSParser settings as
+fallback</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
 </td>
 </tr>
 </tbody>
@@ -96,28 +101,28 @@ Used to resolve other urls in the parsed sheet like &#64;import hrefs.</li>
 <h3><tt class="docutils literal"><span class="pre">parseFile</span></tt><a class="headerlink" href="#parsefile" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="cssutils.parseFile">
-<tt class="descclassname">cssutils.</tt><tt class="descname">parseFile</tt><big>(</big><em>filename</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.parseFile" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">cssutils.</tt><tt class="descname">parseFile</tt><big>(</big><em>filename</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em>, <em>validate=None</em><big>)</big><a class="headerlink" href="#cssutils.parseFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve content from <cite>filename</cite> and parse it. Errors may be raised
 (e.g. IOError).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> &#8211; of the CSS file to parse, if no <cite>href</cite> is given filename is
 converted to a (file:) URL and set as <tt class="docutils literal"><span class="pre">href</span></tt> of resulting
 stylesheet.
 If <cite>href</cite> is given it is set as <tt class="docutils literal"><span class="pre">sheet.href</span></tt>. Either way
 <tt class="docutils literal"><span class="pre">sheet.href</span></tt> is used to resolve e.g. stylesheet imports via
 &#64;import rules.</li>
-<li><strong>encoding</strong> &#8211; Value <tt class="xref docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via BOM or an
+<li><strong>encoding</strong> &#8211; Value <tt class="docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via BOM or an
 &#64;charset rule.
 Other values override detected encoding for the sheet at
 <cite>filename</cite> including any imported sheets.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
 </td>
 </tr>
 </tbody>
@@ -127,7 +132,32 @@ Other values override detected encoding for the sheet at
 </div>
 <div class="section" id="parseurl">
 <h3><tt class="docutils literal"><span class="pre">parseUrl</span></tt><a class="headerlink" href="#parseurl" title="Permalink to this headline">¶</a></h3>
-<p>:: cssutils.parseUrl(href, encoding=None, media=None, title=None)</p>
+<dl class="function">
+<dt id="cssutils.parseUrl">
+<tt class="descclassname">cssutils.</tt><tt class="descname">parseUrl</tt><big>(</big><em>href</em>, <em>encoding=None</em>, <em>media=None</em>, <em>title=None</em>, <em>validate=None</em><big>)</big><a class="headerlink" href="#cssutils.parseUrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve content from URL <cite>href</cite> and parse it. Errors may be raised
+(e.g. URLError).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>href</strong> &#8211; URL of the CSS file to parse, will also be set as <tt class="docutils literal"><span class="pre">href</span></tt> of
+resulting stylesheet</li>
+<li><strong>encoding</strong> &#8211; Value <tt class="docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via HTTP, BOM or an
+&#64;charset rule.
+A value overrides detected encoding for the sheet at <tt class="docutils literal"><span class="pre">href</span></tt>
+including any imported sheets.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 <div class="section" id="working-with-inline-styles">
@@ -143,14 +173,14 @@ a HTML style attribute.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>cssText</strong> &#8211; CSS string to parse</li>
 <li><strong>encoding</strong> &#8211; It will be used to decode <cite>cssText</cite> if given as a (byte)
 string.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleDeclaration" title="cssutils.css.CSSStyleDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleDeclaration" title="cssutils.css.CSSStyleDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -164,7 +194,7 @@ string.</li>
 <p>The parser is reusable.</p>
 <dl class="class">
 <dt id="cssutils.CSSParser">
-<em class="property">class </em><tt class="descclassname">cssutils.</tt><tt class="descname">CSSParser</tt><big>(</big><em>log=None</em>, <em>loglevel=None</em>, <em>raiseExceptions=None</em>, <em>fetcher=None</em>, <em>parseComments=True</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.</tt><tt class="descname">CSSParser</tt><big>(</big><em>log=None</em>, <em>loglevel=None</em>, <em>raiseExceptions=None</em>, <em>fetcher=None</em>, <em>parseComments=True</em>, <em>validate=True</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a CSS StyleSheet from URL, string or file and return a DOM Level 2
 CSS StyleSheet object.</p>
 <p>Usage:</p>
@@ -177,28 +207,28 @@ CSS StyleSheet object.</p>
 </div>
 <dl class="method">
 <dt id="cssutils.CSSParser.parseFile">
-<tt class="descname">parseFile</tt><big>(</big><em>filename</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseFile" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parseFile</tt><big>(</big><em>filename</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em>, <em>validate=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve content from <cite>filename</cite> and parse it. Errors may be raised
 (e.g. IOError).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> &#8211; of the CSS file to parse, if no <cite>href</cite> is given filename is
 converted to a (file:) URL and set as <tt class="docutils literal"><span class="pre">href</span></tt> of resulting
 stylesheet.
 If <cite>href</cite> is given it is set as <tt class="docutils literal"><span class="pre">sheet.href</span></tt>. Either way
 <tt class="docutils literal"><span class="pre">sheet.href</span></tt> is used to resolve e.g. stylesheet imports via
 &#64;import rules.</li>
-<li><strong>encoding</strong> &#8211; Value <tt class="xref docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via BOM or an
+<li><strong>encoding</strong> &#8211; Value <tt class="docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via BOM or an
 &#64;charset rule.
 Other values override detected encoding for the sheet at
 <cite>filename</cite> including any imported sheets.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
 </td>
 </tr>
 </tbody>
@@ -207,16 +237,16 @@ Other values override detected encoding for the sheet at
 
 <dl class="method">
 <dt id="cssutils.CSSParser.parseString">
-<tt class="descname">parseString</tt><big>(</big><em>cssText</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseString" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parseString</tt><big>(</big><em>cssText</em>, <em>encoding=None</em>, <em>href=None</em>, <em>media=None</em>, <em>title=None</em>, <em>validate=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse <cite>cssText</cite> as <a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.
 Errors may be raised (e.g. UnicodeDecodeError).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>cssText</strong> &#8211; CSS string to parse</li>
-<li><strong>encoding</strong> &#8211; If <tt class="xref docutils literal"><span class="pre">None</span></tt> the encoding will be read from BOM or an &#64;charset
+<li><strong>encoding</strong> &#8211; If <tt class="docutils literal"><span class="pre">None</span></tt> the encoding will be read from BOM or an &#64;charset
 rule or defaults to UTF-8.
 If given overrides any found encoding including the ones for
 imported sheets.
@@ -227,10 +257,35 @@ Used to resolve other urls in the parsed sheet like &#64;import hrefs.</li>
 <li><strong>media</strong> &#8211; The <tt class="docutils literal"><span class="pre">media</span></tt> attribute to assign to the parsed style sheet
 (may be a MediaList, list or a string).</li>
 <li><strong>title</strong> &#8211; The <tt class="docutils literal"><span class="pre">title</span></tt> attribute to assign to the parsed style sheet.</li>
+<li><strong>validate</strong> &#8211; If given defines if validation is used. Uses CSSParser settings as
+fallback</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cssutils.CSSParser.parseStyle">
+<tt class="descname">parseStyle</tt><big>(</big><em>cssText</em>, <em>encoding='utf-8'</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseStyle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse given <cite>cssText</cite> which is assumed to be the content of
+a HTML style attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cssText</strong> &#8211; CSS string to parse</li>
+<li><strong>encoding</strong> &#8211; It will be used to decode <cite>cssText</cite> if given as a (byte)
+string.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleDeclaration" title="cssutils.css.CSSStyleDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleDeclaration</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -239,24 +294,24 @@ Used to resolve other urls in the parsed sheet like &#64;import hrefs.</li>
 
 <dl class="method">
 <dt id="cssutils.CSSParser.parseUrl">
-<tt class="descname">parseUrl</tt><big>(</big><em>href</em>, <em>encoding=None</em>, <em>media=None</em>, <em>title=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseUrl" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parseUrl</tt><big>(</big><em>href</em>, <em>encoding=None</em>, <em>media=None</em>, <em>title=None</em>, <em>validate=None</em><big>)</big><a class="headerlink" href="#cssutils.CSSParser.parseUrl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve content from URL <cite>href</cite> and parse it. Errors may be raised
 (e.g. URLError).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>href</strong> &#8211; URL of the CSS file to parse, will also be set as <tt class="docutils literal"><span class="pre">href</span></tt> of
 resulting stylesheet</li>
-<li><strong>encoding</strong> &#8211; Value <tt class="xref docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via HTTP, BOM or an
+<li><strong>encoding</strong> &#8211; Value <tt class="docutils literal"><span class="pre">None</span></tt> defaults to encoding detection via HTTP, BOM or an
 &#64;charset rule.
 A value overrides detected encoding for the sheet at <tt class="docutils literal"><span class="pre">href</span></tt>
 including any imported sheets.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="css.html#cssutils.css.CSSStyleSheet" title="cssutils.css.CSSStyleSheet"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleSheet</span></tt></a>.</p>
 </td>
 </tr>
 </tbody>
@@ -271,15 +326,15 @@ including any imported sheets.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fetcher</strong> &#8211; <p>A function which gets a single parameter</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fetcher</strong> &#8211; <p>A function which gets a single parameter</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">url</span></tt></dt>
 <dd>the URL to read</dd>
 </dl>
-<p>and must return <tt class="docutils literal"><span class="pre">(encoding,</span> <span class="pre">content)</span></tt> where <tt class="docutils literal"><span class="pre">encoding</span></tt> is the 
+<p>and must return <tt class="docutils literal"><span class="pre">(encoding,</span> <span class="pre">content)</span></tt> where <tt class="docutils literal"><span class="pre">encoding</span></tt> is the
 HTTP charset normally given via the Content-Type header (which may
-simply omit the charset in which case <tt class="docutils literal"><span class="pre">encoding</span></tt> would be 
-<tt class="xref docutils literal"><span class="pre">None</span></tt>) and <tt class="docutils literal"><span class="pre">content</span></tt> being the string (or unicode) content.</p>
+simply omit the charset in which case <tt class="docutils literal"><span class="pre">encoding</span></tt> would be
+<tt class="docutils literal"><span class="pre">None</span></tt>) and <tt class="docutils literal"><span class="pre">content</span></tt> being the string (or unicode) content.</p>
 <p>The Mimetype should be &#8216;text/css&#8217; but this has to be checked by the
 fetcher itself (the default fetcher emits a warning if encountering
 a different mimetype).</p>
@@ -313,7 +368,7 @@ to use its default function.</p>
 <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="o">...</span>
 </pre></div>
 </div>
-<p>To omit parsing of imported sheets just define a fetcher like <tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">url:</span> <span class="pre">None</span></tt> (A single <tt class="xref docutils literal"><span class="pre">None</span></tt> is sufficient but returning <tt class="docutils literal"><span class="pre">None,</span> <span class="pre">None</span></tt> would be clearer).</p>
+<p>To omit parsing of imported sheets just define a fetcher like <tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">url:</span> <span class="pre">None</span></tt> (A single <tt class="docutils literal"><span class="pre">None</span></tt> is sufficient but returning <tt class="docutils literal"><span class="pre">None,</span> <span class="pre">None</span></tt> would be clearer).</p>
 <p>You may also define a fetcher which overrides the internal encoding for imported sheets with a fetcher that returns a (normally HTTP) encoding depending e.g on the URL.</p>
 </div>
 </div>
@@ -360,7 +415,7 @@ to use its default function.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -389,12 +444,12 @@ to use its default function.</p>
         <li class="right" >
           <a href="migrate.html" title="version migration"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
+        &copy; Copyright 2004-2011, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

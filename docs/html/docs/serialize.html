@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>serializing CSS &mdash; cssutils v0.9.8dev documentation</title>
+    <title>serializing CSS &mdash; cssutils 0.9.8 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.8dev',
+        VERSION:     '0.9.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.8dev documentation" href="../index.html" />
+    <link rel="top" title="cssutils 0.9.8 documentation" href="../index.html" />
     <link rel="next" title="Package cssutils.css" href="css.html" />
     <link rel="prev" title="extra settings" href="settings.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="settings.html" title="extra settings"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -84,28 +87,31 @@
 <dl class="docutils">
 <dt>defaultAtKeyword = True</dt>
 <dd>Should the literal &#64;keyword from src CSS be used or the default
-form, e.g. if <tt class="xref docutils literal"><span class="pre">True</span></tt>: <tt class="docutils literal"><span class="pre">&#64;import</span></tt> else: <tt class="docutils literal"><span class="pre">&#64;i\mport</span></tt></dd>
+form, e.g. if <tt class="docutils literal"><span class="pre">True</span></tt>: <tt class="docutils literal"><span class="pre">&#64;import</span></tt> else: <tt class="docutils literal"><span class="pre">&#64;i\mport</span></tt></dd>
 <dt>defaultPropertyName = True</dt>
 <dd><p class="first">Should the normalized propertyname be used or the one given in
-the src file, e.g. if <tt class="xref docutils literal"><span class="pre">True</span></tt>: <tt class="docutils literal"><span class="pre">color</span></tt> else: <tt class="docutils literal"><span class="pre">c\olor</span></tt></p>
+the src file, e.g. if <tt class="docutils literal"><span class="pre">True</span></tt>: <tt class="docutils literal"><span class="pre">color</span></tt> else: <tt class="docutils literal"><span class="pre">c\olor</span></tt></p>
 <p class="last">Only used if <tt class="docutils literal"><span class="pre">keepAllProperties==False</span></tt>.</p>
 </dd>
 <dt>defaultPropertyPriority = True</dt>
 <dd>Should the normalized or literal priority be used, e.g. <tt class="docutils literal"><span class="pre">!important</span></tt>
 or <tt class="docutils literal"><span class="pre">!Im\portant</span></tt></dd>
 <dt>importHrefFormat = None</dt>
-<dd>Uses hreftype if <tt class="xref docutils literal"><span class="pre">None</span></tt> or format <tt class="docutils literal"><span class="pre">&quot;URI&quot;</span></tt> if <tt class="docutils literal"><span class="pre">'string'</span></tt> or
+<dd>Uses hreftype if <tt class="docutils literal"><span class="pre">None</span></tt> or format <tt class="docutils literal"><span class="pre">&quot;URI&quot;</span></tt> if <tt class="docutils literal"><span class="pre">'string'</span></tt> or
 format <tt class="docutils literal"><span class="pre">url(URI)</span></tt> if <tt class="docutils literal"><span class="pre">'uri'</span></tt></dd>
 <dt>indent = 4 * &#8216; &#8216;</dt>
 <dd>Indentation of e.g Properties inside a CSSStyleDeclaration</dd>
-<dt>indentSpecificities = False</dt>
+<dt>indentClosingBrace = True</dt>
+<dd>Defines if closing brace of block is indented to match indentation 
+of the block (default) oder match indentation of selector.</dd>
+<dt>indentSpecificities = False (<strong>EXPERIMENTAL</strong>)</dt>
 <dd>Indent rules with subset of Selectors and higher Specitivity</dd>
 <dt>keepAllProperties = True</dt>
-<dd>If <tt class="xref docutils literal"><span class="pre">True</span></tt> all properties set in the original CSSStylesheet
+<dd>If <tt class="docutils literal"><span class="pre">True</span></tt> all properties set in the original CSSStylesheet
 are kept meaning even properties set twice with the exact same
 same name are kept!</dd>
 <dt>keepComments = True</dt>
-<dd>If <tt class="xref docutils literal"><span class="pre">False</span></tt> removes all CSSComments</dd>
+<dd>If <tt class="docutils literal"><span class="pre">False</span></tt> removes all CSSComments</dd>
 <dt>keepEmptyRules = False</dt>
 <dd>defines if empty rules like e.g. <tt class="docutils literal"><span class="pre">a</span> <span class="pre">{}</span></tt> are kept in the resulting
 serialized sheet</dd>
@@ -126,14 +132,16 @@ CSSStyleDeclarations usable in HTML style attribute.</dd>
 <dd>defines if variable names should be serialized normalized (they are
 used as being normalized anyway)</dd>
 <dt>omitLastSemicolon = True</dt>
-<dd>If <tt class="xref docutils literal"><span class="pre">True</span></tt> omits ; after last property of CSSStyleDeclaration</dd>
+<dd>If <tt class="docutils literal"><span class="pre">True</span></tt> omits ; after last property of CSSStyleDeclaration</dd>
+<dt>omitLeadingZero = False</dt>
+<dd>defines if values between -1 and 1 should omit the 0, like <tt class="docutils literal"><span class="pre">.5px</span></tt></dd>
 <dt>paranthesisSpacer = u&#8217; &#8216;</dt>
 <dd>string which is used before an opening paranthesis like in a
 <tt class="docutils literal"><span class="pre">css.CSSMediaRule</span></tt> or <tt class="docutils literal"><span class="pre">css.CSSStyleRule</span></tt></dd>
 <dt>propertyNameSpacer = u&#8217; &#8216;</dt>
 <dd>string which is used after a Property name colon</dd>
 <dt>resolveVariables = True</dt>
-<dd>if <tt class="xref docutils literal"><span class="pre">True</span></tt> all variable references are tried to resolved and
+<dd>if <tt class="docutils literal"><span class="pre">True</span></tt> all variable references are tried to resolved and
 all CSSVariablesRules are removed from the output.
 Any variable reference not resolvable is simply kept untouched.</dd>
 <dt>selectorCombinatorSpacer = u&#8217; &#8216;</dt>
@@ -213,7 +221,7 @@ Serializer and overwrite the methods you like to customize.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -242,12 +250,12 @@ Serializer and overwrite the methods you like to customize.</p>
         <li class="right" >
           <a href="settings.html" title="extra settings"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
+        &copy; Copyright 2004-2011, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

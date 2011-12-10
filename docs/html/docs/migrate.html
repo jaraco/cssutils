@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>version migration &mdash; cssutils v0.9.8dev documentation</title>
+    <title>version migration &mdash; cssutils 0.9.8 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.8dev',
+        VERSION:     '0.9.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.8dev documentation" href="../index.html" />
+    <link rel="top" title="cssutils 0.9.8 documentation" href="../index.html" />
     <link rel="next" title="parsing CSS" href="parse.html" />
     <link rel="prev" title="CHANGELOG" href="../CHANGELOG.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="../CHANGELOG.html" title="CHANGELOG"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -134,7 +137,7 @@
 <p>cssutils 0.9.5 introduced some minor incompatible API changes. Reason for most changes is that for most cases the new default behaviour makes more sense.</p>
 <div class="section" id="logging-versus-raising">
 <h4>logging versus raising<a class="headerlink" href="#logging-versus-raising" title="Permalink to this headline">¶</a></h4>
-<p>Upto 0.9.5rc1 any sheet resulting from parsing via any <tt class="docutils literal"><span class="pre">parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser(raiseExceptions=False)</span></tt> (which is also the default) resulted in the library simply logging any later exceptions and not raising them. 0.9.5rc2 fixes this. Until now the global setting of <tt class="docutils literal"><span class="pre">cssutils.log.raiseExceptions=True</span></tt> (the default) was overwritten with the value of the CSSParser <tt class="docutils literal"><span class="pre">raiseExceptions</span></tt> setting which is normally <tt class="xref docutils literal"><span class="pre">False</span></tt> any time a <tt class="docutils literal"><span class="pre">cssutils.parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser.parse*</span></tt> method was used. So</p>
+<p>Upto 0.9.5rc1 any sheet resulting from parsing via any <tt class="docutils literal"><span class="pre">parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser(raiseExceptions=False)</span></tt> (which is also the default) resulted in the library simply logging any later exceptions and not raising them. 0.9.5rc2 fixes this. Until now the global setting of <tt class="docutils literal"><span class="pre">cssutils.log.raiseExceptions=True</span></tt> (the default) was overwritten with the value of the CSSParser <tt class="docutils literal"><span class="pre">raiseExceptions</span></tt> setting which is normally <tt class="docutils literal"><span class="pre">False</span></tt> any time a <tt class="docutils literal"><span class="pre">cssutils.parse*</span></tt> function or <tt class="docutils literal"><span class="pre">CSSParser.parse*</span></tt> method was used. So</p>
 <p>until 0.9.5rc1:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># does not raise during parse</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="s">&#39;$&#39;</span><span class="p">)</span> <span class="c"># empty but CSSStyleSheet object</span>
@@ -323,7 +326,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -352,12 +355,12 @@
         <li class="right" >
           <a href="../CHANGELOG.html" title="CHANGELOG"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
+        &copy; Copyright 2004-2011, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

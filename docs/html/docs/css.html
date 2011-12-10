@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Package cssutils.css &mdash; cssutils v0.9.8dev documentation</title>
+    <title>Package cssutils.css &mdash; cssutils 0.9.8 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.8dev',
+        VERSION:     '0.9.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.8dev documentation" href="../index.html" />
+    <link rel="top" title="cssutils 0.9.8 documentation" href="../index.html" />
     <link rel="next" title="Package cssutils.stylesheets" href="stylesheets.html" />
     <link rel="prev" title="serializing CSS" href="serialize.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,7 +62,7 @@
 <p>A CSSStyleSheet contains all rules. It consists of the different CSS rules like <a class="reference internal" href="#cssutils.css.CSSImportRule" title="cssutils.css.CSSImportRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSImportRule</span></tt></a>, <a class="reference internal" href="#cssutils.css.CSSStyleRule" title="cssutils.css.CSSStyleRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSStyleRule</span></tt></a> etc. It also defines the encoding of the style sheet used for serialization. The encoding might by set with an <a class="reference internal" href="#cssutils.css.CSSCharsetRule" title="cssutils.css.CSSCharsetRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> rule or simpler with the <a class="reference internal" href="#cssutils.css.CSSStyleSheet.encoding" title="cssutils.css.CSSStyleSheet.encoding"><tt class="xref py py-attr docutils literal"><span class="pre">encoding</span></tt></a> attribute. The serialized sheet may be obtained from <a class="reference internal" href="#cssutils.css.CSSStyleSheet.cssText" title="cssutils.css.CSSStyleSheet.cssText"><tt class="xref py py-attr docutils literal"><span class="pre">cssText</span></tt></a>. All rules are present in <tt class="xref py py-attr docutils literal"><span class="pre">cssRules</span></tt>, a stylesheet iterates on its rules so this might be easier. Namespaces are available via <a class="reference internal" href="#cssutils.css.CSSStyleSheet.namespaces" title="cssutils.css.CSSStyleSheet.namespaces"><tt class="xref py py-attr docutils literal"><span class="pre">namespaces</span></tt></a> (do not rely on prefixes, see <a class="reference external" href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a> how these work). Variables are available via <a class="reference internal" href="#cssutils.css.CSSStyleSheet.variables" title="cssutils.css.CSSStyleSheet.variables"><tt class="xref py py-attr docutils literal"><span class="pre">variables</span></tt></a> which is a <a class="reference internal" href="#cssutils.css.CSSVariablesDeclaration" title="cssutils.css.CSSVariablesDeclaration"><tt class="xref py py-class docutils literal"><span class="pre">CSSVariablesDeclaration</span></tt></a> and contains <strong>all</strong> available variables including the ones defined in imported style sheets. Changes to this object do NOT change the parent sheet!</p>
 <dl class="class">
 <dt id="cssutils.css.CSSStyleSheet">
-<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleSheet</tt><big>(</big><em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>disabled=None</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em>, <em>ownerRule=None</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleSheet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">CSSStyleSheet</tt><big>(</big><em>href=None</em>, <em>media=None</em>, <em>title=u''</em>, <em>disabled=None</em>, <em>ownerNode=None</em>, <em>parentStyleSheet=None</em>, <em>readonly=False</em>, <em>ownerRule=None</em>, <em>validating=True</em><big>)</big><a class="headerlink" href="#cssutils.css.CSSStyleSheet" title="Permalink to this definition">¶</a></dt>
 <dd><p>CSSStyleSheet represents a CSS style sheet.</p>
 <p>Format:</p>
 <div class="highlight-python"><pre>stylesheet
@@ -99,8 +102,8 @@ Same as <tt class="docutils literal"><span class="pre">insertRule(rule,</span> <
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the StyleSheet&#8217;s rule
-list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the StyleSheet&#8217;s rule
+list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
 raised but rules for normal Python lists are used. E.g.
 <tt class="docutils literal"><span class="pre">deleteRule(-1)</span></tt> removes the last rule in cssRules.</p>
 <p><cite>index</cite> may also be a CSSRule object which will then be removed
@@ -108,13 +111,13 @@ from the StyleSheet.</p>
 </p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+<tr class="field-even field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified index does not correspond to a rule in
 the style sheet&#8217;s rule list.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
 Raised if removing this rule would result in an invalid StyleSheet</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this style sheet is readonly.</li>
 </ul>
 </td>
@@ -126,7 +129,7 @@ Raised if this style sheet is readonly.</li>
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleSheet.encoding">
 <tt class="descname">encoding</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.encoding" title="Permalink to this definition">¶</a></dt>
-<dd><p>Encoding set in <a class="reference internal" href="#cssutils.css.CSSCharsetRule" title="cssutils.css.CSSCharsetRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> or if <tt class="xref docutils literal"><span class="pre">None</span></tt>
+<dd><p>Encoding set in <a class="reference internal" href="#cssutils.css.CSSCharsetRule" title="cssutils.css.CSSCharsetRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSCharsetRule</span></tt></a> or if <tt class="docutils literal"><span class="pre">None</span></tt>
 resulting in default <tt class="docutils literal"><span class="pre">utf-8</span></tt> encoding being used.</p>
 </dd></dl>
 
@@ -145,35 +148,35 @@ becomes part of the cascade.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>rule</strong> &#8211; a parsable DOMString, in cssutils also a
 <a class="reference internal" href="#cssutils.css.CSSRule" title="cssutils.css.CSSRule"><tt class="xref py py-class docutils literal"><span class="pre">CSSRule</span></tt></a> or <a class="reference internal" href="#cssutils.css.CSSRuleList" title="cssutils.css.CSSRuleList"><tt class="xref py py-class docutils literal"><span class="pre">CSSRuleList</span></tt></a></li>
 <li><strong>index</strong> &#8211; of the rule before the new rule will be inserted.
 If the specified <cite>index</cite> is equal to the length of the
 StyleSheet&#8217;s rule collection, the rule will be added to the end
 of the style sheet.
-If <cite>index</cite> is not given or <tt class="xref docutils literal"><span class="pre">None</span></tt> rule will be appended to rule
+If <cite>index</cite> is not given or <tt class="docutils literal"><span class="pre">None</span></tt> rule will be appended to rule
 list.</li>
-<li><strong>inOrder</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> the rule will be put to a proper location while
+<li><strong>inOrder</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt> the rule will be put to a proper location while
 ignoring <cite>index</cite> and without raising
-<a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>.
+<a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>.
 The resulting index is returned nevertheless.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The index within the style sheet&#8217;s rule collection</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The index within the style sheet&#8217;s rule collection</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
+<tr class="field-odd field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
 Raised if the rule cannot be inserted at the specified <cite>index</cite>
 e.g. if an &#64;import rule is inserted after a standard rule set
 or other at-rule.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified <cite>index</cite> is not a valid insertion point.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this style sheet is readonly.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified rule has a syntax error and is
 unparsable.</li>
 </ul>
@@ -198,7 +201,7 @@ unparsable.</li>
 <dl class="attribute">
 <dt id="cssutils.css.CSSStyleSheet.ownerRule">
 <tt class="descname">ownerRule</tt><a class="headerlink" href="#cssutils.css.CSSStyleSheet.ownerRule" title="Permalink to this definition">¶</a></dt>
-<dd><p>A ref to an &#64;import rule if it is imported, else <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<dd><p>A ref to an &#64;import rule if it is imported, else <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -256,63 +259,63 @@ recognized by the parser. Unrecognized rules are represented using the
 <tt class="xref py py-class docutils literal"><span class="pre">CSSUnknownRule</span></tt> interface.</p>
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.CHARSET_RULE">
-<tt class="descname">CHARSET_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.CHARSET_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">CHARSET_RULE</tt><em class="property"> = 2</em><a class="headerlink" href="#cssutils.css.CSSRule.CHARSET_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSCharsetRule" title="cssutils.css.CSSCharsetRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSCharsetRule</span></tt></a> (not used in CSSOM anymore)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.COMMENT">
-<tt class="descname">COMMENT</tt><a class="headerlink" href="#cssutils.css.CSSRule.COMMENT" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">COMMENT</tt><em class="property"> = 1001</em><a class="headerlink" href="#cssutils.css.CSSRule.COMMENT" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSComment" title="cssutils.css.CSSComment"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSComment</span></tt></a> - not in the offical spec,
 Value has changed in 0.9.7a3</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.FONT_FACE_RULE">
-<tt class="descname">FONT_FACE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.FONT_FACE_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">FONT_FACE_RULE</tt><em class="property"> = 5</em><a class="headerlink" href="#cssutils.css.CSSRule.FONT_FACE_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSFontFaceRule" title="cssutils.css.CSSFontFaceRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSFontFaceRule</span></tt></a></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.IMPORT_RULE">
-<tt class="descname">IMPORT_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.IMPORT_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">IMPORT_RULE</tt><em class="property"> = 3</em><a class="headerlink" href="#cssutils.css.CSSRule.IMPORT_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSImportRule" title="cssutils.css.CSSImportRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSImportRule</span></tt></a></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.MEDIA_RULE">
-<tt class="descname">MEDIA_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.MEDIA_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">MEDIA_RULE</tt><em class="property"> = 4</em><a class="headerlink" href="#cssutils.css.CSSRule.MEDIA_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSMediaRule" title="cssutils.css.CSSMediaRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSMediaRule</span></tt></a></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.NAMESPACE_RULE">
-<tt class="descname">NAMESPACE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.NAMESPACE_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">NAMESPACE_RULE</tt><em class="property"> = 10</em><a class="headerlink" href="#cssutils.css.CSSRule.NAMESPACE_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSNamespaceRule" title="cssutils.css.CSSNamespaceRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSNamespaceRule</span></tt></a>,
 Value has changed in 0.9.7a3 due to a change in the CSSOM spec.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.PAGE_RULE">
-<tt class="descname">PAGE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.PAGE_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">PAGE_RULE</tt><em class="property"> = 6</em><a class="headerlink" href="#cssutils.css.CSSRule.PAGE_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSPageRule" title="cssutils.css.CSSPageRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSPageRule</span></tt></a></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.STYLE_RULE">
-<tt class="descname">STYLE_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.STYLE_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">STYLE_RULE</tt><em class="property"> = 1</em><a class="headerlink" href="#cssutils.css.CSSRule.STYLE_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSStyleRule" title="cssutils.css.CSSStyleRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSStyleRule</span></tt></a></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.UNKNOWN_RULE">
-<tt class="descname">UNKNOWN_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.UNKNOWN_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">UNKNOWN_RULE</tt><em class="property"> = 0</em><a class="headerlink" href="#cssutils.css.CSSRule.UNKNOWN_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSUnknownRule</span></tt> (not used in CSSOM anymore)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="cssutils.css.CSSRule.VARIABLES_RULE">
-<tt class="descname">VARIABLES_RULE</tt><a class="headerlink" href="#cssutils.css.CSSRule.VARIABLES_RULE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">VARIABLES_RULE</tt><em class="property"> = 1008</em><a class="headerlink" href="#cssutils.css.CSSRule.VARIABLES_RULE" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#cssutils.css.CSSVariablesRule" title="cssutils.css.CSSVariablesRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSVariablesRule</span></tt></a> - experimental rule
 not in the offical spec</p>
 </dd></dl>
@@ -394,11 +397,10 @@ instance of this class!</p>
 <dd><p>Implemented in class using a CSSRuleList only.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="cssutils.css.CSSRuleList.count">
-<tt class="descname">count</tt><a class="headerlink" href="#cssutils.css.CSSRuleList.count" title="Permalink to this definition">¶</a></dt>
-<dd><p>L.count(value) -&gt; integer &#8211; return number of occurrences of value</p>
-</dd></dl>
+<tt class="descname">count</tt><big>(</big><em>value</em><big>)</big> &rarr; integer -- return number of occurrences of value<a class="headerlink" href="#cssutils.css.CSSRuleList.count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="cssutils.css.CSSRuleList.extend">
@@ -406,16 +408,15 @@ instance of this class!</p>
 <dd><p>Implemented in class using a CSSRuleList only.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="cssutils.css.CSSRuleList.index">
-<tt class="descname">index</tt><a class="headerlink" href="#cssutils.css.CSSRuleList.index" title="Permalink to this definition">¶</a></dt>
-<dd><p>L.index(value, [start, [stop]]) -&gt; integer &#8211; return first index of value.
-Raises ValueError if the value is not present.</p>
+<tt class="descname">index</tt><big>(</big><em>value</em><span class="optional">[</span>, <em>start</em><span class="optional">[</span>, <em>stop</em><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; integer -- return first index of value.<a class="headerlink" href="#cssutils.css.CSSRuleList.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises ValueError if the value is not present.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="cssutils.css.CSSRuleList.insert">
-<tt class="descname">insert</tt><a class="headerlink" href="#cssutils.css.CSSRuleList.insert" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">insert</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.insert" title="Permalink to this definition">¶</a></dt>
 <dd><p>L.insert(index, object) &#8211; insert object before index</p>
 </dd></dl>
 
@@ -436,23 +437,22 @@ CSSRuleList, or None if that is not a valid index.</p>
 <dd><p>(DOM) The number of CSSRules in the list.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="cssutils.css.CSSRuleList.pop">
-<tt class="descname">pop</tt><a class="headerlink" href="#cssutils.css.CSSRuleList.pop" title="Permalink to this definition">¶</a></dt>
-<dd><p>L.pop([index]) -&gt; item &#8211; remove and return item at index (default last).
-Raises IndexError if list is empty or index is out of range.</p>
+<tt class="descname">pop</tt><big>(</big><span class="optional">[</span><em>index</em><span class="optional">]</span><big>)</big> &rarr; item -- remove and return item at index (default last).<a class="headerlink" href="#cssutils.css.CSSRuleList.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises IndexError if list is empty or index is out of range.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="cssutils.css.CSSRuleList.remove">
-<tt class="descname">remove</tt><a class="headerlink" href="#cssutils.css.CSSRuleList.remove" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">remove</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>L.remove(value) &#8211; remove first occurrence of value.
 Raises ValueError if the value is not present.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="cssutils.css.CSSRuleList.reverse">
-<tt class="descname">reverse</tt><a class="headerlink" href="#cssutils.css.CSSRuleList.reverse" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">reverse</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.reverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>L.reverse() &#8211; reverse <em>IN PLACE</em></p>
 </dd></dl>
 
@@ -463,9 +463,9 @@ Raises ValueError if the value is not present.</p>
 constants defined in <a class="reference internal" href="#cssutils.css.CSSRule" title="cssutils.css.CSSRule"><tt class="xref py py-class docutils literal"><span class="pre">cssutils.css.CSSRule</span></tt></a>.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="cssutils.css.CSSRuleList.sort">
-<tt class="descname">sort</tt><a class="headerlink" href="#cssutils.css.CSSRuleList.sort" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sort</tt><big>(</big><big>)</big><a class="headerlink" href="#cssutils.css.CSSRuleList.sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>L.sort(cmp=None, key=None, reverse=False) &#8211; stable sort <em>IN PLACE</em>;
 cmp(x, y) -&gt; -1, 0, 1</p>
 </dd></dl>
@@ -778,8 +778,8 @@ Same as <a class="reference internal" href="#cssutils.css.CSSMediaRule.insertRul
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the media block&#8217;s rule
-list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; <p>The <cite>index</cite> of the rule to be removed from the media block&#8217;s rule
+list. For an <cite>index</cite> &lt; 0 <strong>no</strong> <a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a> is
 raised but rules for normal Python lists are used. E.g. 
 <tt class="docutils literal"><span class="pre">deleteRule(-1)</span></tt> removes the last rule in cssRules.</p>
 <p><cite>index</cite> may also be a CSSRule object which will then be removed
@@ -787,11 +787,11 @@ from the media block.</p>
 </p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+<tr class="field-even field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified index does not correspond to a rule in
 the media rule list.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this media rule is readonly.</li>
 </ul>
 </td>
@@ -808,7 +808,7 @@ Raised if this media rule is readonly.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>rule</strong> &#8211; <p>the parsable text representing the <cite>rule</cite> to be inserted. For rule
 sets this contains both the selector and the style declaration. 
 For at-rules, this specifies both the at-identifier and the rule
@@ -825,20 +825,20 @@ list.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the index within the media block&#8217;s rule collection of the
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the index within the media block&#8217;s rule collection of the
 newly inserted rule.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
+<tr class="field-odd field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.HierarchyRequestErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">HierarchyRequestErr</span></tt></a>:
 Raised if the <cite>rule</cite> cannot be inserted at the specified <cite>index</cite>,
 e.g., if an &#64;import rule is inserted after a standard rule set
 or other at-rule.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.IndexSizeErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexSizeErr</span></tt></a>:
 Raised if the specified <cite>index</cite> is not a valid insertion point.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this media rule is readonly.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified <cite>rule</cite> has a syntax error and is
 unparsable.</li>
 </ul>
@@ -1326,22 +1326,22 @@ of a <a class="reference internal" href="#cssutils.css.CSSStyleRule" title="cssu
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>newSelector</strong> &#8211; comma-separated list of selectors (as a single string) or a tuple of
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>newSelector</strong> &#8211; comma-separated list of selectors (as a single string) or a tuple of
 <cite>(newSelector, dict-of-namespaces)</cite></p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New <a class="reference internal" href="#cssutils.css.Selector" title="cssutils.css.Selector"><tt class="xref py py-class docutils literal"><span class="pre">Selector</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt> if 
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New <a class="reference internal" href="#cssutils.css.Selector" title="cssutils.css.Selector"><tt class="xref py py-class docutils literal"><span class="pre">Selector</span></tt></a> or <tt class="docutils literal"><span class="pre">None</span></tt> if 
 <cite>newSelector</cite> is not wellformed.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
+<tr class="field-odd field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NamespaceErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NamespaceErr</span></tt></a>:
 Raised if the specified selector uses an unknown namespace
 prefix.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified CSS string value has a syntax error
 and is unparsable.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this rule is readonly.</li>
 </ul>
 </td>
@@ -1359,7 +1359,7 @@ Raised if this rule is readonly.</li>
 <dl class="attribute">
 <dt id="cssutils.css.SelectorList.parentRule">
 <tt class="descname">parentRule</tt><a class="headerlink" href="#cssutils.css.SelectorList.parentRule" title="Permalink to this definition">¶</a></dt>
-<dd><p>(DOM) The CSS rule that contains this SelectorList or <tt class="xref docutils literal"><span class="pre">None</span></tt> if this SelectorList is not attached to a CSSRule.</p>
+<dd><p>(DOM) The CSS rule that contains this SelectorList or <tt class="docutils literal"><span class="pre">None</span></tt> if this SelectorList is not attached to a CSSRule.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1532,9 +1532,9 @@ set within this variable declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variableName</strong> &#8211; The name of the variable.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variableName</strong> &#8211; The name of the variable.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">the value of the variable if it has been explicitly set in this
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the value of the variable if it has been explicitly set in this
 variable declaration block. Returns the empty string if the
 variable has not been set.</td>
 </tr>
@@ -1554,10 +1554,10 @@ in this variable declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> &#8211; of the variable name to retrieve, negative values behave like
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> &#8211; of the variable name to retrieve, negative values behave like
 negative indexes on Python lists, so -1 is the last element</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The name of the variable at this ordinal position. The empty
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The name of the variable at this ordinal position. The empty
 string if no variable exists at this position.</td>
 </tr>
 </tbody>
@@ -1592,16 +1592,16 @@ variable declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>variableName</strong> &#8211; The name of the variable.</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>variableName</strong> &#8211; The name of the variable.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the value of the variable if it has been explicitly set for this
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the value of the variable if it has been explicitly set for this
 variable declaration block. Returns the empty string if the
 variable has not been set.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<tr class="field-odd field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly is readonly.</li>
 </ul>
 </td>
@@ -1624,17 +1624,17 @@ Raised if this declaration is readonly is readonly.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>variableName</strong> &#8211; The name of the CSS variable.</li>
 <li><strong>value</strong> &#8211; The new value of the variable, may also be a PropertyValue object.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<tr class="field-even field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified value has a syntax error and is
 unparsable.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly or the property is
 readonly.</li>
 </ul>
@@ -1677,7 +1677,6 @@ DOM name, so e.g. <tt class="docutils literal"><span class="pre">fontStyle</span
 <span class="go">green</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">style</span><span class="o">.</span><span class="n">color</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">style</span><span class="o">.</span><span class="n">color</span>
-<span class="go">&lt;BLANKLINE&gt;</span>
 </pre></div>
 </div>
 </dd>
@@ -1705,14 +1704,15 @@ DOM name, so e.g. <tt class="docutils literal"><span class="pre">fontStyle</span
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">serialized property cssText, each property separated by
-given <cite>separator</cite> which may e.g. be <tt class="docutils literal"><span class="pre">u''</span></tt> to be able to use
-cssText directly in an HTML style attribute. <tt class="docutils literal"><span class="pre">;</span></tt> is part of
-each property (except the last one) and <strong>cannot</strong> be set with
-separator!</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
+<p>serialized property cssText, each property separated by
+given <cite>separator</cite> which may e.g. be <tt class="docutils literal"><span class="pre">u''</span></tt> to be able to use
+cssText directly in an HTML style attribute. <tt class="docutils literal"><span class="pre">;</span></tt> is part of
+each property (except the last one) and <strong>cannot</strong> be set with
+separator!</p>
 </dd></dl>
 
 <dl class="method">
@@ -1722,14 +1722,14 @@ separator!</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>name</strong> &#8211; optional <cite>name</cite> of properties which are requested.
 Only properties with this <strong>always normalized</strong> <cite>name</cite> are returned.
-If <cite>name</cite> is <tt class="xref docutils literal"><span class="pre">None</span></tt> all properties are returned (at least one for 
+If <cite>name</cite> is <tt class="docutils literal"><span class="pre">None</span></tt> all properties are returned (at least one for 
 each set name depending on parameter <cite>all</cite>).</li>
-<li><strong>all</strong> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">False</span></tt> (DEFAULT) only the effective properties are returned. 
+<li><strong>all</strong> &#8211; <p>if <tt class="docutils literal"><span class="pre">False</span></tt> (DEFAULT) only the effective properties are returned. 
 If name is given a list with only one property is returned.</p>
-<p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> all properties including properties set multiple times
+<p>if <tt class="docutils literal"><span class="pre">True</span></tt> all properties including properties set multiple times
 with different values or priorities for different UAs are returned.
 The order of the properties is fully kept as in the original 
 stylesheet.</p>
@@ -1737,7 +1737,7 @@ stylesheet.</p>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a class="reference internal" href="#cssutils.css.Property" title="cssutils.css.Property"><tt class="xref py py-class docutils literal"><span class="pre">Property</span></tt></a> objects set in 
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a class="reference internal" href="#cssutils.css.Property" title="cssutils.css.Property"><tt class="xref py py-class docutils literal"><span class="pre">Property</span></tt></a> objects set in 
 this declaration.</p>
 </td>
 </tr>
@@ -1752,17 +1752,17 @@ this declaration.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>name</strong> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
-<li><strong>normalize</strong> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
+<li><strong>normalize</strong> &#8211; <p>if <tt class="docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
 effective for the unnormalized name.</p>
 </li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the effective <a class="reference internal" href="#cssutils.css.Property" title="cssutils.css.Property"><tt class="xref py py-class docutils literal"><span class="pre">Property</span></tt></a> object.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the effective <a class="reference internal" href="#cssutils.css.Property" title="cssutils.css.Property"><tt class="xref py py-class docutils literal"><span class="pre">Property</span></tt></a> object.</p>
 </td>
 </tr>
 </tbody>
@@ -1776,17 +1776,17 @@ effective for the unnormalized name.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>name</strong> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
-<li><strong>normalize</strong> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
+<li><strong>normalize</strong> &#8211; <p>if <tt class="docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
 effective for the unnormalized name.</p>
 </li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">CSSValue</span></tt>, the value of the effective
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">CSSValue</span></tt>, the value of the effective
 property if it has been explicitly set for this declaration block.</p>
 </td>
 </tr>
@@ -1815,17 +1815,17 @@ set.</strong></p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>name</strong> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
-<li><strong>normalize</strong> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
+<li><strong>normalize</strong> &#8211; <p>if <tt class="docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the
 effective for the unnormalized name.</p>
 </li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the priority of the effective CSS property (e.g. the
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the priority of the effective CSS property (e.g. the
 &#8220;important&#8221; qualifier) if the property has been explicitly set in
 this declaration block. The empty string if none exists.</p>
 </td>
@@ -1841,17 +1841,17 @@ this declaration block. The empty string if none exists.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>name</strong> &#8211; of the CSS property, always lowercase (even if not normalized)</li>
-<li><strong>normalize</strong> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
+<li><strong>normalize</strong> &#8211; <p>if <tt class="docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent</p>
-<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the
 effective for the unnormalized name.</p>
 </li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the value of the effective property if it has been explicitly set
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the value of the effective property if it has been explicitly set
 for this declaration block. Returns the empty string if the
 property has not been set.</p>
 </td>
@@ -1872,10 +1872,10 @@ declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> &#8211; of the property to retrieve, negative values behave like
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> &#8211; of the property to retrieve, negative values behave like
 negative indexes on Python lists, so -1 is the last element</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">the name of the property at this ordinal position. The
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the name of the property at this ordinal position. The
 empty string if no property exists at this position.</td>
 </tr>
 </tbody>
@@ -1916,27 +1916,27 @@ this declaration block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>name</strong> &#8211; of the CSS property</li>
-<li><strong>normalize</strong> &#8211; <p>if <tt class="xref docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
+<li><strong>normalize</strong> &#8211; <p>if <tt class="docutils literal"><span class="pre">True</span></tt> (DEFAULT) name will be normalized (lowercase, no simple
 escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will all be equivalent.
 The effective Property value is returned and <em>all</em> Properties
 with <tt class="docutils literal"><span class="pre">Property.name</span> <span class="pre">==</span> <span class="pre">name</span></tt> are removed.</p>
-<p>If <tt class="xref docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt> may return <strong>NOT</strong> the effective value but the 
 effective for the unnormalized <cite>name</cite> only. Also only the 
 Properties with the literal name <cite>name</cite> are removed.</p>
 </li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the value of the property if it has been explicitly set for
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the value of the property if it has been explicitly set for
 this declaration block. Returns the empty string if the property
 has not been set or the property name does not correspond to a
 known CSS property</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<tr class="field-odd field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly or the property is
 readonly.</li>
 </ul>
@@ -1961,7 +1961,7 @@ block.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>name</strong> &#8211; <p>of the CSS property to set (in W3C DOM the parameter is called
 &#8220;propertyName&#8221;), always lowercase (even if not normalized)</p>
 <p>If a property with this <cite>name</cite> is present it will be reset.</p>
@@ -1977,11 +1977,11 @@ escapes) so &#8220;color&#8221;, &#8220;COLOR&#8221; or &#8220;Color&#8221; will
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
+<tr class="field-even field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.SyntaxErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxErr</span></tt></a>:
 Raised if the specified value has a syntax error and is
 unparsable.</li>
-<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
+<li><a class="reference external" href="http://docs.python.org/dev/library/xml.dom.html#xml.dom.NoModificationAllowedErr" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">NoModificationAllowedErr</span></tt></a>:
 Raised if this declaration is readonly or the property is
 readonly.</li>
 </ul>
@@ -2251,11 +2251,11 @@ the defined values which might simply be space or comma or slash.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; the parsable cssText of the value</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> &#8211; the parsable cssText of the value</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="http://docs.python.org/dev/library/exceptions.html#IndexError" title="(in Python v3.2)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexError</span></tt></a>:
+<tr class="field-even field"><th class="field-name">Exceptions :</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://docs.python.org/dev/library/exceptions.html#IndexError" title="(in Python v3.3)"><tt class="xref py py-exc docutils literal"><span class="pre">IndexError</span></tt></a>:
 Raised if index if out of bounds</li>
 </ul>
 </td>
@@ -2437,6 +2437,12 @@ subclasses with an extended API.</p>
 <dt id="cssutils.css.URIValue">
 <em class="property">class </em><tt class="descclassname">cssutils.css.</tt><tt class="descname">URIValue</tt><big>(</big><em>cssText=None</em>, <em>parent=None</em>, <em>readonly=False</em><big>)</big><a class="headerlink" href="#cssutils.css.URIValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>An URI value like <tt class="docutils literal"><span class="pre">url(example.png)</span></tt>.</p>
+<dl class="attribute">
+<dt id="cssutils.css.URIValue.absoluteUri">
+<tt class="descname">absoluteUri</tt><a class="headerlink" href="#cssutils.css.URIValue.absoluteUri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual URL, made absolute if possible, else same as <cite>uri</cite>.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="cssutils.css.URIValue.cssText">
 <tt class="descname">cssText</tt><a class="headerlink" href="#cssutils.css.URIValue.cssText" title="Permalink to this definition">¶</a></dt>
@@ -2673,7 +2679,7 @@ tried to be resolved from any available CSSVariablesRule definition.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -2702,12 +2708,12 @@ tried to be resolved from any available CSSVariablesRule definition.</p>
         <li class="right" >
           <a href="serialize.html" title="serializing CSS"
              >previous</a> |</li>
-        <li><a href="../index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
+        &copy; Copyright 2004-2011, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>
