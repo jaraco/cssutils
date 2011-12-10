@@ -2,10 +2,10 @@
 #!/usr/bin/env python
 """encutils - encoding detection collection for Python
 
-:Version: 0.94
+:Version: 0.9.8
 :Author: Christof Hoeke, see http://cthedot.de/encutils/
 :Contributor: Robert Siemer, Fredrik Hedman <fredrik.hedman@me.com> ported to python3
-:Copyright: 2005-2009: Christof Hoeke
+:Copyright: 2005-2011: Christof Hoeke
 :License: encutils has a dual-license, please choose whatever you prefer:
 
     * encutils is published under the
@@ -86,7 +86,7 @@ import sys
 import types
 import urllib
 
-VERSION = '0.9'
+VERSION = '0.9.8'
 PY2x = sys.version_info < (3,0)
 
 

@@ -6,8 +6,6 @@ CSS3 color module
 -----------------
 :prio: 1
 
-implement rgba()
-
 - named colors::
 
     Black = #000000         Green = #008000
@@ -20,12 +18,12 @@ implement rgba()
     Fuchsia = #FF00FF       Aqua = #00FFFF
 
 - "transparent"
-- rgba(R, G, B, opacity): opacity in range (0,1)
-- hsl(), hsla() ?
 - SVG colors?
 - "currentColor"
-- System Colors are DEPRECATED!
 - "flavor"?
+- System Colors are DEPRECATED!
+
+Fix profile.
 
 
 Selector

@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>README &mdash; cssutils v0.9.8dev documentation</title>
+    <title>README &mdash; cssutils 0.9.8 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.9.8dev',
+        VERSION:     '0.9.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="cssutils v0.9.8dev documentation" href="index.html" />
+    <link rel="top" title="cssutils 0.9.8 documentation" href="index.html" />
     <link rel="next" title="CHANGELOG" href="CHANGELOG.html" />
     <link rel="prev" title="cssutils" href="index.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="index.html" title="cssutils"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,7 +62,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">2004-2010 Christof Hoeke</td>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">2004-2011 Christof Hoeke</td>
 </tr>
 </tbody>
 </table>
@@ -68,7 +71,7 @@
 <p>A Python package to parse and build CSS Cascading Style Sheets. DOM only, not any rendering facilities!</p>
 <p>Based upon and partly implementing the following specifications :</p>
 <dl class="docutils">
-<dt><a class="reference external" href="http://www.w3.org/TR/2009/CR-CSS2-20090423/">CSS 2.1rev1</a></dt>
+<dt><a class="reference external" href="http://www.w3.org/TR/CSS2/">CSS 2.1rev1</a></dt>
 <dd>General CSS rules and properties are defined here</dd>
 <dt><a class="reference external" href="http://www.w3.org/TR/css3-syntax/">CSS3 Module: Syntax</a></dt>
 <dd>Used in parts since cssutils 0.9.4. cssutils tries to use the features from CSS 2.1 and CSS 3 with preference to CSS3 but as this is not final yet some parts are from CSS 2.1</dd>
@@ -100,11 +103,11 @@
 </div>
 <div class="section" id="compatibility">
 <h3>Compatibility<a class="headerlink" href="#compatibility" title="Permalink to this headline">¶</a></h3>
-<p>cssutils is developed on standard Python. Since 0.9.6 all tests pass on Jython (from v2.5.1) too.</p>
+<p>cssutils is developed on standard Python but works under Python 2.x (from 2.5, v2.5.4 tested), 3.x (v3.2.2 tested) and Jython (from 2.5.1). IronPython has not been tested yet but might work? Python 2.4 and older are not supported since cssutils 0.9.8 anymore.</p>
 </div>
 <div class="section" id="license">
 <h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
-<p>Copyright 2005 - 2010 Christof Hoeke</p>
+<p>Copyright 2005 - 2011 Christof Hoeke</p>
 <p>cssutils is published under the LGPL 3 or later</p>
 <p>cssutils is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
 <p>cssutils is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.</p>
@@ -122,13 +125,65 @@
 </div>
 <p>To uninstall remove any registrations of cssutils eggs with Distribute and remove the eggs which should be installed at PYTHONDIR/Lib/site-packages/cssutils too.</p>
 </div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">cssutils</span>
+
+<span class="n">css</span> <span class="o">=</span> <span class="s">u&#39;&#39;&#39;/* a comment with umlaut &amp;auml; */</span>
+<span class="s">     @namespace html &quot;http://www.w3.org/1999/xhtml&quot;;</span>
+<span class="s">     @variables { BG: #fff }</span>
+<span class="s">     html|a { color:red; background: var(BG) }&#39;&#39;&#39;</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">cssutils</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">css</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">sheet</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">rule</span><span class="o">.</span><span class="n">STYLE_RULE</span><span class="p">:</span>
+        <span class="c"># find property</span>
+        <span class="k">for</span> <span class="nb">property</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">style</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">property</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;color&#39;</span><span class="p">:</span>
+                <span class="nb">property</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#39;green&#39;</span>
+                <span class="nb">property</span><span class="o">.</span><span class="n">priority</span> <span class="o">=</span> <span class="s">&#39;IMPORTANT&#39;</span>
+                <span class="k">break</span>
+        <span class="c"># or simply:</span>
+        <span class="n">rule</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s">&#39;margin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;01.0eM&#39;</span> <span class="c"># or: (&#39;1em&#39;, &#39;important&#39;)</span>
+
+<span class="n">sheet</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;ascii&#39;</span>
+<span class="n">sheet</span><span class="o">.</span><span class="n">namespaces</span><span class="p">[</span><span class="s">&#39;xhtml&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;http://www.w3.org/1999/xhtml&#39;</span>
+<span class="n">sheet</span><span class="o">.</span><span class="n">namespaces</span><span class="p">[</span><span class="s">&#39;atom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;http://www.w3.org/2005/Atom&#39;</span>
+<span class="n">sheet</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;atom|title {color: #000000 !important}&#39;</span><span class="p">)</span>
+<span class="n">sheet</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;@import &quot;sheets/import.css&quot;;&#39;</span><span class="p">)</span>
+
+<span class="c"># cssutils.ser.prefs.resolveVariables == True since 0.9.7b2</span>
+<span class="k">print</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cssText</span>
+</pre></div>
+</div>
+<p>results in:</p>
+<div class="highlight-python"><pre>@charset "ascii";
+@import "sheets/import.css";
+/* a comment with umlaut \E4  */
+@namespace xhtml "http://www.w3.org/1999/xhtml";
+@namespace atom "http://www.w3.org/2005/Atom";
+xhtml|a {
+    color: green !important;
+    background: #fff;
+    margin: 1em
+    }
+atom|title {
+    color: #000 !important
+    }</pre>
+</div>
+</div>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<p>The current documenation can be found at <a class="reference external" href="http://packages.python.org/cssutils/">http://packages.python.org/cssutils/</a></p>
+</div>
 <div class="section" id="kind-request">
 <h3>Kind Request<a class="headerlink" href="#kind-request" title="Permalink to this headline">¶</a></h3>
-<p>cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the <a class="reference external" href="http://code.google.com/p/cssutils/issues/list">Issue Tracker</a> at Google.</p>
+<p>cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the <a class="reference external" href="https://bitbucket.org/cthedot/cssutils/issues">Issue Tracker</a> at Bitbucket.</p>
 </div>
 <div class="section" id="thanks">
 <h3>Thanks<a class="headerlink" href="#thanks" title="Permalink to this headline">¶</a></h3>
-<p>Thanks to Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Jason R. Coombs, Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches.</p>
+<p>Thanks to Jason R. Coombs, Simon Sapin and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches. Thanks to Fredrik Hedman for help on port of encutils to Python 3.</p>
 </div>
 </div>
 </div>
@@ -147,6 +202,8 @@
 <li><a class="reference internal" href="#compatibility">Compatibility</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#kind-request">Kind Request</a></li>
 <li><a class="reference internal" href="#thanks">Thanks</a></li>
 </ul>
@@ -169,7 +226,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -198,12 +255,12 @@
         <li class="right" >
           <a href="index.html" title="cssutils"
              >previous</a> |</li>
-        <li><a href="index.html">cssutils v0.9.8dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">cssutils 0.9.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2004-2010, Christof Höke.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
+        &copy; Copyright 2004-2011, Christof Höke.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

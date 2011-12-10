@@ -13,22 +13,22 @@ Shortcuts for initializing a new :class:`cssutils.CSSParser` and use its ``parse
 
 ``parseString``
 ---------------
-.. autofunction:: cssutils.parseString(cssText, encoding=None, href=None, media=None, title=None)
+.. autofunction:: cssutils.parseString(cssText, encoding=None, href=None, media=None, title=None, validate=None)
 
 ``parseFile``
 -------------
-.. autofunction:: cssutils.parseFile(filename, encoding=None, href=None, media=None, title=None)
+.. autofunction:: cssutils.parseFile(filename, encoding=None, href=None, media=None, title=None, validate=None)
 
 ``parseUrl``
 ------------
-:: cssutils.parseUrl(href, encoding=None, media=None, title=None)
+.. autofunction:: cssutils.parseUrl(href, encoding=None, media=None, title=None, validate=None)
 
 
 Working with inline styles
 ==========================
 ``parseStyle``
 --------------
-.. autofunction:: cssutils.parseStyle
+.. autofunction:: cssutils.parseStyle(cssText, encoding='utf-8')
 
 
 ``CSSParser``
@@ -38,6 +38,7 @@ The parser is reusable.
 .. autoclass:: cssutils.CSSParser
    :members:
    :inherited-members:
+   
 
 The URL Fetcher
 ---------------
