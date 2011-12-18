@@ -872,7 +872,12 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         else:
             try:
                 # encoding may still be wrong if encoding *is lying*!
-                decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
+                try:
+                    decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
+                except AttributeError, ae:
+                    # at least in GAE
+                    decodedCssText = content.decode(encoding if encoding else 'utf-8')
+                    
             except UnicodeDecodeError, e:
                 log.warn(e, neverraise=True)
                 decodedCssText = None
