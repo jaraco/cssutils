@@ -22,7 +22,7 @@ class Property(cssutils.util.Base):
           ;
         term
           : unary_operator?
-            [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | 
+            [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* |
               ANGLE S* | TIME S* | FREQ S* | function ]
           | STRING S* | IDENT S* | URI S* | hexcolor
           ;
@@ -153,13 +153,13 @@ class Property(cssutils.util.Base):
                 self.priority = prioritytokens
 
                 # also invalid values are set!
-                                
+
                 try:
                     # parser sets validating prop of sheet
                     doVal = self.parent.parentRule.parentStyleSheet.validating
                 except AttributeError, e:
                     doVal = True
-                    
+
                 if doVal:
                     self.validate()
 
@@ -218,8 +218,14 @@ class Property(cssutils.util.Base):
             self._name = self._normalize(self._literalname)
             self.seqs[0] = newseq
 
+            try:
+                # parser sets validating prop of sheet
+                doVal = self.parent.parentRule.parentStyleSheet.validating
+            except AttributeError, e:
+                doVal = True
+
 #            # validate
-            if self._name not in cssutils.profile.knownNames:
+            if doVal and self._name not in cssutils.profile.knownNames:
                 # self.valid = False
                 self._log.warn(u'Property: Unknown Property name.',
                                token=token, neverraise=True)
@@ -256,12 +262,12 @@ class Property(cssutils.util.Base):
         else:
             self.seqs[1].cssText = cssText
             self.wellformed = self.wellformed and self.seqs[1].wellformed
-    
-    propertyValue = property(lambda self: self.seqs[1], 
+
+    propertyValue = property(lambda self: self.seqs[1],
                              _setPropertyValue,
                              doc=u"(cssutils) PropertyValue object of property")
 
-    
+
     def _getValue(self):
         if self.propertyValue:
             # value without comments
@@ -445,11 +451,11 @@ class Property(cssutils.util.Base):
                 #TODO: same for @page
 
         if self.name and self.value:
-            
+
             cv = self.propertyValue
             # TODO
 #            if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
-#                # TODO: false alarms too! 
+#                # TODO: false alarms too!
 #                cssutils.log.warn(u'No value for variable "%s" found, keeping '
 #                                  u'variable.' % cv.name, neverraise=True)
 
@@ -499,11 +505,10 @@ class Property(cssutils.util.Base):
     @Deprecated(u'Use ``property.propertyValue`` instead.')
     def _getCSSValue(self):
         return self.propertyValue
-        
+
     @Deprecated(u'Use ``property.propertyValue`` instead.')
     def _setCSSValue(self, cssText):
         self._setPropertyValue(cssText)
 
     cssValue = property(_getCSSValue, _setCSSValue,
                    doc="(DEPRECATED) Use ``property.propertyValue`` instead.")
-
