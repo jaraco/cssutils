@@ -39,7 +39,7 @@ HEAD
 0.9.8
 -----
 0.9.8 final 111210
-    - FEATURE: Feature Request (#4) to be able to disable validation of a stylesheet has been implemented. Add Parameter ``validate=False`` for parsing (only for parsing of stylesheets not single styledeclarations yet).
+    - FEATURE: Feature Request (#4) to be able to disable validation of a stylesheet has been implemented. Add Parameter ``validate=False`` for parsing.
 
     + BUGFIX: Fixed #5 Unicode escaping inside strings. Thanks to Simon Sapin
     + BUGFIX: The integer is optional in counter-reset and counter-increment, and not only on the first counter. Thanks to Simon Sapin
@@ -1775,4 +1775,3 @@ Archived Versions
     first version to try if i can bring it to work at all
 
     only a prettyprinter included, no builder
-

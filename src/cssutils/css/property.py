@@ -95,6 +95,17 @@ class Property(cssutils.util.Base):
                   self.valid,
                   id(self))
 
+    def _doValidation(self):
+        """Return True if validation is enabled."""
+        try:
+            if self.parent.validating is not None:
+                # CSSParser.parseStyle() sets validating prop of declaration
+                return self.parent.validating
+            # CSSParser.parseString() sets validating prop of sheet
+            return self.parent.parentRule.parentStyleSheet.validating
+        except AttributeError:
+            return True
+
     def _getCssText(self):
         """Return serialized property cssText."""
         return cssutils.ser.do_Property(self)
@@ -154,13 +165,7 @@ class Property(cssutils.util.Base):
 
                 # also invalid values are set!
 
-                try:
-                    # parser sets validating prop of sheet
-                    doVal = self.parent.parentRule.parentStyleSheet.validating
-                except AttributeError, e:
-                    doVal = True
-
-                if doVal:
+                if self._doValidation():
                     self.validate()
 
         else:
@@ -218,13 +223,8 @@ class Property(cssutils.util.Base):
             self._name = self._normalize(self._literalname)
             self.seqs[0] = newseq
 
-            try:
-                # parser sets validating prop of sheet
-                doVal = self.parent.parentRule.parentStyleSheet.validating
-            except AttributeError, e:
-                doVal = True
-
 #            # validate
+            doVal = self._doValidation()
             if doVal and self._name not in cssutils.profile.knownNames:
                 # self.valid = False
                 self._log.warn(u'Property: Unknown Property name.',

@@ -75,7 +75,7 @@ class CSSParser(object):
         else:
             cssutils.log.raiseExceptions = self.__globalRaising
 
-    def parseStyle(self, cssText, encoding='utf-8'):
+    def parseStyle(self, cssText, encoding='utf-8', validate=None):
         """Parse given `cssText` which is assumed to be the content of
         a HTML style attribute.
 
@@ -84,6 +84,9 @@ class CSSParser(object):
         :param encoding:
             It will be used to decode `cssText` if given as a (byte)
             string.
+        :param validate:
+            If given defines if validation is used. Uses CSSParser settings as
+            fallback
         :returns:
             :class:`~cssutils.css.CSSStyleDeclaration`
         """
@@ -91,7 +94,9 @@ class CSSParser(object):
         if isinstance(cssText, bytes):
             # TODO: use codecs.getdecoder('css') here?
             cssText = cssText.decode(encoding)
-        style = css.CSSStyleDeclaration(cssText)
+        if validate is None:
+            validate = self._validate
+        style = css.CSSStyleDeclaration(cssText, validating=validate)
         self.__parseSetting(False)
         return style
 
