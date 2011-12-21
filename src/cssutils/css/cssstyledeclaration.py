@@ -94,7 +94,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
     
         [Property: Value Priority?;]* [Property: Value Priority?]?
     """
-    def __init__(self, cssText=u'', parentRule=None, readonly=False):
+    def __init__(self, cssText=u'', parentRule=None, readonly=False,
+                 validating=None):
         """
         :param cssText:
             Shortcut, sets CSSStyleDeclaration.cssText
@@ -103,9 +104,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             None if this CSSStyleDeclaration is not attached to a CSSRule.
         :param readonly:
             defaults to False
+        :param validating:
+            a flag defining if this sheet should be validated on change.
+            Defaults to None, which means defer to the parent stylesheet.
         """
         super(CSSStyleDeclaration, self).__init__()
         self._parentRule = parentRule
+        self.validating = validating
         self.cssText = cssText
         self._readonly = readonly
 
@@ -171,7 +176,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         """
         known = ['_tokenizer', '_log', '_ttypes',
                  '_seq', 'seq', 'parentRule', '_parentRule', 'cssText',
-                 'valid', 'wellformed',
+                 'valid', 'wellformed', 'validating',
                  '_readonly', '_profiles']
         known.extend(CSS2Properties._properties)
         if n in known:
