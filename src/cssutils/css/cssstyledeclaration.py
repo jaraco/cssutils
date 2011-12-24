@@ -177,7 +177,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         known = ['_tokenizer', '_log', '_ttypes',
                  '_seq', 'seq', 'parentRule', '_parentRule', 'cssText',
                  'valid', 'wellformed', 'validating',
-                 '_readonly', '_profiles']
+                 '_readonly', '_profiles', '_validating']
         known.extend(CSS2Properties._properties)
         if n in known:
             super(CSSStyleDeclaration, self).__setattr__(n, v)
@@ -648,3 +648,24 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                           u"These are properties with a different ``name`` "
                           u"only. :meth:`item` and :attr:`length` work on the "
                           u"same set here.")
+
+    def _getValidating(self):
+        try:
+            # CSSParser.parseX() sets validating of stylesheet
+            return self.parentRule.parentStyleSheet.validating
+        except AttributeError:
+            # CSSParser.parseStyle() sets validating of declaration
+            if self._validating is not None:
+                return self._validating
+        # default
+        return True
+
+    def _setValidating(self, validating):
+        self._validating = validating
+
+    validating = property(_getValidating, _setValidating,
+                          doc=u"If ``True`` this declaration validates "
+                          u"contained properties. The parent StyleSheet "
+                          u"validation setting does *always* win though so "
+                          u"even if validating is True it may not validate "
+                          u"if the StyleSheet defines else!")
