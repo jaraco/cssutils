@@ -114,16 +114,31 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
                          u'ERROR    Expected "text/css" mime type')
 
     def test_parsevalidation(self):
-        t = 'a { color: 1 }'
-        
+        style = 'color: 1'
+        t = 'a { %s }' % style
+                
         cssutils.log.setLevel(logging.DEBUG)
         
+        # sheet
         s = self._setHandler()
         cssutils.parseString(t)
         self.assertNotEqual(len(s.getvalue()), 0)
         
         s = self._setHandler()
         cssutils.parseString(t, validate=False)
+        self.assertEqual(s.getvalue(), '')
+
+        # style
+        s = self._setHandler()
+        cssutils.parseStyle(style)
+        self.assertNotEqual(len(s.getvalue()), 0)
+
+        s = self._setHandler()
+        cssutils.parseStyle(style, validate=True)
+        self.assertNotEqual(len(s.getvalue()), 0)
+
+        s = self._setHandler()
+        cssutils.parseStyle(style, validate=False)
         self.assertEqual(s.getvalue(), '')
                
 

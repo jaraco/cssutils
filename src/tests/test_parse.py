@@ -207,7 +207,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
 
     def test_validate(self):
         """CSSParser(validate)"""
-        t = 'a {color: red}'
+        style = 'color: red'
+        t = 'a { %s }' % style
 
         # helper
         s = cssutils.parseString(t)
@@ -217,6 +218,13 @@ class CSSParserTestCase(basetest.BaseTestCase):
         s = cssutils.parseString(t, validate=True)
         self.assertEqual(s.validating, True)
 
+        d = cssutils.parseStyle(style)
+        self.assertEqual(d.validating, True)
+        d = cssutils.parseStyle(style, validate=True)
+        self.assertEqual(d.validating, True)
+        d = cssutils.parseStyle(style, validate=False)
+        self.assertEqual(d.validating, False)
+
         # parser
         p = cssutils.CSSParser()
         s = p.parseString(t)
@@ -225,6 +233,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
         self.assertEqual(s.validating, False)
         s = p.parseString(t, validate=True)
         self.assertEqual(s.validating, True)
+        d = p.parseStyle(style)
+        self.assertEqual(d.validating, True)
 
         p = cssutils.CSSParser(validate=True)
         s = p.parseString(t)
@@ -233,6 +243,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
         self.assertEqual(s.validating, False)
         s = p.parseString(t, validate=True)
         self.assertEqual(s.validating, True)
+        d = p.parseStyle(style)
+        self.assertEqual(d.validating, True)
 
         p = cssutils.CSSParser(validate=False)
         s = p.parseString(t)
@@ -241,6 +253,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
         self.assertEqual(s.validating, False)
         s = p.parseString(t, validate=True)
         self.assertEqual(s.validating, True)
+        d = p.parseStyle(style)
+        self.assertEqual(d.validating, False)
 
         # url        
         p = cssutils.CSSParser(validate=False)
