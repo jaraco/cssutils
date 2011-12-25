@@ -220,7 +220,8 @@ class Prod(object):
     def __init__(self, name, match, optional=False,
                  toSeq=None, toStore=None,
                  stop=False, stopAndKeep=False, 
-                 nextSor=False, mayEnd=False):
+                 nextSor=False, mayEnd=False,
+                 storeToken=None):
         """
         name
             name used for error reporting
@@ -247,6 +248,10 @@ class Prod(object):
         mayEnd = False
             no token must follow even defined by Sequence.
             Used for operator ',/ ' currently only
+            
+        storeToken = None
+            if True toStore saves simple token tuple and not and Item object
+            to store. Old style processing, TODO: resolve
         """
         self._name = name
         self.match = match
@@ -255,12 +260,16 @@ class Prod(object):
         self.stopAndKeep = stopAndKeep
         self.nextSor = nextSor
         self.mayEnd = mayEnd
+        self.storeToken = storeToken
 
         def makeToStore(key):
             "Return a function used by toStore."
             def toStore(store, item):
                 "Set or append store item."
                 if key in store:
+                    _v = store[key]
+                    if not isinstance(_v, list):
+                        store[key] = [_v]
                     store[key].append(item)
                 else:
                     store[key] = item
@@ -488,7 +497,13 @@ class ProdParser(object):
                         if val is not None:
                             seq.append(val, type_, line, col)
                             if prod.toStore:
-                                prod.toStore(store, seq[-1])
+                                if not prod.storeToken:
+                                    prod.toStore(store, seq[-1])
+                                else:                                   
+                                    # workaround for now for old style token
+                                    # parsing!
+                                    # TODO: remove when all new style
+                                    prod.toStore(store, token)
                                 
                     if prod.stop: # EOF?
                         # stop here and ignore following tokens

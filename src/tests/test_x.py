@@ -10,8 +10,11 @@ import types
 class XTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        pass
+        cssutils.ser.prefs.useDefaults()
 
+    def tearDown(self):
+        cssutils.ser.prefs.useDefaults()
+        
     def test_prioriy(self):
         "Property.priority"
         s = cssutils.parseString(u'a { color: red }')

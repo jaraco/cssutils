@@ -42,6 +42,10 @@ class CSSRule(cssutils.util.Base2):
     """:class:`cssutils.css.CSSVariablesRule` - experimental rule
     not in the offical spec"""
 
+    MARGIN_RULE = 1006 
+    """:class:`cssutils.css.MarginRule` - experimental rule
+    not in the offical spec"""
+
     _typestrings = {UNKNOWN_RULE: u'UNKNOWN_RULE', 
                     STYLE_RULE: u'STYLE_RULE',
                     CHARSET_RULE: u'CHARSET_RULE', 
@@ -51,7 +55,8 @@ class CSSRule(cssutils.util.Base2):
                     PAGE_RULE: u'PAGE_RULE',                     
                     NAMESPACE_RULE: u'NAMESPACE_RULE',
                     COMMENT: u'COMMENT',
-                    VARIABLES_RULE: u'VARIABLES_RULE'
+                    VARIABLES_RULE: u'VARIABLES_RULE',
+                    MARGIN_RULE: u'MARGIN_RULE'
                     }
 
     def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):
@@ -61,21 +66,23 @@ class CSSRule(cssutils.util.Base2):
         self._parentRule = parentRule
         self._parentStyleSheet = parentStyleSheet
         self._setSeq(self._tempSeq())
+        #self._atkeyword = None
         # must be set after initialization of #inheriting rule is done
         self._readonly = False
 
-    def _setAtkeyword(self, akw):
+    def _setAtkeyword(self, keyword):
         """Check if new keyword fits the rule it is used for."""
-        if not self.atkeyword or (self._normalize(akw) ==
-                                  self._normalize(self.atkeyword)):
-            self._atkeyword = akw
+        atkeyword = self._normalize(keyword)
+        if not self.atkeyword or (self.atkeyword == atkeyword):
+            self._atkeyword = atkeyword
+            self._keyword = keyword
         else:
             self._log.error(u'%s: Invalid atkeyword for this rule: %r' %
-                            (self._normalize(self.atkeyword), akw),
+                            (self.atkeyword, keyword),
                             error=xml.dom.InvalidModificationErr)
 
     atkeyword = property(lambda self: self._atkeyword, _setAtkeyword,
-                         doc=u"Literal keyword of an @rule (e.g. ``@IMport``).")
+                         doc=u"Normalized  keyword of an @rule (e.g. ``@import``).")
 
     def _setCssText(self, cssText):
         """
