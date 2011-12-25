@@ -9,6 +9,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         self.r = cssutils.css.CSSVariablesDeclaration()
+        cssutils.ser.prefs.useDefaults()
 
     def tearDown(self):
         cssutils.ser.prefs.useDefaults()
@@ -112,26 +113,27 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
                 u'/**/ \n /**/ \n /**/ \n x: 1 /**/;\n/**/ \n /**/ \n /**/ \n y: 2 /**/'
             }
         self.do_equal_r(tests)
-        
+ 
+    def test_cssText2(self):
+        "CSSVariablesDeclaration.cssText"        
         # exception
-        tests = {
-            u'top': xml.dom.SyntaxErr,
-            u'top:': xml.dom.SyntaxErr,
-            u'top : ': xml.dom.SyntaxErr,
-            u'top:;': xml.dom.SyntaxErr,
-#            u'top 0': xml.dom.SyntaxErr,
-#            u'top 0;': xml.dom.SyntaxErr,
-
-            u':': xml.dom.SyntaxErr,
-            u':0': xml.dom.SyntaxErr,
-            u':0;': xml.dom.SyntaxErr,
-            u':;': xml.dom.SyntaxErr,
-            u': ;': xml.dom.SyntaxErr,
-
-            u'0': xml.dom.SyntaxErr,
-            u'0;': xml.dom.SyntaxErr,
-
-            u';': xml.dom.SyntaxErr,
+        tests = {u'top': xml.dom.SyntaxErr,
+                 u'top:': xml.dom.SyntaxErr,
+                 u'top : ': xml.dom.SyntaxErr,
+                 u'top:;': xml.dom.SyntaxErr,
+    #            u'top 0': xml.dom.SyntaxErr,
+    #            u'top 0;': xml.dom.SyntaxErr,
+    
+                 u':': xml.dom.SyntaxErr,
+                 u':0': xml.dom.SyntaxErr,
+                 u':0;': xml.dom.SyntaxErr,
+                 u':;': xml.dom.SyntaxErr,
+                 u': ;': xml.dom.SyntaxErr,
+    
+                 u'0': xml.dom.SyntaxErr,
+                 u'0;': xml.dom.SyntaxErr,
+    
+                 u';': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests)
 
