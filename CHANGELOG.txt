@@ -34,9 +34,12 @@ Development Version
 ===================
 
 HEAD
+    - FEATURE: Implemented API for ``MarginRule`` inside ``CSSPageRule``
     - FEATURE: ``parseStyle()`` has optional parameter ``validate=False`` now too to disable validation of properties (default is always ``True``).
 
-    + BUGFIX: Fixed issue for GoogleAppEngine (GAE) which somehow handles codecs differently. ``parseUrl`` should work now.
+    + CHANGE: @rules attribute ``atkeyword`` value is now normalized. The actual keyword (example ``@IMPorT``) is kept and is optionally reserialized but in the example ``atkeyword == '@import'``
+
+    - BUGFIX: Fixed issue for GoogleAppEngine (GAE) which somehow handles codecs differently. ``parseUrl`` should work now.
 
 
 0.9.8

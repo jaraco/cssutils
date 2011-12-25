@@ -221,7 +221,8 @@ class Prod(object):
                  toSeq=None, toStore=None,
                  stop=False, stopAndKeep=False, 
                  nextSor=False, mayEnd=False,
-                 storeToken=None):
+                 storeToken=None,
+                 exception=None):
         """
         name
             name used for error reporting
@@ -252,6 +253,9 @@ class Prod(object):
         storeToken = None
             if True toStore saves simple token tuple and not and Item object
             to store. Old style processing, TODO: resolve
+            
+        exception = None
+            exception to be raised in case of error, normaly SyntaxErr
         """
         self._name = name
         self.match = match
@@ -261,6 +265,7 @@ class Prod(object):
         self.nextSor = nextSor
         self.mayEnd = mayEnd
         self.storeToken = storeToken
+        self.exception = exception  
 
         def makeToStore(key):
             "Return a function used by toStore."

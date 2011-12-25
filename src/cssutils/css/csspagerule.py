@@ -10,7 +10,7 @@ import cssrule
 import cssutils
 import xml.dom
 
-class CSSPageRule(cssrule.CSSRule):
+class CSSPageRule(cssrule.CSSRuleRules):
     """
     The CSSPageRule interface represents a @page rule within a CSS style
     sheet. The @page rule is used to specify the dimensions, orientation,
@@ -25,6 +25,8 @@ class CSSPageRule(cssrule.CSSRule):
         pseudo_page
           ':' [ "left" | "right" | "first" ]
           ;
+          
+    `cssRules` contains a list of `MarginRule` objects.
     """
     def __init__(self, selectorText=None, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
@@ -53,8 +55,6 @@ class CSSPageRule(cssrule.CSSRule):
         else:
             self.style = CSSStyleDeclaration()
 
-        self.cssRules = cssutils.css.CSSRuleList()
-        
         tempseq.append(self.style, 'style')
 
         self._setSeq(tempseq)        
@@ -67,28 +67,12 @@ class CSSPageRule(cssrule.CSSRule):
                 self.style.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object selectorText=%r style=%r at 0x%x>" % (
+        return u"<cssutils.css.%s object selectorText=%r style=%r cssRules=%r at 0x%x>" % (
                 self.__class__.__name__,
                 self.selectorText, 
                 self.style.cssText,
+                len(self.cssRules),
                 id(self))
-
-    # TODO: refactor with @media!
-    def _setCssRules(self, cssRules):
-        "Set new cssRules and update contained rules refs."
-        cssRules.append = self.insertRule
-        cssRules.extend = self.insertRule
-        cssRules.__delitem__ == self.deleteRule
-        
-        for rule in cssRules:
-            rule._parentStyleSheet = None #self.parentStyleSheet?
-            rule._parentRule = self
-            
-        self._cssRules = cssRules
-
-    cssRules = property(lambda self: self._cssRules, _setCssRules,
-            "All Rules in this style sheet, a "
-            ":class:`~cssutils.css.CSSRuleList`.")
 
     def __parseSelectorText(self, selectorText):
         """
@@ -184,8 +168,10 @@ class CSSPageRule(cssrule.CSSRule):
         cssRules = []
         
         for token in g:
-            if (token[0] == 'ATKEYWORD'):                
-                rule = MarginRule(chain([token], g))
+            if (token[0] == 'ATKEYWORD'):   
+                rule = MarginRule(parentRule=self,
+                                  parentStyleSheet=self.parentStyleSheet)
+                rule.cssText = chain([token], g)
                 cssRules.append(rule)
                 continue
             
@@ -322,27 +308,33 @@ class CSSPageRule(cssrule.CSSRule):
                      doc=u"(DOM) The declaration-block of this rule set, "
                          u"a :class:`~cssutils.css.CSSStyleDeclaration`.")
 
+
+    def insertRule(self, rule, index=None):
+        """Implements base ``insertRule``."""
+        rule, index = self._prepareInsertRule(rule, index)
+
+        if rule is False or rule is True:
+            # done or error
+            return
+
+        # check hierarchy
+        if isinstance(rule, cssutils.css.CSSCharsetRule) or \
+           isinstance(rule, cssutils.css.CSSFontFaceRule) or \
+           isinstance(rule, cssutils.css.CSSImportRule) or \
+           isinstance(rule, cssutils.css.CSSNamespaceRule) or \
+           isinstance(rule, CSSPageRule) or \
+           isinstance(rule, cssutils.css.CSSMediaRule):
+            self._log.error(u'%s: This type of rule is not allowed here: %s' 
+                            % (self.__class__.__name__, rule.cssText),
+                            error=xml.dom.HierarchyRequestErr)
+            return
+
+        return self._finishInsertRule(rule, index)
+
+
     type = property(lambda self: self.PAGE_RULE, 
                     doc=u"The type of this rule, as defined by a CSSRule "
                         u"type constant.")
     
     # constant but needed:
     wellformed = property(lambda self: True)
-
-
-    # TODO: refactor with @media
-    def deleteRule(self, index):
-        self._checkReadonly()
-        
-        del self._cssRules[index]
-
-    def insertRule(self, rule, index=None):
-        self._checkReadonly()
-        
-        if index is None:
-            index = len(self._cssRules)
-        
-        self._cssRules.insert(index, rule)
-        rule._parentRule = self
-        rule._parentStyleSheet = self.parentStyleSheet
-        return index

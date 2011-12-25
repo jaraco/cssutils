@@ -38,12 +38,45 @@ def maketokens(valuelist):
 
 if 1:
     t = u'''
-    color: rgba(1,1,1,0);
-    background: rgba(1,1,1,0);'''
-        
+    @page {
+        color: red;
+        @top-LEFT {
+            content: "1";
+        }
+        padding: 1cm;
+        @top-riGHT {
+            content: "2";
+            /*@x {x:1}*/
+            left: 0;
+        }
+        margin: 1cm;
+    }
+    '''    
+    t = '@page {}'
+    s = cssutils.parseString(t)
+
+    p = s.cssRules[0]
+    print p
+    for m in p.cssRules:
+        print m
+        p.deleteRule(m)
+#        print i, p
+    
+
+    
+    sys.exit(1)
+    
+    
+    
     p = cssutils.CSSParser()
-    sheet = p.parseString(t)
-    print sheet.cssText
+    s = p.parseString(t)
+    cssutils.ser.prefs.useDefaults()
+    print 
+    print s.cssText#.replace(' ', '.')
+    
+    
+    
+    
     
     sys.exit(0)
 

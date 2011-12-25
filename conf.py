@@ -43,14 +43,14 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'cssutils'
-copyright = u'2004-2011, Christof Höke'
+copyright = u'2004-2012, Christof Höke'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '0.9.8'
+version = '0.9.9a1'
 # The full version, including alpha/beta/rc tags.
 release = VERSION #'0.9.6b4'
 

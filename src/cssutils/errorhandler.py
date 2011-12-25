@@ -77,6 +77,9 @@ class _ErrorHandler(object):
         logs or raises exception
         """
         if self.enabled:
+            if error is None:
+                error = xml.dom.SyntaxErr
+            
             line, col = None, None
             if token:
                 if isinstance(token, tuple):

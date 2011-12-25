@@ -1,5 +1,4 @@
 """Testcases for cssutils.codec"""
-__version__ = '$Id: test_codec.py 2094 2011-04-18 23:57:38Z jaracosan $'
 
 import codecs
 import unittest

@@ -7,7 +7,7 @@ import cssrule
 import cssutils
 import xml.dom
 
-class CSSMediaRule(cssrule.CSSRule):
+class CSSMediaRule(cssrule.CSSRuleRules):
     """
     Objects implementing the CSSMediaRule interface can be identified by the
     MEDIA_RULE constant. On these objects the type attribute must return the
@@ -38,14 +38,8 @@ class CSSMediaRule(cssrule.CSSRule):
             self.media = cssutils.stylesheets.MediaList()
 
         self.name = name
-        self.cssRules = cssutils.css.CSSRuleList()
         self._readonly = readonly
 
-    def __iter__(self):
-        """Generator iterating over these rule's cssRules."""
-        for rule in self._cssRules:
-            yield rule
-            
     def __repr__(self):
         return u"cssutils.css.%s(mediaText=%r)" % (
                 self.__class__.__name__,
@@ -56,22 +50,6 @@ class CSSMediaRule(cssrule.CSSRule):
                 self.__class__.__name__,
                 self.media.mediaText,
                 id(self))
-
-    def _setCssRules(self, cssRules):
-        "Set new cssRules and update contained rules refs."
-        cssRules.append = self.insertRule
-        cssRules.extend = self.insertRule
-        cssRules.__delitem__ == self.deleteRule
-        
-        for rule in cssRules:
-            rule._parentStyleSheet = None #self.parentStyleSheet?
-            rule._parentRule = self
-            
-        self._cssRules = cssRules
-
-    cssRules = property(lambda self: self._cssRules, _setCssRules,
-            "All Rules in this style sheet, a "
-            ":class:`~cssutils.css.CSSRuleList`.")
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -293,137 +271,29 @@ class CSSMediaRule(cssrule.CSSRule):
                      doc=u"(DOM) A list of media types for this rule "
                          u"of type :class:`~cssutils.stylesheets.MediaList`.")
     
-    def deleteRule(self, index):
-        """
-        Delete the rule at `index` from the media block.
-        
-        :param index:
-            The `index` of the rule to be removed from the media block's rule
-            list. For an `index` < 0 **no** :exc:`~xml.dom.IndexSizeErr` is
-            raised but rules for normal Python lists are used. E.g. 
-            ``deleteRule(-1)`` removes the last rule in cssRules.
-            
-            `index` may also be a CSSRule object which will then be removed
-            from the media block.
-
-        :Exceptions:
-            - :exc:`~xml.dom.IndexSizeErr`:
-              Raised if the specified index does not correspond to a rule in
-              the media rule list.
-            - :exc:`~xml.dom.NoModificationAllowedErr`:
-              Raised if this media rule is readonly.
-        """
-        self._checkReadonly()
-
-        if isinstance(index, cssrule.CSSRule):
-            for i, r in enumerate(self.cssRules):
-                if index == r:
-                    index = i
-                    break
-            else:
-                raise xml.dom.IndexSizeErr(u"CSSMediaRule: Not a rule in "
-                                           u"this rule'a cssRules list: %s"
-                                           % index)
-
-        try:
-            self._cssRules[index]._parentRule = None # detach
-            del self._cssRules[index] # remove from @media
-        except IndexError:
-            raise xml.dom.IndexSizeErr(u'CSSMediaRule: %s is not a valid index '
-                                       u'in the rulelist of length %i' 
-                                       % (index, self._cssRules.length))
-
-    def add(self, rule):
-        """Add `rule` to end of this mediarule. 
-        Same as :meth:`~cssutils.css.CSSMediaRule.insertRule`."""
-        self.insertRule(rule, index=None)
             
     def insertRule(self, rule, index=None):
-        """
-        Insert `rule` into the media block.
+        """Implements base ``insertRule``."""
+        rule, index = self._prepareInsertRule(rule, index)
         
-        :param rule:
-            the parsable text representing the `rule` to be inserted. For rule
-            sets this contains both the selector and the style declaration. 
-            For at-rules, this specifies both the at-identifier and the rule
-            content.
-
-            cssutils also allows rule to be a valid 
-            :class:`~cssutils.css.CSSRule` object.
-
-        :param index:
-            before the specified `rule` will be inserted. 
-            If the specified `index` is
-            equal to the length of the media blocks's rule collection, the
-            rule will be added to the end of the media block.
-            If index is not given or None rule will be appended to rule
-            list.
-
-        :returns:
-            the index within the media block's rule collection of the
-            newly inserted rule.
-
-        :exceptions:
-            - :exc:`~xml.dom.HierarchyRequestErr`:
-              Raised if the `rule` cannot be inserted at the specified `index`,
-              e.g., if an @import rule is inserted after a standard rule set
-              or other at-rule.
-            - :exc:`~xml.dom.IndexSizeErr`:
-              Raised if the specified `index` is not a valid insertion point.
-            - :exc:`~xml.dom.NoModificationAllowedErr`:
-              Raised if this media rule is readonly.
-            - :exc:`~xml.dom.SyntaxErr`:
-              Raised if the specified `rule` has a syntax error and is
-              unparsable.
-
-        """
-        self._checkReadonly()
-
-        # check position
-        if index is None:
-            index = len(self._cssRules)
-        elif index < 0 or index > self._cssRules.length:
-            raise xml.dom.IndexSizeErr(u'CSSMediaRule: Invalid index %s for '
-                                       u'CSSRuleList with a length of %s.'
-                                       % (index, self._cssRules.length))
-
-        # parse
-        if isinstance(rule, basestring):
-            tempsheet = cssutils.css.CSSStyleSheet()
-            tempsheet.cssText = rule
-            if len(tempsheet.cssRules) != 1 or (tempsheet.cssRules and
-             not isinstance(tempsheet.cssRules[0], cssutils.css.CSSRule)):
-                self._log.error(u'CSSMediaRule: Invalid Rule: %s' % rule)
-                return
-            rule = tempsheet.cssRules[0]
-            
-        elif isinstance(rule, cssutils.css.CSSRuleList):
-            # insert all rules
-            for i, r in enumerate(rule):
-                self.insertRule(r, index + i)
-            return index
-            
-        elif not isinstance(rule, cssutils.css.CSSRule):
-            self._log.error(u'CSSMediaRule: Not a CSSRule: %s' % rule)
+        if rule is False or rule is True:
+            # done or error
             return
-
-        # CHECK HIERARCHY
-        # @charset @import @page @namespace @media
+        
+        # check hierarchy
         if isinstance(rule, cssutils.css.CSSCharsetRule) or \
            isinstance(rule, cssutils.css.CSSFontFaceRule) or \
            isinstance(rule, cssutils.css.CSSImportRule) or \
            isinstance(rule, cssutils.css.CSSNamespaceRule) or \
            isinstance(rule, cssutils.css.CSSPageRule) or \
+           isinstance(rule, cssutils.css.MarginRule) or \
            isinstance(rule, CSSMediaRule):
-            self._log.error(u'CSSMediaRule: This type of rule is not allowed '
-                            u'here: %s' % rule.cssText,
+            self._log.error(u'%s: This type of rule is not allowed here: %s' 
+                            % (self.__class__.__name__, rule.cssText),
                             error=xml.dom.HierarchyRequestErr)
             return
 
-        self._cssRules.insert(index, rule)
-        rule._parentRule = self
-        rule._parentStyleSheet = self.parentStyleSheet
-        return index
+        return self._finishInsertRule(rule, index)
 
     type = property(lambda self: self.MEDIA_RULE, 
                     doc=u"The type of this rule, as defined by a CSSRule "
