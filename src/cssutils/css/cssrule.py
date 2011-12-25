@@ -136,3 +136,169 @@ class CSSRule(cssutils.util.Base2):
 
     wellformed = property(lambda self: False,
                           doc=u"If the rule is wellformed.")
+
+
+
+class CSSRuleRules(CSSRule):
+    """Abstract base interface for rules that contain other rules
+    like @media or @page. Methods may be overwritten if a rule
+    has specific stuff to do like checking the order of insertion like 
+    @media does.
+    """
+    
+    def __init__(self, parentRule=None, parentStyleSheet=None):
+        
+        super(CSSRuleRules, self).__init__(parentRule=parentRule, 
+                                           parentStyleSheet=parentStyleSheet)
+        
+        self.cssRules = cssutils.css.CSSRuleList()
+        
+    def __iter__(self):
+        """Generator iterating over these rule's cssRules."""
+        for rule in self._cssRules:
+            yield rule        
+
+    def _setCssRules(self, cssRules):
+        "Set new cssRules and update contained rules refs."
+        cssRules.append = self.insertRule
+        cssRules.extend = self.insertRule
+        cssRules.__delitem__ == self.deleteRule
+        
+        for rule in cssRules:
+            rule._parentRule = self
+            rule._parentStyleSheet = None
+            
+        self._cssRules = cssRules
+
+    cssRules = property(lambda self: self._cssRules, _setCssRules,
+            "All Rules in this style sheet, a "
+            ":class:`~cssutils.css.CSSRuleList`.")    
+    
+    def deleteRule(self, index):
+        """
+        Delete the rule at `index` from rules ``cssRules``.
+        
+        :param index:
+            The `index` of the rule to be removed from the rules cssRules
+            list. For an `index` < 0 **no** :exc:`~xml.dom.IndexSizeErr` is
+            raised but rules for normal Python lists are used. E.g. 
+            ``deleteRule(-1)`` removes the last rule in cssRules.
+            
+            `index` may also be a CSSRule object which will then be removed.
+
+        :Exceptions:
+            - :exc:`~xml.dom.IndexSizeErr`:
+              Raised if the specified index does not correspond to a rule in
+              the media rule list.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this media rule is readonly.
+        """
+        self._checkReadonly()
+
+        if isinstance(index, CSSRule):
+            for i, r in enumerate(self.cssRules):
+                if index == r:
+                    index = i
+                    break
+            else:
+                raise xml.dom.IndexSizeErr(u"%s: Not a rule in "
+                                           u"this rule'a cssRules list: %s"
+                                           % (self.__class__.__name__, index))
+
+        try:
+            # detach
+            self._cssRules[index]._parentRule = None 
+            del self._cssRules[index]
+            
+        except IndexError:
+            raise xml.dom.IndexSizeErr(u'%s: %s is not a valid index '
+                                       u'in the rulelist of length %i' 
+                                       % (self.__class__.__name__, 
+                                          index, self._cssRules.length))
+
+    def _prepareInsertRule(self, rule, index=None):
+        "return checked `index` and optional parsed `rule`"
+        self._checkReadonly()
+
+        # check index
+        if index is None:
+            index = len(self._cssRules)
+            
+        elif index < 0 or index > self._cssRules.length:
+            raise xml.dom.IndexSizeErr(u'%s: Invalid index %s for '
+                                       u'CSSRuleList with a length of %s.'
+                                       % (self.__class__.__name__,
+                                          index, self._cssRules.length))
+        
+        # check and optionally parse rule
+        if isinstance(rule, basestring):
+            tempsheet = cssutils.css.CSSStyleSheet()
+            tempsheet.cssText = rule
+            if len(tempsheet.cssRules) != 1 or (tempsheet.cssRules and
+             not isinstance(tempsheet.cssRules[0], cssutils.css.CSSRule)):
+                self._log.error(u'%s: Invalid Rule: %s' % (self.__class__.__name__,
+                                                           rule))
+                return False, False
+            rule = tempsheet.cssRules[0]
+            
+        elif isinstance(rule, cssutils.css.CSSRuleList):
+            # insert all rules
+            for i, r in enumerate(rule):
+                self.insertRule(r, index + i)
+            return True, True
+            
+        elif not isinstance(rule, cssutils.css.CSSRule):
+            self._log.error(u'%s: Not a CSSRule: %s' % (rule, 
+                                                        self.__class__.__name__))
+            return False, False
+        
+        return rule, index
+
+    def _finishInsertRule(self, rule, index):
+        "add `rule` at `index`"
+        rule._parentRule = self
+        rule._parentStyleSheet = None
+        self._cssRules.insert(index, rule)
+        return index
+
+    def add(self, rule):
+        """Add `rule` to page rule. Same as ``insertRule(rule)``."""
+        return self.insertRule(rule)
+
+    def insertRule(self, rule, index=None):
+        """
+        Insert `rule` into the rules ``cssRules``.
+        
+        :param rule:
+            the parsable text representing the `rule` to be inserted. For rule
+            sets this contains both the selector and the style declaration. 
+            For at-rules, this specifies both the at-identifier and the rule
+            content.
+
+            cssutils also allows rule to be a valid 
+            :class:`~cssutils.css.CSSRule` object.
+
+        :param index:
+            before the `index` the specified `rule` will be inserted. 
+            If the specified `index` is equal to the length of the rules 
+            rule collection, the rule will be added to the end of the rule.
+            If index is not given or None rule will be appended to rule
+            list.
+
+        :returns:
+            the index of the newly inserted rule.
+
+        :exceptions:
+            - :exc:`~xml.dom.HierarchyRequestErr`:
+              Raised if the `rule` cannot be inserted at the specified `index`,
+              e.g., if an @import rule is inserted after a standard rule set
+              or other at-rule.
+            - :exc:`~xml.dom.IndexSizeErr`:
+              Raised if the specified `index` is not a valid insertion point.
+            - :exc:`~xml.dom.NoModificationAllowedErr`:
+              Raised if this rule is readonly.
+            - :exc:`~xml.dom.SyntaxErr`:
+              Raised if the specified `rule` has a syntax error and is
+              unparsable.
+        """
+        return self._prepareInsertRule(rule, index)

@@ -588,18 +588,16 @@ class CSSSerializer(object):
 
         + CSSComments
         """
-        
         # rules
         rules = u''
         rulesout = []
         for r in rule.cssRules:
             rtext = r.cssText
             if rtext:
-                # indent each line of cssText
                 rulesout.append(rtext)
                 rulesout.append(self.prefs.lineSeparator)
         
-        rulesText = u''.join(rulesout).strip()
+        rulesText = u''.join(rulesout)#.strip()
 
         # omit semicolon only if no MarginRules
         styleText = self.do_css_CSSStyleDeclaration(rule.style,
@@ -620,9 +618,7 @@ class CSSSerializer(object):
                     out.append(styleText, type_='styletext', indent=1, space=False)
                 
             if rulesText:            
-                out.append(u'%s%s' % (rulesText,
-                                      self.prefs.lineSeparator
-                                      ), indent=1, space=False)
+                out.append(rulesText, indent=1)
             #?
             self._level -= 1 
             out.append(u'}')

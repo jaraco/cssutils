@@ -21,57 +21,76 @@ class MarginRule(cssrule.CSSRule):
             content: "Hamlet";
             }
     """
-    _keywords = ['@top-left-corner',
-                 '@top-left',
-                 '@top-right'
-                 # ...
-                 ]
+    margins = ['@top-left-corner',
+               '@top-left',
+               '@top-center',
+               '@top-right',
+               '@top-right-corner',
+               '@bottom-left-corner',
+               '@bottom-left',
+               '@bottom-center',
+               '@bottom-right',
+               '@bottom-right-corner',
+               '@left-top',
+               '@left-middle',
+               '@right-bottom',
+               '@right-top',
+               '@right-middle',
+               '@right-bottom'
+               ]
     
-    def __init__(self, cssText=u'', style=None, parentRule=None, 
+    def __init__(self, margin=None, style=None, parentRule=None, 
                  parentStyleSheet=None, readonly=False):
         """
-        :param cssText:
-            of type string
+        :param atkeyword:
+            The margin area, e.g. '@top-left' for this rule
         :param style:
-            CSSStyleDeclaration for this CSSStyleRule
+            CSSStyleDeclaration for this MarginRule
         """
         super(MarginRule, self).__init__(parentRule=parentRule, 
                                          parentStyleSheet=parentStyleSheet)
-        self._atkeyword = None
+        
+        self._atkeyword = self._keyword = None
+        
+        if margin:
+            self.margin = margin
             
-        if cssText:
-            self.cssText = cssText
+        if style:
+            self.style = style
         else:
-            if style:
-                self.style = style
-            else:
-                self.style = CSSStyleDeclaration(parentRule=self)
-            
+            self.style = CSSStyleDeclaration(parentRule=self)
+        
         self._readonly = readonly
 
-    def _setAtkeyword(self, keyword):
+    def _setMargin(self, margin):
         """Check if new keyword fits the rule it is used for."""
-        atkeyword = self._normalize(keyword)
-        if not self.atkeyword or (self.atkeyword == atkeyword) and (
-           atkeyword in MarginRule._keywords):
-            self._atkeyword = atkeyword
-            self._keyword = keyword
-        else:
-            self._log.error(u'%s: Invalid atkeyword for this rule: %r' %
-                            (self.atkeyword, keyword),
+        n = self._normalize(margin)
+        
+        if n not in MarginRule.margins:
+            self._log.error(u'Invalid margin @keyword for this %s rule: %r' %
+                            (self.margin, margin),
                             error=xml.dom.InvalidModificationErr)
+    
+        else:
+            self._atkeyword = n
+            self._keyword = margin
 
-    atkeyword = property(lambda self: self._atkeyword, _setAtkeyword,
-                         doc=u"Normalized  keyword of an @rule (e.g. ``@import``).")
+    margin = property(lambda self: self._atkeyword, _setMargin,
+                      doc=u"Margin area of parent CSSPageRule. "
+                          u"`margin` and `atkeyword `are both normalized "
+                          u"@keyword of the @rule.")
+
+    atkeyword = margin 
 
     def __repr__(self):
-        return u"cssutils.css.%s(style=%r)" % (self.__class__.__name__, 
-                                               self.style.cssText)
+        return u"cssutils.css.%s(margin=%r, style=%r)" % (self.__class__.__name__,
+                                                          self.margin, 
+                                                          self.style.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object keyword=%r style=%r "\
+        return u"<cssutils.css.%s object margin=%r style=%r "\
                u"at 0x%x>" % (self.__class__.__name__,
-                              self.keyword,
+                              self.margin,
                               self.style.cssText,
                               id(self))
 
@@ -96,14 +115,18 @@ class MarginRule(cssrule.CSSRule):
         """
         super(MarginRule, self)._setCssText(cssText)
         
-        prods = Sequence(Prod(name='@', 
-                              match=lambda t, v: t == 'ATKEYWORD',
-                              toStore='@' 
+        prods = Sequence(Prod(name='@ margin', 
+                              match=lambda t, v: 
+                                t == 'ATKEYWORD' and 
+                                self._normalize(v) in MarginRule.margins,
+                              toStore='margin'
+                              # TODO?
+                              #, exception=xml.dom.InvalidModificationErr 
                               ),
                          PreDef.char('OPEN', u'{'),
-                         Sequence(Prod(name='style', 
+                         Sequence(Prod(name='styletokens', 
                                        match=lambda t, v: v != u'}',
-                                       toStore='tokens',
+                                       toStore='styletokens',
                                        storeToken=True # TODO: resolve later
                                        ),
                                   minmax=lambda: (0, None)
@@ -115,22 +138,20 @@ class MarginRule(cssrule.CSSRule):
                                                     u'MarginRule',
                                                     prods)
         
-#        if self._normalize(store['@'].value) not in MarginRule._keywords:
-#            ok = False
-#            self._log.error(u'MarginRule: Unexpected @keyword %r'
-#                            % store['@'].value)
-        
-#        else:
-
-        newStyle = CSSStyleDeclaration(parentRule=self)
-        # SET, may raise:
-        newStyle.cssText = store['tokens']
-        
         if ok:
-            # may raise:
-            self.atkeyword = store['@'].value
+            if 'margin' in store:
+                # may raise:
+                self.margin = store['margin'].value
+            else:
+                self._log.error(u'No margin @keyword for this %s rule' %
+                                self.margin,
+                                error=xml.dom.InvalidModificationErr)
             
-            self.style = newStyle
+            self.style = CSSStyleDeclaration(parentRule=self)
+            if 'styletokens' in store:
+                # may raise:
+                self.style.cssText = store['styletokens']
+            
                 
     cssText = property(fget=_getCssText, fset=_setCssText,
                        doc=u"(DOM) The parsable textual representation.")

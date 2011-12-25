@@ -5,7 +5,7 @@
 :Version: 0.9.8
 :Author: Christof Hoeke, see http://cthedot.de/encutils/
 :Contributor: Robert Siemer, Fredrik Hedman <fredrik.hedman@me.com> ported to python3
-:Copyright: 2005-2011: Christof Hoeke
+:Copyright: 2005-2012: Christof Hoeke
 :License: encutils has a dual-license, please choose whatever you prefer:
 
     * encutils is published under the

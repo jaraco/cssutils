@@ -104,7 +104,14 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
                 u'@page :left {\n    margin: 0\n    }',
             u'@page\n\r\f\t :left\n\r\f\t {margin:0;}':
                 u'@page :left {\n    margin: 0\n    }',
-            }
+                
+            # MarginRule
+            u'@page {    @top-right {        content: "2"        }    }':
+                u'@page {\n    @top-right {\n        content: "2"\n        }\n    }',
+            u'@page {padding: 1cm; margin: 1cm; @top-left {content: "1"}@top-right {content: "2";left: 1}}':
+                u'@page {\n    padding: 1cm;\n    margin: 1cm;\n    @top-left {\n        content: "1"\n        }\n    @top-right {\n        content: "2";\n        left: 1\n        }\n    }'
+        
+        }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
 
@@ -198,6 +205,29 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             }
         self.do_raise_r(tests, att='_setSelectorText')
 
+    def test_cssRules(self):
+        "CSSPageRule.cssRules"
+        s = cssutils.parseString('@page {}')
+        p = s.cssRules[0]
+        
+        self.assertEqual(len(p.cssRules), 0)
+        
+        m1 = cssutils.css.MarginRule('@top-left', 'color: red')
+        p.add(m1)
+        self.assertEqual(len(p.cssRules), 1)
+
+        m2 = cssutils.css.MarginRule('@top-right', 'color: green')
+        p.add(m2)
+        self.assertEqual(len(p.cssRules), 2)
+        
+        p.deleteRule(m2)
+        self.assertEqual(len(p.cssRules), 1)
+
+        p.deleteRule(0)
+        self.assertEqual(len(p.cssRules), 0)
+        
+        
+    
     def test_style(self):
         "CSSPageRule.style (and references)"
         r = cssutils.css.CSSPageRule()

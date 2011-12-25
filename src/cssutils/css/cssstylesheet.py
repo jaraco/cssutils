@@ -245,14 +245,20 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             if rule.wellformed:
                 self.insertRule(rule)
             return 3
-
+        
         def unknownrule(expected, seq, token, tokenizer):
             # parse and consume tokens in any case
-            self._log.warn(u'CSSStylesheet: Unknown @rule found.',
-                           token, neverraise=True)
-            rule = cssutils.css.CSSUnknownRule(self._tokensupto2(tokenizer,
-                                                                 token),
-                                               parentStyleSheet=self)
+            if token[1] in cssutils.css.MarginRule.margins:
+                self._log.error(u'CSSStylesheet: MarginRule out CSSPageRule.',
+                                token, neverraise=True)
+                rule = cssutils.css.MarginRule(parentStyleSheet=self)
+                rule.cssText = self._tokensupto2(tokenizer, token)
+            else:
+                self._log.warn(u'CSSStylesheet: Unknown @rule found.',
+                               token, neverraise=True)
+                rule = cssutils.css.CSSUnknownRule(parentStyleSheet=self)
+                rule.cssText = self._tokensupto2(tokenizer, token)
+                
             if rule.wellformed:
                 self.insertRule(rule)
 

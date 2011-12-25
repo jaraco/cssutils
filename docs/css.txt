@@ -58,11 +58,19 @@ CSS rules
    :members:
    :inherited-members:
 
+
 ``CSSPageRule``
 ---------------
 .. autoclass:: cssutils.css.CSSPageRule
    :members:
    :inherited-members:
+
+``MarginRule``
+---------------
+.. autoclass:: cssutils.css.MarginRule
+   :members:
+   :inherited-members:
+
 
 ``CSSStyleRule``
 ----------------

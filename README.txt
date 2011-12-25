@@ -6,7 +6,7 @@ README
 -------------------------------------------------------
 cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
-:Copyright: 2004-2011 Christof Hoeke
+:Copyright: 2004-2012 Christof Hoeke
 
 Overview
 ========
@@ -25,7 +25,7 @@ Based upon and partly implementing the following specifications :
 `Namespaces <http://dev.w3.org/csswg/css3-namespace/>`__
     Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5 for dev version
 `CSS3 Module: Pages Media <`http://www.w3.org/TR/css3-page/>`__
-    Most properties of this spec are implemented and the additional @rules should at least parse (as ``CSSUnknownRule``)
+    Most properties of this spec are implemented including MarginRules
 `Selectors <http://www.w3.org/TR/css3-selectors/>`__
     The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
 `CSS Backgrounds and Borders Module Level 3 <http://www.w3.org/TR/css3-background/>`__, `CSS3 Basic User Interface Module <http://www.w3.org/TR/css3-ui/#resize>`__, `CSS Text Level 3 <http://www.w3.org/TR/css3-text/>`__
