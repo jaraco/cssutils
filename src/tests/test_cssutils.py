@@ -19,6 +19,12 @@ except ImportError:
 
 class CSSutilsTestCase(basetest.BaseTestCase):
 
+    def setUp(self):
+        cssutils.ser.prefs.useDefaults()
+    
+    def tearDown(self):
+        cssutils.ser.prefs.useDefaults()
+        
     exp = u'''@import "import/import2.css";
 .import {
     /* ./import.css */
@@ -57,7 +63,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(./../images/example.gif)\n    }'.encode())
+        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
 
         tests = {
                  'a {color: red}': u'a {\n    color: red\n    }',
@@ -90,7 +96,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(./../images/example.gif)\n    }'.encode())
+        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
         
         # name is used for open and setting of href automatically
         # test needs to be relative to this test file!
@@ -115,7 +121,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(./../images/example.gif)\n    }'.encode())
+        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
         
         # next test
         css = u'a:after { content: "羊蹄€\u2020" }'
@@ -181,12 +187,12 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual(u'import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(./../images/example.gif)\n    }'.encode())
+        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
 
         ir2 = irs.cssRules[0]
         self.assertEqual(u'../import3.css', ir2.href)
         irs2 = ir2.styleSheet
-        self.assertEqual(irs2.cssText, '/* import3 */\n.import3 {\n    /* from ./import/../import3.css */\n    background: url(import/images2/../../images/example3.gif)\n    }'.encode())
+        self.assertEqual(irs2.cssText, '/* import3 */\n.import3 {\n    /* from ./import/../import3.css */\n    background: url(images/example3.gif);\n    background: url(./images/example3.gif);\n    background: url(import/images2/example2.gif);\n    background: url(./import/images2/example2.gif);\n    background: url(import/images2/../../images/example3.gif)\n    }'.encode())
 
     def test_setCSSSerializer(self):
         "cssutils.setSerializer() and cssutils.ser"
@@ -411,9 +417,9 @@ a {
     z: url(b/subimg/subimg.gif)
     }'''.encode(), r.cssText)
         
+            cssutils.ser.prefs.useDefaults()
         else:
             self.assertEqual(False, u'Mock needed for this test')
-
 
 if __name__ == '__main__':
     import unittest

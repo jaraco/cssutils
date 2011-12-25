@@ -37,6 +37,7 @@ __all__ = [
     'CSSMediaRule',
     'CSSNamespaceRule',
     'CSSPageRule',
+    'MarginRule',
     'CSSStyleRule',
     'CSSUnknownRule',
     'CSSVariablesRule',
@@ -66,6 +67,7 @@ from cssimportrule import *
 from cssmediarule import *
 from cssnamespacerule import *
 from csspagerule import *
+from marginrule import *
 from cssstylerule import *
 from cssvariablesrule import *
 from cssunknownrule import *

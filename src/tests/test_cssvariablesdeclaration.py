@@ -10,6 +10,9 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
     def setUp(self):
         self.r = cssutils.css.CSSVariablesDeclaration()
 
+    def tearDown(self):
+        cssutils.ser.prefs.useDefaults()
+
     def test_init(self):
         "CSSVariablesDeclaration.__init__()"
         v = cssutils.css.CSSVariablesDeclaration()

@@ -6,9 +6,6 @@ import cssutils
 import cssutils.settings
 
 class Settings(test_cssrule.CSSRuleTestCase):
-
-    def tearDown(self):
-        cssutils.ser.prefs.useDefaults()
         
     def test_set(self):
         "settings.set()"
@@ -20,6 +17,8 @@ class Settings(test_cssrule.CSSRuleTestCase):
         cssutils.settings.set('DXImageTransform.Microsoft', True)
         self.assertEqual(cssutils.parseString(text).cssText,
                          'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'.encode())
+
+        cssutils.ser.prefs.useDefaults()
         
 
 if __name__ == '__main__':

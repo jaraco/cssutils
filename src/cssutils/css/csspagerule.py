@@ -3,7 +3,9 @@ __all__ = ['CSSPageRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+from itertools import chain
 from cssstyledeclaration import CSSStyleDeclaration
+from marginrule import MarginRule
 import cssrule
 import cssutils
 import xml.dom
@@ -50,6 +52,8 @@ class CSSPageRule(cssrule.CSSRule):
             self.style = style
         else:
             self.style = CSSStyleDeclaration()
+
+        self.cssRules = cssutils.css.CSSRuleList()
         
         tempseq.append(self.style, 'style')
 
@@ -68,6 +72,23 @@ class CSSPageRule(cssrule.CSSRule):
                 self.selectorText, 
                 self.style.cssText,
                 id(self))
+
+    # TODO: refactor with @media!
+    def _setCssRules(self, cssRules):
+        "Set new cssRules and update contained rules refs."
+        cssRules.append = self.insertRule
+        cssRules.extend = self.insertRule
+        cssRules.__delitem__ == self.deleteRule
+        
+        for rule in cssRules:
+            rule._parentStyleSheet = None #self.parentStyleSheet?
+            rule._parentRule = self
+            
+        self._cssRules = cssRules
+
+    cssRules = property(lambda self: self._cssRules, _setCssRules,
+            "All Rules in this style sheet, a "
+            ":class:`~cssutils.css.CSSRuleList`.")
 
     def __parseSelectorText(self, selectorText):
         """
@@ -153,6 +174,26 @@ class CSSPageRule(cssrule.CSSRule):
             
         return wellformed, newseq
 
+
+    def __parseMarginAndStyle(self, tokens):
+        "tokens is a list, no generator (yet)"        
+        g = (t for t in tokens)
+        styletokens = []
+        
+        # new rules until parse done
+        cssRules = []
+        
+        for token in g:
+            if (token[0] == 'ATKEYWORD'):                
+                rule = MarginRule(chain([token], g))
+                cssRules.append(rule)
+                continue
+            
+            styletokens.append(token)
+
+        return cssRules, styletokens
+        
+
     def _getCssText(self):
         """Return serialized property cssText."""
         return cssutils.ser.do_CSSPageRule(self)
@@ -214,15 +255,23 @@ class CSSPageRule(cssrule.CSSRule):
                 if 'EOF' == type_:
                     # add again as style needs it
                     styletokens.append(braceorEOFtoken)
+                    
+                # filter pagemargin rules out first
+                cssRules, styletokens = self.__parseMarginAndStyle(styletokens)
+                    
                 # SET, may raise:
                 newStyle.cssText = styletokens
 
             if ok:
                 self._selectorText = newselectorseq
                 self.style = newStyle 
+                self.cssRules = cssutils.css.CSSRuleList()
+                for r in cssRules:
+                    self.cssRules.append(r)
                 
     cssText = property(_getCssText, _setCssText,
         doc=u"(DOM) The parsable textual representation of this rule.")
+
 
     def _getSelectorText(self):
         """Wrapper for cssutils Selector object."""
@@ -279,3 +328,21 @@ class CSSPageRule(cssrule.CSSRule):
     
     # constant but needed:
     wellformed = property(lambda self: True)
+
+
+    # TODO: refactor with @media
+    def deleteRule(self, index):
+        self._checkReadonly()
+        
+        del self._cssRules[index]
+
+    def insertRule(self, rule, index=None):
+        self._checkReadonly()
+        
+        if index is None:
+            index = len(self._cssRules)
+        
+        self._cssRules.insert(index, rule)
+        rule._parentRule = self
+        rule._parentStyleSheet = self.parentStyleSheet
+        return index

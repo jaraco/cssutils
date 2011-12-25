@@ -13,6 +13,9 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r_type = cssutils.css.CSSUnknownRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
+    def tearDown(self):
+        cssutils.ser.prefs.useDefaults()
+        
     def test_init(self):
         "CSSUnknownRule.type and init"
         super(CSSUnknownRuleTestCase, self).test_init()
@@ -60,11 +63,11 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
             # not normal rules!
             u'@font-facex{}': u'@font-facex {\n    }',
             u'@importurl(x.css);': u'@importurl (x . css);',
-            u'@mediaAll{}': u'@mediaAll {\n    }',
+            u'@mediaAll{}': u'@mediaall {\n    }',
             u'@namespacep"x";': u'@namespacep "x";',
-            u'@pageX{}': u'@pageX {\n    }',
-            u'@bottom { content: counter(page) }': u'@bottom {\n    content: counter(page)\n    }', 
-            u'@bottom { content: "x" counter(page) "y"}': u'@bottom {\n    content: "x" counter(page) "y"\n    }' 
+            u'@pageX{}': u'@pagex {\n    }',
+            u'@xbottom { content: counter(page) }': u'@xbottom {\n    content: counter(page)\n    }', 
+            u'@xbottom { content: "x" counter(page) "y"}': u'@xbottom {\n    content: "x" counter(page) "y"\n    }' 
             }
         self.do_equal_p(tests)
         

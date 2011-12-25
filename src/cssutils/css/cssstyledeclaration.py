@@ -319,7 +319,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         newseq = self._tempSeq()
         wellformed, expected = self._parse(expected=None,
             seq=newseq, tokenizer=tokenizer,
-            productions={'IDENT': ident},#, 'CHAR': char},
+            productions={'IDENT': ident},
             default=unexpected)
         # wellformed set by parse
 

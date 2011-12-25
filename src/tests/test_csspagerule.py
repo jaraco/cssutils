@@ -8,11 +8,16 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSPageRuleTestCase, self).setUp()
+        
+        cssutils.ser.prefs.useDefaults()
         self.r = cssutils.css.CSSPageRule()
         self.rRO = cssutils.css.CSSPageRule(readonly=True)
         self.r_type = cssutils.css.CSSPageRule.PAGE_RULE#
         self.r_typeString = 'PAGE_RULE'
 
+    def tearDown(self):
+        cssutils.ser.prefs.useDefaults()
+            
     def test_init(self):
         "CSSPageRule.__init__()"
         super(CSSPageRuleTestCase, self).test_init()

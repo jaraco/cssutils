@@ -240,11 +240,12 @@ class Out(object):
                 val = helper.uri(val)
             elif 'HASH' == typ:
                 val = self.ser._hash(val)
-            elif val in u'+>~,:{;)]/=':
+            elif val in u'+>~,:{;)]/=}':
                 self._remove_last_if_S()
 
             # APPEND
-            if indent:
+            
+            if indent or (val == u'}' and self.ser.prefs.indentClosingBrace):
                 self.out.append(self.ser._indentblock(val, self.ser._level+1))
             else:
                 if val.endswith(u' '):
@@ -270,7 +271,7 @@ class Out(object):
                 self.out.append(self.ser.prefs.lineSeparator)
             elif u';' == val: # end or prop or block
                 self.out.append(self.ser.prefs.lineSeparator)
-            elif val not in u'}[]()/=' and typ != 'FUNCTION' and space:
+            elif val not in u'}[]()/=' and space and typ != 'FUNCTION':
                 self.out.append(self.ser.prefs.spacer)
                 if typ != 'STRING' and not self.ser.prefs.spacer and \
                    self.out and not self.out[-1].endswith(u' '):
@@ -305,12 +306,12 @@ class CSSSerializer(object):
         self._selectors = [] # holds SelectorList
         self._selectorlevel = 0 # current specificity nesting level
 
-    def _atkeyword(self, rule, default):
+    def _atkeyword(self, rule):
         "returns default or source atkeyword depending on prefs"
         if self.prefs.defaultAtKeyword:
-            return default
+            return rule.atkeyword # default
         else:
-            return rule.atkeyword
+            return rule._keyword
 
     def _indentblock(self, text, level):
         """
@@ -423,7 +424,7 @@ class CSSSerializer(object):
 
         if variablesText and rule.wellformed and not self.prefs.resolveVariables:
             out = Out(self)
-            out.append(self._atkeyword(rule, u'@variables'))
+            out.append(self._atkeyword(rule))
             for item in rule.seq:
                 # assume comments {
                 out.append(item.value, item.type)
@@ -447,7 +448,7 @@ class CSSSerializer(object):
 
         if styleText and rule.wellformed:
             out = Out(self)
-            out.append(self._atkeyword(rule, u'@font-face'))
+            out.append(self._atkeyword(rule))
             for item in rule.seq:
                 # assume comments {
                 out.append(item.value, item.type)
@@ -473,7 +474,7 @@ class CSSSerializer(object):
         """
         if rule.wellformed:
             out = Out(self)
-            out.append(self._atkeyword(rule, u'@import'))
+            out.append(self._atkeyword(rule))
 
             for item in rule.seq:
                 typ, val = item.type, item.value
@@ -512,7 +513,7 @@ class CSSSerializer(object):
         """
         if rule.wellformed:
             out = Out(self)
-            out.append(self._atkeyword(rule, u'@namespace'))
+            out.append(self._atkeyword(rule))
             for item in rule.seq:
                 typ, val = item.type, item.value
                 if 'namespaceURI' == typ:
@@ -537,7 +538,7 @@ class CSSSerializer(object):
             return u''
 
         # @media
-        out = [self._atkeyword(rule, u'@media')]
+        out = [self._atkeyword(rule)]
         if not len(self.prefs.spacer):
             # for now always with space as only webkit supports @mediaall?
             out.append(u' ')
@@ -586,17 +587,52 @@ class CSSSerializer(object):
             string
         style
             CSSStyleDeclaration
+        cssRules
+            CSSRuleList of MarginRule objects
 
         + CSSComments
         """
-        styleText = self.do_css_CSSStyleDeclaration(rule.style)
-        if styleText and rule.wellformed:
+        
+        # rules
+        rules = u''
+        rulesout = []
+        for r in rule.cssRules:
+            rtext = r.cssText
+            if rtext:
+                # indent each line of cssText
+                rulesout.append(rtext)
+                rulesout.append(self.prefs.lineSeparator)
+        
+        rulesText = u''.join(rulesout).strip()
+
+        # omit semicolon only if no MarginRules
+        styleText = self.do_css_CSSStyleDeclaration(rule.style,
+                                                    omit=not rulesText)
+        
+        if (styleText or rulesText) and rule.wellformed:
             out = Out(self)
-            out.append(self._atkeyword(rule, u'@page'))
+            out.append(self._atkeyword(rule))
             out.append(rule.selectorText)
             out.append(u'{')
-            out.append(u'%s%s}' % (styleText, self.prefs.lineSeparator),
-                       indent=1)
+            
+            if styleText:
+                if not rulesText:
+                    out.append(u'%s%s' % (styleText,
+                                          self.prefs.lineSeparator
+                                          ), indent=1)
+                else:
+                    out.append(styleText, typ='x', indent=1, space=False)
+                
+            if rulesText:            
+                out.append(u'%s%s%s' % (self.prefs.lineSeparator,
+                                      rulesText,
+                                      self.prefs.lineSeparator
+                                      ), indent=1, space=False)
+            #?
+            self._level -= 1 
+            out.append(u'}')
+            self._level += 1 
+            
             return out.value()
         else:
             return u''
@@ -610,6 +646,32 @@ class CSSSerializer(object):
             else:
                 out.append(item.value, item.type)
         return out.value()
+
+    def do_MarginRule(self, rule):
+        """
+        serializes MarginRule
+
+        atkeyword
+            string
+        style
+            CSSStyleDeclaration
+
+        + CSSComments
+        """
+        # might not be set at all?!
+        if rule.atkeyword:
+            styleText = self.do_css_CSSStyleDeclaration(rule.style)
+                    
+            if styleText and rule.wellformed:
+                out = Out(self)
+                out.append(self._atkeyword(rule), typ='ATKEYWORD')
+                out.append(u'{')
+                out.append(u'%s%s' % (self._indentblock(styleText, self._level+1),
+                                       self.prefs.lineSeparator))
+                out.append(u'}')
+                return out.value()
+
+        return u''
 
     def do_CSSUnknownRule(self, rule):
         """
@@ -685,7 +747,7 @@ class CSSSerializer(object):
 
         selectorText = self.do_css_SelectorList(rule.selectorList)
         if not selectorText or not rule.wellformed:
-            return u''
+            return u''        
         self._level += 1
         styleText = u''
         try:
@@ -795,7 +857,7 @@ class CSSSerializer(object):
         else:
             return u''
 
-    def do_css_CSSStyleDeclaration(self, style, separator=None):
+    def do_css_CSSStyleDeclaration(self, style, separator=None, omit=True):
         """
         Style declaration of CSSStyleRule
         """
@@ -818,6 +880,8 @@ class CSSSerializer(object):
                          or not isinstance(item.value, cssutils.css.Property)]
 
             out = []
+            omitLastSemicolon = omit and self.prefs.omitLastSemicolon
+            
             for i, item in enumerate(seq):
                 typ, val = item.type, item.value
                 if isinstance(val, cssutils.css.CSSComment):
@@ -829,7 +893,7 @@ class CSSSerializer(object):
                     # PropertySimilarNameList
                     if val.cssText:
                         out.append(val.cssText)
-                        if not (self.prefs.omitLastSemicolon and i==len(seq)-1):
+                        if not (omitLastSemicolon and i==len(seq)-1):
                             out.append(u';')
                         out.append(separator)
                 elif isinstance(val, cssutils.css.CSSUnknownRule):

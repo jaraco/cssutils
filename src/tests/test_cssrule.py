@@ -24,6 +24,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         relf.r_type the type as defined in CSSRule
         """
         super(CSSRuleTestCase, self).setUp()
+        
         self.sheet = cssutils.css.CSSStyleSheet()
         self.r = cssutils.css.CSSRule()
         self.rRO = cssutils.css.CSSRule()
@@ -31,6 +32,9 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.r_type = cssutils.css.CSSRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
+    def tearDown(self):
+        cssutils.ser.prefs.useDefaults()
+        
     def test_init(self):
         "CSSRule.type and init"
         self.assertEqual(self.r_type, self.r.type)
