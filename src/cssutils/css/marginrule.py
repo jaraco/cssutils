@@ -16,9 +16,34 @@ class MarginRule(cssrule.CSSRule):
     context).
 
     Format::
-
+        
+        margin :
+               margin_sym S* '{' declaration [ ';' S* declaration? ]* '}' S*
+               ;
+        
+        margin_sym :
+               TOPLEFTCORNER_SYM | 
+               TOPLEFT_SYM | 
+               TOPCENTER_SYM | 
+               TOPRIGHT_SYM | 
+               TOPRIGHTCORNER_SYM |
+               BOTTOMLEFTCORNER_SYM | 
+               BOTTOMLEFT_SYM | 
+               BOTTOMCENTER_SYM | 
+               BOTTOMRIGHT_SYM |
+               BOTTOMRIGHTCORNER_SYM |
+               LEFTTOP_SYM |
+               LEFTMIDDLE_SYM |
+               LEFTBOTTOM_SYM |
+               RIGHTTOP_SYM |
+               RIGHTMIDDLE_SYM |
+               RIGHTBOTTOM_SYM 
+               ;
+        
+    e.g.::
+    
         @top-left {
-            content: "Hamlet";
+            content: "123";
             }
     """
     margins = ['@top-left-corner',
@@ -77,7 +102,7 @@ class MarginRule(cssrule.CSSRule):
 
     margin = property(lambda self: self._atkeyword, _setMargin,
                       doc=u"Margin area of parent CSSPageRule. "
-                          u"`margin` and `atkeyword `are both normalized "
+                          u"`margin` and `atkeyword` are both normalized "
                           u"@keyword of the @rule.")
 
     atkeyword = margin 
