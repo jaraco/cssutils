@@ -183,8 +183,7 @@ class Out(object):
             # remove trailing S
             del self.out[-1]
 
-    def append(self, val, typ=None, space=True, keepS=False, indent=False,
-               lineSeparator=False):
+    def append(self, val, type_=None, space=True, keepS=False, indent=False):
         """Appends val. Adds a single S after each token except as follows:
 
         - typ COMMENT
@@ -199,7 +198,7 @@ class Out(object):
             calls helper.uri
         - val ``{``
             adds LF after
-        - val ``;``
+        - val ``;``, typ 'styletext'
             removes S before and adds LF after
         - val ``, :``
             removes S before
@@ -209,36 +208,36 @@ class Out(object):
             add ``*spacer`` except ``space=False``
         """
         prefspace = self.ser.prefs.spacer
-        if val or typ in ('STRING', 'URI'):
+        if val or type_ in ('STRING', 'URI'):
             # PRE
-            if 'COMMENT' == typ:
+            if 'COMMENT' == type_:
                 if self.ser.prefs.keepComments:
                     val = val.cssText
                 else:
                     return
             elif hasattr(val, 'cssText'):
                 val = val.cssText
-#            elif typ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
+#            elif type_ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
 #                val = val.cssText
-            elif 'S' == typ and not keepS:
+            elif 'S' == type_ and not keepS:
                 return
-            elif 'S' == typ and keepS:
+            elif 'S' == type_ and keepS:
                 val = u' '
-#            elif typ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == u'0':
+#            elif type_ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == u'0':
 #                # remove sign + or - if value is zero
 #                # TODO: only for lenghts!
 #                if self.out and self.out[-1] in u'+-':
 #                    del self.out[-1]
-            elif 'STRING' == typ:
+            elif 'STRING' == type_:
                 # may be empty but MUST not be None
                 if val is None:
                     return
                 val = helper.string(val)
                 if not prefspace:
                     self._remove_last_if_S()
-            elif 'URI' == typ:
+            elif 'URI' == type_:
                 val = helper.uri(val)
-            elif 'HASH' == typ:
+            elif 'HASH' == type_:
                 val = self.ser._hash(val)
             elif val in u'+>~,:{;)]/=}':
                 self._remove_last_if_S()
@@ -253,10 +252,7 @@ class Out(object):
                 self.out.append(val)
 
             # POST
-            if lineSeparator:
-                # Property , ...
-                pass
-            elif val in u'+>~': # enclose selector combinator
+            if val in u'+>~': # enclose selector combinator
                 self.out.insert(-1, self.ser.prefs.selectorCombinatorSpacer)
                 self.out.append(self.ser.prefs.selectorCombinatorSpacer)
             elif u')' == val and not keepS: # CHAR funcend
@@ -269,11 +265,11 @@ class Out(object):
             elif u'{' == val: # block start
                 self.out.insert(-1, self.ser.prefs.paranthesisSpacer)
                 self.out.append(self.ser.prefs.lineSeparator)
-            elif u';' == val: # end or prop or block
+            elif u';' == val or 'styletext' == type_: # end or prop or block
                 self.out.append(self.ser.prefs.lineSeparator)
-            elif val not in u'}[]()/=' and space and typ != 'FUNCTION':
+            elif val not in u'}[]()/=' and space and type_ != 'FUNCTION':
                 self.out.append(self.ser.prefs.spacer)
-                if typ != 'STRING' and not self.ser.prefs.spacer and \
+                if type_ != 'STRING' and not self.ser.prefs.spacer and \
                    self.out and not self.out[-1].endswith(u' '):
                     self.out.append(u' ')
 
@@ -477,8 +473,8 @@ class CSSSerializer(object):
             out.append(self._atkeyword(rule))
 
             for item in rule.seq:
-                typ, val = item.type, item.value
-                if 'href' == typ:
+                type_, val = item.type, item.value
+                if 'href' == type_:
                     # "href" or url(href)
                     if self.prefs.importHrefFormat == 'string' or (
                              self.prefs.importHrefFormat != 'uri' and
@@ -486,15 +482,15 @@ class CSSSerializer(object):
                         out.append(val, 'STRING')
                     else:
                         out.append(val, 'URI')
-                elif 'media' == typ:
+                elif 'media' == type_:
                     # media
                     mediaText = self.do_stylesheets_medialist(val)
                     if mediaText and mediaText != u'all':
                         out.append(mediaText)
-                elif 'name' == typ:
+                elif 'name' == type_:
                     out.append(val, 'STRING')
                 else:
-                    out.append(val, typ)
+                    out.append(val, type_)
 
             return out.value(end=u';')
         else:
@@ -515,11 +511,11 @@ class CSSSerializer(object):
             out = Out(self)
             out.append(self._atkeyword(rule))
             for item in rule.seq:
-                typ, val = item.type, item.value
-                if 'namespaceURI' == typ:
+                type_, val = item.type, item.value
+                if 'namespaceURI' == type_:
                     out.append(val, 'STRING')
                 else:
-                    out.append(val, typ)
+                    out.append(val, type_)
 
             return out.value(end=u';')
         else:
@@ -621,11 +617,10 @@ class CSSSerializer(object):
                                           self.prefs.lineSeparator
                                           ), indent=1)
                 else:
-                    out.append(styleText, typ='x', indent=1, space=False)
+                    out.append(styleText, type_='styletext', indent=1, space=False)
                 
             if rulesText:            
-                out.append(u'%s%s%s' % (self.prefs.lineSeparator,
-                                      rulesText,
+                out.append(u'%s%s' % (rulesText,
                                       self.prefs.lineSeparator
                                       ), indent=1, space=False)
             #?
@@ -664,7 +659,7 @@ class CSSSerializer(object):
                     
             if styleText and rule.wellformed:
                 out = Out(self)
-                out.append(self._atkeyword(rule), typ='ATKEYWORD')
+                out.append(self._atkeyword(rule), type_='ATKEYWORD')
                 out.append(u'{')
                 out.append(u'%s%s' % (self._indentblock(styleText, self._level+1),
                                        self.prefs.lineSeparator))
@@ -685,7 +680,7 @@ class CSSSerializer(object):
 
             stacks = []
             for item in rule.seq:
-                typ, val = item.type, item.value
+                type_, val = item.type, item.value
                 # PRE
                 if u'}' == val:
                     # close last open item on stack
@@ -698,9 +693,9 @@ class CSSSerializer(object):
                         val = self._indentblock(val, min(1, len(stacks)+1))
                 # APPEND
                 if stacks:
-                    stacks[-1].append(val, typ)
+                    stacks[-1].append(val, type_)
                 else:
-                    out.append(val, typ)
+                    out.append(val, type_)
 
                 # POST
                 if u'{' == val:
@@ -801,13 +796,13 @@ class CSSSerializer(object):
 
             DEFAULTURI = selector._namespaces.get('', None)
             for item in selector.seq:
-                typ, val = item.type, item.value
+                type_, val = item.type, item.value
                 if isinstance(val, tuple):
                     # namespaceURI|name (element or attribute)
                     namespaceURI, name = val
                     if DEFAULTURI == namespaceURI or (not DEFAULTURI and
                                                       namespaceURI is None):
-                        out.append(name, typ, space=False)
+                        out.append(name, type_, space=False)
                     else:
                         if namespaceURI == cssutils._ANYNS:
                             prefix = u'*'
@@ -818,9 +813,9 @@ class CSSSerializer(object):
                             except IndexError:
                                 prefix = u''
 
-                        out.append(u'%s|%s' % (prefix, name), typ, space=False)
+                        out.append(u'%s|%s' % (prefix, name), type_, space=False)
                 else:
-                    out.append(val, typ, space=False, keepS=True)
+                    out.append(val, type_, space=False, keepS=True)
 
             return out.value()
         else:
@@ -883,7 +878,7 @@ class CSSSerializer(object):
             omitLastSemicolon = omit and self.prefs.omitLastSemicolon
             
             for i, item in enumerate(seq):
-                typ, val = item.type, item.value
+                type_, val = item.type, item.value
                 if isinstance(val, cssutils.css.CSSComment):
                     # CSSComment
                     if self.prefs.keepComments:
