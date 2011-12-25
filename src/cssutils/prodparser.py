@@ -18,6 +18,7 @@ __all__ = ['ProdParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: parse.py 1418 2008-08-09 19:27:50Z cthedot $'
 
+from helper import pushtoken
 import cssutils
 import sys
 
@@ -708,3 +709,29 @@ class PreDef(object):
                     toSeq=toSeq,
                     stop=stop,
                     nextSor=nextSor)
+
+    # used for MarginRule for now:
+    @staticmethod
+    def unknownrule(name=u'@', toStore=None):
+        """@rule dummy (matches ATKEYWORD to remove unknown rule tokens from 
+        stream::
+        
+            @x;
+            @x {...}
+            
+        no nested yet!
+        """            
+        def rule(tokens):
+            saved = []
+            for t in tokens:
+                saved.append(t)
+                if (t[1] == u'}' or t[1] == u';'):
+                    return cssutils.css.CSSUnknownRule(saved)
+        
+        return Prod(name=name,
+                    match=lambda t, v: t == u'ATKEYWORD',
+                    toSeq=lambda t, tokens: (u'CSSUnknownRule', 
+                                             rule(pushtoken(t, tokens))
+                                             ),
+                    toStore=toStore
+                    )

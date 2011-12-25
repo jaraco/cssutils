@@ -655,6 +655,18 @@ class CSSSerializer(object):
                     
             if styleText and rule.wellformed:
                 out = Out(self)
+                
+#                # use seq but styledecl missing
+#                for item in rule.seq:
+#                    if item.type == 'ATKEYWORD':
+#                        # move logic to Out
+#                        out.append(self._atkeyword(rule), type_=item.type)
+#                    else:
+#                        print type_, val
+#                        out.append(item.value, item.type)
+#                return out.value()
+                
+                # ok for now:
                 out.append(self._atkeyword(rule), type_='ATKEYWORD')
                 out.append(u'{')
                 out.append(u'%s%s' % (self._indentblock(styleText, self._level+1),
