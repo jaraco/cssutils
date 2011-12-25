@@ -139,7 +139,16 @@ class MarginRule(cssrule.CSSRule):
               Raised if the rule is readonly.
         """
         super(MarginRule, self)._setCssText(cssText)
-        
+                
+        # TEMP: all style tokens are saved in store to fill styledeclaration
+        # TODO: resolve when all generators
+        styletokens = Prod(name='styletokens',
+                           match=lambda t, v: v != u'}',
+                           #toSeq=False,
+                           toStore='styletokens',
+                           storeToken=True 
+                           )
+                
         prods = Sequence(Prod(name='@ margin', 
                               match=lambda t, v: 
                                 t == 'ATKEYWORD' and 
@@ -149,11 +158,8 @@ class MarginRule(cssrule.CSSRule):
                               #, exception=xml.dom.InvalidModificationErr 
                               ),
                          PreDef.char('OPEN', u'{'),
-                         Sequence(Prod(name='styletokens', 
-                                       match=lambda t, v: v != u'}',
-                                       toStore='styletokens',
-                                       storeToken=True # TODO: resolve later
-                                       ),
+                         Sequence(Choice(PreDef.unknownrule(toStore='@'), 
+                                         styletokens),
                                   minmax=lambda: (0, None)
                          ),
                          PreDef.char('CLOSE', u'}', stopAndKeep=True)
@@ -164,6 +170,9 @@ class MarginRule(cssrule.CSSRule):
                                                     prods)
         
         if ok:
+            # TODO: use seq for serializing instead of fixed stuff?
+            self._setSeq(seq)
+            
             if 'margin' in store:
                 # may raise:
                 self.margin = store['margin'].value
@@ -172,7 +181,9 @@ class MarginRule(cssrule.CSSRule):
                                 self.margin,
                                 error=xml.dom.InvalidModificationErr)
             
+            # new empty style
             self.style = CSSStyleDeclaration(parentRule=self)
+            
             if 'styletokens' in store:
                 # may raise:
                 self.style.cssText = store['styletokens']
