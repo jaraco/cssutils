@@ -34,11 +34,13 @@ Development Version
 ===================
 
 HEAD
-    - FEATURE: Implemented API for ``MarginRule`` inside ``CSSPageRule``
+    - FEATURE: Implemented API for ``MarginRule`` inside ``CSSPageRule``, see http://www.w3.org/TR/css3-page/. You can also use e.g. ``CSSPageRule['@top-left']`` to retrieve the MarginRule it it is set etc. All dict like methods should be there.
+
     - FEATURE: ``parseStyle()`` has optional parameter ``validate=False`` now too to disable validation of properties (default is always ``True``).
 
     + CHANGE: @rules attribute ``atkeyword`` value is now normalized. The actual keyword (example ``@IMPorT``) is kept and is optionally reserialized but in the example ``atkeyword == '@import'``
 
+    - BUGFIX: 'auto' is now an invalid CSSPageRule pagename.
     - BUGFIX: Fixed issue for GoogleAppEngine (GAE) which somehow handles codecs differently. ``parseUrl`` should work now.
 
 

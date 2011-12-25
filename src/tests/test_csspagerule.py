@@ -89,6 +89,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@page name:right { margin: 0 }': EXP % u'name:right',
             u'@page name:first { margin: 0 }': EXP % u'name:first',
             u'@page :left { margin: 0 }': EXP % u':left',
+            u'@page:left { margin: 0 }': EXP % u':left',
             u'@page :right { margin: 0 }': EXP % u':right',
             u'@page :first { margin: 0 }': EXP % u':first',
             u'@page :UNKNOWNIDENT { margin: 0 }': EXP % u':UNKNOWNIDENT',
@@ -116,6 +117,10 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_equal_p(tests)
 
         tests = {
+            # auto is not allowed
+            u'@page AUto {}': xml.dom.SyntaxErr,
+            u'@page AUto:left {}': xml.dom.SyntaxErr,
+            
             u'@page : {}': xml.dom.SyntaxErr,
             u'@page :/*1*/left {}': xml.dom.SyntaxErr,
             u'@page : left {}': xml.dom.SyntaxErr,
@@ -207,26 +212,79 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_cssRules(self):
         "CSSPageRule.cssRules"
-        s = cssutils.parseString('@page {}')
+        s = cssutils.parseString(u'@page {}')
         p = s.cssRules[0]
         
         self.assertEqual(len(p.cssRules), 0)
         
-        m1 = cssutils.css.MarginRule('@top-left', 'color: red')
-        p.add(m1)
+        # add and insert
+        m1 = cssutils.css.MarginRule(u'@top-left', u'color: red')
+        i = p.add(m1)
+        self.assertEqual(i, 0)
         self.assertEqual(len(p.cssRules), 1)
 
-        m2 = cssutils.css.MarginRule('@top-right', 'color: green')
-        p.add(m2)
+        m3 = cssutils.css.MarginRule()
+        m3.cssText = u'@top-right { color: blue }'
+        i = p.insertRule(m3)
+        self.assertEqual(i, 1)
         self.assertEqual(len(p.cssRules), 2)
+
+        m2 = cssutils.css.MarginRule()
+        m2.margin = u'@top-center'
+        m2.style = u'color: green'
+        i = p.insertRule(m2, 1)
+        self.assertEqual(i, 1)
+        self.assertEqual(len(p.cssRules), 3)
+
+        self.assertEqual(p.cssText, u'''@page {
+    @top-left {
+        color: red
+        }
+    @top-center {
+        color: green
+        }
+    @top-right {
+        color: blue
+        }
+    }''')
         
+        # keys and dict index
+        self.assertEqual(u'@top-left' in p, True)
+        self.assertEqual(u'@bottom-left' in p, False)
+        
+        self.assertEqual(p.keys(), [u'@top-left', 
+                                    u'@top-center', 
+                                    u'@top-right'])
+        
+        self.assertEqual(p[u'@bottom-left'], None)
+        self.assertEqual(p[u'@top-left'].cssText, u'color: red')
+        p[u'@top-left'] = u'color: #f00'
+        self.assertEqual(p[u'@top-left'].cssText, u'color: #f00')
+        
+        # delete
         p.deleteRule(m2)
-        self.assertEqual(len(p.cssRules), 1)
+        self.assertEqual(len(p.cssRules), 2)
+        self.assertEqual(p.cssText, u'''@page {
+    @top-left {
+        color: #f00
+        }
+    @top-right {
+        color: blue
+        }
+    }''')
 
         p.deleteRule(0)
+        self.assertEqual(len(p.cssRules), 1)        
+        self.assertEqual(m3, p.cssRules[0])
+        self.assertEqual(p.cssText, u'''@page {
+    @top-right {
+        color: blue
+        }
+    }''')
+
+        del p['@top-right']
         self.assertEqual(len(p.cssRules), 0)
-        
-        
+                
     
     def test_style(self):
         "CSSPageRule.style (and references)"

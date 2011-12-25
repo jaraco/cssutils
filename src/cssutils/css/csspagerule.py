@@ -18,13 +18,37 @@ class CSSPageRule(cssrule.CSSRuleRules):
 
     Format::
 
-        page
-          PAGE_SYM S* IDENT? pseudo_page? S* 
-            '{' S* declaration [ ';' S* declaration ]* '}' S*
-          ;
-        pseudo_page
-          ':' [ "left" | "right" | "first" ]
-          ;
+        page :
+               PAGE_SYM S* IDENT? pseudo_page? S* 
+               '{' S* [ declaration | margin ]? [ ';' S* [ declaration | margin ]? ]* '}' S*
+               ;
+        
+        pseudo_page :
+               ':' [ "left" | "right" | "first" ]
+               ;
+        
+        margin :
+               margin_sym S* '{' declaration [ ';' S* declaration? ]* '}' S*
+               ;
+        
+        margin_sym :
+               TOPLEFTCORNER_SYM | 
+               TOPLEFT_SYM | 
+               TOPCENTER_SYM | 
+               TOPRIGHT_SYM | 
+               TOPRIGHTCORNER_SYM |
+               BOTTOMLEFTCORNER_SYM | 
+               BOTTOMLEFT_SYM | 
+               BOTTOMCENTER_SYM | 
+               BOTTOMRIGHT_SYM |
+               BOTTOMRIGHTCORNER_SYM |
+               LEFTTOP_SYM |
+               LEFTMIDDLE_SYM |
+               LEFTBOTTOM_SYM |
+               RIGHTTOP_SYM |
+               RIGHTMIDDLE_SYM |
+               RIGHTBOTTOM_SYM 
+               ;
           
     `cssRules` contains a list of `MarginRule` objects.
     """
@@ -73,6 +97,42 @@ class CSSPageRule(cssrule.CSSRuleRules):
                 self.style.cssText,
                 len(self.cssRules),
                 id(self))
+
+    def __contains__(self, margin):
+        """Check if margin is set in the rule."""
+        return margin in self.keys()
+    
+    def keys(self):
+        "Return list of all set margins (MarginRule)."
+        return list(r.margin for r in self.cssRules)
+    
+    def __getitem__(self, margin):
+        """Retrieve the style (of MarginRule) 
+        for `margin` (which must be normalized).
+        """
+        print margin, self.cssRules
+        for r in self.cssRules:
+            if r.margin == margin:
+                return r.style
+    
+    def __setitem__(self, margin, style):
+        """Set the style (of MarginRule) 
+        for `margin` (which must be normalized).
+        """
+        for i, r in enumerate(self.cssRules):
+            if r.margin == margin:
+                r.style = style
+                return i
+        else:
+            return self.add(MarginRule(margin, style))
+
+    def __delitem__(self, margin):
+        """Delete the style (the MarginRule) 
+        for `margin` (which must be normalized).
+        """
+        for r in self.cssRules:
+            if r.margin == margin:
+                self.deleteRule(r)
 
     def __parseSelectorText(self, selectorText):
         """
@@ -127,7 +187,11 @@ class CSSPageRule(cssrule.CSSRuleRules):
             ""
             val = self._tokenvalue(token)
             if 'page' == expected:
-                seq.append(val, 'IDENT')
+                if self._normalize(val) == u'auto':
+                    self._log.error(u'CSSPageRule selectorText: Invalid pagename.',
+                                    token)
+                else:
+                    seq.append(val, 'IDENT')
                 return ': or EOF'
             else:
                 new['wellformed'] = False
