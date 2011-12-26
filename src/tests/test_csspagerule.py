@@ -218,6 +218,29 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             }
         self.do_raise_r(tests, att='_setSelectorText')
 
+    def test_specificity(self):
+        "CSSPageRule.specificity"
+        r = cssutils.css.CSSPageRule()
+        tests = {
+            u'': (0, 0, 0),
+            u'name': (1, 0, 0),
+            u':first': (0, 1, 0),
+            u':left': (0, 0, 1),
+            u':right': (0, 0, 1),
+            u':UNKNOWNIDENT': (0, 0, 1),
+            u'name:first': (1, 1, 0),
+            u'name:left': (1, 0, 1),
+            u'name:right': (1, 0, 1),
+            u'name:X': (1, 0, 1)
+        }
+        for sel, exp in tests.items():
+            r.selectorText = sel
+            self.assertEqual(r.specificity, exp)
+            
+            r = cssutils.css.CSSPageRule()
+            r.cssText = u'@page %s {}' % sel
+            self.assertEqual(r.specificity, exp)
+
     def test_cssRules(self):
         "CSSPageRule.cssRules"
         s = cssutils.parseString(u'@page {}')

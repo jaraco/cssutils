@@ -65,6 +65,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         super(CSSPageRule, self).__init__(parentRule=parentRule, 
                                           parentStyleSheet=parentStyleSheet)
         self._atkeyword = u'@page'
+        self._specificity = (0, 0, 0)
         
         tempseq = self._tempSeq()
 
@@ -91,9 +92,11 @@ class CSSPageRule(cssrule.CSSRuleRules):
                 self.style.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object selectorText=%r style=%r cssRules=%r at 0x%x>" % (
+        return (u"<cssutils.css.%s object selectorText=%r specificity=%r "+
+               u"style=%r cssRules=%r at 0x%x>") % (
                 self.__class__.__name__,
                 self.selectorText, 
+                self.specificity,
                 self.style.cssText,
                 len(self.cssRules),
                 id(self))
@@ -141,7 +144,9 @@ class CSSPageRule(cssrule.CSSRuleRules):
         see _setSelectorText for details
         """
         # for closures: must be a mutable
-        new = {'wellformed': True, 'last-S': False}
+        new = {'wellformed': True, 'last-S': False,
+               'name': 0, 'first': 0, 'lr': 0}
+        specificity = (0, 0, 0)
 
         def _char(expected, seq, token, tokenizer=None):
             # pseudo_page, :left, :right or :first
@@ -159,14 +164,16 @@ class CSSPageRule(cssrule.CSSRuleRules):
                     if self._prods.IDENT != ityp:
                         self._log.error(u'CSSPageRule selectorText: Expected '
                                         u'IDENT but found: %r' % ival, token)
-                    else:
-                        seq.append(val + ival, 'pseudo')
-                        
+                    else:                        
                         if not ival in (u'first', u'left', u'right'):
                             self._log.warn(u'CSSPageRule: Unknown @page '
                                            u'selector: %r' 
                                            % (u':'+ival,), neverraise=True)
-
+                        if ival == u'first':
+                            new['first'] = 1
+                        else:
+                            new['lr'] = 1
+                        seq.append(val + ival, 'pseudo')
                         return 'EOF'
                 return expected
             else:
@@ -190,7 +197,9 @@ class CSSPageRule(cssrule.CSSRuleRules):
                     self._log.error(u'CSSPageRule selectorText: Invalid pagename.',
                                     token)
                 else:
+                    new['name'] = 1
                     seq.append(val, 'IDENT')
+                    
                 return ': or EOF'
             else:
                 new['wellformed'] = False
@@ -218,8 +227,8 @@ class CSSPageRule(cssrule.CSSRuleRules):
             self._log.error(
                 u'CSSPageRule selectorText: No valid selector: %r' %
                     self._valuestr(selectorText))
-            
-        return wellformed, newseq
+        
+        return wellformed, newseq, (new['name'], new['first'], new['lr'])
 
 
     def __parseMarginAndStyle(self, tokens):
@@ -299,7 +308,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
                 self._log.error(
                     u'CSSPageRule: Trailing content found.', token=nonetoken)
                 
-            selok, newselectorseq = self.__parseSelectorText(selectortokens)
+            selok, newselseq, specificity = self.__parseSelectorText(selectortokens)
             ok = ok and selok
 
             val, type_ = self._tokenvalue(braceorEOFtoken),\
@@ -321,7 +330,8 @@ class CSSPageRule(cssrule.CSSRuleRules):
                 newStyle.cssText = styletokens
 
             if ok:
-                self._selectorText = newselectorseq
+                self._selectorText = newselseq
+                self._specificity = specificity
                 self.style = newStyle 
                 self.cssRules = cssutils.css.CSSRuleList()
                 for r in cssRules:
@@ -356,9 +366,10 @@ class CSSPageRule(cssrule.CSSRuleRules):
         self._checkReadonly()
 
         # may raise SYNTAX_ERR
-        wellformed, newseq = self.__parseSelectorText(selectorText)
+        wellformed, newseq, specificity = self.__parseSelectorText(selectorText)
         if wellformed:
             self._selectorText = newseq
+            self._specificity = specificity
 
     selectorText = property(_getSelectorText, _setSelectorText,
                             doc=u"(DOM) The parsable textual representation of "
@@ -402,6 +413,17 @@ class CSSPageRule(cssrule.CSSRuleRules):
             return
 
         return self._finishInsertRule(rule, index)
+
+    specificity = property(lambda self: self._specificity, 
+         doc=u"""Specificity of this page rule (READONLY). 
+                 Tuple of (f, g, h) where: 
+                
+                 - if the page selector has a named page, f=1; else f=0
+                 - if the page selector has a ':first' pseudo-class, g=1; 
+                 else g=0
+                 - if the page selector has a ':left' or ':right' pseudo-class, 
+                 h=1; else h=0 
+                 """)
 
 
     type = property(lambda self: self.PAGE_RULE, 

@@ -42,17 +42,19 @@ if 1:
 #    print v
 #    
 #    sys.exit(0)
-    
+    cssutils.ser.prefs.keepComments = True
     t = u'''
-    @page :left {
+    @page x {
         a: 1;
         @top-LEFT/*1*/{
+            /*1*/
             m: 1;
             @x;
             @y {a:1}
             m: 2;
         }
         @top-LEFT/*2*/{
+            /*1*/
             m: 3;
             x: 1
         }
@@ -63,9 +65,7 @@ if 1:
     print s.cssText
     
     p = s.cssRules[0]
-    for m in p:
-        print m
-    print p['@top-left']#.cssText
+    print p
 
     
     sys.exit(1)
