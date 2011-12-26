@@ -614,7 +614,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                 self.assertEqual(expected, actual)
 
             # check if all same number of tokens
-            tokens = [t for t in tokenizer.tokenize(css)]
+            tokens = list(tokenizer.tokenize(css))
             self.assertEqual(len(tokens), len(tests[css]))
 
     def test_tokenizefullsheet(self):
@@ -641,7 +641,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                     self.assertEqual(expected, actual)
 
             # check if all same number of tokens
-            tokens = [t for t in tokenizer.tokenize(css, fullsheet=True)]
+            tokens = list(tokenizer.tokenize(css, fullsheet=True))
             # EOF is added so -1
             self.assertEqual(len(tokens) - 1, len(tests[css]))
 

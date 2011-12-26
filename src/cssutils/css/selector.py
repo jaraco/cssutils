@@ -282,8 +282,7 @@ class Selector(cssutils.util.Base2):
                 else:
                     tokens.append(t)
 
-            # TODO: back to generator but not elegant at all!
-            tokenizer = (t for t in tokens) 
+            tokenizer = iter(tokens)
 
             # for closures: must be a mutable
             new = {'context': [''], # stack of: 'attrib', 'negation', 'pseudo'
