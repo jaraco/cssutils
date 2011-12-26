@@ -240,9 +240,12 @@ class CSSPageRule(cssrule.CSSRuleRules):
         cssRules = []
         
         for token in g:
-            if (token[0] == 'ATKEYWORD'):   
+            if token[0] == 'ATKEYWORD' and \
+               self._normalize(token[1]) in MarginRule.margins:
+                
+                # MarginRule                   
                 m = MarginRule(parentRule=self,
-                                  parentStyleSheet=self.parentStyleSheet)
+                               parentStyleSheet=self.parentStyleSheet)
                 m.cssText = chain([token], g)
                 
                 # merge if margin set more than once
@@ -255,7 +258,8 @@ class CSSPageRule(cssrule.CSSRuleRules):
                     cssRules.append(m)
                     
                 continue
-            
+                            
+            # TODO: Properties?
             styletokens.append(token)
 
         return cssRules, styletokens
