@@ -36,10 +36,10 @@ Development Version
 HEAD
     - FEATURE: ``CSSStyleDeclaration.setProperty`` has new option ``replace=True``. if True (DEFAULT) the given property will replace a present property. If False a new property will be added always. The difference to `normalize` is that two or more properties with the same name may be set, useful for e.g. stuff like::
 
-                background: red;
-                background: rgba(255, 0, 0, 0.5);
+            background: red;
+            background: rgba(255, 0, 0, 0.5);
 
-            which defines the same property but only capable UAs use the last property value, older ones use the first value.
+      which defines the same property but only capable UAs use the last property value, older ones use the first value.
 
     - FEATURE: Implemented API for ``MarginRule`` inside ``CSSPageRule``, see http://www.w3.org/TR/css3-page/. You can also use e.g. ``CSSPageRule['@top-left']`` to retrieve the MarginRule it it is set etc. All dict like methods should be there. If a margin is set twice or more all properties are merged into a single margin rule. Double set properties are all kept though (see above).
 
@@ -50,6 +50,9 @@ HEAD
     - BUGFIX: 'auto' is now an invalid CSSPageRule pagename.
     - BUGFIX: Fixed issue for GoogleAppEngine (GAE) which somehow handles codecs differently. ``parseUrl`` should work now.
 
+
+Last Stable Version
+===================
 
 0.9.8
 -----
@@ -154,9 +157,8 @@ HEAD
     + CHANGE: explicit `+` of any dimension, percentage of number value is kept now instead of being stripped as if put explicitly in the author SHOULD have meant something ;)
 
 
-
-Last Stable Version
-===================
+Archived Versions
+=================
 
 0.9.7
 -----
@@ -284,9 +286,6 @@ Last Stable Version
 
     - INTERNAL: Added ``tokenizer.push()``. Prodparser uses a global tokenizer now.
 
-
-Archived Versions
-=================
 
 0.9.6
 -----
