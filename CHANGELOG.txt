@@ -34,7 +34,14 @@ Development Version
 ===================
 
 HEAD
-    - FEATURE: Implemented API for ``MarginRule`` inside ``CSSPageRule``, see http://www.w3.org/TR/css3-page/. You can also use e.g. ``CSSPageRule['@top-left']`` to retrieve the MarginRule it it is set etc. All dict like methods should be there.
+    - FEATURE: ``CSSStyleDeclaration.setProperty`` has new option ``replace=True``. if True (DEFAULT) the given property will replace a present property. If False a new property will be added always. The difference to `normalize` is that two or more properties with the same name may be set, useful for e.g. stuff like::
+
+                background: red;
+                background: rgba(255, 0, 0, 0.5);
+
+            which defines the same property but only capable UAs use the last property value, older ones use the first value.
+
+    - FEATURE: Implemented API for ``MarginRule`` inside ``CSSPageRule``, see http://www.w3.org/TR/css3-page/. You can also use e.g. ``CSSPageRule['@top-left']`` to retrieve the MarginRule it it is set etc. All dict like methods should be there. If a margin is set twice or more all properties are merged into a single margin rule. Double set properties are all kept though (see above).
 
     - FEATURE: ``parseStyle()`` has optional parameter ``validate=False`` now too to disable validation of properties (default is always ``True``).
 

@@ -110,7 +110,15 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@page {    @top-right {        content: "2"        }    }':
                 u'@page {\n    @top-right {\n        content: "2"\n        }\n    }',
             u'@page {padding: 1cm; margin: 1cm; @top-left {content: "1"}@top-right {content: "2";left: 1}}':
-                u'@page {\n    padding: 1cm;\n    margin: 1cm;\n    @top-left {\n        content: "1"\n        }\n    @top-right {\n        content: "2";\n        left: 1\n        }\n    }'
+                u'@page {\n    padding: 1cm;\n    margin: 1cm;\n    @top-left {\n        content: "1"\n        }\n    @top-right {\n        content: "2";\n        left: 1\n        }\n    }',
+            u'@page {@top-right { content: "1a"; content: "1b"; x: 1 }@top-right { content: "2"; y: 2 }}':
+                u'''@page {\n    @top-right {
+        content: "1a";
+        content: "1b";
+        x: 1;
+        content: "2";
+        y: 2
+        }\n    }''',
         
         }
         self.do_equal_r(tests)

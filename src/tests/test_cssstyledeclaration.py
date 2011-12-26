@@ -489,6 +489,20 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         s.top = None
         self.assertEqual('', s.top)
 
+    def test_setProperty(self):
+        "CSSStyleDeclaration.setProperty(replace=)"
+        s = cssutils.css.CSSStyleDeclaration()
+        s.setProperty('top', '1px')
+        self.assertEqual(len(s.getProperties('top', all=True)), 1)
+        
+        s.setProperty('top', '2px')
+        self.assertEqual(len(s.getProperties('top', all=True)), 1)
+        self.assertEqual(s.getPropertyValue('top'), '2px')
+
+        s.setProperty('top', '3px', replace=False)
+        self.assertEqual(len(s.getProperties('top', all=True)), 2)
+        self.assertEqual(s.getPropertyValue('top'), '3px')
+
     def test_length(self):
         "CSSStyleDeclaration.length"
         s = cssutils.css.CSSStyleDeclaration()

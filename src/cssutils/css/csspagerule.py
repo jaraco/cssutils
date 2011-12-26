@@ -110,7 +110,6 @@ class CSSPageRule(cssrule.CSSRuleRules):
         """Retrieve the style (of MarginRule) 
         for `margin` (which must be normalized).
         """
-        print margin, self.cssRules
         for r in self.cssRules:
             if r.margin == margin:
                 return r.style
@@ -233,10 +232,19 @@ class CSSPageRule(cssrule.CSSRuleRules):
         
         for token in g:
             if (token[0] == 'ATKEYWORD'):   
-                rule = MarginRule(parentRule=self,
+                m = MarginRule(parentRule=self,
                                   parentStyleSheet=self.parentStyleSheet)
-                rule.cssText = chain([token], g)
-                cssRules.append(rule)
+                m.cssText = chain([token], g)
+                
+                # merge if margin set more than once
+                for r in cssRules:
+                    if r.margin == m.margin:
+                        for p in m.style:
+                            r.style.setProperty(p, replace=False)
+                        break 
+                else:
+                    cssRules.append(m)
+                    
                 continue
             
             styletokens.append(token)
