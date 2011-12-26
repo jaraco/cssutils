@@ -5,7 +5,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 from helper import normalize
-from itertools import ifilter
+from itertools import ifilter, chain
 import cssutils
 import codec
 import codecs
@@ -148,15 +148,12 @@ class Base(_BaseClass):
             # needs to be tokenized
             return self.__tokenizer2.tokenize(
                  textortokens)
-        elif isinstance(textortokens, types.GeneratorType):
-            # already tokenized
-            return textortokens
         elif isinstance(textortokens, tuple):
             # a single token (like a comment)
             return [textortokens]
         else:
-            # already tokenized but return generator
-            return (x for x in textortokens)
+            # already tokenized but return an iterator
+            return iter(textortokens)
 
     def _nexttoken(self, tokenizer, default=None):
         "returns next token in generator tokenizer or the default value"
@@ -404,7 +401,7 @@ class Base(_BaseClass):
                 yield initialtoken
                 for item in tokenizer:
                     yield item
-            fulltokenizer = (t for t in tokens())
+            fulltokenizer = chain([initialtoken], tokenizer)
         else:
             fulltokenizer = tokenizer
 
@@ -885,4 +882,3 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         return encoding, enctype, decodedCssText
     else:
         return None, None, None
-

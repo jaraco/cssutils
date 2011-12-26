@@ -333,7 +333,7 @@ ex2|x {
         self.assertEquals('example', s.namespaces['ex2'])
         self.assertRaises(xml.dom.NamespaceErr, s.namespaces.__getitem__, 'UNSET')
         # __iter__
-        self.assertEquals(['', 'ex2'], [n for n in s.namespaces])
+        self.assertEquals(['', 'ex2'], list(s.namespaces))
         # __len__
         self.assertEqual(2, len(s.namespaces))
         # __setitem__

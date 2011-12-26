@@ -58,7 +58,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         
         items = []
         # unsorted!
-        self.assertEquals(sorted([k for k in v]), ['x', 'z'])
+        self.assertEquals(sorted(v), ['x', 'z'])
         
         del v['z']        
         self.assertEqual(1, v.length)

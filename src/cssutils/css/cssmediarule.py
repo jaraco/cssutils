@@ -201,10 +201,10 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                 
                 self.cssRules = cssutils.css.CSSRuleList()
                 seq = [] # not used really
-                
-                tokenizer = (t for t in cssrulestokens) # TODO: not elegant!
-                wellformed, expected = self._parse(braceOrEOF, 
-                                                   seq, 
+
+                tokenizer = iter(cssrulestokens)
+                wellformed, expected = self._parse(braceOrEOF,
+                                                   seq,
                                                    tokenizer, {
                                                      'COMMENT': COMMENT,
                                                      'CHARSET_SYM': atrule,
