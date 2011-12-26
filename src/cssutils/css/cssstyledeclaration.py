@@ -382,7 +382,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                 return []
         elif not all:
             # effective Properties in name order
-            return [self.getProperty(name)for name in self.__nnames()]
+            return [self.getProperty(name) for name in self.__nnames()]
         else:    
             # all properties or all with this name    
             nname = self._normalize(name)
@@ -551,7 +551,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         self._setSeq(newseq)
         return r
 
-    def setProperty(self, name, value=None, priority=u'', normalize=True):
+    def setProperty(self, name, value=None, priority=u'', 
+                    normalize=True, replace=True):
         """(DOM) Set a property value and priority within this declaration
         block.
 
@@ -573,6 +574,17 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         :param normalize:
             if True (DEFAULT) `name` will be normalized (lowercase, no simple
             escapes) so "color", "COLOR" or "C\olor" will all be equivalent
+        :param replace:
+            if True (DEFAULT) the given property will replace a present 
+            property. If False a new property will be added always.
+            The difference to `normalize` is that two or more properties with 
+            the same name may be set, useful for e.g. stuff like::
+                    
+                background: red;
+                background: rgba(255, 0, 0, 0.5);
+                
+            which defines the same property but only capable UAs use the last
+            property value, older ones use the first value.
 
         :exceptions:
             - :exc:`~xml.dom.SyntaxErr`:
@@ -592,26 +604,31 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             return self.removeProperty(name)
         else:
             newp = Property(name, value, priority)
-        if not newp.wellformed:
+
+        if newp.wellformed:
+            if replace:
+                # check if update 
+                nname = self._normalize(name)
+                properties = self.getProperties(name, all=(not normalize))
+                for property in reversed(properties):
+                    if normalize and property.name == nname:
+                        property.cssValue = newp.cssValue.cssText
+                        property.priority = newp.priority
+                        return
+                    elif property.literalname == name:
+                        property.cssValue = newp.cssValue.cssText
+                        property.priority = newp.priority
+                        return
+
+            # not yet set or forced omit replace
+            newp.parent = self
+            self.seq._readonly = False
+            self.seq.append(newp, 'Property')
+            self.seq._readonly = True
+
+        else:
             self._log.warn(u'Invalid Property: %s: %s %s'
                            % (name, value, priority))
-        else:
-            nname = self._normalize(name)
-            properties = self.getProperties(name, all=(not normalize))
-            for property in reversed(properties):
-                if normalize and property.name == nname:
-                    property.cssValue = newp.cssValue.cssText
-                    property.priority = newp.priority
-                    break
-                elif property.literalname == name:
-                    property.cssValue = newp.cssValue.cssText
-                    property.priority = newp.priority
-                    break
-            else:
-                newp.parent = self
-                self.seq._readonly = False
-                self.seq.append(newp, 'Property')
-                self.seq._readonly = True
 
     def item(self, index):
         """(DOM) Retrieve the properties that have been explicitly set in

@@ -37,37 +37,39 @@ def maketokens(valuelist):
 
 
 if 1:
+#    v = cssutils.css.CSSVariablesDeclaration()
+#    v.cssText = 'top '
+#    print v
+#    
+#    sys.exit(0)
+    
     t = u'''
-    @page AUTO:left {
-        color: red;
-        @top-LEFT {
-            content: "1";
+    @page :left {
+        a: 1;
+        @top-LEFT/*1*/{
+            m: 1;
+            @x;
+            @y {a:1}
+            m: 2;
+        }
+        @top-LEFT/*2*/{
+            m: 3;
+            x: 1
         }
     }
+    a {color: green}
     '''    
     s = cssutils.parseString(t)
-    p = s.cssRules[0]
-    
     print s.cssText
     
+    p = s.cssRules[0]
+    for m in p:
+        print m
+    print p['@top-left']#.cssText
 
     
     sys.exit(1)
     
-    
-    
-    p = cssutils.CSSParser()
-    s = p.parseString(t)
-    cssutils.ser.prefs.useDefaults()
-    print 
-    print s.cssText#.replace(' ', '.')
-    
-    
-    
-    
-    
-    sys.exit(0)
-
 
 if 1:
     sel = [
