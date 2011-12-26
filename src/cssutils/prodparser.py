@@ -336,21 +336,14 @@ class ProdParser(object):
             # OLD: (token, tokens) or a single token
             if len(text) == 2:
                 # (token, tokens)
-                def gen(token, tokens):
-                    "new generator appending token and tokens"
-                    yield token
-                    for t in tokens:
-                        yield t
-
-                return (t for t in gen(*text))
-
+                chain([token], tokens)
             else:
                 # single token
-                return  (t for t in [text])
+                return iter([text])
             
         elif isinstance(text, list):
             # OLD: generator from list
-            return (t for t in text)
+            return iter(text)
         
         else:
             # DEFAULT, already tokenized, assume generator
@@ -359,35 +352,33 @@ class ProdParser(object):
     def _SorTokens(self, tokens, until=',/'):
         """New tokens generator which has S tokens removed,
         if followed by anything in ``until``, normally a ``,``."""
-        def removedS(tokens):
-            for token in tokens:
-                if token[0] == self.types.S:
-                    try:
-                        next_ = tokens.next()
-                    except StopIteration:
-                        yield token
-                    else:
-                        if next_[1] in until:
-                            # omit S as e.g. ``,`` has been found
-                            yield next_
-                        elif next_[0] == self.types.COMMENT:
-                            # pass COMMENT
-                            yield next_
-                        else:
-                            yield token
-                            yield next_
-
-                elif token[0] == self.types.COMMENT:
-                    # pass COMMENT
+        for token in tokens:
+            if token[0] == self.types.S:
+                try:
+                    next_ = tokens.next()
+                except StopIteration:
                     yield token
                 else:
-                    yield token
-                    break
-            # normal mode again
-            for token in tokens:
-                yield token
+                    if next_[1] in until:
+                        # omit S as e.g. ``,`` has been found
+                        yield next_
+                    elif next_[0] == self.types.COMMENT:
+                        # pass COMMENT
+                        yield next_
+                    else:
+                        yield token
+                        yield next_
 
-        return (token for token in removedS(tokens))
+            elif token[0] == self.types.COMMENT:
+                # pass COMMENT
+                yield token
+            else:
+                yield token
+                break
+        # normal mode again
+        for token in tokens:
+            yield token
+
 
     def parse(self, text, name, productions, keepS=False, store=None):
         """

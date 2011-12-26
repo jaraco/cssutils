@@ -233,7 +233,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
 
     def __parseMarginAndStyle(self, tokens):
         "tokens is a list, no generator (yet)"        
-        g = (t for t in tokens)
+        g = iter(tokens)
         styletokens = []
         
         # new rules until parse done
