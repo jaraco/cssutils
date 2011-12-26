@@ -299,24 +299,25 @@ class CSSPageRule(cssrule.CSSRuleRules):
                                                            blockstartonly=True,
                                                            separateEnd=True)
             styletokens, braceorEOFtoken = self._tokensupto2(tokenizer, 
-                                                        blockendonly=True,
-                                                        separateEnd=True)
+                                                             blockendonly=True,
+                                                             separateEnd=True)
             nonetoken = self._nexttoken(tokenizer)
             if self._tokenvalue(startbrace) != u'{':
                 ok = False
-                self._log.error(
-                    u'CSSPageRule: No start { of style declaration found: %r' %
-                    self._valuestr(cssText), startbrace)
+                self._log.error(u'CSSPageRule: No start { of style declaration ' 
+                                u'found: %r' % 
+                                self._valuestr(cssText), startbrace)
             elif nonetoken:
                 ok = False
-                self._log.error(
-                    u'CSSPageRule: Trailing content found.', token=nonetoken)
+                self._log.error(u'CSSPageRule: Trailing content found.', 
+                                token=nonetoken)
                 
             selok, newselseq, specificity = self.__parseSelectorText(selectortokens)
             ok = ok and selok
 
             val, type_ = self._tokenvalue(braceorEOFtoken),\
-                       self._type(braceorEOFtoken)
+                         self._type(braceorEOFtoken)
+                         
             if val != u'}' and type_ != 'EOF':
                 ok = False
                 self._log.error(
@@ -419,16 +420,13 @@ class CSSPageRule(cssrule.CSSRuleRules):
         return self._finishInsertRule(rule, index)
 
     specificity = property(lambda self: self._specificity, 
-         doc=u"""Specificity of this page rule (READONLY). 
-                 Tuple of (f, g, h) where: 
-                
-                 - if the page selector has a named page, f=1; else f=0
-                 - if the page selector has a ':first' pseudo-class, g=1; 
-                 else g=0
-                 - if the page selector has a ':left' or ':right' pseudo-class, 
-                 h=1; else h=0 
-                 """)
+                           doc=u"""Specificity of this page rule (READONLY). 
+Tuple of (f, g, h) where: 
 
+ - if the page selector has a named page, f=1; else f=0
+ - if the page selector has a ':first' pseudo-class, g=1; else g=0
+ - if the page selector has a ':left' or ':right' pseudo-class, h=1; else h=0
+""")
 
     type = property(lambda self: self.PAGE_RULE, 
                     doc=u"The type of this rule, as defined by a CSSRule "
