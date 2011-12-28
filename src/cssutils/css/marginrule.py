@@ -58,7 +58,7 @@ class MarginRule(cssrule.CSSRule):
                '@bottom-right-corner',
                '@left-top',
                '@left-middle',
-               '@right-bottom',
+               '@left-bottom',
                '@right-top',
                '@right-middle',
                '@right-bottom'
