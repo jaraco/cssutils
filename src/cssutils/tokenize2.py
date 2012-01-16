@@ -10,6 +10,7 @@ from cssproductions import *
 from helper import normalize
 import itertools
 import re
+import sys
 
 _TOKENIZER_CACHE = {}
 
@@ -106,7 +107,7 @@ class Tokenizer(object):
         def _repl(m):
             "used by unicodesub"
             num = int(m.group(0)[1:], 16)
-            if num < 0x10000:
+            if num <= sys.maxunicode:
                 return unichr(num)
             else:
                 return m.group(0)
