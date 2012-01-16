@@ -4,6 +4,7 @@
 TODO: old tests as new ones are **not complete**!
 """
 
+import sys
 import xml.dom
 import basetest
 from cssutils.tokenize2 import *
@@ -45,17 +46,27 @@ class TokenizerTestCase(basetest.BaseTestCase):
         ur'\{': [('IDENT', ur'\{', 1, 1)],
         ur'\"': [('IDENT', ur'\"', 1, 1)],
         ur'\(': [('IDENT', ur'\(', 1, 1)],
-        ur'\1 \22 \333 \4444 \55555 \666666 \777777 7 \7777777': [
-                ('IDENT', u'\x01"\u0333\u4444\\55555 \\666666 \\777777 7', 1, 1),
-                ('S', ' ', 1, 43),
-                ('IDENT', '\\7777777', 1, 44)],
+        ur'\1 \22 \333 \4444 \55555 \666666 \777777 7 \7777777':
+            [(
+                ('IDENT', u'\x01"\u0333\u4444\U00055555\\666666 \\777777 7', 1, 1)
+                if sys.maxunicode > 0x10000 else
+                ('IDENT', u'\x01"\u0333\u4444\\55555 \\666666 \\777777 7', 1, 1)
+            ),
+            ('S', ' ', 1, 43),
+            ('IDENT', '\\7777777', 1, 44)
+        ],
 
 
         u'\\1 b': [('IDENT', u'\x01b', 1, 1)],
         u'\\44 b': [('IDENT', u'Db', 1, 1)],
         u'\\123 b': [('IDENT', u'\u0123b', 1, 1)],
         u'\\1234 b': [('IDENT', u'\u1234b', 1, 1)],
-        u'\\12345 b': [('IDENT', u'\\12345 b', 1, 1)],
+        u'\\12345 b':
+            [(
+                ('IDENT', u'\U00012345b', 1, 1)
+                if sys.maxunicode > 0x10000 else
+                ('IDENT', u'\\12345 b', 1, 1)
+            )],
         u'\\123456 b': [('IDENT', u'\\123456 b', 1, 1)],
         u'\\1234567 b': [('IDENT', u'\\1234567', 1, 1),
                          ('S', u' ', 1, 9),
