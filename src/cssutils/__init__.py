@@ -36,6 +36,8 @@ Based upon and partly implementing the following specifications :
 `Namespaces <http://dev.w3.org/csswg/css3-namespace/>`__
     Added in v0.9.1, updated to definition in CSSOM in v0.9.4, updated in 0.9.5
     for dev version
+`CSS3 Module: Pages Media <http://www.w3.org/TR/css3-page/>`__
+    Most properties of this spec are implemented including MarginRules
 `Selectors <http://www.w3.org/TR/css3-selectors/>`__
     The selector syntax defined here (and not in CSS 2.1) should be parsable
     with cssutils (*should* mind though ;) )
@@ -68,7 +70,7 @@ which are well documented. Some minor extensions are provided as well.
 Please visit http://cthedot.de/cssutils/ for more details.
 
 
-Tested with Python 2.6 on Windows 7 mainly.
+Tested with Python 2.7 on Windows 7 mainly.
 
 
 This library may be used ``from cssutils import *`` which
@@ -91,7 +93,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '0.9.9a1'
+VERSION = '0.9.9'
 
 __version__ = '%s $Id$' % VERSION
 

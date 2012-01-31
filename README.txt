@@ -145,5 +145,5 @@ cssutils is far from being perfect or even complete. If you find any bugs (espec
 
 Thanks
 ======
-Thanks to Jason R. Coombs, Simon Sapin and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches. Thanks to Fredrik Hedman for help on port of encutils to Python 3.
+Thanks to Simon Sapin, Jason R. Coombs and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches. Thanks to Fredrik Hedman for help on port of encutils to Python 3.
 
