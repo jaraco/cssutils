@@ -12,24 +12,19 @@ __date__ = '$LastChangedDate::                            $:'
 
 import codecs
 import os
-import sys
 
 # For Python 2.5
 try:
     next
 except NameError:
-    next = lambda iter: iter.next
+    next = lambda iter: iter.next()
 
 # extract the version without importing the module
 lines = open('src/cssutils/__init__.py')
 is_ver_line = lambda line: line.startswith('VERSION = ')
 line = next(line for line in lines if is_ver_line(line))
 
-# For Python 2.5
-try:
-    exec(line, locals(), globals())
-except TypeError:
-    exec(line(), locals(), globals())
+exec(line, locals(), globals())
 
 # use the build_py_2to3 if we're building on Python 3
 try:
