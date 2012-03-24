@@ -443,6 +443,7 @@ class ColorValueTestCase(basetest.BaseTestCase):
             (u'rgba(255, 127, 0, .1)', u'rgba(100%, 50%, 0%, .1)'): 
                 (255, 127, 0, 0.1),
             (u'transparent', u'rgba(0, 0, 0, 0)'): (0, 0, 0, 0),
+            (u'aqua',): (0, 255, 255, 1.0)
         }
         for colors, rgba in tests.items():
             for color in colors:
