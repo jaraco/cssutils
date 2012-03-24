@@ -37,6 +37,65 @@ def maketokens(valuelist):
 
 
 if 1:
+    s = '''
+    a {
+font-family : a  b;
+} 
+'''
+    cssutils.parseString(s).cssText
+    sys.exit(1)
+    
+    
+    import cssutils, pprint
+    # remove ALL predefined property profiles
+#    cssutils.profile.removeProfile(all=True)
+#
+    # add your custom profile, {num} is defined in Profile and always available
+    macros = {'color': 'a|b|c', 'num': '1'}
+    props = {'abc': '{num}', 'color': '{color}'}
+    cssutils.profile.addProfile('my1', props, macros)
+
+    props2 = {'abc': '{num}'}
+    cssutils.profile.addProfile('my2', props2)
+    
+    # keep only valid properties (valid in given profile)
+    cssutils.ser.prefs.validOnly = True
+
+    print cssutils.parseString('''a {
+        color: a;
+        background: b;
+    }''').cssText
+
+    cssutils.profile.removeProfile('my1')
+    cssutils.profile.removeProfile('my2')
+    
+    print cssutils.parseString('''a {
+        color: a;
+        background: b;
+    }''').cssText
+
+##    import cssutils, pprint
+##    print "TOKEN_MACROS"
+##    pprint.pprint(cssutils.profile._TOKEN_MACROS)
+##    print "MACROS"
+##    pprint.pprint(cssutils.profile._MACROS)
+#
+#    from cssutils.profiles import macros as predef
+#    from cssutils import profile
+#    macros = {'my-font': predef[profile.CSS_LEVEL_2]['family-name'],
+#              'identifier': predef[profile.CSS_LEVEL_2]['identifier']}
+#    props = {'f': '{my-font}'}
+#    cssutils.profile.addProfile('my-font-profile', props, macros)
+#    print cssutils.parseString('''a {
+#        f: 1; /* 1 is invalid! */
+#        f: Arial;
+#    }''').cssText
+
+    sys.exit(0)
+
+
+
+if 1:
 #    v = cssutils.css.CSSVariablesDeclaration()
 #    v.cssText = 'top '
 #    print v
@@ -45,21 +104,19 @@ if 1:
     cssutils.ser.prefs.keepComments = True
     t = u'''
     @page x {
-        a: 1;
-        @top-LEFT/*1*/{
-            /*1*/
-            m: 1;
-            @x;
-            @y {a:1}
-            m: 2;
+        /*1*/
+        left: 0;
+        @x {}
+        /* @ */
+        @top-LEFT{
+            color: red;
         }
-        @top-LEFT/*2*/{
-            /*1*/
-            m: 3;
-            x: 1
-        }
+        /*2*/
+        top: 0;         /*3*/
+
+        @y;
+        color: green;
     }
-    a {color: green}
     '''    
     s = cssutils.parseString(t)
     print s.cssText
@@ -944,45 +1001,6 @@ if 0:
 
 
 
-if 1:
-    import cssutils, pprint
-    # remove ALL predefined property profiles
-    cssutils.profile.removeProfile(all=True)
-
-    # add your custom profile, {num} is defined in Profile and always available
-    macros = {'myvalue': 'a|b|c'}
-    props = {'abc': '{myvalue}|{num}', 'color': 'red|blue'}
-    cssutils.profile.addProfile('my-profile', props, macros)
-
-    # keep only valid properties (valid in given profile)
-    cssutils.ser.prefs.validOnly = True
-
-    print cssutils.parseString('''a {
-        color: green;
-        color: red;
-        abc: 1;
-        abc: b;
-        abc: 1 a
-    }''').cssText
-
-#    import cssutils, pprint
-#    print "TOKEN_MACROS"
-#    pprint.pprint(cssutils.profile._TOKEN_MACROS)
-#    print "MACROS"
-#    pprint.pprint(cssutils.profile._MACROS)
-
-    from cssutils.profiles import macros as predef
-    from cssutils import profile
-    macros = {'my-font': predef[profile.CSS_LEVEL_2]['family-name'],
-              'identifier': predef[profile.CSS_LEVEL_2]['identifier']}
-    props = {'f': '{my-font}'}
-    cssutils.profile.addProfile('my-font-profile', props, macros)
-    print cssutils.parseString('''a {
-        f: 1; /* 1 is invalid! */
-        f: Arial;
-    }''').cssText
-
-    sys.exit(0)
 
 if 1:
     from cssutils.script import csscombine
