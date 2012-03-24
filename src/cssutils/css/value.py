@@ -286,6 +286,8 @@ class ColorValue(Value):
     
     TODO: Color Keywords
     """
+    from colors import COLORS
+    
     type = Value.COLOR_VALUE
     # hexcolor, FUNCTION?
     _colorType = None
@@ -293,26 +295,7 @@ class ColorValue(Value):
     _green = 0
     _blue = 0
     _alpha = 0
-    
-    COLORS = {u'transparent': (0,0,0, 0),
-              u'black': (0,0,0, 1.0),
-              u'silver': (192,192,192, 1.0),
-              u'gray': (128,128,128, 1.0),
-              u'white': (255,255,255, 1.0),
-              u'maroon': (128,0,0, 1.0),
-              u'red': (255,0,0, 1.0),
-              u'purple': (128,0,128, 1.0),
-              u'fuchsia': (255,0,255, 1.0),
-              u'green': (0,128,0, 1.0),
-              u'lime': (0,255,0, 1.0),
-              u'olive': (128,128,0, 1.0),
-              u'yellow': (255,255,0, 1.0),
-              u'navy': (0,0,128, 1.0),
-              u'blue': (0,0,255, 1.0),
-              u'teal': (0,128,128, 1.0),
-              u'aqua': (0,255,255 , 1.0)
-              }
-    
+       
     def __str__(self):
         return u"<cssutils.css.%s object type=%s value=%r colorType=%r "\
                u"red=%s blue=%s green=%s alpha=%s at 0x%x>"\

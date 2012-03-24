@@ -3,7 +3,15 @@ __________
 
 Known Issues
 ============
+- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
+
+   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
+
+- comments may not survive parsing in all cases (yet)
+
 - ``CSSStyleSheet.cssText`` is a serialized byte string (**not** unicode string) currently. This may change in the future.
+
+- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. Prefer to use ``style['property']`` over ``style.property``.
 
 - although cssutils tries to preserve CSS hacks not all are (and some - mainly syntactically invalid ones - will probably never be). The following hacks are known to **not** be preserved:
 
@@ -18,15 +26,6 @@ Known Issues
   **These kind of invalid hacks are not kept during parsing anymore since cssutils 0.9.5b3!**
   In almost any case it is possible to use at least syntactically valid CSS while still working around different browser implementations.
 
-- handling of comments does probably not work for all cases
-
-- The ``seq`` attribute of most classes does not hinder you to add invalid items. It will probably become readonly. **Never write to it!**
-
-   **Content of ``seq`` will most likely change completely, seq is more of an internal property and should not be used in client code yet**
-
-- ``CSS2Properties`` not implemented completely (setting a shorthand property does not set related properties like setting margin does not set margin-left etc). Also the return values are not as defined in the specification as no normalizing is done yet. Prefer to use ``style['property']`` over ``style.property``.
-
-
 - when PyXML is installed not all tests may run through (see issue #34 for details) as PyXMLs implementation of ``xml.dom.DOMException`` differs from the default (minidom and I guess others) implemtation. Nothing really to worry about...
 
 
@@ -34,6 +33,9 @@ Development Version
 ===================
 
 HEAD
+
+    - IMPROVEMENT: Added all X11 color names and corresponding RGBA values
+    - BUGFIX: for Python 2.5 compatibility (thanks @Jason)
 
 
 Last Stable Version
