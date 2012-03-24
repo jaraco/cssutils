@@ -152,7 +152,7 @@ class Preferences(object):
         """Set options resulting in a minified stylesheet.
 
         You may want to set preferences with this convenience method
-        and set settings you want adjusted afterwards.
+        and override specific settings you want adjusted afterwards.
         """
         self.importHrefFormat = 'string'
         self.indent = u''
