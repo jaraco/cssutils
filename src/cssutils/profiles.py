@@ -98,13 +98,14 @@ class Profiles(object):
         
         # macro cache
         self._usedMacros = Profiles._TOKEN_MACROS.copy()
-        self._usedMacros.update(Profiles._MACROS)        
+        self._usedMacros.update(Profiles._MACROS.copy())
+                
         # to keep order, REFACTOR!
         self._profileNames = [] 
         # for reset if macro changes
         self._rawProfiles = {}
-        # already compiled profiles
-        self._profiles = {}
+        # already compiled profiles: {profile: {property: checkfunc, ...}, ...}
+        self._profilesProperties = {}
         
         self._defaultProfiles = None
 
@@ -160,6 +161,7 @@ class Profiles(object):
                     value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
                                    macro_value, value)
             dictionary[key] = value
+            
         return dictionary
 
     def _compile_regexes(self, dictionary):
@@ -175,7 +177,7 @@ class Profiles(object):
 
     def __update_knownNames(self):
         self._knownNames = []
-        for properties in self._profiles.values():
+        for properties in self._profilesProperties.values():
             self._knownNames.extend(properties.keys())
 
     def _getDefaultProfiles(self):
@@ -209,24 +211,25 @@ class Profiles(object):
         "reset all props from raw values as changes in macros happened"
         # base
         macros = Profiles._TOKEN_MACROS.copy()
-        macros.update(Profiles._MACROS)
-
+        macros.update(Profiles._MACROS.copy())
+        
         # former
         for profile in self._profileNames:
-            macros.update(self._rawProfiles[profile]['macros'])
+            macros.update(self._rawProfiles[profile]['macros'])            
             
         # new
         if newMacros:
             macros.update(newMacros)
 
         # reset properties
-        self._profiles.clear()
+        self._profilesProperties.clear()
         for profile in self._profileNames:
             properties = self._expand_macros(
-                             self._rawProfiles[profile]['properties'].copy(), 
-                             macros)
-            self._profiles[profile] = self._compile_regexes(properties)
-            
+                            # keep raw
+                            self._rawProfiles[profile]['properties'].copy(), 
+                            macros)
+            self._profilesProperties[profile] = self._compile_regexes(properties)
+
         # save
         self._usedMacros = macros
         
@@ -244,7 +247,7 @@ class Profiles(object):
 
         # only add new properties
         for profile, properties, macros in profiles:
-            self.addProfile(profile, properties, None)
+            self.addProfile(profile, properties.copy(), None)
             
             
     def addProfile(self, profile, properties, macros=None):
@@ -288,12 +291,12 @@ class Profiles(object):
                 macros = {}
                 
         # save name and raw props/macros if macros change to completely reset      
-        self._profileNames.append(profile)        
+        self._profileNames.append(profile)       
         self._rawProfiles[profile] = {'properties': properties.copy(),
                                       'macros': macros.copy()}
         # prepare and save properties
         properties = self._expand_macros(properties, self._usedMacros)    
-        self._profiles[profile] = self._compile_regexes(properties)
+        self._profilesProperties[profile] = self._compile_regexes(properties)
 
         self.__update_knownNames()
 
@@ -314,7 +317,7 @@ class Profiles(object):
               If given `profile` cannot be found.
         """
         if all:
-            self._profiles.clear()
+            self._profilesProperties.clear()
             self._rawProfiles.clear()
             del self._profileNames[:]
         else:
@@ -323,8 +326,8 @@ class Profiles(object):
             try:
                 if (self._rawProfiles[profile]['macros']):
                     reset = True
-                    
-                del self._profiles[profile]
+
+                del self._profilesProperties[profile]
                 del self._rawProfiles[profile]
                 del self._profileNames[self._profileNames.index(profile)]
             except KeyError:
@@ -350,7 +353,7 @@ class Profiles(object):
             profiles = (profiles, )
         try:
             for profile in sorted(profiles):
-                for name in sorted(self._profiles[profile].keys()):
+                for name in sorted(self._profilesProperties[profile].keys()):
                     yield name
         except KeyError, e:
             raise NoSuchProfileException(e)
@@ -368,10 +371,10 @@ class Profiles(object):
             profile
         """
         for profile in self.profiles:
-            if name in self._profiles[profile]:
+            if name in self._profilesProperties[profile]:
                 try:
                     # custom validation errors are caught
-                    r = bool(self._profiles[profile][name](value))
+                    r = bool(self._profilesProperties[profile][name](value))
                 except Exception, e:
                     self._log.error(e, error=Exception)
                     return False
@@ -411,8 +414,8 @@ class Profiles(object):
                 profiles = (profiles, )
             for profilename in reversed(profiles):
                 # check given profiles
-                if name in self._profiles[profilename]:
-                    validate = self._profiles[profilename][name]
+                if name in self._profilesProperties[profilename]:
+                    validate = self._profilesProperties[profilename][name]
                     try:
                         if validate(value):
                             return True, True, [profilename]
@@ -422,8 +425,8 @@ class Profiles(object):
             for profilename in (p for p in self._profileNames
                                 if p not in profiles):
                 # check remaining profiles as well
-                if name in self._profiles[profilename]:
-                    validate = self._profiles[profilename][name]
+                if name in self._profilesProperties[profilename]:
+                    validate = self._profilesProperties[profilename][name]
                     try:
                         if validate(value):
                             return True, False, [profilename]
@@ -431,7 +434,7 @@ class Profiles(object):
                         self._log.error(e, error=Exception)
 
             names = []
-            for profilename, properties in self._profiles.items():
+            for profilename, properties in self._profilesProperties.items():
                 # return profile to which name belongs
                 if name in properties.keys():
                     names.append(profilename)
