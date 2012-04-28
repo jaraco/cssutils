@@ -33,6 +33,8 @@ Development Version
 ===================
 
 HEAD
+
+0.9.10b1 120428
     - **REGRESSION**: Valid profiles reported by validation may not be right but as these hardly say anything in the real world anyway the advancements in the following bugfixes are probably worth this. ``Profiles.validateWithProfile`` currently not working but should be hardly used anyway. As a workaround remove all profiles and add just the ones you want to use for your application
 
     - **BUGFIX**: Profiles have been updated. Multiple profiles can be added via ``addProfiles`` and this is preferred to adding separate profiles with ``addProfile``. Profiles do check for updated macros now so that e.g. CSS3 Colors defined in a different profile are valid for all properties defined before. This may lead to a reset of all properties and so may be an extremely expensive operation.
