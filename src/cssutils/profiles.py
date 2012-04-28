@@ -15,6 +15,47 @@ class NoSuchProfileException(Exception):
     pass
 
 
+# dummies, replaced in Profiles.addProfile
+_fontRegexReplacements = {
+    '__FONT_FAMILY_SINGLE': lambda f: False,
+    '__FONT_WITH_1_FAMILY': lambda f: False
+    }
+
+def _fontFamilyValidator(families):
+    """Check if ``font-family`` value is valid, regex is too slow.
+
+    Splits on ``,`` and checks each family separately.
+    Somehow naive as font-family name could contain a "," but this is unlikely.
+    Still should be a TODO.
+    """
+    match = _fontRegexReplacements['__FONT_FAMILY_SINGLE']
+    
+    for f in families.split(u','):
+        if not match(f.strip()):
+            return False
+    return True
+
+def _fontValidator(font):
+    """Check if font value is valid, regex is too slow.
+
+    Checks everything before ``,`` on basic font value. Everything after should
+    be a valid font-family value.
+    """
+    if u',' in font:
+        # split off until 1st family
+        font1, families2 = font.split(u',', 1)
+    else:
+        font1, families2 = font, None
+
+    if not _fontRegexReplacements['__FONT_WITH_1_FAMILY'](font1.strip()):
+        return False
+
+    if families2 and not _fontFamilyValidator(families2):
+        return False
+
+    return True
+
+
 class Profiles(object):
     """
     All profiles used for validation. ``cssutils.profile`` is a
@@ -299,8 +340,14 @@ class Profiles(object):
         self._profilesProperties[profile] = self._compile_regexes(properties)
 
         self.__update_knownNames()
-
-
+        
+        # hack for font and font-family which are too slow with regexes
+        if '__FONT_WITH_1_FAMILY' in properties:
+            _fontRegexReplacements['__FONT_WITH_1_FAMILY'] = properties['__FONT_WITH_1_FAMILY']
+        if '__FONT_FAMILY_SINGLE' in properties:
+            _fontRegexReplacements['__FONT_FAMILY_SINGLE'] = properties['__FONT_FAMILY_SINGLE']
+            
+            
     def removeProfile(self, profile=None, all=False):
         """Remove `profile` or remove `all` profiles.
         
@@ -376,8 +423,10 @@ class Profiles(object):
                     # custom validation errors are caught
                     r = bool(self._profilesProperties[profile][name](value))
                 except Exception, e:
+                    # TODO: more specific exception? 
+                    # Validate should not be fatal though!
                     self._log.error(e, error=Exception)
-                    return False
+                    r = False
                 if r:
                     return r
         return False
@@ -445,38 +494,6 @@ class Profiles(object):
 properties = {}
 macros = {}
 
-def _fontFamilyValidator(families):
-    """Check if ``font-family`` value is valid, regex is too slow.
-
-    Splits on ``,`` and checks each family separately.
-    Somehow naive as font-family name could contain a "," but this is unlikely.
-    Still should be a TODO.
-    """
-    match = properties[Profiles.CSS_LEVEL_2]['__FONT_FAMILY_SINGLE']
-    for f in families.split(u','):
-        if not match(f.strip()):
-            return False
-    return True
-
-def _fontValidator(font):
-    """Check if font value is valid, regex is too slow.
-
-    Checks everything before ``,`` on basic font value. Everything after should
-    be a valid font-family value.
-    """
-    if u',' in font:
-        # split off until 1st family
-        font1, families2 = font.split(u',', 1)
-    else:
-        font1, families2 = font, None
-
-    if not properties[Profiles.CSS_LEVEL_2]['__FONT_WITH_1_FAMILY'](font1.strip()):
-        return False
-
-    if families2 and not _fontFamilyValidator(families2):
-        return False
-
-    return True
 
 """
 Define some regular expression fragments that will be used as

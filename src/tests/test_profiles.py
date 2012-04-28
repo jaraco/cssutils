@@ -47,6 +47,40 @@ class ProfilesTestCase(basetest.BaseTestCase):
         p.removeProfile(all=True)
         self.assertEqual(p.profiles, [])
 
+    def test_validate2(self):
+        "Profiles.validate()"
+        #save
+        saved = cssutils.profile
+        
+        # test        
+        p = cssutils.profiles.Profiles()
+        cssutils.profile = p
+        
+        pvs = [('color', 'red'),
+               ('color', 'rgba(0,0,0,0)'),
+               ('color', 'XXX')
+               ]
+        
+        def check(*results):
+            for i, pv in enumerate(pvs):
+                self.assertEqual(p.validate(*pv), results[i])
+                        
+        check(True, True, False)
+
+        p.removeProfile(p.CSS3_COLOR)
+        check(True, False, False)
+
+        cssutils.profile.addProfile('test', {}, {'color': 'XXX'})
+        check(False, False, True)
+
+        p.removeProfile(all=True)
+        check(False, False, False)
+
+        # TODO: validateWithProfile
+        
+        # restore
+        cssutils.profile = saved
+
     def test_addProfile(self):
         "Profiles.addProfile with custom validation function"
         # unknown profile
@@ -78,9 +112,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
         for test, v in tests.items():
             self.assertEqual(v, cssutils.profile.validate(*test))
             
-            # TODO: Fix
-#            self.assertEqual((v, v, ['test']), 
-#                             cssutils.profile.validateWithProfile(*test))
+            self.assertEqual((v, v, ['test']), 
+                             cssutils.profile.validateWithProfile(*test))
             
         cssutils.log.raiseExceptions = True
         
@@ -151,18 +184,17 @@ class ProfilesTestCase(basetest.BaseTestCase):
             color = color.strip()            
             self.assertEqual(True, cssutils.profile.validate('color', color))
             
-            # TODO: Fix
-#            self.assertEqual((True, True, list(CSS2)), 
-#                             cssutils.profile.validateWithProfile('color', color))
+            self.assertEqual((True, True, list(CSS2)), 
+                             cssutils.profile.validateWithProfile('color', color))
 
             # CSS2 only:
-#        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'
-#        for color in uicolor.split('|'):
-#            self.assertEqual(True, cssutils.profile.validate('color', color))
+        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'
+        for color in uicolor.split('|'):
+            self.assertEqual(False, cssutils.profile.validate('color', color))
             
             # TODO: Fix
-#            self.assertEqual((True, True, list(CSS2)), 
-#                             cssutils.profile.validateWithProfile('color', color))
+            #self.assertEqual((True, True, list(CSS2)), 
+            #                 cssutils.profile.validateWithProfile('color', color))
         
     def test_validate(self):
         "Profiles.validate()"
@@ -466,9 +498,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
                                )): (True, True, FM3FF),
         
         }
+        # TODO!!!
         for (name, values), (valid, matching, profile) in tests.items(): 
-            for value in values:                
-                 
+            for value in values:
                 self.assertEqual(valid, cssutils.profile.validate(name, value))
                 
                 
