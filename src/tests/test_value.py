@@ -206,6 +206,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                     u'++1px': xml.dom.SyntaxErr,
                     u'#': xml.dom.SyntaxErr,
                     u'#00': xml.dom.SyntaxErr,
+                    u'#xyz': xml.dom.SyntaxErr,
                     u'#0000': xml.dom.SyntaxErr,
                     u'#00000': xml.dom.SyntaxErr,
                     u'#0000000': xml.dom.SyntaxErr,

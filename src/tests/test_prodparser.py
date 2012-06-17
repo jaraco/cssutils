@@ -389,8 +389,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
             else:
                 self.assertRaisesMsg(xml.dom.SyntaxErr, u'T: %s' % exp,
                                      ProdParser().parse, text, 'T', prods)
-                
-
+                        
+        
 
 if __name__ == '__main__':
     import unittest

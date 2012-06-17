@@ -20,6 +20,7 @@ __version__ = '$Id: parse.py 1418 2008-08-09 19:27:50Z cthedot $'
 
 from helper import pushtoken
 import cssutils
+import string
 import sys
 
 
@@ -618,11 +619,10 @@ class PreDef(object):
     @staticmethod
     def hexcolor(stop=False, nextSor=False):
         "#123 or #123456"
-        import string
         return Prod(name='HEX color',
                     match=lambda t, v: t == PreDef.types.HASH and (
                                        len(v) == 4 or len(v) == 7) and
-                                       set(v[1:]).issubset(set(string.hexdigits))),
+                                       set(v[1:]).issubset(set(string.hexdigits)),
                     stop=stop,
                     nextSor=nextSor)
     

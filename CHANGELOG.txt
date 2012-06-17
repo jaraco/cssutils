@@ -33,6 +33,7 @@ Development Version
 ===================
 
 HEAD
+    - BUGFIX: Added bugfix for false color values like ``#xyz`` not being handled properly (thanks to Teruaki Koizumi)
 
 0.9.10b1 120428
     - **REGRESSION**: Valid profiles reported by validation may not be right but as these hardly say anything in the real world anyway the advancements in the following bugfixes are probably worth this. ``Profiles.validateWithProfile`` currently not working but should be hardly used anyway. As a workaround remove all profiles and add just the ones you want to use for your application
