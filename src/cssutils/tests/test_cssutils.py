@@ -53,7 +53,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.css.CSSStyleSheet, type(irs))
 
         href = os.path.join(os.path.dirname(__file__), 
-                            '..', '..', 'sheets', 'import.css')
+                            '..', '..', '..', 'sheets', 'import.css')
         href = cssutils.helper.path2url(href)
         s = cssutils.parseString(self.exp, 
                                  href=href)
@@ -75,7 +75,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         "cssutils.parseFile()"
         # name if used with open, href used for @import resolving
         name = os.path.join(os.path.dirname(__file__), 
-                            '..', '..', 'sheets', 'import.css')
+                            '..', '..', '..', 'sheets', 'import.css')
         href = cssutils.helper.path2url(name)
         
         s = cssutils.parseFile(name, href=href, media='screen', title='from file')
@@ -101,7 +101,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         # name is used for open and setting of href automatically
         # test needs to be relative to this test file!
         os.chdir(os.path.dirname(__file__))
-        name = os.path.join('..', '..', 'sheets', 'import.css')
+        name = os.path.join('..', '..', '..', 'sheets', 'import.css')
         
         s = cssutils.parseFile(name, media='screen', title='from file')
         self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
@@ -166,7 +166,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
     def test_parseUrl(self):
         "cssutils.parseUrl()"
         href = os.path.join(os.path.dirname(__file__), 
-                            '..', '..', 'sheets', 'import.css')
+                            '..', '..', '..', 'sheets', 'import.css')
         #href = u'file:' + urllib.pathname2url(href)
         href = cssutils.helper.path2url(href)
         #href = 'http://seewhatever.de/sheets/import.css'
