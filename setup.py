@@ -7,7 +7,7 @@ use EasyInstall or install with
     >python setup.py install
 """
 __docformat__ = 'restructuredtext'
-__author__ = 'Christof Hoeke with contributions by Walter Doerwald'
+__author__ = 'Christof Hoeke with contributions by Walter Doerwald and lots of other people'
 __date__ = '$LastChangedDate::                            $:'
 
 import codecs

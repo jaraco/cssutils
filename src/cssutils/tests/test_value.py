@@ -57,6 +57,12 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                  u'a() 1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4',
                     12, u'a() 1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4'),
 
+                 #issue #24
+                 u'rgb(0, 10, 255)': (None, 1, u'rgb(0, 10, 255)'),
+                 u'hsl(10, 10%, 25%)': (None, 1, u'hsl(10, 10%, 25%)'),
+                 u'rgba(0, 10, 255, 0.5)': (None, 1, u'rgba(0, 10, 255, 0.5)'),
+                 u'hsla(10, 10%, 25%, 0.5)': (None, 1, u'hsla(10, 10%, 25%, 0.5)'),
+
                 #issue #27
                 u'matrix(0.000092, 0.2500010, -0.250000, 0.000092, 0, 0)': (
                     u'matrix(0.000092, 0.250001, -0.25, 0.000092, 0, 0)', 1,

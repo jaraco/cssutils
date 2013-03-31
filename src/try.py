@@ -37,7 +37,7 @@ def maketokens(valuelist):
 
 
 if 1:
-    css = '''a{;display:block;float:left}'''
+    css = '''a{background: rgba(10, 20 ,40, 0.1); color: rgba(10, 20 ,40, 0.1)}'''
     print cssutils.parseString(css).cssText
 
     sys.exit(1)

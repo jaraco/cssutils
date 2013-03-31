@@ -29,7 +29,7 @@ def _fontFamilyValidator(families):
     Still should be a TODO.
     """
     match = _fontRegexReplacements['__FONT_FAMILY_SINGLE']
-    
+
     for f in families.split(u','):
         if not match(f.strip()):
             return False
@@ -118,7 +118,7 @@ class Profiles(object):
         }
     _MACROS = {
         'hexcolor': r'#[0-9a-f]{3}|#[0-9a-f]{6}',
-        'rgbcolor': r'rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
+        'rgbcolor': r'rgb\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\)|rgb\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\)',
         'namedcolor': r'(transparent|orange|maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',
         'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
         'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{uicolor}',
@@ -132,22 +132,22 @@ class Profiles(object):
         'percentage': r'{num}%',
         'shadow': '(inset)?{w}{length}{w}{length}{w}{length}?{w}{length}?{w}{color}?'
         }
-    
+
     def __init__(self, log=None):
         """A few profiles are predefined."""
         self._log = log
-        
+
         # macro cache
         self._usedMacros = Profiles._TOKEN_MACROS.copy()
         self._usedMacros.update(Profiles._MACROS.copy())
-                
+
         # to keep order, REFACTOR!
-        self._profileNames = [] 
+        self._profileNames = []
         # for reset if macro changes
         self._rawProfiles = {}
         # already compiled profiles: {profile: {property: checkfunc, ...}, ...}
         self._profilesProperties = {}
-        
+
         self._defaultProfiles = None
 
         self.addProfiles([(self.CSS_LEVEL_2,
@@ -195,14 +195,14 @@ class Profiles(object):
         """Expand macros in token dictionary"""
         def macro_value(m):
             return '(?:%s)' % macros[m.groupdict()['macro']]
-        
+
         for key, value in dictionary.items():
             if not hasattr(value, '__call__'):
                 while re.search(r'{[a-z][a-z0-9-]*}', value):
                     value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
                                    macro_value, value)
             dictionary[key] = value
-            
+
         return dictionary
 
     def _compile_regexes(self, dictionary):
@@ -253,11 +253,11 @@ class Profiles(object):
         # base
         macros = Profiles._TOKEN_MACROS.copy()
         macros.update(Profiles._MACROS.copy())
-        
+
         # former
         for profile in self._profileNames:
-            macros.update(self._rawProfiles[profile]['macros'])            
-            
+            macros.update(self._rawProfiles[profile]['macros'])
+
         # new
         if newMacros:
             macros.update(newMacros)
@@ -267,17 +267,17 @@ class Profiles(object):
         for profile in self._profileNames:
             properties = self._expand_macros(
                             # keep raw
-                            self._rawProfiles[profile]['properties'].copy(), 
+                            self._rawProfiles[profile]['properties'].copy(),
                             macros)
             self._profilesProperties[profile] = self._compile_regexes(properties)
 
         # save
         self._usedMacros = macros
-        
+
 
     def addProfiles(self, profiles):
-        """Add a list of profiles at once. Useful as if profiles define custom 
-        macros these are used in one go. Using `addProfile` instead my be 
+        """Add a list of profiles at once. Useful as if profiles define custom
+        macros these are used in one go. Using `addProfile` instead my be
         **very** slow instead.
         """
         # add macros
@@ -289,8 +289,8 @@ class Profiles(object):
         # only add new properties
         for profile, properties, macros in profiles:
             self.addProfile(profile, properties.copy(), None)
-            
-            
+
+
     def addProfile(self, profile, properties, macros=None):
         """Add a new profile with name `profile` (e.g. 'CSS level 2')
         and the given `properties`.
@@ -319,38 +319,38 @@ class Profiles(object):
             # check if known macros would change and if yes reset properties
             if len(set(macros.keys()).intersection(self._usedMacros.keys())):
                 self._resetProperties(newMacros=macros)
-                
+
             else:
                 # no replacement, simply continue
                 self._usedMacros.update(macros)
-            
+
         else:
             # might have been set by addProfiles before
             try:
                 macros = self._rawProfiles[profile]['macros']
             except KeyError, e:
                 macros = {}
-                
-        # save name and raw props/macros if macros change to completely reset      
-        self._profileNames.append(profile)       
+
+        # save name and raw props/macros if macros change to completely reset
+        self._profileNames.append(profile)
         self._rawProfiles[profile] = {'properties': properties.copy(),
                                       'macros': macros.copy()}
         # prepare and save properties
-        properties = self._expand_macros(properties, self._usedMacros)    
+        properties = self._expand_macros(properties, self._usedMacros)
         self._profilesProperties[profile] = self._compile_regexes(properties)
 
         self.__update_knownNames()
-        
+
         # hack for font and font-family which are too slow with regexes
         if '__FONT_WITH_1_FAMILY' in properties:
             _fontRegexReplacements['__FONT_WITH_1_FAMILY'] = properties['__FONT_WITH_1_FAMILY']
         if '__FONT_FAMILY_SINGLE' in properties:
             _fontRegexReplacements['__FONT_FAMILY_SINGLE'] = properties['__FONT_FAMILY_SINGLE']
-            
-            
+
+
     def removeProfile(self, profile=None, all=False):
         """Remove `profile` or remove `all` profiles.
-        
+
         If the removed profile used custom macros all remaining profiles
         are reset to reflect the macro changes. This may be quite an expensive
         operation!
@@ -369,7 +369,7 @@ class Profiles(object):
             del self._profileNames[:]
         else:
             reset = False
-            
+
             try:
                 if (self._rawProfiles[profile]['macros']):
                     reset = True
@@ -423,7 +423,7 @@ class Profiles(object):
                     # custom validation errors are caught
                     r = bool(self._profilesProperties[profile][name](value))
                 except Exception, e:
-                    # TODO: more specific exception? 
+                    # TODO: more specific exception?
                     # Validate should not be fatal though!
                     self._log.error(e, error=Exception)
                     r = False
@@ -731,14 +731,14 @@ macros[Profiles.CSS3_COLOR] = {
     # orange and transparent in CSS 2.1
     'namedcolor': r'(currentcolor|transparent|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow)',
                     # orange?
-    'rgbacolor': r'rgba\({w}{int}{w},{w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgba\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',
-    'hslcolor': r'hsl\({w}{int}{w},{w}{num}%{w},{w}{num}%{w}\)|hsla\({w}{int}{w},{w}{num}%{w},{w}{num}%{w},{w}{num}{w}\)',
+    'rgbacolor': r'rgba\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\,{w}{num}{w}\)|rgba\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)',
+    'hslcolor': r'hsl\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\)|hsla\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)',
     'x11color': r'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen',
     'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|{x11color}|inherit',
     }
 properties[Profiles.CSS3_COLOR] = {
-    'opacity': r'{num}|inherit'
+    'opacity': r'{num}|inherit',
     }
 
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
