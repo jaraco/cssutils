@@ -153,10 +153,10 @@ class AutoEncodingTestCase(unittest.TestCase):
             """<meta content="text/html;charset=ascii" http-equiv="cONTENT-type">
                 </ >""":
                 ('text/html', 'ascii'),
-#            """</ >
-#                <meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":
-#                (None, None),
-#                 py 2.7.3 fixed HTMLParser so: ('text/html', 'ascii'),
+            """</ >
+                <meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":
+                ('text/html', 'ascii'),
+            # py 2.7.3 fixed HTMLParser so:  (None, None)
             """<meta content="text/html" http-equiv="cONTENT-type">
                 </ >
                 <meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":

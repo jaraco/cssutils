@@ -35,6 +35,11 @@ Development Version
 HEAD
     - BUGFIX: Added bugfix for false color values like ``#xyz`` not being handled properly (thanks to Teruaki Koizumi)
 
+0.9.10
+    - Fixed issue #23: Tests do work properly in newer Python (>2.7.1?) version now, old versions will report error. Before this was the other way round but this makes more sense probably
+    - Fixed issue #27
+    - Fixed issue #28
+
 0.9.10b1 120428
     - **REGRESSION**: Valid profiles reported by validation may not be right but as these hardly say anything in the real world anyway the advancements in the following bugfixes are probably worth this. ``Profiles.validateWithProfile`` currently not working but should be hardly used anyway. As a workaround remove all profiles and add just the ones you want to use for your application
 
