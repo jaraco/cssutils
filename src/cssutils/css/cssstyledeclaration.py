@@ -35,7 +35,7 @@ style sheet had been::
     IMG { }
     IMG { }
 
-Cssutils again will issue a message (WARNING in this case) about invalid 
+Cssutils again will issue a message (WARNING in this case) about invalid
 CSS2 property values.
 
 TODO:
@@ -91,7 +91,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             <BLANKLINE>
 
     Format::
-    
+
         [Property: Value Priority?;]* [Property: Value Priority?]?
     """
     def __init__(self, cssText=u'', parentRule=None, readonly=False,
@@ -116,7 +116,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     def __contains__(self, nameOrProperty):
         """Check if a property (or a property with given name) is in style.
-        
+
         :param name:
             a string or Property, uses normalized name and not literalname
         """
@@ -125,7 +125,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         else:
             name = self._normalize(nameOrProperty)
         return name in self.__nnames()
-    
+
     def __iter__(self):
         """Iterator of set Property objects with different normalized names."""
         def properties():
@@ -137,18 +137,18 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         """Analoguous to standard dict returns property names which are set in
         this declaration."""
         return list(self.__nnames())
-    
+
     def __getitem__(self, CSSName):
         """Retrieve the value of property ``CSSName`` from this declaration.
-        
+
         ``CSSName`` will be always normalized.
         """
         return self.getPropertyValue(CSSName)
-    
+
     def __setitem__(self, CSSName, value):
-        """Set value of property ``CSSName``. ``value`` may also be a tuple of 
+        """Set value of property ``CSSName``. ``value`` may also be a tuple of
         (value, priority), e.g. style['color'] = ('red', 'important')
-        
+
         ``CSSName`` will be always normalized.
         """
         priority = None
@@ -159,9 +159,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     def __delitem__(self, CSSName):
         """Delete property ``CSSName`` from this declaration.
-        If property is not in this declaration return u'' just like 
+        If property is not in this declaration return u'' just like
         removeProperty.
-        
+
         ``CSSName`` will be always normalized.
         """
         return self.removeProperty(CSSName)
@@ -200,14 +200,14 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     def __nnames(self):
         """Return iterator for all different names in order as set
-        if names are set twice the last one is used (double reverse!) 
+        if names are set twice the last one is used (double reverse!)
         """
         names = []
         for item in reversed(self.seq):
             val = item.value
             if isinstance(val, Property) and not val.name in names:
                 names.append(val.name)
-        return reversed(names)    
+        return reversed(names)
 
     # overwritten accessor functions for CSS2Properties' properties
     def _getP(self, CSSName):
@@ -241,7 +241,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             >>> style.fontStyle = 'italic'
             >>> # or
             >>> style.setProperty('font-style', 'italic', '!important')
-            
+
         """
         self.setProperty(CSSName, value)
         # TODO: Shorthand ones
@@ -287,10 +287,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         tokenizer = self._tokenize2(cssText)
 
         # for closures: must be a mutable
-        new = {'wellformed': True} 
+        new = {'wellformed': True}
         def ident(expected, seq, token, tokenizer=None):
             # a property
-            
+
             tokens = self._tokensupto2(tokenizer, starttoken=token,
                                        semicolon=True)
             if self._tokenvalue(tokens[-1]) == u';':
@@ -298,37 +298,46 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             property = Property(parent=self)
             property.cssText = tokens
             if property.wellformed:
-                seq.append(property, 'Property')                
+                seq.append(property, 'Property')
             else:
                 self._log.error(u'CSSStyleDeclaration: Syntax Error in '
                                 u'Property: %s' % self._valuestr(tokens))
             # does not matter in this case
-            return expected 
+            return expected
 
         def unexpected(expected, seq, token, tokenizer=None):
             # error, find next ; or } to omit upto next property
             ignored = self._tokenvalue(token) + self._valuestr(
-                                self._tokensupto2(tokenizer, 
+                                self._tokensupto2(tokenizer,
                                                   propertyvalueendonly=True))
             self._log.error(u'CSSStyleDeclaration: Unexpected token, ignoring '
                             'upto %r.' % ignored,token)
             # does not matter in this case
             return expected
 
+        def char(expected, seq, token, tokenizer=None):
+            # a standalone ; or error...
+            if self._tokenvalue(token) == u';':
+                self._log.info(u'CSSStyleDeclaration: Stripped standalone semicolon'
+                                u': %s' % self._valuestr([token]), neverraise=True)
+                return expected
+            else:
+                return unexpected(expected, seq, token, tokenizer)
+
         # [Property: Value;]* Property: Value?
         newseq = self._tempSeq()
         wellformed, expected = self._parse(expected=None,
             seq=newseq, tokenizer=tokenizer,
-            productions={'IDENT': ident},
+            productions={'IDENT': ident, 'CHAR': char},
             default=unexpected)
         # wellformed set by parse
 
         for item in newseq:
             item.value._parent = self
-         
-        # do not check wellformed as invalid things are removed anyway            
+
+        # do not check wellformed as invalid things are removed anyway
         self._setSeq(newseq)
-        
+
     cssText = property(_getCssText, _setCssText,
                        doc=u"(DOM) A parsable textual representation of the "
                            u"declaration block excluding the surrounding curly "
@@ -336,7 +345,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     def getCssText(self, separator=None):
         """
-        :returns: 
+        :returns:
             serialized property cssText, each property separated by
             given `separator` which may e.g. be ``u''`` to be able to use
             cssText directly in an HTML style attribute. ``;`` is part of
@@ -349,7 +358,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         self._parentRule = parentRule
 #        for x in self.children():
 #            x.parent = self
-            
+
     parentRule = property(lambda self: self._parentRule, _setParentRule,
         doc="(DOM) The CSS rule that contains this declaration block or "
             "None if this CSSStyleDeclaration is not attached to a CSSRule.")
@@ -359,18 +368,18 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         :param name:
             optional `name` of properties which are requested.
             Only properties with this **always normalized** `name` are returned.
-            If `name` is ``None`` all properties are returned (at least one for 
+            If `name` is ``None`` all properties are returned (at least one for
             each set name depending on parameter `all`).
         :param all:
-            if ``False`` (DEFAULT) only the effective properties are returned. 
+            if ``False`` (DEFAULT) only the effective properties are returned.
             If name is given a list with only one property is returned.
 
             if ``True`` all properties including properties set multiple times
             with different values or priorities for different UAs are returned.
-            The order of the properties is fully kept as in the original 
+            The order of the properties is fully kept as in the original
             stylesheet.
-        :returns: 
-            a list of :class:`~cssutils.css.Property` objects set in 
+        :returns:
+            a list of :class:`~cssutils.css.Property` objects set in
             this declaration.
         """
         if name and not all:
@@ -378,13 +387,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             p = self.getProperty(name)
             if p:
                 return [p]
-            else: 
+            else:
                 return []
         elif not all:
             # effective Properties in name order
             return [self.getProperty(name) for name in self.__nnames()]
-        else:    
-            # all properties or all with this name    
+        else:
+            # all properties or all with this name
             nname = self._normalize(name)
             properties = []
             for item in self.seq:
@@ -402,7 +411,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             if ``True`` (DEFAULT) name will be normalized (lowercase, no simple
             escapes) so "color", "COLOR" or "C\olor" will all be equivalent
 
-            If ``False`` may return **NOT** the effective value but the 
+            If ``False`` may return **NOT** the effective value but the
             effective for the unnormalized name.
         :returns:
             the effective :class:`~cssutils.css.Property` object.
@@ -427,23 +436,23 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             if ``True`` (DEFAULT) name will be normalized (lowercase, no simple
             escapes) so "color", "COLOR" or "C\olor" will all be equivalent
 
-            If ``False`` may return **NOT** the effective value but the 
+            If ``False`` may return **NOT** the effective value but the
             effective for the unnormalized name.
         :returns:
             :class:`~cssutils.css.CSSValue`, the value of the effective
-            property if it has been explicitly set for this declaration block. 
+            property if it has been explicitly set for this declaration block.
 
         (DOM)
         Used to retrieve the object representation of the value of a CSS
         property if it has been explicitly set within this declaration
         block. Returns None if the property has not been set.
-                
+
         (This method returns None if the property is a shorthand
         property. Shorthand property values can only be accessed and
         modified as strings, using the getPropertyValue and setProperty
         methods.)
 
-        **cssutils currently always returns a CSSValue if the property is 
+        **cssutils currently always returns a CSSValue if the property is
         set.**
 
         for more on shorthand properties see
@@ -452,7 +461,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         nname = self._normalize(name)
         if nname in self._SHORTHANDPROPERTIES:
             self._log.info(u'CSSValue for shorthand property "%s" should be '
-                           u'None, this may be implemented later.' % 
+                           u'None, this may be implemented later.' %
                            nname, neverraise=True)
 
         p = self.getProperty(name, normalize)
@@ -460,7 +469,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             return p.cssValue
         else:
             return None
-        
+
     def getPropertyValue(self, name, normalize=True):
         """
         :param name:
@@ -481,7 +490,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             return p.value
         else:
             return u''
-        
+
     def getPropertyPriority(self, name, normalize=True):
         """
         :param name:
@@ -517,8 +526,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             The effective Property value is returned and *all* Properties
             with ``Property.name == name`` are removed.
 
-            If ``False`` may return **NOT** the effective value but the 
-            effective for the unnormalized `name` only. Also only the 
+            If ``False`` may return **NOT** the effective value but the
+            effective for the unnormalized `name` only. Also only the
             Properties with the literal name `name` are removed.
         :returns:
             the value of the property if it has been explicitly set for
@@ -539,19 +548,19 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             # remove all properties with name == nname
             nname = self._normalize(name)
             for item in self.seq:
-                if not (isinstance(item.value, Property) 
+                if not (isinstance(item.value, Property)
                         and item.value.name == nname):
                     newseq.appendItem(item)
         else:
             # remove all properties with literalname == name
             for item in self.seq:
-                if not (isinstance(item.value, Property) 
+                if not (isinstance(item.value, Property)
                         and item.value.literalname == name):
                     newseq.appendItem(item)
         self._setSeq(newseq)
         return r
 
-    def setProperty(self, name, value=None, priority=u'', 
+    def setProperty(self, name, value=None, priority=u'',
                     normalize=True, replace=True):
         """(DOM) Set a property value and priority within this declaration
         block.
@@ -561,11 +570,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             "propertyName"), always lowercase (even if not normalized)
 
             If a property with this `name` is present it will be reset.
-            
-            cssutils also allowed `name` to be a 
+
+            cssutils also allowed `name` to be a
             :class:`~cssutils.css.Property` object, all other
             parameter are ignored in this case
-        
+
         :param value:
             the new value of the property, ignored if `name` is a Property.
         :param priority:
@@ -575,14 +584,14 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             if True (DEFAULT) `name` will be normalized (lowercase, no simple
             escapes) so "color", "COLOR" or "C\olor" will all be equivalent
         :param replace:
-            if True (DEFAULT) the given property will replace a present 
+            if True (DEFAULT) the given property will replace a present
             property. If False a new property will be added always.
-            The difference to `normalize` is that two or more properties with 
+            The difference to `normalize` is that two or more properties with
             the same name may be set, useful for e.g. stuff like::
-                    
+
                 background: red;
                 background: rgba(255, 0, 0, 0.5);
-                
+
             which defines the same property but only capable UAs use the last
             property value, older ones use the first value.
 
@@ -595,9 +604,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
               readonly.
         """
         self._checkReadonly()
-        
+
         if isinstance(name, Property):
-            newp = name 
+            newp = name
             name = newp.literalname
         elif not value:
             # empty string or None effectively removed property
@@ -607,7 +616,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
         if newp.wellformed:
             if replace:
-                # check if update 
+                # check if update
                 nname = self._normalize(name)
                 properties = self.getProperties(name, all=(not normalize))
                 for property in reversed(properties):
