@@ -37,11 +37,9 @@ def maketokens(valuelist):
 
 
 if 1:
-    u = u'.010'
-    d = u.index(u'.') + 2
-    a, b = u[0:d], u[d:len(u)]
-    b = b.rstrip('0')
-    print a + b
+    css = '''a{;display:block;float:left}'''
+    print cssutils.parseString(css).cssText
+
     sys.exit(1)
 
 if 1:
