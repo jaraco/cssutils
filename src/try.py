@@ -37,15 +37,47 @@ def maketokens(valuelist):
 
 
 if 1:
+    u = u'.010'
+    d = u.index(u'.') + 2
+    a, b = u[0:d], u[d:len(u)]
+    b = b.rstrip('0')
+    print a + b
+    sys.exit(1)
+
+if 1:
+    css = 'matrix(0.000092, 0.250000, -0.250000, 0.000092, 0, 0); }'
+    p = cssutils.css.Property('transform', css)
+    print p
+    print
+    pv = p.propertyValue
+    for c in pv:
+        print c
+        #print c.name, c.colorType, c.red, c.green, c.blue, c.alpha
+#    for i, v in enumerate(pv):
+#        print i, v
+#        print 'RGBA', v.red, v.green, v.blue, v.alpha
+#    v = cssutils.css.Value(css)
+    #v = cssutils.css.CSSFunction(css)
+
+#    print v
+#    for i, x in enumerate(v.seq):
+#        print i, x.value
+    sys.exit(1)
+
+
+
+
+
+if 1:
     s = '''
     a {
 font-family : a  b;
-} 
+}
 '''
     cssutils.parseString(s).cssText
     sys.exit(1)
-    
-    
+
+
     import cssutils, pprint
     # remove ALL predefined property profiles
 #    cssutils.profile.removeProfile(all=True)
@@ -57,7 +89,7 @@ font-family : a  b;
 
     props2 = {'abc': '{num}'}
     cssutils.profile.addProfile('my2', props2)
-    
+
     # keep only valid properties (valid in given profile)
     cssutils.ser.prefs.validOnly = True
 
@@ -68,7 +100,7 @@ font-family : a  b;
 
     cssutils.profile.removeProfile('my1')
     cssutils.profile.removeProfile('my2')
-    
+
     print cssutils.parseString('''a {
         color: a;
         background: b;
@@ -99,7 +131,7 @@ if 1:
 #    v = cssutils.css.CSSVariablesDeclaration()
 #    v.cssText = 'top '
 #    print v
-#    
+#
 #    sys.exit(0)
     cssutils.ser.prefs.keepComments = True
     t = u'''
@@ -117,16 +149,16 @@ if 1:
         @y;
         color: green;
     }
-    '''    
+    '''
     s = cssutils.parseString(t)
     print s.cssText
-    
+
     p = s.cssRules[0]
     print p
 
-    
+
     sys.exit(1)
-    
+
 
 if 1:
     sel = [
@@ -139,17 +171,17 @@ if 1:
            '$E > F',
     ]
 
-        
+
 #    t = cssutils.tokenize2.Tokenizer()
 #    pprint.pprint(list(t.tokenize(x)))
 #    print
-    
+
     for i, s in enumerate(sel):
         print i, s
         sheet = cssutils.parseString(s + '{color: green}')
         print sheet.cssText
         print
-        
+
     sys.exit(0)
 
 
@@ -164,27 +196,6 @@ if 1:
                           title='from url')
     print s.cssText
     sys.exit(0)
-
-if 1:
-    css = '\\ReD white transparent, navy #ff0000 #f0f #ff00ff #00ff00'
-    p = cssutils.css.Property('color', css)
-    print p
-    print
-    pv = p.propertyValue
-    for c in pv:
-        print c
-        #print c.name, c.colorType, c.red, c.green, c.blue, c.alpha
-#    for i, v in enumerate(pv):
-#        print i, v
-#        print 'RGBA', v.red, v.green, v.blue, v.alpha
-#    v = cssutils.css.Value(css)
-    #v = cssutils.css.CSSFunction(css)
-
-#    print v
-#    for i, x in enumerate(v.seq):
-#        print i, x.value
-    sys.exit(1)
-
 
 
 if 1:

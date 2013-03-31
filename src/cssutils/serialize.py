@@ -48,7 +48,7 @@ class Preferences(object):
     indent = 4 * ' '
         Indentation of e.g Properties inside a CSSStyleDeclaration
     indentClosingBrace = True
-        Defines if closing brace of block is indented to match indentation 
+        Defines if closing brace of block is indented to match indentation
         of the block (default) oder match indentation of selector.
     indentSpecificities = False (**EXPERIMENTAL**)
         Indent rules with subset of Selectors and higher Specitivity
@@ -243,7 +243,7 @@ class Out(object):
                 self._remove_last_if_S()
 
             # APPEND
-            
+
             if indent or (val == u'}' and self.ser.prefs.indentClosingBrace):
                 self.out.append(self.ser._indentblock(val, self.ser._level+1))
             else:
@@ -570,7 +570,7 @@ class CSSSerializer(object):
         out.extend(rulesout)
 
         #     }
-        out.append(u'%s}' % ((self._level + int(self.prefs.indentClosingBrace)) 
+        out.append(u'%s}' % ((self._level + int(self.prefs.indentClosingBrace))
                              * self.prefs.indent))
 
         return u''.join(out)
@@ -596,19 +596,19 @@ class CSSSerializer(object):
             if rtext:
                 rulesout.append(rtext)
                 rulesout.append(self.prefs.lineSeparator)
-        
+
         rulesText = u''.join(rulesout)#.strip()
 
         # omit semicolon only if no MarginRules
         styleText = self.do_css_CSSStyleDeclaration(rule.style,
                                                     omit=not rulesText)
-        
+
         if (styleText or rulesText) and rule.wellformed:
             out = Out(self)
             out.append(self._atkeyword(rule))
             out.append(rule.selectorText)
             out.append(u'{')
-            
+
             if styleText:
                 if not rulesText:
                     out.append(u'%s%s' % (styleText,
@@ -616,14 +616,14 @@ class CSSSerializer(object):
                                           ), indent=1)
                 else:
                     out.append(styleText, type_='styletext', indent=1, space=False)
-                
-            if rulesText:            
+
+            if rulesText:
                 out.append(rulesText, indent=1)
             #?
-            self._level -= 1 
+            self._level -= 1
             out.append(u'}')
-            self._level += 1 
-            
+            self._level += 1
+
             return out.value()
         else:
             return u''
@@ -652,10 +652,10 @@ class CSSSerializer(object):
         # might not be set at all?!
         if rule.atkeyword:
             styleText = self.do_css_CSSStyleDeclaration(rule.style)
-                    
+
             if styleText and rule.wellformed:
                 out = Out(self)
-                
+
 #                # use seq but styledecl missing
 #                for item in rule.seq:
 #                    if item.type == 'ATKEYWORD':
@@ -665,7 +665,7 @@ class CSSSerializer(object):
 #                        print type_, val
 #                        out.append(item.value, item.type)
 #                return out.value()
-                
+
                 # ok for now:
                 out.append(self._atkeyword(rule), type_='ATKEYWORD')
                 out.append(u'{')
@@ -750,7 +750,7 @@ class CSSSerializer(object):
 
         selectorText = self.do_css_SelectorList(rule.selectorList)
         if not selectorText or not rule.wellformed:
-            return u''        
+            return u''
         self._level += 1
         styleText = u''
         try:
@@ -769,7 +769,7 @@ class CSSSerializer(object):
                     self.prefs.lineSeparator,
                     self._indentblock(styleText, self._level + 1),
                     self.prefs.lineSeparator,
-                    (self._level + int(self.prefs.indentClosingBrace)) 
+                    (self._level + int(self.prefs.indentClosingBrace))
                     * self.prefs.indent),
                 self._selectorlevel)
 
@@ -884,7 +884,7 @@ class CSSSerializer(object):
 
             out = []
             omitLastSemicolon = omit and self.prefs.omitLastSemicolon
-            
+
             for i, item in enumerate(seq):
                 type_, val = item.type, item.value
                 if isinstance(val, cssutils.css.CSSComment):
@@ -998,6 +998,12 @@ class CSSSerializer(object):
 
             return out.value()
 
+    def _strip_zeros(self, s):
+        i = s.index(u'.') + 2
+        a, b = s[0:i], s[i:len(s)]
+        b = b.rstrip('0')
+        return a + b
+
     def do_css_Value(self, value, valuesOnly=None):
         """Serializes a Value, valuesOnly is ignored"""
         if not value:
@@ -1015,28 +1021,29 @@ class CSSSerializer(object):
                     # cut off after . which is zero anyway
                     val = unicode(int(value.value))
                 elif self.prefs.omitLeadingZero and -1 < value.value < 1:
-                    v = unicode(value.value)
+                    v = self._strip_zeros(u'%f' % value.value) # issue #27
                     val = v
                     if value._sign == u'-':
                         val = v[0] + v[2:]
                     else:
                         val = v[1:]
                 else:
-                    val = unicode(value.value)
+
+                    val = self._strip_zeros(u'%f' % value.value) # issue #27
 
                 # keep '+' if given
                 if value.value != 0 and value._sign == u'+':
                     sign = u'+'
                 else:
                     sign = u''
-                    
+
                 out.append(sign + val + dim, value.type)
-        
+
             else:
                 # e.g. URI
                 out.append(value.value, value.type)
-                
-        return out.value()            
+
+        return out.value()
 
     def do_css_ColorValue(self, value, valuesOnly=False):
         """Serialize a ColorValue, a HASH simple value or FUNCTION"""
@@ -1044,7 +1051,7 @@ class CSSSerializer(object):
             return {'FUNCTION': self.do_css_CSSFunction,
                     'HASH': self.do_css_Value,
                     'IDENT': self.do_css_Value
-                    }[value.colorType](value, 
+                    }[value.colorType](value,
                                        valuesOnly=valuesOnly)
         except KeyError, e:
             return u''

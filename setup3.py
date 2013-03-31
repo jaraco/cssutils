@@ -54,7 +54,7 @@ setup(
     version=VERSION,
     package_dir={'':'src3'},
     packages=find_packages('src3'),
-    test_suite='tests', #'nose.collector'
+    test_suite='cssutils.tests', #'nose.collector'
     tests_require='mock',
     entry_points={
         'console_scripts': [
