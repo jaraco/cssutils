@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """cssutils - CSS Cascading Style Sheets library for Python
 
-    Copyright (C) 2004-2012 Christof Hoeke
+    Copyright (C) 2004-2013 Christof Hoeke
 
     cssutils is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -70,7 +70,7 @@ which are well documented. Some minor extensions are provided as well.
 Please visit http://cthedot.de/cssutils/ for more details.
 
 
-Tested with Python 2.7 on Windows 7 mainly.
+Tested with Python 2.7.3 and 3.3 on Windows 8 64bit.
 
 
 This library may be used ``from cssutils import *`` which

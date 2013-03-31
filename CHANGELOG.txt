@@ -32,11 +32,9 @@ Known Issues
 Development Version
 ===================
 
-HEAD
-
 0.9.10 130331
     - BUGFIX: False HASH color values like ``#xyz`` were not being handled properly (thanks to Teruaki Koizumi)
-
+2
     - Fixed issue #23: Tests do work properly in newer Python (>2.7.1?) version now, old versions will report error. Before this was the other way round but this makes more sense probably
 
     - Fixed issue #24: rgba color values did not validate properly

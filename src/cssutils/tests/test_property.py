@@ -20,7 +20,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual(u'', p.priority)
         self.assertEqual(True, p.valid)
         self.assertEqual(True, p.wellformed)
-        
+
         self.assertEqual([u'top'], p.seqs[0])
         self.assertEqual(type(cssutils.css.PropertyValue(cssText="2px")), type(p.seqs[1]))
         self.assertEqual([], p.seqs[2])
@@ -40,7 +40,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual('top: 1px', p.cssText)
         p.cssValue = ''
         self.assertEqual('top', p.cssText)
-        
+
         self.assertRaises(xml.dom.SyntaxErr, cssutils.css.property.Property, 'top', '')
         self.assertRaises(xml.dom.SyntaxErr, cssutils.css.property.Property, 'top')
         p = cssutils.css.property.Property('top', '0')
@@ -49,7 +49,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertRaises(xml.dom.SyntaxErr, p._setValue, '')
         self.assertEqual('0', p.value)
         self.assertEqual(True, p.wellformed)
-        
+
 #        self.assertEqual(True, p.valid)
 
 #    def test_valid(self):
@@ -144,6 +144,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u';': xml.dom.SyntaxErr,
             u'top:': xml.dom.SyntaxErr,
             u'top;': xml.dom.SyntaxErr,
+            u'color: #xyz': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests, att='_setName')
 
@@ -155,7 +156,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         "Property.literalname"
         p = cssutils.css.property.Property(r'c\olor', 'red')
         self.assertEqual(r'c\olor', p.literalname)
-        self.assertRaisesMsg(AttributeError, "can't set attribute", p.__setattr__, 
+        self.assertRaisesMsg(AttributeError, "can't set attribute", p.__setattr__,
                              'literalname', 'color')
 
     def test_validate(self):
@@ -163,7 +164,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         p = cssutils.css.property.Property('left', '1px', '')
 
         self.assertEqual(p.valid, True)
-       
+
         p.name = 'color'
         self.assertEqual(p.valid, False)
 
@@ -172,7 +173,7 @@ class PropertyTestCase(basetest.BaseTestCase):
 
         p.value = 'red'
         self.assertEqual(p.valid, False)
-        
+
     def test_cssValue(self):
         "Property.cssValue"
         pass
@@ -182,7 +183,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         "Property.priority"
         p = cssutils.css.property.Property('top', '1px', 'important')
 
-        for prio in (None, u''):           
+        for prio in (None, u''):
             p.priority = prio
             self.assertEqual(u'', p.priority)
             self.assertEqual(u'', p.literalpriority)
@@ -193,15 +194,15 @@ class PropertyTestCase(basetest.BaseTestCase):
                      u'!/* x */ important /**/',
                      u'important',
                      u'IMPORTANT',
-                     ur'im\portant' 
-                     ):           
+                     ur'im\portant'
+                     ):
             p.priority = prio
             self.assertEqual(u'important', p.priority)
             if prio.startswith('!'):
                 prio = prio[1:].strip()
             if u'/*' in prio:
                 check = 'important'
-            else: 
+            else:
                 check = prio
             self.assertEqual(check, p.literalpriority)
 

@@ -20,6 +20,7 @@ __version__ = '$Id: parse.py 1418 2008-08-09 19:27:50Z cthedot $'
 
 from helper import pushtoken
 import cssutils
+import re
 import string
 import sys
 
@@ -221,7 +222,7 @@ class Prod(object):
     """Single Prod in Sequence or Choice."""
     def __init__(self, name, match, optional=False,
                  toSeq=None, toStore=None,
-                 stop=False, stopAndKeep=False, 
+                 stop=False, stopAndKeep=False,
                  nextSor=False, mayEnd=False,
                  storeToken=None,
                  exception=None):
@@ -234,9 +235,9 @@ class Prod(object):
         toSeq callback (optional) or False
             calling toSeq(token, tokens) returns (type_, val) == (token[0], token[1])
             to be appended to seq else simply unaltered (type_, val)
-            
+
             if False nothing is added
-            
+
         toStore (optional)
             key to save util.Item to store or callback(store, util.Item)
         optional = False
@@ -251,11 +252,11 @@ class Prod(object):
         mayEnd = False
             no token must follow even defined by Sequence.
             Used for operator ',/ ' currently only
-            
+
         storeToken = None
             if True toStore saves simple token tuple and not and Item object
             to store. Old style processing, TODO: resolve
-            
+
         exception = None
             exception to be raised in case of error, normaly SyntaxErr
         """
@@ -267,7 +268,7 @@ class Prod(object):
         self.nextSor = nextSor
         self.mayEnd = mayEnd
         self.storeToken = storeToken
-        self.exception = exception  
+        self.exception = exception
 
         def makeToStore(key):
             "Return a function used by toStore."
@@ -332,7 +333,7 @@ class ProdParser(object):
         if isinstance(text, basestring):
             # DEFAULT, to tokenize strip space
             return tokenizer.tokenize(text.strip())
-        
+
         elif isinstance(text, tuple):
             # OLD: (token, tokens) or a single token
             if len(text) == 2:
@@ -341,11 +342,11 @@ class ProdParser(object):
             else:
                 # single token
                 return iter([text])
-            
+
         elif isinstance(text, list):
             # OLD: generator from list
             return iter(text)
-        
+
         else:
             # DEFAULT, already tokenized, assume generator
             return text
@@ -396,7 +397,7 @@ class ProdParser(object):
             used for logging
         productions
             used to parse tokens
-        keepS 
+        keepS
             if WS should be added to Seq or just be ignored
         store  UPDATED
             If a Prod defines ``toStore`` the key defined there
@@ -413,7 +414,7 @@ class ProdParser(object):
             :store: filled keys defined by Prod.toStore
             :unusedtokens: token generator containing tokens not used yet
         """
-        tokens = self._texttotokens(text) 
+        tokens = self._texttotokens(text)
         if not tokens:
             self._log.error(u'No content to parse.')
             # TODO: return???
@@ -436,7 +437,7 @@ class ProdParser(object):
             except StopIteration:
                 break
             type_, val, line, col = token
-            
+
             # default productions
             if type_ == self.types.COMMENT:
                 # always append COMMENT
@@ -488,7 +489,7 @@ class ProdParser(object):
                     wellformed = False
                     self._log.error(u'%s: %s: %r' % (name, e, token))
                     break
-                else:                    
+                else:
                     # process prod
                     if prod.toSeq and not prod.stopAndKeep:
                         type_, val = prod.toSeq(token, tokens)
@@ -497,12 +498,12 @@ class ProdParser(object):
                             if prod.toStore:
                                 if not prod.storeToken:
                                     prod.toStore(store, seq[-1])
-                                else:                                   
+                                else:
                                     # workaround for now for old style token
                                     # parsing!
                                     # TODO: remove when all new style
                                     prod.toStore(store, token)
-                                
+
                     if prod.stop: # EOF?
                         # stop here and ignore following tokens
                         break
@@ -513,7 +514,7 @@ class ProdParser(object):
                         tokenizer.push(token)
                         stopall = True
                         break
-                    
+
                     if prod.nextSor:
                         # following is S or other token (e.g. ",")?
                         # remove S if
@@ -523,7 +524,7 @@ class ProdParser(object):
                         defaultS = True
 
         lastprod = prod
-        
+
         if not stopall:
             # stop immediately
             while True:
@@ -533,26 +534,26 @@ class ProdParser(object):
                 except Done, e:
                     # ok
                     prod = None
-    
+
                 except Missing, e:
                     prod = None
                     # last was a S operator which may End a Sequence, then ok
                     if hasattr(lastprod, 'mayEnd') and not lastprod.mayEnd:
                         wellformed = False
                         self._log.error(u'%s: %s' % (name, e))
-    
+
                 except ParseError, e:
                     prod = None
                     wellformed = False
                     self._log.error(u'%s: %s' % (name, e))
-    
+
                 else:
                     if prods[-1].optional:
                         prod = None
                     elif prod and prod.optional:
                         # ignore optional
                         continue
-    
+
                 if prod and not prod.optional:
                     wellformed = False
                     self._log.error(u'%s: Missing token for production %r'
@@ -574,6 +575,7 @@ class PreDef(object):
     for ProdParser instances.
     """
     types = cssutils.cssproductions.CSSProductions
+    reHexcolor = re.compile(r'^\#(?:[0-9abcdefABCDEF]{3}|[0-9abcdefABCDEF]{6})$')
 
     @staticmethod
     def calc(toSeq=None, nextSor=False):
@@ -583,7 +585,7 @@ class PreDef(object):
                     nextSor=nextSor)
 
     @staticmethod
-    def char(name='char', char=u',', toSeq=None, 
+    def char(name='char', char=u',', toSeq=None,
              stop=False, stopAndKeep=False,
              optional=True, nextSor=False):
         "any CHAR"
@@ -620,12 +622,13 @@ class PreDef(object):
     def hexcolor(stop=False, nextSor=False):
         "#123 or #123456"
         return Prod(name='HEX color',
-                    match=lambda t, v: t == PreDef.types.HASH and (
-                                       len(v) == 4 or len(v) == 7) and
-                                       set(v[1:]).issubset(set(string.hexdigits)),
+                    match=lambda t, v: (
+                        t == PreDef.types.HASH and
+                        PreDef.reHexcolor.match(v)
+                    ),
                     stop=stop,
                     nextSor=nextSor)
-    
+
     @staticmethod
     def ident(stop=False, toStore=None, nextSor=False):
         return Prod(name=u'ident',
@@ -638,7 +641,7 @@ class PreDef(object):
     def number(stop=False, toSeq=None, nextSor=False):
         return Prod(name=u'number',
                     match=lambda t, v: t == PreDef.types.NUMBER,
-                    stop=stop, 
+                    stop=stop,
                     toSeq=toSeq,
                     nextSor=nextSor)
 
@@ -672,7 +675,7 @@ class PreDef(object):
         "+ or -"
         return Prod(name=u'unary +-', match=lambda t, v: v in (u'+', u'-'),
                     optional=True,
-                    stop=stop, 
+                    stop=stop,
                     toSeq=toSeq,
                     nextSor=nextSor)
 
@@ -694,7 +697,7 @@ class PreDef(object):
                     stop=stop,
                     nextSor=nextSor
                     )
-        
+
     @staticmethod
     def variable(toSeq=None, stop=False, nextSor=False):
         return Prod(name=u'variable',
@@ -706,24 +709,24 @@ class PreDef(object):
     # used for MarginRule for now:
     @staticmethod
     def unknownrule(name=u'@', toStore=None):
-        """@rule dummy (matches ATKEYWORD to remove unknown rule tokens from 
+        """@rule dummy (matches ATKEYWORD to remove unknown rule tokens from
         stream::
-        
+
             @x;
             @x {...}
-            
+
         no nested yet!
-        """            
+        """
         def rule(tokens):
             saved = []
             for t in tokens:
                 saved.append(t)
                 if (t[1] == u'}' or t[1] == u';'):
                     return cssutils.css.CSSUnknownRule(saved)
-        
+
         return Prod(name=name,
                     match=lambda t, v: t == u'ATKEYWORD',
-                    toSeq=lambda t, tokens: (u'CSSUnknownRule', 
+                    toSeq=lambda t, tokens: (u'CSSUnknownRule',
                                              rule(pushtoken(t, tokens))
                                              ),
                     toStore=toStore
