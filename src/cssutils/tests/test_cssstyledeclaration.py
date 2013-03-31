@@ -240,6 +240,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
 
         # exception
         tests = {
+            u'color: #xyz': xml.dom.SyntaxErr,
             u'top': xml.dom.SyntaxErr,
             u'top:': xml.dom.SyntaxErr,
             u'top : ': xml.dom.SyntaxErr,

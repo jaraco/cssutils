@@ -6,7 +6,7 @@ README
 -------------------------------------------------------
 cssutils: CSS Cascading Style Sheets library for Python
 -------------------------------------------------------
-:Copyright: 2004-2012 Christof Hoeke
+:Copyright: 2004-2013 Christof Hoeke
 
 Overview
 ========
@@ -51,11 +51,11 @@ There is also a low-traffic `cssutils discussion group <http://groups.google.com
 
 Compatibility
 =============
-cssutils is developed on standard Python but works under Python 2.x (from 2.5, v2.5.4 tested), 3.x (v3.2.2 tested) and Jython (from 2.5.1). IronPython has not been tested yet but might work? Python 2.4 and older are not supported since cssutils 0.9.8 anymore.
+cssutils is developed on standard Python but works under Python 2.x (from 2.5, 2.7.3 tested), 3.x (v3.3 tested) and Jython (from 2.5.1). IronPython has not been tested yet but might work? Python 2.4 and older are not supported since cssutils 0.9.8 anymore.
 
 License
 =======
-Copyright 2005 - 2012 Christof Hoeke
+Copyright 2005 - 2013 Christof Hoeke
 
 cssutils is published under the LGPL 3 or later
 

@@ -243,7 +243,7 @@ class Property(cssutils.util.Base):
 
     def _setPropertyValue(self, cssText):
         """
-        See css.PropertyValze
+        See css.PropertyValue
 
         :exceptions:
         - :exc:`~xml.dom.SyntaxErr`:
