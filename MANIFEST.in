@@ -1,5 +1,5 @@
 include examples/*.py
-include sheets/*.css
+recursive-include sheets *
 include COPYING
 include COPYING.LESSER
 exclude ANN.txt
