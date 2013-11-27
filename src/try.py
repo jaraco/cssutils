@@ -8,7 +8,7 @@ import codecs
 import cssutils
 import logging
 import os
-import pprint
+from pprint import pprint
 import re
 import sys
 import timeit
@@ -37,7 +37,32 @@ def maketokens(valuelist):
 
 
 if 1:
-    css = '''a { color:#1yz;}'''
+    t = cssutils.tokenize2.Tokenizer()
+    # @media (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+    css = '''a { top: calc(-);left: calc(1 + -2px); width: calc(-20px - -5px + +1%*1/2 +)}'''
+    #css = '''a { top: calc(-2 + -1px)}'''
+    css = 'a{top:calc(1 + +)}'
+    #css = '@page {left: 0}'
+
+    cssutils.ser.prefs.useMinified()
+
+    css = u'a{top: calc(1 )}'
+    print cssutils.parseString(css).cssText
+
+    #pprint (list(t.tokenize(css)))
+
+
+    sys.exit(1)
+
+
+if 1:
+    # @media (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+    css = '''@media all and (min-width:1px), (max-width: 2px) {
+  .logo {
+    background-color: blue;
+  }
+}
+'''
     print cssutils.parseString(css).cssText
 
     sys.exit(1)

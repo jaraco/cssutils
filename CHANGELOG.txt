@@ -32,9 +32,13 @@ Known Issues
 Development Version
 ===================
 
+
+Latest Stable Version
+=====================
+
 0.9.10 130331
     - BUGFIX: False HASH color values like ``#xyz`` were not being handled properly (thanks to Teruaki Koizumi)
-2
+
     - Fixed issue #23: Tests do work properly in newer Python (>2.7.1?) version now, old versions will report error. Before this was the other way round but this makes more sense probably
 
     - Fixed issue #24: rgba color values did not validate properly
@@ -46,6 +50,9 @@ Development Version
     - Fixed issue #28: Standalone semicolons in CSSStyleDeclaration is now simply stripped and does not remove directly following property too
 
 
+Archived Versions
+=================
+
 0.9.10b1 120428
     - **REGRESSION**: Valid profiles reported by validation may not be right but as these hardly say anything in the real world anyway the advancements in the following bugfixes are probably worth this. ``Profiles.validateWithProfile`` currently not working but should be hardly used anyway. As a workaround remove all profiles and add just the ones you want to use for your application
 
@@ -56,10 +63,6 @@ Development Version
     - BUGFIX: for Python 2.5 compatibility (thanks @Jason)
 
     + IMPROVEMENT: Added all X11 color names and corresponding RGBA values
-
-
-Last Stable Version
-===================
 
 0.9.9 final 120131
     - FEATURE: Implemented API for ``MarginRule`` objects inside ``CSSPageRule``, see http://www.w3.org/TR/css3-page/. You can also use e.g. ``CSSPageRule['@top-left']`` to retrieve the MarginRule it it is set etc. All dict like methods should be there. If a margin is set twice or more all properties are merged into a single margin rule. Double set properties are all kept though (see below).
@@ -79,8 +82,6 @@ Last Stable Version
     - BUGFIX: Fixed issue for GoogleAppEngine (GAE) which somehow handles codecs differently. ``parseUrl`` should work now.
 
 
-Archived Versions
-=================
 
 0.9.8
 -----

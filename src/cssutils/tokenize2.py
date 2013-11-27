@@ -140,7 +140,7 @@ class Tokenizer(object):
 
             # speed test for most used CHARs, sadly . not possible :(
             c = text[0]
-            if c in u',:;{}>+[]':
+            if c in u',:;{}>[]': # + but in num!
                 yield ('CHAR', c, line, col)
                 col += 1
                 text = text[1:]
