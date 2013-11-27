@@ -166,3 +166,10 @@ class BaseTestCase(unittest.TestCase):
             if debug:
                 print '"%s"' % test
             self.assertRaises(expected, self.r.__getattribute__(att), test)
+
+    def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
+        # sets self.r and asserts raise
+        for test in tests:
+            if debug:
+                print '"%s"' % test
+            self.assertRaises(err, self.r.__getattribute__(att), test)
