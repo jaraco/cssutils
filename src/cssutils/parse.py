@@ -30,7 +30,7 @@ class CSSParser(object):
         print sheet.cssText
     """
     def __init__(self, log=None, loglevel=None, raiseExceptions=None,
-                 fetcher=None, parseComments=True, 
+                 fetcher=None, parseComments=True,
                  validate=True):
         """
         :param log:
@@ -63,7 +63,7 @@ class CSSParser(object):
 
         self.__tokenizer = tokenize2.Tokenizer(doComments=parseComments)
         self.setFetcher(fetcher)
-        
+
         self._validate = validate
 
     def __parseSetting(self, parse):
@@ -101,7 +101,7 @@ class CSSParser(object):
         return style
 
     def parseString(self, cssText, encoding=None, href=None, media=None,
-                    title=None, 
+                    title=None,
                     validate=None):
         """Parse `cssText` as :class:`~cssutils.css.CSSStyleSheet`.
         Errors may be raised (e.g. UnicodeDecodeError).
@@ -136,7 +136,7 @@ class CSSParser(object):
 
         if validate is None:
             validate = self._validate
-            
+
         sheet = cssutils.css.CSSStyleSheet(href=href,
                                            media=cssutils.stylesheets.MediaList(media),
                                            title=title,
@@ -175,7 +175,11 @@ class CSSParser(object):
             #href = u'file:' + urllib.pathname2url(os.path.abspath(filename))
             href = path2url(filename)
 
-        return self.parseString(open(filename, 'rb').read(),
+        f = open(filename, 'rb')
+        css = f.read()
+        f.close()
+
+        return self.parseString(css,
                                 encoding=encoding, # read returns a str
                                 href=href, media=media, title=title,
                                 validate=validate)
