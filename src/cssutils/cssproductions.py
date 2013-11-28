@@ -30,7 +30,8 @@ MACROS = {
     'comment': r'\/\*[^*]*\*+([^/][^*]*\*+)*\/',
     'ident': r'[-]?{nmstart}{nmchar}*',
     'name': r'{nmchar}+',
-    'num': r'[0-9]*\.[0-9]+|[0-9]+', #r'[-]?\d+|[-]?\d*\.\d+',   
+    # TODO???
+    'num': r'[+-]?[0-9]*\.[0-9]+|[+-]?[0-9]+', #r'[-]?\d+|[-]?\d*\.\d+',
     'string': r'{string1}|{string2}',
     # from CSS2.1
     'invalid': r'{invalid1}|{invalid2}',
@@ -69,8 +70,8 @@ MACROS = {
 # The productions are **ordered**:
 PRODUCTIONS = [
     # UTF8_BOM or UTF8_BOM_SIG will only be checked at beginning of CSS
-    ('BOM', '\xfe\xff|\xef\xbb\xbf'), 
-    
+    ('BOM', '\xfe\xff|\xef\xbb\xbf'),
+
     ('S', r'{s}+'), # 1st in list of general productions
     ('URI', r'{U}{R}{L}\({w}({string}|{url}*){w}\)'),
     ('FUNCTION', r'{ident}\('),
@@ -104,9 +105,9 @@ class CSSProductions(object):
     most attributes are set later
     """
     EOF = True
-    # removed from productions as they simply are ATKEYWORD until 
+    # removed from productions as they simply are ATKEYWORD until
     # tokenizing
-    CHARSET_SYM = u'CHARSET_SYM' 
+    CHARSET_SYM = u'CHARSET_SYM'
     FONT_FACE_SYM = u'FONT_FACE_SYM'
     MEDIA_SYM = u'MEDIA_SYM'
     IMPORT_SYM = u'IMPORT_SYM'
@@ -116,9 +117,9 @@ class CSSProductions(object):
 
 for i, t in enumerate(PRODUCTIONS):
     setattr(CSSProductions, t[0].replace('-', '_'), t[0])
-    
+
 
 # may be enabled by settings.set
-_DXImageTransform = (u'FUNCTION', 
+_DXImageTransform = (u'FUNCTION',
                      ur'progid\:DXImageTransform\.Microsoft\..+\('
                      )

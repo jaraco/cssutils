@@ -107,6 +107,10 @@ class Choice(object):
         elif token:
             raise Exhausted(u'Extra token')
 
+    def __repr__(self):
+        return "<cssutils.prodsparser.%s object sequence=%r optional=%r at 0x%x>" % (
+                self.__class__.__name__, self.__str__(), self.optional, id(self))
+
     def __str__(self):
         return u'Choice(%s)' % u', '.join([str(x) for x in self._prods])
 
@@ -199,7 +203,7 @@ class Sequence(object):
             elif p.optional:
                 continue
 
-            elif round < self._min:
+            elif round < self._min or self._roundstarted: #or (round == 0 and self._min == 0):
                 raise Missing(u'Missing token for production %s' % p)
 
             elif not token:
@@ -214,8 +218,13 @@ class Sequence(object):
         if token:
             raise Exhausted(u'Extra token')
 
+    def __repr__(self):
+        return "<cssutils.prodsparser.%s object sequence=%r optional=%r at 0x%x>" % (
+                self.__class__.__name__, self.__str__(), self.optional, id(self))
+
     def __str__(self):
         return u'Sequence(%s)' % u', '.join([str(x) for x in self._prods])
+
 
 
 class Prod(object):
@@ -382,7 +391,7 @@ class ProdParser(object):
             yield token
 
 
-    def parse(self, text, name, productions, keepS=False, store=None):
+    def parse(self, text, name, productions, keepS=False, checkS=False, store=None, debug=False):
         """
         text (or token generator)
             to parse, will be tokenized if not a generator yet
@@ -431,11 +440,13 @@ class ProdParser(object):
         prod = None
         # flag if default S handling should be done
         defaultS = True
+
         while True:
             try:
                 token = tokens.next()
             except StopIteration:
                 break
+
             type_, val, line, col = token
 
             # default productions
@@ -443,12 +454,14 @@ class ProdParser(object):
                 # always append COMMENT
                 seq.append(cssutils.css.CSSComment(val),
                            cssutils.css.CSSComment, line, col)
-            elif defaultS and type_ == self.types.S:
+
+            elif defaultS and type_ == self.types.S and not checkS:
                 # append S (but ignore starting ones)
                 if not keepS or not started:
                     continue
                 else:
                     seq.append(val, type_, line, col)
+
 #            elif type_ == self.types.ATKEYWORD:
 #                # @rule
 #                r = cssutils.css.CSSUnknownRule(cssText=val)
@@ -458,9 +471,11 @@ class ProdParser(object):
                 wellformed = False
                 self._log.error(u'Invalid token: %r' % (token,))
                 break
+
             elif type_ == 'EOF':
                 # do nothing? (self.types.EOF == True!)
                 pass
+
             else:
                 started = True # check S now
                 nextSor = False # reset
@@ -473,6 +488,7 @@ class ProdParser(object):
                         except (Exhausted, NoMatch), e:
                             # try next
                             prod = None
+
                         if isinstance(prod, Prod):
                             # found actual Prod, not a Choice or Sequence
                             break
@@ -485,10 +501,13 @@ class ProdParser(object):
                                 prods.pop()
                             else:
                                 raise ParseError('No match')
+
+
                 except ParseError, e:
                     wellformed = False
                     self._log.error(u'%s: %s: %r' % (name, e, token))
                     break
+
                 else:
                     # process prod
                     if prod.toSeq and not prod.stopAndKeep:
@@ -586,11 +605,12 @@ class PreDef(object):
 
     @staticmethod
     def char(name='char', char=u',', toSeq=None,
-             stop=False, stopAndKeep=False,
+             stop=False, stopAndKeep=False, mayEnd=False,
              optional=True, nextSor=False):
         "any CHAR"
         return Prod(name=name, match=lambda t, v: v == char, toSeq=toSeq,
-                    stop=stop, stopAndKeep=stopAndKeep, optional=optional,
+                    stop=stop, stopAndKeep=stopAndKeep, mayEnd=mayEnd,
+                    optional=optional,
                     nextSor=nextSor)
 
     @staticmethod
@@ -613,10 +633,10 @@ class PreDef(object):
                     nextSor=nextSor)
 
     @staticmethod
-    def funcEnd(stop=False):
+    def funcEnd(stop=False, mayEnd=False):
         ")"
         return PreDef.char(u'end FUNC ")"', u')',
-                           stop=stop)
+                           stop=stop, optional=False, mayEnd=mayEnd)
 
     @staticmethod
     def hexcolor(stop=False, nextSor=False):

@@ -9,6 +9,7 @@ __all__ = ['PropertyValue',
            'DimensionValue',
            'URIValue',
            'CSSFunction',
+           'CSSCalc',
            'CSSVariable',
            'MSValue'
            ]
@@ -139,11 +140,11 @@ class PropertyValue(cssutils.util._NewBase):
                       _DimensionProd(self, nextSor),
                       _URIProd(self, nextSor),
                       _ValueProd(self, nextSor),
-#                      _CalcValueProd(self, nextSor),
 #                      _Rect(self, nextSor),
                       # all other functions
                       _CSSVariableProd(self, nextSor),
                       _MSValueProd(self, nextSor),
+                      _CalcValueProd(self, nextSor),
                       _CSSFunctionProd(self, nextSor)
                       )
         operator = Choice(PreDef.S(toSeq=False),
@@ -169,9 +170,15 @@ class PropertyValue(cssutils.util._NewBase):
                                                     prods)
         # must be at least one value!
         ok = ok and len(list(self.__items(seq))) > 0
+
+        for item in seq:
+            if hasattr(item.value, 'wellformed') and not item.value.wellformed:
+                ok = False
+                break
+
+        self.wellformed = ok
         if ok:
             self._setSeq(seq)
-            self.wellformed = True
         else:
             self._log.error(u'PropertyValue: Unknown syntax or no value: %s' %
                             self._valuestr(cssText))
@@ -222,6 +229,7 @@ class Value(cssutils.util._NewBase):
     HASH = u'HASH'
 
     FUNCTION = u'FUNCTION'
+    CALC = u'CALC'
     VARIABLE = u'VARIABLE'
 
     _type = None
@@ -231,6 +239,7 @@ class Value(cssutils.util._NewBase):
         super(Value, self).__init__()
 
         self.parent = parent
+        self.wellformed = False
 
         if cssText:
             self.cssText = cssText
@@ -254,13 +263,13 @@ class Value(cssutils.util._NewBase):
                        PreDef.unicode_range(stop=True),
                        )
         ok, seq, store, unused = ProdParser().parse(cssText, u'Value', prods)
+        self.wellformed = ok
         if ok:
             # only 1 value anyway!
             self._type = seq[0].type
             self._value = seq[0].value
 
             self._setSeq(seq)
-            self.wellformed = ok
 
     cssText = property(lambda self: cssutils.ser.do_css_Value(self),
                        _setCssText,
@@ -359,6 +368,7 @@ class ColorValue(Value):
         ok, seq, store, unused = ProdParser().parse(cssText,
                                                     self.type,
                                                     prods)
+        self.wellformed = ok
         if ok:
             t, v = seq[0].type, seq[0].value
             if u'IDENT' == t:
@@ -439,7 +449,6 @@ class ColorValue(Value):
             self._colorType = t
             self._red, self._green, self._blue, self._alpha = tuple(rgba)
             self._setSeq(seq)
-            self.wellformed = ok
 
     cssText = property(lambda self: cssutils.ser.do_css_ColorValue(self),
                        _setCssText,
@@ -474,11 +483,11 @@ class ColorValue(Value):
 
 class DimensionValue(Value):
     """
-    A numerical value with an optional dimenstion like e.g. "px" or "%".
+    A numerical value with an optional dimension like e.g. "px" or "%".
 
     Covers DIMENSION, PERCENTAGE or NUMBER values.
     """
-    __reNumDim = re.compile(ur'^(\d*\.\d+|\d+)(.*)$', re.I | re.U | re.X)
+    __reUnNumDim = re.compile(ur'^([+-]?)(\d*\.\d+|\d+)(.*)$', re.I | re.U | re.X)
     _dimension = None
     _sign = None
 
@@ -491,7 +500,7 @@ class DimensionValue(Value):
     def _setCssText(self, cssText):
         self._checkReadonly()
 
-        prods = Sequence(PreDef.unary(),
+        prods = Sequence(#PreDef.unary(),
                          Choice(PreDef.dimension(stop=True),
                                 PreDef.number(stop=True),
                                 PreDef.percentage(stop=True)
@@ -500,34 +509,27 @@ class DimensionValue(Value):
         ok, seq, store, unused = ProdParser().parse(cssText,
                                                     u'DimensionValue',
                                                     prods)
+        self.wellformed = ok
         if ok:
-            sign = val = u''
-            dim = type_ = None
+            item = seq[0]
 
-            # find
-            for item in seq:
-                if item.value in u'+-':
-                    sign = item.value
-                else:
-                    type_ = item.type
-
-                    # number + optional dim
-                    v, d = self.__reNumDim.findall(
+            sign, v, d = self.__reUnNumDim.findall(
                                 normalize(item.value))[0]
-                    if u'.' in v:
-                        val = float(sign + v)
-                    else:
-                        val = int(sign + v)
-                    if d:
-                        dim = d
+            if u'.' in v:
+                val = float(sign + v)
+            else:
+                val = int(sign + v)
+
+            dim = None
+            if d:
+                dim = d
 
             self._sign = sign
             self._value = val
             self._dimension = dim
-            self._type = type_
+            self._type = item.type
 
             self._setSeq(seq)
-            self.wellformed = ok
 
     cssText = property(lambda self: cssutils.ser.do_css_Value(self),
                        _setCssText,
@@ -555,13 +557,13 @@ class URIValue(Value):
         prods = Sequence(PreDef.uri(stop=True))
 
         ok, seq, store, unused = ProdParser().parse(cssText, u'URIValue', prods)
+        self.wellformed = ok
         if ok:
             # only 1 value only anyway
             self._type = seq[0].type
             self._value = seq[0].value
 
             self._setSeq(seq)
-            self.wellformed = ok
 
     cssText = property(lambda self: cssutils.ser.do_css_Value(self),
                        _setCssText,
@@ -603,7 +605,7 @@ class CSSFunction(Value):
                           _DimensionProd(self),
                           _URIProd(self),
                           _ValueProd(self),
-                          #_CalcValueProd(self),
+                          _CalcValueProd(self),
                           _CSSVariableProd(self),
                           _CSSFunctionProd(self)
                           )
@@ -625,9 +627,9 @@ class CSSFunction(Value):
         ok, seq, store, unused = ProdParser().parse(cssText,
                                                     self.type,
                                                     self._productions())
+        self.wellformed = ok
         if ok:
             self._setSeq(seq)
-            self.wellformed = ok
 
     cssText = property(lambda self: cssutils.ser.do_css_CSSFunction(self),
                        _setCssText,
@@ -658,7 +660,6 @@ class MSValue(CSSFunction):
                                             )
                                          )
                     )
-
 
         funcProds = Sequence(Prod(name='FUNCTION',
                                   match=lambda t, v: t == types.FUNCTION,
@@ -692,6 +693,81 @@ class MSValue(CSSFunction):
                        doc=u"String value of this value.")
 
 
+class CSSCalc(CSSFunction):
+    """The CSSCalc function represents a CSS calc() function.
+
+    No further API is provided. For multiplication and division no check
+    if one operand is a NUMBER is made.
+    """
+    _functionName = 'CSSCalc'
+
+    def __str__(self):
+        return u"<cssutils.css.%s object at 0x%x>" % (
+                self.__class__.__name__, id(self))
+
+    def _setCssText(self, cssText):
+        self._checkReadonly()
+
+        types = self._prods # rename!
+
+        _operator = Choice(Prod(name='Operator */',
+                                match=lambda t, v: v in u'*/',
+                                toSeq=lambda t, tokens: (t[0], t[1])
+                           ),
+                           Sequence(
+                               PreDef.S(),
+                               Choice(
+                                 Sequence(
+                                    Prod(name='Operator */',
+                                        match=lambda t, v: v in u'*/',
+                                        toSeq=lambda t, tokens: (t[0], t[1])
+                                    ),
+                                    PreDef.S(optional=True)
+                                 ),
+                                 Sequence(
+                                    Prod(name='Operator +-',
+                                        match=lambda t, v: v in u'+-',
+                                        toSeq=lambda t, tokens: (t[0], t[1])
+                                    ),
+                                    PreDef.S()
+                                 ),
+                                 PreDef.funcEnd(stop=True, mayEnd=True)
+                               )
+                           )
+                    )
+
+        prods = Sequence(Prod(name='CALC',
+                                  match=lambda t, v: t == types.FUNCTION and
+                                        normalize(v) == u'calc('
+                         ),
+                         PreDef.S(optional=True),
+                         _DimensionProd(self),
+                         Sequence(_operator,
+                                  _DimensionProd(self),
+                                  minmax=lambda: (0, None)
+                                  ),
+                         PreDef.funcEnd(stop=True)
+                )
+
+        # store: name of variable
+        ok, seq, store, unused = ProdParser().parse(cssText,
+                                                    u'CSSCalc',
+                                                    prods,
+                                                    checkS=True)
+        self.wellformed = ok
+        if ok:
+            self._setSeq(seq)
+
+
+    cssText = property(lambda self: cssutils.ser.do_css_CSSCalc(self),
+                       _setCssText, doc=u"String representation of calc function.")
+
+    type = property(lambda self: Value.CALC,
+                    doc=u"Type is fixed to Value.CALC.")
+
+
+
+
 class CSSVariable(CSSFunction):
     """The CSSVariable represents a CSS variables like ``var(varname)``.
 
@@ -721,10 +797,10 @@ class CSSVariable(CSSFunction):
         ok, seq, store, unused = ProdParser().parse(cssText,
                                                     u'CSSVariable',
                                                     prods)
+        self.wellformed = ok
         if ok:
             self._name = store['ident'].value
             self._setSeq(seq)
-            self.wellformed = ok
 
     cssText = property(lambda self: cssutils.ser.do_css_CSSVariable(self),
                        _setCssText, doc=u"String representation of variable.")
@@ -761,6 +837,7 @@ class CSSVariable(CSSFunction):
                      doc=u'The resolved actual value or None.')
 
 
+
 # helper for productions
 def _ValueProd(parent, nextSor=False):
     return Prod(name='Value',
@@ -778,12 +855,12 @@ def _DimensionProd(parent, nextSor=False):
     return Prod(name='Dimension',
                 match=lambda t, v: t in (u'DIMENSION',
                                          u'NUMBER',
-                                         u'PERCENTAGE') or v in u'+-',
+                                         u'PERCENTAGE'),
                 nextSor = nextSor,
-                toSeq=lambda t, tokens: (t[0], DimensionValue(
+                toSeq=lambda t, tokens: (u'DIMENSION', DimensionValue(
                                             pushtoken(t,
-                                                                      tokens),
-                                         parent=parent)
+                                                      tokens),
+                                            parent=parent)
                                          )
                 )
 
@@ -831,6 +908,17 @@ def _CSSFunctionProd(parent, nextSor=False):
                                 parent=parent)
                                 )
                            )
+
+def _CalcValueProd(parent, nextSor=False):
+    return Prod(name=CSSCalc._functionName,
+                    match=lambda t, v: t == PreDef.types.FUNCTION and
+                        normalize(v) == u'calc(',
+                    toSeq=lambda t, tokens: (CSSCalc._functionName,
+                                                    CSSCalc(
+                                pushtoken(t, tokens),
+                                parent=parent)
+                                                    ),
+                    nextSor=nextSor)
 
 def _CSSVariableProd(parent, nextSor=False):
     return PreDef.variable(nextSor=nextSor,

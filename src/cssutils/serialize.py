@@ -183,7 +183,7 @@ class Out(object):
             # remove trailing S
             del self.out[-1]
 
-    def append(self, val, type_=None, space=True, keepS=False, indent=False):
+    def append(self, val, type_=None, space=True, keepS=False, indent=False, alwaysS=False):
         """Appends val. Adds a single S after each token except as follows:
 
         - typ COMMENT
@@ -239,7 +239,7 @@ class Out(object):
                 val = helper.uri(val)
             elif 'HASH' == type_:
                 val = self.ser._hash(val)
-            elif val in u'+>~,:{;)]/=}':
+            elif val in u'+>~,:{;)]/=}' and not alwaysS:
                 self._remove_last_if_S()
 
             # APPEND
@@ -252,7 +252,9 @@ class Out(object):
                 self.out.append(val)
 
             # POST
-            if val in u'+>~': # enclose selector combinator
+            if alwaysS and val in u'-+*/': # calc, */ not really but do anyway
+                self.out.append(u' ')
+            elif val in u'+>~': # enclose selector combinator
                 self.out.insert(-1, self.ser.prefs.selectorCombinatorSpacer)
                 self.out.append(self.ser.prefs.selectorCombinatorSpacer)
             elif u')' == val and not keepS: # CHAR funcend
@@ -1067,6 +1069,27 @@ class CSSSerializer(object):
                 if valuesOnly and type_ == cssutils.css.CSSComment:
                     continue
                 out.append(val, type_)
+            return out.value()
+
+    def do_css_CSSCalc(self, cssvalue, valuesOnly=False):
+        """Serialize a CSS calc value"""
+        if not cssvalue:
+            return u''
+        else:
+            out = Out(self)
+            for item in cssvalue.seq:
+                type_, val = item.type, item.value
+
+                if valuesOnly and type_ == cssutils.css.CSSComment:
+                    continue
+                elif hasattr(val, 'cssText'):
+                    # RGBColor or CSSValue if a CSSValueList
+                    out.append(val.cssText, type_)
+                elif type_ == 'CHAR' and val in u'-+*/':
+                    out.append(val, type_, alwaysS=True)
+                else:
+                    out.append(val, type_)
+
             return out.value()
 
     def do_css_MSValue(self, cssvalue, valuesOnly=False):
