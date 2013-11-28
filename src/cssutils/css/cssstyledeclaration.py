@@ -621,11 +621,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                 properties = self.getProperties(name, all=(not normalize))
                 for property in reversed(properties):
                     if normalize and property.name == nname:
-                        property.cssValue = newp.cssValue.cssText
+                        property.propertyValue = newp.propertyValue.cssText
                         property.priority = newp.priority
                         return
                     elif property.literalname == name:
-                        property.cssValue = newp.cssValue.cssText
+                        property.propertyValue = newp.propertyValue.cssText
                         property.priority = newp.priority
                         return
 
