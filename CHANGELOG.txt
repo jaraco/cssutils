@@ -34,6 +34,7 @@ Development Version
 - FEATURE: Implemented parsing of CSSCalc values. General syntax is checked but not if operators in calc are actually the right kind like DIMENSION * DIMENSION. (issue #37)
 - FIXED issue #20 and #35 (Test fail CSSParser.parseUrl() error with Python 3.3)
 - FIXED issue #30 (Test failed)
+- FIXED issue #33 (well kinda): Added not that cssutils is **not** threadsafe!
 
 Latest Stable Version
 =====================
