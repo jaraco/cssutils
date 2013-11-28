@@ -126,8 +126,9 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('S', u' ', 1, 4)],
 
         u' -0 ': [('S', u' ', 1, 1),
-                 ('CHAR', u'-', 1, 2),
-                 ('NUMBER', u'0', 1, 3),
+                 #('CHAR', u'-', 1, 2),
+                 #('NUMBER', u'0', 1, 3),
+                 ('NUMBER', u'-0', 1, 2),
                  ('S', u' ', 1, 4)],
 
         # PERCENTAGE
@@ -271,8 +272,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
         # specials
         u'c\\olor': [('IDENT', u'c\\olor', 1, 1)],
-        u'-1': [('CHAR', u'-', 1, 1), ('NUMBER', u'1', 1, 2)],
-        u'-1px': [('CHAR', u'-', 1, 1), ('DIMENSION', u'1px', 1, 2)],
+        #u'-1': [('CHAR', u'-', 1, 1), ('NUMBER', u'1', 1, 2)],
+        #u'-1px': [('CHAR', u'-', 1, 1), ('DIMENSION', u'1px', 1, 2)],
+        u'-1': [('NUMBER', u'-1', 1, 1)],
+        u'-1px': [('DIMENSION', u'-1px', 1, 1)],
 
         # ATKEYWORD
         u' @x ': [('S', u' ', 1, 1),

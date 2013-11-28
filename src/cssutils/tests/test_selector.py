@@ -73,7 +73,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             {'': 'default', 'p': 'default' } # same default
             ]
         tests = {
-            # selector: with default, no default, same default 
+            # selector: with default, no default, same default
             '*': ('*', '*', '*'),
             'x': ('x', 'x', 'x'),
             '|*': ('|*', '|*', '|*'),
@@ -82,35 +82,35 @@ class SelectorTestCase(basetest.BaseTestCase):
             '*|x': ('*|x', '*|x', '*|x'),
             'p|*': ('p|*', 'p|*', '*'),
             'p|x': ('p|x', 'p|x', 'x'),
-            'x[a][|a][*|a][p|a]': ('x[a][a][*|a][p|a]', 
-                                   'x[a][a][*|a][p|a]', 
+            'x[a][|a][*|a][p|a]': ('x[a][a][*|a][p|a]',
+                                   'x[a][a][*|a][p|a]',
                                    'x[a][a][*|a][a]')
         }
         for sel, exp in tests.items():
             for i, result in enumerate(exp):
-                s = cssutils.css.Selector((sel, namespaces[i]))  
+                s = cssutils.css.Selector((sel, namespaces[i]))
                 self.assertEqual(result, s.selectorText)
-        
-        # add to CSSStyleSheet        
+
+        # add to CSSStyleSheet
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = '@namespace p "u"; a { color: green }'
-        
+
         r = sheet.cssRules[1]
-        
+
         self.assertEqual(r.selectorText, u'a')
-        
+
         # add default namespace
         sheet.namespaces[''] = 'a';
         self.assertEqual(r.selectorText, u'|a')
-        
+
         del sheet.namespaces[''];
         self.assertEqual(r.selectorText, u'a')
-        
+
 #        r.selectorList.append('a')
 #        self.assertEqual(r.selectorText, u'|a, a')
 #        r.selectorList.append('*|a')
 #        self.assertEqual(r.selectorText, u'|a, a, *|a')
-        
+
     def test_default_namespace(self):
         "Selector.namespaces default"
         css = '''@namespace "default";
@@ -118,19 +118,19 @@ class SelectorTestCase(basetest.BaseTestCase):
         '''
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = css
-        self.assertEqual(sheet.cssText, 
+        self.assertEqual(sheet.cssText,
                          u'@namespace "default";\na[att] {\n    color: green\n    }'.encode())
         # use a prefix for default namespace, does not goes for atts!
-        sheet.namespaces['p'] = 'default' 
-        self.assertEqual(sheet.cssText, 
+        sheet.namespaces['p'] = 'default'
+        self.assertEqual(sheet.cssText,
                          u'@namespace p "default";\np|a[att] {\n    color: green\n    }'.encode())
-    
+
     def test_parent(self):
         "Selector.parent"
         sl = cssutils.css.SelectorList('a, b')
         for sel in sl:
             self.assertEqual(sl, sel.parent)
-            
+
         newsel = cssutils.css.Selector('x')
         sl.append(newsel)
         self.assertEqual(sl, newsel.parent)
@@ -186,7 +186,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a1': None,
             u'a1-1': None,
             u'.a1-1': None,
-            
+
             # universal
             u'*': None,
             u'*/*x*/': None,
@@ -263,18 +263,18 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'''a[/*1*/x/*2*/=/*3*/a/*4*/]''': None,
             u'''a[/*1*/x/*2*/~=/*3*/a/*4*/]''': None,
             u'''a[/*1*/x/*2*/|=/*3*/a/*4*/]''': None,
-            
+
             # pseudo-elements
             u'a x:first-line': None,
             u'a x:first-letter': None,
             u'a x:before': None,
             u'a x:after': None,
             u'a x::selection': None,
-            u'a:hover+b:hover>c:hover~e:hover f:hover': 
+            u'a:hover+b:hover>c:hover~e:hover f:hover':
                 u'a:hover + b:hover > c:hover ~ e:hover f:hover',
             u'a:hover  +  b:hover  >  c:hover  ~  e:hover   f:hover':
                 u'a:hover + b:hover > c:hover ~ e:hover f:hover',
-            u'a::selection+b::selection>c::selection~e::selection f::selection': 
+            u'a::selection+b::selection>c::selection~e::selection f::selection':
                 u'a::selection + b::selection > c::selection ~ e::selection f::selection',
             u'a::selection  +  b::selection  >  c::selection  ~  e::selection   f::selection':
                 u'a::selection + b::selection > c::selection ~ e::selection f::selection',
@@ -284,17 +284,17 @@ class SelectorTestCase(basetest.BaseTestCase):
             # functional pseudo
             u'x:func(a + b-2px22.3"s"i)': None,
             u'x:func(1 + 1)': None,
-            u'x:func(1+1)': u'x:func(1 + 1)',
+            u'x:func(1+1)': u'x:func(1+1)',
             u'x:func(1   +   1)': u'x:func(1 + 1)',
             u'x:func(1-1)': u'x:func(1-1)',
-            u'x:func(1  -  1)': u'x:func(1 -1)',
+            u'x:func(1  -  1)': u'x:func(1 -1)', # TODO: FIX!
             u'x:func(a-1)': u'x:func(a-1)',
             u'x:func(a -1px)': u'x:func(a -1px)',
             u'x:func(1px)': None,
             u'x:func(23.4)': None,
             u'x:func("s")': None,
             u'x:func(i)': None,
-            
+
             # negation
             u':not(y)': None,
             u':not(   y  \t\n)': u':not(y)',
@@ -307,20 +307,20 @@ class SelectorTestCase(basetest.BaseTestCase):
             u':not([a])': None,
             u':not(:first-letter)': None,
             u':not(::first-letter)': None,
-            
+
             # escapes
             ur'\74\72 td': 'trtd',
             ur'\74\72  td': 'tr td',
             ur'\74\000072 td': 'trtd',
             ur'\74\000072  td': 'tr td',
-            
+
             # comments
             u'a/**/ b': None,
             u'a /**/b': None,
             u'a /**/ b': None,
             u'a  /**/ b': u'a /**/ b',
             u'a /**/  b': u'a /**/ b',
-            
+
             # namespaces
             u'|e': None,
             u'*|e': None,
@@ -329,14 +329,14 @@ class SelectorTestCase(basetest.BaseTestCase):
             (u'p|e', (('p', 'uri'),)): u'p|e',
             (u'-a_x12|e', (('-a_x12', 'uri'),)): u'-a_x12|e',
             (u'*|b[p|a]', (('p', 'uri'),)): '*|b[p|a]',
-        
-            # case 
-            u'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE': 
+
+            # case
+            u'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE':
                 u'elemenT.clasS#iD[atT="valuE"]:not(x)::first-line'
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
-        
+
         tests = {
             u'x|a': xml.dom.NamespaceErr,
             (u'p|*', (('x', 'uri'),)): xml.dom.NamespaceErr,
@@ -395,7 +395,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u',': xml.dom.InvalidModificationErr,
             u',a': xml.dom.InvalidModificationErr,
             u'a,': xml.dom.InvalidModificationErr,
-            
+
             # @
             u'p @here': xml.dom.SyntaxErr, # not allowed
 
@@ -406,11 +406,11 @@ class SelectorTestCase(basetest.BaseTestCase):
     def test_specificity(self):
         "Selector.specificity"
         selector = cssutils.css.Selector()
-        
+
         # readonly
         def _set(): selector.specificity = 1
         self.assertRaisesMsg(AttributeError, "can't set attribute", _set)
-        
+
         tests = {
             u'*': (0,0,0,0),
             u'li': (0,0,0,1),
@@ -421,13 +421,13 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'ul ol li.red': (0,0,1,3),
             u'li.red.level': (0,0,2,1),
             u'#x34y': (0,1,0,0),
-            
+
             u'UL OL LI.red': (0,0,1,3),
             u'LI.red.level': (0,0,2,1),
             u'#s12:not(FOO)': (0,1,0,1),
             u'button:not([DISABLED])': (0,0,1,1), #?
             u'*:not(FOO)': (0,0,0,1),
-            
+
             # elements
             u'a+b': (0,0,0,2),
             u'a>b': (0,0,0,2),
@@ -442,13 +442,13 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'a:first-letter': (0,0,0,2),
             u'a:before': (0,0,0,2),
             u'a:after': (0,0,0,2),
-            
+
             # classes and attributes
             u'.a': (0,0,1,0),
             u'*.a': (0,0,1,0),
             u'a.a': (0,0,1,1),
-            u'.a.a': (0,0,2,0), # IE<7 False (0,0,1,0) 
-            u'a.a.a': (0,0,2,1), 
+            u'.a.a': (0,0,2,0), # IE<7 False (0,0,1,0)
+            u'a.a.a': (0,0,2,1),
             u'.a.b': (0,0,2,0),
             u'a.a.b': (0,0,2,1),
             u'.a .a': (0,0,2,0),
@@ -462,7 +462,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'*[x*=a]': (0,0,1,0),
             u'*[x$=a]': (0,0,1,0),
             u'*[x][y]': (0,0,2,0),
-            
+
             # ids
             u'#a': (0,1,0,0),
             u'*#a': (0,1,0,0),
@@ -470,17 +470,17 @@ class SelectorTestCase(basetest.BaseTestCase):
             u'.x#a': (0,1,1,0),
             u'a.x#a': (0,1,1,1),
             u'#a#a': (0,2,0,0), # e.g. html:id + xml:id
-            u'#a#b': (0,2,0,0), 
+            u'#a#b': (0,2,0,0),
             u'#a #b': (0,2,0,0),
             }
         for text in tests:
             selector.selectorText = text
             self.assertEqual(tests[text], selector.specificity)
-                    
+
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
         sel=u'a + b'
-        
+
         s = cssutils.css.Selector(selectorText=sel)
 
         self.assert_(sel in str(s))
