@@ -46,7 +46,7 @@ if 1:
 
     cssutils.ser.prefs.useMinified()
 
-    css = u'a{top: calc(1 )}'
+    css = u'#elem { width: calc(100% -  320px); }'
     print cssutils.parseString(css).cssText
 
     #pprint (list(t.tokenize(css)))

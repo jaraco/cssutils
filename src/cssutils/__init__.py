@@ -70,7 +70,7 @@ which are well documented. Some minor extensions are provided as well.
 Please visit http://cthedot.de/cssutils/ for more details.
 
 
-Tested with Python 2.7.3 and 3.3 on Windows 8 64bit.
+Tested with Python 2.7.6 and 3.3.3 on Windows 8.1 64bit.
 
 
 This library may be used ``from cssutils import *`` which
