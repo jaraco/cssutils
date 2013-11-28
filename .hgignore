@@ -1,0 +1,16 @@
+# use glob syntax.
+syntax: glob
+
+build/**/*.*
+dist/*.*
+docs/html/**/*.*
+examples3/
+mock-1.0.1-py2.7.egg/
+mock-1.0.1-py3.3.egg/
+src/cssutils.egg-info/
+src3/
+
+*.pyc
+*~
+
+
