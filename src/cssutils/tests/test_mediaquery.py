@@ -91,10 +91,10 @@ class MediaQueryTestCase(basetest.BaseTestCase):
         "MediaQuery.__repr__(), .__str__()"
         mediaText='tv and (color)'
         s = cssutils.stylesheets.MediaQuery(mediaText=mediaText)
-        self.assert_(mediaText in str(s))
+        self.assertTrue(mediaText in str(s))
         s2 = eval(repr(s))
         self.assertEqual(mediaText, s2.mediaText)
-        self.assert_(isinstance(s2, s.__class__))
+        self.assertTrue(isinstance(s2, s.__class__))
 
 
 if __name__ == '__main__':

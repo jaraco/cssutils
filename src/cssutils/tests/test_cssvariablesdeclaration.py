@@ -34,10 +34,10 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         "CSSVariablesDeclaration.__contains__(name)"
         v = cssutils.css.CSSVariablesDeclaration(cssText='x: 0; y: 2')
         for test in ('x', 'y'):
-            self.assert_(test in v)
-            self.assert_(test.upper() in v)
+            self.assertTrue(test in v)
+            self.assertTrue(test.upper() in v)
 
-        self.assert_('z' not in v)
+        self.assertTrue('z' not in v)
 
     def test_items(self):
         "CSSVariablesDeclaration[variableName]"
@@ -58,7 +58,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         
         items = []
         # unsorted!
-        self.assertEquals(sorted(v), ['x', 'z'])
+        self.assertEqual(sorted(v), ['x', 'z'])
         
         del v['z']        
         self.assertEqual(1, v.length)
@@ -339,10 +339,10 @@ a {
         "CSSVariablesDeclaration.__repr__(), .__str__()"
         s = cssutils.css.CSSVariablesDeclaration(cssText='a:1;b:2')
 
-        self.assert_("2" in str(s)) # length
+        self.assertTrue("2" in str(s)) # length
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
+        self.assertTrue(isinstance(s2, s.__class__))
 
 
 if __name__ == '__main__':

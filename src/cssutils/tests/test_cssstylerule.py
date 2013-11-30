@@ -33,9 +33,9 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(s, style.parentRule)
 
         s.cssText = 'a { x:1 }'
-        self.failIfEqual(sel, s.selectorList)
+        self.assertNotEqual(sel, s.selectorList)
         self.assertEqual('a', s.selectorList.selectorText)
-        self.failIfEqual(style, s.style)
+        self.assertNotEqual(style, s.style)
         self.assertEqual('1', s.style.getPropertyValue('x'))
 
         sel, style = s.selectorList, s.style
@@ -62,7 +62,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # selectorList
         r.selectorText = 'b'
-        self.failIfEqual(sel1, r.selectorList)
+        self.assertNotEqual(sel1, r.selectorList)
         self.assertEqual('b', r.selectorList.selectorText)
         self.assertEqual('b', r.selectorText)
         sel1b = r.selectorList
@@ -87,7 +87,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # style
         r.style = 's1: 2'
-        self.failIfEqual(st1, r.style)
+        self.assertNotEqual(st1, r.style)
         self.assertEqual('s1: 2', r.style.cssText)
 
         st2 = cssutils.parseStyle(u's2: 1')
@@ -106,8 +106,8 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(st, r.style)
 
         r.cssText = 'a {content: "new"}'
-        self.failIfEqual(sl, r.selectorList)
-        self.failIfEqual(st, r.style)
+        self.assertNotEqual(sl, r.selectorList)
+        self.assertNotEqual(st, r.style)
 
     def test_cssText(self):
         "CSSStyleRule.cssText"
@@ -238,11 +238,11 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = cssutils.css.CSSStyleRule(selectorText=sel)
 
-        self.assert_(sel in str(s))
+        self.assertTrue(sel in str(s))
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
-        self.assert_(sel == s2.selectorText)
+        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertTrue(sel == s2.selectorText)
 
 
 if __name__ == '__main__':

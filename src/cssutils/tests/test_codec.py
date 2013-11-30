@@ -114,10 +114,10 @@ class CodecTestCase(unittest.TestCase):
     def test_fixencoding(self):
         "codec._fixencoding()"
         s = u'@charset "'
-        self.assert_(codec._fixencoding(s, u"utf-8") is None)
+        self.assertTrue(codec._fixencoding(s, u"utf-8") is None)
 
         s = u'@charset "x'
-        self.assert_(codec._fixencoding(s, u"utf-8") is None)
+        self.assertTrue(codec._fixencoding(s, u"utf-8") is None)
 
         s = u'@charset "x'
         self.assertEqual(codec._fixencoding(s, u"utf-8", True), s)

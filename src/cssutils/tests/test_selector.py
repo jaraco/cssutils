@@ -483,11 +483,11 @@ class SelectorTestCase(basetest.BaseTestCase):
 
         s = cssutils.css.Selector(selectorText=sel)
 
-        self.assert_(sel in str(s))
+        self.assertTrue(sel in str(s))
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
-        self.assert_(sel == s2.selectorText)
+        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertTrue(sel == s2.selectorText)
 
 
 if __name__ == '__main__':

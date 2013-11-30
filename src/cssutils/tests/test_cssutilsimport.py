@@ -20,14 +20,14 @@ class CSSutilsImportTestCase(unittest.TestCase):
         }
         exptotal = before + len(exp) + 1
         # imports before + * + "after"
-        self.assert_(after == exptotal, 'too many imported')
+        self.assertTrue(after == exptotal, 'too many imported')
 
         found = 0
         for e in exp:
-            self.assert_(e in act, '%s not found' %e)
-            self.assert_(act[e] == exp[e], '%s not the same' %e)
+            self.assertTrue(e in act, '%s not found' %e)
+            self.assertTrue(act[e] == exp[e], '%s not the same' %e)
             found += 1
-        self.assert_(found == len(exp))
+        self.assertTrue(found == len(exp))
 
 if __name__ == '__main__':
     import unittest

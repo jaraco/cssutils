@@ -669,13 +669,13 @@ def getEncodingInfo(response=None, text=u'', log=None, url=None):
     if encinfo.http_encoding and encinfo.meta_encoding and\
          encinfo.http_encoding != encinfo.meta_encoding:
         encinfo.mismatch = True
-        log.warn(u'"%s" (HTTP) != "%s" (HTML <meta>) encoding mismatch' %
+        log.warning(u'"%s" (HTTP) != "%s" (HTML <meta>) encoding mismatch' %
                  (encinfo.http_encoding, encinfo.meta_encoding))
     # XML + Meta
     if encinfo.xml_encoding and encinfo.meta_encoding and\
          encinfo.xml_encoding != encinfo.meta_encoding:
         encinfo.mismatch = True
-        log.warn(u'"%s" (XML) != "%s" (HTML <meta>) encoding mismatch' %
+        log.warning(u'"%s" (XML) != "%s" (HTML <meta>) encoding mismatch' %
                  (encinfo.xml_encoding, encinfo.meta_encoding))
 
     log.info(u'Encoding (probably): %s (Mismatch: %s)',

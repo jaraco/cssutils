@@ -329,11 +329,11 @@ ex2|x {
         del s.namespaces['del']
         self.assertRaises(xml.dom.NamespaceErr, s.namespaces.__getitem__, 'del')
         # __getitem__
-        self.assertEquals('default', s.namespaces[''])
-        self.assertEquals('example', s.namespaces['ex2'])
+        self.assertEqual('default', s.namespaces[''])
+        self.assertEqual('example', s.namespaces['ex2'])
         self.assertRaises(xml.dom.NamespaceErr, s.namespaces.__getitem__, 'UNSET')
         # __iter__
-        self.assertEquals(['', 'ex2'], sorted(list(s.namespaces)))
+        self.assertEqual(['', 'ex2'], sorted(list(s.namespaces)))
         # __len__
         self.assertEqual(2, len(s.namespaces))
         # __setitem__
@@ -346,8 +346,8 @@ ex2|x {
         self.assertEqual(s.namespaces.namespaces,
                          { u'': u'default', u'ex2': u'example', u'n': 'new'})
         # prefixForNamespaceURI
-        self.assertEquals('', s.namespaces.prefixForNamespaceURI('default'))
-        self.assertEquals('ex2', s.namespaces.prefixForNamespaceURI('example'))
+        self.assertEqual('', s.namespaces.prefixForNamespaceURI('default'))
+        self.assertEqual('ex2', s.namespaces.prefixForNamespaceURI('example'))
         self.assertRaises(IndexError,
                           s.namespaces.prefixForNamespaceURI, 'UNSET')
         # .keys
@@ -447,7 +447,7 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertRaises(xml.dom.NamespaceErr, s.add, css)
 
         s.add('@namespace x "html";')
-        self.assert_(s.namespaces['x'] == 'html')
+        self.assertTrue(s.namespaces['x'] == 'html')
 
         r = cssutils.css.CSSStyleRule()
         r.cssText = ((css, {'h': 'html'}))
@@ -865,13 +865,13 @@ body {
 
         s = cssutils.css.CSSStyleSheet(href=href, title=title)
 
-        self.assert_(href in str(s))
-        self.assert_(title in str(s))
+        self.assertTrue(href in str(s))
+        self.assertTrue(title in str(s))
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
-        self.assert_(href == s2.href)
-        self.assert_(title == s2.title)
+        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertTrue(href == s2.href)
+        self.assertTrue(title == s2.title)
 
 
 if __name__ == '__main__':

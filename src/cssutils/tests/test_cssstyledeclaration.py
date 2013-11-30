@@ -61,11 +61,11 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         "CSSStyleDeclaration.__contains__(nameOrProperty)"
         s = cssutils.css.CSSStyleDeclaration(cssText=r'x: 1;\y: 2')
         for test in ('x', r'x', 'y', r'y'):
-            self.assert_(test in s)
-            self.assert_(test.upper() in s)
-            self.assert_(cssutils.css.Property(test, '1') in s)
-        self.assert_('z' not in s)
-        self.assert_(cssutils.css.Property('z', '1') not in s)
+            self.assertTrue(test in s)
+            self.assertTrue(test.upper() in s)
+            self.assertTrue(cssutils.css.Property(test, '1') in s)
+        self.assertTrue('z' not in s)
+        self.assertTrue(cssutils.css.Property('z', '1') not in s)
 
     def test__iter__item(self):
         "CSSStyleDeclaration.__iter__ and .item"
@@ -583,10 +583,10 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         "CSSStyleDeclaration.__repr__(), .__str__()"
         s = cssutils.css.CSSStyleDeclaration(cssText='a:1;b:2')
 
-        self.assert_("2" in str(s)) # length
+        self.assertTrue("2" in str(s)) # length
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
+        self.assertTrue(isinstance(s2, s.__class__))
 
 
 if __name__ == '__main__':

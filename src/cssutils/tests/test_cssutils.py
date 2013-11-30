@@ -39,7 +39,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         s = cssutils.parseString(self.exp,
                                  media='handheld, screen',
                                  title='from string')
-        self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
+        self.assertTrue(isinstance(s, cssutils.css.CSSStyleSheet))
         self.assertEqual(None, s.href)
         self.assertEqual(self.exp.encode(), s.cssText)
         self.assertEqual(u'utf-8', s.encoding)
@@ -62,7 +62,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
+        self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
         self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
 
         tests = {
@@ -79,14 +79,14 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         href = cssutils.helper.path2url(name)
 
         s = cssutils.parseFile(name, href=href, media='screen', title='from file')
-        self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
+        self.assertTrue(isinstance(s, cssutils.css.CSSStyleSheet))
         if sys.platform.startswith('java'):
             # on Jython only file:
-            self.assert_(s.href.startswith('file:'))
+            self.assertTrue(s.href.startswith('file:'))
         else:
             # normally file:/// on win and file:/ on unix
-            self.assert_(s.href.startswith('file:/'))
-        self.assert_(s.href.endswith('/sheets/import.css'))
+            self.assertTrue(s.href.startswith('file:/'))
+        self.assertTrue(s.href.endswith('/sheets/import.css'))
         self.assertEqual(u'utf-8', s.encoding)
         self.assertEqual(u'screen', s.media.mediaText)
         self.assertEqual(u'from file', s.title)
@@ -95,7 +95,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
+        self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
         self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
 
         # name is used for open and setting of href automatically
@@ -104,14 +104,14 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         name = os.path.join('..', '..', '..', 'sheets', 'import.css')
 
         s = cssutils.parseFile(name, media='screen', title='from file')
-        self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
+        self.assertTrue(isinstance(s, cssutils.css.CSSStyleSheet))
         if sys.platform.startswith('java'):
             # on Jython only file:
-            self.assert_(s.href.startswith('file:'))
+            self.assertTrue(s.href.startswith('file:'))
         else:
             # normally file:/// on win and file:/ on unix
-            self.assert_(s.href.startswith('file:/'))
-        self.assert_(s.href.endswith('/sheets/import.css'))
+            self.assertTrue(s.href.startswith('file:/'))
+        self.assertTrue(s.href.endswith('/sheets/import.css'))
         self.assertEqual(u'utf-8', s.encoding)
         self.assertEqual(u'screen', s.media.mediaText)
         self.assertEqual(u'from file', s.title)
@@ -120,7 +120,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assert_(isinstance(irs, cssutils.css.CSSStyleSheet))
+        self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
         self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
 
         # next test
@@ -173,7 +173,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         s = cssutils.parseUrl(href,
                               media='tv, print',
                               title='from url')
-        self.assert_(isinstance(s, cssutils.css.CSSStyleSheet))
+        self.assertTrue(isinstance(s, cssutils.css.CSSStyleSheet))
         self.assertEqual(href, s.href)
         self.assertEqual(self.exp.encode(), s.cssText)
         self.assertEqual(u'utf-8', s.encoding)

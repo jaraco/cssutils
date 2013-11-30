@@ -74,7 +74,7 @@ class BaseTestCase(unittest.TestCase):
                             "expected=%r, actual=%r"\
                             % (callsig, exc.__class__, exc_args, exc.args))
             if exc_pattern is not None:
-                self.failUnless(exc_pattern.search(str(exc)),
+                self.assertTrue(exc_pattern.search(str(exc)),
                                 "%s raised %s, but the exception "\
                                 "does not match '%s': %r"\
                                 % (callsig, exc.__class__, exc_pattern.pattern,

@@ -18,7 +18,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         super(CSSFontFaceRuleTestCase, self).test_init()
 
         r = cssutils.css.CSSFontFaceRule()
-        self.assert_(isinstance(r.style, cssutils.css.CSSStyleDeclaration))
+        self.assertTrue(isinstance(r.style, cssutils.css.CSSStyleDeclaration))
         self.assertEqual(r, r.style.parentRule)
 
         # until any properties
@@ -98,7 +98,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         # set rule.cssText
         r.cssText = '@font-face { font-family: x1 }'
-        self.failIfEqual(r.style, s1)
+        self.assertNotEqual(r.style, s1)
         self.assertEqual(r, r.style.parentRule)
         self.assertEqual(r.cssText, u'@font-face {\n    font-family: x1\n    }')
         self.assertEqual(r.style.cssText, u'font-family: x1')
@@ -152,7 +152,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         # set r.style with text
         r.style = 'font-family: z'
-        self.failIfEqual(r.style, sn)
+        self.assertNotEqual(r.style, sn)
         self.assertEqual(r.cssText, u'@font-face {\n    font-family: z\n    }')
         self.assertEqual(r.style.cssText, u'font-family: z')
         self.assertEqual(sn.cssText, u'font-family: y2')
@@ -229,11 +229,11 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         style='src: url(x)'        
         s = cssutils.css.CSSFontFaceRule(style=style)
         
-        self.assert_(style in str(s))
+        self.assertTrue(style in str(s))
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
-        self.assert_(style == s2.style.cssText)
+        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertTrue(style == s2.style.cssText)
 
 
 if __name__ == '__main__':

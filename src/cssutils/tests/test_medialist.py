@@ -184,11 +184,11 @@ class MediaListTestCase(basetest.BaseTestCase):
 
         s = cssutils.stylesheets.MediaList(mediaText=mediaText)
 
-        self.assert_(mediaText in str(s))
+        self.assertTrue(mediaText in str(s))
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
-        self.assert_(mediaText == s2.mediaText)
+        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertTrue(mediaText == s2.mediaText)
 
 
 if __name__ == '__main__':
