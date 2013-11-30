@@ -35,7 +35,9 @@ class CSSCombine(basetest.BaseTestCase):
 
         # cssText
         # TODO: really need binary or can handle str too?
-        cssText=open(csspath, mode="rb").read()
+        f = open(csspath, mode="rb")
+        cssText=f.read()
+        f.close()
         combined = csscombine(cssText=cssText, href=cssurl)
         self.assertEqual(combined, self.C.encode())
         combined = csscombine(cssText=cssText, href=cssurl, 

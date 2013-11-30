@@ -326,7 +326,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         # set rule.cssText
         r.cssText = '@page { font-family: x1 }'
-        self.failIfEqual(r.style, s1)
+        self.assertNotEqual(r.style, s1)
         self.assertEqual(r, r.style.parentRule)
         self.assertEqual(r.cssText, u'@page {\n    font-family: x1\n    }')
         self.assertEqual(r.style.cssText, u'font-family: x1')
@@ -380,7 +380,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # set r.style with text
         r.style = 'font-family: z'
-        self.failIfEqual(r.style, s2)
+        self.assertNotEqual(r.style, s2)
         self.assertEqual(r.cssText, u'@page {\n    font-family: z\n    }')
         self.assertEqual(r.style.cssText, u'font-family: z')
 
@@ -421,11 +421,11 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         s = cssutils.css.CSSPageRule(selectorText=sel)
         
-        self.assert_(sel in str(s))
+        self.assertTrue(sel in str(s))
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
-        self.assert_(sel == s2.selectorText)
+        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertTrue(sel == s2.selectorText)
 
 
 if __name__ == '__main__':

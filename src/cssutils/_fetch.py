@@ -41,4 +41,6 @@ def _defaultFetcher(url):
             if mimeType != u'text/css':
                 log.error(u'Expected "text/css" mime type for url=%r but found: %r' %
                                   (url, mimeType), error=ValueError)
-            return encoding, res.read()
+            content = res.read()
+            res.close()
+            return encoding, content

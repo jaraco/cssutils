@@ -157,7 +157,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
         }
 
         for r, exp in tests.items():
-            self.assertEquals(_readUrl(url, fetcher=make_fetcher(r)), exp)
+            self.assertEqual(_readUrl(url, fetcher=make_fetcher(r)), exp)
 
         tests = {
             # (overrideEncoding, parentEncoding, (httpencoding, content)):
@@ -291,7 +291,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
         }
         for (override, parent, r), exp in tests.items():
-            self.assertEquals(_readUrl(url,
+            self.assertEqual(_readUrl(url,
                                        overrideEncoding=override,
                                        parentEncoding=parent,
                                        fetcher=make_fetcher(r)),

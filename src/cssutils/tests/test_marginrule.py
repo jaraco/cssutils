@@ -86,11 +86,11 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         s = cssutils.css.MarginRule(margin=margin, style=u'left: 0')
         
-        self.assert_(margin in str(s))
+        self.assertTrue(margin in str(s))
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
-        self.assert_(margin == s2.margin)
+        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertTrue(margin == s2.margin)
 
 if __name__ == '__main__':
     import unittest

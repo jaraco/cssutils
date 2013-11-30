@@ -135,10 +135,10 @@ class SelectorListTestCase(basetest.BaseTestCase):
         
         s = cssutils.css.SelectorList(selectorText=sel)
 
-        self.assert_(sel[0] in str(s))
+        self.assertTrue(sel[0] in str(s))
 
         s2 = eval(repr(s))
-        self.assert_(isinstance(s2, s.__class__))
+        self.assertTrue(isinstance(s2, s.__class__))
         self.assertEqual(sel[0], s2.selectorText)
 
 

@@ -95,7 +95,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         
         r.cssText = u'@variables {y:2}'
         self.assertEqual(r, r.variables.parentRule)
-        self.failIfEqual(vars1, r.variables)
+        self.assertNotEqual(vars1, r.variables)
         self.assertEqual(r.variables.cssText, u'y: 2')
         self.assertEqual(r.cssText, u'@variables {\n    y: 2\n    }')
 
@@ -122,7 +122,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # string
         r.variables = 'a: x'
-        self.failIfEqual(vars3, r.variables)
+        self.assertNotEqual(vars3, r.variables)
         self.assertEqual(r, r.variables.parentRule)
         self.assertEqual(r.variables.cssText, u'a: x')
         self.assertEqual(r.cssText, u'@variables {\n    a: x\n    }')
@@ -143,11 +143,11 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSVariablesRule.__repr__(), .__str__()"
         r = cssutils.css.CSSVariablesRule()
         r.cssText = '@variables { xxx: 1 }'
-        self.assert_('xxx' in str(r))
+        self.assertTrue('xxx' in str(r))
 
         r2 = eval(repr(r))
-        self.assert_(isinstance(r2, r.__class__))
-        self.assert_(r.cssText == r2.cssText)
+        self.assertTrue(isinstance(r2, r.__class__))
+        self.assertTrue(r.cssText == r2.cssText)
 
 
 if __name__ == '__main__':

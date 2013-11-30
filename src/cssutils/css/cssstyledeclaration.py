@@ -466,7 +466,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
         p = self.getProperty(name, normalize)
         if p:
-            return p.cssValue
+            return p.propertyValue
         else:
             return None
 
