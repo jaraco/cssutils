@@ -76,6 +76,9 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                  u'calc(1  /  1px )': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
                  u'calc( 1*1px )': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
                  u'calc( 1  /  1px )': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
+                 u'calc(var(X))': (None, 1, None),
+                 u'calc(2 * var(X))': (None, 1, None),
+                 u'calc(2px + var(X))': (None, 1, None),
 
                  #issue #24
                  u'rgb(0, 10, 255)': (None, 1, u'rgb(0, 10, 255)'),
