@@ -739,14 +739,17 @@ class CSSCalc(CSSFunction):
                            )
                     )
 
+        _operant = lambda: Choice(_DimensionProd(self),
+                                   _CSSVariableProd(self))
+
         prods = Sequence(Prod(name='CALC',
                                   match=lambda t, v: t == types.FUNCTION and
                                         normalize(v) == u'calc('
                          ),
                          PreDef.S(optional=True),
-                         _DimensionProd(self),
+                         _operant(),
                          Sequence(_operator,
-                                  _DimensionProd(self),
+                                  _operant(),
                                   minmax=lambda: (0, None)
                                   ),
                          PreDef.funcEnd(stop=True)
