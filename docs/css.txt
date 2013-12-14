@@ -221,18 +221,23 @@ A simple example:
     :members:
     :inherited-members:
 
+``CSSCalc``
+~~~~~~~~~~~~~~~~~~
+.. autoclass:: cssutils.css.CSSCalc
+    :members:
+    :inherited-members:
+
+``CSSVariable``
+~~~~~~~~~~~~~~~~~~
+.. autoclass:: cssutils.css.CSSVariable
+    :members:
+    :inherited-members:
+
 ``MSValue``
 ~~~~~~~~~~~~~~~~~~~
 was ``ExpressionValue`` until 0.9.7.
 
 .. autoclass:: cssutils.css.MSValue
-    :members:
-    :inherited-members:
-
-
-``CSSVariable``
-~~~~~~~~~~~~~~~~
-.. autoclass:: cssutils.css.CSSVariable
     :members:
     :inherited-members:
 
