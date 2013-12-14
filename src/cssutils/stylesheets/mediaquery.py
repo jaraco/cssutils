@@ -7,54 +7,53 @@ __all__ = ['MediaQuery']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+from cssutils.prodparser import *
+from cssutils.helper import normalize, pushtoken
 import cssutils
 import re
 import xml.dom
 
-class MediaQuery(cssutils.util.Base):
+class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
     """
     A Media Query consists of one of :const:`MediaQuery.MEDIA_TYPES`
     and one or more expressions involving media features.
 
     Format::
-    
-        media_query: [[only | not]? <media_type> [ and <expression> ]*]
-          | <expression> [ and <expression> ]*
-        expression: ( <media_feature> [: <value>]? )
-        media_type: all | braille | handheld | print |
-          projection | speech | screen | tty | tv | embossed
-        media_feature: width | min-width | max-width
-          | height | min-height | max-height
-          | device-width | min-device-width | max-device-width
-          | device-height | min-device-height | max-device-height
-          | device-aspect-ratio | min-device-aspect-ratio | max-device-aspect-ratio
-          | color | min-color | max-color
-          | color-index | min-color-index | max-color-index
-          | monochrome | min-monochrome | max-monochrome
-          | resolution | min-resolution | max-resolution
-          | scan | grid
+  
+        media_query
+         : [ONLY | NOT]? S* media_type S* [ AND S* expression ]*
+         | expression [ AND S* expression ]*
+         ;
+        media_type
+         : IDENT
+         ;
+        expression
+         : '(' S* media_feature S* [ ':' S* expr ]? ')' S*
+         ;
+        media_feature
+         : IDENT
+         ;
           
     """
-    MEDIA_TYPES = [u'all', u'braille', u'embossed', u'handheld',
-        u'print', u'projection', u'screen', u'speech', u'tty', u'tv']
+    MEDIA_TYPES = ['all', 'braille', 'handheld', 'print', 'projection', 
+                'speech', 'screen', 'tty', 'tv', 'embossed']
 
-    # From the HTML spec (see MediaQuery):
-    # "[...] character that isn't a US ASCII letter [a-zA-Z] (Unicode
-    # decimal 65-90, 97-122), digit [0-9] (Unicode hex 30-39), or hyphen (45)."
-    # so the following is a valid mediaType
-    __mediaTypeMatch = re.compile(ur'^[-a-zA-Z0-9]+$', re.U).match
 
-    def __init__(self, mediaText=None, readonly=False):
+    def __init__(self, mediaText=None, readonly=False, _partof=False):
         """
         :param mediaText:
             unicodestring of parsable media
+
+        # _standalone: True if new from ML parser
         """
         super(MediaQuery, self).__init__()
 
-        self.seq = []
+        self._wellformed = False
         self._mediaType = u''
+        self._partof = _partof
         if mediaText:
             self.mediaText = mediaText # sets self._mediaType too
+            self._partof = False
 
         self._readonly = readonly
 
@@ -82,78 +81,85 @@ class MediaQuery(cssutils.util.Base):
               Raised if the given mediaType is unknown.
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this media query is readonly.
+        
+        media_query
+         : [ONLY | NOT]? S* media_type S* [ AND S* expression ]*
+         | expression [ AND S* expression ]*
+         ;
+        media_type
+         : IDENT
+         ;
+        expression
+         : '(' S* media_feature S* [ ':' S* expr ]? ')' S*
+         ;
+        media_feature
+         : IDENT
+         ;
+
         """
         self._checkReadonly()
-        tokenizer = self._tokenize2(mediaText)
-        if not tokenizer:
-            self._log.error(u'MediaQuery: No MediaText given.')
-        else:
-            # for closures: must be a mutable
-            new = {'mediatype': None,
-                   'wellformed': True }
 
-            def _ident_or_dim(expected, seq, token, tokenizer=None):
-                # only|not or mediatype or and
-                val = self._tokenvalue(token)
-                nval = self._normalize(val)
-                if expected.endswith('mediatype'):
-                    if nval in (u'only', u'not'):
-                        # only or not
-                        seq.append(val)
-                        return 'mediatype'
-                    else:
-                        # mediatype
-                        new['mediatype'] = val
-                        seq.append(val)
-                        return 'and'
-                elif 'and' == nval and expected.startswith('and'):
-                    seq.append(u'and')
-                    return 'feature'
-                else:
-                    new['wellformed'] = False
-                    self._log.error(
-                        u'MediaQuery: Unexpected syntax.', token=token)
-                    return expected
+        expression = lambda: Sequence(PreDef.char(name='expression', char=u'('),
+                                      Prod(name=u'media_feature',
+                                           match=lambda t, v: t == PreDef.types.IDENT
+                                      ),
+                                      Sequence(PreDef.char(name='colon', char=u':'),
+                                               cssutils.css.value.MediaQueryValueProd(self),
+                                               minmax=lambda: (0, 1) # optional
+                                               ),
+                                      PreDef.char(name='expression END', char=u')',
+                                                  stopIfNoMoreMatch=self._partof
+                                                  )
+                                      )
 
-            def _char(expected, seq, token, tokenizer=None):
-                # starting a feature which basically is a CSS Property
-                # but may simply be a property name too
-                val = self._tokenvalue(token)
-                if val == u'(' and expected == 'feature':
-                    proptokens = self._tokensupto2(
-                        tokenizer, funcendonly=True)
-                    if proptokens and u')' == self._tokenvalue(proptokens[-1]):
-                        proptokens.pop()
-                    property = cssutils.css.Property(_mediaQuery=True)
-                    property.cssText = proptokens
-                    seq.append(property)
-                    return 'and or EOF'
-                else:
-                    new['wellformed'] = False
-                    self._log.error(
-                        u'MediaQuery: Unexpected syntax, expected "and" but found "%s".' %
-                        val, token)
-                    return expected
+        prods = Choice(Sequence(Prod(name=u'ONLY|NOT', # media_query
+                                     match=lambda t, v: t == PreDef.types.IDENT and 
+                                                        normalize(v) in (u'only', u'not'),
+                                     optional=True,
+                                     toStore='not simple'
+                                     ), 
+                                Prod(name=u'media_type',
+                                     match=lambda t, v: t == PreDef.types.IDENT and 
+                                                        normalize(v) in self.MEDIA_TYPES,
+                                     stopIfNoMoreMatch=True,
+                                     toStore='media_type'
+                                     ),                   
+                                Sequence(Prod(name=u'AND',
+                                              match=lambda t, v: t == PreDef.types.IDENT and 
+                                                                 normalize(v) == 'and',
+                                              toStore='not simple'
+                                         ),                   
+                                         expression(),
+                                         minmax=lambda: (0, None)
+                                         )
+                                ),
+                       Sequence(expression(),                   
+                                Sequence(Prod(name=u'AND',
+                                              match=lambda t, v: t == PreDef.types.IDENT and 
+                                                                 normalize(v) == 'and'
+                                         ),                   
+                                         expression(),
+                                         minmax=lambda: (0, None)
+                                         )
+                                )                        
+                       )
+        
+        # parse
+        ok, seq, store, unused = ProdParser().parse(mediaText, 
+                                                    u'MediaQuery',
+                                                    prods)
+        self._wellformed = ok
+        if ok:
+            try:
+                media_type = store['media_type']
+            except KeyError, e:
+                pass
+            else:
+                if 'not simple' not in store:
+                    self.mediaType = media_type.value
 
-            # expected: only|not or mediatype, mediatype, feature, and
-            newseq = []
-            wellformed, expected = self._parse(expected='only|not or mediatype',
-                seq=newseq, tokenizer=tokenizer,
-                productions={'IDENT': _ident_or_dim, # e.g. "print"
-                             'DIMENSION': _ident_or_dim, # e.g. "3d"
-                             'CHAR': _char})
-            wellformed = wellformed and new['wellformed']
-
-            # post conditions
-            if not new['mediatype']:
-                wellformed = False
-                self._log.error(u'MediaQuery: No mediatype found: %s' %
-                    self._valuestr(mediaText))
-
-            if wellformed:
-                # set
-                self.mediaType = new['mediatype']
-                self.seq = newseq
+            # TODO: filter doubles!
+            self._setSeq(seq)
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="The parsable textual representation of the media list.")
@@ -173,35 +179,30 @@ class MediaQuery(cssutils.util.Base):
               Raised if this media query is readonly.
         """
         self._checkReadonly()
-        nmediaType = self._normalize(mediaType)
+        nmediaType = normalize(mediaType)
 
-        if not MediaQuery.__mediaTypeMatch(nmediaType):
+        if nmediaType not in self.MEDIA_TYPES:
             self._log.error(
                 u'MediaQuery: Syntax Error in media type "%s".' % mediaType,
                 error=xml.dom.SyntaxErr)
         else:
-            if nmediaType not in MediaQuery.MEDIA_TYPES:
-                self._log.warn(
-                    u'MediaQuery: Unknown media type "%s".' % mediaType,
-                    error=xml.dom.InvalidCharacterErr)
-                return
-
             # set
             self._mediaType = mediaType
 
             # update seq
-            for i, x in enumerate(self.seq):
-                if isinstance(x, basestring):
-                    if self._normalize(x) in (u'only', u'not'):
+            for i, x in enumerate(self._seq):
+                if isinstance(x.value, basestring):
+                    if normalize(x.value) in (u'only', u'not'):
                         continue
                     else:
-                        self.seq[i] = mediaType
+                        # TODO: simplify!
+                        self._seq[i] = (mediaType, 'IDENT', None, None)
                         break
             else:
-                self.seq.insert(0, mediaType)
+                self._seq.insert(0, mediaType, 'IDENT')
 
     mediaType = property(lambda self: self._mediaType, _setMediaType,
         doc="The media type of this MediaQuery (one of "
-            ":attr:`MEDIA_TYPES`).")
-
-    wellformed = property(lambda self: bool(len(self.seq)))
+            ":attr:`MEDIA_TYPES`) but only if it is a simple MediaType!")
+    
+    wellformed = property(lambda self: self._wellformed)

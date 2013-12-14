@@ -127,7 +127,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
 
         vardeclaration = Sequence(
             PreDef.ident(),
-            PreDef.char(u':', u':', toSeq=False),
+            PreDef.char(u':', u':', toSeq=False, optional=True),
             #PreDef.S(toSeq=False, optional=True),
             Prod(name=u'term', match=lambda t, v: True,
                  toSeq=lambda t, tokens: (u'value', 
@@ -135,22 +135,23 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                                                                         tokens), 
                                           parent=self)
                  )
-            )            
+            )
         )
         prods = Sequence(vardeclaration,                         
                          Sequence(PreDef.S(optional=True),
-                                  PreDef.char(u';', u';', toSeq=False),
+                                  PreDef.char(u';', u';', toSeq=False, optional=True),
                                   PreDef.S(optional=True),
                                   vardeclaration,
                                   minmax=lambda: (0, None)),
                          PreDef.S(optional=True),
-                         PreDef.char(u';', u';', toSeq=False, optional=True) 
+                         PreDef.char(u';', u';', toSeq=False, optional=True)
                          )
         # parse
         wellformed, seq, store, notused = \
             ProdParser().parse(cssText, 
                                u'CSSVariableDeclaration',
-                               prods)
+                               prods,
+                               emptyOk=True)
         if wellformed:
             newseq = self._tempSeq()
             newvars = {}

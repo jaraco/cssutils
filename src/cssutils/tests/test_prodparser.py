@@ -210,7 +210,7 @@ class SequenceTestCase(basetest.BaseTestCase):
             (p2, ): ([(t2, p2)],
                      [(t1, 'Missing token for production p2')],
                      [(t2, p2), (t2, p2)],
-                     [(t2, p2), (t1, u'No matching production for token')],
+                     [(t2, p2), (t1, u'No match for (1, 0, 0, 0) in Sequence(p2)')],
                      [(t2, p2), (t2, p2), (t2, u'Extra token')],
                      [(t2, p2), (t2, p2), (t1, u'Extra token')]
                     ),
@@ -249,7 +249,7 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2,0,0,0)
             
         ch = Choice(p1, p2)
-        self.assertRaisesMsg(ParseError, u'No match in Choice(p1, p2)', ch.nextProd, t0)
+        self.assertRaisesMsg(ParseError, u'No match for (0, 0, 0, 0) in Choice(p1, p2)', ch.nextProd, t0)
         self.assertEqual(p1, ch.nextProd(t1))
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
 
@@ -258,7 +258,7 @@ class ChoiceTestCase(basetest.BaseTestCase):
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t2)
 
         ch = Choice(p2, p1)
-        self.assertRaisesMsg(ParseError, 'No match in Choice(p2, p1)', ch.nextProd, t0)
+        self.assertRaisesMsg(ParseError, 'No match for (0, 0, 0, 0) in Choice(p2, p1)', ch.nextProd, t0)
         self.assertEqual(p1, ch.nextProd(t1))
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
 
@@ -296,7 +296,7 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2,0,0,0)
 
         ch = Choice(s1, s2)
-        self.assertRaisesMsg(ParseError, u'No match in Choice(Sequence(p1, p1), Sequence(p2, p2))', ch.nextProd, t0)
+        self.assertRaisesMsg(ParseError, u'No match for (0, 0, 0, 0) in Choice(Sequence(p1, p1), Sequence(p2, p2))', ch.nextProd, t0)
         self.assertEqual(s1, ch.nextProd(t1))
         self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
             

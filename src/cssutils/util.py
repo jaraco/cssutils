@@ -66,12 +66,63 @@ class _NewBase(_BaseClass):
         newseq._readonly = True
         self._seq = newseq
 
+    def _clearSeq(self):
+        self._seq.clear()
+
     def _tempSeq(self, readonly=False):
         "Get a writeable Seq() which is used to set ``seq`` later"
         return Seq(readonly=readonly)
 
     seq = property(lambda self: self._seq,
                    doc="Internal readonly attribute, **DO NOT USE**!")
+
+
+class _NewListBase(_NewBase):
+    """
+    (EXPERIMENTAL)
+    A base class used for list classes like stylesheets.MediaList
+
+    adds list like behaviour running on inhering class' property ``seq``
+
+    - item in x => bool
+    - len(x) => integer
+    - get, set and del x[i]
+    - for item in x
+    - append(item)
+
+    some methods must be overwritten in inheriting class
+    """
+    def __init__(self):
+        self._seq = Seq()
+
+    def __contains__(self, item):
+        for it in self._seq:
+            if item == it.value:
+                return True
+        return False
+
+    def __delitem__(self, index):
+        del self._seq[index]
+
+    def __getitem__(self, index):
+        return self._seq[index].value
+
+    def __iter__(self):
+        def gen():
+            for x in self._seq:
+                yield x.value
+        return gen()
+
+    def __len__(self):
+        return len(self._seq)
+
+    def __setitem__(self, index, item):
+        "must be overwritten"
+        raise NotImplementedError
+
+    def append(self, item):
+        "must be overwritten"
+        raise NotImplementedError
 
 
 class Base(_BaseClass):
@@ -510,11 +561,11 @@ class Seq(object):
             elif isinstance(v, tuple):
                 vals.append(v.value[1])
             else:
-                vals.append(str(v))
+                vals.append(repr(v))
 
-        return "<cssutils.%s.%s object length=%r values=%r readonly=%r at 0x%x>" % (
+        return "<cssutils.%s.%s object length=%r items=%r readonly=%r at 0x%x>" % (
                 self.__module__, self.__class__.__name__, len(self),
-                u', '.join(vals), self._readonly, id(self))
+                vals, self._readonly, id(self))
 
     def __delitem__(self, i):
         del self._seq[i]
@@ -531,12 +582,15 @@ class Seq(object):
     def __len__(self):
         return len(self._seq)
 
-    def append(self, val, typ, line=None, col=None):
+    def append(self, val, typ=None, line=None, col=None):
         "If not readonly add new Item()"
         if self._readonly:
             raise AttributeError('Seq is readonly.')
         else:
-            self._seq.append(Item(val, typ, line, col))
+            if isinstance(val, Item):
+                self._seq.append(val)
+            else:
+                self._seq.append(Item(val, typ, line, col))
 
     def appendItem(self, item):
         "if not readonly add item which must be an Item"
@@ -545,10 +599,13 @@ class Seq(object):
         else:
             self._seq.append(item)
 
+    def clear(self):
+        del self._seq[:]
+
     def insert(self, index, val, typ, line=None, col=None):
         "Insert new Item() at index # even if readony!? TODO!"
         self._seq.insert(index, Item(val, typ, line, col))
-
+    
     def replace(self, index=-1, val=None, typ=None, line=None, col=None):
         """
         if not readonly replace Item at index with new Item or

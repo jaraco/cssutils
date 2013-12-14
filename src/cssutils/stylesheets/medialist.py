@@ -8,12 +8,15 @@ __all__ = ['MediaList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+from cssutils.prodparser import *
+from cssutils.helper import normalize, pushtoken
 from cssutils.css import csscomment
 from mediaquery import MediaQuery
 import cssutils
 import xml.dom
 
-class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
+#class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
+class MediaList(cssutils.util._NewListBase): 
     """Provides the abstraction of an ordered collection of media,
     without defining or constraining how this collection is
     implemented.
@@ -21,13 +24,11 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
     A single media in the list is an instance of :class:`MediaQuery`. 
     An empty list is the same as a list that contains the medium "all".
 
-    Format from CSS2.1::
-
-        medium [ COMMA S* medium ]*
-
     New format with :class:`MediaQuery`::
 
-        <media_query> [, <media_query> ]*
+        : S* [media_query [ ',' S* media_query ]* ]?
+
+
     """
     def __init__(self, mediaText=None, parentRule=None, readonly=False):
         """
@@ -53,15 +54,20 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.stylesheets.%s(mediaText=%r)" % (
-                self.__class__.__name__, self.mediaText)
+        return "cssutils.stylesheets.%s(mediaText=%r)" % (self.__class__.__name__, self.mediaText)
 
     def __str__(self):
-        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
-                self.__class__.__name__, self.mediaText, id(self))
+        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (self.__class__.__name__, self.mediaText, id(self))
 
-    length = property(lambda self: len(self),
+
+    def __iter__(self):
+        for item in self._seq:
+            if item.type == 'MediaQuery':
+                yield item
+
+    length = property(lambda self: len(list(self)),
         doc="The number of media in the list (DOM readonly).")
+
 
     def _getMediaText(self):
         return cssutils.ser.do_stylesheets_medialist(self)
@@ -79,40 +85,66 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
               Raised if this media list is readonly.
         """
         self._checkReadonly()
-        wellformed = True
-        tokenizer = self._tokenize2(mediaText)
-        newseq = []
 
-        expected = None
-        while True:
-            # find all upto and including next ",", EOF or nothing
-            mqtokens = self._tokensupto2(tokenizer, listseponly=True)
-            if mqtokens:
-                if self._tokenvalue(mqtokens[-1]) == ',':
-                    expected = mqtokens.pop()
-                else:
-                    expected = None
 
-                mq = MediaQuery(mqtokens)
-                if mq.wellformed:
-                    newseq.append(mq)
-                else:
-                    wellformed = False
-                    self._log.error(u'MediaList: Invalid MediaQuery: %s' %
-                                    self._valuestr(mqtokens))
-            else:
-                break
+        mediaquery = lambda: Prod(name='MediaQueryStart',
+                                  match=lambda t, v: t == 'IDENT' or v == u'(',
+                                  toSeq=lambda t, tokens: ('MediaQuery', 
+                                                           MediaQuery(pushtoken(t, tokens),
+                                                                      _partof=True))
+                                  )
+        prods = Sequence(Sequence(PreDef.comment(parent=self),
+                                  minmax=lambda: (0, None)
+                                  ),
+                         mediaquery(),
+                         Sequence(PreDef.comma(toSeq=False),
+                                  mediaquery(),
+                                  minmax=lambda: (0, None))
 
-        # post condition
-        if expected:
-            wellformed = False
-            self._log.error(u'MediaList: Cannot end with ",".')
+                         )
+        # parse
+        ok, seq, store, unused = ProdParser().parse(mediaText,
+                                                    u'MediaList',
+                                                    prods, debug="ml")
 
-        if wellformed:
-            del self[:]
-            for mq in newseq:
-                self.appendMedium(mq)
-            self._wellformed = True
+        # each mq must be valid
+        atleastone = False
+
+        for item in seq:
+            v = item.value
+            if isinstance(v, MediaQuery):
+               if not v.wellformed:
+                   ok = False
+                   break
+               else:
+                   atleastone = True
+        # must be at least one value!
+        self._wellformed = ok and atleastone
+
+        if ok: 
+            mediaTypes = []
+            finalseq = cssutils.util.Seq(readonly=False)
+            commentseqonly = cssutils.util.Seq(readonly=False)
+            for item in seq:
+                # filter for doubles?
+                if item.type == 'MediaQuery':
+                    mediaType = item.value.mediaType
+                    if mediaType:
+                        if mediaType == u'all':
+                            # remove anthing else and keep all+comments(!) only
+                            finalseq = commentseqonly
+                            finalseq.append(item)
+                            break
+                        elif mediaType in mediaTypes:
+                            continue
+                        else:
+                            mediaTypes.append(mediaType)
+                elif isinstance(item.value, cssutils.css.csscomment.CSSComment):
+                    commentseqonly.append(item) 
+                
+                finalseq.append(item)
+
+            self._setSeq(finalseq)
 
     mediaText = property(_getMediaText, _setMediaText,
         doc="The parsable textual representation of the media list.")
@@ -132,10 +164,10 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 
         Any duplicate items are **not yet** removed.
         """
+        # TODO: remove duplicates?
         newMedium = self.__prepareset(newMedium)
         if newMedium:
-            self.seq[index] = newMedium
-        # TODO: remove duplicates?
+            self._seq[index] = (newMedium, 'MediaQuery', None, None)
 
     def appendMedium(self, newMedium):
         """Add the `newMedium` to the end of the list. 
@@ -159,33 +191,26 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
         newMedium = self.__prepareset(newMedium)
 
         if newMedium:
-            mts = [self._normalize(mq.mediaType) for mq in self]
-            newmt = self._normalize(newMedium.mediaType)
+            mts = [normalize(item.value.mediaType) for item in self]
+            newmt = normalize(newMedium.mediaType)
 
-            if newmt in mts:
+            self._seq._readonly = False
+
+            if u'all' in mts:
+                self._log.info(u'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' % newMedium, error=xml.dom.InvalidModificationErr)
+            
+            elif newmt and newmt in mts:
+                # might be empty
                 self.deleteMedium(newmt)
-                self.seq.append(newMedium)
-            elif u'all' == newmt:
-                # remove all except handheld (Opera)
-                h = None
-                for mq in self:
-                    if mq.mediaType == u'handheld':
-                        h = mq
-                del self[:]
-                self.seq.append(newMedium)
-                if h:
-                    self.append(h)
-            elif u'all' in mts:
+                self._seq.append(newMedium, 'MediaQuery')
 
-                if u'handheld' == newmt:
-                    self.seq.append(newMedium)
-                    self._log.info(u'MediaList: Already specified "all" but still setting new medium: %r' %
-                                   newMedium, error=xml.dom.InvalidModificationErr, neverraise=True)
-                else:
-                    self._log.info(u'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
-                                   newMedium, error=xml.dom.InvalidModificationErr)
             else:
-                self.seq.append(newMedium)
+                if u'all' == newmt:
+                    self._clearSeq()
+
+                self._seq.append(newMedium, 'MediaQuery')
+
+            self._seq._readonly = True
 
             return True
 
@@ -208,10 +233,10 @@ class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
               Raised if this list is readonly.
         """
         self._checkReadonly()
-        oldMedium = self._normalize(oldMedium)
+        oldMedium = normalize(oldMedium)
 
         for i, mq in enumerate(self):
-            if self._normalize(mq.mediaType) == oldMedium:
+            if normalize(mq.value.mediaType) == oldMedium:
                 del self[i]
                 break
         else:
