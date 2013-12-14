@@ -782,6 +782,7 @@ class CSSVariable(CSSFunction):
     """
     _functionName = 'CSSVariable'
     _name = None
+    _fallback = None
 
     def __str__(self):
         return u"<cssutils.css.%s object name=%r value=%r at 0x%x>" % (
@@ -796,16 +797,33 @@ class CSSVariable(CSSFunction):
                                         normalize(v) == u'var('
                              ),
                              PreDef.ident(toStore='ident'),
+                             Sequence(PreDef.comma(),
+                                      Choice(_ColorProd(self, toStore='fallback'),
+                                             _DimensionProd(self, toStore='fallback'),
+                                             _URIProd(self, toStore='fallback'),
+                                             _ValueProd(self, toStore='fallback'),
+                                             _CalcValueProd(self, toStore='fallback'),
+                                             _CSSVariableProd(self, toStore='fallback'),
+                                             _CSSFunctionProd(self, toStore='fallback')
+                                             ),
+                                      minmax=lambda: (0, 1)
+                                      ),
                              PreDef.funcEnd(stop=True))
 
         # store: name of variable
-        store = {'ident': None}
+        store = {'ident': None, 'fallback': None}
         ok, seq, store, unused = ProdParser().parse(cssText,
                                                     u'CSSVariable',
                                                     prods)
         self.wellformed = ok
+
         if ok:
             self._name = store['ident'].value
+            try:
+                self._fallback = store['fallback'].value
+            except KeyError:
+                self._fallback = None
+
             self._setSeq(seq)
 
     cssText = property(lambda self: cssutils.ser.do_css_CSSVariable(self),
@@ -816,6 +834,9 @@ class CSSVariable(CSSFunction):
                     doc=u"The name identifier of this variable referring to "
                         u"a value in a "
                         u":class:`cssutils.css.CSSVariablesDeclaration`.")
+
+    fallback = property(lambda self: self._fallback,
+                doc=u"The fallback Value of this variable")
 
     type = property(lambda self: Value.VARIABLE,
                     doc=u"Type is fixed to Value.VARIABLE.")
@@ -845,22 +866,24 @@ class CSSVariable(CSSFunction):
 
 
 # helper for productions
-def _ValueProd(parent, nextSor=False):
+def _ValueProd(parent, nextSor=False, toStore=None):
     return Prod(name='Value',
                 match=lambda t, v: t in ('IDENT', 'STRING', 'UNICODE-RANGE'),
                 nextSor = nextSor,
+                toStore=toStore,
                 toSeq=lambda t, tokens: ('Value', Value(pushtoken(t, tokens),
                                          parent=parent)
                                          )
                 )
 
 
-def _DimensionProd(parent, nextSor=False):
+def _DimensionProd(parent, nextSor=False, toStore=None):
     return Prod(name='Dimension',
                 match=lambda t, v: t in (u'DIMENSION',
                                          u'NUMBER',
                                          u'PERCENTAGE'),
                 nextSor = nextSor,
+                toStore=toStore,
                 toSeq=lambda t, tokens: (u'DIMENSION', DimensionValue(
                                             pushtoken(t,
                                                       tokens),
@@ -868,9 +891,10 @@ def _DimensionProd(parent, nextSor=False):
                                          )
                 )
 
-def _URIProd(parent, nextSor=False):
+def _URIProd(parent, nextSor=False, toStore=None):
     return Prod(name='URIValue',
                 match=lambda t, v: t == 'URI',
+                toStore=toStore,
                 nextSor = nextSor,
                 toSeq=lambda t, tokens: ('URIValue', URIValue(
                                             pushtoken(t,
@@ -881,7 +905,7 @@ def _URIProd(parent, nextSor=False):
 
 reHexcolor = re.compile(r'^\#(?:[0-9abcdefABCDEF]{3}|[0-9abcdefABCDEF]{6})$')
 
-def _ColorProd(parent, nextSor=False):
+def _ColorProd(parent, nextSor=False, toStore=None):
     return Prod(name='ColorValue',
                 match=lambda t, v:
                                    (t == 'HASH' and
@@ -897,6 +921,7 @@ def _ColorProd(parent, nextSor=False):
                                     normalize(v) in ColorValue.COLORS.keys()
                                     ),
                 nextSor = nextSor,
+                toStore=toStore,
                 toSeq=lambda t, tokens: ('ColorValue', ColorValue(
                                             pushtoken(t,
                                                                       tokens),
@@ -904,8 +929,9 @@ def _ColorProd(parent, nextSor=False):
                                          )
                 )
 
-def _CSSFunctionProd(parent, nextSor=False):
+def _CSSFunctionProd(parent, nextSor=False, toStore=None):
     return PreDef.function(nextSor=nextSor,
+                           toStore=toStore,
                            toSeq=lambda t, tokens: (CSSFunction._functionName,
                                                     CSSFunction(
                                 pushtoken(t, tokens),
@@ -913,10 +939,11 @@ def _CSSFunctionProd(parent, nextSor=False):
                                 )
                            )
 
-def _CalcValueProd(parent, nextSor=False):
+def _CalcValueProd(parent, nextSor=False, toStore=None):
     return Prod(name=CSSCalc._functionName,
                     match=lambda t, v: t == PreDef.types.FUNCTION and
                         normalize(v) == u'calc(',
+                    toStore=toStore,
                     toSeq=lambda t, tokens: (CSSCalc._functionName,
                                                     CSSCalc(
                                 pushtoken(t, tokens),
@@ -924,8 +951,9 @@ def _CalcValueProd(parent, nextSor=False):
                                                     ),
                     nextSor=nextSor)
 
-def _CSSVariableProd(parent, nextSor=False):
+def _CSSVariableProd(parent, nextSor=False, toStore=None):
     return PreDef.variable(nextSor=nextSor,
+                           toStore=toStore,
                            toSeq=lambda t, tokens: (CSSVariable._functionName,
                                                     CSSVariable(
                                 pushtoken(t, tokens),
