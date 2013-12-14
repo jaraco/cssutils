@@ -149,9 +149,12 @@ class PropertyValue(cssutils.util._NewBase):
                       )
         operator = Choice(PreDef.S(toSeq=False),
                           PreDef.char('comma', ',',
-                                      toSeq=lambda t, tokens: ('operator', t[1])),
+                                      toSeq=lambda t, tokens: ('operator', t[1]),
+                                      optional=True
+                                      ),
                           PreDef.char('slash', '/',
-                                      toSeq=lambda t, tokens: ('operator', t[1])),
+                                      toSeq=lambda t, tokens: ('operator', t[1]),
+                                      optional=True),
                           optional=True)
         prods = Sequence(term,
                          Sequence(# mayEnd this Sequence if whitespace
@@ -335,7 +338,7 @@ class ColorValue(Value):
                                                  v in (u'rgb(', u'hsl('),
                               toSeq=lambda t, tokens: (t[0], normalize(t[1]))),
                           component,
-                          Sequence(PreDef.comma(),
+                          Sequence(PreDef.comma(optional=True),
                                    component,
                                    minmax=lambda: (2, 2)
                                    ),
@@ -348,7 +351,7 @@ class ColorValue(Value):
                                  normalize(t[1]))
                               ),
                           component,
-                          Sequence(PreDef.comma(),
+                          Sequence(PreDef.comma(optional=True),
                                    component,
                                    minmax=lambda: (3, 3)
                                    ),
@@ -614,7 +617,7 @@ class CSSFunction(Value):
                                   toSeq=lambda t, tokens: (t[0],
                                                            normalize(t[1]))),
                              Choice(Sequence(itemProd,
-                                             Sequence(PreDef.comma(),
+                                             Sequence(PreDef.comma(optional=True),
                                                       itemProd,
                                                       minmax=lambda: (0, None)),
                                              PreDef.funcEnd(stop=True)),
@@ -843,9 +846,7 @@ def _ValueProd(parent, nextSor=False):
     return Prod(name='Value',
                 match=lambda t, v: t in ('IDENT', 'STRING', 'UNICODE-RANGE'),
                 nextSor = nextSor,
-                toSeq=lambda t, tokens: ('Value', Value(
-                                            pushtoken(t,
-                                                                      tokens),
+                toSeq=lambda t, tokens: ('Value', Value(pushtoken(t, tokens),
                                          parent=parent)
                                          )
                 )
@@ -957,3 +958,10 @@ def _MSValueProd(parent, nextSor=False):
                                                  )
                                          )
                 )
+
+
+def MediaQueryValueProd(parent):
+    return Choice(_ColorProd(parent),
+                  _DimensionProd(parent),
+                  _ValueProd(parent),
+                  )

@@ -95,25 +95,24 @@ class PropertyTestCase(basetest.BaseTestCase):
                    u'Property: No property name found: : [1:1: :]'),
             u'a': (xml.dom.SyntaxErr,
                    u'Property: No ":" after name found: a [1:1: a]'),
-            u'a !': (xml.dom.SyntaxErr,
-                     u'Property: No ":" after name found: a ! [1:3: !]'),
-            u'a:': (xml.dom.SyntaxErr,
-                    u'Property: No property value found: a: [1:2: :]'),
-            u'/**/a': (xml.dom.SyntaxErr,
-                       u'Property: No ":" after name found: /**/a [1:5: a]'),
-            # somehow 'a: ' fails?!?
-            u'a111: ': (xml.dom.SyntaxErr,
-                   u"PropertyValue: Unknown syntax or no value:  "),
-            u'a: 1!': (xml.dom.SyntaxErr,
+            u'b !': (xml.dom.SyntaxErr,
+                     u'Property: No ":" after name found: b ! [1:3: !]'),
+            u'/**/x': (xml.dom.SyntaxErr,
+                       u'Property: No ":" after name found: /**/x [1:5: x]'),
+            u'c:': (xml.dom.SyntaxErr,
+                   u"Property: No property value found: c: [1:2: :]"),
+            u'd: ': (xml.dom.SyntaxErr,
+                   u"No content to parse."),
+            u'e:!important': (xml.dom.SyntaxErr,
+                   u"No content to parse."),
+            u'f: 1!': (xml.dom.SyntaxErr,
                        u'Property: Invalid priority: !'),
-            u'a: 1!importantX': (xml.dom.SyntaxErr,
+            u'g: 1!importantX': (xml.dom.SyntaxErr,
                    u"Property: No CSS priority value: importantx"),
-            u'a:!important': (xml.dom.SyntaxErr,
-                   u"PropertyValue: Unknown syntax or no value: "),
 
             # TODO?
-#            u'a: 1;': (xml.dom.SyntaxErr,
-#                   u'''CSSValue: No match: ('CHAR', u';', 1, 5)''')
+            #u'a: 1;': (xml.dom.SyntaxErr,
+            #       u'''CSSValue: No match: ('CHAR', u';', 1, 5)''')
             }
         for test in tests:
             ecp, msg = tests[test]

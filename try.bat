@@ -4,4 +4,4 @@ rem python cssutils/parse.py ../%1 %2 %3
 rem cd ..
 @echo on
 
-python src\try.py %1
+%PY2% src\try.py %1

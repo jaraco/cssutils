@@ -566,7 +566,7 @@ a, b {}'''
             u'@namespace a  "a";': u'@namespace a"a";',
             u'@page  :left {   a  :1  }': u'@page :left {\n    a: 1\n    }',
             u'@x  x;': u'@x x;',
-            u'@import"x"a': u'@import"x"a;' # ?
+            u'@import"x"tv': u'@import"x"tv;' # ?
             }
         for css, exp in tests.items():
             self.assertEqual(exp.encode(), cssutils.parseString(css).cssText)

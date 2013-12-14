@@ -37,20 +37,52 @@ def maketokens(valuelist):
 
 
 if 1:
-    t = cssutils.tokenize2.Tokenizer()
-    # @media (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
-    css = '''a { top: calc(-);left: calc(1 + -2px); width: calc(-20px - -5px + +1%*1/2 +)}'''
-    #css = '''a { top: calc(-2 + -1px)}'''
-    css = 'a{top:calc(1 + +)}'
-    #css = '@page {left: 0}'
+    #m = cssutils.stylesheets.MediaList('tv and (color), handheld and (width: 1px) and (color)')
+    #m[10] = 'tv'
+    #print m.mediaText
 
-    cssutils.ser.prefs.useMinified()
-
-    css = u'#elem { width: calc(100% -  320px); }'
+    css = '''@variables {}'''
     print cssutils.parseString(css).cssText
 
-    #pprint (list(t.tokenize(css)))
+    sys.exit(1)
 
+
+if 1:
+    css = u'''@media all and (width: 10px), all and (height:20px) {
+        a {color:red}
+    }
+    '''
+    css = u'''@media (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx){ 
+        a {color:red}
+    }'''
+    css = u'''@media not handheld/**/,/**/ all/**/and/**/ (/**/width: 10px) and (color), tv/**/{
+        a {color:red}
+    }'''
+    css = u'''@media tv,braille,tv {
+        a {color:red}
+    }'''
+    #print cssutils.parseString(css).cssText
+    #sys.exit(1)
+
+    
+    #m = cssutils.stylesheets.MediaList('not tv,braille and')
+    m = cssutils.stylesheets.MediaList('(color),braille and, tty')
+
+    print 
+    print m, m.wellformed
+    print m.mediaText
+    print m.length
+    for mq in m:
+        print mq, mq.mediaType
+    #print
+    #for mq in m:
+    #    mq.mediaType = 'tv'
+    #    print mq.mediaType, mq
+
+
+    #mq = cssutils.stylesheets.MediaQuery('tv,')
+    #print mq
+    #print mq.mediaText
 
     sys.exit(1)
 

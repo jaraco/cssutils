@@ -20,9 +20,11 @@ __version__ = '$Id: parse.py 1418 2008-08-09 19:27:50Z cthedot $'
 
 from helper import pushtoken
 import cssutils
+import itertools
 import re
 import string
 import sys
+import types
 
 
 class ParseError(Exception):
@@ -91,19 +93,22 @@ class Choice(object):
         - raise Exhausted if choice already done
 
         ``token`` may be None but this occurs when no tokens left."""
+        #print u'TEST for %s in %s' % (token, self)
         if not self._exhausted:
             optional = False
-            for x in self._prods:
-                if x.matches(token):
+            for p in self._prods:
+                if p.matches(token):
                     self._exhausted = True
-                    x.reset()
-                    return x
-                elif x.optional:
+                    p.reset()
+                    #print u'FOUND for %s: %s' % (token, p);#print
+                    return p
+                elif p.optional:
                     optional = True
             else:
                 if not optional:
                     # None matched but also None is optional
-                    raise ParseError(u'No match in %s' % self)
+                    raise NoMatch(u'No match for %s in %s' % (token, self))
+                    #raise ParseError(u'No match in %s for %s' % (self, token))
         elif token:
             raise Exhausted(u'Extra token')
 
@@ -120,7 +125,7 @@ class Sequence(object):
     def __init__(self, *prods, **options):
         """
         *prods
-            Prod or Sequence objects
+            Prod or Choice or Sequence objects
         **options:
             minmax = lambda: (1, 1)
                 callback returning number of times this sequence may run
@@ -180,7 +185,9 @@ class Sequence(object):
         - raises ParseError if nothing matches
         - raises Exhausted if sequence already done
         """
+        #print u'TEST for %s in %s' % (token, self)
         while self._round < self._max:
+
             # for this round
             i = self._i
             round = self._round
@@ -198,6 +205,7 @@ class Sequence(object):
                 self._roundstarted = True
                 # reset nested Choice or Prod to use from start
                 p.reset()
+                #print u'FOUND for %s: %s' % (token, p);#print
                 return p
 
             elif p.optional:
@@ -213,7 +221,7 @@ class Sequence(object):
                     raise Done()
 
             else:
-                raise NoMatch(u'No matching production for token')
+                raise NoMatch(u'No match for %s in %s' % (token, self))
 
         if token:
             raise Exhausted(u'Extra token')
@@ -232,6 +240,7 @@ class Prod(object):
     def __init__(self, name, match, optional=False,
                  toSeq=None, toStore=None,
                  stop=False, stopAndKeep=False,
+                 stopIfNoMoreMatch=False,
                  nextSor=False, mayEnd=False,
                  storeToken=None,
                  exception=None):
@@ -250,12 +259,15 @@ class Prod(object):
         toStore (optional)
             key to save util.Item to store or callback(store, util.Item)
         optional = False
-            wether Prod is optional or not
+            whether Prod is optional or not
         stop = False
             if True stop parsing of tokens here
         stopAndKeep
             if True stop parsing of tokens here but return stopping
             token in unused tokens
+        stopIfNoMoreMatch = False
+            stop even if more tokens available, similar to stop and keep but with
+            condition no more matches
         nextSor=False
             next is S or other like , or / (CSSValue)
         mayEnd = False
@@ -274,6 +286,7 @@ class Prod(object):
         self.optional = optional
         self.stop = stop
         self.stopAndKeep = stopAndKeep
+        self.stopIfNoMoreMatch = stopIfNoMoreMatch
         self.nextSor = nextSor
         self.mayEnd = mayEnd
         self.storeToken = storeToken
@@ -327,6 +340,10 @@ class Prod(object):
 # global tokenizer as there is only one!
 tokenizer = cssutils.tokenize2.Tokenizer()
 
+# global: saved from subProds
+savedTokens = []
+
+
 class ProdParser(object):
     """Productions parser."""
     def __init__(self, clear=True):
@@ -334,7 +351,7 @@ class ProdParser(object):
         self._log = cssutils.log
         if clear:
             tokenizer.clear()
-
+   
     def _texttotokens(self, text):
         """Build a generator which is the only thing that is parsed!
         old classes may use lists etc
@@ -342,6 +359,10 @@ class ProdParser(object):
         if isinstance(text, basestring):
             # DEFAULT, to tokenize strip space
             return tokenizer.tokenize(text.strip())
+
+        elif type(text) == types.GeneratorType:
+            # DEFAULT, already tokenized, should be generator
+            return text
 
         elif isinstance(text, tuple):
             # OLD: (token, tokens) or a single token
@@ -357,7 +378,7 @@ class ProdParser(object):
             return iter(text)
 
         else:
-            # DEFAULT, already tokenized, assume generator
+            # ?
             return text
 
     def _SorTokens(self, tokens, until=',/'):
@@ -391,7 +412,8 @@ class ProdParser(object):
             yield token
 
 
-    def parse(self, text, name, productions, keepS=False, checkS=False, store=None, debug=False):
+    def parse(self, text, name, productions, keepS=False, checkS=False, store=None,
+              emptyOk=False, debug=False):
         """
         text (or token generator)
             to parse, will be tokenized if not a generator yet
@@ -416,6 +438,8 @@ class ProdParser(object):
             TODO: NEEDED? :
             Key ``raw`` is always added and holds all unprocessed
             values found
+        emptyOk
+            if True text may be empty, hard to test before as may be generator
 
         returns
             :wellformed: True or False
@@ -424,16 +448,16 @@ class ProdParser(object):
             :unusedtokens: token generator containing tokens not used yet
         """
         tokens = self._texttotokens(text)
+
         if not tokens:
             self._log.error(u'No content to parse.')
-            # TODO: return???
+            return False, [], None, None
 
         seq = cssutils.util.Seq(readonly=False)
         if not store: # store for specific values
             store = {}
         prods = [productions] # stack of productions
         wellformed = True
-
         # while no real token is found any S are ignored
         started = False
         stopall = False
@@ -441,11 +465,21 @@ class ProdParser(object):
         # flag if default S handling should be done
         defaultS = True
 
+        stopIfNoMoreMatch = False
+        stopIfNoMoreMatchNow = False
+
         while True:
+            # get from savedTokens or normal tokens
             try:
-                token = tokens.next()
-            except StopIteration:
-                break
+                #print debug, "SAVED", savedTokens
+                token = savedTokens.pop()
+            except IndexError, e:
+                try:
+                    token = tokens.next()
+                except StopIteration:
+                    break
+
+            #print debug, token, stopIfNoMoreMatch
 
             type_, val, line, col = token
 
@@ -474,7 +508,7 @@ class ProdParser(object):
 
             elif type_ == 'EOF':
                 # do nothing? (self.types.EOF == True!)
-                pass
+                stopall = True
 
             else:
                 started = True # check S now
@@ -500,15 +534,40 @@ class ProdParser(object):
                             if len(prods) > 1:
                                 prods.pop()
                             else:
-                                raise ParseError('No match')
+                                raise NoMatch('No match')
 
+                except NoMatch, e:
+                    if stopIfNoMoreMatch: # and token:
+                        #print "\t1stopIfNoMoreMatch", e, token, prod, 'PUSHING'
+                        #tokenizer.push(token)
+                        savedTokens.append(token)
+                        stopIfNoMoreMatchNow = True
+                        stopall = True
+
+                    else:
+                        wellformed = False
+                        self._log.error(u'%s: %s: %r' % (name, e, token))
+                    break
 
                 except ParseError, e:
-                    wellformed = False
-                    self._log.error(u'%s: %s: %r' % (name, e, token))
+                    # needed???
+                    if stopIfNoMoreMatch: # and token:
+                        #print "\t2stopIfNoMoreMatch", e, token, prod
+                        tokenizer.push(token)
+                        stopIfNoMoreMatchNow = True
+                        stopall = True
+
+                    else:
+                        wellformed = False
+                        self._log.error(u'%s: %s: %r' % (name, e, token))
                     break
 
                 else:
+                    #print '\t1', debug, 'PROD', prod
+
+                    # may stop next time, once set stays
+                    stopIfNoMoreMatch = prod.stopIfNoMoreMatch or stopIfNoMoreMatch 
+
                     # process prod
                     if prod.toSeq and not prod.stopAndKeep:
                         type_, val = prod.toSeq(token, tokens)
@@ -523,14 +582,19 @@ class ProdParser(object):
                                     # TODO: remove when all new style
                                     prod.toStore(store, token)
 
-                    if prod.stop: # EOF?
+                    if prod.stop: 
                         # stop here and ignore following tokens
+                        # EOF? or end of e.g. func ")"
                         break
 
                     if prod.stopAndKeep: # e.g. ;
                         # stop here and ignore following tokens
                         # but keep this token for next run
-                        tokenizer.push(token)
+                        
+                        # TODO: CHECK!!!!
+                        tokenizer.push(token) 
+                        tokens = itertools.chain(token, tokens)
+                                               
                         stopall = True
                         break
 
@@ -541,11 +605,12 @@ class ProdParser(object):
                         defaultS = False
                     else:
                         defaultS = True
-
+        
         lastprod = prod
-
+        #print debug, 'parse done', token, stopall, '\n'
         if not stopall:
             # stop immediately
+
             while True:
                 # all productions exhausted?
                 try:
@@ -584,6 +649,10 @@ class ProdParser(object):
                 else:
                     break
 
+            if not emptyOk and not len(seq):
+                self._log.error(u'No content to parse.')
+                return False, [], None, None
+
         # trim S from end
         seq.rstrip()
         return wellformed, seq, store, tokens
@@ -605,17 +674,30 @@ class PreDef(object):
 
     @staticmethod
     def char(name='char', char=u',', toSeq=None,
-             stop=False, stopAndKeep=False, mayEnd=False,
-             optional=True, nextSor=False):
+             stop=False, stopAndKeep=False, mayEnd=False, 
+             stopIfNoMoreMatch=False,
+             optional=False, # WAS: optional=True, 
+             nextSor=False):
         "any CHAR"
         return Prod(name=name, match=lambda t, v: v == char, toSeq=toSeq,
                     stop=stop, stopAndKeep=stopAndKeep, mayEnd=mayEnd,
+                    stopIfNoMoreMatch=stopIfNoMoreMatch,
                     optional=optional,
                     nextSor=nextSor)
 
     @staticmethod
-    def comma():
-        return PreDef.char(u'comma', u',')
+    def comma(optional=False, toSeq=None):
+        return PreDef.char(u'comma', u',', optional=optional, toSeq=toSeq)
+
+    @staticmethod
+    def comment(parent=None):
+        return Prod(name=u'comment',
+                    match=lambda t, v: t == 'COMMENT',
+                    toSeq=lambda t, tokens: (t[0], cssutils.css.CSSComment([1], 
+                                                                           parentRule=parent)),
+                    optional=True
+                    )
+
 
     @staticmethod
     def dimension(nextSor=False, stop=False):
@@ -635,8 +717,7 @@ class PreDef(object):
     @staticmethod
     def funcEnd(stop=False, mayEnd=False):
         ")"
-        return PreDef.char(u'end FUNC ")"', u')',
-                           stop=stop, optional=False, mayEnd=mayEnd)
+        return PreDef.char(u'end FUNC ")"', u')', stop=stop, mayEnd=mayEnd)
 
     @staticmethod
     def hexcolor(stop=False, nextSor=False):

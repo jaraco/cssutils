@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-"""Testcases for cssutils.stylesheets.MediaList"""
+"""Testcases for cssutils.stylesheets.MediaQuery"""
 
 import xml.dom
 import basetest
@@ -36,6 +36,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             u'tv and (color)': None,
             u'not tv and (color)': None,
             u'only tv and (color)': None,
+            u'print and(color)': u'print and (color)'
             }
         self.do_equal_r(tests, att='mediaText')
 
@@ -43,9 +44,8 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             u'': xml.dom.SyntaxErr,
             u'two values': xml.dom.SyntaxErr,
             u'or even three': xml.dom.SyntaxErr,
-            u'print and(color)': xml.dom.SyntaxErr, # a function
-            u'aural': xml.dom.InvalidCharacterErr, # a dimension
-            u'3d': xml.dom.InvalidCharacterErr, # a dimension
+            u'aural': xml.dom.SyntaxErr, # a dimension
+            u'3d': xml.dom.SyntaxErr, # a dimension
             }
         self.do_raise_r(tests, att='_setMediaText')        
 
@@ -63,7 +63,8 @@ class MediaQueryTestCase(basetest.BaseTestCase):
 
         mt = u'3D-UNKOwn-MEDIAtype0123'
         #mq.mediaType = mt
-        self.assertRaises(xml.dom.InvalidCharacterErr, mq._setMediaType, mt)
+        self.assertRaises(xml.dom.SyntaxErr, mq._setMediaType, mt)
+        #self.assertRaises(xml.dom.InvalidCharacterErr, mq._setMediaType, mt)
 
     def test_comments(self):
         "MediaQuery.mediaText comments"
@@ -82,7 +83,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             u'/*1*/ tv /*2*/': None,
             u'/*0*/ only /*1*/ tv /*2*/': None,
             u'/*0* /not /*1*/ tv /*2*/': None,
-            u'/*x*/ only /*x*/ print /*x*/ and /*x*/ (/*x*/min-width/*x*/: /*x*/ 100px /*x*/)': None,
+            u'/*x*/ only /*x*/ print /*x*/ and /*x*/ (/*x*/ min-width /*x*/: /*x*/ 100px /*x*/)': None,
             u'print and/*1*/(color)': u'print and /*1*/ (color)'
             }
         self.do_equal_r(tests, att='mediaText')

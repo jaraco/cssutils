@@ -215,19 +215,10 @@ class Out(object):
                     val = val.cssText
                 else:
                     return
-            elif hasattr(val, 'cssText'):
-                val = val.cssText
-#            elif type_ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
-#                val = val.cssText
             elif 'S' == type_ and not keepS:
                 return
             elif 'S' == type_ and keepS:
                 val = u' '
-#            elif type_ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == u'0':
-#                # remove sign + or - if value is zero
-#                # TODO: only for lenghts!
-#                if self.out and self.out[-1] in u'+-':
-#                    del self.out[-1]
             elif 'STRING' == type_:
                 # may be empty but MUST not be None
                 if val is None:
@@ -239,8 +230,19 @@ class Out(object):
                 val = helper.uri(val)
             elif 'HASH' == type_:
                 val = self.ser._hash(val)
+            elif hasattr(val, 'cssText'):
+                val = val.cssText
+            elif hasattr(val, 'mediaText'):
+                val = val.mediaText
             elif val in u'+>~,:{;)]/=}' and not alwaysS:
                 self._remove_last_if_S()
+#            elif type_ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
+#                val = val.cssText
+#            elif type_ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == u'0':
+#                # remove sign + or - if value is zero
+#                # TODO: only for lenghts!
+#                if self.out and self.out[-1] in u'+-':
+#                    del self.out[-1]
 
             # APPEND
 
@@ -1101,8 +1103,6 @@ class CSSSerializer(object):
             out = Out(self)
             for item in cssvalue.seq:
                 type_, val = item.type, item.value
-                if valuesOnly and type_ == cssutils.css.CSSComment:
-                    continue
                 #val = self._possiblezero(cssvalue, type_, val)
                 # do no send type_ so no special cases!
                 out.append(val, None, space=False)
@@ -1139,23 +1139,62 @@ class CSSSerializer(object):
         if len(medialist) == 0:
             return u'all'
         else:
-            sep = u',%s' % self.prefs.listItemSpacer
-            return sep.join((mq.mediaText for mq in medialist))
+            seq = medialist.seq
+            out = Out(self)
+            firstdone = False
+
+            for item in seq:
+                type_, val = item.type, item.value
+
+                if type_ == 'MediaQuery':
+                    if firstdone:
+                        out.append(u',', 'CHAR')
+                    else:
+                        firstdone = True
+                
+                out.append(item.value, item.type)
+
+            return out.value()
 
     def do_stylesheets_mediaquery(self, mediaquery):
         """
         a single media used in medialist
         """
-        if mediaquery.wellformed:
-            out = []
-            for part in mediaquery.seq:
-                if isinstance(part, cssutils.css.Property): # Property
-                    out.append(u'(%s)' % part.cssText)
-                elif hasattr(part, 'cssText'): # comments
-                    out.append(part.cssText)
-                else:
-                    # TODO: media queries!
-                    out.append(part)
-            return u' '.join(out)
-        else:
+        if not mediaquery.wellformed:
             return u''
+        else:
+            withsemi = []
+            nextmq = False
+            for item in mediaquery.seq:
+                type_, val = item.type, item.value
+
+                if type_ == 'MediaQuery' and nextmq:
+                    withsemi.append(('CHAR', u','))
+                    nextmq = False
+                else:
+                    nextmq = True
+
+                withsemi.append((type_, val))
+
+            out = Out(self)
+            for t, v, in withsemi:
+                out.append(v, t)
+            #for item in mediaquery.seq:
+            #    type_, val = item.type, item.value
+            #    out.append(val, type_)#, space=False)
+
+            return out.value()
+
+        #if mediaquery.wellformed:
+        #    out = []
+        #    for part in mediaquery.seq:
+        #        if isinstance(part, cssutils.css.Property): # Property
+        #            out.append(u'(%s)' % part.cssText)
+        #        elif hasattr(part, 'cssText'): # comments
+        #            out.append(part.cssText)
+        #        else:
+        #            # TODO: media queries!
+        #            out.append(part)
+        #    return u' '.join(out)
+        #else:
+        #    return u''
