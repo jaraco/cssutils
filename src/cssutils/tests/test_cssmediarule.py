@@ -102,15 +102,83 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_cssText(self):
         "CSSMediaRule.cssText"
+        style = '''{
+    a {
+        color: red
+        }
+    }'''
+
+        mls = {
+            u' (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) ': None,
+            u' tv ': None,
+            u' only tv ': None,
+            u' not tv ': None,
+            u' only tv and (color) ': None,
+            u' only tv and(color)': u' only tv and (color) ',
+            u' only tv and (color: red) ': None,
+            u' only tv and (color: red) and (width: 100px) ': None,
+            u' only tv and (color: red) and (width: 100px), tv ': None,
+            u' only tv and (color: red) and (width: 100px), tv and (width: 20px) ': None,
+            u' only tv and(color :red)and(  width :100px  )  ,tv and(width: 20px) ': 
+                u' only tv and (color: red) and (width: 100px), tv and (width: 20px) ',
+            u' (color: red) and (width: 100px), (width: 20px) ': None,
+            u' /*1*/ only /*2*/ tv /*3*/ and /*4*/ (/*5*/ width) /*5*/ /*6*/, (color) and (height) ': None,
+            u'(color)and(width),(height)': u' (color) and (width), (height) '
+        }
+        tests = {}
+        for b, a in mls.items(): 
+            if a is None:
+                a = b
+            tests[u'@media%s%s' % (b, style)] = u'@media%s%s' % (a, style)
+
+        self.do_equal_p(tests)
+        self.do_equal_r(tests)
+
         tests = {
-            u'''@media all "name"{}''': u'',
-            u'''@media all {}''': u'',
-            u'''@media/*x*/all{}''': u'',
-            u'''@media all { a{ x: 1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
-            u'''@media all "name" { a{ x: 1} }''': u'''@media all "name" {\n    a {\n        x: 1\n        }\n    }''',
-            u'''@MEDIA all { a{x:1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
-            u'''@\\media all { a{x:1} }''': u'''@media all {\n    a {\n        x: 1\n        }\n    }''',
-            u'''@media all {@x some;a{color: red;}b{color: green;}}''':
+            u'@media only tv{}': u'',
+            u'@media not tv{}': u'',
+            u'@media only tv and (color){}': u'',
+            u'@media only tv and (color: red){}': u'',
+            u'@media only tv and (color: red) and (width: 100px){}': u'',
+            u'@media only tv and (color: red) and (width: 100px), tv{}': u'',
+            u'@media only tv and (color: red) and (width: 100px), tv and (width: 20px){}': u'',
+            u'@media (color: red) and (width: 100px), (width: 20px){}': u'',
+            u'@media (width){}': u'',
+            u'@media (width:10px){}': u'',
+            u'@media (width), (color){}': u'',
+            u'@media (width)  ,  (color),(height){}': u'',
+            u'@media (width)  ,  (color) and (height){}': u'',
+            u'@media (width) and (color){}': u'',
+            u'@media all and (width){}': u'',
+            u'@media all and (width:10px){}': u'',
+            u'@media all and (width), (color){}': u'',
+            u'@media all and (width)  ,  (color),(height){}': u'',
+            u'@media all and (width)  ,  (color) and (height){}': u'',
+            u'@media all and (width) and (color){}': u'',
+            u'@media only tv and (width){}': u'',
+            u'@media only tv and (width:10px){}': u'',
+            u'@media only tv and (width), (color){}': u'',
+            u'@media only tv and (width)  ,  (color),(height){}': u'',
+            u'@media only tv and (width)  ,  (color) and (height){}': u'',
+            u'@media only tv and (width) and (color){}': u'',
+
+            u'@media only tv and (width) "name" {}': u'',
+            u'@media only tv and (width:10px) "name" {}': u'',
+            u'@media only tv and (width), (color){}': u'',
+            u'@media only tv and (width)  ,  (color),(height){}': u'',
+            u'@media only tv and (width)  ,  (color) and (height){}': u'',
+            u'@media only tv and (width) and (color){}': u'',
+
+            
+
+            u'@media all "name"{}': u'',
+            u'@media all {}': u'',
+            u'@media/*x*/all{}': u'',
+            u'@media all { a{ x: 1} }': u'@media all {\n    a {\n        x: 1\n        }\n    }',
+            u'@media all "name" { a{ x: 1} }': u'@media all "name" {\n    a {\n        x: 1\n        }\n    }',
+            u'@MEDIA all { a{x:1} }': u'@media all {\n    a {\n        x: 1\n        }\n    }',
+            u'@\\media all { a{x:1} }': u'@media all {\n    a {\n        x: 1\n        }\n    }',
+            u'@media all {@x some;a{color: red;}b{color: green;}}':
                 u'''@media all {
     @x some;
     a {
@@ -150,6 +218,14 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@media all { @media all {} }': xml.dom.HierarchyRequestErr,
             u'@media all { , }': xml.dom.SyntaxErr,
             u'@media all {}EXTRA': xml.dom.SyntaxErr,
+            u'@media ({}': xml.dom.SyntaxErr,
+            u'@media (color{}': xml.dom.SyntaxErr,
+            u'@media (color:{}': xml.dom.SyntaxErr,
+            u'@media (color:red{}': xml.dom.SyntaxErr,
+            u'@media (:red){}': xml.dom.SyntaxErr,
+            u'@media (:){}': xml.dom.SyntaxErr,
+            u'@media color:red){}': xml.dom.SyntaxErr,
+
             }
         self.do_raise_p(tests)
         self.do_raise_r(tests)
