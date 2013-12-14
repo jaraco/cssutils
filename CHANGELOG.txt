@@ -31,7 +31,17 @@ Known Issues
 
 Development Version
 ===================
-- FEATURE: Implemented parsing of CSSCalc values. General syntax is checked but not if operators in calc are actually the right kind like DIMENSION * DIMENSION. (issue #37)
+- EXPERIMENTAL: Variable references may have a fallback value now (as implemented in Firefox 29). It is available as ``CSSVariable.fallback`` and example are::
+
+	bottom: var(b);
+    color: var(theme-colour-1, rgb(14,14,14));
+    left: var(L, 1px);
+    z-index: var(L, 1);
+    top: var(T, calc( 2 * 1px ));
+    background: var(U, url(example.png));
+    border-color: var(C, #f00)
+
+- FEATURE: Implemented parsing of CSSCalc values. General syntax is checked but not if operators in calc are actually the right kind like DIMENSION * DIMENSION. (issue #37). Also Values using calc do not validate in cssutils but are actually valid.
 
 - FIXED issue #20 and #35 (Test fail CSSParser.parseUrl() error with Python 3.3)
 

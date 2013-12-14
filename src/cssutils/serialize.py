@@ -1124,6 +1124,9 @@ class CSSSerializer(object):
                 # keep var(NAME)
                 out.append(u'var(', 'FUNCTION')
                 out.append(variable.name, 'IDENT')
+                if variable.fallback:
+                    out.append(u',', 'COMMA')
+                    out.append(variable.fallback.cssText)
                 out.append(u')')
 
             return out.value()

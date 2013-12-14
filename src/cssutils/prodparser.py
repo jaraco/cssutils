@@ -708,9 +708,10 @@ class PreDef(object):
                     nextSor=nextSor)
 
     @staticmethod
-    def function(toSeq=None, nextSor=False):
+    def function(toSeq=None, nextSor=False, toStore=None):
         return Prod(name=u'function',
                     match=lambda t, v: t == PreDef.types.FUNCTION,
+                    toStore=toStore,
                     toSeq=toSeq,
                     nextSor=nextSor)
 
@@ -800,10 +801,11 @@ class PreDef(object):
                     )
 
     @staticmethod
-    def variable(toSeq=None, stop=False, nextSor=False):
+    def variable(toSeq=None, stop=False, nextSor=False, toStore=None):
         return Prod(name=u'variable',
                     match=lambda t, v: u'var(' == cssutils.helper.normalize(v),
                     toSeq=toSeq,
+                    toStore=toStore,
                     stop=stop,
                     nextSor=nextSor)
 

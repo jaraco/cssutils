@@ -41,7 +41,23 @@ if 1:
     #m[10] = 'tv'
     #print m.mediaText
 
-    css = '@media tv{a {color: red}'
+    css = '''
+    :root {
+  var-theme-colour-1: #009EE0; 
+  var-theme-colour-2: #FFED00; 
+  var-theme-colour-3: #E2007A; 
+  var-spacing: 24px;
+}
+        a {
+            bottom: var(b);
+            color: var(theme-colour-1, rgb(14,14,14));
+            left: var(L, 1px);
+            z-index: var(L, 1);
+            top: var(T, calc( 2 * 1px ));
+            background: var(U, url(example.png));
+            border-color: var(C, #f00)
+        }
+    '''
     print cssutils.parseString(css).cssText
 
     sys.exit(1)

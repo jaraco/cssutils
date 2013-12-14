@@ -697,10 +697,16 @@ class CSSVariableTestCase(basetest.BaseTestCase):
     def test_cssText(self):
         "CSSVariable.cssText"
         tests = {
-                 u'var(x)': (u'var(x)', 'x'),
-                 u'VAR(  X  )': (u'var(X)', 'X')
+                 u'var(x)': (u'var(x)', u'x', None),
+                 u'VAR(  X  )': (u'var(X)', u'X', None),
+                 u'var(c1,rgb(14,14,14))': (u'var(c1, rgb(14, 14, 14))', u'c1', u'rgb(14, 14, 14)'),
+                 u'var( L, 1px )': (u'var(L, 1px)', u'L', u'1px'),
+                 u'var(L,1)': (u'var(L, 1)', u'L', u'1'),
+                 u'var(T, calc( 2 * 1px ))': (u'var(T, calc(2 * 1px))', u'T', 'calc(2 * 1px)'),
+                 u'var(U, url( example.png ) )': (u'var(U, url(example.png))', u'U', u'url(example.png)'),
+                 u'var(C, #f00 )': (u'var(C, #f00)', u'C', '#fff')
                  }
-        for (var, (cssText, name)) in tests.items():
+        for (var, (cssText, name, fallback)) in tests.items():
             v = cssutils.css.CSSVariable(var)
             self.assertEqual(cssText, v.cssText)
             self.assertEqual('VARIABLE', v.type)
