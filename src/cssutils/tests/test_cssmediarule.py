@@ -136,13 +136,13 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_equal_r(tests)
 
         tests = {
-            #u'@media {}': xml.dom.SyntaxErr,
-            #u'@media;': xml.dom.SyntaxErr,
-            #u'@media/*only comment*/{}': xml.dom.SyntaxErr,
-            #u'@media all;': xml.dom.SyntaxErr,
-            #u'@media all "n";': xml.dom.SyntaxErr,
-            #u'@media all; @x{}': xml.dom.SyntaxErr,
-            #u'@media { a{ x: 1} }': xml.dom.SyntaxErr,
+            u'@media {}': xml.dom.SyntaxErr,
+            u'@media;': xml.dom.SyntaxErr,
+            u'@media/*only comment*/{}': xml.dom.SyntaxErr,
+            u'@media all;': xml.dom.SyntaxErr,
+            u'@media all "n";': xml.dom.SyntaxErr,
+            u'@media all; @x{}': xml.dom.SyntaxErr,
+            u'@media { a{ x: 1} }': xml.dom.SyntaxErr,
             u'@media "name" { a{ x: 1} }': xml.dom.SyntaxErr,
             u'@media "name" all { a{ x: 1} }': xml.dom.SyntaxErr,
             u'@media all { @charset "x"; a{}}': xml.dom.HierarchyRequestErr,

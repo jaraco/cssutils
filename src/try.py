@@ -41,7 +41,7 @@ if 1:
     #m[10] = 'tv'
     #print m.mediaText
 
-    css = '''@variables {}'''
+    css = '@media/*only comment*/{}'
     print cssutils.parseString(css).cssText
 
     sys.exit(1)
