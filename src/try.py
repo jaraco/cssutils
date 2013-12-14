@@ -49,7 +49,7 @@ if 1:
   var-spacing: 24px;
 }
         a {
-            bottom: var(b);
+            bottom: var(b, x);
             color: var(theme-colour-1, rgb(14,14,14));
             left: var(L, 1px);
             z-index: var(L, 1);
