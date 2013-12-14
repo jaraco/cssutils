@@ -118,8 +118,15 @@ class MediaList(cssutils.util._NewListBase):
                    break
                else:
                    atleastone = True
+
         # must be at least one value!
-        self._wellformed = ok and atleastone
+        if not atleastone:
+            ok = False
+            self._wellformed = ok
+            self._log.error(u'MediaQuery: No content.',
+                            error=xml.dom.SyntaxErr)
+
+        self._wellformed = ok
 
         if ok: 
             mediaTypes = []
