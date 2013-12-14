@@ -31,33 +31,39 @@ Known Issues
 
 Development Version
 ===================
-- EXPERIMENTAL: Variable references may have a fallback value now (as implemented in Firefox 29). It is available as ``CSSVariable.fallback`` and example are::
-
-	bottom: var(b);
-    color: var(theme-colour-1, rgb(14,14,14));
-    left: var(L, 1px);
-    z-index: var(L, 1);
-    top: var(T, calc( 2 * 1px ));
-    background: var(U, url(example.png));
-    border-color: var(C, #f00)
-
-- FEATURE: Implemented parsing of CSSCalc values. General syntax is checked but not if operators in calc are actually the right kind like DIMENSION * DIMENSION. (issue #37). Also Values using calc do not validate in cssutils but are actually valid.
-
-- FIXED issue #20 and #35 (Test fail CSSParser.parseUrl() error with Python 3.3)
-
-- FIXED issue #21: (almost all) deprecation warning in Py 3.3 removed. Some minor warnings left.
-
-- FIXED issue #30 (Test failed)
-
-- FIXED issue #33 (well kinda): Added not that cssutils is **not** threadsafe!
-
-- FIXED issue #34: More complext MediaQueries should be parsable now. A few slight changes in behavior are:
-	 - xml.dom.SyntaxErr raised instead of xml.dom.InvalidCharacterErr for an unknown media type
-     - removed (old Opera) ``handheld`` media type special case. If defined with ``all`` only ``all`` will be kept
 
 
 Latest Stable Version
 =====================
+0.9.11 131220
+
+	- EXPERIMENTAL: Variable references may have a fallback value now (as implemented in Firefox 29). It is available as ``CSSVariable.fallback`` and example are::
+
+		bottom: var(b);
+		color: var(theme-colour-1, rgb(14,14,14));
+		left: var(L, 1px);
+		z-index: var(L, 1);
+		top: var(T, calc( 2 * 1px ));
+		background: var(U, url(example.png));
+		border-color: var(C, #f00)
+
+	- FEATURE: (issue #37) Implemented parsing of ``CSSCalc`` values. General syntax is checked but not if operators in calc are actually the right kind like DIMENSION * DIMENSION. Also Values using calc do not validate in cssutils but are actually valid.
+
+	- FIXED issue #20 and #35 (Test fail CSSParser.parseUrl() error with Python 3.3)
+
+	- FIXED issue #21: (almost all) deprecation warning in Py 3.3 fixed.
+
+	- FIXED issue #30 (Test failed)
+
+	- FIXED issue #33 (well kinda): Added that cssutils is **not** threadsafe!
+
+	- FIXED issue #34: More complext MediaQueries should be parsable now. A few slight changes in behavior are:
+		 - ``xml.dom.SyntaxErr`` raised instead of ``xml.dom.InvalidCharacterErr`` for an unknown media type
+		 - removed ``handheld`` media type special case (for old Opera).
+
+
+Archived Versions
+=================
 
 0.9.10 130331
     - BUGFIX: False HASH color values like ``#xyz`` were not being handled properly (thanks to Teruaki Koizumi)
@@ -71,10 +77,6 @@ Latest Stable Version
     - Fixed issue #27: Small magnitude float values serialized incorrectly
 
     - Fixed issue #28: Standalone semicolons in CSSStyleDeclaration is now simply stripped and does not remove directly following property too
-
-
-Archived Versions
-=================
 
 0.9.10b1 120428
     - **REGRESSION**: Valid profiles reported by validation may not be right but as these hardly say anything in the real world anyway the advancements in the following bugfixes are probably worth this. ``Profiles.validateWithProfile`` currently not working but should be hardly used anyway. As a workaround remove all profiles and add just the ones you want to use for your application

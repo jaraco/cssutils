@@ -30,7 +30,7 @@ Based upon and partly implementing the following specifications :
     The selector syntax defined here (and not in CSS 2.1) should be parsable with cssutils (*should* mind though ;) )
 `CSS Backgrounds and Borders Module Level 3 <http://www.w3.org/TR/css3-background/>`__, `CSS3 Basic User Interface Module <http://www.w3.org/TR/css3-ui/#resize>`__, `CSS Text Level 3 <http://www.w3.org/TR/css3-text/>`__
     Some validation for properties included, mainly  `cursor`, `outline`, `resize`, `box-shadow`, `text-shadow`
-`Variables <http://disruptive-innovations.com/zoo/cssvariables/>`__ / `CSS Custom Properties http://dev.w3.org/csswg/css-variables/`__
+`Variables <http://disruptive-innovations.com/zoo/cssvariables/>`__ / `CSS Custom Properties <http://dev.w3.org/csswg/css-variables/>`__
     Experimental specification of CSS Variables which cssutils implements partly. The vars defined in the newer CSS Custom Properties spec should in main parts be at least parsable with cssutils.
 
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
