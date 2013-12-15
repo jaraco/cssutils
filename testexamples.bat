@@ -1,2 +1,2 @@
-rem set PYTHONPATH=src
-python examples\testutil.py
+set PYTHONPATH=src
+%py2% examples\testutil.py
