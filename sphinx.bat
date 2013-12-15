@@ -1,2 +1,2 @@
 set PYTHONPATH=src
-sphinx-build-script.py -b html . .\docs\html
+%PY2PATH%\scripts\sphinx-build-script.py -b html . .\docs\html
