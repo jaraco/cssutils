@@ -1,5 +1,5 @@
 set PYTHONPATH=src
-python -V
+%PY2% -V
 
 @echo off
 set DISTUTILS_DEBUG='1'
@@ -12,19 +12,19 @@ echo "set __version__ in setup.py"
 echo
 pause
 
-nosetests -v -w src\tests --with-doctest
+%PY2PATH%\scripts\nosetests -v -w src\cssutils\tests --with-doctest
 pause
-nosetests -v -w examples --with-doctest
+%PY2PATH%\scripts\nosetests -v -w examples --with-doctest
 pause
 
-python examples\testutil.py
+%PY2% examples\testutil.py
 pause
 
 rem sphinx
 rem pause
 
 rem python setup.py sdist bdist_egg
-python setup.py register sdist bdist_egg bdist_wininst
+%PY2% setup.py register sdist bdist_egg bdist_wininst
 rem bdist_rpm upload
 
 @echo on
