@@ -1,3 +1,4 @@
+set PYTHONPATH=src
 python -V
 
 @echo off
@@ -11,9 +12,9 @@ echo "set __version__ in setup.py"
 echo
 pause
 
-nosetests -v -w src\tests --with-doctest 
+nosetests -v -w src\tests --with-doctest
 pause
-nosetests -v -w examples --with-doctest 
+nosetests -v -w examples --with-doctest
 pause
 
 python examples\testutil.py
