@@ -612,7 +612,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             # empty string or None effectively removed property
             return self.removeProperty(name)
         else:
-            newp = Property(name, value, priority)
+            newp = Property(name, value, priority, parent=self)
 
         if newp.wellformed:
             if replace:

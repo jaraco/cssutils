@@ -50,7 +50,7 @@ setup(
     package_dir={'':'src'},
     packages=find_packages('src'),
     test_suite='cssutils.tests', #'nose.collector'
-    tests_require='mock',
+    tests_require=['mock', 'pbr < 1.7.0'],
     entry_points={
         'console_scripts': [
             'csscapture = cssutils.scripts.csscapture:main',
@@ -83,6 +83,8 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Internet',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML'

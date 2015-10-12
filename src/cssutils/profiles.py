@@ -102,7 +102,7 @@ class Profiles(object):
         'nmstart': r'[_a-z]|{nonascii}|{escape}',
         'nonascii': r'[^\0-\177]',
         'unicode': r'\\[0-9a-f]{1,6}(\r\n|[ \n\r\t\f])?',
-        'escape': r'{unicode}|\\[ -~\200-\777]',
+        'escape': r'{unicode}|\\[ -~\u0080-\u01ff]',
     #   'escape': r'{unicode}|\\[ -~\200-\4177777]',
         'int': r'[-]?\d+',
         'nmchar': r'[\w-]|{nonascii}|{escape}',
