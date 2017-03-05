@@ -7,20 +7,19 @@ import os
 
 class CSSCombine(basetest.BaseTestCase):
 
-    C = '@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}' 
+    C = '@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}'
 
     def setUp(self):
         self._saved = cssutils.log.raiseExceptions
-    
+
     def tearDown(self):
         cssutils.log.raiseExceptions = self._saved
 
     def test_combine(self):
         "scripts.csscombine()"
-              
+
         # path, SHOULD be keyword argument!
-        csspath = os.path.join(os.path.dirname(__file__), '..', '..', '..',
-                               'sheets', 'csscombine-proxy.css')
+        csspath = basetest.get_sheet_filename('csscombine-proxy.css')
         combined = csscombine(csspath)
         self.assertEqual(combined, self.C.encode())
         combined = csscombine(path=csspath, targetencoding='ascii')
@@ -40,10 +39,10 @@ class CSSCombine(basetest.BaseTestCase):
         f.close()
         combined = csscombine(cssText=cssText, href=cssurl)
         self.assertEqual(combined, self.C.encode())
-        combined = csscombine(cssText=cssText, href=cssurl, 
+        combined = csscombine(cssText=cssText, href=cssurl,
                               targetencoding='ascii')
         self.assertEqual(combined, ('@charset "ascii";' + self.C).encode())
- 
+
     def test_combine_resolveVariables(self):
         "scripts.csscombine(minify=..., resolveVariables=...)"
         # no actual imports but checking if minify and resolveVariables work
@@ -63,13 +62,13 @@ class CSSCombine(basetest.BaseTestCase):
                          'a{color:#0f0}'.encode())
 
         # no minify
-        self.assertEqual(csscombine(cssText=cssText, 
+        self.assertEqual(csscombine(cssText=cssText,
                                     minify=False,
                                     resolveVariables=False),
                          '@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }'.encode())
         self.assertEqual(csscombine(cssText=cssText, minify=False),
                          'a {\n    color: #0f0\n    }'.encode())
-        
+
 
 if __name__ == '__main__':
     import unittest

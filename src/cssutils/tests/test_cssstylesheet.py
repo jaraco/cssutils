@@ -873,6 +873,18 @@ body {
         self.assertTrue(href == s2.href)
         self.assertTrue(title == s2.title)
 
+    def test_valid(self):
+        cases = [
+            ('body { color: red; }', True),
+            ('body { color: asd; }', False),
+            ('body { foo: 12px; }', False),
+        ]
+        for case, expected in cases:
+            sheet = cssutils.parseString(case)
+            msg = "%r should be %s" % (case,
+                                       'valid' if expected else 'invalid')
+            self.assertEqual(sheet.valid, expected, msg)
+
 
 if __name__ == '__main__':
     import unittest

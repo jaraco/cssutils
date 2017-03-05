@@ -232,3 +232,10 @@ class CSSStyleRule(cssrule.CSSRule):
                         "type constant.")
 
     wellformed = property(lambda self: self.selectorList.wellformed)
+
+    def _getValid(self):
+        """Return whether the style declaration is valid."""
+        return self.style.valid
+
+    valid = property(_getValid,
+                     doc=u'``True`` when the style declaration is true.')

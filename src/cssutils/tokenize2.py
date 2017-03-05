@@ -77,7 +77,7 @@ class Tokenizer(object):
         """compile productions into callable match objects, order is kept"""
         compiled = []
         for key, value in expanded_productions:
-            compiled.append((key, re.compile('^(?:%s)' % value, re.U).match))
+            compiled.append((key, re.compile('(?:%s)' % value, re.U).match))
         return compiled
 
     def push(self, *tokens):
@@ -117,54 +117,75 @@ class Tokenizer(object):
             return normalize(self.unicodesub(_repl, value))
 
         line = col = 1
+        # The current starting character. We just increase this instead of
+        # splitting off the beginning of text to increase performance.
+        pos = 0
 
         # check for BOM first as it should only be max one at the start
         (BOM, matcher), productions = self.tokenmatches[0], self.tokenmatches[1:]
-        match = matcher(text)
+        match = matcher(text, pos)
         if match:
             found = match.group(0)
             yield (BOM, found, line, col)
-            text = text[len(found):]
+            pos += len(found)
 
         # check for @charset which is valid only at start of CSS
-        if text.startswith('@charset '):
+        if has_at(text, pos, '@charset '):
             found = '@charset ' # production has trailing S!
             yield (CSSProductions.CHARSET_SYM, found, line, col)
-            text = text[len(found):]
+            pos += len(found)
             col += len(found)
 
-        while text:
+        # Avoid repeated function call
+        _len_text = len(text)
+        _orig_text = text
+        while pos < _len_text:
             # do pushed tokens before new ones
             for pushed in self._pushed:
                 yield pushed
 
             # speed test for most used CHARs, sadly . not possible :(
-            c = text[0]
+            c = text[pos]
             if c in u',:;{}>[]': # + but in num!
                 yield ('CHAR', c, line, col)
                 col += 1
-                text = text[1:]
+                pos += 1
 
             else:
                 # check all other productions, at least CHAR must match
                 for name, matcher in productions:
 
                     # TODO: USE bad comment?
-                    if fullsheet and name == 'CHAR' and text.startswith(u'/*'):
+                    if (fullsheet and name == 'CHAR' and
+                          has_at(text, pos, u'/*')):
                         # before CHAR production test for incomplete comment
-                        possiblecomment = u'%s*/' % text
+                        possiblecomment = u'%s*/' % text[pos:]
                         match = self.commentmatcher(possiblecomment)
                         if match and self._doComments:
                             yield ('COMMENT', possiblecomment, line, col)
-                            text = None # ate all remaining text
+                            pos = _len_text # ate all remaining text
                             break
 
-                    match = matcher(text) # if no match try next production
+                    match = matcher(text, pos) # if no match try next production
                     if match:
                         found = match.group(0) # needed later for line/col
+                        # The ident regex also matches the beginning of
+                        # functions, but we can't put the function regex before
+                        # the ident regex, as otherwise 'and(' is recognized as
+                        # function (even though it is valid in media queries).
+                        # So we're doing this: if we find an ident, but the next
+                        # character is a open parenthesis, we instead skip and
+                        # let the FUNCTION production take over - except if the
+                        # ident is "and"
+                        if (name == 'IDENT' and
+                                found.lower() != "and" and
+                                match.end(0) < len(text) and
+                                text[match.end(0)] == '('):
+                            continue
                         if fullsheet:
                             # check if found may be completed into a full token
-                            if 'INVALID' == name and text == found:
+                            if ('INVALID' == name and
+                                  suffix_eq(text, pos, found)):
                                 # complete INVALID to STRING with start char " or '
                                 name, found = 'STRING', '%s%s' % (found, found[0])
 
@@ -173,7 +194,7 @@ class Tokenizer(object):
                                 # url( is a FUNCTION if incomplete sheet
                                 # FUNCTION production MUST BE after URI production
                                 for end in (u"')", u'")', u')'):
-                                    possibleuri = '%s%s' % (text, end)
+                                    possibleuri = '%s%s' % (text[pos:], end)
                                     match = self.urimatcher(possibleuri)
                                     if match:
                                         name, found = 'URI', match.group(0)
@@ -196,7 +217,8 @@ class Tokenizer(object):
                                     name = self._atkeywords[_normalize(found)]
                                 except KeyError, e:
                                     # might also be misplace @charset...
-                                    if '@charset' == found and u' ' == text[len(found):len(found)+1]:
+                                    if ('@charset' == found and
+                                          has_at(text, pos + len(found), u' ')):
                                         # @charset needs tailing S!
                                         name = CSSProductions.CHARSET_SYM
                                         found += u' '
@@ -209,7 +231,7 @@ class Tokenizer(object):
                                                 name != 'COMMENT'):
                             yield (name, value, line, col)
 
-                        text = text[len(found):]
+                        pos += len(found)
                         nls = found.count(self._linesep)
                         line += nls
                         if nls:
@@ -218,6 +240,41 @@ class Tokenizer(object):
                             col += len(found)
 
                         break
+            # Make sure we didn't accidentally modify text in the process
+            assert text is _orig_text
 
         if fullsheet:
             yield ('EOF', u'', line, col)
+
+
+def has_at(text, pos, string):
+    """Check if text has substring string as position pos.
+
+    This is effectively equal to ``text[pos:pos+len(string)] == string``.
+
+    If ``pos`` is 0, this is equal to ``text.startswith(string)``.
+
+    :param str text: The text to check against.
+    :param int pos: The starting position where the substring should be
+                    searched.
+    :param str string: The string to search.
+    """
+    return text[pos:pos+len(string)] == string
+
+
+def suffix_eq(text, pos, expected):
+    """Check if the suffix of text starting at pos equals expected.
+
+    This is effectively equivalent to ``text[pos:] == expected``, but avoids
+    allocating a huge substring.
+
+    If ``pos`` is 0, this is equal to ``text == expected``.
+
+    :param str text: Text to compare.
+    :param int pos: Starting position for the suffix.
+    :param str expected: String to compare to.
+    """
+    if not pos:
+        return text == expected
+    return (len(text) - pos == len(expected) and
+            all(text[i + pos] == expected[i] for i in range(len(expected))))

@@ -7,6 +7,7 @@ TODO: old tests as new ones are **not complete**!
 import sys
 import xml.dom
 import basetest
+import cssutils.tokenize2 as tokenize2
 from cssutils.tokenize2 import *
 
 class TokenizerTestCase(basetest.BaseTestCase):
@@ -55,6 +56,8 @@ class TokenizerTestCase(basetest.BaseTestCase):
             ('S', ' ', 1, 43),
             ('IDENT', '\\7777777', 1, 44)
         ],
+        # Not a function, important for media queries
+        u'and(': [('IDENT', u'and', 1, 1), ('CHAR', u'(', 1, 4)],
 
 
         u'\\1 b': [('IDENT', u'\x01b', 1, 1)],
@@ -854,6 +857,32 @@ class TokenizerTestCase(basetest.BaseTestCase):
 #        self.tokenizer.log.raiseExceptions = True #!!
 #        for css, exception in tests.items():
 #            self.assertRaises(exception, self.tokenizer.tokenize, css)
+
+
+class TokenizerUtilsTestCase(basetest.BaseTestCase):
+    """Tests for the util functions of tokenize"""
+    __metaclass__ = basetest.GenerateTests
+
+    def gen_test_has_at(self, string, pos, text, expected):
+        self.assertEqual(tokenize2.has_at(string, pos, text), expected)
+    gen_test_has_at.cases = [
+        ('foo', 0, 'foo', True),
+        ('foo', 0, 'f', True),
+        ('foo', 1, 'o', True),
+        ('foo', 1, 'oo', True),
+        ('foo', 4, 'foo', False),
+        ('foo', 0, 'bar', False),
+        ('foo', 0, 'foobar', False),
+    ]
+
+    def gen_test_suffix_eq(self, string, pos, suffix, expected):
+        self.assertEqual(tokenize2.suffix_eq(string, pos, suffix), expected)
+    gen_test_suffix_eq.cases = [
+        ('foobar', 0, 'foobar', True),
+        ('foobar', 3, 'bar', True),
+        ('foobar', 3, 'foo', False),
+        ('foobar', 10, 'bar', False),
+    ]
 
 
 if __name__ == '__main__':

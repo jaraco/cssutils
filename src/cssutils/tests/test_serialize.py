@@ -85,6 +85,7 @@ class PreferencesTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
         self.assertEqual(cssutils.ser.prefs.lineSeparator, u'\n')
         self.assertEqual(cssutils.ser.prefs.listItemSpacer, u' ')
+        self.assertEqual(cssutils.ser.prefs.minimizeColorHash, True)
         self.assertEqual(cssutils.ser.prefs.omitLastSemicolon, True)
         self.assertEqual(cssutils.ser.prefs.omitLeadingZero, False)
         self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, u' ')
@@ -512,6 +513,14 @@ a, b {}'''
         self.assertEqual(u'@import "x" print, tv;\na, b {}'.encode(), s.cssText)
         cssutils.ser.prefs.listItemSpacer = u''
         self.assertEqual(u'@import "x" print,tv;\na,b {}'.encode(), s.cssText)
+
+    def test_minimizeColorHash(self):
+        "Preferences.minimizeColorHash"
+        css = 'a { color: #ffffff }'
+        s = cssutils.parseString(css)
+        self.assertEqual(u'a {\n    color: #fff\n    }'.encode(), s.cssText)
+        cssutils.ser.prefs.minimizeColorHash = False
+        self.assertEqual(u'a {\n    color: #ffffff\n    }'.encode(), s.cssText)
         
     def test_omitLastSemicolon(self):
         "Preferences.omitLastSemicolon"

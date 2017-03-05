@@ -2,6 +2,7 @@
 __version__ = '$Id: test_cssvalue.py 1443 2008-08-31 13:54:39Z cthedot $'
 
 import sys
+import platform
 import basetest
 import cssutils
 
@@ -124,6 +125,11 @@ class ProfilesTestCase(basetest.BaseTestCase):
             expmsg = u"invalid literal for int(): x" 
         elif sys.platform.startswith('java'):
             expmsg = u"invalid literal for int() with base 10: x"
+        # PyPy adds the u prefix, but only in versions lower than Python 3
+        elif (platform.python_implementation() == "PyPy" and
+              sys.version_info < (3, 0)):
+            expmsg = u"invalid literal for int() with base 10: u'x'"
+
             
         self.assertRaisesMsg(Exception, expmsg, 
                              cssutils.profile.validate, u'-test-funcval', u'x')

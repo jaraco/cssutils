@@ -199,6 +199,13 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             # WS
             u'@media\n\t\f all\n\t\f {\n\t\f a{ x: 1}\n\t\f }': 
                 u'@media all {\n    a {\n        x: 1\n        }\n    }',
+            # @page rule inside @media
+            u'@media all { @page { margin: 0; } }':
+                u'@media all {\n    @page {\n        margin: 0\n        }\n    }',
+            # nested media rules
+            u'@media all { @media all { p { color: red; } } }':
+                u'@media all {\n    @media all {\n        p {\n            '
+                'color: red\n            }\n        }\n    }',
             }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
@@ -215,7 +222,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@media "name" all { a{ x: 1} }': xml.dom.SyntaxErr,
             u'@media all { @charset "x"; a{}}': xml.dom.HierarchyRequestErr,
             u'@media all { @import "x"; a{}}': xml.dom.HierarchyRequestErr,
-            u'@media all { @media all {} }': xml.dom.HierarchyRequestErr,
             u'@media all { , }': xml.dom.SyntaxErr,
             u'@media all {}EXTRA': xml.dom.SyntaxErr,
             u'@media ({}': xml.dom.SyntaxErr,
@@ -365,7 +371,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         importrule = cssutils.css.CSSImportRule('x')
         namespacerule = cssutils.css.CSSNamespaceRule()
         pagerule = cssutils.css.CSSPageRule()
-        mediarule = cssutils.css.CSSMediaRule()
         unknownrule = cssutils.css.CSSUnknownRule('@x;')
         stylerule = cssutils.css.CSSStyleRule('a')
         stylerule.cssText = u'a { x: 1}'
@@ -379,10 +384,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
                           r.insertRule, importrule, 0)
         self.assertRaises(xml.dom.HierarchyRequestErr,
                           r.insertRule, namespacerule, 0)
-        self.assertRaises(xml.dom.HierarchyRequestErr,
-                          r.insertRule, pagerule, 0)
-        self.assertRaises(xml.dom.HierarchyRequestErr,
-                          r.insertRule, mediarule, 0)
 
         # start insert
         r.insertRule(stylerule, 0)

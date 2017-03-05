@@ -785,6 +785,17 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                          doc=u'A ref to an @import rule if it is imported, '
                              u'else ``None``.')
 
+    def _getValid(self):
+        """Check if each contained rule is valid."""
+        for rule in self.cssRules:
+            # Not all rules can be checked for validity
+            if hasattr(rule, 'valid') and not rule.valid:
+                return False
+        return True
+
+    valid = property(_getValid,
+                     doc=u'``True`` if all contained rules are valid')
+
 
     @Deprecated(u'Use ``cssutils.setSerializer(serializer)`` instead.')
     def setSerializer(self, cssserializer):

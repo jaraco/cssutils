@@ -1,13 +1,14 @@
 """Testcases for cssutils.css.DOMImplementation"""
 
 import xml.dom
+import xml.dom.minidom
 import unittest
 import cssutils
 
 class DOMImplementationTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.domimpl = xml.dom.getDOMImplementation()
+        self.domimpl = cssutils.DOMImplementationCSS()
 
     def test_createCSSStyleSheet(self):
         "DOMImplementationCSS.createCSSStyleSheet()"
@@ -19,12 +20,13 @@ class DOMImplementationTestCase(unittest.TestCase):
 
     def test_createDocument(self):
         "DOMImplementationCSS.createDocument()"
-        self.assertRaises(NotImplementedError, self.domimpl.createDocument)
-        self.assertRaises(NotImplementedError, self.domimpl.createDocument)
+        doc = self.domimpl.createDocument(None, None, None)
+        self.assertTrue(isinstance(doc, xml.dom.minidom.Document))
 
     def test_createDocumentType(self):
         "DOMImplementationCSS.createDocumentType()"
-        self.assertRaises(NotImplementedError, self.domimpl.createDocumentType)
+        doctype = self.domimpl.createDocumentType('foo', 'bar', 'raboof')
+        self.assertTrue(isinstance(doctype, xml.dom.minidom.DocumentType))
 
     def test_hasFeature(self):
         "DOMImplementationCSS.hasFeature()"

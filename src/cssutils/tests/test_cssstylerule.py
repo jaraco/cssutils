@@ -244,6 +244,15 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertTrue(isinstance(s2, s.__class__))
         self.assertTrue(sel == s2.selectorText)
 
+    def test_valid(self):
+        "CSSStyleRule.valid"
+        rule = cssutils.css.CSSStyleRule(selectorText='*', style='color: red')
+        self.assertTrue(rule.valid)
+        rule.style = 'color: foobar'
+        self.assertFalse(rule.valid)
+        rule.style = 'foobar: red'
+        self.assertFalse(rule.valid)
+
 
 if __name__ == '__main__':
     import unittest

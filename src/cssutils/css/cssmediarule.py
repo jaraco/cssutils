@@ -181,13 +181,24 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                     # TODO: get complete rule!
                     tokens = self._tokensupto2(tokenizer, token)
                     atval = self._tokenvalue(token)
+                    factories = {
+                        '@page': cssutils.css.CSSPageRule,
+                        '@media': CSSMediaRule,
+                    }
                     if atval in ('@charset ', '@font-face', '@import', 
-                                 '@namespace', '@page', '@media', '@variables'):
+                                 '@namespace', '@variables'):
                         self._log.error(u'CSSMediaRule: This rule is not '
                                         u'allowed in CSSMediaRule - ignored: '
                                         u'%s.' % self._valuestr(tokens),
                                         token = token, 
                                         error=xml.dom.HierarchyRequestErr)
+                    elif atval in factories:
+                        rule = factories[atval](
+                            parentRule=self,
+                            parentStyleSheet=self.parentStyleSheet)
+                        rule.cssText = tokens
+                        if rule.wellformed:
+                            self.insertRule(rule)
                     else:
                         rule = cssutils.css.CSSUnknownRule(tokens,
                                                            parentRule=self, 
@@ -285,9 +296,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
            isinstance(rule, cssutils.css.CSSFontFaceRule) or \
            isinstance(rule, cssutils.css.CSSImportRule) or \
            isinstance(rule, cssutils.css.CSSNamespaceRule) or \
-           isinstance(rule, cssutils.css.CSSPageRule) or \
-           isinstance(rule, cssutils.css.MarginRule) or \
-           isinstance(rule, CSSMediaRule):
+           isinstance(rule, cssutils.css.MarginRule):
             self._log.error(u'%s: This type of rule is not allowed here: %s' 
                             % (self.__class__.__name__, rule.cssText),
                             error=xml.dom.HierarchyRequestErr)

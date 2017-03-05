@@ -588,6 +588,20 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))
 
+    def test_valid(self):
+        "CSSStyleDeclaration.valid"
+        cases = [
+            ('color: red;', True),
+            ('color: asd;', False),
+            ('foo: red;', False),
+            ('color: red; foo: red;', False),
+        ]
+        for case, expected in cases:
+            s = cssutils.css.CSSStyleDeclaration(cssText=case)
+            msg = '%r should be %s' % (case,
+                                       'valid' if expected else 'invalid')
+            self.assertEqual(s.valid, expected, msg)
+
 
 if __name__ == '__main__':
     import unittest

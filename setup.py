@@ -44,11 +44,23 @@ def read(*rnames):
 
 long_description = '\n' + read('README.txt') + '\n'# + read('CHANGELOG.txt')
 
+def list_files(package, dir_name):
+    prefix = os.path.join('src', package)
+    dir_path = os.path.join(prefix, dir_name)
+    result = []
+    for root, dirs, files in os.walk(dir_path):
+        fullpaths = [os.path.join(root, file) for file in files]
+        # strip off the prefix and the slash of the prefix
+        result.extend(path[len(prefix) + 1:] for path in fullpaths)
+    return result
+
 setup(
     name='cssutils',
     version=VERSION,
     package_dir={'':'src'},
     packages=find_packages('src'),
+    include_package_data=True,
+    package_data={'cssutils': list_files('cssutils', 'tests/sheets')},
     test_suite='cssutils.tests', #'nose.collector'
     tests_require=['mock', 'pbr < 1.7.0'],
     entry_points={

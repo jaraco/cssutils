@@ -695,3 +695,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                           u"validation setting does *always* win though so "
                           u"even if validating is True it may not validate "
                           u"if the StyleSheet defines else!")
+
+    def _getValid(self):
+        """Check each contained property for validity."""
+        return all(prop.valid for prop in self.getProperties())
+
+    valid = property(_getValid,
+                     doc=u'``True`` if each property is valid.')

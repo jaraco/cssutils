@@ -7,53 +7,12 @@ __all__ = ['Profiles']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
+from cssutils import util
 import re
-import types
 
 class NoSuchProfileException(Exception):
     """Raised if no profile with given name is found"""
     pass
-
-
-# dummies, replaced in Profiles.addProfile
-_fontRegexReplacements = {
-    '__FONT_FAMILY_SINGLE': lambda f: False,
-    '__FONT_WITH_1_FAMILY': lambda f: False
-    }
-
-def _fontFamilyValidator(families):
-    """Check if ``font-family`` value is valid, regex is too slow.
-
-    Splits on ``,`` and checks each family separately.
-    Somehow naive as font-family name could contain a "," but this is unlikely.
-    Still should be a TODO.
-    """
-    match = _fontRegexReplacements['__FONT_FAMILY_SINGLE']
-
-    for f in families.split(u','):
-        if not match(f.strip()):
-            return False
-    return True
-
-def _fontValidator(font):
-    """Check if font value is valid, regex is too slow.
-
-    Checks everything before ``,`` on basic font value. Everything after should
-    be a valid font-family value.
-    """
-    if u',' in font:
-        # split off until 1st family
-        font1, families2 = font.split(u',', 1)
-    else:
-        font1, families2 = font, None
-
-    if not _fontRegexReplacements['__FONT_WITH_1_FAMILY'](font1.strip()):
-        return False
-
-    if families2 and not _fontFamilyValidator(families2):
-        return False
-
-    return True
 
 
 class Profiles(object):
@@ -208,10 +167,12 @@ class Profiles(object):
     def _compile_regexes(self, dictionary):
         """Compile all regular expressions into callable objects"""
         for key, value in dictionary.items():
-            # might be a function (font-family) as regex is too slow
-            if not hasattr(value, '__call__') and not isinstance(value,
-                                                                 types.FunctionType):
-                value = re.compile('^(?:%s)$' % value, re.I).match
+            if not hasattr(value, '__call__'):
+                # Compiling them now will slow down the cssutils import time,
+                # even if cssutils is not needed. We lazily compile them the
+                # first time they're needed.
+                # https://bitbucket.org/cthedot/cssutils/issues/72
+                value = util.LazyRegex('^(?:%s)$' % value, re.I)
             dictionary[key] = value
 
         return dictionary
@@ -340,12 +301,6 @@ class Profiles(object):
         self._profilesProperties[profile] = self._compile_regexes(properties)
 
         self.__update_knownNames()
-
-        # hack for font and font-family which are too slow with regexes
-        if '__FONT_WITH_1_FAMILY' in properties:
-            _fontRegexReplacements['__FONT_WITH_1_FAMILY'] = properties['__FONT_WITH_1_FAMILY']
-        if '__FONT_FAMILY_SINGLE' in properties:
-            _fontRegexReplacements['__FONT_FAMILY_SINGLE'] = properties['__FONT_FAMILY_SINGLE']
 
 
     def removeProfile(self, profile=None, all=False):
@@ -509,16 +464,11 @@ macros[Profiles.CSS_LEVEL_2] = {
     'shape': r'rect\(({w}({length}|auto}){w},){3}{w}({length}|auto){w}\)',
     'counter': r'counter\({w}{ident}{w}(?:,{w}{list-style-type}{w})?\)',
     'identifier': r'{ident}',
-    'family-name': r'{string}|{ident}({w}{ident})*',
+    'family-name': r'{string}|({ident}(\s+{ident})*)',
     'generic-family': r'serif|sans-serif|cursive|fantasy|monospace',
     'absolute-size': r'(x?x-)?(small|large)|medium',
     'relative-size': r'smaller|larger',
-
-    #[[ <family-name> | <generic-family> ] [, <family-name>| <generic-family>]* ] | inherit
-    #'font-family': r'(({family-name}|{generic-family})({w},{w}({family-name}|{generic-family}))*)|inherit',
-    # EXTREMELY SLOW REGEX
-    #'font-family': r'({family-name}({w},{w}{family-name})*)|inherit',
-
+    'font-family': r'({family-name}({w},{w}{family-name})*)|inherit',
     'font-size': r'{absolute-size}|{relative-size}|{positivelength}|{percentage}|inherit',
     'font-style': r'normal|italic|oblique|inherit',
     'font-variant': r'normal|small-caps|inherit',
@@ -570,22 +520,12 @@ properties[Profiles.CSS_LEVEL_2] = {
     'elevation': r'{angle}|below|level|above|higher|lower|inherit',
     'empty-cells': r'show|hide|inherit',
     'float': r'left|right|none|inherit',
-
-    # regex too slow:
-    # 'font-family': r'{font-family}',
-    'font-family': _fontFamilyValidator,
-    '__FONT_FAMILY_SINGLE': r'{family-name}',
-
+    'font-family': r'{font-family}',
     'font-size': r'{font-size}',
     'font-style': r'{font-style}',
     'font-variant': r'{font-variant}',
     'font-weight': r'{font-weight}',
-
-    # regex too slow and wrong too:
-    # 'font': r'({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{font-family}|caption|icon|menu|message-box|small-caption|status-bar|inherit',
-    'font': _fontValidator,
-    '__FONT_WITH_1_FAMILY': r'(({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{family-name})|caption|icon|menu|message-box|small-caption|status-bar|inherit',
-
+    'font': r'(({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{font-family})|caption|icon|menu|message-box|small-caption|status-bar|inherit',
     'height': r'{length}|{percentage}|auto|inherit',
     'left': r'{length}|{percentage}|auto|inherit',
     'letter-spacing': r'normal|{length}|inherit',
@@ -744,7 +684,7 @@ properties[Profiles.CSS3_COLOR] = {
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
     #'family-name': r'{string}|{ident}',
-    'family-name': r'{string}|{ident}({w}{ident})*',
+    'family-name': r'{string}|({ident}(\s+{ident})*)',
     'font-face-name': 'local\({w}{family-name}{w}\)',
     'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
     'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'

@@ -13,6 +13,7 @@ import errorhandler
 import tokenize2
 import types
 import xml.dom
+import re
 
 try:
     from _fetchgae import _defaultFetcher
@@ -939,3 +940,120 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         return encoding, enctype, decodedCssText
     else:
         return None, None, None
+
+
+class LazyRegex(object):
+    """A class to represent a lazily compiled regular expression.
+
+    The interface is kept similar to a `re.compile`ed object from the standard
+    regex library.
+
+    :ivar pattern: The original regular expression.
+    :ivar flags: Flags of the regular expression.
+    :ivar matcher: The compiled regular expression, or None if it is not yet
+                   compiled.
+    :ivar groups: The number of capturing groups in the pattern, or None.
+    :ivar groupindex: A dictionary mapping any symbolic group names defined by
+                      `(?P<id>)` to group numbers. The dictionary is empty if
+                      no symbolic groups were used in the pattern. None if the
+                      pattern is not yet compiled.
+    """
+
+    __slots__ = ('pattern', 'flags', 'matcher', 'groups', 'groupindex')
+
+    def __init__(self, pattern, flags=0):
+        self.pattern = pattern
+        self.matcher = None
+        self.flags = flags
+        self.groups = None
+        self.groupindex = None
+
+    def ensure(self):
+        """Make sure that the expression is compiled.
+
+        If self.matcher is already a compiled expression, do nothing.
+        """
+        if self.matcher is not None:
+            return
+        self.matcher = re.compile(self.pattern, self.flags)
+        self.flags = self.matcher.flags
+        self.groups = self.matcher.groups
+        self.groupindex = self.matcher.groupindex
+
+    def __call__(self, string, pos=None, endpos=None):
+        """Shortcut for self.match(string)."""
+        return self.match(string, pos, endpos)
+
+    def match(self, string, pos=None, endpos=None):
+        """Attempt to do a match of the regular expression.
+
+        This is similar to the `.match` method of `re` objects.
+        """
+        self.ensure()
+        if pos is None:
+            pos = 0
+        if endpos is None:
+            endpos = len(string)
+        return self.matcher.match(string, pos, endpos)
+
+    def search(self, string, pos=None, endpos=None):
+        """Search the string for the pattern.
+
+        This is similar to the `.search` method of `re` objects.
+        """
+        self.ensure()
+        if pos is None:
+            pos = 0
+        if endpos is None:
+            endpos = len(string)
+        return self.matcher.search(string, pos, endpos)
+
+    def split(self, string, maxsplit=0):
+        """Split the string at the pattern.
+
+        This is similar to the `.split` method of `re` objects.
+        """
+        self.ensure()
+        return self.matcher.split(string, maxsplit)
+
+    def findall(self, string, pos=None, endpos=None):
+        """Find all instances of the pattern in the given string.
+
+        This is similar to the `.findall` method of `re` objects.
+        """
+        self.ensure()
+        if pos is None:
+            pos = 0
+        if endpos is None:
+            endpos = len(string)
+        return self.matcher.findall(string, pos, endpos)
+
+    def finditer(self, string, pos=None, endpos=None):
+        """Find all instances of the pattern in the given string.
+
+        Returns an iterator.
+
+        This is similar to the `.finditer` method of `re` objects.
+        """
+        self.ensure()
+        if pos is None:
+            pos = 0
+        if endpos is None:
+            endpos = len(string)
+        return self.matcher.finditer(string, pos, endpos)
+
+    def sub(self, repl, string, count=0):
+        """Replace all occurences of the pattern with the given replacement.
+
+        This is similar to the `.sub` method of `re` objects.
+        """
+        self.ensure()
+        return self.matcher.sub(repl, string, count)
+
+    def subn(self, repl, string, count=0):
+        """Replace all occurences of the pattern with the given replacement.
+
+        This is similar to the `.subn` method of `re` objects.
+        """
+        self.ensure()
+        return self.matcher.subn(repl, string, count)
