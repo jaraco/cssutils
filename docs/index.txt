@@ -11,24 +11,24 @@ Contents
 .. toctree::
    :maxdepth: 3
 
-    About <README>
-    Changelog <CHANGELOG>
-	Migration from older version <docs/migrate.txt>
+    About <../README>
+    Changelog <../CHANGELOG>
+	Migration from older version <migrate.txt>
 
-    parsing <docs/parse>
-    utilities <docs/utilities>
-    Experimental Settings <docs/settings>
-    serializing <docs/serialize>
-    `cssutils.css` package <docs/css>
-    `cssutils.stylesheets` package <docs/stylesheets>
-    CSS properties profiles (used for validation) <docs/profiles>
-    CSS variables <docs/variables>
-    Logging <docs/logging>
-    Scripts <docs/scripts>
-    CSS Codec <docs/codec>
-    `encutils` module <docs/encutils>
+    parsing <parse>
+    utilities <utilities>
+    Experimental Settings <settings>
+    serializing <serialize>
+    `cssutils.css` package <css>
+    `cssutils.stylesheets` package <stylesheets>
+    CSS properties profiles (used for validation) <profiles>
+    CSS variables <variables>
+    Logging <logging>
+    Scripts <scripts>
+    CSS Codec <codec>
+    `encutils` module <encutils>
 
-	Backlog <docs/backlog.txt>
+	Backlog <backlog.txt>
 
 
 
