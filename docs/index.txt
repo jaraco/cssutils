@@ -31,14 +31,6 @@ Contents
 	Backlog <backlog.txt>
 
 
-
-See also
-========
-* `cssutils at Google Code <http://code.google.com/p/cssutils>`__
-* `cssutils discussion group <http://groups.google.com/group/cssutils>`__
-* `cssutils at cthedot <http://cthedot.de/cssutils/>`__
-
-
 Indices and tables
 ==================
 * :ref:`genindex`
