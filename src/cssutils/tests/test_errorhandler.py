@@ -76,11 +76,11 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         "cssutils.log line col"
         o = cssutils.log.raiseExceptions
         cssutils.log.raiseExceptions = True
-        
+
         s = cssutils.css.CSSStyleSheet()
         try:
             s.cssText = '@import x;'
-        except xml.dom.DOMException as e:                
+        except xml.dom.DOMException as e:
             self.assertEqual(str(e), 'CSSImportRule: Unexpected ident. [1:9: x]')
             self.assertEqual(e.line, 1)
             self.assertEqual(e.col, 9)
@@ -88,7 +88,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
                 self.assertEqual(e.msg, 'CSSImportRule: Unexpected ident. [1:9: x]')
             else:
                 self.assertEqual(e.args, ('CSSImportRule: Unexpected ident. [1:9: x]',))
-        
+
         cssutils.log.raiseExceptions = o
 
     def test_handlers(self):
@@ -119,14 +119,14 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
     def test_parsevalidation(self):
         style = 'color: 1'
         t = 'a { %s }' % style
-                
+
         cssutils.log.setLevel(logging.DEBUG)
-        
+
         # sheet
         s = self._setHandler()
         cssutils.parseString(t)
         self.assertNotEqual(len(s.getvalue()), 0)
-        
+
         s = self._setHandler()
         cssutils.parseString(t, validate=False)
         self.assertEqual(s.getvalue(), '')
@@ -143,7 +143,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         s = self._setHandler()
         cssutils.parseStyle(style, validate=False)
         self.assertEqual(s.getvalue(), '')
-               
+
 
 if __name__ == '__main__':
     import unittest
