@@ -5,6 +5,8 @@ import logging
 import io
 import sys
 import xml.dom
+import socket
+
 from . import basetest
 import cssutils
 
@@ -110,6 +112,12 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
                          'ERROR    Property: Invalid value for "CSS Level 2.1" property: 1 [1:5: color]\n')
 
         s = self._setHandler()
+
+        try:
+            socket.getaddrinfo('example.com', 80)
+        except socket.error:
+            # skip the test as the name can't resolve
+            return
 
         cssutils.log.setLevel(logging.ERROR)
         cssutils.parseUrl('http://example.com')
