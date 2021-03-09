@@ -406,7 +406,7 @@ class Profiles(object):
         Example::
 
             >>> cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2
-            >>> print cssutils.profile.validateWithProfile('color', 'rgba(1,1,1,1)')
+            >>> print(cssutils.profile.validateWithProfile('color', 'rgba(1,1,1,1)'))
             (True, False, Profiles.CSS3_COLOR)
         """
         if name not in self.knownNames:
@@ -729,3 +729,4 @@ macros[Profiles.CSS3_TEXT] = {
 properties[Profiles.CSS3_TEXT] = {
     'text-shadow': 'none|{shadow}({w},{w}{shadow})*',
     }
+

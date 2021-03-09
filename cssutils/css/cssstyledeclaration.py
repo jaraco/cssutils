@@ -84,10 +84,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
             >>> style = CSSStyleDeclaration(cssText='color: red')
             >>> style.color = 'green'
-            >>> print style.color
+            >>> print(style.color)
             green
             >>> del style.color
-            >>> print style.color
+            >>> print(style.color)
             <BLANKLINE>
 
     Format::
@@ -219,7 +219,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         Example::
 
             >>> style = CSSStyleDeclaration(cssText='font-style:italic;')
-            >>> print style.fontStyle
+            >>> print(style.fontStyle)
             italic
         """
         return self.getPropertyValue(CSSName)
@@ -254,7 +254,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
             >>> style = CSSStyleDeclaration(cssText='font-style:italic;')
             >>> del style.fontStyle
-            >>> print style.fontStyle
+            >>> print(style.fontStyle)
             <BLANKLINE>
 
         """
@@ -702,3 +702,4 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     valid = property(_getValid,
                      doc='``True`` if each property is valid.')
+

@@ -81,8 +81,8 @@ Usage may be::
 
     >>> from cssutils import *
     >>> parser = CSSParser()
-    >>> sheet = parser.parseString(u'a { color: red}')
-    >>> print sheet.cssText
+    >>> sheet = parser.parseString('a { color: red}')
+    >>> print(sheet.cssText)
     a {
         color: red
         }
@@ -393,3 +393,4 @@ def resolveImports(sheet, target=None):
 
 if __name__ == '__main__':
     print(__doc__)
+
