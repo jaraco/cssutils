@@ -13,7 +13,7 @@ Contents
 
     About <../README>
     Changelog <../CHANGELOG>
-	Migration from older version <migrate.txt>
+	Migration from older version <migrate>
 
     parsing <parse>
     utilities <utilities>
@@ -28,7 +28,7 @@ Contents
     CSS Codec <codec>
     `encutils` module <encutils>
 
-	Backlog <backlog.txt>
+	Backlog <backlog>
 
 
 Indices and tables
