@@ -405,8 +405,8 @@ class Profiles(object):
 
         Example::
 
-            >>> cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2
-            >>> print(cssutils.profile.validateWithProfile('color', 'rgba(1,1,1,1)'))
+            > cssutils.profile.defaultProfiles = cssutils.profile.CSS_LEVEL_2
+            > print(cssutils.profile.validateWithProfile('color', 'rgba(1,1,1,1)'))
             (True, False, Profiles.CSS3_COLOR)
         """
         if name not in self.knownNames:
