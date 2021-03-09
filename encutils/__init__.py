@@ -36,15 +36,15 @@ supplies an :class:`EncodingInfo` object.
 example::
 
     >>> import encutils
-    >>> info = encutils.getEncodingInfo(url='http://cthedot.de/encutils/')
+    >>> info = encutils.getEncodingInfo(url='http://jaraco.com')
 
-    >>> str(info)
+    >>> print(info)
     utf-8
 
-    >>> repr(info) # doctest:+ELLIPSIS
+    >>> info # doctest:+ELLIPSIS
     <encutils.EncodingInfo object encoding='utf-8' mismatch=False at...>
 
-    >>> info.logtext
+    >>> print(info.logtext)
     HTTP media_type: text/html
     HTTP encoding: utf-8
     Encoding (probably): utf-8 (Mismatch: False)
