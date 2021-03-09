@@ -30,6 +30,16 @@ Known Issues
 
 - when PyXML is installed not all tests may run through (see issue #34 for details) as PyXMLs implementation of ``xml.dom.DOMException`` differs from the default (minidom and I guess others) implemtation. Nothing really to worry about...
 
+v2.0.0
+======
+
+New `maintainer <https://pypi.org/user/jaraco>`_ revives the project
+and moves `hosting <https://github.com/jaraco/cssutils>`_ with
+continuous integration testing.
+
+Refreshed packaging.
+
+Project now requires Python 3.6 or later.
 
 Latest Stable Version
 =====================
