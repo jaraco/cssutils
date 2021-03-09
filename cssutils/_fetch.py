@@ -4,7 +4,6 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: tokenize2.py 1547 2008-12-10 20:42:26Z cthedot $'
 
 import cssutils
-from cssutils import VERSION
 import encutils
 from . import errorhandler
 import urllib.request, urllib.error, urllib.parse
@@ -19,8 +18,10 @@ def _defaultFetcher(url):
     """
     try:
         request = urllib.request.Request(url)
-        request.add_header('User-agent',
-                           'cssutils %s (http://www.cthedot.de/cssutils/)' % VERSION)
+        # TODO: load version from metadata
+        VERSION = '???'
+        agent = 'cssutils %s (http://www.cthedot.de/cssutils/)' % VERSION
+        request.add_header('User-agent', agent)
         res = urllib.request.urlopen(request)
     except urllib.error.HTTPError as e:
         # http error, e.g. 404, e can be raised

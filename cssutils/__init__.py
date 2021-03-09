@@ -91,13 +91,6 @@ Usage may be::
 
 """
 __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
-__docformat__ = 'restructuredtext'
-__author__ = 'Christof Hoeke with contributions by Walter Doerwald'
-__date__ = '$LastChangedDate::                            $:'
-
-VERSION = '2.0.0'
-
-__version__ = '%s $Id$' % VERSION
 
 import sys
 if sys.version_info < (2,6):
