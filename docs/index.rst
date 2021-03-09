@@ -12,7 +12,7 @@ Contents
    :maxdepth: 3
 
     About <../README>
-    Changelog <../CHANGELOG>
+    Changelog <../CHANGES>
 	Migration from older version <migrate>
 
     parsing <parse>
