@@ -82,7 +82,9 @@ Usage may be::
     >>> from cssutils import *
     >>> parser = CSSParser()
     >>> sheet = parser.parseString('a { color: red}')
-    >>> print(sheet.cssText)
+
+    # TODO: shouldn't have to decode here
+    >>> print(sheet.cssText.decode())
     a {
         color: red
         }
