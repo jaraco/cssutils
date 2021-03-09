@@ -3,9 +3,9 @@ __all__ = ['CSSStyleRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssstyledeclaration import CSSStyleDeclaration
-from selectorlist import SelectorList
-import cssrule
+from .cssstyledeclaration import CSSStyleDeclaration
+from .selectorlist import SelectorList
+from . import cssrule
 import cssutils
 import xml.dom
 
@@ -50,12 +50,12 @@ class CSSStyleRule(cssrule.CSSRule):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return u"cssutils.css.%s(selectorText=%r, style=%r)" % (
+        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
                 self.__class__.__name__, st, self.style.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object selectorText=%r style=%r _namespaces=%r "\
-               u"at 0x%x>" % (self.__class__.__name__,
+        return "<cssutils.css.%s object selectorText=%r style=%r _namespaces=%r "\
+               "at 0x%x>" % (self.__class__.__name__,
                               self.selectorText,
                               self.style.cssText,
                               self._namespaces,
@@ -100,13 +100,13 @@ class CSSStyleRule(cssrule.CSSRule):
         styletokens = self._tokensupto2(tokenizer, blockendonly=True)
         trail = self._nexttoken(tokenizer)
         if trail:
-            self._log.error(u'CSSStyleRule: Trailing content: %s' %
+            self._log.error('CSSStyleRule: Trailing content: %s' %
                             self._valuestr(cssText), token=trail)
         elif not selectortokens:
-            self._log.error(u'CSSStyleRule: No selector found: %r' %
+            self._log.error('CSSStyleRule: No selector found: %r' %
                             self._valuestr(cssText))
-        elif self._tokenvalue(selectortokens[0]).startswith(u'@'):
-            self._log.error(u'CSSStyleRule: No style rule: %r' %
+        elif self._tokenvalue(selectortokens[0]).startswith('@'):
+            self._log.error('CSSStyleRule: No style rule: %r' %
                             self._valuestr(cssText),
                             error=xml.dom.InvalidModificationErr)
         else:
@@ -115,14 +115,14 @@ class CSSStyleRule(cssrule.CSSRule):
             ok = True
 
             bracetoken = selectortokens.pop()
-            if self._tokenvalue(bracetoken) != u'{':
+            if self._tokenvalue(bracetoken) != '{':
                 ok = False
                 self._log.error(
-                    u'CSSStyleRule: No start { of style declaration found: %r' %
+                    'CSSStyleRule: No start { of style declaration found: %r' %
                     self._valuestr(cssText), bracetoken)
             elif not selectortokens:
                 ok = False
-                self._log.error(u'CSSStyleRule: No selector found: %r.' %
+                self._log.error('CSSStyleRule: No selector found: %r.' %
                             self._valuestr(cssText), bracetoken)
             # SET
             newSelectorList.selectorText = (selectortokens,
@@ -131,16 +131,16 @@ class CSSStyleRule(cssrule.CSSRule):
             if not styletokens:
                 ok = False
                 self._log.error(
-                    u'CSSStyleRule: No style declaration or "}" found: %r' %
+                    'CSSStyleRule: No style declaration or "}" found: %r' %
                     self._valuestr(cssText))
             else:
                 braceorEOFtoken = styletokens.pop()
                 val, typ = self._tokenvalue(braceorEOFtoken),\
                            self._type(braceorEOFtoken)
-                if val != u'}' and typ != 'EOF':
+                if val != '}' and typ != 'EOF':
                     ok = False
-                    self._log.error(u'CSSStyleRule: No "}" after style '
-                                    u'declaration found: %r'
+                    self._log.error('CSSStyleRule: No "}" after style '
+                                    'declaration found: %r'
                                     % self._valuestr(cssText))
                 else:
                     if 'EOF' == typ:
@@ -154,8 +154,8 @@ class CSSStyleRule(cssrule.CSSRule):
                 self.style = newStyle
 
     cssText = property(_getCssText, _setCssText,
-                       doc=u"(DOM) The parsable textual representation of this "
-                       u"rule.")
+                       doc="(DOM) The parsable textual representation of this "
+                       "rule.")
 
     def __getNamespaces(self):
         """Uses children namespaces if not attached to a sheet, else the sheet's
@@ -166,10 +166,10 @@ class CSSStyleRule(cssrule.CSSRule):
             return self.selectorList._namespaces
 
     _namespaces = property(__getNamespaces,
-                           doc=u"If this Rule is attached to a CSSStyleSheet "
-                               u"the namespaces of that sheet are mirrored "
-                               u"here. While the Rule is not attached the "
-                               u"namespaces of selectorList are used.""")
+                           doc="If this Rule is attached to a CSSStyleSheet "
+                               "the namespaces of that sheet are mirrored "
+                               "here. While the Rule is not attached the "
+                               "namespaces of selectorList are used.""")
 
     def _setSelectorList(self, selectorList):
         """
@@ -182,7 +182,7 @@ class CSSStyleRule(cssrule.CSSRule):
 
     _selectorList = None
     selectorList = property(lambda self: self._selectorList, _setSelectorList,
-                            doc=u"The SelectorList of this rule.")
+                            doc="The SelectorList of this rule.")
 
     def _setSelectorText(self, selectorText):
         """
@@ -209,8 +209,8 @@ class CSSStyleRule(cssrule.CSSRule):
 
     selectorText = property(lambda self: self._selectorList.selectorText,
                             _setSelectorText,
-                            doc=u"(DOM) The textual representation of the "
-                                u"selector for the rule set.")
+                            doc="(DOM) The textual representation of the "
+                                "selector for the rule set.")
 
     def _setStyle(self, style):
         """
@@ -218,17 +218,17 @@ class CSSStyleRule(cssrule.CSSRule):
             current style object.
         """
         self._checkReadonly()
-        if isinstance(style, basestring):
+        if isinstance(style, str):
             self._style = CSSStyleDeclaration(cssText=style, parentRule=self)
         else:
             style._parentRule = self
             self._style = style
 
     style = property(lambda self: self._style, _setStyle,
-                     doc=u"(DOM) The declaration-block of this rule set.")
+                     doc="(DOM) The declaration-block of this rule set.")
 
     type = property(lambda self: self.STYLE_RULE,
-                    doc=u"The type of this rule, as defined by a CSSRule "
+                    doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
 
     wellformed = property(lambda self: self.selectorList.wellformed)
@@ -238,4 +238,4 @@ class CSSStyleRule(cssrule.CSSRule):
         return self.style.valid
 
     valid = property(_getValid,
-                     doc=u'``True`` when the style declaration is true.')
+                     doc='``True`` when the style declaration is true.')

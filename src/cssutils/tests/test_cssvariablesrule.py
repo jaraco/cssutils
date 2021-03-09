@@ -2,7 +2,7 @@
 __version__ = '$Id: test_csspagerule.py 1869 2009-10-17 19:37:40Z cthedot $'
 
 import xml.dom
-import test_cssrule
+from . import test_cssrule
 import cssutils
 
 class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
@@ -26,7 +26,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r, r.variables.parentRule)
 
         # until any variables
-        self.assertEqual(u'', r.cssText)
+        self.assertEqual('', r.cssText)
 
         # only possible to set @... similar name
         self.assertRaises(xml.dom.InvalidModificationErr, 
@@ -34,40 +34,40 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_InvalidModificationErr(self):
         "CSSVariablesRule.cssText InvalidModificationErr"
-        self._test_InvalidModificationErr(u'@variables')
+        self._test_InvalidModificationErr('@variables')
         tests = {
-            u'@var {}': xml.dom.InvalidModificationErr,
+            '@var {}': xml.dom.InvalidModificationErr,
             }
         self.do_raise_r(tests)
 
     def test_incomplete(self):
         "CSSVariablesRule (incomplete)"
         tests = {
-            u'@variables { ':
-                u'', # no } and no content
-            u'@variables { x: red':
-                u'@variables {\n    x: red\n    }', # no }
+            '@variables { ':
+                '', # no } and no content
+            '@variables { x: red':
+                '@variables {\n    x: red\n    }', # no }
         }
         self.do_equal_p(tests) # parse
 
     def test_cssText(self):
         "CSSVariablesRule"
-        EXP = u'@variables {\n    margin: 0\n    }'
+        EXP = '@variables {\n    margin: 0\n    }'
         tests = {
-             u'@variables {}': u'',
-             u'@variables     {margin:0;}': EXP,
-             u'@variables     {margin:0}': EXP,
-             u'@VaRIables {   margin    :   0   ;    }': EXP,
-            u'@\\VaRIables {    margin : 0    }': EXP,
+             '@variables {}': '',
+             '@variables     {margin:0;}': EXP,
+             '@variables     {margin:0}': EXP,
+             '@VaRIables {   margin    :   0   ;    }': EXP,
+            '@\\VaRIables {    margin : 0    }': EXP,
 
-            u'@variables {a:1;b:2}': 
-                u'@variables {\n    a: 1;\n    b: 2\n    }',
+            '@variables {a:1;b:2}': 
+                '@variables {\n    a: 1;\n    b: 2\n    }',
 
             # comments
-            u'@variables   /*1*/   {margin:0;}': 
-                u'@variables /*1*/ {\n    margin: 0\n    }',
-            u'@variables/*1*/{margin:0;}': 
-                u'@variables /*1*/ {\n    margin: 0\n    }',
+            '@variables   /*1*/   {margin:0;}': 
+                '@variables /*1*/ {\n    margin: 0\n    }',
+            '@variables/*1*/{margin:0;}': 
+                '@variables /*1*/ {\n    margin: 0\n    }',
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
@@ -86,30 +86,30 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # cssText
         r = cssutils.css.CSSVariablesRule()
-        r.cssText = u'@variables { x: 1 }'
+        r.cssText = '@variables { x: 1 }'
         vars1 = r.variables
         self.assertEqual(r, r.variables.parentRule)
         self.assertEqual(vars1, r.variables)
-        self.assertEqual(r.variables.cssText, u'x: 1')
-        self.assertEqual(r.cssText, u'@variables {\n    x: 1\n    }')
+        self.assertEqual(r.variables.cssText, 'x: 1')
+        self.assertEqual(r.cssText, '@variables {\n    x: 1\n    }')
         
-        r.cssText = u'@variables {y:2}'
+        r.cssText = '@variables {y:2}'
         self.assertEqual(r, r.variables.parentRule)
         self.assertNotEqual(vars1, r.variables)
-        self.assertEqual(r.variables.cssText, u'y: 2')
-        self.assertEqual(r.cssText, u'@variables {\n    y: 2\n    }')
+        self.assertEqual(r.variables.cssText, 'y: 2')
+        self.assertEqual(r.cssText, '@variables {\n    y: 2\n    }')
 
         vars2 = r.variables
         
         # fail
         try:
-            r.cssText = u'@variables {$:1}'
-        except xml.dom.DOMException, e:
+            r.cssText = '@variables {$:1}'
+        except xml.dom.DOMException as e:
             pass
 
         self.assertEqual(vars2, r.variables)
-        self.assertEqual(r.variables.cssText, u'y: 2')
-        self.assertEqual(r.cssText, u'@variables {\n    y: 2\n    }')
+        self.assertEqual(r.variables.cssText, 'y: 2')
+        self.assertEqual(r.cssText, '@variables {\n    y: 2\n    }')
 
         # var decl
         vars3 = cssutils.css.CSSVariablesDeclaration('z: 3')
@@ -117,26 +117,26 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         self.assertEqual(r, r.variables.parentRule)
         self.assertEqual(vars3, r.variables)
-        self.assertEqual(r.variables.cssText, u'z: 3')
-        self.assertEqual(r.cssText, u'@variables {\n    z: 3\n    }')
+        self.assertEqual(r.variables.cssText, 'z: 3')
+        self.assertEqual(r.cssText, '@variables {\n    z: 3\n    }')
 
         # string
         r.variables = 'a: x'
         self.assertNotEqual(vars3, r.variables)
         self.assertEqual(r, r.variables.parentRule)
-        self.assertEqual(r.variables.cssText, u'a: x')
-        self.assertEqual(r.cssText, u'@variables {\n    a: x\n    }')
+        self.assertEqual(r.variables.cssText, 'a: x')
+        self.assertEqual(r.cssText, '@variables {\n    a: x\n    }')
         vars4 = r.variables
 
         # string fail
         try:
             r.variables = '$: x'
-        except xml.dom.DOMException, e:
+        except xml.dom.DOMException as e:
             pass
         self.assertEqual(vars4, r.variables)
         self.assertEqual(r, r.variables.parentRule)
-        self.assertEqual(r.variables.cssText, u'a: x')
-        self.assertEqual(r.cssText, u'@variables {\n    a: x\n    }')
+        self.assertEqual(r.variables.cssText, 'a: x')
+        self.assertEqual(r.cssText, '@variables {\n    a: x\n    }')
         
         
     def test_reprANDstr(self):

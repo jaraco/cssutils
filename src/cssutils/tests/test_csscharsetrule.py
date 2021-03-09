@@ -2,7 +2,7 @@
 
 import re
 import xml.dom
-import test_cssrule
+from . import test_cssrule
 import cssutils.css
 
 class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
@@ -18,50 +18,50 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSCharsetRule.__init__()"      
         super(CSSCharsetRuleTestCase, self).test_init()
         self.assertEqual(None, self.r.encoding)
-        self.assertEqual(u'', self.r.cssText)
+        self.assertEqual('', self.r.cssText)
         
-        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setCssText, u'xxx')
+        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setCssText, 'xxx')
 
     def test_InvalidModificationErr(self):
         "CSSCharsetRule InvalidModificationErr"
-        self._test_InvalidModificationErr(u'@charset')
+        self._test_InvalidModificationErr('@charset')
 
     def test_init_encoding(self):
         "CSSCharsetRule.__init__(encoding)"
-        for enc in (None, u'UTF-8', u'utf-8', u'iso-8859-1', u'ascii'):
+        for enc in (None, 'UTF-8', 'utf-8', 'iso-8859-1', 'ascii'):
             r = cssutils.css.CSSCharsetRule(enc)
             if enc is None:
                 self.assertEqual(None, r.encoding)
-                self.assertEqual(u'', r.cssText)
+                self.assertEqual('', r.cssText)
             else:
                 self.assertEqual(enc.lower(), r.encoding)
                 self.assertEqual(
-                    u'@charset "%s";' % enc.lower(), r.cssText)
+                    '@charset "%s";' % enc.lower(), r.cssText)
 
         for enc in (' ascii ', ' ascii', 'ascii '):
             self.assertRaisesEx(xml.dom.SyntaxErr,
                     cssutils.css.CSSCharsetRule, enc,
                     exc_pattern=re.compile("Syntax Error"))
 
-        for enc in (u'unknown', ):
+        for enc in ('unknown', ):
             self.assertRaisesEx(xml.dom.SyntaxErr,
                     cssutils.css.CSSCharsetRule, enc,
                     exc_pattern=re.compile("Unknown \(Python\) encoding"))
 
     def test_encoding(self):
         "CSSCharsetRule.encoding"
-        for enc in (u'UTF-8', u'utf-8', u'iso-8859-1', u'ascii'):
+        for enc in ('UTF-8', 'utf-8', 'iso-8859-1', 'ascii'):
             self.r.encoding = enc
             self.assertEqual(enc.lower(), self.r.encoding)
             self.assertEqual(
-                u'@charset "%s";' % enc.lower(), self.r.cssText)
+                '@charset "%s";' % enc.lower(), self.r.cssText)
 
         for enc in (None,' ascii ', ' ascii', 'ascii '):
             self.assertRaisesEx(xml.dom.SyntaxErr,
                     self.r.__setattr__, 'encoding', enc,
                     exc_pattern=re.compile("Syntax Error"))
 
-        for enc in (u'unknown', ):
+        for enc in ('unknown', ):
             self.assertRaisesEx(xml.dom.SyntaxErr,
                     self.r.__setattr__, 'encoding', enc,
                     exc_pattern=re.compile("Unknown \(Python\) encoding"))
@@ -73,31 +73,31 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         using parse MUST use ``@charset "ENCODING";``
         """
         tests = {
-            u'@charset "utf-8";': None,
-            u"@charset 'utf-8';": u'@charset "utf-8";',
+            '@charset "utf-8";': None,
+            "@charset 'utf-8';": '@charset "utf-8";',
             }
         self.do_equal_r(tests)
         self.do_equal_p(tests) # also parse
 
         tests = {
             # token is "@charset " with space!
-            u'@charset;"': xml.dom.InvalidModificationErr,
-            u'@CHARSET "UTF-8";': xml.dom.InvalidModificationErr,
-            u'@charset "";': xml.dom.SyntaxErr,
-            u'''@charset /*1*/"utf-8"/*2*/;''': xml.dom.SyntaxErr,
-            u'''@charset /*1*/"utf-8";''': xml.dom.SyntaxErr,
-            u'''@charset "utf-8"/*2*/;''': xml.dom.SyntaxErr,
-            u'@charset { utf-8 }': xml.dom.SyntaxErr,
-            u'@charset "utf-8"': xml.dom.SyntaxErr,
-            u'@charset a;': xml.dom.SyntaxErr,
-            u'@charset /**/;': xml.dom.SyntaxErr,
+            '@charset;"': xml.dom.InvalidModificationErr,
+            '@CHARSET "UTF-8";': xml.dom.InvalidModificationErr,
+            '@charset "";': xml.dom.SyntaxErr,
+            '''@charset /*1*/"utf-8"/*2*/;''': xml.dom.SyntaxErr,
+            '''@charset /*1*/"utf-8";''': xml.dom.SyntaxErr,
+            '''@charset "utf-8"/*2*/;''': xml.dom.SyntaxErr,
+            '@charset { utf-8 }': xml.dom.SyntaxErr,
+            '@charset "utf-8"': xml.dom.SyntaxErr,
+            '@charset a;': xml.dom.SyntaxErr,
+            '@charset /**/;': xml.dom.SyntaxErr,
             # trailing content
-            u'@charset "utf-8";s': xml.dom.SyntaxErr,
-            u'@charset "utf-8";/**/': xml.dom.SyntaxErr,
-            u'@charset "utf-8"; ': xml.dom.SyntaxErr,
+            '@charset "utf-8";s': xml.dom.SyntaxErr,
+            '@charset "utf-8";/**/': xml.dom.SyntaxErr,
+            '@charset "utf-8"; ': xml.dom.SyntaxErr,
             
             # comments do not work in this rule!
-            u'@charset "utf-8"/*1*//*2*/;': xml.dom.SyntaxErr
+            '@charset "utf-8"/*1*//*2*/;': xml.dom.SyntaxErr
             }
         self.do_raise_r(tests)
 

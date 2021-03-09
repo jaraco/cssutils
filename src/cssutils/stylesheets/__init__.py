@@ -5,7 +5,7 @@ __all__ = ['MediaList', 'MediaQuery', 'StyleSheet', 'StyleSheetList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from medialist import *
-from mediaquery import *
-from stylesheet import *
-from stylesheetlist import *
+from .medialist import *
+from .mediaquery import *
+from .stylesheet import *
+from .stylesheetlist import *

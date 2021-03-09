@@ -43,7 +43,7 @@ class CSSRuleList(list):
             return None
 
     length = property(lambda self: len(self),
-                      doc=u"(DOM) The number of CSSRules in the list.")
+                      doc="(DOM) The number of CSSRules in the list.")
 
     def rulesOfType(self, type):
         """Yield the rules which have the given `type` only, one of the 

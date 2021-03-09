@@ -6,7 +6,7 @@ __version__ = '$Id: errorhandler.py 1234 2008-05-22 20:26:12Z cthedot $'
 import os
 import re
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 class Deprecated(object):
     """This is a decorator which can be used to mark functions
@@ -33,7 +33,7 @@ class Deprecated(object):
         return newFunc
 
 # simple escapes, all non unicodes
-_simpleescapes = re.compile(ur'(\\[^0-9a-fA-F])').sub
+_simpleescapes = re.compile(r'(\\[^0-9a-fA-F])').sub
 def normalize(x):
     """
     normalizes x, namely:
@@ -53,7 +53,7 @@ def normalize(x):
 
 def path2url(path):
     """Return file URL of `path`"""
-    return u'file:' + urllib.pathname2url(os.path.abspath(path))
+    return 'file:' + urllib.request.pathname2url(os.path.abspath(path))
 
 def pushtoken(token, tokens):
     """Return new generator starting with token followed by all tokens in
@@ -70,15 +70,15 @@ def string(value):
         ``a \'string`` => ``'a \'string'``
     """
     # \n = 0xa, \r = 0xd, \f = 0xc
-    value = value.replace(u'\n', u'\\a ').replace(
-                          u'\r', u'\\d ').replace(
-                          u'\f', u'\\c ').replace(
-                          u'"', u'\\"')
+    value = value.replace('\n', '\\a ').replace(
+                          '\r', '\\d ').replace(
+                          '\f', '\\c ').replace(
+                          '"', '\\"')
 
-    if value.endswith(u'\\'):
-        value = value[:-1] + u'\\\\'
+    if value.endswith('\\'):
+        value = value[:-1] + '\\\\'
 
-    return u'"%s"' % value
+    return '"%s"' % value
 
 def stringvalue(string):
     """
@@ -87,9 +87,9 @@ def stringvalue(string):
 
         ``'a \'string'`` => ``a 'string``
     """
-    return string.replace(u'\\'+string[0], string[0])[1:-1]
+    return string.replace('\\'+string[0], string[0])[1:-1]
 
-_match_forbidden_in_uri = re.compile(ur'''.*?[\(\)\s\;,'"]''', re.U).match
+_match_forbidden_in_uri = re.compile(r'''.*?[\(\)\s\;,'"]''', re.U).match
 def uri(value):
     """
     Serialize value by adding ``url()`` and with quotes if needed e.g.::
@@ -98,7 +98,7 @@ def uri(value):
     """
     if _match_forbidden_in_uri(value):
         value = string(value)
-    return u'url(%s)' % value
+    return 'url(%s)' % value
 
 def urivalue(uri):
     """

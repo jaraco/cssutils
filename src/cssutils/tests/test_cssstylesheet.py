@@ -2,7 +2,7 @@
 """Tests for css.CSSStyleSheet"""
 
 import xml.dom
-import basetest
+from . import basetest
 import cssutils.css
 
 class CSSStyleSheetTestCase(basetest.BaseTestCase):
@@ -26,7 +26,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(None, self.s.media)
         self.assertEqual(None, self.s.ownerNode)
         self.assertEqual(None, self.s.parentStyleSheet)
-        self.assertEqual(u'', self.s.title)
+        self.assertEqual('', self.s.title)
 
         # check that type is readonly
         self.assertRaises(AttributeError, self.r.__setattr__, 'href', 'x')
@@ -83,22 +83,22 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         # namespaces
         s = cssutils.parseString('@namespace "http://example.com/ns1"; a {}')
         namespaces = s.namespaces
-        self.assertEqual(s.namespaces.items(), [(u'', 'http://example.com/ns1')])
+        self.assertEqual(list(s.namespaces.items()), [('', 'http://example.com/ns1')])
         s.cssText = '@namespace x "http://example.com/ns2"; x|a {}'
         # not anymore!
         self.assertNotEqual(namespaces, s.namespaces)
-        self.assertEqual(s.namespaces.items(), [(u'x', 'http://example.com/ns2')])
+        self.assertEqual(list(s.namespaces.items()), [('x', 'http://example.com/ns2')])
 
         # variables
-        s = cssutils.parseString(u'@variables { a:1}')
+        s = cssutils.parseString('@variables { a:1}')
         vars1 = s.variables
-        self.assertEqual(vars1[u'a'], u'1')
+        self.assertEqual(vars1['a'], '1')
 
-        s = cssutils.parseString(u'@variables { a:2}')
+        s = cssutils.parseString('@variables { a:2}')
         vars2 = s.variables
         self.assertNotEqual(vars1, vars2)
-        self.assertEqual(vars1[u'a'], u'1')
-        self.assertEqual(vars2[u'a'], u'2')
+        self.assertEqual(vars1['a'], '1')
+        self.assertEqual(vars2['a'], '2')
 
     def test_cssRules(self):
         "CSSStyleSheet.cssRules"
@@ -110,7 +110,7 @@ class CSSStyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(2, s.cssRules.length)
         s.cssRules.extend(cssutils.parseString('/*3*/x {y:2}').cssRules)
         self.assertEqual(4, s.cssRules.length)
-        self.assertEqual(u'a {\n    x: 1\n    }\n/*2*/\n/*3*/\nx {\n    y: 2\n    }'.encode(),
+        self.assertEqual('a {\n    x: 1\n    }\n/*2*/\n/*3*/\nx {\n    y: 2\n    }'.encode(),
                          s.cssText)
 
         for r in s.cssRules:
@@ -228,7 +228,7 @@ x|test {
         self.do_equal_p(tests)
 
         s = cssutils.css.CSSStyleSheet()
-        s.cssText = u'''@charset "ascii";@import "x";@namespace a "x";
+        s.cssText = '''@charset "ascii";@import "x";@namespace a "x";
         @media all {/*1*/}@page {margin: 0}a {\n    x: 1\n    }@unknown;/*comment*/'''
         for r in s.cssRules:
             self.assertEqual(s, r.parentStyleSheet)
@@ -237,24 +237,24 @@ x|test {
         "CSSStyleSheet.cssText HierarchyRequestErr"
         tests = {
             # @charset: only one and always 1st
-            u' @charset "utf-8";': xml.dom.HierarchyRequestErr,
-            u'@charset "ascii";@charset "ascii";': xml.dom.HierarchyRequestErr,            u'/*c*/@charset "ascii";': xml.dom.HierarchyRequestErr,
-            u'@import "x"; @charset "ascii";': xml.dom.HierarchyRequestErr,
-            u'@namespace a "x"; @charset "ascii";': xml.dom.HierarchyRequestErr,
-            u'@media all {} @charset "ascii";': xml.dom.HierarchyRequestErr,
-            u'@page {} @charset "ascii";': xml.dom.HierarchyRequestErr,
-            u'a {} @charset "ascii";': xml.dom.HierarchyRequestErr,
+            ' @charset "utf-8";': xml.dom.HierarchyRequestErr,
+            '@charset "ascii";@charset "ascii";': xml.dom.HierarchyRequestErr,            '/*c*/@charset "ascii";': xml.dom.HierarchyRequestErr,
+            '@import "x"; @charset "ascii";': xml.dom.HierarchyRequestErr,
+            '@namespace a "x"; @charset "ascii";': xml.dom.HierarchyRequestErr,
+            '@media all {} @charset "ascii";': xml.dom.HierarchyRequestErr,
+            '@page {} @charset "ascii";': xml.dom.HierarchyRequestErr,
+            'a {} @charset "ascii";': xml.dom.HierarchyRequestErr,
 
             # @import: before @namespace, @media, @page, sr
-            u'@namespace a "x"; @import "x";': xml.dom.HierarchyRequestErr,
-            u'@media all {} @import "x";': xml.dom.HierarchyRequestErr,
-            u'@page {} @import "x";': xml.dom.HierarchyRequestErr,
-            u'a {} @import "x";': xml.dom.HierarchyRequestErr,
+            '@namespace a "x"; @import "x";': xml.dom.HierarchyRequestErr,
+            '@media all {} @import "x";': xml.dom.HierarchyRequestErr,
+            '@page {} @import "x";': xml.dom.HierarchyRequestErr,
+            'a {} @import "x";': xml.dom.HierarchyRequestErr,
 
             # @namespace: before @media, @page, sr
-            u'@media all {} @namespace a "x";': xml.dom.HierarchyRequestErr,
-            u'@page {} @namespace a "x";': xml.dom.HierarchyRequestErr,
-            u'a {} @namespace a "x";': xml.dom.HierarchyRequestErr,
+            '@media all {} @namespace a "x";': xml.dom.HierarchyRequestErr,
+            '@page {} @namespace a "x";': xml.dom.HierarchyRequestErr,
+            'a {} @namespace a "x";': xml.dom.HierarchyRequestErr,
             }
         self.do_raise_r(tests)
         self.do_raise_p(tests)
@@ -265,12 +265,12 @@ x|test {
         for single {, } or ;
         """
         tests = {
-            u'{': xml.dom.SyntaxErr,
-            u'}': xml.dom.SyntaxErr,
-            u';': xml.dom.SyntaxErr,
-            u'@charset "ascii";{': xml.dom.SyntaxErr,
-            u'@charset "ascii";}': xml.dom.SyntaxErr,
-            u'@charset "ascii";;': xml.dom.SyntaxErr,
+            '{': xml.dom.SyntaxErr,
+            '}': xml.dom.SyntaxErr,
+            ';': xml.dom.SyntaxErr,
+            '@charset "ascii";{': xml.dom.SyntaxErr,
+            '@charset "ascii";}': xml.dom.SyntaxErr,
+            '@charset "ascii";;': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests)
         self.do_raise_p(tests)
@@ -304,11 +304,11 @@ x|test {
         s = cssutils.css.CSSStyleSheet()
         self.assertEqual(0, len(s.namespaces))
 
-        css = u'''@namespace "default";
+        css = '''@namespace "default";
 @namespace ex "example";
 @namespace ex2 "example";
 ex2|x { top: 0 }'''
-        expcss = u'''@namespace "default";
+        expcss = '''@namespace "default";
 @namespace ex2 "example";
 ex2|x {
     top: 0
@@ -316,7 +316,7 @@ ex2|x {
         s.cssText = css
         self.assertEqual(s.cssText, expcss.encode())
         self.assertEqual(s.namespaces.namespaces,
-                         { u'': u'default', u'ex2': u'example'})
+                         { '': 'default', 'ex2': 'example'})
 
         # __contains__
         self.assertTrue('' in s.namespaces)
@@ -341,10 +341,10 @@ ex2|x {
                           s.namespaces.__setitem__, 'ex2', 'NEWURI')
         s.namespaces['n1'] = 'new'
         self.assertEqual(s.namespaces.namespaces,
-                         { u'': u'default', u'ex2': u'example', u'n1': 'new'})
+                         { '': 'default', 'ex2': 'example', 'n1': 'new'})
         s.namespaces['n'] = 'new' # replaces prefix!
         self.assertEqual(s.namespaces.namespaces,
-                         { u'': u'default', u'ex2': u'example', u'n': 'new'})
+                         { '': 'default', 'ex2': 'example', 'n': 'new'})
         # prefixForNamespaceURI
         self.assertEqual('', s.namespaces.prefixForNamespaceURI('default'))
         self.assertEqual('ex2', s.namespaces.prefixForNamespaceURI('example'))
@@ -427,7 +427,7 @@ ex2|x {
         expcss = expcss.replace(oldsel, oldsel + ', ' + newsel)
         self.assertEqual(s.cssText, expcss.encode())
 
-        self.assertEqual(s.cssText, u'''@namespace n "new";
+        self.assertEqual(s.cssText, '''@namespace n "new";
 @namespace ex2 "example";
 @namespace DEFAULT "default";
 @media all {
@@ -443,7 +443,7 @@ ex2|SEL4, a, ex2|SELSR {
         "CSSStyleSheet.namespaces 3"
         # tests setting namespaces with new {}
         s = cssutils.css.CSSStyleSheet()
-        css = u'h|a { top: 0 }'
+        css = 'h|a { top: 0 }'
         self.assertRaises(xml.dom.NamespaceErr, s.add, css)
 
         s.add('@namespace x "html";')
@@ -460,22 +460,22 @@ ex2|SEL4, a, ex2|SELSR {
         s.namespaces['y'] = 'html'
         r.selectorList.append('y|b')
         self.assertEqual(s.cssText,
-            u'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'.encode())
+            '@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'.encode())
 
         self.assertRaises(xml.dom.NoModificationAllowedErr,
                           s.namespaces.__delitem__, 'y')
         self.assertEqual(s.cssText,
-            u'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'.encode())
+            '@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'.encode())
 
         s.cssRules[0].prefix = ''
         self.assertEqual(s.cssText,
-            u'@namespace "html";\na, b {\n    top: 0\n    }'.encode())
+            '@namespace "html";\na, b {\n    top: 0\n    }'.encode())
 
         # remove need of namespace
         s.cssRules[0].prefix = 'x'
         s.cssRules[1].selectorText = 'a, b'
         self.assertEqual(s.cssText,
-            u'@namespace x "html";\na, b {\n    top: 0\n    }'.encode())
+            '@namespace x "html";\na, b {\n    top: 0\n    }'.encode())
 
 
     def test_namespaces4(self):
@@ -488,13 +488,13 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertEqual({}, s.namespaces.namespaces)
 
         s.namespaces[None] = 'default'
-        self.assertEqual({u'': 'default'}, s.namespaces.namespaces)
+        self.assertEqual({'': 'default'}, s.namespaces.namespaces)
 
         del s.namespaces['']
         self.assertEqual({}, s.namespaces.namespaces)
 
         s.namespaces[''] = 'default'
-        self.assertEqual({u'': 'default'}, s.namespaces.namespaces)
+        self.assertEqual({'': 'default'}, s.namespaces.namespaces)
 
         del s.namespaces[None]
         self.assertEqual({}, s.namespaces.namespaces)
@@ -502,9 +502,9 @@ ex2|SEL4, a, ex2|SELSR {
         s.namespaces['p'] = 'uri'
         # cannot use namespaces.namespaces
         del s.namespaces.namespaces['p']
-        self.assertEqual({u'p': 'uri'}, s.namespaces.namespaces)
+        self.assertEqual({'p': 'uri'}, s.namespaces.namespaces)
 
-        self.assertRaisesMsg(xml.dom.NamespaceErr, u"Prefix undefined not found.",
+        self.assertRaisesMsg(xml.dom.NamespaceErr, "Prefix undefined not found.",
                              s.namespaces.__delitem__, 'undefined')
 
     def test_namespaces5(self):
@@ -519,7 +519,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_deleteRuleIndex(self):
         "CSSStyleSheet.deleteRule(index)"
-        self.s.cssText = u'@charset "ascii"; @import "x"; @x; a {\n    x: 1\n    }@y;'
+        self.s.cssText = '@charset "ascii"; @import "x"; @x; a {\n    x: 1\n    }@y;'
         self.assertEqual(5, self.s.cssRules.length)
 
         self.assertRaises(xml.dom.IndexSizeErr, self.s.deleteRule, 5)
@@ -533,19 +533,19 @@ ex2|SEL4, a, ex2|SELSR {
 
         self.assertEqual(4, self.s.cssRules.length)
         self.assertEqual(
-            u'@charset "ascii";\n@import "x";\n@x;\na {\n    x: 1\n    }'.encode(), self.s.cssText)
+            '@charset "ascii";\n@import "x";\n@x;\na {\n    x: 1\n    }'.encode(), self.s.cssText)
         # beginning
         self.s.deleteRule(0)
         self.assertEqual(3, self.s.cssRules.length)
-        self.assertEqual(u'@import "x";\n@x;\na {\n    x: 1\n    }'.encode(), self.s.cssText)
+        self.assertEqual('@import "x";\n@x;\na {\n    x: 1\n    }'.encode(), self.s.cssText)
         # middle
         self.s.deleteRule(1)
         self.assertEqual(2, self.s.cssRules.length)
-        self.assertEqual(u'@import "x";\na {\n    x: 1\n    }'.encode(), self.s.cssText)
+        self.assertEqual('@import "x";\na {\n    x: 1\n    }'.encode(), self.s.cssText)
         # end
         self.s.deleteRule(1)
         self.assertEqual(1, self.s.cssRules.length)
-        self.assertEqual(u'@import "x";'.encode(), self.s.cssText)
+        self.assertEqual('@import "x";'.encode(), self.s.cssText)
 
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule(rule)"
@@ -574,14 +574,14 @@ ex2|SEL4, a, ex2|SELSR {
     def _gets(self):
         # complete
         self.cr = cssutils.css.CSSCharsetRule('ascii')
-        self.c = cssutils.css.CSSComment(u'/*c*/')
+        self.c = cssutils.css.CSSComment('/*c*/')
         self.ur = cssutils.css.CSSUnknownRule('@x;')
         self.ir = cssutils.css.CSSImportRule('x')
         self.nr = cssutils.css.CSSNamespaceRule('uri', 'p')
         self.mr = cssutils.css.CSSMediaRule()
-        self.mr.cssText = u'@media all { @m; }'
+        self.mr.cssText = '@media all { @m; }'
         self.pr = cssutils.css.CSSPageRule()
-        self.pr.style = u'margin: 0;'
+        self.pr.style = 'margin: 0;'
         self.sr = cssutils.css.CSSStyleRule()
         self.sr.cssText = 'a {\n    x: 1\n    }'
 
@@ -594,7 +594,7 @@ ex2|SEL4, a, ex2|SELSR {
         s.insertRule(self.mr) # 5
         s.insertRule(self.pr) # 6
         s.insertRule(self.sr) # 7
-        self.assertEqual(u'@charset "ascii";\n@import url(x);\n@namespace p "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }'.encode(), s.cssText)
+        self.assertEqual('@charset "ascii";\n@import url(x);\n@namespace p "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }'.encode(), s.cssText)
         return s, s.cssRules.length
 
     def test_add(self):
@@ -612,14 +612,14 @@ ex2|SEL4, a, ex2|SELSR {
                '@x;'
                ]
 
-        fullcss = u'\n'.join(css)
+        fullcss = '\n'.join(css)
         full.cssText = fullcss
         self.assertEqual(full.cssText, fullcss.encode())
         for i, line in enumerate(css):
             # sheet without same ruletype
             before = css[:i]
             after = css[i+1:]
-            sheet.cssText = u''.join(before + after)
+            sheet.cssText = ''.join(before + after)
 
             index = sheet.add(line)
             if i < 3:
@@ -631,7 +631,7 @@ ex2|SEL4, a, ex2|SELSR {
                 expected = before
                 expected.extend(after)
                 expected.append(line)
-                self.assertEqual(u'\n'.join(expected).encode(), sheet.cssText)
+                self.assertEqual('\n'.join(expected).encode(), sheet.cssText)
                 self.assertEqual(len(expected)-1, index) # no same rule present
 
             # sheet with the same ruletype
@@ -656,7 +656,7 @@ ex2|SEL4, a, ex2|SELSR {
                     expected.append(line)
                     expectedindex = len(expected) - 1
 
-                self.assertEqual(u'\n'.join(expected).encode(), full.cssText)
+                self.assertEqual('\n'.join(expected).encode(), full.cssText)
                 self.assertEqual(expectedindex, index) # no same rule present
 
     def test_addimport(self):
@@ -673,9 +673,9 @@ ex2|SEL4, a, ex2|SELSR {
             sheet.add(imp)
             added = sheet.cssRules[0]
             self.assertEqual(sheet, added.parentStyleSheet)
-            self.assertEqual(u'example.css', added.href)
-            self.assertEqual(u'utf-8', added.styleSheet.encoding)
-            self.assertEqual(u'/**/'.encode(), added.styleSheet.cssText)
+            self.assertEqual('example.css', added.href)
+            self.assertEqual('utf-8', added.styleSheet.encoding)
+            self.assertEqual('/**/'.encode(), added.styleSheet.cssText)
 
         cssrulessheet = p.parseString('@import "example.css";')
         imports = (
@@ -689,12 +689,12 @@ ex2|SEL4, a, ex2|SELSR {
             sheet.add(imp)
             added = sheet.cssRules[1]
             self.assertEqual(sheet, added.parentStyleSheet)
-            self.assertEqual(u'example.css', added.href)
+            self.assertEqual('example.css', added.href)
             self.assertEqual(enc, added.styleSheet.encoding)
             if enc == 'ascii':
-                self.assertEqual(u'@charset "ascii";\n/**/'.encode(), added.styleSheet.cssText)
+                self.assertEqual('@charset "ascii";\n/**/'.encode(), added.styleSheet.cssText)
             else:
-                self.assertEqual(u'/**/'.encode(), added.styleSheet.cssText)
+                self.assertEqual('/**/'.encode(), added.styleSheet.cssText)
 
         # if styleSheet is already there encoding is not set new
         impsheet = p.parseString('@import "example.css";')
@@ -703,9 +703,9 @@ ex2|SEL4, a, ex2|SELSR {
         sheet.add(imp)
         added = sheet.cssRules[1]
         self.assertEqual(sheet, added.parentStyleSheet)
-        self.assertEqual(u'example.css', added.href)
-        self.assertEqual(u'utf-8', added.styleSheet.encoding)
-        self.assertEqual(u'/**/'.encode(), added.styleSheet.cssText)
+        self.assertEqual('example.css', added.href)
+        self.assertEqual('utf-8', added.styleSheet.encoding)
+        self.assertEqual('/**/'.encode(), added.styleSheet.cssText)
 
     def test_insertRule(self):
         "CSSStyleSheet.insertRule()"
@@ -817,14 +817,14 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_HTMLComments(self):
         "CSSStyleSheet CDO CDC"
-        css = u'''body { color: red }
+        css = '''body { color: red }
 <!-- comment -->
 body { color: blue }
 body { color: pink }
 <!-- comment -->
 body { color: green }
 '''
-        exp = u'''body {
+        exp = '''body {
     color: red
     }
 body {
@@ -836,10 +836,10 @@ body {
     def test_incomplete(self):
         "CSSStyleRule (incomplete)"
         tests = {
-            u'@import "a': u'@import "a";', # no }
-            u'a { x: 1': u'a {\n    x: 1\n    }', # no }
-            u'a { font-family: "arial sans': # no "
-                u'a {\n    font-family: "arial sans"\n    }',
+            '@import "a': '@import "a";', # no }
+            'a { x: 1': 'a {\n    x: 1\n    }', # no }
+            'a { font-family: "arial sans': # no "
+                'a {\n    font-family: "arial sans"\n    }',
         }
         self.do_equal_p(tests) # parse
 
@@ -850,7 +850,7 @@ body {
         self.assertEqual(True, css._readonly) # internal...
 
         self.assertRaises(xml.dom.NoModificationAllowedErr,
-                          css._setCssText, u'@x;')
+                          css._setCssText, '@x;')
         self.assertRaises(xml.dom.NoModificationAllowedErr,
                           css.insertRule, self.rule)
         self.assertRaises(xml.dom.NoModificationAllowedErr,

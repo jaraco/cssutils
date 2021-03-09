@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.CSSRule"""
 
 import xml.dom
-import basetest
+from . import basetest
 import cssutils.css
 
 class CSSRuleTestCase(basetest.BaseTestCase):
@@ -39,7 +39,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         "CSSRule.type and init"
         self.assertEqual(self.r_type, self.r.type)
         self.assertEqual(self.r_typeString, self.r.typeString)
-        self.assertEqual(u'', self.r.cssText)
+        self.assertEqual('', self.r.cssText)
         self.assertEqual(None, self.r.parentRule)
         self.assertEqual(None, self.r.parentStyleSheet)
 
@@ -79,7 +79,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
                 elif i == 2: # check namespaces
                     self.assertEqual('x', s.namespaces[''])
 
-        cssText = u''.join(r[0] for r in rules)
+        cssText = ''.join(r[0] for r in rules)
         # parsing               
         s = cssutils.parseString(cssText)
         test(s)
@@ -137,7 +137,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
                 self.assertEqual(rule.parentStyleSheet, mr.parentStyleSheet)
                 self.assertEqual(rule.type, rules[i][1])
 
-        cssText = '@media all { %s }' % u''.join(r[0] for r in rules)
+        cssText = '@media all { %s }' % ''.join(r[0] for r in rules)
         # parsing               
         s = cssutils.parseString(cssText)
         test(s)
@@ -184,10 +184,10 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.rRO = cssutils.css.CSSRule()
         self.rRO._readonly = True
         self.assertEqual(True, self.rRO._readonly)
-        self.assertEqual(u'', self.rRO.cssText)
+        self.assertEqual('', self.rRO.cssText)
         self.assertRaises(xml.dom.NoModificationAllowedErr,
-                          self.rRO._setCssText, u'x')
-        self.assertEqual(u'', self.rRO.cssText)
+                          self.rRO._setCssText, 'x')
+        self.assertEqual('', self.rRO.cssText)
 
     def _test_InvalidModificationErr(self, startwithspace):
         """
@@ -201,27 +201,27 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         e.g. " @page {}"
         exception is the style rule test
         """
-        tests = (u'',
-                 u'/* comment */',
-                 u'@charset "utf-8";',
-                 u'@font-face {}',
-                 u'@import url(x);',
-                 u'@media all {}',
-                 u'@namespace "x";'
-                 u'@page {}',
-                 u'@unknown;',
-                 u'@variables;',
+        tests = ('',
+                 '/* comment */',
+                 '@charset "utf-8";',
+                 '@font-face {}',
+                 '@import url(x);',
+                 '@media all {}',
+                 '@namespace "x";'
+                 '@page {}',
+                 '@unknown;',
+                 '@variables;',
                  # TODO:
                  #u'@top-left {}'
-                 u'a style rule {}'
+                 'a style rule {}'
                  )
         for test in tests:
-            if startwithspace in (u'a style rule', ) and test in (
-                u'/* comment */', u'a style rule {}'):
+            if startwithspace in ('a style rule', ) and test in (
+                '/* comment */', 'a style rule {}'):
                 continue
 
             if test.startswith(startwithspace):
-                test = u' %s' % test
+                test = ' %s' % test
 
             self.assertRaises(xml.dom.InvalidModificationErr,
                  self.r._setCssText, test)

@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.selectorlist.SelectorList."""
 
 import xml.dom
-import basetest
+from . import basetest
 import cssutils
 from cssutils.css.selectorlist import SelectorList
 
@@ -17,19 +17,19 @@ class SelectorListTestCase(basetest.BaseTestCase):
 
         s = SelectorList('a, b')
         self.assertEqual(2, s.length)
-        self.assertEqual(u'a, b', s.selectorText)
+        self.assertEqual('a, b', s.selectorText)
 
         s = SelectorList(selectorText='a')
         self.assertEqual(1, s.length)
-        self.assertEqual(u'a', s.selectorText)
+        self.assertEqual('a', s.selectorText)
 
         s = SelectorList(selectorText=('p|a', {'p': 'uri'})) # n-dict
         self.assertEqual(1, s.length)
-        self.assertEqual(u'p|a', s.selectorText)
+        self.assertEqual('p|a', s.selectorText)
 
         s = SelectorList(selectorText=('p|a', (('p', 'uri'),))) # n-tuples
         self.assertEqual(1, s.length)
-        self.assertEqual(u'p|a', s.selectorText)
+        self.assertEqual('p|a', s.selectorText)
 
     def test_parentRule(self):
         "Selector.parentRule"
@@ -63,21 +63,21 @@ class SelectorListTestCase(basetest.BaseTestCase):
                           s.appendSelector, 'b,')
         self.assertEqual(1, s.length)
 
-        self.assertEqual(u'a', s.selectorText)
+        self.assertEqual('a', s.selectorText)
 
         s.append('b')
         self.assertEqual(2, s.length)
-        self.assertEqual(u'a, b', s.selectorText)
+        self.assertEqual('a, b', s.selectorText)
 
         s.append('a')
         self.assertEqual(2, s.length)
-        self.assertEqual(u'b, a', s.selectorText)
+        self.assertEqual('b, a', s.selectorText)
         
         # __setitem__    
         self.assertRaises(IndexError, s.__setitem__, 4, 'x')
         s[1] = 'c'
         self.assertEqual(2, s.length)
-        self.assertEqual(u'b, c', s.selectorText)
+        self.assertEqual('b, c', s.selectorText)
         # TODO: remove duplicates?
 #        s[0] = 'c'
 #        self.assertEqual(1, s.length)
@@ -85,53 +85,53 @@ class SelectorListTestCase(basetest.BaseTestCase):
 
         s = SelectorList()
         s.appendSelector(('p|a', {'p': 'uri', 'x': 'xxx'}))
-        self.assertEqual(u'p|a', s.selectorText)
+        self.assertEqual('p|a', s.selectorText)
         # x gets lost as not used
         self.assertRaises(xml.dom.NamespaceErr, s.append, 'x|a')
         # not set at all
         self.assertRaises(xml.dom.NamespaceErr, s.append, 'y|a')
         # but p is retained
         s.append('p|b')
-        self.assertEqual(u'p|a, p|b', s.selectorText)
+        self.assertEqual('p|a, p|b', s.selectorText)
 
     def test_selectorText(self):
         "SelectorList.selectorText"
         s = SelectorList()
-        s.selectorText = u'a, b'
-        self.assertEqual(u'a, b', s.selectorText)
-        self.assertRaises(xml.dom.SyntaxErr, s._setSelectorText, u',')
+        s.selectorText = 'a, b'
+        self.assertEqual('a, b', s.selectorText)
+        self.assertRaises(xml.dom.SyntaxErr, s._setSelectorText, ',')
         # not changed as invalid!
-        self.assertEqual(u'a, b', s.selectorText)
+        self.assertEqual('a, b', s.selectorText)
 
         tests = {
-            u'*': None,
-            u'/*1*/*': None,
-            u'/*1*/*, a': None,
-            u'a, b': None,
-            u'a ,b': u'a, b',
-            u'a , b': u'a, b',
-            u'a, b, c': u'a, b, c',
-            u'#a, x#a, .b, x.b': u'#a, x#a, .b, x.b',
-            (u'[p|a], p|*', (('p', 'uri'),)): u'[p|a], p|*',
+            '*': None,
+            '/*1*/*': None,
+            '/*1*/*, a': None,
+            'a, b': None,
+            'a ,b': 'a, b',
+            'a , b': 'a, b',
+            'a, b, c': 'a, b, c',
+            '#a, x#a, .b, x.b': '#a, x#a, .b, x.b',
+            ('[p|a], p|*', (('p', 'uri'),)): '[p|a], p|*',
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
 
         tests = {
-            u'x|*': xml.dom.NamespaceErr,
-            u'': xml.dom.SyntaxErr,
-            u' ': xml.dom.SyntaxErr,
-            u',': xml.dom.SyntaxErr,
-            u'a,': xml.dom.SyntaxErr,
-            u',a': xml.dom.SyntaxErr,
-            u'/* 1 */,a': xml.dom.SyntaxErr,
+            'x|*': xml.dom.NamespaceErr,
+            '': xml.dom.SyntaxErr,
+            ' ': xml.dom.SyntaxErr,
+            ',': xml.dom.SyntaxErr,
+            'a,': xml.dom.SyntaxErr,
+            ',a': xml.dom.SyntaxErr,
+            '/* 1 */,a': xml.dom.SyntaxErr,
             }
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
 
     def test_reprANDstr(self):
         "SelectorList.__repr__(), .__str__()"
-        sel=(u'a, p|b', { 'p': 'uri'})
+        sel=('a, p|b', { 'p': 'uri'})
         
         s = cssutils.css.SelectorList(selectorText=sel)
 

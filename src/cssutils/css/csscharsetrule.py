@@ -4,7 +4,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import codecs
-import cssrule
+from . import cssrule
 import cssutils
 import xml.dom
 
@@ -57,12 +57,12 @@ class CSSCharsetRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return u"cssutils.css.%s(encoding=%r)" % (
+        return "cssutils.css.%s(encoding=%r)" % (
                 self.__class__.__name__, 
                 self.encoding)
 
     def __str__(self):
-        return u"<cssutils.css.%s object encoding=%r at 0x%x>" % (
+        return "<cssutils.css.%s object encoding=%r at 0x%x>" % (
                 self.__class__.__name__, 
                 self.encoding, 
                 id(self))
@@ -95,7 +95,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         
         if self._type(self._nexttoken(tokenizer)) != self._prods.CHARSET_SYM: 
             wellformed = False
-            self._log.error(u'CSSCharsetRule must start with "@charset "',
+            self._log.error('CSSCharsetRule must start with "@charset "',
                             error=xml.dom.InvalidModificationErr)
         
         encodingtoken = self._nexttoken(tokenizer)
@@ -103,21 +103,21 @@ class CSSCharsetRule(cssrule.CSSRule):
         encoding = self._stringtokenvalue(encodingtoken)
         if self._prods.STRING != encodingtype or not encoding:
             wellformed = False
-            self._log.error(u'CSSCharsetRule: no encoding found; %r.' % 
+            self._log.error('CSSCharsetRule: no encoding found; %r.' % 
                             self._valuestr(cssText))
             
         semicolon = self._tokenvalue(self._nexttoken(tokenizer))
         EOFtype = self._type(self._nexttoken(tokenizer))
-        if u';' != semicolon or EOFtype not in ('EOF', None):
+        if ';' != semicolon or EOFtype not in ('EOF', None):
             wellformed = False
-            self._log.error(u'CSSCharsetRule: Syntax Error: %r.' % 
+            self._log.error('CSSCharsetRule: Syntax Error: %r.' % 
                             self._valuestr(cssText))
         
         if wellformed:
             self.encoding = encoding
             
     cssText = property(fget=_getCssText, fset=_setCssText,
-                       doc=u"(DOM) The parsable textual representation.")
+                       doc="(DOM) The parsable textual representation.")
 
     def _setEncoding(self, encoding):
         """
@@ -138,22 +138,22 @@ class CSSCharsetRule(cssrule.CSSRule):
 
         if not encodingtoken or unexpected or\
            self._prods.IDENT != self._type(encodingtoken):
-            self._log.error(u'CSSCharsetRule: Syntax Error in encoding value '
-                            u'%r.' % encoding)
+            self._log.error('CSSCharsetRule: Syntax Error in encoding value '
+                            '%r.' % encoding)
         else:
             try:
                 codecs.lookup(encoding)
             except LookupError:
-                self._log.error(u'CSSCharsetRule: Unknown (Python) encoding %r.'
+                self._log.error('CSSCharsetRule: Unknown (Python) encoding %r.'
                                 % encoding)
             else:
                 self._encoding = encoding.lower()
 
     encoding = property(lambda self: self._encoding, _setEncoding,
-        doc=u"(DOM)The encoding information used in this @charset rule.")
+        doc="(DOM)The encoding information used in this @charset rule.")
 
     type = property(lambda self: self.CHARSET_RULE, 
-                    doc=u"The type of this rule, as defined by a CSSRule "
-                        u"type constant.")
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
 
     wellformed = property(lambda self: bool(self.encoding))

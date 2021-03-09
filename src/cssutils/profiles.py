@@ -45,15 +45,15 @@ class Profiles(object):
     If you want to redefine any of these macros do this in your custom
     macros.
     """
-    CSS_LEVEL_2 = u'CSS Level 2.1'
-    CSS3_BACKGROUNDS_AND_BORDERS = u'CSS Backgrounds and Borders Module Level 3'
-    CSS3_BASIC_USER_INTERFACE = u'CSS3 Basic User Interface Module'
-    CSS3_BOX = CSS_BOX_LEVEL_3 = u'CSS Box Module Level 3'
-    CSS3_COLOR = CSS_COLOR_LEVEL_3 = u'CSS Color Module Level 3'
-    CSS3_FONTS = u'CSS Fonts Module Level 3'
-    CSS3_FONT_FACE = u'CSS Fonts Module Level 3 @font-face properties'
-    CSS3_PAGED_MEDIA = u'CSS3 Paged Media Module'
-    CSS3_TEXT = u'CSS Text Level 3'
+    CSS_LEVEL_2 = 'CSS Level 2.1'
+    CSS3_BACKGROUNDS_AND_BORDERS = 'CSS Backgrounds and Borders Module Level 3'
+    CSS3_BASIC_USER_INTERFACE = 'CSS3 Basic User Interface Module'
+    CSS3_BOX = CSS_BOX_LEVEL_3 = 'CSS Box Module Level 3'
+    CSS3_COLOR = CSS_COLOR_LEVEL_3 = 'CSS Color Module Level 3'
+    CSS3_FONTS = 'CSS Fonts Module Level 3'
+    CSS3_FONT_FACE = 'CSS Fonts Module Level 3 @font-face properties'
+    CSS3_PAGED_MEDIA = 'CSS3 Paged Media Module'
+    CSS3_TEXT = 'CSS Text Level 3'
 
     _TOKEN_MACROS = {
         'ident': r'[-]?{nmstart}{nmchar}*',
@@ -155,7 +155,7 @@ class Profiles(object):
         def macro_value(m):
             return '(?:%s)' % macros[m.groupdict()['macro']]
 
-        for key, value in dictionary.items():
+        for key, value in list(dictionary.items()):
             if not hasattr(value, '__call__'):
                 while re.search(r'{[a-z][a-z0-9-]*}', value):
                     value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
@@ -166,7 +166,7 @@ class Profiles(object):
 
     def _compile_regexes(self, dictionary):
         """Compile all regular expressions into callable objects"""
-        for key, value in dictionary.items():
+        for key, value in list(dictionary.items()):
             if not hasattr(value, '__call__'):
                 # Compiling them now will slow down the cssutils import time,
                 # even if cssutils is not needed. We lazily compile them the
@@ -179,8 +179,8 @@ class Profiles(object):
 
     def __update_knownNames(self):
         self._knownNames = []
-        for properties in self._profilesProperties.values():
-            self._knownNames.extend(properties.keys())
+        for properties in list(self._profilesProperties.values()):
+            self._knownNames.extend(list(properties.keys()))
 
     def _getDefaultProfiles(self):
         "If not explicitly set same as Profiles.profiles but in reverse order."
@@ -191,20 +191,20 @@ class Profiles(object):
 
     def _setDefaultProfiles(self, profiles):
         "profiles may be a single or a list of profile names"
-        if isinstance(profiles, basestring):
+        if isinstance(profiles, str):
             self._defaultProfiles = (profiles,)
         else:
             self._defaultProfiles = profiles
 
     defaultProfiles = property(_getDefaultProfiles,
                                _setDefaultProfiles,
-                               doc=u"Names of profiles to use for validation."
-                                   u"To use e.g. the CSS2 profile set "
-                                   u"``cssutils.profile.defaultProfiles = "
-                                   u"cssutils.profile.CSS_LEVEL_2``")
+                               doc="Names of profiles to use for validation."
+                                   "To use e.g. the CSS2 profile set "
+                                   "``cssutils.profile.defaultProfiles = "
+                                   "cssutils.profile.CSS_LEVEL_2``")
 
     profiles = property(lambda self: self._profileNames,
-                        doc=u'Names of all profiles in order as defined.')
+                        doc='Names of all profiles in order as defined.')
 
     knownNames = property(lambda self: self._knownNames,
                                doc="All known property names of all profiles.")
@@ -278,7 +278,7 @@ class Profiles(object):
         """
         if macros:
             # check if known macros would change and if yes reset properties
-            if len(set(macros.keys()).intersection(self._usedMacros.keys())):
+            if len(set(macros.keys()).intersection(list(self._usedMacros.keys()))):
                 self._resetProperties(newMacros=macros)
 
             else:
@@ -289,7 +289,7 @@ class Profiles(object):
             # might have been set by addProfiles before
             try:
                 macros = self._rawProfiles[profile]['macros']
-            except KeyError, e:
+            except KeyError as e:
                 macros = {}
 
         # save name and raw props/macros if macros change to completely reset
@@ -333,7 +333,7 @@ class Profiles(object):
                 del self._rawProfiles[profile]
                 del self._profileNames[self._profileNames.index(profile)]
             except KeyError:
-                raise NoSuchProfileException(u'No profile %r.' % profile)
+                raise NoSuchProfileException('No profile %r.' % profile)
 
             else:
                 if reset:
@@ -351,13 +351,13 @@ class Profiles(object):
         """
         if not profiles:
             profiles = self.profiles
-        elif isinstance(profiles, basestring):
+        elif isinstance(profiles, str):
             profiles = (profiles, )
         try:
             for profile in sorted(profiles):
                 for name in sorted(self._profilesProperties[profile].keys()):
                     yield name
-        except KeyError, e:
+        except KeyError as e:
             raise NoSuchProfileException(e)
 
     def validate(self, name, value):
@@ -377,7 +377,7 @@ class Profiles(object):
                 try:
                     # custom validation errors are caught
                     r = bool(self._profilesProperties[profile][name](value))
-                except Exception, e:
+                except Exception as e:
                     # TODO: more specific exception?
                     # Validate should not be fatal though!
                     self._log.error(e, error=Exception)
@@ -414,7 +414,7 @@ class Profiles(object):
         else:
             if not profiles:
                 profiles = self.defaultProfiles
-            elif isinstance(profiles, basestring):
+            elif isinstance(profiles, str):
                 profiles = (profiles, )
             for profilename in reversed(profiles):
                 # check given profiles
@@ -423,7 +423,7 @@ class Profiles(object):
                     try:
                         if validate(value):
                             return True, True, [profilename]
-                    except Exception, e:
+                    except Exception as e:
                         self._log.error(e, error=Exception)
 
             for profilename in (p for p in self._profileNames
@@ -434,13 +434,13 @@ class Profiles(object):
                     try:
                         if validate(value):
                             return True, False, [profilename]
-                    except Exception, e:
+                    except Exception as e:
                         self._log.error(e, error=Exception)
 
             names = []
-            for profilename, properties in self._profilesProperties.items():
+            for profilename, properties in list(self._profilesProperties.items()):
                 # return profile to which name belongs
-                if name in properties.keys():
+                if name in list(properties.keys()):
                     names.append(profilename)
             names.sort()
             return False, False, names

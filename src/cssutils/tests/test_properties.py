@@ -3,7 +3,7 @@ __version__ = '$Id: test_property.py 1529 2008-11-30 15:12:01Z cthedot $'
 
 import copy
 import xml.dom
-import basetest
+from . import basetest
 import cssutils
 from cssutils.css.property import Property
 
@@ -54,7 +54,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
         def expanded(*keys):
             r = []
             for k in keys:
-                if isinstance(V[k], basestring):
+                if isinstance(V[k], str):
                     r.append(V[k])
                 else:
                     r.extend(list(V[k]))
@@ -62,7 +62,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
 
         # before adding combined
         self.V = V
-        self.ALL = list(self._valuesofkeys(V.keys())) 
+        self.ALL = list(self._valuesofkeys(list(V.keys()))) 
         
         # combined values, only keys of V may be used!
         self.V['LENGTHS'] = expanded('0', 'EM', 'EX', 'PX', 'CM', 'MM', 'IN', 'PT', 'PC')
@@ -83,7 +83,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
                     yield v
             else:
                 v = self.V[key]
-                if isinstance(v, basestring):
+                if isinstance(v, str):
                     # single value
                     if v not in done: 
                         done.append(v)
@@ -103,13 +103,13 @@ class PropertiesTestCase(basetest.BaseTestCase):
 
         for value in self._valuesofkeys(keys):
             if name == debug:
-                print '+True?', Property(name, value).valid, value
+                print('+True?', Property(name, value).valid, value)
             self.assertEqual(True, Property(name, value).valid)
             if value in notvalid:
                 notvalid.remove(value)
         for value in notvalid:
             if name == debug:
-                print '-False?', Property(name, value).valid, value
+                print('-False?', Property(name, value).valid, value)
             self.assertEqual(False, Property(name, value).valid)
                 
     def test_properties(self):
@@ -170,7 +170,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
             
             'widows': ('0', ['1', '99999', 'inherit'])
         }
-        for name, keys in tests.items():
+        for name, keys in list(tests.items()):
             # keep track of valid keys
             self._check(name, keys)
 
@@ -182,7 +182,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'rgba(1,2,3,1)': (False, True, True, False, True),
             '1': (False, False, False, False, False)
         }
-        for v, rs in tests.items():
+        for v, rs in list(tests.items()):
             p = Property('color', v)
             
             # TODO: Fix

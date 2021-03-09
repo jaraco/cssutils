@@ -4,13 +4,13 @@ __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from helper import path2url
+from .helper import path2url
 import codecs
 import cssutils
 import os
 import sys
-import tokenize2
-import urllib
+from . import tokenize2
+import urllib.request, urllib.parse, urllib.error
 
 from cssutils import css
 

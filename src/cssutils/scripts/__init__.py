@@ -1,4 +1,4 @@
-from csscombine import csscombine
+from .csscombine import csscombine
 __all__ = ["csscapture", "csscombine", "cssparse"]
  
 

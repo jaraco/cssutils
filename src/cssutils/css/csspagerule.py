@@ -4,9 +4,9 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 from itertools import chain
-from cssstyledeclaration import CSSStyleDeclaration
-from marginrule import MarginRule
-import cssrule
+from .cssstyledeclaration import CSSStyleDeclaration
+from .marginrule import MarginRule
+from . import cssrule
 import cssutils
 import xml.dom
 
@@ -64,7 +64,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         """
         super(CSSPageRule, self).__init__(parentRule=parentRule, 
                                           parentStyleSheet=parentStyleSheet)
-        self._atkeyword = u'@page'
+        self._atkeyword = '@page'
         self._specificity = (0, 0, 0)
         
         tempseq = self._tempSeq()
@@ -86,14 +86,14 @@ class CSSPageRule(cssrule.CSSRuleRules):
         self._readonly = readonly
 
     def __repr__(self):
-        return u"cssutils.css.%s(selectorText=%r, style=%r)" % (
+        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
                 self.__class__.__name__, 
                 self.selectorText, 
                 self.style.cssText)
 
     def __str__(self):
-        return (u"<cssutils.css.%s object selectorText=%r specificity=%r "+
-               u"style=%r cssRules=%r at 0x%x>") % (
+        return ("<cssutils.css.%s object selectorText=%r specificity=%r "+
+               "style=%r cssRules=%r at 0x%x>") % (
                 self.__class__.__name__,
                 self.selectorText, 
                 self.specificity,
@@ -103,7 +103,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
 
     def __contains__(self, margin):
         """Check if margin is set in the rule."""
-        return margin in self.keys()
+        return margin in list(self.keys())
     
     def keys(self):
         "Return list of all set margins (MarginRule)."
@@ -152,24 +152,24 @@ class CSSPageRule(cssrule.CSSRuleRules):
             # pseudo_page, :left, :right or :first
             val = self._tokenvalue(token)
             if not new['last-S'] and expected in ['page', ': or EOF']\
-               and u':' == val:
+               and ':' == val:
                 try:
-                    identtoken = tokenizer.next()
+                    identtoken = next(tokenizer)
                 except StopIteration:
                     self._log.error(
-                        u'CSSPageRule selectorText: No IDENT found.', token)
+                        'CSSPageRule selectorText: No IDENT found.', token)
                 else:
                     ival, ityp = self._tokenvalue(identtoken),\
                                  self._type(identtoken)
                     if self._prods.IDENT != ityp:
-                        self._log.error(u'CSSPageRule selectorText: Expected '
-                                        u'IDENT but found: %r' % ival, token)
+                        self._log.error('CSSPageRule selectorText: Expected '
+                                        'IDENT but found: %r' % ival, token)
                     else:                        
-                        if not ival in (u'first', u'left', u'right'):
-                            self._log.warn(u'CSSPageRule: Unknown @page '
-                                           u'selector: %r' 
-                                           % (u':'+ival,), neverraise=True)
-                        if ival == u'first':
+                        if not ival in ('first', 'left', 'right'):
+                            self._log.warn('CSSPageRule: Unknown @page '
+                                           'selector: %r' 
+                                           % (':'+ival,), neverraise=True)
+                        if ival == 'first':
                             new['first'] = 1
                         else:
                             new['lr'] = 1
@@ -178,7 +178,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
                 return expected
             else:
                 new['wellformed'] = False
-                self._log.error(u'CSSPageRule selectorText: Unexpected CHAR: %r'
+                self._log.error('CSSPageRule selectorText: Unexpected CHAR: %r'
                                 % val, token)
                 return expected
 
@@ -193,8 +193,8 @@ class CSSPageRule(cssrule.CSSRuleRules):
             ""
             val = self._tokenvalue(token)
             if 'page' == expected:
-                if self._normalize(val) == u'auto':
-                    self._log.error(u'CSSPageRule selectorText: Invalid pagename.',
+                if self._normalize(val) == 'auto':
+                    self._log.error('CSSPageRule selectorText: Invalid pagename.',
                                     token)
                 else:
                     new['name'] = 1
@@ -203,8 +203,8 @@ class CSSPageRule(cssrule.CSSRuleRules):
                 return ': or EOF'
             else:
                 new['wellformed'] = False
-                self._log.error(u'CSSPageRule selectorText: Unexpected IDENT: '
-                                u'%r' % val, token)
+                self._log.error('CSSPageRule selectorText: Unexpected IDENT: '
+                                '%r' % val, token)
                 return expected
 
         def COMMENT(expected, seq, token, tokenizer=None):
@@ -225,7 +225,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         # post conditions
         if expected == 'ident':
             self._log.error(
-                u'CSSPageRule selectorText: No valid selector: %r' %
+                'CSSPageRule selectorText: No valid selector: %r' %
                     self._valuestr(selectorText))
         
         return wellformed, newseq, (new['name'], new['first'], new['lr'])
@@ -288,7 +288,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         
         tokenizer = self._tokenize2(cssText)
         if self._type(self._nexttoken(tokenizer)) != self._prods.PAGE_SYM:
-            self._log.error(u'CSSPageRule: No CSSPageRule found: %s' %
+            self._log.error('CSSPageRule: No CSSPageRule found: %s' %
                             self._valuestr(cssText), 
                             error=xml.dom.InvalidModificationErr)
         else:
@@ -302,14 +302,14 @@ class CSSPageRule(cssrule.CSSRuleRules):
                                                              blockendonly=True,
                                                              separateEnd=True)
             nonetoken = self._nexttoken(tokenizer)
-            if self._tokenvalue(startbrace) != u'{':
+            if self._tokenvalue(startbrace) != '{':
                 ok = False
-                self._log.error(u'CSSPageRule: No start { of style declaration ' 
-                                u'found: %r' % 
+                self._log.error('CSSPageRule: No start { of style declaration ' 
+                                'found: %r' % 
                                 self._valuestr(cssText), startbrace)
             elif nonetoken:
                 ok = False
-                self._log.error(u'CSSPageRule: Trailing content found.', 
+                self._log.error('CSSPageRule: Trailing content found.', 
                                 token=nonetoken)
                 
             selok, newselseq, specificity = self.__parseSelectorText(selectortokens)
@@ -318,10 +318,10 @@ class CSSPageRule(cssrule.CSSRuleRules):
             val, type_ = self._tokenvalue(braceorEOFtoken),\
                          self._type(braceorEOFtoken)
                          
-            if val != u'}' and type_ != 'EOF':
+            if val != '}' and type_ != 'EOF':
                 ok = False
                 self._log.error(
-                    u'CSSPageRule: No "}" after style declaration found: %r' %
+                    'CSSPageRule: No "}" after style declaration found: %r' %
                     self._valuestr(cssText))
             else:
                 if 'EOF' == type_:
@@ -343,7 +343,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
                     self.cssRules.append(r)
                 
     cssText = property(_getCssText, _setCssText,
-        doc=u"(DOM) The parsable textual representation of this rule.")
+        doc="(DOM) The parsable textual representation of this rule.")
 
 
     def _getSelectorText(self):
@@ -377,8 +377,8 @@ class CSSPageRule(cssrule.CSSRuleRules):
             self._specificity = specificity
 
     selectorText = property(_getSelectorText, _setSelectorText,
-                            doc=u"(DOM) The parsable textual representation of "
-                                u"the page selector for the rule.")
+                            doc="(DOM) The parsable textual representation of "
+                                "the page selector for the rule.")
 
     def _setStyle(self, style):
         """
@@ -386,15 +386,15 @@ class CSSPageRule(cssrule.CSSRuleRules):
             a CSSStyleDeclaration or string
         """
         self._checkReadonly()
-        if isinstance(style, basestring):
+        if isinstance(style, str):
             self._style = CSSStyleDeclaration(cssText=style, parentRule=self)
         else:
             style._parentRule = self
             self._style = style
             
     style = property(lambda self: self._style, _setStyle,
-                     doc=u"(DOM) The declaration-block of this rule set, "
-                         u"a :class:`~cssutils.css.CSSStyleDeclaration`.")
+                     doc="(DOM) The declaration-block of this rule set, "
+                         "a :class:`~cssutils.css.CSSStyleDeclaration`.")
 
 
     def insertRule(self, rule, index=None):
@@ -412,7 +412,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
            isinstance(rule, cssutils.css.CSSNamespaceRule) or \
            isinstance(rule, CSSPageRule) or \
            isinstance(rule, cssutils.css.CSSMediaRule):
-            self._log.error(u'%s: This type of rule is not allowed here: %s' 
+            self._log.error('%s: This type of rule is not allowed here: %s' 
                             % (self.__class__.__name__, rule.cssText),
                             error=xml.dom.HierarchyRequestErr)
             return
@@ -420,7 +420,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         return self._finishInsertRule(rule, index)
 
     specificity = property(lambda self: self._specificity, 
-                           doc=u"""Specificity of this page rule (READONLY). 
+                           doc="""Specificity of this page rule (READONLY). 
 Tuple of (f, g, h) where: 
 
  - if the page selector has a named page, f=1; else f=0
@@ -429,8 +429,8 @@ Tuple of (f, g, h) where:
 """)
 
     type = property(lambda self: self.PAGE_RULE, 
-                    doc=u"The type of this rule, as defined by a CSSRule "
-                        u"type constant.")
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
     
     # constant but needed:
     wellformed = property(lambda self: True)

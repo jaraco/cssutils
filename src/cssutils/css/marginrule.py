@@ -4,8 +4,8 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 from cssutils.prodparser import *
-from cssstyledeclaration import CSSStyleDeclaration
-import cssrule
+from .cssstyledeclaration import CSSStyleDeclaration
+from . import cssrule
 import cssutils
 import xml.dom
 
@@ -92,7 +92,7 @@ class MarginRule(cssrule.CSSRule):
         n = self._normalize(margin)
         
         if n not in MarginRule.margins:
-            self._log.error(u'Invalid margin @keyword for this %s rule: %r' %
+            self._log.error('Invalid margin @keyword for this %s rule: %r' %
                             (self.margin, margin),
                             error=xml.dom.InvalidModificationErr)
     
@@ -101,20 +101,20 @@ class MarginRule(cssrule.CSSRule):
             self._keyword = margin
 
     margin = property(lambda self: self._atkeyword, _setMargin,
-                      doc=u"Margin area of parent CSSPageRule. "
-                          u"`margin` and `atkeyword` are both normalized "
-                          u"@keyword of the @rule.")
+                      doc="Margin area of parent CSSPageRule. "
+                          "`margin` and `atkeyword` are both normalized "
+                          "@keyword of the @rule.")
 
     atkeyword = margin 
 
     def __repr__(self):
-        return u"cssutils.css.%s(margin=%r, style=%r)" % (self.__class__.__name__,
+        return "cssutils.css.%s(margin=%r, style=%r)" % (self.__class__.__name__,
                                                           self.margin, 
                                                           self.style.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object margin=%r style=%r "\
-               u"at 0x%x>" % (self.__class__.__name__,
+        return "<cssutils.css.%s object margin=%r style=%r "\
+               "at 0x%x>" % (self.__class__.__name__,
                               self.margin,
                               self.style.cssText,
                               id(self))
@@ -143,7 +143,7 @@ class MarginRule(cssrule.CSSRule):
         # TEMP: all style tokens are saved in store to fill styledeclaration
         # TODO: resolve when all generators
         styletokens = Prod(name='styletokens',
-                           match=lambda t, v: v != u'}',
+                           match=lambda t, v: v != '}',
                            #toSeq=False,
                            toStore='styletokens',
                            storeToken=True 
@@ -157,16 +157,16 @@ class MarginRule(cssrule.CSSRule):
                               # TODO?
                               #, exception=xml.dom.InvalidModificationErr 
                               ),
-                         PreDef.char('OPEN', u'{'),
+                         PreDef.char('OPEN', '{'),
                          Sequence(Choice(PreDef.unknownrule(toStore='@'), 
                                          styletokens),
                                   minmax=lambda: (0, None)
                          ),
-                         PreDef.char('CLOSE', u'}', stopAndKeep=True)
+                         PreDef.char('CLOSE', '}', stopAndKeep=True)
                 )
         # parse
         ok, seq, store, unused = ProdParser().parse(cssText,
-                                                    u'MarginRule',
+                                                    'MarginRule',
                                                     prods)
         
         if ok:
@@ -177,7 +177,7 @@ class MarginRule(cssrule.CSSRule):
                 # may raise:
                 self.margin = store['margin'].value
             else:
-                self._log.error(u'No margin @keyword for this %s rule' %
+                self._log.error('No margin @keyword for this %s rule' %
                                 self.margin,
                                 error=xml.dom.InvalidModificationErr)
             
@@ -190,7 +190,7 @@ class MarginRule(cssrule.CSSRule):
             
                 
     cssText = property(fget=_getCssText, fset=_setCssText,
-                       doc=u"(DOM) The parsable textual representation.")
+                       doc="(DOM) The parsable textual representation.")
     
     def _setStyle(self, style):
         """
@@ -198,18 +198,18 @@ class MarginRule(cssrule.CSSRule):
             current style object.
         """
         self._checkReadonly()
-        if isinstance(style, basestring):
+        if isinstance(style, str):
             self._style = CSSStyleDeclaration(cssText=style, parentRule=self)
         else:
             style._parentRule = self
             self._style = style
 
     style = property(lambda self: self._style, _setStyle,
-                     doc=u"(DOM) The declaration-block of this rule set.")
+                     doc="(DOM) The declaration-block of this rule set.")
     
     type = property(lambda self: self.MARGIN_RULE, 
-                    doc=u"The type of this rule, as defined by a CSSRule "
-                        u"type constant.")
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
     
     wellformed = property(lambda self: bool(self.atkeyword))
     

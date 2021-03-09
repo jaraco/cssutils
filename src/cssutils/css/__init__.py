@@ -57,24 +57,24 @@ __all__ = [
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssstylesheet import *
-from cssrulelist import *
-from cssrule import *
-from csscomment import *
-from csscharsetrule import *
-from cssfontfacerule import *
-from cssimportrule import *
-from cssmediarule import *
-from cssnamespacerule import *
-from csspagerule import *
-from marginrule import *
-from cssstylerule import *
-from cssvariablesrule import *
-from cssunknownrule import *
-from selector import *
-from selectorlist import *
-from cssstyledeclaration import *
-from cssvariablesdeclaration import *
-from property import *
+from .cssstylesheet import *
+from .cssrulelist import *
+from .cssrule import *
+from .csscomment import *
+from .csscharsetrule import *
+from .cssfontfacerule import *
+from .cssimportrule import *
+from .cssmediarule import *
+from .cssnamespacerule import *
+from .csspagerule import *
+from .marginrule import *
+from .cssstylerule import *
+from .cssvariablesrule import *
+from .cssunknownrule import *
+from .selector import *
+from .selectorlist import *
+from .cssstyledeclaration import *
+from .cssvariablesdeclaration import *
+from .property import *
 #from cssvalue import *
-from value import *
+from .value import *

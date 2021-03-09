@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import logging
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import xml.dom
 
 class _ErrorHandler(object):
@@ -70,7 +70,7 @@ class _ErrorHandler(object):
             raise AttributeError(
                 '(errorhandler) No Attribute %r found' % name)
 
-    def __handle(self, msg=u'', token=None, error=xml.dom.SyntaxErr,
+    def __handle(self, msg='', token=None, error=xml.dom.SyntaxErr,
                  neverraise=False, args=None):
         """
         handles all calls
@@ -86,11 +86,11 @@ class _ErrorHandler(object):
                     value, line, col = token[1], token[2], token[3]
                 else:
                     value, line, col = token.value, token.line, token.col
-                msg = u'%s [%s:%s: %s]' % (
+                msg = '%s [%s:%s: %s]' % (
                     msg, line, col, value)
     
             if error and self.raiseExceptions and not neverraise:
-                if isinstance(error, urllib2.HTTPError) or isinstance(error, urllib2.URLError):
+                if isinstance(error, urllib.error.HTTPError) or isinstance(error, urllib.error.URLError):
                     raise
                 elif issubclass(error, xml.dom.DOMException): 
                     error.line = line

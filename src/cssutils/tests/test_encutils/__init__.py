@@ -2,8 +2,8 @@
 """
 tests for encutils.py
 """
-import httplib
-from StringIO import StringIO
+import http.client
+from io import StringIO
 import sys
 import unittest
 
@@ -25,9 +25,9 @@ class AutoEncodingTestCase(unittest.TestCase):
             def __init__(self, content):
                 if PY2x:
                     fp = StringIO(content)
-                    self._info = httplib.HTTPMessage(fp)
+                    self._info = http.client.HTTPMessage(fp)
                 else:
-                    self._info = httplib.HTTPMessage()
+                    self._info = http.client.HTTPMessage()
                     # Adjust to testdata.
                     l = content.split(':')
                     if len(l) > 1:
@@ -60,28 +60,28 @@ class AutoEncodingTestCase(unittest.TestCase):
             'x/x': encutils._OTHER_TYPE,
             'ANYTHING': encutils._OTHER_TYPE
             }
-        for test, exp in tests.items():
+        for test, exp in list(tests.items()):
             self.assertEqual(
                 exp, encutils._getTextTypeByMediaType(test, log=log))
 
     def test_getTextType(self):
         "encutils._getTextType"
         tests = {
-            u'\x00\x00\xFE\xFF<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            u'\xFF\xFE\x00\x00<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            u'\xFE\xFF<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            u'\xFF\xFE<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            u'\xef\xbb\xbf<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            u'<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            u'\x00\x00\xFE\xFFanything': encutils._OTHER_TYPE,
-            u'\xFF\xFE\x00\x00anything': encutils._OTHER_TYPE,
-            u'\xFE\xFFanything': encutils._OTHER_TYPE,
-            u'\xFF\xFEanything': encutils._OTHER_TYPE,
-            u'\xef\xbb\xbfanything': encutils._OTHER_TYPE,
-            u'x/x': encutils._OTHER_TYPE,
-            u'ANYTHING': encutils._OTHER_TYPE
+            '\x00\x00\xFE\xFF<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\xFF\xFE\x00\x00<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\xFE\xFF<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\xFF\xFE<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\xef\xbb\xbf<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\x00\x00\xFE\xFFanything': encutils._OTHER_TYPE,
+            '\xFF\xFE\x00\x00anything': encutils._OTHER_TYPE,
+            '\xFE\xFFanything': encutils._OTHER_TYPE,
+            '\xFF\xFEanything': encutils._OTHER_TYPE,
+            '\xef\xbb\xbfanything': encutils._OTHER_TYPE,
+            'x/x': encutils._OTHER_TYPE,
+            'ANYTHING': encutils._OTHER_TYPE
             }
-        for test, exp in tests.items():
+        for test, exp in list(tests.items()):
             self.assertEqual(
                 exp, encutils._getTextType(test, log=log))
 
@@ -101,7 +101,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'text/plain': 'iso-8859-1',
             'ANYTHING': None
             }
-        for test, exp in tests.items():
+        for test, exp in list(tests.items()):
             self.assertEqual(exp,
                              encutils.encodingByMediaType(test, log=log))
 
@@ -162,18 +162,18 @@ class AutoEncodingTestCase(unittest.TestCase):
                 <meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":
                 ('text/html', None)
             }
-        for test, exp in tests.items():
+        for test, exp in list(tests.items()):
             self.assertEqual(exp, encutils.getMetaInfo(test, log=log))
 
     def test_detectXMLEncoding(self):
         "encutils.detectXMLEncoding"
         tests = {
             # BOM
-            ('utf_32_be'): u'\x00\x00\xFE\xFFanything',
-            ('utf_32_le'): u'\xFF\xFE\x00\x00anything',
-            ('utf_16_be'): u'\xFE\xFFanything',
-            ('utf_16_le'): u'\xFF\xFEanything',
-            ('utf-8'): u'\xef\xbb\xbfanything',
+            ('utf_32_be'): '\x00\x00\xFE\xFFanything',
+            ('utf_32_le'): '\xFF\xFE\x00\x00anything',
+            ('utf_16_be'): '\xFE\xFFanything',
+            ('utf_16_le'): '\xFF\xFEanything',
+            ('utf-8'): '\xef\xbb\xbfanything',
             # encoding=
             ('ascii'): '<?xml version="1.0" encoding="ascii" ?>',
             ('ascii'): "<?xml version='1.0' encoding='ascii' ?>",
@@ -182,7 +182,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             ('utf-8'): '<?xml version="1.0" ?>',
             ('utf-8'): '<?xml version="1.0"?><x encoding="ascii"/>'
             }
-        for exp, test in tests.items():
+        for exp, test in list(tests.items()):
             self.assertEqual(exp, encutils.detectXMLEncoding(test, log=log))
 
     def test_tryEncodings(self):
@@ -190,16 +190,16 @@ class AutoEncodingTestCase(unittest.TestCase):
         try:
             import chardet
             tests = [
-                ('ascii', u'abc'.encode('ascii')),
-                ('windows-1252', u'€'.encode('windows-1252')),
-                ('ascii', u'1'.encode('utf-8'))
+                ('ascii', 'abc'.encode('ascii')),
+                ('windows-1252', '€'.encode('windows-1252')),
+                ('ascii', '1'.encode('utf-8'))
                 ]
         except ImportError:
             tests = [
-                ('ascii', u'abc'.encode('ascii')),
-                ('windows-1252', u'€'.encode('windows-1252')),
-                ('iso-8859-1', u'äöüß'.encode('iso-8859-1')),
-                ('iso-8859-1', u'äöüß'.encode('windows-1252')),
+                ('ascii', 'abc'.encode('ascii')),
+                ('windows-1252', '€'.encode('windows-1252')),
+                ('iso-8859-1', 'äöüß'.encode('iso-8859-1')),
+                ('iso-8859-1', 'äöüß'.encode('windows-1252')),
                 #('utf-8', u'\u1111'.encode('utf-8'))
                 ]
         for exp, test in tests:

@@ -3,7 +3,7 @@ __version__ = '$Id: test_cssvalue.py 1443 2008-08-31 13:54:39Z cthedot $'
 
 import sys
 import platform
-import basetest
+from . import basetest
 import cssutils
 
 CSS2 = (cssutils.profile.CSS_LEVEL_2,)
@@ -27,7 +27,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         '-test-macro': '{ident}|{percentage}',
         '-test-custommacro': '{testvalue}',
         # custom validation function 
-        '-test-funcval': lambda(v): int(v) > 0 
+        '-test-funcval': lambda v: int(v) > 0 
         }  
 
     def test_knownNames(self):
@@ -35,7 +35,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         p = cssutils.profiles.Profiles()
         p.removeProfile(all=True)
         p.addProfile('test', self.P1, self.M1)
-        self.assertEqual(p.knownNames, self.P1.keys())
+        self.assertEqual(p.knownNames, list(self.P1.keys()))
         p.removeProfile(all=True)
         self.assertEqual(p.knownNames, [])
         
@@ -91,7 +91,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         # new profile
         cssutils.profile.addProfile('test', self.P1, self.M1)
         
-        props = self.P1.keys()
+        props = list(self.P1.keys())
         props.sort()
         self.assertEqual(props, list(cssutils.profile.propertiesByProfile('test')))
         
@@ -110,7 +110,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('-test-funcval', '-1'): False,     
             ('-test-funcval', 'x'): False     
             }
-        for test, v in tests.items():
+        for test, v in list(tests.items()):
             self.assertEqual(v, cssutils.profile.validate(*test))
             
             self.assertEqual((v, v, ['test']), 
@@ -119,20 +119,20 @@ class ProfilesTestCase(basetest.BaseTestCase):
         cssutils.log.raiseExceptions = True
         
         # raises:
-        expmsg = u"invalid literal for int() with base 10: 'x'"        
+        expmsg = "invalid literal for int() with base 10: 'x'"        
         # Python upto 2.4 and Jython have different msg format...
         if sys.version_info[0:2] == (2,4):
-            expmsg = u"invalid literal for int(): x" 
+            expmsg = "invalid literal for int(): x" 
         elif sys.platform.startswith('java'):
-            expmsg = u"invalid literal for int() with base 10: x"
+            expmsg = "invalid literal for int() with base 10: x"
         # PyPy adds the u prefix, but only in versions lower than Python 3
         elif (platform.python_implementation() == "PyPy" and
               sys.version_info < (3, 0)):
-            expmsg = u"invalid literal for int() with base 10: u'x'"
+            expmsg = "invalid literal for int() with base 10: u'x'"
 
             
         self.assertRaisesMsg(Exception, expmsg, 
-                             cssutils.profile.validate, u'-test-funcval', u'x')
+                             cssutils.profile.validate, '-test-funcval', 'x')
 
     def test_removeProfile(self):
         "Profiles.removeProfile()"
@@ -505,7 +505,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         
         }
         # TODO!!!
-        for (name, values), (valid, matching, profile) in tests.items(): 
+        for (name, values), (valid, matching, profile) in list(tests.items()): 
             for value in values:
                 self.assertEqual(valid, cssutils.profile.validate(name, value))
                 

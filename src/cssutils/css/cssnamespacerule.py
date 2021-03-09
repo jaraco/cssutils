@@ -4,7 +4,7 @@ __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import cssrule
+from . import cssrule
 import cssutils
 import xml.dom
 
@@ -62,8 +62,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
         """
         super(CSSNamespaceRule, self).__init__(parentRule=parentRule, 
                                                parentStyleSheet=parentStyleSheet)
-        self._atkeyword = u'@namespace'
-        self._prefix = u''
+        self._atkeyword = '@namespace'
+        self._prefix = ''
         self._namespaceURI = None
         
         if namespaceURI:
@@ -83,13 +83,13 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return u"cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
+        return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
                 self.__class__.__name__,
                 self.namespaceURI,
                 self.prefix)
 
     def __str__(self):
-        return u"<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
+        return "<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
                 self.__class__.__name__,
                 self.namespaceURI,
                 self.prefix,
@@ -119,13 +119,13 @@ class CSSNamespaceRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.NAMESPACE_SYM:
-            self._log.error(u'CSSNamespaceRule: No CSSNamespaceRule found: %s' %
+            self._log.error('CSSNamespaceRule: No CSSNamespaceRule found: %s' %
                             self._valuestr(cssText),
                             error=xml.dom.InvalidModificationErr)
         else:
             # for closures: must be a mutable
             new = {'keyword': self._tokenvalue(attoken),
-                   'prefix': u'',
+                   'prefix': '',
                    'uri': None,
                    'wellformed': True
                    }
@@ -139,7 +139,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'CSSNamespaceRule: Unexpected ident.', token)
+                        'CSSNamespaceRule: Unexpected ident.', token)
                     return expected
 
             def _string(expected, seq, token, tokenizer=None):
@@ -152,7 +152,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'CSSNamespaceRule: Unexpected string.', token)
+                        'CSSNamespaceRule: Unexpected string.', token)
                     return expected
 
             def _uri(expected, seq, token, tokenizer=None):
@@ -165,18 +165,18 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'CSSNamespaceRule: Unexpected URI.', token)
+                        'CSSNamespaceRule: Unexpected URI.', token)
                     return expected
 
             def _char(expected, seq, token, tokenizer=None):
                 # final ;
                 val = self._tokenvalue(token)
-                if ';' == expected and u';' == val:
+                if ';' == expected and ';' == val:
                     return 'EOF'
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'CSSNamespaceRule: Unexpected char.', token)
+                        'CSSNamespaceRule: Unexpected char.', token)
                     return expected
 
             # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
@@ -195,12 +195,12 @@ class CSSNamespaceRule(cssrule.CSSRule):
             # post conditions
             if new['uri'] is None:
                 wellformed = False
-                self._log.error(u'CSSNamespaceRule: No namespace URI found: %s'
+                self._log.error('CSSNamespaceRule: No namespace URI found: %s'
                                 % self._valuestr(cssText))
 
             if expected != 'EOF':
                 wellformed = False
-                self._log.error(u'CSSNamespaceRule: No ";" found: %s' %
+                self._log.error('CSSNamespaceRule: No ";" found: %s' %
                                 self._valuestr(cssText))
 
             # set all
@@ -211,8 +211,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 self._setSeq(newseq)
 
     cssText = property(fget=_getCssText, fset=_setCssText,
-                       doc=u"(DOM) The parsable textual representation of this "
-                           u"rule.")
+                       doc="(DOM) The parsable textual representation of this "
+                           "rule.")
 
     def _setNamespaceURI(self, namespaceURI):
         """
@@ -230,7 +230,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             tempseq.append(namespaceURI, 'namespaceURI')
             self._setSeq(tempseq) # makes seq readonly!
         elif self._namespaceURI != namespaceURI:
-            self._log.error(u'CSSNamespaceRule: namespaceURI is readonly.',
+            self._log.error('CSSNamespaceRule: namespaceURI is readonly.',
                             error=xml.dom.NoModificationAllowedErr)
 
     namespaceURI = property(lambda self: self._namespaceURI, _setNamespaceURI,
@@ -261,12 +261,12 @@ class CSSNamespaceRule(cssrule.CSSRule):
         """
         self._checkReadonly()
         if not prefix:
-            prefix = u''
+            prefix = ''
         else:        
             tokenizer = self._tokenize2(prefix)
             prefixtoken = self._nexttoken(tokenizer, None)
             if not prefixtoken or self._type(prefixtoken) != self._prods.IDENT:
-                self._log.error(u'CSSNamespaceRule: No valid prefix "%s".' %
+                self._log.error('CSSNamespaceRule: No valid prefix "%s".' %
                                 self._valuestr(prefix),
                                 error=xml.dom.SyntaxErr)
                 return
@@ -285,11 +285,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._prefix = prefix
 
     prefix = property(lambda self: self._prefix, _setPrefix,
-                      doc=u"Prefix used for the defined namespace.")
+                      doc="Prefix used for the defined namespace.")
 
     type = property(lambda self: self.NAMESPACE_RULE, 
-                    doc=u"The type of this rule, as defined by a CSSRule "
-                        u"type constant.")
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
     
     wellformed = property(lambda self: self.namespaceURI is not None)
     

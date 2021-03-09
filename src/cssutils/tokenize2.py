@@ -6,8 +6,8 @@ __all__ = ['Tokenizer', 'CSSProductions']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssproductions import *
-from helper import normalize
+from .cssproductions import *
+from .helper import normalize
 import itertools
 import re
 import sys
@@ -20,14 +20,14 @@ class Tokenizer(object):
         (Tokenname, value, startline, startcolumn)
     """
     _atkeywords = {
-        u'@font-face': CSSProductions.FONT_FACE_SYM,
-        u'@import': CSSProductions.IMPORT_SYM,
-        u'@media': CSSProductions.MEDIA_SYM,
-        u'@namespace': CSSProductions.NAMESPACE_SYM,
-        u'@page': CSSProductions.PAGE_SYM,
-        u'@variables': CSSProductions.VARIABLES_SYM
+        '@font-face': CSSProductions.FONT_FACE_SYM,
+        '@import': CSSProductions.IMPORT_SYM,
+        '@media': CSSProductions.MEDIA_SYM,
+        '@namespace': CSSProductions.NAMESPACE_SYM,
+        '@page': CSSProductions.PAGE_SYM,
+        '@variables': CSSProductions.VARIABLES_SYM
         }
-    _linesep = u'\n'
+    _linesep = '\n'
     unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t\r\n\f\x20])?').sub
     cleanstring = re.compile(r'\\((\r\n)|[\n\r\f])').sub
 
@@ -108,7 +108,7 @@ class Tokenizer(object):
             "used by unicodesub"
             num = int(m.group(0)[1:], 16)
             if num <= sys.maxunicode:
-                return unichr(num)
+                return chr(num)
             else:
                 return m.group(0)
 
@@ -146,7 +146,7 @@ class Tokenizer(object):
 
             # speed test for most used CHARs, sadly . not possible :(
             c = text[pos]
-            if c in u',:;{}>[]': # + but in num!
+            if c in ',:;{}>[]': # + but in num!
                 yield ('CHAR', c, line, col)
                 col += 1
                 pos += 1
@@ -157,9 +157,9 @@ class Tokenizer(object):
 
                     # TODO: USE bad comment?
                     if (fullsheet and name == 'CHAR' and
-                          has_at(text, pos, u'/*')):
+                          has_at(text, pos, '/*')):
                         # before CHAR production test for incomplete comment
-                        possiblecomment = u'%s*/' % text[pos:]
+                        possiblecomment = '%s*/' % text[pos:]
                         match = self.commentmatcher(possiblecomment)
                         if match and self._doComments:
                             yield ('COMMENT', possiblecomment, line, col)
@@ -190,10 +190,10 @@ class Tokenizer(object):
                                 name, found = 'STRING', '%s%s' % (found, found[0])
 
                             elif 'FUNCTION' == name and\
-                                 u'url(' == _normalize(found):
+                                 'url(' == _normalize(found):
                                 # url( is a FUNCTION if incomplete sheet
                                 # FUNCTION production MUST BE after URI production
-                                for end in (u"')", u'")', u')'):
+                                for end in ("')", '")', ')'):
                                     possibleuri = '%s%s' % (text[pos:], end)
                                     match = self.urimatcher(possibleuri)
                                     if match:
@@ -215,13 +215,13 @@ class Tokenizer(object):
                                 try:
                                     # get actual ATKEYWORD SYM
                                     name = self._atkeywords[_normalize(found)]
-                                except KeyError, e:
+                                except KeyError as e:
                                     # might also be misplace @charset...
                                     if ('@charset' == found and
-                                          has_at(text, pos + len(found), u' ')):
+                                          has_at(text, pos + len(found), ' ')):
                                         # @charset needs tailing S!
                                         name = CSSProductions.CHARSET_SYM
-                                        found += u' '
+                                        found += ' '
                                     else:
                                         name = 'ATKEYWORD'
 
@@ -244,7 +244,7 @@ class Tokenizer(object):
             assert text is _orig_text
 
         if fullsheet:
-            yield ('EOF', u'', line, col)
+            yield ('EOF', '', line, col)
 
 
 def has_at(text, pos, string):

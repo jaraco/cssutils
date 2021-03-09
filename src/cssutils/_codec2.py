@@ -154,9 +154,9 @@ def detectencoding_unicode(input, final=False):
     specifies whether more data will be available in later calls or not. If
     ``final`` is true, ``detectencoding_unicode()`` will never return ``None``.
     """
-    prefix = u'@charset "'
+    prefix = '@charset "'
     if input.startswith(prefix):
-        pos = input.find(u'"', len(prefix))
+        pos = input.find('"', len(prefix))
         if pos >= 0:
             return (input[len(prefix):pos], True)
     elif final or not prefix.startswith(input):
@@ -176,13 +176,13 @@ def _fixencoding(input, encoding, final=False):
     specifies whether more data will be available in later calls or not.
     If ``final`` is true, ``_fixencoding()`` will never return ``None``.
     """
-    prefix = u'@charset "'
+    prefix = '@charset "'
     if len(input) > len(prefix):
         if input.startswith(prefix):
-            pos = input.find(u'"', len(prefix))
+            pos = input.find('"', len(prefix))
             if pos >= 0:
                 if encoding.replace("_", "-").lower() == "utf-8-sig":
-                    encoding = u"utf-8"
+                    encoding = "utf-8"
                 return prefix + encoding + input[pos:]
             # we haven't seen the end of the encoding name yet => fall through
         else:
@@ -203,7 +203,7 @@ def decode(input, errors="strict", encoding=None, force=True):
         if (explicit and not force) or encoding is None: # Take the encoding from the input
             encoding = _encoding
     (input, consumed) = codecs.getdecoder(encoding)(input, errors)
-    return (_fixencoding(input, unicode(encoding), True), consumed)
+    return (_fixencoding(input, str(encoding), True), consumed)
 
 
 def encode(input, errors="strict", encoding=None):
@@ -211,9 +211,9 @@ def encode(input, errors="strict", encoding=None):
     if encoding is None:
         encoding = detectencoding_unicode(input, True)[0]
         if encoding.replace("_", "-").lower() == "utf-8-sig":
-            input = _fixencoding(input, u"utf-8", True)
+            input = _fixencoding(input, "utf-8", True)
     else:
-        input = _fixencoding(input, unicode(encoding), True)
+        input = _fixencoding(input, str(encoding), True)
     if encoding == "css":
         raise ValueError("css not allowed as encoding name")
     encoder = codecs.getencoder(encoding)
@@ -247,7 +247,7 @@ if hasattr(codecs, "IncrementalDecoder"):
             # Store ``errors`` somewhere else,
             # because we have to hide it in a property
             self._errors = errors
-            self.buffer = u"".encode()
+            self.buffer = "".encode()
             self.headerfixed = False
 
         def iterdecode(self, input):
@@ -272,7 +272,7 @@ if hasattr(codecs, "IncrementalDecoder"):
                     (encoding, explicit) = detectencoding_str(input, final)
                     if encoding is None: # no encoding determined yet
                         self.buffer = input # retry the complete input on the next call
-                        return u"" # no encoding determined yet, so no output
+                        return "" # no encoding determined yet, so no output
                     elif encoding == "css":
                         raise ValueError("css not allowed as encoding name")
                     if (explicit and not self.force) or self.encoding is None: # Take the encoding from the input
@@ -288,18 +288,18 @@ if hasattr(codecs, "IncrementalDecoder"):
             encoding = self.encoding
             if encoding.replace("_", "-").lower() == "utf-8-sig":
                 encoding = "utf-8"
-            newoutput = _fixencoding(output, unicode(encoding), final)
+            newoutput = _fixencoding(output, str(encoding), final)
             if newoutput is None:
                 # retry fixing the @charset rule (but keep the decoded stuff)
                 self.buffer = output
-                return u""
+                return ""
             self.headerfixed = True
             return newoutput
 
         def reset(self):
             codecs.IncrementalDecoder.reset(self)
             self.decoder = None
-            self.buffer = u"".encode()
+            self.buffer = "".encode()
             self.headerfixed = False
 
         def _geterrors(self):
@@ -340,14 +340,14 @@ if hasattr(codecs, "IncrementalEncoder"):
             # Store ``errors`` somewhere else,
             # because we have to hide it in a property
             self._errors = errors
-            self.buffer = u""
+            self.buffer = ""
 
         def iterencode(self, input):
             for part in input:
                 result = self.encode(part, False)
                 if result:
                     yield result
-            result = self.encode(u"", True)
+            result = self.encode("", True)
             if result:
                 yield result
 
@@ -359,7 +359,7 @@ if hasattr(codecs, "IncrementalEncoder"):
                     encoding = self.encoding
                     if encoding.replace("_", "-").lower() == "utf-8-sig":
                         encoding = "utf-8"
-                    newinput = _fixencoding(input, unicode(encoding), final)
+                    newinput = _fixencoding(input, str(encoding), final)
                     if newinput is None: # @charset rule incomplete => Retry next time
                         self.buffer = input
                         return ""
@@ -373,9 +373,9 @@ if hasattr(codecs, "IncrementalEncoder"):
                     info = codecs.lookup(self.encoding)
                     encoding = self.encoding
                     if self.encoding.replace("_", "-").lower() == "utf-8-sig":
-                        input = _fixencoding(input, u"utf-8", True)
+                        input = _fixencoding(input, "utf-8", True)
                     self.encoder = info.incrementalencoder(self._errors)
-                    self.buffer = u""
+                    self.buffer = ""
                 else:
                     self.buffer = input
                     return ""
@@ -384,7 +384,7 @@ if hasattr(codecs, "IncrementalEncoder"):
         def reset(self):
             codecs.IncrementalEncoder.reset(self)
             self.encoder = None
-            self.buffer = u""
+            self.buffer = ""
 
         def _geterrors(self):
             return self._errors
@@ -420,7 +420,7 @@ class StreamWriter(codecs.StreamWriter):
         self.streamwriter = None
         self.encoding = encoding
         self._errors = errors
-        self.buffer = u""
+        self.buffer = ""
 
     def encode(self, input, errors='strict'):
         li = len(input)
@@ -432,7 +432,7 @@ class StreamWriter(codecs.StreamWriter):
                 encoding = self.encoding
                 if encoding.replace("_", "-").lower() == "utf-8-sig":
                     encoding = "utf-8"
-                newinput = _fixencoding(input, unicode(encoding), False)
+                newinput = _fixencoding(input, str(encoding), False)
                 if newinput is None: # @charset rule incomplete => Retry next time
                     self.buffer = input
                     return ("", 0)
@@ -446,8 +446,8 @@ class StreamWriter(codecs.StreamWriter):
                 self.streamwriter = codecs.getwriter(self.encoding)(self.stream, self._errors)
                 encoding = self.encoding
                 if self.encoding.replace("_", "-").lower() == "utf-8-sig":
-                    input = _fixencoding(input, u"utf-8", True)
-                self.buffer = u""
+                    input = _fixencoding(input, "utf-8", True)
+                self.buffer = ""
             else:
                 self.buffer = input
                 return ("", 0)
@@ -478,7 +478,7 @@ class StreamReader(codecs.StreamReader):
             if self.encoding is None or not self.force:
                 (encoding, explicit) = detectencoding_str(input, False)
                 if encoding is None: # no encoding determined yet
-                    return (u"", 0) # no encoding determined yet, so no output
+                    return ("", 0) # no encoding determined yet, so no output
                 elif encoding == "css":
                     raise ValueError("css not allowed as encoding name")
                 if (explicit and not self.force) or self.encoding is None: # Take the encoding from the input
@@ -489,11 +489,11 @@ class StreamReader(codecs.StreamReader):
             encoding = self.encoding
             if encoding.replace("_", "-").lower() == "utf-8-sig":
                 encoding = "utf-8"
-            newoutput = _fixencoding(output, unicode(encoding), False)
+            newoutput = _fixencoding(output, str(encoding), False)
             if newoutput is not None:
                 self.streamreader = streamreader
                 return (newoutput, consumed)
-            return (u"", 0) # we will create a new streamreader on the next call
+            return ("", 0) # we will create a new streamreader on the next call
         return self.streamreader.decode(input, errors)
 
     def _geterrors(self):
@@ -558,7 +558,7 @@ else:
             if len(input) < 3 and codecs.BOM_UTF8.startswith(input):
                 # not enough data to decide if this is a BOM
                 # => try again on the next call
-                return (u"", 0)
+                return ("", 0)
             self.decode = codecs.utf_8_decode
             return utf8sig_decode(input, errors)
 
@@ -579,6 +579,6 @@ codecs.register(search_function)
 def cssescape(exc):
     if not isinstance(exc, UnicodeEncodeError):
         raise TypeError("don't know how to handle %r" % exc)
-    return (u"".join(u"\\%06x" % ord(c) for c in exc.object[exc.start:exc.end]), exc.end)
+    return ("".join("\\%06x" % ord(c) for c in exc.object[exc.start:exc.end]), exc.end)
 
 codecs.register_error("cssescape", cssescape)

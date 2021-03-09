@@ -4,10 +4,10 @@ __all__ = ['CSSImportRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import cssrule
+from . import cssrule
 import cssutils
 import os
-import urlparse
+import urllib.parse
 import xml.dom
 
 class CSSImportRule(cssrule.CSSRule):
@@ -37,7 +37,7 @@ class CSSImportRule(cssrule.CSSRule):
         """
         super(CSSImportRule, self).__init__(parentRule=parentRule,
                                             parentStyleSheet=parentStyleSheet)
-        self._atkeyword = u'@import'
+        self._atkeyword = '@import'
         self._styleSheet = None
 
         # string or uri used for reserialization
@@ -55,7 +55,7 @@ class CSSImportRule(cssrule.CSSRule):
             self.media = mediaText
         else:
             # must be all for @import
-            self.media = cssutils.stylesheets.MediaList(mediaText=u'all')
+            self.media = cssutils.stylesheets.MediaList(mediaText='all')
         # 2. name
         self.name = name
         # 3. href and styleSheet
@@ -68,7 +68,7 @@ class CSSImportRule(cssrule.CSSRule):
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return u"cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
+        return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
                 self.__class__.__name__,
                 self.href, 
                 self.media.mediaText, 
@@ -79,14 +79,14 @@ class CSSImportRule(cssrule.CSSRule):
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return u"<cssutils.css.%s object href=%r mediaText=%r name=%r at 0x%x>"\
+        return "<cssutils.css.%s object href=%r mediaText=%r name=%r at 0x%x>"\
                % (self.__class__.__name__, 
                   self.href, 
                   mediaText, 
                   self.name, 
                   id(self))
 
-    _usemedia = property(lambda self: self.media.mediaText not in (u'', u'all'),
+    _usemedia = property(lambda self: self.media.mediaText not in ('', 'all'),
                          doc="if self.media is used (or simply empty)")
 
     def _getCssText(self):
@@ -112,7 +112,7 @@ class CSSImportRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.IMPORT_SYM:
-            self._log.error(u'CSSImportRule: No CSSImportRule found: %s' %
+            self._log.error('CSSImportRule: No CSSImportRule found: %s' %
                             self._valuestr(cssText),
                             error=xml.dom.InvalidModificationErr)
         else:
@@ -144,7 +144,7 @@ class CSSImportRule(cssrule.CSSRule):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'CSSImportRule: Unexpected string.', token)
+                        'CSSImportRule: Unexpected string.', token)
                     return expected
 
             def _uri(expected, seq, token, tokenizer=None):
@@ -158,7 +158,7 @@ class CSSImportRule(cssrule.CSSRule):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'CSSImportRule: Unexpected URI.', token)
+                        'CSSImportRule: Unexpected URI.', token)
                     return expected
 
             def _ident(expected, seq, token, tokenizer=None):
@@ -170,10 +170,10 @@ class CSSImportRule(cssrule.CSSRule):
 
                     last = mediatokens.pop() # retrieve ;
                     lastval, lasttyp = self._tokenvalue(last), self._type(last)
-                    if lastval != u';' and lasttyp not in ('EOF', 
+                    if lastval != ';' and lasttyp not in ('EOF', 
                                                            self._prods.STRING):
                         new['wellformed'] = False
-                        self._log.error(u'CSSImportRule: No ";" found: %s' %
+                        self._log.error('CSSImportRule: No ";" found: %s' %
                                         self._valuestr(cssText), token=token)
 
                     newMedia = cssutils.stylesheets.MediaList(parentRule=self)
@@ -183,7 +183,7 @@ class CSSImportRule(cssrule.CSSRule):
                         seq.append(newMedia, 'media')
                     else:
                         new['wellformed'] = False
-                        self._log.error(u'CSSImportRule: Invalid MediaList: %s' %
+                        self._log.error('CSSImportRule: Invalid MediaList: %s' %
                                         self._valuestr(cssText), token=token)
 
                     if lasttyp == self._prods.STRING:
@@ -193,18 +193,18 @@ class CSSImportRule(cssrule.CSSRule):
                         return 'EOF' # ';' is token "last"
                 else:
                     new['wellformed'] = False
-                    self._log.error(u'CSSImportRule: Unexpected ident.', token)
+                    self._log.error('CSSImportRule: Unexpected ident.', token)
                     return expected
 
             def _char(expected, seq, token, tokenizer=None):
                 # final ;
                 val = self._tokenvalue(token)
-                if expected.endswith(';') and u';' == val:
+                if expected.endswith(';') and ';' == val:
                     return 'EOF'
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'CSSImportRule: Unexpected char.', token)
+                        'CSSImportRule: Unexpected char.', token)
                     return expected
 
             # import : IMPORT_SYM S* [STRING|URI]
@@ -226,12 +226,12 @@ class CSSImportRule(cssrule.CSSRule):
             # post conditions
             if not new['href']:
                 ok = False
-                self._log.error(u'CSSImportRule: No href found: %s' %
+                self._log.error('CSSImportRule: No href found: %s' %
                     self._valuestr(cssText))
 
             if expected != 'EOF':
                 ok = False
-                self._log.error(u'CSSImportRule: No ";" found: %s' %
+                self._log.error('CSSImportRule: No ";" found: %s' %
                     self._valuestr(cssText))
 
             # set all
@@ -246,7 +246,7 @@ class CSSImportRule(cssrule.CSSRule):
                     self.media = new['media']
                 else:
                     # must be all for @import
-                    self.media = cssutils.stylesheets.MediaList(mediaText=u'all')
+                    self.media = cssutils.stylesheets.MediaList(mediaText='all')
 
                 # needs new self.media
                 self.href = new['href']
@@ -278,7 +278,7 @@ class CSSImportRule(cssrule.CSSRule):
                 # use cwd instead
                 parentHref = cssutils.helper.path2url(os.getcwd()) + '/'
                 
-            fullhref = urlparse.urljoin(parentHref, self.href)
+            fullhref = urllib.parse.urljoin(parentHref, self.href)
 
             # all possible exceptions are ignored
             try:
@@ -306,9 +306,9 @@ class CSSImportRule(cssrule.CSSRule):
                                             encodingOverride=encodingOverride,
                                             encoding=encoding)
 
-            except (OSError, IOError, ValueError), e:
-                self._log.warn(u'CSSImportRule: While processing imported '
-                               u'style sheet href=%s: %r'
+            except (OSError, IOError, ValueError) as e:
+                self._log.warn('CSSImportRule: While processing imported '
+                               'style sheet href=%s: %r'
                                % (self.href, e), neverraise=True)
                 
             else:
@@ -319,7 +319,7 @@ class CSSImportRule(cssrule.CSSRule):
 
     _href = None # needs to be set 
     href = property(lambda self: self._href, _setHref,
-                    doc=u"Location of the style sheet to be imported.")
+                    doc="Location of the style sheet to be imported.")
 
     def _setMedia(self, media):
         """
@@ -327,7 +327,7 @@ class CSSImportRule(cssrule.CSSRule):
             a :class:`~cssutils.stylesheets.MediaList` or string
         """
         self._checkReadonly()
-        if isinstance(media, basestring):
+        if isinstance(media, str):
             self._media = cssutils.stylesheets.MediaList(mediaText=media, 
                                                          parentRule=self)
         else:
@@ -348,12 +348,12 @@ class CSSImportRule(cssrule.CSSRule):
                             self._media, 'media', None, None)
         
     media = property(lambda self: self._media, _setMedia,
-                     doc=u"(DOM) A list of media types for this rule "
-                         u"of type :class:`~cssutils.stylesheets.MediaList`.")
+                     doc="(DOM) A list of media types for this rule "
+                         "of type :class:`~cssutils.stylesheets.MediaList`.")
 
-    def _setName(self, name=u''):
+    def _setName(self, name=''):
         """Raises xml.dom.SyntaxErr if name is not a string."""
-        if name is None or isinstance(name, basestring):
+        if name is None or isinstance(name, str):
             # "" or '' handled as None
             if not name:
                 name = None
@@ -373,18 +373,18 @@ class CSSImportRule(cssrule.CSSRule):
                 self.styleSheet.title = name
                 
         else:
-            self._log.error(u'CSSImportRule: Not a valid name: %s' % name)
+            self._log.error('CSSImportRule: Not a valid name: %s' % name)
 
     name = property(lambda self: self._name, _setName,
-                    doc=u"An optional name for the imported sheet.")
+                    doc="An optional name for the imported sheet.")
 
     styleSheet = property(lambda self: self._styleSheet,
-                          doc=u"(readonly) The style sheet referred to by this "
-                              u"rule.")
+                          doc="(readonly) The style sheet referred to by this "
+                              "rule.")
 
     type = property(lambda self: self.IMPORT_RULE, 
-                    doc=u"The type of this rule, as defined by a CSSRule "
-                        u"type constant.")
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
 
     def _getWellformed(self):
         "Depending on if media is used at all."

@@ -3,7 +3,7 @@ __version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
 
 import sys
 import xml.dom
-import basetest
+from . import basetest
 from cssutils.prodparser import *
 from cssutils.prodparser import ParseError, Done, Exhausted, NoMatch # not in __all__
 
@@ -108,7 +108,7 @@ class SequenceTestCase(basetest.BaseTestCase):
             m = sys.maxsize
         except AttributeError:
             # py<1.6
-            m = sys.maxint
+            m = sys.maxsize
         self.assertEqual(m, s._max)
 
     def test_optional(self):
@@ -168,23 +168,23 @@ class SequenceTestCase(basetest.BaseTestCase):
             # seq: list of list of (token, prod or error msg)
             (p1, ): ([(t1, p1)],
                      [(t2, 'Extra token')], # as p1 optional
-                     [(t1, p1), (t1, u'Extra token')],
-                     [(t1, p1), (t2, u'Extra token')]
+                     [(t1, p1), (t1, 'Extra token')],
+                     [(t1, p1), (t2, 'Extra token')]
                     ),
             (p2, ): ([(t2, p2)],
-                     [(t2, p2), (t2, u'Extra token')],
-                     [(t2, p2), (t1, u'Extra token')],
+                     [(t2, p2), (t2, 'Extra token')],
+                     [(t2, p2), (t1, 'Extra token')],
                      [(t1, 'Missing token for production p2')]
                     ),
             (p1, p2): ([(t1, p1), (t2, p2)],
-                       [(t1, p1), (t1, u'Missing token for production p2')]
+                       [(t1, p1), (t1, 'Missing token for production p2')]
                        )
             }
-        for seqitems, results in tests.items():
+        for seqitems, results in list(tests.items()):
             for result in results: 
                 seq = Sequence(*seqitems)
                 for t, p in result:
-                    if isinstance(p, basestring):
+                    if isinstance(p, str):
                         self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
                     else:
                         self.assertEqual(p, seq.nextProd(t))
@@ -197,29 +197,29 @@ class SequenceTestCase(basetest.BaseTestCase):
                        [(t1, p1), (t1, p1)],
                        [(t1, p1), (t1, p1), (t1, p1)],
                        [(t1, p1), (t1, p1), (t1, p1), (t1, p1)],
-                       [(t1, p1), (t1, p1), (t1, p1), (t1, p1), (t1, u'Extra token')],
+                       [(t1, p1), (t1, p1), (t1, p1), (t1, p1), (t1, 'Extra token')],
                      ),
             (p1, ): ([(t1, p1)],
                      [(t2, 'Extra token')], 
                      [(t1, p1), (t1, p1)],
                      [(t1, p1), (t2, 'Extra token')],
-                     [(t1, p1), (t1, p1), (t1, u'Extra token')],
-                     [(t1, p1), (t1, p1), (t2, u'Extra token')]
+                     [(t1, p1), (t1, p1), (t1, 'Extra token')],
+                     [(t1, p1), (t1, p1), (t2, 'Extra token')]
                     ),
             # as p2 NOT optional
             (p2, ): ([(t2, p2)],
                      [(t1, 'Missing token for production p2')],
                      [(t2, p2), (t2, p2)],
-                     [(t2, p2), (t1, u'No match for (1, 0, 0, 0) in Sequence(p2)')],
-                     [(t2, p2), (t2, p2), (t2, u'Extra token')],
-                     [(t2, p2), (t2, p2), (t1, u'Extra token')]
+                     [(t2, p2), (t1, 'No match for (1, 0, 0, 0) in Sequence(p2)')],
+                     [(t2, p2), (t2, p2), (t2, 'Extra token')],
+                     [(t2, p2), (t2, p2), (t1, 'Extra token')]
                     ),
-            (p1, p2): ([(t1, p1), (t1, u'Missing token for production p2')],
+            (p1, p2): ([(t1, p1), (t1, 'Missing token for production p2')],
                        [(t2, p2), (t2, p2)],
                        [(t2, p2), (t1, p1), (t2, p2)],
                        [(t1, p1), (t2, p2), (t2, p2)],
                        [(t1, p1), (t2, p2), (t1, p1), (t2, p2)],
-                       [(t2, p2), (t2, p2), (t2, u'Extra token')],
+                       [(t2, p2), (t2, p2), (t2, 'Extra token')],
                        [(t2, p2), (t1, p1), (t2, p2), (t1, 'Extra token')],
                        [(t2, p2), (t1, p1), (t2, p2), (t2, 'Extra token')],
                        [(t1, p1), (t2, p2), (t2, p2), (t1, 'Extra token')],
@@ -228,11 +228,11 @@ class SequenceTestCase(basetest.BaseTestCase):
                        [(t1, p1), (t2, p2), (t1, p1), (t2, p2), (t2, 'Extra token')],
                        )
             }
-        for seqitems, results in tests.items():
+        for seqitems, results in list(tests.items()):
             for result in results: 
                 seq = Sequence(minmax=lambda: (1,2), *seqitems)
                 for t, p in result:
-                    if isinstance(p, basestring):
+                    if isinstance(p, str):
                         self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
                     else:
                         self.assertEqual(p, seq.nextProd(t))
@@ -249,22 +249,22 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2,0,0,0)
             
         ch = Choice(p1, p2)
-        self.assertRaisesMsg(ParseError, u'No match for (0, 0, 0, 0) in Choice(p1, p2)', ch.nextProd, t0)
+        self.assertRaisesMsg(ParseError, 'No match for (0, 0, 0, 0) in Choice(p1, p2)', ch.nextProd, t0)
         self.assertEqual(p1, ch.nextProd(t1))
-        self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
+        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
 
         ch = Choice(p1, p2)
         self.assertEqual(p2, ch.nextProd(t2))
-        self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t2)
+        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t2)
 
         ch = Choice(p2, p1)
         self.assertRaisesMsg(ParseError, 'No match for (0, 0, 0, 0) in Choice(p2, p1)', ch.nextProd, t0)
         self.assertEqual(p1, ch.nextProd(t1))
-        self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
+        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
 
         ch = Choice(p2, p1)
         self.assertEqual(p2, ch.nextProd(t2))
-        self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t2)
+        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t2)
 
     def test_matches(self):
         "Choice.matches()"
@@ -296,13 +296,13 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2,0,0,0)
 
         ch = Choice(s1, s2)
-        self.assertRaisesMsg(ParseError, u'No match for (0, 0, 0, 0) in Choice(Sequence(p1, p1), Sequence(p2, p2))', ch.nextProd, t0)
+        self.assertRaisesMsg(ParseError, 'No match for (0, 0, 0, 0) in Choice(Sequence(p1, p1), Sequence(p2, p2))', ch.nextProd, t0)
         self.assertEqual(s1, ch.nextProd(t1))
-        self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
+        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
             
         ch = Choice(s1, s2)
         self.assertEqual(s2, ch.nextProd(t2))
-        self.assertRaisesMsg(Exhausted, u'Extra token', ch.nextProd, t1)
+        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
 
     def test_reset(self):    
         "Choice.reset()"
@@ -327,8 +327,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
         p = ProdParser()
             
         # text, name, productions, store=None
-        prods = lambda: Sequence(PreDef.char(';', u';'),
-                                 PreDef.char(':', u':')
+        prods = lambda: Sequence(PreDef.char(';', ';'),
+                                 PreDef.char(':', ':')
                                  )       
         
         w, seq, store, unused = p.parse('; :', 'test', prods(), 
@@ -358,14 +358,14 @@ class ProdParserTestCase(basetest.BaseTestCase):
                  '3 x': "No match: ('IDENT', 'x', 1, 3)",
                  '3 3': "No match: ('NUMBER', '3', 1, 3)",
                  }
-        for text, exp in tests.items():
+        for text, exp in list(tests.items()):
             prods = Choice(Sequence(p1, p2, minmax=lambda: (1,2)),
                            p3)
             if exp is True:
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
                 self.assertEqual(wellformed, exp)
             else:
-                self.assertRaisesMsg(xml.dom.SyntaxErr, u'T: %s' % exp,
+                self.assertRaisesMsg(xml.dom.SyntaxErr, 'T: %s' % exp,
                                      ProdParser().parse, text, 'T', prods)
         
         tests = {'1 3': True,
@@ -379,7 +379,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
                  '2': 'Missing token for production p3',
                  '3': "Missing token for production Choice(Sequence(p1), p2): ('NUMBER', '3', 1, 1)",
                  }
-        for text, exp in tests.items():
+        for text, exp in list(tests.items()):
             prods = Sequence(Choice(Sequence(p1, minmax=lambda: (1,2)),
                                     p2),
                              p3)
@@ -387,7 +387,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
                 self.assertEqual(wellformed, exp)
             else:
-                self.assertRaisesMsg(xml.dom.SyntaxErr, u'T: %s' % exp,
+                self.assertRaisesMsg(xml.dom.SyntaxErr, 'T: %s' % exp,
                                      ProdParser().parse, text, 'T', prods)
                         
         

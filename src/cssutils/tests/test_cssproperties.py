@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.cssproperties."""
 
 import xml.dom
-import basetest
+from . import basetest
 import cssutils.css
 import cssutils.profiles
 
@@ -46,7 +46,7 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
         "CSS2Properties"
         CSS2Properties = cssutils.css.cssproperties.CSS2Properties
         self.assertEqual(type(property()), type(CSS2Properties.color))
-        self.assertEqual(sum([len(x) for x in cssutils.profiles.properties.values()]),
+        self.assertEqual(sum([len(x) for x in list(cssutils.profiles.properties.values())]),
                           len(CSS2Properties._properties))
 
         c2 = CSS2Properties()

@@ -44,17 +44,17 @@ def main(args=None):
         cssutils.ser.prefs.useMinified()
 
     if options.string:
-        sheet = p.parseString(u''.join(params), encoding=options.encoding)
-        print sheet.cssText
+        sheet = p.parseString(''.join(params), encoding=options.encoding)
+        print(sheet.cssText)
     elif options.url:
         sheet = p.parseUrl(options.url, encoding=options.encoding)
-        print sheet.cssText
+        print(sheet.cssText)
     else:
         for filename in params:
             sys.stderr.write('=== CSS FILE: "%s" ===\n' % filename)
             sheet = p.parseFile(filename, encoding=options.encoding)
-            print sheet.cssText
-            print
+            print(sheet.cssText)
+            print()
             sys.stderr.write('\n')
 
 

@@ -7,7 +7,7 @@ what should happen here?
 
 """
 import xml.dom
-import basetest
+from . import basetest
 import cssutils
 
 class SelectorTestCase(basetest.BaseTestCase):
@@ -41,9 +41,9 @@ class SelectorTestCase(basetest.BaseTestCase):
             '*': (None, '*'),
             'x': (None, 'x'),
             '\\x': (None, '\\x'),
-            '|x': (u'', 'x'),
+            '|x': ('', 'x'),
             '*|x': (cssutils._ANYNS, 'x'),
-            'ex|x': (u'example', 'x'),
+            'ex|x': ('example', 'x'),
             'a x': (None, 'x'),
             'a+x': (None, 'x'),
             'a>x': (None, 'x'),
@@ -61,7 +61,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             'x#id': (None, 'x'),
             'x.c': (None, 'x')
         }
-        for test, ele in tests.items():
+        for test, ele in list(tests.items()):
             s = cssutils.css.Selector((test,{'ex': 'example'}))
             self.assertEqual(ele, s.element)
 
@@ -86,7 +86,7 @@ class SelectorTestCase(basetest.BaseTestCase):
                                    'x[a][a][*|a][p|a]',
                                    'x[a][a][*|a][a]')
         }
-        for sel, exp in tests.items():
+        for sel, exp in list(tests.items()):
             for i, result in enumerate(exp):
                 s = cssutils.css.Selector((sel, namespaces[i]))
                 self.assertEqual(result, s.selectorText)
@@ -97,14 +97,14 @@ class SelectorTestCase(basetest.BaseTestCase):
 
         r = sheet.cssRules[1]
 
-        self.assertEqual(r.selectorText, u'a')
+        self.assertEqual(r.selectorText, 'a')
 
         # add default namespace
         sheet.namespaces[''] = 'a';
-        self.assertEqual(r.selectorText, u'|a')
+        self.assertEqual(r.selectorText, '|a')
 
         del sheet.namespaces[''];
-        self.assertEqual(r.selectorText, u'a')
+        self.assertEqual(r.selectorText, 'a')
 
 #        r.selectorList.append('a')
 #        self.assertEqual(r.selectorText, u'|a, a')
@@ -119,11 +119,11 @@ class SelectorTestCase(basetest.BaseTestCase):
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = css
         self.assertEqual(sheet.cssText,
-                         u'@namespace "default";\na[att] {\n    color: green\n    }'.encode())
+                         '@namespace "default";\na[att] {\n    color: green\n    }'.encode())
         # use a prefix for default namespace, does not goes for atts!
         sheet.namespaces['p'] = 'default'
         self.assertEqual(sheet.cssText,
-                         u'@namespace p "default";\np|a[att] {\n    color: green\n    }'.encode())
+                         '@namespace p "default";\np|a[att] {\n    color: green\n    }'.encode())
 
     def test_parent(self):
         "Selector.parent"
@@ -143,261 +143,261 @@ class SelectorTestCase(basetest.BaseTestCase):
         "Selector.selectorText"
         tests = {
             # combinators
-            u'a+b>c~e f': u'a + b > c ~ e f',
-            u'a  +  b  >  c  ~  e   f': u'a + b > c ~ e f',
-            u'a+b': u'a + b',
-            u'a  +  b': 'a + b',
-            u'a\n  +\t  b': 'a + b',
-            u'a~b': u'a ~ b',
-            u'a b': None,
-            u'a   b': 'a b',
-            u'a\nb': 'a b',
-            u'a\tb': 'a b',
-            u'a   #b': 'a #b',
-            u'a   .b': 'a .b',
-            u'a * b': None,
+            'a+b>c~e f': 'a + b > c ~ e f',
+            'a  +  b  >  c  ~  e   f': 'a + b > c ~ e f',
+            'a+b': 'a + b',
+            'a  +  b': 'a + b',
+            'a\n  +\t  b': 'a + b',
+            'a~b': 'a ~ b',
+            'a b': None,
+            'a   b': 'a b',
+            'a\nb': 'a b',
+            'a\tb': 'a b',
+            'a   #b': 'a #b',
+            'a   .b': 'a .b',
+            'a * b': None,
             # >
-            u'a>b': u'a > b',
-            u'a> b': 'a > b',
-            u'a >b': 'a > b',
-            u'a > b': 'a > b',
+            'a>b': 'a > b',
+            'a> b': 'a > b',
+            'a >b': 'a > b',
+            'a > b': 'a > b',
             # +
-            u'a+b': u'a + b',
-            u'a+ b': 'a + b',
-            u'a +b': 'a + b',
-            u'a + b': 'a + b',
+            'a+b': 'a + b',
+            'a+ b': 'a + b',
+            'a +b': 'a + b',
+            'a + b': 'a + b',
             # ~
-            u'a~b': u'a ~ b',
-            u'a~ b': 'a ~ b',
-            u'a ~b': 'a ~ b',
-            u'a ~ b': 'a ~ b',
+            'a~b': 'a ~ b',
+            'a~ b': 'a ~ b',
+            'a ~b': 'a ~ b',
+            'a ~ b': 'a ~ b',
 
             # type selector
-            u'a': None,
-            u'h1-a_x__--': None,
-            u'a-a': None,
-            u'a_a': None,
-            u'-a': None,
-            u'_': None,
-            u'-_': None,
-            ur'-\72': u'-r',
+            'a': None,
+            'h1-a_x__--': None,
+            'a-a': None,
+            'a_a': None,
+            '-a': None,
+            '_': None,
+            '-_': None,
+            r'-\72': '-r',
             #ur'\25': u'%', # TODO: should be escaped!
-            u'.a a': None,
-            u'a1': None,
-            u'a1-1': None,
-            u'.a1-1': None,
+            '.a a': None,
+            'a1': None,
+            'a1-1': None,
+            '.a1-1': None,
 
             # universal
-            u'*': None,
-            u'*/*x*/': None,
-            u'* /*x*/': None,
-            u'*:hover': None,
-            u'* :hover': None,
-            u'*:lang(fr)': None,
-            u'* :lang(fr)': None,
-            u'*::first-line': None,
-            u'* ::first-line': None,
-            u'*[lang=fr]': None,
-            u'[lang=fr]': None,
+            '*': None,
+            '*/*x*/': None,
+            '* /*x*/': None,
+            '*:hover': None,
+            '* :hover': None,
+            '*:lang(fr)': None,
+            '* :lang(fr)': None,
+            '*::first-line': None,
+            '* ::first-line': None,
+            '*[lang=fr]': None,
+            '[lang=fr]': None,
 
             # HASH
-            u'''#a''': None,
-            u'''#a1''': None,
-            u'''#1a''': None, # valid to grammar but not for HTML
-            u'''#1''': None, # valid to grammar but not for HTML
-            u'''a#b''': None,
-            u'''a #b''': None,
-            u'''a#b.c''': None,
-            u'''a.c#b''': None,
-            u'''a #b.c''': None,
-            u'''a .c#b''': None,
+            '''#a''': None,
+            '''#a1''': None,
+            '''#1a''': None, # valid to grammar but not for HTML
+            '''#1''': None, # valid to grammar but not for HTML
+            '''a#b''': None,
+            '''a #b''': None,
+            '''a#b.c''': None,
+            '''a.c#b''': None,
+            '''a #b.c''': None,
+            '''a .c#b''': None,
 
             # class
-            u'ab': 'ab',
-            u'a.b': None,
-            u'a.b.c': None,
-            u'.a1._1': None,
+            'ab': 'ab',
+            'a.b': None,
+            'a.b.c': None,
+            '.a1._1': None,
 
             # attrib
-            u'''[x]''': None,
-            u'''*[x]''': None,
-            u'''a[x]''': None,
-            u'''a[ x]''': 'a[x]',
-            u'''a[x ]''': 'a[x]',
-            u'''a [x]''': 'a [x]',
-            u'''* [x]''': None, # is really * *[x]
+            '''[x]''': None,
+            '''*[x]''': None,
+            '''a[x]''': None,
+            '''a[ x]''': 'a[x]',
+            '''a[x ]''': 'a[x]',
+            '''a [x]''': 'a [x]',
+            '''* [x]''': None, # is really * *[x]
 
-            u'''a[x="1"]''': None,
-            u'''a[x ="1"]''': 'a[x="1"]',
-            u'''a[x= "1"]''': 'a[x="1"]',
-            u'''a[x = "1"]''': 'a[x="1"]',
-            u'''a[ x = "1"]''': 'a[x="1"]',
-            u'''a[x = "1" ]''': 'a[x="1"]',
-            u'''a[ x = "1" ]''': 'a[x="1"]',
-            u'''a [ x = "1" ]''': 'a [x="1"]',
+            '''a[x="1"]''': None,
+            '''a[x ="1"]''': 'a[x="1"]',
+            '''a[x= "1"]''': 'a[x="1"]',
+            '''a[x = "1"]''': 'a[x="1"]',
+            '''a[ x = "1"]''': 'a[x="1"]',
+            '''a[x = "1" ]''': 'a[x="1"]',
+            '''a[ x = "1" ]''': 'a[x="1"]',
+            '''a [ x = "1" ]''': 'a [x="1"]',
 
-            u'''a[x~=a1]''': None,
-            u'''a[x ~=a1]''': 'a[x~=a1]',
-            u'''a[x~= a1]''': 'a[x~=a1]',
-            u'''a[x ~= a1]''': 'a[x~=a1]',
-            u'''a[ x ~= a1]''': 'a[x~=a1]',
-            u'''a[x ~= a1 ]''': 'a[x~=a1]',
-            u'''a[ x ~= a1 ]''': 'a[x~=a1]',
-            u'''a [ x ~= a1 ]''': 'a [x~=a1]', # same as next!
-            u'''a *[ x ~= a1 ]''': 'a *[x~=a1]',
+            '''a[x~=a1]''': None,
+            '''a[x ~=a1]''': 'a[x~=a1]',
+            '''a[x~= a1]''': 'a[x~=a1]',
+            '''a[x ~= a1]''': 'a[x~=a1]',
+            '''a[ x ~= a1]''': 'a[x~=a1]',
+            '''a[x ~= a1 ]''': 'a[x~=a1]',
+            '''a[ x ~= a1 ]''': 'a[x~=a1]',
+            '''a [ x ~= a1 ]''': 'a [x~=a1]', # same as next!
+            '''a *[ x ~= a1 ]''': 'a *[x~=a1]',
 
-            u'''a[x|=en]''': None,
-            u'''a[x|= en]''': 'a[x|=en]',
-            u'''a[x |=en]''': 'a[x|=en]',
-            u'''a[x |= en]''': 'a[x|=en]',
-            u'''a[ x |= en]''': 'a[x|=en]',
-            u'''a[x |= en ]''': 'a[x|=en]',
-            u'''a[ x |= en]''': 'a[x|=en]',
-            u'''a [ x |= en]''': 'a [x|=en]',
+            '''a[x|=en]''': None,
+            '''a[x|= en]''': 'a[x|=en]',
+            '''a[x |=en]''': 'a[x|=en]',
+            '''a[x |= en]''': 'a[x|=en]',
+            '''a[ x |= en]''': 'a[x|=en]',
+            '''a[x |= en ]''': 'a[x|=en]',
+            '''a[ x |= en]''': 'a[x|=en]',
+            '''a [ x |= en]''': 'a [x|=en]',
             # CSS3
-            u'''a[x^=en]''': None,
-            u'''a[x$=en]''': None,
-            u'''a[x*=en]''': None,
+            '''a[x^=en]''': None,
+            '''a[x$=en]''': None,
+            '''a[x*=en]''': None,
 
-            u'''a[/*1*/x/*2*/]''': None,
-            u'''a[/*1*/x/*2*/=/*3*/a/*4*/]''': None,
-            u'''a[/*1*/x/*2*/~=/*3*/a/*4*/]''': None,
-            u'''a[/*1*/x/*2*/|=/*3*/a/*4*/]''': None,
+            '''a[/*1*/x/*2*/]''': None,
+            '''a[/*1*/x/*2*/=/*3*/a/*4*/]''': None,
+            '''a[/*1*/x/*2*/~=/*3*/a/*4*/]''': None,
+            '''a[/*1*/x/*2*/|=/*3*/a/*4*/]''': None,
 
             # pseudo-elements
-            u'a x:first-line': None,
-            u'a x:first-letter': None,
-            u'a x:before': None,
-            u'a x:after': None,
-            u'a x::selection': None,
-            u'a:hover+b:hover>c:hover~e:hover f:hover':
-                u'a:hover + b:hover > c:hover ~ e:hover f:hover',
-            u'a:hover  +  b:hover  >  c:hover  ~  e:hover   f:hover':
-                u'a:hover + b:hover > c:hover ~ e:hover f:hover',
-            u'a::selection+b::selection>c::selection~e::selection f::selection':
-                u'a::selection + b::selection > c::selection ~ e::selection f::selection',
-            u'a::selection  +  b::selection  >  c::selection  ~  e::selection   f::selection':
-                u'a::selection + b::selection > c::selection ~ e::selection f::selection',
+            'a x:first-line': None,
+            'a x:first-letter': None,
+            'a x:before': None,
+            'a x:after': None,
+            'a x::selection': None,
+            'a:hover+b:hover>c:hover~e:hover f:hover':
+                'a:hover + b:hover > c:hover ~ e:hover f:hover',
+            'a:hover  +  b:hover  >  c:hover  ~  e:hover   f:hover':
+                'a:hover + b:hover > c:hover ~ e:hover f:hover',
+            'a::selection+b::selection>c::selection~e::selection f::selection':
+                'a::selection + b::selection > c::selection ~ e::selection f::selection',
+            'a::selection  +  b::selection  >  c::selection  ~  e::selection   f::selection':
+                'a::selection + b::selection > c::selection ~ e::selection f::selection',
 
-            u'x:lang(de) y': None,
-            u'x:nth-child(odd) y': None,
+            'x:lang(de) y': None,
+            'x:nth-child(odd) y': None,
             # functional pseudo
-            u'x:func(a + b-2px22.3"s"i)': None,
-            u'x:func(1 + 1)': None,
-            u'x:func(1+1)': u'x:func(1+1)',
-            u'x:func(1   +   1)': u'x:func(1 + 1)',
-            u'x:func(1-1)': u'x:func(1-1)',
-            u'x:func(1  -  1)': u'x:func(1 -1)', # TODO: FIX!
-            u'x:func(a-1)': u'x:func(a-1)',
-            u'x:func(a -1px)': u'x:func(a -1px)',
-            u'x:func(1px)': None,
-            u'x:func(23.4)': None,
-            u'x:func("s")': None,
-            u'x:func(i)': None,
+            'x:func(a + b-2px22.3"s"i)': None,
+            'x:func(1 + 1)': None,
+            'x:func(1+1)': 'x:func(1+1)',
+            'x:func(1   +   1)': 'x:func(1 + 1)',
+            'x:func(1-1)': 'x:func(1-1)',
+            'x:func(1  -  1)': 'x:func(1 -1)', # TODO: FIX!
+            'x:func(a-1)': 'x:func(a-1)',
+            'x:func(a -1px)': 'x:func(a -1px)',
+            'x:func(1px)': None,
+            'x:func(23.4)': None,
+            'x:func("s")': None,
+            'x:func(i)': None,
 
             # negation
-            u':not(y)': None,
-            u':not(   y  \t\n)': u':not(y)',
-            u'*:not(y)': None,
-            u'x:not(y)': None,
-            u'.x:not(y)': None,
-            u':not(*)': None,
-            u':not(#a)': None,
-            u':not(.a)': None,
-            u':not([a])': None,
-            u':not(:first-letter)': None,
-            u':not(::first-letter)': None,
+            ':not(y)': None,
+            ':not(   y  \t\n)': ':not(y)',
+            '*:not(y)': None,
+            'x:not(y)': None,
+            '.x:not(y)': None,
+            ':not(*)': None,
+            ':not(#a)': None,
+            ':not(.a)': None,
+            ':not([a])': None,
+            ':not(:first-letter)': None,
+            ':not(::first-letter)': None,
 
             # escapes
-            ur'\74\72 td': 'trtd',
-            ur'\74\72  td': 'tr td',
-            ur'\74\000072 td': 'trtd',
-            ur'\74\000072  td': 'tr td',
+            r'\74\72 td': 'trtd',
+            r'\74\72  td': 'tr td',
+            r'\74\000072 td': 'trtd',
+            r'\74\000072  td': 'tr td',
 
             # comments
-            u'a/**/ b': None,
-            u'a /**/b': None,
-            u'a /**/ b': None,
-            u'a  /**/ b': u'a /**/ b',
-            u'a /**/  b': u'a /**/ b',
+            'a/**/ b': None,
+            'a /**/b': None,
+            'a /**/ b': None,
+            'a  /**/ b': 'a /**/ b',
+            'a /**/  b': 'a /**/ b',
 
             # namespaces
-            u'|e': None,
-            u'*|e': None,
-            u'*|*': None,
-            (u'p|*', (('p', 'uri'),)): u'p|*',
-            (u'p|e', (('p', 'uri'),)): u'p|e',
-            (u'-a_x12|e', (('-a_x12', 'uri'),)): u'-a_x12|e',
-            (u'*|b[p|a]', (('p', 'uri'),)): '*|b[p|a]',
+            '|e': None,
+            '*|e': None,
+            '*|*': None,
+            ('p|*', (('p', 'uri'),)): 'p|*',
+            ('p|e', (('p', 'uri'),)): 'p|e',
+            ('-a_x12|e', (('-a_x12', 'uri'),)): '-a_x12|e',
+            ('*|b[p|a]', (('p', 'uri'),)): '*|b[p|a]',
 
             # case
-            u'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE':
-                u'elemenT.clasS#iD[atT="valuE"]:not(x)::first-line'
+            'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE':
+                'elemenT.clasS#iD[atT="valuE"]:not(x)::first-line'
             }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
 
         tests = {
-            u'x|a': xml.dom.NamespaceErr,
-            (u'p|*', (('x', 'uri'),)): xml.dom.NamespaceErr,
+            'x|a': xml.dom.NamespaceErr,
+            ('p|*', (('x', 'uri'),)): xml.dom.NamespaceErr,
 
-            u'': xml.dom.SyntaxErr,
-            u'1': xml.dom.SyntaxErr,
-            u'-1': xml.dom.SyntaxErr,
-            u'a*b': xml.dom.SyntaxErr,
-            u'a *b': xml.dom.SyntaxErr,
-            u'a* b': xml.dom.SyntaxErr,
-            u'a/**/b': xml.dom.SyntaxErr,
+            '': xml.dom.SyntaxErr,
+            '1': xml.dom.SyntaxErr,
+            '-1': xml.dom.SyntaxErr,
+            'a*b': xml.dom.SyntaxErr,
+            'a *b': xml.dom.SyntaxErr,
+            'a* b': xml.dom.SyntaxErr,
+            'a/**/b': xml.dom.SyntaxErr,
 
-            u'#': xml.dom.SyntaxErr,
-            u'|': xml.dom.SyntaxErr,
+            '#': xml.dom.SyntaxErr,
+            '|': xml.dom.SyntaxErr,
 
-            u':': xml.dom.SyntaxErr,
-            u'::': xml.dom.SyntaxErr,
-            u': a': xml.dom.SyntaxErr,
-            u':: a': xml.dom.SyntaxErr,
-            u':a()': xml.dom.SyntaxErr, # no value
-            u'::a()': xml.dom.SyntaxErr, # no value
-            u':::a': xml.dom.SyntaxErr,
-            u':1': xml.dom.SyntaxErr,
+            ':': xml.dom.SyntaxErr,
+            '::': xml.dom.SyntaxErr,
+            ': a': xml.dom.SyntaxErr,
+            ':: a': xml.dom.SyntaxErr,
+            ':a()': xml.dom.SyntaxErr, # no value
+            '::a()': xml.dom.SyntaxErr, # no value
+            ':::a': xml.dom.SyntaxErr,
+            ':1': xml.dom.SyntaxErr,
 
-            u'#.x': xml.dom.SyntaxErr,
-            u'.': xml.dom.SyntaxErr,
-            u'.1': xml.dom.SyntaxErr,
-            u'.a.1': xml.dom.SyntaxErr,
+            '#.x': xml.dom.SyntaxErr,
+            '.': xml.dom.SyntaxErr,
+            '.1': xml.dom.SyntaxErr,
+            '.a.1': xml.dom.SyntaxErr,
 
-            u'[a': xml.dom.SyntaxErr,
-            u'a]': xml.dom.SyntaxErr,
-            u'[a b]': xml.dom.SyntaxErr,
-            u'[=b]': xml.dom.SyntaxErr,
-            u'[a=]': xml.dom.SyntaxErr,
-            u'[a|=]': xml.dom.SyntaxErr,
-            u'[a~=]': xml.dom.SyntaxErr,
-            u'[a=1]': xml.dom.SyntaxErr,
+            '[a': xml.dom.SyntaxErr,
+            'a]': xml.dom.SyntaxErr,
+            '[a b]': xml.dom.SyntaxErr,
+            '[=b]': xml.dom.SyntaxErr,
+            '[a=]': xml.dom.SyntaxErr,
+            '[a|=]': xml.dom.SyntaxErr,
+            '[a~=]': xml.dom.SyntaxErr,
+            '[a=1]': xml.dom.SyntaxErr,
 
-            u'a +': xml.dom.SyntaxErr,
-            u'a >': xml.dom.SyntaxErr,
-            u'a ++ b': xml.dom.SyntaxErr,
-            u'a + > b': xml.dom.SyntaxErr,
+            'a +': xml.dom.SyntaxErr,
+            'a >': xml.dom.SyntaxErr,
+            'a ++ b': xml.dom.SyntaxErr,
+            'a + > b': xml.dom.SyntaxErr,
 
             # functional pseudo
-            u'*:lang(': xml.dom.SyntaxErr,
-            u'*:lang()': xml.dom.SyntaxErr, # no arg
+            '*:lang(': xml.dom.SyntaxErr,
+            '*:lang()': xml.dom.SyntaxErr, # no arg
 
             # negation
-            u'not(x)': xml.dom.SyntaxErr, # no valid function
-            u':not()': xml.dom.SyntaxErr, # no arg
-            u':not(x': xml.dom.SyntaxErr, # no )
-            u':not(-': xml.dom.SyntaxErr, # not allowed
-            u':not(+': xml.dom.SyntaxErr, # not allowed
+            'not(x)': xml.dom.SyntaxErr, # no valid function
+            ':not()': xml.dom.SyntaxErr, # no arg
+            ':not(x': xml.dom.SyntaxErr, # no )
+            ':not(-': xml.dom.SyntaxErr, # not allowed
+            ':not(+': xml.dom.SyntaxErr, # not allowed
 
             # only one selector!
-            u',': xml.dom.InvalidModificationErr,
-            u',a': xml.dom.InvalidModificationErr,
-            u'a,': xml.dom.InvalidModificationErr,
+            ',': xml.dom.InvalidModificationErr,
+            ',a': xml.dom.InvalidModificationErr,
+            'a,': xml.dom.InvalidModificationErr,
 
             # @
-            u'p @here': xml.dom.SyntaxErr, # not allowed
+            'p @here': xml.dom.SyntaxErr, # not allowed
 
             }
         # only set as not complete
@@ -412,66 +412,66 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertRaisesMsg(AttributeError, "can't set attribute", _set)
 
         tests = {
-            u'*': (0,0,0,0),
-            u'li': (0,0,0,1),
-            u'li:first-line': (0,0,0,2),
-            u'ul li': (0,0,0,2),
-            u'ul ol+li': (0,0,0,3),
-            u'h1 + *[rel=up]': (0,0,1,1),
-            u'ul ol li.red': (0,0,1,3),
-            u'li.red.level': (0,0,2,1),
-            u'#x34y': (0,1,0,0),
+            '*': (0,0,0,0),
+            'li': (0,0,0,1),
+            'li:first-line': (0,0,0,2),
+            'ul li': (0,0,0,2),
+            'ul ol+li': (0,0,0,3),
+            'h1 + *[rel=up]': (0,0,1,1),
+            'ul ol li.red': (0,0,1,3),
+            'li.red.level': (0,0,2,1),
+            '#x34y': (0,1,0,0),
 
-            u'UL OL LI.red': (0,0,1,3),
-            u'LI.red.level': (0,0,2,1),
-            u'#s12:not(FOO)': (0,1,0,1),
-            u'button:not([DISABLED])': (0,0,1,1), #?
-            u'*:not(FOO)': (0,0,0,1),
+            'UL OL LI.red': (0,0,1,3),
+            'LI.red.level': (0,0,2,1),
+            '#s12:not(FOO)': (0,1,0,1),
+            'button:not([DISABLED])': (0,0,1,1), #?
+            '*:not(FOO)': (0,0,0,1),
 
             # elements
-            u'a+b': (0,0,0,2),
-            u'a>b': (0,0,0,2),
-            u'a b': (0,0,0,2),
-            u'* a': (0,0,0,1),
-            u'a *': (0,0,0,1),
-            u'a * b': (0,0,0,2),
+            'a+b': (0,0,0,2),
+            'a>b': (0,0,0,2),
+            'a b': (0,0,0,2),
+            '* a': (0,0,0,1),
+            'a *': (0,0,0,1),
+            'a * b': (0,0,0,2),
 
-            u'a:hover': (0,0,0,1),
+            'a:hover': (0,0,0,1),
 
-            u'a:first-line': (0,0,0,2),
-            u'a:first-letter': (0,0,0,2),
-            u'a:before': (0,0,0,2),
-            u'a:after': (0,0,0,2),
+            'a:first-line': (0,0,0,2),
+            'a:first-letter': (0,0,0,2),
+            'a:before': (0,0,0,2),
+            'a:after': (0,0,0,2),
 
             # classes and attributes
-            u'.a': (0,0,1,0),
-            u'*.a': (0,0,1,0),
-            u'a.a': (0,0,1,1),
-            u'.a.a': (0,0,2,0), # IE<7 False (0,0,1,0)
-            u'a.a.a': (0,0,2,1),
-            u'.a.b': (0,0,2,0),
-            u'a.a.b': (0,0,2,1),
-            u'.a .a': (0,0,2,0),
-            u'*[x]': (0,0,1,0),
-            u'*[x]': (0,0,1,0),
-            u'*[x]': (0,0,1,0),
-            u'*[x=a]': (0,0,1,0),
-            u'*[x~=a]': (0,0,1,0),
-            u'*[x|=a]': (0,0,1,0),
-            u'*[x^=a]': (0,0,1,0),
-            u'*[x*=a]': (0,0,1,0),
-            u'*[x$=a]': (0,0,1,0),
-            u'*[x][y]': (0,0,2,0),
+            '.a': (0,0,1,0),
+            '*.a': (0,0,1,0),
+            'a.a': (0,0,1,1),
+            '.a.a': (0,0,2,0), # IE<7 False (0,0,1,0)
+            'a.a.a': (0,0,2,1),
+            '.a.b': (0,0,2,0),
+            'a.a.b': (0,0,2,1),
+            '.a .a': (0,0,2,0),
+            '*[x]': (0,0,1,0),
+            '*[x]': (0,0,1,0),
+            '*[x]': (0,0,1,0),
+            '*[x=a]': (0,0,1,0),
+            '*[x~=a]': (0,0,1,0),
+            '*[x|=a]': (0,0,1,0),
+            '*[x^=a]': (0,0,1,0),
+            '*[x*=a]': (0,0,1,0),
+            '*[x$=a]': (0,0,1,0),
+            '*[x][y]': (0,0,2,0),
 
             # ids
-            u'#a': (0,1,0,0),
-            u'*#a': (0,1,0,0),
-            u'x#a': (0,1,0,1),
-            u'.x#a': (0,1,1,0),
-            u'a.x#a': (0,1,1,1),
-            u'#a#a': (0,2,0,0), # e.g. html:id + xml:id
-            u'#a#b': (0,2,0,0),
-            u'#a #b': (0,2,0,0),
+            '#a': (0,1,0,0),
+            '*#a': (0,1,0,0),
+            'x#a': (0,1,0,1),
+            '.x#a': (0,1,1,0),
+            'a.x#a': (0,1,1,1),
+            '#a#a': (0,2,0,0), # e.g. html:id + xml:id
+            '#a#b': (0,2,0,0),
+            '#a #b': (0,2,0,0),
             }
         for text in tests:
             selector.selectorText = text
@@ -479,7 +479,7 @@ class SelectorTestCase(basetest.BaseTestCase):
 
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
-        sel=u'a + b'
+        sel='a + b'
 
         s = cssutils.css.Selector(selectorText=sel)
 

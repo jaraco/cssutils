@@ -2,7 +2,7 @@
 """Testcases for cssutils.stylesheets.MediaQuery"""
 
 import xml.dom
-import basetest
+from . import basetest
 import cssutils.stylesheets
 
 class MediaQueryTestCase(basetest.BaseTestCase):
@@ -14,38 +14,38 @@ class MediaQueryTestCase(basetest.BaseTestCase):
     def test_mediaText(self):
         "MediaQuery.mediaText"
         tests = {
-            u'all': None,
-            u'braille': None,
-            u'embossed': None,
-            u'handheld': None,
-            u'print': None,
-            u'projection': None,
-            u'screen': None,
-            u'speech': None,
-            u'tty': None,
-            u'tv': None,
-            u'ALL': None,
-            u'a\\ll': None,
-            u'not tv': None,
-            u'n\\ot t\\v': None,
-            u'only tv': None,
-            u'\\only \\tv': None,
-            u'PRINT': None,
-            u'NOT PRINT': None,
-            u'ONLY PRINT': None,
-            u'tv and (color)': None,
-            u'not tv and (color)': None,
-            u'only tv and (color)': None,
-            u'print and(color)': u'print and (color)'
+            'all': None,
+            'braille': None,
+            'embossed': None,
+            'handheld': None,
+            'print': None,
+            'projection': None,
+            'screen': None,
+            'speech': None,
+            'tty': None,
+            'tv': None,
+            'ALL': None,
+            'a\\ll': None,
+            'not tv': None,
+            'n\\ot t\\v': None,
+            'only tv': None,
+            '\\only \\tv': None,
+            'PRINT': None,
+            'NOT PRINT': None,
+            'ONLY PRINT': None,
+            'tv and (color)': None,
+            'not tv and (color)': None,
+            'only tv and (color)': None,
+            'print and(color)': 'print and (color)'
             }
         self.do_equal_r(tests, att='mediaText')
 
         tests = {
-            u'': xml.dom.SyntaxErr,
-            u'two values': xml.dom.SyntaxErr,
-            u'or even three': xml.dom.SyntaxErr,
-            u'aural': xml.dom.SyntaxErr, # a dimension
-            u'3d': xml.dom.SyntaxErr, # a dimension
+            '': xml.dom.SyntaxErr,
+            'two values': xml.dom.SyntaxErr,
+            'or even three': xml.dom.SyntaxErr,
+            'aural': xml.dom.SyntaxErr, # a dimension
+            '3d': xml.dom.SyntaxErr, # a dimension
             }
         self.do_raise_r(tests, att='_setMediaText')        
 
@@ -53,7 +53,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
         "MediaQuery.mediaType"
         mq = cssutils.stylesheets.MediaQuery()
 
-        self.assertEqual(u'', mq.mediaText)
+        self.assertEqual('', mq.mediaText)
 
         for mt in cssutils.stylesheets.MediaQuery.MEDIA_TYPES:
             mq.mediaType = mt
@@ -61,7 +61,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             mq.mediaType = mt.upper()
             self.assertEqual(mq.mediaType, mt.upper())
 
-        mt = u'3D-UNKOwn-MEDIAtype0123'
+        mt = '3D-UNKOwn-MEDIAtype0123'
         #mq.mediaType = mt
         self.assertRaises(xml.dom.SyntaxErr, mq._setMediaType, mt)
         #self.assertRaises(xml.dom.InvalidCharacterErr, mq._setMediaType, mt)
@@ -69,22 +69,22 @@ class MediaQueryTestCase(basetest.BaseTestCase):
     def test_comments(self):
         "MediaQuery.mediaText comments"
         tests = {
-            u'all': None,
-            u'print': None,
-            u'not print': None,
-            u'only print': None,
-            u'print and (color)': None,
-            u'print and (color) and (width)': None,
-            u'print and (color: 2)': None,
-            u'print and (min-width: 100px)': None,
-            u'print and (min-width: 100px) and (color: red)': None,
-            u'not print and (min-width: 100px)': None,
-            u'only print and (min-width: 100px)': None,
-            u'/*1*/ tv /*2*/': None,
-            u'/*0*/ only /*1*/ tv /*2*/': None,
-            u'/*0* /not /*1*/ tv /*2*/': None,
-            u'/*x*/ only /*x*/ print /*x*/ and /*x*/ (/*x*/ min-width /*x*/: /*x*/ 100px /*x*/)': None,
-            u'print and/*1*/(color)': u'print and /*1*/ (color)'
+            'all': None,
+            'print': None,
+            'not print': None,
+            'only print': None,
+            'print and (color)': None,
+            'print and (color) and (width)': None,
+            'print and (color: 2)': None,
+            'print and (min-width: 100px)': None,
+            'print and (min-width: 100px) and (color: red)': None,
+            'not print and (min-width: 100px)': None,
+            'only print and (min-width: 100px)': None,
+            '/*1*/ tv /*2*/': None,
+            '/*0*/ only /*1*/ tv /*2*/': None,
+            '/*0* /not /*1*/ tv /*2*/': None,
+            '/*x*/ only /*x*/ print /*x*/ and /*x*/ (/*x*/ min-width /*x*/: /*x*/ 100px /*x*/)': None,
+            'print and/*1*/(color)': 'print and /*1*/ (color)'
             }
         self.do_equal_r(tests, att='mediaText')
 

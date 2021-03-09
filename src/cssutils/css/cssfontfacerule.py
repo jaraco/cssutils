@@ -7,8 +7,8 @@ __all__ = ['CSSFontFaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssstyledeclaration import CSSStyleDeclaration
-import cssrule
+from .cssstyledeclaration import CSSStyleDeclaration
+from . import cssrule
 import cssutils
 import xml.dom
 
@@ -41,7 +41,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
         """
         super(CSSFontFaceRule, self).__init__(parentRule=parentRule, 
                                               parentStyleSheet=parentStyleSheet)
-        self._atkeyword = u'@font-face'
+        self._atkeyword = '@font-face'
             
         if style:
             self.style = style
@@ -51,12 +51,12 @@ class CSSFontFaceRule(cssrule.CSSRule):
         self._readonly = readonly
         
     def __repr__(self):
-        return u"cssutils.css.%s(style=%r)" % (
+        return "cssutils.css.%s(style=%r)" % (
                 self.__class__.__name__, 
                 self.style.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object style=%r valid=%r at 0x%x>" % (
+        return "<cssutils.css.%s object style=%r valid=%r at 0x%x>" % (
                 self.__class__.__name__, 
                 self.style.cssText, 
                 self.valid, 
@@ -86,7 +86,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.FONT_FACE_SYM:
-            self._log.error(u'CSSFontFaceRule: No CSSFontFaceRule found: %s' %
+            self._log.error('CSSFontFaceRule: No CSSFontFaceRule found: %s' %
                 self._valuestr(cssText),
                 error=xml.dom.InvalidModificationErr)
         else:
@@ -96,10 +96,10 @@ class CSSFontFaceRule(cssrule.CSSRule):
             beforetokens, brace = self._tokensupto2(tokenizer, 
                                                     blockstartonly=True,
                                                     separateEnd=True)            
-            if self._tokenvalue(brace) != u'{':
+            if self._tokenvalue(brace) != '{':
                 ok = False
-                self._log.error(u'CSSFontFaceRule: No start { of style '
-                                u'declaration found: %r' 
+                self._log.error('CSSFontFaceRule: No start { of style '
+                                'declaration found: %r' 
                                 % self._valuestr(cssText), brace)
             
             # parse stuff before { which should be comments and S only
@@ -117,16 +117,16 @@ class CSSFontFaceRule(cssrule.CSSRule):
 
             val, type_ = self._tokenvalue(braceorEOFtoken),\
                          self._type(braceorEOFtoken)
-            if val != u'}' and type_ != 'EOF':
+            if val != '}' and type_ != 'EOF':
                 ok = False
-                self._log.error(u'CSSFontFaceRule: No "}" after style '
-                                u'declaration found: %r'
+                self._log.error('CSSFontFaceRule: No "}" after style '
+                                'declaration found: %r'
                                 % self._valuestr(cssText))
                 
             nonetoken = self._nexttoken(tokenizer)
             if nonetoken:
                 ok = False
-                self._log.error(u'CSSFontFaceRule: Trailing content found.',
+                self._log.error('CSSFontFaceRule: Trailing content found.',
                                 token=nonetoken)
 
             if 'EOF' == type_:
@@ -142,8 +142,8 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 self.style = newStyle                 
                 
     cssText = property(_getCssText, _setCssText,
-                       doc=u"(DOM) The parsable textual representation of this "
-                           u"rule.")
+                       doc="(DOM) The parsable textual representation of this "
+                           "rule.")
 
     def _setStyle(self, style):
         """
@@ -151,19 +151,19 @@ class CSSFontFaceRule(cssrule.CSSRule):
             a CSSStyleDeclaration or string
         """
         self._checkReadonly()
-        if isinstance(style, basestring):
+        if isinstance(style, str):
             self._style = CSSStyleDeclaration(cssText=style, parentRule=self)
         else:
             style._parentRule = self
             self._style = style
 
     style = property(lambda self: self._style, _setStyle,
-                     doc=u"(DOM) The declaration-block of this rule set, "
-                         u"a :class:`~cssutils.css.CSSStyleDeclaration`.")
+                     doc="(DOM) The declaration-block of this rule set, "
+                         "a :class:`~cssutils.css.CSSStyleDeclaration`.")
 
     type = property(lambda self: self.FONT_FACE_RULE, 
-                    doc=u"The type of this rule, as defined by a CSSRule "
-                        u"type constant.")
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
 
     def _getValid(self):
         needed = ['font-family', 'src']
@@ -177,8 +177,8 @@ class CSSFontFaceRule(cssrule.CSSRule):
         return not bool(needed)
 
     valid = property(_getValid, 
-                     doc=u"CSSFontFace is valid if properties `font-family` "
-                         u"and `src` are set and all properties are valid.")
+                     doc="CSSFontFace is valid if properties `font-family` "
+                         "and `src` are set and all properties are valid.")
     
     # constant but needed:
     wellformed = property(lambda self: True)

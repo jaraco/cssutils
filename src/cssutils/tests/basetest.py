@@ -4,9 +4,9 @@ import logging
 import os
 import re
 import sys
-import StringIO
+import io
 import unittest
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from email import message_from_string, message_from_file
 
 # add src to PYTHONPATH
@@ -86,14 +86,14 @@ class BaseTestCase(unittest.TestCase):
             exc_pattern = None
 
         argv = [repr(a) for a in args]\
-               + ["%s=%r" % (k,v)  for k,v in kwargs.items()]
+               + ["%s=%r" % (k,v)  for k,v in list(kwargs.items())]
         callsig = "%s(%s)" % (callable.__name__, ", ".join(argv))
 
         try:
             callable(*args, **kwargs)
-        except exception, exc:
+        except exception as exc:
             if exc_args is not None:
-                self.failIf(exc.args != exc_args,
+                self.assertFalse(exc.args != exc_args,
                             "%s raised %s with unexpected args: "\
                             "expected=%r, actual=%r"\
                             % (callsig, exc.__class__, exc_args, exc.args))
@@ -105,7 +105,7 @@ class BaseTestCase(unittest.TestCase):
                                    str(exc)))
         except:
             exc_info = sys.exc_info()
-            print exc_info
+            print(exc_info)
             self.fail("%s raised an unexpected exception type: "\
                       "expected=%s, actual=%s"\
                       % (callsig, exception, exc_info[0]))
@@ -129,8 +129,8 @@ class BaseTestCase(unittest.TestCase):
         """
         try:
             callableObj(*args, **kwargs)
-        except excClass, exc:
-            excMsg = unicode(exc)
+        except excClass as exc:
+            excMsg = str(exc)
             if not msg:
                 # No message provided: any message is fine.
                 return
@@ -140,7 +140,7 @@ class BaseTestCase(unittest.TestCase):
             else:
                 # Message provided, and it didn't match: fail!
                 raise self.failureException(
-                    u"Right exception, wrong message: got '%s' instead of '%s'" %
+                    "Right exception, wrong message: got '%s' instead of '%s'" %
                     (excMsg, msg))
         else:
             if hasattr(excClass, '__name__'):
@@ -158,27 +158,27 @@ class BaseTestCase(unittest.TestCase):
         """
         p = cssutils.CSSParser(raiseExceptions=raising)
         # parses with self.p and checks att of result
-        for test, expected in tests.items():
+        for test, expected in list(tests.items()):
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             s = p.parseString(test)
             if expected is None:
                 expected = test
-            self.assertEqual(expected, unicode(s.__getattribute__(att), 'utf-8'))
+            self.assertEqual(expected, str(s.__getattribute__(att), 'utf-8'))
 
     def do_raise_p(self, tests, debug=False, raising=True):
         # parses with self.p and expects raise
         p = cssutils.CSSParser(raiseExceptions=raising)
-        for test, expected in tests.items():
+        for test, expected in list(tests.items()):
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             self.assertRaises(expected, p.parseString, test)
 
     def do_equal_r(self, tests, att='cssText', debug=False):
         # sets attribute att of self.r and asserts Equal
-        for test, expected in tests.items():
+        for test, expected in list(tests.items()):
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             self.r.__setattr__(att, test)
             if expected is None:
                 expected = test
@@ -186,16 +186,16 @@ class BaseTestCase(unittest.TestCase):
 
     def do_raise_r(self, tests, att='_setCssText', debug=False):
         # sets self.r and asserts raise
-        for test, expected in tests.items():
+        for test, expected in list(tests.items()):
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             self.assertRaises(expected, self.r.__getattribute__(att), test)
 
     def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
         # sets self.r and asserts raise
         for test in tests:
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             self.assertRaises(err, self.r.__getattribute__(att), test)
 
 
@@ -220,7 +220,7 @@ class GenerateTests(type):
     """
     def __new__(cls, name, bases, attrs):
         new_attrs = {}
-        for aname, aobj in attrs.items():
+        for aname, aobj in list(attrs.items()):
             if not aname.startswith("gen_test_"):
                 new_attrs[aname] = aobj
                 continue

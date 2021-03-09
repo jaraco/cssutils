@@ -49,7 +49,7 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
         super(MediaQuery, self).__init__()
 
         self._wellformed = False
-        self._mediaType = u''
+        self._mediaType = ''
         self._partof = _partof
         if mediaText:
             self.mediaText = mediaText # sets self._mediaType too
@@ -99,32 +99,32 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
         """
         self._checkReadonly()
 
-        expression = lambda: Sequence(PreDef.char(name='expression', char=u'('),
-                                      Prod(name=u'media_feature',
+        expression = lambda: Sequence(PreDef.char(name='expression', char='('),
+                                      Prod(name='media_feature',
                                            match=lambda t, v: t == PreDef.types.IDENT
                                       ),
-                                      Sequence(PreDef.char(name='colon', char=u':'),
+                                      Sequence(PreDef.char(name='colon', char=':'),
                                                cssutils.css.value.MediaQueryValueProd(self),
                                                minmax=lambda: (0, 1) # optional
                                                ),
-                                      PreDef.char(name='expression END', char=u')',
+                                      PreDef.char(name='expression END', char=')',
                                                   stopIfNoMoreMatch=self._partof
                                                   )
                                       )
 
-        prods = Choice(Sequence(Prod(name=u'ONLY|NOT', # media_query
+        prods = Choice(Sequence(Prod(name='ONLY|NOT', # media_query
                                      match=lambda t, v: t == PreDef.types.IDENT and 
-                                                        normalize(v) in (u'only', u'not'),
+                                                        normalize(v) in ('only', 'not'),
                                      optional=True,
                                      toStore='not simple'
                                      ), 
-                                Prod(name=u'media_type',
+                                Prod(name='media_type',
                                      match=lambda t, v: t == PreDef.types.IDENT and 
                                                         normalize(v) in self.MEDIA_TYPES,
                                      stopIfNoMoreMatch=True,
                                      toStore='media_type'
                                      ),                   
-                                Sequence(Prod(name=u'AND',
+                                Sequence(Prod(name='AND',
                                               match=lambda t, v: t == PreDef.types.IDENT and 
                                                                  normalize(v) == 'and',
                                               toStore='not simple'
@@ -134,7 +134,7 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
                                          )
                                 ),
                        Sequence(expression(),                   
-                                Sequence(Prod(name=u'AND',
+                                Sequence(Prod(name='AND',
                                               match=lambda t, v: t == PreDef.types.IDENT and 
                                                                  normalize(v) == 'and'
                                          ),                   
@@ -146,13 +146,13 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
         
         # parse
         ok, seq, store, unused = ProdParser().parse(mediaText, 
-                                                    u'MediaQuery',
+                                                    'MediaQuery',
                                                     prods)
         self._wellformed = ok
         if ok:
             try:
                 media_type = store['media_type']
-            except KeyError, e:
+            except KeyError as e:
                 pass
             else:
                 if 'not simple' not in store:
@@ -183,7 +183,7 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
 
         if nmediaType not in self.MEDIA_TYPES:
             self._log.error(
-                u'MediaQuery: Syntax Error in media type "%s".' % mediaType,
+                'MediaQuery: Syntax Error in media type "%s".' % mediaType,
                 error=xml.dom.SyntaxErr)
         else:
             # set
@@ -191,8 +191,8 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
 
             # update seq
             for i, x in enumerate(self._seq):
-                if isinstance(x.value, basestring):
-                    if normalize(x.value) in (u'only', u'not'):
+                if isinstance(x.value, str):
+                    if normalize(x.value) in ('only', 'not'):
                         continue
                     else:
                         # TODO: simplify!

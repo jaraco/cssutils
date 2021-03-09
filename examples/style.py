@@ -19,15 +19,15 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 try:
     import pkg_resources
     pkg_resources.require('lxml')
-except pkg_resources.DistributionNotFound, e:
+except pkg_resources.DistributionNotFound as e:
     pass
 
 try:
     from lxml import etree
     from lxml.builder import E
     from lxml.cssselect import CSSSelector
-except ImportError, e:
-    print 'You need lxml for this example:', e
+except ImportError as e:
+    print('You need lxml for this example:', e)
     sys.exit(1)
 
 
@@ -138,8 +138,8 @@ def render2style(document, view):
     - add style into @style attribute
     - add style into @title attribute (for debugging)
     """
-    for element, style in view.items():
-        v = style.getCssText(separator=u'')
+    for element, style in list(view.items()):
+        v = style.getCssText(separator='')
         element.set('style', v)
         element.set('title', v)
 
@@ -154,8 +154,8 @@ def render2content(document, view, css):
     e = etree.Element('style', {'type': 'text/css'})
     e.text = css
     document.find('head').append(e)
-    for element, style in view.items():
-        v = style.getCssText(separator=u'')
+    for element, style in list(view.items()):
+        v = style.getCssText(separator='')
         element.text = v
 
 def show(text, name, encoding='utf-8'):

@@ -127,12 +127,12 @@ class Selector(cssutils.util.Base2):
             st = (self.selectorText, self._getUsedNamespaces())
         else:
             st = self.selectorText
-        return u"cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__, 
+        return "cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__, 
                                                       st)
 
     def __str__(self):
-        return u"<cssutils.css.%s object selectorText=%r specificity=%r" \
-               u" _namespaces=%r at 0x%x>" % (self.__class__.__name__,
+        return "<cssutils.css.%s object selectorText=%r specificity=%r" \
+               " _namespaces=%r at 0x%x>" % (self.__class__.__name__,
                                               self.selectorText,
                                               self.specificity,
                                               self._getUsedNamespaces(),
@@ -143,8 +143,8 @@ class Selector(cssutils.util.Base2):
         uris = set()
         for item in self.seq:
             type_, val = item.type, item.value
-            if type_.endswith(u'-selector') or type_ == u'universal' and \
-               isinstance(val, tuple) and val[0] not in (None, u'*'):
+            if type_.endswith('-selector') or type_ == 'universal' and \
+               isinstance(val, tuple) and val[0] not in (None, '*'):
                 uris.add(val[0])
         return uris
 
@@ -152,7 +152,7 @@ class Selector(cssutils.util.Base2):
         "Return actually used namespaces only."
         useduris = self._getUsedUris()
         namespaces = _SimpleNamespaces(log=self._log)
-        for p, uri in self._namespaces.items():
+        for p, uri in list(self._namespaces.items()):
             if uri in useduris:
                 namespaces[p] = uri
         return namespaces
@@ -165,21 +165,21 @@ class Selector(cssutils.util.Base2):
             return self.__namespaces
 
     _namespaces = property(__getNamespaces, 
-                           doc=u"If this Selector is attached to a "
-                               u"CSSStyleSheet the namespaces of that sheet "
-                               u"are mirrored here. While the Selector (or "
-                               u"parent SelectorList or parentRule(s) of that "
-                               u"are not attached a own dict of {prefix: "
-                               u"namespaceURI} is used.")
+                           doc="If this Selector is attached to a "
+                               "CSSStyleSheet the namespaces of that sheet "
+                               "are mirrored here. While the Selector (or "
+                               "parent SelectorList or parentRule(s) of that "
+                               "are not attached a own dict of {prefix: "
+                               "namespaceURI} is used.")
 
     
     element = property(lambda self: self._element, 
-                       doc=u"Effective element target of this selector.")
+                       doc="Effective element target of this selector.")
 
     parent = property(lambda self: self._parent,
-                      doc=u"(DOM) The SelectorList that contains this Selector "
-                          u"or None if this Selector is not attached to a "
-                          u"SelectorList.")
+                      doc="(DOM) The SelectorList that contains this Selector "
+                          "or None if this Selector is not attached to a "
+                          "SelectorList.")
                 
     def _getSelectorText(self):
         """Return serialized format."""
@@ -215,7 +215,7 @@ class Selector(cssutils.util.Base2):
             pass
         tokenizer = self._tokenize2(selectorText)
         if not tokenizer:
-            self._log.error(u'Selector: No selectorText given.')
+            self._log.error('Selector: No selectorText given.')
         else:
             # prepare tokenlist:
             #     "*" -> type "universal"
@@ -228,54 +228,54 @@ class Selector(cssutils.util.Base2):
             tokens = []
             for t in tokenizer:
                 typ, val, lin, col = t
-                if val == u':' and tokens and\
+                if val == ':' and tokens and\
                    self._tokenvalue(tokens[-1]) == ':':
                     # combine ":" and ":"
-                    tokens[-1] = (typ, u'::', lin, col)
+                    tokens[-1] = (typ, '::', lin, col)
 
                 elif typ == 'IDENT' and tokens\
-                     and self._tokenvalue(tokens[-1]) == u'.':
+                     and self._tokenvalue(tokens[-1]) == '.':
                     # class: combine to .IDENT
-                    tokens[-1] = ('class', u'.'+val, lin, col)
+                    tokens[-1] = ('class', '.'+val, lin, col)
                 elif typ == 'IDENT' and tokens and \
-                     self._tokenvalue(tokens[-1]).startswith(u':') and\
-                     not self._tokenvalue(tokens[-1]).endswith(u'('):
+                     self._tokenvalue(tokens[-1]).startswith(':') and\
+                     not self._tokenvalue(tokens[-1]).endswith('('):
                     # pseudo-X: combine to :IDENT or ::IDENT but not ":a(" + "b"
-                    if self._tokenvalue(tokens[-1]).startswith(u'::'): 
+                    if self._tokenvalue(tokens[-1]).startswith('::'): 
                         t = 'pseudo-element'
                     else: 
                         t = 'pseudo-class'
                     tokens[-1] = (t, self._tokenvalue(tokens[-1])+val, lin, col)
 
-                elif typ == 'FUNCTION' and val == u'not(' and tokens and \
-                     u':' == self._tokenvalue(tokens[-1]):
-                    tokens[-1] = ('negation', u':' + val, lin, tokens[-1][3])
+                elif typ == 'FUNCTION' and val == 'not(' and tokens and \
+                     ':' == self._tokenvalue(tokens[-1]):
+                    tokens[-1] = ('negation', ':' + val, lin, tokens[-1][3])
                 elif typ == 'FUNCTION' and tokens\
-                     and self._tokenvalue(tokens[-1]).startswith(u':'):
+                     and self._tokenvalue(tokens[-1]).startswith(':'):
                     # pseudo-X: combine to :FUNCTION( or ::FUNCTION(
-                    if self._tokenvalue(tokens[-1]).startswith(u'::'): 
+                    if self._tokenvalue(tokens[-1]).startswith('::'): 
                         t = 'pseudo-element'
                     else: 
                         t = 'pseudo-class'
                     tokens[-1] = (t, self._tokenvalue(tokens[-1])+val, lin, col)
 
-                elif val == u'*' and tokens and\
+                elif val == '*' and tokens and\
                      self._type(tokens[-1]) == 'namespace_prefix' and\
-                     self._tokenvalue(tokens[-1]).endswith(u'|'):
+                     self._tokenvalue(tokens[-1]).endswith('|'):
                     # combine prefix|*
                     tokens[-1] = ('universal', self._tokenvalue(tokens[-1])+val, 
                                   lin, col)
-                elif val == u'*':
+                elif val == '*':
                     # universal: "*"
                     tokens.append(('universal', val, lin, col))
 
-                elif val == u'|' and tokens and\
+                elif val == '|' and tokens and\
                      self._type(tokens[-1]) in (self._prods.IDENT, 'universal')\
-                     and self._tokenvalue(tokens[-1]).find(u'|') == -1:
+                     and self._tokenvalue(tokens[-1]).find('|') == -1:
                     # namespace_prefix: "IDENT|" or "*|"
                     tokens[-1] = ('namespace_prefix', 
-                                  self._tokenvalue(tokens[-1])+u'|', lin, col)
-                elif val == u'|':
+                                  self._tokenvalue(tokens[-1])+'|', lin, col)
+                elif val == '|':
                     # namespace_prefix: "|"
                     tokens.append(('namespace_prefix', val, lin, col))
 
@@ -292,7 +292,7 @@ class Selector(cssutils.util.Base2):
                    'wellformed': True
                    }
             # used for equality checks and setting of a space combinator
-            S = u' '
+            S = ' '
 
             def append(seq, val, typ=None, token=None):
                 """
@@ -331,16 +331,16 @@ class Selector(cssutils.util.Base2):
                 if (typ.endswith('-selector') or typ == 'universal') and not (
                     'attribute-selector' == typ and not prefix):
                     # att **IS NOT** in default ns
-                    if prefix == u'*':
+                    if prefix == '*':
                         # *|name: in ANY_NS
                         namespaceURI = cssutils._ANYNS
                     elif prefix is None:
                         # e or *: default namespace with prefix u'' 
                         # or local-name()
-                        namespaceURI = namespaces.get(u'', None)
-                    elif prefix == u'':
+                        namespaceURI = namespaces.get('', None)
+                    elif prefix == '':
                         # |name or |*: in no (or the empty) namespace
-                        namespaceURI = u''
+                        namespaceURI = ''
                     else:
                         # explicit namespace prefix
                         # does not raise KeyError, see _SimpleNamespaces
@@ -348,8 +348,8 @@ class Selector(cssutils.util.Base2):
 
                         if namespaceURI is None:
                             new['wellformed'] = False
-                            self._log.error(u'Selector: No namespaceURI found '
-                                            u'for prefix %r' % prefix, 
+                            self._log.error('Selector: No namespaceURI found '
+                                            'for prefix %r' % prefix, 
                                             token=token, 
                                             error=xml.dom.NamespaceErr)
                             return
@@ -403,7 +403,7 @@ class Selector(cssutils.util.Base2):
                 # S
                 context = new['context'][-1]
                 if context.startswith('pseudo-'):
-                    if seq and seq[-1].value not in u'+-':
+                    if seq and seq[-1].value not in '+-':
                         # e.g. x:func(a + b)
                         append(seq, S, 'S', token=token)
                     return expected
@@ -430,7 +430,7 @@ class Selector(cssutils.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected universal.', token=token)
+                        'Selector: Unexpected universal.', token=token)
                     return expected
 
             def _namespace_prefix(expected, seq, token, tokenizer=None):
@@ -449,7 +449,7 @@ class Selector(cssutils.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected namespace prefix.', token=token)
+                        'Selector: Unexpected namespace prefix.', token=token)
                     return expected
 
             def _pseudo(expected, seq, token, tokenizer=None):
@@ -474,7 +474,7 @@ class Selector(cssutils.util.Base2):
                         typ = 'pseudo-element'
                     append(seq, val, typ, token=token)
                     
-                    if val.endswith(u'('):
+                    if val.endswith('('):
                         # function
                         # "pseudo-" "class" or "element"
                         new['context'].append(typ) 
@@ -490,7 +490,7 @@ class Selector(cssutils.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected start of pseudo.', token=token)
+                        'Selector: Unexpected start of pseudo.', token=token)
                     return expected
 
             def _expression(expected, seq, token, tokenizer=None):
@@ -503,7 +503,7 @@ class Selector(cssutils.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected %s.' % typ, token=token)
+                        'Selector: Unexpected %s.' % typ, token=token)
                     return expected
 
             def _attcombinator(expected, seq, token, tokenizer=None):
@@ -519,7 +519,7 @@ class Selector(cssutils.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected %s.' % typ, token=token)
+                        'Selector: Unexpected %s.' % typ, token=token)
                     return expected
 
             def _string(expected, seq, token, tokenizer=None):
@@ -542,7 +542,7 @@ class Selector(cssutils.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected STRING.', token=token)
+                        'Selector: Unexpected STRING.', token=token)
                     return expected
 
             def _ident(expected, seq, token, tokenizer=None):
@@ -580,7 +580,7 @@ class Selector(cssutils.util.Base2):
 
                 else:
                     new['wellformed'] = False
-                    self._log.error(u'Selector: Unexpected IDENT.', token=token)
+                    self._log.error('Selector: Unexpected IDENT.', token=token)
                     return expected
 
             def _class(expected, seq, token, tokenizer=None):
@@ -597,7 +597,7 @@ class Selector(cssutils.util.Base2):
 
                 else:
                     new['wellformed'] = False
-                    self._log.error(u'Selector: Unexpected class.', token=token)
+                    self._log.error('Selector: Unexpected class.', token=token)
                     return expected
 
             def _hash(expected, seq, token, tokenizer=None):
@@ -614,7 +614,7 @@ class Selector(cssutils.util.Base2):
 
                 else:
                     new['wellformed'] = False
-                    self._log.error(u'Selector: Unexpected HASH.', token=token)
+                    self._log.error('Selector: Unexpected HASH.', token=token)
                     return expected
 
             def _char(expected, seq, token, tokenizer=None):
@@ -623,7 +623,7 @@ class Selector(cssutils.util.Base2):
                 val = self._tokenvalue(token)
                 
                 # context: attrib
-                if u']' == val and 'attrib' == context and ']' in expected:
+                if ']' == val and 'attrib' == context and ']' in expected:
                     # end of attrib
                     append(seq, val, 'attribute-end', token=token)
                     context = new['context'].pop() # attrib is done
@@ -633,14 +633,14 @@ class Selector(cssutils.util.Base2):
                     else:
                         return simple_selector_sequence2 + combinator
 
-                elif u'=' == val and 'attrib' == context\
+                elif '=' == val and 'attrib' == context\
                      and 'combinator' in expected:
                     # combinator in attrib
                     append(seq, val, 'equals', token=token)
                     return attvalue
 
                 # context: negation
-                elif u')' == val and 'negation' == context and u')' in expected:
+                elif ')' == val and 'negation' == context and ')' in expected:
                     # not(negation_arg)"
                     append(seq, val, 'negation-end', token=token)
                     new['context'].pop() # negation is done
@@ -648,17 +648,17 @@ class Selector(cssutils.util.Base2):
                     return simple_selector_sequence + combinator                
 
                 # context: pseudo (at least one expression)
-                elif val in u'+-' and context.startswith('pseudo-'):
+                elif val in '+-' and context.startswith('pseudo-'):
                     # :func(+ -)"
                     _names = {'+': 'plus', '-': 'minus'}
-                    if val == u'+' and seq and seq[-1].value == S:
+                    if val == '+' and seq and seq[-1].value == S:
                         seq.replace(-1, val, _names[val])
                     else:
                         append(seq, val, _names[val], 
                                token=token)
                     return expression                
 
-                elif u')' == val and context.startswith('pseudo-') and\
+                elif ')' == val and context.startswith('pseudo-') and\
                      expression == expected:
                     # :func(expression)"
                     append(seq, val, 'function-end', token=token)
@@ -669,13 +669,13 @@ class Selector(cssutils.util.Base2):
                         return simple_selector_sequence + combinator                
 
                 # context: ROOT                
-                elif u'[' == val and 'attrib' in expected:
+                elif '[' == val and 'attrib' in expected:
                     # start of [attrib]
                     append(seq, val, 'attribute-start', token=token)
                     new['context'].append('attrib')
                     return attname
 
-                elif val in u'+>~' and 'combinator' in expected:
+                elif val in '+>~' and 'combinator' in expected:
                     # no other combinator except S may be following
                     _names = {
                         '>': 'child',
@@ -687,11 +687,11 @@ class Selector(cssutils.util.Base2):
                         append(seq, val, _names[val], token=token)
                     return simple_selector_sequence
 
-                elif u',' == val:
+                elif ',' == val:
                     # not a selectorlist
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Single selector only.', 
+                        'Selector: Single selector only.', 
                         error=xml.dom.InvalidModificationErr, 
                         token=token)
                     return expected
@@ -699,7 +699,7 @@ class Selector(cssutils.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected CHAR.', token=token)
+                        'Selector: Unexpected CHAR.', token=token)
                     return expected
 
             def _negation(expected, seq, token, tokenizer=None):
@@ -713,14 +713,14 @@ class Selector(cssutils.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        u'Selector: Unexpected negation.', token=token)
+                        'Selector: Unexpected negation.', token=token)
                     return expected
 
             def _atkeyword(expected, seq, token, tokenizer=None):
                 "invalidates selector"
                 new['wellformed'] = False
                 self._log.error(
-                        u'Selector: Unexpected ATKEYWORD.', token=token)
+                        'Selector: Unexpected ATKEYWORD.', token=token)
                 return expected
 
 
@@ -758,21 +758,21 @@ class Selector(cssutils.util.Base2):
             # post condition         
             if len(new['context']) > 1 or not newseq:
                 wellformed = False
-                self._log.error(u'Selector: Invalid or incomplete selector: %s' 
+                self._log.error('Selector: Invalid or incomplete selector: %s' 
                                 % self._valuestr(selectorText))
             
             if expected == 'element_name':
                 wellformed = False
-                self._log.error(u'Selector: No element name found: %s'
+                self._log.error('Selector: No element name found: %s'
                                 % self._valuestr(selectorText))
 
             if expected == simple_selector_sequence and newseq:
                 wellformed = False
-                self._log.error(u'Selector: Cannot end with combinator: %s'
+                self._log.error('Selector: Cannot end with combinator: %s'
                                 % self._valuestr(selectorText))
 
             if newseq and hasattr(newseq[-1].value, 'strip') \
-               and newseq[-1].value.strip() == u'':
+               and newseq[-1].value.strip() == '':
                 del newseq[-1]
 
             # set
@@ -785,8 +785,8 @@ class Selector(cssutils.util.Base2):
                 self.__namespaces = self._getUsedNamespaces()
 
     selectorText = property(_getSelectorText, _setSelectorText,
-                            doc=u"(DOM) The parsable textual representation of "
-                                u"the selector.")
+                            doc="(DOM) The parsable textual representation of "
+                                "the selector.")
 
     specificity = property(lambda self: self._specificity, 
          doc="""Specificity of this selector (READONLY). 

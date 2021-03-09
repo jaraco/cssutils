@@ -6,8 +6,8 @@ __version__ = '$Id: tokenize2.py 1547 2008-12-10 20:42:26Z cthedot $'
 # raises ImportError of not on GAE
 from google.appengine.api import urlfetch
 import cgi
-import errorhandler
-import util
+from . import errorhandler
+from . import util
 
 log = errorhandler.ErrorHandler()
 
@@ -46,8 +46,8 @@ def _defaultFetcher(url):
     #from google.appengine.api import urlfetch
     try:
         r = urlfetch.fetch(url, method=urlfetch.GET)
-    except urlfetch.Error, e:
-        log.warn(u'Error opening url=%r: %s' % (url, e),
+    except urlfetch.Error as e:
+        log.warn('Error opening url=%r: %s' % (url, e),
                           error=IOError)
     else:
         if r.status_code == 200:
@@ -58,11 +58,11 @@ def _defaultFetcher(url):
                 encoding = params['charset']
             except KeyError:
                 encoding = None
-            if mimetype != u'text/css':
-                log.error(u'Expected "text/css" mime type for url %r but found: %r' % 
+            if mimetype != 'text/css':
+                log.error('Expected "text/css" mime type for url %r but found: %r' % 
                               (url, mimetype), error=ValueError)
             return encoding, r.content
         else:
             # TODO: 301 etc
-            log.warn(u'Error opening url=%r: HTTP status %s' % 
+            log.warn('Error opening url=%r: HTTP status %s' % 
                               (url, r.status_code), error=IOError)

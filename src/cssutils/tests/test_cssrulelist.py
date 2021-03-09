@@ -1,6 +1,6 @@
 """Testcases for cssutils.css.CSSRuleList"""
 
-import basetest
+from . import basetest
 import cssutils
 
 class CSSRuleListTestCase(basetest.BaseTestCase):

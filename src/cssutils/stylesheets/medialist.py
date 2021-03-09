@@ -11,7 +11,7 @@ __version__ = '$Id$'
 from cssutils.prodparser import *
 from cssutils.helper import normalize, pushtoken
 from cssutils.css import csscomment
-from mediaquery import MediaQuery
+from .mediaquery import MediaQuery
 import cssutils
 import xml.dom
 
@@ -44,7 +44,7 @@ class MediaList(cssutils.util._NewListBase):
         self._wellformed = False
 
         if isinstance(mediaText, list):
-            mediaText = u','.join(mediaText)
+            mediaText = ','.join(mediaText)
 
         self._parentRule = parentRule
         
@@ -88,7 +88,7 @@ class MediaList(cssutils.util._NewListBase):
 
 
         mediaquery = lambda: Prod(name='MediaQueryStart',
-                                  match=lambda t, v: t == 'IDENT' or v == u'(',
+                                  match=lambda t, v: t == 'IDENT' or v == '(',
                                   toSeq=lambda t, tokens: ('MediaQuery', 
                                                            MediaQuery(pushtoken(t, tokens),
                                                                       _partof=True))
@@ -104,7 +104,7 @@ class MediaList(cssutils.util._NewListBase):
                          )
         # parse
         ok, seq, store, unused = ProdParser().parse(mediaText,
-                                                    u'MediaList',
+                                                    'MediaList',
                                                     prods, debug="ml")
 
         # each mq must be valid
@@ -123,7 +123,7 @@ class MediaList(cssutils.util._NewListBase):
         if not atleastone:
             ok = False
             self._wellformed = ok
-            self._log.error(u'MediaQuery: No content.',
+            self._log.error('MediaQuery: No content.',
                             error=xml.dom.SyntaxErr)
 
         self._wellformed = ok
@@ -137,7 +137,7 @@ class MediaList(cssutils.util._NewListBase):
                 if item.type == 'MediaQuery':
                     mediaType = item.value.mediaType
                     if mediaType:
-                        if mediaType == u'all':
+                        if mediaType == 'all':
                             # remove anthing else and keep all+comments(!) only
                             finalseq = commentseqonly
                             finalseq.append(item)
@@ -203,8 +203,8 @@ class MediaList(cssutils.util._NewListBase):
 
             self._seq._readonly = False
 
-            if u'all' in mts:
-                self._log.info(u'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' % newMedium, error=xml.dom.InvalidModificationErr)
+            if 'all' in mts:
+                self._log.info('MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' % newMedium, error=xml.dom.InvalidModificationErr)
             
             elif newmt and newmt in mts:
                 # might be empty
@@ -212,7 +212,7 @@ class MediaList(cssutils.util._NewListBase):
                 self._seq.append(newMedium, 'MediaQuery')
 
             else:
-                if u'all' == newmt:
+                if 'all' == newmt:
                     self._clearSeq()
 
                 self._seq.append(newMedium, 'MediaQuery')
@@ -247,7 +247,7 @@ class MediaList(cssutils.util._NewListBase):
                 del self[i]
                 break
         else:
-            self._log.error(u'"%s" not in this MediaList' % oldMedium,
+            self._log.error('"%s" not in this MediaList' % oldMedium,
                             error=xml.dom.NotFoundErr)
 
     def item(self, index):
@@ -261,7 +261,7 @@ class MediaList(cssutils.util._NewListBase):
             return None
 
     parentRule = property(lambda self: self._parentRule,
-                          doc=u"The CSSRule (e.g. an @media or @import rule "
-                              u"this list is part of or None")
+                          doc="The CSSRule (e.g. an @media or @import rule "
+                              "this list is part of or None")
     
     wellformed = property(lambda self: self._wellformed)

@@ -11,7 +11,7 @@ __all__ = ['TestUtil']
 
 import logging
 import os
-import StringIO
+import io
 import sys
 
 import cssutils
@@ -46,7 +46,7 @@ class TestUtil(object):
         self._out = OutReplacement()#StringIO()
         sys.stdout = self._out
         
-        self._err = StringIO.StringIO()
+        self._err = io.StringIO()
         hdlr = logging.StreamHandler(self._err)
         cssutils.log._log.addHandler(hdlr)
                 
@@ -59,11 +59,11 @@ class TestUtil(object):
 
         ok = (out == expo and err == expe)
         if not ok:
-            print
+            print()
             if out != expo:
-                print '### out:\n%r\n### != expout:\n%r\n' % (out, expo)
+                print('### out:\n%r\n### != expout:\n%r\n' % (out, expo))
             else:
-                print '### err:\n%r\n### != experr:\n%r\n' % (err, expe)
+                print('### err:\n%r\n### != experr:\n%r\n' % (err, expe))
         return ok
 
 modules = 0
@@ -77,20 +77,20 @@ def mod(module):
     ok = t.end(module.EXPOUT, module.EXPERR)
     if not ok:
         errors += 1
-    print '---', ok, ':', os.path.basename(module.__file__)
-    print 
+    print('---', ok, ':', os.path.basename(module.__file__))
+    print() 
           
 def main():
     if PY2x:
-        print "DOCTESTS:::::::::::::"
+        print("DOCTESTS:::::::::::::")
         # doctests
         import website
         import doctest
         doctest.testmod(website)
-        print 
-        print 80*'-' 
-        print 
-        print 
+        print() 
+        print(80*'-') 
+        print() 
+        print() 
 
     global modules, errors
     
@@ -111,13 +111,13 @@ def main():
     import minify
     mod(minify)
     
-    print 
-    print 80*'-' 
-    print 'Ran %i tests (%i errors).' % (modules, errors)
+    print() 
+    print(80*'-') 
+    print('Ran %i tests (%i errors).' % (modules, errors))
     if PY2x:
-        print '**Check doctest results above!**'
+        print('**Check doctest results above!**')
     else:
-        print 'doctests do not work in Python 3 (yet?)!'
+        print('doctests do not work in Python 3 (yet?)!')
           
     
 if __name__ == '__main__':

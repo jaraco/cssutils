@@ -2,10 +2,10 @@
 __version__ = '$Id: test_parse.py 1281 2008-06-04 21:12:29Z cthedot $'
 
 import logging
-import StringIO
+import io
 import sys
 import xml.dom
-import basetest
+from . import basetest
 import cssutils
 
 class ErrorHandlerTestCase(basetest.BaseTestCase):
@@ -27,7 +27,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
     def _setHandler(self):
         "sets new handler and returns StringIO instance to getvalue"
-        s = StringIO.StringIO()
+        s = io.StringIO()
         h = logging.StreamHandler(s)
         h.setFormatter(logging.Formatter('%(levelname)s    %(message)s'))
         # remove if present already
@@ -40,37 +40,37 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         s = self._setHandler()
         cssutils.log.setLevel(logging.DEBUG)
         cssutils.log.debug('msg', neverraise=True)
-        self.assertEqual(s.getvalue(), u'DEBUG    msg\n')
+        self.assertEqual(s.getvalue(), 'DEBUG    msg\n')
 
         s = self._setHandler()
         cssutils.log.setLevel(logging.INFO)
         cssutils.log.info('msg', neverraise=True)
-        self.assertEqual(s.getvalue(), u'INFO    msg\n')
+        self.assertEqual(s.getvalue(), 'INFO    msg\n')
 
         s = self._setHandler()
         cssutils.log.setLevel(logging.WARNING)
         cssutils.log.warn('msg', neverraise=True)
-        self.assertEqual(s.getvalue(), u'WARNING    msg\n')
+        self.assertEqual(s.getvalue(), 'WARNING    msg\n')
 
         s = self._setHandler()
         cssutils.log.setLevel(logging.ERROR)
         cssutils.log.error('msg', neverraise=True)
-        self.assertEqual(s.getvalue(), u'ERROR    msg\n')
+        self.assertEqual(s.getvalue(), 'ERROR    msg\n')
 
         s = self._setHandler()
         cssutils.log.setLevel(logging.FATAL)
         cssutils.log.fatal('msg', neverraise=True)
-        self.assertEqual(s.getvalue(), u'CRITICAL    msg\n')
+        self.assertEqual(s.getvalue(), 'CRITICAL    msg\n')
 
         s = self._setHandler()
         cssutils.log.setLevel(logging.CRITICAL)
         cssutils.log.critical('msg', neverraise=True)
-        self.assertEqual(s.getvalue(), u'CRITICAL    msg\n')
+        self.assertEqual(s.getvalue(), 'CRITICAL    msg\n')
 
         s = self._setHandler()
         cssutils.log.setLevel(logging.CRITICAL)
         cssutils.log.error('msg', neverraise=True)
-        self.assertEqual(s.getvalue(), u'')
+        self.assertEqual(s.getvalue(), '')
 
     def test_linecol(self):
         "cssutils.log line col"
@@ -80,14 +80,14 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         s = cssutils.css.CSSStyleSheet()
         try:
             s.cssText = '@import x;'
-        except xml.dom.DOMException, e:                
+        except xml.dom.DOMException as e:                
             self.assertEqual(str(e), 'CSSImportRule: Unexpected ident. [1:9: x]')
             self.assertEqual(e.line, 1)
             self.assertEqual(e.col, 9)
             if sys.platform.startswith('java'):
-                self.assertEqual(e.msg, u'CSSImportRule: Unexpected ident. [1:9: x]')
+                self.assertEqual(e.msg, 'CSSImportRule: Unexpected ident. [1:9: x]')
             else:
-                self.assertEqual(e.args, (u'CSSImportRule: Unexpected ident. [1:9: x]',))
+                self.assertEqual(e.args, ('CSSImportRule: Unexpected ident. [1:9: x]',))
         
         cssutils.log.raiseExceptions = o
 
@@ -99,7 +99,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         self.assertEqual(cssutils.log.getEffectiveLevel(), logging.FATAL)
 
         cssutils.parseString('a { color: 1 }')
-        self.assertEqual(s.getvalue(), u'')
+        self.assertEqual(s.getvalue(), '')
 
         cssutils.log.setLevel(logging.DEBUG)
         cssutils.parseString('a { color: 1 }')
@@ -107,14 +107,14 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 #        self.assertEqual(s.getvalue(),
 #                         u'ERROR    Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 1 [1:5: color]\n')
         self.assertEqual(s.getvalue(),
-                         u'ERROR    Property: Invalid value for "CSS Level 2.1" property: 1 [1:5: color]\n')
+                         'ERROR    Property: Invalid value for "CSS Level 2.1" property: 1 [1:5: color]\n')
 
         s = self._setHandler()
 
         cssutils.log.setLevel(logging.ERROR)
         cssutils.parseUrl('http://example.com')
         self.assertEqual(s.getvalue()[:38],
-                         u'ERROR    Expected "text/css" mime type')
+                         'ERROR    Expected "text/css" mime type')
 
     def test_parsevalidation(self):
         style = 'color: 1'

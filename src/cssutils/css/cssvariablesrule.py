@@ -5,8 +5,8 @@ __all__ = ['CSSVariablesRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssfontfacerule.py 1818 2009-07-30 21:39:00Z cthedot $'
 
-from cssvariablesdeclaration import CSSVariablesDeclaration
-import cssrule
+from .cssvariablesdeclaration import CSSVariablesDeclaration
+from . import cssrule
 import cssutils
 import xml.dom
 
@@ -48,7 +48,7 @@ class CSSVariablesRule(cssrule.CSSRule):
         """
         super(CSSVariablesRule, self).__init__(parentRule=parentRule, 
                                               parentStyleSheet=parentStyleSheet)
-        self._atkeyword = u'@variables'
+        self._atkeyword = '@variables'
         
         # dummy
         self._media = cssutils.stylesheets.MediaList(mediaText, 
@@ -62,14 +62,14 @@ class CSSVariablesRule(cssrule.CSSRule):
         self._readonly = readonly
         
     def __repr__(self):
-        return u"cssutils.css.%s(mediaText=%r, variables=%r)" % (
+        return "cssutils.css.%s(mediaText=%r, variables=%r)" % (
                 self.__class__.__name__, 
                 self._media.mediaText,
                 self.variables.cssText)
 
     def __str__(self):
-        return u"<cssutils.css.%s object mediaText=%r variables=%r valid=%r " \
-               u"at 0x%x>" % (self.__class__.__name__,
+        return "<cssutils.css.%s object mediaText=%r variables=%r valid=%r " \
+               "at 0x%x>" % (self.__class__.__name__,
                               self._media.mediaText,
                               self.variables.cssText,
                               self.valid,
@@ -110,7 +110,7 @@ class CSSVariablesRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.VARIABLES_SYM:
-            self._log.error(u'CSSVariablesRule: No CSSVariablesRule found: %s' %
+            self._log.error('CSSVariablesRule: No CSSVariablesRule found: %s' %
                             self._valuestr(cssText),
                             error=xml.dom.InvalidModificationErr)
         else:
@@ -120,10 +120,10 @@ class CSSVariablesRule(cssrule.CSSRule):
             beforetokens, brace = self._tokensupto2(tokenizer, 
                                                     blockstartonly=True,
                                                     separateEnd=True)            
-            if self._tokenvalue(brace) != u'{':
+            if self._tokenvalue(brace) != '{':
                 ok = False
-                self._log.error(u'CSSVariablesRule: No start { of variable '
-                                u'declaration found: %r' 
+                self._log.error('CSSVariablesRule: No start { of variable '
+                                'declaration found: %r' 
                                 % self._valuestr(cssText), brace)
             
             # parse stuff before { which should be comments and S only
@@ -141,16 +141,16 @@ class CSSVariablesRule(cssrule.CSSRule):
 
             val, type_ = self._tokenvalue(braceorEOFtoken), \
                          self._type(braceorEOFtoken)
-            if val != u'}' and type_ != 'EOF':
+            if val != '}' and type_ != 'EOF':
                 ok = False
-                self._log.error(u'CSSVariablesRule: No "}" after variables '
-                                u'declaration found: %r'
+                self._log.error('CSSVariablesRule: No "}" after variables '
+                                'declaration found: %r'
                                 % self._valuestr(cssText))
                 
             nonetoken = self._nexttoken(tokenizer)
             if nonetoken:
                 ok = False
-                self._log.error(u'CSSVariablesRule: Trailing content found.',
+                self._log.error('CSSVariablesRule: Trailing content found.',
                                 token=nonetoken)
 
             if 'EOF' == type_:
@@ -165,11 +165,11 @@ class CSSVariablesRule(cssrule.CSSRule):
                 self.variables = newVariables
 
     cssText = property(_getCssText, _setCssText,
-                       doc=u"(DOM) The parsable textual representation of this "
-                           u"rule.")
+                       doc="(DOM) The parsable textual representation of this "
+                           "rule.")
 
-    media = property(doc=u"NOT IMPLEMENTED! As cssutils resolves variables "\
-                         u"during serializing media information is lost.")
+    media = property(doc="NOT IMPLEMENTED! As cssutils resolves variables "\
+                         "during serializing media information is lost.")
 
     def _setVariables(self, variables):
         """
@@ -177,7 +177,7 @@ class CSSVariablesRule(cssrule.CSSRule):
             a CSSVariablesDeclaration or string
         """
         self._checkReadonly()
-        if isinstance(variables, basestring):
+        if isinstance(variables, str):
             self._variables = CSSVariablesDeclaration(cssText=variables, 
                                                       parentRule=self)
         else:
@@ -185,12 +185,12 @@ class CSSVariablesRule(cssrule.CSSRule):
             self._variables = variables
 
     variables = property(lambda self: self._variables, _setVariables,
-                         doc=u"(DOM) The variables of this rule set, a "
-                             u":class:`cssutils.css.CSSVariablesDeclaration`.")
+                         doc="(DOM) The variables of this rule set, a "
+                             ":class:`cssutils.css.CSSVariablesDeclaration`.")
 
     type = property(lambda self: self.VARIABLES_RULE, 
-                    doc=u"The type of this rule, as defined by a CSSRule "
-                        u"type constant.")
+                    doc="The type of this rule, as defined by a CSSRule "
+                        "type constant.")
 
     valid = property(lambda self: True, doc='NOT IMPLEMTED REALLY (TODO)')
     

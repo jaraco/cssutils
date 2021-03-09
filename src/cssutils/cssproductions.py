@@ -107,19 +107,19 @@ class CSSProductions(object):
     EOF = True
     # removed from productions as they simply are ATKEYWORD until
     # tokenizing
-    CHARSET_SYM = u'CHARSET_SYM'
-    FONT_FACE_SYM = u'FONT_FACE_SYM'
-    MEDIA_SYM = u'MEDIA_SYM'
-    IMPORT_SYM = u'IMPORT_SYM'
-    NAMESPACE_SYM = u'NAMESPACE_SYM'
-    PAGE_SYM = u'PAGE_SYM'
-    VARIABLES_SYM = u'VARIABLES_SYM'
+    CHARSET_SYM = 'CHARSET_SYM'
+    FONT_FACE_SYM = 'FONT_FACE_SYM'
+    MEDIA_SYM = 'MEDIA_SYM'
+    IMPORT_SYM = 'IMPORT_SYM'
+    NAMESPACE_SYM = 'NAMESPACE_SYM'
+    PAGE_SYM = 'PAGE_SYM'
+    VARIABLES_SYM = 'VARIABLES_SYM'
 
 for i, t in enumerate(PRODUCTIONS):
     setattr(CSSProductions, t[0].replace('-', '_'), t[0])
 
 
 # may be enabled by settings.set
-_DXImageTransform = (u'FUNCTION',
-                     ur'progid\:DXImageTransform\.Microsoft\..+\('
+_DXImageTransform = ('FUNCTION',
+                     r'progid\:DXImageTransform\.Microsoft\..+\('
                      )

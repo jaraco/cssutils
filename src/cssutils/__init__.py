@@ -101,25 +101,25 @@ import sys
 if sys.version_info < (2,6):
     bytes = str
 
-import codec
+from . import codec
 import os.path
-import urllib
-import urlparse
+import urllib.request, urllib.parse, urllib.error
+import urllib.parse
 import xml.dom
 
 # order of imports is important (partly circular)
 from . import util
-import errorhandler
+from . import errorhandler
 log = errorhandler.ErrorHandler()
 
-import css
-import stylesheets
-from parse import CSSParser
+from . import css
+from . import stylesheets
+from .parse import CSSParser
 
-from serialize import CSSSerializer
+from .serialize import CSSSerializer
 ser = CSSSerializer()
 
-from profiles import Profiles
+from .profiles import Profiles
 profile = Profiles(log=log)
 
 # used by Selector defining namespace prefix '*'
@@ -180,7 +180,7 @@ class DOMImplementationCSS(object):
         return minidom.DOMImplementation().createDocumentType(*args, **kwargs)
 
     def hasFeature(self, feature, version):
-        return (feature.lower(), unicode(version)) in self._features
+        return (feature.lower(), str(version)) in self._features
 
 xml.dom.registerDOMImplementation('cssutils', DOMImplementationCSS)
 
@@ -298,16 +298,16 @@ def resolveImports(sheet, target=None):
 
     def getReplacer(targetbase):
         "Return a replacer which uses base to return adjusted URLs"
-        basesch, baseloc, basepath, basequery, basefrag = urlparse.urlsplit(targetbase)
+        basesch, baseloc, basepath, basequery, basefrag = urllib.parse.urlsplit(targetbase)
         basepath, basepathfilename = os.path.split(basepath)
 
         def replacer(uri):
-            scheme, location, path, query, fragment = urlparse.urlsplit(uri)
-            if not scheme and not location and not path.startswith(u'/'):
+            scheme, location, path, query, fragment = urllib.parse.urlsplit(uri)
+            if not scheme and not location and not path.startswith('/'):
                 # relative
                 path, filename = os.path.split(path)
                 combined = os.path.normpath(os.path.join(basepath, path, filename))
-                return urllib.pathname2url(combined)
+                return urllib.request.pathname2url(combined)
             else:
                 # keep anything absolute
                 return uri
@@ -318,30 +318,30 @@ def resolveImports(sheet, target=None):
         if rule.type == rule.CHARSET_RULE:
             pass
         elif rule.type == rule.IMPORT_RULE:
-            log.info(u'Processing @import %r' % rule.href, neverraise=True)
+            log.info('Processing @import %r' % rule.href, neverraise=True)
 
             if rule.hrefFound:
                 # add all rules of @import to current sheet
-                target.add(css.CSSComment(cssText=u'/* START @import "%s" */'
+                target.add(css.CSSComment(cssText='/* START @import "%s" */'
                                           % rule.href))
 
                 try:
                     # nested imports
                     importedSheet = resolveImports(rule.styleSheet)
-                except xml.dom.HierarchyRequestErr, e:
-                    log.warn(u'@import: Cannot resolve target, keeping rule: %s'
+                except xml.dom.HierarchyRequestErr as e:
+                    log.warn('@import: Cannot resolve target, keeping rule: %s'
                              % e, neverraise=True)
                     target.add(rule)
                 else:
                     # adjust relative URI references
-                    log.info(u'@import: Adjusting paths for %r' % rule.href,
+                    log.info('@import: Adjusting paths for %r' % rule.href,
                              neverraise=True)
                     replaceUrls(importedSheet,
                                 getReplacer(rule.href),
                                 ignoreImportRules=True)
 
                     # might have to wrap rules in @media if media given
-                    if rule.media.mediaText == u'all':
+                    if rule.media.mediaText == 'all':
                         mediaproxy = None
                     else:
                         keepimport = False
@@ -354,18 +354,18 @@ def resolveImports(sheet, target=None):
                                 keepimport = True
                                 break
                         if keepimport:
-                            log.warn(u'Cannot combine imported sheet with'
-                                     u' given media as other rules then'
-                                     u' comments or stylerules found %r,'
-                                     u' keeping %r' % (r,
+                            log.warn('Cannot combine imported sheet with'
+                                     ' given media as other rules then'
+                                     ' comments or stylerules found %r,'
+                                     ' keeping %r' % (r,
                                                        rule.cssText),
                                      neverraise=True)
                             target.add(rule)
                             continue
 
                         # wrap in @media if media is not `all`
-                        log.info(u'@import: Wrapping some rules in @media '
-                                 u' to keep media: %s'
+                        log.info('@import: Wrapping some rules in @media '
+                                 ' to keep media: %s'
                                  % rule.media.mediaText, neverraise=True)
                         mediaproxy = css.CSSMediaRule(rule.media.mediaText)
 
@@ -381,7 +381,7 @@ def resolveImports(sheet, target=None):
 
             else:
                 # keep @import as it is
-                log.error(u'Cannot get referenced stylesheet %r, keeping rule'
+                log.error('Cannot get referenced stylesheet %r, keeping rule'
                           % rule.href, neverraise=True)
                 target.add(rule)
 
@@ -392,4 +392,4 @@ def resolveImports(sheet, target=None):
 
 
 if __name__ == '__main__':
-    print __doc__
+    print(__doc__)

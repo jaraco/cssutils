@@ -53,8 +53,8 @@ __all__ = ['CSSStyleDeclaration', 'Property']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssproperties import CSS2Properties
-from property import Property
+from .cssproperties import CSS2Properties
+from .property import Property
 import cssutils
 import xml.dom
 
@@ -94,7 +94,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
         [Property: Value Priority?;]* [Property: Value Priority?]?
     """
-    def __init__(self, cssText=u'', parentRule=None, readonly=False,
+    def __init__(self, cssText='', parentRule=None, readonly=False,
                  validating=None):
         """
         :param cssText:
@@ -182,17 +182,17 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         if n in known:
             super(CSSStyleDeclaration, self).__setattr__(n, v)
         else:
-            raise AttributeError(u'Unknown CSS Property, '
-                                 u'``CSSStyleDeclaration.setProperty("%s", '
-                                 u'...)`` MUST be used.' % n)
+            raise AttributeError('Unknown CSS Property, '
+                                 '``CSSStyleDeclaration.setProperty("%s", '
+                                 '...)`` MUST be used.' % n)
 
     def __repr__(self):
-        return u"cssutils.css.%s(cssText=%r)" % (
+        return "cssutils.css.%s(cssText=%r)" % (
                 self.__class__.__name__,
-                self.getCssText(separator=u' '))
+                self.getCssText(separator=' '))
 
     def __str__(self):
-        return u"<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
+        return "<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
                 self.__class__.__name__,
                 self.length,
                 len(self.getProperties(all=True)),
@@ -293,15 +293,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
             tokens = self._tokensupto2(tokenizer, starttoken=token,
                                        semicolon=True)
-            if self._tokenvalue(tokens[-1]) == u';':
+            if self._tokenvalue(tokens[-1]) == ';':
                 tokens.pop()
             property = Property(parent=self)
             property.cssText = tokens
             if property.wellformed:
                 seq.append(property, 'Property')
             else:
-                self._log.error(u'CSSStyleDeclaration: Syntax Error in '
-                                u'Property: %s' % self._valuestr(tokens))
+                self._log.error('CSSStyleDeclaration: Syntax Error in '
+                                'Property: %s' % self._valuestr(tokens))
             # does not matter in this case
             return expected
 
@@ -310,16 +310,16 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             ignored = self._tokenvalue(token) + self._valuestr(
                                 self._tokensupto2(tokenizer,
                                                   propertyvalueendonly=True))
-            self._log.error(u'CSSStyleDeclaration: Unexpected token, ignoring '
+            self._log.error('CSSStyleDeclaration: Unexpected token, ignoring '
                             'upto %r.' % ignored,token)
             # does not matter in this case
             return expected
 
         def char(expected, seq, token, tokenizer=None):
             # a standalone ; or error...
-            if self._tokenvalue(token) == u';':
-                self._log.info(u'CSSStyleDeclaration: Stripped standalone semicolon'
-                                u': %s' % self._valuestr([token]), neverraise=True)
+            if self._tokenvalue(token) == ';':
+                self._log.info('CSSStyleDeclaration: Stripped standalone semicolon'
+                                ': %s' % self._valuestr([token]), neverraise=True)
                 return expected
             else:
                 return unexpected(expected, seq, token, tokenizer)
@@ -339,9 +339,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         self._setSeq(newseq)
 
     cssText = property(_getCssText, _setCssText,
-                       doc=u"(DOM) A parsable textual representation of the "
-                           u"declaration block excluding the surrounding curly "
-                           u"braces.")
+                       doc="(DOM) A parsable textual representation of the "
+                           "declaration block excluding the surrounding curly "
+                           "braces.")
 
     def getCssText(self, separator=None):
         """
@@ -460,8 +460,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         """
         nname = self._normalize(name)
         if nname in self._SHORTHANDPROPERTIES:
-            self._log.info(u'CSSValue for shorthand property "%s" should be '
-                           u'None, this may be implemented later.' %
+            self._log.info('CSSValue for shorthand property "%s" should be '
+                           'None, this may be implemented later.' %
                            nname, neverraise=True)
 
         p = self.getProperty(name, normalize)
@@ -489,7 +489,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         if p:
             return p.value
         else:
-            return u''
+            return ''
 
     def getPropertyPriority(self, name, normalize=True):
         """
@@ -510,7 +510,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         if p:
             return p.priority
         else:
-            return u''
+            return ''
 
     def removeProperty(self, name, normalize=True):
         """
@@ -560,7 +560,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         self._setSeq(newseq)
         return r
 
-    def setProperty(self, name, value=None, priority=u'',
+    def setProperty(self, name, value=None, priority='',
                     normalize=True, replace=True):
         """(DOM) Set a property value and priority within this declaration
         block.
@@ -636,7 +636,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             self.seq._readonly = True
 
         else:
-            self._log.warn(u'Invalid Property: %s: %s %s'
+            self._log.warn('Invalid Property: %s: %s %s'
                            % (name, value, priority))
 
     def item(self, index):
@@ -665,15 +665,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         try:
             return names[index]
         except IndexError:
-            return u''
+            return ''
 
     length = property(lambda self: len(list(self.__nnames())),
-                      doc=u"(DOM) The number of distinct properties that have "
-                          u"been explicitly in this declaration block. The "
-                          u"range of valid indices is 0 to length-1 inclusive. "
-                          u"These are properties with a different ``name`` "
-                          u"only. :meth:`item` and :attr:`length` work on the "
-                          u"same set here.")
+                      doc="(DOM) The number of distinct properties that have "
+                          "been explicitly in this declaration block. The "
+                          "range of valid indices is 0 to length-1 inclusive. "
+                          "These are properties with a different ``name`` "
+                          "only. :meth:`item` and :attr:`length` work on the "
+                          "same set here.")
 
     def _getValidating(self):
         try:
@@ -690,15 +690,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         self._validating = validating
 
     validating = property(_getValidating, _setValidating,
-                          doc=u"If ``True`` this declaration validates "
-                          u"contained properties. The parent StyleSheet "
-                          u"validation setting does *always* win though so "
-                          u"even if validating is True it may not validate "
-                          u"if the StyleSheet defines else!")
+                          doc="If ``True`` this declaration validates "
+                          "contained properties. The parent StyleSheet "
+                          "validation setting does *always* win though so "
+                          "even if validating is True it may not validate "
+                          "if the StyleSheet defines else!")
 
     def _getValid(self):
         """Check each contained property for validity."""
         return all(prop.valid for prop in self.getProperties())
 
     valid = property(_getValid,
-                     doc=u'``True`` if each property is valid.')
+                     doc='``True`` if each property is valid.')

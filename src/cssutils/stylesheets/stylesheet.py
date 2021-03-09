@@ -4,7 +4,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import cssutils
-import urlparse
+import urllib.parse
 
 class StyleSheet(cssutils.util.Base2):
     """
@@ -23,7 +23,7 @@ class StyleSheet(cssutils.util.Base2):
     def __init__(self, type='text/css',
                  href=None,
                  media=None,
-                 title=u'',
+                 title='',
                  ownerNode=None,
                  parentStyleSheet=None,
                  alternate=False,

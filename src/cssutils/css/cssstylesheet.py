@@ -13,8 +13,8 @@ __version__ = '$Id$'
 
 from cssutils.helper import Deprecated
 from cssutils.util import _Namespaces, _SimpleNamespaces, _readUrl
-from cssrule import CSSRule
-from cssvariablesdeclaration import CSSVariablesDeclaration
+from .cssrule import CSSRule
+from .cssvariablesdeclaration import CSSVariablesDeclaration
 import cssutils.stylesheets
 import xml.dom
 
@@ -32,7 +32,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     ``cssRules``
         All Rules in this style sheet, a :class:`~cssutils.css.CSSRuleList`.
     """
-    def __init__(self, href=None, media=None, title=u'', disabled=None,
+    def __init__(self, href=None, media=None, title='', disabled=None,
                  ownerNode=None, parentStyleSheet=None, readonly=False,
                  ownerRule=None,
                  validating=True):
@@ -82,7 +82,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     def _cleanNamespaces(self):
         "Remove all namespace rules with same namespaceURI but last."
         rules = self.cssRules
-        namespaceitems = self.namespaces.items()
+        namespaceitems = list(self.namespaces.items())
         i = 0
         while i < len(rules):
             rule = rules[i]
@@ -116,8 +116,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._cssRules = cssRules
 
     cssRules = property(lambda self: self._cssRules, _setCssRules,
-                        u"All Rules in this style sheet, a "
-                        u":class:`~cssutils.css.CSSRuleList`.")
+                        "All Rules in this style sheet, a "
+                        ":class:`~cssutils.css.CSSRuleList`.")
 
     def _getCssText(self):
         "Textual representation of the stylesheet (a byte string)."
@@ -160,8 +160,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule.cssText = self._tokensupto2(tokenizer, token)
 
             if expected > 0:
-                self._log.error(u'CSSStylesheet: CSSCharsetRule only allowed '
-                                u'at beginning of stylesheet.',
+                self._log.error('CSSStylesheet: CSSCharsetRule only allowed '
+                                'at beginning of stylesheet.',
                                 token, xml.dom.HierarchyRequestErr)
                 return expected
             elif rule.wellformed:
@@ -175,8 +175,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule.cssText = self._tokensupto2(tokenizer, token)
 
             if expected > 1:
-                self._log.error(u'CSSStylesheet: CSSImportRule not allowed '
-                                u'here.', token, xml.dom.HierarchyRequestErr)
+                self._log.error('CSSStylesheet: CSSImportRule not allowed '
+                                'here.', token, xml.dom.HierarchyRequestErr)
                 return expected
             elif rule.wellformed:
                 self.insertRule(rule)
@@ -190,8 +190,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                                                  parentStyleSheet=self)
 
             if expected > 2:
-                self._log.error(u'CSSStylesheet: CSSNamespaceRule not allowed '
-                                u'here.', token, xml.dom.HierarchyRequestErr)
+                self._log.error('CSSStylesheet: CSSNamespaceRule not allowed '
+                                'here.', token, xml.dom.HierarchyRequestErr)
                 return expected
             elif rule.wellformed:
                 if rule.prefix not in self.namespaces:
@@ -213,8 +213,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule.cssText = self._tokensupto2(tokenizer, token)
 
             if expected > 2:
-                self._log.error(u'CSSStylesheet: CSSVariablesRule not allowed '
-                                u'here.', token, xml.dom.HierarchyRequestErr)
+                self._log.error('CSSStylesheet: CSSVariablesRule not allowed '
+                                'here.', token, xml.dom.HierarchyRequestErr)
                 return expected
             elif rule.wellformed:
                 self.insertRule(rule)
@@ -249,12 +249,12 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         def unknownrule(expected, seq, token, tokenizer):
             # parse and consume tokens in any case
             if token[1] in cssutils.css.MarginRule.margins:
-                self._log.error(u'CSSStylesheet: MarginRule out CSSPageRule.',
+                self._log.error('CSSStylesheet: MarginRule out CSSPageRule.',
                                 token, neverraise=True)
                 rule = cssutils.css.MarginRule(parentStyleSheet=self)
                 rule.cssText = self._tokensupto2(tokenizer, token)
             else:
-                self._log.warn(u'CSSStylesheet: Unknown @rule found.',
+                self._log.warn('CSSStylesheet: Unknown @rule found.',
                                token, neverraise=True)
                 rule = cssutils.css.CSSUnknownRule(parentStyleSheet=self)
                 rule.cssText = self._tokensupto2(tokenizer, token)
@@ -364,7 +364,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             self.encoding = encoding
             try:
                 del self.__newEncoding
-            except AttributeError, e:
+            except AttributeError as e:
                 pass
 
     def _setFetcher(self, fetcher=None):
@@ -422,10 +422,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 self._variables.setVariable(var, vr.variables[var])
 
     variables = property(lambda self: self._variables,
-                         doc=u"A :class:`cssutils.css.CSSVariablesDeclaration` "
-                         u"containing all available variables in this "
-                         u"CSSStyleSheet including the ones defined in "
-                         u"imported sheets.")
+                         doc="A :class:`cssutils.css.CSSVariablesDeclaration` "
+                         "containing all available variables in this "
+                         "CSSStyleSheet including the ones defined in "
+                         "imported sheets.")
 
     def add(self, rule):
         """Add `rule` to style sheet at appropriate position.
@@ -462,7 +462,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     index = i
                     break
             else:
-                raise xml.dom.IndexSizeErr(u"CSSStyleSheet: Not a rule in"
+                raise xml.dom.IndexSizeErr("CSSStyleSheet: Not a rule in"
                                            " this sheets'a cssRules list: %s"
                                            % index)
 
@@ -470,8 +470,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule = self._cssRules[index]
         except IndexError:
             raise xml.dom.IndexSizeErr(
-                u'CSSStyleSheet: %s is not a valid index in the rulelist of '
-                u'length %i' % (index, self._cssRules.length))
+                'CSSStyleSheet: %s is not a valid index in the rulelist of '
+                'length %i' % (index, self._cssRules.length))
         else:
             if rule.type == rule.NAMESPACE_RULE:
                 # check all namespacerules if used
@@ -481,8 +481,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 if rule.namespaceURI in useduris and\
                    uris.count(rule.namespaceURI) == 1:
                     raise xml.dom.NoModificationAllowedErr(
-                        u'CSSStyleSheet: NamespaceURI defined in this rule is '
-                        u'used, cannot remove.')
+                        'CSSStyleSheet: NamespaceURI defined in this rule is '
+                        'used, cannot remove.')
                     return
 
             rule._parentStyleSheet = None # detach
@@ -529,11 +529,11 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             index = len(self._cssRules)
         elif index < 0 or index > self._cssRules.length:
             raise xml.dom.IndexSizeErr(
-                u'CSSStyleSheet: Invalid index %s for CSSRuleList with a '
-                u'length of %s.' % (index, self._cssRules.length))
+                'CSSStyleSheet: Invalid index %s for CSSRuleList with a '
+                'length of %s.' % (index, self._cssRules.length))
             return
 
-        if isinstance(rule, basestring):
+        if isinstance(rule, str):
             # init a temp sheet which has the same properties as self
             tempsheet = CSSStyleSheet(href=self.href,
                                       media=self.media,
@@ -545,7 +545,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             # prepend encoding if in this sheet to be able to use it in
             # @import rules encoding resolution
             # do not add if new rule startswith "@charset" (which is exact!)
-            if not rule.startswith(u'@charset') and (self._cssRules and
+            if not rule.startswith('@charset') and (self._cssRules and
                 self._cssRules[0].type == self._cssRules[0].CHARSET_RULE):
                 # rule 0 is @charset!
                 newrulescount, newruleindex = 2, 1
@@ -558,7 +558,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             if len(tempsheet.cssRules) != newrulescount or (not isinstance(
                tempsheet.cssRules[newruleindex], cssutils.css.CSSRule)):
-                self._log.error(u'CSSStyleSheet: Not a CSSRule: %s' % rule)
+                self._log.error('CSSStyleSheet: Not a CSSRule: %s' % rule)
                 return
             rule = tempsheet.cssRules[newruleindex]
             rule._parentStyleSheet = None # done later?
@@ -574,7 +574,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             return index
 
         if not rule.wellformed:
-            self._log.error(u'CSSStyleSheet: Invalid rules cannot be added.')
+            self._log.error('CSSStyleSheet: Invalid rules cannot be added.')
             return
 
         # CHECK HIERARCHY
@@ -591,7 +591,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             elif index != 0 or (self._cssRules and
                               self._cssRules[0].type == rule.CHARSET_RULE):
                 self._log.error(
-                    u'CSSStylesheet: @charset only allowed once at the'
+                    'CSSStylesheet: @charset only allowed once at the'
                     ' beginning of a stylesheet.',
                     error=xml.dom.HierarchyRequestErr)
                 return
@@ -603,7 +603,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             if index == 0 and self._cssRules and\
                self._cssRules[0].type == rule.CHARSET_RULE:
                 self._log.error(
-                    u'CSSStylesheet: @charset must be the first rule.',
+                    'CSSStylesheet: @charset must be the first rule.',
                     error=xml.dom.HierarchyRequestErr)
                 return
             else:
@@ -632,7 +632,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 if index == 0 and self._cssRules and\
                    self._cssRules[0].type == rule.CHARSET_RULE:
                     self._log.error(
-                        u'CSSStylesheet: Found @charset at index 0.',
+                        'CSSStylesheet: Found @charset at index 0.',
                         error=xml.dom.HierarchyRequestErr)
                     return
                 # before @namespace @variables @page @font-face @media stylerule
@@ -644,7 +644,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                                   r.STYLE_RULE,
                                   r.FONT_FACE_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert @import here,'
+                            'CSSStylesheet: Cannot insert @import here,'
                              ' found @namespace, @variables, @media, @page or'
                              ' CSSStyleRule before index %s.' %
                             index,
@@ -676,7 +676,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                 for r in self._cssRules[index:]:
                     if r.type in (r.CHARSET_RULE, r.IMPORT_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert @namespace here,'
+                            'CSSStylesheet: Cannot insert @namespace here,'
                             ' found @charset or @import after index %s.' %
                             index,
                             error=xml.dom.HierarchyRequestErr)
@@ -689,7 +689,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                                   r.STYLE_RULE,
                                   r.FONT_FACE_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert @namespace here,'
+                            'CSSStylesheet: Cannot insert @namespace here,'
                             ' found @variables, @media, @page or CSSStyleRule'
                             ' before index %s.' %
                             index,
@@ -731,7 +731,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                                   r.IMPORT_RULE,
                                   r.NAMESPACE_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert @variables here,'
+                            'CSSStylesheet: Cannot insert @variables here,'
                             ' found @charset, @import or @namespace after'
                             ' index %s.' %
                             index,
@@ -744,7 +744,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                                   r.STYLE_RULE,
                                   r.FONT_FACE_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert @variables here,'
+                            'CSSStylesheet: Cannot insert @variables here,'
                             ' found @media, @page or CSSStyleRule'
                             ' before index %s.' %
                             index,
@@ -766,8 +766,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                                   r.IMPORT_RULE,
                                   r.NAMESPACE_RULE):
                         self._log.error(
-                            u'CSSStylesheet: Cannot insert rule here, found '
-                            u'@charset, @import or @namespace before index %s.'
+                            'CSSStylesheet: Cannot insert rule here, found '
+                            '@charset, @import or @namespace before index %s.'
                             % index, error=xml.dom.HierarchyRequestErr)
                         return
                 self._cssRules.insert(index, rule)
@@ -782,8 +782,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         return index
 
     ownerRule = property(lambda self: self._ownerRule,
-                         doc=u'A ref to an @import rule if it is imported, '
-                             u'else ``None``.')
+                         doc='A ref to an @import rule if it is imported, '
+                             'else ``None``.')
 
     def _getValid(self):
         """Check if each contained rule is valid."""
@@ -794,19 +794,19 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         return True
 
     valid = property(_getValid,
-                     doc=u'``True`` if all contained rules are valid')
+                     doc='``True`` if all contained rules are valid')
 
 
-    @Deprecated(u'Use ``cssutils.setSerializer(serializer)`` instead.')
+    @Deprecated('Use ``cssutils.setSerializer(serializer)`` instead.')
     def setSerializer(self, cssserializer):
         """Set the cssutils global Serializer used for all output."""
         if isinstance(cssserializer, cssutils.CSSSerializer):
             cssutils.ser = cssserializer
         else:
-            raise ValueError(u'Serializer must be an instance of '
-                             u'cssutils.CSSSerializer.')
+            raise ValueError('Serializer must be an instance of '
+                             'cssutils.CSSSerializer.')
 
-    @Deprecated(u'Set pref in ``cssutils.ser.prefs`` instead.')
+    @Deprecated('Set pref in ``cssutils.ser.prefs`` instead.')
     def setSerializerPref(self, pref, value):
         """Set a Preference of CSSSerializer used for output.
         See :class:`cssutils.serialize.Preferences` for possible

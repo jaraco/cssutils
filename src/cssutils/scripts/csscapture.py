@@ -55,14 +55,14 @@ def main(args=None):
         if options.saveto:
             saveto = options.saveto
         else:
-            saveto = u'_CSSCapture_SAVED'
+            saveto = '_CSSCapture_SAVED'
         c.saveto(saveto, saveraw=options.saveraw, minified=options.minified)
     else:
         for i, s in enumerate(stylesheetlist):
-            print u'''%s.
+            print('''%s.
     encoding: %r
     title: %r
-    href: %r''' % (i + 1, s.encoding, s.title, s.href)
+    href: %r''' % (i + 1, s.encoding, s.title, s.href))
 
 
 if __name__ == "__main__":

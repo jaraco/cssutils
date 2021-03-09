@@ -76,15 +76,15 @@ def main(args=None):
     options, path = parser.parse_args()
 
     if options.url:
-        print csscombine(url=options.url,
+        print(csscombine(url=options.url,
                          sourceencoding=options.sourceencoding, 
                          targetencoding=options.targetencoding,
-                         minify=options.minify)
+                         minify=options.minify))
     elif path:
-        print csscombine(path=path[0],
+        print(csscombine(path=path[0],
                          sourceencoding=options.sourceencoding, 
                          targetencoding=options.targetencoding,
-                         minify=options.minify)
+                         minify=options.minify))
     else:
         parser.error('no path or URL (-u) given')
 

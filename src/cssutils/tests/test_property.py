@@ -1,7 +1,7 @@
 """Testcases for cssutils.css.property._Property."""
 
 import xml.dom
-import basetest
+from . import basetest
 import cssutils
 
 class PropertyTestCase(basetest.BaseTestCase):
@@ -18,11 +18,11 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual('1px', p.value)
         #self.assertEqual('1px', p.cssValue.cssText)
         self.assertEqual('1px', p.propertyValue.cssText)
-        self.assertEqual(u'', p.priority)
+        self.assertEqual('', p.priority)
         self.assertEqual(True, p.valid)
         self.assertEqual(True, p.wellformed)
 
-        self.assertEqual([u'top'], p.seqs[0])
+        self.assertEqual(['top'], p.seqs[0])
         self.assertEqual(type(cssutils.css.PropertyValue(cssText="2px")), type(p.seqs[1]))
         self.assertEqual([], p.seqs[2])
 
@@ -36,7 +36,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual('', p.value)
         #self.assertEqual('', p.cssValue.cssText)
         self.assertEqual('', p.propertyValue.cssText)
-        self.assertEqual(u'', p.priority)
+        self.assertEqual('', p.priority)
         self.assertEqual(False, p.valid)
         #p.cssValue.cssText = '1px'
         p.propertyValue.cssText = '1px'
@@ -77,38 +77,38 @@ class PropertyTestCase(basetest.BaseTestCase):
         p = cssutils.css.property.Property()
 
         tests = {
-            u'a: 1': None,
-            u'a: 1px 2px': None,
-            u'a: 1 !important': None,
-            u'a: 1 !IMPORTANT': u'a: 1 !important',
-            u'a: 1 !impor\\tant': u'a: 1 !important',
+            'a: 1': None,
+            'a: 1px 2px': None,
+            'a: 1 !important': None,
+            'a: 1 !IMPORTANT': 'a: 1 !important',
+            'a: 1 !impor\\tant': 'a: 1 !important',
             # TODO: important with unicode escapes!
-            u'font: normal 1em/1.5 serif': None,
-            u'font: normal 1em/serif': None
+            'font: normal 1em/1.5 serif': None,
+            'font: normal 1em/serif': None
             }
         self.do_equal_r(tests)
 
         tests = {
-            u'': (xml.dom.SyntaxErr,
-                   u'Property: No property name found: '),
-            u':': (xml.dom.SyntaxErr,
-                   u'Property: No property name found: : [1:1: :]'),
-            u'a': (xml.dom.SyntaxErr,
-                   u'Property: No ":" after name found: a [1:1: a]'),
-            u'b !': (xml.dom.SyntaxErr,
-                     u'Property: No ":" after name found: b ! [1:3: !]'),
-            u'/**/x': (xml.dom.SyntaxErr,
-                       u'Property: No ":" after name found: /**/x [1:5: x]'),
-            u'c:': (xml.dom.SyntaxErr,
-                   u"Property: No property value found: c: [1:2: :]"),
-            u'd: ': (xml.dom.SyntaxErr,
-                   u"No content to parse."),
-            u'e:!important': (xml.dom.SyntaxErr,
-                   u"No content to parse."),
-            u'f: 1!': (xml.dom.SyntaxErr,
-                       u'Property: Invalid priority: !'),
-            u'g: 1!importantX': (xml.dom.SyntaxErr,
-                   u"Property: No CSS priority value: importantx"),
+            '': (xml.dom.SyntaxErr,
+                   'Property: No property name found: '),
+            ':': (xml.dom.SyntaxErr,
+                   'Property: No property name found: : [1:1: :]'),
+            'a': (xml.dom.SyntaxErr,
+                   'Property: No ":" after name found: a [1:1: a]'),
+            'b !': (xml.dom.SyntaxErr,
+                     'Property: No ":" after name found: b ! [1:3: !]'),
+            '/**/x': (xml.dom.SyntaxErr,
+                       'Property: No ":" after name found: /**/x [1:5: x]'),
+            'c:': (xml.dom.SyntaxErr,
+                   "Property: No property value found: c: [1:2: :]"),
+            'd: ': (xml.dom.SyntaxErr,
+                   "No content to parse."),
+            'e:!important': (xml.dom.SyntaxErr,
+                   "No content to parse."),
+            'f: 1!': (xml.dom.SyntaxErr,
+                       'Property: Invalid priority: !'),
+            'g: 1!importantX': (xml.dom.SyntaxErr,
+                   "Property: No CSS priority value: importantx"),
 
             # TODO?
             #u'a: 1;': (xml.dom.SyntaxErr,
@@ -125,29 +125,29 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual('left', p.name)
 
         tests = {
-            u'top': None,
-            u' top': u'top',
-            u'top ': u'top',
-            u' top ': u'top',
-            u'/*x*/ top ': u'top',
-            u' top /*x*/': u'top',
-            u'/*x*/top/*x*/': u'top',
-            u'\\x': u'x',
-            u'a\\010': u'a\x10',
-            u'a\\01': u'a\x01'
+            'top': None,
+            ' top': 'top',
+            'top ': 'top',
+            ' top ': 'top',
+            '/*x*/ top ': 'top',
+            ' top /*x*/': 'top',
+            '/*x*/top/*x*/': 'top',
+            '\\x': 'x',
+            'a\\010': 'a\x10',
+            'a\\01': 'a\x01'
             }
         self.do_equal_r(tests, att='name')
 
         tests = {
-            u'': xml.dom.SyntaxErr,
-            u' ': xml.dom.SyntaxErr,
-            u'"\n': xml.dom.SyntaxErr,
-            u'/*x*/': xml.dom.SyntaxErr,
-            u':': xml.dom.SyntaxErr,
-            u';': xml.dom.SyntaxErr,
-            u'top:': xml.dom.SyntaxErr,
-            u'top;': xml.dom.SyntaxErr,
-            u'color: #xyz': xml.dom.SyntaxErr,
+            '': xml.dom.SyntaxErr,
+            ' ': xml.dom.SyntaxErr,
+            '"\n': xml.dom.SyntaxErr,
+            '/*x*/': xml.dom.SyntaxErr,
+            ':': xml.dom.SyntaxErr,
+            ';': xml.dom.SyntaxErr,
+            'top:': xml.dom.SyntaxErr,
+            'top;': xml.dom.SyntaxErr,
+            'color: #xyz': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests, att='_setName')
 
@@ -186,65 +186,65 @@ class PropertyTestCase(basetest.BaseTestCase):
         "Property.priority"
         p = cssutils.css.property.Property('top', '1px', 'important')
 
-        for prio in (None, u''):
+        for prio in (None, ''):
             p.priority = prio
-            self.assertEqual(u'', p.priority)
-            self.assertEqual(u'', p.literalpriority)
+            self.assertEqual('', p.priority)
+            self.assertEqual('', p.literalpriority)
 
-        for prio in (u'!important',
-                     u'! important',
-                     u'!/* x */ important',
-                     u'!/* x */ important /**/',
-                     u'important',
-                     u'IMPORTANT',
-                     ur'im\portant'
+        for prio in ('!important',
+                     '! important',
+                     '!/* x */ important',
+                     '!/* x */ important /**/',
+                     'important',
+                     'IMPORTANT',
+                     r'im\portant'
                      ):
             p.priority = prio
-            self.assertEqual(u'important', p.priority)
+            self.assertEqual('important', p.priority)
             if prio.startswith('!'):
                 prio = prio[1:].strip()
-            if u'/*' in prio:
+            if '/*' in prio:
                 check = 'important'
             else:
                 check = prio
             self.assertEqual(check, p.literalpriority)
 
         tests = {
-            u' ': xml.dom.SyntaxErr,
-            u'"\n': xml.dom.SyntaxErr,
+            ' ': xml.dom.SyntaxErr,
+            '"\n': xml.dom.SyntaxErr,
             #u'important': xml.dom.SyntaxErr,
-            u';': xml.dom.SyntaxErr,
-            u'!important !important': xml.dom.SyntaxErr
+            ';': xml.dom.SyntaxErr,
+            '!important !important': xml.dom.SyntaxErr
             }
         self.do_raise_r(tests, att='_setPriority')
 
     def test_value(self):
         "Property.value"
-        p = cssutils.css.property.Property('top', u'1px')
+        p = cssutils.css.property.Property('top', '1px')
         self.assertEqual('1px', p.value)
         p.value = '2px'
         self.assertEqual('2px', p.value)
 
         tests = {
-            u'1px': None,
-            u' 2px': u'2px',
-            u'3px ': u'3px',
-            u' 4px ': u'4px',
-            u'5px 1px': u'5px 1px',
+            '1px': None,
+            ' 2px': '2px',
+            '3px ': '3px',
+            ' 4px ': '4px',
+            '5px 1px': '5px 1px',
             }
         self.do_equal_r(tests, att='value')
 
         tests = {
             # no value
             None: xml.dom.SyntaxErr,
-            u'': xml.dom.SyntaxErr,
-            u' ': xml.dom.SyntaxErr,
-            u'"\n': xml.dom.SyntaxErr,
-            u'/*x*/': xml.dom.SyntaxErr,
+            '': xml.dom.SyntaxErr,
+            ' ': xml.dom.SyntaxErr,
+            '"\n': xml.dom.SyntaxErr,
+            '/*x*/': xml.dom.SyntaxErr,
             # not allowed:
-            u':': xml.dom.SyntaxErr,
-            u';': xml.dom.SyntaxErr,
-            u'!important': xml.dom.SyntaxErr,
+            ':': xml.dom.SyntaxErr,
+            ';': xml.dom.SyntaxErr,
+            '!important': xml.dom.SyntaxErr,
             }
         self.do_raise_r(tests, att='_setValue')
 

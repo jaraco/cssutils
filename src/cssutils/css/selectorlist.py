@@ -19,7 +19,7 @@ __all__ = ['SelectorList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from selector import Selector
+from .selector import Selector
 import cssutils
 import xml.dom
 
@@ -49,12 +49,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return u"cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__, 
+        return "cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__, 
                                                       st)
 
     def __str__(self):
-        return u"<cssutils.css.%s object selectorText=%r _namespaces=%r at " \
-               u"0x%x>" % (self.__class__.__name__,
+        return "<cssutils.css.%s object selectorText=%r _namespaces=%r at " \
+               "0x%x>" % (self.__class__.__name__,
                            self.selectorText,
                            self._namespaces,
                            id(self))
@@ -200,35 +200,35 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                     newseq.append(selector)
                 else:
                     wellformed = False
-                    self._log.error(u'SelectorList: Invalid Selector: %s' %
+                    self._log.error('SelectorList: Invalid Selector: %s' %
                                     self._valuestr(selectortokens))
             else:
                 break
 
         # post condition
-        if u',' == expected:
+        if ',' == expected:
             wellformed = False
-            self._log.error(u'SelectorList: Cannot end with ",": %r' %
+            self._log.error('SelectorList: Cannot end with ",": %r' %
                             self._valuestr(selectorText))
         elif expected:
             wellformed = False
-            self._log.error(u'SelectorList: Unknown Syntax: %r' %
+            self._log.error('SelectorList: Unknown Syntax: %r' %
                             self._valuestr(selectorText))
         if wellformed:
             self.seq = newseq
 
     selectorText = property(_getSelectorText, _setSelectorText,
-                            doc=u"(cssutils) The textual representation of the "
-                                u"selector for a rule set.")
+                            doc="(cssutils) The textual representation of the "
+                                "selector for a rule set.")
 
     length = property(lambda self: len(self),
-                      doc=u"The number of :class:`~cssutils.css.Selector` "
-                          u"objects in the list.")
+                      doc="The number of :class:`~cssutils.css.Selector` "
+                          "objects in the list.")
 
     parentRule = property(lambda self: self._parentRule,
-                          doc=u"(DOM) The CSS rule that contains this "
-                              u"SelectorList or ``None`` if this SelectorList "
-                              u"is not attached to a CSSRule.")
+                          doc="(DOM) The CSS rule that contains this "
+                              "SelectorList or ``None`` if this SelectorList "
+                              "is not attached to a CSSRule.")
 
     wellformed = property(lambda self: bool(len(self.seq)))
 
