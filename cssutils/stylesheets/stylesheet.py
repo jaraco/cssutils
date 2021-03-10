@@ -2,7 +2,6 @@
 __all__ = ['StyleSheet']
 
 import cssutils
-import urllib.parse
 
 
 class StyleSheet(cssutils.util.Base2):

@@ -6,9 +6,8 @@ A cssutils implementation, not defined in official DOM.
 __all__ = ['MediaQuery']
 
 from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
-from cssutils.helper import normalize, pushtoken
+from cssutils.helper import normalize
 import cssutils
-import re
 import xml.dom
 
 
@@ -113,7 +112,7 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
         """
         self._checkReadonly()
 
-        expression = lambda: Sequence(
+        expression = lambda: Sequence(  # noqa
             PreDef.char(name='expression', char='('),
             Prod(name='media_feature', match=lambda t, v: t == PreDef.types.IDENT),
             Sequence(

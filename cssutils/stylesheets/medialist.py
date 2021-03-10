@@ -8,10 +8,10 @@ __all__ = ['MediaList']
 
 from cssutils.prodparser import PreDef, Prod, ProdParser, Sequence
 from cssutils.helper import normalize, pushtoken
-from cssutils.css import csscomment
 from .mediaquery import MediaQuery
 import cssutils
 import xml.dom
+
 
 # class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 class MediaList(cssutils.util._NewListBase):
@@ -78,7 +78,7 @@ class MediaList(cssutils.util._NewListBase):
     def _getMediaText(self):
         return cssutils.ser.do_stylesheets_medialist(self)
 
-    def _setMediaText(self, mediaText):
+    def _setMediaText(self, mediaText):  # noqa: C901
         """
         :param mediaText:
             simple value or comma-separated list of media
@@ -92,7 +92,7 @@ class MediaList(cssutils.util._NewListBase):
         """
         self._checkReadonly()
 
-        mediaquery = lambda: Prod(
+        mediaquery = lambda: Prod(  # noqa
             name='MediaQueryStart',
             match=lambda t, v: t == 'IDENT' or v == '(',
             toSeq=lambda t, tokens: (
@@ -210,7 +210,8 @@ class MediaList(cssutils.util._NewListBase):
 
             if 'all' in mts:
                 self._log.info(
-                    'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).'
+                    'MediaList: Ignoring new medium %r as already specified '
+                    '"all" (set ``mediaText`` instead).'
                     % newMedium,
                     error=xml.dom.InvalidModificationErr,
                 )
