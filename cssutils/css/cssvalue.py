@@ -7,7 +7,7 @@
 """
 __all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor', 'CSSVariable']
 
-from cssutils.prodparser import *
+from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 import cssutils
 import cssutils.helper
 import math

@@ -1,7 +1,7 @@
 """MarginRule implements DOM Level 2 CSS MarginRule."""
 __all__ = ['MarginRule']
 
-from cssutils.prodparser import *
+from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 from .cssstyledeclaration import CSSStyleDeclaration
 from . import cssrule
 import cssutils

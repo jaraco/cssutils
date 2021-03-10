@@ -15,7 +15,7 @@ __all__ = [
     'MSValue',
 ]
 
-from cssutils.prodparser import *
+from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 import cssutils
 from cssutils.helper import normalize, pushtoken
 import colorsys

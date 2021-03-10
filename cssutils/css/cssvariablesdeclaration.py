@@ -3,7 +3,7 @@ http://disruptive-innovations.com/zoo/cssvariables/#mozTocId496530
 """
 __all__ = ['CSSVariablesDeclaration']
 
-from cssutils.prodparser import *
+from cssutils.prodparser import PreDef, Prod, ProdParser, Sequence
 from cssutils.helper import normalize
 from .value import PropertyValue
 import cssutils
