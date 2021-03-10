@@ -64,6 +64,8 @@ class _ErrorHandler(object):
         other = ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler')
 
         if name in calls:
+            if name == 'warn':
+                name = 'warning'
             self._logcall = getattr(self._log, name)
             return self.__handle
         elif name in other:
