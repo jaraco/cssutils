@@ -16,7 +16,7 @@ __all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
 MACROS = {
     'nonascii': r'[^\0-\177]',
     'unicode': r'\\[0-9A-Fa-f]{1,6}(?:{nl}|{s})?',
-    #'escape': r'{unicode}|\\[ -~\200-\777]',
+    # 'escape': r'{unicode}|\\[ -~\200-\777]',
     'escape': r'{unicode}|\\[^\n\r\f0-9a-f]',
     'nmstart': r'[_a-zA-Z]|{nonascii}|{escape}',
     'nmchar': r'[-_a-zA-Z0-9]|{nonascii}|{escape}',
@@ -79,7 +79,7 @@ PRODUCTIONS = [
     ('STRING', r'{string}'),
     ('INVALID', r'{invalid}'),  # from CSS2.1
     ('ATKEYWORD', r'@{ident}'),  # other keywords are done in the tokenizer
-    ('INCLUDES', '\~\='),
+    ('INCLUDES', r'\~\='),
     ('DASHMATCH', r'\|\='),
     ('PREFIXMATCH', r'\^\='),
     ('SUFFIXMATCH', r'\$\='),

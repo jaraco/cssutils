@@ -5,7 +5,6 @@ __all__ = ['_defaultFetcher']
 from google.appengine.api import urlfetch
 import cgi
 from . import errorhandler
-from . import util
 
 log = errorhandler.ErrorHandler()
 

@@ -11,7 +11,7 @@ __all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
 # option case-insensitive
 MACROS = {
     'h': r'[0-9a-f]',
-    #'nonascii': r'[\200-\377]',
+    # 'nonascii': r'[\200-\377]',
     'nonascii': r'[^\0-\177]',  # CSS3
     'unicode': r'\\{h}{1,6}(\r\n|[ \t\r\n\f])?',
     'escape': r'{unicode}|\\[^\r\n\f0-9a-f]',
@@ -34,7 +34,8 @@ MACROS = {
     's': r'[ \t\r\n\f]+',
     'w': r'{s}?',
     'nl': r'\n|\r\n|\r|\f',
-    'range': r'\?{1,6}|{h}(\?{0,5}|{h}(\?{0,4}|{h}(\?{0,3}|{h}(\?{0,2}|{h}(\??|{h})))))',
+    'range':
+        r'\?{1,6}|{h}(\?{0,5}|{h}(\?{0,4}|{h}(\?{0,3}|{h}(\?{0,2}|{h}(\??|{h})))))',
     'A': r'a|\\0{0,4}(41|61)(\r\n|[ \t\r\n\f])?',
     'C': r'c|\\0{0,4}(43|63)(\r\n|[ \t\r\n\f])?',
     'D': r'd|\\0{0,4}(44|64)(\r\n|[ \t\r\n\f])?',
@@ -76,7 +77,7 @@ PRODUCTIONS = [
     ('ATKEYWORD', r'\@{ident}'),
     ('IDENT', r'{ident}'),  # {ident}            {return IDENT;}
     ('STRING', r'{string}'),  # {string}        {return STRING;}
-    ('INVALID', r'{invalid}'),  #        {return INVALID; /* unclosed string */}
+    ('INVALID', r'{invalid}'),  # {return INVALID; /* unclosed string */}
     ('HASH', r'\#{name}'),  # "#"{name}        {return HASH;}
     ('PERCENTAGE', r'{num}%'),  # {num}%            {return PERCENTAGE;}
     ('LENGTH', r'{num}{E}{M}'),  # {num}em            {return EMS;}
@@ -97,12 +98,12 @@ PRODUCTIONS = [
     ('DIMEN', r'{num}{ident}'),  # {num}{ident}        {return DIMEN;}
     ('NUMBER', r'{num}'),  # {num}            {return NUMBER;}
     # ('UNICODERANGE', r'U\+{range}'), #U\+{range}        {return UNICODERANGE;}
-    # ('UNICODERANGE', r'U\+{h}{1,6}-{h}{1,6}'), #U\+{h}{1,6}-{h}{1,6}    {return UNICODERANGE;}
+    # ('UNICODERANGE', r'U\+{h}{1,6}-{h}{1,6}'), #U\+{h}{1,6}-{h}{1,6}    {return UNICODERANGE;}  # noqa
     # --- CSS3 ---
     ('UNICODE-RANGE', r'[0-9A-F?]{1,6}(\-[0-9A-F]{1,6})?'),
     ('CDO', r'\<\!\-\-'),  # "<!--"            {return CDO;}
     ('CDC', r'\-\-\>'),  # "-->"            {return CDC;}
-    ('S', r'{s}'),  # 		{return S;}
+    ('S', r'{s}'),  # {return S;}
     # \/\*[^*]*\*+([^/*][^*]*\*+)*\/		/* ignore comments */
     # {s}+\/\*[^*]*\*+([^/*][^*]*\*+)*\/	{unput(' '); /*replace by space*/}
     ('INCLUDES', r'\~\='),  # "~="			{return INCLUDES;}
@@ -115,7 +116,7 @@ PRODUCTIONS = [
         'IMPORTANT_SYM',
         r'\!({w}|{comment})*{I}{M}{P}{O}{R}{T}{A}{N}{T}',
     ),  # "!{w}important"        {return IMPORTANT_SYM;}
-    ('COMMENT', '\/\*[^*]*\*+([^/][^*]*\*+)*\/'),  #    /* ignore comments */
+    ('COMMENT', r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),  # /* ignore comments */
     ('CLASS', r'\.'),  # .			{return *yytext;}
     # --- CSS3! ---
     ('CHAR', r'[^"\']'),

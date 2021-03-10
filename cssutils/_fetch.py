@@ -1,10 +1,11 @@
 """Default URL reading functions"""
 __all__ = ['_defaultFetcher']
 
-import cssutils
 import encutils
 from . import errorhandler
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 
 log = errorhandler.ErrorHandler()
 
