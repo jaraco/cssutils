@@ -4,11 +4,12 @@
 """
 __all__ = ['Tokenizer', 'CSSProductions']
 
-from .cssproductions import *
-from .helper import normalize
 import itertools
 import re
 import sys
+
+from .cssproductions import CSSProductions, MACROS, PRODUCTIONS
+from .helper import normalize
 
 _TOKENIZER_CACHE = {}
 
@@ -91,7 +92,7 @@ class Tokenizer(object):
     def clear(self):
         self._pushed = []
 
-    def tokenize(self, text, fullsheet=False):
+    def tokenize(self, text, fullsheet=False):  # noqa: C901
         """Generator: Tokenize text and yield tokens, each token is a tuple
         of::
 
@@ -218,7 +219,7 @@ class Tokenizer(object):
                             # may contain unicode escape, replace with normal
                             # char but do not _normalize (?)
                             value = self.unicodesub(_repl, found)
-                            if name in ('STRING', 'INVALID'):  #'URI'?
+                            if name in ('STRING', 'INVALID'):  # 'URI'?
                                 # remove \ followed by nl (so escaped) from string
                                 value = self.cleanstring('', value)
 
@@ -227,7 +228,7 @@ class Tokenizer(object):
                                 try:
                                     # get actual ATKEYWORD SYM
                                     name = self._atkeywords[_normalize(found)]
-                                except KeyError as e:
+                                except KeyError:
                                     # might also be misplace @charset...
                                     if '@charset' == found and has_at(
                                         text, pos + len(found), ' '
