@@ -1,7 +1,6 @@
 """Testcases for cssutils.css.property._Property."""
 
 import copy
-import xml.dom
 from . import basetest
 import cssutils
 from cssutils.css.property import Property
@@ -31,8 +30,8 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'STRING': ('"string"', "'STRING'"),
             'URI': ('url(x)', 'URL("x")', "url(')')"),
             'IDENT': ('ident', 'IDENT', '_IDENT', '_2', 'i-2'),
-            #'AUTO': 'auto', # explicit in list as an IDENT too
-            #'INHERIT': 'inherit', # explicit in list as an IDENT too
+            # 'AUTO': 'auto', # explicit in list as an IDENT too
+            # 'INHERIT': 'inherit', # explicit in list as an IDENT too
             'ATTR': ('attr(x)'),
             'RECT': ('rect(1,2,3,4)'),
             # ?
@@ -135,7 +134,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
                     'a b' 'a b, c  d  , e',
                 ],
             ),
-            #'src': ('STRING',),
+            # 'src': ('STRING',),
             'font-weight': (
                 [
                     'normal',
@@ -191,9 +190,9 @@ class PropertiesTestCase(basetest.BaseTestCase):
                 ],
             ),
             'font-size-adjust': ('NUMBER', ['none', 'inherit']),
-            #            'font': (['italic small-caps bold 1px/3 a, "b", serif',
-            #                      'caption', 'icon', 'menu', 'message-box', 'small-caption',
-            #                      'status-bar', 'inherit'],),
+            # 'font': (['italic small-caps bold 1px/3 a, "b", serif',
+            #           'caption', 'icon', 'menu', 'message-box', 'small-caption',
+            #           'status-bar', 'inherit'],),
             'image-orientation': ('0', 'ANGLES', ['auto']),
             'left': ('LENGTHS', 'PERCENTAGE', ['inherit', 'auto']),
             'opacity': ('NUMBER', ['inherit']),
