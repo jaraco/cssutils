@@ -9,9 +9,20 @@ Refreshed packaging.
 
 Project now requires Python 3.6 or later.
 
-Latest Stable Version
-=====================
-1.0 131215 (1.0 only cause I was tired of the 0.9.x releases ;)
+v1.0.2
+======
+
+Undocumented changes.
+
+v1.0.1
+======
+
+Undocumented changes.
+
+v1.0
+====
+
+(1.0 only cause I was tired of the 0.9.x releases ;)
 
 	- EXPERIMENTAL: Variable references may have a fallback value now (as implemented in Firefox 29). It is available as ``CSSVariable.fallback`` and example are::
 
@@ -37,11 +48,9 @@ Latest Stable Version
 		 - ``xml.dom.SyntaxErr`` raised instead of ``xml.dom.InvalidCharacterErr`` for an unknown media type
 		 - removed ``handheld`` media type special case (for old Opera).
 
+v0.9.10
+=======
 
-Archived Versions
-=================
-
-0.9.10 130331
     - BUGFIX: False HASH color values like ``#xyz`` were not being handled properly (thanks to Teruaki Koizumi)
 
     - Fixed issue #23: Tests do work properly in newer Python (>2.7.1?) version now, old versions will report error. Before this was the other way round but this makes more sense probably
@@ -65,7 +74,9 @@ Archived Versions
 
     + IMPROVEMENT: Added all X11 color names and corresponding RGBA values
 
-0.9.9 final 120131
+v0.9.9
+======
+
     - FEATURE: Implemented API for ``MarginRule`` objects inside ``CSSPageRule``, see http://www.w3.org/TR/css3-page/. You can also use e.g. ``CSSPageRule['@top-left']`` to retrieve the MarginRule it it is set etc. All dict like methods should be there. If a margin is set twice or more all properties are merged into a single margin rule. Double set properties are all kept though (see below).
 
     - FEATURE: ``parseStyle()`` has optional parameter ``validate=False`` now too to disable validation (default is always ``True``).
@@ -84,8 +95,9 @@ Archived Versions
 
 
 
-0.9.8
------
+v0.9.8
+======
+
 0.9.8 final 111210
     - FEATURE: Feature Request (#4) to be able to disable validation of a stylesheet has been implemented. Add Parameter ``validate=False`` for parsing.
 
@@ -187,10 +199,9 @@ Archived Versions
     + CHANGE: explicit `+` of any dimension, percentage of number value is kept now instead of being stripped as if put explicitly in the author SHOULD have meant something ;)
 
 
-0.9.7
------
+v0.9.7
+======
 
-0.9.7final 101127
     + **FUTURE CHANGE**: CSSValue and subclasses will most certain not be supported in the next cssutils 0.9.8 version. A simpler and hopefully more robust API is in development. So the next version will have incompatible changes so you might wanna use 0.9.8 from the start if you do anything fancy with CSSValue and related classes.
 
 0.9.7b4 101101
@@ -314,8 +325,9 @@ Archived Versions
     - INTERNAL: Added ``tokenizer.push()``. Prodparser uses a global tokenizer now.
 
 
-0.9.6
------
+v0.9.6
+======
+
 0.9.6 091007
     + BUGFIX: Definition of macro for `positivenum` in cssutils profiles actually did allow nagative numbers, fixed (thanks to Jason R. Coombs)
 
@@ -568,8 +580,9 @@ Archived Versions
 
 
 
-0.9.5
------
+v0.9.5
+======
+
 0.9.5.1 080811
     + **BUGFIX**: Fixed parsing of ``}a,b`` which resulted in TypeError until now.
 
