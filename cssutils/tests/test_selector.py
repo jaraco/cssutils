@@ -265,10 +265,15 @@ class SelectorTestCase(basetest.BaseTestCase):
             'a x:before': None,
             'a x:after': None,
             'a x::selection': None,
-            'a:hover+b:hover>c:hover~e:hover f:hover': 'a:hover + b:hover > c:hover ~ e:hover f:hover',
-            'a:hover  +  b:hover  >  c:hover  ~  e:hover   f:hover': 'a:hover + b:hover > c:hover ~ e:hover f:hover',
-            'a::selection+b::selection>c::selection~e::selection f::selection': 'a::selection + b::selection > c::selection ~ e::selection f::selection',
-            'a::selection  +  b::selection  >  c::selection  ~  e::selection   f::selection': 'a::selection + b::selection > c::selection ~ e::selection f::selection',
+            'a:hover+b:hover>c:hover~e:hover f:hover':
+            'a:hover + b:hover > c:hover ~ e:hover f:hover',
+            'a:hover  +  b:hover  >  c:hover  ~  e:hover   f:hover':
+            'a:hover + b:hover > c:hover ~ e:hover f:hover',
+            'a::selection+b::selection>c::selection~e::selection f::selection':
+            'a::selection + b::selection > c::selection ~ e::selection f::selection',
+            'a::selection  +  b::selection  >  c::selection  ~  e::selection   '
+            'f::selection':
+            'a::selection + b::selection > c::selection ~ e::selection f::selection',
             'x:lang(de) y': None,
             'x:nth-child(odd) y': None,
             # functional pseudo
@@ -316,7 +321,8 @@ class SelectorTestCase(basetest.BaseTestCase):
             ('-a_x12|e', (('-a_x12', 'uri'),)): '-a_x12|e',
             ('*|b[p|a]', (('p', 'uri'),)): '*|b[p|a]',
             # case
-            'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE': 'elemenT.clasS#iD[atT="valuE"]:not(x)::first-line',
+            'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE':
+            'elemenT.clasS#iD[atT="valuE"]:not(x)::first-line',
         }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
