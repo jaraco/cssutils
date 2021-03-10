@@ -99,28 +99,22 @@ import sys
 if sys.version_info < (2, 6):
     bytes = str
 
-from . import codec
 import os.path
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import urllib.parse
 import xml.dom
 
-# order of imports is important (partly circular)
-from . import util
 from . import errorhandler
-
-log = errorhandler.ErrorHandler()
-
 from . import css
 from . import stylesheets
 from .parse import CSSParser
-
 from .serialize import CSSSerializer
-
-ser = CSSSerializer()
-
 from .profiles import Profiles
 
+log = errorhandler.ErrorHandler()
+ser = CSSSerializer()
 profile = Profiles(log=log)
 
 # used by Selector defining namespace prefix '*'
@@ -221,6 +215,7 @@ def parseStyle(*a, **k):
 
 parseStyle.__doc__ = CSSParser.parseStyle.__doc__
 
+
 # set "ser", default serializer
 def setSerializer(serializer):
     """Set the global serializer used by all class in cssutils."""
@@ -228,7 +223,7 @@ def setSerializer(serializer):
     ser = serializer
 
 
-def getUrls(sheet):
+def getUrls(sheet):  # noqa: C901
     """Retrieve all ``url(urlstring)`` values (in e.g.
     :class:`cssutils.css.CSSImportRule` or :class:`cssutils.css.CSSValue`
     objects of given `sheet`.
@@ -258,7 +253,7 @@ def getUrls(sheet):
                     yield v.uri
 
 
-def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
+def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):  # noqa: C901
     """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
     :class:`cssutils.css.CSSValue` objects of given `sheetOrStyle`.
 
@@ -295,7 +290,7 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
                     v.uri = replacer(v.uri)
 
 
-def resolveImports(sheet, target=None):
+def resolveImports(sheet, target=None):  # noqa: C901
     """Recurcively combine all rules in given `sheet` into a `target` sheet.
     @import rules which use media information are tried to be wrapped into
     @media rules so keeping the media information. This may not work in
