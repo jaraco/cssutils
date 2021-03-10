@@ -56,7 +56,8 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
             '@\\VaRIables {    margin : 0    }': EXP,
             '@variables {a:1;b:2}': '@variables {\n    a: 1;\n    b: 2\n    }',
             # comments
-            '@variables   /*1*/   {margin:0;}': '@variables /*1*/ {\n    margin: 0\n    }',
+            '@variables   /*1*/   {margin:0;}':
+            '@variables /*1*/ {\n    margin: 0\n    }',
             '@variables/*1*/{margin:0;}': '@variables /*1*/ {\n    margin: 0\n    }',
         }
         self.do_equal_r(tests)
@@ -95,7 +96,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         # fail
         try:
             r.cssText = '@variables {$:1}'
-        except xml.dom.DOMException as e:
+        except xml.dom.DOMException:
             pass
 
         self.assertEqual(vars2, r.variables)
@@ -122,7 +123,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         # string fail
         try:
             r.variables = '$: x'
-        except xml.dom.DOMException as e:
+        except xml.dom.DOMException:
             pass
         self.assertEqual(vars4, r.variables)
         self.assertEqual(r, r.variables.parentRule)
