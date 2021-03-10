@@ -4,7 +4,6 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Walter Doerwald'
 __version__ = '$Id: util.py 1114 2008-03-05 13:22:59Z cthedot $'
 
-import sys
 import codecs
 import marshal
 
@@ -29,7 +28,7 @@ def chars(bytestring):
     return "".join(chr(byte) for byte in bytestring)
 
 
-def detectencoding_str(input, final=False):
+def detectencoding_str(input, final=False):  # noqa: C901
     """
     Detect the encoding of the byte string ``input``, which contains the
     beginning of a CSS file. This function returns the detected encoding (or
@@ -224,7 +223,7 @@ def decode(input, errors="strict", encoding=None, force=True):
     try:
         # py 3 only, memory?! object to bytes
         input = input.tobytes()
-    except AttributeError as e:
+    except AttributeError:
         pass
 
     if encoding is None or not force:
@@ -272,7 +271,7 @@ def _int2bytes(i):
     return "".join(v)
 
 
-if hasattr(codecs, "IncrementalDecoder"):
+if hasattr(codecs, "IncrementalDecoder"):  # noqa: C901
 
     class IncrementalDecoder(codecs.IncrementalDecoder):
         def __init__(self, errors="strict", encoding=None, force=True):
@@ -376,7 +375,7 @@ if hasattr(codecs, "IncrementalDecoder"):
                 self.decoder = None
 
 
-if hasattr(codecs, "IncrementalEncoder"):
+if hasattr(codecs, "IncrementalEncoder"):  # noqa: C901
 
     class IncrementalEncoder(codecs.IncrementalEncoder):
         def __init__(self, errors="strict", encoding=None):
@@ -510,7 +509,7 @@ class StreamWriter(codecs.StreamWriter):
         try:
             if self.streamwriter is not None:
                 self.streamwriter.errors = errors
-        except AttributeError as e:
+        except AttributeError:
             # TODO: py3 only exception?
             pass
 
@@ -560,7 +559,7 @@ class StreamReader(codecs.StreamReader):
         try:
             if self.streamreader is not None:
                 self.streamreader.errors = errors
-        except AttributeError as e:
+        except AttributeError:
             # TODO: py3 only exception?
             pass
 
@@ -569,7 +568,7 @@ class StreamReader(codecs.StreamReader):
     errors = property(_geterrors, _seterrors)
 
 
-if hasattr(codecs, "CodecInfo"):
+if hasattr(codecs, "CodecInfo"):  # noqa: C901
     # We're running on Python 2.5 or better
     def search_function(name):
         if name == "css":
