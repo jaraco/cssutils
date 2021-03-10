@@ -8,7 +8,9 @@ import cssutils
 import os
 import sys
 from . import tokenize2
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.error
+import urllib.parse
 
 from cssutils import css
 

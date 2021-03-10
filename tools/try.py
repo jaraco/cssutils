@@ -13,7 +13,9 @@ import re
 import sys
 import timeit
 import unicodedata
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.error
+import urllib.parse
 import urllib.parse
 import xml
 import xml.dom
@@ -45,9 +47,9 @@ if 1:
 
     css = '''
     :root {
-  var-theme-colour-1: #009EE0; 
-  var-theme-colour-2: #FFED00; 
-  var-theme-colour-3: #E2007A; 
+  var-theme-colour-1: #009EE0;
+  var-theme-colour-2: #FFED00;
+  var-theme-colour-3: #E2007A;
   var-spacing: 24px;
 }
         a {
@@ -70,7 +72,7 @@ if 1:
         a {color:red}
     }
     '''
-    css = '''@media (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx){ 
+    css = '''@media (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx){
         a {color:red}
     }'''
     css = '''@media not handheld/**/,/**/ all/**/and/**/ (/**/width: 10px) and (color), tv/**/{
@@ -1030,7 +1032,9 @@ def pathname2url(p):
     # C:\foo\bar\spam.foo
     # becomes
     # ///C|/foo/bar/spam.foo
-    import urllib.request, urllib.parse, urllib.error
+    import urllib.request
+import urllib.error
+import urllib.parse
 
     if not ':' in p:
         # No drive specifier, just convert slashes and quote the name

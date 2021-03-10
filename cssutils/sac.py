@@ -7,7 +7,9 @@ import codecs
 from . import errorhandler
 import os
 from . import tokenize2
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.error
+import urllib.parse
 import sys
 
 
