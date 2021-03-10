@@ -7,3 +7,5 @@ max-complexity = 10
 extend-ignore =
 	# Black creates whitespace before colon
 	E203
+	# Ignore long lines for now
+	E501
