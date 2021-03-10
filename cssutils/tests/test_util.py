@@ -7,7 +7,9 @@ from email import message_from_string, message_from_file
 import io
 import re
 import sys
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 import xml.dom
 
 try:

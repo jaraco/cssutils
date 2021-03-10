@@ -6,7 +6,9 @@ import re
 import sys
 import io
 import unittest
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 from email import message_from_string, message_from_file
 
 # add src to PYTHONPATH

@@ -6,7 +6,9 @@ import sys
 import xml.dom
 from . import basetest
 import cssutils
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 
 try:
     import mock

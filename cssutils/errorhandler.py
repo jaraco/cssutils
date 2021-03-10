@@ -17,7 +17,9 @@ log
 __all__ = ['ErrorHandler']
 
 import logging
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 import xml.dom
 
 
