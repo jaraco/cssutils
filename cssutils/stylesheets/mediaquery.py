@@ -5,7 +5,7 @@ A cssutils implementation, not defined in official DOM.
 """
 __all__ = ['MediaQuery']
 
-from cssutils.prodparser import *
+from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 from cssutils.helper import normalize, pushtoken
 import cssutils
 import re

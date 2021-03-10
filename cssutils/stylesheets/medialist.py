@@ -6,7 +6,7 @@ TODO:
 """
 __all__ = ['MediaList']
 
-from cssutils.prodparser import *
+from cssutils.prodparser import PreDef, Prod, ProdParser, Sequence
 from cssutils.helper import normalize, pushtoken
 from cssutils.css import csscomment
 from .mediaquery import MediaQuery
