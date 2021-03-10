@@ -1,3 +1,10 @@
+v2.1.0
+======
+
+Adopted `jaraco/skeleton <https://github.com/jaraco/skeleton>`_.
+
+Delinted codebase.
+
 v2.0.0
 ======
 
