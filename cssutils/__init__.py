@@ -24,7 +24,8 @@ Based upon and partly implementing the following specifications :
 
 `CSS 2.1 <http://www.w3.org/TR/CSS2/>`__
     General CSS rules and properties are defined here
-`CSS 2.1 Errata  <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`__
+`CSS 2.1 Errata
+    <http://www.w3.org/Style/css2-updates/CR-CSS21-20070719-errata.html>`__
     A few errata, mainly the definition of CHARSET_SYM tokens
 `CSS3 Module: Syntax <http://www.w3.org/TR/css3-syntax/>`__
     Used in parts since cssutils 0.9.4. cssutils tries to use the features from
@@ -45,7 +46,8 @@ Based upon and partly implementing the following specifications :
 `DOM Level 2 Style CSS <http://www.w3.org/TR/DOM-Level-2-Style/css.html>`__
     DOM for package css. 0.9.8 removes support for CSSValue and related API,
     see PropertyValue and Value API for now
-`DOM Level 2 Style Stylesheets <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`__
+`DOM Level 2 Style Stylesheets
+    <http://www.w3.org/TR/DOM-Level-2-Style/stylesheets.html>`__
     DOM for package stylesheets
 `CSSOM <http://dev.w3.org/csswg/cssom/>`__
     A few details (mainly the NamespaceRule DOM) is taken from here. Plan is
