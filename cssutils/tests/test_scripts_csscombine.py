@@ -3,7 +3,6 @@
 from cssutils.script import csscombine
 from . import basetest
 import cssutils
-import os
 
 
 class CSSCombine(basetest.BaseTestCase):
