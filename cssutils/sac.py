@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 """A validating CSSParser"""
-__all__ = ['CSSParser']
+
+import codecs
+import sys
 
 from . import helper
-import codecs
 from . import errorhandler
-import os
 from . import tokenize2
-import urllib.request
-import urllib.error
-import urllib.parse
-import sys
 
 
 class ErrorHandler(object):
@@ -53,7 +49,8 @@ class DocumentHandler(object):
              Receive notification of the end of a media statement.
     void     endPage(java.lang.String name, java.lang.String pseudo_page)
              Receive notification of the end of a media statement.
-    void     importStyle(java.lang.String uri, SACMediaList media, java.lang.String defaultNamespaceURI)
+    void     importStyle(java.lang.String uri, SACMediaList media,
+             java.lang.String defaultNamespaceURI)
              Receive notification of a import statement in the style sheet.
     void     startFontFace()
              Receive notification of the beginning of a font face statement.
@@ -205,7 +202,7 @@ class Parser(object):
         else:
             self.setErrorHandler(ErrorHandler())
 
-    def parseString(self, cssText, encoding=None):
+    def parseString(self, cssText, encoding=None):  # noqa: C901
         if isinstance(cssText, str):
             cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
 
