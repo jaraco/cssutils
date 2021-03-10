@@ -20,7 +20,6 @@ from .helper import pushtoken
 import cssutils
 import itertools
 import re
-import string
 import sys
 import types
 
@@ -69,7 +68,7 @@ class Choice(object):
 
         try:
             self.optional = options['optional']
-        except KeyError as e:
+        except KeyError:
             for p in self._prods:
                 if p.optional:
                     self.optional = True
@@ -146,7 +145,7 @@ class Sequence(object):
         try:
             minmax = options['minmax']
         except KeyError:
-            minmax = lambda: (1, 1)
+            minmax = lambda: (1, 1)  # noqa: E731
 
         self._min, self._max = minmax()
         if self._max is None:
@@ -392,7 +391,7 @@ class ProdParser(object):
             # DEFAULT, to tokenize strip space
             return tokenizer.tokenize(text.strip())
 
-        elif type(text) == types.GeneratorType:
+        elif isinstance(text, types.GeneratorType):
             # DEFAULT, already tokenized, should be generator
             return text
 
@@ -400,7 +399,8 @@ class ProdParser(object):
             # OLD: (token, tokens) or a single token
             if len(text) == 2:
                 # (token, tokens)
-                chain([token], tokens)
+                # chain([token], tokens)
+                raise NotImplementedError()
             else:
                 # single token
                 return iter([text])
@@ -443,7 +443,7 @@ class ProdParser(object):
         for token in tokens:
             yield token
 
-    def parse(
+    def parse(  # noqa: C901
         self,
         text,
         name,
@@ -506,14 +506,13 @@ class ProdParser(object):
         defaultS = True
 
         stopIfNoMoreMatch = False
-        stopIfNoMoreMatchNow = False
 
         while True:
             # get from savedTokens or normal tokens
             try:
                 # print debug, "SAVED", savedTokens
                 token = savedTokens.pop()
-            except IndexError as e:
+            except IndexError:
                 try:
                     token = next(tokens)
                 except StopIteration:
@@ -553,14 +552,13 @@ class ProdParser(object):
 
             else:
                 started = True  # check S now
-                nextSor = False  # reset
 
                 try:
                     while True:
                         # find next matching production
                         try:
                             prod = prods[-1].nextProd(token)
-                        except (Exhausted, NoMatch) as e:
+                        except (Exhausted, NoMatch):
                             # try next
                             prod = None
 
@@ -582,7 +580,6 @@ class ProdParser(object):
                         # print "\t1stopIfNoMoreMatch", e, token, prod, 'PUSHING'
                         # tokenizer.push(token)
                         savedTokens.append(token)
-                        stopIfNoMoreMatchNow = True
                         stopall = True
 
                     else:
@@ -595,7 +592,6 @@ class ProdParser(object):
                     if stopIfNoMoreMatch:  # and token:
                         # print "\t2stopIfNoMoreMatch", e, token, prod
                         tokenizer.push(token)
-                        stopIfNoMoreMatchNow = True
                         stopall = True
 
                     else:
@@ -656,7 +652,7 @@ class ProdParser(object):
                 # all productions exhausted?
                 try:
                     prod = prods[-1].nextProd(token=None)
-                except Done as e:
+                except Done:
                     # ok
                     prod = None
 

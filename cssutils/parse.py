@@ -5,12 +5,8 @@ __all__ = ['CSSParser']
 from .helper import path2url
 import codecs
 import cssutils
-import os
 import sys
 from . import tokenize2
-import urllib.request
-import urllib.error
-import urllib.parse
 
 from cssutils import css
 
