@@ -45,7 +45,7 @@ __all__ = [
     'SelectorList',
     'CSSStyleDeclaration',
     'Property',
-    #'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
+    # 'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
     'PropertyValue',
     'Value',
     'ColorValue',
