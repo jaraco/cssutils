@@ -3,7 +3,6 @@
 
 from . import basetest
 import cssutils
-import sys
 
 
 class PreferencesTestCase(basetest.BaseTestCase):
@@ -45,15 +44,18 @@ class PreferencesTestCase(basetest.BaseTestCase):
         '''
         tests = {
             '''a {\n    color: var(c1)\n    }''': '''a {\n    color: red\n    }''',
-            '''a {\n    color: var(c1)\n; color: var(  c2   )    }''': '''a {\n    color: red;\n    color: #0f0\n    }''',
-            '''a {\n    margin: var(px)\n    }''': '''a {\n    margin: 1px 2px\n    }''',
+            '''a {\n    color: var(c1)\n; color: var(  c2   )    }''':
+            '''a {\n    color: red;\n    color: #0f0\n    }''',
+            '''a {\n    margin: var(px)\n    }''':
+            '''a {\n    margin: 1px 2px\n    }''',
             '''@media all {
                 a {
                     margin: var(px) var(px);
                     color: var(c1);
                     left: var(unknown)
                     }
-            }''': '''@media all {\n    a {\n        margin: 1px 2px 1px 2px;\n        color: red;\n        left: var(unknown)\n        }\n    }''',
+            }''': '''@media all {\n    a {\n        margin: 1px 2px 1px 2px;\n'''
+            '''        color: red;\n        left: var(unknown)\n        }\n    }''',
         }
         cssutils.ser.prefs.resolveVariables = True
 
@@ -127,7 +129,10 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(s.cssText, parsedcss.encode())
 
         tests = {
-            '0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% +.1% -0.1 -.1 -0.1px -.1px -0.1% -.1%': '0.1 0.1 0.1px 0.1px 0.1% 0.1% +0.1 +0.1 +0.1px +0.1px +0.1% +0.1% -0.1 -0.1 -0.1px -0.1px -0.1% -0.1%'
+            '0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% +.1% '
+            '-0.1 -.1 -0.1px -.1px -0.1% -.1%':
+            '0.1 0.1 0.1px 0.1px 0.1% 0.1% +0.1 +0.1 +0.1px +0.1px +0.1% '
+            '+0.1% -0.1 -0.1 -0.1px -0.1px -0.1% -0.1%'
         }
         cssutils.ser.prefs.useDefaults()
         for test, exp in list(tests.items()):
@@ -183,12 +188,16 @@ prefix|x, a + b > c ~ d, b {
         cssutils.ser.prefs.keepUnknownAtRules = True
         self.assertEqual(
             s.cssText,
-            '''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}@x x;'''.encode(),
+            '''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
+            '''{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;'''
+            '''font-family:arial,"some"}@x x;'''.encode(),
         )
         cssutils.ser.prefs.keepUnknownAtRules = False
         self.assertEqual(
             s.cssText,
-            '''@import"x"tv,print;@namespace prefix"uri";@media all"name"{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;font-family:arial,"some"}'''.encode(),
+            '''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
+            '''{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;'''
+            '''font-family:arial,"some"}'''.encode(),
         )
         # Values
         valuetests = {
@@ -196,16 +205,24 @@ prefix|x, a + b > c ~ d, b {
             'a b 1 c 1em d -1em e': 'a b 1 c 1em d -1em e',
             '  1em  /  5  ': '1em/5',
             '1em/5': '1em/5',
-            'a 0 a .0 a 0.0 a -0 a -.0 a -0.0 a +0 a +.0 a +0.0': 'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0',
-            'a  0px  a  .0px  a  0.0px  a  -0px  a  -.0px  a  -0.0px  a  +0px  a  +.0px  a  +0.0px ': 'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0',
-            'a  1  a  .1  a  1.0  a  0.1  a  -1  a  -.1  a  -1.0  a  -0.1  a  +1  a  +.1  a  +1.0': 'a 1 a .1 a 1 a .1 a -1 a -.1 a -1 a -.1 a +1 a +.1 a +1',
+            'a 0 a .0 a 0.0 a -0 a -.0 a -0.0 a +0 a +.0 a +0.0':
+            'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0',
+            'a  0px  a  .0px  a  0.0px  a  -0px  a  -.0px  a  -0.0px  a  +0px  '
+            'a  +.0px  a  +0.0px ':
+            'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0',
+            'a  1  a  .1  a  1.0  a  0.1  a  -1  a  -.1  a  -1.0  a  -0.1  a  '
+            '+1  a  +.1  a  +1.0':
+            'a 1 a .1 a 1 a .1 a -1 a -.1 a -1 a -.1 a +1 a +.1 a +1',
             '  url(x)  f()': 'url(x) f()',
             '#112233': '#123',
             '#112234': '#112234',
             '#123': '#123',
             '#123 url() f()': '#123 url() f()',
             '1 +2 +3 -4': '1 +2 +3 -4',  # ?
-            '0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% +.1% -0.1 -.1 -0.1px -.1px -0.1% -.1%': '.1 .1 .1px .1px .1% .1% +.1 +.1 +.1px +.1px +.1% +.1% -.1 -.1 -.1px -.1px -.1% -.1%',
+            '0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% '
+            '+.1% -0.1 -.1 -0.1px -.1px -0.1% -.1%':
+            '.1 .1 .1px .1px .1% .1% +.1 +.1 +.1px +.1px +.1% +.1% '
+            '-.1 -.1 -.1px -.1px -.1% -.1%',
         }
         for test, exp in list(valuetests.items()):
             s = cssutils.parseString('a{x:%s}' % test)
@@ -234,7 +251,7 @@ prefix|x, a + b > c ~ d, b {
         cssutils.ser.prefs.defaultPropertyName = False
         self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
 
-        s = cssutils.parseString('a { color: red; c\olor: green; }')
+        s = cssutils.parseString(r'a { color: red; c\olor: green; }')
         self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
         cssutils.ser.prefs.defaultPropertyName = False
         self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
@@ -310,7 +327,7 @@ b {
 
     def test_keepAllProperties(self):
         "Preferences.keepAllProperties"
-        css = '''a {
+        css = r'''a {
             color: pink;
             color: red;
             c\olor: blue;
@@ -323,7 +340,8 @@ b {
         # keep all
         cssutils.ser.prefs.keepAllProperties = True
         self.assertEqual(
-            'a {\n    color: pink;\n    color: red;\n    c\olor: blue;\n    c\olor: green\n    }'.encode(),
+            'a {\n    color: pink;\n    color: red;\n    c\\olor: blue;\n    '
+            'c\\olor: green\n    }'.encode(),
             s.cssText,
         )
 
@@ -579,7 +597,8 @@ a, b {}'''
         tests = {
             '@font-face {a:1}': '@font-face {\n    a: 1\n    }',
             '@import  url( a );': '@import url(a);',
-            '@media  all{a{color:red}}': '@media all {\n    a {\n        color: red\n        }\n    }',
+            '@media  all{a{color:red}}':
+            '@media all {\n    a {\n        color: red\n        }\n    }',
             '@namespace "a";': '@namespace"a";',
             '@namespace a  "a";': '@namespace a"a";',
             '@page  :left {   a  :1  }': '@page :left {\n    a: 1\n    }',
@@ -616,7 +635,8 @@ a, b {}'''
             '''img { float: left }       /* correct CSS 2.1 */
 img { float: left here }  /* "here" is not a value of 'float' */
 img { background: "red" } /* keywords cannot be quoted */
-img { border-width: 3 }   /* a unit must be specified for length values */''': 'img {\n    float: left\n    }',
+img { border-width: 3 }   /* a unit must be specified for length values */''':
+            'img {\n    float: left\n    }',
         }
         self.do_equal_p(tests, raising=False)
 
@@ -706,7 +726,7 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
 
     def test_escapestring(self):
         "CSSSerializer._escapestring"
-        #'"\a\22\27"'
+        # '"\a\22\27"'
         css = r'''@import url("ABC\a");
 @import "ABC\a";
 @import 'ABC\a';
