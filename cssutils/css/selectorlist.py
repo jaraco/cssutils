@@ -16,8 +16,6 @@ TODO
         the color of H3 to red:
 """
 __all__ = ['SelectorList']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from .selector import Selector
 import cssutils

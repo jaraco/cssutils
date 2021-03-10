@@ -8,8 +8,6 @@ TODO:
     - ownerRule and ownerNode
 """
 __all__ = ['CSSStyleSheet']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.helper import Deprecated
 from cssutils.util import _Namespaces, _SimpleNamespaces, _readUrl

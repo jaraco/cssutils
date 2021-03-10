@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
-__version__ = '$Id: test_cssvalue.py 1443 2008-08-31 13:54:39Z cthedot $'
 
 import sys
 import platform

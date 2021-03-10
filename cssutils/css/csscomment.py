@@ -4,8 +4,6 @@ class only.
 Implements CSSRule which is also extended for a CSSComment rule type.
 """
 __all__ = ['CSSComment']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from . import cssrule
 import cssutils

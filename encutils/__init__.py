@@ -75,9 +75,6 @@ __all__ = [
     'tryEncodings',
     'EncodingInfo',
 ]
-__docformat__ = 'restructuredtext'
-__author__ = 'Christof Hoeke, Robert Siemer, Fredrik Hedman'
-__version__ = '$Id$'
 
 import html.parser
 import io

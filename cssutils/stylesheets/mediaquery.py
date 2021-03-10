@@ -1,11 +1,9 @@
-"""Implements a DOM for MediaQuery, see 
+"""Implements a DOM for MediaQuery, see
 http://www.w3.org/TR/css3-mediaqueries/.
 
 A cssutils implementation, not defined in official DOM.
 """
 __all__ = ['MediaQuery']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.prodparser import *
 from cssutils.helper import normalize, pushtoken

@@ -15,8 +15,6 @@ log
     - setloglevel(loglevel)
 """
 __all__ = ['ErrorHandler']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import logging
 import urllib.request, urllib.error, urllib.parse

@@ -1,7 +1,5 @@
 """CSSRule implements DOM Level 2 CSS CSSRule."""
 __all__ = ['CSSRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import cssutils
 import xml.dom
@@ -34,7 +32,7 @@ class CSSRule(cssutils.util.Base2):
     PAGE_RULE = 6
     ":class:`cssutils.css.CSSPageRule`"
     NAMESPACE_RULE = 10
-    """:class:`cssutils.css.CSSNamespaceRule`, 
+    """:class:`cssutils.css.CSSNamespaceRule`,
     Value has changed in 0.9.7a3 due to a change in the CSSOM spec."""
     COMMENT = 1001  # was -1, cssutils only
     """:class:`cssutils.css.CSSComment` - not in the offical spec,

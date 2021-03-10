@@ -1,9 +1,7 @@
-"""CSSVariables implements (and only partly) experimental 
+"""CSSVariables implements (and only partly) experimental
 `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
 """
 __all__ = ['CSSVariablesRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: cssfontfacerule.py 1818 2009-07-30 21:39:00Z cthedot $'
 
 from .cssvariablesdeclaration import CSSVariablesDeclaration
 from . import cssrule

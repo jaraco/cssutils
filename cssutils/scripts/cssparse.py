@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 """utility script to parse given filenames or string
 """
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import cssutils
 import logging

@@ -1,8 +1,6 @@
 """CSSNamespaceRule currently implements http://dev.w3.org/csswg/css3-namespace/
 """
 __all__ = ['CSSNamespaceRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from . import cssrule
 import cssutils

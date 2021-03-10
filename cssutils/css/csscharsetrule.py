@@ -1,7 +1,5 @@
 """CSSCharsetRule implements DOM Level 2 CSS CSSCharsetRule."""
 __all__ = ['CSSCharsetRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 import codecs
 from . import cssrule

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 """Python codec for CSS."""
-__docformat__ = 'restructuredtext'
-__author__ = 'Walter Doerwald'
-__version__ = '$Id: util.py 1114 2008-03-05 13:22:59Z cthedot $'
 
 import codecs
 import marshal

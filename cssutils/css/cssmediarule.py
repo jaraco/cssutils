@@ -1,7 +1,5 @@
 """CSSMediaRule implements DOM Level 2 CSS CSSMediaRule."""
 __all__ = ['CSSMediaRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from . import cssrule
 import cssutils

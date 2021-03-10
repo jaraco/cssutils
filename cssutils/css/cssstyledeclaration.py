@@ -50,8 +50,6 @@ TODO:
       -> background: #fff url() no-repeat left
 """
 __all__ = ['CSSStyleDeclaration', 'Property']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from .cssproperties import CSS2Properties
 from .property import Property

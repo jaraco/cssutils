@@ -55,8 +55,6 @@ __all__ = [
     'CSSVariable',
     'MSValue',
 ]
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from .cssstylesheet import *
 from .cssrulelist import *

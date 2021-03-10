@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
-__version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
 
 import sys
 import xml.dom

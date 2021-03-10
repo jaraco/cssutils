@@ -1,8 +1,6 @@
 """base classes and helper functions for css and stylesheets packages
 """
 __all__ = []
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from .helper import normalize
 from itertools import chain

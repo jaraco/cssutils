@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.cssvariablesdelaration.CSSVariablesDeclaration."""
-__version__ = '$Id: test_cssstyledeclaration.py 1869 2009-10-17 19:37:40Z cthedot $'
 
 import xml.dom
 from . import basetest

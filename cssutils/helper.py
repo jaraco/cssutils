@@ -1,7 +1,5 @@
 """cssutils helper TEST
 """
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: errorhandler.py 1234 2008-05-22 20:26:12Z cthedot $'
 
 import os
 import re

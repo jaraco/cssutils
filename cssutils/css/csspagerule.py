@@ -1,7 +1,5 @@
 """CSSPageRule implements DOM Level 2 CSS CSSPageRule."""
 __all__ = ['CSSPageRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from itertools import chain
 from .cssstyledeclaration import CSSStyleDeclaration
@@ -451,8 +449,8 @@ class CSSPageRule(cssrule.CSSRuleRules):
 
     specificity = property(
         lambda self: self._specificity,
-        doc="""Specificity of this page rule (READONLY). 
-Tuple of (f, g, h) where: 
+        doc="""Specificity of this page rule (READONLY).
+Tuple of (f, g, h) where:
 
  - if the page selector has a named page, f=1; else f=0
  - if the page selector has a ':first' pseudo-class, g=1; else g=0

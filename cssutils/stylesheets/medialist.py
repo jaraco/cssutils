@@ -5,8 +5,6 @@ TODO:
     - is unknown media an exception?
 """
 __all__ = ['MediaList']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.prodparser import *
 from cssutils.helper import normalize, pushtoken

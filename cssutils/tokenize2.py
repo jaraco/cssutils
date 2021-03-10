@@ -3,8 +3,6 @@
 """New CSS Tokenizer (a generator)
 """
 __all__ = ['Tokenizer', 'CSSProductions']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from .cssproductions import *
 from .helper import normalize

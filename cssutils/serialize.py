@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """cssutils serializer"""
 __all__ = ['CSSSerializer', 'Preferences']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.helper import normalize
 import codecs

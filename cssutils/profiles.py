@@ -4,8 +4,6 @@ Profiles is based on code by Kevin D. Smith, orginally used as cssvalues,
 thanks!
 """
 __all__ = ['Profiles']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
 from cssutils import util
 import re

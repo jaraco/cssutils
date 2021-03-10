@@ -6,8 +6,6 @@ TODO
     - .isSubselector(selector)
 """
 __all__ = ['Selector']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.helper import Deprecated
 from cssutils.util import _SimpleNamespaces
@@ -838,17 +836,17 @@ class Selector(cssutils.util.Base2):
 
     specificity = property(
         lambda self: self._specificity,
-        doc="""Specificity of this selector (READONLY). 
-                Tuple of (a, b, c, d) where: 
-                
+        doc="""Specificity of this selector (READONLY).
+                Tuple of (a, b, c, d) where:
+
                 a
-                    presence of style in document, always 0 if not used on a 
+                    presence of style in document, always 0 if not used on a
                     document
                 b
                     number of ID selectors
-                c 
+                c
                     number of .class selectors
-                d 
+                d
                     number of Element (type) selectors""",
     )
 

@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
-__version__ = '$Id: test_cssvalue.py 1473 2008-09-15 21:15:54Z cthedot $'
 
 # from decimal import Decimal # maybe for later tests?
 import xml.dom

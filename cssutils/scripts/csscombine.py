@@ -3,7 +3,7 @@
 into a single new sheet.
 
 - no ``url()`` values are adjusted so currently when using relative references
-  for e.g. images it is best to have all sheets in a single folder 
+  for e.g. images it is best to have all sheets in a single folder
 - in @import rules only relative paths do work for now but should be used
   anyway
 - messages are send to stderr
@@ -51,8 +51,6 @@ or without option -m::
 
 """
 __all__ = ['csscombine']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.script import csscombine
 import optparse

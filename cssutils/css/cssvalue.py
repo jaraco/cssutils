@@ -6,8 +6,6 @@
 
 """
 __all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor', 'CSSVariable']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.prodparser import *
 import cssutils

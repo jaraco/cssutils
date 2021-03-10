@@ -7,8 +7,6 @@ http://www.w3.org/TR/css3-syntax/#grammar0
 
 """
 __all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 # option case-insensitive
 MACROS = {

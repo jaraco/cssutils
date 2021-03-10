@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.property._Property."""
-__version__ = '$Id: test_property.py 1529 2008-11-30 15:12:01Z cthedot $'
 
 import copy
 import xml.dom

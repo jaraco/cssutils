@@ -1,5 +1,4 @@
 """Tests for parsing which does not raise Exceptions normally"""
-__version__ = '$Id: test_parse.py 1281 2008-06-04 21:12:29Z cthedot $'
 
 import logging
 import io

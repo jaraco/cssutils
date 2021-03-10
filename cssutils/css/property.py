@@ -1,7 +1,5 @@
 """Property is a single CSS property in a CSSStyleDeclaration."""
 __all__ = ['Property']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.helper import Deprecated
 from .value import PropertyValue

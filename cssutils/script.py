@@ -1,8 +1,6 @@
 """classes and functions used by cssutils scripts
 """
 __all__ = ['CSSCapture', 'csscombine']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id: parse.py 1323 2008-07-06 18:13:57Z cthedot $'
 
 import html.parser
 import codecs

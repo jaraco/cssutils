@@ -8,8 +8,6 @@ TODO:
 - saveto: why does urllib2 hang?
 """
 __all__ = ['CSSCapture']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.script import CSSCapture
 import logging

@@ -1,7 +1,5 @@
 """CSSStyleRule implements DOM Level 2 CSS CSSStyleRule."""
 __all__ = ['CSSStyleRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from .cssstyledeclaration import CSSStyleDeclaration
 from .selectorlist import SelectorList

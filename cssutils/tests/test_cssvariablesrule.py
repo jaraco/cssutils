@@ -1,5 +1,4 @@
 """Testcases for cssutils.css.CSSPageRule"""
-__version__ = '$Id: test_csspagerule.py 1869 2009-10-17 19:37:40Z cthedot $'
 
 import xml.dom
 from . import test_cssrule

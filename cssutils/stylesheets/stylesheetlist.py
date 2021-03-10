@@ -1,7 +1,5 @@
 """StyleSheetList implements DOM Level 2 Style Sheets StyleSheetList."""
 __all__ = ['StyleSheetList']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 
 class StyleSheetList(list):

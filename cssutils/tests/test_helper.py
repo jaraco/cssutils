@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Testcases for cssutils.helper"""
-__version__ = '$Id: test_util.py 1437 2008-08-18 20:30:38Z cthedot $'
 
 from . import basetest
 from cssutils.helper import *

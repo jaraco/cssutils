@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 """A validating CSSParser"""
 __all__ = ['CSSParser']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from .helper import path2url
 import codecs

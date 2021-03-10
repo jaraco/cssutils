@@ -4,8 +4,6 @@ From cssutils 0.9.6 additions from CSS Fonts Module Level 3 are
 added http://www.w3.org/TR/css3-fonts/.
 """
 __all__ = ['CSSFontFaceRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from .cssstyledeclaration import CSSStyleDeclaration
 from . import cssrule

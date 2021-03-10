@@ -1,7 +1,5 @@
 """MarginRule implements DOM Level 2 CSS MarginRule."""
 __all__ = ['MarginRule']
-__docformat__ = 'restructuredtext'
-__version__ = '$Id$'
 
 from cssutils.prodparser import *
 from .cssstyledeclaration import CSSStyleDeclaration

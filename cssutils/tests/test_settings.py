@@ -1,5 +1,4 @@
 """Testcases for cssutils.settings"""
-__version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
 
 from . import test_cssrule
 import cssutils
