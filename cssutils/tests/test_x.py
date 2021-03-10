@@ -1,10 +1,8 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 
 # from decimal import Decimal # maybe for later tests?
-import xml.dom
 from . import basetest
 import cssutils
-import types
 
 
 class XTestCase(basetest.BaseTestCase):
@@ -24,7 +22,8 @@ class XTestCase(basetest.BaseTestCase):
 #
 #        s = cssutils.parseString('a { color: red !important }')
 #        self.assertEqual(u'a {\n    color: red !important\n    }', s.cssText)
-#        self.assertEqual(u'important', s.cssRules[0].style.getPropertyPriority('color'))
+#        self.assertEqual(
+#            u'important', s.cssRules[0].style.getPropertyPriority('color'))
 #
 #        cssutils.log.raiseExceptions = True
 #        p = cssutils.css.Property(u'color', u'red', u'')
@@ -44,10 +43,10 @@ class XTestCase(basetest.BaseTestCase):
 #
 #
 #        # invalid but kept!
-##        #cssutils.log.raiseExceptions = False
-##        s = cssutils.parseString('a { color: red !x }')
-##        self.assertEqual(u'a {\n    color: red !x\n    }', s.cssText)
-##        self.assertEqual(u'x', s.cssRules[0].style.getPropertyPriority('color'))
+#        #cssutils.log.raiseExceptions = False
+#        s = cssutils.parseString('a { color: red !x }')
+#        self.assertEqual(u'a {\n    color: red !x\n    }', s.cssText)
+#        self.assertEqual(u'x', s.cssRules[0].style.getPropertyPriority('color'))
 #
 
 if __name__ == '__main__':
