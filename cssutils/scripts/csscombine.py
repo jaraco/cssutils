@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Combine all sheets referred to a given CSS *proxy* sheet
+r"""Combine all sheets referred to a given CSS *proxy* sheet
 into a single new sheet.
 
 - no ``url()`` values are adjusted so currently when using relative references
@@ -25,7 +25,8 @@ results in log.txt::
 
 and combined.css::
 
-    @charset "ascii";@import"1.css";@namespaces2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}
+    @charset "ascii";@import"1.css";@namespaces2"uri";s2|sheet-1\
+    {top:1px}s2|sheet-2{top:2px}proxy{top:3px}
 
 or without option -m::
 
@@ -72,7 +73,8 @@ def main(args=None):
         '--sourceencoding',
         action='store',
         dest='sourceencoding',
-        help='encoding of input, defaulting to "css". If given overwrites other encoding information like @charset declarations',
+        help='encoding of input, defaulting to "css". '
+        'If given overwrites other encoding information like @charset declarations',
     )
     parser.add_option(
         '-t',
