@@ -8,7 +8,6 @@ import cssutils
 import os
 import sys
 import tempfile
-import xml.dom
 
 try:
     import mock
@@ -59,7 +58,17 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
         self.assertEqual(
             irs.cssText,
-            '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode(),
+            '@import "../import3.css";\n'
+            '@import "import-impossible.css" print;\n.import2 {\n'
+            '    /* sheets/import2.css */\n'
+            '    background: url(http://example.com/images/example.gif);\n'
+            '    background: url(//example.com/images/example.gif);\n'
+            '    background: url(/images/example.gif);\n'
+            '    background: url(images2/example.gif);\n'
+            '    background: url(./images2/example.gif);\n'
+            '    background: url(../images/example.gif);\n'
+            '    background: url(./../images/example.gif)\n'
+            '    }'.encode(),
         )
 
         tests = {
@@ -94,7 +103,18 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
         self.assertEqual(
             irs.cssText,
-            '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode(),
+            '@import "../import3.css";\n'
+            '@import "import-impossible.css" print;\n'
+            '.import2 {\n'
+            '    /* sheets/import2.css */\n'
+            '    background: url(http://example.com/images/example.gif);\n'
+            '    background: url(//example.com/images/example.gif);\n'
+            '    background: url(/images/example.gif);\n'
+            '    background: url(images2/example.gif);\n'
+            '    background: url(./images2/example.gif);\n'
+            '    background: url(../images/example.gif);\n'
+            '    background: url(./../images/example.gif)\n'
+            '    }'.encode(),
         )
 
         # name is used for open and setting of href automatically
@@ -122,7 +142,18 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
         self.assertEqual(
             irs.cssText,
-            '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode(),
+            '@import "../import3.css";\n'
+            '@import "import-impossible.css" print;\n'
+            '.import2 {\n'
+            '    /* sheets/import2.css */\n'
+            '    background: url(http://example.com/images/example.gif);\n'
+            '    background: url(//example.com/images/example.gif);\n'
+            '    background: url(/images/example.gif);\n'
+            '    background: url(images2/example.gif);\n'
+            '    background: url(./images2/example.gif);\n'
+            '    background: url(../images/example.gif);\n'
+            '    background: url(./../images/example.gif)\n'
+            '    }'.encode(),
         )
 
         # next test
@@ -160,7 +191,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         # clean up
         try:
             os.remove(name)
-        except OSError as e:
+        except OSError:
             pass
 
     def test_parseUrl(self):
@@ -186,7 +217,18 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         irs = ir.styleSheet
         self.assertEqual(
             irs.cssText,
-            '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode(),
+            '@import "../import3.css";\n'
+            '@import "import-impossible.css" print;\n'
+            '.import2 {\n'
+            '    /* sheets/import2.css */\n'
+            '    background: url(http://example.com/images/example.gif);\n'
+            '    background: url(//example.com/images/example.gif);\n'
+            '    background: url(/images/example.gif);\n'
+            '    background: url(images2/example.gif);\n'
+            '    background: url(./images2/example.gif);\n'
+            '    background: url(../images/example.gif);\n'
+            '    background: url(./../images/example.gif)\n'
+            '    }'.encode(),
         )
 
         ir2 = irs.cssRules[0]
@@ -194,7 +236,15 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         irs2 = ir2.styleSheet
         self.assertEqual(
             irs2.cssText,
-            '/* import3 */\n.import3 {\n    /* from ./import/../import3.css */\n    background: url(images/example3.gif);\n    background: url(./images/example3.gif);\n    background: url(import/images2/example2.gif);\n    background: url(./import/images2/example2.gif);\n    background: url(import/images2/../../images/example3.gif)\n    }'.encode(),
+            '/* import3 */\n'
+            '.import3 {\n'
+            '    /* from ./import/../import3.css */\n'
+            '    background: url(images/example3.gif);\n'
+            '    background: url(./images/example3.gif);\n'
+            '    background: url(import/images2/example2.gif);\n'
+            '    background: url(./import/images2/example2.gif);\n'
+            '    background: url(import/images2/../../images/example3.gif)\n'
+            '    }'.encode(),
         )
 
     def test_setCSSSerializer(self):
@@ -240,7 +290,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         "cssutils.getUrls()"
         cssutils.ser.prefs.keepAllProperties = True
 
-        css = '''
+        css = r'''
         @import "im1";
         @import url(im2);
         @import url( im3 );
@@ -281,7 +331,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         "cssutils.replaceUrls()"
         cssutils.ser.prefs.keepAllProperties = True
 
-        css = '''
+        css = r'''
         @import "im1";
         @import url(im2);
         a {
