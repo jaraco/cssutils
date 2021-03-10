@@ -1,5 +1,3 @@
-import logging, io
-
 EXPOUT = "@variables{c:#0f0}a{color:var(c)}\na{color:#0f0}\n"
 EXPERR = 'Property: Found valid "CSS Level 2.1" value: #0f0 [6:9: color]\n'
 

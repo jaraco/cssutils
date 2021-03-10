@@ -4,7 +4,7 @@ import logging
 cssutils.log.setLevel(logging.FATAL)
 
 
-css = '''@import "example.css"; 
+css = r'''@import "example.css";
 a {
     color: blue !important;
     c\olor: green !important;
@@ -40,7 +40,7 @@ print('     name and results in actual value only:')
 print('\t.getPropertyValue("color") ==', end=' ')
 print(sheet.cssRules[1].style.getPropertyValue('color'))
 print('\t.getPropertyValue("c\\olor") ==', end=' ')
-print(sheet.cssRules[1].style.getPropertyValue('c\olor'))
+print(sheet.cssRules[1].style.getPropertyValue(r'c\olor'))
 print('\t.getPropertyValue("c\\o\\l\\o\\r") ==', end=' ')
 print(sheet.cssRules[1].style.getPropertyValue('c\\o\\l\\o\\r'))
 print()

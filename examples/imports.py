@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import cssutils
 import os.path
-import xml.dom
 
 EXPOUT = '''@charset "iso-8859-1";
 @import "1inherit-iso.css";
@@ -26,15 +25,15 @@ EXPERR = ''
 
 
 def main():
-    def p(s, l=0):
-        c = '#=-'[l] * (30 - l * 10)
+    def p(s, len=0):
+        c = '#=-'[len] * (30 - len * 10)
         for r in s.cssRules.rulesOfType(cssutils.css.CSSRule.IMPORT_RULE):
             print(c)
             print(r.href)
             print(c)
             print(r.styleSheet.cssText)
             print()
-            p(r.styleSheet, l=l + 1)
+            p(r.styleSheet, len=len + 1)
             print()
 
     s = cssutils.parseFile(os.path.join('sheets', '1import.css'))

@@ -1,4 +1,5 @@
-import logging, io
+import logging
+import io
 
 EXPOUT = ""
 EXPERR = "Property: Unknown Property name. [1:5: x]\nHTTPError opening url=http://cthedot.de/x: 404 Not Found\nCSSImportRule: While processing imported style sheet href=http://cthedot.de/x: IOError('Cannot read Stylesheet.',)\nCSSStylesheet: CSSImportRule not allowed here. [1:13: @import]\n"
@@ -13,7 +14,7 @@ def main():
     # cssutils.log.addHandler(h)
     cssutils.log.setLevel(logging.INFO)
 
-    sheet = cssutils.parseString('a { x: 1; } @import "http://cthedot.de/x";')
+    cssutils.parseString('a { x: 1; } @import "http://cthedot.de/x";')
     # print mylog.getvalue()
 
     cssutils.log.removeHandler(h)

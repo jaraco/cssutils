@@ -2,12 +2,11 @@
 """
 example renderer
 
-moves infos from external stylesheet "css" to internal @style attributes 
+moves infos from external stylesheet "css" to internal @style attributes
 and for debugging also in @title attributes.
 
 adds css as text to html
 """
-from pprint import pprint
 import codecs
 import cssutils
 import os
@@ -20,12 +19,11 @@ try:
     import pkg_resources
 
     pkg_resources.require('lxml')
-except pkg_resources.DistributionNotFound as e:
+except pkg_resources.DistributionNotFound:
     pass
 
 try:
     from lxml import etree
-    from lxml.builder import E
     from lxml.cssselect import CSSSelector
 except ImportError as e:
     print('You need lxml for this example:', e)

@@ -26,7 +26,7 @@ def main():
     print("\n--- CSSParser(raiseExceptions=True) ---")
     p = cssutils.CSSParser(raiseExceptions=True)
     try:
-        c2 = p.parseString(css)
+        p.parseString(css)
     except xml.dom.DOMException as e:
         print(":::RAISED:::", e)
 

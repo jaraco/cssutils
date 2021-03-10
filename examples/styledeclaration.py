@@ -12,7 +12,7 @@ def show(style):
     print("style.getPropertyValue('color') ==", style.getPropertyValue('color'), '\n')
 
 
-styledeclaration = '''
+styledeclaration = r'''
 x:1;
 color: yellow;
 color: red;
