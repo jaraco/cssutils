@@ -79,13 +79,11 @@ __all__ = [
 import html.parser
 import io
 import cgi
-import http.client
 import re
 import sys
-import types
-import urllib.request, urllib.parse, urllib.error
-
-PY2x = sys.version_info < (3, 0)
+import urllib.request
+import urllib.parse
+import urllib.error
 
 
 class _MetaHTMLParser(html.parser.HTMLParser):
@@ -100,7 +98,9 @@ class _MetaHTMLParser(html.parser.HTMLParser):
                 self.content_type = atts.get('content')
 
 
-# application/xml, application/xml-dtd, application/xml-external-parsed-entity, or a subtype like application/rss+xml.
+# application/xml, application/xml-dtd,
+# application/xml-external-parsed-entity,
+# or a subtype like application/rss+xml.
 _XML_APPLICATION_TYPE = 0
 
 # text/xml, text/xml-external-parsed-entity, or a subtype like text/AnythingAtAll+xml
@@ -308,10 +308,7 @@ def getHTTPInfo(response, log=None):
         available.
     """
     info = response.info()
-    if PY2x:
-        media_type, encoding = info.gettype(), info.getparam('charset')
-    else:
-        media_type, encoding = info.get_content_type(), info.get_content_charset()
+    media_type, encoding = info.get_content_type(), info.get_content_charset()
 
     if encoding:
         encoding = encoding.lower()
@@ -340,7 +337,7 @@ def getMetaInfo(text, log=None):
 
     try:
         p.feed(text)
-    except html.parser.HTMLParseError as e:
+    except html.parser.HTMLParseError:
         pass
 
     if p.content_type:
@@ -357,7 +354,7 @@ def getMetaInfo(text, log=None):
     return media_type, encoding
 
 
-def detectXMLEncoding(fp, log=None, includeDefault=True):
+def detectXMLEncoding(fp, log=None, includeDefault=True):  # noqa: C901
     """Attempt to detect the character encoding of the xml file
     given by a file object `fp`. `fp` must not be a codec wrapped file
     object! `fp` may be a string or unicode string though.
@@ -379,14 +376,12 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
         - if BOM and xml declaration fail, utf-8 is returned according
           to XML 1.0.
     """
-    if PY2x and isinstance(fp, (str,)):
-        fp = io.StringIO(fp)
-    elif isinstance(fp, str):
+    if isinstance(fp, str):
         fp = io.StringIO(fp)
 
-    ### detection using BOM
+    # detection using BOM
 
-    ## the BOMs we know, by their pattern
+    # the BOMs we know, by their pattern
     bomDict = {  # bytepattern: name
         (0x00, 0x00, 0xFE, 0xFF): "utf_32_be",
         (0xFF, 0xFE, 0x00, 0x00): "utf_32_le",
@@ -395,36 +390,36 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
         (0xEF, 0xBB, 0xBF, None): "utf-8",
     }
 
-    ## go to beginning of file and get the first 4 bytes
+    # go to beginning of file and get the first 4 bytes
     oldFP = fp.tell()
     fp.seek(0)
     (byte1, byte2, byte3, byte4) = tuple(map(ord, fp.read(4)))
 
-    ## try bom detection using 4 bytes, 3 bytes, or 2 bytes
+    # try bom detection using 4 bytes, 3 bytes, or 2 bytes
     bomDetection = bomDict.get((byte1, byte2, byte3, byte4))
     if not bomDetection:
         bomDetection = bomDict.get((byte1, byte2, byte3, None))
         if not bomDetection:
             bomDetection = bomDict.get((byte1, byte2, None, None))
 
-    ## if BOM detected, we're done :-)
+    # if BOM detected, we're done :-)
     if bomDetection:
         if log:
             log.info('XML BOM encoding: %s' % bomDetection)
         fp.seek(oldFP)
         return bomDetection
 
-    ## still here? BOM detection failed.
-    ##  now that BOM detection has failed we assume one byte character
-    ##  encoding behaving ASCII
+    # still here? BOM detection failed.
+    #  now that BOM detection has failed we assume one byte character
+    #  encoding behaving ASCII
 
-    ### search xml declaration for encoding attribute
+    # search xml declaration for encoding attribute
 
-    ## assume xml declaration fits into the first 2 KB (*cough*)
+    # assume xml declaration fits into the first 2 KB (*cough*)
     fp.seek(0)
     buffer = fp.read(2048)
 
-    ## set up regular expression
+    # set up regular expression
     xmlDeclPattern = r"""
     ^<\?xml             # w/o BOM, xmldecl starts with <?xml at the first byte
     .+?                 # some chars (version info), matched minimal
@@ -439,7 +434,7 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
     """
     xmlDeclRE = re.compile(xmlDeclPattern, re.VERBOSE)
 
-    ## search and extract encoding string
+    # search and extract encoding string
     match = xmlDeclRE.search(buffer)
     fp.seek(oldFP)
     if match:
@@ -456,7 +451,7 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
             return None
 
 
-def tryEncodings(text, log=None):
+def tryEncodings(text, log=None):  # noqa: C901
     """If installed uses chardet http://chardet.feedparser.org/ to detect
     encoding, else tries different encodings on `text` and returns the one
     that does not raise an exception which is not very advanced or may
@@ -489,7 +484,7 @@ def tryEncodings(text, log=None):
         encodings = (
             'ascii',
             'iso-8859-1',
-            #'windows-1252', # test later
+            # 'windows-1252', # test later
             'utf-8',
         )
         encoding = None
@@ -511,7 +506,7 @@ def tryEncodings(text, log=None):
     return encoding
 
 
-def getEncodingInfo(response=None, text='', log=None, url=None):
+def getEncodingInfo(response=None, text='', log=None, url=None):  # noqa: C901
     """Find all encoding related information in given `text`.
 
     Information in headers of supplied HTTPResponse, possible XML
@@ -600,7 +595,7 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
         # read text from response only if not explicitly given
         try:
             text = response.read()
-        except IOError as e:
+        except IOError:
             pass
 
     if text is None:
@@ -625,14 +620,14 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
     if texttype == _XML_APPLICATION_TYPE:  # or texttype == _XML_TEXT_TYPE:
         try:
             encinfo.xml_encoding = detectXMLEncoding(text, log)
-        except (AttributeError, ValueError) as e:
+        except (AttributeError, ValueError):
             encinfo.xml_encoding = None
 
     # XML (also XHTML served as text/html)
     if texttype == _HTML_TEXT_TYPE:
         try:
             encinfo.xml_encoding = detectXMLEncoding(text, log, includeDefault=False)
-        except (AttributeError, ValueError) as e:
+        except (AttributeError, ValueError):
             encinfo.xml_encoding = None
 
     # HTML
