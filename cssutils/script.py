@@ -12,7 +12,6 @@ import sys
 import urllib.request
 import urllib.error
 import urllib.parse
-import urllib.parse
 
 try:
     import cssutils.encutils as encutils
