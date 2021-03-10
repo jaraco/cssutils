@@ -45,7 +45,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.assertEqual(None, self.r.parentRule)
         self.assertEqual(None, self.r.parentStyleSheet)
 
-    def test_parentRule_parentStyleSheet_type(self):
+    def test_parentRule_parentStyleSheet_type(self):  # noqa: C901
         "CSSRule.parentRule .parentStyleSheet .type"
         rules = [
             ('@charset "ascii";', cssutils.css.CSSRule.CHARSET_RULE),

@@ -66,7 +66,6 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
             '@namespace "";': None,
             '@namespace "u";': None,
-            '@namespace p "u";': None,
             '@namespace empty "";': None,
             '@namespace p "p";': None,
             "@namespace p 'u';": '@namespace p "u";',
@@ -121,7 +120,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         )
 
         def _do(test):
-            r = cssutils.css.CSSNamespaceRule(cssText=test)
+            cssutils.css.CSSNamespaceRule(cssText=test)
 
         for test, expected in list(tests.items()):
             self.assertRaises(expected, _do, test)
