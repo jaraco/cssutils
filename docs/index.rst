@@ -1,38 +1,33 @@
-=============================================
-cssutils
-=============================================
----------------------------------------------
-CSS Cascading Style Sheets library for Python
----------------------------------------------
-:version release: |release|
+Welcome to |project| documentation!
+===================================
 
-Contents
-========
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
 
-    About <../README>
-    Changelog <../CHANGES>
+   history
 	Migration from older version <migrate>
 
-    parsing <parse>
-    utilities <utilities>
-    Experimental Settings <settings>
-    serializing <serialize>
-    `cssutils.css` package <css>
-    `cssutils.stylesheets` package <stylesheets>
-    CSS properties profiles (used for validation) <profiles>
-    CSS variables <variables>
-    Logging <logging>
-    Scripts <scripts>
-    CSS Codec <codec>
-    `encutils` module <encutils>
+	parsing <parse>
+	utilities <utilities>
+	Experimental Settings <settings>
+	serializing <serialize>
+	`cssutils.css` package <css>
+	`cssutils.stylesheets` package <stylesheets>
+	CSS properties profiles (used for validation) <profiles>
+	CSS variables <variables>
+	Logging <logging>
+	Scripts <scripts>
+	CSS Codec <codec>
+	`encutils` module <encutils>
 
 	Backlog <backlog>
 
 
+
+
 Indices and tables
 ==================
+
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`

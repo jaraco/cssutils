@@ -1,12 +1,22 @@
-======
-README
-======
-.. -*- restructuredtext -*-
+.. image:: https://img.shields.io/pypi/v/cssutils.svg
+   :target: `PyPI link`_
 
--------------------------------------------------------
-cssutils: CSS Cascading Style Sheets library for Python
--------------------------------------------------------
-:Copyright: 2004-2013 Christof Hoeke
+.. image:: https://img.shields.io/pypi/pyversions/cssutils.svg
+   :target: `PyPI link`_
+
+.. _PyPI link: https://pypi.org/project/cssutils
+
+.. image:: https://github.com/jaraco/cssutils/workflows/tests/badge.svg
+   :target: https://github.com/jaraco/cssutils/actions?query=workflow%3A%22tests%22
+   :alt: tests
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+   :alt: Code style: Black
+
+.. image:: https://readthedocs.org/projects/cssutils/badge/?version=latest
+   :target: https://cssutils.readthedocs.io/en/latest/?badge=latest
+
 
 Overview
 ========
