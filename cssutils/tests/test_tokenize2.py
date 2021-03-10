@@ -5,10 +5,9 @@ TODO: old tests as new ones are **not complete**!
 """
 
 import sys
-import xml.dom
 from . import basetest
 import cssutils.tokenize2 as tokenize2
-from cssutils.tokenize2 import *
+from cssutils.tokenize2 import Tokenizer
 
 
 class TokenizerTestCase(basetest.BaseTestCase):
@@ -32,7 +31,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         # TODO:
         # Note that this means that a "real" space after the escape sequence
         # must itself either be escaped or doubled:
-        '\\44\ x': [('IDENT', 'D\\ x', 1, 1)],
+        '\\44\\ x': [('IDENT', 'D\\ x', 1, 1)],
         '\\44  ': [('IDENT', 'D', 1, 1), ('S', ' ', 1, 5)],
         r'\44': [('IDENT', 'D', 1, 1)],
         r'\\': [('IDENT', r'\\', 1, 1)],
@@ -51,7 +50,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         # Not a function, important for media queries
         'and(': [('IDENT', 'and', 1, 1), ('CHAR', '(', 1, 4)],
         '\\1 b': [('IDENT', '\x01b', 1, 1)],
-        '\\44 b': [('IDENT', 'Db', 1, 1)],
+        # repeat: '\\44 b': [('IDENT', 'Db', 1, 1)],
         '\\123 b': [('IDENT', '\u0123b', 1, 1)],
         '\\1234 b': [('IDENT', '\u1234b', 1, 1)],
         '\\12345 b': [
@@ -73,7 +72,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         # STRING
         ' "" ': [('S', ' ', 1, 1), ('STRING', '""', 1, 2), ('S', ' ', 1, 4)],
         ' "\'" ': [('S', ' ', 1, 1), ('STRING', '"\'"', 1, 2), ('S', ' ', 1, 5)],
-        " '' ": [('S', ' ', 1, 1), ('STRING', "''", 1, 2), ('S', ' ', 1, 4)],
         " '' ": [('S', ' ', 1, 1), ('STRING', "''", 1, 2), ('S', ' ', 1, 4)],
         # until 0.9.5.x
         # u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
@@ -129,7 +127,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         '\n': [('S', '\n', 1, 1)],
         '\r\n': [('S', '\r\n', 1, 1)],
         '\f': [('S', '\f', 1, 1)],
-        '\r': [('S', '\r', 1, 1)],
         '\t': [('S', '\t', 1, 1)],
         '\r\n\r\n\f\t ': [('S', '\r\n\r\n\f\t ', 1, 1)],
         # COMMENT, for incomplete see later
@@ -446,7 +443,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
         r'"\""': [('STRING', r'"\""', 1, 1)],
         r'"\" "': [('STRING', r'"\" "', 1, 1)],
         """'\\''""": [('STRING', """'\\''""", 1, 1)],
-        '''"\\""''': [('STRING', '''"\\""''', 1, 1)],
         ' "\na': [
             ('S', ' ', 1, 1),
             ('INVALID', '"', 1, 2),
@@ -591,201 +587,6 @@ class TokenizerTestCase(basetest.BaseTestCase):
             tokens = list(tokenizer.tokenize(css, fullsheet=True))
             # EOF is added so -1
             self.assertEqual(len(tokens) - 1, len(tests[css]))
-
-    # --------------
-
-    def __old(self):
-
-        testsOLD = {
-            'x x1 -x .-x #_x -': [
-                (1, 1, tt.IDENT, 'x'),
-                (1, 2, 'S', ' '),
-                (1, 3, tt.IDENT, 'x1'),
-                (1, 5, 'S', ' '),
-                (1, 6, tt.IDENT, '-x'),
-                (1, 8, 'S', ' '),
-                (1, 9, tt.CLASS, '.'),
-                (1, 10, tt.IDENT, '-x'),
-                (1, 12, 'S', ' '),
-                (1, 13, tt.HASH, '#_x'),
-                (1, 16, 'S', ' '),
-                (1, 17, 'DELIM', '-'),
-            ],
-            # num
-            '1 1.1 -1 -1.1 .1 -.1 1.': [
-                (1, 1, tt.NUMBER, '1'),
-                (1, 2, 'S', ' '),
-                (1, 3, tt.NUMBER, '1.1'),
-                (1, 6, 'S', ' '),
-                (1, 7, tt.NUMBER, '-1'),
-                (1, 9, 'S', ' '),
-                (1, 10, tt.NUMBER, '-1.1'),
-                (1, 14, 'S', ' '),
-                (1, 15, tt.NUMBER, '0.1'),
-                (1, 17, 'S', ' '),
-                (1, 18, tt.NUMBER, '-0.1'),
-                (1, 21, 'S', ' '),
-                (1, 22, tt.NUMBER, '1'),
-                (1, 23, tt.CLASS, '.'),
-            ],
-            # CSS3 pseudo
-            '::': [(1, 1, tt.PSEUDO_ELEMENT, '::')],
-            # SPECIALS
-            '*+>~{},': [
-                (1, 1, tt.UNIVERSAL, '*'),
-                (1, 2, tt.PLUS, '+'),
-                (1, 3, tt.GREATER, '>'),
-                (1, 4, tt.TILDE, '~'),
-                (1, 5, tt.LBRACE, '{'),
-                (1, 6, tt.RBRACE, '}'),
-                (1, 7, tt.COMMA, ','),
-            ],
-            # DELIM
-            '!%:&$|': [
-                (1, 1, 'DELIM', '!'),
-                (1, 2, 'DELIM', '%'),
-                (1, 3, 'DELIM', ':'),
-                (1, 4, 'DELIM', '&'),
-                (1, 5, 'DELIM', '$'),
-                (1, 6, 'DELIM', '|'),
-            ],
-            # DIMENSION
-            '5em': [(1, 1, tt.DIMENSION, '5em')],
-            ' 5em': [(1, 1, 'S', ' '), (1, 2, tt.DIMENSION, '5em')],
-            '5em ': [(1, 1, tt.DIMENSION, '5em'), (1, 4, 'S', ' ')],
-            '-5em': [(1, 1, tt.DIMENSION, '-5em')],
-            ' -5em': [(1, 1, 'S', ' '), (1, 2, tt.DIMENSION, '-5em')],
-            '-5em ': [(1, 1, tt.DIMENSION, '-5em'), (1, 5, 'S', ' ')],
-            '.5em': [(1, 1, tt.DIMENSION, '0.5em')],
-            ' .5em': [(1, 1, 'S', ' '), (1, 2, tt.DIMENSION, '0.5em')],
-            '.5em ': [(1, 1, tt.DIMENSION, '0.5em'), (1, 5, 'S', ' ')],
-            '-.5em': [(1, 1, tt.DIMENSION, '-0.5em')],
-            ' -.5em': [(1, 1, 'S', ' '), (1, 2, tt.DIMENSION, '-0.5em')],
-            '-.5em ': [(1, 1, tt.DIMENSION, '-0.5em'), (1, 6, 'S', ' ')],
-            '5em5_-': [(1, 1, tt.DIMENSION, '5em5_-')],
-            'a a5 a5a 5 5a 5a5': [
-                (1, 1, tt.IDENT, 'a'),
-                (1, 2, 'S', ' '),
-                (1, 3, tt.IDENT, 'a5'),
-                (1, 5, 'S', ' '),
-                (1, 6, tt.IDENT, 'a5a'),
-                (1, 9, 'S', ' '),
-                (1, 10, tt.NUMBER, '5'),
-                (1, 11, 'S', ' '),
-                (1, 12, tt.DIMENSION, '5a'),
-                (1, 14, 'S', ' '),
-                (1, 15, tt.DIMENSION, '5a5'),
-            ],
-            # URI
-            'url()': [(1, 1, tt.URI, 'url()')],
-            'url();': [(1, 1, tt.URI, 'url()'), (1, 6, tt.SEMICOLON, ';')],
-            'url("x")': [(1, 1, tt.URI, 'url("x")')],
-            'url( "x")': [(1, 1, tt.URI, 'url("x")')],
-            'url("x" )': [(1, 1, tt.URI, 'url("x")')],
-            'url( "x" )': [(1, 1, tt.URI, 'url("x")')],
-            ' url("x")': [(1, 1, 'S', ' '), (1, 2, tt.URI, 'url("x")')],
-            'url("x") ': [
-                (1, 1, tt.URI, 'url("x")'),
-                (1, 9, 'S', ' '),
-            ],
-            'url(ab)': [(1, 1, tt.URI, 'url(ab)')],
-            'url($#/ab)': [(1, 1, tt.URI, 'url($#/ab)')],
-            'url(\1233/a/b)': [(1, 1, tt.URI, 'url(\1233/a/b)')],
-            # not URI
-            'url("1""2")': [
-                (1, 1, tt.FUNCTION, 'url('),
-                (1, 5, tt.STRING, '"1"'),
-                (1, 8, tt.STRING, '"2"'),
-                (1, 11, tt.RPARANTHESIS, ')'),
-            ],
-            'url(a"2")': [
-                (1, 1, tt.FUNCTION, 'url('),
-                (1, 5, tt.IDENT, 'a'),
-                (1, 6, tt.STRING, '"2"'),
-                (1, 9, tt.RPARANTHESIS, ')'),
-            ],
-            'url(a b)': [
-                (1, 1, tt.FUNCTION, 'url('),
-                (1, 5, tt.IDENT, 'a'),
-                (1, 6, 'S', ' '),
-                (1, 7, tt.IDENT, 'b'),
-                (1, 8, tt.RPARANTHESIS, ')'),
-            ],
-            # FUNCTION
-            ' counter("x")': [
-                (1, 1, 'S', ' '),
-                (1, 2, tt.FUNCTION, 'counter('),
-                (1, 10, tt.STRING, '"x"'),
-                (1, 13, tt.RPARANTHESIS, ')'),
-            ],
-            # HASH
-            '# #a #_a #-a #1': [
-                (1, 1, 'DELIM', '#'),
-                (1, 2, 'S', ' '),
-                (1, 3, tt.HASH, '#a'),
-                (1, 5, 'S', ' '),
-                (1, 6, tt.HASH, '#_a'),
-                (1, 9, 'S', ' '),
-                (1, 10, tt.HASH, '#-a'),
-                (1, 13, 'S', ' '),
-                (1, 14, tt.HASH, '#1'),
-            ],
-            '#1a1 ': [
-                (1, 1, tt.HASH, '#1a1'),
-                (1, 5, 'S', ' '),
-            ],
-            '#1a1\n': [
-                (1, 1, tt.HASH, '#1a1'),
-                (1, 5, 'S', '\n'),
-            ],
-            '#1a1{': [
-                (1, 1, tt.HASH, '#1a1'),
-                (1, 5, tt.LBRACE, '{'),
-            ],
-            '#1a1 {': [
-                (1, 1, tt.HASH, '#1a1'),
-                (1, 5, 'S', ' '),
-                (1, 6, tt.LBRACE, '{'),
-            ],
-            '#1a1\n{': [
-                (1, 1, tt.HASH, '#1a1'),
-                (1, 5, 'S', '\n'),
-                (2, 1, tt.LBRACE, '{'),
-            ],
-            '#1a1\n {': [
-                (1, 1, tt.HASH, '#1a1'),
-                (1, 5, 'S', '\n '),
-                (2, 2, tt.LBRACE, '{'),
-            ],
-            '#1a1 \n{': [
-                (1, 1, tt.HASH, '#1a1'),
-                (1, 5, 'S', ' \n'),
-                (2, 1, tt.LBRACE, '{'),
-            ],
-            # STRINGS with NL
-            '"x\n': [(1, 1, tt.INVALID, '"x\n')],
-            '"x\r': [(1, 1, tt.INVALID, '"x\r')],
-            '"x\f': [(1, 1, tt.INVALID, '"x\f')],
-            '"x\n ': [(1, 1, tt.INVALID, '"x\n'), (2, 1, 'S', ' ')],
-        }
-
-        tests = {
-            '/*a': xml.dom.SyntaxErr,
-            '"a': xml.dom.SyntaxErr,
-            "'a": xml.dom.SyntaxErr,
-            "\\0 a": xml.dom.SyntaxErr,
-            "\\00": xml.dom.SyntaxErr,
-            "\\000": xml.dom.SyntaxErr,
-            "\\0000": xml.dom.SyntaxErr,
-            "\\00000": xml.dom.SyntaxErr,
-            "\\000000": xml.dom.SyntaxErr,
-            "\\0000001": xml.dom.SyntaxErr,
-        }
-
-
-#        self.tokenizer.log.raiseExceptions = True #!!
-#        for css, exception in tests.items():
-#            self.assertRaises(exception, self.tokenizer.tokenize, css)
 
 
 class TokenizerUtilsTestCase(basetest.BaseTestCase, metaclass=basetest.GenerateTests):
