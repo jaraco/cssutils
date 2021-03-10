@@ -9,7 +9,7 @@ def set(key, value):
 
     Clears the tokenizer cache which holds the compiled productions!
     """
-    if key == 'DXImageTransform.Microsoft' and value == True:
+    if key == 'DXImageTransform.Microsoft' and value is True:
         from . import cssproductions
         from . import tokenize2
 
