@@ -85,7 +85,6 @@ import sys
 import types
 import urllib.request, urllib.parse, urllib.error
 
-VERSION = '0.9.8'
 PY2x = sys.version_info < (3, 0)
 
 
