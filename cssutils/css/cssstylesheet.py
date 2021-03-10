@@ -10,7 +10,7 @@ TODO:
 __all__ = ['CSSStyleSheet']
 
 from cssutils.helper import Deprecated
-from cssutils.util import _Namespaces, _SimpleNamespaces, _readUrl
+from cssutils.util import _Namespaces, _readUrl
 from .cssrule import CSSRule
 from .cssvariablesdeclaration import CSSVariablesDeclaration
 import cssutils.stylesheets
@@ -152,7 +152,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         "Textual representation of the stylesheet (a byte string)."
         return cssutils.ser.do_CSSStyleSheet(self)
 
-    def _setCssText(self, cssText):
+    def _setCssText(self, cssText):  # noqa: C901
         """Parse `cssText` and overwrites the whole stylesheet.
 
         :param cssText:
@@ -417,7 +417,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             self.encoding = encoding
             try:
                 del self.__newEncoding
-            except AttributeError as e:
+            except AttributeError:
                 pass
 
     def _setFetcher(self, fetcher=None):
@@ -470,10 +470,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             if s:
                 for var in s.variables:
                     self._variables.setVariable(var, s.variables[var])
-        #        for r in self.cssRules.rulesOfType(CSSRule.IMPORT_RULE):
-        #            for vr in r.styleSheet.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
-        #                for var in vr.variables:
-        #                    self._variables.setVariable(var, vr.variables[var])
+        # for r in self.cssRules.rulesOfType(CSSRule.IMPORT_RULE):
+        #     for vr in r.styleSheet.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
+        #         for var in vr.variables:
+        #             self._variables.setVariable(var, vr.variables[var])
         for vr in self.cssRules.rulesOfType(CSSRule.VARIABLES_RULE):
             for var in vr.variables:
                 self._variables.setVariable(var, vr.variables[var])
@@ -548,7 +548,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule._parentStyleSheet = None  # detach
             del self._cssRules[index]  # delete from StyleSheet
 
-    def insertRule(self, rule, index=None, inOrder=False, _clean=True):
+    def insertRule(self, rule, index=None, inOrder=False, _clean=True):  # noqa: C901
         """
         Used to insert a new rule into the style sheet. The new rule now
         becomes part of the cascade.

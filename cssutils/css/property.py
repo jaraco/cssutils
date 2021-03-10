@@ -4,7 +4,6 @@ __all__ = ['Property']
 from cssutils.helper import Deprecated
 from .value import PropertyValue
 import cssutils
-import xml.dom
 
 
 class Property(cssutils.util.Base):
@@ -291,7 +290,7 @@ class Property(cssutils.util.Base):
         _getValue, _setValue, doc="The textual value of this Properties propertyValue."
     )
 
-    def _setPriority(self, priority):
+    def _setPriority(self, priority):  # noqa: C901
         """
         priority
             a string, currently either u'', u'!important' or u'important'
@@ -390,7 +389,7 @@ class Property(cssutils.util.Base):
         doc="The Parent Node (normally a CSSStyledeclaration) of this " "Property",
     )
 
-    def validate(self):
+    def validate(self):  # noqa: C901
         """Validate value against `profiles` which are checked dynamically.
         properties in e.g. @font-face rules are checked against
         ``cssutils.profile.CSS3_FONT_FACE`` only.
@@ -425,8 +424,10 @@ class Property(cssutils.util.Base):
             # Log output:
 
             WARNING Property: Unknown Property name. [2:9: unknown-property]
-            ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 4 [3:9: color]
-            DEBUG   Property: Found valid "CSS Color Module Level 3" value: rgba(1, 2, 3, 4) [4:9: color]
+            ERROR   Property: Invalid value for \
+                "CSS Color Module Level 3/CSS Level 2.1" property: 4 [3:9: color]
+            DEBUG   Property: Found valid \
+                "CSS Color Module Level 3" value: rgba(1, 2, 3, 4) [4:9: color]
             DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]
 
 
@@ -443,8 +444,11 @@ class Property(cssutils.util.Base):
             # Log output:
 
             WARNING Property: Unknown Property name. [2:9: unknown-property]
-            ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 4 [3:9: color]
-            WARNING Property: Not valid for profile "CSS Level 2.1" but valid "CSS Color Module Level 3" value: rgba(1, 2, 3, 4)  [4:9: color]
+            ERROR   Property: Invalid value for \
+                "CSS Color Module Level 3/CSS Level 2.1" property: 4 [3:9: color]
+            WARNING Property: Not valid for profile \
+                "CSS Level 2.1" but valid "CSS Color Module Level 3" \
+                value: rgba(1, 2, 3, 4)  [4:9: color]
             DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]
         """
         valid = False
@@ -463,12 +467,12 @@ class Property(cssutils.util.Base):
 
         if self.name and self.value:
 
-            cv = self.propertyValue
             # TODO
-            #            if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
-            #                # TODO: false alarms too!
-            #                cssutils.log.warn(u'No value for variable "%s" found, keeping '
-            #                                  u'variable.' % cv.name, neverraise=True)
+            # cv = self.propertyValue
+            # if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
+            #     # TODO: false alarms too!
+            #     cssutils.log.warn(u'No value for variable "%s" found, keeping '
+            #                       u'variable.' % cv.name, neverraise=True)
 
             if self.name in cssutils.profile.knownNames:
                 # add valid, matching, validprofiles...

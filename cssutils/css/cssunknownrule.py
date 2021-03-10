@@ -46,7 +46,7 @@ class CSSUnknownRule(cssrule.CSSRule):
         """Return serialized property cssText."""
         return cssutils.ser.do_CSSUnknownRule(self)
 
-    def _setCssText(self, cssText):
+    def _setCssText(self, cssText):  # noqa: C901
         """
         :exceptions:
             - :exc:`~xml.dom.SyntaxErr`:

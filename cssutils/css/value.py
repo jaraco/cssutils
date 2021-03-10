@@ -19,9 +19,7 @@ from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 import cssutils
 from cssutils.helper import normalize, pushtoken
 import colorsys
-import math
 import re
-import xml.dom
 import urllib.parse
 
 
@@ -344,7 +342,7 @@ class ColorValue(Value):
             )
         )
 
-    def _setCssText(self, cssText):
+    def _setCssText(self, cssText):  # noqa: C901
         self._checkReadonly()
         types = self._prods  # rename!
 
@@ -423,7 +421,7 @@ class ColorValue(Value):
                 for item in seq:
                     try:
                         type_ = item.value.type
-                    except AttributeError as e:
+                    except AttributeError:
                         # type of function, e.g. rgb(
                         if item.type == 'FUNCTION':
                             functiontype = item.value
@@ -446,9 +444,9 @@ class ColorValue(Value):
                 if HSL:
                     # convert to rgb
                     # h is 360 based (circle)
-                    h, s, l = raw[0] / 360.0, raw[1], raw[2]
+                    h, s, l_ = raw[0] / 360.0, raw[1], raw[2]
                     # ORDER h l s !!!
-                    r, g, b = colorsys.hls_to_rgb(h, l, s)
+                    r, g, b = colorsys.hls_to_rgb(h, l_, s)
                     # back to 255 based
                     rgba = [
                         int(round(r * 255)),
@@ -647,7 +645,7 @@ class URIValue(Value):
         try:
             # TODO: better way?
             styleSheet = self.parent.parent.parent.parentRule.parentStyleSheet
-        except AttributeError as e:
+        except AttributeError:
             return self.uri
         else:
             return urllib.parse.urljoin(styleSheet.href, self.uri)
@@ -822,7 +820,7 @@ class CSSCalc(CSSFunction):
             ),
         )
 
-        _operant = lambda: Choice(_DimensionProd(self), _CSSVariableProd(self))
+        _operant = lambda: Choice(_DimensionProd(self), _CSSVariableProd(self))  # noqa
 
         prods = Sequence(
             Prod(

@@ -196,7 +196,7 @@ class Selector(cssutils.util.Base2):
         """Return serialized format."""
         return cssutils.ser.do_css_Selector(self)
 
-    def _setSelectorText(self, selectorText):
+    def _setSelectorText(self, selectorText):  # noqa: C901
         """
         :param selectorText:
             parsable string or a tuple of (selectorText, dict-of-namespaces).
@@ -740,7 +740,6 @@ class Selector(cssutils.util.Base2):
 
             def _negation(expected, seq, token, tokenizer=None):
                 # not(
-                context = new['context'][-1]
                 val = self._tokenvalue(token, normalize=True)
                 if 'negation' in expected:
                     new['context'].append('negation')

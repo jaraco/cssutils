@@ -8,7 +8,6 @@ from cssutils.helper import normalize
 from .value import PropertyValue
 import cssutils
 import itertools
-import xml.dom
 
 
 class CSSVariablesDeclaration(cssutils.util._NewBase):
@@ -229,7 +228,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         """
         try:
             return self._vars[normalize(variableName)].cssText
-        except KeyError as e:
+        except KeyError:
             return ''
 
     def removeVariable(self, variableName):
@@ -250,7 +249,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         normalname = variableName
         try:
             r = self._vars[normalname]
-        except KeyError as e:
+        except KeyError:
             return ''
         else:
             self.seq._readonly = False

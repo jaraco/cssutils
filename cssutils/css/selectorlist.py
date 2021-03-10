@@ -19,7 +19,6 @@ __all__ = ['SelectorList']
 
 from .selector import Selector
 import cssutils
-import xml.dom
 
 
 class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):

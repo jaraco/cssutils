@@ -80,7 +80,7 @@ class CSSStyleRule(cssrule.CSSRule):
         """Return serialized property cssText."""
         return cssutils.ser.do_CSSStyleRule(self)
 
-    def _setCssText(self, cssText):
+    def _setCssText(self, cssText):  # noqa: C901
         """
         :param cssText:
             a parseable string or a tuple of (cssText, dict-of-namespaces)
