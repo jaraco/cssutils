@@ -19,7 +19,8 @@ class CSSPageRule(cssrule.CSSRuleRules):
 
         page :
                PAGE_SYM S* IDENT? pseudo_page? S*
-               '{' S* [ declaration | margin ]? [ ';' S* [ declaration | margin ]? ]* '}' S*
+               '{' S* [ declaration | margin ]?
+               [ ';' S* [ declaration | margin ]? ]* '}' S*
                ;
 
         pseudo_page :
@@ -147,7 +148,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             if r.margin == margin:
                 self.deleteRule(r)
 
-    def __parseSelectorText(self, selectorText):
+    def __parseSelectorText(self, selectorText):  # noqa: C901
         """
         Parse `selectorText` which may also be a list of tokens
         and returns (selectorText, seq).
@@ -156,7 +157,6 @@ class CSSPageRule(cssrule.CSSRuleRules):
         """
         # for closures: must be a mutable
         new = {'wellformed': True, 'last-S': False, 'name': 0, 'first': 0, 'lr': 0}
-        specificity = (0, 0, 0)
 
         def _char(expected, seq, token, tokenizer=None):
             # pseudo_page, :left, :right or :first
@@ -175,7 +175,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
                             token,
                         )
                     else:
-                        if not ival in ('first', 'left', 'right'):
+                        if ival not in ('first', 'left', 'right'):
                             self._log.warn(
                                 'CSSPageRule: Unknown @page '
                                 'selector: %r' % (':' + ival,),

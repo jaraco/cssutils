@@ -109,7 +109,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
         """Return serialized property cssText"""
         return cssutils.ser.do_CSSNamespaceRule(self)
 
-    def _setCssText(self, cssText):
+    def _setCssText(self, cssText):  # noqa: C901
         """
         :param cssText: initial value for this rules cssText which is parsed
         :exceptions:
