@@ -105,7 +105,7 @@ class CSSImportRule(cssrule.CSSRule):
         """Return serialized property cssText."""
         return cssutils.ser.do_CSSImportRule(self)
 
-    def _setCssText(self, cssText):
+    def _setCssText(self, cssText):  # noqa: C901
         """
         :exceptions:
             - :exc:`~xml.dom.HierarchyRequestErr`:
@@ -285,7 +285,7 @@ class CSSImportRule(cssrule.CSSRule):
         self._href = href
         # update seq
         for i, item in enumerate(self.seq):
-            val, type_ = item.value, item.type
+            type_ = item.type
             if 'href' == type_:
                 self._seq[i] = (href, type_, item.line, item.col)
                 break
@@ -397,7 +397,7 @@ class CSSImportRule(cssrule.CSSRule):
 
             # update seq
             for i, item in enumerate(self.seq):
-                val, typ = item.value, item.type
+                typ = item.type
                 if 'name' == typ:
                     self._seq[i] = (name, typ, item.line, item.col)
                     break
