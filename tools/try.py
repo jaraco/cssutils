@@ -1,29 +1,15 @@
 # -*- coding: utf-8 -*-
-__date__ = '$LastChangedDate::                            $:'
 
-from io import StringIO
-from cssutils.prodparser import *
-from pprint import pprint as pp
-import codecs
 import cssutils
 import logging
 import os
-from pprint import pprint
-import re
 import sys
 import timeit
-import unicodedata
 import urllib.request
 import urllib.error
 import urllib.parse
-import urllib.parse
 import xml
 import xml.dom
-
-try:
-    from minimock import mock, restore
-except ImportError:
-    pass
 
 sys.stdout.write(sys.version)
 print()
@@ -41,7 +27,8 @@ def maketokens(valuelist):
 
 
 if 1:
-    # m = cssutils.stylesheets.MediaList('tv and (color), handheld and (width: 1px) and (color)')
+    # m = cssutils.stylesheets.MediaList(
+    #     'tv and (color), handheld and (width: 1px) and (color)')
     # m[10] = 'tv'
     # print m.mediaText
 
@@ -147,7 +134,7 @@ font-family : a  b;
     cssutils.parseString(s).cssText
     sys.exit(1)
 
-    import cssutils, pprint
+    import cssutils
 
     # remove ALL predefined property profiles
     #    cssutils.profile.removeProfile(all=True)
@@ -184,11 +171,11 @@ font-family : a  b;
         ).cssText
     )
 
-    ##    import cssutils, pprint
-    ##    print "TOKEN_MACROS"
-    ##    pprint.pprint(cssutils.profile._TOKEN_MACROS)
-    ##    print "MACROS"
-    ##    pprint.pprint(cssutils.profile._MACROS)
+    #    import cssutils, pprint
+    #    print "TOKEN_MACROS"
+    #    pprint.pprint(cssutils.profile._TOKEN_MACROS)
+    #    print "MACROS"
+    #    pprint.pprint(cssutils.profile._MACROS)
     #
     #    from cssutils.profiles import macros as predef
     #    from cssutils import profile
@@ -238,8 +225,10 @@ if 1:
 
 if 1:
     sel = [
-        'E[foo="bar"], E[foo~="bar"], E[foo^="bar"], E[foo$="bar"], E[foo*="bar"], E[foo|="bar"]',
-        'E:dir(ltr), E:lang(fr), E:any-link, E:local-link, E:local-link(0), E:target, E:scope',
+        'E[foo="bar"], E[foo~="bar"], E[foo^="bar"], E[foo$="bar"], '
+        'E[foo*="bar"], E[foo|="bar"]',
+        'E:dir(ltr), E:lang(fr), E:any-link, E:local-link, E:local-link(0), '
+        'E:target, E:scope',
         'E:not(s1, s2)',
         'E:matches(s1, s2)',
         'E[foo="bar" i]',
@@ -387,7 +376,7 @@ ul, ol, li, dd {
     t = timeit.Timer(do)  # outside the try/except
     try:
         print(t.timeit(100))  # or t.repeat(...)
-    except:
+    except Exception:
         print(t.print_exc())
 
     #    print cssutils.script.csscombine(p,
@@ -438,8 +427,10 @@ if 1:
 
 if 0:
     # ISSUE 35
-    css = """div.one {color: expression((function(ele){ele.style.behavior="none";})(this));}   """
-    css = """div.one {color: expression(function(ele){ele.style.behavior="none";})(this);}   """
+    css = """div.one {color: expression("""\
+        """(function(ele){ele.style.behavior="none";})(this));}   """
+    css = """div.one {color: expression(function(ele)"""\
+        """{ele.style.behavior="none";})(this);}   """
     sheet = cssutils.parseString(css)
     print(sheet.cssText)
 
@@ -455,14 +446,14 @@ if 1:
 
 /* IE 6/7/8 fixes */
 * html .content       { height: 1%; /* IE6 hasLayout */ }
-.content div          { -ieafter: expression(this.ieAfter ? 0 : (function(el) {
-                        el.ieAfter = document.createElement('span'); el.ieAfter.className = 'ieafter';
-                        el.appendChild(el.ieAfter); })(this)); }
-.ieafter              { width: expression(parseInt(parentNode.offsetWidth) + 1 + 'px');
-                        height: expression(parseInt(parentNode.parentNode.offsetHeight) + 'px');
-                        background-color: expression(parentNode.currentStyle.backgroundColor);
-                        background-image: expression(parentNode.currentStyle.backgroundImage);
-                        background-repeat: expression(parentNode.currentStyle.backgroundRepeat); }
+.content div { -ieafter: expression(this.ieAfter ? 0 : (function(el) {
+    el.ieAfter = document.createElement('span'); el.ieAfter.className = 'ieafter';
+    el.appendChild(el.ieAfter); })(this)); }
+.ieafter { width: expression(parseInt(parentNode.offsetWidth) + 1 + 'px');
+    height: expression(parseInt(parentNode.parentNode.offsetHeight) + 'px');
+    background-color: expression(parentNode.currentStyle.backgroundColor);
+    background-image: expression(parentNode.currentStyle.backgroundImage);
+    background-repeat: expression(parentNode.currentStyle.backgroundRepeat); }
                     """
     s = cssutils.parseString(css)
     print(s.cssText)
@@ -621,7 +612,7 @@ if 1:
     t = timeit.Timer(do)  # outside the try/except
     try:
         print(t.timeit(100))  # or t.repeat(...)
-    except:
+    except Exception:
         print(t.print_exc())
 
     sys.exit(0)
@@ -701,7 +692,7 @@ if 0:
 
     sys.exit(0)
 
-if 1:
+if 1:  # noqa: C901
     css = '''
     @variables {
       c1: #0f0;
@@ -782,7 +773,8 @@ if 0:
         1,
         (
             'EXPRESSION',
-            r'\(?\s*function\s*\(({ident},?\s*)*\)\s*\{(\s|\S)*\}\s*\)?\((({ident}|\.),?\s*)*\)',
+            r'\(?\s*function\s*\(({ident},?\s*)*\)\s*\{(\s|\S)*\}\s*\)?'
+            r'\((({ident}|\.),?\s*)*\)',
         ),
     )
 
@@ -796,7 +788,8 @@ x:expression((function(ele){ele.style.behavior=''})(this));
     #    print p
     #    p.cssText = u'expression((function(ele){ele.style.behavior="none";})(this))'
 
-    # p = cssutils.css.CSSPrimitiveValue(u'expression((function(ele){ele.style.behavior="none";})(this))')
+    # p = cssutils.css.CSSPrimitiveValue(
+    #     u'expression((function(ele){ele.style.behavior="none";})(this))')
 
     sys.exit(1)
 
@@ -964,7 +957,7 @@ if 1:
     ).cssRules[0]
     print(r, r.valid)
     sys.exit(1)
-    for p in st.getProperties():
+    for p in st.getProperties():  # noqa
         print(p)
     #        v = p.cssValue
     #        if v.cssValueType == v.CSS_VALUE_LIST:
@@ -974,7 +967,7 @@ if 1:
     #                #    print '\t', 111, x.getStringValue()
     #                print
     #        print v
-    print(st.cssText)
+    print(st.cssText)  # noqa
     print()
     sys.exit(1)
     s = cssutils.parseString(
@@ -1032,11 +1025,8 @@ def pathname2url(p):
     # C:\foo\bar\spam.foo
     # becomes
     # ///C|/foo/bar/spam.foo
-    import urllib.request
-import urllib.error
-import urllib.parse
 
-    if not ':' in p:
+    if ':' not in p:
         # No drive specifier, just convert slashes and quote the name
         if p[:2] == '\\\\':
             # path is something like \\host\path\on\remote\host
@@ -1070,7 +1060,7 @@ if 0:
 
     # href = 'file:' + urllib.pathname2url(name)
 
-    from nturl2path import pathname2url
+    from nturl2path import pathname2url  # noqa
 
     href = pathname2url(os.path.abspath(name))
     href = href.replace('|', ':')
@@ -1092,7 +1082,8 @@ if 0:
 if 1:
     from cssutils.script import csscombine
 
-    # a = csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
+    # a = csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1',
+    #    minify=False)
     print()
     b = csscombine(
         r"E:\xampp\htdocs\css.css", targetencoding='iso-8859-1', minify=False
@@ -1151,7 +1142,7 @@ if 1:
 
     sys.exit()
 
-    #    from cssutils.profiles import profiles
+    from cssutils.profiles import profiles
     # TODO: better API
     #    cssutils.css.profiles.profiles.addProfile('x', {
     #        'color': '1',
@@ -1230,6 +1221,7 @@ if 0:
                 # find mimetype and encoding
                 mimetype = 'application/octet-stream'
                 try:
+                    import cgi
                     mimetype, params = cgi.parse_header(r.headers['content-type'])
                     encoding = params['charset']
                 except KeyError:
@@ -1348,7 +1340,7 @@ if 1:
             e: red;
             }
     '''
-    css = '''
+    css = r'''
         body {
             font: normal 100% sans-serif;
         }
@@ -1371,8 +1363,7 @@ if 1:
     </html>'''
 
     from lxml import etree
-    from lxml.builder import E
-    from lxml.cssselect import CSSSelector
+    from lxml.cssselect import CSSSelector  # noqa
 
     document = etree.HTML(html)
     e = etree.Element('pre', {'class': 'cssutils'})
@@ -1481,7 +1472,7 @@ if 1:
     print(s)
 
     print('attrib')
-    s.selectorText = 'a[a|href][x="1"][y=a][x*=a][x|=a]'  #':a x ::b y'
+    s.selectorText = 'a[a|href][x="1"][y=a][x*=a][x|=a]'  # ':a x ::b y'
     print(s)
 
     print('pseudo')
@@ -1497,7 +1488,7 @@ if 1:
     s.selectorText = 'not(a) not(*|*) not(*) not(#a) not(.b) not([a]) not(:d)'
     print(s)
 
-    s.selectorText = '*|* * a|b+|c~a|e#1 #a a.a'  #'a *~x+b>c'#:not(*)'
+    s.selectorText = '*|* * a|b+|c~a|e#1 #a a.a'  # 'a *~x+b>c'#:not(*)'
     s.selectorText = 'not(*) not(#a) not(.a)'
     print(s)
     print(s.prefixes)
