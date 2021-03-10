@@ -1,5 +1,7 @@
 """Testcases for cssutils.css.CSSMediaRule"""
 
+# flake8: noqa
+
 import xml.dom
 from . import test_cssrule
 import cssutils
@@ -371,7 +373,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         charsetrule = cssutils.css.CSSCharsetRule('ascii')
         importrule = cssutils.css.CSSImportRule('x')
         namespacerule = cssutils.css.CSSNamespaceRule()
-        pagerule = cssutils.css.CSSPageRule()
         unknownrule = cssutils.css.CSSUnknownRule('@x;')
         stylerule = cssutils.css.CSSStyleRule('a')
         stylerule.cssText = 'a { x: 1}'

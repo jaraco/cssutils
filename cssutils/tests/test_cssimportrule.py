@@ -146,7 +146,6 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             '''@import;''': xml.dom.SyntaxErr,
             '''@import all;''': xml.dom.SyntaxErr,
             '''@import all"name";''': xml.dom.SyntaxErr,
-            '''@import;''': xml.dom.SyntaxErr,
             '''@import x";''': xml.dom.SyntaxErr,
             '''@import "str" ,all;''': xml.dom.SyntaxErr,
             '''@import "str" all,;''': xml.dom.SyntaxErr,
@@ -266,7 +265,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaisesMsg(
             xml.dom.InvalidModificationErr,
             basetest.msg3x(
-                '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''
+                '''MediaList: Ignoring new medium '''
+                '''cssutils.stylesheets.MediaQuery(mediaText=u'tv') '''
+                '''as already specified "all" (set ``mediaText`` instead).'''
             ),
             r.media.appendMedium,
             'tv',
@@ -275,7 +276,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaisesMsg(
             xml.dom.InvalidModificationErr,
             basetest.msg3x(
-                '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''
+                '''MediaList: Ignoring new medium '''
+                '''cssutils.stylesheets.MediaQuery(mediaText=u'tv') '''
+                '''as already specified "all" (set ``mediaText`` instead).'''
             ),
             r.media.appendMedium,
             'tv',
@@ -293,7 +296,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaisesMsg(
             xml.dom.InvalidModificationErr,
             basetest.msg3x(
-                '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''
+                '''MediaList: Ignoring new medium '''
+                '''cssutils.stylesheets.MediaQuery(mediaText=u'tv') '''
+                '''as already specified "all" (set ``mediaText`` instead).'''
             ),
             r.media.appendMedium,
             'tv',
@@ -302,7 +307,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertRaisesMsg(
             xml.dom.InvalidModificationErr,
             basetest.msg3x(
-                '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''
+                '''MediaList: Ignoring new medium '''
+                '''cssutils.stylesheets.MediaQuery(mediaText=u'tv') '''
+                '''as already specified "all" (set ``mediaText`` instead).'''
             ),
             r.media.appendMedium,
             'tv',

@@ -1,5 +1,7 @@
 """Testcases for cssutils.css.CSSFontFaceRule"""
 
+# flake8: noqa
+
 import xml.dom
 from . import test_cssrule
 import cssutils
