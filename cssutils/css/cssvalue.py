@@ -71,7 +71,7 @@ class CSSValue(cssutils.util._NewBase):
             % (self.__class__.__name__, self.cssValueTypeString, self.cssText, id(self))
         )
 
-    def _setCssText(self, cssText):
+    def _setCssText(self, cssText):  # noqa: C901
         """
         Format::
 
@@ -180,20 +180,20 @@ class CSSValue(cssutils.util._NewBase):
                 ),
             ),
             # TODO:
-            #                      # rgb/rgba(
-            #                      Prod(name='RGBColor',
-            #                           match=lambda t, v: t == self._prods.FUNCTION and (
-            #                              cssutils.helper.normalize(v) in (u'rgb(',
-            #                                                               u'rgba('
-            #                                                               )
-            #                           ),
-            #                           nextSor=nextSor,
-            #                                  toSeq=lambda t, tokens: (RGBColor._functionName,
-            #                                                           RGBColor(
-            #                                        cssutils.helper.pushtoken(t, tokens),
-            #                                        parent=self)
-            #                                                           )
-            #                      ),
+            # # rgb/rgba(
+            # Prod(name='RGBColor',
+            #      match=lambda t, v: t == self._prods.FUNCTION and (
+            #         cssutils.helper.normalize(v) in (u'rgb(',
+            #                                          u'rgba('
+            #                                          )
+            #      ),
+            #      nextSor=nextSor,
+            #             toSeq=lambda t, tokens: (RGBColor._functionName,
+            #                                      RGBColor(
+            #                   cssutils.helper.pushtoken(t, tokens),
+            #                   parent=self)
+            #                                      )
+            # ),
             # other functions like rgb( etc
             PreDef.function(
                 nextSor=nextSor,
@@ -778,7 +778,7 @@ class CSSPrimitiveValue(CSSValue):
             )
         try:
             val = float(floatValue)
-        except ValueError as e:
+        except ValueError:
             raise xml.dom.InvalidAccessErr(
                 'CSSPrimitiveValue: floatValue %r is not a float' % floatValue
             )
@@ -1190,7 +1190,8 @@ class RGBColor(CSSFunction):
                 self._colorType = 'Named Color'
             else:
                 self._colorType = store['colorType'].value[:-1]
-                # self._colorType = cssutils.helper.normalize(store['colorType'].value)[:-1]
+                # self._colorType = \
+                # cssutils.helper.normalize(store['colorType'].value)[:-1]
 
             self._setSeq(seq)
 

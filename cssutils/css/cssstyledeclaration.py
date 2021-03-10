@@ -594,7 +594,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         return r
 
     def setProperty(self, name, value=None, priority='', normalize=True, replace=True):
-        """(DOM) Set a property value and priority within this declaration
+        r"""(DOM) Set a property value and priority within this declaration
         block.
 
         :param name:
