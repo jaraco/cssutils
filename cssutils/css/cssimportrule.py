@@ -79,7 +79,7 @@ class CSSImportRule(cssrule.CSSRule):
         return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
             self.__class__.__name__,
             self.href,
-            self.media.mediaText,
+            mediaText,
             self.name,
         )
 
