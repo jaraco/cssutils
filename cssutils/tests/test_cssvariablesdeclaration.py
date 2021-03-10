@@ -1,6 +1,5 @@
 """Testcases for cssutils.css.cssvariablesdelaration.CSSVariablesDeclaration."""
 
-import xml.dom
 from . import basetest
 import cssutils
 
@@ -54,7 +53,6 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         v['z'] = '1'
         self.assertEqual(2, v.length)
 
-        items = []
         # unsorted!
         self.assertEqual(sorted(v), ['x', 'z'])
 
@@ -103,7 +101,8 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
             'xxx : 1; yyy : 2': 'xxx: 1;\nyyy: 2',
             'x:1;x:2;X:2': 'x: 2',
             'same:1;SAME:2;': 'same: 2',
-            '/**/x/**/:/**/1/**/;/**/y/**/:/**/2/**/': '/**/ \n /**/ \n /**/ \n x: 1 /**/;\n/**/ \n /**/ \n /**/ \n y: 2 /**/',
+            '/**/x/**/:/**/1/**/;/**/y/**/:/**/2/**/':
+            '/**/ \n /**/ \n /**/ \n x: 1 /**/;\n/**/ \n /**/ \n /**/ \n y: 2 /**/',
         }
         self.do_equal_r(tests)
 
@@ -172,7 +171,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
                         over3-0: 3;
                         local3: 3;
                     }
-                
+
                 ''',
                     '2.css': '''
                     @variables {
@@ -185,7 +184,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
                         over2-0: 2;
                         local2: 2;
                     }
-                
+
                 ''',
                     '1.css': '''
                     @import "3.css";
@@ -200,7 +199,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
                         over1-0: 1;
                         local1: 1;
                     }
-                
+
                 ''',
                 }[url],
             )
