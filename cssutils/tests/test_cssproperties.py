@@ -1,6 +1,5 @@
 """Testcases for cssutils.css.cssproperties."""
 
-import xml.dom
 from . import basetest
 import cssutils.css
 import cssutils.profiles
