@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
 """encutils - encoding detection collection for Python
 
 :Version: 0.9.8
@@ -27,7 +26,8 @@
     along with encutils.  If not, see <http://www.gnu.org/licenses/>.
 
 
-A collection of helper functions to detect encodings of text files (like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP, file or string.
+A collection of helper functions to detect encodings of text files
+(like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP, file or string.
 
 :func:`getEncodingInfo` is probably the main function of interest which uses
 other supplied functions itself and gathers all information together and
