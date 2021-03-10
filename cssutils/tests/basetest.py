@@ -4,15 +4,7 @@ import logging
 import os
 import re
 import sys
-import io
 import unittest
-import urllib.request
-import urllib.error
-import urllib.parse
-from email import message_from_string, message_from_file
-
-# add src to PYTHONPATH
-sys.path.append(os.path.join(os.path.abspath('.'), '..'))
 
 import cssutils
 
@@ -109,7 +101,7 @@ class BaseTestCase(unittest.TestCase):
                     "does not match '%s': %r"
                     % (callsig, exc.__class__, exc_pattern.pattern, str(exc)),
                 )
-        except:
+        except Exception:
             exc_info = sys.exc_info()
             print(exc_info)
             self.fail(
@@ -239,6 +231,7 @@ class GenerateTests(type):
             for case_num, case in enumerate(cases):
                 stringed_case = cls.make_case_repr(case)
                 case_name = "%s_%s_%s" % (test_name, case_num, stringed_case)
+
                 # Force the closure binding
                 def make_wrapper(case=case, aobj=aobj):
                     def wrapper(self):
