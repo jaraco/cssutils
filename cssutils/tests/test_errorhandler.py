@@ -10,8 +10,8 @@ import socket
 from . import basetest
 import cssutils
 
-class ErrorHandlerTestCase(basetest.BaseTestCase):
 
+class ErrorHandlerTestCase(basetest.BaseTestCase):
     def setUp(self):
         "replace default log and ignore its output"
         self._oldlog = cssutils.log._log
@@ -106,10 +106,12 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         cssutils.log.setLevel(logging.DEBUG)
         cssutils.parseString('a { color: 1 }')
         # TODO: Fix?
-#        self.assertEqual(s.getvalue(),
-#                         u'ERROR    Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 1 [1:5: color]\n')
-        self.assertEqual(s.getvalue(),
-                         'ERROR    Property: Invalid value for "CSS Level 2.1" property: 1 [1:5: color]\n')
+        #        self.assertEqual(s.getvalue(),
+        #                         u'ERROR    Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 1 [1:5: color]\n')
+        self.assertEqual(
+            s.getvalue(),
+            'ERROR    Property: Invalid value for "CSS Level 2.1" property: 1 [1:5: color]\n',
+        )
 
         s = self._setHandler()
 
@@ -121,8 +123,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
         cssutils.log.setLevel(logging.ERROR)
         cssutils.parseUrl('http://example.com')
-        self.assertEqual(s.getvalue()[:38],
-                         'ERROR    Expected "text/css" mime type')
+        self.assertEqual(s.getvalue()[:38], 'ERROR    Expected "text/css" mime type')
 
     def test_parsevalidation(self):
         style = 'color: 1'
@@ -155,4 +156,5 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

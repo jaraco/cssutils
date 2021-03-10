@@ -5,8 +5,8 @@ import xml.dom
 from . import basetest
 import cssutils.stylesheets
 
-class MediaListTestCase(basetest.BaseTestCase):
 
+class MediaListTestCase(basetest.BaseTestCase):
     def setUp(self):
         super(MediaListTestCase, self).setUp()
         self.r = cssutils.stylesheets.MediaList()
@@ -21,16 +21,15 @@ class MediaListTestCase(basetest.BaseTestCase):
         ml.mediaText = ' print   , screen '
         self.assertEqual(2, ml.length)
         self.assertEqual('print, screen', ml.mediaText)
-        
-        #self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
-        #                     basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''), 
+
+        # self.assertRaisesMsg(xml.dom.InvalidModificationErr,
+        #                     basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
         #                     ml._setMediaText, u' print , all  , tv ')
         #
-        #self.assertEqual(u'all', ml.mediaText)
-        #self.assertEqual(1, ml.length)
+        # self.assertEqual(u'all', ml.mediaText)
+        # self.assertEqual(1, ml.length)
 
-        self.assertRaises(xml.dom.SyntaxErr,
-                          ml.appendMedium, 'test')
+        self.assertRaises(xml.dom.SyntaxErr, ml.appendMedium, 'test')
 
     def test_appendMedium(self):
         "MediaList.appendMedium() 1"
@@ -59,7 +58,7 @@ class MediaListTestCase(basetest.BaseTestCase):
         ml.appendMedium(mq)
         self.assertEqual(2, ml.length)
         self.assertEqual('print, SCREEN', ml.mediaText)
-        
+
         # append()
         mq = cssutils.stylesheets.MediaQuery('tv')
         ml.append(mq)
@@ -84,9 +83,14 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(1, ml.length)
         self.assertEqual('all', ml.mediaText)
 
-        self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
-                             basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''), 
-                             ml.appendMedium, 'tv')
+        self.assertRaisesMsg(
+            xml.dom.InvalidModificationErr,
+            basetest.msg3x(
+                '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''
+            ),
+            ml.appendMedium,
+            'tv',
+        )
         self.assertEqual(1, ml.length)
         self.assertEqual('all', ml.mediaText)
 
@@ -96,10 +100,15 @@ class MediaListTestCase(basetest.BaseTestCase):
         "MediaList all"
         ml = cssutils.stylesheets.MediaList()
         ml.appendMedium('all')
-        self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
-                             basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'print') as already specified "all" (set ``mediaText`` instead).'''), 
-                             ml.appendMedium, 'print')
-        
+        self.assertRaisesMsg(
+            xml.dom.InvalidModificationErr,
+            basetest.msg3x(
+                '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'print') as already specified "all" (set ``mediaText`` instead).'''
+            ),
+            ml.appendMedium,
+            'print',
+        )
+
         sheet = cssutils.parseString('@media all, print { /**/ }')
         self.assertEqual('@media all {\n    /**/\n    }'.encode(), sheet.cssText)
 
@@ -128,18 +137,18 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(None, ml.item(2))
 
     # REMOVED special case!
-    #def test_handheld(self):
+    # def test_handheld(self):
     #    "MediaList handheld"
     #    ml = cssutils.stylesheets.MediaList()
 
     #    ml.mediaText = u' handheld , all  '
     #    self.assertEqual(2, ml.length)
     #    self.assertEqual(u'handheld, all', ml.mediaText)
-        
-    #    self.assertRaisesMsg(xml.dom.InvalidModificationErr, 
-    #                         basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'handheld') as already specified "all" (set ``mediaText`` instead).'''), 
+
+    #    self.assertRaisesMsg(xml.dom.InvalidModificationErr,
+    #                         basetest.msg3x('''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'handheld') as already specified "all" (set ``mediaText`` instead).'''),
     #                         ml._setMediaText, u' handheld , all  , tv ')
-        
+
     def test_mediaText(self):
         "MediaList.mediaText 2"
         tests = {
@@ -150,7 +159,7 @@ class MediaListTestCase(basetest.BaseTestCase):
             'tv': None,
             'tv, handheld, print': None,
             'tv and (color), handheld and (width: 1px) and (color)': None,
-            }
+        }
         self.do_equal_r(tests, att='mediaText')
 
         tests = {
@@ -158,9 +167,9 @@ class MediaListTestCase(basetest.BaseTestCase):
             'UNKNOWN': xml.dom.SyntaxErr,
             'a,b': xml.dom.SyntaxErr,
             'a and (color)': xml.dom.SyntaxErr,
-            'not': xml.dom.SyntaxErr, # known but need media
-            'only': xml.dom.SyntaxErr, # known but need media
-            'not tv,': xml.dom.SyntaxErr, # known but need media
+            'not': xml.dom.SyntaxErr,  # known but need media
+            'only': xml.dom.SyntaxErr,  # known but need media
+            'not tv,': xml.dom.SyntaxErr,  # known but need media
             'all;': xml.dom.SyntaxErr,
             'all, and(color)': xml.dom.SyntaxErr,
             'all,': xml.dom.SyntaxErr,
@@ -169,20 +178,19 @@ class MediaListTestCase(basetest.BaseTestCase):
             'all, /*1*/': xml.dom.SyntaxErr,
             'all and (color),': xml.dom.SyntaxErr,
             'all tv, print': xml.dom.SyntaxErr,
-            }
+        }
         self.do_raise_r(tests, att='_setMediaText')
 
     def test_comments(self):
         "MediaList.mediaText comments"
         tests = {
-            '/*1*/ tv /*2*/, /*3*/ handheld /*4*/, print': 
-            '/*1*/ tv /*2*/ /*3*/, handheld /*4*/, print',
-            }
+            '/*1*/ tv /*2*/, /*3*/ handheld /*4*/, print': '/*1*/ tv /*2*/ /*3*/, handheld /*4*/, print',
+        }
         self.do_equal_r(tests, att='mediaText')
 
     def test_reprANDstr(self):
         "MediaList.__repr__(), .__str__()"
-        mediaText='tv, print'
+        mediaText = 'tv, print'
 
         s = cssutils.stylesheets.MediaList(mediaText=mediaText)
 
@@ -195,4 +203,5 @@ class MediaListTestCase(basetest.BaseTestCase):
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

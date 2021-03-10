@@ -22,20 +22,21 @@ except ImportError as e:
 
 log = errorhandler.ErrorHandler()
 
+
 class _BaseClass(object):
     """
     Base class for Base, Base2 and _NewBase.
 
     **Base and Base2 will be removed in the future!**
     """
+
     _log = errorhandler.ErrorHandler()
     _prods = tokenize2.CSSProductions
 
     def _checkReadonly(self):
         "Raise xml.dom.NoModificationAllowedErr if rule/... is readonly"
         if hasattr(self, '_readonly') and self._readonly:
-            raise xml.dom.NoModificationAllowedErr(
-                '%s is readonly.' % self.__class__)
+            raise xml.dom.NoModificationAllowedErr('%s is readonly.' % self.__class__)
             return True
         return False
 
@@ -59,6 +60,7 @@ class _NewBase(_BaseClass):
 
     **Currently CSSValue and related ones only.**
     """
+
     def __init__(self):
         self._seq = Seq()
 
@@ -74,8 +76,9 @@ class _NewBase(_BaseClass):
         "Get a writeable Seq() which is used to set ``seq`` later"
         return Seq(readonly=readonly)
 
-    seq = property(lambda self: self._seq,
-                   doc="Internal readonly attribute, **DO NOT USE**!")
+    seq = property(
+        lambda self: self._seq, doc="Internal readonly attribute, **DO NOT USE**!"
+    )
 
 
 class _NewListBase(_NewBase):
@@ -93,6 +96,7 @@ class _NewListBase(_NewBase):
 
     some methods must be overwritten in inheriting class
     """
+
     def __init__(self):
         self._seq = Seq()
 
@@ -112,6 +116,7 @@ class _NewListBase(_NewBase):
         def gen():
             for x in self._seq:
                 yield x.value
+
         return gen()
 
     def __len__(self):
@@ -138,30 +143,31 @@ class Base(_BaseClass):
 
     ``_normalize`` is static as used by Preferences.
     """
+
     __tokenizer2 = tokenize2.Tokenizer()
 
     # for more on shorthand properties see
     # http://www.dustindiaz.com/css-shorthand/
     # format: shorthand: [(propname, mandatorycheck?)*]
     _SHORTHANDPROPERTIES = {
-            'background': [],
-            #u'background-position': [], # list of 2 values!
-            'border': [],
-            'border-left': [],
-            'border-right': [],
-            'border-top': [],
-            'border-bottom': [],
-            #u'border-color': [], # list or single but same values
-            #u'border-style': [], # list or single but same values
-            #u'border-width': [], # list or single but same values
-            'cue': [],
-            'font': [],
-            'list-style': [],
-            #u'margin': [], # list or single but same values
-            'outline': [],
-            #u'padding': [], # list or single but same values
-            'pause': []
-            }
+        'background': [],
+        # u'background-position': [], # list of 2 values!
+        'border': [],
+        'border-left': [],
+        'border-right': [],
+        'border-top': [],
+        'border-bottom': [],
+        # u'border-color': [], # list or single but same values
+        # u'border-style': [], # list or single but same values
+        # u'border-width': [], # list or single but same values
+        'cue': [],
+        'font': [],
+        'list-style': [],
+        # u'margin': [], # list or single but same values
+        'outline': [],
+        # u'padding': [], # list or single but same values
+        'pause': [],
+    }
 
     @staticmethod
     def _normalize(x):
@@ -184,8 +190,9 @@ class Base(_BaseClass):
         CSSStyleSheet
         """
         if isinstance(text_namespaces_tuple, tuple):
-            return text_namespaces_tuple[0], _SimpleNamespaces(self._log,
-                                                    text_namespaces_tuple[1])
+            return text_namespaces_tuple[0], _SimpleNamespaces(
+                self._log, text_namespaces_tuple[1]
+            )
         else:
             return text_namespaces_tuple, _SimpleNamespaces(log=self._log)
 
@@ -198,8 +205,7 @@ class Base(_BaseClass):
             return None
         elif isinstance(textortokens, str):
             # needs to be tokenized
-            return self.__tokenizer2.tokenize(
-                 textortokens)
+            return self.__tokenizer2.tokenize(textortokens)
         elif isinstance(textortokens, tuple):
             # a single token (like a comment)
             return [textortokens]
@@ -240,7 +246,7 @@ class Base(_BaseClass):
         """
         if token:
             value = token[1]
-            return value.replace('\\' + value[0], value[0])[1: - 1]
+            return value.replace('\\' + value[0], value[0])[1:-1]
         else:
             return None
 
@@ -252,31 +258,32 @@ class Base(_BaseClass):
              url("\"") => "
         """
         if token:
-            value = token[1][4: - 1].strip()
-            if value and (value[0] in '\'"') and (value[0] == value[ - 1]):
+            value = token[1][4:-1].strip()
+            if value and (value[0] in '\'"') and (value[0] == value[-1]):
                 # a string "..." or '...'
-                value = value.replace('\\' + value[0], value[0])[1: - 1]
+                value = value.replace('\\' + value[0], value[0])[1:-1]
             return value
         else:
             return None
 
-    def _tokensupto2(self,
-                     tokenizer,
-                     starttoken=None,
-                     blockstartonly=False, # {
-                     blockendonly=False, # }
-                     mediaendonly=False,
-                     importmediaqueryendonly=False, # ; or STRING
-                     mediaqueryendonly=False, # { or STRING
-                     semicolon=False, # ;
-                     propertynameendonly=False, # :
-                     propertyvalueendonly=False, # ! ; }
-                     propertypriorityendonly=False, # ; }
-                     selectorattendonly=False, # ]
-                     funcendonly=False, # )
-                     listseponly=False, # ,
-                     separateEnd=False # returns (resulttokens, endtoken)
-                     ):
+    def _tokensupto2(
+        self,
+        tokenizer,
+        starttoken=None,
+        blockstartonly=False,  # {
+        blockendonly=False,  # }
+        mediaendonly=False,
+        importmediaqueryendonly=False,  # ; or STRING
+        mediaqueryendonly=False,  # { or STRING
+        semicolon=False,  # ;
+        propertynameendonly=False,  # :
+        propertyvalueendonly=False,  # ! ; }
+        propertypriorityendonly=False,  # ; }
+        selectorattendonly=False,  # ]
+        funcendonly=False,  # )
+        listseponly=False,  # ,
+        separateEnd=False,  # returns (resulttokens, endtoken)
+    ):
         """
         returns tokens upto end of atrule and end index
         end is defined by parameters, might be ; } ) or other
@@ -285,17 +292,17 @@ class Base(_BaseClass):
         """
         ends = ';}'
         endtypes = ()
-        brace = bracket = parant = 0 # {}, [], ()
+        brace = bracket = parant = 0  # {}, [], ()
 
-        if blockstartonly: # {
+        if blockstartonly:  # {
             ends = '{'
-            brace = - 1 # set to 0 with first {
-        elif blockendonly: # }
+            brace = -1  # set to 0 with first {
+        elif blockendonly:  # }
             ends = '}'
             brace = 1
-        elif mediaendonly: # }
+        elif mediaendonly:  # }
             ends = '}'
-            brace = 1 # rules } and mediarules }
+            brace = 1  # rules } and mediarules }
         elif importmediaqueryendonly:
             # end of mediaquery which may be ; or STRING
             ends = ';'
@@ -304,24 +311,24 @@ class Base(_BaseClass):
             # end of mediaquery which may be { or STRING
             # special case, see below
             ends = '{'
-            brace = - 1 # set to 0 with first {
+            brace = -1  # set to 0 with first {
             endtypes = ('STRING',)
         elif semicolon:
             ends = ';'
-        elif propertynameendonly: # : and ; in case of an error
+        elif propertynameendonly:  # : and ; in case of an error
             ends = ':;'
-        elif propertyvalueendonly: # ; or !important
+        elif propertyvalueendonly:  # ; or !important
             ends = ';!'
-        elif propertypriorityendonly: # ;
+        elif propertypriorityendonly:  # ;
             ends = ';'
-        elif selectorattendonly: # ]
+        elif selectorattendonly:  # ]
             ends = ']'
             if starttoken and self._tokenvalue(starttoken) == '[':
                 bracket = 1
-        elif funcendonly: # )
+        elif funcendonly:  # )
             ends = ')'
             parant = 1
-        elif listseponly: # ,
+        elif listseponly:  # ,
             ends = ','
 
         resulttokens = []
@@ -351,8 +358,7 @@ class Base(_BaseClass):
                 elif ']' == val:
                     bracket -= 1
                 # function( or single (
-                elif '(' == val or \
-                     Base._prods.FUNCTION == typ:
+                elif '(' == val or Base._prods.FUNCTION == typ:
                     parant += 1
                 elif ')' == val:
                     parant -= 1
@@ -360,16 +366,21 @@ class Base(_BaseClass):
                 resulttokens.append(token)
 
                 if (brace == bracket == parant == 0) and (
-                    val in ends or typ in endtypes):
+                    val in ends or typ in endtypes
+                ):
                     break
-                elif mediaqueryendonly and brace == - 1 and (
-                     bracket == parant == 0) and typ in endtypes:
-                     # mediaqueryendonly with STRING
+                elif (
+                    mediaqueryendonly
+                    and brace == -1
+                    and (bracket == parant == 0)
+                    and typ in endtypes
+                ):
+                    # mediaqueryendonly with STRING
                     break
         if separateEnd:
             # TODO: use this method as generator, then this makes sense
             if resulttokens:
-                return resulttokens[: - 1], resulttokens[ - 1]
+                return resulttokens[:-1], resulttokens[-1]
             else:
                 return resulttokens, None
         else:
@@ -385,6 +396,7 @@ class Base(_BaseClass):
         some have no expectation like S or COMMENT, so simply return
         the current value of self.__expected
         """
+
         def ATKEYWORD(expected, seq, token, tokenizer=None):
             "default impl for unexpected @rule"
             if expected != 'EOF':
@@ -412,16 +424,25 @@ class Base(_BaseClass):
             "default implementation for EOF token"
             return 'EOF'
 
-        p = {'ATKEYWORD': ATKEYWORD,
-             'COMMENT': COMMENT,
-             'S': S,
-             'EOF': EOF # only available if fullsheet
-             }
+        p = {
+            'ATKEYWORD': ATKEYWORD,
+            'COMMENT': COMMENT,
+            'S': S,
+            'EOF': EOF,  # only available if fullsheet
+        }
         p.update(productions)
         return p
 
-    def _parse(self, expected, seq, tokenizer, productions, default=None,
-               new=None, initialtoken=None):
+    def _parse(
+        self,
+        expected,
+        seq,
+        tokenizer,
+        productions,
+        default=None,
+        new=None,
+        initialtoken=None,
+    ):
         """
         puts parsed tokens in seq by calling a production with
             (seq, tokenizer, token)
@@ -453,6 +474,7 @@ class Base(_BaseClass):
                 yield initialtoken
                 for item in tokenizer:
                     yield item
+
             fulltokenizer = chain([initialtoken], tokenizer)
         else:
             fulltokenizer = tokenizer
@@ -475,6 +497,7 @@ class Base2(Base, _NewBase):
 
     Base class for new seq handling.
     """
+
     def __init__(self):
         self._seq = Seq()
 
@@ -488,6 +511,7 @@ class Base2(Base, _NewBase):
         some have no expectation like S or COMMENT, so simply return
         the current value of self.__expected
         """
+
         def ATKEYWORD(expected, seq, token, tokenizer=None):
             "default impl for unexpected @rule"
             if expected != 'EOF':
@@ -495,8 +519,12 @@ class Base2(Base, _NewBase):
                 rule = cssutils.css.CSSUnknownRule()
                 rule.cssText = self._tokensupto2(tokenizer, token)
                 if rule.wellformed:
-                    seq.append(rule, cssutils.css.CSSRule.UNKNOWN_RULE,
-                               line=token[2], col=token[3])
+                    seq.append(
+                        rule,
+                        cssutils.css.CSSRule.UNKNOWN_RULE,
+                        line=token[2],
+                        col=token[3],
+                    )
                 return expected
             else:
                 new['wellformed'] = False
@@ -522,11 +550,12 @@ class Base2(Base, _NewBase):
             "default implementation for EOF token"
             return 'EOF'
 
-        defaultproductions = {'ATKEYWORD': ATKEYWORD,
-             'COMMENT': COMMENT,
-             'S': S,
-             'EOF': EOF # only available if fullsheet
-             }
+        defaultproductions = {
+            'ATKEYWORD': ATKEYWORD,
+            'COMMENT': COMMENT,
+            'S': S,
+            'EOF': EOF,  # only available if fullsheet
+        }
         defaultproductions.update(productions)
         return defaultproductions
 
@@ -539,6 +568,7 @@ class Seq(object):
 
     is normally readonly, only writable during parsing
     """
+
     def __init__(self, readonly=True):
         """
         only way to write to a Seq is to initialize it with new items
@@ -549,10 +579,12 @@ class Seq(object):
 
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"
-        return 'cssutils.%s.%s([\n    %s], readonly=%r)' % (self.__module__,
-                                          self.__class__.__name__,
-            ',\n    '.join(['%r' % item for item in self._seq]
-            ), self._readonly)
+        return 'cssutils.%s.%s([\n    %s], readonly=%r)' % (
+            self.__module__,
+            self.__class__.__name__,
+            ',\n    '.join(['%r' % item for item in self._seq]),
+            self._readonly,
+        )
 
     def __str__(self):
         vals = []
@@ -565,8 +597,13 @@ class Seq(object):
                 vals.append(repr(v))
 
         return "<cssutils.%s.%s object length=%r items=%r readonly=%r at 0x%x>" % (
-                self.__module__, self.__class__.__name__, len(self),
-                vals, self._readonly, id(self))
+            self.__module__,
+            self.__class__.__name__,
+            len(self),
+            vals,
+            self._readonly,
+            id(self),
+        )
 
     def __delitem__(self, i):
         del self._seq[i]
@@ -607,7 +644,7 @@ class Seq(object):
     def insert(self, index, val, typ, line=None, col=None):
         "Insert new Item() at index # even if readony!? TODO!"
         self._seq.insert(index, Item(val, typ, line, col))
-    
+
     def replace(self, index=-1, val=None, typ=None, line=None, col=None):
         """
         if not readonly replace Item at index with new Item or
@@ -620,11 +657,11 @@ class Seq(object):
 
     def rstrip(self):
         "trims S items from end of Seq"
-        while self._seq and self._seq[ - 1].type == tokenize2.CSSProductions.S:
+        while self._seq and self._seq[-1].type == tokenize2.CSSProductions.S:
             # TODO: removed S before CSSComment /**/ /**/
-            del self._seq[ - 1]
+            del self._seq[-1]
 
-    def appendToVal(self, val=None, index= - 1):
+    def appendToVal(self, val=None, index=-1):
         """
         if not readonly append to Item's value at index
         """
@@ -632,8 +669,7 @@ class Seq(object):
             raise AttributeError('Seq is readonly.')
         else:
             old = self._seq[index]
-            self._seq[index] = Item(old.value + val, old.type,
-                                    old.line, old.col)
+            self._seq[index] = Item(old.value + val, old.type, old.line, old.col)
 
 
 class Item(object):
@@ -650,6 +686,7 @@ class Item(object):
     *line*
         **NOT IMPLEMENTED YET, may contain the line in the source later**
     """
+
     def __init__(self, value, type, line=None, col=None):
         self.__value = value
         self.__type = type
@@ -663,8 +700,13 @@ class Item(object):
 
     def __repr__(self):
         return "%s.%s(value=%r, type=%r, line=%r, col=%r)" % (
-                self.__module__, self.__class__.__name__,
-                self.__value, self.__type, self.__line, self.__col)
+            self.__module__,
+            self.__class__.__name__,
+            self.__value,
+            self.__type,
+            self.__line,
+            self.__col,
+        )
 
 
 class ListSeq(object):
@@ -683,8 +725,9 @@ class ListSeq(object):
 
     some methods must be overwritten in inheriting class
     """
+
     def __init__(self):
-        self.seq = [] # does not need to use ``Seq`` as simple list only
+        self.seq = []  # does not need to use ``Seq`` as simple list only
 
     def __contains__(self, item):
         return item in self.seq
@@ -699,6 +742,7 @@ class ListSeq(object):
         def gen():
             for x in self.seq:
                 yield x
+
         return gen()
 
     def __len__(self):
@@ -729,6 +773,7 @@ class _Namespaces(object):
     parentStyleSheet
         the parent CSSStyleSheet
     """
+
     def __init__(self, parentStyleSheet, log=None, *args):
         "no initial values are set, only the relevant sheet is"
         self.parentStyleSheet = parentStyleSheet
@@ -748,21 +793,20 @@ class _Namespaces(object):
         if not prefix:
             prefix = ''
         delrule = self.__findrule(prefix)
-        for i, rule in enumerate(filter(lambda r: r.type == r.NAMESPACE_RULE,
-                            self.parentStyleSheet.cssRules)):
+        for i, rule in enumerate(
+            filter(lambda r: r.type == r.NAMESPACE_RULE, self.parentStyleSheet.cssRules)
+        ):
             if rule == delrule:
                 self.parentStyleSheet.deleteRule(i)
                 return
 
-        self._log.error('Prefix %s not found.' % prefix,
-                        error=xml.dom.NamespaceErr)
+        self._log.error('Prefix %s not found.' % prefix, error=xml.dom.NamespaceErr)
 
     def __getitem__(self, prefix):
         try:
             return self.namespaces[prefix]
         except KeyError as e:
-            self._log.error('Prefix %s not found.' % prefix,
-                            error=xml.dom.NamespaceErr)
+            self._log.error('Prefix %s not found.' % prefix, error=xml.dom.NamespaceErr)
 
     def __iter__(self):
         return self.namespaces.__iter__()
@@ -773,23 +817,25 @@ class _Namespaces(object):
     def __setitem__(self, prefix, namespaceURI):
         "replaces prefix or sets new rule, may raise NoModificationAllowedErr"
         if not prefix:
-            prefix = '' # None or ''
+            prefix = ''  # None or ''
         rule = self.__findrule(prefix)
         if not rule:
-            self.parentStyleSheet.insertRule(cssutils.css.CSSNamespaceRule(
-                                                    prefix=prefix,
-                                                    namespaceURI=namespaceURI),
-                                  inOrder=True)
+            self.parentStyleSheet.insertRule(
+                cssutils.css.CSSNamespaceRule(prefix=prefix, namespaceURI=namespaceURI),
+                inOrder=True,
+            )
         else:
             if prefix in self.namespaces:
-                rule.namespaceURI = namespaceURI # raises NoModificationAllowedErr
+                rule.namespaceURI = namespaceURI  # raises NoModificationAllowedErr
             if namespaceURI in list(self.namespaces.values()):
                 rule.prefix = prefix
 
     def __findrule(self, prefix):
         # returns namespace rule where prefix == key
-        for rule in filter(lambda r: r.type == r.NAMESPACE_RULE,
-                            reversed(self.parentStyleSheet.cssRules)):
+        for rule in filter(
+            lambda r: r.type == r.NAMESPACE_RULE,
+            reversed(self.parentStyleSheet.cssRules),
+        ):
             if rule.prefix == prefix:
                 return rule
 
@@ -800,8 +846,10 @@ class _Namespaces(object):
         self.parentStyleSheets.
         """
         namespaces = {}
-        for rule in filter(lambda r: r.type == r.NAMESPACE_RULE,
-                            reversed(self.parentStyleSheet.cssRules)):
+        for rule in filter(
+            lambda r: r.type == r.NAMESPACE_RULE,
+            reversed(self.parentStyleSheet.cssRules),
+        ):
             if rule.namespaceURI not in list(namespaces.values()):
                 namespaces[rule.prefix] = rule.namespaceURI
         return namespaces
@@ -829,7 +877,10 @@ class _Namespaces(object):
 
     def __str__(self):
         return "<cssutils.util.%s object parentStyleSheet=%r at 0x%x>" % (
-                self.__class__.__name__, str(self.parentStyleSheet), id(self))
+            self.__class__.__name__,
+            str(self.parentStyleSheet),
+            id(self),
+        )
 
 
 class _SimpleNamespaces(_Namespaces):
@@ -837,6 +888,7 @@ class _SimpleNamespaces(_Namespaces):
     namespaces used in objects like Selector as long as they are not connected
     to a CSSStyleSheet
     """
+
     def __init__(self, log=None, *args):
         """init"""
         super(_SimpleNamespaces, self).__init__(parentStyleSheet=None, log=log)
@@ -845,16 +897,20 @@ class _SimpleNamespaces(_Namespaces):
     def __setitem__(self, prefix, namespaceURI):
         self.__namespaces[prefix] = namespaceURI
 
-    namespaces = property(lambda self: self.__namespaces,
-                          doc='Dict Wrapper for self.sheets @namespace rules.')
+    namespaces = property(
+        lambda self: self.__namespaces,
+        doc='Dict Wrapper for self.sheets @namespace rules.',
+    )
 
     def __str__(self):
         return "<cssutils.util.%s object namespaces=%r at 0x%x>" % (
-                self.__class__.__name__, self.namespaces, id(self))
+            self.__class__.__name__,
+            self.namespaces,
+            id(self),
+        )
 
     def __repr__(self):
-        return "cssutils.util.%s(%r)" % (self.__class__.__name__,
-            self.namespaces)
+        return "cssutils.util.%s(%r)" % (self.__class__.__name__, self.namespaces)
 
 
 def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
@@ -898,10 +954,10 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         httpEncoding, content = r
 
         if overrideEncoding:
-            enctype = 0 # 0. override encoding
+            enctype = 0  # 0. override encoding
             encoding = overrideEncoding
         elif httpEncoding:
-            enctype = 1 # 1. HTTP
+            enctype = 1  # 1. HTTP
             encoding = httpEncoding
         else:
             # BOM or @charset
@@ -909,18 +965,18 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
                 contentEncoding, explicit = codec.detectencoding_unicode(content)
             else:
                 contentEncoding, explicit = codec.detectencoding_str(content)
-            
+
             if explicit:
-                enctype = 2 # 2. BOM/@charset: explicitly
+                enctype = 2  # 2. BOM/@charset: explicitly
                 encoding = contentEncoding
-                
+
             elif parentEncoding:
-                enctype = 4 # 4. parent stylesheet or document
+                enctype = 4  # 4. parent stylesheet or document
                 # may also be None in which case 5. is used in next step anyway
                 encoding = parentEncoding
-                
+
             else:
-                enctype = 5 # 5. assume UTF-8
+                enctype = 5  # 5. assume UTF-8
                 encoding = 'utf-8'
 
         if isinstance(content, str):
@@ -929,11 +985,13 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
             try:
                 # encoding may still be wrong if encoding *is lying*!
                 try:
-                    decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
+                    decodedCssText = codecs.lookup("css")[1](
+                        content, encoding=encoding
+                    )[0]
                 except AttributeError as ae:
                     # at least in GAE
                     decodedCssText = content.decode(encoding if encoding else 'utf-8')
-                    
+
             except UnicodeDecodeError as e:
                 log.warn(e, neverraise=True)
                 decodedCssText = None

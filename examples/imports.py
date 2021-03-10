@@ -26,23 +26,23 @@ EXPERR = ''
 
 
 def main():
-
     def p(s, l=0):
-        c = '#=-'[l] * (30 - l*10)
+        c = '#=-'[l] * (30 - l * 10)
         for r in s.cssRules.rulesOfType(cssutils.css.CSSRule.IMPORT_RULE):
             print(c)
             print(r.href)
             print(c)
             print(r.styleSheet.cssText)
-            print() 
-            p(r.styleSheet, l=l+1)
-            print() 
-            
-    s = cssutils.parseFile(os.path.join('sheets', '1import.css'))        
+            print()
+            p(r.styleSheet, l=l + 1)
+            print()
+
+    s = cssutils.parseFile(os.path.join('sheets', '1import.css'))
     print(s.cssText)
     print()
-    
+
     p(s)
+
 
 if __name__ == '__main__':
     main()

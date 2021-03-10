@@ -1,5 +1,6 @@
 import cssutils
 
+
 def show(style):
     print("style.length ==", style.length)
     print("style.item(0) ==", style.item(0))
@@ -31,7 +32,7 @@ print("------------")
 
 # overwrite in any case
 print("style.setProperty('color', 'yellow','!important')")
-style.setProperty('color', 'yellow','!important')
+style.setProperty('color', 'yellow', '!important')
 show(style)
 
 # overwrite in any case, even !important

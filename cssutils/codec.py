@@ -8,9 +8,11 @@ import sys
 
 if sys.version_info < (3,):
     from ._codec2 import *
+
     # for tests
     from ._codec2 import _fixencoding
 else:
     from ._codec3 import *
+
     # for tests
     from ._codec3 import _fixencoding

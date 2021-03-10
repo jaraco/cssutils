@@ -93,7 +93,8 @@ Usage may be::
 __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 
 import sys
-if sys.version_info < (2,6):
+
+if sys.version_info < (2, 6):
     bytes = str
 
 from . import codec
@@ -105,6 +106,7 @@ import xml.dom
 # order of imports is important (partly circular)
 from . import util
 from . import errorhandler
+
 log = errorhandler.ErrorHandler()
 
 from . import css
@@ -112,13 +114,16 @@ from . import stylesheets
 from .parse import CSSParser
 
 from .serialize import CSSSerializer
+
 ser = CSSSerializer()
 
 from .profiles import Profiles
+
 profile = Profiles(log=log)
 
 # used by Selector defining namespace prefix '*'
 _ANYNS = -1
+
 
 class DOMImplementationCSS(object):
     """This interface allows the DOM user to create a CSSStyleSheet
@@ -129,11 +134,12 @@ class DOMImplementationCSS(object):
     xml.dom.registerDOMImplementation which simply calls it and receives
     an instance of this class then.
     """
+
     _features = [
         ('css', '1.0'),
         ('css', '2.0'),
         ('stylesheets', '1.0'),
-        ('stylesheets', '2.0')
+        ('stylesheets', '2.0'),
     ]
 
     def createCSSStyleSheet(self, title, media):
@@ -155,8 +161,11 @@ class DOMImplementationCSS(object):
             syntax error and is unparsable.
         """
         import warnings
-        warning = ("Deprecated, see "
-                   "https://bitbucket.org/cthedot/cssutils/issues/69#comment-30669799")
+
+        warning = (
+            "Deprecated, see "
+            "https://bitbucket.org/cthedot/cssutils/issues/69#comment-30669799"
+        )
         warnings.warn(warning, DeprecationWarning)
         return css.CSSStyleSheet(title=title, media=media)
 
@@ -165,6 +174,7 @@ class DOMImplementationCSS(object):
         # xml.dom.getDOMImplementation, so we should provide an implementation
         # see https://bitbucket.org/cthedot/cssutils/issues/69
         import xml.dom.minidom as minidom
+
         return minidom.DOMImplementation().createDocument(*args, **kwargs)
 
     def createDocumentType(self, *args, **kwargs):
@@ -172,28 +182,41 @@ class DOMImplementationCSS(object):
         # xml.dom.getDOMImplementation, so we should provide an implementation
         # see https://bitbucket.org/cthedot/cssutils/issues/69
         import xml.dom.minidom as minidom
+
         return minidom.DOMImplementation().createDocumentType(*args, **kwargs)
 
     def hasFeature(self, feature, version):
         return (feature.lower(), str(version)) in self._features
+
 
 xml.dom.registerDOMImplementation('cssutils', DOMImplementationCSS)
 
 
 def parseString(*a, **k):
     return CSSParser().parseString(*a, **k)
+
+
 parseString.__doc__ = CSSParser.parseString.__doc__
+
 
 def parseFile(*a, **k):
     return CSSParser().parseFile(*a, **k)
+
+
 parseFile.__doc__ = CSSParser.parseFile.__doc__
+
 
 def parseUrl(*a, **k):
     return CSSParser().parseUrl(*a, **k)
+
+
 parseUrl.__doc__ = CSSParser.parseUrl.__doc__
+
 
 def parseStyle(*a, **k):
     return CSSParser().parseStyle(*a, **k)
+
+
 parseStyle.__doc__ = CSSParser.parseStyle.__doc__
 
 # set "ser", default serializer
@@ -201,6 +224,7 @@ def setSerializer(serializer):
     """Set the global serializer used by all class in cssutils."""
     global ser
     ser = serializer
+
 
 def getUrls(sheet):
     """Retrieve all ``url(urlstring)`` values (in e.g.
@@ -231,6 +255,7 @@ def getUrls(sheet):
                 if v.type == 'URI':
                     yield v.uri
 
+
 def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
     :class:`cssutils.css.CSSValue` objects of given `sheetOrStyle`.
@@ -245,8 +270,7 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     :param ignoreImportRules:
         if ``True`` does not call `replacer` with URLs from @import rules.
     """
-    if not ignoreImportRules and not isinstance(sheetOrStyle,
-                                                css.CSSStyleDeclaration):
+    if not ignoreImportRules and not isinstance(sheetOrStyle, css.CSSStyleDeclaration):
         for importrule in (r for r in sheetOrStyle if r.type == r.IMPORT_RULE):
             importrule.href = replacer(importrule.href)
 
@@ -268,6 +292,7 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
                 if v.type == v.URI:
                     v.uri = replacer(v.uri)
 
+
 def resolveImports(sheet, target=None):
     """Recurcively combine all rules in given `sheet` into a `target` sheet.
     @import rules which use media information are tried to be wrapped into
@@ -287,13 +312,15 @@ def resolveImports(sheet, target=None):
         object
     """
     if not target:
-        target = css.CSSStyleSheet(href=sheet.href,
-                                   media=sheet.media,
-                                   title=sheet.title)
+        target = css.CSSStyleSheet(
+            href=sheet.href, media=sheet.media, title=sheet.title
+        )
 
     def getReplacer(targetbase):
         "Return a replacer which uses base to return adjusted URLs"
-        basesch, baseloc, basepath, basequery, basefrag = urllib.parse.urlsplit(targetbase)
+        basesch, baseloc, basepath, basequery, basefrag = urllib.parse.urlsplit(
+            targetbase
+        )
         basepath, basepathfilename = os.path.split(basepath)
 
         def replacer(uri):
@@ -317,23 +344,27 @@ def resolveImports(sheet, target=None):
 
             if rule.hrefFound:
                 # add all rules of @import to current sheet
-                target.add(css.CSSComment(cssText='/* START @import "%s" */'
-                                          % rule.href))
+                target.add(
+                    css.CSSComment(cssText='/* START @import "%s" */' % rule.href)
+                )
 
                 try:
                     # nested imports
                     importedSheet = resolveImports(rule.styleSheet)
                 except xml.dom.HierarchyRequestErr as e:
-                    log.warn('@import: Cannot resolve target, keeping rule: %s'
-                             % e, neverraise=True)
+                    log.warn(
+                        '@import: Cannot resolve target, keeping rule: %s' % e,
+                        neverraise=True,
+                    )
                     target.add(rule)
                 else:
                     # adjust relative URI references
-                    log.info('@import: Adjusting paths for %r' % rule.href,
-                             neverraise=True)
-                    replaceUrls(importedSheet,
-                                getReplacer(rule.href),
-                                ignoreImportRules=True)
+                    log.info(
+                        '@import: Adjusting paths for %r' % rule.href, neverraise=True
+                    )
+                    replaceUrls(
+                        importedSheet, getReplacer(rule.href), ignoreImportRules=True
+                    )
 
                     # might have to wrap rules in @media if media given
                     if rule.media.mediaText == 'all':
@@ -343,25 +374,26 @@ def resolveImports(sheet, target=None):
                         for r in importedSheet:
                             # check if rules present which may not be
                             # combined with media
-                            if r.type not in (r.COMMENT,
-                                              r.STYLE_RULE,
-                                              r.IMPORT_RULE):
+                            if r.type not in (r.COMMENT, r.STYLE_RULE, r.IMPORT_RULE):
                                 keepimport = True
                                 break
                         if keepimport:
-                            log.warn('Cannot combine imported sheet with'
-                                     ' given media as other rules then'
-                                     ' comments or stylerules found %r,'
-                                     ' keeping %r' % (r,
-                                                       rule.cssText),
-                                     neverraise=True)
+                            log.warn(
+                                'Cannot combine imported sheet with'
+                                ' given media as other rules then'
+                                ' comments or stylerules found %r,'
+                                ' keeping %r' % (r, rule.cssText),
+                                neverraise=True,
+                            )
                             target.add(rule)
                             continue
 
                         # wrap in @media if media is not `all`
-                        log.info('@import: Wrapping some rules in @media '
-                                 ' to keep media: %s'
-                                 % rule.media.mediaText, neverraise=True)
+                        log.info(
+                            '@import: Wrapping some rules in @media '
+                            ' to keep media: %s' % rule.media.mediaText,
+                            neverraise=True,
+                        )
                         mediaproxy = css.CSSMediaRule(rule.media.mediaText)
 
                     for r in importedSheet:
@@ -376,8 +408,10 @@ def resolveImports(sheet, target=None):
 
             else:
                 # keep @import as it is
-                log.error('Cannot get referenced stylesheet %r, keeping rule'
-                          % rule.href, neverraise=True)
+                log.error(
+                    'Cannot get referenced stylesheet %r, keeping rule' % rule.href,
+                    neverraise=True,
+                )
                 target.add(rule)
 
         else:
@@ -388,4 +422,3 @@ def resolveImports(sheet, target=None):
 
 if __name__ == '__main__':
     print(__doc__)
-

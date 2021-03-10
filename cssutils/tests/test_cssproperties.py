@@ -5,22 +5,23 @@ from . import basetest
 import cssutils.css
 import cssutils.profiles
 
+
 class CSSPropertiesTestCase(basetest.BaseTestCase):
 
-#    def test_cssvalues(self):
-#        "cssproperties cssvalues"
-#        # does actually return match object, so a very simplified test...
-#        match = cssutils.css.cssproperties.cssvalues
-#
-#        self.assertEqual(True, bool(match['color']('red')))
-#        self.assertEqual(False, bool(match['top']('red')))
-#
-#        self.assertEqual(True, bool(match['left']('0')))
-#        self.assertEqual(True, bool(match['left']('1px')))
-#        self.assertEqual(True, bool(match['left']('.1px')))
-#        self.assertEqual(True, bool(match['left']('-1px')))
-#        self.assertEqual(True, bool(match['left']('-.1px')))
-#        self.assertEqual(True, bool(match['left']('-0.1px')))
+    #    def test_cssvalues(self):
+    #        "cssproperties cssvalues"
+    #        # does actually return match object, so a very simplified test...
+    #        match = cssutils.css.cssproperties.cssvalues
+    #
+    #        self.assertEqual(True, bool(match['color']('red')))
+    #        self.assertEqual(False, bool(match['top']('red')))
+    #
+    #        self.assertEqual(True, bool(match['left']('0')))
+    #        self.assertEqual(True, bool(match['left']('1px')))
+    #        self.assertEqual(True, bool(match['left']('.1px')))
+    #        self.assertEqual(True, bool(match['left']('-1px')))
+    #        self.assertEqual(True, bool(match['left']('-.1px')))
+    #        self.assertEqual(True, bool(match['left']('-0.1px')))
 
     def test_toDOMname(self):
         "cssproperties _toDOMname(CSSname)"
@@ -46,8 +47,10 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
         "CSS2Properties"
         CSS2Properties = cssutils.css.cssproperties.CSS2Properties
         self.assertEqual(type(property()), type(CSS2Properties.color))
-        self.assertEqual(sum([len(x) for x in list(cssutils.profiles.properties.values())]),
-                          len(CSS2Properties._properties))
+        self.assertEqual(
+            sum([len(x) for x in list(cssutils.profiles.properties.values())]),
+            len(CSS2Properties._properties),
+        )
 
         c2 = CSS2Properties()
         # CSS2Properties has simplified implementation return always None
@@ -60,4 +63,5 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

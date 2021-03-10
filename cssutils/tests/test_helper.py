@@ -3,46 +3,47 @@
 __version__ = '$Id: test_util.py 1437 2008-08-18 20:30:38Z cthedot $'
 
 from . import basetest
-from cssutils.helper import * 
+from cssutils.helper import *
+
 
 class HelperTestCase(basetest.BaseTestCase):
-
     def test_normalize(self):
         "helper._normalize()"
-        tests = {'abcdefg ABCDEFG äöüß€ AÖÜ': r'abcdefg abcdefg äöüß€ aöü',
-                 r'\ga\Ga\\\ ': r'gaga\ ',
-                 r'0123456789': r'0123456789',
-                 r'"\x"': r'"x"',
-                 # unicode escape seqs should have been done by
-                 # the tokenizer...
-                 }
+        tests = {
+            'abcdefg ABCDEFG äöüß€ AÖÜ': r'abcdefg abcdefg äöüß€ aöü',
+            r'\ga\Ga\\\ ': r'gaga\ ',
+            r'0123456789': r'0123456789',
+            r'"\x"': r'"x"',
+            # unicode escape seqs should have been done by
+            # the tokenizer...
+        }
         for test, exp in list(tests.items()):
             self.assertEqual(normalize(test), exp)
             # static too
             self.assertEqual(normalize(test), exp)
 
-#    def test_normalnumber(self):
-#        "helper.normalnumber()"
-#        tests = {
-#                 '0': '0',
-#                 '00': '0',
-#                 '0.0': '0',
-#                 '00.0': '0',
-#                 '1': '1',
-#                 '01': '1',
-#                 '00.1': '0.1',
-#                 '0.00001': '0.00001',
-#                 '-0': '0',
-#                 '-00': '0',
-#                 '-0.0': '0',
-#                 '-00.0': '0',
-#                 '-1': '-1',
-#                 '-01': '-1',
-#                 '-00.1': '-0.1',
-#                 '-0.00001': '-0.00001',
-#                 }
-#        for test, exp in tests.items():
-#            self.assertEqual(exp, normalnumber(test))
+    #    def test_normalnumber(self):
+    #        "helper.normalnumber()"
+    #        tests = {
+    #                 '0': '0',
+    #                 '00': '0',
+    #                 '0.0': '0',
+    #                 '00.0': '0',
+    #                 '1': '1',
+    #                 '01': '1',
+    #                 '00.1': '0.1',
+    #                 '0.00001': '0.00001',
+    #                 '-0': '0',
+    #                 '-00': '0',
+    #                 '-0.0': '0',
+    #                 '-00.0': '0',
+    #                 '-1': '-1',
+    #                 '-01': '-1',
+    #                 '-00.1': '-0.1',
+    #                 '-0.00001': '-0.00001',
+    #                 }
+    #        for test, exp in tests.items():
+    #            self.assertEqual(exp, normalnumber(test))
 
     def test_string(self):
         "helper.string()"
@@ -51,8 +52,13 @@ class HelperTestCase(basetest.BaseTestCase):
         self.assertEqual(r'''"'"''', string("'"))
         self.assertEqual(r'"\""', string('"'))
         # \n = 0xa, \r = 0xd, \f = 0xc
-        self.assertEqual(r'"\a "', string('''
-'''))
+        self.assertEqual(
+            r'"\a "',
+            string(
+                '''
+'''
+            ),
+        )
         self.assertEqual(r'"\c "', string('\f'))
         self.assertEqual(r'"\d "', string('\r'))
         self.assertEqual(r'"\d \a "', string('\r\n'))
@@ -62,7 +68,7 @@ class HelperTestCase(basetest.BaseTestCase):
         self.assertEqual('x', stringvalue('"x"'))
         self.assertEqual('"', stringvalue('"\\""'))
         self.assertEqual(r'x', stringvalue(r"\x "))
-        
+
         # escapes should have been done by tokenizer
         # so this shoule not happen at all:
         self.assertEqual(r'a', stringvalue(r"\a "))
@@ -86,4 +92,5 @@ class HelperTestCase(basetest.BaseTestCase):
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

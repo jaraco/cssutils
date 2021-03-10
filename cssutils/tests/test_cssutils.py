@@ -18,7 +18,6 @@ except ImportError:
 
 
 class CSSutilsTestCase(basetest.BaseTestCase):
-
     def setUp(self):
         cssutils.ser.prefs.useDefaults()
 
@@ -33,9 +32,9 @@ class CSSutilsTestCase(basetest.BaseTestCase):
 
     def test_parseString(self):
         "cssutils.parseString()"
-        s = cssutils.parseString(self.exp,
-                                 media='handheld, screen',
-                                 title='from string')
+        s = cssutils.parseString(
+            self.exp, media='handheld, screen', title='from string'
+        )
         self.assertTrue(isinstance(s, cssutils.css.CSSStyleSheet))
         self.assertEqual(None, s.href)
         self.assertEqual(self.exp.encode(), s.cssText)
@@ -51,20 +50,22 @@ class CSSutilsTestCase(basetest.BaseTestCase):
 
         href = basetest.get_sheet_filename('import.css')
         href = cssutils.helper.path2url(href)
-        s = cssutils.parseString(self.exp,
-                                 href=href)
+        s = cssutils.parseString(self.exp, href=href)
         self.assertEqual(href, s.href)
 
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
+        self.assertEqual(
+            irs.cssText,
+            '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode(),
+        )
 
         tests = {
-                 'a {color: red}': 'a {\n    color: red\n    }',
-                 'a {color: rgb(1,2,3)}': 'a {\n    color: rgb(1, 2, 3)\n    }'
-                 }
+            'a {color: red}': 'a {\n    color: red\n    }',
+            'a {color: rgb(1,2,3)}': 'a {\n    color: rgb(1, 2, 3)\n    }',
+        }
         self.do_equal_p(tests)
 
     def test_parseFile(self):
@@ -91,7 +92,10 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
+        self.assertEqual(
+            irs.cssText,
+            '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode(),
+        )
 
         # name is used for open and setting of href automatically
         # test needs to be relative to this test file!
@@ -116,7 +120,10 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
         self.assertTrue(isinstance(irs, cssutils.css.CSSStyleSheet))
-        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
+        self.assertEqual(
+            irs.cssText,
+            '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode(),
+        )
 
         # next test
         css = 'a:after { content: "羊蹄€\u2020" }'
@@ -142,15 +149,13 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         t.write(css)
         t.close()
 
-        self.assertRaises(
-            UnicodeDecodeError, cssutils.parseFile, name, 'ascii')
+        self.assertRaises(UnicodeDecodeError, cssutils.parseFile, name, 'ascii')
 
         s = cssutils.parseFile(name, encoding='iso-8859-1')
         self.assertEqual(cssutils.css.CSSStyleSheet, type(s))
         self.assertEqual(s.cssRules[1].selectorText, 'a:after')
 
-        self.assertRaises(
-            UnicodeDecodeError, cssutils.parseFile, name, 'utf-8')
+        self.assertRaises(UnicodeDecodeError, cssutils.parseFile, name, 'utf-8')
 
         # clean up
         try:
@@ -161,12 +166,10 @@ class CSSutilsTestCase(basetest.BaseTestCase):
     def test_parseUrl(self):
         "cssutils.parseUrl()"
         href = basetest.get_sheet_filename('import.css')
-        #href = u'file:' + urllib.pathname2url(href)
+        # href = u'file:' + urllib.pathname2url(href)
         href = cssutils.helper.path2url(href)
-        #href = 'http://seewhatever.de/sheets/import.css'
-        s = cssutils.parseUrl(href,
-                              media='tv, print',
-                              title='from url')
+        # href = 'http://seewhatever.de/sheets/import.css'
+        s = cssutils.parseUrl(href, media='tv, print', title='from url')
         self.assertTrue(isinstance(s, cssutils.css.CSSStyleSheet))
         self.assertEqual(href, s.href)
         self.assertEqual(self.exp.encode(), s.cssText)
@@ -181,12 +184,18 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assertEqual(irs.cssText, '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode())
+        self.assertEqual(
+            irs.cssText,
+            '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'.encode(),
+        )
 
         ir2 = irs.cssRules[0]
         self.assertEqual('../import3.css', ir2.href)
         irs2 = ir2.styleSheet
-        self.assertEqual(irs2.cssText, '/* import3 */\n.import3 {\n    /* from ./import/../import3.css */\n    background: url(images/example3.gif);\n    background: url(./images/example3.gif);\n    background: url(import/images2/example2.gif);\n    background: url(./import/images2/example2.gif);\n    background: url(import/images2/../../images/example3.gif)\n    }'.encode())
+        self.assertEqual(
+            irs2.cssText,
+            '/* import3 */\n.import3 {\n    /* from ./import/../import3.css */\n    background: url(images/example3.gif);\n    background: url(./images/example3.gif);\n    background: url(import/images2/example2.gif);\n    background: url(./import/images2/example2.gif);\n    background: url(import/images2/../../images/example3.gif)\n    }'.encode(),
+        )
 
     def test_setCSSSerializer(self):
         "cssutils.setSerializer() and cssutils.ser"
@@ -209,29 +218,29 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         "cssutils.parseStyle()"
         s = cssutils.parseStyle('x:0; y:red')
         self.assertEqual(type(s), cssutils.css.CSSStyleDeclaration)
-        self.assertEqual(s.cssText,  'x: 0;\ny: red')
+        self.assertEqual(s.cssText, 'x: 0;\ny: red')
 
         s = cssutils.parseStyle('@import "x";')
         self.assertEqual(type(s), cssutils.css.CSSStyleDeclaration)
         self.assertEqual(s.cssText, '')
 
-        tests = [
-            ('content: "ä"', 'iso-8859-1'),
-            ('content: "€"', 'utf-8')
-        ]
+        tests = [('content: "ä"', 'iso-8859-1'), ('content: "€"', 'utf-8')]
         for v, e in tests:
             s = cssutils.parseStyle(v.encode(e), encoding=e)
             self.assertEqual(s.cssText, v)
 
-        self.assertRaises(UnicodeDecodeError, cssutils.parseStyle,
-                          'content: "ä"'.encode('utf-8'), 'ascii')
-
+        self.assertRaises(
+            UnicodeDecodeError,
+            cssutils.parseStyle,
+            'content: "ä"'.encode('utf-8'),
+            'ascii',
+        )
 
     def test_getUrls(self):
         "cssutils.getUrls()"
         cssutils.ser.prefs.keepAllProperties = True
 
-        css='''
+        css = '''
         @import "im1";
         @import url(im2);
         @import url( im3 );
@@ -248,16 +257,31 @@ class CSSutilsTestCase(basetest.BaseTestCase):
                  url("f.svg#f") format("svg");
             }'''
         urls = set(cssutils.getUrls(cssutils.parseString(css)))
-        self.assertEqual(urls, set(["im1", "im2", "im3", "im4", "im5",
-                                    "a", "b", "c",
-                                    'f.woff', 'f.svg#f', 'f.otf']))
+        self.assertEqual(
+            urls,
+            set(
+                [
+                    "im1",
+                    "im2",
+                    "im3",
+                    "im4",
+                    "im5",
+                    "a",
+                    "b",
+                    "c",
+                    'f.woff',
+                    'f.svg#f',
+                    'f.otf',
+                ]
+            ),
+        )
         cssutils.ser.prefs.keepAllProperties = False
 
     def test_replaceUrls(self):
         "cssutils.replaceUrls()"
         cssutils.ser.prefs.keepAllProperties = True
 
-        css='''
+        css = '''
         @import "im1";
         @import url(im2);
         a {
@@ -269,21 +293,28 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         cssutils.replaceUrls(s, lambda old: "NEW" + old)
         self.assertEqual('@import "NEWim1";', s.cssRules[0].cssText)
         self.assertEqual('NEWim2', s.cssRules[1].href)
-        self.assertEqual('''background-image: url(NEWc) !important;
+        self.assertEqual(
+            '''background-image: url(NEWc) !important;
 background-\\image: url(NEWb);
-background: url(NEWa) no-repeat !important''', s.cssRules[2].style.cssText)
+background: url(NEWa) no-repeat !important''',
+            s.cssRules[2].style.cssText,
+        )
 
         cssutils.ser.prefs.keepAllProperties = False
 
         # CSSStyleDeclaration
-        style = cssutils.parseStyle('''color: red;
+        style = cssutils.parseStyle(
+            '''color: red;
                                         background-image:
                                             url(1.png),
-                                            url('2.png')''')
-        cssutils.replaceUrls(style, lambda url: 'prefix/'+url)
-        self.assertEqual(style.cssText, '''color: red;
-background-image: url(prefix/1.png), url(prefix/2.png)''')
-
+                                            url('2.png')'''
+        )
+        cssutils.replaceUrls(style, lambda url: 'prefix/' + url)
+        self.assertEqual(
+            style.cssText,
+            '''color: red;
+background-image: url(prefix/1.png), url(prefix/2.png)''',
+        )
 
     def test_resolveImports(self):
         "cssutils.resolveImports(sheet)"
@@ -291,7 +322,9 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
             self._tempSer()
             cssutils.ser.prefs.useMinified()
 
-            a = '@charset "iso-8859-1";@import"b.css";\xe4{color:green}'.encode('iso-8859-1')
+            a = '@charset "iso-8859-1";@import"b.css";\xe4{color:green}'.encode(
+                'iso-8859-1'
+            )
             b = '@charset "ascii";\\E4 {color:red}'.encode('ascii')
 
             # normal
@@ -307,12 +340,16 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
                 c = cssutils.resolveImports(s)
 
                 # py3 TODO
-                self.assertEqual('\xc3\xa4{color:red}\xc3\xa4{color:green}'.encode('iso-8859-1'),
-                                 c.cssText)
+                self.assertEqual(
+                    '\xc3\xa4{color:red}\xc3\xa4{color:green}'.encode('iso-8859-1'),
+                    c.cssText,
+                )
 
                 c.encoding = 'ascii'
-                self.assertEqual(r'@charset "ascii";\E4 {color:red}\E4 {color:green}'.encode(),
-                                 c.cssText)
+                self.assertEqual(
+                    r'@charset "ascii";\E4 {color:red}\E4 {color:green}'.encode(),
+                    c.cssText,
+                )
 
             # b cannot be found
             m = mock.Mock()
@@ -322,12 +359,15 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
 
                 # py3 TODO
                 self.assertEqual(a, s.cssText)
-                self.assertEqual(cssutils.css.CSSStyleSheet,
-                                 type(s.cssRules[1].styleSheet))
+                self.assertEqual(
+                    cssutils.css.CSSStyleSheet, type(s.cssRules[1].styleSheet)
+                )
                 c = cssutils.resolveImports(s)
                 # py3 TODO
-                self.assertEqual('@import"b.css";\xc3\xa4{color:green}'.encode('iso-8859-1'),
-                                 c.cssText)
+                self.assertEqual(
+                    '@import"b.css";\xc3\xa4{color:green}'.encode('iso-8859-1'),
+                    c.cssText,
+                )
 
             # @import with media
             a = '@import"b.css";@import"b.css" print, tv ;@import"b.css" all;'
@@ -339,8 +379,10 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
 
                 c = cssutils.resolveImports(s)
 
-                self.assertEqual('a{color:red}@media print,tv{a{color:red}}a{color:red}'.encode(),
-                                 c.cssText)
+                self.assertEqual(
+                    'a{color:red}@media print,tv{a{color:red}}a{color:red}'.encode(),
+                    c.cssText,
+                )
 
             # cannot resolve with media => keep original
             a = '@import"b.css"print;'
@@ -366,26 +408,26 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
                      y: url(img/img.gif);
                      z: url(b/subimg/subimg.gif);
                      }'''
+
             def fetcher(url):
                 c = {
-                     'b.css': '''
+                    'b.css': '''
                          @import"../c.css";
                          b {
                              x: url(/img/abs.gif);
                              y: url(../img/img.gif);
                              z: url(subimg/subimg.gif);
                              }''',
-                     'c.css': '''
+                    'c.css': '''
                          c {
                              x: url(/img/abs.gif);
                              y: url(./img/img.gif);
                              z: url(./b/subimg/subimg.gif);
-                             }'''
-                     }
+                             }''',
+                }
                 return 'utf-8', c[os.path.split(url)[1]]
 
-            @mock.patch.object(cssutils.util, '_defaultFetcher',
-                               new=fetcher)
+            @mock.patch.object(cssutils.util, '_defaultFetcher', new=fetcher)
             def do():
                 s = cssutils.parseString(a)
                 r = cssutils.resolveImports(s)
@@ -395,7 +437,8 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
 
             cssutils.ser.prefs.useDefaults()
             cssutils.ser.prefs.keepComments = False
-            self.assertEqual('''c {
+            self.assertEqual(
+                '''c {
     x: url(/img/abs.gif);
     y: url(img/img.gif);
     z: url(b/subimg/subimg.gif)
@@ -409,12 +452,16 @@ a {
     x: url(/img/abs.gif);
     y: url(img/img.gif);
     z: url(b/subimg/subimg.gif)
-    }'''.encode(), r.cssText)
+    }'''.encode(),
+                r.cssText,
+            )
 
             cssutils.ser.prefs.useDefaults()
         else:
             self.assertEqual(False, 'Mock needed for this test')
 
+
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

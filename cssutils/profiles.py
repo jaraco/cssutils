@@ -10,8 +10,10 @@ __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 from cssutils import util
 import re
 
+
 class NoSuchProfileException(Exception):
     """Raised if no profile with given name is found"""
+
     pass
 
 
@@ -45,6 +47,7 @@ class Profiles(object):
     If you want to redefine any of these macros do this in your custom
     macros.
     """
+
     CSS_LEVEL_2 = 'CSS Level 2.1'
     CSS3_BACKGROUNDS_AND_BORDERS = 'CSS Backgrounds and Borders Module Level 3'
     CSS3_BASIC_USER_INTERFACE = 'CSS3 Basic User Interface Module'
@@ -62,7 +65,7 @@ class Profiles(object):
         'nonascii': r'[^\0-\177]',
         'unicode': r'\\[0-9a-f]{1,6}(\r\n|[ \n\r\t\f])?',
         'escape': r'{unicode}|\\[ -~\u0080-\u01ff]',
-    #   'escape': r'{unicode}|\\[ -~\200-\4177777]',
+        #   'escape': r'{unicode}|\\[ -~\200-\4177777]',
         'int': r'[-]?\d+',
         'nmchar': r'[\w-]|{nonascii}|{escape}',
         'num': r'[-]?\d+|[-]?\d*\.\d+',
@@ -74,7 +77,7 @@ class Profiles(object):
         'string2': r"'(\\\'|[^\'])*'",
         'nl': r'\n|\r\n|\r|\f',
         'w': r'\s*',
-        }
+    }
     _MACROS = {
         'hexcolor': r'#[0-9a-f]{3}|#[0-9a-f]{6}',
         'rgbcolor': r'rgb\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\)|rgb\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\)',
@@ -89,8 +92,8 @@ class Profiles(object):
         'time': r'0|{num}m?s',
         'frequency': r'0|{num}k?Hz',
         'percentage': r'{num}%',
-        'shadow': '(inset)?{w}{length}{w}{length}{w}{length}?{w}{length}?{w}{color}?'
-        }
+        'shadow': '(inset)?{w}{length}{w}{length}{w}{length}?{w}{length}?{w}{color}?',
+    }
 
     def __init__(self, log=None):
         """A few profiles are predefined."""
@@ -109,57 +112,53 @@ class Profiles(object):
 
         self._defaultProfiles = None
 
-        self.addProfiles([(self.CSS_LEVEL_2,
-                           properties[self.CSS_LEVEL_2],
-                           macros[self.CSS_LEVEL_2]
-                           ),
-                          (self.CSS3_BACKGROUNDS_AND_BORDERS,
-                           properties[self.CSS3_BACKGROUNDS_AND_BORDERS],
-                           macros[self.CSS3_BACKGROUNDS_AND_BORDERS]
-                           ),
-                          (self.CSS3_BASIC_USER_INTERFACE,
-                           properties[self.CSS3_BASIC_USER_INTERFACE],
-                           macros[self.CSS3_BASIC_USER_INTERFACE]
-                           ),
-                          (self.CSS3_BOX,
-                           properties[self.CSS3_BOX],
-                           macros[self.CSS3_BOX]
-                           ),
-                          (self.CSS3_COLOR,
-                           properties[self.CSS3_COLOR],
-                           macros[self.CSS3_COLOR]
-                           ),
-                          (self.CSS3_FONTS,
-                           properties[self.CSS3_FONTS],
-                           macros[self.CSS3_FONTS]
-                           ),
-                          # new object for font-face only?
-                          (self.CSS3_FONT_FACE,
-                           properties[self.CSS3_FONT_FACE],
-                           macros[self.CSS3_FONTS]
-                           ),
-                          (self.CSS3_PAGED_MEDIA,
-                           properties[self.CSS3_PAGED_MEDIA],
-                           macros[self.CSS3_PAGED_MEDIA]
-                           ),
-                          (self.CSS3_TEXT,
-                           properties[self.CSS3_TEXT],
-                           macros[self.CSS3_TEXT]
-                           )
-                        ])
+        self.addProfiles(
+            [
+                (
+                    self.CSS_LEVEL_2,
+                    properties[self.CSS_LEVEL_2],
+                    macros[self.CSS_LEVEL_2],
+                ),
+                (
+                    self.CSS3_BACKGROUNDS_AND_BORDERS,
+                    properties[self.CSS3_BACKGROUNDS_AND_BORDERS],
+                    macros[self.CSS3_BACKGROUNDS_AND_BORDERS],
+                ),
+                (
+                    self.CSS3_BASIC_USER_INTERFACE,
+                    properties[self.CSS3_BASIC_USER_INTERFACE],
+                    macros[self.CSS3_BASIC_USER_INTERFACE],
+                ),
+                (self.CSS3_BOX, properties[self.CSS3_BOX], macros[self.CSS3_BOX]),
+                (self.CSS3_COLOR, properties[self.CSS3_COLOR], macros[self.CSS3_COLOR]),
+                (self.CSS3_FONTS, properties[self.CSS3_FONTS], macros[self.CSS3_FONTS]),
+                # new object for font-face only?
+                (
+                    self.CSS3_FONT_FACE,
+                    properties[self.CSS3_FONT_FACE],
+                    macros[self.CSS3_FONTS],
+                ),
+                (
+                    self.CSS3_PAGED_MEDIA,
+                    properties[self.CSS3_PAGED_MEDIA],
+                    macros[self.CSS3_PAGED_MEDIA],
+                ),
+                (self.CSS3_TEXT, properties[self.CSS3_TEXT], macros[self.CSS3_TEXT]),
+            ]
+        )
 
         self.__update_knownNames()
 
     def _expand_macros(self, dictionary, macros):
         """Expand macros in token dictionary"""
+
         def macro_value(m):
             return '(?:%s)' % macros[m.groupdict()['macro']]
 
         for key, value in list(dictionary.items()):
             if not hasattr(value, '__call__'):
                 while re.search(r'{[a-z][a-z0-9-]*}', value):
-                    value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
-                                   macro_value, value)
+                    value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}', macro_value, value)
             dictionary[key] = value
 
         return dictionary
@@ -196,18 +195,23 @@ class Profiles(object):
         else:
             self._defaultProfiles = profiles
 
-    defaultProfiles = property(_getDefaultProfiles,
-                               _setDefaultProfiles,
-                               doc="Names of profiles to use for validation."
-                                   "To use e.g. the CSS2 profile set "
-                                   "``cssutils.profile.defaultProfiles = "
-                                   "cssutils.profile.CSS_LEVEL_2``")
+    defaultProfiles = property(
+        _getDefaultProfiles,
+        _setDefaultProfiles,
+        doc="Names of profiles to use for validation."
+        "To use e.g. the CSS2 profile set "
+        "``cssutils.profile.defaultProfiles = "
+        "cssutils.profile.CSS_LEVEL_2``",
+    )
 
-    profiles = property(lambda self: self._profileNames,
-                        doc='Names of all profiles in order as defined.')
+    profiles = property(
+        lambda self: self._profileNames,
+        doc='Names of all profiles in order as defined.',
+    )
 
-    knownNames = property(lambda self: self._knownNames,
-                               doc="All known property names of all profiles.")
+    knownNames = property(
+        lambda self: self._knownNames, doc="All known property names of all profiles."
+    )
 
     def _resetProperties(self, newMacros=None):
         "reset all props from raw values as changes in macros happened"
@@ -227,14 +231,14 @@ class Profiles(object):
         self._profilesProperties.clear()
         for profile in self._profileNames:
             properties = self._expand_macros(
-                            # keep raw
-                            self._rawProfiles[profile]['properties'].copy(),
-                            macros)
+                # keep raw
+                self._rawProfiles[profile]['properties'].copy(),
+                macros,
+            )
             self._profilesProperties[profile] = self._compile_regexes(properties)
 
         # save
         self._usedMacros = macros
-
 
     def addProfiles(self, profiles):
         """Add a list of profiles at once. Useful as if profiles define custom
@@ -250,7 +254,6 @@ class Profiles(object):
         # only add new properties
         for profile, properties, macros in profiles:
             self.addProfile(profile, properties.copy(), None)
-
 
     def addProfile(self, profile, properties, macros=None):
         """Add a new profile with name `profile` (e.g. 'CSS level 2')
@@ -294,14 +297,15 @@ class Profiles(object):
 
         # save name and raw props/macros if macros change to completely reset
         self._profileNames.append(profile)
-        self._rawProfiles[profile] = {'properties': properties.copy(),
-                                      'macros': macros.copy()}
+        self._rawProfiles[profile] = {
+            'properties': properties.copy(),
+            'macros': macros.copy(),
+        }
         # prepare and save properties
         properties = self._expand_macros(properties, self._usedMacros)
         self._profilesProperties[profile] = self._compile_regexes(properties)
 
         self.__update_knownNames()
-
 
     def removeProfile(self, profile=None, all=False):
         """Remove `profile` or remove `all` profiles.
@@ -326,7 +330,7 @@ class Profiles(object):
             reset = False
 
             try:
-                if (self._rawProfiles[profile]['macros']):
+                if self._rawProfiles[profile]['macros']:
                     reset = True
 
                 del self._profilesProperties[profile]
@@ -352,7 +356,7 @@ class Profiles(object):
         if not profiles:
             profiles = self.profiles
         elif isinstance(profiles, str):
-            profiles = (profiles, )
+            profiles = (profiles,)
         try:
             for profile in sorted(profiles):
                 for name in sorted(self._profilesProperties[profile].keys()):
@@ -415,7 +419,7 @@ class Profiles(object):
             if not profiles:
                 profiles = self.defaultProfiles
             elif isinstance(profiles, str):
-                profiles = (profiles, )
+                profiles = (profiles,)
             for profilename in reversed(profiles):
                 # check given profiles
                 if name in self._profilesProperties[profilename]:
@@ -426,8 +430,7 @@ class Profiles(object):
                     except Exception as e:
                         self._log.error(e, error=Exception)
 
-            for profilename in (p for p in self._profileNames
-                                if p not in profiles):
+            for profilename in (p for p in self._profileNames if p not in profiles):
                 # check remaining profiles as well
                 if name in self._profilesProperties[profilename]:
                     validate = self._profilesProperties[profilename][name]
@@ -598,8 +601,8 @@ macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'b5': r'{color}?({w}{border-style})?({w}{border-width})?',
     'b6': r'{color}?({w}{border-width})?({w}{border-style})?',
     'border-attrs': r'{b1}|{b2}|{b3}|{b4}|{b5}|{b6}',
-    'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?'
-    }
+    'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?',
+}
 properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'border-color': r'({color}|transparent)(\s+({color}|transparent)){0,3}|inherit',
     'border-style': r'{border-style}(\s+{border-style}){0,3}|inherit',
@@ -627,7 +630,7 @@ properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'border-top-left-radius': '{border-radius-part}',
     'border-radius': '({length}{w}|{percentage}{w}){1,4}(/{w}({length}{w}|{percentage}{w}){1,4})?',
     'box-shadow': 'none|{shadow}({w},{w}{shadow})*',
-    }
+}
 
 # CSS3 Basic User Interface Module
 macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
@@ -642,7 +645,7 @@ macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'outline-color': r'{color}|invert|inherit',
     'outline-style': r'auto|{border-style}|inherit',
     'outline-width': r'{border-width}|inherit',
-    }
+}
 properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'box-sizing': r'content-box|border-box',
     'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit',
@@ -654,32 +657,30 @@ properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     #'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
     'outline': r'{outline-1}|{outline-2}|{outline-3}|{outline-4}|{outline-5}|{outline-6}|inherit',
     'resize': 'none|both|horizontal|vertical|inherit',
-    }
+}
 
 # CSS Box Module Level 3
-macros[Profiles.CSS3_BOX] = {
-    'overflow': macros[Profiles.CSS_LEVEL_2]['overflow']
-    }
+macros[Profiles.CSS3_BOX] = {'overflow': macros[Profiles.CSS_LEVEL_2]['overflow']}
 properties[Profiles.CSS3_BOX] = {
     'overflow': '{overflow}{w}{overflow}?|inherit',
     'overflow-x': '{overflow}|inherit',
-    'overflow-y': '{overflow}|inherit'
-    }
+    'overflow-y': '{overflow}|inherit',
+}
 
 # CSS Color Module Level 3
 macros[Profiles.CSS3_COLOR] = {
     # orange and transparent in CSS 2.1
     'namedcolor': r'(currentcolor|transparent|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow)',
-                    # orange?
+    # orange?
     'rgbacolor': r'rgba\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\,{w}{num}{w}\)|rgba\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)',
     'hslcolor': r'hsl\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\)|hsla\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)',
     'x11color': r'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen',
     'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|{x11color}|inherit',
-    }
+}
 properties[Profiles.CSS3_COLOR] = {
     'opacity': r'{num}|inherit',
-    }
+}
 
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
@@ -687,20 +688,20 @@ macros[Profiles.CSS3_FONTS] = {
     'family-name': r'{string}|({ident}(\s+{ident})*)',
     'font-face-name': 'local\({w}{family-name}{w}\)',
     'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
-    'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'
-    }
+    'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?',
+}
 properties[Profiles.CSS3_FONTS] = {
     'font-size-adjust': r'{number}|none|inherit',
-    'font-stretch': r'normal|wider|narrower|{font-stretch-names}|inherit'
-    }
+    'font-stretch': r'normal|wider|narrower|{font-stretch-names}|inherit',
+}
 properties[Profiles.CSS3_FONT_FACE] = {
     'font-family': '{family-name}',
     'font-stretch': r'{font-stretch-names}',
     'font-style': r'normal|italic|oblique',
     'font-weight': r'normal|bold|[1-9]00',
     'src': r'({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name})({w},{w}({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name}))*',
-    'unicode-range': '{unicode-range}({w},{w}{unicode-range})*'
-    }
+    'unicode-range': '{unicode-range}({w},{w}{unicode-range})*',
+}
 
 # CSS3 Paged Media
 macros[Profiles.CSS3_PAGED_MEDIA] = {
@@ -709,8 +710,8 @@ macros[Profiles.CSS3_PAGED_MEDIA] = {
     'page-1': '{page-size}(?:{w}{page-orientation})?',
     'page-2': '{page-orientation}(?:{w}{page-size})?',
     'page-size-orientation': '{page-1}|{page-2}',
-    'pagebreak': 'auto|always|avoid|left|right'
-    }
+    'pagebreak': 'auto|always|avoid|left|right',
+}
 properties[Profiles.CSS3_PAGED_MEDIA] = {
     'fit': 'fill|hidden|meet|slice',
     'fit-position': r'auto|(({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?))',
@@ -721,12 +722,10 @@ properties[Profiles.CSS3_PAGED_MEDIA] = {
     'page-break-after': '{pagebreak}|inherit',
     'page-break-inside': 'auto|avoid|inherit',
     'size': '({length}{w}){1,2}|auto|{page-size-orientation}',
-    'widows': r'{integer}|inherit'
-    }
+    'widows': r'{integer}|inherit',
+}
 
-macros[Profiles.CSS3_TEXT] = {
-    }
+macros[Profiles.CSS3_TEXT] = {}
 properties[Profiles.CSS3_TEXT] = {
     'text-shadow': 'none|{shadow}({w},{w}{shadow})*',
-    }
-
+}

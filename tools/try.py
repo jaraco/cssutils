@@ -17,6 +17,7 @@ import urllib.request, urllib.parse, urllib.error
 import urllib.parse
 import xml
 import xml.dom
+
 try:
     from minimock import mock, restore
 except ImportError:
@@ -25,6 +26,7 @@ except ImportError:
 sys.stdout.write(sys.version)
 print()
 
+
 def save(name, string):
     f = open(name, 'w')
     f.write(string)
@@ -32,14 +34,14 @@ def save(name, string):
 
 
 def maketokens(valuelist):
-                # returns list of tuples
-                return [('TYPE', v, 0, 0) for v in valuelist]
+    # returns list of tuples
+    return [('TYPE', v, 0, 0) for v in valuelist]
 
 
 if 1:
-    #m = cssutils.stylesheets.MediaList('tv and (color), handheld and (width: 1px) and (color)')
-    #m[10] = 'tv'
-    #print m.mediaText
+    # m = cssutils.stylesheets.MediaList('tv and (color), handheld and (width: 1px) and (color)')
+    # m[10] = 'tv'
+    # print m.mediaText
 
     css = '''
     :root {
@@ -77,28 +79,26 @@ if 1:
     css = '''@media tv,braille,tv {
         a {color:red}
     }'''
-    #print cssutils.parseString(css).cssText
-    #sys.exit(1)
+    # print cssutils.parseString(css).cssText
+    # sys.exit(1)
 
-    
-    #m = cssutils.stylesheets.MediaList('not tv,braille and')
+    # m = cssutils.stylesheets.MediaList('not tv,braille and')
     m = cssutils.stylesheets.MediaList('(color),braille and, tty')
 
-    print() 
+    print()
     print(m, m.wellformed)
     print(m.mediaText)
     print(m.length)
     for mq in m:
         print(mq, mq.mediaType)
-    #print
-    #for mq in m:
+    # print
+    # for mq in m:
     #    mq.mediaType = 'tv'
     #    print mq.mediaType, mq
 
-
-    #mq = cssutils.stylesheets.MediaQuery('tv,')
-    #print mq
-    #print mq.mediaText
+    # mq = cssutils.stylesheets.MediaQuery('tv,')
+    # print mq
+    # print mq.mediaText
 
     sys.exit(1)
 
@@ -123,20 +123,17 @@ if 1:
     pv = p.propertyValue
     for c in pv:
         print(c)
-        #print c.name, c.colorType, c.red, c.green, c.blue, c.alpha
-#    for i, v in enumerate(pv):
-#        print i, v
-#        print 'RGBA', v.red, v.green, v.blue, v.alpha
-#    v = cssutils.css.Value(css)
-    #v = cssutils.css.CSSFunction(css)
+        # print c.name, c.colorType, c.red, c.green, c.blue, c.alpha
+    #    for i, v in enumerate(pv):
+    #        print i, v
+    #        print 'RGBA', v.red, v.green, v.blue, v.alpha
+    #    v = cssutils.css.Value(css)
+    # v = cssutils.css.CSSFunction(css)
 
-#    print v
-#    for i, x in enumerate(v.seq):
-#        print i, x.value
+    #    print v
+    #    for i, x in enumerate(v.seq):
+    #        print i, x.value
     sys.exit(1)
-
-
-
 
 
 if 1:
@@ -148,11 +145,11 @@ font-family : a  b;
     cssutils.parseString(s).cssText
     sys.exit(1)
 
-
     import cssutils, pprint
+
     # remove ALL predefined property profiles
-#    cssutils.profile.removeProfile(all=True)
-#
+    #    cssutils.profile.removeProfile(all=True)
+    #
     # add your custom profile, {num} is defined in Profile and always available
     macros = {'color': 'a|b|c', 'num': '1'}
     props = {'abc': '{num}', 'color': '{color}'}
@@ -164,46 +161,53 @@ font-family : a  b;
     # keep only valid properties (valid in given profile)
     cssutils.ser.prefs.validOnly = True
 
-    print(cssutils.parseString('''a {
+    print(
+        cssutils.parseString(
+            '''a {
         color: a;
         background: b;
-    }''').cssText)
+    }'''
+        ).cssText
+    )
 
     cssutils.profile.removeProfile('my1')
     cssutils.profile.removeProfile('my2')
 
-    print(cssutils.parseString('''a {
+    print(
+        cssutils.parseString(
+            '''a {
         color: a;
         background: b;
-    }''').cssText)
+    }'''
+        ).cssText
+    )
 
-##    import cssutils, pprint
-##    print "TOKEN_MACROS"
-##    pprint.pprint(cssutils.profile._TOKEN_MACROS)
-##    print "MACROS"
-##    pprint.pprint(cssutils.profile._MACROS)
-#
-#    from cssutils.profiles import macros as predef
-#    from cssutils import profile
-#    macros = {'my-font': predef[profile.CSS_LEVEL_2]['family-name'],
-#              'identifier': predef[profile.CSS_LEVEL_2]['identifier']}
-#    props = {'f': '{my-font}'}
-#    cssutils.profile.addProfile('my-font-profile', props, macros)
-#    print cssutils.parseString('''a {
-#        f: 1; /* 1 is invalid! */
-#        f: Arial;
-#    }''').cssText
+    ##    import cssutils, pprint
+    ##    print "TOKEN_MACROS"
+    ##    pprint.pprint(cssutils.profile._TOKEN_MACROS)
+    ##    print "MACROS"
+    ##    pprint.pprint(cssutils.profile._MACROS)
+    #
+    #    from cssutils.profiles import macros as predef
+    #    from cssutils import profile
+    #    macros = {'my-font': predef[profile.CSS_LEVEL_2]['family-name'],
+    #              'identifier': predef[profile.CSS_LEVEL_2]['identifier']}
+    #    props = {'f': '{my-font}'}
+    #    cssutils.profile.addProfile('my-font-profile', props, macros)
+    #    print cssutils.parseString('''a {
+    #        f: 1; /* 1 is invalid! */
+    #        f: Arial;
+    #    }''').cssText
 
     sys.exit(0)
 
 
-
 if 1:
-#    v = cssutils.css.CSSVariablesDeclaration()
-#    v.cssText = 'top '
-#    print v
-#
-#    sys.exit(0)
+    #    v = cssutils.css.CSSVariablesDeclaration()
+    #    v.cssText = 'top '
+    #    print v
+    #
+    #    sys.exit(0)
     cssutils.ser.prefs.keepComments = True
     t = '''
     @page x {
@@ -227,25 +231,23 @@ if 1:
     p = s.cssRules[0]
     print(p)
 
-
     sys.exit(1)
 
 
 if 1:
     sel = [
-           'E[foo="bar"], E[foo~="bar"], E[foo^="bar"], E[foo$="bar"], E[foo*="bar"], E[foo|="bar"]',
-           'E:dir(ltr), E:lang(fr), E:any-link, E:local-link, E:local-link(0), E:target, E:scope',
-           'E:not(s1, s2)',
-           'E:matches(s1, s2)',
-           'E[foo="bar" i]',
-           'E /foo/ F',
-           '$E > F',
+        'E[foo="bar"], E[foo~="bar"], E[foo^="bar"], E[foo$="bar"], E[foo*="bar"], E[foo|="bar"]',
+        'E:dir(ltr), E:lang(fr), E:any-link, E:local-link, E:local-link(0), E:target, E:scope',
+        'E:not(s1, s2)',
+        'E:matches(s1, s2)',
+        'E[foo="bar" i]',
+        'E /foo/ F',
+        '$E > F',
     ]
 
-
-#    t = cssutils.tokenize2.Tokenizer()
-#    pprint.pprint(list(t.tokenize(x)))
-#    print
+    #    t = cssutils.tokenize2.Tokenizer()
+    #    pprint.pprint(list(t.tokenize(x)))
+    #    print
 
     for i, s in enumerate(sel):
         print(i, s)
@@ -256,22 +258,19 @@ if 1:
     sys.exit(0)
 
 
-
 if 1:
-    href = os.path.join(os.path.dirname(__file__),
-                        '..', 'sheets', 'import.css')
+    href = os.path.join(os.path.dirname(__file__), '..', 'sheets', 'import.css')
     href = cssutils.helper.path2url(href)
-    #href = 'http://seewhatever.de/sheets/import.css'
-    s = cssutils.parseUrl(href,
-                          media='tv, print',
-                          title='from url')
+    # href = 'http://seewhatever.de/sheets/import.css'
+    s = cssutils.parseUrl(href, media='tv, print', title='from url')
     print(s.cssText)
     sys.exit(0)
 
 
 if 1:
     import cssutils.script
-    #p = r'sheets\vars\vars.css'
+
+    # p = r'sheets\vars\vars.css'
     p = r'sheets\var\start.css'
 
     do = """
@@ -383,24 +382,23 @@ ul, ol, li, dd {
     """
     t = cssutils.tokenize2.Tokenizer()
 
-
-    t = timeit.Timer(do)       # outside the try/except
+    t = timeit.Timer(do)  # outside the try/except
     try:
-        print(t.timeit(100))    # or t.repeat(...)
+        print(t.timeit(100))  # or t.repeat(...)
     except:
         print(t.print_exc())
 
-#    print cssutils.script.csscombine(p,
-#                                     resolveVariables=True)
-#    cssutils.ser.prefs.resolveVariables = True
-#    s = cssutils.parseFile(p)
-#    print s.cssRules
-#    print s.cssText
+    #    print cssutils.script.csscombine(p,
+    #                                     resolveVariables=True)
+    #    cssutils.ser.prefs.resolveVariables = True
+    #    s = cssutils.parseFile(p)
+    #    print s.cssRules
+    #    print s.cssText
     sys.exit(1)
 
 
 if 1:
-    css='''
+    css = '''
     a {
         border: red 1px solid;
         border-radius: 1px  2px /   4px;
@@ -418,20 +416,20 @@ if 1:
     t = cssutils.tokenize2.Tokenizer()
     for x in t.tokenize(css):
         print(x)
-#
-#    v = cssutils.css.URIValue(u'url(/**/1)')
-#    print v.cssText
-#    v.uri = 'uri'
-#    print v.cssText
-#    v.value = 'value'
-#    print v.cssText
+    #
+    #    v = cssutils.css.URIValue(u'url(/**/1)')
+    #    print v.cssText
+    #    v.uri = 'uri'
+    #    print v.cssText
+    #    v.value = 'value'
+    #    print v.cssText
 
     sys.exit(1)
 
 if 1:
     # request by Walter
     style = cssutils.parseStyle("background-image: url(1.png), url('2.png')")
-    cssutils.replaceUrls(style, lambda url: 'prefix/'+url)
+    cssutils.replaceUrls(style, lambda url: 'prefix/' + url)
     print(style.cssText)
 
     sys.exit(1)
@@ -444,8 +442,6 @@ if 0:
     print(sheet.cssText)
 
     sys.exit(1)
-
-
 
 
 if 1:
@@ -480,16 +476,15 @@ if 0:
     sys.exit(1)
 
 
-
-
-
-
 if 1:
+
     def fetcher(url):
         url = url.replace('\\', '/')
-        url = url[url.rfind('/')+1:]
-        return (None, {
-            '3.css': '''
+        url = url[url.rfind('/') + 1 :]
+        return (
+            None,
+            {
+                '3.css': '''
                 @variables {
                     over3-2-1-0: 3;
                     over3-2-1: 3;
@@ -502,7 +497,7 @@ if 1:
                 }
 
             ''',
-            '2.css': '''
+                '2.css': '''
                 @variables {
                     over3-2-1-0: 2;
                     over3-2-1: 2;
@@ -515,7 +510,7 @@ if 1:
                 }
 
             ''',
-            '1.css': '''
+                '1.css': '''
                 @import "3.css";
                 @import "2.css";
                 @variables {
@@ -529,8 +524,9 @@ if 1:
                     local1: 1;
                 }
 
-            '''
-            }[url])
+            ''',
+            }[url],
+        )
 
     css = '''
         @import "1.css";
@@ -564,7 +560,7 @@ if 1:
     cssutils.ser.prefs.resolveVariables = False
     p = cssutils.CSSParser(fetcher=fetcher)
     s = p.parseString(css)
-    #print s.cssText
+    # print s.cssText
     print()
     s = cssutils.resolveImports(s)
     print(sorted(s.variables.keys()))
@@ -572,24 +568,24 @@ if 1:
     sys.exit(0)
 
 
-
 if 1:
     print(cssutils.ser.prefs.keepUnkownAtRules)
     cssutils.ser.prefs.keepUnkownAtRules = 1
     sys.exit(1)
 
-
     def fetcher(url):
         if url == "/1/2.css":
-            return None, '''@variables {
+            return (
+                None,
+                '''@variables {
                 color: red;
-            }'''
+            }''',
+            )
         else:
             return None, 'a { color: red }'
 
     parser = cssutils.CSSParser(fetcher=fetcher)
-    sheet = parser.parseString('''@import "2.css" tv "title";''',
-                               href='/1/')
+    sheet = parser.parseString('''@import "2.css" tv "title";''', href='/1/')
 
     print(sheet.cssText)
 
@@ -620,9 +616,9 @@ if 1:
     cssutils.parseString(css)
     """
     print(cssutils.VERSION)
-    t = timeit.Timer(do)       # outside the try/except
+    t = timeit.Timer(do)  # outside the try/except
     try:
-        print(t.timeit(100))    # or t.repeat(...)
+        print(t.timeit(100))  # or t.repeat(...)
     except:
         print(t.print_exc())
 
@@ -633,6 +629,7 @@ if 1:
 
     def f(url):
         return (None, '/*%s*/' % url)
+
     p = cssutils.CSSParser(fetcher=f)
 
     cssrulessheet = p.parseString('@import "x";')
@@ -642,12 +639,11 @@ if 1:
     added = sheet.cssRules[1]
     print(sheet == added.parentStyleSheet)
     print('x' == added.href)
-    print(added.styleSheet.encoding)# == u'utf-8'
+    print(added.styleSheet.encoding)  # == u'utf-8'
     print(1, cssrulessheet.cssText)
-    print(2, added.styleSheet.cssText) # == u'/**/'
+    print(2, added.styleSheet.cssText)  # == u'/**/'
 
     sys.exit(0)
-
 
 
 if 0:
@@ -667,14 +663,16 @@ if 0:
     print(varrule)
     for v in varrule.variables:
         print(v, varrule.variables[v])
-    print(20*'-')
+    print(20 * '-')
 
-    v = cssutils.css.CSSVariablesDeclaration(cssText='''
+    v = cssutils.css.CSSVariablesDeclaration(
+        cssText='''
     a: 1px;
     /* 1 */
     c: #f00;
     a: 2px 2px
-    ''')
+    '''
+    )
     print(v.cssText)
     sys.exit(1)
 
@@ -723,32 +721,32 @@ if 1:
 
     varrule, mediarule, stylerule = s.cssRules
 
-    #cssutils.ser.prefs.resolveVariables = True
+    # cssutils.ser.prefs.resolveVariables = True
     print(s.cssText)
-    #print 20*'-'
-    #print cssutils.resolveVariables(s).cssText
-
+    # print 20*'-'
+    # print cssutils.resolveVariables(s).cssText
 
     sys.exit(1)
 
     print()
-#    p = stylerule.style.getProperty('color')
-#    print p
-#    print '3', id(p.cssValue), type(p.cssValue), p.cssValue
+    #    p = stylerule.style.getProperty('color')
+    #    print p
+    #    print '3', id(p.cssValue), type(p.cssValue), p.cssValue
     print('\n--- RESOLVE var() and remove @variables ---')
 
     # replace vars (ALL!)
     for p in stylerule.style.getProperties(all=True):
         v = p.cssValue
-        #print 1, v.cssValueTypeString, v
+        # print 1, v.cssValueTypeString, v
 
         if v.cssValueType == v.CSS_VALUE_LIST:
             newvalue = []
             for vi in v:
                 if vi.cssValueType == vi.CSS_VARIABLE:
                     if vi.value:
-                        print('+ CSSValueList: Replacing %r with %r' % (p.value,
-                                                                        vi.value))
+                        print(
+                            '+ CSSValueList: Replacing %r with %r' % (p.value, vi.value)
+                        )
                         newvalue.append(vi.value)
                     else:
                         print('- CSSValueList: No value found for %r' % vi.cssText)
@@ -765,36 +763,38 @@ if 1:
             else:
                 print('- No value found for %r' % p.value)
 
-
     # remove @variables rules
     for r in s:
         if r.VARIABLES_RULE == r.type:
             s.deleteRule(r)
 
-    #cssutils.ser.prefs.validOnly = True
+    # cssutils.ser.prefs.validOnly = True
     print()
     print(s.cssText)
 
     sys.exit(1)
 
 
-
-
 if 0:
-    cssutils.cssproductions.PRODUCTIONS.insert(1,('EXPRESSION',
-        r'\(?\s*function\s*\(({ident},?\s*)*\)\s*\{(\s|\S)*\}\s*\)?\((({ident}|\.),?\s*)*\)'))
+    cssutils.cssproductions.PRODUCTIONS.insert(
+        1,
+        (
+            'EXPRESSION',
+            r'\(?\s*function\s*\(({ident},?\s*)*\)\s*\{(\s|\S)*\}\s*\)?\((({ident}|\.),?\s*)*\)',
+        ),
+    )
 
     css = """
     selector {
 x:expression((function(ele){ele.style.behavior=''})(this));
 }
     """
-    s =  cssutils.parseString(css)
-#    p = s.cssRules[0].style.getPropertyCSSValue('x')
-#    print p
-#    p.cssText = u'expression((function(ele){ele.style.behavior="none";})(this))'
+    s = cssutils.parseString(css)
+    #    p = s.cssRules[0].style.getPropertyCSSValue('x')
+    #    print p
+    #    p.cssText = u'expression((function(ele){ele.style.behavior="none";})(this))'
 
-    #p = cssutils.css.CSSPrimitiveValue(u'expression((function(ele){ele.style.behavior="none";})(this))')
+    # p = cssutils.css.CSSPrimitiveValue(u'expression((function(ele){ele.style.behavior="none";})(this))')
 
     sys.exit(1)
 
@@ -843,13 +843,13 @@ if 1:
     sys.exit(0)
 
 
-
 if 1:
     import cssutils.sac
 
     echo = cssutils.sac.EchoHandler()
     p = cssutils.sac.Parser(echo)
-    p.parseString('''@charset "ascii";
+    p.parseString(
+        '''@charset "ascii";
         /* 1 */
         @import url("x");
         @namespace x "urlx";
@@ -863,18 +863,21 @@ if 1:
             a{}
             }
         @x 1;
-        html, x>y, .x {left:0;color:red ! /*1*/ important;}''')
+        html, x>y, .x {left:0;color:red ! /*1*/ important;}'''
+    )
 
     print('\n\n--------------')
     print(echo.out)
 
     sys.exit(1)
 
-    sheet =  []
-    for t in p.parseString('''
+    sheet = []
+    for t in p.parseString(
+        '''
     a, b {
         color: red;
-        background: url(/1.png); }'''):
+        background: url(/1.png); }'''
+    ):
         type_, text, line, col = t
         if 'URI' == type_:
             uri = cssutils.helper.urivalue(text)
@@ -886,7 +889,6 @@ if 1:
     print(''.join(sheet))
 
     sys.exit(1)
-
 
 
 if 1:
@@ -904,12 +906,6 @@ if 1:
     print(2, p)
 
     sys.exit(0)
-
-
-
-
-
-
 
 
 if 1:
@@ -956,28 +952,31 @@ if 1:
     sys.exit(1)
 
 if 1:
-    r = cssutils.parseString(r'''
+    r = cssutils.parseString(
+        r'''
         @font-face {
             font-family: a;
             src: local(x)
         }
-    ''').cssRules[0]
+    '''
+    ).cssRules[0]
     print(r, r.valid)
     sys.exit(1)
     for p in st.getProperties():
         print(p)
-#        v = p.cssValue
-#        if v.cssValueType == v.CSS_VALUE_LIST:
-#            for i, x in enumerate(v):
-#                #print i, x
-#                #if x.primitiveType == x.CSS_STRING:
-#                #    print '\t', 111, x.getStringValue()
-#                print
-#        print v
+    #        v = p.cssValue
+    #        if v.cssValueType == v.CSS_VALUE_LIST:
+    #            for i, x in enumerate(v):
+    #                #print i, x
+    #                #if x.primitiveType == x.CSS_STRING:
+    #                #    print '\t', 111, x.getStringValue()
+    #                print
+    #        print v
     print(st.cssText)
     print()
     sys.exit(1)
-    s = cssutils.parseString('''
+    s = cssutils.parseString(
+        '''
     @font-face {
         src: local(HiraKakuPro-W3), local(Meiryo), local(IPAPGothic);
         src: local(Gentium), url(/fonts/Gentium.ttf);
@@ -1004,7 +1003,8 @@ if 1:
     @page {
         font-weight: bolder;
         }*/
-    ''')
+    '''
+    )
     for r in s:
         if r.type != r.COMMENT:
             for p in r.style.getProperties(all=True):
@@ -1017,9 +1017,11 @@ if 1:
         # normally r == encoding, content
         def fetcher(url):
             return r
+
         return fetcher
 
     sys.exit(0)
+
 
 def pathname2url(p):
     """OS-specific conversion from a file system path to a relative URL
@@ -1029,12 +1031,13 @@ def pathname2url(p):
     # becomes
     # ///C|/foo/bar/spam.foo
     import urllib.request, urllib.parse, urllib.error
+
     if not ':' in p:
         # No drive specifier, just convert slashes and quote the name
         if p[:2] == '\\\\':
-        # path is something like \\host\path\on\remote\host
-        # convert this to ////host/path/on/remote/host
-        # (notice doubling of slashes at the start of the path)
+            # path is something like \\host\path\on\remote\host
+            # convert this to ////host/path/on/remote/host
+            # (notice doubling of slashes at the start of the path)
             p = '\\\\' + p
         components = p.split('\\')
         return urllib.parse.quote('/'.join(components))
@@ -1053,17 +1056,18 @@ def pathname2url(p):
 
 
 if 0:
+
     def jyhref(path):
         href = os.path.abspath(path)
         href = href.replace('\\', '/')
-        return 'file:'+href
+        return 'file:' + href
 
-    name = os.path.join(os.path.dirname(__file__),
-                            '..', 'sheets', 'import.css')
+    name = os.path.join(os.path.dirname(__file__), '..', 'sheets', 'import.css')
 
-    #href = 'file:' + urllib.pathname2url(name)
+    # href = 'file:' + urllib.pathname2url(name)
 
     from nturl2path import pathname2url
+
     href = pathname2url(os.path.abspath(name))
     href = href.replace('|', ':')
     href = href[3:]
@@ -1081,15 +1085,15 @@ if 0:
     sys.exit(0)
 
 
-
-
-
 if 1:
     from cssutils.script import csscombine
-    #a = csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
+
+    # a = csscombine(url='http://localhost/css.css', targetencoding='iso-8859-1', minify=False)
     print()
-    b = csscombine(r"E:\xampp\htdocs\css.css", targetencoding='iso-8859-1', minify=False)
-    #print a
+    b = csscombine(
+        r"E:\xampp\htdocs\css.css", targetencoding='iso-8859-1', minify=False
+    )
+    # print a
     print(b)
 
     sys.exit(0)
@@ -1103,36 +1107,34 @@ if 1:
     sys.exit(1)
 
 
-
 if 1:
     cssutils.log.setLevel(logging.DEBUG)
     css = '''rect(1,2,3)'''
     p = cssutils.css.Property('left', '1.2pc')
     print(p)
 
-
     v = cssutils.css.CSSValue(css)
-#
+    #
     print(v)
     print(v.cssText)
 
-#
-    #print v.getRGBColorValue()
-    #v.setFloatValue(v.CSS_RGBACOLOR, 1)
+    #
+    # print v.getRGBColorValue()
+    # v.setFloatValue(v.CSS_RGBACOLOR, 1)
     print()
 
-    #print v
-    #v.setFloatValue(cssutils.css.CSSPrimitiveValue.CSS_KHZ, 2000)
-    #print v
-#    s = cssutils.parseString('a { left:  inherit; }')
-#    print s.cssText
-    #cssutils.log.raiseExceptions = False
-#    p = cssutils.css.Property(name="color",
-#                              value="red",
-#                              priority="!important"
-#                              )
-#    print p
-#    print p.cssText
+    # print v
+    # v.setFloatValue(cssutils.css.CSSPrimitiveValue.CSS_KHZ, 2000)
+    # print v
+    #    s = cssutils.parseString('a { left:  inherit; }')
+    #    print s.cssText
+    # cssutils.log.raiseExceptions = False
+    #    p = cssutils.css.Property(name="color",
+    #                              value="red",
+    #                              priority="!important"
+    #                              )
+    #    print p
+    #    print p.cssText
     sys.exit(1)
 
 
@@ -1140,32 +1142,37 @@ if 1:
     cssutils.log.setLevel(logging.DEBUG)
     s = cssutils.parseString('')
     print(s.cssText)
-    #v = s.cssRules[0].style.getPropertyCSSValue('color')
-    #print v
+    # v = s.cssRules[0].style.getPropertyCSSValue('color')
+    # print v
 
     sys.exit()
 
-#    from cssutils.profiles import profiles
+    #    from cssutils.profiles import profiles
     # TODO: better API
-#    cssutils.css.profiles.profiles.addProfile('x', {
-#        'color': '1',
-#        'x': '{int}'})
+    #    cssutils.css.profiles.profiles.addProfile('x', {
+    #        'color': '1',
+    #        'x': '{int}'})
     cssutils.log.setLevel(logging.DEBUG)
 
     print(list(profiles.propertiesByProfile('profiles.CSS3_COLOR')))
 
-    print(cssutils.parseString('''
+    print(
+        cssutils.parseString(
+            '''
         a { opacity: 0.9;
             color: #000;
             color: rgba(0,0,0, 0);
         }
-    ''').cssText)
+    '''
+        ).cssText
+    )
 
     sys.exit(1)
 
 if 1:
     cssutils.log.setLevel(logging.DEBUG)
     from cssutils.script import csscombine
+
     c = csscombine('sheets/csscombine-proxy.css')
     print(c)
 
@@ -1211,8 +1218,9 @@ if 0:
         try:
             r = urlfetch.fetch(url, method=urlfetch.GET)
         except urlfetch.Error as e:
-            cssutils.log.warn('Error opening url=%r: %s' % (url, e.message),
-                              error=IOError)
+            cssutils.log.warn(
+                'Error opening url=%r: %s' % (url, e.message), error=IOError
+            )
         else:
             if r.status_code == 200:
                 # find mimetype and encoding
@@ -1226,13 +1234,15 @@ if 0:
                 return encoding, r.content
             else:
                 # TODO: 301 etc
-                cssutils.log.warn('Error opening url=%r: HTTP status %s' %
-                                  (url, r.status_code), error=IOError)
+                cssutils.log.warn(
+                    'Error opening url=%r: HTTP status %s' % (url, r.status_code),
+                    error=IOError,
+                )
 
     def fetcher(url):
         return 'text/css', 'ascii', '/*test*/'
 
-    p = cssutils.CSSParser()#fetcher=fetcher)
+    p = cssutils.CSSParser()  # fetcher=fetcher)
     url = 'http://cdot.local/sheets/import.css'
     x = p.parseUrl(url, encoding='iso-8859-1')
     print()
@@ -1244,23 +1254,24 @@ if 0:
     print(x2.cssText[:50])
 
     # ValueError:
-#    css = u'a {content: "ä"}'.encode('iso-8859-1')
-#    s = cssutils.parseString(css, encoding='iso-8859-1')
-#    print s
+    #    css = u'a {content: "ä"}'.encode('iso-8859-1')
+    #    s = cssutils.parseString(css, encoding='iso-8859-1')
+    #    print s
 
     # HTTPError
-    #_fetchUrl('http://cthedot.de/__UNKNOWN__.css')
+    # _fetchUrl('http://cthedot.de/__UNKNOWN__.css')
 
     # URLError
-    #_fetchUrl('mailto:a.css')
-    #_fetchUrl('http://localhost/__UNKNOWN__.css')
+    # _fetchUrl('mailto:a.css')
+    # _fetchUrl('http://localhost/__UNKNOWN__.css')
 
     sys.exit(0)
 
 
 if 0:
     # RESOLVE INDENTATION!!!
-    sheet = cssutils.parseString('''
+    sheet = cssutils.parseString(
+        '''
         a,b  { color: red }
         a:hover {color: blue}
         b a { left: 0 }
@@ -1270,7 +1281,8 @@ if 0:
             b a { color: blue}
             a:hover { color: blue}
         }
-        ''')
+        '''
+    )
     sheet.setSerializerPref('indentSpecificities', True)
     print(sheet.cssText)
 
@@ -1280,27 +1292,29 @@ if 0:
 if 0:
     # SELECTOR4QUERY
     from lxml.cssselect import CSSSelector
-#    sl = cssutils.css.SelectorList(selectorText='''
-#        :not(a|x) *|* a|* * /*x*/* b>c|c+d[a]~e[a=v].a,
-#        a:not(x) p|a[p|a=a],
-#        [a="x"][a|=dash][a~=incl][a^=pref][a$=suff][a*=suff]''')
-#
-#        #*|*, *|e, |e, e, p|*, p|e   ''')
+
+    #    sl = cssutils.css.SelectorList(selectorText='''
+    #        :not(a|x) *|* a|* * /*x*/* b>c|c+d[a]~e[a=v].a,
+    #        a:not(x) p|a[p|a=a],
+    #        [a="x"][a|=dash][a~=incl][a^=pref][a$=suff][a*=suff]''')
+    #
+    #        #*|*, *|e, |e, e, p|*, p|e   ''')
     s = cssutils.css.Selector('*|* |* * *|a |a a')
     print(s.selectorText)
     ns = [
-           {'p': 'URI'},
-           {'': 'EMPTY', 'p': 'URI'},
-           ]
+        {'p': 'URI'},
+        {'': 'EMPTY', 'p': 'URI'},
+    ]
     for n in ns:
-        sl = cssutils.css.SelectorList(selectorText='*|* |* * *|a |a a p|* p|a',
-                                       namespaces=n)
+        sl = cssutils.css.SelectorList(
+            selectorText='*|* |* * *|a |a a p|* p|a', namespaces=n
+        )
         print()
         for s in sl:
             print('ns', n)
             print('Selector.seq:', repr(s.seq))
             print('\t', s.selectorText)
-            #print  CSSSelector(s.selectorText).path
+            # print  CSSSelector(s.selectorText).path
             print()
 
     sys.exit(0)
@@ -1364,7 +1378,7 @@ if 1:
     sheet = cssutils.parseString(css)
 
     view = {}
-    specificities = {} # temporarily needed
+    specificities = {}  # temporarily needed
     # TODO: filter rules simpler?, add @media
     rules = (rule for rule in sheet.cssRules if rule.type == rule.STYLE_RULE)
 
@@ -1385,21 +1399,27 @@ if 1:
                         view[element].setProperty(p)
                         specificities[element][p.name] = selector.specificity
                     else:
-                        sameprio = (p.priority ==
-                                    view[element].getPropertyPriority(p.name))
-                        if not sameprio and bool(p.priority) or (
-                           sameprio and selector.specificity >=
-                                        specificities[element][p.name]):
+                        sameprio = p.priority == view[element].getPropertyPriority(
+                            p.name
+                        )
+                        if (
+                            not sameprio
+                            and bool(p.priority)
+                            or (
+                                sameprio
+                                and selector.specificity
+                                >= specificities[element][p.name]
+                            )
+                        ):
                             # later, more specific or higher prio
                             view[element].setProperty(p)
-    #pp(view)
+    # pp(view)
 
     # render somewhat (add @style and text with how it should look
     for element, style in list(view.items()):
         v = style.getCssText(separator='')
         element.set('style', v)
         element.set('title', v)
-
 
     f = open('c.html', 'w')
     f.write(etree.tostring(document, pretty_print=True))
@@ -1409,7 +1429,7 @@ if 1:
 
 
 if 1:
-    #QUERY
+    # QUERY
     from lxml.cssselect import CSSSelector
 
     css = '''@namespace p 'test';
@@ -1457,7 +1477,7 @@ if 1:
     print(s)
 
     print('attrib')
-    s.selectorText = 'a[a|href][x="1"][y=a][x*=a][x|=a]'#':a x ::b y'
+    s.selectorText = 'a[a|href][x="1"][y=a][x*=a][x|=a]'  #':a x ::b y'
     print(s)
 
     print('pseudo')
@@ -1467,16 +1487,14 @@ if 1:
     print(s)
     s.selectorText = ':a x:a x:a:b'
     print(s)
-    s.selectorText = '::a x::a' # only 1
+    s.selectorText = '::a x::a'  # only 1
     print(s)
     print('\nnot(: type_selector | universal | HASH | class | attrib | pseudo)')
     s.selectorText = 'not(a) not(*|*) not(*) not(#a) not(.b) not([a]) not(:d)'
     print(s)
 
-
-    s.selectorText = '*|* * a|b+|c~a|e#1 #a a.a'#'a *~x+b>c'#:not(*)'
+    s.selectorText = '*|* * a|b+|c~a|e#1 #a a.a'  #'a *~x+b>c'#:not(*)'
     s.selectorText = 'not(*) not(#a) not(.a)'
     print(s)
     print(s.prefixes)
     sys.exit(0)
-

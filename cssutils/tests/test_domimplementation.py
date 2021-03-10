@@ -5,8 +5,8 @@ import xml.dom.minidom
 import unittest
 import cssutils
 
-class DOMImplementationTestCase(unittest.TestCase):
 
+class DOMImplementationTestCase(unittest.TestCase):
     def setUp(self):
         self.domimpl = cssutils.DOMImplementationCSS()
 
@@ -34,7 +34,7 @@ class DOMImplementationTestCase(unittest.TestCase):
             ('css', '1.0'),
             ('css', '2.0'),
             ('stylesheets', '1.0'),
-            ('stylesheets', '2.0')
+            ('stylesheets', '2.0'),
         ]
         for name, version in tests:
             self.assertEqual(True, self.domimpl.hasFeature(name, version))

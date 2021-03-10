@@ -5,8 +5,8 @@ import xml.dom
 from . import basetest
 import cssutils
 
-class StyleSheetTestCase(basetest.BaseTestCase):
 
+class StyleSheetTestCase(basetest.BaseTestCase):
     def test_init(self):
         "StyleSheet.__init__()"
         s = cssutils.stylesheets.StyleSheet()
@@ -20,15 +20,16 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(s.alternate, False)
         self.assertEqual(s.disabled, False)
 
-
-        s = cssutils.stylesheets.StyleSheet(type='unknown',
-                                            href='test.css',
-                                            media=None,
-                                            title='title',
-                                            ownerNode=None,
-                                            parentStyleSheet=None,
-                                            alternate=True,
-                                            disabled=True)
+        s = cssutils.stylesheets.StyleSheet(
+            type='unknown',
+            href='test.css',
+            media=None,
+            title='title',
+            ownerNode=None,
+            parentStyleSheet=None,
+            alternate=True,
+            disabled=True,
+        )
 
         self.assertEqual(s.type, 'unknown')
         self.assertEqual(s.href, 'test.css')
@@ -39,6 +40,8 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(s.alternate, True)
         self.assertEqual(s.disabled, True)
 
+
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

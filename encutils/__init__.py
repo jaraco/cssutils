@@ -65,14 +65,16 @@ TODO
     - parse @charset of HTML elements?
     - check for more texttypes if only text given
 """
-__all__ = ['buildlog',
-           'encodingByMediaType',
-           'getHTTPInfo',
-           'getMetaInfo',
-           'detectXMLEncoding',
-           'getEncodingInfo',
-           'tryEncodings',
-           'EncodingInfo']
+__all__ = [
+    'buildlog',
+    'encodingByMediaType',
+    'getHTTPInfo',
+    'getMetaInfo',
+    'detectXMLEncoding',
+    'getEncodingInfo',
+    'tryEncodings',
+    'EncodingInfo',
+]
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke, Robert Siemer, Fredrik Hedman'
 __version__ = '$Id$'
@@ -87,11 +89,12 @@ import types
 import urllib.request, urllib.parse, urllib.error
 
 VERSION = '0.9.8'
-PY2x = sys.version_info < (3,0)
+PY2x = sys.version_info < (3, 0)
 
 
 class _MetaHTMLParser(html.parser.HTMLParser):
     """Parse given data for <meta http-equiv="content-type">."""
+
     content_type = None
 
     def handle_starttag(self, tag, attrs):
@@ -118,6 +121,7 @@ _TEXT_UTF8 = 5
 
 # types not fitting in above types
 _OTHER_TYPE = 4
+
 
 class EncodingInfo(object):
     """
@@ -150,15 +154,20 @@ class EncodingInfo(object):
 
         - ``logtext``: if no log was given log reports are given here
     """
+
     def __init__(self):
         """Initialize all possible properties to ``None``, see class
         description
         """
-        self.encoding = self.mismatch = self.logtext =\
-            self.http_encoding = self.http_media_type =\
-            self.meta_encoding = self.meta_media_type =\
-            self.xml_encoding =\
-                None
+        self.encoding = (
+            self.mismatch
+        ) = (
+            self.logtext
+        ) = (
+            self.http_encoding
+        ) = (
+            self.http_media_type
+        ) = self.meta_encoding = self.meta_media_type = self.xml_encoding = None
 
     def __str__(self):
         """Output the guessed encoding itself or the empty string."""
@@ -169,13 +178,22 @@ class EncodingInfo(object):
 
     def __repr__(self):
         return "<%s.%s object encoding=%r mismatch=%s at 0x%x>" % (
-                self.__class__.__module__, self.__class__.__name__,
-                self.encoding, self.mismatch, id(self))
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.encoding,
+            self.mismatch,
+            id(self),
+        )
 
 
-def buildlog(logname='encutils', level='INFO', stream=sys.stderr,
-            filename=None, filemode="w",
-            format='%(levelname)s\t%(message)s'):
+def buildlog(
+    logname='encutils',
+    level='INFO',
+    stream=sys.stderr,
+    filename=None,
+    filemode="w",
+    format='%(levelname)s\t%(message)s',
+):
     """Helper to build a basic log
 
     - if `filename` is given returns a log logging to `filename` with
@@ -217,19 +235,19 @@ def _getTextTypeByMediaType(media_type, log=None):
         r'application/.*?\+xml',
         'application/xml',
         'application/xml-dtd',
-        'application/xml-external-parsed-entity']
-    xml_text_types = [
-        r'text\/.*?\+xml',
-        'text/xml',
-        'text/xml-external-parsed-entity']
+        'application/xml-external-parsed-entity',
+    ]
+    xml_text_types = [r'text\/.*?\+xml', 'text/xml', 'text/xml-external-parsed-entity']
 
     media_type = media_type.strip().lower()
 
-    if media_type in xml_application_types or\
-            re.match(xml_application_types[0], media_type, re.I|re.S|re.X):
+    if media_type in xml_application_types or re.match(
+        xml_application_types[0], media_type, re.I | re.S | re.X
+    ):
         return _XML_APPLICATION_TYPE
-    elif media_type in xml_text_types or\
-            re.match(xml_text_types[0], media_type, re.I|re.S|re.X):
+    elif media_type in xml_text_types or re.match(
+        xml_text_types[0], media_type, re.I | re.S | re.X
+    ):
         return _XML_TEXT_TYPE
     elif media_type == 'text/html':
         return _HTML_TEXT_TYPE
@@ -266,22 +284,20 @@ def encodingByMediaType(media_type, log=None):
     defaultencodings = {
         _XML_APPLICATION_TYPE: 'utf-8',
         _XML_TEXT_TYPE: 'ascii',
-        _HTML_TEXT_TYPE: 'iso-8859-1', # should be None?
-        _TEXT_TYPE: 'iso-8859-1', # should be None?
+        _HTML_TEXT_TYPE: 'iso-8859-1',  # should be None?
+        _TEXT_TYPE: 'iso-8859-1',  # should be None?
         _TEXT_UTF8: 'utf-8',
-        _OTHER_TYPE: None}
+        _OTHER_TYPE: None,
+    }
 
     texttype = _getTextTypeByMediaType(media_type)
     encoding = defaultencodings.get(texttype, None)
 
     if log:
         if not encoding:
-            log.debug('"%s" Media-Type has no default encoding',
-                media_type)
+            log.debug('"%s" Media-Type has no default encoding', media_type)
         else:
-            log.debug(
-                'Default encoding for Media Type "%s": %s',
-                media_type, encoding)
+            log.debug('Default encoding for Media Type "%s": %s', media_type, encoding)
     return encoding
 
 
@@ -333,7 +349,7 @@ def getMetaInfo(text, log=None):
 
     if p.content_type:
         media_type, params = cgi.parse_header(p.content_type)
-        encoding = params.get('charset') # defaults to None
+        encoding = params.get('charset')  # defaults to None
         if encoding:
             encoding = encoding.lower()
         if log:
@@ -375,13 +391,13 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
     ### detection using BOM
 
     ## the BOMs we know, by their pattern
-    bomDict={ # bytepattern: name
-             (0x00, 0x00, 0xFE, 0xFF) : "utf_32_be",
-             (0xFF, 0xFE, 0x00, 0x00) : "utf_32_le",
-             (0xFE, 0xFF, None, None) : "utf_16_be",
-             (0xFF, 0xFE, None, None) : "utf_16_le",
-             (0xEF, 0xBB, 0xBF, None) : "utf-8",
-            }
+    bomDict = {  # bytepattern: name
+        (0x00, 0x00, 0xFE, 0xFF): "utf_32_be",
+        (0xFF, 0xFE, 0x00, 0x00): "utf_32_le",
+        (0xFE, 0xFF, None, None): "utf_16_be",
+        (0xFF, 0xFE, None, None): "utf_16_le",
+        (0xEF, 0xBB, 0xBF, None): "utf-8",
+    }
 
     ## go to beginning of file and get the first 4 bytes
     oldFP = fp.tell()
@@ -464,6 +480,7 @@ def tryEncodings(text, log=None):
     """
     try:
         import chardet
+
         encoding = chardet.detect(text)["encoding"]
 
     except ImportError:
@@ -477,8 +494,8 @@ def tryEncodings(text, log=None):
             'ascii',
             'iso-8859-1',
             #'windows-1252', # test later
-            'utf-8'
-            )
+            'utf-8',
+        )
         encoding = None
         for e in encodings:
             try:
@@ -602,15 +619,14 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
 
     # HTTP
     if response:
-        encinfo.http_media_type, encinfo.http_encoding = getHTTPInfo(
-            response, log)
+        encinfo.http_media_type, encinfo.http_encoding = getHTTPInfo(response, log)
         texttype = _getTextTypeByMediaType(encinfo.http_media_type, log)
     else:
         # check if maybe XML or (TODO:) HTML
         texttype = _getTextType(text, log)
 
     # XML only served as application/xml ! #(also XHTML served as text/html)
-    if texttype == _XML_APPLICATION_TYPE:# or texttype == _XML_TEXT_TYPE:
+    if texttype == _XML_APPLICATION_TYPE:  # or texttype == _XML_TEXT_TYPE:
         try:
             encinfo.xml_encoding = detectXMLEncoding(text, log)
         except (AttributeError, ValueError) as e:
@@ -625,8 +641,7 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
 
     # HTML
     if texttype == _HTML_TEXT_TYPE or texttype == _TEXT_TYPE:
-        encinfo.meta_media_type, encinfo.meta_encoding = getMetaInfo(
-            text, log)
+        encinfo.meta_media_type, encinfo.meta_encoding = getMetaInfo(text, log)
 
     # guess
     # 1. HTTP charset?
@@ -660,26 +675,42 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
 
     # possible mismatches, checks if present at all and then if equal
     # HTTP + XML
-    if encinfo.http_encoding and encinfo.xml_encoding and\
-       encinfo.http_encoding != encinfo.xml_encoding:
+    if (
+        encinfo.http_encoding
+        and encinfo.xml_encoding
+        and encinfo.http_encoding != encinfo.xml_encoding
+    ):
         encinfo.mismatch = True
-        log.warn('"%s" (HTTP) != "%s" (XML) encoding mismatch' %
-                 (encinfo.http_encoding, encinfo.xml_encoding))
+        log.warn(
+            '"%s" (HTTP) != "%s" (XML) encoding mismatch'
+            % (encinfo.http_encoding, encinfo.xml_encoding)
+        )
     # HTTP + Meta
-    if encinfo.http_encoding and encinfo.meta_encoding and\
-         encinfo.http_encoding != encinfo.meta_encoding:
+    if (
+        encinfo.http_encoding
+        and encinfo.meta_encoding
+        and encinfo.http_encoding != encinfo.meta_encoding
+    ):
         encinfo.mismatch = True
-        log.warning('"%s" (HTTP) != "%s" (HTML <meta>) encoding mismatch' %
-                 (encinfo.http_encoding, encinfo.meta_encoding))
+        log.warning(
+            '"%s" (HTTP) != "%s" (HTML <meta>) encoding mismatch'
+            % (encinfo.http_encoding, encinfo.meta_encoding)
+        )
     # XML + Meta
-    if encinfo.xml_encoding and encinfo.meta_encoding and\
-         encinfo.xml_encoding != encinfo.meta_encoding:
+    if (
+        encinfo.xml_encoding
+        and encinfo.meta_encoding
+        and encinfo.xml_encoding != encinfo.meta_encoding
+    ):
         encinfo.mismatch = True
-        log.warning('"%s" (XML) != "%s" (HTML <meta>) encoding mismatch' %
-                 (encinfo.xml_encoding, encinfo.meta_encoding))
+        log.warning(
+            '"%s" (XML) != "%s" (HTML <meta>) encoding mismatch'
+            % (encinfo.xml_encoding, encinfo.meta_encoding)
+        )
 
-    log.info('Encoding (probably): %s (Mismatch: %s)',
-             encinfo.encoding, encinfo.mismatch)
+    log.info(
+        'Encoding (probably): %s (Mismatch: %s)', encinfo.encoding, encinfo.mismatch
+    )
 
     encinfo.logtext = logstream.getvalue()
     return encinfo
@@ -687,4 +718,5 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
 
 if __name__ == '__main__':
     import pydoc
+
     pydoc.help(__name__)

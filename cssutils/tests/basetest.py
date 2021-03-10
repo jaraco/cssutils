@@ -15,7 +15,8 @@ sys.path.append(os.path.join(os.path.abspath('.'), '..'))
 import cssutils
 
 
-PY2x = sys.version_info < (3,0)
+PY2x = sys.version_info < (3, 0)
+
 
 def msg3x(msg):
     """msg might contain unicode repr `u'...'` which in py3 is `u'...`
@@ -49,7 +50,6 @@ def get_sheet_filename(sheet_name):
 
 
 class BaseTestCase(unittest.TestCase):
-
     def _tempSer(self):
         "Replace default ser with temp ser."
         self._ser = cssutils.ser
@@ -85,30 +85,35 @@ class BaseTestCase(unittest.TestCase):
         else:
             exc_pattern = None
 
-        argv = [repr(a) for a in args]\
-               + ["%s=%r" % (k,v)  for k,v in list(kwargs.items())]
+        argv = [repr(a) for a in args] + [
+            "%s=%r" % (k, v) for k, v in list(kwargs.items())
+        ]
         callsig = "%s(%s)" % (callable.__name__, ", ".join(argv))
 
         try:
             callable(*args, **kwargs)
         except exception as exc:
             if exc_args is not None:
-                self.assertFalse(exc.args != exc_args,
-                            "%s raised %s with unexpected args: "\
-                            "expected=%r, actual=%r"\
-                            % (callsig, exc.__class__, exc_args, exc.args))
+                self.assertFalse(
+                    exc.args != exc_args,
+                    "%s raised %s with unexpected args: "
+                    "expected=%r, actual=%r"
+                    % (callsig, exc.__class__, exc_args, exc.args),
+                )
             if exc_pattern is not None:
-                self.assertTrue(exc_pattern.search(str(exc)),
-                                "%s raised %s, but the exception "\
-                                "does not match '%s': %r"\
-                                % (callsig, exc.__class__, exc_pattern.pattern,
-                                   str(exc)))
+                self.assertTrue(
+                    exc_pattern.search(str(exc)),
+                    "%s raised %s, but the exception "
+                    "does not match '%s': %r"
+                    % (callsig, exc.__class__, exc_pattern.pattern, str(exc)),
+                )
         except:
             exc_info = sys.exc_info()
             print(exc_info)
-            self.fail("%s raised an unexpected exception type: "\
-                      "expected=%s, actual=%s"\
-                      % (callsig, exception, exc_info[0]))
+            self.fail(
+                "%s raised an unexpected exception type: "
+                "expected=%s, actual=%s" % (callsig, exception, exc_info[0])
+            )
         else:
             self.fail("%s did not raise %s" % (callsig, exception))
 
@@ -140,17 +145,17 @@ class BaseTestCase(unittest.TestCase):
             else:
                 # Message provided, and it didn't match: fail!
                 raise self.failureException(
-                    "Right exception, wrong message: got '%s' instead of '%s'" %
-                    (excMsg, msg))
+                    "Right exception, wrong message: got '%s' instead of '%s'"
+                    % (excMsg, msg)
+                )
         else:
             if hasattr(excClass, '__name__'):
                 excName = excClass.__name__
             else:
                 excName = str(excClass)
             raise self.failureException(
-                "Expected to raise %s, didn't get an exception at all" %
-                excName
-                )
+                "Expected to raise %s, didn't get an exception at all" % excName
+            )
 
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
         """
@@ -218,6 +223,7 @@ class GenerateTests(type):
             ("aa", 2),
         ]
     """
+
     def __new__(cls, name, bases, attrs):
         new_attrs = {}
         for aname, aobj in list(attrs.items()):
@@ -235,11 +241,12 @@ class GenerateTests(type):
                 def make_wrapper(case=case, aobj=aobj):
                     def wrapper(self):
                         aobj(self, *case)
+
                     return wrapper
+
                 wrapper = make_wrapper()
                 wrapper.__name__ = case_name
-                wrapper.__doc__ = "%s(%s)" % (test_name,
-                                              ", ".join(map(repr, case)))
+                wrapper.__doc__ = "%s(%s)" % (test_name, ", ".join(map(repr, case)))
                 if aobj.__doc__ is not None:
                     wrapper.__doc__ += "\n\n" + aobj.__doc__
                 new_attrs[case_name] = wrapper

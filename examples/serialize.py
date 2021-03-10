@@ -1,5 +1,6 @@
 import cssutils
 import logging
+
 cssutils.log.setLevel(logging.FATAL)
 
 
@@ -21,7 +22,7 @@ print(repr(cssutils.ser.prefs))
 print("\nCSS Serialized")
 print(sheet.cssText)
 
-print("\nCSS Serialized with ``keepAllProperties`` = False") 
+print("\nCSS Serialized with ``keepAllProperties`` = False")
 cssutils.ser.prefs.keepAllProperties = False
 print(sheet.cssText)
 
@@ -42,10 +43,12 @@ print('\t.getPropertyValue("c\\olor") ==', end=' ')
 print(sheet.cssRules[1].style.getPropertyValue('c\olor'))
 print('\t.getPropertyValue("c\\o\\l\\o\\r") ==', end=' ')
 print(sheet.cssRules[1].style.getPropertyValue('c\\o\\l\\o\\r'))
-print() 
+print()
 
-print('\nCSS Serialized with indent = 2*" ", importHrefFormat="string", lineNumbers=True')
-cssutils.ser.prefs.indent = 2*' '
+print(
+    '\nCSS Serialized with indent = 2*" ", importHrefFormat="string", lineNumbers=True'
+)
+cssutils.ser.prefs.indent = 2 * ' '
 # used to set indentation string, default is 4*' '
 cssutils.ser.prefs.importHrefFormat = 'string'
 # or 'uri', defaults to the format used in parsed stylesheet
@@ -57,7 +60,7 @@ cssutils.ser.prefs.useMinified()
 print(sheet.cssText)
 
 # OUTPUTS
-#1: @import "example.css";
-#2: body {
-#3:   color: red
-#4:   }
+# 1: @import "example.css";
+# 2: body {
+# 3:   color: red
+# 4:   }

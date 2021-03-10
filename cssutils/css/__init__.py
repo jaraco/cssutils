@@ -32,8 +32,7 @@ __all__ = [
     'CSSRule',
     'CSSComment',
     'CSSCharsetRule',
-    'CSSFontFaceRule'
-    'CSSImportRule',
+    'CSSFontFaceRule' 'CSSImportRule',
     'CSSMediaRule',
     'CSSNamespaceRule',
     'CSSPageRule',
@@ -42,18 +41,20 @@ __all__ = [
     'CSSUnknownRule',
     'CSSVariablesRule',
     'CSSVariablesDeclaration',
-    'Selector', 'SelectorList',
-    'CSSStyleDeclaration', 'Property',
+    'Selector',
+    'SelectorList',
+    'CSSStyleDeclaration',
+    'Property',
     #'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
     'PropertyValue',
-           'Value',
-           'ColorValue',
-           'DimensionValue',
-           'URIValue',
-           'CSSFunction', 
-           'CSSVariable',
-           'MSValue'
-    ]
+    'Value',
+    'ColorValue',
+    'DimensionValue',
+    'URIValue',
+    'CSSFunction',
+    'CSSVariable',
+    'MSValue',
+]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
@@ -76,5 +77,6 @@ from .selectorlist import *
 from .cssstyledeclaration import *
 from .cssvariablesdeclaration import *
 from .property import *
-#from cssvalue import *
+
+# from cssvalue import *
 from .value import *

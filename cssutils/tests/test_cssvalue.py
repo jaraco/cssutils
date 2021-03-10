@@ -2,12 +2,12 @@
 
 #
 ## from decimal import Decimal # maybe for later tests?
-#import xml.dom
-#import basetest
-#import cssutils
-#import types
+# import xml.dom
+# import basetest
+# import cssutils
+# import types
 #
-#class CSSValueTestCase(basetest.BaseTestCase):
+# class CSSValueTestCase(basetest.BaseTestCase):
 #
 #    def setUp(self):
 #        self.r = cssutils.css.CSSValue() # needed for tests
@@ -31,7 +31,7 @@
 #        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
 #        self.assertTrue(v.CSS_PX == v.primitiveType)
 #        self.assertTrue(u'1px' == v.cssText)
-#        
+#
 #        v.cssText = u'1p\\x'
 #        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
 #        self.assertTrue(v.CSS_PX == v.primitiveType)
@@ -98,7 +98,7 @@
 #            # mix
 #            u'a()1,-1,+1,1%,-1%,1px,-1px,"a",a,url(a),#aabb44':
 #                u'a() 1, -1, 1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4',
-#            
+#
 #            # S or COMMENT
 #            u'red': u'red',
 #            u'red ': u'red',
@@ -110,8 +110,8 @@
 #            u'red /**/': u'red /**/',
 #            u'/**/ red /**/': u'/**/ red /**/',
 #            u'red-': u'red-',
-#            
-#            # num / dimension 
+#
+#            # num / dimension
 #            u'.0': u'0',
 #            u'0': u'0',
 #            u'0.0': u'0',
@@ -139,14 +139,14 @@
 #            u'-1': u'-1',
 #            u'+1.0': u'1',
 #            u'-1.0': u'-1',
-#            
+#
 #            # string, escaped nl is removed during tokenizing
 #            u'"x"': u'"x"',
 #            u"'x'": u'"x"',
 #            #ur''' "1\'2" ''': u'''"1'2"''', #???
 #            #ur"'x\"'": ur'"x\""', #???
 #            ur'''"x\
-#y"''': u'''"xy"''', 
+# y"''': u'''"xy"''',
 #
 #            # hash and rgb/a
 #            u'#112234': u'#112234',
@@ -157,17 +157,17 @@
 #            u'rgba(1,2,3,4)': u'rgba(1, 2, 3, 4)',
 #            u'rgba(  1  ,  2  ,  3  ,  4 )': u'rgba(1, 2, 3, 4)',
 #            u'rgba(-1,+2,0, 0)': u'rgba(-1, 2, 0, 0)',
-#            
-#            # FUNCTION 
+#
+#            # FUNCTION
 #            u'f(1,2)': u'f(1, 2)',
 #            u'f(  1  ,  2  )': u'f(1, 2)',
 #            u'f(-1,+2)': u'f(-1, 2)',
 #            u'f(  -1  ,  +2  )': u'f(-1, 2)',
 #            u'fun(  -1  ,  +2  )': u'fun(-1, 2)',
 #            u'local( x )': u'local(x)',
-#            u'test(1px, #111, y, 1, 1%, "1", y(), var(x))': 
+#            u'test(1px, #111, y, 1, 1%, "1", y(), var(x))':
 #                u'test(1px, #111, y, 1, 1%, "1", y(), var(x))',
-#            u'test(-1px, #111, y, -1, -1%, "1", -y())': 
+#            u'test(-1px, #111, y, -1, -1%, "1", -y())':
 #                u'test(-1px, #111, y, -1, -1%, "1", -y())',
 #            u'url(y)  format( "x" ,  "y" )': u'url(y) format("x", "y")',
 #            u'f(1 2,3 4)': u'f(1 2, 3 4)',
@@ -196,7 +196,7 @@
 #            '''url("'")''': '''url("'")''',
 #            '''url('"')''': '''url("\\"")''',
 #            '''url("'")''': '''url("'")''',
-#            
+#
 #            # operator
 #            '1': '1',
 #            '1 2': '1 2',
@@ -229,12 +229,12 @@
 #            '1/*a*/  ,/*b*/  2': '1 /*a*/, /*b*/ 2',
 #            '1  /*a*/,  /*b*/2': '1 /*a*/, /*b*/ 2',
 #            '1  /*a*/  ,  /*b*/  2': '1 /*a*/, /*b*/ 2',
-#            
+#
 #            # list
 #            'a b1,b2 b2,b3,b4': 'a b1, b2 b2, b3, b4',
 #            'a b1  ,   b2   b2  ,  b3  ,   b4': 'a b1, b2 b2, b3, b4',
 #            'u+1  ,   u+2-5': 'u+1, u+2-5',
-#            u'local( x ),  url(y)  format( "x" ,  "y" )': 
+#            u'local( x ),  url(y)  format( "x" ,  "y" )':
 #                u'local(x), url(y) format("x", "y")',
 #            # FUNCTION
 #            u'attr( href )': u'attr(href)',
@@ -274,7 +274,7 @@
 #            # string
 #            u'"': xml.dom.SyntaxErr,
 #            u"'": xml.dom.SyntaxErr,
-#            # function 
+#            # function
 #            u'f(-)': xml.dom.SyntaxErr,
 #            u'f(x))': xml.dom.SyntaxErr
 #            }
@@ -305,7 +305,7 @@
 #             'CSS_PRIMITIVE_VALUE', cssutils.css.CSSPrimitiveValue),
 #            ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST', cssutils.css.CSSValueList),
 #            # what is a custom value?
-#            #([], 'CSS_CUSTOM', cssutils.css.CSSValue) 
+#            #([], 'CSS_CUSTOM', cssutils.css.CSSValue)
 #            ]
 #        for values, name, cls in tests:
 #            for value in values:
@@ -342,7 +342,7 @@
 #        self.assertTrue(cssText == s2.cssText)
 #
 #
-#class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
+# class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 #
 #    def test_init(self):
 #        "CSSPrimitiveValue.__init__()"
@@ -406,7 +406,7 @@
 #                  '"a", "b"',
 #                  ), 'CSS_STRING'),
 #                (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
-#                (('some', 'or_anth-er'), 'CSS_IDENT'),            
+#                (('some', 'or_anth-er'), 'CSS_IDENT'),
 #                (('attr(a)', 'attr(b)'), 'CSS_ATTR'),
 #                (('counter(1)', 'counter(2)'), 'CSS_COUNTER'),
 #                (('rect(1,2,3,4)',), 'CSS_RECT'),
@@ -467,7 +467,7 @@
 #            '1khz': (v.CSS_KHZ, 1),
 #            '1khz': (v.CSS_HZ, 1000),
 #
-#            '1DIMENSION': (v.CSS_DIMENSION, 1),            
+#            '1DIMENSION': (v.CSS_DIMENSION, 1),
 #            }
 #        for cssText in tests:
 #            v.cssText = cssText
@@ -656,15 +656,15 @@
 #        self.assertEqual((u')', 'URI'), v._value)
 #        self.assertEqual(u')', v.getStringValue())
 #
-#        v.setStringValue(v.CSS_URI, '"') 
+#        v.setStringValue(v.CSS_URI, '"')
 #        self.assertEqual(ur'"', v.getStringValue())
 #        self.assertEqual((ur'"', 'URI'), v._value)
 #
-#        v.setStringValue(v.CSS_URI, "''") 
+#        v.setStringValue(v.CSS_URI, "''")
 #        self.assertEqual(ur"''", v.getStringValue())
 #        self.assertEqual((ur"''", 'URI'), v._value)
 #
-#        v.setStringValue(v.CSS_URI, ',') 
+#        v.setStringValue(v.CSS_URI, ',')
 #        self.assertEqual(ur',', v.getStringValue())
 #        self.assertEqual((ur',', 'URI'), v._value)
 #
@@ -754,7 +754,7 @@
 #        self.assertTrue(v == s2.cssText)
 #
 #
-#class CSSValueListTestCase(basetest.BaseTestCase):
+# class CSSValueListTestCase(basetest.BaseTestCase):
 #
 #    def test_init(self):
 #        "CSSValueList.__init__()"
@@ -814,6 +814,6 @@
 #        #s2 = eval(repr(s))
 #
 #
-#if __name__ == '__main__':
+# if __name__ == '__main__':
 #    import unittest
 #    unittest.main()

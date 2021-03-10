@@ -8,6 +8,7 @@ import re
 import sys
 import urllib.request, urllib.parse, urllib.error
 
+
 class Deprecated(object):
     """This is a decorator which can be used to mark functions
     as deprecated. It will result in a warning being emitted
@@ -16,24 +17,31 @@ class Deprecated(object):
     It accepts a single paramter ``msg`` which is shown with the warning.
     It should contain information which function or method to use instead.
     """
+
     def __init__(self, msg):
         self.msg = msg
 
     def __call__(self, func):
         def newFunc(*args, **kwargs):
             import warnings
-            warnings.warn("Call to deprecated method %r. %s" %
-                            (func.__name__, self.msg),
-                            category=DeprecationWarning,
-                            stacklevel=2)
+
+            warnings.warn(
+                "Call to deprecated method %r. %s" % (func.__name__, self.msg),
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
             return func(*args, **kwargs)
+
         newFunc.__name__ = func.__name__
         newFunc.__doc__ = func.__doc__
         newFunc.__dict__.update(func.__dict__)
         return newFunc
 
+
 # simple escapes, all non unicodes
 _simpleescapes = re.compile(r'(\\[^0-9a-fA-F])').sub
+
+
 def normalize(x):
     """
     normalizes x, namely:
@@ -44,16 +52,20 @@ def normalize(x):
     - lowercase
     """
     if x:
+
         def removeescape(matchobj):
             return matchobj.group(0)[1:]
+
         x = _simpleescapes(removeescape, x)
         return x.lower()
     else:
         return x
 
+
 def path2url(path):
     """Return file URL of `path`"""
     return 'file:' + urllib.request.pathname2url(os.path.abspath(path))
+
 
 def pushtoken(token, tokens):
     """Return new generator starting with token followed by all tokens in
@@ -63,6 +75,7 @@ def pushtoken(token, tokens):
     for t in tokens:
         yield t
 
+
 def string(value):
     """
     Serialize value with quotes e.g.::
@@ -70,15 +83,18 @@ def string(value):
         ``a \'string`` => ``'a \'string'``
     """
     # \n = 0xa, \r = 0xd, \f = 0xc
-    value = value.replace('\n', '\\a ').replace(
-                          '\r', '\\d ').replace(
-                          '\f', '\\c ').replace(
-                          '"', '\\"')
+    value = (
+        value.replace('\n', '\\a ')
+        .replace('\r', '\\d ')
+        .replace('\f', '\\c ')
+        .replace('"', '\\"')
+    )
 
     if value.endswith('\\'):
         value = value[:-1] + '\\\\'
 
     return '"%s"' % value
+
 
 def stringvalue(string):
     """
@@ -87,9 +103,12 @@ def stringvalue(string):
 
         ``'a \'string'`` => ``a 'string``
     """
-    return string.replace('\\'+string[0], string[0])[1:-1]
+    return string.replace('\\' + string[0], string[0])[1:-1]
+
 
 _match_forbidden_in_uri = re.compile(r'''.*?[\(\)\s\;,'"]''', re.U).match
+
+
 def uri(value):
     """
     Serialize value by adding ``url()`` and with quotes if needed e.g.::
@@ -100,6 +119,7 @@ def uri(value):
         value = string(value)
     return 'url(%s)' % value
 
+
 def urivalue(uri):
     """
     Return actual content without surrounding "url(" and ")"
@@ -108,13 +128,14 @@ def urivalue(uri):
 
          ``url("\"")`` => ``"``
     """
-    uri = uri[uri.find('(')+1:-1].strip()
+    uri = uri[uri.find('(') + 1 : -1].strip()
     if uri and (uri[0] in '\'"') and (uri[0] == uri[-1]):
         return stringvalue(uri)
     else:
         return uri
 
-#def normalnumber(num):
+
+# def normalnumber(num):
 #    """
 #    Return normalized number as string.
 #    """

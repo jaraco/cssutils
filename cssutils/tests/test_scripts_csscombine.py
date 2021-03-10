@@ -5,6 +5,7 @@ from . import basetest
 import cssutils
 import os
 
+
 class CSSCombine(basetest.BaseTestCase):
 
     C = '@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}'
@@ -35,12 +36,11 @@ class CSSCombine(basetest.BaseTestCase):
         # cssText
         # TODO: really need binary or can handle str too?
         f = open(csspath, mode="rb")
-        cssText=f.read()
+        cssText = f.read()
         f.close()
         combined = csscombine(cssText=cssText, href=cssurl)
         self.assertEqual(combined, self.C.encode())
-        combined = csscombine(cssText=cssText, href=cssurl,
-                              targetencoding='ascii')
+        combined = csscombine(cssText=cssText, href=cssurl, targetencoding='ascii')
         self.assertEqual(combined, ('@charset "ascii";' + self.C).encode())
 
     def test_combine_resolveVariables(self):
@@ -55,21 +55,24 @@ class CSSCombine(basetest.BaseTestCase):
         }
         '''
         # default minify
-        self.assertEqual(csscombine(cssText=cssText,
-                                    resolveVariables=False),
-                         '@variables{c:#0f0}a{color:var(c)}'.encode())
-        self.assertEqual(csscombine(cssText=cssText),
-                         'a{color:#0f0}'.encode())
+        self.assertEqual(
+            csscombine(cssText=cssText, resolveVariables=False),
+            '@variables{c:#0f0}a{color:var(c)}'.encode(),
+        )
+        self.assertEqual(csscombine(cssText=cssText), 'a{color:#0f0}'.encode())
 
         # no minify
-        self.assertEqual(csscombine(cssText=cssText,
-                                    minify=False,
-                                    resolveVariables=False),
-                         '@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }'.encode())
-        self.assertEqual(csscombine(cssText=cssText, minify=False),
-                         'a {\n    color: #0f0\n    }'.encode())
+        self.assertEqual(
+            csscombine(cssText=cssText, minify=False, resolveVariables=False),
+            '@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }'.encode(),
+        )
+        self.assertEqual(
+            csscombine(cssText=cssText, minify=False),
+            'a {\n    color: #0f0\n    }'.encode(),
+        )
 
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

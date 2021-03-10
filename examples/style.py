@@ -18,6 +18,7 @@ import webbrowser
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 try:
     import pkg_resources
+
     pkg_resources.require('lxml')
 except pkg_resources.DistributionNotFound as e:
     pass
@@ -33,13 +34,12 @@ except ImportError as e:
 
 def log(level, *msg):
     """print '%s- %s' % (level * '\t ',
-                      ' '.join((str(m) for m in msg)))"""
-                      
-    
+    ' '.join((str(m) for m in msg)))"""
+
 
 def getDocument(html, css=None):
     """
-    returns a DOM of html, if css is given it is appended to html/body as 
+    returns a DOM of html, if css is given it is appended to html/body as
     pre.cssutils
     """
     document = etree.HTML(html)
@@ -49,7 +49,8 @@ def getDocument(html, css=None):
         e.text = css
         document.find('body').append(e)
     return document
-    
+
+
 def styleattribute(element):
     "returns css.CSSStyleDeclaration of inline styles, for html: @style"
     cssText = element.get('style')
@@ -58,8 +59,8 @@ def styleattribute(element):
     else:
         return None
 
-def getView(document, css, media='all', name=None, 
-            styleCallback=lambda element: None):
+
+def getView(document, css, media='all', name=None, styleCallback=lambda element: None):
     """
     document
         a DOM document, currently an lxml HTML document
@@ -71,19 +72,19 @@ def getView(document, css, media='all', name=None,
         TODO: names of sheets only
     styleCallback: optional
         should return css.CSSStyleDeclaration of inline styles, for html
-        a style declaration for ``element@style``. Gets one parameter 
+        a style declaration for ``element@style``. Gets one parameter
         ``element`` which is the relevant DOMElement
-    
+
     returns style view
         a dict of {DOMElement: css.CSSStyleDeclaration} for html
     """
     sheet = cssutils.parseString(css)
-    
+
     view = {}
-    specificities = {} # needed temporarily 
+    specificities = {}  # needed temporarily
 
     # TODO: filter rules simpler?, add @media
-    rules = (rule for rule in sheet if rule.type == rule.STYLE_RULE)    
+    rules = (rule for rule in sheet if rule.type == rule.STYLE_RULE)
     for rule in rules:
         for selector in rule.selectorList:
             log(0, 'SELECTOR', selector.selectorText)
@@ -91,47 +92,54 @@ def getView(document, css, media='all', name=None,
             cssselector = CSSSelector(selector.selectorText)
             matching = cssselector.evaluate(document)
             for element in matching:
-                #if element.tag in ('div',):
-                    # add styles for all matching DOM elements
-                    log(1, 'ELEMENT', id(element), element.text)
-                    
-                    if element not in view:    
-                        # add initial empty style declatation
-                        view[element] = cssutils.css.CSSStyleDeclaration()
-                        specificities[element] = {}                    
-                        
-                        # and add inline @style if present
-                        inlinestyle = styleCallback(element)
-                        if inlinestyle:
-                            for p in inlinestyle:
-                                # set inline style specificity
-                                view[element].setProperty(p)
-                                specificities[element][p.name] = (1,0,0,0)
-                                                            
-                    for p in rule.style:
-                        # update style declaration
-                        if p not in view[element]:
-                            # setProperty needs a new Property object and
-                            # MUST NOT reuse the existing Property
-                            # which would be the same for all elements!
-                            # see Issue #23
+                # if element.tag in ('div',):
+                # add styles for all matching DOM elements
+                log(1, 'ELEMENT', id(element), element.text)
+
+                if element not in view:
+                    # add initial empty style declatation
+                    view[element] = cssutils.css.CSSStyleDeclaration()
+                    specificities[element] = {}
+
+                    # and add inline @style if present
+                    inlinestyle = styleCallback(element)
+                    if inlinestyle:
+                        for p in inlinestyle:
+                            # set inline style specificity
+                            view[element].setProperty(p)
+                            specificities[element][p.name] = (1, 0, 0, 0)
+
+                for p in rule.style:
+                    # update style declaration
+                    if p not in view[element]:
+                        # setProperty needs a new Property object and
+                        # MUST NOT reuse the existing Property
+                        # which would be the same for all elements!
+                        # see Issue #23
+                        view[element].setProperty(p.name, p.value, p.priority)
+                        specificities[element][p.name] = selector.specificity
+                        log(2, view[element].getProperty('color'))
+
+                    else:
+                        log(2, view[element].getProperty('color'))
+                        sameprio = p.priority == view[element].getPropertyPriority(
+                            p.name
+                        )
+                        if (
+                            not sameprio
+                            and bool(p.priority)
+                            or (
+                                sameprio
+                                and selector.specificity
+                                >= specificities[element][p.name]
+                            )
+                        ):
+                            # later, more specific or higher prio
                             view[element].setProperty(p.name, p.value, p.priority)
-                            specificities[element][p.name] = selector.specificity
-                            log(2, view[element].getProperty('color'))
-                            
-                        else:
-                            log(2, view[element].getProperty('color'))
-                            sameprio = (p.priority == 
-                                        view[element].getPropertyPriority(p.name))
-                            if not sameprio and bool(p.priority) or (
-                               sameprio and selector.specificity >= 
-                                            specificities[element][p.name]):
-                                # later, more specific or higher prio 
-                                view[element].setProperty(p.name, p.value, p.priority)
-                    
-                   
-    #pprint(view)
-    return view                        
+
+    # pprint(view)
+    return view
+
 
 def render2style(document, view):
     """
@@ -143,11 +151,12 @@ def render2style(document, view):
         element.set('style', v)
         element.set('title', v)
 
+
 def render2content(document, view, css):
     """
     - add css as <style> element to be rendered by browser
     - replace elements content with actual style
-    
+
     result is a HTML which the browser renders itself from the original css
     cssutils only writes debugging, useful to compare with render2style
     """
@@ -158,6 +167,7 @@ def render2content(document, view, css):
         v = style.getCssText(separator='')
         element.text = v
 
+
 def show(text, name, encoding='utf-8'):
     "saves text to file with name and encoding"
     f = codecs.open(name, 'w', encoding=encoding)
@@ -165,9 +175,12 @@ def show(text, name, encoding='utf-8'):
     f.close()
     webbrowser.open(name)
 
+
 def main():
     tpl = '''<html><head><title>style test</title></head><body>%s</body></html>'''
-    html = tpl % '''
+    html = (
+        tpl
+        % '''
             <h1>Style example 1</h1>
             <p>&lt;p></p>
             <p style="color: red;">&lt;p> with inline style: "color: red"</p>
@@ -175,6 +188,7 @@ def main():
             <div>a &lt;div> green?</div>
             <div id="y">#y pink?</div>
         '''
+    )
     css = r'''
         * {
             margin: 0;
@@ -204,8 +218,8 @@ def main():
         }
     '''
     # TODO:
-    #defaultsheet = cssutils.parseFile('sheets/default_html4.css')
-    
+    # defaultsheet = cssutils.parseFile('sheets/default_html4.css')
+
     # adds style to @style
     document = getDocument(html, css)
     view = getView(document, css, styleCallback=styleattribute)
@@ -216,11 +230,12 @@ def main():
     # replaces elements content with style
     document = getDocument(html)
     view = getView(document, css, styleCallback=styleattribute)
-    render2content(document, view, css)    
+    render2content(document, view, css)
     text = etree.tostring(document, pretty_print=True)
     show(text, '__tempbrowser.html')
 
-    
+
 if __name__ == '__main__':
     import sys
+
     sys.exit(main())

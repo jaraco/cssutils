@@ -4,8 +4,8 @@ import xml.dom
 from . import basetest
 import cssutils
 
-class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
 
+class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
     def setUp(self):
         self.r = cssutils.css.CSSStyleDeclaration()
 
@@ -42,7 +42,7 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         name, value, priority = 'UnKnown-ProPERTY', 'unknown value', 'important'
         s[name] = (value, priority)
         self.assertEqual(value, s[name])
-        self.assertEqual(value, s[name.lower()]) # will be normalized
+        self.assertEqual(value, s[name.lower()])  # will be normalized
         self.assertRaises(AttributeError, s.__getattribute__, name)
         self.assertEqual(value, s.getProperty(name).value)
         self.assertEqual(priority, s.getProperty(name).priority)
@@ -125,7 +125,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
                 font-family: 'Courier New Times
                 color: red;
                 color: green;''': 'color: green',
-
             # special IE hacks are not preserved anymore (>=0.9.5b3)
             '/color: red; color: green': 'color: green',
             '/ color: red; color: green': 'color: green',
@@ -133,16 +132,16 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             '0: red; color: green': 'color: green',
             '1px:: red; color: green': 'color: green',
             r'$top: 0': '',
-            r'$: 0': '', # really invalid!
+            r'$: 0': '',  # really invalid!
             # unknown rule but valid
             '@x;\ncolor: red': None,
             '@x {\n    }\ncolor: red': None,
             '/**/\ncolor: red': None,
             '/**/\ncolor: red;\n/**/': None,
-            #issue #28
+            # issue #28
             ';color: red': 'color: red',
-            ';;color: red;;': 'color: red'
-            }
+            ';;color: red;;': 'color: red',
+        }
         cssutils.ser.prefs.keepAllProperties = False
         for test, exp in list(tests.items()):
             sh = cssutils.parseString('a { %s }' % test)
@@ -158,8 +157,10 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         "CSSStyleDeclaration serialize"
         s = cssutils.css.CSSStyleDeclaration()
         tests = {
-            'a:1 !important; a:2;b:1': ('a: 1 !important;\nb: 1',
-                                         'a: 1 !important;\na: 2;\nb: 1')
+            'a:1 !important; a:2;b:1': (
+                'a: 1 !important;\nb: 1',
+                'a: 1 !important;\na: 2;\nb: 1',
+            )
         }
         for test, exp in list(tests.items()):
             s.cssText = test
@@ -177,16 +178,22 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             cssutils.css.CSSComment,
             cssutils.css.Property,
             cssutils.css.Property,
-            cssutils.css.CSSUnknownRule
+            cssutils.css.CSSUnknownRule,
         ]
+
         def t(s):
             for i, x in enumerate(s.children()):
                 self.assertEqual(types[i], type(x))
                 self.assertEqual(x.parent, s)
 
         t(cssutils.parseStyle(style))
-        t(cssutils.parseString('a {'+style+'}').cssRules[0].style)
-        t(cssutils.parseString('@media all {a {'+style+'}}').cssRules[0].cssRules[0].style)
+        t(cssutils.parseString('a {' + style + '}').cssRules[0].style)
+        t(
+            cssutils.parseString('@media all {a {' + style + '}}')
+            .cssRules[0]
+            .cssRules[0]
+            .style
+        )
 
         s = cssutils.parseStyle(style)
         s['x'] = '0'
@@ -198,14 +205,9 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         "CSSStyleDeclaration.cssText"
         # empty
         s = cssutils.css.CSSStyleDeclaration()
-        tests = {
-            '': '',
-            ' ': '',
-            ' \t \n  ': '',
-            '/*x*/': '/*x*/'
-            }
+        tests = {'': '', ' ': '', ' \t \n  ': '', '/*x*/': '/*x*/'}
         for test, exp in list(tests.items()):
-            s.cssText = 'left: 0;' # dummy to reset s
+            s.cssText = 'left: 0;'  # dummy to reset s
             s.cssText = test
             self.assertEqual(exp, s.cssText)
 
@@ -222,18 +224,14 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             'left: 0; top: 1': 'left: 0;\ntop: 1',
             # comments
             # TODO: spaces?
-            '/*1*//*2*/left/*3*//*4*/:/*5*//*6*/0/*7*//*8*/!/*9*//*a*/important/*b*//*c*/;':
-                '/*1*/\n/*2*/\nleft/*3*//*4*/: /*5*/ /*6*/ 0 /*7*/ /*8*/ !/*9*//*a*/important/*b*//*c*/',
-            '/*1*/left: 0;/*2*/ top: 1/*3*/':
-                '/*1*/\nleft: 0;\n/*2*/\ntop: 1 /*3*/',
+            '/*1*//*2*/left/*3*//*4*/:/*5*//*6*/0/*7*//*8*/!/*9*//*a*/important/*b*//*c*/;': '/*1*/\n/*2*/\nleft/*3*//*4*/: /*5*/ /*6*/ 0 /*7*/ /*8*/ !/*9*//*a*/important/*b*//*c*/',
+            '/*1*/left: 0;/*2*/ top: 1/*3*/': '/*1*/\nleft: 0;\n/*2*/\ntop: 1 /*3*/',
             'left:0; top:1;': 'left: 0;\ntop: 1',
-            '/*1*/left: 0;/*2*/ top: 1;/*3*/':
-                '/*1*/\nleft: 0;\n/*2*/\ntop: 1;\n/*3*/',
+            '/*1*/left: 0;/*2*/ top: 1;/*3*/': '/*1*/\nleft: 0;\n/*2*/\ntop: 1;\n/*3*/',
             # WS
             'left:0!important;margin:1px 2px 3px 4px!important;': 'left: 0 !important;\nmargin: 1px 2px 3px 4px !important',
-            '\n\r\f\t left\n\r\f\t :\n\r\f\t 0\n\r\f\t !\n\r\f\t important\n\r\f\t ;\n\r\f\t margin\n\r\f\t :\n\r\f\t 1px\n\r\f\t 2px\n\r\f\t 3px\n\r\f\t 4px;':
-            'left: 0 !important;\nmargin: 1px 2px 3px 4px',
-            }
+            '\n\r\f\t left\n\r\f\t :\n\r\f\t 0\n\r\f\t !\n\r\f\t important\n\r\f\t ;\n\r\f\t margin\n\r\f\t :\n\r\f\t 1px\n\r\f\t 2px\n\r\f\t 3px\n\r\f\t 4px;': 'left: 0 !important;\nmargin: 1px 2px 3px 4px',
+        }
         for test, exp in list(tests.items()):
             s.cssText = test
             self.assertEqual(exp, s.cssText)
@@ -249,7 +247,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             'top:;': xml.dom.SyntaxErr,
             'top 0': xml.dom.SyntaxErr,
             'top 0;': xml.dom.SyntaxErr,
-
             ':': xml.dom.SyntaxErr,
             ':0': xml.dom.SyntaxErr,
             ':0;': xml.dom.SyntaxErr,
@@ -258,15 +255,13 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             ': ;': xml.dom.SyntaxErr,
             ':!important;': xml.dom.SyntaxErr,
             ': !important;': xml.dom.SyntaxErr,
-
             '0': xml.dom.SyntaxErr,
             '0!important': xml.dom.SyntaxErr,
             '0!important;': xml.dom.SyntaxErr,
             '0;': xml.dom.SyntaxErr,
-
             '!important': xml.dom.SyntaxErr,
             '!important;': xml.dom.SyntaxErr,
-            }
+        }
         self.do_raise_r(tests)
 
     def test_getCssText(self):
@@ -288,7 +283,8 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         d = s.style
         self.assertEqual(s, d.parentRule)
 
-        s = cssutils.parseString('''
+        s = cssutils.parseString(
+            '''
         @font-face {
             font-weight: bold;
             }
@@ -298,7 +294,8 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         @page {
             font-weight: bolder;
             }
-        ''')
+        '''
+        )
         for r in s:
             self.assertEqual(r.style.parentRule, r)
 
@@ -318,24 +315,23 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
 
     def test_getProperties(self):
         "CSSStyleDeclaration.getProperties()"
-        s = cssutils.css.CSSStyleDeclaration(cssText=
-                                             '/*1*/y:0;x:a !important;y:1; \\x:b;')
+        s = cssutils.css.CSSStyleDeclaration(
+            cssText='/*1*/y:0;x:a !important;y:1; \\x:b;'
+        )
         tests = {
             # name, all
-            (None, False): [('y', '1', ''),
-                            ('x', 'a', 'important')],
-            (None, True): [('y', '0', ''),
-                           ('x', 'a', 'important'),
-                           ('y', '1', ''),
-                           ('\\x', 'b', '')
-                           ],
+            (None, False): [('y', '1', ''), ('x', 'a', 'important')],
+            (None, True): [
+                ('y', '0', ''),
+                ('x', 'a', 'important'),
+                ('y', '1', ''),
+                ('\\x', 'b', ''),
+            ],
             ('x', False): [('x', 'a', 'important')],
             ('\\x', False): [('x', 'a', 'important')],
-            ('x', True): [('x', 'a', 'important'),
-                           ('\\x', 'b', '')],
-            ('\\x', True): [('x', 'a', 'important'),
-                           ('\\x', 'b', '')],
-            }
+            ('x', True): [('x', 'a', 'important'), ('\\x', 'b', '')],
+            ('\\x', True): [('x', 'a', 'important'), ('\\x', 'b', '')],
+        }
         for test in tests:
             name, all = test
             expected = tests[test]
@@ -346,8 +342,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
                 self.assertEqual(ex, (a.literalname, a.value, a.priority))
 
         # order is be effective properties set
-        s = cssutils.css.CSSStyleDeclaration(cssText=
-                                             'a:0;b:1;a:1')
+        s = cssutils.css.CSSStyleDeclaration(cssText='a:0;b:1;a:1')
         self.assertEqual('ba', ''.join([p.name for p in s]))
 
     def test_getPropertyCSSValue(self):
@@ -357,23 +352,24 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         self.assertEqual('green', s.getPropertyCSSValue('c\\olor').cssText)
         self.assertEqual('red', s.getPropertyCSSValue('color', False).cssText)
         self.assertEqual('green', s.getPropertyCSSValue('c\\olor', False).cssText)
-#        # shorthand CSSValue should be None
-#        SHORTHAND = [
-#            u'background',
-#            u'border',
-#            u'border-left', u'border-right',
-#            u'border-top', u'border-bottom',
-#            u'border-color', u'border-style', u'border-width',
-#            u'cue',
-#            u'font',
-#            u'list-style',
-#            u'margin',
-#            u'outline',
-#            u'padding',
-#            u'pause']
-#        for short in SHORTHAND:
-#            s.setProperty(short, u'inherit')
-#            self.assertEqual(None, s.getPropertyCSSValue(short))
+
+    #        # shorthand CSSValue should be None
+    #        SHORTHAND = [
+    #            u'background',
+    #            u'border',
+    #            u'border-left', u'border-right',
+    #            u'border-top', u'border-bottom',
+    #            u'border-color', u'border-style', u'border-width',
+    #            u'cue',
+    #            u'font',
+    #            u'list-style',
+    #            u'margin',
+    #            u'outline',
+    #            u'padding',
+    #            u'pause']
+    #        for short in SHORTHAND:
+    #            s.setProperty(short, u'inherit')
+    #            self.assertEqual(None, s.getPropertyCSSValue(short))
 
     def test_getPropertyValue(self):
         "CSSStyleDeclaration.getPropertyValue()"
@@ -398,7 +394,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             r'color: red; c\olor: green': 'green',
             r'color: red !important; color: green !important': 'green',
             r'color: green !important; color: red': 'green',
-            }
+        }
         for test in tests:
             s = cssutils.css.CSSStyleDeclaration(cssText=test)
             self.assertEqual(tests[test], s.getPropertyValue('color'))
@@ -411,8 +407,9 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         s.setProperty('left', '0', '!important')
         self.assertEqual('important', s.getPropertyPriority('left'))
 
-        s = cssutils.css.CSSStyleDeclaration(cssText=
-            'x: 1 !important;\\x: 2;x: 3 !important;\\x: 4')
+        s = cssutils.css.CSSStyleDeclaration(
+            cssText='x: 1 !important;\\x: 2;x: 3 !important;\\x: 4'
+        )
         self.assertEqual('important', s.getPropertyPriority('x'))
         self.assertEqual('important', s.getPropertyPriority('\\x'))
         self.assertEqual('important', s.getPropertyPriority('x', True))
@@ -473,7 +470,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             ('left', '0', 'important'): 'left: 0 !important',
             ('LEFT', '0', 'important'): 'left: 0 !important',
             ('left', '0', 'important'): 'left: 0 !important',
-            }
+        }
         for test, exp in list(tests.items()):
             s = cssutils.css.CSSStyleDeclaration()
             n, v, p = test
@@ -549,7 +546,8 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
     def test_css2properties(self):
         "CSSStyleDeclaration.$css2property get set del"
         s = cssutils.css.CSSStyleDeclaration(
-            cssText='left: 1px;color: red; font-style: italic')
+            cssText='left: 1px;color: red; font-style: italic'
+        )
 
         s.color = 'green'
         s.fontStyle = 'normal'
@@ -557,14 +555,10 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         self.assertEqual('normal', s.fontStyle)
         self.assertEqual('green', s.getPropertyValue('color'))
         self.assertEqual('normal', s.getPropertyValue('font-style'))
-        self.assertEqual(
-            '''left: 1px;\ncolor: green;\nfont-style: normal''',
-            s.cssText)
+        self.assertEqual('''left: 1px;\ncolor: green;\nfont-style: normal''', s.cssText)
 
         del s.color
-        self.assertEqual(
-            '''left: 1px;\nfont-style: normal''',
-            s.cssText)
+        self.assertEqual('''left: 1px;\nfont-style: normal''', s.cssText)
         del s.fontStyle
         self.assertEqual('left: 1px', s.cssText)
 
@@ -576,14 +570,13 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         self.assertRaises(AttributeError, s.__delattr__, 'UNKNOWN')
         # but are kept
         self.assertEqual('red', s.getPropertyValue('UNKNOWN'))
-        self.assertEqual(
-            '''left: 1px;\nunknown: red''', s.cssText)
+        self.assertEqual('''left: 1px;\nunknown: red''', s.cssText)
 
     def test_reprANDstr(self):
         "CSSStyleDeclaration.__repr__(), .__str__()"
         s = cssutils.css.CSSStyleDeclaration(cssText='a:1;b:2')
 
-        self.assertTrue("2" in str(s)) # length
+        self.assertTrue("2" in str(s))  # length
 
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))
@@ -598,11 +591,11 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         ]
         for case, expected in cases:
             s = cssutils.css.CSSStyleDeclaration(cssText=case)
-            msg = '%r should be %s' % (case,
-                                       'valid' if expected else 'invalid')
+            msg = '%r should be %s' % (case, 'valid' if expected else 'invalid')
             self.assertEqual(s.valid, expected, msg)
 
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

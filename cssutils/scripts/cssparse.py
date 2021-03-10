@@ -9,9 +9,10 @@ import logging
 import optparse
 import sys
 
+
 def main(args=None):
     """
-    Parses given filename(s) or string or URL (using optional encoding) and 
+    Parses given filename(s) or string or URL (using optional encoding) and
     prints the parsed style sheet to stdout.
 
     Redirect stdout to save CSS. Redirect stderr to save parser log infos.
@@ -19,16 +20,32 @@ def main(args=None):
     usage = """usage: %prog [options] filename1.css [filename2.css ...]
         [>filename_combined.css] [2>parserinfo.log] """
     p = optparse.OptionParser(usage=usage)
-    p.add_option('-s', '--string', action='store_true', dest='string',
-        help='parse given string')
-    p.add_option('-u', '--url', action='store', dest='url',
-        help='parse given url')
-    p.add_option('-e', '--encoding', action='store', dest='encoding',
-        help='encoding of the file or override encoding found')
-    p.add_option('-m', '--minify', action='store_true', dest='minify',
-        help='minify parsed CSS', default=False)
-    p.add_option('-d', '--debug', action='store_true', dest='debug',
-        help='activate debugging output')
+    p.add_option(
+        '-s', '--string', action='store_true', dest='string', help='parse given string'
+    )
+    p.add_option('-u', '--url', action='store', dest='url', help='parse given url')
+    p.add_option(
+        '-e',
+        '--encoding',
+        action='store',
+        dest='encoding',
+        help='encoding of the file or override encoding found',
+    )
+    p.add_option(
+        '-m',
+        '--minify',
+        action='store_true',
+        dest='minify',
+        help='minify parsed CSS',
+        default=False,
+    )
+    p.add_option(
+        '-d',
+        '--debug',
+        action='store_true',
+        dest='debug',
+        help='activate debugging output',
+    )
 
     (options, params) = p.parse_args(args)
 
@@ -59,4 +76,4 @@ def main(args=None):
 
 
 if __name__ == "__main__":
-     sys.exit(main())
+    sys.exit(main())

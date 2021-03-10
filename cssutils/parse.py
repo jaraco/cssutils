@@ -14,8 +14,9 @@ import urllib.request, urllib.parse, urllib.error
 
 from cssutils import css
 
-if sys.version_info < (2,6):
+if sys.version_info < (2, 6):
     bytes = str
+
 
 class CSSParser(object):
     """Parse a CSS StyleSheet from URL, string or file and return a DOM Level 2
@@ -29,9 +30,16 @@ class CSSParser(object):
         sheet = parser.parseFile('test1.css', 'ascii')
         print sheet.cssText
     """
-    def __init__(self, log=None, loglevel=None, raiseExceptions=None,
-                 fetcher=None, parseComments=True,
-                 validate=True):
+
+    def __init__(
+        self,
+        log=None,
+        loglevel=None,
+        raiseExceptions=None,
+        fetcher=None,
+        parseComments=True,
+        validate=True,
+    ):
         """
         :param log:
             logging object
@@ -100,9 +108,9 @@ class CSSParser(object):
         self.__parseSetting(False)
         return style
 
-    def parseString(self, cssText, encoding=None, href=None, media=None,
-                    title=None,
-                    validate=None):
+    def parseString(
+        self, cssText, encoding=None, href=None, media=None, title=None, validate=None
+    ):
         """Parse `cssText` as :class:`~cssutils.css.CSSStyleSheet`.
         Errors may be raised (e.g. UnicodeDecodeError).
 
@@ -137,21 +145,24 @@ class CSSParser(object):
         if validate is None:
             validate = self._validate
 
-        sheet = cssutils.css.CSSStyleSheet(href=href,
-                                           media=cssutils.stylesheets.MediaList(media),
-                                           title=title,
-                                           validating=validate)
+        sheet = cssutils.css.CSSStyleSheet(
+            href=href,
+            media=cssutils.stylesheets.MediaList(media),
+            title=title,
+            validating=validate,
+        )
         sheet._setFetcher(self.__fetcher)
         # tokenizing this ways closes open constructs and adds EOF
-        sheet._setCssTextWithEncodingOverride(self.__tokenizer.tokenize(cssText,
-                                                                        fullsheet=True),
-                                              encodingOverride=encoding)
+        sheet._setCssTextWithEncodingOverride(
+            self.__tokenizer.tokenize(cssText, fullsheet=True),
+            encodingOverride=encoding,
+        )
         self.__parseSetting(False)
         return sheet
 
-    def parseFile(self, filename, encoding=None,
-                  href=None, media=None, title=None,
-                  validate=None):
+    def parseFile(
+        self, filename, encoding=None, href=None, media=None, title=None, validate=None
+    ):
         """Retrieve content from `filename` and parse it. Errors may be raised
         (e.g. IOError).
 
@@ -172,20 +183,23 @@ class CSSParser(object):
         """
         if not href:
             # prepend // for file URL, urllib does not do this?
-            #href = u'file:' + urllib.pathname2url(os.path.abspath(filename))
+            # href = u'file:' + urllib.pathname2url(os.path.abspath(filename))
             href = path2url(filename)
 
         f = open(filename, 'rb')
         css = f.read()
         f.close()
 
-        return self.parseString(css,
-                                encoding=encoding, # read returns a str
-                                href=href, media=media, title=title,
-                                validate=validate)
+        return self.parseString(
+            css,
+            encoding=encoding,  # read returns a str
+            href=href,
+            media=media,
+            title=title,
+            validate=validate,
+        )
 
-    def parseUrl(self, href, encoding=None, media=None, title=None,
-                 validate=None):
+    def parseUrl(self, href, encoding=None, media=None, title=None, validate=None):
         """Retrieve content from URL `href` and parse it. Errors may be raised
         (e.g. URLError).
 
@@ -200,17 +214,22 @@ class CSSParser(object):
         :returns:
             :class:`~cssutils.css.CSSStyleSheet`.
         """
-        encoding, enctype, text = cssutils.util._readUrl(href,
-                                                         fetcher=self.__fetcher,
-                                                         overrideEncoding=encoding)
+        encoding, enctype, text = cssutils.util._readUrl(
+            href, fetcher=self.__fetcher, overrideEncoding=encoding
+        )
         if enctype == 5:
             # do not use if defaulting to UTF-8
             encoding = None
 
         if text is not None:
-            return self.parseString(text, encoding=encoding,
-                                    href=href, media=media, title=title,
-                                    validate=validate)
+            return self.parseString(
+                text,
+                encoding=encoding,
+                href=href,
+                media=media,
+                title=title,
+                validate=validate,
+            )
 
     def setFetcher(self, fetcher=None):
         """Replace the default URL fetch function with a custom one.

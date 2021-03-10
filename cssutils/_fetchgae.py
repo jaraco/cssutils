@@ -11,6 +11,7 @@ from . import util
 
 log = errorhandler.ErrorHandler()
 
+
 def _defaultFetcher(url):
     """
     uses GoogleAppEngine (GAE)
@@ -43,12 +44,11 @@ def _defaultFetcher(url):
             The response data exceeded the maximum allowed size, and the
             allow_truncated parameter passed to fetch() was False.
     """
-    #from google.appengine.api import urlfetch
+    # from google.appengine.api import urlfetch
     try:
         r = urlfetch.fetch(url, method=urlfetch.GET)
     except urlfetch.Error as e:
-        log.warn('Error opening url=%r: %s' % (url, e),
-                          error=IOError)
+        log.warn('Error opening url=%r: %s' % (url, e), error=IOError)
     else:
         if r.status_code == 200:
             # find mimetype and encoding
@@ -59,10 +59,15 @@ def _defaultFetcher(url):
             except KeyError:
                 encoding = None
             if mimetype != 'text/css':
-                log.error('Expected "text/css" mime type for url %r but found: %r' % 
-                              (url, mimetype), error=ValueError)
+                log.error(
+                    'Expected "text/css" mime type for url %r but found: %r'
+                    % (url, mimetype),
+                    error=ValueError,
+                )
             return encoding, r.content
         else:
             # TODO: 301 etc
-            log.warn('Error opening url=%r: HTTP status %s' % 
-                              (url, r.status_code), error=IOError)
+            log.warn(
+                'Error opening url=%r: HTTP status %s' % (url, r.status_code),
+                error=IOError,
+            )

@@ -4,8 +4,8 @@ import xml.dom
 from . import test_cssrule
 import cssutils
 
-class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
+class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
     def setUp(self):
         super(CSSStyleRuleTestCase, self).setUp()
         self.r = cssutils.css.CSSStyleRule()
@@ -17,11 +17,11 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSStyleRule.type and init"
         super(CSSStyleRuleTestCase, self).test_init()
         self.assertEqual('', self.r.cssText)
-        self.assertEqual(cssutils.css.selectorlist.SelectorList,
-                         type(self.r.selectorList))
+        self.assertEqual(
+            cssutils.css.selectorlist.SelectorList, type(self.r.selectorList)
+        )
         self.assertEqual('', self.r.selectorText)
-        self.assertEqual(cssutils.css.CSSStyleDeclaration,
-                         type(self.r.style))
+        self.assertEqual(cssutils.css.CSSStyleDeclaration, type(self.r.style))
         self.assertEqual(self.r, self.r.style.parentRule)
 
     def test_refs(self):
@@ -40,10 +40,11 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         sel, style = s.selectorList, s.style
 
-        invalids = ('$b { x:2 }', # invalid selector
-                    'c { $x3 }', # invalid style
-                    '/b { 2 }' # both invalid
-                    )
+        invalids = (
+            '$b { x:2 }',  # invalid selector
+            'c { $x3 }',  # invalid style
+            '/b { 2 }',  # both invalid
+        )
         for invalid in invalids:
             try:
                 s.cssText = invalid
@@ -114,21 +115,20 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
             '* {}': '',
             'a {}': '',
-            }
-        self.do_equal_p(tests) # parse
-        #self.do_equal_r(tests) # set cssText # TODO: WHY?
+        }
+        self.do_equal_p(tests)  # parse
+        # self.do_equal_r(tests) # set cssText # TODO: WHY?
 
         cssutils.ser.prefs.keepEmptyRules = True
         tests = {
-            #u'''a{;display:block;float:left}''': 'a {\n    display:block;\n    float:left\n    }', # issue 28
-
-            '''a\n{color: #000}''': 'a {\n    color: #000\n    }', # issue 4
-            '''a\n{color: #000000}''': 'a {\n    color: #000\n    }', # issue 4
-            '''a\n{color: #abc}''': 'a {\n    color: #abc\n    }', # issue 4
-            '''a\n{color: #abcdef}''': 'a {\n    color: #abcdef\n    }', # issue 4
-            '''a\n{color: #00a}''': 'a {\n    color: #00a\n    }', # issue 4
-            '''a\n{color: #1a1a1a}''': 'a {\n    color: #1a1a1a\n    }', # issue 4
-            '''#id\n{ color: red }''': '#id {\n    color: red\n    }', # issue 3
+            # u'''a{;display:block;float:left}''': 'a {\n    display:block;\n    float:left\n    }', # issue 28
+            '''a\n{color: #000}''': 'a {\n    color: #000\n    }',  # issue 4
+            '''a\n{color: #000000}''': 'a {\n    color: #000\n    }',  # issue 4
+            '''a\n{color: #abc}''': 'a {\n    color: #abc\n    }',  # issue 4
+            '''a\n{color: #abcdef}''': 'a {\n    color: #abcdef\n    }',  # issue 4
+            '''a\n{color: #00a}''': 'a {\n    color: #00a\n    }',  # issue 4
+            '''a\n{color: #1a1a1a}''': 'a {\n    color: #1a1a1a\n    }',  # issue 4
+            '''#id\n{ color: red }''': '#id {\n    color: red\n    }',  # issue 3
             '''* {}''': None,
             'a {}': None,
             'b { a: 1; }': 'b {\n    a: 1\n    }',
@@ -139,30 +139,30 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             'd2 {/*0*//*1*/}': 'd2 {\n    /*0*/\n    /*1*/\n    }',
             # comments
             # TODO: spaces?
-            '''a/*1*//*2*/,/*3*//*4*/b/*5*//*6*/{color: #000}''':
-                'a/*1*//*2*/, /*3*//*4*/b/*5*//*6*/ {\n    color: #000\n    }',
-
-            '''a,b{color: #000}''': 'a, b {\n    color: #000\n    }', # issue 4
-            '''a\n\r\t\f ,\n\r\t\f b\n\r\t\f {color: #000}''': 'a, b {\n    color: #000\n    }', # issue 4
-            }
-        self.do_equal_p(tests) # parse
-        self.do_equal_r(tests) # set cssText
+            '''a/*1*//*2*/,/*3*//*4*/b/*5*//*6*/{color: #000}''': 'a/*1*//*2*/, /*3*//*4*/b/*5*//*6*/ {\n    color: #000\n    }',
+            '''a,b{color: #000}''': 'a, b {\n    color: #000\n    }',  # issue 4
+            '''a\n\r\t\f ,\n\r\t\f b\n\r\t\f {color: #000}''': 'a, b {\n    color: #000\n    }',  # issue 4
+        }
+        self.do_equal_p(tests)  # parse
+        self.do_equal_r(tests)  # set cssText
 
         tests = {
             '''a;''': xml.dom.SyntaxErr,
             '''a {{}''': xml.dom.SyntaxErr,
             '''a }''': xml.dom.SyntaxErr,
+        }
+        self.do_raise_p(tests)  # parse
+        tests.update(
+            {
+                '''/*x*/''': xml.dom.SyntaxErr,
+                '''a {''': xml.dom.SyntaxErr,
+                # trailing
+                '''a {}x''': xml.dom.SyntaxErr,
+                '''a {/**/''': xml.dom.SyntaxErr,
+                '''a {} ''': xml.dom.SyntaxErr,
             }
-        self.do_raise_p(tests) # parse
-        tests.update({
-            '''/*x*/''': xml.dom.SyntaxErr,
-            '''a {''': xml.dom.SyntaxErr,
-            # trailing
-            '''a {}x''': xml.dom.SyntaxErr,
-            '''a {/**/''': xml.dom.SyntaxErr,
-            '''a {} ''': xml.dom.SyntaxErr,
-            })
-        self.do_raise_r(tests) # set cssText
+        )
+        self.do_raise_r(tests)  # set cssText
         cssutils.ser.prefs.useDefaults()
 
     def test_selectorList(self):
@@ -175,8 +175,9 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         r.selectorList.appendSelector(' b  ')
         # only simple selector!
-        self.assertRaises(xml.dom.InvalidModificationErr,
-                          r.selectorList.appendSelector, '  h1, x ')
+        self.assertRaises(
+            xml.dom.InvalidModificationErr, r.selectorList.appendSelector, '  h1, x '
+        )
 
         self.assertEqual(2, r.selectorList.length)
         self.assertEqual('a, b', r.selectorText)
@@ -206,11 +207,9 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSStyleRule (incomplete)"
         cssutils.ser.prefs.keepEmptyRules = True
         tests = {
-            'a {': 'a {}', # no }
-            'a { font-family: "arial sans': # no "}
-                'a {\n    font-family: "arial sans"\n    }',
-            'a { font-family: "arial sans";': # no }
-                'a {\n    font-family: "arial sans"\n    }',
+            'a {': 'a {}',  # no }
+            'a { font-family: "arial sans': 'a {\n    font-family: "arial sans"\n    }',  # no "}
+            'a { font-family: "arial sans";': 'a {\n    font-family: "arial sans"\n    }',  # no }
             '''p {
                 color: green;
                 font-family: 'Courier New Times
@@ -223,18 +222,18 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
                 font-family: 'Courier New Times'
                 color: red;
                 color: green;
-                ''': '''p {\n    color: green;\n    color: green\n    }'''
+                ''': '''p {\n    color: green;\n    color: green\n    }''',
         }
-        self.do_equal_p(tests, raising=False) # parse
+        self.do_equal_p(tests, raising=False)  # parse
         cssutils.ser.prefs.useDefaults()
 
-# TODO:   def test_InvalidModificationErr(self):
-#        "CSSStyleRule.cssText InvalidModificationErr"
-#        self._test_InvalidModificationErr(u'@a a {}')
+    # TODO:   def test_InvalidModificationErr(self):
+    #        "CSSStyleRule.cssText InvalidModificationErr"
+    #        self._test_InvalidModificationErr(u'@a a {}')
 
     def test_reprANDstr(self):
         "CSSStyleRule.__repr__(), .__str__()"
-        sel='a > b + c'
+        sel = 'a > b + c'
 
         s = cssutils.css.CSSStyleRule(selectorText=sel)
 
@@ -256,4 +255,5 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

@@ -26,21 +26,18 @@ MACROS = {
     'string2': r"'([^\n\r\f\\']|\\{nl}|{escape})*'",
     'invalid1': r'\"([^\n\r\f\\"]|\\{nl}|{escape})*',
     'invalid2': r"\'([^\n\r\f\\']|\\{nl}|{escape})*",
-
     'comment': r'\/\*[^*]*\*+([^/][^*]*\*+)*\/',
     'ident': r'[-]?{nmstart}{nmchar}*',
     'name': r'{nmchar}+',
     # TODO???
-    'num': r'[+-]?[0-9]*\.[0-9]+|[+-]?[0-9]+', #r'[-]?\d+|[-]?\d*\.\d+',
+    'num': r'[+-]?[0-9]*\.[0-9]+|[+-]?[0-9]+',  # r'[-]?\d+|[-]?\d*\.\d+',
     'string': r'{string1}|{string2}',
     # from CSS2.1
     'invalid': r'{invalid1}|{invalid2}',
-    'url':  r'[\x09\x21\x23-\x26\x28\x2a-\x7E]|{nonascii}|{escape}',
-
+    'url': r'[\x09\x21\x23-\x26\x28\x2a-\x7E]|{nonascii}|{escape}',
     's': r'\t|\r|\n|\f|\x20',
     'w': r'{s}*',
     'nl': r'\n|\r\n|\r|\f',
-
     'A': r'A|a|\\0{0,4}(?:41|61)(?:\r\n|[ \t\r\n\f])?',
     'B': r'B|b|\\0{0,4}(?:42|62)(?:\r\n|[ \t\r\n\f])?',
     'C': r'C|c|\\0{0,4}(?:43|63)(?:\r\n|[ \t\r\n\f])?',
@@ -63,7 +60,7 @@ MACROS = {
     'V': r'V|v|\\0{0,4}(?:56|76)(?:\r\n|[ \t\r\n\f])?|\\V|\\v',
     'X': r'X|x|\\0{0,4}(?:58|78)(?:\r\n|[ \t\r\n\f])?|\\X|\\x',
     'Z': r'Z|z|\\0{0,4}(?:5a|7a)(?:\r\n|[ \t\r\n\f])?|\\Z|\\z',
-    }
+}
 
 # The following productions are the complete list of tokens
 # used by cssutils, a mix of CSS3 and some CSS2.1 productions.
@@ -71,8 +68,7 @@ MACROS = {
 PRODUCTIONS = [
     # UTF8_BOM or UTF8_BOM_SIG will only be checked at beginning of CSS
     ('BOM', '\xfe\xff|\xef\xbb\xbf'),
-
-    ('S', r'{s}+'), # 1st in list of general productions
+    ('S', r'{s}+'),  # 1st in list of general productions
     ('URI', r'{U}{R}{L}\({w}({string}|{url}*){w}\)'),
     ('UNICODE-RANGE', r'{U}\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'),
     ('IDENT', r'{ident}'),
@@ -81,10 +77,10 @@ PRODUCTIONS = [
     ('PERCENTAGE', r'{num}\%'),
     ('NUMBER', r'{num}'),
     ('HASH', r'\#{name}'),
-    ('COMMENT', r'{comment}'), #r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
+    ('COMMENT', r'{comment}'),  # r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
     ('STRING', r'{string}'),
-    ('INVALID', r'{invalid}'), # from CSS2.1
-    ('ATKEYWORD', r'@{ident}'), # other keywords are done in the tokenizer
+    ('INVALID', r'{invalid}'),  # from CSS2.1
+    ('ATKEYWORD', r'@{ident}'),  # other keywords are done in the tokenizer
     ('INCLUDES', '\~\='),
     ('DASHMATCH', r'\|\='),
     ('PREFIXMATCH', r'\^\='),
@@ -92,18 +88,18 @@ PRODUCTIONS = [
     ('SUBSTRINGMATCH', r'\*\='),
     ('CDO', r'\<\!\-\-'),
     ('CDC', r'\-\-\>'),
-    ('CHAR', r'[^"\']') # MUST always be last
+    ('CHAR', r'[^"\']')  # MUST always be last
     # valid ony at start so not checked everytime
-    #('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
+    # ('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
     # checked specially if fullsheet is parsed
-    ]
-
+]
 
 
 class CSSProductions(object):
     """
     most attributes are set later
     """
+
     EOF = True
     # removed from productions as they simply are ATKEYWORD until
     # tokenizing
@@ -115,11 +111,10 @@ class CSSProductions(object):
     PAGE_SYM = 'PAGE_SYM'
     VARIABLES_SYM = 'VARIABLES_SYM'
 
+
 for i, t in enumerate(PRODUCTIONS):
     setattr(CSSProductions, t[0].replace('-', '_'), t[0])
 
 
 # may be enabled by settings.set
-_DXImageTransform = ('FUNCTION',
-                     r'progid\:DXImageTransform\.Microsoft\..+\('
-                     )
+_DXImageTransform = ('FUNCTION', r'progid\:DXImageTransform\.Microsoft\..+\(')

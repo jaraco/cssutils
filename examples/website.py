@@ -6,7 +6,9 @@ Log output cannot be tested!
 
 """
 import cssutils
+
 cssutils.ser.prefs.useDefaults()
+
 
 def profile():
     """
@@ -30,6 +32,7 @@ def profile():
     True
     """
 
+
 def cssparse_example():
     """
     >>> import cssutils, logging
@@ -42,6 +45,7 @@ def cssparse_example():
         color: red
         }
     """
+
 
 def logging():
     """
@@ -61,6 +65,7 @@ def logging():
     ERROR CSSStylesheet: CSSImportRule not allowed here. [1:13: @import]
     <BLANKLINE>
     """
+
 
 def prefs():
     """
@@ -119,6 +124,7 @@ def work_and_build():
         }
     """
 
+
 def api_addons():
     """
     >>> import cssutils, logging
@@ -153,7 +159,8 @@ def api_addons():
     background: red !important;
     """
 
+
 if __name__ == '__main__':
     import doctest
-    doctest.testmod()
 
+    doctest.testmod()

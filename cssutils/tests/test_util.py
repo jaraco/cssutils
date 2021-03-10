@@ -21,8 +21,8 @@ import encutils
 
 from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
 
-class ListSeqTestCase(basetest.BaseTestCase):
 
+class ListSeqTestCase(basetest.BaseTestCase):
     def test_all(self):
         "util.ListSeq"
         ls = ListSeq()
@@ -53,16 +53,16 @@ class ListSeqTestCase(basetest.BaseTestCase):
 
 
 class BaseTestCase(basetest.BaseTestCase):
-
     def test_normalize(self):
         "Base._normalize()"
         b = Base()
-        tests = {'abcdefg ABCDEFG äöüß€ AÖÜ': 'abcdefg abcdefg äöüß€ aöü',
-                 r'\ga\Ga\\\ ': r'gaga\ ',
-                 r'0123456789': '0123456789',
-                 # unicode escape seqs should have been done by
-                 # the tokenizer...
-                 }
+        tests = {
+            'abcdefg ABCDEFG äöüß€ AÖÜ': 'abcdefg abcdefg äöüß€ aöü',
+            r'\ga\Ga\\\ ': r'gaga\ ',
+            r'0123456789': '0123456789',
+            # unicode escape seqs should have been done by
+            # the tokenizer...
+        }
         for test, exp in list(tests.items()):
             self.assertEqual(b._normalize(test), exp)
             # static too
@@ -81,21 +81,45 @@ class BaseTestCase(basetest.BaseTestCase):
             ('blockstartonly', 'a[{1}]({2}) { NOT', 'a[{1}]func({2}) {', True),
             ('propertynameendonly', 'a[(2)1] { }2 : a;', 'a[(2)1] { }2 :', False),
             ('propertynameendonly', 'a[(2)1] { }2 : a;', 'a[func(2)1] { }2 :', True),
-            ('propertyvalueendonly', 'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1; NOT',
-                'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1;', False),
-            ('propertyvalueendonly', 'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1; NOT',
-                'a{;{;}[;]func(;)}[;{;}[;]func(;)]func(;{;}[;]func(;)) 1;', True),
-            ('funcendonly', 'a{[1]}([3])[{[1]}[2]([3])]) NOT',
-                'a{[1]}([3])[{[1]}[2]([3])])', False),
-            ('funcendonly', 'a{[1]}([3])[{[1]}[2]([3])]) NOT',
-                'a{[1]}func([3])[{[1]}[2]func([3])])', True),
-            ('selectorattendonly', '[a[()]{()}([()]{()}())] NOT',
-                '[a[()]{()}([()]{()}())]', False),
-            ('selectorattendonly', '[a[()]{()}([()]{()}())] NOT',
-                '[a[func()]{func()}func([func()]{func()}func())]', True),
+            (
+                'propertyvalueendonly',
+                'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1; NOT',
+                'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1;',
+                False,
+            ),
+            (
+                'propertyvalueendonly',
+                'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1; NOT',
+                'a{;{;}[;]func(;)}[;{;}[;]func(;)]func(;{;}[;]func(;)) 1;',
+                True,
+            ),
+            (
+                'funcendonly',
+                'a{[1]}([3])[{[1]}[2]([3])]) NOT',
+                'a{[1]}([3])[{[1]}[2]([3])])',
+                False,
+            ),
+            (
+                'funcendonly',
+                'a{[1]}([3])[{[1]}[2]([3])]) NOT',
+                'a{[1]}func([3])[{[1]}[2]func([3])])',
+                True,
+            ),
+            (
+                'selectorattendonly',
+                '[a[()]{()}([()]{()}())] NOT',
+                '[a[()]{()}([()]{()}())]',
+                False,
+            ),
+            (
+                'selectorattendonly',
+                '[a[()]{()}([()]{()}())] NOT',
+                '[a[func()]{func()}func([func()]{func()}func())]',
+                True,
+            ),
             # issue 50
-            ('withstarttoken [', 'a];x', '[a];', False)
-            ]
+            ('withstarttoken [', 'a];x', '[a];', False),
+        ]
 
         for typ, values, exp, paransasfunc in tests:
 
@@ -112,20 +136,15 @@ class BaseTestCase(basetest.BaseTestCase):
             if 'default' == typ:
                 restokens = b._tokensupto2(tokens)
             elif 'blockstartonly' == typ:
-                restokens = b._tokensupto2(
-                    tokens, blockstartonly=True)
+                restokens = b._tokensupto2(tokens, blockstartonly=True)
             elif 'propertynameendonly' == typ:
-                restokens = b._tokensupto2(
-                    tokens, propertynameendonly=True)
+                restokens = b._tokensupto2(tokens, propertynameendonly=True)
             elif 'propertyvalueendonly' == typ:
-                restokens = b._tokensupto2(
-                    tokens, propertyvalueendonly=True)
+                restokens = b._tokensupto2(tokens, propertyvalueendonly=True)
             elif 'funcendonly' == typ:
-                restokens = b._tokensupto2(
-                    tokens, funcendonly=True)
+                restokens = b._tokensupto2(tokens, funcendonly=True)
             elif 'selectorattendonly' == typ:
-                restokens = b._tokensupto2(
-                    tokens, selectorattendonly=True)
+                restokens = b._tokensupto2(tokens, selectorattendonly=True)
             elif 'withstarttoken [' == typ:
                 restokens = b._tokensupto2(tokens, ('CHAR', '[', 0, 0))
 
@@ -145,6 +164,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             # normally r == encoding, content
             def fetcher(url):
                 return r
+
             return fetcher
 
         tests = {
@@ -154,7 +174,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             (None, '€'.encode('utf-8')): ('utf-8', 5, '€'),
             ('utf-8', '€'.encode('utf-8')): ('utf-8', 1, '€'),
             ('ISO-8859-1', 'ä'.encode('iso-8859-1')): ('ISO-8859-1', 1, 'ä'),
-            ('ASCII', 'a'.encode('ascii')): ('ASCII', 1, 'a')
+            ('ASCII', 'a'.encode('ascii')): ('ASCII', 1, 'a'),
         }
 
         for r, exp in list(tests.items()):
@@ -163,140 +183,205 @@ class _readUrl_TestCase(basetest.BaseTestCase):
         tests = {
             # (overrideEncoding, parentEncoding, (httpencoding, content)):
             #                        readUrl returns
-
             # ===== 0. OVERRIDE WINS =====
             # override + parent + http
             ('latin1', 'ascii', ('utf-16', ''.encode())): ('latin1', 0, ''),
             ('latin1', 'ascii', ('utf-16', '123'.encode())): ('latin1', 0, '123'),
-            ('latin1', 'ascii', ('utf-16', 'ä'.encode('iso-8859-1'))):
-                ('latin1', 0, 'ä'),
-            ('latin1', 'ascii', ('utf-16', 'a'.encode('ascii'))):
-                ('latin1',0,  'a'),
+            ('latin1', 'ascii', ('utf-16', 'ä'.encode('iso-8859-1'))): (
+                'latin1',
+                0,
+                'ä',
+            ),
+            ('latin1', 'ascii', ('utf-16', 'a'.encode('ascii'))): ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', 'ascii', ('utf-16', '@charset "ascii";'.encode())):
-                ('latin1', 0, '@charset "latin1";'),
-            ('latin1', 'ascii', ('utf-16', '@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, '@charset "latin1";ä'),
-            ('latin1', 'ascii', ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, '@charset "latin1";\xc3\xa4'), # read as latin1!
-
+            ('latin1', 'ascii', ('utf-16', '@charset "ascii";'.encode())): (
+                'latin1',
+                0,
+                '@charset "latin1";',
+            ),
+            ('latin1', 'ascii', ('utf-16', '@charset "utf-8";ä'.encode('latin1'))): (
+                'latin1',
+                0,
+                '@charset "latin1";ä',
+            ),
+            ('latin1', 'ascii', ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))): (
+                'latin1',
+                0,
+                '@charset "latin1";\xc3\xa4',
+            ),  # read as latin1!
             # override only
             ('latin1', None, None): (None, None, None),
             ('latin1', None, (None, ''.encode())): ('latin1', 0, ''),
             ('latin1', None, (None, '123'.encode())): ('latin1', 0, '123'),
-            ('latin1', None, (None, 'ä'.encode('iso-8859-1'))):
-                ('latin1', 0, 'ä'),
-            ('latin1', None, (None, 'a'.encode('ascii'))):
-                ('latin1', 0, 'a'),
+            ('latin1', None, (None, 'ä'.encode('iso-8859-1'))): ('latin1', 0, 'ä'),
+            ('latin1', None, (None, 'a'.encode('ascii'))): ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', None, (None, '@charset "ascii";'.encode())):
-                ('latin1', 0, '@charset "latin1";'),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, '@charset "latin1";ä'),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, '@charset "latin1";\xc3\xa4'), # read as latin1!
-
+            ('latin1', None, (None, '@charset "ascii";'.encode())): (
+                'latin1',
+                0,
+                '@charset "latin1";',
+            ),
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode('latin1'))): (
+                'latin1',
+                0,
+                '@charset "latin1";ä',
+            ),
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))): (
+                'latin1',
+                0,
+                '@charset "latin1";\xc3\xa4',
+            ),  # read as latin1!
             # override + parent
             ('latin1', 'ascii', None): (None, None, None),
             ('latin1', 'ascii', (None, ''.encode())): ('latin1', 0, ''),
             ('latin1', 'ascii', (None, '123'.encode())): ('latin1', 0, '123'),
-            ('latin1', 'ascii', (None, 'ä'.encode('iso-8859-1'))):
-                ('latin1', 0, 'ä'),
-            ('latin1', 'ascii', (None, 'a'.encode('ascii'))):
-                ('latin1', 0, 'a'),
+            ('latin1', 'ascii', (None, 'ä'.encode('iso-8859-1'))): ('latin1', 0, 'ä'),
+            ('latin1', 'ascii', (None, 'a'.encode('ascii'))): ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', 'ascii', (None, '@charset "ascii";'.encode())):
-                ('latin1', 0, '@charset "latin1";'),
-            ('latin1', 'ascii', (None, '@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, '@charset "latin1";ä'),
-            ('latin1', 'ascii', (None, '@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, '@charset "latin1";\xc3\xa4'), # read as latin1!
-
+            ('latin1', 'ascii', (None, '@charset "ascii";'.encode())): (
+                'latin1',
+                0,
+                '@charset "latin1";',
+            ),
+            ('latin1', 'ascii', (None, '@charset "utf-8";ä'.encode('latin1'))): (
+                'latin1',
+                0,
+                '@charset "latin1";ä',
+            ),
+            ('latin1', 'ascii', (None, '@charset "utf-8";ä'.encode('utf-8'))): (
+                'latin1',
+                0,
+                '@charset "latin1";\xc3\xa4',
+            ),  # read as latin1!
             # override + http
             ('latin1', None, ('utf-16', ''.encode())): ('latin1', 0, ''),
             ('latin1', None, ('utf-16', '123'.encode())): ('latin1', 0, '123'),
-            ('latin1', None, ('utf-16', 'ä'.encode('iso-8859-1'))):
-                ('latin1', 0, 'ä'),
-            ('latin1', None, ('utf-16', 'a'.encode('ascii'))):
-                ('latin1', 0, 'a'),
+            ('latin1', None, ('utf-16', 'ä'.encode('iso-8859-1'))): ('latin1', 0, 'ä'),
+            ('latin1', None, ('utf-16', 'a'.encode('ascii'))): ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', None, ('utf-16', '@charset "ascii";'.encode())):
-                ('latin1', 0, '@charset "latin1";'),
-            ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, '@charset "latin1";ä'),
-            ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, '@charset "latin1";\xc3\xa4'), # read as latin1!
-
+            ('latin1', None, ('utf-16', '@charset "ascii";'.encode())): (
+                'latin1',
+                0,
+                '@charset "latin1";',
+            ),
+            ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode('latin1'))): (
+                'latin1',
+                0,
+                '@charset "latin1";ä',
+            ),
+            ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))): (
+                'latin1',
+                0,
+                '@charset "latin1";\xc3\xa4',
+            ),  # read as latin1!
             # override ü @charset
-            ('latin1', None, (None, '@charset "ascii";'.encode())):
-                ('latin1', 0, '@charset "latin1";'),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, '@charset "latin1";ä'),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, '@charset "latin1";\xc3\xa4'), # read as latin1!
-
-
+            ('latin1', None, (None, '@charset "ascii";'.encode())): (
+                'latin1',
+                0,
+                '@charset "latin1";',
+            ),
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode('latin1'))): (
+                'latin1',
+                0,
+                '@charset "latin1";ä',
+            ),
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))): (
+                'latin1',
+                0,
+                '@charset "latin1";\xc3\xa4',
+            ),  # read as latin1!
             # ===== 1. HTTP WINS =====
             (None, 'ascii', ('latin1', ''.encode())): ('latin1', 1, ''),
             (None, 'ascii', ('latin1', '123'.encode())): ('latin1', 1, '123'),
-            (None, 'ascii', ('latin1', 'ä'.encode('iso-8859-1'))):
-                ('latin1', 1, 'ä'),
-            (None, 'ascii', ('latin1', 'a'.encode('ascii'))):
-                ('latin1', 1, 'a'),
+            (None, 'ascii', ('latin1', 'ä'.encode('iso-8859-1'))): ('latin1', 1, 'ä'),
+            (None, 'ascii', ('latin1', 'a'.encode('ascii'))): ('latin1', 1, 'a'),
             # + @charset
-            (None, 'ascii', ('latin1', '@charset "ascii";'.encode())):
-                ('latin1', 1, '@charset "latin1";'),
-            (None, 'ascii', ('latin1', '@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 1, '@charset "latin1";ä'),
-            (None, 'ascii', ('latin1', '@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 1, '@charset "latin1";\xc3\xa4'), # read as latin1!
-
-
+            (None, 'ascii', ('latin1', '@charset "ascii";'.encode())): (
+                'latin1',
+                1,
+                '@charset "latin1";',
+            ),
+            (None, 'ascii', ('latin1', '@charset "utf-8";ä'.encode('latin1'))): (
+                'latin1',
+                1,
+                '@charset "latin1";ä',
+            ),
+            (None, 'ascii', ('latin1', '@charset "utf-8";ä'.encode('utf-8'))): (
+                'latin1',
+                1,
+                '@charset "latin1";\xc3\xa4',
+            ),  # read as latin1!
             # ===== 2. @charset WINS =====
-            (None, 'ascii', (None, '@charset "latin1";'.encode())):
-                ('latin1', 2, '@charset "latin1";'),
-            (None, 'ascii', (None, '@charset "latin1";ä'.encode('latin1'))):
-                ('latin1', 2, '@charset "latin1";ä'),
-            (None, 'ascii', (None, '@charset "latin1";ä'.encode('utf-8'))):
-                ('latin1', 2, '@charset "latin1";\xc3\xa4'), # read as latin1!
-
+            (None, 'ascii', (None, '@charset "latin1";'.encode())): (
+                'latin1',
+                2,
+                '@charset "latin1";',
+            ),
+            (None, 'ascii', (None, '@charset "latin1";ä'.encode('latin1'))): (
+                'latin1',
+                2,
+                '@charset "latin1";ä',
+            ),
+            (None, 'ascii', (None, '@charset "latin1";ä'.encode('utf-8'))): (
+                'latin1',
+                2,
+                '@charset "latin1";\xc3\xa4',
+            ),  # read as latin1!
             # ===== 2. BOM WINS =====
-            (None, 'ascii', (None, 'ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, '\xe4'), # read as latin1!
-            (None, 'ascii', (None, '@charset "utf-8";ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, '@charset "utf-8";\xe4'), # read as latin1!
-            (None, 'ascii', (None, '@charset "latin1";ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, '@charset "utf-8";\xe4'), # read as latin1!
-
-
+            (None, 'ascii', (None, 'ä'.encode('utf-8-sig'))): (
+                'utf-8-sig',
+                2,
+                '\xe4',
+            ),  # read as latin1!
+            (None, 'ascii', (None, '@charset "utf-8";ä'.encode('utf-8-sig'))): (
+                'utf-8-sig',
+                2,
+                '@charset "utf-8";\xe4',
+            ),  # read as latin1!
+            (None, 'ascii', (None, '@charset "latin1";ä'.encode('utf-8-sig'))): (
+                'utf-8-sig',
+                2,
+                '@charset "utf-8";\xe4',
+            ),  # read as latin1!
             # ===== 4. parentEncoding WINS =====
             (None, 'latin1', (None, ''.encode())): ('latin1', 4, ''),
             (None, 'latin1', (None, '123'.encode())): ('latin1', 4, '123'),
-            (None, 'latin1', (None, 'ä'.encode('iso-8859-1'))):
-                ('latin1', 4, 'ä'),
-            (None, 'latin1', (None, 'a'.encode('ascii'))):
-                ('latin1', 4, 'a'),
-            (None, 'latin1', (None, 'ä'.encode('utf-8'))):
-                ('latin1', 4, '\xc3\xa4'), # read as latin1!
-
+            (None, 'latin1', (None, 'ä'.encode('iso-8859-1'))): ('latin1', 4, 'ä'),
+            (None, 'latin1', (None, 'a'.encode('ascii'))): ('latin1', 4, 'a'),
+            (None, 'latin1', (None, 'ä'.encode('utf-8'))): (
+                'latin1',
+                4,
+                '\xc3\xa4',
+            ),  # read as latin1!
             # ===== 5. default WINS which in this case is None! =====
             (None, None, (None, ''.encode())): ('utf-8', 5, ''),
             (None, None, (None, '123'.encode())): ('utf-8', 5, '123'),
-            (None, None, (None, 'a'.encode('ascii'))):
-                ('utf-8', 5, 'a'),
-            (None, None, (None, 'ä'.encode('utf-8'))):
-                ('utf-8', 5, 'ä'), # read as utf-8
-            (None, None, (None, 'ä'.encode('iso-8859-1'))): # trigger UnicodeDecodeError!
-                ('utf-8', 5, None),
-
-
+            (None, None, (None, 'a'.encode('ascii'))): ('utf-8', 5, 'a'),
+            (None, None, (None, 'ä'.encode('utf-8'))): (
+                'utf-8',
+                5,
+                'ä',
+            ),  # read as utf-8
+            (
+                None,
+                None,
+                (None, 'ä'.encode('iso-8859-1')),
+            ): (  # trigger UnicodeDecodeError!
+                'utf-8',
+                5,
+                None,
+            ),
         }
         for (override, parent, r), exp in list(tests.items()):
-            self.assertEqual(_readUrl(url,
-                                       overrideEncoding=override,
-                                       parentEncoding=parent,
-                                       fetcher=make_fetcher(r)),
-                              exp)
+            self.assertEqual(
+                _readUrl(
+                    url,
+                    overrideEncoding=override,
+                    parentEncoding=parent,
+                    fetcher=make_fetcher(r),
+                ),
+                exp,
+            )
 
     def test_defaultFetcher(self):
         """util._defaultFetcher"""
@@ -304,9 +389,10 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
             class Response(object):
                 """urllib2.Reponse mock"""
-                def __init__(self, url,
-                             contenttype, content,
-                             exception=None, args=None):
+
+                def __init__(
+                    self, url, contenttype, content, exception=None, args=None
+                ):
                     self.url = url
 
                     mt, params = cgi.parse_header(contenttype)
@@ -323,18 +409,20 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
                 def info(self):
                     mimetype, charset = self.mimetype, self.charset
+
                     class Info(object):
-                        
+
                         # py2x
                         def gettype(self):
                             return mimetype
+
                         def getparam(self, name=None):
                             return charset
-                        
+
                         # py 3x
                         get_content_type = gettype
-                        get_content_charset = getparam # here always charset!  
-                        
+                        get_content_charset = getparam  # here always charset!
+
                     return Info()
 
                 def read(self):
@@ -344,75 +432,85 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                     else:
                         raise self.exception(*self.args)
 
-            def urlopen(url,
-                        contenttype=None, content=None,
-                        exception=None, args=None):
+            def urlopen(url, contenttype=None, content=None, exception=None, args=None):
                 # return an mock which returns parameterized Response
                 def x(*ignored):
                     if exception:
                         raise exception(*args)
                     else:
-                        return Response(url,
-                                        contenttype, content,
-                                        exception=exception, args=args)
+                        return Response(
+                            url, contenttype, content, exception=exception, args=args
+                        )
+
                 return x
 
-            urlopenpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.urlopen' 
+            urlopenpatch = (
+                'urllib2.urlopen' if basetest.PY2x else 'urllib.request.urlopen'
+            )
 
             # positive tests
             tests = {
                 # content-type, contentstr: encoding, contentstr
-                ('text/css', '€'.encode('utf-8')):
-                        (None, '€'.encode('utf-8')),
-                ('text/css;charset=utf-8', '€'.encode('utf-8')):
-                        ('utf-8', '€'.encode('utf-8')),
-                ('text/css;charset=ascii', 'a'):
-                        ('ascii', 'a')
+                ('text/css', '€'.encode('utf-8')): (None, '€'.encode('utf-8')),
+                ('text/css;charset=utf-8', '€'.encode('utf-8')): (
+                    'utf-8',
+                    '€'.encode('utf-8'),
+                ),
+                ('text/css;charset=ascii', 'a'): ('ascii', 'a'),
             }
             url = 'http://example.com/test.css'
             for (contenttype, content), exp in list(tests.items()):
+
                 @mock.patch(urlopenpatch, new=urlopen(url, contenttype, content))
                 def do(url):
                     return _defaultFetcher(url)
-                
+
                 self.assertEqual(exp, do(url))
 
             # wrong mimetype
             @mock.patch(urlopenpatch, new=urlopen(url, 'text/html', 'a'))
             def do(url):
                 return _defaultFetcher(url)
-            
+
             self.assertRaises(ValueError, do, url)
-            
+
             # calling url results in fake exception
-                            
+
             # py2 ~= py3 raises error earlier than urlopen!
             tests = {
                 '1': (ValueError, ['invalid value for url']),
-                #_readUrl('mailto:a.css')
+                # _readUrl('mailto:a.css')
                 'mailto:e4': (urllib.error.URLError, ['urlerror']),
                 # cannot resolve x, IOError
                 'http://x': (urllib.error.URLError, ['ioerror']),
             }
             for url, (exception, args) in list(tests.items()):
-                @mock.patch(urlopenpatch, new=urlopen(url, exception=exception, args=args))
+
+                @mock.patch(
+                    urlopenpatch, new=urlopen(url, exception=exception, args=args)
+                )
                 def do(url):
                     return _defaultFetcher(url)
-                
+
                 self.assertRaises(exception, do, url)
 
             # py2 != py3 raises error earlier than urlopen!
-            urlrequestpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.Request' 
+            urlrequestpatch = (
+                'urllib2.urlopen' if basetest.PY2x else 'urllib.request.Request'
+            )
             tests = {
-                #_readUrl('http://cthedot.de/__UNKNOWN__.css')
+                # _readUrl('http://cthedot.de/__UNKNOWN__.css')
                 'e2': (urllib.error.HTTPError, ['u', 500, 'server error', {}, None]),
                 'e3': (urllib.error.HTTPError, ['u', 404, 'not found', {}, None]),
             }
             for url, (exception, args) in list(tests.items()):
-                @mock.patch(urlrequestpatch, new=urlopen(url, exception=exception, args=args))
+
+                @mock.patch(
+                    urlrequestpatch, new=urlopen(url, exception=exception, args=args)
+                )
                 def do(url):
                     return _defaultFetcher(url)
-                
+
                 self.assertRaises(exception, do, url)
 
         else:
@@ -426,11 +524,23 @@ class TestLazyRegex(basetest.BaseTestCase):
         self.lazyre = LazyRegex('f.o')
 
     def test_public_interface(self):
-        methods = ['search', 'match', 'split', 'sub', 'subn', 'findall',
-                   'finditer', 'pattern', 'flags', 'groups', 'groupindex',]
+        methods = [
+            'search',
+            'match',
+            'split',
+            'sub',
+            'subn',
+            'findall',
+            'finditer',
+            'pattern',
+            'flags',
+            'groups',
+            'groupindex',
+        ]
         for method in methods:
-            self.assertTrue(hasattr(self.lazyre, method),
-                            'expected %r public attribute' % method)
+            self.assertTrue(
+                hasattr(self.lazyre, method), 'expected %r public attribute' % method
+            )
 
     def test_ensure(self):
         self.assertIsNone(self.lazyre.matcher)
@@ -463,14 +573,11 @@ class TestLazyRegex(basetest.BaseTestCase):
         self.assertEqual(match.group(), 'fuo')
 
     def test_split(self):
-        self.assertEqual(self.lazyre.split('rafoobarfoobaz'),
-                          ['ra', 'bar', 'baz'])
-        self.assertEqual(self.lazyre.split('rafoobarfoobaz', 1),
-                          ['ra', 'barfoobaz'])
+        self.assertEqual(self.lazyre.split('rafoobarfoobaz'), ['ra', 'bar', 'baz'])
+        self.assertEqual(self.lazyre.split('rafoobarfoobaz', 1), ['ra', 'barfoobaz'])
 
     def test_findall(self):
-        self.assertEqual(self.lazyre.findall('rafoobarfuobaz'),
-                          ['foo', 'fuo'])
+        self.assertEqual(self.lazyre.findall('rafoobarfuobaz'), ['foo', 'fuo'])
 
     def test_finditer(self):
         result = self.lazyre.finditer('rafoobarfuobaz')
@@ -508,4 +615,5 @@ class TestLazyRegex(basetest.BaseTestCase):
 
 if __name__ == '__main__':
     import unittest
+
     unittest.main()

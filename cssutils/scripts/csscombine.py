@@ -58,36 +58,62 @@ from cssutils.script import csscombine
 import optparse
 import sys
 
+
 def main(args=None):
     usage = "usage: %prog [options] [path]"
     parser = optparse.OptionParser(usage=usage)
-    parser.add_option('-u', '--url', action='store',
-        dest='url', 
-        help='URL to parse (path is ignored if URL given)')
-    parser.add_option('-s', '--sourceencoding', action='store',
-        dest='sourceencoding', 
-        help='encoding of input, defaulting to "css". If given overwrites other encoding information like @charset declarations')
-    parser.add_option('-t', '--targetencoding', action='store',
+    parser.add_option(
+        '-u',
+        '--url',
+        action='store',
+        dest='url',
+        help='URL to parse (path is ignored if URL given)',
+    )
+    parser.add_option(
+        '-s',
+        '--sourceencoding',
+        action='store',
+        dest='sourceencoding',
+        help='encoding of input, defaulting to "css". If given overwrites other encoding information like @charset declarations',
+    )
+    parser.add_option(
+        '-t',
+        '--targetencoding',
+        action='store',
         dest='targetencoding',
-        help='encoding of output, defaulting to "UTF-8"', default='utf-8')
-    parser.add_option('-m', '--minify', action='store_true', dest='minify',
+        help='encoding of output, defaulting to "UTF-8"',
+        default='utf-8',
+    )
+    parser.add_option(
+        '-m',
+        '--minify',
+        action='store_true',
+        dest='minify',
         default=False,
-        help='saves minified version of combined files, defaults to False')
+        help='saves minified version of combined files, defaults to False',
+    )
     options, path = parser.parse_args()
 
     if options.url:
-        print(csscombine(url=options.url,
-                         sourceencoding=options.sourceencoding, 
-                         targetencoding=options.targetencoding,
-                         minify=options.minify))
+        print(
+            csscombine(
+                url=options.url,
+                sourceencoding=options.sourceencoding,
+                targetencoding=options.targetencoding,
+                minify=options.minify,
+            )
+        )
     elif path:
-        print(csscombine(path=path[0],
-                         sourceencoding=options.sourceencoding, 
-                         targetencoding=options.targetencoding,
-                         minify=options.minify))
+        print(
+            csscombine(
+                path=path[0],
+                sourceencoding=options.sourceencoding,
+                targetencoding=options.targetencoding,
+                minify=options.minify,
+            )
+        )
     else:
         parser.error('no path or URL (-u) given')
-
 
 
 if __name__ == '__main__':

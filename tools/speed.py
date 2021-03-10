@@ -26,9 +26,8 @@ font: normal 1px/5em Arial, sans-serif;
 p = cssutils.CSSParser(parseComments=False)
 sheet = p.parseString(10*css)
 """
-t = timeit.Timer(do)       # outside the try/except
+t = timeit.Timer(do)  # outside the try/except
 try:
-    print(t.timeit(20))    # or t.repeat(...)
+    print(t.timeit(20))  # or t.repeat(...)
 except:
     print(t.print_exc())
-    
