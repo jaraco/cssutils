@@ -172,7 +172,7 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
         if ok:
             try:
                 media_type = store['media_type']
-            except KeyError as e:
+            except KeyError:
                 pass
             else:
                 if 'not simple' not in store:
