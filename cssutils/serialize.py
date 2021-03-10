@@ -7,12 +7,10 @@ from cssutils.helper import normalize
 import codecs
 import cssutils
 from . import helper
-import re
-import xml.dom
 
 
 def _escapecss(e):
-    """
+    r"""
     Escapes characters not allowed in the current encoding the CSS way
     with a backslash followed by a uppercase hex code point
 
@@ -31,7 +29,7 @@ codecs.register_error('escapecss', _escapecss)
 
 
 class Preferences(object):
-    """Control output of CSSSerializer.
+    r"""Control output of CSSSerializer.
 
     defaultAtKeyword = True
         Should the literal @keyword from src CSS be used or the default
@@ -198,7 +196,7 @@ class Out(object):
             # remove trailing S
             del self.out[-1]
 
-    def append(
+    def append(  # noqa: C901
         self, val, type_=None, space=True, keepS=False, indent=False, alwaysS=False
     ):
         """Appends val. Adds a single S after each token except as follows:
@@ -253,13 +251,13 @@ class Out(object):
                 val = val.mediaText
             elif val in '+>~,:{;)]/=}' and not alwaysS:
                 self._remove_last_if_S()
-            #            elif type_ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
-            #                val = val.cssText
-            #            elif type_ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == u'0':
-            #                # remove sign + or - if value is zero
-            #                # TODO: only for lenghts!
-            #                if self.out and self.out[-1] in u'+-':
-            #                    del self.out[-1]
+            # elif type_ in ('Property', cssutils.css.CSSRule.UNKNOWN_RULE):
+            #     val = val.cssText
+            # elif type_ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == u'0':
+            #     # remove sign + or - if value is zero
+            #     # TODO: only for lenghts!
+            #     if self.out and self.out[-1] in u'+-':
+            #         del self.out[-1]
 
             # APPEND
 
@@ -621,7 +619,6 @@ class CSSSerializer(object):
         + CSSComments
         """
         # rules
-        rules = ''
         rulesout = []
         for r in rule.cssRules:
             rtext = r.cssText
@@ -685,15 +682,15 @@ class CSSSerializer(object):
             if styleText and rule.wellformed:
                 out = Out(self)
 
-                #                # use seq but styledecl missing
-                #                for item in rule.seq:
-                #                    if item.type == 'ATKEYWORD':
-                #                        # move logic to Out
-                #                        out.append(self._atkeyword(rule), type_=item.type)
-                #                    else:
-                #                        print type_, val
-                #                        out.append(item.value, item.type)
-                #                return out.value()
+                # # use seq but styledecl missing
+                # for item in rule.seq:
+                #     if item.type == 'ATKEYWORD':
+                #         # move logic to Out
+                #         out.append(self._atkeyword(rule), type_=item.type)
+                #     else:
+                #         print type_, val
+                #         out.append(item.value, item.type)
+                # return out.value()
 
                 # ok for now:
                 out.append(self._atkeyword(rule), type_='ATKEYWORD')
@@ -899,7 +896,8 @@ class CSSSerializer(object):
         else:
             return ''
 
-    def do_css_CSSStyleDeclaration(self, style, separator=None, omit=True):
+    def do_css_CSSStyleDeclaration(  # noqa: C901
+            self, style, separator=None, omit=True):
         """
         Style declaration of CSSStyleRule
         """
@@ -930,7 +928,7 @@ class CSSSerializer(object):
             omitLastSemicolon = omit and self.prefs.omitLastSemicolon
 
             for i, item in enumerate(seq):
-                type_, val = item.type, item.value
+                val = item.value
                 if isinstance(val, cssutils.css.CSSComment):
                     # CSSComment
                     if self.prefs.keepComments:
@@ -1108,7 +1106,7 @@ class CSSSerializer(object):
                 'HASH': self.do_css_Value,
                 'IDENT': self.do_css_Value,
             }[value.colorType](value, valuesOnly=valuesOnly)
-        except KeyError as e:
+        except KeyError:
             return ''
 
     def do_css_CSSFunction(self, cssvalue, valuesOnly=False):
@@ -1153,7 +1151,8 @@ class CSSSerializer(object):
         else:
             out = Out(self)
             for item in cssvalue.seq:
-                type_, val = item.type, item.value
+                val = item.value
+                # type_ = item.type
                 # val = self._possiblezero(cssvalue, type_, val)
                 # do no send type_ so no special cases!
                 out.append(val, None, space=False)
@@ -1197,9 +1196,7 @@ class CSSSerializer(object):
             firstdone = False
 
             for item in seq:
-                type_, val = item.type, item.value
-
-                if type_ == 'MediaQuery':
+                if item.type == 'MediaQuery':
                     if firstdone:
                         out.append(',', 'CHAR')
                     else:
