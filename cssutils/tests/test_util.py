@@ -3,14 +3,10 @@
 
 
 import cgi
-from email import message_from_string, message_from_file
-import io
 import re
-import sys
 import urllib.request
 import urllib.error
 import urllib.parse
-import xml.dom
 
 try:
     import mock
@@ -19,7 +15,6 @@ except ImportError:
     print("install mock library to run all tests")
 
 from . import basetest
-import encutils
 
 from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
 
@@ -70,7 +65,7 @@ class BaseTestCase(basetest.BaseTestCase):
             # static too
             self.assertEqual(Base._normalize(test), exp)
 
-    def test_tokenupto(self):
+    def test_tokenupto(self):  # noqa: C901
         "Base._tokensupto2()"
 
         # tests nested blocks of {} [] or ()
@@ -385,7 +380,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 exp,
             )
 
-    def test_defaultFetcher(self):
+    def test_defaultFetcher(self):  # noqa: C901
         """util._defaultFetcher"""
         if mock:
 
