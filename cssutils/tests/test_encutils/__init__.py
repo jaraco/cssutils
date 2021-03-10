@@ -30,11 +30,11 @@ class AutoEncodingTestCase(unittest.TestCase):
                 else:
                     self._info = http.client.HTTPMessage()
                     # Adjust to testdata.
-                    l = content.split(':')
-                    if len(l) > 1:
+                    items = content.split(':')
+                    if len(items) > 1:
                         # Get the type by just
                         # using the data at the end.
-                        t = l[-1].strip()
+                        t = items[-1].strip()
                         self._info.set_type(t)
 
             def info(self):
@@ -198,29 +198,27 @@ class AutoEncodingTestCase(unittest.TestCase):
 
     def test_detectXMLEncoding(self):
         "encutils.detectXMLEncoding"
-        tests = {
+        tests = (
             # BOM
-            ('utf_32_be'): '\x00\x00\xFE\xFFanything',
-            ('utf_32_le'): '\xFF\xFE\x00\x00anything',
-            ('utf_16_be'): '\xFE\xFFanything',
-            ('utf_16_le'): '\xFF\xFEanything',
-            ('utf-8'): '\xef\xbb\xbfanything',
+            (('utf_32_be'), '\x00\x00\xFE\xFFanything'),
+            (('utf_32_le'), '\xFF\xFE\x00\x00anything'),
+            (('utf_16_be'), '\xFE\xFFanything'),
+            (('utf_16_le'), '\xFF\xFEanything'),
+            (('utf-8'), '\xef\xbb\xbfanything'),
             # encoding=
-            ('ascii'): '<?xml version="1.0" encoding="ascii" ?>',
-            ('ascii'): "<?xml version='1.0' encoding='ascii' ?>",
-            ('iso-8859-1'): "<?xml version='1.0' encoding='iso-8859-1' ?>",
+            (('ascii'), '<?xml version="1.0" encoding="ascii" ?>'),
+            (('ascii'), "<?xml version='1.0' encoding='ascii' ?>"),
+            (('iso-8859-1'), "<?xml version='1.0' encoding='iso-8859-1' ?>"),
             # default
-            ('utf-8'): '<?xml version="1.0" ?>',
-            ('utf-8'): '<?xml version="1.0"?><x encoding="ascii"/>',
-        }
-        for exp, test in list(tests.items()):
+            (('utf-8'), '<?xml version="1.0" ?>'),
+            (('utf-8'), '<?xml version="1.0"?><x encoding="ascii"/>'),
+        )
+        for exp, test in tests:
             self.assertEqual(exp, encutils.detectXMLEncoding(test, log=log))
 
     def test_tryEncodings(self):
         "encutils.tryEncodings"
         try:
-            import chardet
-
             tests = [
                 ('ascii', 'abc'.encode('ascii')),
                 ('windows-1252', '€'.encode('windows-1252')),
