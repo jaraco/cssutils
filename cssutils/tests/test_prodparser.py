@@ -3,8 +3,9 @@
 import sys
 import xml.dom
 from . import basetest
-from cssutils.prodparser import *
-from cssutils.prodparser import ParseError, Done, Exhausted, NoMatch  # not in __all__
+from cssutils.prodparser import (
+    Prod, Sequence, Choice, PreDef, ParseError, Exhausted, ProdParser
+    )
 
 
 class ProdTestCase(basetest.BaseTestCase):
@@ -82,7 +83,7 @@ class SequenceTestCase(basetest.BaseTestCase):
         "Sequence.__init__()"
         p1 = Prod('p1', lambda t, v: t == 1)
         p2 = Prod('p2', lambda t, v: t == 2)
-        seq = Sequence(p1, p1)
+        seq = Sequence(p1, p2)
 
         self.assertEqual(1, seq._min)
         self.assertEqual(1, seq._max)
@@ -338,7 +339,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
         p = ProdParser()
 
         # text, name, productions, store=None
-        prods = lambda: Sequence(PreDef.char(';', ';'), PreDef.char(':', ':'))
+        def prods():
+            return Sequence(PreDef.char(';', ';'), PreDef.char(':', ':'))
 
         w, seq, store, unused = p.parse('; :', 'test', prods(), keepS=True)
         self.assertTrue(w)
@@ -358,7 +360,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
             '1 2': True,
             '1 2 1 2': True,
             '3': True,
-            #'': 'No match in Choice(Sequence(p1, p2), p3)',
+            # '': 'No match in Choice(Sequence(p1, p2), p3)',
             '1': 'Missing token for production p2',
             '1 2 1': 'Missing token for production p2',
             '1 2 1 2 x': "No match: ('IDENT', 'x', 1, 9)",
@@ -391,7 +393,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
             '1 1 3 3': "No match: ('NUMBER', '3', 1, 7)",
             '2 3 3': "No match: ('NUMBER', '3', 1, 5)",
             '2': 'Missing token for production p3',
-            '3': "Missing token for production Choice(Sequence(p1), p2): ('NUMBER', '3', 1, 1)",
+            '3': "Missing token for production Choice(Sequence(p1), p2): "
+            "('NUMBER', '3', 1, 1)",
         }
         for text, exp in list(tests.items()):
             prods = Sequence(Choice(Sequence(p1, minmax=lambda: (1, 2)), p2), p3)
