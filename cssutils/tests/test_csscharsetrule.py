@@ -50,7 +50,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
                 xml.dom.SyntaxErr,
                 cssutils.css.CSSCharsetRule,
                 enc,
-                exc_pattern=re.compile("Unknown \(Python\) encoding"),
+                exc_pattern=re.compile(r"Unknown \(Python\) encoding"),
             )
 
     def test_encoding(self):
@@ -75,7 +75,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
                 self.r.__setattr__,
                 'encoding',
                 enc,
-                exc_pattern=re.compile("Unknown \(Python\) encoding"),
+                exc_pattern=re.compile(r"Unknown \(Python\) encoding"),
             )
 
     def test_cssText(self):

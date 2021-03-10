@@ -2,17 +2,7 @@
 
 import codecs
 import unittest
-import sys
-
-PY2x = sys.version_info < (3, 0)
-if PY2x:
-    import io
-
-    iostream = io.StringIO
-else:
-    import io
-
-    iostream = io.BytesIO
+import io
 
 from cssutils import codec
 
@@ -22,6 +12,8 @@ except LookupError:
     haveutf32 = False
 else:
     haveutf32 = True
+
+iostream = io.BytesIO
 
 
 class Queue(object):
@@ -34,11 +26,10 @@ class Queue(object):
 
     def write(self, chars):
         # TODO ???
-        if not PY2x:
-            if isinstance(chars, str):
-                chars = chars.encode()
-            elif isinstance(chars, int):
-                chars = bytes([chars])
+        if isinstance(chars, str):
+            chars = chars.encode()
+        elif isinstance(chars, int):
+            chars = bytes([chars])
 
         self._buffer += chars
 
@@ -184,7 +175,7 @@ class CodecTestCase(unittest.TestCase):
         s = '@charset "x"'
         self.assertEqual(codec._fixencoding(s, "utf-8"), s.replace('"x"', '"utf-8"'))
 
-    def test_decoder(self):
+    def test_decoder(self):  # noqa: C901
         "codecs.decoder"
 
         def checkauto(encoding, input='@charset "x";g\xfcrk\u20ac{}'):
@@ -385,21 +376,21 @@ class CodecTestCase(unittest.TestCase):
             return reader.read()
 
         for d in (decodeall, incdecode, streamdecode):
-            #            input = '@charset "utf-8"; \xc3\xbf'
-            #            output = u'@charset "utf-8"; \xff'
-            #            self.assertEqual(d(input), output)
+            # input = '@charset "utf-8"; \xc3\xbf'
+            # output = u'@charset "utf-8"; \xff'
+            # self.assertEqual(d(input), output)
             #
-            #            input = '@charset "utf-8"; \xc3\xbf'
-            #            output = u'@charset "iso-8859-1"; \xc3\xbf'
-            #            self.assertEqual(d(input, encoding="iso-8859-1", force=True), output)
+            # input = '@charset "utf-8"; \xc3\xbf'
+            # output = u'@charset "iso-8859-1"; \xc3\xbf'
+            # self.assertEqual(d(input, encoding="iso-8859-1", force=True), output)
             #
-            #            input = '\xc3\xbf'
-            #            output = u'\xc3\xbf'
-            #            self.assertEqual(d(input, encoding="iso-8859-1", force=True), output)
+            # input = '\xc3\xbf'
+            # output = u'\xc3\xbf'
+            # self.assertEqual(d(input, encoding="iso-8859-1", force=True), output)
             #
-            #            input = '@charset "utf-8"; \xc3\xbf'
-            #            output = u'@charset "utf-8"; \xff'
-            #            self.assertEqual(d(input, encoding="iso-8859-1", force=False), output)
+            # input = '@charset "utf-8"; \xc3\xbf'
+            # output = u'@charset "utf-8"; \xff'
+            # self.assertEqual(d(input, encoding="iso-8859-1", force=False), output)
 
             input = '@charset "utf-8"; \xff'.encode('utf-8')
             output = '@charset "utf-8"; \xff'
