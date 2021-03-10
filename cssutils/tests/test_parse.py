@@ -2,7 +2,6 @@
 """Tests for parsing which does not raise Exceptions normally"""
 
 
-import sys
 import xml.dom
 from . import basetest
 import cssutils
@@ -178,7 +177,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
             ('/*a*/', 'ascii'): ('ascii', '@charset "ascii";\n/*a*/'.encode('ascii')),
             # org
             # ('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xc3\xa4*/'.encode('utf-8')),
-            # ('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xc3\xa4*/'.encode('utf-8')),
+            # ('/*\xc3\xa4*/', 'utf-8'): (u'utf-8',
+            #  u'@charset "utf-8";\n/*\xc3\xa4*/'.encode('utf-8')),
             # new for 2.x and 3.x
             ('/*\xe4*/'.encode('utf-8'), None): ('utf-8', '/*\xe4*/'.encode('utf-8')),
             ('/*\xe4*/'.encode('utf-8'), 'utf-8'): (
@@ -325,7 +325,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
         order:
            0. explicity given encoding OVERRIDE (cssutils only)
 
-           1. An HTTP "charset" parameter in a "Content-Type" field (or similar parameters in other protocols)
+           1. An HTTP "charset" parameter in a "Content-Type" field
+              (or similar parameters in other protocols)
            2. BOM and/or @charset (see below)
            3. <link charset=""> or other metadata from the linking mechanism (if any)
            4. charset of referring style sheet or document (if any)
@@ -527,7 +528,7 @@ a {
 
         for css in tests:
             exp = tests[css]
-            if exp == None:
+            if exp is None:
                 exp = css
             s = cssutils.parseString(css)
             self.assertEqual(exp.encode(), s.cssText)
@@ -543,7 +544,8 @@ a {
             # should this be u''?
             '@1 { [ } div{color:green}': '',
             # red was eaten:
-            '@1 { [ } ] div{color:red}div{color:green}': 'div {\n    color: green\n    }',
+            '@1 { [ } ] div{color:red}div{color:green}':
+            'div {\n    color: green\n    }',
         }
         for css, exp in list(tests.items()):
             self.assertEqual(exp.encode(), cssutils.parseString(css).cssText)
@@ -559,7 +561,7 @@ o very long title"] {/*...*/}''': '''a[title="a not so very long title"] {
         }
         for css in tests:
             exp = tests[css]
-            if exp == None:
+            if exp is None:
                 exp = css
             s = cssutils.parseString(css)
             self.assertEqual(exp.encode(), s.cssText)
@@ -593,10 +595,6 @@ o very long title"] {/*...*/}''': '''a[title="a not so very long title"] {
             "a{}", href="file:foo.css", media=["screen", "projection", "tv"]
         )
         self.assertEqual(s.media.mediaText, "screen, projection, tv")
-
-    def tearDown(self):
-        # needs to be reenabled here for other tests
-        cssutils.log.raiseExceptions = True
 
 
 if __name__ == '__main__':
