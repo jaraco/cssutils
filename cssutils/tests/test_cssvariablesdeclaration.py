@@ -101,8 +101,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
             'xxx : 1; yyy : 2': 'xxx: 1;\nyyy: 2',
             'x:1;x:2;X:2': 'x: 2',
             'same:1;SAME:2;': 'same: 2',
-            '/**/x/**/:/**/1/**/;/**/y/**/:/**/2/**/':
-            '/**/ \n /**/ \n /**/ \n x: 1 /**/;\n/**/ \n /**/ \n /**/ \n y: 2 /**/',
+            '/**/x/**/:/**/1/**/;/**/y/**/:/**/2/**/': '/**/ \n /**/ \n /**/ \n x: 1 /**/;\n/**/ \n /**/ \n /**/ \n y: 2 /**/',
         }
         self.do_equal_r(tests)
 

@@ -427,10 +427,14 @@ if 1:
 
 if 0:
     # ISSUE 35
-    css = """div.one {color: expression("""\
+    css = (
+        """div.one {color: expression("""
         """(function(ele){ele.style.behavior="none";})(this));}   """
-    css = """div.one {color: expression(function(ele)"""\
+    )
+    css = (
+        """div.one {color: expression(function(ele)"""
         """{ele.style.behavior="none";})(this);}   """
+    )
     sheet = cssutils.parseString(css)
     print(sheet.cssText)
 
@@ -1143,6 +1147,7 @@ if 1:
     sys.exit()
 
     from cssutils.profiles import profiles
+
     # TODO: better API
     #    cssutils.css.profiles.profiles.addProfile('x', {
     #        'color': '1',
@@ -1222,6 +1227,7 @@ if 0:
                 mimetype = 'application/octet-stream'
                 try:
                     import cgi
+
                     mimetype, params = cgi.parse_header(r.headers['content-type'])
                     encoding = params['charset']
                 except KeyError:

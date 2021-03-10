@@ -145,10 +145,8 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             'f(  -1  ,  +2  )': 'f(-1, +2)',
             'fun(  -1  ,  +2  )': 'fun(-1, +2)',
             'local( x )': 'local(x)',
-            'test(1px, #111, y, 1, 1%, "1", y(), var(x))':
-            'test(1px, #111, y, 1, 1%, "1", y(), var(x))',
-            'test(-1px, #111, y, -1, -1%, "1", -y())':
-            'test(-1px, #111, y, -1, -1%, "1", -y())',
+            'test(1px, #111, y, 1, 1%, "1", y(), var(x))': 'test(1px, #111, y, 1, 1%, "1", y(), var(x))',
+            'test(-1px, #111, y, -1, -1%, "1", -y())': 'test(-1px, #111, y, -1, -1%, "1", -y())',
             'url(y)  format( "x" ,  "y" )': 'url(y) format("x", "y")',
             'f(1 2,3 4)': 'f(1 2, 3 4)',
             # IE expression
@@ -157,8 +155,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             r'expression(document.width == "1")': 'expression(document.width=="1")',
             'alpha(opacity=80)': 'alpha(opacity=80)',
             'alpha( opacity = 80 , x=2  )': 'alpha(opacity=80, x=2)',
-            'expression(eval(document.documentElement.scrollTop))':
-            'expression(eval(document.documentElement.scrollTop))',
+            'expression(eval(document.documentElement.scrollTop))': 'expression(eval(document.documentElement.scrollTop))',
             # TODO
             #            u'expression((function(ele){ele.style.behavior="none";})(this))':
             #                u'expression((function(ele){ele.style.behavior="none";})(this))',
@@ -214,8 +211,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             'a b1,b2 b2,b3,b4': 'a b1, b2 b2, b3, b4',
             'a b1  ,   b2   b2  ,  b3  ,   b4': 'a b1, b2 b2, b3, b4',
             'u+1  ,   u+2-5': 'u+1, u+2-5',
-            'local( x ),  url(y)  format( "x" ,  "y" )':
-            'local(x), url(y) format("x", "y")',
+            'local( x ),  url(y)  format( "x" ,  "y" )': 'local(x), url(y) format("x", "y")',
             # FUNCTION
             'attr( href )': 'attr(href)',
             # PrinceXML extende FUNC syntax with nested FUNC

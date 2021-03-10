@@ -544,8 +544,7 @@ a {
             # should this be u''?
             '@1 { [ } div{color:green}': '',
             # red was eaten:
-            '@1 { [ } ] div{color:red}div{color:green}':
-            'div {\n    color: green\n    }',
+            '@1 { [ } ] div{color:red}div{color:green}': 'div {\n    color: green\n    }',
         }
         for css, exp in list(tests.items()):
             self.assertEqual(exp.encode(), cssutils.parseString(css).cssText)

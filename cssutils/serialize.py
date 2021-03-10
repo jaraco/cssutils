@@ -897,7 +897,8 @@ class CSSSerializer(object):
             return ''
 
     def do_css_CSSStyleDeclaration(  # noqa: C901
-            self, style, separator=None, omit=True):
+        self, style, separator=None, omit=True
+    ):
         """
         Style declaration of CSSStyleRule
         """

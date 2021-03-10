@@ -44,10 +44,8 @@ class PreferencesTestCase(basetest.BaseTestCase):
         '''
         tests = {
             '''a {\n    color: var(c1)\n    }''': '''a {\n    color: red\n    }''',
-            '''a {\n    color: var(c1)\n; color: var(  c2   )    }''':
-            '''a {\n    color: red;\n    color: #0f0\n    }''',
-            '''a {\n    margin: var(px)\n    }''':
-            '''a {\n    margin: 1px 2px\n    }''',
+            '''a {\n    color: var(c1)\n; color: var(  c2   )    }''': '''a {\n    color: red;\n    color: #0f0\n    }''',
+            '''a {\n    margin: var(px)\n    }''': '''a {\n    margin: 1px 2px\n    }''',
             '''@media all {
                 a {
                     margin: var(px) var(px);
@@ -130,8 +128,7 @@ prefix|x, a + b > c ~ d, b {
 
         tests = {
             '0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% +.1% '
-            '-0.1 -.1 -0.1px -.1px -0.1% -.1%':
-            '0.1 0.1 0.1px 0.1px 0.1% 0.1% +0.1 +0.1 +0.1px +0.1px +0.1% '
+            '-0.1 -.1 -0.1px -.1px -0.1% -.1%': '0.1 0.1 0.1px 0.1px 0.1% 0.1% +0.1 +0.1 +0.1px +0.1px +0.1% '
             '+0.1% -0.1 -0.1 -0.1px -0.1px -0.1% -0.1%'
         }
         cssutils.ser.prefs.useDefaults()
@@ -205,14 +202,11 @@ prefix|x, a + b > c ~ d, b {
             'a b 1 c 1em d -1em e': 'a b 1 c 1em d -1em e',
             '  1em  /  5  ': '1em/5',
             '1em/5': '1em/5',
-            'a 0 a .0 a 0.0 a -0 a -.0 a -0.0 a +0 a +.0 a +0.0':
-            'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0',
+            'a 0 a .0 a 0.0 a -0 a -.0 a -0.0 a +0 a +.0 a +0.0': 'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0',
             'a  0px  a  .0px  a  0.0px  a  -0px  a  -.0px  a  -0.0px  a  +0px  '
-            'a  +.0px  a  +0.0px ':
-            'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0',
+            'a  +.0px  a  +0.0px ': 'a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0 a 0',
             'a  1  a  .1  a  1.0  a  0.1  a  -1  a  -.1  a  -1.0  a  -0.1  a  '
-            '+1  a  +.1  a  +1.0':
-            'a 1 a .1 a 1 a .1 a -1 a -.1 a -1 a -.1 a +1 a +.1 a +1',
+            '+1  a  +.1  a  +1.0': 'a 1 a .1 a 1 a .1 a -1 a -.1 a -1 a -.1 a +1 a +.1 a +1',
             '  url(x)  f()': 'url(x) f()',
             '#112233': '#123',
             '#112234': '#112234',
@@ -220,8 +214,7 @@ prefix|x, a + b > c ~ d, b {
             '#123 url() f()': '#123 url() f()',
             '1 +2 +3 -4': '1 +2 +3 -4',  # ?
             '0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% '
-            '+.1% -0.1 -.1 -0.1px -.1px -0.1% -.1%':
-            '.1 .1 .1px .1px .1% .1% +.1 +.1 +.1px +.1px +.1% +.1% '
+            '+.1% -0.1 -.1 -0.1px -.1px -0.1% -.1%': '.1 .1 .1px .1px .1% .1% +.1 +.1 +.1px +.1px +.1% +.1% '
             '-.1 -.1 -.1px -.1px -.1% -.1%',
         }
         for test, exp in list(valuetests.items()):
@@ -597,8 +590,7 @@ a, b {}'''
         tests = {
             '@font-face {a:1}': '@font-face {\n    a: 1\n    }',
             '@import  url( a );': '@import url(a);',
-            '@media  all{a{color:red}}':
-            '@media all {\n    a {\n        color: red\n        }\n    }',
+            '@media  all{a{color:red}}': '@media all {\n    a {\n        color: red\n        }\n    }',
             '@namespace "a";': '@namespace"a";',
             '@namespace a  "a";': '@namespace a"a";',
             '@page  :left {   a  :1  }': '@page :left {\n    a: 1\n    }',
@@ -635,8 +627,7 @@ a, b {}'''
             '''img { float: left }       /* correct CSS 2.1 */
 img { float: left here }  /* "here" is not a value of 'float' */
 img { background: "red" } /* keywords cannot be quoted */
-img { border-width: 3 }   /* a unit must be specified for length values */''':
-            'img {\n    float: left\n    }',
+img { border-width: 3 }   /* a unit must be specified for length values */''': 'img {\n    float: left\n    }',
         }
         self.do_equal_p(tests, raising=False)
 

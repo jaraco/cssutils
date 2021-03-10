@@ -211,8 +211,7 @@ class MediaList(cssutils.util._NewListBase):
             if 'all' in mts:
                 self._log.info(
                     'MediaList: Ignoring new medium %r as already specified '
-                    '"all" (set ``mediaText`` instead).'
-                    % newMedium,
+                    '"all" (set ``mediaText`` instead).' % newMedium,
                     error=xml.dom.InvalidModificationErr,
                 )
 

@@ -79,6 +79,12 @@ from .property import Property
 
 # from cssvalue import *
 from .value import (
-    PropertyValue, Value, ColorValue, DimensionValue, URIValue, CSSFunction,
-    CSSVariable, MSValue,
+    PropertyValue,
+    Value,
+    ColorValue,
+    DimensionValue,
+    URIValue,
+    CSSFunction,
+    CSSVariable,
+    MSValue,
 )

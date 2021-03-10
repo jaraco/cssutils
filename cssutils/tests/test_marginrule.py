@@ -53,8 +53,7 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
         tests = {
             '@page { @top-left { ': '',  # no } and no content
             '@page { @top-left { /*1*/ ': '',  # no } and no content
-            '@page { @top-left { color: red':
-            '@page {\n    @top-left {\n        color: red\n        }\n    }',
+            '@page { @top-left { color: red': '@page {\n    @top-left {\n        color: red\n        }\n    }',
         }
         self.do_equal_p(tests)  # parse
 
@@ -65,8 +64,7 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
             '@top-left { color: red }': '@top-left {\n    color: red\n    }',
             '@top-left{color:red;}': '@top-left {\n    color: red\n    }',
             '@top-left{color:red}': '@top-left {\n    color: red\n    }',
-            '@top-left { color: red; left: 0 }':
-            '@top-left {\n    color: red;\n    left: 0\n    }',
+            '@top-left { color: red; left: 0 }': '@top-left {\n    color: red;\n    left: 0\n    }',
         }
         self.do_equal_r(tests)
 

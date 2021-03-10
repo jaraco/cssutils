@@ -911,7 +911,8 @@ class _SimpleNamespaces(_Namespaces):
 
 
 def _readUrl(  # noqa: C901
-        url, fetcher=None, overrideEncoding=None, parentEncoding=None):
+    url, fetcher=None, overrideEncoding=None, parentEncoding=None
+):
     """
     Read cssText from url and decode it using all relevant methods (HTTP
     header, BOM, @charset). Returns

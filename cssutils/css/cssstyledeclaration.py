@@ -428,9 +428,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             properties = []
             for item in self.seq:
                 val = item.value
-                if isinstance(val, Property) and (
-                    (not nname) or (val.name == nname)
-                ):
+                if isinstance(val, Property) and ((not nname) or (val.name == nname)):
                     properties.append(val)
             return properties
 

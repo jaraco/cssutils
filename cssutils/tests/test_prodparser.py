@@ -4,8 +4,14 @@ import sys
 import xml.dom
 from . import basetest
 from cssutils.prodparser import (
-    Prod, Sequence, Choice, PreDef, ParseError, Exhausted, ProdParser
-    )
+    Prod,
+    Sequence,
+    Choice,
+    PreDef,
+    ParseError,
+    Exhausted,
+    ProdParser,
+)
 
 
 class ProdTestCase(basetest.BaseTestCase):

@@ -56,8 +56,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
             '@\\VaRIables {    margin : 0    }': EXP,
             '@variables {a:1;b:2}': '@variables {\n    a: 1;\n    b: 2\n    }',
             # comments
-            '@variables   /*1*/   {margin:0;}':
-            '@variables /*1*/ {\n    margin: 0\n    }',
+            '@variables   /*1*/   {margin:0;}': '@variables /*1*/ {\n    margin: 0\n    }',
             '@variables/*1*/{margin:0;}': '@variables /*1*/ {\n    margin: 0\n    }',
         }
         self.do_equal_r(tests)

@@ -195,12 +195,14 @@ class ProfilesTestCase(basetest.BaseTestCase):
             )
 
         # CSS2 only:
-        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|'\
-            'ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|'\
-            'HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|'\
-            'InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|'\
-            'ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|'\
+        uicolor = (
+            'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|'
+            'ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|'
+            'HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|'
+            'InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|'
+            'ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|'
             'WindowFrame|WindowText'
+        )
         for color in uicolor.split('|'):
             self.assertEqual(False, cssutils.profile.validate('color', color))
 

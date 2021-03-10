@@ -196,8 +196,7 @@ class MediaListTestCase(basetest.BaseTestCase):
     def test_comments(self):
         "MediaList.mediaText comments"
         tests = {
-            '/*1*/ tv /*2*/, /*3*/ handheld /*4*/, print':
-            '/*1*/ tv /*2*/ /*3*/, handheld /*4*/, print',
+            '/*1*/ tv /*2*/, /*3*/ handheld /*4*/, print': '/*1*/ tv /*2*/ /*3*/, handheld /*4*/, print',
         }
         self.do_equal_r(tests, att='mediaText')
 
