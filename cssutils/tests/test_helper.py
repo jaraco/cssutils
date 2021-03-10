@@ -2,7 +2,7 @@
 """Testcases for cssutils.helper"""
 
 from . import basetest
-from cssutils.helper import *
+from cssutils.helper import normalize, string, stringvalue, uri, urivalue
 
 
 class HelperTestCase(basetest.BaseTestCase):
