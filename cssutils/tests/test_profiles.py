@@ -140,40 +140,42 @@ class ProfilesTestCase(basetest.BaseTestCase):
         self.assertEqual(0, len(p.profiles))
 
     # TODO: FIX
-    #    def test_validateWithProfile(self):
-    #        "Profiles.validate(), Profiles.validateWithProfile()"
-    #        p = cssutils.profiles.Profiles()
-    #        tests = {
-    #            ('color', 'red', None): (True, True, [p.CSS_LEVEL_2]),
-    #            ('color', 'red', p.CSS_LEVEL_2): (True, True,[p.CSS_LEVEL_2]),
-    #            ('color', 'red', p.CSS3_COLOR): (True, False, [p.CSS_LEVEL_2]),
-    #            ('color', 'rgba(0,0,0,0)', None): (True, True, [p.CSS3_COLOR]),
-    #            ('color', 'rgba(0,0,0,0)', p.CSS_LEVEL_2): (True, False, [p.CSS3_COLOR]),
-    #            ('color', 'rgba(0,0,0,0)', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
-    #            ('color', '1px', None): (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
-    #            ('color', '1px', p.CSS_LEVEL_2): (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
-    #            ('color', '1px', p.CSS3_COLOR): (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
-    #            ('color', 'aliceblue', None): (True, True, [p.CSS_LEVEL_2]),
+    # def test_validateWithProfile(self):
+    #     "Profiles.validate(), Profiles.validateWithProfile()"
+    #     p = cssutils.profiles.Profiles()
+    #     tests = {
+    #         ('color', 'red', None): (True, True, [p.CSS_LEVEL_2]),
+    #         ('color', 'red', p.CSS_LEVEL_2): (True, True,[p.CSS_LEVEL_2]),
+    #         ('color', 'red', p.CSS3_COLOR): (True, False, [p.CSS_LEVEL_2]),
+    #         ('color', 'rgba(0,0,0,0)', None): (True, True, [p.CSS3_COLOR]),
+    #         ('color', 'rgba(0,0,0,0)', p.CSS_LEVEL_2): (True, False, [p.CSS3_COLOR]),
+    #         ('color', 'rgba(0,0,0,0)', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
+    #         ('color', '1px', None): (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
+    #         ('color', '1px', p.CSS_LEVEL_2):
+    #         (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
+    #         ('color', '1px', p.CSS3_COLOR):
+    #         (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
+    #         ('color', 'aliceblue', None): (True, True, [p.CSS_LEVEL_2]),
     #
-    #            ('opacity', '1', None): (True, True, [p.CSS3_COLOR]),
-    #            ('opacity', '1', p.CSS_LEVEL_2): (True, False, [p.CSS3_COLOR]),
-    #            ('opacity', '1', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
-    #            ('opacity', '1px', None): (False, False, [p.CSS3_COLOR]),
-    #            ('opacity', '1px', p.CSS_LEVEL_2): (False, False, [p.CSS3_COLOR]),
-    #            ('opacity', '1px', p.CSS3_COLOR): (False, False, [p.CSS3_COLOR]),
+    #         ('opacity', '1', None): (True, True, [p.CSS3_COLOR]),
+    #         ('opacity', '1', p.CSS_LEVEL_2): (True, False, [p.CSS3_COLOR]),
+    #         ('opacity', '1', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
+    #         ('opacity', '1px', None): (False, False, [p.CSS3_COLOR]),
+    #         ('opacity', '1px', p.CSS_LEVEL_2): (False, False, [p.CSS3_COLOR]),
+    #         ('opacity', '1px', p.CSS3_COLOR): (False, False, [p.CSS3_COLOR]),
     #
-    #            ('-x', '1', None): (False, False, []),
-    #            ('-x', '1', p.CSS_LEVEL_2): (False, False, []),
-    #            ('-x', '1', p.CSS3_COLOR): (False, False, []),
-    #        }
-    #        for test, r in tests.items():
-    #            self.assertEqual(p.validate(test[0], test[1]), r[0])
-    #            self.assertEqual(p.validateWithProfile(*test), r)
+    #         ('-x', '1', None): (False, False, []),
+    #         ('-x', '1', p.CSS_LEVEL_2): (False, False, []),
+    #         ('-x', '1', p.CSS3_COLOR): (False, False, []),
+    #     }
+    #     for test, r in tests.items():
+    #         self.assertEqual(p.validate(test[0], test[1]), r[0])
+    #         self.assertEqual(p.validateWithProfile(*test), r)
 
     def test_propertiesByProfile(self):
         "Profiles.propertiesByProfile"
         self.assertEqual(
-            ['opacity'],  #'color',
+            ['opacity'],  # 'color',
             list(cssutils.profile.propertiesByProfile(cssutils.profile.CSS3_COLOR)),
         )
 
@@ -192,8 +194,13 @@ class ProfilesTestCase(basetest.BaseTestCase):
                 cssutils.profile.validateWithProfile('color', color),
             )
 
-            # CSS2 only:
-        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'
+        # CSS2 only:
+        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|'\
+            'ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|'\
+            'HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|'\
+            'InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|'\
+            'ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|'\
+            'WindowFrame|WindowText'
         for color in uicolor.split('|'):
             self.assertEqual(False, cssutils.profile.validate('color', color))
 
@@ -390,7 +397,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
                 ),
             ): (True, True, CM3),
             # TODO?:
-            # ('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'): (True, True, CSS2),
+            # ('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'):
+            # (True, True, CSS2),
             # content
             (
                 'content',
@@ -423,7 +431,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
                     '"a", "b", "c"',
                     '"x y"',
                     'serif',
-                    '"serif"',  # valid but CSS2: font with name serif, CSS3: same as `serif`
+                    # valid but CSS2: font with name serif, CSS3: same as `serif`
+                    '"serif"',
                     'a  b',  # should use quotes but valid
                     'a, b   b, d',
                 ),
@@ -571,7 +580,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
                     'a4 portrait',
                     'landscape',
                     'a5',
-                    #'inherit'
+                    # 'inherit'
                 ),
             ): (True, True, C3PM),
             ('size', ('portrait landscape', 'a5 letter', '2%')): (False, False, C3PM),
@@ -584,11 +593,13 @@ class ProfilesTestCase(basetest.BaseTestCase):
                     'local(  "x"  )',
                     'url(../fonts/LateefRegAAT.ttf) format(  "truetype-aat"  )',
                     'url(a) format(  "123x"  , "a"   )',
-                    'url(a) format( "123x"  , "a"   ), url(a) format( "123x"  , "a"   )',
+                    'url(a) format( "123x"  , "a"   ), '
+                    'url(a) format( "123x"  , "a"   )',
                     'local(HiraKakuPro-W3), local(Meiryo), local(IPAPGothic)',
                     'local(Gentium), url(/fonts/Gentium.ttf)',
                     'local("Gentium"), url("/fonts/Gentium.ttf")',
-                    'local(Futura-Medium), url(fonts.svg#MyGeometricModern) format("svg")',
+                    'local(Futura-Medium), url(fonts.svg#MyGeometricModern) '
+                    'format("svg")',
                 ),
             ): (True, True, FM3FF),
             (
@@ -626,10 +637,12 @@ class ProfilesTestCase(basetest.BaseTestCase):
                 self.assertEqual(valid, cssutils.profile.validate(name, value))
 
 
-#                if (valid, matching, list(profile)) != cssutils.profile.validateWithProfile(name, value):
-#                    print
-#                    print '###############', name, value
-#                    print (valid, matching, list(profile)), cssutils.profile.validateWithProfile(name, value)
+# if (valid, matching, list(profile)) !=
+# cssutils.profile.validateWithProfile(name, value):
+#     print
+#     print '###############', name, value
+#     print (valid, matching, list(profile)),
+# cssutils.profile.validateWithProfile(name, value)
 
 # TODO: fix
 #                self.assertEqual((valid, matching, list(profile)),
