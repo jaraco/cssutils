@@ -9,13 +9,12 @@ from . import codec
 import codecs
 from . import errorhandler
 from . import tokenize2
-import types
 import xml.dom
 import re
 
 try:
     from ._fetchgae import _defaultFetcher
-except ImportError as e:
+except ImportError:
     from ._fetch import _defaultFetcher
 
 log = errorhandler.ErrorHandler()
@@ -169,7 +168,7 @@ class Base(_BaseClass):
 
     @staticmethod
     def _normalize(x):
-        """
+        r"""
         normalizes x, namely:
 
         - remove any \ before non unicode sequences (0-9a-zA-Z) so for
@@ -264,7 +263,7 @@ class Base(_BaseClass):
         else:
             return None
 
-    def _tokensupto2(
+    def _tokensupto2(  # noqa: C901
         self,
         tokenizer,
         starttoken=None,
@@ -803,7 +802,7 @@ class _Namespaces(object):
     def __getitem__(self, prefix):
         try:
             return self.namespaces[prefix]
-        except KeyError as e:
+        except KeyError:
             self._log.error('Prefix %s not found.' % prefix, error=xml.dom.NamespaceErr)
 
     def __iter__(self):
@@ -911,7 +910,8 @@ class _SimpleNamespaces(_Namespaces):
         return "cssutils.util.%s(%r)" % (self.__class__.__name__, self.namespaces)
 
 
-def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
+def _readUrl(  # noqa: C901
+        url, fetcher=None, overrideEncoding=None, parentEncoding=None):
     """
     Read cssText from url and decode it using all relevant methods (HTTP
     header, BOM, @charset). Returns
@@ -986,7 +986,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
                     decodedCssText = codecs.lookup("css")[1](
                         content, encoding=encoding
                     )[0]
-                except AttributeError as ae:
+                except AttributeError:
                     # at least in GAE
                     decodedCssText = content.decode(encoding if encoding else 'utf-8')
 
