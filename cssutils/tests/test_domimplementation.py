@@ -3,6 +3,8 @@
 import xml.dom
 import xml.dom.minidom
 import unittest
+import warnings
+
 import cssutils
 
 
@@ -13,7 +15,9 @@ class DOMImplementationTestCase(unittest.TestCase):
     def test_createCSSStyleSheet(self):
         "DOMImplementationCSS.createCSSStyleSheet()"
         title, media = 'Test Title', cssutils.stylesheets.MediaList('all')
-        sheet = self.domimpl.createCSSStyleSheet(title, media)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            sheet = self.domimpl.createCSSStyleSheet(title, media)
         self.assertEqual(True, isinstance(sheet, cssutils.css.CSSStyleSheet))
         self.assertEqual(title, sheet.title)
         self.assertEqual(media, sheet.media)
