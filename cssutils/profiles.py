@@ -3,6 +3,10 @@
 Profiles is based on code by Kevin D. Smith, orginally used as cssvalues,
 thanks!
 """
+
+# too many long lines
+# flake8: noqa
+
 __all__ = ['Profiles']
 
 from cssutils import util
@@ -82,7 +86,7 @@ class Profiles(object):
         'namedcolor': r'(transparent|orange|maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',
         'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
         'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{uicolor}',
-        #'color': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
+        # 'color': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
         'integer': r'{int}',
         'length': r'0|{num}(em|ex|px|in|cm|mm|pt|pc)',
         'positivelength': r'0|{positivenum}(em|ex|px|in|cm|mm|pt|pc)',
@@ -290,7 +294,7 @@ class Profiles(object):
             # might have been set by addProfiles before
             try:
                 macros = self._rawProfiles[profile]['macros']
-            except KeyError as e:
+            except KeyError:
                 macros = {}
 
         # save name and raw props/macros if macros change to completely reset
@@ -388,7 +392,7 @@ class Profiles(object):
                     return r
         return False
 
-    def validateWithProfile(self, name, value, profiles=None):
+    def validateWithProfile(self, name, value, profiles=None):  # noqa: C901
         """Check if `value` is valid for given property `name` returning
         ``(valid, profile)``.
 
@@ -458,7 +462,7 @@ macros within the CSS property value regular expressions.
 macros[Profiles.CSS_LEVEL_2] = {
     'background-color': r'{color}|transparent|inherit',
     'background-image': r'{uri}|none|inherit',
-    #'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
+    # 'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-position': r'({percentage}|{length}|left|center|right)(\s*({percentage}|{length}|top|center|bottom))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
@@ -515,7 +519,7 @@ properties[Profiles.CSS_LEVEL_2] = {
     'cue-after': r'{uri}|none|inherit',
     'cue-before': r'{uri}|none|inherit',
     'cue': r'({uri}|none|inherit){1,2}|inherit',
-    #'cursor': r'((({uri}{w},{w})*)?(auto|crosshair|default|pointer|move|(e|ne|nw|n|se|sw|s|w)-resize|text|wait|help|progress))|inherit',
+    # 'cursor': r'((({uri}{w},{w})*)?(auto|crosshair|default|pointer|move|(e|ne|nw|n|se|sw|s|w)-resize|text|wait|help|progress))|inherit',
     'direction': r'ltr|rtl|inherit',
     'display': r'inline|block|list-item|run-in|inline-block|table|inline-table|table-row-group|table-header-group|table-footer-group|table-row|table-column-group|table-column|table-cell|table-caption|none|inherit',
     'elevation': r'{angle}|below|level|above|higher|lower|inherit',
@@ -599,7 +603,7 @@ macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'b5': r'{color}?({w}{border-style})?({w}{border-width})?',
     'b6': r'{color}?({w}{border-width})?({w}{border-style})?',
     'border-attrs': r'{b1}|{b2}|{b3}|{b4}|{b5}|{b6}',
-    'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?',
+    'border-radius-part': r'({length}|{percentage})(\s+({length}|{percentage}))?',
 }
 properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'border-color': r'({color}|transparent)(\s+({color}|transparent)){0,3}|inherit',
@@ -652,7 +656,7 @@ properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'outline-style': r'{outline-style}',
     'outline-width': r'{outline-width}',
     'outline-offset': r'{length}|inherit',
-    #'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
+    # 'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
     'outline': r'{outline-1}|{outline-2}|{outline-3}|{outline-4}|{outline-5}|{outline-6}|inherit',
     'resize': 'none|both|horizontal|vertical|inherit',
 }
@@ -682,9 +686,9 @@ properties[Profiles.CSS3_COLOR] = {
 
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
-    #'family-name': r'{string}|{ident}',
+    # 'family-name': r'{string}|{ident}',
     'family-name': r'{string}|({ident}(\s+{ident})*)',
-    'font-face-name': 'local\({w}{family-name}{w}\)',
+    'font-face-name': r'local\({w}{family-name}{w}\)',
     'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
     'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?',
 }
