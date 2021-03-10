@@ -18,7 +18,8 @@ class Settings(test_cssrule.CSSRuleTestCase):
         cssutils.settings.set('DXImageTransform.Microsoft', True)
         self.assertEqual(
             cssutils.parseString(text).cssText,
-            'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'.encode(),
+            'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'
+            .encode(),
         )
 
         cssutils.ser.prefs.useDefaults()

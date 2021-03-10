@@ -1,6 +1,5 @@
 """Testcases for cssutils.stylesheets.StyleSheet"""
 
-import xml.dom
 from . import basetest
 import cssutils
 
