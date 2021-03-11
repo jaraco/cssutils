@@ -70,11 +70,6 @@ Example::
 """
 __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 
-import sys
-
-if sys.version_info < (2, 6):
-    bytes = str
-
 import os.path
 import urllib.request
 import urllib.parse
