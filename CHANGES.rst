@@ -41,17 +41,17 @@ v1.0
 		background: var(U, url(example.png));
 		border-color: var(C, #f00)
 
-	- FEATURE: (issue #37) Implemented parsing of ``CSSCalc`` values. General syntax is checked but not if operators in calc are actually the right kind like DIMENSION * DIMENSION. Also Values using calc do not validate in cssutils but are actually valid.
+	- FEATURE: (Bitbucket #37) Implemented parsing of ``CSSCalc`` values. General syntax is checked but not if operators in calc are actually the right kind like DIMENSION * DIMENSION. Also Values using calc do not validate in cssutils but are actually valid.
 
-	- FIXED issue #20 and #35 (Test fail CSSParser.parseUrl() error with Python 3.3)
+	- FIXED Bitbucket #20 and Bitbucket #35 (Test fail CSSParser.parseUrl() error with Python 3.3)
 
-	- FIXED issue #21: (almost all) deprecation warning in Py 3.3 fixed.
+	- FIXED Bitbucket #21: (almost all) deprecation warning in Py 3.3 fixed.
 
-	- FIXED issue #30 (Test failed)
+	- FIXED Bitbucket #30 (Test failed)
 
-	- FIXED issue #33 (well kinda): Added that cssutils is **not** threadsafe!
+	- FIXED Bitbucket #33 (well kinda): Added that cssutils is **not** threadsafe!
 
-	- FIXED issue #34: More complext MediaQueries should be parsable now. A few slight changes in behavior are:
+	- FIXED Bitbucket #34: More complext MediaQueries should be parsable now. A few slight changes in behavior are:
 		 - ``xml.dom.SyntaxErr`` raised instead of ``xml.dom.InvalidCharacterErr`` for an unknown media type
 		 - removed ``handheld`` media type special case (for old Opera).
 
@@ -60,15 +60,15 @@ v0.9.10
 
     - BUGFIX: False HASH color values like ``#xyz`` were not being handled properly (thanks to Teruaki Koizumi)
 
-    - Fixed issue #23: Tests do work properly in newer Python (>2.7.1?) version now, old versions will report error. Before this was the other way round but this makes more sense probably
+    - Fixed Bitbucket #23: Tests do work properly in newer Python (>2.7.1?) version now, old versions will report error. Before this was the other way round but this makes more sense probably
 
-    - Fixed issue #24: rgba color values did not validate properly
+    - Fixed Bitbucket #24: rgba color values did not validate properly
 
-    - (Jason R. Coombs) Fixed issue #25: Cssutils installs "tests" package
+    - (Jason R. Coombs) Fixed Bitbucket #25: Cssutils installs "tests" package
 
-    - Fixed issue #27: Small magnitude float values serialized incorrectly
+    - Fixed Bitbucket #27: Small magnitude float values serialized incorrectly
 
-    - Fixed issue #28: Standalone semicolons in CSSStyleDeclaration is now simply stripped and does not remove directly following property too
+    - Fixed Bitbucket #28: Standalone semicolons in CSSStyleDeclaration is now simply stripped and does not remove directly following property too
 
 0.9.10b1 120428
     - **REGRESSION**: Valid profiles reported by validation may not be right but as these hardly say anything in the real world anyway the advancements in the following bugfixes are probably worth this. ``Profiles.validateWithProfile`` currently not working but should be hardly used anyway. As a workaround remove all profiles and add just the ones you want to use for your application
@@ -106,9 +106,9 @@ v0.9.8
 ======
 
 0.9.8 final 111210
-    - FEATURE: Feature Request (#4) to be able to disable validation of a stylesheet has been implemented. Add Parameter ``validate=False`` for parsing.
+    - FEATURE: Feature Request (Bitbucket #4) to be able to disable validation of a stylesheet has been implemented. Add Parameter ``validate=False`` for parsing.
 
-    + BUGFIX: Fixed #5 Unicode escaping inside strings. Thanks to Simon Sapin
+    + BUGFIX: Fixed Bitbucket #5 Unicode escaping inside strings. Thanks to Simon Sapin
     + BUGFIX: The integer is optional in counter-reset and counter-increment, and not only on the first counter. Thanks to Simon Sapin
     + BUGFIX: Fix for unicode replacements by Denis Bilenko, thanks!  https://bitbucket.org/cthedot/cssutils/pull-request/1/fix-a-bug-in-regex-which-accidentally
 
@@ -117,11 +117,11 @@ v0.9.8
 
 0.9.8a3 110727
     + BUGFIX: Fixed validation of ``size`` property (thanks to Simon Sapin)
-	+ BUGFIX: Fixed Issue #55 (thanks to Simon Sapin): `outline-color` property was missing from validation.
+	+ BUGFIX: Fixed Issue Bitbucket #55 (thanks to Simon Sapin): `outline-color` property was missing from validation.
     + BUGFIX: Fixed resolution of encoding detection of a stylesheet which did not use @charset in certain circumstances (mainly when imported sheets use different encoding than importing one which should be quite rare actually).
 
     - FEATURE: Added ``URIValue.absoluteUri`` (thanks to Simon Sapin)
-    - FEATURE: Issue #53 feature request: Added new Preference option ``cssutils.ser.prefs.indentClosingBrace``. Defines if closing brace of block is indented to match indentation of the block (default) oder match indentation of selector.
+    - FEATURE: Issue Bitbucket #53 feature request: Added new Preference option ``cssutils.ser.prefs.indentClosingBrace``. Defines if closing brace of block is indented to match indentation of the block (default) oder match indentation of selector.
     - FEATURE: Feature request: Added new Preference option ``cssutils.ser.prefs.omitLeadingZero``. Defines if values between -1 and 1 should omit the 0, like ``.5px``. Minified settings do this, else 0 is kept by default.
 
     + CHANGE (minor): Some error messages have slightly changed due to a simpler compatibility to Python 3. Problem are any ``u'...'`` texts inside error messages which now are simplified, some without and quotes. Changed are e.g. error messages by ``Property``.
@@ -130,17 +130,17 @@ v0.9.8
 
     - **IMPROVEMENT**: Parsing of longer (and probably invalid) ``font`` or ``font-family`` values was *extremely* slow due to a very complex regex. This has been changed and parsing of specific stylesheets using these values should be much faster now. (``macros[Profiles.CSS_LEVEL_2]['font-family']`` is gone so if you used this in your own validation modules you need to check the source in `profiles.py`.)
 
-    - IMPROVEMENT: Fixed Issue #54 (thanks to Simon Sapin): Short hand like `#f80` color value object have correct red, green and blue property values now. Also ``hsl()`` and ``hsla()`` colors report (almost) correct values (due to rounding problems).
+    - IMPROVEMENT: Fixed Issue Bitbucket #54 (thanks to Simon Sapin): Short hand like `#f80` color value object have correct red, green and blue property values now. Also ``hsl()`` and ``hsla()`` colors report (almost) correct values (due to rounding problems).
 
     - **Source control has moved to bitbucket https://bitbucket.org/cthedot/cssutils**. Older Issues are currently still at Google Code, newer at Bitbucket. Please do not use Google Code for new issue reports anymore!
 
 
 0.9.8a2 110611
-    - BUGFIX: Fixed Issue #59 which showed a rather strange problem with longer space separated lists of font-family values being so slow to actually stop parsing.
+    - BUGFIX: Fixed Issue Bitbucket #59 which showed a rather strange problem with longer space separated lists of font-family values being so slow to actually stop parsing.
 
-    - BUGFIX/IMPROVEMENT: Fixed Issue #48. ``CSSParser.parseUrl()`` uses the defined fetcher of this parser *for the initial stylesheet* at url too and not just the imported sheets *from* this sheet.
+    - BUGFIX/IMPROVEMENT: Fixed Issue Bitbucket #48. ``CSSParser.parseUrl()`` uses the defined fetcher of this parser *for the initial stylesheet* at url too and not just the imported sheets *from* this sheet.
 
-    - BUGFIX: Fixed Issue #50 which prevented cssutils parsing the acid2.css file correctly. Problem were selectors starting directly with ``[class]`` (an attribute selector).
+    - BUGFIX: Fixed Issue Bitbucket #50 which prevented cssutils parsing the acid2.css file correctly. Problem were selectors starting directly with ``[class]`` (an attribute selector).
 
     + **API CHANGE (major)**
         (Known) named colors are parsed as ColorValue objects now. These are the 16 simple colors (black, white, etc) and `transparent` but not all Extended color keywords yet. Also changed ``ColorValue.type`` to ``Value.COLOR_VALUE``. ColorValue has additional properties ``red, green, blue, alpha`` and ``colorType`` which is one of IDENT, HASH or FUNCTION for now.
@@ -190,7 +190,7 @@ v0.9.8
 
     - **IMPROVEMENT**: New Value parsing and API accelerate parsing of style declarations which take about 20-30% less time now. Of course this depends on the complexity of your styles.
 
-    + BUGFIX: fixes issue #41, #42, #45, #46
+    + BUGFIX: fixes Bitbucket #41, Bitbucket #42, Bitbucket #45, Bitbucket #46
         PropertyValue.value returns value without any comments now, else use PropertyValue.cssText
 
     - FEATURE: ``cssutils.replaceUrls()`` accepts as first argument a `cssutils.css.CSSStyleSheet` but now also a
@@ -231,7 +231,7 @@ v0.9.7
 
 
 0.9.7b2 100606
-    + IMPROVEMENT/BUGFIX: CSSFunction value parameters may contain HASH values like ``#fff`` now. These are used in experimental properties like ``-moz-linear-gradient(top,#fff,#fff 55%,#e4e4e4)``. Fixes issue #38.
+    + IMPROVEMENT/BUGFIX: CSSFunction value parameters may contain HASH values like ``#fff`` now. These are used in experimental properties like ``-moz-linear-gradient(top,#fff,#fff 55%,#e4e4e4)``. Fixes Bitbucket #38.
 
     + API CHANGE: ``cssutils.ser.prefs.resolveVariables == True`` is the default from 0.9.7b2 as CSSVariables are not in any official specification yet and better reflects what you probably want after serializing a stylesheet...
 
@@ -254,14 +254,14 @@ v0.9.7
 0.9.7a6 100523
     + **API CHANGE (major)**: When setting an objects ``cssText`` (or ``selectorText`` etc) property the underlying object is replaced with a new one now. E.g. if setting ``cssutils.css.CSSStyleRule.selectorText`` the underlying ``cssutils.css.CSSStyleRule.selectorList`` object is swapped to a new ``SelectorList`` object. This should be expected but cssutils until now kept the exact same object and changed its content *in-place*. Please be aware! (Also the strange ``_absorb`` method of some objects is gone which was used for this.)
 
-    + **API CHANGE (minor)**: Renamed ``cssutils.ser.prefs.keepUnkownAtRules`` to ``cssutils.ser.prefs.keepUnknownAtRules`` due to misspelling, see Issue #37. A DeprecationWarning is issued on use.
+    + **API CHANGE (minor)**: Renamed ``cssutils.ser.prefs.keepUnkownAtRules`` to ``cssutils.ser.prefs.keepUnknownAtRules`` due to misspelling, see Issue Bitbucket #37. A DeprecationWarning is issued on use.
 
     + API CHANGES (minor):
         - ``cssutils.css.CSSImportRule.media`` and ``cssutils.css.CSSMediaRule.media`` are now writable (setting with a string or ``cssutils.stylesheets.MediaList``)
         - msg level when setting ``cssutils.stylesheets.MediaList.appendMedium`` changed to INFO (was WARNING)
         - ``str(cssutils.css.CSSStyleRule)`` slightly changed
 
-    - **IMPROVEMENT/BUGFIX**: Improved distribution: Egg release should no longer include the tests package, source release still should. Also added dependency package for tests (minimock) and removed documenation txt files from distribution (HTML still included of course). This also fixes Issue #36.
+    - **IMPROVEMENT/BUGFIX**: Improved distribution: Egg release should no longer include the tests package, source release still should. Also added dependency package for tests (minimock) and removed documenation txt files from distribution (HTML still included of course). This also fixes Issue Bitbucket #36.
 
     - IMPROVEMENT: cssutils issues a warning if a page selector is not one of the defined in the spec (``:first``, ``:left``, ``:right``).
 
@@ -307,13 +307,13 @@ v0.9.7
     - **BUGFIX/IMPROVEMENT**: Parser now handles FUNCTION values which themselves contain another FUNCTION as used by PrinceXML CSS like e.g. ``prince-link: target-counter(attr(href), page)``
 
 0.9.7a2 091230
-    - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue #32.
+    - **API CHANGE**: Setting a style declarations' property to ``None`` or the empty string effectively removes this property from the declaration. See also Issue Bitbucket #32.
 
     + **BUGFIX/FEATURE**: Fixed Issue 33: URL references (like ``url()`` values) in combined sheets are now adjusted even if sheets are not in the same folder. Only relative paths are adjusted.
 
     - **BUGFIX**: Fixed parsing of FUNCTIONS in CSSUnknownRule like ``@bottom { counter(page) }`` which raised a false error of a mismatch of parenthesis
 
-    + FEATURE: Added parameter ``ignoreImportRules=False`` to ``cssutils.replaceUrls`` which when set to ``True`` no longer reports URLs from @import rules but property values only (see Issue #33)
+    + FEATURE: Added parameter ``ignoreImportRules=False`` to ``cssutils.replaceUrls`` which when set to ``True`` no longer reports URLs from @import rules but property values only (see Issue Bitbucket #33)
 
 0.9.7a1
     - test release only
@@ -341,10 +341,10 @@ v0.9.6
     - distribution build with `distribute <http://pypi.python.org/pypi/distribute>`_ instead of setuptools
 
 0.9.6b5 090830
-    + BUGFIX: Issue #30 fixed. Setup from source did not work.
+    + BUGFIX: Issue Bitbucket #30 fixed. Setup from source did not work.
 
 0.9.6b4 090829
-    + BUGFIX: Issue #29 fixed. Double defined namespaces are replaced with a single (the last one) now.
+    + BUGFIX: Issue Bitbucket #29 fixed. Double defined namespaces are replaced with a single (the last one) now.
 
     - IMPROVEMENT: ``cssutils.resolveImports`` now keeps media information when to be resolved @import rule uses these. It wraps the imported rules in an @media rule which uses the same media information from the @media rule in the original sheet.
 
@@ -361,7 +361,7 @@ v0.9.6
 
     + **FEATURE**: Added ``cssutils.parseStyle(cssText, encoding='utf-8')`` convienience function which assumes that the given `cssText` is the content of an HTML style attribute. It returns a :class:`~cssutils.css.CSSStyleDeclaration`.
 
-    + **FEATURE** (experimental, request from issue #27): Added ``css.CSSStyleDeclaration.children()`` which is a generator yielding any known children of a declaration including *all* properties, comments or CSSUnknownRules.
+    + **FEATURE** (experimental, request from Bitbucket #27): Added ``css.CSSStyleDeclaration.children()`` which is a generator yielding any known children of a declaration including *all* properties, comments or CSSUnknownRules.
 
     + FEATURE: ``CSSStyleDeclaration.insertRule`` also accepts a ``CSSRuleList`` now (same as ``CSSStyleSheet`` which does this for some time now).
 
@@ -419,9 +419,9 @@ v0.9.6
         - Jython's ``xml.dom.Exception`` misses attribute ``args`` it seems
 
 0.9.6a4 090509
-    - **API CHANGE**: Reverted handling of exceptions (issue #24) as this did not work with PyXML installed. You may again use ``str(e)`` on any raised xml.dom.Exception ``e``. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as ``e.line, e.col``.
+    - **API CHANGE**: Reverted handling of exceptions (Bitbucket #24) as this did not work with PyXML installed. You may again use ``str(e)`` on any raised xml.dom.Exception ``e``. Since 0.9.6a0 exceptions raised did raise a tuple of message, line and col information. Now the message alone is raised (again). Line and col information is still available as ``e.line, e.col``.
 
-    + BUGFIX: Fixed issue #22 parsing or actually reserializing of values like ``content: "\\"``
+    + BUGFIX: Fixed Bitbucket #22 parsing or actually reserializing of values like ``content: "\\"``
 
     + BUGFIX: All examples at http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#illegalvalues should work now as expected:
         - Unknown ATKEYWORD tokens in selectors make these invalid now, see example : ``p @here {color: red}``
@@ -435,7 +435,7 @@ v0.9.6
 
     - **FEATURE**: New preference option ``keepUnkownAtRules = False`` which defines if unknown atrules like e.g. ``@three-dee {...}`` are kept or not. Setting this pref to ``False`` in result removes unknown @rules from the serialized sheet which is the default for the minified settings.
 
-    - **IMPROVEMENT**: Fixed issue #23. The examples/style.py example renderer was reusing ``Property`` objects for each HTML element so they effectively overwrote each other.
+    - **IMPROVEMENT**: Fixed Bitbucket #23. The examples/style.py example renderer was reusing ``Property`` objects for each HTML element so they effectively overwrote each other.
 
     + DOCUMENTATION: Using Sphinx 0.6.1 now
 
@@ -451,7 +451,7 @@ v0.9.6
         - log output for mismatch uses ``!=`` instead of ``<>`` now
         - fixed testcases which were not all tested :(most embarrassing)
 
-    + **BUGFIX**: Fixed issue #21 http://code.google.com/p/cssutils/issues/detail?id=21. Definition of valid values for property `background-position` was wrong. Still mixed values like ``background-position: 0 top`` are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.
+    + **BUGFIX**: Fixed Bitbucket #21 http://code.google.com/p/cssutils/issues/detail?id=21. Definition of valid values for property `background-position` was wrong. Still mixed values like ``background-position: 0 top`` are invalid although most browsers accept them. But the CSS 2.1 spec defines it the above way. CSS3 backgrounds is not implemented yet in cssutils.
 
 
 0.9.6a2 090308
@@ -497,7 +497,7 @@ v0.9.6
 
       See the docs and source of the cssutils.profiles module for details.
 
-    + **FEATURE**:  ``cssutils.util._readUrl()`` allows fetchers to pre-decode CSS content and return `unicode` instances, with or without a specified source encoding (integrated from patch of Issue #19).
+    + **FEATURE**:  ``cssutils.util._readUrl()`` allows fetchers to pre-decode CSS content and return `unicode` instances, with or without a specified source encoding (integrated from patch of Issue Bitbucket #19).
 
     + **FEATURE**: URL fetch method checks if cssutils is run in GoogleAppEngine (GAE) (if ``import google.appengine`` is successful) and uses the GAE fetch methods instead of urllib2 in that case. So in result cssutils should run on GAE just as elsewhere.
     + **FEATURE**: Function ``cssutils.resolveImports(sheet)`` returns a new stylesheet with all rules in given sheet but with all @import rules being pulled into the top sheet.
@@ -546,7 +546,7 @@ v0.9.6
         - BUGFIX: Parsing values with ``+`` operator fixed.
         - BUGFIX: ``CSSValueList.__str__`` added (missing last underscore rendered it useless)
         - IMPROVEMENT: Serializing e.g. ``rgb(0,0,0)`` now defaults to ``rgb(0, 0, 0)``
-        - IMPROVEMENT: HEX values are minified if possible, e.g. ``#112233`` results in ``#123``
+        - IMPROVEMENT: HEX values are minified if possible, e.g. ``Bitbucket #112233`` results in ``Bitbucket #123``
         - IMPROVEMENT: Improved handling of zero lengths like ``-0, 0.0, .0mm`` etc all should come out simply as ``0`` now
         - IMPROVEMENT: number values are normalized now, e.g. ``010.0px`` results in ``10px`` etc
         - IMPROVEMENT: DIMENSIONs are normalized now, e.g. ``1pX`` results in ``1px``
@@ -571,7 +571,7 @@ v0.9.6
 
     - BUGFIX: Other priority values than ``!important`` are parsed now. Nevertheless they log an ERROR or raise a SyntaxErr.
 
-    - BUGFIX: Fixed Issue #14, added ``CSSStyleDeclaration().borderLeftWidth``. But prefer to use ``CSSStyleDeclaration()['border-left.width']``.
+    - BUGFIX: Fixed Issue Bitbucket #14, added ``CSSStyleDeclaration().borderLeftWidth``. But prefer to use ``CSSStyleDeclaration()['border-left.width']``.
 
     + **API CLEANUP**:
         - moved validating of a property from ``CSSValue`` to ``Property``
@@ -800,7 +800,7 @@ v0.9.5
 
     + FEATURE: Added ``cssutils.parseURL(url, encoding=None, ...)``
 
-    + BUGFIX: Fixes Issue #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used which also includes simple but sufficient date information.
+    + BUGFIX: Fixes Issue Bitbucket #10, using full ``$LastChangedDate$`` in source files breaks code for some locales. Now only in a few files this svn:keywords replacement is used and only to a fixed length without the problematic part. In all other files ``$Id$`` is used which also includes simple but sufficient date information.
 
     + **BUGFIX/IMPROVEMENT**: Handling of trailing content, WS and comments in rules should be more consistent and properly handled now, added tests. Exception is ``CSSCharsetRule`` where no comments are allowed at all.
 
@@ -1126,7 +1126,7 @@ v0.9.5
 
     + API CHANGE (internal): renamed serializers method ``do_stylesheet`` to ``do_CSSStyleSheet``
 
-    - BUGFIX (issue #9): Parsing of empty ``url()`` values has been fixed
+    - BUGFIX (Bitbucket #9): Parsing of empty ``url()`` values has been fixed
     - BUGFIX: Handling of linenumbers in the serializer has been fixed.
     - BUGFIX (minor): removed debug output in CSSStyleDeclaration
 
@@ -1167,20 +1167,20 @@ v0.9.5
         - MediaList shows the mediaText
 
 0.9.2b3 070804
-    - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue #6 by Walter Doerwald)
+    - FEATURE: Script ``cssparse`` handles more than one file at a time now (patch from Issue Bitbucket #6 by Walter Doerwald)
 
-    - BUGFIX: Fixed Issue #7: typo gave AssertionError for selectors like ``tr:nth-child(odd) td{}``
-    - BUGFIX: Fixed Issue #5: false warning for certain values for ``background-position`` removed
+    - BUGFIX: Fixed Issue Bitbucket #7: typo gave AssertionError for selectors like ``tr:nth-child(odd) td{}``
+    - BUGFIX: Fixed Issue Bitbucket #5: false warning for certain values for ``background-position`` removed
     - BUGFIX: Report of line/col for any node was not correct if a node contained line breaks itself
 
     - Quite a few internal optimizations (thanks to Walter Doerwald)
-    - Added tests for issues #3 and #4 to tokenizer too
+    - Added tests for issues Bitbucket #3 and Bitbucket #4 to tokenizer too
 
 0.9.2b2 070728
-    - BUGFIX: Fixed Issue #4, tokenizing of color values like ``#00a`` was buggy (mixture of numbers and characters). Also warnings of invalid property values should be more reliable now (regexes in ``css.cssproperties`` changed).
+    - BUGFIX: Fixed Issue Bitbucket #4, tokenizing of color values like ``Bitbucket #00a`` was buggy (mixture of numbers and characters). Also warnings of invalid property values should be more reliable now (regexes in ``css.cssproperties`` changed).
 
 0.9.2b1 070726
-    - BUGFIX: Fixed Issue #3, WS was not handled properly if added to token list by tokenizer
+    - BUGFIX: Fixed Issue Bitbucket #3, WS was not handled properly if added to token list by tokenizer
 
 0.9.2a5 070624
     - BUGFIX: Unexpected end of style sheet now handled according to spec for most cases, e.g. incomplete CSSStyleRule, CSSMediaRule, CSSImportRule, CSSNamespaceRule, CSSPageRule.

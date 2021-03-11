@@ -19,6 +19,11 @@ link_files = {
                 pattern=r'PEP[- ](?P<pep_number>\d+)',
                 url='https://www.python.org/dev/peps/pep-{pep_number:0>4}/',
             ),
+            dict(
+                pattern=r'(Bitbucket #)(?P<bb_issue>\d+)',
+                url='https://web.archive.org/web/20200701035501/'
+                'https://bitbucket.org/cthedot/cssutils/issues/{bb_issue}/',
+            ),
         ],
     )
 }
