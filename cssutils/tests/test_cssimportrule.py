@@ -1,10 +1,12 @@
 """Testcases for cssutils.css.CSSImportRule"""
 
+import re
 import xml.dom
-from . import test_cssrule
-import cssutils
 
-from . import basetest
+import pytest
+
+import cssutils
+from . import test_cssrule
 
 
 class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
@@ -260,29 +262,19 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.media.appendMedium('tv')
         self.assertEqual('@import url(x) print, tv;', self.r.cssText)
 
+        tv_msg = re.escape(
+            '''MediaList: Ignoring new medium '''
+            '''cssutils.stylesheets.MediaQuery(mediaText='tv') '''
+            '''as already specified "all" (set ``mediaText`` instead).'''
+        )
+
         # for generated rule
         r = cssutils.css.CSSImportRule(href='x')
-        self.assertRaisesMsg(
-            xml.dom.InvalidModificationErr,
-            basetest.msg3x(
-                '''MediaList: Ignoring new medium '''
-                '''cssutils.stylesheets.MediaQuery(mediaText=u'tv') '''
-                '''as already specified "all" (set ``mediaText`` instead).'''
-            ),
-            r.media.appendMedium,
-            'tv',
-        )
+        with pytest.raises(xml.dom.InvalidModificationErr, match=tv_msg):
+            r.media.appendMedium('tv')
         self.assertEqual('@import url(x);', r.cssText)
-        self.assertRaisesMsg(
-            xml.dom.InvalidModificationErr,
-            basetest.msg3x(
-                '''MediaList: Ignoring new medium '''
-                '''cssutils.stylesheets.MediaQuery(mediaText=u'tv') '''
-                '''as already specified "all" (set ``mediaText`` instead).'''
-            ),
-            r.media.appendMedium,
-            'tv',
-        )
+        with pytest.raises(xml.dom.InvalidModificationErr, match=tv_msg):
+            r.media.appendMedium('tv')
         self.assertEqual('@import url(x);', r.cssText)
         r.media.mediaText = 'tv'
         self.assertEqual('@import url(x) tv;', r.cssText)
@@ -293,27 +285,11 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         s = cssutils.parseString('@import url(x);')
         r = s.cssRules[0]
 
-        self.assertRaisesMsg(
-            xml.dom.InvalidModificationErr,
-            basetest.msg3x(
-                '''MediaList: Ignoring new medium '''
-                '''cssutils.stylesheets.MediaQuery(mediaText=u'tv') '''
-                '''as already specified "all" (set ``mediaText`` instead).'''
-            ),
-            r.media.appendMedium,
-            'tv',
-        )
+        with pytest.raises(xml.dom.InvalidModificationErr, match=tv_msg):
+            r.media.appendMedium('tv')
         self.assertEqual('@import url(x);', r.cssText)
-        self.assertRaisesMsg(
-            xml.dom.InvalidModificationErr,
-            basetest.msg3x(
-                '''MediaList: Ignoring new medium '''
-                '''cssutils.stylesheets.MediaQuery(mediaText=u'tv') '''
-                '''as already specified "all" (set ``mediaText`` instead).'''
-            ),
-            r.media.appendMedium,
-            'tv',
-        )
+        with pytest.raises(xml.dom.InvalidModificationErr, match=tv_msg):
+            r.media.appendMedium('tv')
         self.assertEqual('@import url(x);', r.cssText)
         r.media.mediaText = 'tv'
         self.assertEqual('@import url(x) tv;', r.cssText)
