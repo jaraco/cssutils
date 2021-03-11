@@ -9,14 +9,6 @@ import unittest
 import cssutils
 
 
-def msg3x(msg):
-    """msg might contain unicode repr `u'...'` which in py3 is `u'...`
-    needed by tests using ``assertRaisesMsg``"""
-    if msg.find("u'"):
-        msg = msg.replace("u'", "'")
-    return msg
-
-
 def get_resource_filename(resource_name):
     """Get the resource filename.
 
