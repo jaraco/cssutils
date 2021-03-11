@@ -13,13 +13,8 @@ import urllib.request
 import urllib.error
 import urllib.parse
 
-try:
-    import cssutils.encutils as encutils
-except ImportError:
-    try:
-        import encutils
-    except ImportError:
-        sys.exit("You need encutils from http://cthedot.de/encutils/")
+import encutils
+
 
 # types of sheets in HTML
 LINK = (

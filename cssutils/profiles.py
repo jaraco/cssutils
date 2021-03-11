@@ -170,9 +170,8 @@ class Profiles(object):
         for key, value in list(dictionary.items()):
             if not hasattr(value, '__call__'):
                 # Compiling them now will slow down the cssutils import time,
-                # even if cssutils is not needed. We lazily compile them the
+                # even if cssutils is not needed. Thus, lazily compile them the
                 # first time they're needed.
-                # https://bitbucket.org/cthedot/cssutils/issues/72
                 value = util.LazyRegex('^(?:%s)$' % value, re.I)
             dictionary[key] = value
 
