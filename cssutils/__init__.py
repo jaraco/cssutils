@@ -134,12 +134,19 @@ class DOMImplementationCSS(object):
         """
         import warnings
 
-        warnings.warn("Deprecated, reason unknown", DeprecationWarning)
+        warning = (
+            "Deprecated, see "
+            "https://web.archive.org/web/20200701035537/"
+            "https://bitbucket.org/cthedot/cssutils/issues/69#comment-30669799"
+        )
+        warnings.warn(warning, DeprecationWarning)
         return css.CSSStyleSheet(title=title, media=media)
 
     def createDocument(self, *args, **kwargs):
         # sometimes cssutils is picked automatically for
         # xml.dom.getDOMImplementation, so provide an implementation
+        # see (https://web.archive.org/web/20200701035537/
+        # https://bitbucket.org/cthedot/cssutils/issues/69)
         import xml.dom.minidom as minidom
 
         return minidom.DOMImplementation().createDocument(*args, **kwargs)
@@ -147,6 +154,8 @@ class DOMImplementationCSS(object):
     def createDocumentType(self, *args, **kwargs):
         # sometimes cssutils is picked automatically for
         # xml.dom.getDOMImplementation, so provide an implementation
+        # see (https://web.archive.org/web/20200701035537/
+        # https://bitbucket.org/cthedot/cssutils/issues/69)
         import xml.dom.minidom as minidom
 
         return minidom.DOMImplementation().createDocumentType(*args, **kwargs)
