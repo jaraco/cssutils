@@ -9,13 +9,10 @@ import unittest
 import cssutils
 
 
-PY2x = sys.version_info < (3, 0)
-
-
 def msg3x(msg):
     """msg might contain unicode repr `u'...'` which in py3 is `u'...`
     needed by tests using ``assertRaisesMsg``"""
-    if not PY2x and msg.find("u'"):
+    if msg.find("u'"):
         msg = msg.replace("u'", "'")
     return msg
 

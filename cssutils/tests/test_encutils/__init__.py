@@ -4,10 +4,7 @@ tests for encutils.py
 """
 import http.client
 from io import StringIO
-import sys
 import unittest
-
-PY2x = sys.version_info < (3, 0)
 
 try:
     import cssutils.encutils as encutils
@@ -24,18 +21,14 @@ class AutoEncodingTestCase(unittest.TestCase):
 
         class FakeRes:
             def __init__(self, content):
-                if PY2x:
-                    fp = StringIO(content)
-                    self._info = http.client.HTTPMessage(fp)
-                else:
-                    self._info = http.client.HTTPMessage()
-                    # Adjust to testdata.
-                    items = content.split(':')
-                    if len(items) > 1:
-                        # Get the type by just
-                        # using the data at the end.
-                        t = items[-1].strip()
-                        self._info.set_type(t)
+                self._info = http.client.HTTPMessage()
+                # Adjust to testdata.
+                items = content.split(':')
+                if len(items) > 1:
+                    # Get the type by just
+                    # using the data at the end.
+                    t = items[-1].strip()
+                    self._info.set_type(t)
 
             def info(self):
                 return self._info
