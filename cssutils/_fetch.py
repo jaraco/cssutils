@@ -1,11 +1,16 @@
 """Default URL reading functions"""
 __all__ = ['_defaultFetcher']
 
-import encutils
-from . import errorhandler
 import urllib.request
 import urllib.error
-import urllib.parse
+
+try:
+    from importlib import metadata
+except ImportError:
+    import importlib_metadata as metadata
+
+import encutils
+from . import errorhandler
 
 log = errorhandler.ErrorHandler()
 
@@ -18,9 +23,8 @@ def _defaultFetcher(url):
     """
     try:
         request = urllib.request.Request(url)
-        # TODO: load version from metadata
-        VERSION = '???'
-        agent = 'cssutils %s (http://www.cthedot.de/cssutils/)' % VERSION
+        version = metadata.version('cssutils')
+        agent = f'cssutils {version} (https://pypi.org/project/cssutils)'
         request.add_header('User-agent', agent)
         res = urllib.request.urlopen(request)
     except urllib.error.HTTPError as e:
