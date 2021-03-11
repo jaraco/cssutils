@@ -1,9 +1,20 @@
+v2.2.0
+======
+
+Minor cleanup.
+
+Restored package version reporting when fetching URLs.
+
 v2.1.0
 ======
 
 Adopted `jaraco/skeleton <https://github.com/jaraco/skeleton>`_.
 
 Delinted codebase.
+
+Removed ``cssutils.VERSION`` and ``cssutils.__version__``.
+Consumers wishing to know the version should use
+``importlib.metadata.version('cssutils')``.
 
 v2.0.0
 ======
