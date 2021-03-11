@@ -1,8 +1,11 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 
-import sys
-from . import basetest
+import re
+
+import pytest
+
 import cssutils
+from . import basetest
 
 CSS2 = (cssutils.profile.CSS_LEVEL_2,)
 C3BUI = (cssutils.profile.CSS3_BASIC_USER_INTERFACE,)
@@ -114,10 +117,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
 
         cssutils.log.raiseExceptions = True
 
-        expmsg = "invalid literal for int() with base 10: 'x'"
-        self.assertRaisesMsg(
-            Exception, expmsg, cssutils.profile.validate, '-test-funcval', 'x'
-        )
+        expmsg = re.escape("invalid literal for int() with base 10: 'x'")
+        with pytest.raises(Exception, match=expmsg):
+            cssutils.profile.validate('-test-funcval', 'x')
 
     def test_removeProfile(self):
         "Profiles.removeProfile()"
