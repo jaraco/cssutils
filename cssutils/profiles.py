@@ -172,7 +172,7 @@ class Profiles(object):
                 # Compiling them now will slow down the cssutils import time,
                 # even if cssutils is not needed. We lazily compile them the
                 # first time they're needed.
-                # https://bitbucket.org/cthedot/cssutils/issues/72
+                # https://web.archive.org/web/20200701035537/https://bitbucket.org/cthedot/cssutils/issues/69)
                 value = util.LazyRegex('^(?:%s)$' % value, re.I)
             dictionary[key] = value
 
