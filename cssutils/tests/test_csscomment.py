@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Testcases for cssutils.css.CSSComment"""
 
 import xml

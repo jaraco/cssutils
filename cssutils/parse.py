@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """A validating CSSParser"""
 __all__ = ['CSSParser']
 

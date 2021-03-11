@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """encutils - encoding detection collection for Python
 
 :Version: 0.9.8

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """test utils for tests of examples
 
 A module to test must have:

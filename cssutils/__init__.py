@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """cssutils - CSS Cascading Style Sheets library for Python
 
     Copyright (C) 2004-2013 Christof Hoeke

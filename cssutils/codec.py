@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Python codec for CSS."""
 
 import codecs

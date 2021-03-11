@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import cssutils
 import logging
 
@@ -23,8 +22,7 @@ EXPERR = 'Property: Found valid "CSS Level 2.1" value: red [4:19: color]\nProper
 
 
 def main():
-    # -*- coding: utf-8 -*-
-    import cssutils
+        import cssutils
     import logging
 
     cssutils.log.setLevel(logging.DEBUG)

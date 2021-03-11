@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Retrieve all CSS stylesheets including embedded for a given URL.
 Retrieve as StyleSheetList or save to disk - raw, parsed or minified version.
 

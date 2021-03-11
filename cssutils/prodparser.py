@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Productions parser used by css and stylesheets classes to parse
 test into a cssutils.util.Seq and at the same time retrieving
 additional specific cssutils.util.Item objects for later use.
