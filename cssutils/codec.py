@@ -2,6 +2,7 @@
 
 import codecs
 import marshal
+import functools
 
 # We're using bits to store all possible candidate encodings (or variants, i.e.
 # we have two bits for the variants of UTF-16 and two for the
@@ -575,16 +576,14 @@ def search_function(name):
     )
 
 
-# Error handler for CSS escaping
-
-
+@functools.partial(codecs.register_error, "cssescape")
 def cssescape(exc):
+    """
+    Error handler for CSS escaping.
+    """
     if not isinstance(exc, UnicodeEncodeError):
         raise TypeError("don't know how to handle %r" % exc)
     return (
         "".join("\\%06x" % ord(c) for c in exc.object[exc.start : exc.end]),
         exc.end,
     )
-
-
-codecs.register_error("cssescape", cssescape)
