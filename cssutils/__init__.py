@@ -74,6 +74,7 @@ import os.path
 import urllib.request
 import urllib.parse
 import xml.dom
+import itertools
 
 from . import errorhandler
 from . import css
@@ -194,7 +195,7 @@ def setSerializer(serializer):
     globals().update(ser=serializer)
 
 
-def getUrls(sheet):  # noqa: C901
+def getUrls(sheet):
     """Retrieve all ``url(urlstring)`` values (in e.g.
     :class:`cssutils.css.CSSImportRule` or :class:`cssutils.css.CSSValue`
     objects of given `sheet`.
@@ -205,8 +206,7 @@ def getUrls(sheet):  # noqa: C901
     This function is a generator. The generated URL values exclude ``url(`` and
     ``)`` and surrounding single or double quotes.
     """
-    for importrule in (r for r in sheet if r.type == r.IMPORT_RULE):
-        yield importrule.href
+    imports = (rule.href for rule in sheet if rule.type == rule.IMPORT_RULE)
 
     def styleDeclarations(base):
         "recursive generator to find all CSSStyleDeclarations"
@@ -217,11 +217,15 @@ def getUrls(sheet):  # noqa: C901
         elif hasattr(base, 'style'):
             yield base.style
 
-    for style in styleDeclarations(sheet):
-        for p in style.getProperties(all=True):
-            for v in p.propertyValue:
-                if v.type == 'URI':
-                    yield v.uri
+    other = (
+        v.uri
+        for style in styleDeclarations(sheet)
+        for p in style.getProperties(all=True)
+        for v in p.propertyValue
+        if v.type == 'URI'
+    )
+
+    return itertools.chain(imports, other)
 
 
 def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):  # noqa: C901
