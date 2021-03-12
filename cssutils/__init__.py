@@ -195,6 +195,18 @@ def setSerializer(serializer):
     globals().update(ser=serializer)
 
 
+def _style_declarations(base):
+    "recursive generator to find all CSSStyleDeclarations"
+    if isinstance(base, css.CSSStyleDeclaration):
+        # base is a style already
+        yield base
+        return
+    for rule in getattr(base, 'cssRules', ()):
+        yield from _style_declarations(rule)
+    if hasattr(base, 'style'):
+        yield base.style
+
+
 def getUrls(sheet):
     """Retrieve all ``url(urlstring)`` values (in e.g.
     :class:`cssutils.css.CSSImportRule` or :class:`cssutils.css.CSSValue`
@@ -208,16 +220,9 @@ def getUrls(sheet):
     """
     imports = (rule.href for rule in sheet if rule.type == rule.IMPORT_RULE)
 
-    def styleDeclarations(base):
-        "recursive generator to find all CSSStyleDeclarations"
-        for rule in getattr(base, 'cssRules', ()):
-            yield from styleDeclarations(rule)
-        if hasattr(base, 'style'):
-            yield base.style
-
     other = (
         value.uri
-        for style in styleDeclarations(sheet)
+        for style in _style_declarations(sheet)
         for prop in style.getProperties(all=True)
         for value in prop.propertyValue
         if value.type == 'URI'
@@ -244,21 +249,9 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
         for importrule in (r for r in sheetOrStyle if r.type == r.IMPORT_RULE):
             importrule.href = replacer(importrule.href)
 
-    def styleDeclarations(base):
-        "recursive generator to find all CSSStyleDeclarations"
-        if hasattr(base, 'cssRules'):
-            for rule in base.cssRules:
-                for s in styleDeclarations(rule):
-                    yield s
-        elif hasattr(base, 'style'):
-            yield base.style
-        elif isinstance(sheetOrStyle, css.CSSStyleDeclaration):
-            # base is a style already
-            yield base
-
     values = (
         value
-        for style in styleDeclarations(sheetOrStyle)
+        for style in _style_declarations(sheetOrStyle)
         for prop in style.getProperties(all=True)
         for value in prop.propertyValue
         if value.type == 'URI'
