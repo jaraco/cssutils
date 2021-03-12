@@ -216,17 +216,17 @@ def getUrls(sheet):
             yield base.style
 
     other = (
-        v.uri
+        value.uri
         for style in styleDeclarations(sheet)
-        for p in style.getProperties(all=True)
-        for v in p.propertyValue
-        if v.type == 'URI'
+        for prop in style.getProperties(all=True)
+        for value in prop.propertyValue
+        if value.type == 'URI'
     )
 
     return itertools.chain(imports, other)
 
 
-def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):  # noqa: C901
+def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
     :class:`cssutils.css.CSSValue` objects of given `sheetOrStyle`.
 
@@ -256,11 +256,15 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):  # noqa: C901
             # base is a style already
             yield base
 
-    for style in styleDeclarations(sheetOrStyle):
-        for p in style.getProperties(all=True):
-            for v in p.propertyValue:
-                if v.type == v.URI:
-                    v.uri = replacer(v.uri)
+    values = (
+        value
+        for style in styleDeclarations(sheetOrStyle)
+        for prop in style.getProperties(all=True)
+        for value in prop.propertyValue
+        if value.type == 'URI'
+    )
+    for value in values:
+        value.uri = replacer(value.uri)
 
 
 def resolveImports(sheet, target=None):  # noqa: C901
