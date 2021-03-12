@@ -191,8 +191,7 @@ parseStyle.__doc__ = CSSParser.parseStyle.__doc__
 # set "ser", default serializer
 def setSerializer(serializer):
     """Set the global serializer used by all class in cssutils."""
-    global ser
-    ser = serializer
+    globals().update(ser=serializer)
 
 
 def getUrls(sheet):  # noqa: C901
