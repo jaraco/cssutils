@@ -267,193 +267,189 @@ def _int2bytes(i):
     return "".join(v)
 
 
-if hasattr(codecs, "IncrementalDecoder"):  # noqa: C901
+class IncrementalDecoder(codecs.IncrementalDecoder):
+    def __init__(self, errors="strict", encoding=None, force=True):
+        self.decoder = None
+        self.encoding = encoding
+        self.force = force
+        codecs.IncrementalDecoder.__init__(self, errors)
+        # Store ``errors`` somewhere else,
+        # because we have to hide it in a property
+        self._errors = errors
+        self.buffer = b""
+        self.headerfixed = False
 
-    class IncrementalDecoder(codecs.IncrementalDecoder):
-        def __init__(self, errors="strict", encoding=None, force=True):
-            self.decoder = None
-            self.encoding = encoding
-            self.force = force
-            codecs.IncrementalDecoder.__init__(self, errors)
-            # Store ``errors`` somewhere else,
-            # because we have to hide it in a property
-            self._errors = errors
-            self.buffer = b""
-            self.headerfixed = False
-
-        def iterdecode(self, input):
-            for part in input:
-                result = self.decode(part, False)
-                if result:
-                    yield result
-            result = self.decode("", True)
+    def iterdecode(self, input):
+        for part in input:
+            result = self.decode(part, False)
             if result:
                 yield result
+        result = self.decode("", True)
+        if result:
+            yield result
 
-        def decode(self, input, final=False):
-            # We're doing basically the same as a ``BufferedIncrementalDecoder``,
-            # but since the buffer is only relevant until the encoding has been
-            # detected (in which case the buffer of the underlying codec might
-            # kick in), we're implementing buffering ourselves to avoid some
-            # overhead.
-            if self.decoder is None:
-                input = self.buffer + input
-                # Do we have to detect the encoding from the input?
-                if self.encoding is None or not self.force:
-                    (encoding, explicit) = detectencoding_str(input, final)
-                    if encoding is None:  # no encoding determined yet
-                        self.buffer = input  # retry the complete input on the next call
-                        return ""  # no encoding determined yet, so no output
-                    elif encoding == "css":
-                        raise ValueError("css not allowed as encoding name")
-                    if (
-                        explicit and not self.force
-                    ) or self.encoding is None:  # Take the encoding from the input
-                        self.encoding = encoding
-                self.buffer = ""  # drop buffer, as the decoder might keep its own
-                decoder = codecs.getincrementaldecoder(self.encoding)
-                self.decoder = decoder(self._errors)
-            if self.headerfixed:
-                return self.decoder.decode(input, final)
-            # If we haven't fixed the header yet,
-            # the content of ``self.buffer`` is a ``unicode`` object
-            output = self.buffer + self.decoder.decode(input, final)
-            encoding = self.encoding
-            if encoding.replace("_", "-").lower() == "utf-8-sig":
-                encoding = "utf-8"
-            newoutput = _fixencoding(output, str(encoding), final)
-            if newoutput is None:
-                # retry fixing the @charset rule (but keep the decoded stuff)
-                self.buffer = output
-                return ""
-            self.headerfixed = True
-            return newoutput
+    def decode(self, input, final=False):
+        # We're doing basically the same as a ``BufferedIncrementalDecoder``,
+        # but since the buffer is only relevant until the encoding has been
+        # detected (in which case the buffer of the underlying codec might
+        # kick in), we're implementing buffering ourselves to avoid some
+        # overhead.
+        if self.decoder is None:
+            input = self.buffer + input
+            # Do we have to detect the encoding from the input?
+            if self.encoding is None or not self.force:
+                (encoding, explicit) = detectencoding_str(input, final)
+                if encoding is None:  # no encoding determined yet
+                    self.buffer = input  # retry the complete input on the next call
+                    return ""  # no encoding determined yet, so no output
+                elif encoding == "css":
+                    raise ValueError("css not allowed as encoding name")
+                if (
+                    explicit and not self.force
+                ) or self.encoding is None:  # Take the encoding from the input
+                    self.encoding = encoding
+            self.buffer = ""  # drop buffer, as the decoder might keep its own
+            decoder = codecs.getincrementaldecoder(self.encoding)
+            self.decoder = decoder(self._errors)
+        if self.headerfixed:
+            return self.decoder.decode(input, final)
+        # If we haven't fixed the header yet,
+        # the content of ``self.buffer`` is a ``unicode`` object
+        output = self.buffer + self.decoder.decode(input, final)
+        encoding = self.encoding
+        if encoding.replace("_", "-").lower() == "utf-8-sig":
+            encoding = "utf-8"
+        newoutput = _fixencoding(output, str(encoding), final)
+        if newoutput is None:
+            # retry fixing the @charset rule (but keep the decoded stuff)
+            self.buffer = output
+            return ""
+        self.headerfixed = True
+        return newoutput
 
-        def reset(self):
-            codecs.IncrementalDecoder.reset(self)
+    def reset(self):
+        codecs.IncrementalDecoder.reset(self)
+        self.decoder = None
+        self.buffer = b""
+        self.headerfixed = False
+
+    def _geterrors(self):
+        return self._errors
+
+    def _seterrors(self, errors):
+        # Setting ``errors`` must be done on the real decoder too
+        if self.decoder is not None:
+            self.decoder.errors = errors
+        self._errors = errors
+
+    errors = property(_geterrors, _seterrors)
+
+    def getstate(self):
+        if self.decoder is not None:
+            state = (
+                self.encoding,
+                self.buffer,
+                self.headerfixed,
+                True,
+                self.decoder.getstate(),
+            )
+        else:
+            state = (self.encoding, self.buffer, self.headerfixed, False, None)
+        return ("", _bytes2int(marshal.dumps(state)))
+
+    def setstate(self, state):
+        state = _int2bytes(marshal.loads(state[1]))  # ignore buffered input
+        self.encoding = state[0]
+        self.buffer = state[1]
+        self.headerfixed = state[2]
+        if state[3] is not None:
+            self.decoder = codecs.getincrementaldecoder(self.encoding)(self._errors)
+            self.decoder.setstate(state[4])
+        else:
             self.decoder = None
-            self.buffer = b""
-            self.headerfixed = False
-
-        def _geterrors(self):
-            return self._errors
-
-        def _seterrors(self, errors):
-            # Setting ``errors`` must be done on the real decoder too
-            if self.decoder is not None:
-                self.decoder.errors = errors
-            self._errors = errors
-
-        errors = property(_geterrors, _seterrors)
-
-        def getstate(self):
-            if self.decoder is not None:
-                state = (
-                    self.encoding,
-                    self.buffer,
-                    self.headerfixed,
-                    True,
-                    self.decoder.getstate(),
-                )
-            else:
-                state = (self.encoding, self.buffer, self.headerfixed, False, None)
-            return ("", _bytes2int(marshal.dumps(state)))
-
-        def setstate(self, state):
-            state = _int2bytes(marshal.loads(state[1]))  # ignore buffered input
-            self.encoding = state[0]
-            self.buffer = state[1]
-            self.headerfixed = state[2]
-            if state[3] is not None:
-                self.decoder = codecs.getincrementaldecoder(self.encoding)(self._errors)
-                self.decoder.setstate(state[4])
-            else:
-                self.decoder = None
 
 
-if hasattr(codecs, "IncrementalEncoder"):  # noqa: C901
+class IncrementalEncoder(codecs.IncrementalEncoder):
+    def __init__(self, errors="strict", encoding=None):
+        self.encoder = None
+        self.encoding = encoding
+        codecs.IncrementalEncoder.__init__(self, errors)
+        # Store ``errors`` somewhere else,
+        # because we have to hide it in a property
+        self._errors = errors
+        self.buffer = ""
 
-    class IncrementalEncoder(codecs.IncrementalEncoder):
-        def __init__(self, errors="strict", encoding=None):
-            self.encoder = None
-            self.encoding = encoding
-            codecs.IncrementalEncoder.__init__(self, errors)
-            # Store ``errors`` somewhere else,
-            # because we have to hide it in a property
-            self._errors = errors
-            self.buffer = ""
-
-        def iterencode(self, input):
-            for part in input:
-                result = self.encode(part, False)
-                if result:
-                    yield result
-            result = self.encode("", True)
+    def iterencode(self, input):
+        for part in input:
+            result = self.encode(part, False)
             if result:
                 yield result
+        result = self.encode("", True)
+        if result:
+            yield result
 
-        def encode(self, input, final=False):
-            if self.encoder is None:
-                input = self.buffer + input
-                if self.encoding is not None:
-                    # Replace encoding in the @charset rule with the specified one
-                    encoding = self.encoding
-                    if encoding.replace("_", "-").lower() == "utf-8-sig":
-                        encoding = "utf-8"
-                    newinput = _fixencoding(input, str(encoding), final)
-                    if newinput is None:  # @charset rule incomplete => Retry next time
-                        self.buffer = input
-                        return ""
-                    input = newinput
-                else:
-                    # Use encoding from the @charset declaration
-                    self.encoding = detectencoding_unicode(input, final)[0]
-                if self.encoding is not None:
-                    if self.encoding == "css":
-                        raise ValueError("css not allowed as encoding name")
-                    info = codecs.lookup(self.encoding)
-                    encoding = self.encoding
-                    if self.encoding.replace("_", "-").lower() == "utf-8-sig":
-                        input = _fixencoding(input, "utf-8", True)
-                    self.encoder = info.incrementalencoder(self._errors)
-                    self.buffer = ""
-                else:
+    def encode(self, input, final=False):
+        if self.encoder is None:
+            input = self.buffer + input
+            if self.encoding is not None:
+                # Replace encoding in the @charset rule with the specified one
+                encoding = self.encoding
+                if encoding.replace("_", "-").lower() == "utf-8-sig":
+                    encoding = "utf-8"
+                newinput = _fixencoding(input, str(encoding), final)
+                if newinput is None:  # @charset rule incomplete => Retry next time
                     self.buffer = input
                     return ""
-            return self.encoder.encode(input, final)
+                input = newinput
+            else:
+                # Use encoding from the @charset declaration
+                self.encoding = detectencoding_unicode(input, final)[0]
+            if self.encoding is not None:
+                if self.encoding == "css":
+                    raise ValueError("css not allowed as encoding name")
+                info = codecs.lookup(self.encoding)
+                encoding = self.encoding
+                if self.encoding.replace("_", "-").lower() == "utf-8-sig":
+                    input = _fixencoding(input, "utf-8", True)
+                self.encoder = info.incrementalencoder(self._errors)
+                self.buffer = ""
+            else:
+                self.buffer = input
+                return ""
+        return self.encoder.encode(input, final)
 
-        def reset(self):
-            codecs.IncrementalEncoder.reset(self)
+    def reset(self):
+        codecs.IncrementalEncoder.reset(self)
+        self.encoder = None
+        self.buffer = ""
+
+    def _geterrors(self):
+        return self._errors
+
+    def _seterrors(self, errors):
+        # Setting ``errors ``must be done on the real encoder too
+        if self.encoder is not None:
+            self.encoder.errors = errors
+        self._errors = errors
+
+    errors = property(_geterrors, _seterrors)
+
+    def getstate(self):
+        if self.encoder is not None:
+            state = (self.encoding, self.buffer, True, self.encoder.getstate())
+        else:
+            state = (self.encoding, self.buffer, False, None)
+        return _bytes2int(marshal.dumps(state))
+
+    def setstate(self, state):
+        state = _int2bytes(marshal.loads(state))
+        self.encoding = state[0]
+        self.buffer = state[1]
+        if state[2] is not None:
+            self.encoder = codecs.getincrementalencoder(self.encoding)(self._errors)
+            self.encoder.setstate(state[4])
+        else:
             self.encoder = None
-            self.buffer = ""
-
-        def _geterrors(self):
-            return self._errors
-
-        def _seterrors(self, errors):
-            # Setting ``errors ``must be done on the real encoder too
-            if self.encoder is not None:
-                self.encoder.errors = errors
-            self._errors = errors
-
-        errors = property(_geterrors, _seterrors)
-
-        def getstate(self):
-            if self.encoder is not None:
-                state = (self.encoding, self.buffer, True, self.encoder.getstate())
-            else:
-                state = (self.encoding, self.buffer, False, None)
-            return _bytes2int(marshal.dumps(state))
-
-        def setstate(self, state):
-            state = _int2bytes(marshal.loads(state))
-            self.encoding = state[0]
-            self.buffer = state[1]
-            if state[2] is not None:
-                self.encoder = codecs.getincrementalencoder(self.encoding)(self._errors)
-                self.encoder.setstate(state[4])
-            else:
-                self.encoder = None
 
 
 class StreamWriter(codecs.StreamWriter):
@@ -564,75 +560,17 @@ class StreamReader(codecs.StreamReader):
     errors = property(_geterrors, _seterrors)
 
 
-if hasattr(codecs, "CodecInfo"):  # noqa: C901
-    # We're running on Python 2.5 or better
-    def search_function(name):
-        if name == "css":
-            return codecs.CodecInfo(
-                name="css",
-                encode=encode,
-                decode=decode,
-                incrementalencoder=IncrementalEncoder,
-                incrementaldecoder=IncrementalDecoder,
-                streamwriter=StreamWriter,
-                streamreader=StreamReader,
-            )
-
-
-else:
-    # If we're running on Python 2.4, define the utf-8-sig codec here
-    def utf8sig_encode(input, errors="strict"):
-        return (codecs.BOM_UTF8 + codecs.utf_8_encode(input, errors)[0], len(input))
-
-    def utf8sig_decode(input, errors="strict"):
-        prefix = 0
-        if input[:3] == codecs.BOM_UTF8:
-            input = input[3:]
-            prefix = 3
-        (output, consumed) = codecs.utf_8_decode(input, errors, True)
-        return (output, consumed + prefix)
-
-    class UTF8SigStreamWriter(codecs.StreamWriter):
-        def reset(self):
-            codecs.StreamWriter.reset(self)
-            try:
-                del self.encode
-            except AttributeError:
-                pass
-
-        def encode(self, input, errors="strict"):
-            self.encode = codecs.utf_8_encode
-            return utf8sig_encode(input, errors)
-
-    class UTF8SigStreamReader(codecs.StreamReader):
-        def reset(self):
-            codecs.StreamReader.reset(self)
-            try:
-                del self.decode
-            except AttributeError:
-                pass
-
-        def decode(self, input, errors="strict"):
-            if len(input) < 3 and codecs.BOM_UTF8.startswith(input):
-                # not enough data to decide if this is a BOM
-                # => try again on the next call
-                return ("", 0)
-            self.decode = codecs.utf_8_decode
-            return utf8sig_decode(input, errors)
-
-    def search_function(name):
-        import encodings
-
-        name = encodings.normalize_encoding(name)
-        if name == "css":
-            return (encode, decode, StreamReader, StreamWriter)
-        elif name == "utf_8_sig":
-            return (
-                utf8sig_encode,
-                utf8sig_decode,
-                UTF8SigStreamReader,
-                UTF8SigStreamWriter,
-            )
+def search_function(name):
+    if name == "css":
+        return codecs.CodecInfo(
+            name="css",
+            encode=encode,
+            decode=decode,
+            incrementalencoder=IncrementalEncoder,
+            incrementaldecoder=IncrementalDecoder,
+            streamwriter=StreamWriter,
+            streamreader=StreamReader,
+        )
 
 
 codecs.register(search_function)
