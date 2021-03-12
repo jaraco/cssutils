@@ -246,8 +246,9 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
         if ``True`` does not call `replacer` with URLs from @import rules.
     """
     if not ignoreImportRules and not isinstance(sheetOrStyle, css.CSSStyleDeclaration):
-        for importrule in (r for r in sheetOrStyle if r.type == r.IMPORT_RULE):
-            importrule.href = replacer(importrule.href)
+        imports = (rule for rule in sheetOrStyle if rule.type == rule.IMPORT_RULE)
+        for rule in imports:
+            rule.href = replacer(rule.href)
 
     values = (
         value
