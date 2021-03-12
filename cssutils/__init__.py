@@ -75,6 +75,7 @@ import urllib.request
 import urllib.parse
 import xml.dom
 import itertools
+import functools
 
 from . import errorhandler
 from . import css
@@ -197,10 +198,6 @@ def setSerializer(serializer):
 
 def _style_declarations(base):
     "recursive generator to find all CSSStyleDeclarations"
-    if isinstance(base, css.CSSStyleDeclaration):
-        # base is a style already
-        yield base
-        return
     for rule in getattr(base, 'cssRules', ()):
         yield from _style_declarations(rule)
     if hasattr(base, 'style'):
@@ -223,21 +220,31 @@ def getUrls(sheet):
     other = (
         value.uri
         for style in _style_declarations(sheet)
-        for prop in style.getProperties(all=True)
-        for value in prop.propertyValue
-        if value.type == 'URI'
+        for value in _uri_values(style)
     )
 
     return itertools.chain(imports, other)
 
 
-def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
-    """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
-    :class:`cssutils.css.CSSValue` objects of given `sheetOrStyle`.
+def _uri_values(style):
+    return (
+        value
+        for prop in style.getProperties(all=True)
+        for value in prop.propertyValue
+        if value.type == 'URI'
+    )
 
-    :param sheetOrStyle:
-        a :class:`cssutils.css.CSSStyleSheet` or a
-        :class:`cssutils.css.CSSStyleDeclaration` which is changed in place
+
+_flatten = itertools.chain.from_iterable
+
+
+@functools.singledispatch
+def replaceUrls(sheet, replacer, ignoreImportRules=False):
+    """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
+    :class:`cssutils.css.CSSValue` objects of given `sheet`.
+
+    :param sheet:
+        a :class:`cssutils.css.CSSStyleSheet` to be modified in place.
     :param replacer:
         a function which is called with a single argument `url` which
         is the current value of each url() excluding ``url(``, ``)`` and
@@ -245,19 +252,33 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     :param ignoreImportRules:
         if ``True`` does not call `replacer` with URLs from @import rules.
     """
-    if not ignoreImportRules and not isinstance(sheetOrStyle, css.CSSStyleDeclaration):
-        imports = (rule for rule in sheetOrStyle if rule.type == rule.IMPORT_RULE)
-        for rule in imports:
-            rule.href = replacer(rule.href)
-
-    values = (
-        value
-        for style in _style_declarations(sheetOrStyle)
-        for prop in style.getProperties(all=True)
-        for value in prop.propertyValue
-        if value.type == 'URI'
+    imports = (
+        rule
+        for rule in sheet
+        if rule.type == rule.IMPORT_RULE and not ignoreImportRules
     )
-    for value in values:
+    for rule in imports:
+        rule.href = replacer(rule.href)
+
+    for value in _flatten(map(_uri_values, _style_declarations(sheet))):
+        value.uri = replacer(value.uri)
+
+
+@replaceUrls.register(css.CSSStyleDeclaration)
+def _(style, replacer, ignoreImportRules=False):
+    """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
+    :class:`cssutils.css.CSSValue` objects of given `style`.
+
+    :param style:
+        a :class:`cssutils.css.CSSStyleDeclaration` to be modified in place.
+    :param replacer:
+        a function which is called with a single argument `url` which
+        is the current value of each url() excluding ``url(``, ``)`` and
+        surrounding (single or double) quotes.
+    :param ignoreImportRules:
+        not applicable, ignored.
+    """
+    for value in _uri_values(style):
         value.uri = replacer(value.uri)
 
 
