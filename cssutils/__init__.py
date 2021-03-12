@@ -73,8 +73,6 @@ __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 import os.path
 import urllib.request
 import urllib.parse
-import urllib.error
-import urllib.parse
 import xml.dom
 
 from . import errorhandler
