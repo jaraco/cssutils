@@ -560,20 +560,19 @@ class StreamReader(codecs.StreamReader):
     errors = property(_geterrors, _seterrors)
 
 
+@codecs.register
 def search_function(name):
-    if name == "css":
-        return codecs.CodecInfo(
-            name="css",
-            encode=encode,
-            decode=decode,
-            incrementalencoder=IncrementalEncoder,
-            incrementaldecoder=IncrementalDecoder,
-            streamwriter=StreamWriter,
-            streamreader=StreamReader,
-        )
-
-
-codecs.register(search_function)
+    if name != "css":
+        return
+    return codecs.CodecInfo(
+        name="css",
+        encode=encode,
+        decode=decode,
+        incrementalencoder=IncrementalEncoder,
+        incrementaldecoder=IncrementalDecoder,
+        streamwriter=StreamWriter,
+        streamreader=StreamReader,
+    )
 
 
 # Error handler for CSS escaping
