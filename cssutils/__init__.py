@@ -210,11 +210,9 @@ def getUrls(sheet):
 
     def styleDeclarations(base):
         "recursive generator to find all CSSStyleDeclarations"
-        if hasattr(base, 'cssRules'):
-            for rule in base.cssRules:
-                for s in styleDeclarations(rule):
-                    yield s
-        elif hasattr(base, 'style'):
+        for rule in getattr(base, 'cssRules', ()):
+            yield from styleDeclarations(rule)
+        if hasattr(base, 'style'):
             yield base.style
 
     other = (
