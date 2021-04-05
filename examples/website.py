@@ -1,9 +1,6 @@
 """website example tests
 
 Log output cannot be tested!
-
-#doctest: +ELLIPSIS
-
 """
 import cssutils
 
@@ -12,7 +9,6 @@ cssutils.ser.prefs.useDefaults()
 
 def profile():
     """
-    >>> import cssutils
     >>> sheet = cssutils.parseString('x { -test-custommacro: x }')
     >>> print(sheet.cssRules[0].style.getProperties()[0].valid)
     False
@@ -35,11 +31,11 @@ def profile():
 
 def cssparse_example():
     """
-    >>> import cssutils, logging
+    >>> import logging
     >>> cssutils.log.setLevel(logging.FATAL)
     >>> sheet = cssutils.parseString('@import url(example.css); body { color: red }')
     >>> # log output not shown
-    >>> print(sheet.cssText)
+    >>> print(sheet.cssText.decode())
     @import url(example.css);
     body {
         color: red
@@ -52,7 +48,7 @@ def logging():
     >>> import cssutils, logging
     >>> cssutils.log.setLevel(logging.FATAL)
     >>> import logging, io, cssutils
-    >>> mylog = StringIO.StringIO()
+    >>> mylog = io.StringIO()
     >>> h = logging.StreamHandler(mylog)
     >>> h.setFormatter(logging.Formatter('%(levelname)s %(message)s'))
     >>> cssutils.log.addHandler(h)
@@ -61,7 +57,7 @@ def logging():
     >>> print(mylog.getvalue())
     WARNING Property: Unknown Property name. [1:5: x]
     WARNING HTTPError opening url=http://cthedot.de/not-present.css: 404 Not Found
-    WARNING CSSImportRule: While processing imported style sheet href=http://cthedot.de/not-present.css: IOError('Cannot read Stylesheet.',)
+    WARNING CSSImportRule: While processing imported style sheet href=http://cthedot.de/not-present.css: OSError('Cannot read Stylesheet.'...)
     ERROR CSSStylesheet: CSSImportRule not allowed here. [1:13: @import]
     <BLANKLINE>
     """
@@ -78,7 +74,7 @@ def prefs():
     >>> cssutils.ser.prefs.importHrefFormat = 'uri'
     >>> # or 'string', defaults to the format used in parsed stylesheet
     >>> cssutils.ser.prefs.lineNumbers = True
-    >>> print(sheet.cssText)
+    >>> print(sheet.cssText.decode())
     1: @import url(example.css);
     2: body {
     3:   color: red
@@ -95,7 +91,7 @@ def work_and_build():
     >>> from cssutils import css, stylesheets
     >>> sheet = css.CSSStyleSheet()
     >>> sheet.cssText = '@import url(example.css) tv;'
-    >>> print(sheet.cssText)
+    >>> print(sheet.cssText.decode())
     @import url(example.css) tv;
     >>> style = css.CSSStyleDeclaration()
     >>> style['color'] = 'red' # until 0.9.5: setProperty(u'color', u'red')
@@ -106,7 +102,7 @@ def work_and_build():
     >>> # sheet.insertRule(stylerule, 0) # try before @import
     >>> # xml.dom.HierarchyRequestErr: CSSStylesheet: Found @charset, @import or @namespace before index 0.
     >>> # sheet.insertRule(stylerule) # at end of rules, returns index
-    >>> print(sheet.cssText)
+    >>> print(sheet.cssText.decode())
     @import url(example.css) tv;
     body {
         color: red
@@ -117,7 +113,7 @@ def work_and_build():
     >>> # returns the new Selector:
     >>> sheet.cssRules[1].selectorList.appendSelector('a')
     cssutils.css.Selector(selectorText=u'a')
-    >>> print(sheet.cssText)
+    >>> print(sheet.cssText.decode())
     @import url(example.css) tv, print;
     body, a {
         color: red
@@ -158,9 +154,3 @@ def api_addons():
     >>> print(style.cssText)
     background: red !important;
     """
-
-
-if __name__ == '__main__':
-    import doctest
-
-    doctest.testmod()
