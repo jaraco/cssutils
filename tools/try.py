@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import cssutils
 import logging
 import os

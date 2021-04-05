@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 r"""Combine all sheets referred to a given CSS *proxy* sheet
 into a single new sheet.
 

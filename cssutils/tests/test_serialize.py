@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Testcases for cssutils.CSSSerializer"""
 
 from . import basetest
@@ -18,8 +17,6 @@ class PreferencesTestCase(basetest.BaseTestCase):
 
     #    def testkeepUnkownAtRules(self):
     #        "Preferences.keepUnkownAtRules"
-    #        # py >=2.6 only
-    #        # v = sys.version_info; if v[0]*10+v[1] >= 26:
     #        from warnings import catch_warnings
     #        with catch_warnings(record=True) as log:
     #            x = cssutils.ser.prefs.keepUnkownAtRules

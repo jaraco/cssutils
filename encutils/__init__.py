@@ -1,30 +1,4 @@
-# -*- coding: utf-8 -*-
 """encutils - encoding detection collection for Python
-
-:Version: 0.9.8
-:Author: Christof Hoeke, see http://cthedot.de/encutils/
-:Contributor: Robert Siemer, Fredrik Hedman <fredrik.hedman@me.com> ported to python3
-:Copyright: 2005-2012: Christof Hoeke
-:License: encutils has a dual-license, please choose whatever you prefer:
-
-    * encutils is published under the
-      `LGPL 3 or later <http://cthedot.de/encutils/license/>`__
-    * encutils is published under the
-      `Creative Commons License <http://creativecommons.org/licenses/by/3.0/>`__.
-
-    encutils is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    encutils is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with encutils.  If not, see <http://www.gnu.org/licenses/>.
-
 
 A collection of helper functions to detect encodings of text files
 (like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP, file or string.

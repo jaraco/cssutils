@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Testcases for cssutils.util"""
 
 
@@ -441,9 +440,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
                 return x
 
-            urlopenpatch = (
-                'urllib2.urlopen' if basetest.PY2x else 'urllib.request.urlopen'
-            )
+            urlopenpatch = 'urllib.request.urlopen'
 
             # positive tests
             tests = {
@@ -491,10 +488,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
                 self.assertRaises(exception, do, url)
 
-            # py2 != py3 raises error earlier than urlopen!
-            urlrequestpatch = (
-                'urllib2.urlopen' if basetest.PY2x else 'urllib.request.Request'
-            )
+            urlrequestpatch = 'urllib.request.Request'
             tests = {
                 # _readUrl('http://cthedot.de/__UNKNOWN__.css')
                 'e2': (urllib.error.HTTPError, ['u', 500, 'server error', {}, None]),

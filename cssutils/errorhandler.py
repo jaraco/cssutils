@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """cssutils ErrorHandler
 
 ErrorHandler

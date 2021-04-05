@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """New CSS Tokenizer (a generator)
 """
 __all__ = ['Tokenizer', 'CSSProductions']

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """test utils for tests of examples
 
 A module to test must have:
@@ -16,8 +15,6 @@ import sys
 
 import cssutils
 
-PY2x = sys.version_info < (3, 0)
-
 
 class OutReplacement(object):
     "io.StringIO does not work somehow?!"
@@ -26,19 +23,13 @@ class OutReplacement(object):
         self.t = ''
 
     def write(self, t):
-        if not PY2x:
-            # py3 hack
-            if t.startswith('b') and t.endswith("'"):
-                t = t[2:-1]
+        if t.startswith('b') and t.endswith("'"):
+            t = t[2:-1]
 
         self.t += t
 
     def getvalue(self):
-        if not PY2x:
-            # py3 hack
-            self.t = self.t.replace('\\n', '\n')
-            self.t = self.t.replace('\\\\', '\\')
-
+        self.t = self.t.replace('\\n', '\n').replace('\\\\', '\\')
         return self.t
 
 
@@ -86,18 +77,6 @@ def mod(module):
 
 
 def main():
-    if PY2x:
-        print("DOCTESTS:::::::::::::")
-        # doctests
-        import website
-        import doctest
-
-        doctest.testmod(website)
-        print()
-        print(80 * '-')
-        print()
-        print()
-
     global modules, errors
 
     import build
@@ -127,10 +106,7 @@ def main():
     print()
     print(80 * '-')
     print('Ran %i tests (%i errors).' % (modules, errors))
-    if PY2x:
-        print('**Check doctest results above!**')
-    else:
-        print('doctests do not work in Python 3 (yet?)!')
+    print('doctests do not work in Python 3 (yet?)!')
 
 
 if __name__ == '__main__':

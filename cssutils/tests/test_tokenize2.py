@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Testcases for new cssutils.tokenize.Tokenizer
 
 TODO: old tests as new ones are **not complete**!

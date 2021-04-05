@@ -61,47 +61,20 @@ There is also a low-traffic `cssutils discussion group <http://groups.google.com
 
 Compatibility
 =============
-cssutils is developed on standard Python but works under Python 2.x (from 2.5, 2.7.6 tested), 3.x (v3.3.3 tested) and Jython (from 2.5.1). IronPython has not been tested yet but might work? Python 2.4 and older are not supported since cssutils 0.9.8 anymore.
-cssutils is not thread safe, please beware!
 
-License
-=======
-Copyright 2005 - 2013 Christof Hoeke
+cssutils is developed on modern Python versions. Check the package metadata
+for compatibilty.
 
-cssutils is published under the LGPL 3 or later
-
-cssutils is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-cssutils is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License along with cssutils. If not, see http://www.gnu.org/licenses.
-
-
-Installation
-============
-From 0.9.6 cssutils uses `Distribute <http://pypi.python.org/pypi/distribute>`_
-
-After installing Distribute use::
-
-    > easy_install cssutils
-
-to install the latest version of cssutils.
-
-Alternatively download the provided source distribution. Expand the file and from a command line install with::
-
-    > python setup.py install
-
-To uninstall remove any registrations of cssutils eggs with Distribute and remove the eggs which should be installed at PYTHONDIR/Lib/site-packages/cssutils too.
+Beware, cssutils is known to be thread unsafe.
 
 
 Example
 =======
 ::
 
-    # -*- coding: utf-8 -*-
     import cssutils
 
-    css = u'''/* a comment with umlaut &auml; */
+    css = '''/* a comment with umlaut &auml; */
          @namespace html "http://www.w3.org/1999/xhtml";
          @variables { BG: #fff }
          html|a { color:red; background: var(BG) }'''
@@ -144,17 +117,15 @@ results in::
 	    }
 
 
-Documentation
-=============
-The current documenation can be found at http://packages.python.org/cssutils/
-
-
 Kind Request
 ============
-cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the `Issue Tracker <https://bitbucket.org/cthedot/cssutils/issues>`_ at Bitbucket.
+
+cssutils is far from being perfect or even complete. If you find any bugs (especially specification violations) or have problems or suggestions please put them in the `Issue Tracker <https://github.com/jaraco/cssutils/issues>`_.
 
 
 Thanks
 ======
-Thanks to Simon Sapin, Jason R. Coombs and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches. Thanks to Fredrik Hedman for help on port of encutils to Python 3.
 
+Special thanks to Christof Höke for seminal creation of the library.
+
+Thanks to Simon Sapin, Jason R. Coombs, and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches. Thanks to Fredrik Hedman for help on port of encutils to Python 3.

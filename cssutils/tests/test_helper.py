@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Testcases for cssutils.helper"""
 
 from . import basetest

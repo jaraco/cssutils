@@ -1,17 +1,12 @@
-#!/usr/bin/env python
 """A validating CSSParser"""
 __all__ = ['CSSParser']
 
 from .helper import path2url
 import codecs
 import cssutils
-import sys
 from . import tokenize2
 
 from cssutils import css
-
-if sys.version_info < (2, 6):
-    bytes = str
 
 
 class CSSParser(object):

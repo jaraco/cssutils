@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 extensions = ['sphinx.ext.autodoc', 'jaraco.packaging.sphinx', 'rst.linker']
 
 master_doc = "index"
@@ -20,6 +18,11 @@ link_files = {
             dict(
                 pattern=r'PEP[- ](?P<pep_number>\d+)',
                 url='https://www.python.org/dev/peps/pep-{pep_number:0>4}/',
+            ),
+            dict(
+                pattern=r'(Bitbucket #)(?P<bb_issue>\d+)',
+                url='https://web.archive.org/web/20200701035501/'
+                'https://bitbucket.org/cthedot/cssutils/issues/{bb_issue}/',
             ),
         ],
     )
