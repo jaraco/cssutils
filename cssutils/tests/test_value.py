@@ -74,6 +74,8 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             'calc(1  /  1px )': ('calc(1 / 1px)', 1, 'calc(1 / 1px)'),
             'calc( 1*1px )': ('calc(1 * 1px)', 1, 'calc(1 * 1px)'),
             'calc( 1  /  1px )': ('calc(1 / 1px)', 1, 'calc(1 / 1px)'),
+            'calc(calc(1px + 5px) * 4)': ('calc(calc(1px + 5px) * 4)', 1, 'calc(calc(1px + 5px) * 4)'),
+            'calc( calc(1px + 5px)*4 )': ('calc(calc(1px + 5px) * 4)', 1, 'calc(calc(1px + 5px) * 4)'),
             'calc(var(X))': (None, 1, None),
             'calc(2 * var(X))': (None, 1, None),
             'calc(2px + var(X))': (None, 1, None),
