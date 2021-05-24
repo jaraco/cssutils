@@ -11,8 +11,7 @@ def profile():
     """
     >>> sheet = cssutils.parseString('x { -test-custommacro: x }')
 
-    The following fails in a full suite test run due to non-hermetic tests.
-    >>> print(sheet.cssRules[0].style.getProperties()[0].valid)  # doctest: +SKIP
+    >>> print(sheet.cssRules[0].style.getProperties()[0].valid)
     False
     >>> M1 = {
     ...      'testvalue': 'x'
@@ -24,6 +23,7 @@ def profile():
     ...    # custom validation function
     ...    '-test-funcval': lambda v: int(v) > 0
     ...      }
+    >>> profiles = getfixture('saved_profiles')  # keep test hermetic
     >>> cssutils.profile.addProfile('test', P1, M1)
     >>> sheet = cssutils.parseString('x { -test-custommacro: x }')
     >>> print(sheet.cssRules[0].style.getProperties()[0].valid)

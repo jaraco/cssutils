@@ -78,6 +78,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         # restore
         cssutils.profile = saved
 
+    @pytest.mark.usefixtures('saved_profiles')
     def test_addProfile(self):
         "Profiles.addProfile with custom validation function"
         # unknown profile
