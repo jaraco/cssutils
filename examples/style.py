@@ -8,24 +8,14 @@ adds css as text to html
 """
 import codecs
 import cssutils
-import os
 import sys
 import webbrowser
-
-# lxml egg may be in a lib dir below this file (not in SVN though)
-sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
-try:
-    import pkg_resources
-
-    pkg_resources.require('lxml')
-except pkg_resources.DistributionNotFound:
-    pass
 
 try:
     from lxml import etree
     from lxml.cssselect import CSSSelector
 except ImportError as e:
-    print('You need lxml for this example:', e)
+    print('lxml is required:', e)
     sys.exit(1)
 
 

@@ -6,6 +6,11 @@ import re
 import sys
 import unittest
 
+try:
+    from importlib import resources
+except ImportError:
+    import importlib_resources as resources
+
 import cssutils
 
 
@@ -27,9 +32,8 @@ def get_resource_filename(resource_name):
 
 def get_sheet_filename(sheet_name):
     """Get the filename for the given sheet."""
-    # Extract all sheets since they might use @import
-    sheet_dir = get_resource_filename('tests/sheets')
-    return os.path.join(sheet_dir, sheet_name)
+    # assume resources are on the file system
+    return resources.files('cssutils') / 'tests' / 'sheets' / sheet_name
 
 
 class BaseTestCase(unittest.TestCase):
