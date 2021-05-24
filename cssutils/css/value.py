@@ -820,9 +820,9 @@ class CSSCalc(CSSFunction):
             ),
         )
 
-        _operant = lambda: Choice(
+        _operant = lambda: Choice(  # noqa:E731
             _DimensionProd(self), _CalcValueProd(self), _CSSVariableProd(self)
-        )  # noqa
+        )
 
         prods = Sequence(
             Prod(
