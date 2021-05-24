@@ -1,3 +1,8 @@
+v2.3.0
+======
+
+#7: Add support for a ``calc()`` within a ``calc()``.
+
 v2.2.0
 ======
 
