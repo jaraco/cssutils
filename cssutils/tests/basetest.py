@@ -126,7 +126,7 @@ class BaseTestCase(unittest.TestCase):
             if not msg:
                 # No message provided: any message is fine.
                 return
-            elif excMsg == msg:
+            elif msg in excMsg:
                 # Message provided, and we got the right message: passes.
                 return
             else:
