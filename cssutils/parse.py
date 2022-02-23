@@ -177,9 +177,8 @@ class CSSParser(object):
             # href = u'file:' + urllib.pathname2url(os.path.abspath(filename))
             href = path2url(filename)
 
-        f = open(filename, 'rb')
-        css = f.read()
-        f.close()
+        with open(filename, 'rb') as fd:
+            css = fd.read()
 
         return self.parseString(
             css,
