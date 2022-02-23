@@ -6,9 +6,9 @@ import re
 import sys
 import unittest
 
-try:
+if sys.version_info >= (3, 9):
     from importlib import resources
-except ImportError:
+else:
     import importlib_resources as resources
 
 import cssutils
