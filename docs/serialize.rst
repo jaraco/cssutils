@@ -57,9 +57,9 @@ To set a new serializer, use::
 
     cssutils.setSerializer(serializer)
 
-You may also set :attr:`cssutils.ser` directly but the above method is the preferred one.
+You may also set ``cssutils.ser`` directly but the above method is the preferred one.
 
-For most cases adjusting the :attr:`cssutils.ser.prefs` of the default serializer should be sufficient though.
+For most cases adjusting the ``cssutils.ser.prefs`` of the default serializer should be sufficient though.
 
 .. autoclass:: cssutils.serialize.CSSSerializer
 

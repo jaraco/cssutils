@@ -264,6 +264,6 @@ Some classes in this package support standard Python idioms like iteration on ce
     <cssutils.css.CSSStyleRule object selector=u'a' style=u'color:
     s=<cssutils.util._Namespaces object at 0x02CE7B30> at 0x2ce7d3
 
-``for in`` is supported by :class:`~cssutils.css.CSSStyleSheet` and  :class:`~cssutils.css.CSSMediaRule` (iterating over the contained :class:`~cssutils.css.CSSRule` objects, :class:`~cssutils.css.CSSStyleDeclaration` (over the names of the contained :class:`~cssutils.css.Property` objects), :class:`~cssutils.css.CSSValueList` (over the :class:`~cssutils.css.CSSValue` objects in the list).
+``for in`` is supported by :class:`~cssutils.css.CSSStyleSheet` and  :class:`~cssutils.css.CSSMediaRule` (iterating over the contained :class:`~cssutils.css.CSSRule` objects, :class:`~cssutils.css.CSSStyleDeclaration` (over the names of the contained :class:`~cssutils.css.Property` objects), ``~cssutils.css.CSSValueList`` (over the ``~cssutils.css.CSSValue`` objects in the list).
 
 
