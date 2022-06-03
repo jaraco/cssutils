@@ -206,7 +206,7 @@ def _style_declarations(base):
 
 def getUrls(sheet):
     """Retrieve all ``url(urlstring)`` values (in e.g.
-    :class:`cssutils.css.CSSImportRule` or :class:`cssutils.css.CSSValue`
+    :class:`cssutils.css.CSSImportRule` or ``cssutils.css.CSSValue``
     objects of given `sheet`.
 
     :param sheet:
@@ -241,7 +241,7 @@ _flatten = itertools.chain.from_iterable
 @functools.singledispatch
 def replaceUrls(sheet, replacer, ignoreImportRules=False):
     """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
-    :class:`cssutils.css.CSSValue` objects of given `sheet`.
+    ``cssutils.css.CSSValue`` objects of given `sheet`.
 
     :param sheet:
         a :class:`cssutils.css.CSSStyleSheet` to be modified in place.

@@ -468,7 +468,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             If ``False`` may return **NOT** the effective value but the
             effective for the unnormalized name.
         :returns:
-            :class:`~cssutils.css.CSSValue`, the value of the effective
+            ``~cssutils.css.CSSValue``, the value of the effective
             property if it has been explicitly set for this declaration block.
 
         (DOM)

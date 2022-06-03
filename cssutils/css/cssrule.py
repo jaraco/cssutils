@@ -10,7 +10,7 @@ class CSSRule(cssutils.util.Base2):
     both rule sets and at-rules. An implementation is expected to preserve
     all rules specified in a CSS style sheet, even if the rule is not
     recognized by the parser. Unrecognized rules are represented using the
-    :class:`CSSUnknownRule` interface.
+    ``CSSUnknownRule`` interface.
     """
 
     """
@@ -18,31 +18,31 @@ class CSSRule(cssutils.util.Base2):
     An integer indicating which type of rule this is.
     """
     UNKNOWN_RULE = 0
-    ":class:`cssutils.css.CSSUnknownRule` (not used in CSSOM anymore)"
+    "``cssutils.css.CSSUnknownRule`` (not used in CSSOM anymore)"
     STYLE_RULE = 1
-    ":class:`cssutils.css.CSSStyleRule`"
+    "``cssutils.css.CSSStyleRule``"
     CHARSET_RULE = 2
-    ":class:`cssutils.css.CSSCharsetRule` (not used in CSSOM anymore)"
+    "``cssutils.css.CSSCharsetRule`` (not used in CSSOM anymore)"
     IMPORT_RULE = 3
-    ":class:`cssutils.css.CSSImportRule`"
+    "``cssutils.css.CSSImportRule``"
     MEDIA_RULE = 4
-    ":class:`cssutils.css.CSSMediaRule`"
+    "``cssutils.css.CSSMediaRule``"
     FONT_FACE_RULE = 5
-    ":class:`cssutils.css.CSSFontFaceRule`"
+    "``cssutils.css.CSSFontFaceRule``"
     PAGE_RULE = 6
-    ":class:`cssutils.css.CSSPageRule`"
+    "``cssutils.css.CSSPageRule``"
     NAMESPACE_RULE = 10
-    """:class:`cssutils.css.CSSNamespaceRule`,
+    """``cssutils.css.CSSNamespaceRule``,
     Value has changed in 0.9.7a3 due to a change in the CSSOM spec."""
     COMMENT = 1001  # was -1, cssutils only
-    """:class:`cssutils.css.CSSComment` - not in the offical spec,
+    """``cssutils.css.CSSComment`` - not in the offical spec,
     Value has changed in 0.9.7a3"""
     VARIABLES_RULE = 1008
-    """:class:`cssutils.css.CSSVariablesRule` - experimental rule
+    """``cssutils.css.CSSVariablesRule`` - experimental rule
     not in the offical spec"""
 
     MARGIN_RULE = 1006
-    """:class:`cssutils.css.MarginRule` - experimental rule
+    """``cssutils.css.MarginRule`` - experimental rule
     not in the offical spec"""
 
     _typestrings = {

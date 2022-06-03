@@ -13,7 +13,7 @@ import xml.dom
 
 class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
     """
-    A Media Query consists of one of :const:`MediaQuery.MEDIA_TYPES`
+    A Media Query consists of one of ``MediaQuery.MEDIA_TYPES``
     and one or more expressions involving media features.
 
     Format::
@@ -229,7 +229,7 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
         lambda self: self._mediaType,
         _setMediaType,
         doc="The media type of this MediaQuery (one of "
-        ":attr:`MEDIA_TYPES`) but only if it is a simple MediaType!",
+        "``MEDIA_TYPES``) but only if it is a simple MediaType!",
     )
 
     wellformed = property(lambda self: self._wellformed)

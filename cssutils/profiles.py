@@ -28,22 +28,22 @@ class Profiles(object):
     :meth:`~cssutils.profiles.Profiles.propertiesByProfile` to
     get a list of defined properties):
 
-    :attr:`~cssutils.profiles.Profiles.CSS_LEVEL_2`
+    ``~cssutils.profiles.Profiles.CSS_LEVEL_2``
         Properties defined by CSS2.1
-    :attr:`~cssutils.profiles.Profiles.CSS3_BASIC_USER_INTERFACE`
+    ``~cssutils.profiles.Profiles.CSS3_BASIC_USER_INTERFACE``
         Currently resize and outline properties only
-    :attr:`~cssutils.profiles.Profiles.CSS3_BOX`
+    ``~cssutils.profiles.Profiles.CSS3_BOX``
         Currently overflow related properties only
-    :attr:`~cssutils.profiles.Profiles.CSS3_COLOR`
+    ``~cssutils.profiles.Profiles.CSS3_COLOR``
         CSS 3 color properties
-    :attr:`~cssutils.profiles.Profiles.CSS3_PAGED_MEDIA`
+    ``~cssutils.profiles.Profiles.CSS3_PAGED_MEDIA``
         As defined at http://www.w3.org/TR/css3-page/ (at 090307)
 
     Predefined macros are:
 
-    :attr:`~cssutils.profiles.Profiles._TOKEN_MACROS`
+    ``~cssutils.profiles.Profiles._TOKEN_MACROS``
         Macros containing the token values as defined to CSS2
-    :attr:`~cssutils.profiles.Profiles._MACROS`
+    ``~cssutils.profiles.Profiles._MACROS``
         Additional general macros.
 
     If you want to redefine any of these macros do this in your custom
@@ -279,7 +279,7 @@ class Profiles(object):
         :param macros:
             may be used in the given properties definitions. There are some
             predefined basic macros which may always be used in
-            :attr:`Profiles._TOKEN_MACROS` and :attr:`Profiles._MACROS`.
+            ``Profiles._TOKEN_MACROS`` and ``Profiles._MACROS``.
         """
         if macros:
             # check if known macros would change and if yes reset properties
@@ -321,7 +321,7 @@ class Profiles(object):
         :param all:
             if ``True`` removes all profiles to start with a clean state
         :exceptions:
-            - :exc:`cssutils.profiles.NoSuchProfileException`:
+            - ``cssutils.profiles.NoSuchProfileException``:
               If given `profile` cannot be found.
         """
         if all:
