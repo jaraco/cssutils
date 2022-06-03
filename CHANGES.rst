@@ -1,3 +1,8 @@
+v2.4.1
+======
+
+#22: Removed ``cssutils.tests.basetest.get_resource_filename``.
+
 v2.4.0
 ======
 

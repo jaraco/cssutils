@@ -1,7 +1,6 @@
 """Base class for all tests"""
 
 import logging
-import os
 import re
 import sys
 import unittest
@@ -14,25 +13,8 @@ else:
 import cssutils
 
 
-def get_resource_filename(resource_name):
-    """Get the resource filename.
-
-    If the module is zipped, the file will be extracted and the temporary name
-    is returned instead.
-    """
-    try:
-        from pkg_resources import resource_filename
-    except ImportError:
-        this_dir = os.path.dirname(__file__)
-        parts = resource_name.split('/')
-        return os.path.normpath(os.path.join(this_dir, '..', *parts))
-    else:
-        return resource_filename('cssutils', resource_name)
-
-
 def get_sheet_filename(sheet_name):
     """Get the filename for the given sheet."""
-    # assume resources are on the file system
     return resources.files('cssutils') / 'tests' / 'sheets' / sheet_name
 
 
