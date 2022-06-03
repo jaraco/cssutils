@@ -55,6 +55,7 @@ __all__ = [
     'CSSFunction',
     'CSSVariable',
     'MSValue',
+    'CSSCalc',
 ]
 
 from .cssstylesheet import CSSStyleSheet
@@ -87,4 +88,5 @@ from .value import (
     CSSFunction,
     CSSVariable,
     MSValue,
+    CSSCalc,
 )
