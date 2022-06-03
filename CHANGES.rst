@@ -489,7 +489,7 @@ v0.9.6
         - renamed ``Profiles.basicmacros`` to ``Profiles._TOKEN_MACROS`` and ``Profiles.generalmacros`` to ``Profiles._MACROS``. As these two are always added to your property definitions there is no need to use these predefined macro dictionaries in your code.
         - renamed ``Profiles.knownnames`` to ``Profiles.knownNames``
         - ``Profiles.validateWithProfile`` returns ``valid, matching, profiles`` now
-        - renamed named parameter in :meth:`cssutils.css.Property.validate(profiles=None)` from ``profile`` to ``profiles``
+        - renamed named parameter in ``cssutils.css.Property.validate(profiles=None)`` from ``profile`` to ``profiles``
         - ``cssutils.profiles.properties`` (and new ``cssutils.profiles.macros``) use as keys the predefined constants in Profiles, like e.g. ``Profiles.CSS_LEVEL_2`` now. If you want to use some of the predefind macros you may e.g. use ``cssutils.profiles.macros[Profiles.CSS_LEVEL_2]['family-name']`` (in addition to the always available ``Profiles._TOKEN_MACROS`` and  ``Profiles._MACROS``).
 
     + **CHANGE**: Reporting levels of properties have changed. Please see :meth:`cssutils.css.Property.validate` for details. E.g. valid properties in the current profile are only reported on DEBUG and not INFO level anymore. The log output has been changed too, context information is provided now (line, column and name of the relevant property)
@@ -514,11 +514,11 @@ v0.9.6
 
     + **FEATURE**: Added **experimental** profiles handling. You may add new profiles with new properties and their validation and set a defaultprofile used for validation. The current default profile is ``None`` so all predefined profiles are used. Currently 3 profiles are defined:
 
-      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2`
+      ``~cssutils.profiles.Profiles.Profiles.CSS_LEVEL_2``
             Properties defined by CSS2.1
-      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_COLOR_LEVEL_3`
+      ``~cssutils.profiles.Profiles.Profiles.CSS_COLOR_LEVEL_3``
             CSS 3 color properties
-      :attr:`~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3`
+      ``~cssutils.profiles.Profiles.Profiles.CSS_BOX_LEVEL_3``
             Currently overflow related properties only
 
       See the docs and source of the cssutils.profiles module for details.
