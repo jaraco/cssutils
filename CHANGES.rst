@@ -2,6 +2,7 @@ v2.4.1
 ======
 
 #22: Removed ``cssutils.tests.basetest.get_resource_filename``.
+#21: Cleaned up docs so they build without warnings.
 
 v2.4.0
 ======
