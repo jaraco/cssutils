@@ -131,7 +131,13 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         useduris.update(r2.selectorList._getUsedUris())
         return useduris
 
-    def _setCssRules(self, cssRules):
+    @property
+    def cssRules(self):
+        "All Rules in this style sheet, a :class:`~cssutils.css.CSSRuleList`."
+        return self._cssRules
+
+    @cssRules.setter
+    def cssRules(self, cssRules):
         "Set new cssRules and update contained rules refs."
         cssRules.append = self.insertRule
         cssRules.extend = self.insertRule
@@ -141,12 +147,6 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule._parentStyleSheet = self
 
         self._cssRules = cssRules
-
-    cssRules = property(
-        lambda self: self._cssRules,
-        _setCssRules,
-        "All Rules in this style sheet, a " ":class:`~cssutils.css.CSSRuleList`.",
-    )
 
     def _getCssText(self):
         "Textual representation of the stylesheet (a byte string)."
