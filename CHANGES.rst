@@ -1,3 +1,8 @@
+v2.4.2
+======
+
+#24: Added Python 3.11 compatibility to tests.
+
 v2.4.1
 ======
 
