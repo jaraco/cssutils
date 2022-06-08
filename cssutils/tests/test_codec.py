@@ -16,7 +16,7 @@ else:
 iostream = io.BytesIO
 
 
-class Queue(object):
+class Queue:
     """
     queue: write bytes at one end, read bytes from the other end
     """

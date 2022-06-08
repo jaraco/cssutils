@@ -93,7 +93,7 @@ _TEXT_UTF8 = 5
 _OTHER_TYPE = 4
 
 
-class EncodingInfo(object):
+class EncodingInfo:
     """
     All encoding related information, returned by :func:`getEncodingInfo`.
 

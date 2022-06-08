@@ -92,7 +92,7 @@ profile = Profiles(log=log)
 _ANYNS = -1
 
 
-class DOMImplementationCSS(object):
+class DOMImplementationCSS:
     """This interface allows the DOM user to create a CSSStyleSheet
     outside the context of a document. There is no way to associate
     the new CSSStyleSheet with a document in DOM Level 2.

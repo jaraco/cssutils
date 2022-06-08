@@ -122,7 +122,7 @@ PRODUCTIONS = [
 ]
 
 
-class CSSProductions(object):
+class CSSProductions:
     pass
 
 

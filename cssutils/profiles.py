@@ -19,7 +19,7 @@ class NoSuchProfileException(Exception):
     pass
 
 
-class Profiles(object):
+class Profiles:
     """
     All profiles used for validation. ``cssutils.profile`` is a
     preset object of this class and used by all properties for validation.

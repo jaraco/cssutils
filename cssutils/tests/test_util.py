@@ -383,7 +383,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
         """util._defaultFetcher"""
         if mock:
 
-            class Response(object):
+            class Response:
                 """urllib2.Reponse mock"""
 
                 def __init__(
@@ -406,7 +406,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 def info(self):
                     mimetype, charset = self.mimetype, self.charset
 
-                    class Info(object):
+                    class Info:
 
                         # py2x
                         def gettype(self):

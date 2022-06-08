@@ -60,7 +60,7 @@ class CSSCaptureHTMLParser(html.parser.HTMLParser):
         self.curtag = ''
 
 
-class CSSCapture(object):
+class CSSCapture:
     """
     Retrieve all CSS stylesheets including embedded for a given URL.
     Optional setting of User-Agent used for retrieval possible

@@ -9,7 +9,7 @@ from . import tokenize2
 from cssutils import css
 
 
-class CSSParser(object):
+class CSSParser:
     """Parse a CSS StyleSheet from URL, string or file and return a DOM Level 2
     CSS StyleSheet object.
 

@@ -93,7 +93,7 @@ PRODUCTIONS = [
 ]
 
 
-class CSSProductions(object):
+class CSSProductions:
     """
     most attributes are set later
     """

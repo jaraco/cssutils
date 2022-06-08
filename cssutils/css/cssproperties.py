@@ -52,7 +52,7 @@ import cssutils.profiles
 import re
 
 
-class CSS2Properties(object):
+class CSS2Properties:
     """The CSS2Properties interface represents a convenience mechanism
     for retrieving and setting properties within a CSSStyleDeclaration.
     The attributes of this interface correspond to all the properties

@@ -53,7 +53,7 @@ class NoMatch(ParseError):
     pass
 
 
-class Choice(object):
+class Choice:
     """A Choice of productions (Sequence or single Prod)."""
 
     def __init__(self, *prods, **options):
@@ -129,7 +129,7 @@ class Choice(object):
         return 'Choice(%s)' % ', '.join([str(x) for x in self._prods])
 
 
-class Sequence(object):
+class Sequence:
     """A Sequence of productions (Choice or single Prod)."""
 
     def __init__(self, *prods, **options):
@@ -250,7 +250,7 @@ class Sequence(object):
         return 'Sequence(%s)' % ', '.join([str(x) for x in self._prods])
 
 
-class Prod(object):
+class Prod:
     """Single Prod in Sequence or Choice."""
 
     def __init__(
@@ -373,7 +373,7 @@ tokenizer = cssutils.tokenize2.Tokenizer()
 savedTokens = []
 
 
-class ProdParser(object):
+class ProdParser:
     """Productions parser."""
 
     def __init__(self, clear=True):
@@ -695,7 +695,7 @@ class ProdParser(object):
         return wellformed, seq, store, tokens
 
 
-class PreDef(object):
+class PreDef:
     """Predefined Prod definition for use in productions definition
     for ProdParser instances.
     """

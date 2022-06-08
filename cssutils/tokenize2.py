@@ -12,7 +12,7 @@ from .helper import normalize
 _TOKENIZER_CACHE = {}
 
 
-class Tokenizer(object):
+class Tokenizer:
     """
     generates a list of Token tuples:
         (Tokenname, value, startline, startcolumn)

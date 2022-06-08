@@ -20,7 +20,7 @@ except ImportError:
 log = errorhandler.ErrorHandler()
 
 
-class _BaseClass(object):
+class _BaseClass:
     """
     Base class for Base, Base2 and _NewBase.
 
@@ -557,7 +557,7 @@ class Base2(Base, _NewBase):
         return defaultproductions
 
 
-class Seq(object):
+class Seq:
     """
     property seq of Base2 inheriting classes, holds a list of Item objects.
 
@@ -669,7 +669,7 @@ class Seq(object):
             self._seq[index] = Item(old.value + val, old.type, old.line, old.col)
 
 
-class Item(object):
+class Item:
     """
     an item in the seq list of classes (successor to tuple items in old seq)
 
@@ -706,7 +706,7 @@ class Item(object):
         )
 
 
-class ListSeq(object):
+class ListSeq:
     """
     (EXPERIMENTAL)
     A base class used for list classes like cssutils.css.SelectorList or
@@ -754,7 +754,7 @@ class ListSeq(object):
         raise NotImplementedError
 
 
-class _Namespaces(object):
+class _Namespaces:
     """
     A dictionary like wrapper for @namespace rules used in a CSSStyleSheet.
     Works on effective namespaces, so e.g. if::
@@ -1000,7 +1000,7 @@ def _readUrl(  # noqa: C901
         return None, None, None
 
 
-class LazyRegex(object):
+class LazyRegex:
     """A class to represent a lazily compiled regular expression.
 
     The interface is kept similar to a `re.compile`ed object from the standard

@@ -8,7 +8,7 @@ from . import errorhandler
 from . import tokenize2
 
 
-class ErrorHandler(object):
+class ErrorHandler:
     """Basic class for CSS error handlers.
 
     This class class provides a default implementation ignoring warnings and
@@ -40,7 +40,7 @@ class ErrorHandler(object):
         self._log.warn(exception, token, neverraise=True)
 
 
-class DocumentHandler(object):
+class DocumentHandler:
     """
     void     endFontFace()
              Receive notification of the end of a font face statement.
@@ -160,7 +160,7 @@ class EchoHandler(DocumentHandler):
         )
 
 
-class Parser(object):
+class Parser:
     """
     java.lang.String     getParserVersion()
         Returns a string about which CSS language is supported by this parser.

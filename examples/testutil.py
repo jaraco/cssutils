@@ -16,7 +16,7 @@ import sys
 import cssutils
 
 
-class OutReplacement(object):
+class OutReplacement:
     "io.StringIO does not work somehow?!"
 
     def __init__(self):
@@ -33,7 +33,7 @@ class OutReplacement(object):
         return self.t
 
 
-class TestUtil(object):
+class TestUtil:
     def __init__(self):
         "init out and err to catch both"
         self._out = OutReplacement()  # StringIO()

@@ -22,7 +22,7 @@ import urllib.parse
 import xml.dom
 
 
-class _ErrorHandler(object):
+class _ErrorHandler:
     """
     handles all errors and log messages
     """
