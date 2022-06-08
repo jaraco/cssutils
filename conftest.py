@@ -1,3 +1,5 @@
+import importlib
+
 import pytest
 
 import cssutils
@@ -7,6 +9,12 @@ collect_ignore = [
     'cssutils/_fetchgae.py',
     'tools',
 ]
+
+
+try:
+    importlib.import_module('lxml')
+except ImportError:
+    collect_ignore += ['examples/style.py']
 
 
 @pytest.fixture(autouse=True)
