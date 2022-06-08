@@ -1,6 +1,9 @@
 """Testcases for cssutils.css.property._Property."""
 
 import xml.dom
+
+import pytest
+
 from . import basetest
 import cssutils
 
@@ -155,6 +158,10 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual(r'c\olor', p.literalname)
         self.assertEqual('color', p.name)
 
+    @pytest.mark.xfail(
+        "sys.version_info > (3, 11)",
+        reason="jaraco/cssutils#24",
+    )
     def test_literalname(self):
         "Property.literalname"
         p = cssutils.css.property.Property(r'c\olor', 'red')
