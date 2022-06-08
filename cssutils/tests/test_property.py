@@ -3,6 +3,7 @@
 import xml.dom
 
 import pytest
+from jaraco.test import property_error
 
 from . import basetest
 import cssutils
@@ -158,17 +159,14 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual(r'c\olor', p.literalname)
         self.assertEqual('color', p.name)
 
-    @pytest.mark.xfail(
-        "sys.version_info > (3, 11)",
-        reason="jaraco/cssutils#24",
-    )
     def test_literalname(self):
         "Property.literalname"
         p = cssutils.css.property.Property(r'c\olor', 'red')
         self.assertEqual(r'c\olor', p.literalname)
-        self.assertRaisesMsg(
-            AttributeError, "can't set attribute", p.__setattr__, 'literalname', 'color'
-        )
+        with pytest.raises(
+            AttributeError, match=property_error("Property.literalname")
+        ):
+            p.literalname = 'color'
 
     def test_validate(self):
         "Property.valid"

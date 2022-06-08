@@ -9,6 +9,7 @@ what should happen here?
 import xml.dom
 
 import pytest
+from jaraco.test import property_error
 
 from . import basetest
 import cssutils
@@ -380,19 +381,15 @@ class SelectorTestCase(basetest.BaseTestCase):
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
 
-    @pytest.mark.xfail(
-        "sys.version_info > (3, 11)",
-        reason="jaraco/cssutils#24",
-    )
     def test_specificity(self):
         "Selector.specificity"
         selector = cssutils.css.Selector()
 
-        # readonly
-        def _set():
+        # property is read-only
+        with pytest.raises(
+            AttributeError, match=property_error('Selector.specificity')
+        ):
             selector.specificity = 1
-
-        self.assertRaisesMsg(AttributeError, "can't set attribute", _set)
 
         tests = {
             '*': (0, 0, 0, 0),
