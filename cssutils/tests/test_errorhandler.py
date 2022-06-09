@@ -6,11 +6,10 @@ import sys
 import xml.dom
 import socket
 
-from . import basetest
 import cssutils
 
 
-class TestErrorHandler(basetest.BaseTestCase):
+class TestErrorHandler:
     def setup(self):
         "replace default log and ignore its output"
         self._oldlog = cssutils.log._log

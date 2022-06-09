@@ -626,7 +626,7 @@ img { border-width: 3 }   /* a unit must be specified for length values */''': '
         self.do_equal_p(tests, raising=False)
 
 
-class TestCSSSerializer(basetest.BaseTestCase):
+class TestCSSSerializer:
     """
     testcases for cssutils.CSSSerializer
     """

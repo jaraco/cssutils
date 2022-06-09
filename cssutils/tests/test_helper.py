@@ -1,10 +1,9 @@
 """Testcases for cssutils.helper"""
 
-from . import basetest
 from cssutils.helper import normalize, string, stringvalue, uri, urivalue
 
 
-class TestHelper(basetest.BaseTestCase):
+class TestHelper:
     def test_normalize(self):
         "helper._normalize()"
         tests = {

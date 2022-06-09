@@ -2,7 +2,6 @@
 
 
 import xml.dom
-from . import basetest
 import cssutils
 import urllib.request
 import urllib.error
@@ -11,7 +10,7 @@ from unittest import mock
 import pytest
 
 
-class TestCSSParser(basetest.BaseTestCase):
+class TestCSSParser:
     def _make_fetcher(self, encoding, content):
         "make an URL fetcher with specified data"
 

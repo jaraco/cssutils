@@ -1,11 +1,10 @@
 """Testcases for cssutils.css.CSSRuleList"""
 
-from . import basetest
 import cssutils
 import pytest
 
 
-class TestCSSRuleList(basetest.BaseTestCase):
+class TestCSSRuleList:
     def test_init(self):
         "CSSRuleList.__init__()"
         r = cssutils.css.CSSRuleList()

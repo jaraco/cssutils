@@ -362,7 +362,7 @@ y"''': '''"xy"''',
         assert cssText == s2.cssText
 
 
-class TestCSSPrimitiveValue(basetest.BaseTestCase):
+class TestCSSPrimitiveValue:
     def test_init(self):
         "CSSPrimitiveValue.__init__()"
         v = cssutils.css.CSSPrimitiveValue('1')
@@ -854,7 +854,7 @@ class TestCSSPrimitiveValue(basetest.BaseTestCase):
         assert v == s2.cssText
 
 
-class TestCSSValueList(basetest.BaseTestCase):
+class TestCSSValueList:
     def test_init(self):
         "CSSValueList.__init__()"
         v = cssutils.css.CSSValue(cssText='red blue')

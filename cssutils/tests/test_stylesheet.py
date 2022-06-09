@@ -1,10 +1,9 @@
 """Testcases for cssutils.stylesheets.StyleSheet"""
 
-from . import basetest
 import cssutils
 
 
-class TestStyleSheet(basetest.BaseTestCase):
+class TestStyleSheet:
     def test_init(self):
         "StyleSheet.__init__()"
         s = cssutils.stylesheets.StyleSheet()

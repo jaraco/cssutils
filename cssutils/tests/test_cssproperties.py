@@ -1,12 +1,11 @@
 """Testcases for cssutils.css.cssproperties."""
 
-from . import basetest
 import cssutils.css
 import cssutils.profiles
 import pytest
 
 
-class TestCSSProperties(basetest.BaseTestCase):
+class TestCSSProperties:
 
     #    def test_cssvalues(self):
     #        "cssproperties cssvalues"

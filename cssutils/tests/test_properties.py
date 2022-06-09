@@ -1,14 +1,13 @@
 """Testcases for cssutils.css.property._Property."""
 
 import copy
-from . import basetest
 import cssutils
 from cssutils.css.property import Property
 
 debug = False
 
 
-class TestProperties(basetest.BaseTestCase):
+class TestProperties:
     def setup(self):
         "init test values"
         V = {

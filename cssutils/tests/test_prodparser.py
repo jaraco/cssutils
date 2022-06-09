@@ -3,7 +3,6 @@
 import sys
 import re
 import xml.dom
-from . import basetest
 from cssutils.prodparser import (
     Prod,
     Sequence,
@@ -16,7 +15,7 @@ from cssutils.prodparser import (
 import pytest
 
 
-class TestProd(basetest.BaseTestCase):
+class TestProd:
     def test_init(self):
         "Prod.__init__(...)"
         p = Prod('min', lambda t, v: t == 1 and v == 2)
@@ -86,7 +85,7 @@ class TestProd(basetest.BaseTestCase):
         assert p2.matches([0, 0, 0, 0]) is False
 
 
-class TestSequence(basetest.BaseTestCase):
+class TestSequence:
     def test_init(self):
         "Sequence.__init__()"
         p1 = Prod('p1', lambda t, v: t == 1)
@@ -253,7 +252,7 @@ class TestSequence(basetest.BaseTestCase):
                         assert p == seq.nextProd(t)
 
 
-class TestChoice(basetest.BaseTestCase):
+class TestChoice:
     def test_init(self):
         "Choice.__init__()"
         p1 = Prod('p1', lambda t, v: t == 1)
@@ -349,7 +348,7 @@ class TestChoice(basetest.BaseTestCase):
         assert p2 == ch.nextProd(t2)
 
 
-class TestProdParser(basetest.BaseTestCase):
+class TestProdParser:
     def setup(self):
         pass
 

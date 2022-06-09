@@ -5,7 +5,6 @@ import re
 import pytest
 
 import cssutils
-from . import basetest
 
 CSS2 = (cssutils.profile.CSS_LEVEL_2,)
 C3BUI = (cssutils.profile.CSS3_BASIC_USER_INTERFACE,)
@@ -19,7 +18,7 @@ CSS2_CM3 = (CM3[0], CSS2[0])
 CSS2_FM3 = (FM3[0], CSS2[0])
 
 
-class TestProfiles(basetest.BaseTestCase):
+class TestProfiles:
     M1 = {'testvalue': 'x'}
     P1 = {
         '-test-tokenmacro': '({num}{w}){1,2}',
