@@ -1,11 +1,9 @@
 """Testcase for cssutils imports"""
 
-import unittest
-
 import cssutils
 
 
-class CSSutilsImportTestCase(unittest.TestCase):
+class CSSutilsImportTestCase:
     def test_import_all(self):
         "from cssutils import *"
         namespace = {}
@@ -18,9 +16,3 @@ class CSSutilsImportTestCase(unittest.TestCase):
             'stylesheets': cssutils.stylesheets,
         }
         assert namespace == exp
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()
