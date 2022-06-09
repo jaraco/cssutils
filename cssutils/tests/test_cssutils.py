@@ -9,6 +9,13 @@ import sys
 import tempfile
 from unittest import mock
 
+import pytest
+
+
+@pytest.fixture
+def serializer(monkeypatch):
+    monkeypatch.setattr(cssutils, 'ser', cssutils.serialize.CSSSerializer())
+
 
 class CSSutilsTestCase(basetest.BaseTestCase):
     def setUp(self):
@@ -360,9 +367,9 @@ background: url(NEWa) no-repeat !important''',
 background-image: url(prefix/1.png), url(prefix/2.png)''',
         )
 
+    @pytest.mark.usefixtures('serializer')
     def test_resolveImports(self):
         "cssutils.resolveImports(sheet)"
-        self._tempSer()
         cssutils.ser.prefs.useMinified()
 
         a = '@charset "iso-8859-1";@import"b.css";\xe4{color:green}'.encode(
