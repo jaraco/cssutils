@@ -26,11 +26,8 @@ class BaseTestCase:
         self.p = cssutils.CSSParser(raiseExceptions=True)
 
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
-        """
-        if raising self.p is used for parsing, else self.pf
-        """
         p = cssutils.CSSParser(raiseExceptions=raising)
-        # parses with self.p and checks att of result
+        # parse and check att of result
         for test, expected in list(tests.items()):
             if debug:
                 print('"%s"' % test)
@@ -40,7 +37,7 @@ class BaseTestCase:
             assert str(s.__getattribute__(att), 'utf-8') == expected
 
     def do_raise_p(self, tests, debug=False, raising=True):
-        # parses with self.p and expects raise
+        # parse and expect raise
         p = cssutils.CSSParser(raiseExceptions=raising)
         for test, expected in list(tests.items()):
             if debug:
@@ -49,7 +46,7 @@ class BaseTestCase:
                 p.parseString(test)
 
     def do_equal_r(self, tests, att='cssText', debug=False):
-        # sets attribute att of self.r and asserts Equal
+        # set attribute att of self.r and assert Equal
         for test, expected in list(tests.items()):
             if debug:
                 print('"%s"' % test)
@@ -59,7 +56,7 @@ class BaseTestCase:
             assert self.r.__getattribute__(att) == expected
 
     def do_raise_r(self, tests, att='_setCssText', debug=False):
-        # sets self.r and asserts raise
+        # set self.r and expect raise
         for test, expected in list(tests.items()):
             if debug:
                 print('"%s"' % test)
@@ -67,7 +64,7 @@ class BaseTestCase:
                 self.r.__getattribute__(att)(test)
 
     def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
-        # sets self.r and asserts raise
+        # set self.r and expect raise
         for test in tests:
             if debug:
                 print('"%s"' % test)
