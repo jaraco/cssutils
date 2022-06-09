@@ -593,9 +593,3 @@ o very long title"] {/*...*/}''': '''a[title="a not so very long title"] {
             "a{}", href="file:foo.css", media=["screen", "projection", "tv"]
         )
         self.assertEqual(s.media.mediaText, "screen, projection, tv")
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

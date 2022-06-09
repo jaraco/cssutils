@@ -69,9 +69,3 @@ class CSSCombine(basetest.BaseTestCase):
             csscombine(cssText=cssText, minify=False),
             'a {\n    color: #0f0\n    }'.encode(),
         )
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

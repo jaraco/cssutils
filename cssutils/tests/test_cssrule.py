@@ -245,9 +245,3 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.assertRaises(AttributeError, self.r.__setattr__, 'parentStyleSheet', None)
         self.assertRaises(AttributeError, self.r.__setattr__, 'type', 1)
         self.assertRaises(AttributeError, self.r.__setattr__, 'typeString', "")
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

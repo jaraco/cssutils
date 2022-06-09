@@ -58,9 +58,3 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
         self.assertEqual(None, c2.__delattr__('color'))
         # only defined properties
         self.assertRaises(AttributeError, c2.__getattribute__, 'UNKNOWN')
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

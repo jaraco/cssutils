@@ -431,9 +431,3 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertTrue(href == s2.href)
         self.assertTrue(mediaText == s2.media.mediaText)
         self.assertTrue(name == s2.name)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

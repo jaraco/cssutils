@@ -930,9 +930,3 @@ class CSSValueListTestCase(basetest.BaseTestCase):
 
         # not "eval()"able!
         # s2 = eval(repr(s))
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

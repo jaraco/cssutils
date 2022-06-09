@@ -664,9 +664,3 @@ class ProfilesTestCase(basetest.BaseTestCase):
 #                                 cssutils.profile.validateWithProfile(name,
 #                                                                      value,
 #                                                                      profiles))
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

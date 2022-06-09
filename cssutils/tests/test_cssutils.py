@@ -508,9 +508,3 @@ a {
             cssutils.ser.prefs.useDefaults()
         else:
             self.assertEqual(False, 'Mock needed for this test')
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

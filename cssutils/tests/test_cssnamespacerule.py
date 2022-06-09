@@ -213,9 +213,3 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertTrue(isinstance(s2, s.__class__))
         self.assertTrue(namespaceURI == s2.namespaceURI)
         self.assertTrue(prefix == s2.prefix)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

@@ -1153,9 +1153,3 @@ class CSSVariableTestCase(basetest.BaseTestCase):
 #        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
 #        v = cssutils.css.CSSPrimitiveValue('rgb(1%, .5%, 10.1%)')
 #        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

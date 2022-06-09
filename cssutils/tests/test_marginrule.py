@@ -93,9 +93,3 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))
         self.assertTrue(margin == s2.margin)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

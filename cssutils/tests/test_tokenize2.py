@@ -613,9 +613,3 @@ class TokenizerUtilsTestCase(basetest.BaseTestCase, metaclass=basetest.GenerateT
         ('foobar', 3, 'foo', False),
         ('foobar', 10, 'bar', False),
     ]
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

@@ -199,9 +199,3 @@ class MediaListTestCase(basetest.BaseTestCase):
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))
         self.assertTrue(mediaText == s2.mediaText)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

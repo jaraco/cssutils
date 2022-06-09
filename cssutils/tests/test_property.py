@@ -272,9 +272,3 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertTrue(name == s2.name)
         self.assertTrue(value == s2.value)
         self.assertTrue(priority == s2.priority)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

@@ -22,9 +22,3 @@ class Settings(test_cssrule.CSSRuleTestCase):
         )
 
         cssutils.ser.prefs.useDefaults()
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

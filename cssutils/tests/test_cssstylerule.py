@@ -251,9 +251,3 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertFalse(rule.valid)
         rule.style = 'foobar: red'
         self.assertFalse(rule.valid)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

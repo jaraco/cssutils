@@ -756,9 +756,3 @@ a[href="\"\a \"'\""] {
     }'''
         sheet = cssutils.parseString(css)
         self.assertEqual(sheet.cssText, exp.encode())
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

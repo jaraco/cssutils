@@ -154,9 +154,3 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         s = self._setHandler()
         cssutils.parseStyle(style, validate=False)
         self.assertEqual(s.getvalue(), '')
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

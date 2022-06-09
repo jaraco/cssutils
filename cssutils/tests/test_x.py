@@ -48,8 +48,3 @@ class XTestCase(basetest.BaseTestCase):
 #        self.assertEqual(u'a {\n    color: red !x\n    }', s.cssText)
 #        self.assertEqual(u'x', s.cssRules[0].style.getPropertyPriority('color'))
 #
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

@@ -416,9 +416,3 @@ class ProdParserTestCase(basetest.BaseTestCase):
                     'T',
                     prods,
                 )
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

@@ -37,9 +37,3 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(s.parentStyleSheet, None)
         self.assertEqual(s.alternate, True)
         self.assertEqual(s.disabled, True)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

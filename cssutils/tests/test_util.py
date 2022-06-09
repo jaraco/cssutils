@@ -602,9 +602,3 @@ class TestLazyRegex(basetest.BaseTestCase):
 
     def test_pattern(self):
         self.assertEqual(self.lazyre.pattern, 'f.o')
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

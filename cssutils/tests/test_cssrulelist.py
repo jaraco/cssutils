@@ -32,9 +32,3 @@ class CSSRuleListTestCase(basetest.BaseTestCase):
         r = list(s.cssRules.rulesOfType(cssutils.css.CSSRule.STYLE_RULE))
         self.assertEqual(2, len(r))
         self.assertEqual('b {\n    left: 0\n    }', r[1].cssText)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

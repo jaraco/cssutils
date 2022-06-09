@@ -86,9 +86,3 @@ class HelperTestCase(basetest.BaseTestCase):
         self.assertEqual('x', urivalue('url(x)'))
         self.assertEqual('x', urivalue('url("x")'))
         self.assertEqual(')', urivalue('url(")")'))
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

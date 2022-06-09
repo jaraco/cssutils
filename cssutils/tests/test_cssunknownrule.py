@@ -139,9 +139,3 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

@@ -138,9 +138,3 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         r2 = eval(repr(r))
         self.assertTrue(isinstance(r2, r.__class__))
         self.assertTrue(r.cssText == r2.cssText)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

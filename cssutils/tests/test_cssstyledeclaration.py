@@ -592,9 +592,3 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             s = cssutils.css.CSSStyleDeclaration(cssText=case)
             msg = '%r should be %s' % (case, 'valid' if expected else 'invalid')
             self.assertEqual(s.valid, expected, msg)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

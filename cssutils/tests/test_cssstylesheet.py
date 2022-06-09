@@ -909,9 +909,3 @@ body {
             sheet = cssutils.parseString(case)
             msg = "%r should be %s" % (case, 'valid' if expected else 'invalid')
             self.assertEqual(sheet.valid, expected, msg)
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()
