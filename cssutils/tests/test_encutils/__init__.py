@@ -3,7 +3,6 @@ tests for encutils.py
 """
 import http.client
 from io import StringIO
-import unittest
 
 try:
     import cssutils.encutils as encutils
@@ -14,7 +13,7 @@ except ImportError:
 log = encutils.buildlog(stream=StringIO())
 
 
-class AutoEncodingTestCase(unittest.TestCase):
+class AutoEncodingTestCase:
     def _fakeRes(self, content):
         "build a fake HTTP response"
 
@@ -54,7 +53,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'ANYTHING': encutils._OTHER_TYPE,
         }
         for test, exp in list(tests.items()):
-            self.assertEqual(exp, encutils._getTextTypeByMediaType(test, log=log))
+            assert exp == encutils._getTextTypeByMediaType(test, log=log)
 
     def test_getTextType(self):
         "encutils._getTextType"
@@ -74,7 +73,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'ANYTHING': encutils._OTHER_TYPE,
         }
         for test, exp in list(tests.items()):
-            self.assertEqual(exp, encutils._getTextType(test, log=log))
+            assert exp == encutils._getTextType(test, log=log)
 
     def test_encodingByMediaType(self):
         "encutils.encodingByMediaType"
@@ -93,7 +92,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'ANYTHING': None,
         }
         for test, exp in list(tests.items()):
-            self.assertEqual(exp, encutils.encodingByMediaType(test, log=log))
+            assert exp == encutils.encodingByMediaType(test, log=log)
 
     def test_getMetaInfo(self):
         "encutils.getMetaInfo"
@@ -186,7 +185,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             ),
         }
         for test, exp in list(tests.items()):
-            self.assertEqual(exp, encutils.getMetaInfo(test, log=log))
+            assert exp == encutils.getMetaInfo(test, log=log)
 
     def test_detectXMLEncoding(self):
         "encutils.detectXMLEncoding"
@@ -206,7 +205,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             (('utf-8'), '<?xml version="1.0"?><x encoding="ascii"/>'),
         )
         for exp, test in tests:
-            self.assertEqual(exp, encutils.detectXMLEncoding(test, log=log))
+            assert exp == encutils.detectXMLEncoding(test, log=log)
 
     def test_tryEncodings(self):
         "encutils.tryEncodings"
@@ -225,7 +224,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                 # ('utf-8', u'\u1111'.encode('utf-8'))
             ]
         for exp, test in tests:
-            self.assertEqual(exp, encutils.tryEncodings(test))
+            assert exp == encutils.tryEncodings(test)
 
     def test_getEncodingInfo(self):
         "encutils.getEncodingInfo"
@@ -464,8 +463,4 @@ class AutoEncodingTestCase(unittest.TestCase):
                 res = encutils.getEncodingInfo(text=text)
 
             res = (res.encoding, res.mismatch)
-            self.assertEqual(exp, res)
-
-
-if __name__ == '__main__':
-    unittest.main()
+            assert exp == res
