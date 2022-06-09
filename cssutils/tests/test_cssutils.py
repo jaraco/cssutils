@@ -7,12 +7,7 @@ import cssutils
 import os
 import sys
 import tempfile
-
-try:
-    import mock
-except ImportError:
-    mock = None
-    print("install mock library to run all tests")
+from unittest import mock
 
 
 class CSSutilsTestCase(basetest.BaseTestCase):
@@ -367,127 +362,123 @@ background-image: url(prefix/1.png), url(prefix/2.png)''',
 
     def test_resolveImports(self):
         "cssutils.resolveImports(sheet)"
-        if mock:
-            self._tempSer()
-            cssutils.ser.prefs.useMinified()
+        self._tempSer()
+        cssutils.ser.prefs.useMinified()
 
-            a = '@charset "iso-8859-1";@import"b.css";\xe4{color:green}'.encode(
-                'iso-8859-1'
-            )
-            b = '@charset "ascii";\\E4 {color:red}'.encode('ascii')
+        a = '@charset "iso-8859-1";@import"b.css";\xe4{color:green}'.encode(
+            'iso-8859-1'
+        )
+        b = '@charset "ascii";\\E4 {color:red}'.encode('ascii')
 
-            # normal
-            m = mock.Mock()
-            with mock.patch('cssutils.util._defaultFetcher', m):
-                m.return_value = (None, b)
-                s = cssutils.parseString(a)
+        # normal
+        m = mock.Mock()
+        with mock.patch('cssutils.util._defaultFetcher', m):
+            m.return_value = (None, b)
+            s = cssutils.parseString(a)
 
-                # py3 TODO
-                self.assertEqual(a, s.cssText)
-                self.assertEqual(b, s.cssRules[1].styleSheet.cssText)
+            # py3 TODO
+            self.assertEqual(a, s.cssText)
+            self.assertEqual(b, s.cssRules[1].styleSheet.cssText)
 
-                c = cssutils.resolveImports(s)
+            c = cssutils.resolveImports(s)
 
-                # py3 TODO
-                self.assertEqual(
-                    '\xc3\xa4{color:red}\xc3\xa4{color:green}'.encode('iso-8859-1'),
-                    c.cssText,
-                )
-
-                c.encoding = 'ascii'
-                self.assertEqual(
-                    r'@charset "ascii";\E4 {color:red}\E4 {color:green}'.encode(),
-                    c.cssText,
-                )
-
-            # b cannot be found
-            m = mock.Mock()
-            with mock.patch('cssutils.util._defaultFetcher', m):
-                m.return_value = (None, None)
-                s = cssutils.parseString(a)
-
-                # py3 TODO
-                self.assertEqual(a, s.cssText)
-                self.assertEqual(
-                    cssutils.css.CSSStyleSheet, type(s.cssRules[1].styleSheet)
-                )
-                c = cssutils.resolveImports(s)
-                # py3 TODO
-                self.assertEqual(
-                    '@import"b.css";\xc3\xa4{color:green}'.encode('iso-8859-1'),
-                    c.cssText,
-                )
-
-            # @import with media
-            a = '@import"b.css";@import"b.css" print, tv ;@import"b.css" all;'
-            b = 'a {color: red}'
-            m = mock.Mock()
-            with mock.patch('cssutils.util._defaultFetcher', m):
-                m.return_value = (None, b)
-                s = cssutils.parseString(a)
-
-                c = cssutils.resolveImports(s)
-
-                self.assertEqual(
-                    'a{color:red}@media print,tv{a{color:red}}a{color:red}'.encode(),
-                    c.cssText,
-                )
-
-            # cannot resolve with media => keep original
-            a = '@import"b.css"print;'
-            b = '@namespace "http://example.com";'
-            m = mock.Mock()
-            with mock.patch('cssutils.util._defaultFetcher', m):
-                m.return_value = (None, b)
-                s = cssutils.parseString(a)
-                c = cssutils.resolveImports(s)
-                self.assertEqual(a.encode(), c.cssText)
-
-            # urls are adjusted too, layout:
-            # a.css
-            # c.css
-            # img/img.gif
-            # b/
-            #     b.css
-            #     subimg/subimg.gif
-            a = '''
-                 @import"b/b.css";
-                 a {
-                     x: url(/img/abs.gif);
-                     y: url(img/img.gif);
-                     z: url(b/subimg/subimg.gif);
-                     }'''
-
-            def fetcher(url):
-                c = {
-                    'b.css': '''
-                         @import"../c.css";
-                         b {
-                             x: url(/img/abs.gif);
-                             y: url(../img/img.gif);
-                             z: url(subimg/subimg.gif);
-                             }''',
-                    'c.css': '''
-                         c {
-                             x: url(/img/abs.gif);
-                             y: url(./img/img.gif);
-                             z: url(./b/subimg/subimg.gif);
-                             }''',
-                }
-                return 'utf-8', c[os.path.split(url)[1]]
-
-            @mock.patch.object(cssutils.util, '_defaultFetcher', new=fetcher)
-            def do():
-                s = cssutils.parseString(a)
-                r = cssutils.resolveImports(s)
-                return s, r
-
-            s, r = do()
-
-            cssutils.ser.prefs.useDefaults()
-            cssutils.ser.prefs.keepComments = False
+            # py3 TODO
             self.assertEqual(
-                '''c {
+                '\xc3\xa4{color:red}\xc3\xa4{color:green}'.encode('iso-8859-1'),
+                c.cssText,
+            )
+
+            c.encoding = 'ascii'
+            self.assertEqual(
+                r'@charset "ascii";\E4 {color:red}\E4 {color:green}'.encode(),
+                c.cssText,
+            )
+
+        # b cannot be found
+        m = mock.Mock()
+        with mock.patch('cssutils.util._defaultFetcher', m):
+            m.return_value = (None, None)
+            s = cssutils.parseString(a)
+
+            # py3 TODO
+            self.assertEqual(a, s.cssText)
+            self.assertEqual(cssutils.css.CSSStyleSheet, type(s.cssRules[1].styleSheet))
+            c = cssutils.resolveImports(s)
+            # py3 TODO
+            self.assertEqual(
+                '@import"b.css";\xc3\xa4{color:green}'.encode('iso-8859-1'),
+                c.cssText,
+            )
+
+        # @import with media
+        a = '@import"b.css";@import"b.css" print, tv ;@import"b.css" all;'
+        b = 'a {color: red}'
+        m = mock.Mock()
+        with mock.patch('cssutils.util._defaultFetcher', m):
+            m.return_value = (None, b)
+            s = cssutils.parseString(a)
+
+            c = cssutils.resolveImports(s)
+
+            self.assertEqual(
+                'a{color:red}@media print,tv{a{color:red}}a{color:red}'.encode(),
+                c.cssText,
+            )
+
+        # cannot resolve with media => keep original
+        a = '@import"b.css"print;'
+        b = '@namespace "http://example.com";'
+        m = mock.Mock()
+        with mock.patch('cssutils.util._defaultFetcher', m):
+            m.return_value = (None, b)
+            s = cssutils.parseString(a)
+            c = cssutils.resolveImports(s)
+            self.assertEqual(a.encode(), c.cssText)
+
+        # urls are adjusted too, layout:
+        # a.css
+        # c.css
+        # img/img.gif
+        # b/
+        #     b.css
+        #     subimg/subimg.gif
+        a = '''
+             @import"b/b.css";
+             a {
+                 x: url(/img/abs.gif);
+                 y: url(img/img.gif);
+                 z: url(b/subimg/subimg.gif);
+                 }'''
+
+        def fetcher(url):
+            c = {
+                'b.css': '''
+                     @import"../c.css";
+                     b {
+                         x: url(/img/abs.gif);
+                         y: url(../img/img.gif);
+                         z: url(subimg/subimg.gif);
+                         }''',
+                'c.css': '''
+                     c {
+                         x: url(/img/abs.gif);
+                         y: url(./img/img.gif);
+                         z: url(./b/subimg/subimg.gif);
+                         }''',
+            }
+            return 'utf-8', c[os.path.split(url)[1]]
+
+        @mock.patch.object(cssutils.util, '_defaultFetcher', new=fetcher)
+        def do():
+            s = cssutils.parseString(a)
+            r = cssutils.resolveImports(s)
+            return s, r
+
+        s, r = do()
+
+        cssutils.ser.prefs.useDefaults()
+        cssutils.ser.prefs.keepComments = False
+        expected = '''c {
     x: url(/img/abs.gif);
     y: url(img/img.gif);
     z: url(b/subimg/subimg.gif)
@@ -501,10 +492,7 @@ a {
     x: url(/img/abs.gif);
     y: url(img/img.gif);
     z: url(b/subimg/subimg.gif)
-    }'''.encode(),
-                r.cssText,
-            )
+    }'''.encode()
+        assert expected == r.cssText
 
-            cssutils.ser.prefs.useDefaults()
-        else:
-            self.assertEqual(False, 'Mock needed for this test')
+        cssutils.ser.prefs.useDefaults()
