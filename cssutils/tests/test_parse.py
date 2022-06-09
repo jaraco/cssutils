@@ -20,12 +20,6 @@ class TestCSSParser(basetest.BaseTestCase):
 
         return fetcher
 
-    def setup(self):
-        self._saved = cssutils.log.raiseExceptions
-
-    def teardown(self):
-        cssutils.log.raiseExceptions = self._saved
-
     def test_init(self):
         "CSSParser.__init__()"
         assert cssutils.log.raiseExceptions

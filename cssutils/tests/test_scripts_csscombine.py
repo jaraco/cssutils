@@ -9,12 +9,6 @@ class CSSCombine(basetest.BaseTestCase):
 
     C = '@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}'
 
-    def setup(self):
-        self._saved = cssutils.log.raiseExceptions
-
-    def teardown(self):
-        cssutils.log.raiseExceptions = self._saved
-
     def test_combine(self):
         "scripts.csscombine()"
 
