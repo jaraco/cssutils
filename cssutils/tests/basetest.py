@@ -22,7 +22,7 @@ class BaseTestCase:
     def do_equal_p(tests, att='cssText', raising=True):
         p = cssutils.CSSParser(raiseExceptions=raising)
         # parse and check att of result
-        for test, expected in list(tests.items()):
+        for test, expected in tests.items():
             s = p.parseString(test)
             if expected is None:
                 expected = test
@@ -32,13 +32,13 @@ class BaseTestCase:
     def do_raise_p(tests, raising=True):
         # parse and expect raise
         p = cssutils.CSSParser(raiseExceptions=raising)
-        for test, expected in list(tests.items()):
+        for test, expected in tests.items():
             with pytest.raises(expected):
                 p.parseString(test)
 
     def do_equal_r(self, tests, att='cssText'):
         # set attribute att of self.r and assert Equal
-        for test, expected in list(tests.items()):
+        for test, expected in tests.items():
             self.r.__setattr__(att, test)
             if expected is None:
                 expected = test
@@ -46,7 +46,7 @@ class BaseTestCase:
 
     def do_raise_r(self, tests, att='_setCssText'):
         # set self.r and expect raise
-        for test, expected in list(tests.items()):
+        for test, expected in tests.items():
             with pytest.raises(expected):
                 self.r.__getattribute__(att)(test)
 
