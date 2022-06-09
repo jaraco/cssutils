@@ -1,11 +1,10 @@
 """Testcases for cssutils.settings"""
 
-from . import test_cssrule
 import cssutils
 import cssutils.settings
 
 
-class Settings(test_cssrule.TestCSSRule):
+class TestSettings:
     def test_set(self):
         "settings.set()"
         cssutils.ser.prefs.useMinified()
