@@ -7,12 +7,11 @@ import sys
 
 import pytest
 
-from . import basetest
 import cssutils.tokenize2 as tokenize2
 from cssutils.tokenize2 import Tokenizer
 
 
-class TestTokenizer(basetest.BaseTestCase):
+class TestTokenizer:
 
     testsall = {
         # IDENT
@@ -570,7 +569,7 @@ class TestTokenizer(basetest.BaseTestCase):
             assert len(tokens) - 1 == len(tests[css])
 
 
-class TestTokenizerUtils(basetest.BaseTestCase):
+class TestTokenizerUtils:
     """Tests for the util functions of tokenize"""
 
     has_at_cases = [
