@@ -31,3 +31,9 @@ def hermetic_profiles():
 def saved_profiles(monkeypatch):
     profiles = cssutils.profiles.Profiles(log=cssutils.log)
     monkeypatch.setattr(cssutils, 'profile', profiles)
+
+
+@pytest.fixture(autouse=True)
+def raise_exceptions():
+    # configure log to raise exceptions
+    cssutils.log.raiseExceptions = True
