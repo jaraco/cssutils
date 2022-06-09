@@ -4,6 +4,9 @@ TODO: old tests as new ones are **not complete**!
 """
 
 import sys
+
+import pytest
+
 from . import basetest
 import cssutils.tokenize2 as tokenize2
 from cssutils.tokenize2 import Tokenizer
@@ -588,13 +591,10 @@ class TestTokenizer(basetest.BaseTestCase):
             assert len(tokens) - 1 == len(tests[css])
 
 
-class TestTokenizerUtils(basetest.BaseTestCase, metaclass=basetest.GenerateTests):
+class TestTokenizerUtils(basetest.BaseTestCase):
     """Tests for the util functions of tokenize"""
 
-    def gen_test_has_at(self, string, pos, text, expected):
-        assert tokenize2.has_at(string, pos, text) == expected
-
-    gen_test_has_at.cases = [
+    has_at_cases = [
         ('foo', 0, 'foo', True),
         ('foo', 0, 'f', True),
         ('foo', 1, 'o', True),
@@ -604,12 +604,17 @@ class TestTokenizerUtils(basetest.BaseTestCase, metaclass=basetest.GenerateTests
         ('foo', 0, 'foobar', False),
     ]
 
-    def gen_test_suffix_eq(self, string, pos, suffix, expected):
-        assert tokenize2.suffix_eq(string, pos, suffix) == expected
+    @pytest.mark.parametrize("string, pos, text, expected", has_at_cases)
+    def test_has_at(self, string, pos, text, expected):
+        assert tokenize2.has_at(string, pos, text) == expected
 
-    gen_test_suffix_eq.cases = [
+    suffix_eq_cases = [
         ('foobar', 0, 'foobar', True),
         ('foobar', 3, 'bar', True),
         ('foobar', 3, 'foo', False),
         ('foobar', 10, 'bar', False),
     ]
+
+    @pytest.mark.parametrize("string, pos, suffix, expected", suffix_eq_cases)
+    def test_suffix_eq(self, string, pos, suffix, expected):
+        assert tokenize2.suffix_eq(string, pos, suffix) == expected
