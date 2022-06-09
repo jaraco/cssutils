@@ -1,6 +1,5 @@
 """Base class for all tests"""
 
-import logging
 import re
 import sys
 import pytest
@@ -20,10 +19,8 @@ def get_sheet_filename(sheet_name):
 
 class BaseTestCase:
     def setup(self):
-        # a raising parser!!!
+        # configure log to raise exceptions
         cssutils.log.raiseExceptions = True
-        cssutils.log.setLevel(logging.FATAL)
-        self.p = cssutils.CSSParser(raiseExceptions=True)
 
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
         p = cssutils.CSSParser(raiseExceptions=raising)
