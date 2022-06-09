@@ -18,9 +18,6 @@ def get_sheet_filename(sheet_name):
 
 
 class BaseTestCase:
-    def setup(self):
-        pass
-
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
         p = cssutils.CSSParser(raiseExceptions=raising)
         # parse and check att of result

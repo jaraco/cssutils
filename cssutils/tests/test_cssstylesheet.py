@@ -8,7 +8,6 @@ import pytest
 
 class TestCSSStyleSheet(basetest.BaseTestCase):
     def setup(self):
-        super().setup()
         self.r = cssutils.css.CSSStyleSheet()  # used by basetest
         self.s = self.r  # used here
         self.rule = cssutils.css.CSSStyleRule()

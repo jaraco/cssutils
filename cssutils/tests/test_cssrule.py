@@ -21,13 +21,10 @@ class TestCSSRule(basetest.BaseTestCase):
 
     def setup(self):
         """
-        OVERWRITE!
         self.r is the rule
         self.rRO the readonly rule
         relf.r_type the type as defined in CSSRule
         """
-        super().setup()
-
         self.sheet = cssutils.css.CSSStyleSheet()
         self.r = cssutils.css.CSSRule()
         self.rRO = cssutils.css.CSSRule()
