@@ -3,11 +3,12 @@
 import xml.dom
 from . import test_cssrule
 import cssutils
+import pytest
 
 
-class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
-    def setUp(self):
-        super(CSSStyleRuleTestCase, self).setUp()
+class TestCSSStyleRule(test_cssrule.TestCSSRule):
+    def setup(self):
+        super().setup()
         self.r = cssutils.css.CSSStyleRule()
         self.rRO = cssutils.css.CSSStyleRule(readonly=True)
         self.r_type = cssutils.css.CSSStyleRule.STYLE_RULE
@@ -15,28 +16,26 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSStyleRule.type and init"
-        super(CSSStyleRuleTestCase, self).test_init()
-        self.assertEqual('', self.r.cssText)
-        self.assertEqual(
-            cssutils.css.selectorlist.SelectorList, type(self.r.selectorList)
-        )
-        self.assertEqual('', self.r.selectorText)
-        self.assertEqual(cssutils.css.CSSStyleDeclaration, type(self.r.style))
-        self.assertEqual(self.r, self.r.style.parentRule)
+        super().test_init()
+        assert '' == self.r.cssText
+        assert isinstance(self.r.selectorList, cssutils.css.selectorlist.SelectorList)
+        assert '' == self.r.selectorText
+        assert isinstance(self.r.style, cssutils.css.CSSStyleDeclaration)
+        assert self.r == self.r.style.parentRule
 
     def test_refs(self):
         "CSSStyleRule references"
         s = cssutils.css.CSSStyleRule()
         sel, style = s.selectorList, s.style
 
-        self.assertEqual(s, sel.parentRule)
-        self.assertEqual(s, style.parentRule)
+        assert s == sel.parentRule
+        assert s == style.parentRule
 
         s.cssText = 'a { x:1 }'
-        self.assertNotEqual(sel, s.selectorList)
-        self.assertEqual('a', s.selectorList.selectorText)
-        self.assertNotEqual(style, s.style)
-        self.assertEqual('1', s.style.getPropertyValue('x'))
+        assert sel != s.selectorList
+        assert 'a' == s.selectorList.selectorText
+        assert style != s.style
+        assert '1' == s.style.getPropertyValue('x')
 
         sel, style = s.selectorList, s.style
 
@@ -50,10 +49,10 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
                 s.cssText = invalid
             except xml.dom.DOMException:
                 pass
-            self.assertEqual(sel, s.selectorList)
-            self.assertEqual('a', s.selectorList.selectorText)
-            self.assertEqual(style, s.style)
-            self.assertEqual('1', s.style.getPropertyValue('x'))
+            assert sel == s.selectorList
+            assert 'a' == s.selectorList.selectorText
+            assert style == s.style
+            assert '1' == s.style.getPropertyValue('x')
 
         # CHANGING
         s = cssutils.parseString('a {s1: 1}')
@@ -63,38 +62,38 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # selectorList
         r.selectorText = 'b'
-        self.assertNotEqual(sel1, r.selectorList)
-        self.assertEqual('b', r.selectorList.selectorText)
-        self.assertEqual('b', r.selectorText)
+        assert sel1 != r.selectorList
+        assert 'b' == r.selectorList.selectorText
+        assert 'b' == r.selectorText
         sel1b = r.selectorList
 
         sel1b.selectorText = 'c'
-        self.assertEqual(sel1b, r.selectorList)
-        self.assertEqual('c', r.selectorList.selectorText)
-        self.assertEqual('c', r.selectorText)
+        assert sel1b == r.selectorList
+        assert 'c' == r.selectorList.selectorText
+        assert 'c' == r.selectorText
 
         sel2 = cssutils.css.SelectorList('sel2')
         s.selectorList = sel2
-        self.assertEqual(sel2, s.selectorList)
-        self.assertEqual('sel2', s.selectorList.selectorText)
+        assert sel2 == s.selectorList
+        assert 'sel2' == s.selectorList.selectorText
 
         sel2.selectorText = 'sel2b'
-        self.assertEqual('sel2b', sel2.selectorText)
-        self.assertEqual('sel2b', s.selectorList.selectorText)
+        assert 'sel2b' == sel2.selectorText
+        assert 'sel2b' == s.selectorList.selectorText
 
         s.selectorList.selectorText = 'sel2c'
-        self.assertEqual('sel2c', sel2.selectorText)
-        self.assertEqual('sel2c', s.selectorList.selectorText)
+        assert 'sel2c' == sel2.selectorText
+        assert 'sel2c' == s.selectorList.selectorText
 
         # style
         r.style = 's1: 2'
-        self.assertNotEqual(st1, r.style)
-        self.assertEqual('s1: 2', r.style.cssText)
+        assert st1 != r.style
+        assert 's1: 2' == r.style.cssText
 
         st2 = cssutils.parseStyle('s2: 1')
         r.style = st2
-        self.assertEqual(st2, r.style)
-        self.assertEqual('s2: 1', r.style.cssText)
+        assert st2 == r.style
+        assert 's2: 1' == r.style.cssText
 
         # cssText
         sl, st = r.selectorList, r.style
@@ -103,12 +102,12 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             r.cssText = '$ {content: "new"}'
         except xml.dom.SyntaxErr:
             pass
-        self.assertEqual(sl, r.selectorList)
-        self.assertEqual(st, r.style)
+        assert sl == r.selectorList
+        assert st == r.style
 
         r.cssText = 'a {content: "new"}'
-        self.assertNotEqual(sl, r.selectorList)
-        self.assertNotEqual(st, r.style)
+        assert sl != r.selectorList
+        assert st != r.style
 
     def test_cssText(self):
         "CSSStyleRule.cssText"
@@ -170,38 +169,37 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSStyleRule()
 
         r.selectorList.appendSelector('a')
-        self.assertEqual(1, r.selectorList.length)
-        self.assertEqual('a', r.selectorText)
+        assert 1 == r.selectorList.length
+        assert 'a' == r.selectorText
 
         r.selectorList.appendSelector(' b  ')
         # only simple selector!
-        self.assertRaises(
-            xml.dom.InvalidModificationErr, r.selectorList.appendSelector, '  h1, x '
-        )
+        with pytest.raises(xml.dom.InvalidModificationErr):
+            r.selectorList.appendSelector('  h1, x ')
 
-        self.assertEqual(2, r.selectorList.length)
-        self.assertEqual('a, b', r.selectorText)
+        assert 2 == r.selectorList.length
+        assert 'a, b' == r.selectorText
 
     def test_selectorText(self):
         "CSSStyleRule.selectorText"
         r = cssutils.css.CSSStyleRule()
 
         r.selectorText = 'a'
-        self.assertEqual(1, r.selectorList.length)
-        self.assertEqual('a', r.selectorText)
+        assert 1 == r.selectorList.length
+        assert 'a' == r.selectorText
 
         r.selectorText = ' b, h1  '
-        self.assertEqual(2, r.selectorList.length)
-        self.assertEqual('b, h1', r.selectorText)
+        assert 2 == r.selectorList.length
+        assert 'b, h1' == r.selectorText
 
     def test_style(self):
         "CSSStyleRule.style"
         d = cssutils.css.CSSStyleDeclaration()
         self.r.style = d
-        self.assertEqual(d.cssText, self.r.style.cssText)
+        assert d.cssText == self.r.style.cssText
 
         # check if parentRule of d is set
-        self.assertEqual(self.r, d.parentRule)
+        assert self.r == d.parentRule
 
     def test_incomplete(self):
         "CSSStyleRule (incomplete)"
@@ -237,17 +235,17 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = cssutils.css.CSSStyleRule(selectorText=sel)
 
-        self.assertTrue(sel in str(s))
+        assert sel in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(sel == s2.selectorText)
+        assert isinstance(s2, s.__class__)
+        assert sel == s2.selectorText
 
     def test_valid(self):
         "CSSStyleRule.valid"
         rule = cssutils.css.CSSStyleRule(selectorText='*', style='color: red')
-        self.assertTrue(rule.valid)
+        assert rule.valid
         rule.style = 'color: foobar'
-        self.assertFalse(rule.valid)
+        assert not rule.valid
         rule.style = 'foobar: red'
-        self.assertFalse(rule.valid)
+        assert not rule.valid

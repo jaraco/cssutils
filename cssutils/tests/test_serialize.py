@@ -4,15 +4,15 @@ from . import basetest
 import cssutils
 
 
-class PreferencesTestCase(basetest.BaseTestCase):
+class TestPreferences(basetest.BaseTestCase):
     """
     testcases for cssutils.serialize.Preferences
     """
 
-    def setUp(self):
+    def setup(self):
         cssutils.ser.prefs.useDefaults()
 
-    def tearDown(self):
+    def teardown(self):
         cssutils.ser.prefs.useDefaults()
 
     #    def testkeepUnkownAtRules(self):
@@ -28,7 +28,7 @@ class PreferencesTestCase(basetest.BaseTestCase):
 
     def test_resolveVariables(self):
         "Preferences.resolveVariables"
-        self.assertEqual(cssutils.ser.prefs.resolveVariables, True)
+        assert cssutils.ser.prefs.resolveVariables
 
         cssutils.ser.prefs.resolveVariables = False
 
@@ -56,7 +56,7 @@ class PreferencesTestCase(basetest.BaseTestCase):
 
         for test, exp in list(tests.items()):
             s = cssutils.parseString(vars + test)
-            self.assertEqual(exp.encode(), s.cssText)
+            assert exp.encode() == s.cssText
 
         cssutils.ser.prefs.resolveVariables = True
 
@@ -64,28 +64,28 @@ class PreferencesTestCase(basetest.BaseTestCase):
         "Preferences.useDefaults()"
         cssutils.ser.prefs.useMinified()
         cssutils.ser.prefs.useDefaults()
-        self.assertEqual(cssutils.ser.prefs.defaultAtKeyword, True)
-        self.assertEqual(cssutils.ser.prefs.defaultPropertyName, True)
-        self.assertEqual(cssutils.ser.prefs.defaultPropertyPriority, True)
-        self.assertEqual(cssutils.ser.prefs.importHrefFormat, None)
-        self.assertEqual(cssutils.ser.prefs.indent, 4 * ' ')
-        self.assertEqual(cssutils.ser.prefs.indentClosingBrace, True)
-        self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
-        self.assertEqual(cssutils.ser.prefs.keepComments, True)
-        self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
-        self.assertEqual(cssutils.ser.prefs.keepUnknownAtRules, True)
-        self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, False)
-        self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
-        self.assertEqual(cssutils.ser.prefs.lineSeparator, '\n')
-        self.assertEqual(cssutils.ser.prefs.listItemSpacer, ' ')
-        self.assertEqual(cssutils.ser.prefs.minimizeColorHash, True)
-        self.assertEqual(cssutils.ser.prefs.omitLastSemicolon, True)
-        self.assertEqual(cssutils.ser.prefs.omitLeadingZero, False)
-        self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, ' ')
-        self.assertEqual(cssutils.ser.prefs.propertyNameSpacer, ' ')
-        self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, ' ')
-        self.assertEqual(cssutils.ser.prefs.spacer, ' ')
-        self.assertEqual(cssutils.ser.prefs.validOnly, False)
+        assert cssutils.ser.prefs.defaultAtKeyword
+        assert cssutils.ser.prefs.defaultPropertyName
+        assert cssutils.ser.prefs.defaultPropertyPriority
+        assert cssutils.ser.prefs.importHrefFormat is None
+        assert cssutils.ser.prefs.indent == 4 * ' '
+        assert cssutils.ser.prefs.indentClosingBrace
+        assert cssutils.ser.prefs.keepAllProperties
+        assert cssutils.ser.prefs.keepComments
+        assert cssutils.ser.prefs.keepEmptyRules is False
+        assert cssutils.ser.prefs.keepUnknownAtRules
+        assert cssutils.ser.prefs.keepUsedNamespaceRulesOnly is False
+        assert cssutils.ser.prefs.lineNumbers is False
+        assert cssutils.ser.prefs.lineSeparator == '\n'
+        assert cssutils.ser.prefs.listItemSpacer == ' '
+        assert cssutils.ser.prefs.minimizeColorHash
+        assert cssutils.ser.prefs.omitLastSemicolon
+        assert cssutils.ser.prefs.omitLeadingZero is False
+        assert cssutils.ser.prefs.paranthesisSpacer == ' '
+        assert cssutils.ser.prefs.propertyNameSpacer == ' '
+        assert cssutils.ser.prefs.selectorCombinatorSpacer == ' '
+        assert cssutils.ser.prefs.spacer == ' '
+        assert cssutils.ser.prefs.validOnly is False
         css = '''
     /*1*/
     @import url(x) tv , print;
@@ -121,7 +121,7 @@ prefix|x, a + b > c ~ d, b {
     font-family: arial, "some"
     }'''
         s = cssutils.parseString(css)
-        self.assertEqual(s.cssText, parsedcss.encode())
+        assert s.cssText == parsedcss.encode()
 
         tests = {
             '0.1 .1 0.1px .1px 0.1% .1% +0.1 +.1 +0.1px +.1px +0.1% +.1% '
@@ -131,31 +131,31 @@ prefix|x, a + b > c ~ d, b {
         cssutils.ser.prefs.useDefaults()
         for test, exp in list(tests.items()):
             s = cssutils.parseString('a{x:%s}' % test)
-            self.assertEqual(('a {\n    x: %s\n    }' % exp).encode(), s.cssText)
+            assert ('a {\n    x: %s\n    }' % exp).encode() == s.cssText
 
     def test_useMinified(self):
         "Preferences.useMinified()"
         cssutils.ser.prefs.useDefaults()
         cssutils.ser.prefs.useMinified()
-        self.assertEqual(cssutils.ser.prefs.defaultAtKeyword, True)
-        self.assertEqual(cssutils.ser.prefs.defaultPropertyName, True)
-        self.assertEqual(cssutils.ser.prefs.importHrefFormat, 'string')
-        self.assertEqual(cssutils.ser.prefs.indent, '')
-        self.assertEqual(cssutils.ser.prefs.keepAllProperties, True)
-        self.assertEqual(cssutils.ser.prefs.keepComments, False)
-        self.assertEqual(cssutils.ser.prefs.keepEmptyRules, False)
-        self.assertEqual(cssutils.ser.prefs.keepUnknownAtRules, False)
-        self.assertEqual(cssutils.ser.prefs.keepUsedNamespaceRulesOnly, True)
-        self.assertEqual(cssutils.ser.prefs.lineNumbers, False)
-        self.assertEqual(cssutils.ser.prefs.lineSeparator, '')
-        self.assertEqual(cssutils.ser.prefs.listItemSpacer, '')
-        self.assertEqual(cssutils.ser.prefs.omitLastSemicolon, True)
-        self.assertEqual(cssutils.ser.prefs.omitLeadingZero, True)
-        self.assertEqual(cssutils.ser.prefs.paranthesisSpacer, '')
-        self.assertEqual(cssutils.ser.prefs.propertyNameSpacer, '')
-        self.assertEqual(cssutils.ser.prefs.selectorCombinatorSpacer, '')
-        self.assertEqual(cssutils.ser.prefs.spacer, '')
-        self.assertEqual(cssutils.ser.prefs.validOnly, False)
+        assert cssutils.ser.prefs.defaultAtKeyword
+        assert cssutils.ser.prefs.defaultPropertyName
+        assert cssutils.ser.prefs.importHrefFormat == 'string'
+        assert cssutils.ser.prefs.indent == ''
+        assert cssutils.ser.prefs.keepAllProperties
+        assert cssutils.ser.prefs.keepComments is False
+        assert cssutils.ser.prefs.keepEmptyRules is False
+        assert cssutils.ser.prefs.keepUnknownAtRules is False
+        assert cssutils.ser.prefs.keepUsedNamespaceRulesOnly
+        assert cssutils.ser.prefs.lineNumbers is False
+        assert cssutils.ser.prefs.lineSeparator == ''
+        assert cssutils.ser.prefs.listItemSpacer == ''
+        assert cssutils.ser.prefs.omitLastSemicolon
+        assert cssutils.ser.prefs.omitLeadingZero
+        assert cssutils.ser.prefs.paranthesisSpacer == ''
+        assert cssutils.ser.prefs.propertyNameSpacer == ''
+        assert cssutils.ser.prefs.selectorCombinatorSpacer == ''
+        assert cssutils.ser.prefs.spacer == ''
+        assert cssutils.ser.prefs.validOnly is False
 
         css = '''
     /*1*/
@@ -180,18 +180,18 @@ prefix|x, a + b > c ~ d, b {
     '''
         s = cssutils.parseString(css)
         cssutils.ser.prefs.keepUnknownAtRules = True
-        self.assertEqual(
-            s.cssText,
-            '''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
+        assert (
+            s.cssText
+            == '''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
             '''{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;'''
-            '''font-family:arial,"some"}@x x;'''.encode(),
+            '''font-family:arial,"some"}@x x;'''.encode()
         )
         cssutils.ser.prefs.keepUnknownAtRules = False
-        self.assertEqual(
-            s.cssText,
-            '''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
+        assert (
+            s.cssText
+            == '''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
             '''{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;'''
-            '''font-family:arial,"some"}'''.encode(),
+            '''font-family:arial,"some"}'''.encode()
         )
         # Values
         valuetests = {
@@ -216,16 +216,16 @@ prefix|x, a + b > c ~ d, b {
         }
         for test, exp in list(valuetests.items()):
             s = cssutils.parseString('a{x:%s}' % test)
-            self.assertEqual(('a{x:%s}' % exp).encode(), s.cssText)
+            assert ('a{x:%s}' % exp).encode() == s.cssText
 
     def test_defaultAtKeyword(self):
         "Preferences.defaultAtKeyword"
         s = cssutils.parseString('@im\\port "x";')
-        self.assertEqual('@import "x";'.encode(), s.cssText)
+        assert '@import "x";'.encode() == s.cssText
         cssutils.ser.prefs.defaultAtKeyword = True
-        self.assertEqual('@import "x";'.encode(), s.cssText)
+        assert '@import "x";'.encode() == s.cssText
         cssutils.ser.prefs.defaultAtKeyword = False
-        self.assertEqual('@im\\port "x";'.encode(), s.cssText)
+        assert '@im\\port "x";'.encode() == s.cssText
 
     def test_defaultPropertyName(self):
         "Preferences.defaultPropertyName"
@@ -235,26 +235,26 @@ prefix|x, a + b > c ~ d, b {
         # if used with a backslash in it later...
 
         s = cssutils.parseString(r'a { c\olor: green; }')
-        self.assertEqual('a {\n    color: green\n    }'.encode(), s.cssText)
+        assert 'a {\n    color: green\n    }'.encode() == s.cssText
         cssutils.ser.prefs.defaultPropertyName = True
-        self.assertEqual('a {\n    color: green\n    }'.encode(), s.cssText)
+        assert 'a {\n    color: green\n    }'.encode() == s.cssText
         cssutils.ser.prefs.defaultPropertyName = False
-        self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
+        assert 'a {\n    c\\olor: green\n    }'.encode() == s.cssText
 
         s = cssutils.parseString(r'a { color: red; c\olor: green; }')
-        self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
+        assert 'a {\n    c\\olor: green\n    }'.encode() == s.cssText
         cssutils.ser.prefs.defaultPropertyName = False
-        self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
+        assert 'a {\n    c\\olor: green\n    }'.encode() == s.cssText
         cssutils.ser.prefs.defaultPropertyName = True
-        self.assertEqual('a {\n    color: green\n    }'.encode(), s.cssText)
+        assert 'a {\n    color: green\n    }'.encode() == s.cssText
 
     def test_defaultPropertyPriority(self):
         "Preferences.defaultPropertyPriority"
         css = 'a {\n    color: green !IM\\portant\n    }'
         s = cssutils.parseString(css)
-        self.assertEqual(s.cssText, 'a {\n    color: green !important\n    }'.encode())
+        assert s.cssText == 'a {\n    color: green !important\n    }'.encode()
         cssutils.ser.prefs.defaultPropertyPriority = False
-        self.assertEqual(s.cssText, css.encode())
+        assert s.cssText == css.encode()
 
     def test_importHrefFormat(self):
         "Preferences.importHrefFormat"
@@ -262,20 +262,20 @@ prefix|x, a + b > c ~ d, b {
         r0.cssText = '@import url("not");'
         r1 = cssutils.css.CSSImportRule()
         r1.cssText = '@import "str";'
-        self.assertEqual('@import url(not);', r0.cssText)
-        self.assertEqual('@import "str";', r1.cssText)
+        assert '@import url(not);' == r0.cssText
+        assert '@import "str";' == r1.cssText
 
         cssutils.ser.prefs.importHrefFormat = 'string'
-        self.assertEqual('@import "not";', r0.cssText)
-        self.assertEqual('@import "str";', r1.cssText)
+        assert '@import "not";' == r0.cssText
+        assert '@import "str";' == r1.cssText
 
         cssutils.ser.prefs.importHrefFormat = 'uri'
-        self.assertEqual('@import url(not);', r0.cssText)
-        self.assertEqual('@import url(str);', r1.cssText)
+        assert '@import url(not);' == r0.cssText
+        assert '@import url(str);' == r1.cssText
 
         cssutils.ser.prefs.importHrefFormat = 'not defined'
-        self.assertEqual('@import url(not);', r0.cssText)
-        self.assertEqual('@import "str";', r1.cssText)
+        assert '@import url(not);' == r0.cssText
+        assert '@import "str";' == r1.cssText
 
     def test_indent(self):
         "Preferences.ident"
@@ -287,9 +287,9 @@ prefix|x, a + b > c ~ d, b {
  left: 0
  }'''
         cssutils.ser.prefs.indent = ' '
-        self.assertEqual(exp1.encode(), s.cssText)
+        assert exp1.encode() == s.cssText
         cssutils.ser.prefs.indent = 4 * ' '
-        self.assertEqual(exp4.encode(), s.cssText)
+        assert exp4.encode() == s.cssText
 
     def test_indentClosingBrace(self):
         "Preferences.indentClosingBrace"
@@ -311,9 +311,9 @@ b {
     top: 0
 }'''
         cssutils.ser.prefs.useDefaults()
-        self.assertEqual(expT.encode(), s.cssText)
+        assert expT.encode() == s.cssText
         cssutils.ser.prefs.indentClosingBrace = False
-        self.assertEqual(expF.encode(), s.cssText)
+        assert expF.encode() == s.cssText
 
     def test_keepAllProperties(self):
         "Preferences.keepAllProperties"
@@ -326,22 +326,21 @@ b {
         s = cssutils.parseString(css)
         # keep only last
         cssutils.ser.prefs.keepAllProperties = False
-        self.assertEqual('a {\n    color: green\n    }'.encode(), s.cssText)
+        assert 'a {\n    color: green\n    }'.encode() == s.cssText
         # keep all
         cssutils.ser.prefs.keepAllProperties = True
-        self.assertEqual(
+        assert (
             'a {\n    color: pink;\n    color: red;\n    c\\olor: blue;\n    '
-            'c\\olor: green\n    }'.encode(),
-            s.cssText,
+            'c\\olor: green\n    }'.encode() == s.cssText
         )
 
     def test_keepComments(self):
         "Preferences.keepComments"
         s = cssutils.parseString('/*1*/ a { /*2*/ }')
         cssutils.ser.prefs.keepComments = False
-        self.assertEqual(''.encode(), s.cssText)
+        assert ''.encode() == s.cssText
         cssutils.ser.prefs.keepEmptyRules = True
-        self.assertEqual('a {}'.encode(), s.cssText)
+        assert 'a {}'.encode() == s.cssText
 
     def test_keepEmptyRules(self):
         "Preferences.keepEmptyRules"
@@ -356,13 +355,11 @@ a {
         s = cssutils.parseString(css)
         cssutils.ser.prefs.useDefaults()
         cssutils.ser.prefs.keepEmptyRules = True
-        self.assertEqual(css.encode(), s.cssText)
+        assert css.encode() == s.cssText
         cssutils.ser.prefs.keepEmptyRules = False
-        self.assertEqual(
-            'a {\n    /*1*/\n    }\na {\n    color: red\n    }'.encode(), s.cssText
-        )
+        assert 'a {\n    /*1*/\n    }\na {\n    color: red\n    }'.encode() == s.cssText
         cssutils.ser.prefs.keepComments = False
-        self.assertEqual('a {\n    color: red\n    }'.encode(), s.cssText)
+        assert 'a {\n    color: red\n    }'.encode() == s.cssText
 
         # CSSMediaRule
         css = '''@media tv {
@@ -388,7 +385,7 @@ a {
         cssutils.ser.prefs.keepEmptyRules = True
         #     self.assertEqual(css, s.cssText)
         cssutils.ser.prefs.keepEmptyRules = False
-        self.assertEqual(
+        assert (
             '''@media all {
     /*1*/
     }
@@ -401,17 +398,17 @@ a {
     a {
         color: red
         }
-    }'''.encode(),
-            s.cssText,
+    }'''.encode()
+            == s.cssText
         )
         cssutils.ser.prefs.keepComments = False
-        self.assertEqual(
+        assert (
             '''@media all {
     a {
         color: red
         }
-    }'''.encode(),
-            s.cssText,
+    }'''.encode()
+            == s.cssText
         )
 
     def test_keepUnknownAtRules(self):
@@ -445,9 +442,9 @@ h1 {
             s = cssutils.parseString(test)
             expwith, expwithout = tests[test]
             cssutils.ser.prefs.keepUnknownAtRules = True
-            self.assertEqual(s.cssText, expwith.encode())
+            assert s.cssText == expwith.encode()
             cssutils.ser.prefs.keepUnknownAtRules = False
-            self.assertEqual(s.cssText, expwithout.encode())
+            assert s.cssText == expwithout.encode()
 
     def test_keepUsedNamespaceRulesOnly(self):
         "Preferences.keepUsedNamespaceRulesOnly"
@@ -486,9 +483,9 @@ h1 {
             s = cssutils.parseString(test)
             expwith, expwithout = tests[test]
             cssutils.ser.prefs.keepUsedNamespaceRulesOnly = False
-            self.assertEqual(s.cssText, expwith.encode())
+            assert s.cssText == expwith.encode()
             cssutils.ser.prefs.keepUsedNamespaceRulesOnly = True
-            self.assertEqual(s.cssText, expwithout.encode())
+            assert s.cssText == expwithout.encode()
 
     def test_lineNumbers(self):
         "Preferences.lineNumbers"
@@ -502,22 +499,22 @@ h1 {
 2:     top: 1;
 3:     left: 2
 4:     }'''
-        self.assertEqual(False, cssutils.ser.prefs.lineNumbers)
-        self.assertEqual(exp0.encode(), s.cssText)
+        assert not cssutils.ser.prefs.lineNumbers
+        assert exp0.encode() == s.cssText
         cssutils.ser.prefs.lineNumbers = True
-        self.assertEqual(True, cssutils.ser.prefs.lineNumbers)
-        self.assertEqual(exp1.encode(), s.cssText)
+        assert cssutils.ser.prefs.lineNumbers
+        assert exp1.encode() == s.cssText
 
     def test_lineSeparator(self):
         "Preferences.lineSeparator"
         s = cssutils.parseString('a { x:1;y:2}')
-        self.assertEqual('a {\n    x: 1;\n    y: 2\n    }'.encode(), s.cssText)
+        assert 'a {\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
         # cannot be indented as no split possible
         cssutils.ser.prefs.lineSeparator = ''
-        self.assertEqual('a {x: 1;y: 2    }'.encode(), s.cssText)
+        assert 'a {x: 1;y: 2    }'.encode() == s.cssText
         # no valid css but should work
         cssutils.ser.prefs.lineSeparator = 'XXX'
-        self.assertEqual('a {XXX    x: 1;XXX    y: 2XXX    }'.encode(), s.cssText)
+        assert 'a {XXX    x: 1;XXX    y: 2XXX    }'.encode() == s.cssText
 
     def test_listItemSpacer(self):
         "Preferences.listItemSpacer"
@@ -527,25 +524,25 @@ h1 {
         @import "x" print, tv;
 a, b {}'''
         s = cssutils.parseString(css)
-        self.assertEqual('@import "x" print, tv;\na, b {}'.encode(), s.cssText)
+        assert '@import "x" print, tv;\na, b {}'.encode() == s.cssText
         cssutils.ser.prefs.listItemSpacer = ''
-        self.assertEqual('@import "x" print,tv;\na,b {}'.encode(), s.cssText)
+        assert '@import "x" print,tv;\na,b {}'.encode() == s.cssText
 
     def test_minimizeColorHash(self):
         "Preferences.minimizeColorHash"
         css = 'a { color: #ffffff }'
         s = cssutils.parseString(css)
-        self.assertEqual('a {\n    color: #fff\n    }'.encode(), s.cssText)
+        assert 'a {\n    color: #fff\n    }'.encode() == s.cssText
         cssutils.ser.prefs.minimizeColorHash = False
-        self.assertEqual('a {\n    color: #ffffff\n    }'.encode(), s.cssText)
+        assert 'a {\n    color: #ffffff\n    }'.encode() == s.cssText
 
     def test_omitLastSemicolon(self):
         "Preferences.omitLastSemicolon"
         css = 'a { x: 1; y: 2 }'
         s = cssutils.parseString(css)
-        self.assertEqual('a {\n    x: 1;\n    y: 2\n    }'.encode(), s.cssText)
+        assert 'a {\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
         cssutils.ser.prefs.omitLastSemicolon = False
-        self.assertEqual('a {\n    x: 1;\n    y: 2;\n    }'.encode(), s.cssText)
+        assert 'a {\n    x: 1;\n    y: 2;\n    }'.encode() == s.cssText
 
     def test_normalizedVarNames(self):
         "Preferences.normalizedVarNames"
@@ -553,9 +550,9 @@ a, b {}'''
 
         css = '@variables { A: 1 }'
         s = cssutils.parseString(css)
-        self.assertEqual('@variables {\n    a: 1\n    }'.encode(), s.cssText)
+        assert '@variables {\n    a: 1\n    }'.encode() == s.cssText
         cssutils.ser.prefs.normalizedVarNames = False
-        self.assertEqual('@variables {\n    A: 1\n    }'.encode(), s.cssText)
+        assert '@variables {\n    A: 1\n    }'.encode() == s.cssText
 
         cssutils.ser.prefs.resolveVariables = True
 
@@ -563,24 +560,24 @@ a, b {}'''
         "Preferences.paranthesisSpacer"
         css = 'a { x: 1; y: 2 }'
         s = cssutils.parseString(css)
-        self.assertEqual('a {\n    x: 1;\n    y: 2\n    }'.encode(), s.cssText)
+        assert 'a {\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
         cssutils.ser.prefs.paranthesisSpacer = ''
-        self.assertEqual('a{\n    x: 1;\n    y: 2\n    }'.encode(), s.cssText)
+        assert 'a{\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
 
     def test_propertyNameSpacer(self):
         "Preferences.propertyNameSpacer"
         css = 'a { x: 1; y: 2 }'
         s = cssutils.parseString(css)
-        self.assertEqual('a {\n    x: 1;\n    y: 2\n    }'.encode(), s.cssText)
+        assert 'a {\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
         cssutils.ser.prefs.propertyNameSpacer = ''
-        self.assertEqual('a {\n    x:1;\n    y:2\n    }'.encode(), s.cssText)
+        assert 'a {\n    x:1;\n    y:2\n    }'.encode() == s.cssText
 
     def test_selectorCombinatorSpacer(self):
         "Preferences.selectorCombinatorSpacer"
         s = cssutils.css.Selector(selectorText='a+b>c~d  e')
-        self.assertEqual('a + b > c ~ d e', s.selectorText)
+        assert 'a + b > c ~ d e' == s.selectorText
         cssutils.ser.prefs.selectorCombinatorSpacer = ''
-        self.assertEqual('a+b>c~d e', s.selectorText)
+        assert 'a+b>c~d e' == s.selectorText
 
     def test_spacer(self):
         cssutils.ser.prefs.spacer = ''
@@ -595,26 +592,26 @@ a, b {}'''
             '@import"x"tv': '@import"x"tv;',  # ?
         }
         for css, exp in list(tests.items()):
-            self.assertEqual(exp.encode(), cssutils.parseString(css).cssText)
+            assert exp.encode() == cssutils.parseString(css).cssText
 
     def test_validOnly(self):
         "Preferences.validOnly"
         # Property
         p = cssutils.css.Property('color', '1px')
-        self.assertEqual(p.cssText, 'color: 1px')
+        assert p.cssText == 'color: 1px'
         p.value = '1px'
         cssutils.ser.prefs.validOnly = True
-        self.assertEqual(p.cssText, '')
+        assert p.cssText == ''
         cssutils.ser.prefs.validOnly = False
-        self.assertEqual(p.cssText, 'color: 1px')
+        assert p.cssText == 'color: 1px'
 
         # CSSStyleDeclaration has no actual property valid
         # but is empty if containing invalid Properties only
         s = cssutils.css.CSSStyleDeclaration()
         s.cssText = 'left: x;top: x'
-        self.assertEqual(s.cssText, 'left: x;\ntop: x')
+        assert s.cssText == 'left: x;\ntop: x'
         cssutils.ser.prefs.validOnly = True
-        self.assertEqual(s.cssText, '')
+        assert s.cssText == ''
 
         cssutils.ser.prefs.useDefaults()
         cssutils.ser.prefs.keepComments = False
@@ -629,15 +626,15 @@ img { border-width: 3 }   /* a unit must be specified for length values */''': '
         self.do_equal_p(tests, raising=False)
 
 
-class CSSSerializerTestCase(basetest.BaseTestCase):
+class TestCSSSerializer(basetest.BaseTestCase):
     """
     testcases for cssutils.CSSSerializer
     """
 
-    def setUp(self):
+    def setup(self):
         cssutils.ser.prefs.useDefaults()
 
-    def tearDown(self):
+    def teardown(self):
         cssutils.ser.prefs.useDefaults()
 
     def test_canonical(self):
@@ -682,21 +679,21 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         }
         for test, exp in list(tests.items()):
             v = cssutils.css.PropertyValue(test)
-            self.assertEqual(exp, v.cssText)
+            assert exp == v.cssText
 
     def test_CSSStyleSheet(self):
         "CSSSerializer.do_CSSStyleSheet"
         css = '/* κουρος */'
         sheet = cssutils.parseString(css)
-        self.assertEqual(css, str(sheet.cssText, 'utf-8'))
+        assert css == str(sheet.cssText, 'utf-8')
 
         css = '@charset "utf-8";\n/* κουρος */'
         sheet = cssutils.parseString(css)
-        self.assertEqual(css, str(sheet.cssText, 'utf-8'))
+        assert css == str(sheet.cssText, 'utf-8')
         sheet.cssRules[0].encoding = 'ascii'
-        self.assertEqual(
-            '@charset "ascii";\n/* \\3BA \\3BF \\3C5 \\3C1 \\3BF \\3C2  */'.encode(),
-            sheet.cssText,
+        assert (
+            '@charset "ascii";\n/* \\3BA \\3BF \\3C5 \\3C1 \\3BF \\3C2  */'.encode()
+            == sheet.cssText
         )
 
     def test_Property(self):
@@ -707,10 +704,10 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
         priority = "!important"
 
         s = cssutils.css.property.Property(name=name, value=value, priority=priority)
-        self.assertEqual('color: red !important', cssutils.ser.do_Property(s))
+        assert 'color: red !important' == cssutils.ser.do_Property(s)
 
         s = cssutils.css.property.Property(name=name, value=value)
-        self.assertEqual('color: red', cssutils.ser.do_Property(s))
+        assert 'color: red' == cssutils.ser.do_Property(s)
 
     def test_escapestring(self):
         "CSSSerializer._escapestring"
@@ -755,4 +752,4 @@ a[href="\"\a \"'\""] {
     content: "'"
     }'''
         sheet = cssutils.parseString(css)
-        self.assertEqual(sheet.cssText, exp.encode())
+        assert sheet.cssText == exp.encode()

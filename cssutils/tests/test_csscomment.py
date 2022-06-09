@@ -5,9 +5,9 @@ from . import test_cssrule
 import cssutils.css
 
 
-class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
-    def setUp(self):
-        super(CSSCommentTestCase, self).setUp()
+class TestCSSComment(test_cssrule.TestCSSRule):
+    def setup(self):
+        super().setup()
         self.r = cssutils.css.CSSComment()
         self.rRO = cssutils.css.CSSComment(readonly=True)
         self.r_type = cssutils.css.CSSComment.COMMENT
@@ -15,7 +15,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSComment.type and init"
-        super(CSSCommentTestCase, self).test_init()
+        super().test_init()
 
     def test_csstext(self):
         "CSSComment.cssText"
@@ -64,5 +64,5 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         s = cssutils.css.CSSComment(cssText=text)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(text == s2.cssText)
+        assert isinstance(s2, s.__class__)
+        assert text == s2.cssText

@@ -4,7 +4,7 @@ from . import basetest
 from cssutils.helper import normalize, string, stringvalue, uri, urivalue
 
 
-class HelperTestCase(basetest.BaseTestCase):
+class TestHelper(basetest.BaseTestCase):
     def test_normalize(self):
         "helper._normalize()"
         tests = {
@@ -16,9 +16,9 @@ class HelperTestCase(basetest.BaseTestCase):
             # the tokenizer...
         }
         for test, exp in list(tests.items()):
-            self.assertEqual(normalize(test), exp)
+            assert normalize(test) == exp
             # static too
-            self.assertEqual(normalize(test), exp)
+            assert normalize(test) == exp
 
     #    def test_normalnumber(self):
     #        "helper.normalnumber()"
@@ -45,44 +45,41 @@ class HelperTestCase(basetest.BaseTestCase):
 
     def test_string(self):
         "helper.string()"
-        self.assertEqual('"x"', string('x'))
-        self.assertEqual('"1 2ä€"', string('1 2ä€'))
-        self.assertEqual(r'''"'"''', string("'"))
-        self.assertEqual(r'"\""', string('"'))
+        assert '"x"' == string('x')
+        assert '"1 2ä€"' == string('1 2ä€')
+        assert r'''"'"''' == string("'")
+        assert r'"\""' == string('"')
         # \n = 0xa, \r = 0xd, \f = 0xc
-        self.assertEqual(
-            r'"\a "',
-            string(
-                '''
+        assert r'"\a "' == string(
+            '''
 '''
-            ),
         )
-        self.assertEqual(r'"\c "', string('\f'))
-        self.assertEqual(r'"\d "', string('\r'))
-        self.assertEqual(r'"\d \a "', string('\r\n'))
+        assert r'"\c "' == string('\f')
+        assert r'"\d "' == string('\r')
+        assert r'"\d \a "' == string('\r\n')
 
     def test_stringvalue(self):
         "helper.stringvalue()"
-        self.assertEqual('x', stringvalue('"x"'))
-        self.assertEqual('"', stringvalue('"\\""'))
-        self.assertEqual(r'x', stringvalue(r"\x "))
+        assert 'x' == stringvalue('"x"')
+        assert '"' == stringvalue('"\\""')
+        assert r'x' == stringvalue(r"\x ")
 
         # escapes should have been done by tokenizer
         # so this shoule not happen at all:
-        self.assertEqual(r'a', stringvalue(r"\a "))
+        assert r'a' == stringvalue(r"\a ")
 
     def test_uri(self):
         "helper.uri()"
-        self.assertEqual('url(x)', uri('x'))
-        self.assertEqual('url("(")', uri('('))
-        self.assertEqual('url(")")', uri(')'))
-        self.assertEqual('url(" ")', uri(' '))
-        self.assertEqual('url(";")', uri(';'))
-        self.assertEqual('url(",")', uri(','))
-        self.assertEqual('url("x)x")', uri('x)x'))
+        assert 'url(x)' == uri('x')
+        assert 'url("(")' == uri('(')
+        assert 'url(")")' == uri(')')
+        assert 'url(" ")' == uri(' ')
+        assert 'url(";")' == uri(';')
+        assert 'url(",")' == uri(',')
+        assert 'url("x)x")' == uri('x)x')
 
     def test_urivalue(self):
         "helper.urivalue()"
-        self.assertEqual('x', urivalue('url(x)'))
-        self.assertEqual('x', urivalue('url("x")'))
-        self.assertEqual(')', urivalue('url(")")'))
+        assert 'x' == urivalue('url(x)')
+        assert 'x' == urivalue('url("x")')
+        assert ')' == urivalue('url(")")')

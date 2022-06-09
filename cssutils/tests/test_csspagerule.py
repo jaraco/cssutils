@@ -3,11 +3,12 @@
 import xml.dom
 from . import test_cssrule
 import cssutils
+import pytest
 
 
-class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
-    def setUp(self):
-        super(CSSPageRuleTestCase, self).setUp()
+class TestCSSPageRule(test_cssrule.TestCSSRule):
+    def setup(self):
+        super().setup()
 
         cssutils.ser.prefs.useDefaults()
         self.r = cssutils.css.CSSPageRule()
@@ -15,28 +16,29 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r_type = cssutils.css.CSSPageRule.PAGE_RULE  #
         self.r_typeString = 'PAGE_RULE'
 
-    def tearDown(self):
+    def teardown(self):
         cssutils.ser.prefs.useDefaults()
 
     def test_init(self):
         "CSSPageRule.__init__()"
-        super(CSSPageRuleTestCase, self).test_init()
+        super().test_init()
 
         r = cssutils.css.CSSPageRule()
-        self.assertEqual('', r.selectorText)
-        self.assertEqual(cssutils.css.CSSStyleDeclaration, type(r.style))
-        self.assertEqual(r, r.style.parentRule)
+        assert '' == r.selectorText
+        assert isinstance(r.style, cssutils.css.CSSStyleDeclaration)
+        assert r == r.style.parentRule
 
         # until any properties
-        self.assertEqual('', r.cssText)
+        assert '' == r.cssText
 
         # only possible to set @... similar name
-        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
+        with pytest.raises(xml.dom.InvalidModificationErr):
+            self.r._setAtkeyword('x')
 
         def checkrefs(ff):
-            self.assertEqual(ff, ff.style.parentRule)
+            assert ff == ff.style.parentRule
             for p in ff.style:
-                self.assertEqual(ff.style, p.parent)
+                assert ff.style == p.parent
 
         checkrefs(
             cssutils.css.CSSPageRule(
@@ -149,35 +151,39 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSPageRule()
         s = 'a:left'
         r.selectorText = s
-        self.assertEqual(r.selectorText, s)
+        assert r.selectorText == s
 
         st = 'size: a4'
         r.style = st
-        self.assertEqual(r.style.cssText, st)
+        assert r.style.cssText == st
 
         # invalid selector
-        self.assertRaises(xml.dom.SyntaxErr, r._setStyle, '$')
-        self.assertEqual(r.selectorText, s)
-        self.assertEqual(r.style.cssText, st)
+        with pytest.raises(xml.dom.SyntaxErr):
+            r._setStyle('$')
+        assert r.selectorText == s
+        assert r.style.cssText == st
 
-        self.assertRaises(xml.dom.SyntaxErr, r._setCssText, '@page $ { color: red }')
-        self.assertEqual(r.selectorText, s)
-        self.assertEqual(r.style.cssText, st)
+        with pytest.raises(xml.dom.SyntaxErr):
+            r._setCssText('@page $ { color: red }')
+        assert r.selectorText == s
+        assert r.style.cssText == st
 
         # invalid style
-        self.assertRaises(xml.dom.SyntaxErr, r._setSelectorText, '$')
-        self.assertEqual(r.selectorText, s)
-        self.assertEqual(r.style.cssText, st)
+        with pytest.raises(xml.dom.SyntaxErr):
+            r._setSelectorText('$')
+        assert r.selectorText == s
+        assert r.style.cssText == st
 
-        self.assertRaises(xml.dom.SyntaxErr, r._setCssText, '@page b:right { x }')
-        self.assertEqual(r.selectorText, s)
-        self.assertEqual(r.style.cssText, st)
+        with pytest.raises(xml.dom.SyntaxErr):
+            r._setCssText('@page b:right { x }')
+        assert r.selectorText == s
+        assert r.style.cssText == st
 
     def test_selectorText(self):
         "CSSPageRule.selectorText"
         r = cssutils.css.CSSPageRule()
         r.selectorText = 'a:left'
-        self.assertEqual(r.selectorText, 'a:left')
+        assert r.selectorText == 'a:left'
 
         tests = {
             '': '',
@@ -222,41 +228,41 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         }
         for sel, exp in list(tests.items()):
             r.selectorText = sel
-            self.assertEqual(r.specificity, exp)
+            assert r.specificity == exp
 
             r = cssutils.css.CSSPageRule()
             r.cssText = '@page %s {}' % sel
-            self.assertEqual(r.specificity, exp)
+            assert r.specificity == exp
 
     def test_cssRules(self):
         "CSSPageRule.cssRules"
         s = cssutils.parseString('@page {}')
         p = s.cssRules[0]
 
-        self.assertEqual(len(p.cssRules), 0)
+        assert len(p.cssRules) == 0
 
         # add and insert
         m1 = cssutils.css.MarginRule('@top-left', 'color: red')
         i = p.add(m1)
-        self.assertEqual(i, 0)
-        self.assertEqual(len(p.cssRules), 1)
+        assert i == 0
+        assert len(p.cssRules) == 1
 
         m3 = cssutils.css.MarginRule()
         m3.cssText = '@top-right { color: blue }'
         i = p.insertRule(m3)
-        self.assertEqual(i, 1)
-        self.assertEqual(len(p.cssRules), 2)
+        assert i == 1
+        assert len(p.cssRules) == 2
 
         m2 = cssutils.css.MarginRule()
         m2.margin = '@top-center'
         m2.style = 'color: green'
         i = p.insertRule(m2, 1)
-        self.assertEqual(i, 1)
-        self.assertEqual(len(p.cssRules), 3)
+        assert i == 1
+        assert len(p.cssRules) == 3
 
-        self.assertEqual(
-            p.cssText,
-            '''@page {
+        assert (
+            p.cssText
+            == '''@page {
     @top-left {
         color: red
         }
@@ -266,64 +272,64 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
     @top-right {
         color: blue
         }
-    }''',
+    }'''
         )
 
         # keys and dict index
-        self.assertEqual('@top-left' in p, True)
-        self.assertEqual('@bottom-left' in p, False)
+        assert '@top-left' in p
+        assert '@bottom-left' not in p
 
-        self.assertEqual(list(p.keys()), ['@top-left', '@top-center', '@top-right'])
+        assert list(p.keys()) == ['@top-left', '@top-center', '@top-right']
 
-        self.assertEqual(p['@bottom-left'], None)
-        self.assertEqual(p['@top-left'].cssText, 'color: red')
+        assert p['@bottom-left'] is None
+        assert p['@top-left'].cssText == 'color: red'
         p['@top-left'] = 'color: #f00'
-        self.assertEqual(p['@top-left'].cssText, 'color: #f00')
+        assert p['@top-left'].cssText == 'color: #f00'
 
         # delete
         p.deleteRule(m2)
-        self.assertEqual(len(p.cssRules), 2)
-        self.assertEqual(
-            p.cssText,
-            '''@page {
+        assert len(p.cssRules) == 2
+        assert (
+            p.cssText
+            == '''@page {
     @top-left {
         color: #f00
         }
     @top-right {
         color: blue
         }
-    }''',
+    }'''
         )
 
         p.deleteRule(0)
-        self.assertEqual(len(p.cssRules), 1)
-        self.assertEqual(m3, p.cssRules[0])
-        self.assertEqual(
-            p.cssText,
-            '''@page {
+        assert len(p.cssRules) == 1
+        assert m3 == p.cssRules[0]
+        assert (
+            p.cssText
+            == '''@page {
     @top-right {
         color: blue
         }
-    }''',
+    }'''
         )
 
         del p['@top-right']
-        self.assertEqual(len(p.cssRules), 0)
+        assert len(p.cssRules) == 0
 
     def test_style(self):
         "CSSPageRule.style (and references)"
         r = cssutils.css.CSSPageRule()
         s1 = r.style
-        self.assertEqual(r, s1.parentRule)
-        self.assertEqual('', s1.cssText)
+        assert r == s1.parentRule
+        assert '' == s1.cssText
 
         # set rule.cssText
         r.cssText = '@page { font-family: x1 }'
-        self.assertNotEqual(r.style, s1)
-        self.assertEqual(r, r.style.parentRule)
-        self.assertEqual(r.cssText, '@page {\n    font-family: x1\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: x1')
-        self.assertEqual(s1.cssText, '')
+        assert r.style != s1
+        assert r == r.style.parentRule
+        assert r.cssText == '@page {\n    font-family: x1\n    }'
+        assert r.style.cssText == 'font-family: x1'
+        assert s1.cssText == ''
         s2 = r.style
 
         # set invalid rule.cssText
@@ -331,51 +337,51 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             r.cssText = '@page { $ }'
         except xml.dom.SyntaxErr:
             pass
-        self.assertEqual(r.style, s2)
-        self.assertEqual(r, r.style.parentRule)
-        self.assertEqual(r.cssText, '@page {\n    font-family: x1\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: x1')
-        self.assertEqual(s2.cssText, 'font-family: x1')
+        assert r.style == s2
+        assert r == r.style.parentRule
+        assert r.cssText == '@page {\n    font-family: x1\n    }'
+        assert r.style.cssText == 'font-family: x1'
+        assert s2.cssText == 'font-family: x1'
         s3 = r.style
 
         # set rule.style.cssText
         r.style.cssText = 'font-family: x2'
-        self.assertEqual(r.style, s3)
-        self.assertEqual(r, r.style.parentRule)
-        self.assertEqual(r.cssText, '@page {\n    font-family: x2\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: x2')
+        assert r.style == s3
+        assert r == r.style.parentRule
+        assert r.cssText == '@page {\n    font-family: x2\n    }'
+        assert r.style.cssText == 'font-family: x2'
 
         # set new style object s2
         s2 = cssutils.css.CSSStyleDeclaration('font-family: y1')
         r.style = s2
-        self.assertEqual(r.style, s2)
-        self.assertEqual(r, s2.parentRule)
-        self.assertEqual(r.cssText, '@page {\n    font-family: y1\n    }')
-        self.assertEqual(s2.cssText, 'font-family: y1')
-        self.assertEqual(r.style.cssText, 'font-family: y1')
-        self.assertEqual(s3.cssText, 'font-family: x2')  # old
+        assert r.style == s2
+        assert r == s2.parentRule
+        assert r.cssText == '@page {\n    font-family: y1\n    }'
+        assert s2.cssText == 'font-family: y1'
+        assert r.style.cssText == 'font-family: y1'
+        assert s3.cssText == 'font-family: x2'  # old
 
         # set s2.cssText
         s2.cssText = 'font-family: y2'
-        self.assertEqual(r.style, s2)
-        self.assertEqual(r.cssText, '@page {\n    font-family: y2\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: y2')
-        self.assertEqual(s3.cssText, 'font-family: x2')  # old
+        assert r.style == s2
+        assert r.cssText == '@page {\n    font-family: y2\n    }'
+        assert r.style.cssText == 'font-family: y2'
+        assert s3.cssText == 'font-family: x2'  # old
         # set invalid s2.cssText
         try:
             s2.cssText = '$'
         except xml.dom.SyntaxErr:
             pass
-        self.assertEqual(r.style, s2)
-        self.assertEqual(r.cssText, '@page {\n    font-family: y2\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: y2')
-        self.assertEqual(s3.cssText, 'font-family: x2')  # old
+        assert r.style == s2
+        assert r.cssText == '@page {\n    font-family: y2\n    }'
+        assert r.style.cssText == 'font-family: y2'
+        assert s3.cssText == 'font-family: x2'  # old
 
         # set r.style with text
         r.style = 'font-family: z'
-        self.assertNotEqual(r.style, s2)
-        self.assertEqual(r.cssText, '@page {\n    font-family: z\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: z')
+        assert r.style != s2
+        assert r.cssText == '@page {\n    font-family: z\n    }'
+        assert r.style.cssText == 'font-family: z'
 
     def test_properties(self):
         "CSSPageRule.style properties"
@@ -406,7 +412,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
     orphans: 3;
     widows: 3
     }'''
-        self.assertEqual(exp, r.cssText)
+        assert exp == r.cssText
 
     def test_reprANDstr(self):
         "CSSPageRule.__repr__(), .__str__()"
@@ -414,8 +420,8 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = cssutils.css.CSSPageRule(selectorText=sel)
 
-        self.assertTrue(sel in str(s))
+        assert sel in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(sel == s2.selectorText)
+        assert isinstance(s2, s.__class__)
+        assert sel == s2.selectorText

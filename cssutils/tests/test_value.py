@@ -7,7 +7,7 @@ import pytest
 
 
 class PropertyValueTestCase:
-    def setUp(self):
+    def setup(self):
         self.r = cssutils.css.PropertyValue()
 
     def test_init(self):

@@ -9,7 +9,7 @@ import cssutils.tokenize2 as tokenize2
 from cssutils.tokenize2 import Tokenizer
 
 
-class TokenizerTestCase(basetest.BaseTestCase):
+class TestTokenizer(basetest.BaseTestCase):
 
     testsall = {
         # IDENT
@@ -508,7 +508,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         "url('a'": [('URI', "url('a')", 1, 1)],
     }
 
-    def setUp(self):
+    def setup(self):
         # log = cssutils.errorhandler.ErrorHandler()
         self.tokenizer = Tokenizer()
 
@@ -551,11 +551,11 @@ class TokenizerTestCase(basetest.BaseTestCase):
             tokens = tokenizer.tokenize(css)
             for i, actual in enumerate(tokens):
                 expected = tests[css][i]
-                self.assertEqual(expected, actual)
+                assert expected == actual
 
             # check if all same number of tokens
             tokens = list(tokenizer.tokenize(css))
-            self.assertEqual(len(tokens), len(tests[css]))
+            assert len(tokens) == len(tests[css])
 
     def test_tokenizefullsheet(self):
         "cssutils Tokenizer().tokenize(fullsheet=True)"
@@ -578,21 +578,21 @@ class TokenizerTestCase(basetest.BaseTestCase):
                     expected = tests[css][i]
                 except IndexError:
                     # EOF is added
-                    self.assertEqual(actual[0], 'EOF')
+                    assert actual[0] == 'EOF'
                 else:
-                    self.assertEqual(expected, actual)
+                    assert expected == actual
 
             # check if all same number of tokens
             tokens = list(tokenizer.tokenize(css, fullsheet=True))
             # EOF is added so -1
-            self.assertEqual(len(tokens) - 1, len(tests[css]))
+            assert len(tokens) - 1 == len(tests[css])
 
 
-class TokenizerUtilsTestCase(basetest.BaseTestCase, metaclass=basetest.GenerateTests):
+class TestTokenizerUtils(basetest.BaseTestCase, metaclass=basetest.GenerateTests):
     """Tests for the util functions of tokenize"""
 
     def gen_test_has_at(self, string, pos, text, expected):
-        self.assertEqual(tokenize2.has_at(string, pos, text), expected)
+        assert tokenize2.has_at(string, pos, text) == expected
 
     gen_test_has_at.cases = [
         ('foo', 0, 'foo', True),
@@ -605,7 +605,7 @@ class TokenizerUtilsTestCase(basetest.BaseTestCase, metaclass=basetest.GenerateT
     ]
 
     def gen_test_suffix_eq(self, string, pos, suffix, expected):
-        self.assertEqual(tokenize2.suffix_eq(string, pos, suffix), expected)
+        assert tokenize2.suffix_eq(string, pos, suffix) == expected
 
     gen_test_suffix_eq.cases = [
         ('foobar', 0, 'foobar', True),

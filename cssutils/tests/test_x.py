@@ -8,10 +8,10 @@ import cssutils
 
 
 class XTestCase:
-    def setUp(self):
+    def setup(self):
         cssutils.ser.prefs.useDefaults()
 
-    def tearDown(self):
+    def teardown(self):
         cssutils.ser.prefs.useDefaults()
 
     @pytest.mark.xfail(reason="not implemented")

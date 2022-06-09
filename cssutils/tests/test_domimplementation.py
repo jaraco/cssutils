@@ -8,7 +8,7 @@ import cssutils
 
 
 class DOMImplementationTestCase:
-    def setUp(self):
+    def setup(self):
         self.domimpl = cssutils.DOMImplementationCSS()
 
     def test_createCSSStyleSheet(self):

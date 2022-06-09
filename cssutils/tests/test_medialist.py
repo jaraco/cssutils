@@ -10,21 +10,21 @@ from . import basetest
 import cssutils.stylesheets
 
 
-class MediaListTestCase(basetest.BaseTestCase):
-    def setUp(self):
-        super(MediaListTestCase, self).setUp()
+class TestMediaList(basetest.BaseTestCase):
+    def setup(self):
+        super().setup()
         self.r = cssutils.stylesheets.MediaList()
 
     def test_set(self):
         "MediaList.mediaText 1"
         ml = cssutils.stylesheets.MediaList()
 
-        self.assertEqual(0, ml.length)
-        self.assertEqual('all', ml.mediaText)
+        assert 0 == ml.length
+        assert 'all' == ml.mediaText
 
         ml.mediaText = ' print   , screen '
-        self.assertEqual(2, ml.length)
-        self.assertEqual('print, screen', ml.mediaText)
+        assert 2 == ml.length
+        assert 'print, screen' == ml.mediaText
 
         # with pytest.raises(xml.dom.InvalidModificationErr, match=self.media_msg('tv')):
         #     ml._setMediaText(u' print , all  , tv ')
@@ -32,66 +32,69 @@ class MediaListTestCase(basetest.BaseTestCase):
         # self.assertEqual(u'all', ml.mediaText)
         # self.assertEqual(1, ml.length)
 
-        self.assertRaises(xml.dom.SyntaxErr, ml.appendMedium, 'test')
+        with pytest.raises(xml.dom.SyntaxErr):
+            ml.appendMedium('test')
 
     def test_appendMedium(self):
         "MediaList.appendMedium() 1"
         ml = cssutils.stylesheets.MediaList()
 
         ml.appendMedium('print')
-        self.assertEqual(1, ml.length)
-        self.assertEqual('print', ml.mediaText)
+        assert 1 == ml.length
+        assert 'print' == ml.mediaText
 
         ml.appendMedium('screen')
-        self.assertEqual(2, ml.length)
-        self.assertEqual('print, screen', ml.mediaText)
+        assert 2 == ml.length
+        assert 'print, screen' == ml.mediaText
 
         # automatic del and append!
         ml.appendMedium('print')
-        self.assertEqual(2, ml.length)
-        self.assertEqual('screen, print', ml.mediaText)
+        assert 2 == ml.length
+        assert 'screen, print' == ml.mediaText
 
         # automatic del and append!
         ml.appendMedium('SCREEN')
-        self.assertEqual(2, ml.length)
-        self.assertEqual('print, SCREEN', ml.mediaText)
+        assert 2 == ml.length
+        assert 'print, SCREEN' == ml.mediaText
 
         # append invalid MediaQuery
         mq = cssutils.stylesheets.MediaQuery()
         ml.appendMedium(mq)
-        self.assertEqual(2, ml.length)
-        self.assertEqual('print, SCREEN', ml.mediaText)
+        assert 2 == ml.length
+        assert 'print, SCREEN' == ml.mediaText
 
         # append()
         mq = cssutils.stylesheets.MediaQuery('tv')
         ml.append(mq)
-        self.assertEqual(3, ml.length)
-        self.assertEqual('print, SCREEN, tv', ml.mediaText)
+        assert 3 == ml.length
+        assert 'print, SCREEN, tv' == ml.mediaText
 
         # __setitem__
-        self.assertRaises(IndexError, ml.__setitem__, 10, 'all')
+        with pytest.raises(IndexError):
+            ml.__setitem__(10, 'all')
         ml[0] = 'handheld'
-        self.assertEqual(3, ml.length)
-        self.assertEqual('handheld, SCREEN, tv', ml.mediaText)
+        assert 3 == ml.length
+        assert 'handheld, SCREEN, tv' == ml.mediaText
 
     def test_appendAll(self):
         "MediaList.append() 2"
         ml = cssutils.stylesheets.MediaList()
         ml.appendMedium('print')
         ml.appendMedium('tv')
-        self.assertEqual(2, ml.length)
-        self.assertEqual('print, tv', ml.mediaText)
+        assert 2 == ml.length
+        assert 'print, tv' == ml.mediaText
 
         ml.appendMedium('all')
-        self.assertEqual(1, ml.length)
-        self.assertEqual('all', ml.mediaText)
+        assert 1 == ml.length
+        assert 'all' == ml.mediaText
 
         with pytest.raises(xml.dom.InvalidModificationErr, match=self.media_msg('tv')):
             ml.appendMedium('tv')
-        self.assertEqual(1, ml.length)
-        self.assertEqual('all', ml.mediaText)
+        assert 1 == ml.length
+        assert 'all' == ml.mediaText
 
-        self.assertRaises(xml.dom.SyntaxErr, ml.appendMedium, 'test')
+        with pytest.raises(xml.dom.SyntaxErr):
+            ml.appendMedium('test')
 
     @staticmethod
     def media_msg(text):
@@ -111,21 +114,23 @@ class MediaListTestCase(basetest.BaseTestCase):
             ml.appendMedium('print')
 
         sheet = cssutils.parseString('@media all, print { /**/ }')
-        self.assertEqual('@media all {\n    /**/\n    }'.encode(), sheet.cssText)
+        assert '@media all {\n    /**/\n    }'.encode() == sheet.cssText
 
     def test_delete(self):
         "MediaList.deleteMedium()"
         ml = cssutils.stylesheets.MediaList()
 
-        self.assertRaises(xml.dom.NotFoundErr, ml.deleteMedium, 'all')
-        self.assertRaises(xml.dom.NotFoundErr, ml.deleteMedium, 'test')
+        with pytest.raises(xml.dom.NotFoundErr):
+            ml.deleteMedium('all')
+        with pytest.raises(xml.dom.NotFoundErr):
+            ml.deleteMedium('test')
 
         ml.appendMedium('print')
         ml.deleteMedium('print')
         ml.appendMedium('tV')
         ml.deleteMedium('Tv')
-        self.assertEqual(0, ml.length)
-        self.assertEqual('all', ml.mediaText)
+        assert 0 == ml.length
+        assert 'all' == ml.mediaText
 
     def test_item(self):
         "MediaList.item()"
@@ -133,9 +138,9 @@ class MediaListTestCase(basetest.BaseTestCase):
         ml.appendMedium('print')
         ml.appendMedium('screen')
 
-        self.assertEqual('print', ml.item(0))
-        self.assertEqual('screen', ml.item(1))
-        self.assertEqual(None, ml.item(2))
+        assert 'print' == ml.item(0)
+        assert 'screen' == ml.item(1)
+        assert ml.item(2) is None
 
     # REMOVED special case!
     # def test_handheld(self):
@@ -194,8 +199,8 @@ class MediaListTestCase(basetest.BaseTestCase):
 
         s = cssutils.stylesheets.MediaList(mediaText=mediaText)
 
-        self.assertTrue(mediaText in str(s))
+        assert mediaText in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(mediaText == s2.mediaText)
+        assert isinstance(s2, s.__class__)
+        assert mediaText == s2.mediaText

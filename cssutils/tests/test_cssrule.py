@@ -3,9 +3,10 @@
 import xml.dom
 from . import basetest
 import cssutils.css
+import pytest
 
 
-class CSSRuleTestCase(basetest.BaseTestCase):
+class TestCSSRule(basetest.BaseTestCase):
     """
     base class for all CSSRule subclass tests
 
@@ -18,14 +19,14 @@ class CSSRuleTestCase(basetest.BaseTestCase):
     to use the base class tests too
     """
 
-    def setUp(self):
+    def setup(self):
         """
         OVERWRITE!
         self.r is the rule
         self.rRO the readonly rule
         relf.r_type the type as defined in CSSRule
         """
-        super(CSSRuleTestCase, self).setUp()
+        super().setup()
 
         self.sheet = cssutils.css.CSSStyleSheet()
         self.r = cssutils.css.CSSRule()
@@ -34,16 +35,16 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.r_type = cssutils.css.CSSRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
-    def tearDown(self):
+    def teardown(self):
         cssutils.ser.prefs.useDefaults()
 
     def test_init(self):
         "CSSRule.type and init"
-        self.assertEqual(self.r_type, self.r.type)
-        self.assertEqual(self.r_typeString, self.r.typeString)
-        self.assertEqual('', self.r.cssText)
-        self.assertEqual(None, self.r.parentRule)
-        self.assertEqual(None, self.r.parentStyleSheet)
+        assert self.r_type == self.r.type
+        assert self.r_typeString == self.r.typeString
+        assert '' == self.r.cssText
+        assert self.r.parentRule is None
+        assert self.r.parentStyleSheet is None
 
     def test_parentRule_parentStyleSheet_type(self):  # noqa: C901
         "CSSRule.parentRule .parentStyleSheet .type"
@@ -73,19 +74,19 @@ class CSSRuleTestCase(basetest.BaseTestCase):
 
         def test(s):
             for i, rule in enumerate(s):
-                self.assertEqual(rule.parentRule, None)
-                self.assertEqual(rule.parentStyleSheet, s)
+                assert rule.parentRule is None
+                assert rule.parentStyleSheet == s
                 # self.assertEqual(rule.type, rules[i][1])
                 if rule.MEDIA_RULE == rule.type:
                     for j, r in enumerate(rule):
-                        self.assertEqual(r.parentRule, rule)
-                        self.assertEqual(r.parentStyleSheet, s)
-                        self.assertEqual(r.type, mrt[j])
+                        assert r.parentRule == rule
+                        assert r.parentStyleSheet == s
+                        assert r.type == mrt[j]
 
                 if i == 0:  # check encoding
-                    self.assertEqual('ascii', s.encoding)
+                    assert 'ascii' == s.encoding
                 elif i == 2:  # check namespaces
-                    self.assertEqual('x', s.namespaces[''])
+                    assert 'x' == s.namespaces['']
 
         cssText = ''.join(r[0] for r in rules)
         # parsing
@@ -143,10 +144,10 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         def test(s):
             mr = s.cssRules[0]
             for i, rule in enumerate(mr):
-                self.assertEqual(rule.parentRule, mr)
-                self.assertEqual(rule.parentStyleSheet, s)
-                self.assertEqual(rule.parentStyleSheet, mr.parentStyleSheet)
-                self.assertEqual(rule.type, rules[i][1])
+                assert rule.parentRule == mr
+                assert rule.parentStyleSheet == s
+                assert rule.parentStyleSheet == mr.parentStyleSheet
+                assert rule.type == rules[i][1]
 
         cssText = '@media all { %s }' % ''.join(r[0] for r in rules)
         # parsing
@@ -197,10 +198,11 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         "CSSRule readonly"
         self.rRO = cssutils.css.CSSRule()
         self.rRO._readonly = True
-        self.assertEqual(True, self.rRO._readonly)
-        self.assertEqual('', self.rRO.cssText)
-        self.assertRaises(xml.dom.NoModificationAllowedErr, self.rRO._setCssText, 'x')
-        self.assertEqual('', self.rRO.cssText)
+        assert self.rRO._readonly
+        assert '' == self.rRO.cssText
+        with pytest.raises(xml.dom.NoModificationAllowedErr):
+            self.rRO._setCssText('x')
+        assert '' == self.rRO.cssText
 
     def _test_InvalidModificationErr(self, startwithspace):
         """
@@ -238,10 +240,15 @@ class CSSRuleTestCase(basetest.BaseTestCase):
             if test.startswith(startwithspace):
                 test = ' %s' % test
 
-            self.assertRaises(xml.dom.InvalidModificationErr, self.r._setCssText, test)
+            with pytest.raises(xml.dom.InvalidModificationErr):
+                self.r._setCssText(test)
 
         # check that type is readonly
-        self.assertRaises(AttributeError, self.r.__setattr__, 'parentRule', None)
-        self.assertRaises(AttributeError, self.r.__setattr__, 'parentStyleSheet', None)
-        self.assertRaises(AttributeError, self.r.__setattr__, 'type', 1)
-        self.assertRaises(AttributeError, self.r.__setattr__, 'typeString', "")
+        with pytest.raises(AttributeError):
+            self.r.__setattr__('parentRule', None)
+        with pytest.raises(AttributeError):
+            self.r.__setattr__('parentStyleSheet', None)
+        with pytest.raises(AttributeError):
+            self.r.__setattr__('type', 1)
+        with pytest.raises(AttributeError):
+            self.r.__setattr__('typeString', "")

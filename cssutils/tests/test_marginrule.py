@@ -3,11 +3,12 @@
 import xml.dom
 from . import test_cssrule
 import cssutils
+import pytest
 
 
-class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
-    def setUp(self):
-        super(MarginRuleTestCase, self).setUp()
+class TestMarginRule(test_cssrule.TestCSSRule):
+    def setup(self):
+        super().setup()
 
         cssutils.ser.prefs.useDefaults()
         self.r = cssutils.css.MarginRule()
@@ -15,27 +16,28 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r_type = cssutils.css.MarginRule.MARGIN_RULE
         self.r_typeString = 'MARGIN_RULE'
 
-    def tearDown(self):
+    def teardown(self):
         cssutils.ser.prefs.useDefaults()
 
     def test_init(self):
         "MarginRule.__init__()"
 
         r = cssutils.css.MarginRule()
-        self.assertEqual(r.margin, None)
-        self.assertEqual(r.atkeyword, None)
-        self.assertEqual(r._keyword, None)
-        self.assertEqual(r.style.cssText, '')
-        self.assertEqual(r.cssText, '')
+        assert r.margin is None
+        assert r.atkeyword is None
+        assert r._keyword is None
+        assert r.style.cssText == ''
+        assert r.cssText == ''
 
         r = cssutils.css.MarginRule(margin='@TOP-left')
-        self.assertEqual(r.margin, '@top-left')
-        self.assertEqual(r.atkeyword, '@top-left')
-        self.assertEqual(r._keyword, '@TOP-left')
-        self.assertEqual(r.style.cssText, '')
-        self.assertEqual(r.cssText, '')
+        assert r.margin == '@top-left'
+        assert r.atkeyword == '@top-left'
+        assert r._keyword == '@TOP-left'
+        assert r.style.cssText == ''
+        assert r.cssText == ''
 
-        self.assertRaises(xml.dom.InvalidModificationErr, cssutils.css.MarginRule, '@x')
+        with pytest.raises(xml.dom.InvalidModificationErr):
+            cssutils.css.MarginRule('@x')
 
     def test_InvalidModificationErr(self):
         "MarginRule.cssText InvalidModificationErr"
@@ -88,8 +90,8 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = cssutils.css.MarginRule(margin=margin, style='left: 0')
 
-        self.assertTrue(margin in str(s))
+        assert margin in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(margin == s2.margin)
+        assert isinstance(s2, s.__class__)
+        assert margin == s2.margin

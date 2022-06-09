@@ -4,40 +4,41 @@ import xml.dom
 from . import basetest
 import cssutils
 from cssutils.css.selectorlist import SelectorList
+import pytest
 
 
-class SelectorListTestCase(basetest.BaseTestCase):
-    def setUp(self):
+class TestSelectorList(basetest.BaseTestCase):
+    def setup(self):
         self.r = SelectorList()
 
     def test_init(self):
         "SelectorList.__init__() and .length"
         s = SelectorList()
-        self.assertEqual(0, s.length)
+        assert 0 == s.length
 
         s = SelectorList('a, b')
-        self.assertEqual(2, s.length)
-        self.assertEqual('a, b', s.selectorText)
+        assert 2 == s.length
+        assert 'a, b' == s.selectorText
 
         s = SelectorList(selectorText='a')
-        self.assertEqual(1, s.length)
-        self.assertEqual('a', s.selectorText)
+        assert 1 == s.length
+        assert 'a' == s.selectorText
 
         s = SelectorList(selectorText=('p|a', {'p': 'uri'}))  # n-dict
-        self.assertEqual(1, s.length)
-        self.assertEqual('p|a', s.selectorText)
+        assert 1 == s.length
+        assert 'p|a' == s.selectorText
 
         s = SelectorList(selectorText=('p|a', (('p', 'uri'),)))  # n-tuples
-        self.assertEqual(1, s.length)
-        self.assertEqual('p|a', s.selectorText)
+        assert 1 == s.length
+        assert 'p|a' == s.selectorText
 
     def test_parentRule(self):
         "Selector.parentRule"
 
         def check(style):
-            self.assertEqual(style, style.selectorList.parentRule)
+            assert style == style.selectorList.parentRule
             for sel in style.selectorList:
-                self.assertEqual(style.selectorList, sel.parent)
+                assert style.selectorList == sel.parent
 
         style = cssutils.css.CSSStyleRule('a, b')
         check(style)
@@ -58,26 +59,28 @@ class SelectorListTestCase(basetest.BaseTestCase):
         "SelectorList.appendSelector() and .length"
         s = SelectorList()
         s.appendSelector('a')
-        self.assertEqual(1, s.length)
+        assert 1 == s.length
 
-        self.assertRaises(xml.dom.InvalidModificationErr, s.appendSelector, 'b,')
-        self.assertEqual(1, s.length)
+        with pytest.raises(xml.dom.InvalidModificationErr):
+            s.appendSelector('b,')
+        assert 1 == s.length
 
-        self.assertEqual('a', s.selectorText)
+        assert 'a' == s.selectorText
 
         s.append('b')
-        self.assertEqual(2, s.length)
-        self.assertEqual('a, b', s.selectorText)
+        assert 2 == s.length
+        assert 'a, b' == s.selectorText
 
         s.append('a')
-        self.assertEqual(2, s.length)
-        self.assertEqual('b, a', s.selectorText)
+        assert 2 == s.length
+        assert 'b, a' == s.selectorText
 
         # __setitem__
-        self.assertRaises(IndexError, s.__setitem__, 4, 'x')
+        with pytest.raises(IndexError):
+            s.__setitem__(4, 'x')
         s[1] = 'c'
-        self.assertEqual(2, s.length)
-        self.assertEqual('b, c', s.selectorText)
+        assert 2 == s.length
+        assert 'b, c' == s.selectorText
         # TODO: remove duplicates?
         #        s[0] = 'c'
         #        self.assertEqual(1, s.length)
@@ -85,23 +88,26 @@ class SelectorListTestCase(basetest.BaseTestCase):
 
         s = SelectorList()
         s.appendSelector(('p|a', {'p': 'uri', 'x': 'xxx'}))
-        self.assertEqual('p|a', s.selectorText)
+        assert 'p|a' == s.selectorText
         # x gets lost as not used
-        self.assertRaises(xml.dom.NamespaceErr, s.append, 'x|a')
+        with pytest.raises(xml.dom.NamespaceErr):
+            s.append('x|a')
         # not set at all
-        self.assertRaises(xml.dom.NamespaceErr, s.append, 'y|a')
+        with pytest.raises(xml.dom.NamespaceErr):
+            s.append('y|a')
         # but p is retained
         s.append('p|b')
-        self.assertEqual('p|a, p|b', s.selectorText)
+        assert 'p|a, p|b' == s.selectorText
 
     def test_selectorText(self):
         "SelectorList.selectorText"
         s = SelectorList()
         s.selectorText = 'a, b'
-        self.assertEqual('a, b', s.selectorText)
-        self.assertRaises(xml.dom.SyntaxErr, s._setSelectorText, ',')
+        assert 'a, b' == s.selectorText
+        with pytest.raises(xml.dom.SyntaxErr):
+            s._setSelectorText(',')
         # not changed as invalid!
-        self.assertEqual('a, b', s.selectorText)
+        assert 'a, b' == s.selectorText
 
         tests = {
             '*': None,
@@ -135,8 +141,8 @@ class SelectorListTestCase(basetest.BaseTestCase):
 
         s = cssutils.css.SelectorList(selectorText=sel)
 
-        self.assertTrue(sel[0] in str(s))
+        assert sel[0] in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertEqual(sel[0], s2.selectorText)
+        assert isinstance(s2, s.__class__)
+        assert sel[0] == s2.selectorText

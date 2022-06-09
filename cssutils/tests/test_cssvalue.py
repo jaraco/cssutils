@@ -11,88 +11,88 @@ import pytest
 pytestmark = pytest.mark.xfail(reason="incomplete")
 
 
-class CSSValueTestCase(basetest.BaseTestCase):
-    def setUp(self):
+class TestCSSValue(basetest.BaseTestCase):
+    def setup(self):
         self.r = cssutils.css.CSSValue()  # needed for tests
 
     def test_init(self):
         "CSSValue.__init__()"
         v = cssutils.css.CSSValue()
-        self.assertTrue('' == v.cssText)
-        self.assertTrue(None is v.cssValueType)
-        self.assertTrue(None is v.cssValueTypeString)
+        assert '' == v.cssText
+        assert None is v.cssValueType
+        assert None is v.cssValueTypeString
 
     def test_escapes(self):
         "CSSValue Escapes"
         v = cssutils.css.CSSValue()
         v.cssText = '1px'
-        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-        self.assertTrue(v.CSS_PX == v.primitiveType)
-        self.assertTrue('1px' == v.cssText)
+        assert v.CSS_PRIMITIVE_VALUE == v.cssValueType
+        assert v.CSS_PX == v.primitiveType
+        assert '1px' == v.cssText
 
         v.cssText = '1PX'
-        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-        self.assertTrue(v.CSS_PX == v.primitiveType)
-        self.assertTrue('1px' == v.cssText)
+        assert v.CSS_PRIMITIVE_VALUE == v.cssValueType
+        assert v.CSS_PX == v.primitiveType
+        assert '1px' == v.cssText
 
         v.cssText = '1p\\x'
-        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-        self.assertTrue(v.CSS_PX == v.primitiveType)
-        self.assertTrue('1px' == v.cssText)
+        assert v.CSS_PRIMITIVE_VALUE == v.cssValueType
+        assert v.CSS_PX == v.primitiveType
+        assert '1px' == v.cssText
 
     def test_cssText(self):
         "CSSValue.cssText"
         v = cssutils.css.CSSValue()
         v.cssText = '1px'
-        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-        self.assertTrue(v.CSS_PX == v.primitiveType)
-        self.assertTrue('1px' == v.cssText)
+        assert v.CSS_PRIMITIVE_VALUE == v.cssValueType
+        assert v.CSS_PX == v.primitiveType
+        assert '1px' == v.cssText
 
         v = cssutils.css.CSSValue()
         v.cssText = '1px'
-        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-        self.assertTrue(v.CSS_PX == v.primitiveType)
-        self.assertTrue('1px' == v.cssText)
+        assert v.CSS_PRIMITIVE_VALUE == v.cssValueType
+        assert v.CSS_PX == v.primitiveType
+        assert '1px' == v.cssText
 
         v = cssutils.css.CSSValue()
         v.cssText = 'a  ,b,  c  ,"d or d", "e, " '
-        self.assertEqual(v.CSS_PRIMITIVE_VALUE, v.cssValueType)
-        self.assertEqual(v.CSS_STRING, v.primitiveType)
-        self.assertEqual('a, b, c, "d or d", "e, "', v.cssText)
+        assert v.CSS_PRIMITIVE_VALUE == v.cssValueType
+        assert v.CSS_STRING == v.primitiveType
+        assert 'a, b, c, "d or d", "e, "' == v.cssText
 
         v.cssText = '  1   px    '
-        self.assertTrue(v.CSS_VALUE_LIST == v.cssValueType)
-        self.assertTrue('1 px' == v.cssText)
+        assert v.CSS_VALUE_LIST == v.cssValueType
+        assert '1 px' == v.cssText
 
         v.cssText = '  normal 1px a, b, "c" end   '
-        self.assertTrue(v.CSS_VALUE_LIST == v.cssValueType)
-        self.assertEqual('normal 1px a, b, "c" end', v.cssText)
+        assert v.CSS_VALUE_LIST == v.cssValueType
+        assert 'normal 1px a, b, "c" end' == v.cssText
 
         for i, x in enumerate(v):
-            self.assertEqual(x.CSS_PRIMITIVE_VALUE, x.cssValueType)
+            assert x.CSS_PRIMITIVE_VALUE == x.cssValueType
             if x == 0:
-                self.assertEqual(x.CSS_IDENT, x.primitiveType)
-                self.assertEqual('normal', x.cssText)
+                assert x.CSS_IDENT == x.primitiveType
+                assert 'normal' == x.cssText
             elif x == 1:
-                self.assertEqual(x.CSS_PX, x.primitiveType)
-                self.assertEqual('1px', x.cssText)
+                assert x.CSS_PX == x.primitiveType
+                assert '1px' == x.cssText
             if x == 2:
-                self.assertEqual(x.CSS_STRING, x.primitiveType)
-                self.assertEqual('a, b, "c"', x.cssText)
+                assert x.CSS_STRING == x.primitiveType
+                assert 'a, b, "c"' == x.cssText
             if x == 3:
-                self.assertEqual(x.CSS_IDENT, x.primitiveType)
-                self.assertEqual('end', x.cssText)
+                assert x.CSS_IDENT == x.primitiveType
+                assert 'end' == x.cssText
 
         v = cssutils.css.CSSValue()
         v.cssText = '  1   px    '
-        self.assertTrue(v.CSS_VALUE_LIST == v.cssValueType)
-        self.assertTrue('1 px' == v.cssText)
+        assert v.CSS_VALUE_LIST == v.cssValueType
+        assert '1 px' == v.cssText
 
         v.cssText = 'expression(document.body.clientWidth > 972 ? "1014px": "100%" )'
-        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-        self.assertTrue(v.CSS_UNKNOWN == v.primitiveType)
-        self.assertEqual(
-            'expression(document.body.clientWidth > 972?"1014px": "100%")', v.cssText
+        assert v.CSS_PRIMITIVE_VALUE == v.cssValueType
+        assert v.CSS_UNKNOWN == v.primitiveType
+        assert (
+            'expression(document.body.clientWidth > 972?"1014px": "100%")' == v.cssText
         )
 
     def test_cssText2(self):
@@ -275,7 +275,7 @@ y"''': '''"xy"''',
         for v, exp in list(tests.items()):
             s = cssutils.parseString('a { background: %s' % v)
             v = s.cssRules[0].style.background
-            self.assertEqual(v, exp)
+            assert v == exp
 
     def test_cssValueType(self):
         "CSSValue.cssValueType .cssValueTypeString"
@@ -332,21 +332,22 @@ y"''': '''"xy"''',
                 if value == "'string'":
                     # will be changed to " always
                     value = '"string"'
-                self.assertEqual(value, v.cssText)
-                self.assertEqual(name, v.cssValueTypeString)
-                self.assertEqual(getattr(v, name), v.cssValueType)
-                self.assertEqual(cls, type(v))
+                assert value == v.cssText
+                assert name == v.cssValueTypeString
+                assert getattr(v, name) == v.cssValueType
+                assert cls == type(v)
 
     def test_readonly(self):
         "(CSSValue._readonly)"
         v = cssutils.css.CSSValue(cssText='inherit')
-        self.assertTrue(False is v._readonly)
+        assert False is v._readonly
 
         v = cssutils.css.CSSValue(cssText='inherit', readonly=True)
-        self.assertTrue(True is v._readonly)
-        self.assertTrue('inherit', v.cssText)
-        self.assertRaises(xml.dom.NoModificationAllowedErr, v._setCssText, 'x')
-        self.assertTrue('inherit', v.cssText)
+        assert True is v._readonly
+        assert 'inherit', v.cssText
+        with pytest.raises(xml.dom.NoModificationAllowedErr):
+            v._setCssText('x')
+        assert 'inherit', v.cssText
 
     def test_reprANDstr(self):
         "CSSValue.__repr__(), .__str__()"
@@ -354,38 +355,42 @@ y"''': '''"xy"''',
 
         s = cssutils.css.CSSValue(cssText=cssText)
 
-        self.assertTrue(cssText in str(s))
+        assert cssText in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(cssText == s2.cssText)
+        assert isinstance(s2, s.__class__)
+        assert cssText == s2.cssText
 
 
-class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
+class TestCSSPrimitiveValue(basetest.BaseTestCase):
     def test_init(self):
         "CSSPrimitiveValue.__init__()"
         v = cssutils.css.CSSPrimitiveValue('1')
-        self.assertTrue('1' == v.cssText)
+        assert '1' == v.cssText
 
-        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-        self.assertTrue("CSS_PRIMITIVE_VALUE" == v.cssValueTypeString)
+        assert v.CSS_PRIMITIVE_VALUE == v.cssValueType
+        assert "CSS_PRIMITIVE_VALUE" == v.cssValueTypeString
 
-        self.assertTrue(v.CSS_NUMBER == v.primitiveType)
-        self.assertTrue("CSS_NUMBER" == v.primitiveTypeString)
+        assert v.CSS_NUMBER == v.primitiveType
+        assert "CSS_NUMBER" == v.primitiveTypeString
 
         # DUMMY to be able to test empty constructor call
         # self.assertRaises(xml.dom.SyntaxErr, v.__init__, None)
 
-        self.assertRaises(xml.dom.InvalidAccessErr, v.getCounterValue)
-        self.assertRaises(xml.dom.InvalidAccessErr, v.getRGBColorValue)
-        self.assertRaises(xml.dom.InvalidAccessErr, v.getRectValue)
-        self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
+        with pytest.raises(xml.dom.InvalidAccessErr):
+            v.getCounterValue()
+        with pytest.raises(xml.dom.InvalidAccessErr):
+            v.getRGBColorValue()
+        with pytest.raises(xml.dom.InvalidAccessErr):
+            v.getRectValue()
+        with pytest.raises(xml.dom.InvalidAccessErr):
+            v.getStringValue()
 
     def test_CSS_UNKNOWN(self):
         "CSSPrimitiveValue.CSS_UNKNOWN"
         v = cssutils.css.CSSPrimitiveValue('expression(false)')
-        self.assertTrue(v.CSS_UNKNOWN == v.primitiveType)
-        self.assertTrue('CSS_UNKNOWN' == v.primitiveTypeString)
+        assert v.CSS_UNKNOWN == v.primitiveType
+        assert 'CSS_UNKNOWN' == v.primitiveTypeString
 
     def test_CSS_NUMBER_AND_OTHER_DIMENSIONS(self):
         "CSSPrimitiveValue.CSS_NUMBER .. CSS_DIMENSION"
@@ -412,8 +417,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         for dim, name in defs:
             for n in (0, 1, 1.1, -1, -1.1, -0):
                 v = cssutils.css.CSSPrimitiveValue('%i%s' % (n, dim))
-                self.assertEqual(name, v.primitiveTypeString)
-                self.assertEqual(getattr(v, name), v.primitiveType)
+                assert name == v.primitiveTypeString
+                assert getattr(v, name) == v.primitiveType
 
     def test_CSS_STRING_AND_OTHER(self):
         "CSSPrimitiveValue.CSS_STRING .. CSS_RGBCOLOR"
@@ -449,8 +454,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         for examples, name in defs:
             for x in examples:
                 v = cssutils.css.CSSPrimitiveValue(x)
-                self.assertEqual(getattr(v, name), v.primitiveType)
-                self.assertEqual(name, v.primitiveTypeString)
+                assert getattr(v, name) == v.primitiveType
+                assert name == v.primitiveTypeString
 
     def test_getFloat(self):
         "CSSPrimitiveValue.getFloatValue()"
@@ -497,7 +502,7 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
             val = v.getFloatValue(unitType)
             if unitType in (v.CSS_IN, v.CSS_CM):
                 val = round(val)
-            self.assertEqual(val, exp)
+            assert val == exp
 
     def test_setFloat(self):
         "CSSPrimitiveValue.setFloatValue()"
@@ -641,20 +646,22 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                             exp, cssText, pv.setFloatValue, setType, setValue
                         )
                     else:
-                        self.assertRaises(exp, pv.setFloatValue, setType, setValue)
+                        with pytest.raises(exp):
+                            pv.setFloatValue(setType, setValue)
                 else:
                     pv.setFloatValue(setType, setValue)
-                    self.assertEqual(pv._value[0], cssText)
+                    assert pv._value[0] == cssText
                     if cssText == '0mm':
                         cssText = '0'
-                    self.assertEqual(pv.cssText, cssText)
-                    self.assertEqual(pv.getFloatValue(initialType), exp)
+                    assert pv.cssText == cssText
+                    assert pv.getFloatValue(initialType) == exp
 
     def test_getString(self):
         "CSSPrimitiveValue.getStringValue()"
         v = cssutils.css.CSSPrimitiveValue('1px')
-        self.assertTrue(v.primitiveType == v.CSS_PX)
-        self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
+        assert v.primitiveType == v.CSS_PX
+        with pytest.raises(xml.dom.InvalidAccessErr):
+            v.getStringValue()
 
         pv = cssutils.css.CSSPrimitiveValue
         tests = {
@@ -673,17 +680,17 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
                 exp = val
 
             v = cssutils.css.CSSPrimitiveValue(val)
-            self.assertEqual(v.primitiveType, t)
-            self.assertEqual(v.getStringValue(), exp)
+            assert v.primitiveType == t
+            assert v.getStringValue() == exp
 
     def test_setString(self):
         "CSSPrimitiveValue.setStringValue()"
         # CSS_STRING
         v = cssutils.css.CSSPrimitiveValue('"a"')
-        self.assertTrue(v.CSS_STRING == v.primitiveType)
+        assert v.CSS_STRING == v.primitiveType
         v.setStringValue(v.CSS_STRING, 'b')
-        self.assertTrue(('b', 'STRING') == v._value)
-        self.assertEqual('b', v.getStringValue())
+        assert ('b', 'STRING') == v._value
+        assert 'b' == v.getStringValue()
         self.assertRaisesMsg(
             xml.dom.InvalidAccessErr,
             "CSSPrimitiveValue: Cannot coerce primitiveType "
@@ -709,9 +716,9 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         # CSS_IDENT
         v = cssutils.css.CSSPrimitiveValue('new')
         v.setStringValue(v.CSS_IDENT, 'ident')
-        self.assertTrue(v.CSS_IDENT == v.primitiveType)
-        self.assertTrue(('ident', 'IDENT') == v._value)
-        self.assertTrue('ident' == v.getStringValue())
+        assert v.CSS_IDENT == v.primitiveType
+        assert ('ident', 'IDENT') == v._value
+        assert 'ident' == v.getStringValue()
         self.assertRaisesMsg(
             xml.dom.InvalidAccessErr,
             "CSSPrimitiveValue: Cannot coerce primitiveType "
@@ -737,37 +744,37 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         # CSS_URI
         v = cssutils.css.CSSPrimitiveValue('url(old)')
         v.setStringValue(v.CSS_URI, '(')
-        self.assertEqual(('(', 'URI'), v._value)
-        self.assertEqual('(', v.getStringValue())
+        assert ('(', 'URI') == v._value
+        assert '(' == v.getStringValue()
 
         v.setStringValue(v.CSS_URI, ')')
-        self.assertEqual((')', 'URI'), v._value)
-        self.assertEqual(')', v.getStringValue())
+        assert (')', 'URI') == v._value
+        assert ')' == v.getStringValue()
 
         v.setStringValue(v.CSS_URI, '"')
-        self.assertEqual(r'"', v.getStringValue())
-        self.assertEqual((r'"', 'URI'), v._value)
+        assert r'"' == v.getStringValue()
+        assert (r'"', 'URI') == v._value
 
         v.setStringValue(v.CSS_URI, "''")
-        self.assertEqual(r"''", v.getStringValue())
-        self.assertEqual((r"''", 'URI'), v._value)
+        assert r"''" == v.getStringValue()
+        assert (r"''", 'URI') == v._value
 
         v.setStringValue(v.CSS_URI, ',')
-        self.assertEqual(r',', v.getStringValue())
-        self.assertEqual((r',', 'URI'), v._value)
+        assert r',' == v.getStringValue()
+        assert (r',', 'URI') == v._value
 
         v.setStringValue(v.CSS_URI, ' ')
-        self.assertEqual((' ', 'URI'), v._value)
-        self.assertEqual(' ', v.getStringValue())
+        assert (' ', 'URI') == v._value
+        assert ' ' == v.getStringValue()
 
         v.setStringValue(v.CSS_URI, 'a)')
-        self.assertEqual(('a)', 'URI'), v._value)
-        self.assertEqual('a)', v.getStringValue())
+        assert ('a)', 'URI') == v._value
+        assert 'a)' == v.getStringValue()
 
         v.setStringValue(v.CSS_URI, 'a')
-        self.assertTrue(v.CSS_URI == v.primitiveType)
-        self.assertEqual(('a', 'URI'), v._value)
-        self.assertEqual('a', v.getStringValue())
+        assert v.CSS_URI == v.primitiveType
+        assert ('a', 'URI') == v._value
+        assert 'a' == v.getStringValue()
 
         self.assertRaisesMsg(
             xml.dom.InvalidAccessErr,
@@ -793,8 +800,8 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
         # CSS_ATTR
         v = cssutils.css.CSSPrimitiveValue('attr(old)')
         v.setStringValue(v.CSS_ATTR, 'a')
-        self.assertTrue(v.CSS_ATTR == v.primitiveType)
-        self.assertTrue('a' == v.getStringValue())
+        assert v.CSS_ATTR == v.primitiveType
+        assert 'a' == v.getStringValue()
         self.assertRaisesMsg(
             xml.dom.InvalidAccessErr,
             "CSSPrimitiveValue: Cannot coerce primitiveType "
@@ -841,23 +848,23 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
     def test_typeRGBColor(self):
         "RGBColor"
         v = cssutils.css.CSSPrimitiveValue('RGB(1, 5, 10)')
-        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-        self.assertEqual('rgb(1, 5, 10)', v.cssText)
+        assert v.CSS_RGBCOLOR == v.primitiveType
+        assert 'rgb(1, 5, 10)' == v.cssText
 
         v = cssutils.css.CSSPrimitiveValue('rgb(1, 5, 10)')
-        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-        self.assertEqual('rgb(1, 5, 10)', v.cssText)
+        assert v.CSS_RGBCOLOR == v.primitiveType
+        assert 'rgb(1, 5, 10)' == v.cssText
 
         v = cssutils.css.CSSPrimitiveValue('rgb(1%, 5%, 10%)')
-        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-        self.assertEqual('rgb(1%, 5%, 10%)', v.cssText)
+        assert v.CSS_RGBCOLOR == v.primitiveType
+        assert 'rgb(1%, 5%, 10%)' == v.cssText
 
         v = cssutils.css.CSSPrimitiveValue('  rgb(  1 ,5,  10  )')
-        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        assert v.CSS_RGBCOLOR == v.primitiveType
         v = cssutils.css.CSSPrimitiveValue('rgb(1,5,10)')
-        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        assert v.CSS_RGBCOLOR == v.primitiveType
         v = cssutils.css.CSSPrimitiveValue('rgb(1%, .5%, 10.1%)')
-        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        assert v.CSS_RGBCOLOR == v.primitiveType
 
     def test_reprANDstr(self):
         "CSSPrimitiveValue.__repr__(), .__str__()"
@@ -865,26 +872,26 @@ class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 
         s = cssutils.css.CSSPrimitiveValue(v)
 
-        self.assertTrue(v in str(s))
-        self.assertTrue('CSS_NUMBER' in str(s))
+        assert v in str(s)
+        assert 'CSS_NUMBER' in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(v == s2.cssText)
+        assert isinstance(s2, s.__class__)
+        assert v == s2.cssText
 
 
-class CSSValueListTestCase(basetest.BaseTestCase):
+class TestCSSValueList(basetest.BaseTestCase):
     def test_init(self):
         "CSSValueList.__init__()"
         v = cssutils.css.CSSValue(cssText='red blue')
-        self.assertTrue(v.CSS_VALUE_LIST == v.cssValueType)
-        self.assertEqual('red blue', v.cssText)
+        assert v.CSS_VALUE_LIST == v.cssValueType
+        assert 'red blue' == v.cssText
 
-        self.assertTrue(2 == v.length)
+        assert 2 == v.length
 
         item = v.item(0)
         item.setStringValue(item.CSS_IDENT, 'green')
-        self.assertEqual('green blue', v.cssText)
+        assert 'green blue' == v.cssText
 
     def test_numbers(self):
         "CSSValueList.cssText"
@@ -914,19 +921,19 @@ class CSSValueListTestCase(basetest.BaseTestCase):
             if not exp:
                 exp = test
             v = cssutils.css.CSSValue(cssText=test)
-            self.assertTrue(v.CSS_VALUE_LIST == v.cssValueType)
-            self.assertEqual(num, v.length)
-            self.assertEqual(exp, v.cssText)
+            assert v.CSS_VALUE_LIST == v.cssValueType
+            assert num == v.length
+            assert exp == v.cssText
 
     def test_reprANDstr(self):
         "CSSValueList.__repr__(), .__str__()"
         v = '1px 2px'
 
         s = cssutils.css.CSSValue(v)
-        self.assertTrue(isinstance(s, cssutils.css.CSSValueList))
+        assert isinstance(s, cssutils.css.CSSValueList)
 
-        self.assertTrue('length=2' in str(s))
-        self.assertTrue(v in str(s))
+        assert 'length=2' in str(s)
+        assert v in str(s)
 
         # not "eval()"able!
         # s2 = eval(repr(s))

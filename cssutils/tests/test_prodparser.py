@@ -12,40 +12,41 @@ from cssutils.prodparser import (
     Exhausted,
     ProdParser,
 )
+import pytest
 
 
-class ProdTestCase(basetest.BaseTestCase):
+class TestProd(basetest.BaseTestCase):
     def test_init(self):
         "Prod.__init__(...)"
         p = Prod('min', lambda t, v: t == 1 and v == 2)
 
-        self.assertEqual(str(p), 'min')
-        self.assertEqual(p.toStore, None)
-        self.assertEqual(p.optional, False)
+        assert str(p) == 'min'
+        assert p.toStore is None
+        assert p.optional is False
 
         p = Prod('optional', lambda t, v: True, optional=True)
-        self.assertEqual(p.optional, True)
+        assert p.optional is True
 
     def test_initMatch(self):
         "Prod.__init__(...match=...)"
         p = Prod('min', lambda t, v: t == 1 and v == 2)
-        self.assertEqual(p.match(1, 2), True)
-        self.assertEqual(p.match(2, 2), False)
-        self.assertEqual(p.match(1, 1), False)
+        assert p.match(1, 2) is True
+        assert p.match(2, 2) is False
+        assert p.match(1, 1) is False
 
     def test_initToSeq(self):
         "Prod.__init__(...toSeq=...)"
         # simply saves
         p = Prod('all', lambda t, tokens: True, toSeq=None)
-        self.assertEqual(p.toSeq([1, 2], None), (1, 2))  # simply saves
-        self.assertEqual(p.toSeq(['s1', 's2'], None), ('s1', 's2'))  # simply saves
+        assert p.toSeq([1, 2], None) == (1, 2)  # simply saves
+        assert p.toSeq(['s1', 's2'], None) == ('s1', 's2')  # simply saves
 
         # saves callback(val)
         p = Prod(
             'all', lambda t, v: True, toSeq=lambda t, tokens: (1 == t[0], 3 == t[1])
         )
-        self.assertEqual(p.toSeq([1, 3], None), (True, True))
-        self.assertEqual(p.toSeq([2, 4], None), (False, False))
+        assert p.toSeq([1, 3], None) == (True, True)
+        assert p.toSeq([2, 4], None) == (False, False)
 
     def test_initToStore(self):
         "Prod.__init__(...toStore=...)"
@@ -54,13 +55,13 @@ class ProdTestCase(basetest.BaseTestCase):
         # save as key
         s = {}
         p.toStore(s, 1)
-        self.assertEqual(s['key'], 1)
+        assert s['key'] == 1
 
         # append to key
         s = {'key': []}
         p.toStore(s, 1)
         p.toStore(s, 2)
-        self.assertEqual(s['key'], [1, 2])
+        assert s['key'] == [1, 2]
 
         # callback
         def doubleToStore(key):
@@ -72,27 +73,27 @@ class ProdTestCase(basetest.BaseTestCase):
         p = Prod('all', lambda t, v: True, toStore=doubleToStore('key'))
         s = {'key': []}
         p.toStore(s, 1)
-        self.assertEqual(s['key'], 2)
+        assert s['key'] == 2
 
     def test_matches(self):
         "Prod.matches(token)"
         p1 = Prod('p1', lambda t, v: t == 1 and v == 2)
         p2 = Prod('p2', lambda t, v: t == 1 and v == 2, optional=True)
-        self.assertEqual(p1.matches([1, 2, 0, 0]), True)
-        self.assertEqual(p2.matches([1, 2, 0, 0]), True)
-        self.assertEqual(p1.matches([0, 0, 0, 0]), False)
-        self.assertEqual(p2.matches([0, 0, 0, 0]), False)
+        assert p1.matches([1, 2, 0, 0]) is True
+        assert p2.matches([1, 2, 0, 0]) is True
+        assert p1.matches([0, 0, 0, 0]) is False
+        assert p2.matches([0, 0, 0, 0]) is False
 
 
-class SequenceTestCase(basetest.BaseTestCase):
+class TestSequence(basetest.BaseTestCase):
     def test_init(self):
         "Sequence.__init__()"
         p1 = Prod('p1', lambda t, v: t == 1)
         p2 = Prod('p2', lambda t, v: t == 2)
         seq = Sequence(p1, p2)
 
-        self.assertEqual(1, seq._min)
-        self.assertEqual(1, seq._max)
+        assert 1 == seq._min
+        assert 1 == seq._max
 
     def test_initminmax(self):
         "Sequence.__init__(...minmax=...)"
@@ -100,11 +101,11 @@ class SequenceTestCase(basetest.BaseTestCase):
         p2 = Prod('p2', lambda t, v: t == 2)
 
         s = Sequence(p1, p2, minmax=lambda: (2, 3))
-        self.assertEqual(2, s._min)
-        self.assertEqual(3, s._max)
+        assert 2 == s._min
+        assert 3 == s._max
 
         s = Sequence(p1, p2, minmax=lambda: (0, None))
-        self.assertEqual(0, s._min)
+        assert 0 == s._min
 
         try:
             # py2.6/3
@@ -112,18 +113,18 @@ class SequenceTestCase(basetest.BaseTestCase):
         except AttributeError:
             # py<1.6
             m = sys.maxsize
-        self.assertEqual(m, s._max)
+        assert m == s._max
 
     def test_optional(self):
         "Sequence.optional"
         p1 = Prod('p1', lambda t, v: t == 1)
 
         s = Sequence(p1, minmax=lambda: (1, 3))
-        self.assertEqual(False, s.optional)
+        assert not s.optional
         s = Sequence(p1, minmax=lambda: (0, 3))
-        self.assertEqual(True, s.optional)
+        assert s.optional
         s = Sequence(p1, minmax=lambda: (0, None))
-        self.assertEqual(True, s.optional)
+        assert s.optional
 
     def test_reset(self):
         "Sequence.reset()"
@@ -132,11 +133,12 @@ class SequenceTestCase(basetest.BaseTestCase):
         seq = Sequence(p1, p2)
         t1 = (1, 0, 0, 0)
         t2 = (2, 0, 0, 0)
-        self.assertEqual(p1, seq.nextProd(t1))
-        self.assertEqual(p2, seq.nextProd(t2))
-        self.assertRaises(Exhausted, seq.nextProd, t1)
+        assert p1 == seq.nextProd(t1)
+        assert p2 == seq.nextProd(t2)
+        with pytest.raises(Exhausted):
+            seq.nextProd(t1)
         seq.reset()
-        self.assertEqual(p1, seq.nextProd(t1))
+        assert p1 == seq.nextProd(t1)
 
     def test_matches(self):
         "Sequence.matches()"
@@ -148,17 +150,17 @@ class SequenceTestCase(basetest.BaseTestCase):
         t3 = (3, 0, 0, 0)
 
         s = Sequence(p1, p2)
-        self.assertEqual(True, s.matches(t1))
-        self.assertEqual(False, s.matches(t2))
+        assert s.matches(t1)
+        assert not s.matches(t2)
 
         s = Sequence(p2, p1)
-        self.assertEqual(True, s.matches(t1))
-        self.assertEqual(True, s.matches(t2))
+        assert s.matches(t1)
+        assert s.matches(t2)
 
         s = Sequence(Choice(p1, p2))
-        self.assertEqual(True, s.matches(t1))
-        self.assertEqual(True, s.matches(t2))
-        self.assertEqual(False, s.matches(t3))
+        assert s.matches(t1)
+        assert s.matches(t2)
+        assert not s.matches(t3)
 
     def test_nextProd(self):
         "Sequence.nextProd()"
@@ -193,7 +195,7 @@ class SequenceTestCase(basetest.BaseTestCase):
                     if isinstance(p, str):
                         self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
                     else:
-                        self.assertEqual(p, seq.nextProd(t))
+                        assert p == seq.nextProd(t)
 
         tests = {
             # seq: list of list of (token, prod or error msg)
@@ -245,10 +247,10 @@ class SequenceTestCase(basetest.BaseTestCase):
                     if isinstance(p, str):
                         self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
                     else:
-                        self.assertEqual(p, seq.nextProd(t))
+                        assert p == seq.nextProd(t)
 
 
-class ChoiceTestCase(basetest.BaseTestCase):
+class TestChoice(basetest.BaseTestCase):
     def test_init(self):
         "Choice.__init__()"
         p1 = Prod('p1', lambda t, v: t == 1)
@@ -261,22 +263,22 @@ class ChoiceTestCase(basetest.BaseTestCase):
         self.assertRaisesMsg(
             ParseError, 'No match for (0, 0, 0, 0) in Choice(p1, p2)', ch.nextProd, t0
         )
-        self.assertEqual(p1, ch.nextProd(t1))
+        assert p1 == ch.nextProd(t1)
         self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
 
         ch = Choice(p1, p2)
-        self.assertEqual(p2, ch.nextProd(t2))
+        assert p2 == ch.nextProd(t2)
         self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t2)
 
         ch = Choice(p2, p1)
         self.assertRaisesMsg(
             ParseError, 'No match for (0, 0, 0, 0) in Choice(p2, p1)', ch.nextProd, t0
         )
-        self.assertEqual(p1, ch.nextProd(t1))
+        assert p1 == ch.nextProd(t1)
         self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
 
         ch = Choice(p2, p1)
-        self.assertEqual(p2, ch.nextProd(t2))
+        assert p2 == ch.nextProd(t2)
         self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t2)
 
     def test_matches(self):
@@ -289,14 +291,14 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t3 = (3, 0, 0, 0)
 
         c = Choice(p1, p2)
-        self.assertEqual(True, c.matches(t1))
-        self.assertEqual(True, c.matches(t2))
-        self.assertEqual(False, c.matches(t3))
+        assert c.matches(t1)
+        assert c.matches(t2)
+        assert not c.matches(t3)
 
         c = Choice(Sequence(p1), Sequence(p2))
-        self.assertEqual(True, c.matches(t1))
-        self.assertEqual(True, c.matches(t2))
-        self.assertEqual(False, c.matches(t3))
+        assert c.matches(t1)
+        assert c.matches(t2)
+        assert not c.matches(t3)
 
     def test_nested(self):
         "Choice with nested Sequence"
@@ -315,11 +317,11 @@ class ChoiceTestCase(basetest.BaseTestCase):
             ch.nextProd,
             t0,
         )
-        self.assertEqual(s1, ch.nextProd(t1))
+        assert s1 == ch.nextProd(t1)
         self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
 
         ch = Choice(s1, s2)
-        self.assertEqual(s2, ch.nextProd(t2))
+        assert s2 == ch.nextProd(t2)
         self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
 
     def test_reset(self):
@@ -330,14 +332,15 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2, 0, 0, 0)
 
         ch = Choice(p1, p2)
-        self.assertEqual(p1, ch.nextProd(t1))
-        self.assertRaises(Exhausted, ch.nextProd, t1)
+        assert p1 == ch.nextProd(t1)
+        with pytest.raises(Exhausted):
+            ch.nextProd(t1)
         ch.reset()
-        self.assertEqual(p2, ch.nextProd(t2))
+        assert p2 == ch.nextProd(t2)
 
 
-class ProdParserTestCase(basetest.BaseTestCase):
-    def setUp(self):
+class TestProdParser(basetest.BaseTestCase):
+    def setup(self):
         pass
 
     def test_parse_keepS(self):
@@ -349,12 +352,12 @@ class ProdParserTestCase(basetest.BaseTestCase):
             return Sequence(PreDef.char(';', ';'), PreDef.char(':', ':'))
 
         w, seq, store, unused = p.parse('; :', 'test', prods(), keepS=True)
-        self.assertTrue(w)
-        self.assertEqual(3, len(seq))
+        assert w
+        assert 3 == len(seq)
 
         w, seq, store, unused = p.parse('; :', 'test', prods(), keepS=False)
-        self.assertTrue(w)
-        self.assertEqual(2, len(seq))
+        assert w
+        assert 2 == len(seq)
 
     def test_combi(self):
         "ProdParser.parse() 2"
@@ -378,7 +381,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
             prods = Choice(Sequence(p1, p2, minmax=lambda: (1, 2)), p3)
             if exp is True:
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
-                self.assertEqual(wellformed, exp)
+                assert wellformed == exp
             else:
                 self.assertRaisesMsg(
                     xml.dom.SyntaxErr,
@@ -406,7 +409,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
             prods = Sequence(Choice(Sequence(p1, minmax=lambda: (1, 2)), p2), p3)
             if exp is True:
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
-                self.assertEqual(wellformed, exp)
+                assert wellformed == exp
             else:
                 self.assertRaisesMsg(
                     xml.dom.SyntaxErr,

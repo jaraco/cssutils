@@ -8,9 +8,10 @@ import urllib.request
 import urllib.error
 import urllib.parse
 from unittest import mock
+import pytest
 
 
-class CSSParserTestCase(basetest.BaseTestCase):
+class TestCSSParser(basetest.BaseTestCase):
     def _make_fetcher(self, encoding, content):
         "make an URL fetcher with specified data"
 
@@ -19,15 +20,15 @@ class CSSParserTestCase(basetest.BaseTestCase):
 
         return fetcher
 
-    def setUp(self):
+    def setup(self):
         self._saved = cssutils.log.raiseExceptions
 
-    def tearDown(self):
+    def teardown(self):
         cssutils.log.raiseExceptions = self._saved
 
     def test_init(self):
         "CSSParser.__init__()"
-        self.assertEqual(True, cssutils.log.raiseExceptions)
+        assert cssutils.log.raiseExceptions
 
         # also the default:
         cssutils.log.raiseExceptions = True
@@ -35,45 +36,46 @@ class CSSParserTestCase(basetest.BaseTestCase):
         # default non raising parser
         p = cssutils.CSSParser()
         s = p.parseString('$')
-        self.assertEqual(s.cssText, ''.encode())
+        assert s.cssText == ''.encode()
 
         # explicit raiseExceptions=False
         p = cssutils.CSSParser(raiseExceptions=False)
         s = p.parseString('$')
-        self.assertEqual(s.cssText, ''.encode())
+        assert s.cssText == ''.encode()
 
         # working with sheet does raise though!
-        self.assertRaises(xml.dom.DOMException, s.__setattr__, 'cssText', '$')
+        with pytest.raises(xml.dom.DOMException):
+            s.__setattr__('cssText', '$')
 
         # ----
 
         # raiseExceptions=True
         p = cssutils.CSSParser(raiseExceptions=True)
-        self.assertRaises(xml.dom.SyntaxErr, p.parseString, '$')
+        with pytest.raises(xml.dom.SyntaxErr):
+            p.parseString('$')
 
         # working with a sheet does raise too
         s = cssutils.css.CSSStyleSheet()
-        self.assertRaises(xml.dom.DOMException, s.__setattr__, 'cssText', '$')
+        with pytest.raises(xml.dom.DOMException):
+            s.__setattr__('cssText', '$')
 
         # RESET cssutils.log.raiseExceptions
         cssutils.log.raiseExceptions = False
         s = cssutils.css.CSSStyleSheet()
         # does not raise!
         s.__setattr__('cssText', '$')
-        self.assertEqual(s.cssText, ''.encode())
+        assert s.cssText == ''.encode()
 
     def test_parseComments(self):
         "cssutils.CSSParser(parseComments=False)"
         css = '/*1*/ a { color: /*2*/ red; }'
 
         p = cssutils.CSSParser(parseComments=False)
-        self.assertEqual(
-            p.parseString(css).cssText, 'a {\n    color: red\n    }'.encode()
-        )
+        assert p.parseString(css).cssText == 'a {\n    color: red\n    }'.encode()
         p = cssutils.CSSParser(parseComments=True)
-        self.assertEqual(
-            p.parseString(css).cssText,
-            '/*1*/\na {\n    color: /*2*/ red\n    }'.encode(),
+        assert (
+            p.parseString(css).cssText
+            == '/*1*/\na {\n    color: /*2*/ red\n    }'.encode()
         )
 
     #    def test_parseFile(self):
@@ -91,10 +93,10 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 'http://example.com', media='tv,print', title='test'
             )
 
-        self.assertEqual(sheet.href, 'http://example.com')
-        self.assertEqual(sheet.encoding, 'utf-8')
-        self.assertEqual(sheet.media.mediaText, 'tv, print')
-        self.assertEqual(sheet.title, 'test')
+        assert sheet.href == 'http://example.com'
+        assert sheet.encoding == 'utf-8'
+        assert sheet.media.mediaText == 'tv, print'
+        assert sheet.title == 'test'
 
         # URL and content tests
         tests = {
@@ -130,34 +132,29 @@ class CSSParserTestCase(basetest.BaseTestCase):
             sheet1 = parser.parseUrl(url)
             sheet2 = parser.parseUrl(url, encoding=override)
             if isSheet:
-                self.assertEqual(sheet1.encoding, expencoding)
-                self.assertEqual(sheet1.cssText, cssText.encode())
-                self.assertEqual(sheet2.encoding, override)
+                assert sheet1.encoding == expencoding
+                assert sheet1.cssText == cssText.encode()
+                assert sheet2.encoding == override
                 if sheet1.cssText and cssText.startswith('@charset'):
-                    self.assertEqual(
-                        sheet2.cssText,
-                        (cssText.replace('ascii', override).encode()),
+                    assert sheet2.cssText == (
+                        cssText.replace('ascii', override).encode()
                     )
                 elif sheet1.cssText:
-                    self.assertEqual(
-                        sheet2.cssText, (overrideprefix + '\n' + cssText).encode()
-                    )
+                    assert sheet2.cssText == (overrideprefix + '\n' + cssText).encode()
                 else:
-                    self.assertEqual(
-                        sheet2.cssText, (overrideprefix + cssText).encode()
-                    )
+                    assert sheet2.cssText == (overrideprefix + cssText).encode()
             else:
-                self.assertEqual(sheet1, None)
-                self.assertEqual(sheet2, None)
+                assert sheet1 is None
+                assert sheet2 is None
 
         parser.setFetcher(None)
 
-        self.assertRaises(ValueError, parser.parseUrl, '../not-valid-in-urllib')
-        self.assertRaises(
-            urllib.error.HTTPError,
-            parser.parseUrl,
-            'http://cthedot.de/not-present.css',
-        )
+        with pytest.raises(ValueError):
+            parser.parseUrl('../not-valid-in-urllib')
+        with pytest.raises(urllib.error.HTTPError):
+            parser.parseUrl(
+                'http://cthedot.de/not-present.css',
+            )
 
     def test_parseString(self):
         "CSSParser.parseString()"
@@ -229,8 +226,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
             css, encoding = test
             sheet = cssutils.parseString(css, encoding=encoding)
             encoding, cssText = tests[test]
-            self.assertEqual(encoding, sheet.encoding)
-            self.assertEqual(cssText, sheet.cssText)
+            assert encoding == sheet.encoding
+            assert cssText == sheet.cssText
 
         tests = [
             # encoded css, overiding encoding
@@ -241,9 +238,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
         ]
         for test in tests:
             # self.assertEqual(None, cssutils.parseString(css, encoding=encoding))
-            self.assertRaises(
-                UnicodeDecodeError, cssutils.parseString, test[0], test[1]
-            )
+            with pytest.raises(UnicodeDecodeError):
+                cssutils.parseString(test[0], test[1])
 
     def test_validate(self):
         """CSSParser(validate)"""
@@ -252,60 +248,60 @@ class CSSParserTestCase(basetest.BaseTestCase):
 
         # helper
         s = cssutils.parseString(t)
-        self.assertEqual(s.validating, True)
+        assert s.validating
         s = cssutils.parseString(t, validate=False)
-        self.assertEqual(s.validating, False)
+        assert s.validating is False
         s = cssutils.parseString(t, validate=True)
-        self.assertEqual(s.validating, True)
+        assert s.validating
 
         d = cssutils.parseStyle(style)
-        self.assertEqual(d.validating, True)
+        assert d.validating
         d = cssutils.parseStyle(style, validate=True)
-        self.assertEqual(d.validating, True)
+        assert d.validating
         d = cssutils.parseStyle(style, validate=False)
-        self.assertEqual(d.validating, False)
+        assert d.validating is False
 
         # parser
         p = cssutils.CSSParser()
         s = p.parseString(t)
-        self.assertEqual(s.validating, True)
+        assert s.validating
         s = p.parseString(t, validate=False)
-        self.assertEqual(s.validating, False)
+        assert s.validating is False
         s = p.parseString(t, validate=True)
-        self.assertEqual(s.validating, True)
+        assert s.validating
         d = p.parseStyle(style)
-        self.assertEqual(d.validating, True)
+        assert d.validating
 
         p = cssutils.CSSParser(validate=True)
         s = p.parseString(t)
-        self.assertEqual(s.validating, True)
+        assert s.validating
         s = p.parseString(t, validate=False)
-        self.assertEqual(s.validating, False)
+        assert s.validating is False
         s = p.parseString(t, validate=True)
-        self.assertEqual(s.validating, True)
+        assert s.validating
         d = p.parseStyle(style)
-        self.assertEqual(d.validating, True)
+        assert d.validating
 
         p = cssutils.CSSParser(validate=False)
         s = p.parseString(t)
-        self.assertEqual(s.validating, False)
+        assert s.validating is False
         s = p.parseString(t, validate=False)
-        self.assertEqual(s.validating, False)
+        assert s.validating is False
         s = p.parseString(t, validate=True)
-        self.assertEqual(s.validating, True)
+        assert s.validating
         d = p.parseStyle(style)
-        self.assertEqual(d.validating, False)
+        assert d.validating is False
 
         # url
         p = cssutils.CSSParser(validate=False)
         p.setFetcher(self._make_fetcher('utf-8', t))
         u = 'url'
         s = p.parseUrl(u)
-        self.assertEqual(s.validating, False)
+        assert s.validating is False
         s = p.parseUrl(u, validate=False)
-        self.assertEqual(s.validating, False)
+        assert s.validating is False
         s = p.parseUrl(u, validate=True)
-        self.assertEqual(s.validating, True)
+        assert s.validating
 
         # check if it raises see log test
 
@@ -417,19 +413,13 @@ class CSSParserTestCase(basetest.BaseTestCase):
             sheet2 = parser2.parseString(css, encoding=encoding)
 
             # sheet
-            self.assertEqual(sheet.encoding, sheetencoding)
-            self.assertEqual(sheet2.encoding, sheetencoding)
+            assert sheet.encoding == sheetencoding
+            assert sheet2.encoding == sheetencoding
             # imported sheet
-            self.assertEqual(
-                sheet.cssRules[importIndex].styleSheet.encoding, importEncoding
-            )
-            self.assertEqual(
-                sheet2.cssRules[importIndex].styleSheet.encoding, importEncoding
-            )
-            self.assertEqual(sheet.cssRules[importIndex].styleSheet.cssText, importText)
-            self.assertEqual(
-                sheet2.cssRules[importIndex].styleSheet.cssText, importText
-            )
+            assert sheet.cssRules[importIndex].styleSheet.encoding == importEncoding
+            assert sheet2.cssRules[importIndex].styleSheet.encoding == importEncoding
+            assert sheet.cssRules[importIndex].styleSheet.cssText == importText
+            assert sheet2.cssRules[importIndex].styleSheet.cssText == importText
 
     def test_roundtrip(self):
         "cssutils encodings"
@@ -437,33 +427,33 @@ class CSSParserTestCase(basetest.BaseTestCase):
 /* ä */'''
         s = cssutils.parseString(css1)
         css2 = str(s.cssText, 'utf-8')
-        self.assertEqual(css1, css2)
+        assert css1 == css2
 
         s = cssutils.parseString(css2)
         s.cssRules[0].encoding = 'ascii'
         css3 = r'''@charset "ascii";
 /* \E4  */'''
-        self.assertEqual(css3, str(s.cssText, 'utf-8'))
+        assert css3 == str(s.cssText, 'utf-8')
 
     def test_escapes(self):
         "cssutils escapes"
         css = r'\43\x { \43\x: \43\x !import\41nt }'
         sheet = cssutils.parseString(css)
-        self.assertEqual(
-            sheet.cssText,
-            r'''C\x {
+        assert (
+            sheet.cssText
+            == r'''C\x {
     c\x: C\x !important
-    }'''.encode(),
+    }'''.encode()
         )
 
         css = r'\ x{\ x :\ x ;y:1} '
         sheet = cssutils.parseString(css)
-        self.assertEqual(
-            sheet.cssText,
-            r'''\ x {
+        assert (
+            sheet.cssText
+            == r'''\ x {
     \ x: \ x;
     y: 1
-    }'''.encode(),
+    }'''.encode()
         )
 
     def test_invalidstring(self):
@@ -491,7 +481,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
         )
         for css in csss:
             s = cssutils.parseString(css)
-            self.assertEqual(validfromhere.encode(), s.cssText)
+            assert validfromhere.encode() == s.cssText
 
         csss = (
             '''a { font-family: "Courier
@@ -502,7 +492,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 ''',
         )
         for css in csss:
-            self.assertEqual(''.encode(), cssutils.parseString(css).cssText)
+            assert ''.encode() == cssutils.parseString(css).cssText
 
     def test_invalid(self):
         "cssutils.parseString(INVALID_CSS)"
@@ -521,7 +511,7 @@ a {
             if exp is None:
                 exp = css
             s = cssutils.parseString(css)
-            self.assertEqual(exp.encode(), s.cssText)
+            assert exp.encode() == s.cssText
 
     def test_nesting(self):
         "cssutils.parseString nesting"
@@ -537,7 +527,7 @@ a {
             '@1 { [ } ] div{color:red}div{color:green}': 'div {\n    color: green\n    }',
         }
         for css, exp in list(tests.items()):
-            self.assertEqual(exp.encode(), cssutils.parseString(css).cssText)
+            assert exp.encode() == cssutils.parseString(css).cssText
 
     def test_specialcases(self):
         "cssutils.parseString(special_case)"
@@ -553,7 +543,7 @@ o very long title"] {/*...*/}''': '''a[title="a not so very long title"] {
             if exp is None:
                 exp = css
             s = cssutils.parseString(css)
-            self.assertEqual(exp.encode(), s.cssText)
+            assert exp.encode() == s.cssText
 
     def test_iehack(self):
         "IEhack: $property (not since 0.9.5b3)"
@@ -562,25 +552,25 @@ o very long title"] {/*...*/}''': '''a[title="a not so very long title"] {
         s = cssutils.parseString(css)
 
         p1 = s.cssRules[0].style.getProperty('color')
-        self.assertEqual('color', p1.name)
-        self.assertEqual('color', p1.literalname)
-        self.assertEqual('', s.cssRules[0].style.getPropertyValue('$color'))
+        assert 'color' == p1.name
+        assert 'color' == p1.literalname
+        assert '' == s.cssRules[0].style.getPropertyValue('$color')
 
         p2 = s.cssRules[0].style.getProperty('$color')
-        self.assertEqual(None, p2)
+        assert p2 is None
 
-        self.assertEqual('green', s.cssRules[0].style.getPropertyValue('color'))
-        self.assertEqual('green', s.cssRules[0].style.color)
+        assert 'green' == s.cssRules[0].style.getPropertyValue('color')
+        assert 'green' == s.cssRules[0].style.color
 
     def test_attributes(self):
         "cssutils.parseString(href, media)"
         s = cssutils.parseString(
             "a{}", href="file:foo.css", media="screen, projection, tv"
         )
-        self.assertEqual(s.href, "file:foo.css")
-        self.assertEqual(s.media.mediaText, "screen, projection, tv")
+        assert s.href == "file:foo.css"
+        assert s.media.mediaText == "screen, projection, tv"
 
         s = cssutils.parseString(
             "a{}", href="file:foo.css", media=["screen", "projection", "tv"]
         )
-        self.assertEqual(s.media.mediaText, "screen, projection, tv")
+        assert s.media.mediaText == "screen, projection, tv"

@@ -5,57 +5,57 @@ from . import test_cssrule
 import cssutils
 
 
-class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
-    def setUp(self):
-        super(CSSUnknownRuleTestCase, self).setUp()
+class TestCSSUnknownRule(test_cssrule.TestCSSRule):
+    def setup(self):
+        super().setup()
         self.r = cssutils.css.CSSUnknownRule()
         self.rRO = cssutils.css.CSSUnknownRule(readonly=True)
         self.r_type = cssutils.css.CSSUnknownRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
-    def tearDown(self):
+    def teardown(self):
         cssutils.ser.prefs.useDefaults()
 
     def test_init(self):
         "CSSUnknownRule.type and init"
-        super(CSSUnknownRuleTestCase, self).test_init()
+        super().test_init()
 
-        self.assertFalse(self.r.wellformed)
+        assert not self.r.wellformed
 
         # only name
         r = cssutils.css.CSSUnknownRule(cssText='@init;')
-        self.assertEqual('@init', r.atkeyword)
-        self.assertEqual('@init;', r.cssText)
-        self.assertTrue(r.wellformed)
+        assert '@init' == r.atkeyword
+        assert '@init;' == r.cssText
+        assert r.wellformed
 
         # @-... not allowed?
         r = cssutils.css.CSSUnknownRule(cssText='@-init;')
-        self.assertEqual('@-init;', r.cssText)
-        self.assertEqual('@-init', r.atkeyword)
-        self.assertTrue(r.wellformed)
+        assert '@-init;' == r.cssText
+        assert '@-init' == r.atkeyword
+        assert r.wellformed
 
         r = cssutils.css.CSSUnknownRule(cssText='@_w-h-a-012;')
-        self.assertEqual('@_w-h-a-012;', r.cssText)
-        self.assertEqual('@_w-h-a-012', r.atkeyword)
-        self.assertTrue(r.wellformed)
+        assert '@_w-h-a-012;' == r.cssText
+        assert '@_w-h-a-012' == r.atkeyword
+        assert r.wellformed
 
         # name and content
         r = cssutils.css.CSSUnknownRule(cssText='@init xxx;')
-        self.assertEqual('@init', r.atkeyword)
-        self.assertEqual('@init xxx;', r.cssText)
-        self.assertTrue(r.wellformed)
+        assert '@init' == r.atkeyword
+        assert '@init xxx;' == r.cssText
+        assert r.wellformed
 
         # name and block
         r = cssutils.css.CSSUnknownRule(cssText='@init { xxx }')
-        self.assertEqual('@init', r.atkeyword)
-        self.assertEqual('@init {\n    xxx\n    }', r.cssText)
-        self.assertTrue(r.wellformed)
+        assert '@init' == r.atkeyword
+        assert '@init {\n    xxx\n    }' == r.cssText
+        assert r.wellformed
 
         # name and content and block
         r = cssutils.css.CSSUnknownRule(cssText='@init xxx { yyy }')
-        self.assertEqual('@init', r.atkeyword)
-        self.assertEqual('@init xxx {\n    yyy\n    }', r.cssText)
-        self.assertTrue(r.wellformed)
+        assert '@init' == r.atkeyword
+        assert '@init xxx {\n    yyy\n    }' == r.cssText
+        assert r.wellformed
 
     def test_cssText(self):
         "CSSUnknownRule.cssText"
@@ -138,4 +138,4 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         s = cssutils.css.CSSUnknownRule(cssText='@x;')
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
+        assert isinstance(s2, s.__class__)

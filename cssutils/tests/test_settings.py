@@ -5,7 +5,7 @@ import cssutils
 import cssutils.settings
 
 
-class Settings(test_cssrule.CSSRuleTestCase):
+class Settings(test_cssrule.TestCSSRule):
     def test_set(self):
         "settings.set()"
         cssutils.ser.prefs.useMinified()
@@ -13,12 +13,12 @@ class Settings(test_cssrule.CSSRuleTestCase):
             'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
         )
 
-        self.assertEqual(cssutils.parseString(text).cssText, ''.encode())
+        assert cssutils.parseString(text).cssText == ''.encode()
 
         cssutils.settings.set('DXImageTransform.Microsoft', True)
-        self.assertEqual(
-            cssutils.parseString(text).cssText,
-            'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'.encode(),
+        assert (
+            cssutils.parseString(text).cssText
+            == 'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'.encode()
         )
 
         cssutils.ser.prefs.useDefaults()

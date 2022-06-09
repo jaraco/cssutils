@@ -4,11 +4,12 @@
 import xml.dom
 from . import basetest
 import cssutils.stylesheets
+import pytest
 
 
-class MediaQueryTestCase(basetest.BaseTestCase):
-    def setUp(self):
-        super(MediaQueryTestCase, self).setUp()
+class TestMediaQuery(basetest.BaseTestCase):
+    def setup(self):
+        super().setup()
         self.r = cssutils.stylesheets.MediaQuery()
 
     def test_mediaText(self):
@@ -53,17 +54,18 @@ class MediaQueryTestCase(basetest.BaseTestCase):
         "MediaQuery.mediaType"
         mq = cssutils.stylesheets.MediaQuery()
 
-        self.assertEqual('', mq.mediaText)
+        assert '' == mq.mediaText
 
         for mt in cssutils.stylesheets.MediaQuery.MEDIA_TYPES:
             mq.mediaType = mt
-            self.assertEqual(mq.mediaType, mt)
+            assert mq.mediaType == mt
             mq.mediaType = mt.upper()
-            self.assertEqual(mq.mediaType, mt.upper())
+            assert mq.mediaType == mt.upper()
 
         mt = '3D-UNKOwn-MEDIAtype0123'
         # mq.mediaType = mt
-        self.assertRaises(xml.dom.SyntaxErr, mq._setMediaType, mt)
+        with pytest.raises(xml.dom.SyntaxErr):
+            mq._setMediaType(mt)
         # self.assertRaises(xml.dom.InvalidCharacterErr, mq._setMediaType, mt)
 
     def test_comments(self):
@@ -93,7 +95,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
         "MediaQuery.__repr__(), .__str__()"
         mediaText = 'tv and (color)'
         s = cssutils.stylesheets.MediaQuery(mediaText=mediaText)
-        self.assertTrue(mediaText in str(s))
+        assert mediaText in str(s)
         s2 = eval(repr(s))
-        self.assertEqual(mediaText, s2.mediaText)
-        self.assertTrue(isinstance(s2, s.__class__))
+        assert mediaText == s2.mediaText
+        assert isinstance(s2, s.__class__)

@@ -19,7 +19,7 @@ CSS2_CM3 = (CM3[0], CSS2[0])
 CSS2_FM3 = (FM3[0], CSS2[0])
 
 
-class ProfilesTestCase(basetest.BaseTestCase):
+class TestProfiles(basetest.BaseTestCase):
     M1 = {'testvalue': 'x'}
     P1 = {
         '-test-tokenmacro': '({num}{w}){1,2}',
@@ -34,18 +34,18 @@ class ProfilesTestCase(basetest.BaseTestCase):
         p = cssutils.profiles.Profiles()
         p.removeProfile(all=True)
         p.addProfile('test', self.P1, self.M1)
-        self.assertEqual(p.knownNames, list(self.P1.keys()))
+        assert p.knownNames == list(self.P1.keys())
         p.removeProfile(all=True)
-        self.assertEqual(p.knownNames, [])
+        assert p.knownNames == []
 
     def test_profiles(self):
         "Profiles.profiles"
         p = cssutils.profiles.Profiles()
         p.removeProfile(all=True)
         p.addProfile('test', self.P1, self.M1)
-        self.assertEqual(p.profiles, ['test'])
+        assert p.profiles == ['test']
         p.removeProfile(all=True)
-        self.assertEqual(p.profiles, [])
+        assert p.profiles == []
 
     def test_validate2(self):
         "Profiles.validate()"
@@ -60,7 +60,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
 
         def check(*results):
             for i, pv in enumerate(pvs):
-                self.assertEqual(p.validate(*pv), results[i])
+                assert p.validate(*pv) == results[i]
 
         check(True, True, False)
 
@@ -82,17 +82,15 @@ class ProfilesTestCase(basetest.BaseTestCase):
     def test_addProfile(self):
         "Profiles.addProfile with custom validation function"
         # unknown profile
-        self.assertRaises(
-            cssutils.profiles.NoSuchProfileException,
-            lambda: list(cssutils.profile.propertiesByProfile('NOTSET')),
-        )
+        with pytest.raises(cssutils.profiles.NoSuchProfileException):
+            list(cssutils.profile.propertiesByProfile('NOTSET'))
 
         # new profile
         cssutils.profile.addProfile('test', self.P1, self.M1)
 
         props = list(self.P1.keys())
         props.sort()
-        self.assertEqual(props, list(cssutils.profile.propertiesByProfile('test')))
+        assert props == list(cssutils.profile.propertiesByProfile('test'))
 
         cssutils.log.raiseExceptions = False
         tests = {
@@ -110,11 +108,9 @@ class ProfilesTestCase(basetest.BaseTestCase):
             ('-test-funcval', 'x'): False,
         }
         for test, v in list(tests.items()):
-            self.assertEqual(v, cssutils.profile.validate(*test))
+            assert v == cssutils.profile.validate(*test)
 
-            self.assertEqual(
-                (v, v, ['test']), cssutils.profile.validateWithProfile(*test)
-            )
+            assert (v, v, ['test']) == cssutils.profile.validateWithProfile(*test)
 
         cssutils.log.raiseExceptions = True
 
@@ -125,11 +121,11 @@ class ProfilesTestCase(basetest.BaseTestCase):
     def test_removeProfile(self):
         "Profiles.removeProfile()"
         p = cssutils.profiles.Profiles()
-        self.assertEqual(9, len(p.profiles))
+        assert 9 == len(p.profiles)
         p.removeProfile(p.CSS_LEVEL_2)
-        self.assertEqual(8, len(p.profiles))
+        assert 8 == len(p.profiles)
         p.removeProfile(all=True)
-        self.assertEqual(0, len(p.profiles))
+        assert 0 == len(p.profiles)
 
     # TODO: FIX
     # def test_validateWithProfile(self):
@@ -166,9 +162,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
 
     def test_propertiesByProfile(self):
         "Profiles.propertiesByProfile"
-        self.assertEqual(
-            ['opacity'],  # 'color',
-            list(cssutils.profile.propertiesByProfile(cssutils.profile.CSS3_COLOR)),
+        assert ['opacity'] == list(
+            cssutils.profile.propertiesByProfile(cssutils.profile.CSS3_COLOR)
         )
 
     def test_csscolorlevel3(self):
@@ -179,11 +174,10 @@ class ProfilesTestCase(basetest.BaseTestCase):
                          navy, olive, purple, red, silver, teal, white, yellow'''
         for color in namedcolors.split(','):
             color = color.strip()
-            self.assertEqual(True, cssutils.profile.validate('color', color))
+            assert cssutils.profile.validate('color', color)
 
-            self.assertEqual(
-                (True, True, list(CSS2)),
-                cssutils.profile.validateWithProfile('color', color),
+            assert (True, True, list(CSS2)) == cssutils.profile.validateWithProfile(
+                'color', color
             )
 
         # CSS2 only:
@@ -196,7 +190,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
             'WindowFrame|WindowText'
         )
         for color in uicolor.split('|'):
-            self.assertEqual(False, cssutils.profile.validate('color', color))
+            assert not cssutils.profile.validate('color', color)
 
             # TODO: Fix
             # self.assertEqual((True, True, list(CSS2)),
@@ -628,7 +622,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         # TODO!!!
         for (name, values), (valid, matching, profile) in list(tests.items()):
             for value in values:
-                self.assertEqual(valid, cssutils.profile.validate(name, value))
+                assert valid == cssutils.profile.validate(name, value)
 
 
 # if (valid, matching, list(profile)) !=

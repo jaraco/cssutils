@@ -5,11 +5,12 @@
 import xml.dom
 from . import test_cssrule
 import cssutils
+import pytest
 
 
-class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
-    def setUp(self):
-        super(CSSFontFaceRuleTestCase, self).setUp()
+class TestCSSFontFaceRule(test_cssrule.TestCSSRule):
+    def setup(self):
+        super().setup()
         self.r = cssutils.css.CSSFontFaceRule()
         self.rRO = cssutils.css.CSSFontFaceRule(readonly=True)
         self.r_type = cssutils.css.CSSFontFaceRule.FONT_FACE_RULE  #
@@ -17,22 +18,23 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSFontFaceRule.__init__()"
-        super(CSSFontFaceRuleTestCase, self).test_init()
+        super().test_init()
 
         r = cssutils.css.CSSFontFaceRule()
-        self.assertTrue(isinstance(r.style, cssutils.css.CSSStyleDeclaration))
-        self.assertEqual(r, r.style.parentRule)
+        assert isinstance(r.style, cssutils.css.CSSStyleDeclaration)
+        assert r == r.style.parentRule
 
         # until any properties
-        self.assertEqual('', r.cssText)
+        assert '' == r.cssText
 
         # only possible to set @... similar name
-        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
+        with pytest.raises(xml.dom.InvalidModificationErr):
+            self.r._setAtkeyword('x')
 
         def checkrefs(ff):
-            self.assertEqual(ff, ff.style.parentRule)
+            assert ff == ff.style.parentRule
             for p in ff.style:
-                self.assertEqual(ff.style, p.parent)
+                assert ff.style == p.parent
 
         checkrefs(
             cssutils.css.CSSFontFaceRule(
@@ -98,16 +100,16 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSFontFaceRule.style (and references)"
         r = cssutils.css.CSSFontFaceRule()
         s1 = r.style
-        self.assertEqual(r, s1.parentRule)
-        self.assertEqual('', s1.cssText)
+        assert r == s1.parentRule
+        assert '' == s1.cssText
 
         # set rule.cssText
         r.cssText = '@font-face { font-family: x1 }'
-        self.assertNotEqual(r.style, s1)
-        self.assertEqual(r, r.style.parentRule)
-        self.assertEqual(r.cssText, '@font-face {\n    font-family: x1\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: x1')
-        self.assertEqual(s1.cssText, '')
+        assert r.style != s1
+        assert r == r.style.parentRule
+        assert r.cssText == '@font-face {\n    font-family: x1\n    }'
+        assert r.style.cssText == 'font-family: x1'
+        assert s1.cssText == ''
         s2 = r.style
 
         # set invalid rule.cssText
@@ -115,52 +117,52 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             r.cssText = '@font-face { $ }'
         except xml.dom.SyntaxErr as e:
             pass
-        self.assertEqual(r.style, s2)
-        self.assertEqual(r, s2.parentRule)
-        self.assertEqual(r.cssText, '@font-face {\n    font-family: x1\n    }')
-        self.assertEqual(s2.cssText, 'font-family: x1')
-        self.assertEqual(r.style.cssText, 'font-family: x1')
+        assert r.style == s2
+        assert r == s2.parentRule
+        assert r.cssText == '@font-face {\n    font-family: x1\n    }'
+        assert s2.cssText == 'font-family: x1'
+        assert r.style.cssText == 'font-family: x1'
 
         # set rule.style.cssText
         r.style.cssText = 'font-family: x2'
-        self.assertEqual(r.style, s2)
-        self.assertEqual(r, s2.parentRule)
-        self.assertEqual(r.cssText, '@font-face {\n    font-family: x2\n    }')
-        self.assertEqual(s2.cssText, 'font-family: x2')
-        self.assertEqual(r.style.cssText, 'font-family: x2')
+        assert r.style == s2
+        assert r == s2.parentRule
+        assert r.cssText == '@font-face {\n    font-family: x2\n    }'
+        assert s2.cssText == 'font-family: x2'
+        assert r.style.cssText == 'font-family: x2'
 
         # set new style object s2
         sn = cssutils.css.CSSStyleDeclaration('font-family: y1')
         r.style = sn
-        self.assertEqual(r.style, sn)
-        self.assertEqual(r, sn.parentRule)
-        self.assertEqual(r.cssText, '@font-face {\n    font-family: y1\n    }')
-        self.assertEqual(sn.cssText, 'font-family: y1')
-        self.assertEqual(r.style.cssText, 'font-family: y1')
-        self.assertEqual(s2.cssText, 'font-family: x2')  # old
+        assert r.style == sn
+        assert r == sn.parentRule
+        assert r.cssText == '@font-face {\n    font-family: y1\n    }'
+        assert sn.cssText == 'font-family: y1'
+        assert r.style.cssText == 'font-family: y1'
+        assert s2.cssText == 'font-family: x2'  # old
 
         # set s2.cssText
         sn.cssText = 'font-family: y2'
-        self.assertEqual(r.style, sn)
-        self.assertEqual(r.cssText, '@font-face {\n    font-family: y2\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: y2')
-        self.assertEqual(s2.cssText, 'font-family: x2')  # old
+        assert r.style == sn
+        assert r.cssText == '@font-face {\n    font-family: y2\n    }'
+        assert r.style.cssText == 'font-family: y2'
+        assert s2.cssText == 'font-family: x2'  # old
 
         # set invalid s2.cssText
         try:
             sn.cssText = '$'
         except xml.dom.SyntaxErr as e:
             pass
-        self.assertEqual(r.style, sn)
-        self.assertEqual(r.style.cssText, 'font-family: y2')
-        self.assertEqual(r.cssText, '@font-face {\n    font-family: y2\n    }')
+        assert r.style == sn
+        assert r.style.cssText == 'font-family: y2'
+        assert r.cssText == '@font-face {\n    font-family: y2\n    }'
 
         # set r.style with text
         r.style = 'font-family: z'
-        self.assertNotEqual(r.style, sn)
-        self.assertEqual(r.cssText, '@font-face {\n    font-family: z\n    }')
-        self.assertEqual(r.style.cssText, 'font-family: z')
-        self.assertEqual(sn.cssText, 'font-family: y2')
+        assert r.style != sn
+        assert r.cssText == '@font-face {\n    font-family: z\n    }'
+        assert r.style.cssText == 'font-family: z'
+        assert sn.cssText == 'font-family: y2'
 
     def test_properties(self):
         "CSSFontFaceRule.style properties"
@@ -171,7 +173,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         exp = '''@font-face {
     src: url(x)
     }'''
-        self.assertEqual(exp, r.cssText)
+        assert exp == r.cssText
 
         tests = {
             'font-family': [  # ('serif', True),
@@ -187,8 +189,8 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             for (v, valid) in t:
                 r = cssutils.css.CSSFontFaceRule()
                 r.style[n] = v
-                self.assertEqual(r.style.getProperty(n).parent, r.style)
-                self.assertEqual(r.style.getProperty(n).valid, valid)
+                assert r.style.getProperty(n).parent == r.style
+                assert r.style.getProperty(n).valid == valid
 
     def test_incomplete(self):
         "CSSFontFaceRule (incomplete)"
@@ -210,7 +212,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_valid(self):
         "CSSFontFaceRule.valid"
         r = cssutils.css.CSSFontFaceRule()
-        self.assertEqual(False, r.valid)
+        assert False == r.valid
         N = 'font-family: x; src: local(x);'
         tests = {
             True: (
@@ -227,15 +229,15 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         for valid, testlist in list(tests.items()):
             for test in testlist:
                 r.style.cssText = test
-                self.assertEqual(valid, r.valid)
+                assert valid == r.valid
 
     def test_reprANDstr(self):
         "CSSFontFaceRule.__repr__(), .__str__()"
         style = 'src: url(x)'
         s = cssutils.css.CSSFontFaceRule(style=style)
 
-        self.assertTrue(style in str(s))
+        assert style in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(style == s2.style.cssText)
+        assert isinstance(s2, s.__class__)
+        assert style == s2.style.cssText

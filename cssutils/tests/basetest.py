@@ -3,7 +3,7 @@
 import logging
 import re
 import sys
-import unittest
+import pytest
 
 if sys.version_info >= (3, 9):
     from importlib import resources
@@ -18,100 +18,23 @@ def get_sheet_filename(sheet_name):
     return resources.files('cssutils') / 'tests' / 'sheets' / sheet_name
 
 
-class BaseTestCase(unittest.TestCase):
-    def setUp(self):
+class BaseTestCase:
+    def setup(self):
         # a raising parser!!!
         cssutils.log.raiseExceptions = True
         cssutils.log.setLevel(logging.FATAL)
         self.p = cssutils.CSSParser(raiseExceptions=True)
 
-    def assertRaisesEx(self, exception, callable, *args, **kwargs):
-        """
-        from
-        http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/307970
-        """
-        if "exc_args" in kwargs:
-            exc_args = kwargs["exc_args"]
-            del kwargs["exc_args"]
-        else:
-            exc_args = None
-        if "exc_pattern" in kwargs:
-            exc_pattern = kwargs["exc_pattern"]
-            del kwargs["exc_pattern"]
-        else:
-            exc_pattern = None
-
-        argv = [repr(a) for a in args] + [
-            "%s=%r" % (k, v) for k, v in list(kwargs.items())
-        ]
-        callsig = "%s(%s)" % (callable.__name__, ", ".join(argv))
-
-        try:
+    def assertRaisesEx(
+        self, exception, callable, *args, exc_args=None, exc_pattern=None, **kwargs
+    ):
+        assert exc_args is None
+        with pytest.raises(exception, match=exc_pattern):
             callable(*args, **kwargs)
-        except exception as exc:
-            if exc_args is not None:
-                self.assertFalse(
-                    exc.args != exc_args,
-                    "%s raised %s with unexpected args: "
-                    "expected=%r, actual=%r"
-                    % (callsig, exc.__class__, exc_args, exc.args),
-                )
-            if exc_pattern is not None:
-                self.assertTrue(
-                    exc_pattern.search(str(exc)),
-                    "%s raised %s, but the exception "
-                    "does not match '%s': %r"
-                    % (callsig, exc.__class__, exc_pattern.pattern, str(exc)),
-                )
-        except Exception:
-            exc_info = sys.exc_info()
-            print(exc_info)
-            self.fail(
-                "%s raised an unexpected exception type: "
-                "expected=%s, actual=%s" % (callsig, exception, exc_info[0])
-            )
-        else:
-            self.fail("%s did not raise %s" % (callsig, exception))
 
     def assertRaisesMsg(self, excClass, msg, callableObj, *args, **kwargs):
-        """
-        Just like unittest.TestCase.assertRaises,
-        but checks that the message is right too.
-
-        Usage::
-
-            self.assertRaisesMsg(
-                MyException, "Exception message",
-                my_function, (arg1, arg2)
-                )
-
-        from
-        http://www.nedbatchelder.com/blog/200609.html#e20060905T064418
-        """
-        try:
+        with pytest.raises(excClass, match=re.escape(msg)):
             callableObj(*args, **kwargs)
-        except excClass as exc:
-            excMsg = str(exc)
-            if not msg:
-                # No message provided: any message is fine.
-                return
-            elif msg in excMsg:
-                # Message provided, and we got the right message: passes.
-                return
-            else:
-                # Message provided, and it didn't match: fail!
-                raise self.failureException(
-                    "Right exception, wrong message: got '%s' instead of '%s'"
-                    % (excMsg, msg)
-                )
-        else:
-            if hasattr(excClass, '__name__'):
-                excName = excClass.__name__
-            else:
-                excName = str(excClass)
-            raise self.failureException(
-                "Expected to raise %s, didn't get an exception at all" % excName
-            )
 
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
         """
@@ -125,7 +48,7 @@ class BaseTestCase(unittest.TestCase):
             s = p.parseString(test)
             if expected is None:
                 expected = test
-            self.assertEqual(expected, str(s.__getattribute__(att), 'utf-8'))
+            assert str(s.__getattribute__(att), 'utf-8') == expected
 
     def do_raise_p(self, tests, debug=False, raising=True):
         # parses with self.p and expects raise
@@ -133,7 +56,8 @@ class BaseTestCase(unittest.TestCase):
         for test, expected in list(tests.items()):
             if debug:
                 print('"%s"' % test)
-            self.assertRaises(expected, p.parseString, test)
+            with pytest.raises(expected):
+                p.parseString(test)
 
     def do_equal_r(self, tests, att='cssText', debug=False):
         # sets attribute att of self.r and asserts Equal
@@ -143,21 +67,23 @@ class BaseTestCase(unittest.TestCase):
             self.r.__setattr__(att, test)
             if expected is None:
                 expected = test
-            self.assertEqual(expected, self.r.__getattribute__(att))
+            assert self.r.__getattribute__(att) == expected
 
     def do_raise_r(self, tests, att='_setCssText', debug=False):
         # sets self.r and asserts raise
         for test, expected in list(tests.items()):
             if debug:
                 print('"%s"' % test)
-            self.assertRaises(expected, self.r.__getattribute__(att), test)
+            with pytest.raises(expected):
+                self.r.__getattribute__(att)(test)
 
     def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
         # sets self.r and asserts raise
         for test in tests:
             if debug:
                 print('"%s"' % test)
-            self.assertRaises(err, self.r.__getattribute__(att), test)
+            with pytest.raises(err):
+                self.r.__getattribute__(att)(test)
 
 
 class GenerateTests(type):

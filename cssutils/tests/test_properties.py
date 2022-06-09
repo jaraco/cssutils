@@ -8,8 +8,8 @@ from cssutils.css.property import Property
 debug = False
 
 
-class PropertiesTestCase(basetest.BaseTestCase):
-    def setUp(self):
+class TestProperties(basetest.BaseTestCase):
+    def setup(self):
         "init test values"
         V = {
             '0': ('0', '-0'),  # , '+0'),
@@ -102,13 +102,13 @@ class PropertiesTestCase(basetest.BaseTestCase):
         for value in self._valuesofkeys(keys):
             if name == debug:
                 print('+True?', Property(name, value).valid, value)
-            self.assertEqual(True, Property(name, value).valid)
+            assert Property(name, value).valid
             if value in notvalid:
                 notvalid.remove(value)
         for value in notvalid:
             if name == debug:
                 print('-False?', Property(name, value).valid, value)
-            self.assertEqual(False, Property(name, value).valid)
+            assert not Property(name, value).valid
 
     def test_properties(self):
         "properties"
@@ -226,9 +226,9 @@ class PropertiesTestCase(basetest.BaseTestCase):
             #            self.assertEqual(rs[0], p.valid)
 
             cssutils.profile.defaultProfiles = None
-            self.assertEqual(rs[1], p.valid)
+            assert rs[1] == p.valid
 
-            self.assertEqual(rs[2], p.validate())
+            assert rs[2] == p.validate()
 
 
 #            self.assertEqual(rs[3], p.validate(

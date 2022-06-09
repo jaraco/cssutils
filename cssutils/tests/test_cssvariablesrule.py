@@ -3,11 +3,12 @@
 import xml.dom
 from . import test_cssrule
 import cssutils
+import pytest
 
 
-class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
-    def setUp(self):
-        super(CSSVariablesRuleTestCase, self).setUp()
+class TestCSSVariablesRule(test_cssrule.TestCSSRule):
+    def setup(self):
+        super().setup()
         self.r = cssutils.css.CSSVariablesRule()
         self.rRO = cssutils.css.CSSVariablesRule(readonly=True)
         self.r_type = cssutils.css.CSSPageRule.VARIABLES_RULE
@@ -17,17 +18,18 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSVariablesRule.__init__()"
-        super(CSSVariablesRuleTestCase, self).test_init()
+        super().test_init()
 
         r = cssutils.css.CSSVariablesRule()
-        self.assertEqual(cssutils.css.CSSVariablesDeclaration, type(r.variables))
-        self.assertEqual(r, r.variables.parentRule)
+        assert isinstance(r.variables, cssutils.css.CSSVariablesDeclaration)
+        assert r == r.variables.parentRule
 
         # until any variables
-        self.assertEqual('', r.cssText)
+        assert '' == r.cssText
 
         # only possible to set @... similar name
-        self.assertRaises(xml.dom.InvalidModificationErr, self.r._setAtkeyword, 'x')
+        with pytest.raises(xml.dom.InvalidModificationErr):
+            self.r._setAtkeyword('x')
 
     def test_InvalidModificationErr(self):
         "CSSVariablesRule.cssText InvalidModificationErr"
@@ -65,30 +67,32 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_media(self):
         "CSSVariablesRule.media"
         r = cssutils.css.CSSVariablesRule()
-        self.assertRaises(AttributeError, r.__getattribute__, 'media')
-        self.assertRaises(AttributeError, r.__setattr__, 'media', '?')
+        with pytest.raises(AttributeError):
+            r.__getattribute__('media')
+        with pytest.raises(AttributeError):
+            r.__setattr__('media', '?')
 
     def test_variables(self):
         "CSSVariablesRule.variables"
         r = cssutils.css.CSSVariablesRule(
             variables=cssutils.css.CSSVariablesDeclaration('x: 1')
         )
-        self.assertEqual(r, r.variables.parentRule)
+        assert r == r.variables.parentRule
 
         # cssText
         r = cssutils.css.CSSVariablesRule()
         r.cssText = '@variables { x: 1 }'
         vars1 = r.variables
-        self.assertEqual(r, r.variables.parentRule)
-        self.assertEqual(vars1, r.variables)
-        self.assertEqual(r.variables.cssText, 'x: 1')
-        self.assertEqual(r.cssText, '@variables {\n    x: 1\n    }')
+        assert r == r.variables.parentRule
+        assert vars1 == r.variables
+        assert r.variables.cssText == 'x: 1'
+        assert r.cssText == '@variables {\n    x: 1\n    }'
 
         r.cssText = '@variables {y:2}'
-        self.assertEqual(r, r.variables.parentRule)
-        self.assertNotEqual(vars1, r.variables)
-        self.assertEqual(r.variables.cssText, 'y: 2')
-        self.assertEqual(r.cssText, '@variables {\n    y: 2\n    }')
+        assert r == r.variables.parentRule
+        assert vars1 != r.variables
+        assert r.variables.cssText == 'y: 2'
+        assert r.cssText == '@variables {\n    y: 2\n    }'
 
         vars2 = r.variables
 
@@ -98,25 +102,25 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         except xml.dom.DOMException:
             pass
 
-        self.assertEqual(vars2, r.variables)
-        self.assertEqual(r.variables.cssText, 'y: 2')
-        self.assertEqual(r.cssText, '@variables {\n    y: 2\n    }')
+        assert vars2 == r.variables
+        assert r.variables.cssText == 'y: 2'
+        assert r.cssText == '@variables {\n    y: 2\n    }'
 
         # var decl
         vars3 = cssutils.css.CSSVariablesDeclaration('z: 3')
         r.variables = vars3
 
-        self.assertEqual(r, r.variables.parentRule)
-        self.assertEqual(vars3, r.variables)
-        self.assertEqual(r.variables.cssText, 'z: 3')
-        self.assertEqual(r.cssText, '@variables {\n    z: 3\n    }')
+        assert r == r.variables.parentRule
+        assert vars3 == r.variables
+        assert r.variables.cssText == 'z: 3'
+        assert r.cssText == '@variables {\n    z: 3\n    }'
 
         # string
         r.variables = 'a: x'
-        self.assertNotEqual(vars3, r.variables)
-        self.assertEqual(r, r.variables.parentRule)
-        self.assertEqual(r.variables.cssText, 'a: x')
-        self.assertEqual(r.cssText, '@variables {\n    a: x\n    }')
+        assert vars3 != r.variables
+        assert r == r.variables.parentRule
+        assert r.variables.cssText == 'a: x'
+        assert r.cssText == '@variables {\n    a: x\n    }'
         vars4 = r.variables
 
         # string fail
@@ -124,17 +128,17 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
             r.variables = '$: x'
         except xml.dom.DOMException:
             pass
-        self.assertEqual(vars4, r.variables)
-        self.assertEqual(r, r.variables.parentRule)
-        self.assertEqual(r.variables.cssText, 'a: x')
-        self.assertEqual(r.cssText, '@variables {\n    a: x\n    }')
+        assert vars4 == r.variables
+        assert r == r.variables.parentRule
+        assert r.variables.cssText == 'a: x'
+        assert r.cssText == '@variables {\n    a: x\n    }'
 
     def test_reprANDstr(self):
         "CSSVariablesRule.__repr__(), .__str__()"
         r = cssutils.css.CSSVariablesRule()
         r.cssText = '@variables { xxx: 1 }'
-        self.assertTrue('xxx' in str(r))
+        assert 'xxx' in str(r)
 
         r2 = eval(repr(r))
-        self.assertTrue(isinstance(r2, r.__class__))
-        self.assertTrue(r.cssText == r2.cssText)
+        assert isinstance(r2, r.__class__)
+        assert r.cssText == r2.cssText

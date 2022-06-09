@@ -15,27 +15,27 @@ from . import basetest
 import cssutils
 
 
-class SelectorTestCase(basetest.BaseTestCase):
-    def setUp(self):
+class TestSelector(basetest.BaseTestCase):
+    def setup(self):
         self.r = cssutils.css.Selector('*')
 
     def test_init(self):
         "Selector.__init__()"
         s = cssutils.css.Selector('*')
-        self.assertEqual((None, '*'), s.element)
-        self.assertEqual({}, s._namespaces.namespaces)
-        self.assertEqual(None, s.parent)
-        self.assertEqual('*', s.selectorText)
-        self.assertEqual((0, 0, 0, 0), s.specificity)
-        self.assertEqual(True, s.wellformed)
+        assert (None, '*') == s.element
+        assert {} == s._namespaces.namespaces
+        assert s.parent is None
+        assert '*' == s.selectorText
+        assert (0, 0, 0, 0) == s.specificity
+        assert s.wellformed
 
         s = cssutils.css.Selector(('p|b', {'p': 'URI'}))
-        self.assertEqual(('URI', 'b'), s.element)
-        self.assertEqual({'p': 'URI'}, s._namespaces.namespaces)
-        self.assertEqual(None, s.parent)
-        self.assertEqual('p|b', s.selectorText)
-        self.assertEqual((0, 0, 0, 1), s.specificity)
-        self.assertEqual(True, s.wellformed)
+        assert ('URI', 'b') == s.element
+        assert {'p': 'URI'} == s._namespaces.namespaces
+        assert s.parent is None
+        assert 'p|b' == s.selectorText
+        assert (0, 0, 0, 1) == s.specificity
+        assert s.wellformed
 
         self.assertRaisesEx(xml.dom.NamespaceErr, cssutils.css.Selector, 'p|b')
 
@@ -66,7 +66,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         }
         for test, ele in list(tests.items()):
             s = cssutils.css.Selector((test, {'ex': 'example'}))
-            self.assertEqual(ele, s.element)
+            assert ele == s.element
 
     def test_namespaces(self):
         "Selector.namespaces"
@@ -94,7 +94,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         for sel, exp in list(tests.items()):
             for i, result in enumerate(exp):
                 s = cssutils.css.Selector((sel, namespaces[i]))
-                self.assertEqual(result, s.selectorText)
+                assert result == s.selectorText
 
         # add to CSSStyleSheet
         sheet = cssutils.css.CSSStyleSheet()
@@ -102,14 +102,14 @@ class SelectorTestCase(basetest.BaseTestCase):
 
         r = sheet.cssRules[1]
 
-        self.assertEqual(r.selectorText, 'a')
+        assert r.selectorText == 'a'
 
         # add default namespace
         sheet.namespaces[''] = 'a'
-        self.assertEqual(r.selectorText, '|a')
+        assert r.selectorText == '|a'
 
         del sheet.namespaces['']
-        self.assertEqual(r.selectorText, 'a')
+        assert r.selectorText == 'a'
 
     #        r.selectorList.append('a')
     #        self.assertEqual(r.selectorText, u'|a, a')
@@ -123,30 +123,30 @@ class SelectorTestCase(basetest.BaseTestCase):
         '''
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = css
-        self.assertEqual(
-            sheet.cssText,
-            '@namespace "default";\na[att] {\n    color: green\n    }'.encode(),
+        assert (
+            sheet.cssText
+            == '@namespace "default";\na[att] {\n    color: green\n    }'.encode()
         )
         # use a prefix for default namespace, does not goes for atts!
         sheet.namespaces['p'] = 'default'
-        self.assertEqual(
-            sheet.cssText,
-            '@namespace p "default";\np|a[att] {\n    color: green\n    }'.encode(),
+        assert (
+            sheet.cssText
+            == '@namespace p "default";\np|a[att] {\n    color: green\n    }'.encode()
         )
 
     def test_parent(self):
         "Selector.parent"
         sl = cssutils.css.SelectorList('a, b')
         for sel in sl:
-            self.assertEqual(sl, sel.parent)
+            assert sl == sel.parent
 
         newsel = cssutils.css.Selector('x')
         sl.append(newsel)
-        self.assertEqual(sl, newsel.parent)
+        assert sl == newsel.parent
 
         newsel = cssutils.css.Selector('y')
         sl.appendSelector(newsel)
-        self.assertEqual(sl, newsel.parent)
+        assert sl == newsel.parent
 
     def test_selectorText(self):
         "Selector.selectorText"
@@ -449,7 +449,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         }
         for text in tests:
             selector.selectorText = text
-            self.assertEqual(tests[text], selector.specificity)
+            assert tests[text] == selector.specificity
 
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
@@ -457,8 +457,8 @@ class SelectorTestCase(basetest.BaseTestCase):
 
         s = cssutils.css.Selector(selectorText=sel)
 
-        self.assertTrue(sel in str(s))
+        assert sel in str(s)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(sel == s2.selectorText)
+        assert isinstance(s2, s.__class__)
+        assert sel == s2.selectorText
