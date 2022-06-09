@@ -3,6 +3,8 @@
 import xml.dom
 from . import basetest
 import cssutils
+import types
+import pytest
 
 
 class PropertyValueTestCase(basetest.BaseTestCase):
@@ -711,444 +713,551 @@ class CSSVariableTestCase(basetest.BaseTestCase):
             # not resolved so it is None
             self.assertEqual(None, v.value)
 
+    @pytest.mark.xfail(reason="not implemented")
+    def test_cssValueType(self):
+        "CSSValue.cssValueType .cssValueTypeString"
+        tests = [
+            (['inherit', 'INhe\\rit'], 'CSS_INHERIT', cssutils.css.CSSValue),
+            (
+                [
+                    '1',
+                    '1%',
+                    '1em',
+                    '1ex',
+                    '1px',
+                    '1cm',
+                    '1mm',
+                    '1in',
+                    '1pt',
+                    '1pc',
+                    '1deg',
+                    '1rad',
+                    '1grad',
+                    '1ms',
+                    '1s',
+                    '1hz',
+                    '1khz',
+                    '1other',
+                    '"string"',
+                    "'string'",
+                    'url(x)',
+                    'red',
+                    'attr(a)',
+                    'counter(x)',
+                    'rect(1px, 2px, 3px, 4px)',
+                    'rgb(0, 0, 0)',
+                    '#000',
+                    '#123456',
+                    'rgba(0, 0, 0, 0)',
+                    'hsl(0, 0, 0)',
+                    'hsla(0, 0, 0, 0)',
+                ],
+                'CSS_PRIMITIVE_VALUE',
+                cssutils.css.CSSPrimitiveValue,
+            ),
+            (
+                ['1px 1px', 'red blue green x'],
+                'CSS_VALUE_LIST',
+                cssutils.css.CSSValueList,
+            ),
+            # what is a custom value?
+            # ([], 'CSS_CUSTOM', cssutils.css.CSSValue)
+        ]
+        for values, name, cls in tests:
+            for value in values:
+                v = cssutils.css.CSSValue(cssText=value)
+                if value == "'string'":
+                    # will be changed to " always
+                    value = '"string"'
+                self.assertEqual(value, v.cssText)
+                self.assertEqual(name, v.cssValueTypeString)
+                self.assertEqual(getattr(v, name), v.cssValueType)
+                self.assertEqual(cls, type(v))
 
-#    def test_cssValueType(self):
-#        "CSSValue.cssValueType .cssValueTypeString"
-#        tests = [
-#            ([u'inherit', u'INhe\\rit'], 'CSS_INHERIT', cssutils.css.CSSValue),
-#            (['1', '1%', '1em', '1ex', '1px', '1cm', '1mm', '1in', '1pt', '1pc',
-#              '1deg', '1rad', '1grad', '1ms', '1s', '1hz', '1khz', '1other',
-#               '"string"', "'string'", 'url(x)', 'red',
-#               'attr(a)', 'counter(x)', 'rect(1px, 2px, 3px, 4px)',
-#               'rgb(0, 0, 0)', '#000', '#123456', 'rgba(0, 0, 0, 0)',
-#               'hsl(0, 0, 0)', 'hsla(0, 0, 0, 0)',
-#               ],
-#             'CSS_PRIMITIVE_VALUE', cssutils.css.CSSPrimitiveValue),
-#            ([u'1px 1px', 'red blue green x'], 'CSS_VALUE_LIST',
-# cssutils.css.CSSValueList),
-#            # what is a custom value?
-#            #([], 'CSS_CUSTOM', cssutils.css.CSSValue)
-#            ]
-#        for values, name, cls in tests:
-#            for value in values:
-#                v = cssutils.css.CSSValue(cssText=value)
-#                if value == "'string'":
-#                    # will be changed to " always
-#                    value = '"string"'
-#                self.assertEqual(value, v.cssText)
-#                self.assertEqual(name, v.cssValueTypeString)
-#                self.assertEqual(getattr(v, name), v.cssValueType)
-#                self.assertEqual(cls, type(v))
 
+@pytest.mark.xfail(reason="not implemented")
+class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
+    def test_init(self):
+        "CSSPrimitiveValue.__init__()"
+        v = cssutils.css.CSSPrimitiveValue(u'1')
+        self.assertTrue('1' == v.cssText)
 
-# class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
-#
-#    def test_init(self):
-#        "CSSPrimitiveValue.__init__()"
-#        v = cssutils.css.CSSPrimitiveValue(u'1')
-#        self.assertTrue(u'1' == v.cssText)
-#
-#        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
-#        self.assertTrue("CSS_PRIMITIVE_VALUE" == v.cssValueTypeString)
-#
-#        self.assertTrue(v.CSS_NUMBER == v.primitiveType)
-#        self.assertTrue("CSS_NUMBER" == v.primitiveTypeString)
-#
-#        # DUMMY to be able to test empty constructor call
-#        #self.assertRaises(xml.dom.SyntaxErr, v.__init__, None)
-#
-#        self.assertRaises(xml.dom.InvalidAccessErr, v.getCounterValue)
-#        self.assertRaises(xml.dom.InvalidAccessErr, v.getRGBColorValue)
-#        self.assertRaises(xml.dom.InvalidAccessErr, v.getRectValue)
-#        self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
-#
-#    def test_CSS_UNKNOWN(self):
-#        "CSSPrimitiveValue.CSS_UNKNOWN"
-#        v = cssutils.css.CSSPrimitiveValue(u'expression(false)')
-#        self.assertTrue(v.CSS_UNKNOWN == v.primitiveType)
-#        self.assertTrue('CSS_UNKNOWN' == v.primitiveTypeString)
-#
-#    def test_CSS_NUMBER_AND_OTHER_DIMENSIONS(self):
-#        "CSSPrimitiveValue.CSS_NUMBER .. CSS_DIMENSION"
-#        defs = [
-#            ('', 'CSS_NUMBER'),
-#            ('%', 'CSS_PERCENTAGE'),
-#            ('em', 'CSS_EMS'),
-#            ('ex', 'CSS_EXS'),
-#            ('px', 'CSS_PX'),
-#            ('cm', 'CSS_CM'),
-#            ('mm', 'CSS_MM'),
-#            ('in', 'CSS_IN'),
-#            ('pt', 'CSS_PT'),
-#            ('pc', 'CSS_PC'),
-#            ('deg', 'CSS_DEG'),
-#            ('rad', 'CSS_RAD'),
-#            ('grad', 'CSS_GRAD'),
-#            ('ms', 'CSS_MS'),
-#            ('s', 'CSS_S'),
-#            ('hz', 'CSS_HZ'),
-#            ('khz', 'CSS_KHZ'),
-#            ('other_dimension', 'CSS_DIMENSION')
-#            ]
-#        for dim, name in defs:
-#            for n in (0, 1, 1.1, -1, -1.1, -0):
-#                v = cssutils.css.CSSPrimitiveValue('%i%s' % (n, dim))
-#                self.assertEqual(name, v.primitiveTypeString)
-#                self.assertEqual(getattr(v, name), v.primitiveType)
-#
-#    def test_CSS_STRING_AND_OTHER(self):
-#        "CSSPrimitiveValue.CSS_STRING .. CSS_RGBCOLOR"
-#        defs = [
-#                (('""', "''", '"some thing"', "' A\\ND '",
-#                  # comma separated lists are STRINGS FOR NOW!
-#                  'a, b',
-#                  '"a", "b"',
-#                  ), 'CSS_STRING'),
-#                (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
-#                (('some', 'or_anth-er'), 'CSS_IDENT'),
-#                (('attr(a)', 'attr(b)'), 'CSS_ATTR'),
-#                (('counter(1)', 'counter(2)'), 'CSS_COUNTER'),
-#                (('rect(1,2,3,4)',), 'CSS_RECT'),
-#                (('rgb(1,2,3)', 'rgb(10%, 20%, 30%)', '#123', '#123456'),
-#                 'CSS_RGBCOLOR'),
-#                (('rgba(1,2,3,4)','rgba(10%, 20%, 30%, 40%)', ),
-#                 'CSS_RGBACOLOR'),
-#                (('U+0', 'u+ffffff', 'u+000000-f',
-#                  'u+0-f, U+ee-ff'), 'CSS_UNICODE_RANGE')
-#                ]
-#
-#        for examples, name in defs:
-#            for x in examples:
-#                v = cssutils.css.CSSPrimitiveValue(x)
-#                self.assertEqual(getattr(v, name), v.primitiveType)
-#                self.assertEqual(name, v.primitiveTypeString)
-#
-#    def test_getFloat(self):
-#        "CSSPrimitiveValue.getFloatValue()"
-#        # NOT TESTED are float values as it seems difficult to
-#        # compare these. Maybe use decimal.Decimal?
-#
-#        v = cssutils.css.CSSPrimitiveValue(u'1px')
-#        tests = {
-#            '0': (v.CSS_NUMBER, 0),
-#            '-1.1': (v.CSS_NUMBER, -1.1),
-#            '1%': (v.CSS_PERCENTAGE, 1),
-#            '-1%': (v.CSS_PERCENTAGE, -1),
-#            '1em': (v.CSS_EMS, 1),
-#            '-1.1em': (v.CSS_EMS, -1.1),
-#            '1ex': (v.CSS_EXS, 1),
-#            '1px': (v.CSS_PX, 1),
-#
-#            '1cm': (v.CSS_CM, 1),
-#            '1cm': (v.CSS_MM, 10),
-#            '254cm': (v.CSS_IN, 100),
-#            '1mm': (v.CSS_MM, 1),
-#            '10mm': (v.CSS_CM, 1),
-#            '254mm': (v.CSS_IN, 10),
-#            '1in': (v.CSS_IN, 1),
-#            '100in': (v.CSS_CM, 254), # ROUNDED!!!
-#            '10in': (v.CSS_MM, 254), # ROUNDED!!!
-#
-#            '1pt': (v.CSS_PT, 1),
-#            '1pc': (v.CSS_PC, 1),
-#
-#            '1deg': (v.CSS_DEG, 1),
-#            '1rad': (v.CSS_RAD, 1),
-#            '1grad': (v.CSS_GRAD, 1),
-#
-#            '1ms': (v.CSS_MS, 1),
-#            '1000ms': (v.CSS_S, 1),
-#            '1s': (v.CSS_S, 1),
-#            '1s': (v.CSS_MS, 1000),
-#
-#            '1hz': (v.CSS_HZ, 1),
-#            '1000hz': (v.CSS_KHZ, 1),
-#            '1khz': (v.CSS_KHZ, 1),
-#            '1khz': (v.CSS_HZ, 1000),
-#
-#            '1DIMENSION': (v.CSS_DIMENSION, 1),
-#            }
-#        for cssText in tests:
-#            v.cssText = cssText
-#            unitType, exp = tests[cssText]
-#            val = v.getFloatValue(unitType)
-#            if unitType in (v.CSS_IN, v.CSS_CM):
-#                val = round(val)
-#            self.assertEqual(val , exp)
-#
-#    def test_setFloat(self):
-#        "CSSPrimitiveValue.setFloatValue()"
-#        V = cssutils.css.CSSPrimitiveValue
-#
-#        tests = {
-#            # unitType, value
-#            (V.CSS_NUMBER, 1): [
-#                # unitType, setvalue,
-#                #    getvalue or expected exception, msg or cssText
-#                (V.CSS_NUMBER, 0, 0, '0'),
-#                (V.CSS_NUMBER, 0.1, 0.1, '0.1'),
-#                (V.CSS_NUMBER, -0, 0, '0'),
-#                (V.CSS_NUMBER, 2, 2, '2'),
-#                (V.CSS_NUMBER, 2.0, 2, '2'),
-#                (V.CSS_NUMBER, 2.1, 2.1, '2.1'),
-#                (V.CSS_NUMBER, -2.1, -2.1, '-2.1'),
-#                # setting with string does work
-#                (V.CSS_NUMBER, '1', 1, '1'),
-#                (V.CSS_NUMBER, '1.1', 1.1, '1.1'),
-#                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_RAD, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_GRAD, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_S, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_MS, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_KHZ, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_HZ, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_DIMENSION, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_MM, 2, xml.dom.InvalidAccessErr, None),
-#
-#                (V.CSS_NUMBER, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: floatValue 'x' is not a float"),
-#                (V.CSS_NUMBER, '1x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: floatValue '1x' is not a float"),
-#
-#                (V.CSS_STRING, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: unitType 'CSS_STRING' is not a float type"),
-#                (V.CSS_URI, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: unitType 'CSS_URI' is not a float type"),
-#                (V.CSS_ATTR, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: unitType 'CSS_ATTR' is not a float type"),
-#                (V.CSS_IDENT, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: unitType 'CSS_IDENT' is not a float type"),
-#                (V.CSS_RGBCOLOR, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: unitType 'CSS_RGBCOLOR' is not a float type"),
-#                (V.CSS_RGBACOLOR, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: unitType 'CSS_RGBACOLOR' is not a float type"),
-#                (V.CSS_RECT, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: unitType 'CSS_RECT' is not a float type"),
-#                (V.CSS_COUNTER, 'x', xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: unitType 'CSS_COUNTER' is not a float type"),
-#                (V.CSS_EMS, 1, xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_NUMBER' to 'CSS_EMS'"),
-#                (V.CSS_EXS, 1, xml.dom.InvalidAccessErr,
-#                 "CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_NUMBER' to 'CSS_EXS'")
-#            ],
-#            (V.CSS_MM, '1mm'): [
-#                (V.CSS_MM, 2, 2, '2mm'),
-#                (V.CSS_MM, 0, 0, '0mm'),
-#                (V.CSS_MM, 0.1, 0.1, '0.1mm'),
-#                (V.CSS_MM, -0, -0, '0mm'),
-#                (V.CSS_MM, 3.0, 3, '3mm'),
-#                (V.CSS_MM, 3.1, 3.1, '3.1mm'),
-#                (V.CSS_MM, -3.1, -3.1, '-3.1mm'),
-#                (V.CSS_CM, 1, 10, '10mm'),
-#                (V.CSS_IN, 10, 254, '254mm'),
-#                (V.CSS_PT, 1, 1828.8, '1828.8mm'),
-#                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_NUMBER, 2, xml.dom.InvalidAccessErr, None)
-#            ],
-#            (V.CSS_PT, '1pt'): [
-#                (V.CSS_PT, 2, 2, '2pt'),
-#                (V.CSS_PC, 12, 1, '1pt'),
-#                (V.CSS_NUMBER, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None)
-#            ],
-#            (V.CSS_KHZ, '1khz'): [
-#                (V.CSS_HZ, 2000, 2, '2khz'),
-#                (V.CSS_NUMBER, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
-#                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None)
-#            ]
-#        }
-#        for test in tests:
-#            initialType, initialValue = test
-#            pv = cssutils.css.CSSPrimitiveValue(initialValue)
-#            for setType, setValue, exp, cssText in tests[test]:
-#                if type(exp) == types.TypeType or\
-#                   type(exp) == types.ClassType: # 2.4 compatibility
-#                    if cssText:
-#                        self.assertRaisesMsg(
-#                            exp, cssText, pv.setFloatValue, setType, setValue)
-#                    else:
-#                        self.assertRaises(
-#                            exp, pv.setFloatValue, setType, setValue)
-#                else:
-#                    pv.setFloatValue(setType, setValue)
-#                    self.assertEqual(pv._value[0], cssText)
-#                    if cssText == '0mm':
-#                        cssText = '0'
-#                    self.assertEqual(pv.cssText, cssText)
-#                    self.assertEqual(pv.getFloatValue(initialType), exp)
-#
-#    def test_getString(self):
-#        "CSSPrimitiveValue.getStringValue()"
-#        v = cssutils.css.CSSPrimitiveValue(u'1px')
-#        self.assertTrue(v.primitiveType == v.CSS_PX)
-#        self.assertRaises(xml.dom.InvalidAccessErr,
-#                          v.getStringValue)
-#
-#        pv = cssutils.css.CSSPrimitiveValue
-#        tests = {
-#            pv.CSS_STRING: ("'red'", 'red'),
-#            pv.CSS_STRING: ('"red"', 'red'),
-#            pv.CSS_URI: ('url(http://example.com)', None),
-#            pv.CSS_URI: ("url('http://example.com')",
-#                         u"http://example.com"),
-#            pv.CSS_URI: ('url("http://example.com")',
-#                         u'http://example.com'),
-#            pv.CSS_URI: ('url("http://example.com?)")',
-#                         u'http://example.com?)'),
-#            pv.CSS_IDENT: ('red', None),
-#            pv.CSS_ATTR: ('attr(att-name)',
-#                         u'att-name'), # the name of the attrr
-#            }
-#        for t in tests:
-#            val, exp = tests[t]
-#            if not exp:
-#                exp = val
-#
-#            v = cssutils.css.CSSPrimitiveValue(val)
-#            self.assertEqual(v.primitiveType, t)
-#            self.assertEqual(v.getStringValue(), exp)
-#
-#    def test_setString(self):
-#        "CSSPrimitiveValue.setStringValue()"
-#        # CSS_STRING
-#        v = cssutils.css.CSSPrimitiveValue(u'"a"')
-#        self.assertTrue(v.CSS_STRING == v.primitiveType)
-#        v.setStringValue(v.CSS_STRING, 'b')
-#        self.assertTrue(('b', 'STRING') == v._value)
-#        self.assertEqual('b', v.getStringValue())
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_STRING' to 'CSS_URI'",
-#            v.setStringValue, *(v.CSS_URI, 'x'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_STRING' to 'CSS_IDENT'",
-#            v.setStringValue, *(v.CSS_IDENT, 'x'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_STRING' to 'CSS_ATTR'",
-#            v.setStringValue, *(v.CSS_ATTR, 'x'))
-#
-#        # CSS_IDENT
-#        v = cssutils.css.CSSPrimitiveValue('new')
-#        v.setStringValue(v.CSS_IDENT, 'ident')
-#        self.assertTrue(v.CSS_IDENT == v.primitiveType)
-#        self.assertTrue(('ident', 'IDENT') == v._value)
-#        self.assertTrue('ident' == v.getStringValue())
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_IDENT' to 'CSS_URI'",
-#            v.setStringValue, *(v.CSS_URI, 'x'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_IDENT' to 'CSS_STRING'",
-#            v.setStringValue, *(v.CSS_STRING, '"x"'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_IDENT' to 'CSS_ATTR'",
-#            v.setStringValue, *(v.CSS_ATTR, 'x'))
-#
-#        # CSS_URI
-#        v = cssutils.css.CSSPrimitiveValue('url(old)')
-#        v.setStringValue(v.CSS_URI, '(')
-#        self.assertEqual((u'(', 'URI'), v._value)
-#        self.assertEqual(u'(', v.getStringValue())
-#
-#        v.setStringValue(v.CSS_URI, ')')
-#        self.assertEqual((u')', 'URI'), v._value)
-#        self.assertEqual(u')', v.getStringValue())
-#
-#        v.setStringValue(v.CSS_URI, '"')
-#        self.assertEqual(ur'"', v.getStringValue())
-#        self.assertEqual((ur'"', 'URI'), v._value)
-#
-#        v.setStringValue(v.CSS_URI, "''")
-#        self.assertEqual(ur"''", v.getStringValue())
-#        self.assertEqual((ur"''", 'URI'), v._value)
-#
-#        v.setStringValue(v.CSS_URI, ',')
-#        self.assertEqual(ur',', v.getStringValue())
-#        self.assertEqual((ur',', 'URI'), v._value)
-#
-#        v.setStringValue(v.CSS_URI, ' ')
-#        self.assertEqual((u' ', 'URI'), v._value)
-#        self.assertEqual(u' ', v.getStringValue())
-#
-#        v.setStringValue(v.CSS_URI, 'a)')
-#        self.assertEqual((u'a)', 'URI'), v._value)
-#        self.assertEqual(u'a)', v.getStringValue())
-#
-#        v.setStringValue(v.CSS_URI, 'a')
-#        self.assertTrue(v.CSS_URI == v.primitiveType)
-#        self.assertEqual((u'a', 'URI'), v._value)
-#        self.assertEqual(u'a', v.getStringValue())
-#
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_URI' to 'CSS_IDENT'",
-#            v.setStringValue, *(v.CSS_IDENT, 'x'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_URI' to 'CSS_STRING'",
-#            v.setStringValue, *(v.CSS_STRING, '"x"'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_URI' to 'CSS_ATTR'",
-#            v.setStringValue, *(v.CSS_ATTR, 'x'))
-#
-#        # CSS_ATTR
-#        v = cssutils.css.CSSPrimitiveValue('attr(old)')
-#        v.setStringValue(v.CSS_ATTR, 'a')
-#        self.assertTrue(v.CSS_ATTR == v.primitiveType)
-#        self.assertTrue('a' == v.getStringValue())
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_ATTR' to 'CSS_IDENT'",
-#            v.setStringValue, *(v.CSS_IDENT, 'x'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_ATTR' to 'CSS_STRING'",
-#            v.setStringValue, *(v.CSS_STRING, '"x"'))
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: Cannot coerce primitiveType
-# "'CSS_ATTR' to 'CSS_URI'",
-#            v.setStringValue, *(v.CSS_URI, 'x'))
-#
-#        # TypeError as 'x' is no valid type
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: stringType 'x' (UNKNOWN TYPE) is not a string type",
-#            v.setStringValue, *('x', 'brown'))
-#        # IndexError as 111 is no valid type
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: stringType 111 (UNKNOWN TYPE) is not a string type",
-#            v.setStringValue, *(111, 'brown'))
-#        # CSS_PX is no string type
-#        self.assertRaisesMsg(xml.dom.InvalidAccessErr,
-#            u"CSSPrimitiveValue: stringType CSS_PX is not a string type",
-#            v.setStringValue, *(v.CSS_PX, 'brown'))
-#
-#    def test_typeRGBColor(self):
-#        "RGBColor"
-#        v = cssutils.css.CSSPrimitiveValue('RGB(1, 5, 10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
-#
-#        v = cssutils.css.CSSPrimitiveValue('rgb(1, 5, 10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        self.assertEqual(u'rgb(1, 5, 10)', v.cssText)
-#
-#        v = cssutils.css.CSSPrimitiveValue('rgb(1%, 5%, 10%)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        self.assertEqual(u'rgb(1%, 5%, 10%)', v.cssText)
-#
-#        v = cssutils.css.CSSPrimitiveValue('  rgb(  1 ,5,  10  )')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        v = cssutils.css.CSSPrimitiveValue('rgb(1,5,10)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-#        v = cssutils.css.CSSPrimitiveValue('rgb(1%, .5%, 10.1%)')
-#        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        self.assertTrue(v.CSS_PRIMITIVE_VALUE == v.cssValueType)
+        self.assertTrue("CSS_PRIMITIVE_VALUE" == v.cssValueTypeString)
+
+        self.assertTrue(v.CSS_NUMBER == v.primitiveType)
+        self.assertTrue("CSS_NUMBER" == v.primitiveTypeString)
+
+        # DUMMY to be able to test empty constructor call
+        # self.assertRaises(xml.dom.SyntaxErr, v.__init__, None)
+
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getCounterValue)
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getRGBColorValue)
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getRectValue)
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
+
+    def test_CSS_UNKNOWN(self):
+        "CSSPrimitiveValue.CSS_UNKNOWN"
+        v = cssutils.css.CSSPrimitiveValue('expression(false)')
+        self.assertTrue(v.CSS_UNKNOWN == v.primitiveType)
+        self.assertTrue('CSS_UNKNOWN' == v.primitiveTypeString)
+
+    def test_CSS_NUMBER_AND_OTHER_DIMENSIONS(self):
+        "CSSPrimitiveValue.CSS_NUMBER .. CSS_DIMENSION"
+        defs = [
+            ('', 'CSS_NUMBER'),
+            ('%', 'CSS_PERCENTAGE'),
+            ('em', 'CSS_EMS'),
+            ('ex', 'CSS_EXS'),
+            ('px', 'CSS_PX'),
+            ('cm', 'CSS_CM'),
+            ('mm', 'CSS_MM'),
+            ('in', 'CSS_IN'),
+            ('pt', 'CSS_PT'),
+            ('pc', 'CSS_PC'),
+            ('deg', 'CSS_DEG'),
+            ('rad', 'CSS_RAD'),
+            ('grad', 'CSS_GRAD'),
+            ('ms', 'CSS_MS'),
+            ('s', 'CSS_S'),
+            ('hz', 'CSS_HZ'),
+            ('khz', 'CSS_KHZ'),
+            ('other_dimension', 'CSS_DIMENSION'),
+        ]
+        for dim, name in defs:
+            for n in (0, 1, 1.1, -1, -1.1, -0):
+                v = cssutils.css.CSSPrimitiveValue('%i%s' % (n, dim))
+                self.assertEqual(name, v.primitiveTypeString)
+                self.assertEqual(getattr(v, name), v.primitiveType)
+
+    def test_CSS_STRING_AND_OTHER(self):
+        "CSSPrimitiveValue.CSS_STRING .. CSS_RGBCOLOR"
+        defs = [
+            (
+                (
+                    '""',
+                    "''",
+                    '"some thing"',
+                    "' A\\ND '",
+                    # comma separated lists are STRINGS FOR NOW!
+                    'a, b',
+                    '"a", "b"',
+                ),
+                'CSS_STRING',
+            ),
+            (('url(a)', 'url("a b")', "url(' ')"), 'CSS_URI'),
+            (('some', 'or_anth-er'), 'CSS_IDENT'),
+            (('attr(a)', 'attr(b)'), 'CSS_ATTR'),
+            (('counter(1)', 'counter(2)'), 'CSS_COUNTER'),
+            (('rect(1,2,3,4)',), 'CSS_RECT'),
+            (('rgb(1,2,3)', 'rgb(10%, 20%, 30%)', '#123', '#123456'), 'CSS_RGBCOLOR'),
+            (
+                (
+                    'rgba(1,2,3,4)',
+                    'rgba(10%, 20%, 30%, 40%)',
+                ),
+                'CSS_RGBACOLOR',
+            ),
+            (('U+0', 'u+ffffff', 'u+000000-f', 'u+0-f, U+ee-ff'), 'CSS_UNICODE_RANGE'),
+        ]
+
+        for examples, name in defs:
+            for x in examples:
+                v = cssutils.css.CSSPrimitiveValue(x)
+                self.assertEqual(getattr(v, name), v.primitiveType)
+                self.assertEqual(name, v.primitiveTypeString)
+
+    def test_getFloat(self):
+        "CSSPrimitiveValue.getFloatValue()"
+        # NOT TESTED are float values as it seems difficult to
+        # compare these. Maybe use decimal.Decimal?
+
+        v = cssutils.css.CSSPrimitiveValue('1px')
+        tests = {
+            '0': (v.CSS_NUMBER, 0),
+            '-1.1': (v.CSS_NUMBER, -1.1),
+            '1%': (v.CSS_PERCENTAGE, 1),
+            '-1%': (v.CSS_PERCENTAGE, -1),
+            '1em': (v.CSS_EMS, 1),
+            '-1.1em': (v.CSS_EMS, -1.1),
+            '1ex': (v.CSS_EXS, 1),
+            '1px': (v.CSS_PX, 1),
+            '1cm': (v.CSS_CM, 1),
+            # '1cm': (v.CSS_MM, 10),
+            '254cm': (v.CSS_IN, 100),
+            '1mm': (v.CSS_MM, 1),
+            '10mm': (v.CSS_CM, 1),
+            '254mm': (v.CSS_IN, 10),
+            '1in': (v.CSS_IN, 1),
+            '100in': (v.CSS_CM, 254),  # ROUNDED!!!
+            '10in': (v.CSS_MM, 254),  # ROUNDED!!!
+            '1pt': (v.CSS_PT, 1),
+            '1pc': (v.CSS_PC, 1),
+            '1deg': (v.CSS_DEG, 1),
+            '1rad': (v.CSS_RAD, 1),
+            '1grad': (v.CSS_GRAD, 1),
+            '1ms': (v.CSS_MS, 1),
+            '1000ms': (v.CSS_S, 1),
+            '1s': (v.CSS_S, 1),
+            # '1s': (v.CSS_MS, 1000),
+            '1hz': (v.CSS_HZ, 1),
+            '1000hz': (v.CSS_KHZ, 1),
+            '1khz': (v.CSS_KHZ, 1),
+            # '1khz': (v.CSS_HZ, 1000),
+            '1DIMENSION': (v.CSS_DIMENSION, 1),
+        }
+        for cssText in tests:
+            v.cssText = cssText
+            unitType, exp = tests[cssText]
+            val = v.getFloatValue(unitType)
+            if unitType in (v.CSS_IN, v.CSS_CM):
+                val = round(val)
+            self.assertEqual(val, exp)
+
+    def test_setFloat(self):
+        "CSSPrimitiveValue.setFloatValue()"
+        V = cssutils.css.CSSPrimitiveValue
+
+        tests = {
+            # unitType, value
+            (V.CSS_NUMBER, 1): [
+                # unitType, setvalue,
+                #    getvalue or expected exception, msg or cssText
+                (V.CSS_NUMBER, 0, 0, '0'),
+                (V.CSS_NUMBER, 0.1, 0.1, '0.1'),
+                (V.CSS_NUMBER, -0, 0, '0'),
+                (V.CSS_NUMBER, 2, 2, '2'),
+                (V.CSS_NUMBER, 2.0, 2, '2'),
+                (V.CSS_NUMBER, 2.1, 2.1, '2.1'),
+                (V.CSS_NUMBER, -2.1, -2.1, '-2.1'),
+                # setting with string does work
+                (V.CSS_NUMBER, '1', 1, '1'),
+                (V.CSS_NUMBER, '1.1', 1.1, '1.1'),
+                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_RAD, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_GRAD, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_S, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_MS, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_KHZ, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_HZ, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_DIMENSION, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_MM, 2, xml.dom.InvalidAccessErr, None),
+                (
+                    V.CSS_NUMBER,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: floatValue 'x' is not a float",
+                ),
+                (
+                    V.CSS_NUMBER,
+                    '1x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: floatValue '1x' is not a float",
+                ),
+                (
+                    V.CSS_STRING,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: unitType 'CSS_STRING' is not a float type",
+                ),
+                (
+                    V.CSS_URI,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: unitType 'CSS_URI' is not a float type",
+                ),
+                (
+                    V.CSS_ATTR,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: unitType 'CSS_ATTR' is not a float type",
+                ),
+                (
+                    V.CSS_IDENT,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: unitType 'CSS_IDENT' is not a float type",
+                ),
+                (
+                    V.CSS_RGBCOLOR,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: unitType 'CSS_RGBCOLOR' is not a float type",
+                ),
+                (
+                    V.CSS_RGBACOLOR,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: unitType 'CSS_RGBACOLOR' is not a float type",
+                ),
+                (
+                    V.CSS_RECT,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: unitType 'CSS_RECT' is not a float type",
+                ),
+                (
+                    V.CSS_COUNTER,
+                    'x',
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: unitType 'CSS_COUNTER' is not a float type",
+                ),
+                (
+                    V.CSS_EMS,
+                    1,
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_NUMBER' to 'CSS_EMS'",
+                ),
+                (
+                    V.CSS_EXS,
+                    1,
+                    xml.dom.InvalidAccessErr,
+                    "CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_NUMBER' to 'CSS_EXS'",
+                ),
+            ],
+            (V.CSS_MM, '1mm'): [
+                (V.CSS_MM, 2, 2, '2mm'),
+                (V.CSS_MM, 0, 0, '0mm'),
+                (V.CSS_MM, 0.1, 0.1, '0.1mm'),
+                (V.CSS_MM, -0, -0, '0mm'),
+                (V.CSS_MM, 3.0, 3, '3mm'),
+                (V.CSS_MM, 3.1, 3.1, '3.1mm'),
+                (V.CSS_MM, -3.1, -3.1, '-3.1mm'),
+                (V.CSS_CM, 1, 10, '10mm'),
+                (V.CSS_IN, 10, 254, '254mm'),
+                (V.CSS_PT, 1, 1828.8, '1828.8mm'),
+                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_NUMBER, 2, xml.dom.InvalidAccessErr, None),
+            ],
+            (V.CSS_PT, '1pt'): [
+                (V.CSS_PT, 2, 2, '2pt'),
+                (V.CSS_PC, 12, 1, '1pt'),
+                (V.CSS_NUMBER, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
+            ],
+            (V.CSS_KHZ, '1khz'): [
+                (V.CSS_HZ, 2000, 2, '2khz'),
+                (V.CSS_NUMBER, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_DEG, 1, xml.dom.InvalidAccessErr, None),
+                (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
+            ],
+        }
+        for test in tests:
+            initialType, initialValue = test
+            pv = cssutils.css.CSSPrimitiveValue(initialValue)
+            for setType, setValue, exp, cssText in tests[test]:
+                if isinstance(exp, types.TypeType):
+                    if cssText:
+                        self.assertRaisesMsg(
+                            exp, cssText, pv.setFloatValue, setType, setValue
+                        )
+                    else:
+                        self.assertRaises(exp, pv.setFloatValue, setType, setValue)
+                else:
+                    pv.setFloatValue(setType, setValue)
+                    self.assertEqual(pv._value[0], cssText)
+                    if cssText == '0mm':
+                        cssText = '0'
+                    self.assertEqual(pv.cssText, cssText)
+                    self.assertEqual(pv.getFloatValue(initialType), exp)
+
+    def test_getString(self):
+        "CSSPrimitiveValue.getStringValue()"
+        v = cssutils.css.CSSPrimitiveValue('1px')
+        self.assertTrue(v.primitiveType == v.CSS_PX)
+        self.assertRaises(xml.dom.InvalidAccessErr, v.getStringValue)
+
+        pv = cssutils.css.CSSPrimitiveValue
+        tests = {
+            pv.CSS_STRING: ("'red'", 'red'),
+            pv.CSS_STRING: ('"red"', 'red'),
+            pv.CSS_URI: ('url(http://example.com)', None),
+            pv.CSS_URI: ("url('http://example.com')", u"http://example.com"),
+            pv.CSS_URI: ('url("http://example.com")', 'http://example.com'),
+            pv.CSS_URI: ('url("http://example.com?)")', 'http://example.com?)'),
+            pv.CSS_IDENT: ('red', None),
+            pv.CSS_ATTR: ('attr(att-name)', 'att-name'),  # the name of the attrr
+        }
+        for t in tests:
+            val, exp = tests[t]
+            if not exp:
+                exp = val
+
+            v = cssutils.css.CSSPrimitiveValue(val)
+            self.assertEqual(v.primitiveType, t)
+            self.assertEqual(v.getStringValue(), exp)
+
+    def test_setString(self):
+        "CSSPrimitiveValue.setStringValue()"
+        # CSS_STRING
+        v = cssutils.css.CSSPrimitiveValue('"a"')
+        self.assertTrue(v.CSS_STRING == v.primitiveType)
+        v.setStringValue(v.CSS_STRING, 'b')
+        self.assertTrue(('b', 'STRING') == v._value)
+        self.assertEqual('b', v.getStringValue())
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_STRING' to 'CSS_URI'",
+            v.setStringValue,
+            *(v.CSS_URI, 'x')
+        )
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_STRING' to 'CSS_IDENT'",
+            v.setStringValue,
+            *(v.CSS_IDENT, 'x')
+        )
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_STRING' to 'CSS_ATTR'",
+            v.setStringValue,
+            *(v.CSS_ATTR, 'x')
+        )
+
+        # CSS_IDENT
+        v = cssutils.css.CSSPrimitiveValue('new')
+        v.setStringValue(v.CSS_IDENT, 'ident')
+        self.assertTrue(v.CSS_IDENT == v.primitiveType)
+        self.assertTrue(('ident', 'IDENT') == v._value)
+        self.assertTrue('ident' == v.getStringValue())
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_IDENT' to 'CSS_URI'",
+            v.setStringValue,
+            *(v.CSS_URI, 'x')
+        )
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_IDENT' to 'CSS_STRING'",
+            v.setStringValue,
+            *(v.CSS_STRING, '"x"')
+        )
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_IDENT' to 'CSS_ATTR'",
+            v.setStringValue,
+            *(v.CSS_ATTR, 'x')
+        )
+
+        # CSS_URI
+        v = cssutils.css.CSSPrimitiveValue('url(old)')
+        v.setStringValue(v.CSS_URI, '(')
+        self.assertEqual(('(', 'URI'), v._value)
+        self.assertEqual('(', v.getStringValue())
+
+        v.setStringValue(v.CSS_URI, ')')
+        self.assertEqual((')', 'URI'), v._value)
+        self.assertEqual(')', v.getStringValue())
+
+        v.setStringValue(v.CSS_URI, '"')
+        self.assertEqual('"', v.getStringValue())
+        self.assertEqual(('"', 'URI'), v._value)
+
+        v.setStringValue(v.CSS_URI, "''")
+        self.assertEqual("''", v.getStringValue())
+        self.assertEqual(("''", 'URI'), v._value)
+
+        v.setStringValue(v.CSS_URI, ',')
+        self.assertEqual(',', v.getStringValue())
+        self.assertEqual((',', 'URI'), v._value)
+
+        v.setStringValue(v.CSS_URI, ' ')
+        self.assertEqual((' ', 'URI'), v._value)
+        self.assertEqual(' ', v.getStringValue())
+
+        v.setStringValue(v.CSS_URI, 'a)')
+        self.assertEqual(('a)', 'URI'), v._value)
+        self.assertEqual('a)', v.getStringValue())
+
+        v.setStringValue(v.CSS_URI, 'a')
+        self.assertTrue(v.CSS_URI == v.primitiveType)
+        self.assertEqual(('a', 'URI'), v._value)
+        self.assertEqual('a', v.getStringValue())
+
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_URI' to 'CSS_IDENT'",
+            v.setStringValue,
+            *(v.CSS_IDENT, 'x')
+        )
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_URI' to 'CSS_STRING'",
+            v.setStringValue,
+            *(v.CSS_STRING, '"x"')
+        )
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_URI' to 'CSS_ATTR'",
+            v.setStringValue,
+            *(v.CSS_ATTR, 'x')
+        )
+
+        # CSS_ATTR
+        v = cssutils.css.CSSPrimitiveValue('attr(old)')
+        v.setStringValue(v.CSS_ATTR, 'a')
+        self.assertTrue(v.CSS_ATTR == v.primitiveType)
+        self.assertTrue('a' == v.getStringValue())
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_IDENT'",
+            v.setStringValue,
+            *(v.CSS_IDENT, 'x')
+        )
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_STRING'",
+            v.setStringValue,
+            *(v.CSS_STRING, '"x"')
+        )
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: Cannot coerce primitiveType 'CSS_ATTR' to 'CSS_URI'",
+            v.setStringValue,
+            *(v.CSS_URI, 'x')
+        )
+
+        # TypeError as 'x' is no valid type
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: stringType 'x' (UNKNOWN TYPE) is not a string type",
+            v.setStringValue,
+            *('x', 'brown')
+        )
+        # IndexError as 111 is no valid type
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: stringType 111 (UNKNOWN TYPE) is not a string type",
+            v.setStringValue,
+            *(111, 'brown')
+        )
+        # CSS_PX is no string type
+        self.assertRaisesMsg(
+            xml.dom.InvalidAccessErr,
+            u"CSSPrimitiveValue: stringType CSS_PX is not a string type",
+            v.setStringValue,
+            *(v.CSS_PX, 'brown')
+        )
+
+    def test_typeRGBColor(self):
+        "RGBColor"
+        v = cssutils.css.CSSPrimitiveValue('RGB(1, 5, 10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        self.assertEqual('rgb(1, 5, 10)', v.cssText)
+
+        v = cssutils.css.CSSPrimitiveValue('rgb(1, 5, 10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        self.assertEqual('rgb(1, 5, 10)', v.cssText)
+
+        v = cssutils.css.CSSPrimitiveValue('rgb(1%, 5%, 10%)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        self.assertEqual('rgb(1%, 5%, 10%)', v.cssText)
+
+        v = cssutils.css.CSSPrimitiveValue('  rgb(  1 ,5,  10  )')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        v = cssutils.css.CSSPrimitiveValue('rgb(1,5,10)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
+        v = cssutils.css.CSSPrimitiveValue('rgb(1%, .5%, 10.1%)')
+        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
