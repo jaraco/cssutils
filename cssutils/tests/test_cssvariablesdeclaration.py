@@ -1,5 +1,7 @@
 """Testcases for cssutils.css.cssvariablesdelaration.CSSVariablesDeclaration."""
 
+import xml.dom
+
 from . import basetest
 import cssutils
 
@@ -105,30 +107,26 @@ class TestCSSVariablesDeclaration(basetest.BaseTestCase):
         }
         self.do_equal_r(tests)
 
-    # TODO: Fix?
-    #    def test_cssText2(self):
-    #        "CSSVariablesDeclaration.cssText"
-    #        # exception
-    #        tests = {
-    #                 u'top': xml.dom.SyntaxErr,
-    #                 u'top:': xml.dom.SyntaxErr,
-    #                 u'top : ': xml.dom.SyntaxErr,
-    #                 u'top:;': xml.dom.SyntaxErr,
-    #                 u'top 0': xml.dom.SyntaxErr,
-    #                 u'top 0;': xml.dom.SyntaxErr,
-    #
-    #                 u':': xml.dom.SyntaxErr,
-    #                 u':0': xml.dom.SyntaxErr,
-    #                 u':0;': xml.dom.SyntaxErr,
-    #                 u':;': xml.dom.SyntaxErr,
-    #                 u': ;': xml.dom.SyntaxErr,
-    #
-    #                 u'0': xml.dom.SyntaxErr,
-    #                 u'0;': xml.dom.SyntaxErr,
-    #
-    #                 u';': xml.dom.SyntaxErr,
-    #            }
-    #        self.do_raise_r(tests)
+        def test_cssText2(self):
+            "CSSVariablesDeclaration.cssText"
+
+            tests = {
+                'top': xml.dom.SyntaxErr,
+                'top:': xml.dom.SyntaxErr,
+                'top : ': xml.dom.SyntaxErr,
+                'top:;': xml.dom.SyntaxErr,
+                'top 0': xml.dom.SyntaxErr,
+                'top 0;': xml.dom.SyntaxErr,
+                ':': xml.dom.SyntaxErr,
+                ':0': xml.dom.SyntaxErr,
+                ':0;': xml.dom.SyntaxErr,
+                ':;': xml.dom.SyntaxErr,
+                ': ;': xml.dom.SyntaxErr,
+                '0': xml.dom.SyntaxErr,
+                '0;': xml.dom.SyntaxErr,
+                ';': xml.dom.SyntaxErr,
+            }
+            self.do_raise_r(tests)
 
     def test_xVariable(self):
         "CSSVariablesDeclaration.xVariable()"
