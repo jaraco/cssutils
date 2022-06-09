@@ -31,9 +31,8 @@ class XTestCase:
         assert p.priority == ''
         p = cssutils.css.Property('color', 'red', '!important')
         assert p.priority == 'important'
-        self.assertRaisesMsg(
-            xml.dom.SyntaxErr, '', cssutils.css.Property, 'color', 'red', 'x'
-        )
+        with pytest.raises(xml.dom.SyntaxErr):
+            cssutils.css.Property('color', 'red', 'x')
 
         cssutils.log.raiseExceptions = False
         p = cssutils.css.Property('color', 'red', '!x')

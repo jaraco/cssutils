@@ -1,6 +1,7 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
 
 import sys
+import re
 import xml.dom
 from . import basetest
 from cssutils.prodparser import (
@@ -193,7 +194,8 @@ class TestSequence(basetest.BaseTestCase):
                 seq = Sequence(*seqitems)
                 for t, p in result:
                     if isinstance(p, str):
-                        self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
+                        with pytest.raises(ParseError, match=p):
+                            seq.nextProd(t)
                     else:
                         assert p == seq.nextProd(t)
 
@@ -245,7 +247,8 @@ class TestSequence(basetest.BaseTestCase):
                 seq = Sequence(minmax=lambda: (1, 2), *seqitems)
                 for t, p in result:
                     if isinstance(p, str):
-                        self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
+                        with pytest.raises(ParseError, match=re.escape(p)):
+                            seq.nextProd(t)
                     else:
                         assert p == seq.nextProd(t)
 
@@ -260,26 +263,32 @@ class TestChoice(basetest.BaseTestCase):
         t2 = (2, 0, 0, 0)
 
         ch = Choice(p1, p2)
-        self.assertRaisesMsg(
-            ParseError, 'No match for (0, 0, 0, 0) in Choice(p1, p2)', ch.nextProd, t0
-        )
+        with pytest.raises(
+            ParseError, match=re.escape('No match for (0, 0, 0, 0) in Choice(p1, p2)')
+        ):
+            ch.nextProd(t0)
         assert p1 == ch.nextProd(t1)
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
+        with pytest.raises(Exhausted, match='Extra token'):
+            ch.nextProd(t1)
 
         ch = Choice(p1, p2)
         assert p2 == ch.nextProd(t2)
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t2)
+        with pytest.raises(Exhausted, match='Extra token'):
+            ch.nextProd(t2)
 
         ch = Choice(p2, p1)
-        self.assertRaisesMsg(
-            ParseError, 'No match for (0, 0, 0, 0) in Choice(p2, p1)', ch.nextProd, t0
-        )
+        with pytest.raises(
+            ParseError, match=re.escape('No match for (0, 0, 0, 0) in Choice(p2, p1)')
+        ):
+            ch.nextProd(t0)
         assert p1 == ch.nextProd(t1)
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
+        with pytest.raises(Exhausted, match='Extra token'):
+            ch.nextProd(t1)
 
         ch = Choice(p2, p1)
         assert p2 == ch.nextProd(t2)
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t2)
+        with pytest.raises(Exhausted, match='Extra token'):
+            ch.nextProd(t2)
 
     def test_matches(self):
         "Choice.matches()"
@@ -311,18 +320,19 @@ class TestChoice(basetest.BaseTestCase):
         t2 = (2, 0, 0, 0)
 
         ch = Choice(s1, s2)
-        self.assertRaisesMsg(
-            ParseError,
-            'No match for (0, 0, 0, 0) in Choice(Sequence(p1, p1), Sequence(p2, p2))',
-            ch.nextProd,
-            t0,
+        expected = (
+            'No match for (0, 0, 0, 0) in Choice(Sequence(p1, p1), Sequence(p2, p2))'
         )
+        with pytest.raises(ParseError, match=re.escape(expected)):
+            ch.nextProd(t0)
         assert s1 == ch.nextProd(t1)
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
+        with pytest.raises(Exhausted, match='Extra token'):
+            ch.nextProd(t1)
 
         ch = Choice(s1, s2)
         assert s2 == ch.nextProd(t2)
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
+        with pytest.raises(Exhausted, match='Extra token'):
+            ch.nextProd(t1)
 
     def test_reset(self):
         "Choice.reset()"
@@ -383,14 +393,12 @@ class TestProdParser(basetest.BaseTestCase):
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
                 assert wellformed == exp
             else:
-                self.assertRaisesMsg(
-                    xml.dom.SyntaxErr,
-                    'T: %s' % exp,
-                    ProdParser().parse,
-                    text,
-                    'T',
-                    prods,
-                )
+                with pytest.raises(xml.dom.SyntaxErr, match=re.escape(f'T: {exp}')):
+                    ProdParser().parse(
+                        text,
+                        'T',
+                        prods,
+                    )
 
         tests = {
             '1 3': True,
@@ -411,11 +419,9 @@ class TestProdParser(basetest.BaseTestCase):
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
                 assert wellformed == exp
             else:
-                self.assertRaisesMsg(
-                    xml.dom.SyntaxErr,
-                    'T: %s' % exp,
-                    ProdParser().parse,
-                    text,
-                    'T',
-                    prods,
-                )
+                with pytest.raises(xml.dom.SyntaxErr, match=re.escape(f'T: {exp}')):
+                    ProdParser().parse(
+                        text,
+                        'T',
+                        prods,
+                    )

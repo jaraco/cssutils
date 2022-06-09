@@ -25,10 +25,6 @@ class BaseTestCase:
         cssutils.log.setLevel(logging.FATAL)
         self.p = cssutils.CSSParser(raiseExceptions=True)
 
-    def assertRaisesMsg(self, excClass, msg, callableObj, *args, **kwargs):
-        with pytest.raises(excClass, match=re.escape(msg)):
-            callableObj(*args, **kwargs)
-
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
         """
         if raising self.p is used for parsing, else self.pf

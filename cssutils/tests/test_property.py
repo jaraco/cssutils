@@ -1,5 +1,6 @@
 """Testcases for cssutils.css.property._Property."""
 
+import re
 import xml.dom
 
 import pytest
@@ -121,7 +122,8 @@ class TestProperty(basetest.BaseTestCase):
         }
         for test in tests:
             ecp, msg = tests[test]
-            self.assertRaisesMsg(ecp, msg, p._setCssText, test)
+            with pytest.raises(ecp, match=re.escape(msg)):
+                p._setCssText(test)
 
     def test_name(self):
         "Property.name"
