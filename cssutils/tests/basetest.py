@@ -18,7 +18,8 @@ def get_sheet_filename(sheet_name):
 
 
 class BaseTestCase:
-    def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
+    @staticmethod
+    def do_equal_p(tests, att='cssText', debug=False, raising=True):
         p = cssutils.CSSParser(raiseExceptions=raising)
         # parse and check att of result
         for test, expected in list(tests.items()):
@@ -29,7 +30,8 @@ class BaseTestCase:
                 expected = test
             assert str(s.__getattribute__(att), 'utf-8') == expected
 
-    def do_raise_p(self, tests, debug=False, raising=True):
+    @staticmethod
+    def do_raise_p(tests, debug=False, raising=True):
         # parse and expect raise
         p = cssutils.CSSParser(raiseExceptions=raising)
         for test, expected in list(tests.items()):
