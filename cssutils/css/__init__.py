@@ -46,7 +46,6 @@ __all__ = [
     'SelectorList',
     'CSSStyleDeclaration',
     'Property',
-    # 'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
     'PropertyValue',
     'Value',
     'ColorValue',
@@ -78,7 +77,6 @@ from .cssstyledeclaration import CSSStyleDeclaration
 from .cssvariablesdeclaration import CSSVariablesDeclaration
 from .property import Property
 
-# from cssvalue import *
 from .value import (
     PropertyValue,
     Value,
