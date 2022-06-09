@@ -2,13 +2,12 @@
 
 import xml.dom
 import xml.dom.minidom
-import unittest
 import warnings
 
 import cssutils
 
 
-class DOMImplementationTestCase(unittest.TestCase):
+class DOMImplementationTestCase:
     def setUp(self):
         self.domimpl = cssutils.DOMImplementationCSS()
 
@@ -18,19 +17,19 @@ class DOMImplementationTestCase(unittest.TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             sheet = self.domimpl.createCSSStyleSheet(title, media)
-        self.assertEqual(True, isinstance(sheet, cssutils.css.CSSStyleSheet))
-        self.assertEqual(title, sheet.title)
-        self.assertEqual(media, sheet.media)
+        assert isinstance(sheet, cssutils.css.CSSStyleSheet)
+        assert title == sheet.title
+        assert media == sheet.media
 
     def test_createDocument(self):
         "DOMImplementationCSS.createDocument()"
         doc = self.domimpl.createDocument(None, None, None)
-        self.assertTrue(isinstance(doc, xml.dom.minidom.Document))
+        assert isinstance(doc, xml.dom.minidom.Document)
 
     def test_createDocumentType(self):
         "DOMImplementationCSS.createDocumentType()"
         doctype = self.domimpl.createDocumentType('foo', 'bar', 'raboof')
-        self.assertTrue(isinstance(doctype, xml.dom.minidom.DocumentType))
+        assert isinstance(doctype, xml.dom.minidom.DocumentType)
 
     def test_hasFeature(self):
         "DOMImplementationCSS.hasFeature()"
@@ -41,8 +40,4 @@ class DOMImplementationTestCase(unittest.TestCase):
             ('stylesheets', '2.0'),
         ]
         for name, version in tests:
-            self.assertEqual(True, self.domimpl.hasFeature(name, version))
-
-
-if __name__ == '__main__':
-    unittest.main()
+            assert self.domimpl.hasFeature(name, version)
