@@ -37,7 +37,8 @@ class TestSelector(basetest.BaseTestCase):
         assert (0, 0, 0, 1) == s.specificity
         assert s.wellformed
 
-        self.assertRaisesEx(xml.dom.NamespaceErr, cssutils.css.Selector, 'p|b')
+        with pytest.raises(xml.dom.NamespaceErr):
+            cssutils.css.Selector('p|b')
 
     def test_element(self):
         "Selector.element (TODO: RESOLVE)"

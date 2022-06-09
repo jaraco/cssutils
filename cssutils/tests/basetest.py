@@ -25,13 +25,6 @@ class BaseTestCase:
         cssutils.log.setLevel(logging.FATAL)
         self.p = cssutils.CSSParser(raiseExceptions=True)
 
-    def assertRaisesEx(
-        self, exception, callable, *args, exc_args=None, exc_pattern=None, **kwargs
-    ):
-        assert exc_args is None
-        with pytest.raises(exception, match=exc_pattern):
-            callable(*args, **kwargs)
-
     def assertRaisesMsg(self, excClass, msg, callableObj, *args, **kwargs):
         with pytest.raises(excClass, match=re.escape(msg)):
             callableObj(*args, **kwargs)

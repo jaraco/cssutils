@@ -1,6 +1,5 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
 
-import re
 import xml.dom
 from . import test_cssrule
 import cssutils.css
@@ -40,20 +39,12 @@ class TestCSSCharsetRule(test_cssrule.TestCSSRule):
                 assert '@charset "%s";' % enc.lower() == r.cssText
 
         for enc in (' ascii ', ' ascii', 'ascii '):
-            self.assertRaisesEx(
-                xml.dom.SyntaxErr,
-                cssutils.css.CSSCharsetRule,
-                enc,
-                exc_pattern=re.compile("Syntax Error"),
-            )
+            with pytest.raises(xml.dom.SyntaxErr, match="Syntax Error"):
+                cssutils.css.CSSCharsetRule(enc)
 
         for enc in ('unknown',):
-            self.assertRaisesEx(
-                xml.dom.SyntaxErr,
-                cssutils.css.CSSCharsetRule,
-                enc,
-                exc_pattern=re.compile(r"Unknown \(Python\) encoding"),
-            )
+            with pytest.raises(xml.dom.SyntaxErr, match=r"Unknown \(Python\) encoding"):
+                cssutils.css.CSSCharsetRule(enc)
 
     def test_encoding(self):
         "CSSCharsetRule.encoding"
@@ -63,22 +54,12 @@ class TestCSSCharsetRule(test_cssrule.TestCSSRule):
             assert '@charset "%s";' % enc.lower() == self.r.cssText
 
         for enc in (None, ' ascii ', ' ascii', 'ascii '):
-            self.assertRaisesEx(
-                xml.dom.SyntaxErr,
-                self.r.__setattr__,
-                'encoding',
-                enc,
-                exc_pattern=re.compile("Syntax Error"),
-            )
+            with pytest.raises(xml.dom.SyntaxErr, match="Syntax Error"):
+                self.r.encoding = enc
 
         for enc in ('unknown',):
-            self.assertRaisesEx(
-                xml.dom.SyntaxErr,
-                self.r.__setattr__,
-                'encoding',
-                enc,
-                exc_pattern=re.compile(r"Unknown \(Python\) encoding"),
-            )
+            with pytest.raises(xml.dom.SyntaxErr, match=r"Unknown \(Python\) encoding"):
+                self.r.encoding = enc
 
     def test_cssText(self):
         """CSSCharsetRule.cssText
