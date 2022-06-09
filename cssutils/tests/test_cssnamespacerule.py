@@ -17,8 +17,6 @@ class TestCSSNamespaceRule(test_cssrule.TestCSSRule):
 
     def test_init(self):
         "CSSNamespaceRule.__init__()"
-        # cannot use here as self.r and self rRO and not useful
-        # super().test_init()
         tests = [
             (None, None),
             ('', ''),

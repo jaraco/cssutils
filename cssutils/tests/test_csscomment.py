@@ -13,10 +13,6 @@ class TestCSSComment(test_cssrule.TestCSSRule):
         self.r_type = cssutils.css.CSSComment.COMMENT
         self.r_typeString = 'COMMENT'
 
-    def test_init(self):
-        "CSSComment.type and init"
-        super().test_init()
-
     def test_csstext(self):
         "CSSComment.cssText"
         tests = {
