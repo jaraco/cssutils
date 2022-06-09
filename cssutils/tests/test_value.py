@@ -1,6 +1,5 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 
-# from decimal import Decimal # maybe for later tests?
 import xml.dom
 from . import basetest
 import cssutils
