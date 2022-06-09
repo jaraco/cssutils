@@ -19,50 +19,40 @@ def get_sheet_filename(sheet_name):
 
 class BaseTestCase:
     @staticmethod
-    def do_equal_p(tests, att='cssText', debug=False, raising=True):
+    def do_equal_p(tests, att='cssText', raising=True):
         p = cssutils.CSSParser(raiseExceptions=raising)
         # parse and check att of result
         for test, expected in list(tests.items()):
-            if debug:
-                print('"%s"' % test)
             s = p.parseString(test)
             if expected is None:
                 expected = test
             assert str(s.__getattribute__(att), 'utf-8') == expected
 
     @staticmethod
-    def do_raise_p(tests, debug=False, raising=True):
+    def do_raise_p(tests, raising=True):
         # parse and expect raise
         p = cssutils.CSSParser(raiseExceptions=raising)
         for test, expected in list(tests.items()):
-            if debug:
-                print('"%s"' % test)
             with pytest.raises(expected):
                 p.parseString(test)
 
-    def do_equal_r(self, tests, att='cssText', debug=False):
+    def do_equal_r(self, tests, att='cssText'):
         # set attribute att of self.r and assert Equal
         for test, expected in list(tests.items()):
-            if debug:
-                print('"%s"' % test)
             self.r.__setattr__(att, test)
             if expected is None:
                 expected = test
             assert self.r.__getattribute__(att) == expected
 
-    def do_raise_r(self, tests, att='_setCssText', debug=False):
+    def do_raise_r(self, tests, att='_setCssText'):
         # set self.r and expect raise
         for test, expected in list(tests.items()):
-            if debug:
-                print('"%s"' % test)
             with pytest.raises(expected):
                 self.r.__getattribute__(att)(test)
 
-    def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
+    def do_raise_r_list(self, tests, err, att='_setCssText'):
         # set self.r and expect raise
         for test in tests:
-            if debug:
-                print('"%s"' % test)
             with pytest.raises(err):
                 self.r.__getattribute__(att)(test)
 
