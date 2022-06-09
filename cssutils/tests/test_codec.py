@@ -7,13 +7,6 @@ import pytest
 
 from cssutils import codec
 
-try:
-    codecs.lookup("utf-32")
-except LookupError:
-    haveutf32 = False
-else:
-    haveutf32 = True
-
 iostream = io.BytesIO
 
 
@@ -76,11 +69,10 @@ class CodecTestCase:
             "utf-16",
             True,
         )
-        if haveutf32:
-            assert codec.detectencoding_str('\xff\xfe\x00\x00'.encode("utf-32")) == (
-                "utf-32",
-                True,
-            )
+        assert codec.detectencoding_str('\xff\xfe\x00\x00'.encode("utf-32")) == (
+            "utf-32",
+            True,
+        )
         assert codec.detectencoding_str('\x00'.encode()) == (None, False)
         assert codec.detectencoding_str('\x00\x33'.encode()) == ("utf-8", False)
         assert codec.detectencoding_str('\x00\x00'.encode()) == (None, False)
@@ -90,26 +82,24 @@ class CodecTestCase:
             False,
         )
         assert codec.detectencoding_str('\x00\x00\x00\x33'.encode()) == ("utf-8", False)
-        if haveutf32:
-            assert codec.detectencoding_str('\x00\x00\x00@'.encode()) == (
-                "utf-32-be",
-                False,
-            )
-            assert codec.detectencoding_str('\x00\x00\xfe\xff'.encode('utf-32')) == (
-                "utf-32",
-                True,
-            )
+        assert codec.detectencoding_str('\x00\x00\x00@'.encode()) == (
+            "utf-32-be",
+            False,
+        )
+        assert codec.detectencoding_str('\x00\x00\xfe\xff'.encode('utf-32')) == (
+            "utf-32",
+            True,
+        )
         assert codec.detectencoding_str('@'.encode()) == (None, False)
         assert codec.detectencoding_str('@\x33'.encode()) == ("utf-8", False)
         assert codec.detectencoding_str('@\x00'.encode()) == (None, False)
         assert codec.detectencoding_str('@\x00\x33'.encode()) == ("utf-8", False)
         assert codec.detectencoding_str('@\x00\x00'.encode()) == (None, False)
         assert codec.detectencoding_str('@\x00\x00\x33'.encode()) == ("utf-8", False)
-        if haveutf32:
-            assert codec.detectencoding_str('@\x00\x00\x00'.encode()) == (
-                "utf-32-le",
-                False,
-            )
+        assert codec.detectencoding_str('@\x00\x00\x00'.encode()) == (
+            "utf-32-le",
+            False,
+        )
         assert codec.detectencoding_str('@c'.encode()) == (None, False)
         assert codec.detectencoding_str('@ch'.encode()) == (None, False)
         assert codec.detectencoding_str('@cha'.encode()) == (None, False)
@@ -207,10 +197,9 @@ class CodecTestCase:
         checkauto("utf-16")
         checkauto("utf-16-le")
         checkauto("utf-16-be")
-        if haveutf32:
-            checkauto("utf-32")
-            checkauto("utf-32-le")
-            checkauto("utf-32-be")
+        checkauto("utf-32")
+        checkauto("utf-32-le")
+        checkauto("utf-32-be")
 
         def checkdecl(encoding, input='@charset "%s";g\xfcrk{}'):
             # Check stateless decoder with encoding autodetection
@@ -310,10 +299,9 @@ class CodecTestCase:
         check("utf-16")
         check("utf-16-le")
         check("utf-16-be")
-        if haveutf32:
-            check("utf-32")
-            check("utf-32-le")
-            check("utf-32-be")
+        check("utf-32")
+        check("utf-32-le")
+        check("utf-32-be")
         check("utf-8")
         check("iso-8859-1", '@charset "x";g\xfcrk{}')
         check("iso-8859-15")
