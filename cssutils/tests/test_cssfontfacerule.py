@@ -9,8 +9,7 @@ import pytest
 
 
 class TestCSSFontFaceRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSFontFaceRule()
         self.rRO = cssutils.css.CSSFontFaceRule(readonly=True)
         self.r_type = cssutils.css.CSSFontFaceRule.FONT_FACE_RULE  #

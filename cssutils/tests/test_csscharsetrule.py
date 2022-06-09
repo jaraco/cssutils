@@ -7,8 +7,7 @@ import pytest
 
 
 class TestCSSCharsetRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSCharsetRule()
         self.rRO = cssutils.css.CSSCharsetRule(readonly=True)
         self.r_type = cssutils.css.CSSCharsetRule.CHARSET_RULE

@@ -6,8 +6,7 @@ import cssutils
 
 
 class TestCSSUnknownRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSUnknownRule()
         self.rRO = cssutils.css.CSSUnknownRule(readonly=True)
         self.r_type = cssutils.css.CSSUnknownRule.UNKNOWN_RULE

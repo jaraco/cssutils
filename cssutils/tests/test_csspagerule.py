@@ -7,9 +7,7 @@ import pytest
 
 
 class TestCSSPageRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
-
+    def _setup_rule(self):
         cssutils.ser.prefs.useDefaults()
         self.r = cssutils.css.CSSPageRule()
         self.rRO = cssutils.css.CSSPageRule(readonly=True)

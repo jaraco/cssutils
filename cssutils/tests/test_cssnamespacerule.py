@@ -7,8 +7,7 @@ import pytest
 
 
 class TestCSSNamespaceRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSNamespaceRule(namespaceURI='x')
         # self.rRO = cssutils.css.CSSNamespaceRule(namespaceURI='x',
         #                                         readonly=True)

@@ -7,8 +7,7 @@ import pytest
 
 
 class TestCSSStyleRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSStyleRule()
         self.rRO = cssutils.css.CSSStyleRule(readonly=True)
         self.r_type = cssutils.css.CSSStyleRule.STYLE_RULE

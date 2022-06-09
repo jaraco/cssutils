@@ -6,8 +6,7 @@ import cssutils.css
 
 
 class TestCSSComment(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSComment()
         self.rRO = cssutils.css.CSSComment(readonly=True)
         self.r_type = cssutils.css.CSSComment.COMMENT

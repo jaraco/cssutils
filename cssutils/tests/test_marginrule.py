@@ -7,9 +7,7 @@ import pytest
 
 
 class TestMarginRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
-
+    def _setup_rule(self):
         cssutils.ser.prefs.useDefaults()
         self.r = cssutils.css.MarginRule()
         self.rRO = cssutils.css.MarginRule(readonly=True)

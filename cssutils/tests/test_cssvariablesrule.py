@@ -7,8 +7,7 @@ import pytest
 
 
 class TestCSSVariablesRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSVariablesRule()
         self.rRO = cssutils.css.CSSVariablesRule(readonly=True)
         self.r_type = cssutils.css.CSSPageRule.VARIABLES_RULE

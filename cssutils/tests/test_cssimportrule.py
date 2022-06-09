@@ -10,8 +10,7 @@ from . import test_cssrule
 
 
 class TestCSSImportRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSImportRule()
         self.rRO = cssutils.css.CSSImportRule(readonly=True)
         self.r_type = cssutils.css.CSSImportRule.IMPORT_RULE

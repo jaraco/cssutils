@@ -9,8 +9,7 @@ import pytest
 
 
 class TestCSSMediaRule(test_cssrule.TestCSSRule):
-    def setup(self):
-        super().setup()
+    def _setup_rule(self):
         self.r = cssutils.css.CSSMediaRule()
         self.rRO = cssutils.css.CSSMediaRule(readonly=True)
         self.r_type = cssutils.css.CSSMediaRule.MEDIA_RULE

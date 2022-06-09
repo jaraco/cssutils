@@ -25,7 +25,10 @@ class TestCSSRule(basetest.BaseTestCase):
         self.rRO the readonly rule
         relf.r_type the type as defined in CSSRule
         """
+        self._setup_rule()
         self.sheet = cssutils.css.CSSStyleSheet()
+
+    def _setup_rule(self):
         self.r = cssutils.css.CSSRule()
         self.rRO = cssutils.css.CSSRule()
         self.rRO._readonly = True  # must be set here!
