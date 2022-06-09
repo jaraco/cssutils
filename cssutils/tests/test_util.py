@@ -13,42 +13,43 @@ except ImportError:
     mock = None
     print("install mock library to run all tests")
 
-from . import basetest
-
 from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
+import pytest
 
 
-class ListSeqTestCase(basetest.BaseTestCase):
+class ListSeqTestCase:
     def test_all(self):
         "util.ListSeq"
         ls = ListSeq()
-        self.assertEqual(0, len(ls))
+        assert 0 == len(ls)
         # append()
-        self.assertRaises(NotImplementedError, ls.append, 1)
+        with pytest.raises(NotImplementedError):
+            ls.append(1)
         # set
-        self.assertRaises(NotImplementedError, ls.__setitem__, 0, 1)
+        with pytest.raises(NotImplementedError):
+            ls.__setitem__(0, 1)
 
         # hack:
         ls.seq.append(1)
         ls.seq.append(2)
 
         # len
-        self.assertEqual(2, len(ls))
+        assert 2 == len(ls)
         # __contains__
-        self.assertEqual(True, 1 in ls)
+        assert True == (1 in ls)
         # get
-        self.assertEqual(1, ls[0])
-        self.assertEqual(2, ls[1])
+        assert 1 == ls[0]
+        assert 2 == ls[1]
         # del
         del ls[0]
-        self.assertEqual(1, len(ls))
-        self.assertEqual(False, 1 in ls)
+        assert 1 == len(ls)
+        assert False == (1 in ls)
         # for in
         for x in ls:
-            self.assertEqual(2, x)
+            assert 2 == x
 
 
-class BaseTestCase(basetest.BaseTestCase):
+class BaseTestCase:
     def test_normalize(self):
         "Base._normalize()"
         b = Base()
@@ -60,9 +61,9 @@ class BaseTestCase(basetest.BaseTestCase):
             # the tokenizer...
         }
         for test, exp in list(tests.items()):
-            self.assertEqual(b._normalize(test), exp)
+            assert b._normalize(test) == exp
             # static too
-            self.assertEqual(Base._normalize(test), exp)
+            assert Base._normalize(test) == exp
 
     def test_tokenupto(self):  # noqa: C901
         "Base._tokensupto2()"
@@ -145,10 +146,10 @@ class BaseTestCase(basetest.BaseTestCase):
                 restokens = b._tokensupto2(tokens, ('CHAR', '[', 0, 0))
 
             res = ''.join([t[1] for t in restokens])
-            self.assertEqual(exp, res)
+            assert exp == res
 
 
-class _readUrl_TestCase(basetest.BaseTestCase):
+class _readUrl_TestCase:
     """needs mock"""
 
     def test_readUrl(self):
@@ -174,7 +175,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
         }
 
         for r, exp in list(tests.items()):
-            self.assertEqual(_readUrl(url, fetcher=make_fetcher(r)), exp)
+            assert _readUrl(url, fetcher=make_fetcher(r)) == exp
 
         tests = {
             # (overrideEncoding, parentEncoding, (httpencoding, content)):
@@ -369,14 +370,14 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             ),
         }
         for (override, parent, r), exp in list(tests.items()):
-            self.assertEqual(
+            assert (
                 _readUrl(
                     url,
                     overrideEncoding=override,
                     parentEncoding=parent,
                     fetcher=make_fetcher(r),
-                ),
-                exp,
+                )
+                == exp
             )
 
     def test_defaultFetcher(self):  # noqa: C901
@@ -459,14 +460,15 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 def do(url):
                     return _defaultFetcher(url)
 
-                self.assertEqual(exp, do(url))
+                assert exp == do(url)
 
             # wrong mimetype
             @mock.patch(urlopenpatch, new=urlopen(url, 'text/html', 'a'))
             def do(url):
                 return _defaultFetcher(url)
 
-            self.assertRaises(ValueError, do, url)
+            with pytest.raises(ValueError):
+                do(url)
 
             # calling url results in fake exception
 
@@ -486,7 +488,8 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 def do(url):
                     return _defaultFetcher(url)
 
-                self.assertRaises(exception, do, url)
+                with pytest.raises(exception):
+                    do(url)
 
             urlrequestpatch = 'urllib.request.Request'
             tests = {
@@ -502,16 +505,17 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 def do(url):
                     return _defaultFetcher(url)
 
-                self.assertRaises(exception, do, url)
+                with pytest.raises(exception):
+                    do(url)
 
         else:
-            self.assertEqual(False, 'Mock needed for this test')
+            assert False == 'Mock needed for this test'
 
 
-class TestLazyRegex(basetest.BaseTestCase):
+class TestLazyRegex:
     """Tests for cssutils.util.LazyRegex."""
 
-    def setUp(self):
+    def setup(self):
         self.lazyre = LazyRegex('f.o')
 
     def test_public_interface(self):
@@ -529,76 +533,74 @@ class TestLazyRegex(basetest.BaseTestCase):
             'groupindex',
         ]
         for method in methods:
-            self.assertTrue(
-                hasattr(self.lazyre, method), 'expected %r public attribute' % method
-            )
+            assert hasattr(self.lazyre, method), 'expected %r public attribute' % method
 
     def test_ensure(self):
-        self.assertIsNone(self.lazyre.matcher)
+        assert self.lazyre.matcher is None
         self.lazyre.ensure()
-        self.assertIsNotNone(self.lazyre.matcher)
+        assert self.lazyre.matcher is not None
 
     def test_calling(self):
-        self.assertIsNone(self.lazyre('bar'))
+        assert self.lazyre('bar') is None
         match = self.lazyre('foobar')
-        self.assertEqual(match.group(), 'foo')
+        assert match.group() == 'foo'
 
     def test_matching(self):
-        self.assertIsNone(self.lazyre.match('bar'))
+        assert self.lazyre.match('bar') is None
         match = self.lazyre.match('foobar')
-        self.assertEqual(match.group(), 'foo')
+        assert match.group() == 'foo'
 
     def test_matching_with_position_parameters(self):
-        self.assertIsNone(self.lazyre.match('foo', 1))
-        self.assertIsNone(self.lazyre.match('foo', 0, 2))
+        assert self.lazyre.match('foo', 1) is None
+        assert self.lazyre.match('foo', 0, 2) is None
 
     def test_searching(self):
-        self.assertIsNone(self.lazyre.search('rafuubar'))
+        assert self.lazyre.search('rafuubar') is None
         match = self.lazyre.search('rafoobar')
-        self.assertEqual(match.group(), 'foo')
+        assert match.group() == 'foo'
 
     def test_searching_with_position_parameters(self):
-        self.assertIsNone(self.lazyre.search('rafoobar', 3))
-        self.assertIsNone(self.lazyre.search('rafoobar', 0, 4))
+        assert self.lazyre.search('rafoobar', 3) is None
+        assert self.lazyre.search('rafoobar', 0, 4) is None
         match = self.lazyre.search('rafoofuobar', 4)
-        self.assertEqual(match.group(), 'fuo')
+        assert match.group() == 'fuo'
 
     def test_split(self):
-        self.assertEqual(self.lazyre.split('rafoobarfoobaz'), ['ra', 'bar', 'baz'])
-        self.assertEqual(self.lazyre.split('rafoobarfoobaz', 1), ['ra', 'barfoobaz'])
+        assert self.lazyre.split('rafoobarfoobaz') == ['ra', 'bar', 'baz']
+        assert self.lazyre.split('rafoobarfoobaz', 1) == ['ra', 'barfoobaz']
 
     def test_findall(self):
-        self.assertEqual(self.lazyre.findall('rafoobarfuobaz'), ['foo', 'fuo'])
+        assert self.lazyre.findall('rafoobarfuobaz') == ['foo', 'fuo']
 
     def test_finditer(self):
         result = self.lazyre.finditer('rafoobarfuobaz')
-        self.assertEqual([m.group() for m in result], ['foo', 'fuo'])
+        assert [m.group() for m in result] == ['foo', 'fuo']
 
     def test_sub(self):
-        self.assertEqual(self.lazyre.sub('bar', 'foofoo'), 'barbar')
-        self.assertEqual(self.lazyre.sub(lambda x: 'baz', 'foofoo'), 'bazbaz')
+        assert self.lazyre.sub('bar', 'foofoo') == 'barbar'
+        assert self.lazyre.sub(lambda x: 'baz', 'foofoo') == 'bazbaz'
 
     def test_subn(self):
         subbed = self.lazyre.subn('bar', 'foofoo')
-        self.assertEqual(subbed, ('barbar', 2))
+        assert subbed == ('barbar', 2)
         subbed = self.lazyre.subn(lambda x: 'baz', 'foofoo')
-        self.assertEqual(subbed, ('bazbaz', 2))
+        assert subbed == ('bazbaz', 2)
 
     def test_groups(self):
         lazyre = LazyRegex('(.)(.)')
-        self.assertIsNone(lazyre.groups)
+        assert lazyre.groups is None
         lazyre.ensure()
-        self.assertEqual(lazyre.groups, 2)
+        assert lazyre.groups == 2
 
     def test_groupindex(self):
         lazyre = LazyRegex('(?P<foo>.)')
-        self.assertIsNone(lazyre.groupindex)
+        assert lazyre.groupindex is None
         lazyre.ensure()
-        self.assertEqual(lazyre.groupindex, {'foo': 1})
+        assert lazyre.groupindex == {'foo': 1}
 
     def test_flags(self):
         self.lazyre.ensure()
-        self.assertEqual(self.lazyre.flags, re.compile('.').flags)
+        assert self.lazyre.flags == re.compile('.').flags
 
     def test_pattern(self):
-        self.assertEqual(self.lazyre.pattern, 'f.o')
+        assert self.lazyre.pattern == 'f.o'
