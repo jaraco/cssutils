@@ -12,7 +12,7 @@ collect_ignore = [
 
 
 try:
-    importlib.import_module('lxml')
+    importlib.import_module('lxml.etree')
 except ImportError:
     collect_ignore += ['examples/style.py']
 
