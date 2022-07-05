@@ -71,8 +71,7 @@ def pushtoken(token, tokens):
     ``tokens``"""
     # TODO: may use itertools.chain?
     yield token
-    for t in tokens:
-        yield t
+    yield from tokens
 
 
 def string(value):
