@@ -40,9 +40,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             CSSStyleDeclaration used to hold any font descriptions
             for this CSSFontFaceRule
         """
-        super(CSSFontFaceRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@font-face'
 
         if style:
@@ -53,13 +51,13 @@ class CSSFontFaceRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(style=%r)" % (
+        return "cssutils.css.{}(style={!r})".format(
             self.__class__.__name__,
             self.style.cssText,
         )
 
     def __str__(self):
-        return "<cssutils.css.%s object style=%r valid=%r at 0x%x>" % (
+        return "<cssutils.css.{} object style={!r} valid={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.style.cssText,
             self.valid,
@@ -85,7 +83,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSFontFaceRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)

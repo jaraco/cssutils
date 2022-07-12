@@ -61,7 +61,7 @@ class CSSRule(cssutils.util.Base2):
 
     def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):
         """Set common attributes for all rules."""
-        super(CSSRule, self).__init__()
+        super().__init__()
         self._parent = parentRule
         self._parentRule = parentRule
         self._parentStyleSheet = parentStyleSheet
@@ -78,7 +78,9 @@ class CSSRule(cssutils.util.Base2):
             self._keyword = keyword
         else:
             self._log.error(
-                '%s: Invalid atkeyword for this rule: %r' % (self.atkeyword, keyword),
+                '{}: Invalid atkeyword for this rule: {!r}'.format(
+                    self.atkeyword, keyword
+                ),
                 error=xml.dom.InvalidModificationErr,
             )
 
@@ -160,16 +162,13 @@ class CSSRuleRules(CSSRule):
 
     def __init__(self, parentRule=None, parentStyleSheet=None):
 
-        super(CSSRuleRules, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
 
         self.cssRules = cssutils.css.CSSRuleList()
 
     def __iter__(self):
         """Generator iterating over these rule's cssRules."""
-        for rule in self._cssRules:
-            yield rule
+        yield from self._cssRules
 
     def _setCssRules(self, cssRules):
         "Set new cssRules and update contained rules refs."
@@ -257,7 +256,7 @@ class CSSRuleRules(CSSRule):
                 and not isinstance(tempsheet.cssRules[0], cssutils.css.CSSRule)
             ):
                 self._log.error(
-                    '%s: Invalid Rule: %s' % (self.__class__.__name__, rule)
+                    '{}: Invalid Rule: {}'.format(self.__class__.__name__, rule)
                 )
                 return False, False
             rule = tempsheet.cssRules[0]
@@ -269,7 +268,9 @@ class CSSRuleRules(CSSRule):
             return True, True
 
         elif not isinstance(rule, cssutils.css.CSSRule):
-            self._log.error('%s: Not a CSSRule: %s' % (rule, self.__class__.__name__))
+            self._log.error(
+                '{}: Not a CSSRule: {}'.format(rule, self.__class__.__name__)
+            )
             return False, False
 
         return rule, index

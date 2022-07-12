@@ -30,7 +30,7 @@ class CSSCaptureHTMLParser(html.parser.HTMLParser):
     sheets = []  # (type, [atts, cssText])
 
     def _loweratts(self, atts):
-        return dict([(a.lower(), v.lower()) for a, v in atts])
+        return {a.lower(): v.lower() for a, v in atts}
 
     def handle_starttag(self, tag, atts):
         if tag == 'link':
@@ -114,9 +114,7 @@ class CSSCapture:
         try:
             res = urllib.request.urlopen(req)
         except urllib.error.HTTPError as e:
-            self._log.critical(
-                '    %s\n%s %s\n%s' % (e.geturl(), e.code, e.msg, e.headers)
-            )
+            self._log.critical(f'    {e.geturl()}\n{e.code} {e.msg}\n{e.headers}')
             return None, None
 
         # get real url
@@ -286,7 +284,7 @@ class CSSCapture:
             url = sheet.href
             if not url:
                 inlines += 1
-                url = '%s_INLINE_%s.css' % (self._filename, inlines)
+                url = f'{self._filename}_INLINE_{inlines}.css'
 
             # build savepath
             scheme, loc, path, query, fragment = urllib.parse.urlsplit(url)
@@ -304,7 +302,7 @@ class CSSCapture:
                     raise e
                 self._log.debug('Path "%s" already exists.', savepath)
 
-            self._log.info('SAVING %s, %s %r' % (i + 1, msg, savefn))
+            self._log.info(f'SAVING {i + 1}, {msg} {savefn!r}')
 
             sf = open(savefn, 'wb')
             if saveraw:

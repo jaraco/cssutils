@@ -33,9 +33,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         readonly=False,
     ):
         """constructor"""
-        super(CSSMediaRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@media'
 
         # 1. media
@@ -48,13 +46,13 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(mediaText=%r)" % (
+        return "cssutils.css.{}(mediaText={!r})".format(
             self.__class__.__name__,
             self.media.mediaText,
         )
 
     def __str__(self):
-        return "<cssutils.css.%s object mediaText=%r at 0x%x>" % (
+        return "<cssutils.css.{} object mediaText={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.media.mediaText,
             id(self),
@@ -85,7 +83,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
               Raised if the rule is readonly.
         """
         # media "name"? { cssRules }
-        super(CSSMediaRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         # might be (cssText, namespaces)
         cssText, namespaces = self._splitNamespacesOff(cssText)

@@ -1,4 +1,3 @@
-# -*- coding: iso-8859-1 -*-
 """Testcases for cssutils.stylesheets.MediaList"""
 
 import re
@@ -113,7 +112,7 @@ class TestMediaList(basetest.BaseTestCase):
             ml.appendMedium('print')
 
         sheet = cssutils.parseString('@media all, print { /**/ }')
-        assert '@media all {\n    /**/\n    }'.encode() == sheet.cssText
+        assert b'@media all {\n    /**/\n    }' == sheet.cssText
 
     def test_delete(self):
         "MediaList.deleteMedium()"

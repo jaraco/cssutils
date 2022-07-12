@@ -39,7 +39,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                 : IDENT S*
                 ;
         """
-        super(CSSVariablesDeclaration, self).__init__()
+        super().__init__()
         self._parentRule = parentRule
         self._vars = {}
         if cssText:
@@ -48,10 +48,12 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (self.__class__.__name__, self.cssText)
+        return "cssutils.css.{}(cssText={!r})".format(
+            self.__class__.__name__, self.cssText
+        )
 
     def __str__(self):
-        return "<cssutils.css.%s object length=%r at 0x%x>" % (
+        return "<cssutils.css.{} object length={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.length,
             id(self),
@@ -79,8 +81,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
 
     def __iter__(self):
         """Iterator of names of set variables."""
-        for name in list(self.keys()):
-            yield name
+        yield from list(self.keys())
 
     def keys(self):
         """Analoguous to standard dict returns variable names which are set in
@@ -285,7 +286,9 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             normalize(variableName), 'variableName', Sequence(PreDef.ident())
         )
         if not wellformed:
-            self._log.error('Invalid variableName: %r: %r' % (variableName, value))
+            self._log.error(
+                'Invalid variableName: {!r}: {!r}'.format(variableName, value)
+            )
         else:
             # check value
             if isinstance(value, PropertyValue):
@@ -295,7 +298,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
 
             if not v.wellformed:
                 self._log.error(
-                    'Invalid variable value: %r: %r' % (variableName, value)
+                    'Invalid variable value: {!r}: {!r}'.format(variableName, value)
                 )
             else:
                 # update seq

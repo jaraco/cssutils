@@ -138,7 +138,7 @@ class TestCSSMediaRule(test_cssrule.TestCSSRule):
         for b, a in list(mls.items()):
             if a is None:
                 a = b
-            tests['@media%s%s' % (b, style)] = '@media%s%s' % (a, style)
+            tests['@media{}{}'.format(b, style)] = '@media{}{}'.format(a, style)
 
         self.do_equal_p(tests)
         self.do_equal_r(tests)

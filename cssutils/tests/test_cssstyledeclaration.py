@@ -595,5 +595,5 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         ]
         for case, expected in cases:
             s = cssutils.css.CSSStyleDeclaration(cssText=case)
-            msg = '%r should be %s' % (case, 'valid' if expected else 'invalid')
+            msg = '{!r} should be {}'.format(case, 'valid' if expected else 'invalid')
             assert s.valid == expected, msg

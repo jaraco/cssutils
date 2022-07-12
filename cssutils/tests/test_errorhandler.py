@@ -117,7 +117,7 @@ class TestErrorHandler:
 
         try:
             socket.getaddrinfo('example.com', 80)
-        except socket.error:
+        except OSError:
             # skip the test as the name can't resolve
             return
 

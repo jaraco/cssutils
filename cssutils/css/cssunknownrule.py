@@ -23,9 +23,7 @@ class CSSUnknownRule(cssrule.CSSRule):
         :param cssText:
             of type string
         """
-        super(CSSUnknownRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
         self._atkeyword = None
         if cssText:
             self.cssText = cssText
@@ -33,10 +31,12 @@ class CSSUnknownRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (self.__class__.__name__, self.cssText)
+        return "cssutils.css.{}(cssText={!r})".format(
+            self.__class__.__name__, self.cssText
+        )
 
     def __str__(self):
-        return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
+        return "<cssutils.css.{} object cssText={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.cssText,
             id(self),
@@ -61,7 +61,7 @@ class CSSUnknownRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSUnknownRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if not attoken or self._type(attoken) != self._prods.ATKEYWORD:

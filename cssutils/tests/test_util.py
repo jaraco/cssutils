@@ -163,10 +163,10 @@ class _readUrl_TestCase:
             # defaultFetcher returns: readUrl returns
             None: (None, None, None),
             (None, ''): ('utf-8', 5, ''),
-            (None, '€'.encode('utf-8')): ('utf-8', 5, '€'),
-            ('utf-8', '€'.encode('utf-8')): ('utf-8', 1, '€'),
+            (None, '€'.encode()): ('utf-8', 5, '€'),
+            ('utf-8', '€'.encode()): ('utf-8', 1, '€'),
             ('ISO-8859-1', 'ä'.encode('iso-8859-1')): ('ISO-8859-1', 1, 'ä'),
-            ('ASCII', 'a'.encode('ascii')): ('ASCII', 1, 'a'),
+            ('ASCII', b'a'): ('ASCII', 1, 'a'),
         }
 
         for r, exp in list(tests.items()):
@@ -177,16 +177,16 @@ class _readUrl_TestCase:
             #                        readUrl returns
             # ===== 0. OVERRIDE WINS =====
             # override + parent + http
-            ('latin1', 'ascii', ('utf-16', ''.encode())): ('latin1', 0, ''),
-            ('latin1', 'ascii', ('utf-16', '123'.encode())): ('latin1', 0, '123'),
+            ('latin1', 'ascii', ('utf-16', b'')): ('latin1', 0, ''),
+            ('latin1', 'ascii', ('utf-16', b'123')): ('latin1', 0, '123'),
             ('latin1', 'ascii', ('utf-16', 'ä'.encode('iso-8859-1'))): (
                 'latin1',
                 0,
                 'ä',
             ),
-            ('latin1', 'ascii', ('utf-16', 'a'.encode('ascii'))): ('latin1', 0, 'a'),
+            ('latin1', 'ascii', ('utf-16', b'a')): ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', 'ascii', ('utf-16', '@charset "ascii";'.encode())): (
+            ('latin1', 'ascii', ('utf-16', b'@charset "ascii";')): (
                 'latin1',
                 0,
                 '@charset "latin1";',
@@ -196,19 +196,19 @@ class _readUrl_TestCase:
                 0,
                 '@charset "latin1";ä',
             ),
-            ('latin1', 'ascii', ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))): (
+            ('latin1', 'ascii', ('utf-16', '@charset "utf-8";ä'.encode())): (
                 'latin1',
                 0,
                 '@charset "latin1";\xc3\xa4',
             ),  # read as latin1!
             # override only
             ('latin1', None, None): (None, None, None),
-            ('latin1', None, (None, ''.encode())): ('latin1', 0, ''),
-            ('latin1', None, (None, '123'.encode())): ('latin1', 0, '123'),
+            ('latin1', None, (None, b'')): ('latin1', 0, ''),
+            ('latin1', None, (None, b'123')): ('latin1', 0, '123'),
             ('latin1', None, (None, 'ä'.encode('iso-8859-1'))): ('latin1', 0, 'ä'),
-            ('latin1', None, (None, 'a'.encode('ascii'))): ('latin1', 0, 'a'),
+            ('latin1', None, (None, b'a')): ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', None, (None, '@charset "ascii";'.encode())): (
+            ('latin1', None, (None, b'@charset "ascii";')): (
                 'latin1',
                 0,
                 '@charset "latin1";',
@@ -218,19 +218,19 @@ class _readUrl_TestCase:
                 0,
                 '@charset "latin1";ä',
             ),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))): (
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode())): (
                 'latin1',
                 0,
                 '@charset "latin1";\xc3\xa4',
             ),  # read as latin1!
             # override + parent
             ('latin1', 'ascii', None): (None, None, None),
-            ('latin1', 'ascii', (None, ''.encode())): ('latin1', 0, ''),
-            ('latin1', 'ascii', (None, '123'.encode())): ('latin1', 0, '123'),
+            ('latin1', 'ascii', (None, b'')): ('latin1', 0, ''),
+            ('latin1', 'ascii', (None, b'123')): ('latin1', 0, '123'),
             ('latin1', 'ascii', (None, 'ä'.encode('iso-8859-1'))): ('latin1', 0, 'ä'),
-            ('latin1', 'ascii', (None, 'a'.encode('ascii'))): ('latin1', 0, 'a'),
+            ('latin1', 'ascii', (None, b'a')): ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', 'ascii', (None, '@charset "ascii";'.encode())): (
+            ('latin1', 'ascii', (None, b'@charset "ascii";')): (
                 'latin1',
                 0,
                 '@charset "latin1";',
@@ -240,18 +240,18 @@ class _readUrl_TestCase:
                 0,
                 '@charset "latin1";ä',
             ),
-            ('latin1', 'ascii', (None, '@charset "utf-8";ä'.encode('utf-8'))): (
+            ('latin1', 'ascii', (None, '@charset "utf-8";ä'.encode())): (
                 'latin1',
                 0,
                 '@charset "latin1";\xc3\xa4',
             ),  # read as latin1!
             # override + http
-            ('latin1', None, ('utf-16', ''.encode())): ('latin1', 0, ''),
-            ('latin1', None, ('utf-16', '123'.encode())): ('latin1', 0, '123'),
+            ('latin1', None, ('utf-16', b'')): ('latin1', 0, ''),
+            ('latin1', None, ('utf-16', b'123')): ('latin1', 0, '123'),
             ('latin1', None, ('utf-16', 'ä'.encode('iso-8859-1'))): ('latin1', 0, 'ä'),
-            ('latin1', None, ('utf-16', 'a'.encode('ascii'))): ('latin1', 0, 'a'),
+            ('latin1', None, ('utf-16', b'a')): ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', None, ('utf-16', '@charset "ascii";'.encode())): (
+            ('latin1', None, ('utf-16', b'@charset "ascii";')): (
                 'latin1',
                 0,
                 '@charset "latin1";',
@@ -261,13 +261,13 @@ class _readUrl_TestCase:
                 0,
                 '@charset "latin1";ä',
             ),
-            ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))): (
+            ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode())): (
                 'latin1',
                 0,
                 '@charset "latin1";\xc3\xa4',
             ),  # read as latin1!
             # override ü @charset
-            ('latin1', None, (None, '@charset "ascii";'.encode())): (
+            ('latin1', None, (None, b'@charset "ascii";')): (
                 'latin1',
                 0,
                 '@charset "latin1";',
@@ -277,18 +277,18 @@ class _readUrl_TestCase:
                 0,
                 '@charset "latin1";ä',
             ),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))): (
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode())): (
                 'latin1',
                 0,
                 '@charset "latin1";\xc3\xa4',
             ),  # read as latin1!
             # ===== 1. HTTP WINS =====
-            (None, 'ascii', ('latin1', ''.encode())): ('latin1', 1, ''),
-            (None, 'ascii', ('latin1', '123'.encode())): ('latin1', 1, '123'),
+            (None, 'ascii', ('latin1', b'')): ('latin1', 1, ''),
+            (None, 'ascii', ('latin1', b'123')): ('latin1', 1, '123'),
             (None, 'ascii', ('latin1', 'ä'.encode('iso-8859-1'))): ('latin1', 1, 'ä'),
-            (None, 'ascii', ('latin1', 'a'.encode('ascii'))): ('latin1', 1, 'a'),
+            (None, 'ascii', ('latin1', b'a')): ('latin1', 1, 'a'),
             # + @charset
-            (None, 'ascii', ('latin1', '@charset "ascii";'.encode())): (
+            (None, 'ascii', ('latin1', b'@charset "ascii";')): (
                 'latin1',
                 1,
                 '@charset "latin1";',
@@ -298,13 +298,13 @@ class _readUrl_TestCase:
                 1,
                 '@charset "latin1";ä',
             ),
-            (None, 'ascii', ('latin1', '@charset "utf-8";ä'.encode('utf-8'))): (
+            (None, 'ascii', ('latin1', '@charset "utf-8";ä'.encode())): (
                 'latin1',
                 1,
                 '@charset "latin1";\xc3\xa4',
             ),  # read as latin1!
             # ===== 2. @charset WINS =====
-            (None, 'ascii', (None, '@charset "latin1";'.encode())): (
+            (None, 'ascii', (None, b'@charset "latin1";')): (
                 'latin1',
                 2,
                 '@charset "latin1";',
@@ -314,7 +314,7 @@ class _readUrl_TestCase:
                 2,
                 '@charset "latin1";ä',
             ),
-            (None, 'ascii', (None, '@charset "latin1";ä'.encode('utf-8'))): (
+            (None, 'ascii', (None, '@charset "latin1";ä'.encode())): (
                 'latin1',
                 2,
                 '@charset "latin1";\xc3\xa4',
@@ -336,20 +336,20 @@ class _readUrl_TestCase:
                 '@charset "utf-8";\xe4',
             ),  # read as latin1!
             # ===== 4. parentEncoding WINS =====
-            (None, 'latin1', (None, ''.encode())): ('latin1', 4, ''),
-            (None, 'latin1', (None, '123'.encode())): ('latin1', 4, '123'),
+            (None, 'latin1', (None, b'')): ('latin1', 4, ''),
+            (None, 'latin1', (None, b'123')): ('latin1', 4, '123'),
             (None, 'latin1', (None, 'ä'.encode('iso-8859-1'))): ('latin1', 4, 'ä'),
-            (None, 'latin1', (None, 'a'.encode('ascii'))): ('latin1', 4, 'a'),
-            (None, 'latin1', (None, 'ä'.encode('utf-8'))): (
+            (None, 'latin1', (None, b'a')): ('latin1', 4, 'a'),
+            (None, 'latin1', (None, 'ä'.encode())): (
                 'latin1',
                 4,
                 '\xc3\xa4',
             ),  # read as latin1!
             # ===== 5. default WINS which in this case is None! =====
-            (None, None, (None, ''.encode())): ('utf-8', 5, ''),
-            (None, None, (None, '123'.encode())): ('utf-8', 5, '123'),
-            (None, None, (None, 'a'.encode('ascii'))): ('utf-8', 5, 'a'),
-            (None, None, (None, 'ä'.encode('utf-8'))): (
+            (None, None, (None, b'')): ('utf-8', 5, ''),
+            (None, None, (None, b'123')): ('utf-8', 5, '123'),
+            (None, None, (None, b'a')): ('utf-8', 5, 'a'),
+            (None, None, (None, 'ä'.encode())): (
                 'utf-8',
                 5,
                 'ä',
@@ -438,10 +438,10 @@ class _readUrl_TestCase:
         # positive tests
         tests = {
             # content-type, contentstr: encoding, contentstr
-            ('text/css', '€'.encode('utf-8')): (None, '€'.encode('utf-8')),
-            ('text/css;charset=utf-8', '€'.encode('utf-8')): (
+            ('text/css', '€'.encode()): (None, '€'.encode()),
+            ('text/css;charset=utf-8', '€'.encode()): (
                 'utf-8',
-                '€'.encode('utf-8'),
+                '€'.encode(),
             ),
             ('text/css;charset=ascii', 'a'): ('ascii', 'a'),
         }

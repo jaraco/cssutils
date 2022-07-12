@@ -39,7 +39,7 @@ class MediaList(cssutils.util._NewListBase):
         :param readonly:
             Not used yet.
         """
-        super(MediaList, self).__init__()
+        super().__init__()
         self._wellformed = False
 
         if isinstance(mediaText, list):
@@ -53,13 +53,13 @@ class MediaList(cssutils.util._NewListBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.stylesheets.%s(mediaText=%r)" % (
+        return "cssutils.stylesheets.{}(mediaText={!r})".format(
             self.__class__.__name__,
             self.mediaText,
         )
 
     def __str__(self):
-        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
+        return "<cssutils.stylesheets.{} object mediaText={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.mediaText,
             id(self),

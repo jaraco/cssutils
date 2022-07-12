@@ -69,9 +69,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         :param style:
             CSSStyleDeclaration for this CSSStyleRule
         """
-        super(CSSPageRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@page'
         self._specificity = (0, 0, 0)
 
@@ -94,7 +92,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
+        return "cssutils.css.{}(selectorText={!r}, style={!r})".format(
             self.__class__.__name__,
             self.selectorText,
             self.style.cssText,
@@ -299,7 +297,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSPageRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         tokenizer = self._tokenize2(cssText)
         if self._type(self._nexttoken(tokenizer)) != self._prods.PAGE_SYM:

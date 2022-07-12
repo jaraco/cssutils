@@ -67,7 +67,7 @@ class DocumentHandler:
 
     def comment(self, text, line=None, col=None):
         "Receive notification of a comment."
-        self._log("comment %r at [%s, %s]" % (text, line, col))
+        self._log(f"comment {text!r} at [{line}, {col}]")
 
     def startDocument(self, encoding):
         "Receive notification of the beginning of a style sheet."
@@ -81,43 +81,43 @@ class DocumentHandler:
     def importStyle(self, uri, media, name, line=None, col=None):
         "Receive notification of a import statement in the style sheet."
         # defaultNamespaceURI???
-        self._log("importStyle at [%s, %s]" % (line, col))
+        self._log(f"importStyle at [{line}, {col}]")
 
     def namespaceDeclaration(self, prefix, uri, line=None, col=None):
         "Receive notification of an unknown rule t-rule not supported by this parser."
         # prefix might be None!
-        self._log("namespaceDeclaration at [%s, %s]" % (line, col))
+        self._log(f"namespaceDeclaration at [{line}, {col}]")
 
     def startSelector(self, selectors=None, line=None, col=None):
         "Receive notification of the beginning of a rule statement."
         # TODO selectorList!
-        self._log("startSelector at [%s, %s]" % (line, col))
+        self._log(f"startSelector at [{line}, {col}]")
 
     def endSelector(self, selectors=None, line=None, col=None):
         "Receive notification of the end of a rule statement."
-        self._log("endSelector at [%s, %s]" % (line, col))
+        self._log(f"endSelector at [{line}, {col}]")
 
     def property(self, name, value='TODO', important=False, line=None, col=None):
         "Receive notification of a declaration."
         # TODO: value is LexicalValue?
-        self._log("property %r at [%s, %s]" % (name, line, col))
+        self._log(f"property {name!r} at [{line}, {col}]")
 
     def ignorableAtRule(self, atRule, line=None, col=None):
         "Receive notification of an unknown rule t-rule not supported by this parser."
-        self._log("ignorableAtRule %r at [%s, %s]" % (atRule, line, col))
+        self._log(f"ignorableAtRule {atRule!r} at [{line}, {col}]")
 
 
 class EchoHandler(DocumentHandler):
     "Echos all input to property `out`"
 
     def __init__(self):
-        super(EchoHandler, self).__init__()
+        super().__init__()
         self._out = []
 
     out = property(lambda self: ''.join(self._out))
 
     def startDocument(self, encoding):
-        super(EchoHandler, self).startDocument(encoding)
+        super().startDocument(encoding)
         if 'utf-8' != encoding:
             self._out.append('@charset "%s";\n' % encoding)
 
@@ -127,7 +127,7 @@ class EchoHandler(DocumentHandler):
     def importStyle(self, uri, media, name, line=None, col=None):
         "Receive notification of a import statement in the style sheet."
         # defaultNamespaceURI???
-        super(EchoHandler, self).importStyle(uri, media, name, line, col)
+        super().importStyle(uri, media, name, line, col)
         self._out.append(
             '@import %s%s%s;\n'
             % (
@@ -138,14 +138,14 @@ class EchoHandler(DocumentHandler):
         )
 
     def namespaceDeclaration(self, prefix, uri, line=None, col=None):
-        super(EchoHandler, self).namespaceDeclaration(prefix, uri, line, col)
+        super().namespaceDeclaration(prefix, uri, line, col)
         self._out.append(
             '@namespace %s%s;\n'
             % ('%s ' % prefix if prefix else '', helper.string(uri))
         )
 
     def startSelector(self, selectors=None, line=None, col=None):
-        super(EchoHandler, self).startSelector(selectors, line, col)
+        super().startSelector(selectors, line, col)
         if selectors:
             self._out.append(', '.join(selectors))
         self._out.append(' {\n')
@@ -154,9 +154,9 @@ class EchoHandler(DocumentHandler):
         self._out.append('    }')
 
     def property(self, name, value, important=False, line=None, col=None):
-        super(EchoHandler, self).property(name, value, line, col)
+        super().property(name, value, line, col)
         self._out.append(
-            '    %s: %s%s;\n' % (name, value, ' !important' if important else '')
+            '    {}: {}{};\n'.format(name, value, ' !important' if important else '')
         )
 
 

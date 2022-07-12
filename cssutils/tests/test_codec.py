@@ -16,7 +16,7 @@ class Queue:
     """
 
     def __init__(self):
-        self._buffer = "".encode()
+        self._buffer = b""
 
     def write(self, chars):
         # TODO ???
@@ -30,7 +30,7 @@ class Queue:
     def read(self, size=-1):
         if size < 0:
             s = self._buffer
-            self._buffer = "".encode()
+            self._buffer = b""
             return s
         else:
             s = self._buffer[:size]
@@ -41,12 +41,12 @@ class Queue:
 class CodecTestCase:
     def test_detectencoding_str(self):
         "codec.detectencoding_str()"
-        assert codec.detectencoding_str(''.encode()) == (None, False)
-        assert codec.detectencoding_str('\xef'.encode('latin1')) == (None, False)
-        assert codec.detectencoding_str('\xef\x33'.encode("utf-8")) == ("utf-8", False)
-        assert codec.detectencoding_str('\xc3\xaf3'.encode("utf-8")) == ("utf-8", False)
-        assert codec.detectencoding_str('\xef\xbb'.encode("latin1")) == (None, False)
-        assert codec.detectencoding_str('\xef\xbb\x33'.encode("utf-8")) == (
+        assert codec.detectencoding_str(b'') == (None, False)
+        assert codec.detectencoding_str(b'\xef') == (None, False)
+        assert codec.detectencoding_str('\xef\x33'.encode()) == ("utf-8", False)
+        assert codec.detectencoding_str('\xc3\xaf3'.encode()) == ("utf-8", False)
+        assert codec.detectencoding_str(b'\xef\xbb') == (None, False)
+        assert codec.detectencoding_str('\xef\xbb\x33'.encode()) == (
             "utf-8",
             False,
         )
@@ -54,14 +54,14 @@ class CodecTestCase:
             "utf-8-sig",
             True,
         )
-        assert codec.detectencoding_str('\xff'.encode("latin1")) == (None, False)
-        assert codec.detectencoding_str('\xff\x33'.encode("utf-8")) == ("utf-8", False)
-        assert codec.detectencoding_str('\xff\xfe'.encode("latin1")) == (None, False)
+        assert codec.detectencoding_str(b'\xff') == (None, False)
+        assert codec.detectencoding_str('\xff\x33'.encode()) == ("utf-8", False)
+        assert codec.detectencoding_str(b'\xff\xfe') == (None, False)
         assert codec.detectencoding_str('\xff\xfe\x33'.encode("utf-16")) == (
             "utf-16",
             True,
         )
-        assert codec.detectencoding_str('\xff\xfe\x00'.encode("latin1")) == (
+        assert codec.detectencoding_str(b'\xff\xfe\x00') == (
             None,
             False,
         )
@@ -77,7 +77,7 @@ class CodecTestCase:
         assert codec.detectencoding_str('\x00\x33'.encode()) == ("utf-8", False)
         assert codec.detectencoding_str('\x00\x00'.encode()) == (None, False)
         assert codec.detectencoding_str('\x00\x00\x33'.encode()) == ("utf-8", False)
-        assert codec.detectencoding_str('\x00\x00\xfe'.encode('latin1')) == (
+        assert codec.detectencoding_str(b'\x00\x00\xfe') == (
             None,
             False,
         )
@@ -90,7 +90,7 @@ class CodecTestCase:
             "utf-32",
             True,
         )
-        assert codec.detectencoding_str('@'.encode()) == (None, False)
+        assert codec.detectencoding_str(b'@') == (None, False)
         assert codec.detectencoding_str('@\x33'.encode()) == ("utf-8", False)
         assert codec.detectencoding_str('@\x00'.encode()) == (None, False)
         assert codec.detectencoding_str('@\x00\x33'.encode()) == ("utf-8", False)
@@ -100,22 +100,22 @@ class CodecTestCase:
             "utf-32-le",
             False,
         )
-        assert codec.detectencoding_str('@c'.encode()) == (None, False)
-        assert codec.detectencoding_str('@ch'.encode()) == (None, False)
-        assert codec.detectencoding_str('@cha'.encode()) == (None, False)
-        assert codec.detectencoding_str('@char'.encode()) == (None, False)
-        assert codec.detectencoding_str('@chars'.encode()) == (None, False)
-        assert codec.detectencoding_str('@charse'.encode()) == (None, False)
-        assert codec.detectencoding_str('@charset'.encode()) == (None, False)
-        assert codec.detectencoding_str('@charset '.encode()) == (None, False)
-        assert codec.detectencoding_str('@charset "'.encode()) == (None, False)
-        assert codec.detectencoding_str('@charset "x'.encode()) == (None, False)
-        assert codec.detectencoding_str('@charset ""'.encode()) == ("", True)
-        assert codec.detectencoding_str('@charset "x"'.encode()) == ("x", True)
-        assert codec.detectencoding_str("@".encode(), False) == (None, False)
-        assert codec.detectencoding_str("@".encode(), True) == ("utf-8", False)
-        assert codec.detectencoding_str("@c".encode(), False) == (None, False)
-        assert codec.detectencoding_str("@c".encode(), True) == ("utf-8", False)
+        assert codec.detectencoding_str(b'@c') == (None, False)
+        assert codec.detectencoding_str(b'@ch') == (None, False)
+        assert codec.detectencoding_str(b'@cha') == (None, False)
+        assert codec.detectencoding_str(b'@char') == (None, False)
+        assert codec.detectencoding_str(b'@chars') == (None, False)
+        assert codec.detectencoding_str(b'@charse') == (None, False)
+        assert codec.detectencoding_str(b'@charset') == (None, False)
+        assert codec.detectencoding_str(b'@charset ') == (None, False)
+        assert codec.detectencoding_str(b'@charset "') == (None, False)
+        assert codec.detectencoding_str(b'@charset "x') == (None, False)
+        assert codec.detectencoding_str(b'@charset ""') == ("", True)
+        assert codec.detectencoding_str(b'@charset "x"') == ("x", True)
+        assert codec.detectencoding_str(b"@", False) == (None, False)
+        assert codec.detectencoding_str(b"@", True) == ("utf-8", False)
+        assert codec.detectencoding_str(b"@c", False) == (None, False)
+        assert codec.detectencoding_str(b"@c", True) == ("utf-8", False)
 
     def test_detectencoding_unicode(self):
         "codec.detectencoding_unicode()"
@@ -248,7 +248,7 @@ class CodecTestCase:
 
         # No recursion
         with pytest.raises(ValueError):
-            '@charset "css";div{}'.encode().decode("css")
+            b'@charset "css";div{}'.decode("css")
 
     def test_encoder(self):
         "codec.encoder"
@@ -345,21 +345,21 @@ class CodecTestCase:
             # output = u'@charset "utf-8"; \xff'
             # self.assertEqual(d(input, encoding="iso-8859-1", force=False), output)
 
-            input = '@charset "utf-8"; \xff'.encode('utf-8')
+            input = '@charset "utf-8"; \xff'.encode()
             output = '@charset "utf-8"; \xff'
             assert d(input) == output
 
             # input = b'@charset "utf-8"; \xc3\xbf'
-            input = '@charset "utf-8"; \xff'.encode('utf-8')
+            input = '@charset "utf-8"; \xff'.encode()
             output = '@charset "iso-8859-1"; \xc3\xbf'
             assert d(input, encoding="iso-8859-1", force=True) == output
 
             # input = b'\xc3\xbf'
-            input = '\xff'.encode('utf-8')
+            input = '\xff'.encode()
             output = '\xc3\xbf'
             assert d(input, encoding="iso-8859-1", force=True) == output
 
             # input = b'@charset "utf-8"; \xc3\xbf'
-            input = '@charset "utf-8"; \xff'.encode('utf-8')
+            input = '@charset "utf-8"; \xff'.encode()
             output = '@charset "utf-8"; \xff'
             assert d(input, encoding="iso-8859-1", force=False) == output

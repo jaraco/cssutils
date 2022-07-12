@@ -78,7 +78,7 @@ class StyleSheet(cssutils.util.Base2):
             a flag defining if this sheet should be validate on change.
 
         """
-        super(StyleSheet, self).__init__()
+        super().__init__()
 
         self.validating = validating
 

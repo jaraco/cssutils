@@ -33,7 +33,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             parentRule
                 the parent CSSRule if available
         """
-        super(SelectorList, self).__init__()
+        super().__init__()
 
         self._parentRule = parentRule
 
@@ -47,7 +47,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return "cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__, st)
+        return "cssutils.css.{}(selectorText={!r})".format(self.__class__.__name__, st)
 
     def __str__(self):
         return "<cssutils.css.%s object selectorText=%r _namespaces=%r at " "0x%x>" % (

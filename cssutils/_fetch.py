@@ -29,7 +29,7 @@ def _defaultFetcher(url):
         res = urllib.request.urlopen(request)
     except urllib.error.HTTPError as e:
         # http error, e.g. 404, e can be raised
-        log.warn('HTTPError opening url=%s: %s %s' % (url, e.code, e.msg), error=e)
+        log.warn(f'HTTPError opening url={url}: {e.code} {e.msg}', error=e)
     except urllib.error.URLError as e:
         # URLError like mailto: or other IO errors, e can be raised
         log.warn('URLError, %s' % e.reason, error=e)

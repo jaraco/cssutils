@@ -12,12 +12,12 @@ class TestSettings:
             'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
         )
 
-        assert cssutils.parseString(text).cssText == ''.encode()
+        assert cssutils.parseString(text).cssText == b''
 
         cssutils.settings.set('DXImageTransform.Microsoft', True)
         assert (
             cssutils.parseString(text).cssText
-            == 'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'.encode()
+            == b'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'
         )
 
         cssutils.ser.prefs.useDefaults()

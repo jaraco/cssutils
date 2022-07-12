@@ -47,7 +47,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         """
         For parameters see :class:`~cssutils.stylesheets.StyleSheet`
         """
-        super(CSSStyleSheet, self).__init__(
+        super().__init__(
             'text/css',
             href,
             media,
@@ -70,15 +70,14 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
     def __iter__(self):
         "Generator which iterates over cssRules."
-        for rule in self._cssRules:
-            yield rule
+        yield from self._cssRules
 
     def __repr__(self):
         if self.media:
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "cssutils.css.%s(href=%r, media=%r, title=%r)" % (
+        return "cssutils.css.{}(href={!r}, media={!r}, title={!r})".format(
             self.__class__.__name__,
             self.href,
             mediaText,

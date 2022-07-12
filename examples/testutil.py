@@ -54,9 +54,9 @@ class TestUtil:
         if not ok:
             print()
             if out != expo:
-                print('### out:\n%r\n### != expout:\n%r\n' % (out, expo))
+                print('### out:\n{!r}\n### != expout:\n{!r}\n'.format(out, expo))
             else:
-                print('### err:\n%r\n### != experr:\n%r\n' % (err, expe))
+                print('### err:\n{!r}\n### != experr:\n{!r}\n'.format(err, expe))
         return ok
 
 

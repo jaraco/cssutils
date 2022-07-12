@@ -67,7 +67,7 @@ class _MetaHTMLParser(html.parser.HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == 'meta' and not self.content_type:
-            atts = dict([(a.lower(), v.lower()) for a, v in attrs])
+            atts = {a.lower(): v.lower() for a, v in attrs}
             if atts.get('http-equiv', '').strip() == 'content-type':
                 self.content_type = atts.get('content')
 
@@ -147,7 +147,7 @@ class EncodingInfo:
             return ''
 
     def __repr__(self):
-        return "<%s.%s object encoding=%r mismatch=%s at 0x%x>" % (
+        return "<{}.{} object encoding={!r} mismatch={} at 0x{:x}>".format(
             self.__class__.__module__,
             self.__class__.__name__,
             self.encoding,
@@ -569,7 +569,7 @@ def getEncodingInfo(response=None, text='', log=None, url=None):  # noqa: C901
         # read text from response only if not explicitly given
         try:
             text = response.read()
-        except IOError:
+        except OSError:
             pass
 
     if text is None:

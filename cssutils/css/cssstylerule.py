@@ -37,9 +37,7 @@ class CSSStyleRule(cssrule.CSSRule):
             readonly
                 if True allows setting of properties in constructor only
         """
-        super(CSSStyleRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
 
         self.selectorList = SelectorList()
         if selectorText:
@@ -57,7 +55,7 @@ class CSSStyleRule(cssrule.CSSRule):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return "cssutils.css.%s(selectorText=%r, style=%r)" % (
+        return "cssutils.css.{}(selectorText={!r}, style={!r})".format(
             self.__class__.__name__,
             st,
             self.style.cssText,
@@ -100,7 +98,7 @@ class CSSStyleRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSStyleRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         # might be (cssText, namespaces)
         cssText, namespaces = self._splitNamespacesOff(cssText)

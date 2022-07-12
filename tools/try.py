@@ -740,7 +740,9 @@ if 1:  # noqa: C901
                 if vi.cssValueType == vi.CSS_VARIABLE:
                     if vi.value:
                         print(
-                            '+ CSSValueList: Replacing %r with %r' % (p.value, vi.value)
+                            '+ CSSValueList: Replacing {!r} with {!r}'.format(
+                                p.value, vi.value
+                            )
                         )
                         newvalue.append(vi.value)
                     else:
@@ -753,7 +755,7 @@ if 1:  # noqa: C901
 
         elif v.cssValueType == v.CSS_VARIABLE:
             if v.value:
-                print('+ Replacing %r with %r' % (p.value, v.value))
+                print('+ Replacing {!r} with {!r}'.format(p.value, v.value))
                 p.value = v.value
             else:
                 print('- No value found for %r' % p.value)
@@ -1040,7 +1042,7 @@ def pathname2url(p):
     comp = p.split(':')
     if len(comp) != 2 or len(comp[0]) > 1:
         error = 'Bad path: ' + p
-        raise IOError(error)
+        raise OSError(error)
 
     drive = urllib.parse.quote(comp[0].upper())
     components = comp[1].split('\\')
@@ -1217,7 +1219,7 @@ if 0:
             r = urlfetch.fetch(url, method=urlfetch.GET)
         except urlfetch.Error as e:
             cssutils.log.warn(
-                'Error opening url=%r: %s' % (url, e.message), error=IOError
+                'Error opening url={!r}: {}'.format(url, e.message), error=IOError
             )
         else:
             if r.status_code == 200:
@@ -1235,7 +1237,7 @@ if 0:
             else:
                 # TODO: 301 etc
                 cssutils.log.warn(
-                    'Error opening url=%r: HTTP status %s' % (url, r.status_code),
+                    'Error opening url={!r}: HTTP status {}'.format(url, r.status_code),
                     error=IOError,
                 )
 

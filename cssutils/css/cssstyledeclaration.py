@@ -106,7 +106,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             a flag defining if this sheet should be validated on change.
             Defaults to None, which means defer to the parent stylesheet.
         """
-        super(CSSStyleDeclaration, self).__init__()
+        super().__init__()
         self._parentRule = parentRule
         self.validating = validating
         self.cssText = cssText
@@ -192,7 +192,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         ]
         known.extend(CSS2Properties._properties)
         if n in known:
-            super(CSSStyleDeclaration, self).__setattr__(n, v)
+            super().__setattr__(n, v)
         else:
             raise AttributeError(
                 'Unknown CSS Property, '
@@ -201,13 +201,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             )
 
     def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (
+        return "cssutils.css.{}(cssText={!r})".format(
             self.__class__.__name__,
             self.getCssText(separator=' '),
         )
 
     def __str__(self):
-        return "<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
+        return "<cssutils.css.{} object length={!r} (all: {!r}) at 0x{:x}>".format(
             self.__class__.__name__,
             self.length,
             len(self.getProperties(all=True)),
@@ -666,7 +666,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             self.seq._readonly = True
 
         else:
-            self._log.warn('Invalid Property: %s: %s %s' % (name, value, priority))
+            self._log.warn('Invalid Property: {}: {} {}'.format(name, value, priority))
 
     def item(self, index):
         """(DOM) Retrieve the properties that have been explicitly set in

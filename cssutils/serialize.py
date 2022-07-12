@@ -115,17 +115,17 @@ class Preferences:
                 self.__setattr__(key, value)
 
     def __repr__(self):
-        return "cssutils.css.%s(%s)" % (
+        return "cssutils.css.{}({})".format(
             self.__class__.__name__,
             ', '.join(
-                ['\n    %s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]
+                [f'\n    {p}={self.__getattribute__(p)!r}' for p in self.__dict__]
             ),
         )
 
     def __str__(self):
-        return "<cssutils.css.%s object %s at 0x%x" % (
+        return "<cssutils.css.{} object {} at 0x{:x}".format(
             self.__class__.__name__,
-            ' '.join(['%s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]),
+            ' '.join([f'{p}={self.__getattribute__(p)!r}' for p in self.__dict__]),
             id(self),
         )
 
@@ -340,7 +340,7 @@ class CSSSerializer:
             return text
         return self.prefs.lineSeparator.join(
             [
-                '%s%s' % (level * self.prefs.indent, line)
+                f'{level * self.prefs.indent}{line}'
                 for line in text.split(self.prefs.lineSeparator)
             ]
         )
@@ -376,7 +376,7 @@ class CSSSerializer:
             and val[3] == val[4]
             and val[5] == val[6]
         ):
-            return '#%s%s%s' % (val[1], val[3], val[5])
+            return f'#{val[1]}{val[3]}{val[5]}'
         return val
 
     def _valid(self, x):
@@ -452,7 +452,7 @@ class CSSSerializer:
                 # assume comments {
                 out.append(item.value, item.type)
             out.append('{')
-            out.append('%s%s}' % (variablesText, self.prefs.lineSeparator), indent=1)
+            out.append(f'{variablesText}{self.prefs.lineSeparator}}}', indent=1)
             return out.value()
         else:
             return ''
@@ -475,7 +475,7 @@ class CSSSerializer:
                 # assume comments {
                 out.append(item.value, item.type)
             out.append('{')
-            out.append('%s%s}' % (styleText, self.prefs.lineSeparator), indent=1)
+            out.append(f'{styleText}{self.prefs.lineSeparator}}}', indent=1)
             return out.value()
         else:
             return ''
@@ -637,7 +637,7 @@ class CSSSerializer:
 
             if styleText:
                 if not rulesText:
-                    out.append('%s%s' % (styleText, self.prefs.lineSeparator), indent=1)
+                    out.append(f'{styleText}{self.prefs.lineSeparator}', indent=1)
                 else:
                     out.append(styleText, type_='styletext', indent=1, space=False)
 
@@ -759,10 +759,10 @@ class CSSSerializer:
         # TODO: sort selectors!
         if self.prefs.indentSpecificities:
             # subselectorlist?
-            elements = set([s.element for s in rule.selectorList])
+            elements = {s.element for s in rule.selectorList}
             specitivities = [s.specificity for s in rule.selectorList]
             for selector in self._selectors:
-                lastelements = set([s.element for s in selector])
+                lastelements = {s.element for s in selector}
                 if elements.issubset(lastelements):
                     # higher specificity?
                     lastspecitivities = [s.specificity for s in selector]
@@ -789,7 +789,7 @@ class CSSSerializer:
             self._level -= 1
         if not styleText:
             if self.prefs.keepEmptyRules:
-                return '%s%s{}' % (selectorText, self.prefs.paranthesisSpacer)
+                return f'{selectorText}{self.prefs.paranthesisSpacer}{{}}'
         else:
             return self._indentblock(
                 '%s%s{%s%s%s%s}'
@@ -855,7 +855,7 @@ class CSSSerializer:
                             except IndexError:
                                 prefix = ''
 
-                        out.append('%s|%s' % (prefix, name), type_, space=False)
+                        out.append(f'{prefix}|{name}', type_, space=False)
                 else:
                     out.append(val, type_, space=False, keepS=True)
 

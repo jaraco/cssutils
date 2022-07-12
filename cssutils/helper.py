@@ -26,7 +26,7 @@ class Deprecated:
             import warnings
 
             warnings.warn(
-                "Call to deprecated method %r. %s" % (func.__name__, self.msg),
+                f"Call to deprecated method {func.__name__!r}. {self.msg}",
                 category=DeprecationWarning,
                 stacklevel=2,
             )

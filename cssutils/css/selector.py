@@ -109,7 +109,7 @@ class Selector(cssutils.util.Base2):
             readonly
                 default to False
         """
-        super(Selector, self).__init__()
+        super().__init__()
 
         self.__namespaces = _SimpleNamespaces(log=self._log)
         self._element = None
@@ -126,7 +126,7 @@ class Selector(cssutils.util.Base2):
             st = (self.selectorText, self._getUsedNamespaces())
         else:
             st = self.selectorText
-        return "cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__, st)
+        return "cssutils.css.{}(selectorText={!r})".format(self.__class__.__name__, st)
 
     def __str__(self):
         return (

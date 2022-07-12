@@ -50,16 +50,15 @@ class CSSCombine:
         # default minify
         assert (
             csscombine(cssText=cssText, resolveVariables=False)
-            == '@variables{c:#0f0}a{color:var(c)}'.encode()
+            == b'@variables{c:#0f0}a{color:var(c)}'
         )
-        assert csscombine(cssText=cssText) == 'a{color:#0f0}'.encode()
+        assert csscombine(cssText=cssText) == b'a{color:#0f0}'
 
         # no minify
         assert (
             csscombine(cssText=cssText, minify=False, resolveVariables=False)
-            == '@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }'.encode()
+            == b'@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }'
         )
         assert (
-            csscombine(cssText=cssText, minify=False)
-            == 'a {\n    color: #0f0\n    }'.encode()
+            csscombine(cssText=cssText, minify=False) == b'a {\n    color: #0f0\n    }'
         )

@@ -361,8 +361,7 @@ class Profiles:
             profiles = (profiles,)
         try:
             for profile in sorted(profiles):
-                for name in sorted(self._profilesProperties[profile].keys()):
-                    yield name
+                yield from sorted(self._profilesProperties[profile].keys())
         except KeyError as e:
             raise NoSuchProfileException(e)
 

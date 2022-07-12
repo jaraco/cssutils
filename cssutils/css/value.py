@@ -45,7 +45,7 @@ class PropertyValue(cssutils.util._NewBase):
         :param readonly:
             defaults to False
         """
-        super(PropertyValue, self).__init__()
+        super().__init__()
 
         self.parent = parent
         self.wellformed = False
@@ -68,11 +68,10 @@ class PropertyValue(cssutils.util._NewBase):
 
     def __iter__(self):
         "Generator which iterates over values."
-        for item in self.__items():
-            yield item
+        yield from self.__items()
 
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
 
     def __str__(self):
         return "<cssutils.css.%s object length=%r cssText=%r at " "0x%x>" % (
@@ -246,7 +245,7 @@ class Value(cssutils.util._NewBase):
     _value = ''
 
     def __init__(self, cssText=None, parent=None, readonly=False):
-        super(Value, self).__init__()
+        super().__init__()
 
         self.parent = parent
         self.wellformed = False
@@ -255,15 +254,17 @@ class Value(cssutils.util._NewBase):
             self.cssText = cssText
 
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object type=%s value=%r cssText=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.type,
-            self.value,
-            self.cssText,
-            id(self),
+        return (
+            "<cssutils.css.{} object type={} value={!r} cssText={!r} at 0x{:x}>".format(
+                self.__class__.__name__,
+                self.type,
+                self.value,
+                self.cssText,
+                id(self),
+            )
         )
 
     def _setCssText(self, cssText):
@@ -599,7 +600,7 @@ class URIValue(Value):
     _uri = Value._value
 
     def __str__(self):
-        return "<cssutils.css.%s object type=%s value=%r uri=%r cssText=%r at 0x%x>" % (
+        return "<cssutils.css.{} object type={} value={!r} uri={!r} cssText={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.type,
             self.value,
@@ -764,7 +765,7 @@ class MSValue(CSSFunction):
         return funcProds
 
     def _setCssText(self, cssText):
-        super(MSValue, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
     cssText = property(
         lambda self: cssutils.ser.do_css_MSValue(self),
@@ -783,7 +784,9 @@ class CSSCalc(CSSFunction):
     _functionName = 'CSSCalc'
 
     def __str__(self):
-        return "<cssutils.css.%s object at 0x%x>" % (self.__class__.__name__, id(self))
+        return "<cssutils.css.{} object at 0x{:x}>".format(
+            self.__class__.__name__, id(self)
+        )
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -864,7 +867,7 @@ class CSSVariable(CSSFunction):
     _fallback = None
 
     def __str__(self):
-        return "<cssutils.css.%s object name=%r value=%r at 0x%x>" % (
+        return "<cssutils.css.{} object name={!r} value={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.name,
             self.value,

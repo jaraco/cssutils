@@ -59,7 +59,7 @@ class Property(cssutils.util.Base):
             the parent object, normally a
             :class:`cssutils.css.CSSStyleDeclaration`
         """
-        super(Property, self).__init__()
+        super().__init__()
         self.seqs = [[], None, []]
         self.wellformed = False
         self._mediaQuery = _mediaQuery
@@ -79,7 +79,7 @@ class Property(cssutils.util.Base):
             self.priority = priority
 
     def __repr__(self):
-        return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
+        return "cssutils.css.{}(name={!r}, value={!r}, priority={!r})".format(
             self.__class__.__name__,
             self.literalname,
             self.propertyValue.cssText,
@@ -87,7 +87,7 @@ class Property(cssutils.util.Base):
         )
 
     def __str__(self):
-        return "<%s.%s object name=%r value=%r priority=%r valid=%r at 0x%x>" % (
+        return "<{}.{} object name={!r} value={!r} priority={!r} valid={!r} at 0x{:x}>".format(
             self.__class__.__module__,
             self.__class__.__name__,
             self.name,

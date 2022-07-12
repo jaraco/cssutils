@@ -112,13 +112,13 @@ class Choice:
             else:
                 if not optional:
                     # None matched but also None is optional
-                    raise NoMatch('No match for %s in %s' % (token, self))
+                    raise NoMatch(f'No match for {token} in {self}')
                     # raise ParseError(u'No match in %s for %s' % (self, token))
         elif token:
             raise Exhausted('Extra token')
 
     def __repr__(self):
-        return "<cssutils.prodsparser.%s object sequence=%r optional=%r at 0x%x>" % (
+        return "<cssutils.prodsparser.{} object sequence={!r} optional={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.__str__(),
             self.optional,
@@ -233,13 +233,13 @@ class Sequence:
                     raise Done()
 
             else:
-                raise NoMatch('No match for %s in %s' % (token, self))
+                raise NoMatch(f'No match for {token} in {self}')
 
         if token:
             raise Exhausted('Extra token')
 
     def __repr__(self):
-        return "<cssutils.prodsparser.%s object sequence=%r optional=%r at 0x%x>" % (
+        return "<cssutils.prodsparser.{} object sequence={!r} optional={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.__str__(),
             self.optional,
@@ -359,7 +359,7 @@ class Prod:
         return self._name
 
     def __repr__(self):
-        return "<cssutils.prodsparser.%s object name=%r at 0x%x>" % (
+        return "<cssutils.prodsparser.{} object name={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self._name,
             id(self),
@@ -542,7 +542,7 @@ class ProdParser:
             elif type_ == self.types.INVALID:
                 # invalidate parse
                 wellformed = False
-                self._log.error('Invalid token: %r' % (token,))
+                self._log.error(f'Invalid token: {token!r}')
                 break
 
             elif type_ == 'EOF':
@@ -583,7 +583,7 @@ class ProdParser:
 
                     else:
                         wellformed = False
-                        self._log.error('%s: %s: %r' % (name, e, token))
+                        self._log.error(f'{name}: {e}: {token!r}')
                     break
 
                 except ParseError as e:
@@ -595,7 +595,7 @@ class ProdParser:
 
                     else:
                         wellformed = False
-                        self._log.error('%s: %s: %r' % (name, e, token))
+                        self._log.error(f'{name}: {e}: {token!r}')
                     break
 
                 else:
@@ -660,12 +660,12 @@ class ProdParser:
                     # last was a S operator which may End a Sequence, then ok
                     if hasattr(lastprod, 'mayEnd') and not lastprod.mayEnd:
                         wellformed = False
-                        self._log.error('%s: %s' % (name, e))
+                        self._log.error(f'{name}: {e}')
 
                 except ParseError as e:
                     prod = None
                     wellformed = False
-                    self._log.error('%s: %s' % (name, e))
+                    self._log.error(f'{name}: {e}')
 
                 else:
                     if prods[-1].optional:
@@ -677,7 +677,7 @@ class ProdParser:
                 if prod and not prod.optional:
                     wellformed = False
                     self._log.error(
-                        '%s: Missing token for production %r' % (name, str(prod))
+                        f'{name}: Missing token for production {str(prod)!r}'
                     )
                     break
                 elif len(prods) > 1:

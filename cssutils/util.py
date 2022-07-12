@@ -469,8 +469,7 @@ class Base(_BaseClass):
             def tokens():
                 "Build new tokenizer including initialtoken"
                 yield initialtoken
-                for item in tokenizer:
-                    yield item
+                yield from tokenizer
 
             fulltokenizer = chain([initialtoken], tokenizer)
         else:
@@ -576,7 +575,7 @@ class Seq:
 
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"
-        return 'cssutils.%s.%s([\n    %s], readonly=%r)' % (
+        return 'cssutils.{}.{}([\n    {}], readonly={!r})'.format(
             self.__module__,
             self.__class__.__name__,
             ',\n    '.join(['%r' % item for item in self._seq]),
@@ -593,7 +592,7 @@ class Seq:
             else:
                 vals.append(repr(v))
 
-        return "<cssutils.%s.%s object length=%r items=%r readonly=%r at 0x%x>" % (
+        return "<cssutils.{}.{} object length={!r} items={!r} readonly={!r} at 0x{:x}>".format(
             self.__module__,
             self.__class__.__name__,
             len(self),
@@ -696,7 +695,7 @@ class Item:
     col = property(lambda self: self.__col)
 
     def __repr__(self):
-        return "%s.%s(value=%r, type=%r, line=%r, col=%r)" % (
+        return "{}.{}(value={!r}, type={!r}, line={!r}, col={!r})".format(
             self.__module__,
             self.__class__.__name__,
             self.__value,
@@ -737,8 +736,7 @@ class ListSeq:
 
     def __iter__(self):
         def gen():
-            for x in self.seq:
-                yield x
+            yield from self.seq
 
         return gen()
 
@@ -873,7 +871,7 @@ class _Namespaces:
         raise IndexError('NamespaceURI %s not found.' % namespaceURI)
 
     def __str__(self):
-        return "<cssutils.util.%s object parentStyleSheet=%r at 0x%x>" % (
+        return "<cssutils.util.{} object parentStyleSheet={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             str(self.parentStyleSheet),
             id(self),
@@ -888,7 +886,7 @@ class _SimpleNamespaces(_Namespaces):
 
     def __init__(self, log=None, *args):
         """init"""
-        super(_SimpleNamespaces, self).__init__(parentStyleSheet=None, log=log)
+        super().__init__(parentStyleSheet=None, log=log)
         self.__namespaces = dict(*args)
 
     def __setitem__(self, prefix, namespaceURI):
@@ -900,14 +898,14 @@ class _SimpleNamespaces(_Namespaces):
     )
 
     def __str__(self):
-        return "<cssutils.util.%s object namespaces=%r at 0x%x>" % (
+        return "<cssutils.util.{} object namespaces={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.namespaces,
             id(self),
         )
 
     def __repr__(self):
-        return "cssutils.util.%s(%r)" % (self.__class__.__name__, self.namespaces)
+        return f"cssutils.util.{self.__class__.__name__}({self.namespaces!r})"
 
 
 def _readUrl(  # noqa: C901

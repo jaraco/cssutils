@@ -67,9 +67,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
               : IDENT
               ;
         """
-        super(CSSNamespaceRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@namespace'
         self._prefix = ''
         self._namespaceURI = None
@@ -91,18 +89,20 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
+        return "cssutils.css.{}(namespaceURI={!r}, prefix={!r})".format(
             self.__class__.__name__,
             self.namespaceURI,
             self.prefix,
         )
 
     def __str__(self):
-        return "<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.namespaceURI,
-            self.prefix,
-            id(self),
+        return (
+            "<cssutils.css.{} object namespaceURI={!r} prefix={!r} at 0x{:x}>".format(
+                self.__class__.__name__,
+                self.namespaceURI,
+                self.prefix,
+                id(self),
+            )
         )
 
     def _getCssText(self):
@@ -125,7 +125,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
               Raised if the specified CSS string value has a syntax error and
               is unparsable.
         """
-        super(CSSNamespaceRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.NAMESPACE_SYM:

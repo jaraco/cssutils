@@ -779,7 +779,7 @@ class CSSVariableTestCase:
 class CSSPrimitiveValueTestCase:
     def test_init(self):
         "CSSPrimitiveValue.__init__()"
-        v = cssutils.css.CSSPrimitiveValue(u'1')
+        v = cssutils.css.CSSPrimitiveValue('1')
         assert '1' == v.cssText
 
         assert v.CSS_PRIMITIVE_VALUE == v.cssValueType

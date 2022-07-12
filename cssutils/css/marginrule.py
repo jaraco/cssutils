@@ -79,9 +79,7 @@ class MarginRule(cssrule.CSSRule):
         :param style:
             CSSStyleDeclaration for this MarginRule
         """
-        super(MarginRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
 
         self._atkeyword = self._keyword = None
 
@@ -101,7 +99,9 @@ class MarginRule(cssrule.CSSRule):
 
         if n not in MarginRule.margins:
             self._log.error(
-                'Invalid margin @keyword for this %s rule: %r' % (self.margin, margin),
+                'Invalid margin @keyword for this {} rule: {!r}'.format(
+                    self.margin, margin
+                ),
                 error=xml.dom.InvalidModificationErr,
             )
 
@@ -120,7 +120,7 @@ class MarginRule(cssrule.CSSRule):
     atkeyword = margin
 
     def __repr__(self):
-        return "cssutils.css.%s(margin=%r, style=%r)" % (
+        return "cssutils.css.{}(margin={!r}, style={!r})".format(
             self.__class__.__name__,
             self.margin,
             self.style.cssText,
@@ -153,7 +153,7 @@ class MarginRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(MarginRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         # TEMP: all style tokens are saved in store to fill styledeclaration
         # TODO: resolve when all generators

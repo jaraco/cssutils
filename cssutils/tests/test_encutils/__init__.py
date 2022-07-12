@@ -211,13 +211,13 @@ class AutoEncodingTestCase:
         "encutils.tryEncodings"
         try:
             tests = [
-                ('ascii', 'abc'.encode('ascii')),
+                ('ascii', b'abc'),
                 ('windows-1252', '€'.encode('windows-1252')),
-                ('ascii', '1'.encode('utf-8')),
+                ('ascii', b'1'),
             ]
         except ImportError:
             tests = [
-                ('ascii', 'abc'.encode('ascii')),
+                ('ascii', b'abc'),
                 ('windows-1252', '€'.encode('windows-1252')),
                 ('iso-8859-1', 'äöüß'.encode('iso-8859-1')),
                 ('iso-8859-1', 'äöüß'.encode('windows-1252')),

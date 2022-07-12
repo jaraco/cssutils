@@ -117,10 +117,7 @@ class TestCSSStyleSheet(basetest.BaseTestCase):
         assert 2 == s.cssRules.length
         s.cssRules.extend(cssutils.parseString('/*3*/x {y:2}').cssRules)
         assert 4 == s.cssRules.length
-        assert (
-            'a {\n    x: 1\n    }\n/*2*/\n/*3*/\nx {\n    y: 2\n    }'.encode()
-            == s.cssText
-        )
+        assert b'a {\n    x: 1\n    }\n/*2*/\n/*3*/\nx {\n    y: 2\n    }' == s.cssText
 
         for r in s.cssRules:
             assert r.parentStyleSheet == s
@@ -128,37 +125,37 @@ class TestCSSStyleSheet(basetest.BaseTestCase):
     def test_cssText(self):
         "CSSStyleSheet.cssText"
         tests = {
-            '': ''.encode(),
+            '': b'',
             # @charset
-            '@charset "ascii";\n@import "x";': '@charset "ascii";\n@import "x";'.encode(),
-            '@charset "ascii";\n@media all {}': '@charset "ascii";'.encode(),
-            '@charset "ascii";\n@x;': '@charset "ascii";\n@x;'.encode(),
-            '@charset "ascii";\na {\n    x: 1\n    }': '@charset "ascii";\na {\n    x: 1\n    }'.encode(),
+            '@charset "ascii";\n@import "x";': b'@charset "ascii";\n@import "x";',
+            '@charset "ascii";\n@media all {}': b'@charset "ascii";',
+            '@charset "ascii";\n@x;': b'@charset "ascii";\n@x;',
+            '@charset "ascii";\na {\n    x: 1\n    }': b'@charset "ascii";\na {\n    x: 1\n    }',
             # @import
-            '@x;\n@import "x";': '@x;\n@import "x";'.encode(),
-            '@import "x";\n@import "y";': '@import "x";\n@import "y";'.encode(),
-            '@import "x";\n@media all {}': '@import "x";'.encode(),
-            '@import "x";\n@x;': '@import "x";\n@x;'.encode(),
-            '@import "x";\na {\n    x: 1\n    }': '@import "x";\na {\n    x: 1\n    }'.encode(),
+            '@x;\n@import "x";': b'@x;\n@import "x";',
+            '@import "x";\n@import "y";': b'@import "x";\n@import "y";',
+            '@import "x";\n@media all {}': b'@import "x";',
+            '@import "x";\n@x;': b'@import "x";\n@x;',
+            '@import "x";\na {\n    x: 1\n    }': b'@import "x";\na {\n    x: 1\n    }',
             # @namespace
-            '@x;\n@namespace a "x";': '@x;\n@namespace a "x";'.encode(),
-            '@namespace a "x";\n@namespace b "y";': '@namespace a "x";\n@namespace b "y";'.encode(),
-            '@import "x";\n@namespace a "x";\n@media all {}': '@import "x";\n@namespace a "x";'.encode(),
-            '@namespace a "x";\n@x;': '@namespace a "x";\n@x;'.encode(),
-            '@namespace a "x";\na {\n    x: 1\n    }': '@namespace a "x";\na {\n    x: 1\n    }'.encode(),
+            '@x;\n@namespace a "x";': b'@x;\n@namespace a "x";',
+            '@namespace a "x";\n@namespace b "y";': b'@namespace a "x";\n@namespace b "y";',
+            '@import "x";\n@namespace a "x";\n@media all {}': b'@import "x";\n@namespace a "x";',
+            '@namespace a "x";\n@x;': b'@namespace a "x";\n@x;',
+            '@namespace a "x";\na {\n    x: 1\n    }': b'@namespace a "x";\na {\n    x: 1\n    }',
             """@namespace url("e1");
                 @namespace url("e2");
                 @namespace x url("x1");
                 @namespace x url("x2");
                 test{color: green}
-                x|test {color: green}""": """@namespace "e2";
+                x|test {color: green}""": b"""@namespace "e2";
 @namespace x "x2";
 test {
     color: green
     }
 x|test {
     color: green
-    }""".encode()
+    }"""
             #            ur'\1 { \2: \3 }': ur'''\x01 {
             #    \x02: \x03
             #    }''',
@@ -351,7 +348,7 @@ ex2|x {
         with pytest.raises(IndexError):
             s.namespaces.prefixForNamespaceURI('UNSET')
         # .keys
-        assert set(s.namespaces.keys()) == set(['', 'ex2', 'n'])
+        assert set(s.namespaces.keys()) == {'', 'ex2', 'n'}
         # .get
         assert 'x' == s.namespaces.get('UNKNOWN', 'x')
         assert 'example' == s.namespaces.get('ex2', 'not used defa')
@@ -431,7 +428,7 @@ ex2|x {
 
         assert (
             s.cssText
-            == '''@namespace n "new";
+            == b'''@namespace n "new";
 @namespace ex2 "example";
 @namespace DEFAULT "default";
 @media all {
@@ -441,7 +438,7 @@ ex2|x {
     }
 ex2|SEL4, a, ex2|SELSR {
     top: 0
-    }'''.encode()
+    }'''
         )
 
     def test_namespaces3(self):
@@ -458,7 +455,7 @@ ex2|SEL4, a, ex2|SELSR {
         r = cssutils.css.CSSStyleRule()
         r.cssText = (css, {'h': 'html'})
         s.add(r)  # uses x as set before! h is temporary only
-        assert s.cssText == '@namespace x "html";\nx|a {\n    top: 0\n    }'.encode()
+        assert s.cssText == b'@namespace x "html";\nx|a {\n    top: 0\n    }'
 
         # prefix is now "x"!
         with pytest.raises(xml.dom.NamespaceErr):
@@ -467,23 +464,19 @@ ex2|SEL4, a, ex2|SELSR {
             r.selectorList.append('y|b')
         s.namespaces['y'] = 'html'
         r.selectorList.append('y|b')
-        assert (
-            s.cssText == '@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'.encode()
-        )
+        assert s.cssText == b'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'
 
         with pytest.raises(xml.dom.NoModificationAllowedErr):
             s.namespaces.__delitem__('y')
-        assert (
-            s.cssText == '@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'.encode()
-        )
+        assert s.cssText == b'@namespace y "html";\ny|a, y|b {\n    top: 0\n    }'
 
         s.cssRules[0].prefix = ''
-        assert s.cssText == '@namespace "html";\na, b {\n    top: 0\n    }'.encode()
+        assert s.cssText == b'@namespace "html";\na, b {\n    top: 0\n    }'
 
         # remove need of namespace
         s.cssRules[0].prefix = 'x'
         s.cssRules[1].selectorText = 'a, b'
-        assert s.cssText == '@namespace x "html";\na, b {\n    top: 0\n    }'.encode()
+        assert s.cssText == b'@namespace x "html";\na, b {\n    top: 0\n    }'
 
     def test_namespaces4(self):
         "CSSStyleSheet.namespaces 4"
@@ -518,7 +511,7 @@ ex2|SEL4, a, ex2|SELSR {
         "CSSStyleSheet.namespaces 5"
         # unknown namespace
         s = cssutils.parseString('a|a { color: red }')
-        assert s.cssText == ''.encode()
+        assert s.cssText == b''
 
         s = cssutils.css.CSSStyleSheet()
         with pytest.raises(xml.dom.NamespaceErr, match=r"Prefix a not found\."):
@@ -541,21 +534,21 @@ ex2|SEL4, a, ex2|SELSR {
 
         assert 4 == self.s.cssRules.length
         assert (
-            '@charset "ascii";\n@import "x";\n@x;\na {\n    x: 1\n    }'.encode()
+            b'@charset "ascii";\n@import "x";\n@x;\na {\n    x: 1\n    }'
             == self.s.cssText
         )
         # beginning
         self.s.deleteRule(0)
         assert 3 == self.s.cssRules.length
-        assert '@import "x";\n@x;\na {\n    x: 1\n    }'.encode() == self.s.cssText
+        assert b'@import "x";\n@x;\na {\n    x: 1\n    }' == self.s.cssText
         # middle
         self.s.deleteRule(1)
         assert 2 == self.s.cssRules.length
-        assert '@import "x";\na {\n    x: 1\n    }'.encode() == self.s.cssText
+        assert b'@import "x";\na {\n    x: 1\n    }' == self.s.cssText
         # end
         self.s.deleteRule(1)
         assert 1 == self.s.cssRules.length
-        assert '@import "x";'.encode() == self.s.cssText
+        assert b'@import "x";' == self.s.cssText
 
     def test_deleteRule(self):
         "CSSStyleSheet.deleteRule(rule)"
@@ -577,16 +570,13 @@ ex2|SEL4, a, ex2|SELSR {
         assert 3 == s.cssRules.length
         assert (
             s.cssText
-            == 'a {\n    color: red\n    }\nb {\n    color: blue\n    }\nc {\n    color: green\n    }'.encode()
+            == b'a {\n    color: red\n    }\nb {\n    color: blue\n    }\nc {\n    color: green\n    }'
         )
         with pytest.raises(xml.dom.IndexSizeErr):
             s.deleteRule(n)
         s.deleteRule(s2)
         assert 2 == s.cssRules.length
-        assert (
-            s.cssText
-            == 'a {\n    color: red\n    }\nc {\n    color: green\n    }'.encode()
-        )
+        assert s.cssText == b'a {\n    color: red\n    }\nc {\n    color: green\n    }'
         with pytest.raises(xml.dom.IndexSizeErr):
             s.deleteRule(s2)
 
@@ -614,7 +604,7 @@ ex2|SEL4, a, ex2|SELSR {
         s.insertRule(self.pr)  # 6
         s.insertRule(self.sr)  # 7
         assert (
-            '@charset "ascii";\n@import url(x);\n@namespace p "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }'.encode()
+            b'@charset "ascii";\n@import url(x);\n@namespace p "uri";\n@media all {\n    @m;\n    }\na {\n    x: 1\n    }\n@media all {\n    @m;\n    }\n@page {\n    margin: 0\n    }\na {\n    x: 1\n    }'
             == s.cssText
         )
         return s, s.cssRules.length
@@ -700,7 +690,7 @@ ex2|SEL4, a, ex2|SELSR {
             assert sheet == added.parentStyleSheet
             assert 'example.css' == added.href
             assert 'utf-8' == added.styleSheet.encoding
-            assert '/**/'.encode() == added.styleSheet.cssText
+            assert b'/**/' == added.styleSheet.cssText
 
         cssrulessheet = p.parseString('@import "example.css";')
         imports = (
@@ -717,9 +707,9 @@ ex2|SEL4, a, ex2|SELSR {
             assert 'example.css' == added.href
             assert enc == added.styleSheet.encoding
             if enc == 'ascii':
-                assert '@charset "ascii";\n/**/'.encode() == added.styleSheet.cssText
+                assert b'@charset "ascii";\n/**/' == added.styleSheet.cssText
             else:
-                assert '/**/'.encode() == added.styleSheet.cssText
+                assert b'/**/' == added.styleSheet.cssText
 
         # if styleSheet is already there encoding is not set new
         impsheet = p.parseString('@import "example.css";')
@@ -730,7 +720,7 @@ ex2|SEL4, a, ex2|SELSR {
         assert sheet == added.parentStyleSheet
         assert 'example.css' == added.href
         assert 'utf-8' == added.styleSheet.encoding
-        assert '/**/'.encode() == added.styleSheet.cssText
+        assert b'/**/' == added.styleSheet.cssText
 
     def test_insertRule(self):
         "CSSStyleSheet.insertRule()"
@@ -906,5 +896,5 @@ body {
         ]
         for case, expected in cases:
             sheet = cssutils.parseString(case)
-            msg = "%r should be %s" % (case, 'valid' if expected else 'invalid')
+            msg = "{!r} should be {}".format(case, 'valid' if expected else 'invalid')
             assert sheet.valid == expected, msg

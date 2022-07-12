@@ -46,9 +46,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         :param readonly:
             defaults to False, not used yet
         """
-        super(CSSCharsetRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@charset'
 
         if encoding:
@@ -59,10 +57,12 @@ class CSSCharsetRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(encoding=%r)" % (self.__class__.__name__, self.encoding)
+        return "cssutils.css.{}(encoding={!r})".format(
+            self.__class__.__name__, self.encoding
+        )
 
     def __str__(self):
-        return "<cssutils.css.%s object encoding=%r at 0x%x>" % (
+        return "<cssutils.css.{} object encoding={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.encoding,
             id(self),
@@ -89,7 +89,7 @@ class CSSCharsetRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSCharsetRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         wellformed = True
         tokenizer = self._tokenize2(cssText)

@@ -42,9 +42,7 @@ class CSSImportRule(cssrule.CSSRule):
         :param name:
             Additional name of imported style sheet
         """
-        super(CSSImportRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@import'
         self._styleSheet = None
 
@@ -76,7 +74,7 @@ class CSSImportRule(cssrule.CSSRule):
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
+        return "cssutils.css.{}(href={!r}, mediaText={!r}, name={!r})".format(
             self.__class__.__name__,
             self.href,
             mediaText,
@@ -88,7 +86,7 @@ class CSSImportRule(cssrule.CSSRule):
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "<cssutils.css.%s object href=%r mediaText=%r name=%r at 0x%x>" % (
+        return "<cssutils.css.{} object href={!r} mediaText={!r} name={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.href,
             mediaText,
@@ -120,7 +118,7 @@ class CSSImportRule(cssrule.CSSRule):
               Raised if the specified CSS string value has a syntax error and
               is unparsable.
         """
-        super(CSSImportRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.IMPORT_SYM:
@@ -314,7 +312,7 @@ class CSSImportRule(cssrule.CSSRule):
 
                 if cssText is None:
                     # catched in next except below!
-                    raise IOError('Cannot read Stylesheet.')
+                    raise OSError('Cannot read Stylesheet.')
 
                 # contentEncoding with parentStyleSheet.overrideEncoding,
                 # HTTP or parent
@@ -332,7 +330,7 @@ class CSSImportRule(cssrule.CSSRule):
                     cssText, encodingOverride=encodingOverride, encoding=encoding
                 )
 
-            except (OSError, IOError, ValueError) as e:
+            except (OSError, ValueError) as e:
                 self._log.warn(
                     'CSSImportRule: While processing imported '
                     'style sheet href=%s: %r' % (self.href, e),

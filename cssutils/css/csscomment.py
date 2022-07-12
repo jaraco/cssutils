@@ -22,9 +22,7 @@ class CSSComment(cssrule.CSSRule):
     def __init__(
         self, cssText=None, parentRule=None, parentStyleSheet=None, readonly=False
     ):
-        super(CSSComment, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
 
         self._cssText = None
         if cssText:
@@ -33,10 +31,12 @@ class CSSComment(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(cssText=%r)" % (self.__class__.__name__, self.cssText)
+        return "cssutils.css.{}(cssText={!r})".format(
+            self.__class__.__name__, self.cssText
+        )
 
     def __str__(self):
-        return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
+        return "<cssutils.css.{} object cssText={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.cssText,
             id(self),
@@ -62,7 +62,7 @@ class CSSComment(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSComment, self)._setCssText(cssText)
+        super()._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
 
         commenttoken = self._nexttoken(tokenizer)

@@ -46,9 +46,9 @@ class TestCSSProperties:
         "CSS2Properties"
         CSS2Properties = cssutils.css.cssproperties.CSS2Properties
         assert isinstance(property(), type(CSS2Properties.color))
-        assert sum(
-            [len(x) for x in list(cssutils.profiles.properties.values())]
-        ) == len(CSS2Properties._properties)
+        assert sum(len(x) for x in list(cssutils.profiles.properties.values())) == len(
+            CSS2Properties._properties
+        )
 
         c2 = CSS2Properties()
         # CSS2Properties has simplified implementation return always None

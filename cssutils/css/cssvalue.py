@@ -46,7 +46,7 @@ class CSSValue(cssutils.util._NewBase):
         :param readonly:
             defaults to False
         """
-        super(CSSValue, self).__init__()
+        super().__init__()
 
         self._cssValueType = None
         self.wellformed = False
@@ -62,7 +62,7 @@ class CSSValue(cssutils.util._NewBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
 
     def __str__(self):
         return (
@@ -555,16 +555,16 @@ class CSSPrimitiveValue(CSSValue):
 
     def __init__(self, cssText=None, parent=None, readonly=False):
         """See CSSPrimitiveValue.__init__()"""
-        super(CSSPrimitiveValue, self).__init__(
-            cssText=cssText, parent=parent, readonly=readonly
-        )
+        super().__init__(cssText=cssText, parent=parent, readonly=readonly)
 
     def __str__(self):
-        return "<cssutils.css.%s object primitiveType=%s cssText=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.primitiveTypeString,
-            self.cssText,
-            id(self),
+        return (
+            "<cssutils.css.{} object primitiveType={} cssText={!r} at 0x{:x}>".format(
+                self.__class__.__name__,
+                self.primitiveTypeString,
+                self.cssText,
+                id(self),
+            )
         )
 
     _unitnames = [
@@ -800,7 +800,7 @@ class CSSPrimitiveValue(CSSValue):
         if val == int(val):
             val = int(val)
 
-        self.cssText = '%s%s' % (val, dim)
+        self.cssText = '{}{}'.format(val, dim)
 
     def getStringValue(self):
         """(DOM) This method is used to get the string value. If the
@@ -922,7 +922,7 @@ class CSSPrimitiveValue(CSSValue):
 
     def _setCssText(self, cssText):
         """Use CSSValue."""
-        return super(CSSPrimitiveValue, self)._setCssText(cssText)
+        return super()._setCssText(cssText)
 
     cssText = property(
         _getCssText, _setCssText, doc="A string representation of the current value."
@@ -945,9 +945,7 @@ class CSSValueList(CSSValue):
 
     def __init__(self, cssText=None, parent=None, readonly=False):
         """Init a new CSSValueList"""
-        super(CSSValueList, self).__init__(
-            cssText=cssText, parent=parent, readonly=readonly
-        )
+        super().__init__(cssText=cssText, parent=parent, readonly=readonly)
         self._items = []
 
     def __iter__(self):
@@ -1003,7 +1001,7 @@ class CSSFunction(CSSPrimitiveValue):
         :param readonly:
             defaults to False
         """
-        super(CSSFunction, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self._funcType = None
         self.valid = False
         self.wellformed = False
@@ -1134,10 +1132,10 @@ class RGBColor(CSSFunction):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object colorType=%r cssText=%r at 0x%x>" % (
+        return "<cssutils.css.{} object colorType={!r} cssText={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.colorType,
             self.cssText,
@@ -1241,7 +1239,7 @@ class CalcValue(CSSFunction):
         return cssutils.ser.do_css_CalcValue(self)
 
     def _setCssText(self, cssText):
-        return super(CalcValue, self)._setCssText(cssText)
+        return super()._setCssText(cssText)
 
     cssText = property(
         _getCssText, _setCssText, doc="A string representation of the current value."
@@ -1293,7 +1291,7 @@ class ExpressionValue(CSSFunction):
 
     def _setCssText(self, cssText):
         # self._log.warn(u'CSSValue: Unoffial and probably invalid MS value used!')
-        return super(ExpressionValue, self)._setCssText(cssText)
+        return super()._setCssText(cssText)
 
     cssText = property(
         _getCssText, _setCssText, doc="A string representation of the current value."
@@ -1312,15 +1310,13 @@ class CSSVariable(CSSValue):
             defaults to False
         """
         self._name = None
-        super(CSSVariable, self).__init__(
-            cssText=cssText, parent=parent, readonly=readonly
-        )
+        super().__init__(cssText=cssText, parent=parent, readonly=readonly)
 
     def __repr__(self):
-        return "cssutils.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
 
     def __str__(self):
-        return "<cssutils.css.%s object name=%r value=%r at 0x%x>" % (
+        return "<cssutils.css.{} object name={!r} value={!r} at 0x{:x}>".format(
             self.__class__.__name__,
             self.name,
             self.value,

@@ -52,9 +52,7 @@ class CSSVariablesRule(cssrule.CSSRule):
         """
         If readonly allows setting of properties in constructor only.
         """
-        super(CSSVariablesRule, self).__init__(
-            parentRule=parentRule, parentStyleSheet=parentStyleSheet
-        )
+        super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@variables'
 
         # dummy
@@ -68,7 +66,7 @@ class CSSVariablesRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.%s(mediaText=%r, variables=%r)" % (
+        return "cssutils.css.{}(mediaText={!r}, variables={!r})".format(
             self.__class__.__name__,
             self._media.mediaText,
             self.variables.cssText,
@@ -117,7 +115,7 @@ class CSSVariablesRule(cssrule.CSSRule):
             : LBRACE S* vardeclaration [ ';' S* vardeclaration ]* '}' S*
             ;
         """
-        super(CSSVariablesRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)

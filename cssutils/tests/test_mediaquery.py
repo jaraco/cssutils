@@ -1,4 +1,3 @@
-# -*- coding: iso-8859-1 -*-
 """Testcases for cssutils.stylesheets.MediaQuery"""
 
 import xml.dom

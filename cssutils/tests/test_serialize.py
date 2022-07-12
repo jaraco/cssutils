@@ -182,16 +182,16 @@ prefix|x, a + b > c ~ d, b {
         cssutils.ser.prefs.keepUnknownAtRules = True
         assert (
             s.cssText
-            == '''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
-            '''{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;'''
-            '''font-family:arial,"some"}@x x;'''.encode()
+            == b'''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
+            b'''{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;'''
+            b'''font-family:arial,"some"}@x x;'''
         )
         cssutils.ser.prefs.keepUnknownAtRules = False
         assert (
             s.cssText
-            == '''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
-            '''{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;'''
-            '''font-family:arial,"some"}'''.encode()
+            == b'''@import"x"tv,print;@namespace prefix"uri";@media all"name"'''
+            b'''{a{color:red}}@page :left{left:0}prefix|x,a+b>c~d,b{top:1px;'''
+            b'''font-family:arial,"some"}'''
         )
         # Values
         valuetests = {
@@ -221,11 +221,11 @@ prefix|x, a + b > c ~ d, b {
     def test_defaultAtKeyword(self):
         "Preferences.defaultAtKeyword"
         s = cssutils.parseString('@im\\port "x";')
-        assert '@import "x";'.encode() == s.cssText
+        assert b'@import "x";' == s.cssText
         cssutils.ser.prefs.defaultAtKeyword = True
-        assert '@import "x";'.encode() == s.cssText
+        assert b'@import "x";' == s.cssText
         cssutils.ser.prefs.defaultAtKeyword = False
-        assert '@im\\port "x";'.encode() == s.cssText
+        assert b'@im\\port "x";' == s.cssText
 
     def test_defaultPropertyName(self):
         "Preferences.defaultPropertyName"
@@ -235,24 +235,24 @@ prefix|x, a + b > c ~ d, b {
         # if used with a backslash in it later...
 
         s = cssutils.parseString(r'a { c\olor: green; }')
-        assert 'a {\n    color: green\n    }'.encode() == s.cssText
+        assert b'a {\n    color: green\n    }' == s.cssText
         cssutils.ser.prefs.defaultPropertyName = True
-        assert 'a {\n    color: green\n    }'.encode() == s.cssText
+        assert b'a {\n    color: green\n    }' == s.cssText
         cssutils.ser.prefs.defaultPropertyName = False
-        assert 'a {\n    c\\olor: green\n    }'.encode() == s.cssText
+        assert b'a {\n    c\\olor: green\n    }' == s.cssText
 
         s = cssutils.parseString(r'a { color: red; c\olor: green; }')
-        assert 'a {\n    c\\olor: green\n    }'.encode() == s.cssText
+        assert b'a {\n    c\\olor: green\n    }' == s.cssText
         cssutils.ser.prefs.defaultPropertyName = False
-        assert 'a {\n    c\\olor: green\n    }'.encode() == s.cssText
+        assert b'a {\n    c\\olor: green\n    }' == s.cssText
         cssutils.ser.prefs.defaultPropertyName = True
-        assert 'a {\n    color: green\n    }'.encode() == s.cssText
+        assert b'a {\n    color: green\n    }' == s.cssText
 
     def test_defaultPropertyPriority(self):
         "Preferences.defaultPropertyPriority"
         css = 'a {\n    color: green !IM\\portant\n    }'
         s = cssutils.parseString(css)
-        assert s.cssText == 'a {\n    color: green !important\n    }'.encode()
+        assert s.cssText == b'a {\n    color: green !important\n    }'
         cssutils.ser.prefs.defaultPropertyPriority = False
         assert s.cssText == css.encode()
 
@@ -326,21 +326,21 @@ b {
         s = cssutils.parseString(css)
         # keep only last
         cssutils.ser.prefs.keepAllProperties = False
-        assert 'a {\n    color: green\n    }'.encode() == s.cssText
+        assert b'a {\n    color: green\n    }' == s.cssText
         # keep all
         cssutils.ser.prefs.keepAllProperties = True
         assert (
-            'a {\n    color: pink;\n    color: red;\n    c\\olor: blue;\n    '
-            'c\\olor: green\n    }'.encode() == s.cssText
+            b'a {\n    color: pink;\n    color: red;\n    c\\olor: blue;\n    '
+            b'c\\olor: green\n    }' == s.cssText
         )
 
     def test_keepComments(self):
         "Preferences.keepComments"
         s = cssutils.parseString('/*1*/ a { /*2*/ }')
         cssutils.ser.prefs.keepComments = False
-        assert ''.encode() == s.cssText
+        assert b'' == s.cssText
         cssutils.ser.prefs.keepEmptyRules = True
-        assert 'a {}'.encode() == s.cssText
+        assert b'a {}' == s.cssText
 
     def test_keepEmptyRules(self):
         "Preferences.keepEmptyRules"
@@ -357,9 +357,9 @@ a {
         cssutils.ser.prefs.keepEmptyRules = True
         assert css.encode() == s.cssText
         cssutils.ser.prefs.keepEmptyRules = False
-        assert 'a {\n    /*1*/\n    }\na {\n    color: red\n    }'.encode() == s.cssText
+        assert b'a {\n    /*1*/\n    }\na {\n    color: red\n    }' == s.cssText
         cssutils.ser.prefs.keepComments = False
-        assert 'a {\n    color: red\n    }'.encode() == s.cssText
+        assert b'a {\n    color: red\n    }' == s.cssText
 
         # CSSMediaRule
         css = '''@media tv {
@@ -386,7 +386,7 @@ a {
         #     self.assertEqual(css, s.cssText)
         cssutils.ser.prefs.keepEmptyRules = False
         assert (
-            '''@media all {
+            b'''@media all {
     /*1*/
     }
 @media print {
@@ -398,16 +398,16 @@ a {
     a {
         color: red
         }
-    }'''.encode()
+    }'''
             == s.cssText
         )
         cssutils.ser.prefs.keepComments = False
         assert (
-            '''@media all {
+            b'''@media all {
     a {
         color: red
         }
-    }'''.encode()
+    }'''
             == s.cssText
         )
 
@@ -508,13 +508,13 @@ h1 {
     def test_lineSeparator(self):
         "Preferences.lineSeparator"
         s = cssutils.parseString('a { x:1;y:2}')
-        assert 'a {\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
+        assert b'a {\n    x: 1;\n    y: 2\n    }' == s.cssText
         # cannot be indented as no split possible
         cssutils.ser.prefs.lineSeparator = ''
-        assert 'a {x: 1;y: 2    }'.encode() == s.cssText
+        assert b'a {x: 1;y: 2    }' == s.cssText
         # no valid css but should work
         cssutils.ser.prefs.lineSeparator = 'XXX'
-        assert 'a {XXX    x: 1;XXX    y: 2XXX    }'.encode() == s.cssText
+        assert b'a {XXX    x: 1;XXX    y: 2XXX    }' == s.cssText
 
     def test_listItemSpacer(self):
         "Preferences.listItemSpacer"
@@ -524,25 +524,25 @@ h1 {
         @import "x" print, tv;
 a, b {}'''
         s = cssutils.parseString(css)
-        assert '@import "x" print, tv;\na, b {}'.encode() == s.cssText
+        assert b'@import "x" print, tv;\na, b {}' == s.cssText
         cssutils.ser.prefs.listItemSpacer = ''
-        assert '@import "x" print,tv;\na,b {}'.encode() == s.cssText
+        assert b'@import "x" print,tv;\na,b {}' == s.cssText
 
     def test_minimizeColorHash(self):
         "Preferences.minimizeColorHash"
         css = 'a { color: #ffffff }'
         s = cssutils.parseString(css)
-        assert 'a {\n    color: #fff\n    }'.encode() == s.cssText
+        assert b'a {\n    color: #fff\n    }' == s.cssText
         cssutils.ser.prefs.minimizeColorHash = False
-        assert 'a {\n    color: #ffffff\n    }'.encode() == s.cssText
+        assert b'a {\n    color: #ffffff\n    }' == s.cssText
 
     def test_omitLastSemicolon(self):
         "Preferences.omitLastSemicolon"
         css = 'a { x: 1; y: 2 }'
         s = cssutils.parseString(css)
-        assert 'a {\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
+        assert b'a {\n    x: 1;\n    y: 2\n    }' == s.cssText
         cssutils.ser.prefs.omitLastSemicolon = False
-        assert 'a {\n    x: 1;\n    y: 2;\n    }'.encode() == s.cssText
+        assert b'a {\n    x: 1;\n    y: 2;\n    }' == s.cssText
 
     def test_normalizedVarNames(self):
         "Preferences.normalizedVarNames"
@@ -550,9 +550,9 @@ a, b {}'''
 
         css = '@variables { A: 1 }'
         s = cssutils.parseString(css)
-        assert '@variables {\n    a: 1\n    }'.encode() == s.cssText
+        assert b'@variables {\n    a: 1\n    }' == s.cssText
         cssutils.ser.prefs.normalizedVarNames = False
-        assert '@variables {\n    A: 1\n    }'.encode() == s.cssText
+        assert b'@variables {\n    A: 1\n    }' == s.cssText
 
         cssutils.ser.prefs.resolveVariables = True
 
@@ -560,17 +560,17 @@ a, b {}'''
         "Preferences.paranthesisSpacer"
         css = 'a { x: 1; y: 2 }'
         s = cssutils.parseString(css)
-        assert 'a {\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
+        assert b'a {\n    x: 1;\n    y: 2\n    }' == s.cssText
         cssutils.ser.prefs.paranthesisSpacer = ''
-        assert 'a{\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
+        assert b'a{\n    x: 1;\n    y: 2\n    }' == s.cssText
 
     def test_propertyNameSpacer(self):
         "Preferences.propertyNameSpacer"
         css = 'a { x: 1; y: 2 }'
         s = cssutils.parseString(css)
-        assert 'a {\n    x: 1;\n    y: 2\n    }'.encode() == s.cssText
+        assert b'a {\n    x: 1;\n    y: 2\n    }' == s.cssText
         cssutils.ser.prefs.propertyNameSpacer = ''
-        assert 'a {\n    x:1;\n    y:2\n    }'.encode() == s.cssText
+        assert b'a {\n    x:1;\n    y:2\n    }' == s.cssText
 
     def test_selectorCombinatorSpacer(self):
         "Preferences.selectorCombinatorSpacer"
@@ -692,7 +692,7 @@ class TestCSSSerializer:
         assert css == str(sheet.cssText, 'utf-8')
         sheet.cssRules[0].encoding = 'ascii'
         assert (
-            '@charset "ascii";\n/* \\3BA \\3BF \\3C5 \\3C1 \\3BF \\3C2  */'.encode()
+            b'@charset "ascii";\n/* \\3BA \\3BF \\3C5 \\3C1 \\3BF \\3C2  */'
             == sheet.cssText
         )
 

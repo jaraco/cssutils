@@ -89,7 +89,7 @@ class _ErrorHandler:
                     value, line, col = token[1], token[2], token[3]
                 else:
                     value, line, col = token.value, token.line, token.col
-                msg = '%s [%s:%s: %s]' % (msg, line, col, value)
+                msg = f'{msg} [{line}:{col}: {value}]'
 
             if error and self.raiseExceptions and not neverraise:
                 if isinstance(error, urllib.error.HTTPError) or isinstance(

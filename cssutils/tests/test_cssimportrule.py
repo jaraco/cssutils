@@ -215,12 +215,12 @@ class TestCSSImportRule(test_cssrule.TestCSSRule):
         sheet = parser.parseString('@import "http://example.com/yes" "name"')
 
         r = sheet.cssRules[0]
-        assert '/**/'.encode() == r.styleSheet.cssText
+        assert b'/**/' == r.styleSheet.cssText
         assert r.hrefFound
         assert 'name' == r.name
 
         r.cssText = '@import url(http://example.com/none) "name2";'
-        assert ''.encode() == r.styleSheet.cssText
+        assert b'' == r.styleSheet.cssText
         assert not r.hrefFound
         assert 'name2' == r.name
 
@@ -353,7 +353,7 @@ class TestCSSImportRule(test_cssrule.TestCSSRule):
         assert ir.styleSheet.title == 'title'
         assert (
             ir.styleSheet.cssText
-            == '@charset "ascii";\n@import "level2/css.css" "title2";'.encode()
+            == b'@charset "ascii";\n@import "level2/css.css" "title2";'
         )
 
         ir2 = ir.styleSheet.cssRules[1]
@@ -366,8 +366,7 @@ class TestCSSImportRule(test_cssrule.TestCSSRule):
         assert ir2.styleSheet.parentStyleSheet is None  # ir.styleSheet
         assert ir2.styleSheet.title == 'title2'
         assert (
-            ir2.styleSheet.cssText
-            == '@charset "ascii";\na {\n    color: red\n    }'.encode()
+            ir2.styleSheet.cssText == b'@charset "ascii";\na {\n    color: red\n    }'
         )
 
         sheet = cssutils.parseString('@import "CANNOT-FIND.css";')
@@ -377,9 +376,9 @@ class TestCSSImportRule(test_cssrule.TestCSSRule):
 
         def fetcher(url):
             if url.endswith('level1.css'):
-                return None, '@charset "ascii"; @import "level2.css";'.encode()
+                return None, b'@charset "ascii"; @import "level2.css";'
             else:
-                return None, 'a { color: red }'.encode()
+                return None, b'a { color: red }'
 
         parser = cssutils.CSSParser(fetcher=fetcher)
 
