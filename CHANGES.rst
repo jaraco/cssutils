@@ -1,3 +1,10 @@
+v2.5.0
+======
+
+Substantial code refresh. Ported tests to native pytest.
+
+Enrolled project with Tidelift.
+
 v2.4.2
 ======
 
