@@ -3,6 +3,7 @@
 
 import os
 import re
+import itertools
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -69,10 +70,7 @@ def path2url(path):
 def pushtoken(token, tokens):
     """Return new generator starting with token followed by all tokens in
     ``tokens``"""
-    # TODO: may use itertools.chain?
-    yield token
-    for t in tokens:
-        yield t
+    return itertools.chain([token], tokens)
 
 
 def string(value):
