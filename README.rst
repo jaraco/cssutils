@@ -20,6 +20,9 @@
 .. image:: https://img.shields.io/badge/skeleton-2022-informational
    :target: https://blog.jaraco.com/skeleton
 
+.. image:: https://tidelift.com/badges/package/pypi/cssutils
+   :target: https://tidelift.com/subscription/pkg/pypi-cssutils?utm_source=pypi-cssutils&utm_medium=readme
+
 
 Overview
 ========
@@ -132,3 +135,21 @@ Thanks
 Special thanks to Christof Höke for seminal creation of the library.
 
 Thanks to Simon Sapin, Jason R. Coombs, and Walter Doerwald for patches, help and discussion. Thanks to Kevin D. Smith for the value validating module. Thanks also to Cory Dodt, Tim Gerla, James Dobson and Amit Moscovich for helpful suggestions and code patches. Thanks to Fredrik Hedman for help on port of encutils to Python 3.
+
+
+For Enterprise
+==============
+
+Available as part of the Tidelift Subscription.
+
+This project and the maintainers of thousands of other packages are working with Tidelift to deliver one enterprise subscription that covers all of the open source you use.
+
+`Learn more <https://tidelift.com/subscription/pkg/pypi-cssutils?utm_source=pypi-cssutils&utm_medium=referral&utm_campaign=github>`_.
+
+
+Security Contact
+================
+
+To report a security vulnerability, please use the
+`Tidelift security contact <https://tidelift.com/security>`_.
+Tidelift will coordinate the fix and disclosure.
