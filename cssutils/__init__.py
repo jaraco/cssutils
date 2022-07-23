@@ -164,32 +164,19 @@ class DOMImplementationCSS:
 xml.dom.registerDOMImplementation('cssutils', DOMImplementationCSS)
 
 
-def parseString(*a, **k):
-    return CSSParser().parseString(*a, **k)
+def _parser_redirect(name):
+    def func(*args, **kwargs):
+        return getattr(CSSParser(), name)(*args, **kwargs)
+
+    func.__doc__ = getattr(CSSParser, name).__doc__
+    func.__qualname__ = func.__name__ = name
+    return func
 
 
-parseString.__doc__ = CSSParser.parseString.__doc__
-
-
-def parseFile(*a, **k):
-    return CSSParser().parseFile(*a, **k)
-
-
-parseFile.__doc__ = CSSParser.parseFile.__doc__
-
-
-def parseUrl(*a, **k):
-    return CSSParser().parseUrl(*a, **k)
-
-
-parseUrl.__doc__ = CSSParser.parseUrl.__doc__
-
-
-def parseStyle(*a, **k):
-    return CSSParser().parseStyle(*a, **k)
-
-
-parseStyle.__doc__ = CSSParser.parseStyle.__doc__
+parseString = _parser_redirect('parseString')
+parseFile = _parser_redirect('parseFile')
+parseUrl = _parser_redirect('parseUrl')
+parseStyle = _parser_redirect('parseStyle')
 
 
 # set "ser", default serializer
