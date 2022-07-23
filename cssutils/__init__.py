@@ -68,7 +68,6 @@ Example::
         }
 
 """
-__all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 
 import os.path
 import urllib.request
@@ -83,6 +82,9 @@ from . import stylesheets
 from .parse import CSSParser
 from .serialize import CSSSerializer
 from .profiles import Profiles
+
+
+__all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 
 log = errorhandler.ErrorHandler()
 ser = CSSSerializer()
