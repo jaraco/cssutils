@@ -179,14 +179,15 @@ parseUrl = _parser_redirect('parseUrl')
 parseStyle = _parser_redirect('parseStyle')
 
 
-# set "ser", default serializer
 def setSerializer(serializer):
     """Set the global serializer used by all class in cssutils."""
     globals().update(ser=serializer)
 
 
 def _style_declarations(base):
-    "recursive generator to find all CSSStyleDeclarations"
+    """
+    Recursively find all CSSStyleDeclarations.
+    """
     for rule in getattr(base, 'cssRules', ()):
         yield from _style_declarations(rule)
     if hasattr(base, 'style'):
