@@ -272,6 +272,30 @@ def _(style, replacer, ignoreImportRules=False):
         value.uri = replacer(value.uri)
 
 
+def replace_base(uri, new_base):
+    scheme, location, path, query, fragment = urllib.parse.urlsplit(uri)
+    if scheme or location or path.startswith('/'):
+        # keep anything absolute
+        return uri
+
+    path, filename = os.path.split(path)
+    combined = os.path.normpath(os.path.join(new_base, path, filename))
+    return urllib.request.pathname2url(combined)
+
+
+def extract_base(uri):
+    _, _, raw_path, _, _ = urllib.parse.urlsplit(uri)
+    base_path, _ = os.path.split(raw_path)
+    return base_path
+
+
+def get_replacer(base):
+    """
+    Return a replacer that uses base to return adjusted URLs.
+    """
+    return functools.partial(replace_base, new_base=extract_base(base))
+
+
 def resolveImports(sheet, target=None):  # noqa: C901
     """
     Recursively combine all rules in given `sheet` into a `target` sheet.
@@ -296,26 +320,6 @@ def resolveImports(sheet, target=None):  # noqa: C901
         target = css.CSSStyleSheet(
             href=sheet.href, media=sheet.media, title=sheet.title
         )
-
-    def getReplacer(targetbase):
-        """
-        Return a replacer that uses base to return adjusted URLs.
-        """
-        _, _, raw_path, _, _ = urllib.parse.urlsplit(targetbase)
-        basepath, _ = os.path.split(raw_path)
-
-        def replacer(uri):
-            scheme, location, path, query, fragment = urllib.parse.urlsplit(uri)
-            if not scheme and not location and not path.startswith('/'):
-                # relative
-                path, filename = os.path.split(path)
-                combined = os.path.normpath(os.path.join(basepath, path, filename))
-                return urllib.request.pathname2url(combined)
-            else:
-                # keep anything absolute
-                return uri
-
-        return replacer
 
     for rule in sheet.cssRules:
         if rule.type == rule.CHARSET_RULE:
@@ -344,7 +348,7 @@ def resolveImports(sheet, target=None):  # noqa: C901
                         '@import: Adjusting paths for %r' % rule.href, neverraise=True
                     )
                     replaceUrls(
-                        importedSheet, getReplacer(rule.href), ignoreImportRules=True
+                        importedSheet, get_replacer(rule.href), ignoreImportRules=True
                     )
 
                     # might have to wrap rules in @media if media given
