@@ -362,45 +362,44 @@ def _resolve_import(rule, target):
             neverraise=True,
         )
         target.add(rule)
+        return
+
+    # adjust relative URI references
+    log.info('@import: Adjusting paths for %r' % rule.href, neverraise=True)
+    replaceUrls(importedSheet, Replacer(rule.href), ignoreImportRules=True)
+
+    # might have to wrap rules in @media if media given
+    if rule.media.mediaText == 'all':
+        mediaproxy = None
     else:
-        # adjust relative URI references
-        log.info('@import: Adjusting paths for %r' % rule.href, neverraise=True)
-        replaceUrls(importedSheet, Replacer(rule.href), ignoreImportRules=True)
-
-        # might have to wrap rules in @media if media given
-        if rule.media.mediaText == 'all':
-            mediaproxy = None
-        else:
-            # check if rules present that may not be combined with media
-            disallowed = list(
-                itertools.filterfalse(_combinable_with_media, importedSheet)
-            )
-            if disallowed:
-                log.warn(
-                    'Cannot combine imported sheet with given media as rules other than '
-                    f'comments or stylerules; found {disallowed[0]!r}, keeping {rule.cssText}',
-                    neverraise=True,
-                )
-                target.add(rule)
-                return
-
-            # wrap in @media if media is not `all`
-            log.info(
-                '@import: Wrapping some rules in @media '
-                ' to keep media: %s' % rule.media.mediaText,
+        # check if rules present that may not be combined with media
+        disallowed = list(itertools.filterfalse(_combinable_with_media, importedSheet))
+        if disallowed:
+            log.warn(
+                'Cannot combine imported sheet with given media as rules other than '
+                f'comments or stylerules; found {disallowed[0]!r}, keeping {rule.cssText}',
                 neverraise=True,
             )
-            mediaproxy = css.CSSMediaRule(rule.media.mediaText)
+            target.add(rule)
+            return
 
-        for r in importedSheet:
-            if mediaproxy:
-                mediaproxy.add(r)
-            else:
-                # add to top sheet directly but are difficult anyway
-                target.add(r)
+        # wrap in @media if media is not `all`
+        log.info(
+            '@import: Wrapping some rules in @media '
+            f' to keep media: {rule.media.mediaText}',
+            neverraise=True,
+        )
+        mediaproxy = css.CSSMediaRule(rule.media.mediaText)
 
+    for r in importedSheet:
         if mediaproxy:
-            target.add(mediaproxy)
+            mediaproxy.add(r)
+        else:
+            # add to top sheet directly but are difficult anyway
+            target.add(r)
+
+    if mediaproxy:
+        target.add(mediaproxy)
 
 
 if __name__ == '__main__':
