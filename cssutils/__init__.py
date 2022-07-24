@@ -383,7 +383,7 @@ def _resolve_import(rule, target):
     replaceUrls(importedSheet, Replacer(rule.href), ignoreImportRules=True)
 
     try:
-        mediaproxy = _check_mediaproxy(rule, importedSheet)
+        media_proxy = _check_media_proxy(rule, importedSheet)
     except MediaCombineDisallowed as exc:
         log.warn(
             'Cannot combine imported sheet with given media as rules other than '
@@ -393,18 +393,15 @@ def _resolve_import(rule, target):
         target.add(rule)
         return
 
+    imp_target = media_proxy or target
     for r in importedSheet:
-        if mediaproxy:
-            mediaproxy.add(r)
-        else:
-            # add to top sheet directly but are difficult anyway
-            target.add(r)
+        imp_target.add(r)
 
-    if mediaproxy:
-        target.add(mediaproxy)
+    if media_proxy:
+        target.add(media_proxy)
 
 
-def _check_mediaproxy(rule, importedSheet):
+def _check_media_proxy(rule, importedSheet):
     # might have to wrap rules in @media if media given
     if rule.media.mediaText == 'all':
         return
