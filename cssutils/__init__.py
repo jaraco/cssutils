@@ -272,28 +272,29 @@ def _(style, replacer, ignoreImportRules=False):
         value.uri = replacer(value.uri)
 
 
-def replace_base(uri, new_base):
-    scheme, location, path, query, fragment = urllib.parse.urlsplit(uri)
-    if scheme or location or path.startswith('/'):
-        # keep anything absolute
-        return uri
-
-    path, filename = os.path.split(path)
-    combined = os.path.normpath(os.path.join(new_base, path, filename))
-    return urllib.request.pathname2url(combined)
-
-
-def extract_base(uri):
-    _, _, raw_path, _, _ = urllib.parse.urlsplit(uri)
-    base_path, _ = os.path.split(raw_path)
-    return base_path
-
-
-def get_replacer(base):
+class Replacer:
     """
-    Return a replacer that uses base to return adjusted URLs.
+    A replacer that uses base to return adjusted URLs.
     """
-    return functools.partial(replace_base, new_base=extract_base(base))
+
+    def __init__(self, base):
+        self.base = self.extract_base(base)
+
+    def __call__(self, uri):
+        scheme, location, path, query, fragment = urllib.parse.urlsplit(uri)
+        if scheme or location or path.startswith('/'):
+            # keep anything absolute
+            return uri
+
+        path, filename = os.path.split(path)
+        combined = os.path.normpath(os.path.join(self.base, path, filename))
+        return urllib.request.pathname2url(combined)
+
+    @staticmethod
+    def extract_base(uri):
+        _, _, raw_path, _, _ = urllib.parse.urlsplit(uri)
+        base_path, _ = os.path.split(raw_path)
+        return base_path
 
 
 def resolveImports(sheet, target=None):  # noqa: C901
@@ -348,7 +349,7 @@ def resolveImports(sheet, target=None):  # noqa: C901
                         '@import: Adjusting paths for %r' % rule.href, neverraise=True
                     )
                     replaceUrls(
-                        importedSheet, get_replacer(rule.href), ignoreImportRules=True
+                        importedSheet, Replacer(rule.href), ignoreImportRules=True
                     )
 
                     # might have to wrap rules in @media if media given
