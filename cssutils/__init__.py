@@ -273,22 +273,24 @@ def _(style, replacer, ignoreImportRules=False):
 
 
 def resolveImports(sheet, target=None):  # noqa: C901
-    """Recurcively combine all rules in given `sheet` into a `target` sheet.
-    @import rules which use media information are tried to be wrapped into
-    @media rules so keeping the media information. This may not work in
-    all instances (if e.g. an @import rule itself contains an @import rule
-    with different media infos or if it contains rules which may not be
-    used inside an @media block like @namespace rules.). In these cases
-    the @import rule is kept as in the original sheet and a WARNING is issued.
+    """
+    Recursively combine all rules in given `sheet` into a `target` sheet.
+    Attempts to wrap @import rules that use media information into
+    @media rules, keeping the media information. This approach may not work in
+    all instances (e.g. if an @import rule itself contains an @import rule
+    with different media infos or if it contains rules that may not be
+    used inside an @media block like @namespace rules). In these cases,
+    the @import rule from the original sheet takes precedence and a WARNING
+    is issued.
 
     :param sheet:
-        in this given :class:`cssutils.css.CSSStyleSheet` all import rules are
+        :class:`cssutils.css.CSSStyleSheet` from which all import rules are
         resolved and added to a resulting *flat* sheet.
     :param target:
-        A :class:`cssutils.css.CSSStyleSheet` object which will be the
-        resulting *flat* sheet if given
-    :returns: given `target` or a new :class:`cssutils.css.CSSStyleSheet`
-        object
+        A :class:`cssutils.css.CSSStyleSheet` object that will be the
+        resulting *flat* sheet if given.
+    :returns:
+        :class:`cssutils.css.CSSStyleSheet` with imports resolved.
     """
     if not target:
         target = css.CSSStyleSheet(
