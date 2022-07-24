@@ -301,10 +301,8 @@ def resolveImports(sheet, target=None):  # noqa: C901
         """
         Return a replacer that uses base to return adjusted URLs.
         """
-        basesch, baseloc, basepath, basequery, basefrag = urllib.parse.urlsplit(
-            targetbase
-        )
-        basepath, basepathfilename = os.path.split(basepath)
+        _, _, raw_path, _, _ = urllib.parse.urlsplit(targetbase)
+        basepath, _ = os.path.split(raw_path)
 
         def replacer(uri):
             scheme, location, path, query, fragment = urllib.parse.urlsplit(uri)
