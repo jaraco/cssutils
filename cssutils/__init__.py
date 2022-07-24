@@ -333,7 +333,12 @@ def resolveImports(sheet, target=None):
     return target
 
 
-def _resolve_import(rule, target):  # noqa: C901
+def _combinable_with_media(rule):
+    combinable = rule.COMMENT, rule.STYLE_RULE, rule.IMPORT_RULE
+    return rule.type in combinable
+
+
+def _resolve_import(rule, target):
     log.info('Processing @import %r' % rule.href, neverraise=True)
 
     if not rule.hrefFound:
@@ -366,19 +371,14 @@ def _resolve_import(rule, target):  # noqa: C901
         if rule.media.mediaText == 'all':
             mediaproxy = None
         else:
-            keepimport = False
-            for r in importedSheet:
-                # check if rules present which may not be
-                # combined with media
-                if r.type not in (r.COMMENT, r.STYLE_RULE, r.IMPORT_RULE):
-                    keepimport = True
-                    break
-            if keepimport:
+            # check if rules present that may not be combined with media
+            disallowed = list(
+                itertools.filterfalse(_combinable_with_media, importedSheet)
+            )
+            if disallowed:
                 log.warn(
-                    'Cannot combine imported sheet with'
-                    ' given media as other rules then'
-                    ' comments or stylerules found %r,'
-                    ' keeping %r' % (r, rule.cssText),
+                    'Cannot combine imported sheet with given media as rules other than '
+                    f'comments or stylerules; found {disallowed[0]!r}, keeping {rule.cssText}',
                     neverraise=True,
                 )
                 target.add(rule)
