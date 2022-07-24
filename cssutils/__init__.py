@@ -298,7 +298,9 @@ def resolveImports(sheet, target=None):  # noqa: C901
         )
 
     def getReplacer(targetbase):
-        "Return a replacer which uses base to return adjusted URLs"
+        """
+        Return a replacer that uses base to return adjusted URLs.
+        """
         basesch, baseloc, basepath, basequery, basefrag = urllib.parse.urlsplit(
             targetbase
         )
