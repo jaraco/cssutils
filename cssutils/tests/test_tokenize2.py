@@ -19,6 +19,7 @@ class TestTokenizer:
         ' a ': [('S', ' ', 1, 1), ('IDENT', 'a', 1, 2), ('S', ' ', 1, 3)],
         '_a': [('IDENT', '_a', 1, 1)],
         '-a': [('IDENT', '-a', 1, 1)],
+        '--a': [('IDENT', '--a', 1, 1)],
         'aA-_\200\377': [('IDENT', 'aA-_\200\377', 1, 1)],
         'a1': [('IDENT', 'a1', 1, 1)],
         # escapes must end with S or max 6 digits:
