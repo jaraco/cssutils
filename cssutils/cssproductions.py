@@ -25,7 +25,7 @@ MACROS = {
     'invalid1': r'\"([^\n\r\f\\"]|\\{nl}|{escape})*',
     'invalid2': r"\'([^\n\r\f\\']|\\{nl}|{escape})*",
     'comment': r'\/\*[^*]*\*+([^/][^*]*\*+)*\/',
-    'ident': r'[-]?{nmstart}{nmchar}*',
+    'ident': r'[-]{0,2}{nmstart}{nmchar}*',
     'name': r'{nmchar}+',
     # TODO???
     'num': r'[+-]?[0-9]*\.[0-9]+|[+-]?[0-9]+',  # r'[-]?\d+|[-]?\d*\.\d+',
