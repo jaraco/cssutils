@@ -1,3 +1,8 @@
+v2.6.0
+======
+
+#14: Added support for custom CSS variables with ``--`` prefix.
+
 v2.5.1
 ======
 
