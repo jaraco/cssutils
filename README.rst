@@ -1,10 +1,7 @@
 .. image:: https://img.shields.io/pypi/v/cssutils.svg
-   :target: `PyPI link`_
+   :target: https://pypi.org/project/cssutils
 
 .. image:: https://img.shields.io/pypi/pyversions/cssutils.svg
-   :target: `PyPI link`_
-
-.. _PyPI link: https://pypi.org/project/cssutils
 
 .. image:: https://github.com/jaraco/cssutils/workflows/tests/badge.svg
    :target: https://github.com/jaraco/cssutils/actions?query=workflow%3A%22tests%22
