@@ -7,7 +7,7 @@ import pytest
 
 
 class TestMediaQuery(basetest.BaseTestCase):
-    def setup(self):
+    def setup_method(self):
         self.r = cssutils.stylesheets.MediaQuery()
 
     def test_mediaText(self):

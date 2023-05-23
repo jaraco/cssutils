@@ -19,7 +19,7 @@ class TestCSSRule(basetest.BaseTestCase):
     to use the base class tests too
     """
 
-    def setup(self):
+    def setup_method(self):
         """
         self.r is the rule
         self.rRO the readonly rule
@@ -35,7 +35,7 @@ class TestCSSRule(basetest.BaseTestCase):
         self.r_type = cssutils.css.CSSRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
-    def teardown(self):
+    def teardown_method(self):
         cssutils.ser.prefs.useDefaults()
 
     def test_init(self):

@@ -7,11 +7,11 @@ import cssutils
 
 
 class TestCSSVariablesDeclaration(basetest.BaseTestCase):
-    def setup(self):
+    def setup_method(self):
         self.r = cssutils.css.CSSVariablesDeclaration()
         cssutils.ser.prefs.useDefaults()
 
-    def teardown(self):
+    def teardown_method(self):
         cssutils.ser.prefs.useDefaults()
 
     def test_init(self):

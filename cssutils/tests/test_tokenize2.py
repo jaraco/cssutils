@@ -498,7 +498,7 @@ class TestTokenizer:
         "url('a'": [('URI', "url('a')", 1, 1)],
     }
 
-    def setup(self):
+    def setup_method(self):
         # log = cssutils.errorhandler.ErrorHandler()
         self.tokenizer = Tokenizer()
 

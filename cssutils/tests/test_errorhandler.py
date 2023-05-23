@@ -10,7 +10,7 @@ import cssutils
 
 
 class TestErrorHandler:
-    def setup(self):
+    def setup_method(self):
         "replace default log and ignore its output"
         self._oldlog = cssutils.log._log
         self._saved = cssutils.log.raiseExceptions
@@ -18,7 +18,7 @@ class TestErrorHandler:
         cssutils.log.raiseExceptions = False
         cssutils.log.setLog(logging.getLogger('IGNORED-CSSUTILS-TEST'))
 
-    def teardown(self):
+    def teardown_method(self):
         "reset default log"
         cssutils.log.setLog(self._oldlog)
         # for tests only
