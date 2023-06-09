@@ -8,7 +8,7 @@ import pytest
 
 
 class TestSelectorList(basetest.BaseTestCase):
-    def setup(self):
+    def setup_method(self):
         self.r = SelectorList()
 
     def test_init(self):

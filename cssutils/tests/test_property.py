@@ -11,7 +11,7 @@ import cssutils
 
 
 class TestProperty(basetest.BaseTestCase):
-    def setup(self):
+    def setup_method(self):
         self.r = cssutils.css.property.Property('top', '1px')  # , 'important')
 
     def test_init(self):

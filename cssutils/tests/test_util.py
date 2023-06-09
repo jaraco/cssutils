@@ -501,7 +501,7 @@ class _readUrl_TestCase:
 class TestLazyRegex:
     """Tests for cssutils.util.LazyRegex."""
 
-    def setup(self):
+    def setup_method(self):
         self.lazyre = LazyRegex('f.o')
 
     def test_public_interface(self):

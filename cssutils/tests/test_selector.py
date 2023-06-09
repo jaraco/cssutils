@@ -16,7 +16,7 @@ import cssutils
 
 
 class TestSelector(basetest.BaseTestCase):
-    def setup(self):
+    def setup_method(self):
         self.r = cssutils.css.Selector('*')
 
     def test_init(self):

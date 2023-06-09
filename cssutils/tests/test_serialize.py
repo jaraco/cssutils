@@ -9,10 +9,10 @@ class TestPreferences(basetest.BaseTestCase):
     testcases for cssutils.serialize.Preferences
     """
 
-    def setup(self):
+    def setup_method(self):
         cssutils.ser.prefs.useDefaults()
 
-    def teardown(self):
+    def teardown_method(self):
         cssutils.ser.prefs.useDefaults()
 
     #    def testkeepUnkownAtRules(self):
@@ -631,10 +631,10 @@ class TestCSSSerializer:
     testcases for cssutils.CSSSerializer
     """
 
-    def setup(self):
+    def setup_method(self):
         cssutils.ser.prefs.useDefaults()
 
-    def teardown(self):
+    def teardown_method(self):
         cssutils.ser.prefs.useDefaults()
 
     def test_canonical(self):

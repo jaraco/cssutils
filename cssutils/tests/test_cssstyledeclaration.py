@@ -7,7 +7,7 @@ import pytest
 
 
 class TestCSSStyleDeclaration(basetest.BaseTestCase):
-    def setup(self):
+    def setup_method(self):
         self.r = cssutils.css.CSSStyleDeclaration()
 
     def test_init(self):

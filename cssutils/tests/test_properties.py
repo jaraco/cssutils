@@ -8,7 +8,7 @@ debug = False
 
 
 class TestProperties:
-    def setup(self):
+    def setup_method(self):
         "init test values"
         V = {
             '0': ('0', '-0'),  # , '+0'),

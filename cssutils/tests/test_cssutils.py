@@ -18,10 +18,10 @@ def serializer(monkeypatch):
 
 
 class TestCSSutils(basetest.BaseTestCase):
-    def setup(self):
+    def setup_method(self):
         cssutils.ser.prefs.useDefaults()
 
-    def teardown(self):
+    def teardown_method(self):
         cssutils.ser.prefs.useDefaults()
 
     exp = '''@import "import/import2.css";
