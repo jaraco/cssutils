@@ -61,10 +61,6 @@ The cssutils tokenizer is a customized implementation of `CSS3 Module: Syntax (W
 
 I guess cssutils is neither CSS 2.1 nor CSS 3 compliant but tries to at least be able to parse both grammars including some more real world cases (some CSS hacks are actually parsed and serialized). Both official grammars are not final nor bugfree but still feasible. cssutils aim is not to be fully compliant to any CSS specification (the specifications seem to be in a constant flow anyway) but cssutils *should* be able to read and write as many as possible CSS stylesheets "in the wild" while at the same time implement the official APIs which are well documented. Some minor extensions are provided as well.
 
-Please visit http://cthedot.de/cssutils/ or https://bitbucket.org/cthedot/cssutils/ for more details.
-
-There is also a low-traffic `cssutils discussion group <http://groups.google.com/group/cssutils>`_.
-
 
 Compatibility
 =============
