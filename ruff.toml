@@ -1,0 +1,2 @@
+# ignore "line too long" as many lines are too long
+ignore = ["E501"]
