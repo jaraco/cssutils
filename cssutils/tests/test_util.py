@@ -1,7 +1,7 @@
 """Testcases for cssutils.util"""
 
 
-import cgi
+from email.message import Message
 import re
 import urllib.request
 import urllib.error
@@ -384,9 +384,11 @@ class _readUrl_TestCase:
             def __init__(self, url, contenttype, content, exception=None, args=None):
                 self.url = url
 
-                mt, params = cgi.parse_header(contenttype)
-                self.mimetype = mt
-                self.charset = params.get('charset', None)
+                m = Message()
+                m['content-type'] = contenttype
+
+                self.mimetype = m.get_content_type()
+                self.charset = m.get_param('charset', None)
 
                 self.text = content
 

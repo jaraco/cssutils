@@ -50,9 +50,9 @@ __all__ = [
     'EncodingInfo',
 ]
 
+from email.message import Message
 import html.parser
 import io
-import cgi
 import re
 import sys
 import urllib.request
@@ -315,8 +315,11 @@ def getMetaInfo(text, log=None):
         pass
 
     if p.content_type:
-        media_type, params = cgi.parse_header(p.content_type)
-        encoding = params.get('charset')  # defaults to None
+        m = Message()
+        m['content-type'] = p.content_type
+
+        media_type = m.get_content_type()
+        encoding = m.get_param('charset')  # defaults to None
         if encoding:
             encoding = encoding.lower()
         if log:
