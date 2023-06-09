@@ -1218,9 +1218,7 @@ if 0:
         try:
             r = urlfetch.fetch(url, method=urlfetch.GET)
         except urlfetch.Error as e:
-            cssutils.log.warn(
-                f'Error opening url={url!r}: {e.message}', error=IOError
-            )
+            cssutils.log.warn(f'Error opening url={url!r}: {e.message}', error=IOError)
         else:
             if r.status_code == 200:
                 # find mimetype and encoding

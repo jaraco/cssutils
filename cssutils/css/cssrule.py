@@ -254,9 +254,7 @@ class CSSRuleRules(CSSRule):
                 tempsheet.cssRules
                 and not isinstance(tempsheet.cssRules[0], cssutils.css.CSSRule)
             ):
-                self._log.error(
-                    f'{self.__class__.__name__}: Invalid Rule: {rule}'
-                )
+                self._log.error(f'{self.__class__.__name__}: Invalid Rule: {rule}')
                 return False, False
             rule = tempsheet.cssRules[0]
 
@@ -267,9 +265,7 @@ class CSSRuleRules(CSSRule):
             return True, True
 
         elif not isinstance(rule, cssutils.css.CSSRule):
-            self._log.error(
-                f'{rule}: Not a CSSRule: {self.__class__.__name__}'
-            )
+            self._log.error(f'{rule}: Not a CSSRule: {self.__class__.__name__}')
             return False, False
 
         return rule, index

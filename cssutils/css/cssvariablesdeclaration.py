@@ -286,9 +286,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             normalize(variableName), 'variableName', Sequence(PreDef.ident())
         )
         if not wellformed:
-            self._log.error(
-                f'Invalid variableName: {variableName!r}: {value!r}'
-            )
+            self._log.error(f'Invalid variableName: {variableName!r}: {value!r}')
         else:
             # check value
             if isinstance(value, PropertyValue):
@@ -297,9 +295,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                 v = PropertyValue(cssText=value, parent=self)
 
             if not v.wellformed:
-                self._log.error(
-                    f'Invalid variable value: {variableName!r}: {value!r}'
-                )
+                self._log.error(f'Invalid variable value: {variableName!r}: {value!r}')
             else:
                 # update seq
                 self.seq._readonly = False
