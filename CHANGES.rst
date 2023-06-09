@@ -1,3 +1,12 @@
+v2.7.0
+======
+
+#35: Updated deprecated usage of ``cgi`` module.
+
+#34: Updated deprecated setup/teardown from ``nose`` in tests.
+
+Other miscellaneous cleanup and packaging updates.
+
 v2.6.0
 ======
 
