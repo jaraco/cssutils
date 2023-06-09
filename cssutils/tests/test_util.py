@@ -400,7 +400,6 @@ class _readUrl_TestCase:
                 mimetype, charset = self.mimetype, self.charset
 
                 class Info:
-
                     # py2x
                     def gettype(self):
                         return mimetype

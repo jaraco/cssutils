@@ -12,7 +12,6 @@ from cssutils.tokenize2 import Tokenizer
 
 
 class TestTokenizer:
-
     testsall = {
         # IDENT
         'äöüß€': [('IDENT', 'äöüß€', 1, 1)],

@@ -197,7 +197,6 @@ class Sequence:
         """
         # print u'TEST for %s in %s' % (token, self)
         while self._round < self._max:
-
             # for this round
             i = self._i
             round = self._round
