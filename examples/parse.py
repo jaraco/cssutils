@@ -6,7 +6,6 @@ EXPERR = 'Property: Invalid value for "CSS Level 2.1" property: red [4:9: top]\n
 
 
 def main():
-
     css = '''/* This is a comment */
     body {
         background: white;

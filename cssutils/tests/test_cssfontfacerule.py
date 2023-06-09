@@ -185,7 +185,7 @@ class TestCSSFontFaceRule(test_cssrule.TestCSSRule):
             ]
         }
         for n, t in list(tests.items()):
-            for (v, valid) in t:
+            for v, valid in t:
                 r = cssutils.css.CSSFontFaceRule()
                 r.style[n] = v
                 assert r.style.getProperty(n).parent == r.style

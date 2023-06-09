@@ -157,7 +157,6 @@ class Tokenizer:
             else:
                 # check all other productions, at least CHAR must match
                 for name, matcher in productions:
-
                     # TODO: USE bad comment?
                     if fullsheet and name == 'CHAR' and has_at(text, pos, '/*'):
                         # before CHAR production test for incomplete comment

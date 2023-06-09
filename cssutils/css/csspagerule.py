@@ -257,7 +257,6 @@ class CSSPageRule(cssrule.CSSRuleRules):
                 token[0] == 'ATKEYWORD'
                 and self._normalize(token[1]) in MarginRule.margins
             ):
-
                 # MarginRule
                 m = MarginRule(parentRule=self, parentStyleSheet=self.parentStyleSheet)
                 m.cssText = chain([token], g)

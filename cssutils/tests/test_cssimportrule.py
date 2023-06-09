@@ -90,7 +90,6 @@ class TestCSSImportRule(test_cssrule.TestCSSRule):
             '''@IMPORT "str";''': '''@import "str";''',
             '''@import 'str';''': '''@import "str";''',
             '''@import 'str' ;''': '''@import "str";''',
-            '''@import "str";''': None,
             '''@import "str"  ;''': '''@import "str";''',
             r'''@import "\""  ;''': r'''@import "\"";''',
             '''@import '\\'';''': r'''@import "'";''',

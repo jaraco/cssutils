@@ -466,7 +466,6 @@ class Property(cssutils.util.Base):
                 # TODO: same for @page
 
         if self.name and self.value:
-
             # TODO
             # cv = self.propertyValue
             # if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:

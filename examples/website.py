@@ -114,7 +114,7 @@ def work_and_build():
     True
     >>> # returns the new Selector:
     >>> sheet.cssRules[1].selectorList.appendSelector('a')
-    cssutils.css.Selector(selectorText=u'a')
+    cssutils.css.Selector(selectorText='a')
     >>> print(sheet.cssText.decode())
     @import url(example.css) tv, print;
     body, a {
@@ -139,7 +139,7 @@ def api_addons():
     >>> # work with properties:
     >>> proplist = style.getProperties('background', all=True)
     >>> proplist
-    [cssutils.css.Property(name='background', value=u'white url(paper.png) scroll', priority=u''), cssutils.css.Property(name='background', value=u'white url(ledger.png) fixed', priority=u'')]
+    [cssutils.css.Property(name='background', value='white url(paper.png) scroll', priority=''), cssutils.css.Property(name='background', value='white url(ledger.png) fixed', priority='')]
     >>> for prop in proplist: print(prop.value)
     white url(paper.png) scroll
     white url(ledger.png) fixed

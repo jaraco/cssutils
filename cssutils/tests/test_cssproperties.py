@@ -6,7 +6,6 @@ import pytest
 
 
 class TestCSSProperties:
-
     #    def test_cssvalues(self):
     #        "cssproperties cssvalues"
     #        # does actually return match object, so a very simplified test...

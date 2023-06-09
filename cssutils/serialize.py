@@ -1080,7 +1080,6 @@ class CSSSerializer:
                     else:
                         val = v[1:]
                 else:
-
                     val = self._strip_zeros('%f' % value.value)  # issue #27
 
                 # keep '+' if given
