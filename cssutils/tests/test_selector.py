@@ -170,13 +170,9 @@ class TestSelector(basetest.BaseTestCase):
             'a> b': 'a > b',
             'a >b': 'a > b',
             'a > b': 'a > b',
-            # +
-            'a+b': 'a + b',
             'a+ b': 'a + b',
             'a +b': 'a + b',
             'a + b': 'a + b',
-            # ~
-            'a~b': 'a ~ b',
             'a~ b': 'a ~ b',
             'a ~b': 'a ~ b',
             'a ~ b': 'a ~ b',
@@ -253,7 +249,6 @@ class TestSelector(basetest.BaseTestCase):
             '''a[x |= en]''': 'a[x|=en]',
             '''a[ x |= en]''': 'a[x|=en]',
             '''a[x |= en ]''': 'a[x|=en]',
-            '''a[ x |= en]''': 'a[x|=en]',
             '''a [ x |= en]''': 'a [x|=en]',
             # CSS3
             '''a[x^=en]''': None,
@@ -427,8 +422,6 @@ class TestSelector(basetest.BaseTestCase):
             '.a.b': (0, 0, 2, 0),
             'a.a.b': (0, 0, 2, 1),
             '.a .a': (0, 0, 2, 0),
-            '*[x]': (0, 0, 1, 0),
-            '*[x]': (0, 0, 1, 0),
             '*[x]': (0, 0, 1, 0),
             '*[x=a]': (0, 0, 1, 0),
             '*[x~=a]': (0, 0, 1, 0),

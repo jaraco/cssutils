@@ -113,7 +113,6 @@ class ErrorHandler(_ErrorHandler):
     instance = None
 
     def __init__(self, log=None, defaultloglevel=logging.INFO, raiseExceptions=True):
-
         if ErrorHandler.instance is None:
             ErrorHandler.instance = _ErrorHandler(
                 log=log,

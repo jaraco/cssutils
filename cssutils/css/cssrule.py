@@ -161,7 +161,6 @@ class CSSRuleRules(CSSRule):
     """
 
     def __init__(self, parentRule=None, parentStyleSheet=None):
-
         super().__init__(parentRule=parentRule, parentStyleSheet=parentStyleSheet)
 
         self.cssRules = cssutils.css.CSSRuleList()

@@ -99,7 +99,7 @@ class PropertyValueTestCase:
                 'matrix(0.000092, 0.250001, -0.25, 0.000092, 0, 0)',
             ),
         }
-        for (cssText, (c, len, v)) in list(tests.items()):
+        for cssText, (c, len, v) in list(tests.items()):
             if c is None:
                 c = cssText
             if v is None:
@@ -131,7 +131,7 @@ class PropertyValueTestCase:
             'url(x.gif)0 0': ('url(x.gif) 0 0', 3),
             'url(x.gif)no-repeat': ('url(x.gif) no-repeat', 2),
         }
-        for (cssText, (c, len)) in list(tests.items()):
+        for cssText, (c, len) in list(tests.items()):
             if c is None:
                 c = cssText
             pv = cssutils.css.PropertyValue(cssText)
@@ -178,13 +178,11 @@ class PropertyValueTestCase:
             'u\\rl(a)': 'url(a)',
             'url("a")': 'url(a)',
             'url(  "a"  )': 'url(a)',
-            'url(a)': 'url(a)',
             'url(";")': 'url(";")',
             'url(",")': 'url(",")',
             'url(")")': 'url(")")',
             '''url("'")''': '''url("'")''',
             '''url('"')''': '''url("\\"")''',
-            '''url("'")''': '''url("'")''',
             # operator
             '1': '1',
             '1 2': '1 2',
@@ -409,7 +407,7 @@ y"''': (
                 'STRING',
             ),
         }
-        for (p, (r, n, t)) in list(tests.items()):
+        for p, (r, n, t) in list(tests.items()):
             v = cssutils.css.Value(p)
             assert r == v.cssText
             assert t == v.type
@@ -443,7 +441,7 @@ class ColorValueTestCase:
             'hsl(1,2%,3%)': ('hsl(1, 2%, 3%)',),
             'hsla(1,2%,3%, 1.0)': ('hsla(1, 2%, 3%, 1)',),
         }
-        for (p, (r,)) in list(tests.items()):
+        for p, (r,) in list(tests.items()):
             v = cssutils.css.ColorValue(p)
             assert v.COLOR_VALUE == v.type
             assert r == v.cssText
@@ -565,7 +563,7 @@ class URIValueTestCase:
             '  url(some.gif)  ': ('url(some.gif)', 'some.gif', 'URI'),
             'url(   some.gif  )': ('url(some.gif)', 'some.gif', 'URI'),
         }
-        for (p, (r, n, t)) in list(tests.items()):
+        for p, (r, n, t) in list(tests.items()):
             v = cssutils.css.URIValue(p)
             assert r == v.cssText
             assert t == v.type
@@ -639,7 +637,7 @@ class DimensionValueTestCase:
             '-1.1%': ('-1.1%', -1.1, '%', 'PERCENTAGE'),
             '+1%': ('+1%', 1, '%', 'PERCENTAGE'),
         }
-        for (p, (r, n, d, t)) in list(tests.items()):
+        for p, (r, n, d, t) in list(tests.items()):
             v = cssutils.css.DimensionValue(p)
             assert r == v.cssText
             assert t == v.type
@@ -665,9 +663,8 @@ class CSSFunctionTestCase:
             'x(/**/1)': ('x(/**/ 1)', 'x(1)'),
             'x(/**/1/**/)': ('x(/**/ 1 /**/)', 'x(1)'),
             'x(/**/1,x/**/)': ('x(/**/ 1, x /**/)', 'x(1, x)'),
-            'x(1,2)': ('x(1, 2)', None),
         }
-        for (f, (cssText, value)) in list(tests.items()):
+        for f, (cssText, value) in list(tests.items()):
             if value is None:
                 value = cssText
             v = cssutils.css.CSSFunction(f)
@@ -705,7 +702,7 @@ class CSSVariableTestCase:
             ),
             'var(C, #f00 )': ('var(C, #f00)', 'C', '#fff'),
         }
-        for (var, (cssText, name, fallback)) in list(tests.items()):
+        for var, (cssText, name, fallback) in list(tests.items()):
             v = cssutils.css.CSSVariable(var)
             assert cssText == v.cssText
             assert 'VARIABLE' == v.type
