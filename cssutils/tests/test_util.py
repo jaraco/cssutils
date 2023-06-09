@@ -31,14 +31,14 @@ class ListSeqTestCase:
         # len
         assert 2 == len(ls)
         # __contains__
-        assert True == (1 in ls)
+        assert True is (1 in ls)
         # get
         assert 1 == ls[0]
         assert 2 == ls[1]
         # del
         del ls[0]
         assert 1 == len(ls)
-        assert False == (1 in ls)
+        assert False is (1 in ls)
         # for in
         for x in ls:
             assert 2 == x

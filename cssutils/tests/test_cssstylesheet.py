@@ -318,7 +318,7 @@ ex2|x {
         # __contains__
         assert '' in s.namespaces
         assert 'ex2' in s.namespaces
-        assert not ('NOTSET' in s.namespaces)
+        assert "NOTSET" not in s.namespaces
         # __delitem__
         with pytest.raises(xml.dom.NoModificationAllowedErr):
             s.namespaces.__delitem__('ex2')

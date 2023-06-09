@@ -178,13 +178,11 @@ class PropertyValueTestCase:
             'u\\rl(a)': 'url(a)',
             'url("a")': 'url(a)',
             'url(  "a"  )': 'url(a)',
-            'url(a)': 'url(a)',
             'url(";")': 'url(";")',
             'url(",")': 'url(",")',
             'url(")")': 'url(")")',
             '''url("'")''': '''url("'")''',
             '''url('"')''': '''url("\\"")''',
-            '''url("'")''': '''url("'")''',
             # operator
             '1': '1',
             '1 2': '1 2',
@@ -665,7 +663,6 @@ class CSSFunctionTestCase:
             'x(/**/1)': ('x(/**/ 1)', 'x(1)'),
             'x(/**/1/**/)': ('x(/**/ 1 /**/)', 'x(1)'),
             'x(/**/1,x/**/)': ('x(/**/ 1, x /**/)', 'x(1, x)'),
-            'x(1,2)': ('x(1, 2)', None),
         }
         for f, (cssText, value) in list(tests.items()):
             if value is None:
