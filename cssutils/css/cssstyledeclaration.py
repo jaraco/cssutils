@@ -666,7 +666,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             self.seq._readonly = True
 
         else:
-            self._log.warn('Invalid Property: {}: {} {}'.format(name, value, priority))
+            self._log.warn(f'Invalid Property: {name}: {value} {priority}')
 
     def item(self, index):
         """(DOM) Retrieve the properties that have been explicitly set in

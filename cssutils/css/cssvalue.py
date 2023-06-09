@@ -62,7 +62,7 @@ class CSSValue(cssutils.util._NewBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
+        return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
         return (
@@ -800,7 +800,7 @@ class CSSPrimitiveValue(CSSValue):
         if val == int(val):
             val = int(val)
 
-        self.cssText = '{}{}'.format(val, dim)
+        self.cssText = f'{val}{dim}'
 
     def getStringValue(self):
         """(DOM) This method is used to get the string value. If the
@@ -1132,7 +1132,7 @@ class RGBColor(CSSFunction):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
+        return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
         return "<cssutils.css.{} object colorType={!r} cssText={!r} at 0x{:x}>".format(
@@ -1313,7 +1313,7 @@ class CSSVariable(CSSValue):
         super().__init__(cssText=cssText, parent=parent, readonly=readonly)
 
     def __repr__(self):
-        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
+        return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
         return "<cssutils.css.{} object name={!r} value={!r} at 0x{:x}>".format(

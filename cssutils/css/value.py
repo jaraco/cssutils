@@ -71,7 +71,7 @@ class PropertyValue(cssutils.util._NewBase):
         yield from self.__items()
 
     def __repr__(self):
-        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
+        return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
         return "<cssutils.css.%s object length=%r cssText=%r at " "0x%x>" % (
@@ -254,7 +254,7 @@ class Value(cssutils.util._NewBase):
             self.cssText = cssText
 
     def __repr__(self):
-        return "cssutils.css.{}({!r})".format(self.__class__.__name__, self.cssText)
+        return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
         return (

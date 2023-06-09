@@ -47,7 +47,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return "cssutils.css.{}(selectorText={!r})".format(self.__class__.__name__, st)
+        return f"cssutils.css.{self.__class__.__name__}(selectorText={st!r})"
 
     def __str__(self):
         return "<cssutils.css.%s object selectorText=%r _namespaces=%r at " "0x%x>" % (

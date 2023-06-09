@@ -287,7 +287,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         )
         if not wellformed:
             self._log.error(
-                'Invalid variableName: {!r}: {!r}'.format(variableName, value)
+                f'Invalid variableName: {variableName!r}: {value!r}'
             )
         else:
             # check value
@@ -298,7 +298,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
 
             if not v.wellformed:
                 self._log.error(
-                    'Invalid variable value: {!r}: {!r}'.format(variableName, value)
+                    f'Invalid variable value: {variableName!r}: {value!r}'
                 )
             else:
                 # update seq

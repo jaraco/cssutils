@@ -755,7 +755,7 @@ if 1:  # noqa: C901
 
         elif v.cssValueType == v.CSS_VARIABLE:
             if v.value:
-                print('+ Replacing {!r} with {!r}'.format(p.value, v.value))
+                print(f'+ Replacing {p.value!r} with {v.value!r}')
                 p.value = v.value
             else:
                 print('- No value found for %r' % p.value)
@@ -1219,7 +1219,7 @@ if 0:
             r = urlfetch.fetch(url, method=urlfetch.GET)
         except urlfetch.Error as e:
             cssutils.log.warn(
-                'Error opening url={!r}: {}'.format(url, e.message), error=IOError
+                f'Error opening url={url!r}: {e.message}', error=IOError
             )
         else:
             if r.status_code == 200:
@@ -1237,7 +1237,7 @@ if 0:
             else:
                 # TODO: 301 etc
                 cssutils.log.warn(
-                    'Error opening url={!r}: HTTP status {}'.format(url, r.status_code),
+                    f'Error opening url={url!r}: HTTP status {r.status_code}',
                     error=IOError,
                 )
 

@@ -126,7 +126,7 @@ class Selector(cssutils.util.Base2):
             st = (self.selectorText, self._getUsedNamespaces())
         else:
             st = self.selectorText
-        return "cssutils.css.{}(selectorText={!r})".format(self.__class__.__name__, st)
+        return f"cssutils.css.{self.__class__.__name__}(selectorText={st!r})"
 
     def __str__(self):
         return (
