@@ -291,12 +291,14 @@ class Value(cssutils.util._NewBase):
         doc='String value of this value.',
     )
 
-    type = property(
-        lambda self: self._type,  # _setType,
-        doc="Type of this value, for now the production type "
-        "like e.g. `DIMENSION` or `STRING`. All types are "
-        "defined as constants in :class:`~cssutils.css.Value`.",
-    )
+    @property
+    def type(self):
+        """
+        Type of this value, for now the production type
+        like e.g. `DIMENSION` or `STRING`. All types are
+        defined as constants in :class:`~cssutils.css.Value`.
+        """
+        return self._type
 
     def _setValue(self, value):
         # TODO: check!
@@ -493,9 +495,10 @@ class ColorValue(Value):
         doc='Same as cssText but without comments.',
     )
 
-    type = property(
-        lambda self: Value.COLOR_VALUE, doc="Type is fixed to Value.COLOR_VALUE."
-    )
+    @property
+    def type(self):
+        """Type is fixed to Value.COLOR_VALUE."""
+        return Value.COLOR_VALUE
 
     def _getName(self):
         for n, v in list(self.COLORS.items()):
@@ -512,15 +515,21 @@ class ColorValue(Value):
     )
 
     red = property(lambda self: self._red, doc='red part as integer between 0 and 255')
-    green = property(
-        lambda self: self._green, doc='green part as integer between 0 and 255'
-    )
-    blue = property(
-        lambda self: self._blue, doc='blue part as integer between 0 and 255'
-    )
-    alpha = property(
-        lambda self: self._alpha, doc='alpha part as float between 0.0 and 1.0'
-    )
+
+    @property
+    def green(self):
+        """green part as integer between 0 and 255"""
+        return self._green
+
+    @property
+    def blue(self):
+        """blue part as integer between 0 and 255"""
+        return self._blue
+
+    @property
+    def alpha(self):
+        """alpha part as float between 0.0 and 1.0"""
+        return self._alpha
 
 
 class DimensionValue(Value):
@@ -928,9 +937,10 @@ class CSSVariable(CSSFunction):
         ":class:`cssutils.css.CSSVariablesDeclaration`.",
     )
 
-    fallback = property(
-        lambda self: self._fallback, doc="The fallback Value of this variable"
-    )
+    @property
+    def fallback(self):
+        """The fallback Value of this variable"""
+        return self._fallback
 
     type = property(lambda self: Value.VARIABLE, doc="Type is fixed to Value.VARIABLE.")
 

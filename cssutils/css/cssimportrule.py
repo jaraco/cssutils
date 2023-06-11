@@ -407,8 +407,11 @@ class CSSImportRule(cssrule.CSSRule):
         else:
             self._log.error('CSSImportRule: Not a valid name: %s' % name)
 
+    def _getName(self):
+        return self._name
+
     name = property(
-        lambda self: self._name,
+        _getName,
         _setName,
         doc="An optional name for the imported sheet.",
     )

@@ -73,9 +73,10 @@ class _NewBase(_BaseClass):
         "Get a writeable Seq() which is used to set ``seq`` later"
         return Seq(readonly=readonly)
 
-    seq = property(
-        lambda self: self._seq, doc="Internal readonly attribute, **DO NOT USE**!"
-    )
+    @property
+    def seq(self):
+        """Internal readonly attribute, **DO NOT USE**!"""
+        return self._seq
 
 
 class _NewListBase(_NewBase):
@@ -892,10 +893,10 @@ class _SimpleNamespaces(_Namespaces):
     def __setitem__(self, prefix, namespaceURI):
         self.__namespaces[prefix] = namespaceURI
 
-    namespaces = property(
-        lambda self: self.__namespaces,
-        doc='Dict Wrapper for self.sheets @namespace rules.',
-    )
+    @property
+    def namespaces(self):
+        """Dict Wrapper for self.sheets @namespace rules."""
+        return self.__namespaces
 
     def __str__(self):
         return "<cssutils.util.{} object namespaces={!r} at 0x{:x}>".format(

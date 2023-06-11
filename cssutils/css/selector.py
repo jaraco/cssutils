@@ -181,9 +181,10 @@ class Selector(cssutils.util.Base2):
         "namespaceURI} is used.",
     )
 
-    element = property(
-        lambda self: self._element, doc="Effective element target of this selector."
-    )
+    @property
+    def element(self):
+        """Effective element target of this selector."""
+        return self._element
 
     parent = property(
         lambda self: self._parent,

@@ -456,9 +456,10 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         "(default) if set to ``None``",
     )
 
-    namespaces = property(
-        lambda self: self._namespaces, doc="All Namespaces used in this CSSStyleSheet."
-    )
+    @property
+    def namespaces(self):
+        """All Namespaces used in this CSSStyleSheet."""
+        return self._namespaces
 
     def _updateVariables(self):
         """Updates self._variables, called when @import or @variables rules

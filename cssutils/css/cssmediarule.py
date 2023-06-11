@@ -261,7 +261,13 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         doc="(DOM) The parsable textual representation of this " "rule.",
     )
 
-    def _setName(self, name):
+    @property
+    def name(self):
+        """An optional name for this media rule."""
+        return self._name
+
+    @name.setter
+    def name(self, name):
         if isinstance(name, str) or name is None:
             # "" or ''
             if not name:
@@ -271,9 +277,8 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         else:
             self._log.error('CSSImportRule: Not a valid name: %s' % name)
 
-    name = property(
-        lambda self: self._name, _setName, doc="An optional name for this media rule."
-    )
+    def _setName(self, name):
+        self.name = name
 
     def _setMedia(self, media):
         """

@@ -211,9 +211,10 @@ class Profiles:
         doc='Names of all profiles in order as defined.',
     )
 
-    knownNames = property(
-        lambda self: self._knownNames, doc="All known property names of all profiles."
-    )
+    @property
+    def knownNames(self):
+        """All known property names of all profiles."""
+        return self._knownNames
 
     def _resetProperties(self, newMacros=None):
         "reset all props from raw values as changes in macros happened"

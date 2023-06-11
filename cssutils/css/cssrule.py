@@ -117,9 +117,10 @@ class CSSRule(cssutils.util.Base2):
         "and not its initial value.",
     )
 
-    parent = property(
-        lambda self: self._parent, doc="The Parent Node of this CSSRule or None."
-    )
+    @property
+    def parent(self):
+        """The Parent Node of this CSSRule or None."""
+        return self._parent
 
     parentRule = property(
         lambda self: self._parentRule,

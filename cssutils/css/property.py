@@ -290,7 +290,16 @@ class Property(cssutils.util.Base):
         _getValue, _setValue, doc="The textual value of this Properties propertyValue."
     )
 
-    def _setPriority(self, priority):  # noqa: C901
+    def _setPriority(self, priority):
+        self.priority = priority
+
+    @property
+    def priority(self):
+        """Priority of this property."""
+        return self._priority
+
+    @priority.setter
+    def priority(self, priority):  # noqa: C901
         """
         priority
             a string, currently either u'', u'!important' or u'important'
@@ -371,23 +380,19 @@ class Property(cssutils.util.Base):
             if self._priority not in ('', 'important'):
                 self._log.error('Property: No CSS priority value: %s' % self._priority)
 
-    priority = property(
-        lambda self: self._priority, _setPriority, doc="Priority of this property."
-    )
-
     literalpriority = property(
         lambda self: self._literalpriority,
         doc="Readonly literal (not normalized) priority of this property",
     )
 
-    def _setParent(self, parent):
-        self._parent = parent
+    @property
+    def parent(self):
+        """The Parent Node (normally a CSSStyledeclaration) of this Property"""
+        return self._parent
 
-    parent = property(
-        lambda self: self._parent,
-        _setParent,
-        doc="The Parent Node (normally a CSSStyledeclaration) of this " "Property",
-    )
+    @parent.setter
+    def parent(self, parent):
+        self._parent = parent
 
     def validate(self):  # noqa: C901
         """Validate value against `profiles` which are checked dynamically.

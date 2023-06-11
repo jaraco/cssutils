@@ -43,9 +43,10 @@ class CSSRuleList(list):
         except IndexError:
             return None
 
-    length = property(
-        lambda self: len(self), doc="(DOM) The number of CSSRules in the list."
-    )
+    @property
+    def length(self):
+        """(DOM) The number of CSSRules in the list."""
+        return len(self)
 
     def rulesOfType(self, type):
         """Yield the rules which have the given `type` only, one of the
