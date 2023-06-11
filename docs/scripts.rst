@@ -114,46 +114,46 @@ programmatic use
 ----------------
 example::
 
-	>>> from cssutils.script import csscombine
-	>>> proxypath = 'sheets/import.css'
-	>>> print csscombine(path=proxypath, sourceencoding=None, targetencoding='utf-8', minify=False)
-	INFO    Combining files from None
-	INFO    Processing @import u'import/import2.css'
-	INFO    Processing @import u'../import3.css'
-	INFO    @import: Adjusting paths for u'../import3.css'
-	INFO    Processing @import u'import-impossible.css'
-	INFO    @import: Adjusting paths for u'import-impossible.css'
-	WARNING Cannot combine imported sheet with given media as other rules then comments or stylerules found cssutils.css.CSSNamespaceRule(namespaceURI=u'y', prefix=u''), keeping u'@import "import-impossible.css" print;'
-	INFO    @import: Adjusting paths for u'import/import2.css'
-	INFO    Using target encoding: 'utf-8'
-	@charset "utf-8";
-	/* START @import "import/import2.css" */
-	@import "import-impossible.css" print;
-	/* START @import "../import3.css" */
-	/* import3 */
-	.import3 {
-	    /* from ./import/../import3.css */
-	    background: url(images/example3.gif);
-	    background: url(images/example3.gif);
-	    background: url(import/images2/example2.gif);
-	    background: url(import/images2/example2.gif);
-	    background: url(images/example3.gif)
-	    }
-	/* START @import "import-impossible.css" */
-	.import2 {
-	    /* sheets/import2.css */
-	    background: url(http://example.com/images/example.gif);
-	    background: url(//example.com/images/example.gif);
-	    background: url(/images/example.gif);
-	    background: url(import/images2/example.gif);
-	    background: url(import/images2/example.gif);
-	    background: url(images/example.gif);
-	    background: url(images/example.gif)
-	    }
-	.import {
-	    /* ./import.css */
-	    background-image: url(images/example.gif)
-	    }
+    >>> from cssutils.script import csscombine
+    >>> proxypath = 'sheets/import.css'
+    >>> print csscombine(path=proxypath, sourceencoding=None, targetencoding='utf-8', minify=False)
+    INFO    Combining files from None
+    INFO    Processing @import u'import/import2.css'
+    INFO    Processing @import u'../import3.css'
+    INFO    @import: Adjusting paths for u'../import3.css'
+    INFO    Processing @import u'import-impossible.css'
+    INFO    @import: Adjusting paths for u'import-impossible.css'
+    WARNING Cannot combine imported sheet with given media as other rules then comments or stylerules found cssutils.css.CSSNamespaceRule(namespaceURI=u'y', prefix=u''), keeping u'@import "import-impossible.css" print;'
+    INFO    @import: Adjusting paths for u'import/import2.css'
+    INFO    Using target encoding: 'utf-8'
+    @charset "utf-8";
+    /* START @import "import/import2.css" */
+    @import "import-impossible.css" print;
+    /* START @import "../import3.css" */
+    /* import3 */
+    .import3 {
+        /* from ./import/../import3.css */
+        background: url(images/example3.gif);
+        background: url(images/example3.gif);
+        background: url(import/images2/example2.gif);
+        background: url(import/images2/example2.gif);
+        background: url(images/example3.gif)
+        }
+    /* START @import "import-impossible.css" */
+    .import2 {
+        /* sheets/import2.css */
+        background: url(http://example.com/images/example.gif);
+        background: url(//example.com/images/example.gif);
+        background: url(/images/example.gif);
+        background: url(import/images2/example.gif);
+        background: url(import/images2/example.gif);
+        background: url(images/example.gif);
+        background: url(images/example.gif)
+        }
+    .import {
+        /* ./import.css */
+        background-image: url(images/example.gif)
+        }
 
 
 script use

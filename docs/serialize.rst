@@ -9,19 +9,19 @@ serializing CSS
 ===============
 To serialize any stylesheet use::
 
-	print sheet.cssText
-	
+    print sheet.cssText
+
 Also most other objects have a similar property which contains the *text* content of each object. Some use a slightly different name (e.g. ``selectorText``) but all use the global serializer::
 
-	>>> sheet = cssutils.parseString('a, b { color: green }')
-	>>> print sheet.cssRules[0].cssText
-	a, b {
-	    color: green
-	    }
-	>>> print sheet.cssRules[0].selectorText
-	a, b
-	>>> print sheet.cssRules[0].selectorList[1].selectorText
-	b
+    >>> sheet = cssutils.parseString('a, b { color: green }')
+    >>> print sheet.cssRules[0].cssText
+    a, b {
+        color: green
+        }
+    >>> print sheet.cssRules[0].selectorText
+    a, b
+    >>> print sheet.cssRules[0].selectorList[1].selectorText
+    b
 
 
 .. _Preferences:

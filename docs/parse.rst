@@ -38,7 +38,7 @@ The parser is reusable.
 .. autoclass:: cssutils.CSSParser
    :members:
    :inherited-members:
-   
+
 
 The URL Fetcher
 ---------------
