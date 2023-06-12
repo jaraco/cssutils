@@ -9,12 +9,6 @@ class TestPreferences(basetest.BaseTestCase):
     testcases for cssutils.serialize.Preferences
     """
 
-    def setup_method(self):
-        cssutils.ser.prefs.useDefaults()
-
-    def teardown_method(self):
-        cssutils.ser.prefs.useDefaults()
-
     #    def testkeepUnkownAtRules(self):
     #        "Preferences.keepUnkownAtRules"
     #        from warnings import catch_warnings
@@ -135,7 +129,6 @@ prefix|x, a + b > c ~ d, b {
 
     def test_useMinified(self):
         "Preferences.useMinified()"
-        cssutils.ser.prefs.useDefaults()
         cssutils.ser.prefs.useMinified()
         assert cssutils.ser.prefs.defaultAtKeyword
         assert cssutils.ser.prefs.defaultPropertyName
@@ -630,12 +623,6 @@ class TestCSSSerializer:
     """
     testcases for cssutils.CSSSerializer
     """
-
-    def setup_method(self):
-        cssutils.ser.prefs.useDefaults()
-
-    def teardown_method(self):
-        cssutils.ser.prefs.useDefaults()
 
     def test_canonical(self):
         tests = {

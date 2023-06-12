@@ -37,3 +37,8 @@ def saved_profiles(monkeypatch):
 def raise_exceptions():
     # configure log to raise exceptions
     cssutils.log.raiseExceptions = True
+
+
+@pytest.fixture(autouse=True)
+def restore_serializer_preference_defaults():
+    cssutils.ser.prefs.useDefaults()

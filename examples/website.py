@@ -88,7 +88,6 @@ def work_and_build():
     """
     >>> import cssutils, logging
     >>> cssutils.log.setLevel(logging.FATAL)
-    >>> cssutils.ser.prefs.useDefaults()
     >>> # --- RESET ---
     >>> from cssutils import css, stylesheets
     >>> sheet = css.CSSStyleSheet()

@@ -12,9 +12,6 @@ class TestCSSUnknownRule(test_cssrule.TestCSSRule):
         self.r_type = cssutils.css.CSSUnknownRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
-    def teardown(self):
-        cssutils.ser.prefs.useDefaults()
-
     def test_init(self):
         "CSSUnknownRule.type and init"
         super().test_init()

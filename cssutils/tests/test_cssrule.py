@@ -35,9 +35,6 @@ class TestCSSRule(basetest.BaseTestCase):
         self.r_type = cssutils.css.CSSRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
-    def teardown_method(self):
-        cssutils.ser.prefs.useDefaults()
-
     def test_init(self):
         "CSSRule.type and init"
         assert self.r_type == self.r.type

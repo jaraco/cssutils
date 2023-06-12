@@ -18,12 +18,6 @@ def serializer(monkeypatch):
 
 
 class TestCSSutils(basetest.BaseTestCase):
-    def setup_method(self):
-        cssutils.ser.prefs.useDefaults()
-
-    def teardown_method(self):
-        cssutils.ser.prefs.useDefaults()
-
     exp = '''@import "import/import2.css";
 .import {
     /* ./import.css */
@@ -481,5 +475,3 @@ a {
     z: url(b/subimg/subimg.gif)
     }'''
         assert expected == r.cssText
-
-        cssutils.ser.prefs.useDefaults()

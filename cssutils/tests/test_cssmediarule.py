@@ -245,8 +245,6 @@ class TestCSSMediaRule(test_cssrule.TestCSSRule):
             assert m == r.parentRule
             assert m.parentStyleSheet == r.parentStyleSheet
 
-        cssutils.ser.prefs.useDefaults()
-
     def test_media(self):
         "CSSMediaRule.media"
         # see CSSImportRule.media
@@ -263,7 +261,6 @@ class TestCSSMediaRule(test_cssrule.TestCSSRule):
         assert '' == self.r.cssText
         cssutils.ser.prefs.keepEmptyRules = True
         assert '@media print {\n    a {}\n    }' == self.r.cssText
-        cssutils.ser.prefs.useDefaults()
 
     def test_name(self):
         "CSSMediaRule.name"

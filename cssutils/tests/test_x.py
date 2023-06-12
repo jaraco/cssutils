@@ -8,12 +8,6 @@ import cssutils
 
 
 class XTestCase:
-    def setup(self):
-        cssutils.ser.prefs.useDefaults()
-
-    def teardown(self):
-        cssutils.ser.prefs.useDefaults()
-
     @pytest.mark.xfail(reason="not implemented")
     def test_priority(self):
         "Property.priority"

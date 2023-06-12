@@ -8,14 +8,10 @@ import pytest
 
 class TestCSSPageRule(test_cssrule.TestCSSRule):
     def _setup_rule(self):
-        cssutils.ser.prefs.useDefaults()
         self.r = cssutils.css.CSSPageRule()
         self.rRO = cssutils.css.CSSPageRule(readonly=True)
         self.r_type = cssutils.css.CSSPageRule.PAGE_RULE  #
         self.r_typeString = 'PAGE_RULE'
-
-    def teardown(self):
-        cssutils.ser.prefs.useDefaults()
 
     def test_init(self):
         "CSSPageRule.__init__()"

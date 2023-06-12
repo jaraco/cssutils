@@ -12,9 +12,6 @@ class TestCSSStyleSheet(basetest.BaseTestCase):
         self.s = self.r  # used here
         self.rule = cssutils.css.CSSStyleRule()
 
-    def teardown_method(self):
-        cssutils.ser.prefs.useDefaults()
-
     def test_init(self):
         "CSSStyleSheet.__init__()"
         assert 'text/css' == self.s.type

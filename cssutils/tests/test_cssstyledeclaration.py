@@ -153,8 +153,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
                 exp = '%s' % exp
             assert exp == sh.cssRules[0].style.cssText
 
-        cssutils.ser.prefs.useDefaults()
-
     def test_serialize(self):
         "CSSStyleDeclaration serialize"
         s = cssutils.css.CSSStyleDeclaration()
@@ -170,8 +168,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             assert exp[0] == s.cssText
             cssutils.ser.prefs.keepAllProperties = True
             assert exp[1] == s.cssText
-
-        cssutils.ser.prefs.useDefaults()
 
     def test_children(self):
         "CSSStyleDeclaration.children()"
@@ -418,7 +414,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
 
     def test_removeProperty(self):
         "CSSStyleDeclaration.removeProperty()"
-        cssutils.ser.prefs.useDefaults()
         s = cssutils.css.CSSStyleDeclaration()
         css = r'\x:0 !important; x:1; \x:2; x:3'
 

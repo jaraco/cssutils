@@ -161,7 +161,6 @@ class TestCSSStyleRule(test_cssrule.TestCSSRule):
             }
         )
         self.do_raise_r(tests)  # set cssText
-        cssutils.ser.prefs.useDefaults()
 
     def test_selectorList(self):
         "CSSStyleRule.selectorList"
@@ -222,7 +221,6 @@ class TestCSSStyleRule(test_cssrule.TestCSSRule):
                 ''': '''p {\n    color: green;\n    color: green\n    }''',
         }
         self.do_equal_p(tests, raising=False)  # parse
-        cssutils.ser.prefs.useDefaults()
 
     # TODO:   def test_InvalidModificationErr(self):
     #        "CSSStyleRule.cssText InvalidModificationErr"

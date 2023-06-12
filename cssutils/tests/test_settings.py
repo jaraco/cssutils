@@ -19,5 +19,3 @@ class TestSettings:
             cssutils.parseString(text).cssText
             == b'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'
         )
-
-        cssutils.ser.prefs.useDefaults()
