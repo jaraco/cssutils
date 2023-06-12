@@ -263,9 +263,10 @@ class TestProfiles:
         for color in uicolor.split('|'):
             assert not cssutils.profile.validate('color', color)
 
-            # TODO: Fix
-            # self.assertEqual((True, True, list(CSS2)),
-            #                 cssutils.profile.validateWithProfile('color', color))
+            # TODO: fixme
+            # assert (True, True, list(CSS2)) == cssutils.profile.validateWithProfile(
+            #     'color', color
+            # )
 
     def test_validate(self):
         "Profiles.validate()"
