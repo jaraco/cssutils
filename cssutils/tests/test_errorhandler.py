@@ -20,8 +20,6 @@ def save_log(monkeypatch):
     monkeypatch.setattr(
         cssutils.log, '_log', logging.getLogger('IGNORED-CSSUTILS-TEST')
     )
-    yield
-    cssutils.log.setLevel(logging.FATAL)
 
 
 class TestErrorHandler:
