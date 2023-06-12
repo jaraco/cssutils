@@ -695,17 +695,12 @@ class TestProfiles:
             for value in values:
                 assert valid == cssutils.profile.validate(name, value)
 
+                # assert (
+                #     valid,
+                #     matching,
+                #     list(profile),
+                # ) == cssutils.profile.validateWithProfile(name, value)
 
-# if (valid, matching, list(profile)) !=
-# cssutils.profile.validateWithProfile(name, value):
-#     print
-#     print '###############', name, value
-#     print (valid, matching, list(profile)),
-# cssutils.profile.validateWithProfile(name, value)
-
-# TODO: fix
-#                self.assertEqual((valid, matching, list(profile)),
-#                                 cssutils.profile.validateWithProfile(name, value))
 
 # TODO: fix
 #    def test_validateByProfile(self):
