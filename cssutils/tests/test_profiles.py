@@ -701,26 +701,43 @@ class TestProfiles:
                 #     list(profile),
                 # ) == cssutils.profile.validateWithProfile(name, value)
 
+    def _gen_validation_inputs():
+        yield (
+            (FM3FF, 'font-family', ('y', '"y"')),
+            (  # => name should be "y"!!!
+                True,
+                True,
+                FM3FF,
+            ),
+        )
+        yield ((FM3FF, 'font-family', ('"y", "a"', 'a, b', 'a a')), (True, False, CSS2))
+        yield (
+            (FM3FF, 'font-stretch', ('normal', 'wider', 'narrower', 'inherit')),
+            (
+                True,
+                False,
+                FM3,
+            ),
+        )
+        yield ((FM3FF, 'font-style', ('inherit',)), (True, False, CSS2))
+        yield (
+            (
+                FM3FF,
+                'font-weight',
+                (
+                    'bolder',
+                    'lighter',
+                    'inherit',
+                ),
+            ),
+            (True, False, CSS2),
+        )
 
-# TODO: fix
-#    def test_validateByProfile(self):
-#        "Profiles.validateByProfile()"
-#        # testing for valid values overwritten in a profile
-#        tests = {
-#            (FM3FF, 'font-family', ('y', '"y"' # => name should be "y"!!!
-#                                     )): (True, True, FM3FF),
-#            (FM3FF, 'font-family', ('"y", "a"', 'a, b', 'a a'
-#                                     )): (True, False, CSS2),
-#            (FM3FF, 'font-stretch', ('normal', 'wider', 'narrower', 'inherit'
-#                                     )): (True, False, FM3),
-#            (FM3FF, 'font-style', ('inherit',
-#                                     )): (True, False, CSS2),
-#            (FM3FF, 'font-weight', ('bolder', 'lighter', 'inherit',
-#                                     )): (True, False, CSS2),
-#            }
-#        for (profiles, name, values), (v, m, p) in tests.items():
-#            for value in values:
-#                self.assertEqual((v, m, list(p)),
-#                                 cssutils.profile.validateWithProfile(name,
-#                                                                      value,
-#                                                                      profiles))
+    @pytest.mark.parametrize(('params', 'results'), _gen_validation_inputs())
+    @pytest.mark.xfail(reason="#37")
+    def test_validateWithProfile_fonts(self, params, results):
+        "Profiles.validateWithProfile()"
+        # testing for valid values overwritten in a profile
+        v, m, p = results
+        expected = v, m, list(p)
+        assert cssutils.profile.validateWithProfile(*params) == expected
