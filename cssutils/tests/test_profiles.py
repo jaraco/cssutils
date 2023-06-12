@@ -126,38 +126,110 @@ class TestProfiles:
         p.removeProfile(all=True)
         assert 0 == len(p.profiles)
 
-    # TODO: FIX
-    # def test_validateWithProfile(self):
-    #     "Profiles.validate(), Profiles.validateWithProfile()"
-    #     p = cssutils.profiles.Profiles()
-    #     tests = {
-    #         ('color', 'red', None): (True, True, [p.CSS_LEVEL_2]),
-    #         ('color', 'red', p.CSS_LEVEL_2): (True, True,[p.CSS_LEVEL_2]),
-    #         ('color', 'red', p.CSS3_COLOR): (True, False, [p.CSS_LEVEL_2]),
-    #         ('color', 'rgba(0,0,0,0)', None): (True, True, [p.CSS3_COLOR]),
-    #         ('color', 'rgba(0,0,0,0)', p.CSS_LEVEL_2): (True, False, [p.CSS3_COLOR]),
-    #         ('color', 'rgba(0,0,0,0)', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
-    #         ('color', '1px', None): (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
-    #         ('color', '1px', p.CSS_LEVEL_2):
-    #         (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
-    #         ('color', '1px', p.CSS3_COLOR):
-    #         (False, False, [p.CSS3_COLOR, p.CSS_LEVEL_2]),
-    #         ('color', 'aliceblue', None): (True, True, [p.CSS_LEVEL_2]),
-    #
-    #         ('opacity', '1', None): (True, True, [p.CSS3_COLOR]),
-    #         ('opacity', '1', p.CSS_LEVEL_2): (True, False, [p.CSS3_COLOR]),
-    #         ('opacity', '1', p.CSS3_COLOR): (True, True, [p.CSS3_COLOR]),
-    #         ('opacity', '1px', None): (False, False, [p.CSS3_COLOR]),
-    #         ('opacity', '1px', p.CSS_LEVEL_2): (False, False, [p.CSS3_COLOR]),
-    #         ('opacity', '1px', p.CSS3_COLOR): (False, False, [p.CSS3_COLOR]),
-    #
-    #         ('-x', '1', None): (False, False, []),
-    #         ('-x', '1', p.CSS_LEVEL_2): (False, False, []),
-    #         ('-x', '1', p.CSS3_COLOR): (False, False, []),
-    #     }
-    #     for test, r in tests.items():
-    #         self.assertEqual(p.validate(test[0], test[1]), r[0])
-    #         self.assertEqual(p.validateWithProfile(*test), r)
+    def _gen_validation_inputs():
+        CSS_LEVEL_2 = cssutils.profiles.Profiles.CSS_LEVEL_2
+        CSS3_COLOR = cssutils.profiles.Profiles.CSS3_COLOR
+        yield (
+            ('color', 'red', None),
+            (True, True, [CSS_LEVEL_2]),
+        )
+        yield (
+            ('color', 'red', CSS_LEVEL_2),
+            (True, True, [CSS_LEVEL_2]),
+        )
+        yield (
+            ('color', 'red', CSS3_COLOR),
+            (True, False, [CSS_LEVEL_2]),
+        )
+        yield pytest.param(
+            ('color', 'rgba(0,0,0,0)', None),
+            (True, True, [CSS3_COLOR]),
+            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+        )
+        yield pytest.param(
+            ('color', 'rgba(0,0,0,0)', CSS_LEVEL_2),
+            (True, False, [CSS3_COLOR]),
+            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+        )
+        yield pytest.param(
+            ('color', 'rgba(0,0,0,0)', CSS3_COLOR),
+            (True, True, [CSS3_COLOR]),
+            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+        )
+        yield pytest.param(
+            ('color', '1px', None),
+            (
+                False,
+                False,
+                [CSS3_COLOR, CSS_LEVEL_2],
+            ),
+            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+        )
+        yield pytest.param(
+            ('color', '1px', CSS_LEVEL_2),
+            (
+                False,
+                False,
+                [CSS3_COLOR, CSS_LEVEL_2],
+            ),
+            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+        )
+        yield pytest.param(
+            ('color', '1px', CSS3_COLOR),
+            (
+                False,
+                False,
+                [CSS3_COLOR, CSS_LEVEL_2],
+            ),
+            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+        )
+        yield (
+            ('color', 'aliceblue', None),
+            (True, True, [CSS_LEVEL_2]),
+        )
+        yield (
+            ('opacity', '1', None),
+            (True, True, [CSS3_COLOR]),
+        )
+        yield (
+            ('opacity', '1', CSS_LEVEL_2),
+            (True, False, [CSS3_COLOR]),
+        )
+        yield (
+            ('opacity', '1', CSS3_COLOR),
+            (True, True, [CSS3_COLOR]),
+        )
+        yield (
+            ('opacity', '1px', None),
+            (False, False, [CSS3_COLOR]),
+        )
+        yield (
+            ('opacity', '1px', CSS_LEVEL_2),
+            (False, False, [CSS3_COLOR]),
+        )
+        yield (
+            ('opacity', '1px', CSS3_COLOR),
+            (False, False, [CSS3_COLOR]),
+        )
+        yield (
+            ('-x', '1', None),
+            (False, False, []),
+        )
+        yield (
+            ('-x', '1', CSS_LEVEL_2),
+            (False, False, []),
+        )
+        yield (
+            ('-x', '1', CSS3_COLOR),
+            (False, False, []),
+        )
+
+    @pytest.mark.parametrize(('params', 'results'), _gen_validation_inputs())
+    def test_validateWithProfile(self, params, results):
+        "Profiles.validate(), Profiles.validateWithProfile()"
+        p = cssutils.profiles.Profiles()
+        assert p.validate(*params[:2]) == results[0]
+        assert p.validateWithProfile(*params) == results
 
     def test_propertiesByProfile(self):
         "Profiles.propertiesByProfile"
