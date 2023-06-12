@@ -144,17 +144,17 @@ class TestProfiles:
         yield pytest.param(
             ('color', 'rgba(0,0,0,0)', None),
             (True, True, [CSS3_COLOR]),
-            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+            marks=pytest.mark.xfail(reason="#37"),
         )
         yield pytest.param(
             ('color', 'rgba(0,0,0,0)', CSS_LEVEL_2),
             (True, False, [CSS3_COLOR]),
-            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+            marks=pytest.mark.xfail(reason="#37"),
         )
         yield pytest.param(
             ('color', 'rgba(0,0,0,0)', CSS3_COLOR),
             (True, True, [CSS3_COLOR]),
-            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+            marks=pytest.mark.xfail(reason="#37"),
         )
         yield pytest.param(
             ('color', '1px', None),
@@ -163,7 +163,7 @@ class TestProfiles:
                 False,
                 [CSS3_COLOR, CSS_LEVEL_2],
             ),
-            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+            marks=pytest.mark.xfail(reason="#37"),
         )
         yield pytest.param(
             ('color', '1px', CSS_LEVEL_2),
@@ -172,7 +172,7 @@ class TestProfiles:
                 False,
                 [CSS3_COLOR, CSS_LEVEL_2],
             ),
-            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+            marks=pytest.mark.xfail(reason="#37"),
         )
         yield pytest.param(
             ('color', '1px', CSS3_COLOR),
@@ -181,7 +181,7 @@ class TestProfiles:
                 False,
                 [CSS3_COLOR, CSS_LEVEL_2],
             ),
-            marks=pytest.mark.xfail(reason="legacy failure (TODO fix)"),
+            marks=pytest.mark.xfail(reason="#37"),
         )
         yield (
             ('color', 'aliceblue', None),
