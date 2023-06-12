@@ -68,10 +68,6 @@ class TestCSSParser:
         p = cssutils.CSSParser(parseComments=True)
         assert p.parseString(css).cssText == b'/*1*/\na {\n    color: /*2*/ red\n    }'
 
-    #    def test_parseFile(self):
-    #        "CSSParser.parseFile()"
-    #        # see test_cssutils
-
     def test_parseUrl(self):
         "CSSParser.parseUrl()"
         # parseUrl(self, href, encoding=None, media=None, title=None):

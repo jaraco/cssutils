@@ -9,17 +9,6 @@ class TestPreferences(basetest.BaseTestCase):
     testcases for cssutils.serialize.Preferences
     """
 
-    #    def testkeepUnkownAtRules(self):
-    #        "Preferences.keepUnkownAtRules"
-    #        from warnings import catch_warnings
-    #        with catch_warnings(record=True) as log:
-    #            x = cssutils.ser.prefs.keepUnkownAtRules
-    #
-    #        if log:
-    #            # unpack the only member of log
-    #            warning, = log
-    #            self.assertEqual(warning.category, DeprecationWarning)
-
     def test_resolveVariables(self):
         "Preferences.resolveVariables"
         assert cssutils.ser.prefs.resolveVariables

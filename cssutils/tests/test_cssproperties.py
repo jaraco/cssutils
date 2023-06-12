@@ -6,21 +6,6 @@ import pytest
 
 
 class TestCSSProperties:
-    #    def test_cssvalues(self):
-    #        "cssproperties cssvalues"
-    #        # does actually return match object, so a very simplified test...
-    #        match = cssutils.css.cssproperties.cssvalues
-    #
-    #        self.assertEqual(True, bool(match['color']('red')))
-    #        self.assertEqual(False, bool(match['top']('red')))
-    #
-    #        self.assertEqual(True, bool(match['left']('0')))
-    #        self.assertEqual(True, bool(match['left']('1px')))
-    #        self.assertEqual(True, bool(match['left']('.1px')))
-    #        self.assertEqual(True, bool(match['left']('-1px')))
-    #        self.assertEqual(True, bool(match['left']('-.1px')))
-    #        self.assertEqual(True, bool(match['left']('-0.1px')))
-
     def test_toDOMname(self):
         "cssproperties _toDOMname(CSSname)"
         _toDOMname = cssutils.css.cssproperties._toDOMname

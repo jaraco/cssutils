@@ -62,24 +62,6 @@ class TestProperty(basetest.BaseTestCase):
         assert '0' == p.value
         assert p.wellformed
 
-    #        self.assertEqual(True, p.valid)
-
-    #    def test_valid(self):
-    #        "Property.valid"
-    #        # context property must be set
-    #        tests = [
-    #            ('color', r'INHe\rIT', True),
-    #            ('color', '1', False),
-    #            ('color', 'red', True),
-    #            ('left', '1', False),
-    #            ('left', '1px', True),
-    #            ('font', 'normal 1em/1.5 serif', True),
-    #            ('background', 'url(x.gif) 1 0', False)
-    #            ]
-    #        for n, v, exp in tests:
-    #            v = cssutils.css.CSSValue(cssText=v)
-    #            self.assertTrue(v.wellformed, True)
-
     def test_cssText(self):
         "Property.cssText"
         p = cssutils.css.property.Property()
@@ -185,11 +167,6 @@ class TestProperty(basetest.BaseTestCase):
 
         p.value = 'red'
         assert p.valid is False
-
-    # def test_cssValue(self):
-    #    "Property.cssValue"
-    #    pass
-    #    # DEPRECATED
 
     def test_priority(self):
         "Property.priority"

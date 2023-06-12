@@ -121,9 +121,6 @@ class EchoHandler(DocumentHandler):
         if 'utf-8' != encoding:
             self._out.append('@charset "%s";\n' % encoding)
 
-    #    def comment(self, text, line=None, col=None):
-    #        self._out.append(u'/*%s*/' % text)
-
     def importStyle(self, uri, media, name, line=None, col=None):
         "Receive notification of a import statement in the style sheet."
         # defaultNamespaceURI???

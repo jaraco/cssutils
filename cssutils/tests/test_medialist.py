@@ -140,18 +140,6 @@ class TestMediaList(basetest.BaseTestCase):
         assert 'screen' == ml.item(1)
         assert ml.item(2) is None
 
-    # REMOVED special case!
-    # def test_handheld(self):
-    #    "MediaList handheld"
-    #    ml = cssutils.stylesheets.MediaList()
-
-    #    ml.mediaText = u' handheld , all  '
-    #    self.assertEqual(2, ml.length)
-    #    self.assertEqual(u'handheld, all', ml.mediaText)
-
-    #    with pytest.raises(xml.dom.InvalidModificationErr, match=self.media_msg('handheld')):
-    #        ml._setMediaText(' handheld , all  , tv ')
-
     def test_mediaText(self):
         "MediaList.mediaText 2"
         tests = {
