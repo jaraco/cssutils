@@ -1,3 +1,8 @@
+v2.7.1
+======
+
+#36: Refactored to restore docs builds without warning-errors.
+
 v2.7.0
 ======
 
