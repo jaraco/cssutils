@@ -455,10 +455,6 @@ class TestProfiles:
                     'hsla(-1000,555.5%,-61.5%, 0.5)',
                 ),
             ): (True, True, CM3),
-            # TODO?:
-            # ('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'):
-            # (True, True, CSS2),
-            # content
             (
                 'content',
                 (
