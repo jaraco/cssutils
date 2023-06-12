@@ -6,25 +6,25 @@ import sys
 import xml.dom
 import socket
 
+import pytest
+
 import cssutils
 
 
+@pytest.fixture(autouse=True)
+def save_log(monkeypatch):
+    """
+    Replace default log and ignore its output.
+    """
+    monkeypatch.setattr(cssutils.log, 'raiseExceptions', False)
+    monkeypatch.setattr(
+        cssutils.log, '_log', logging.getLogger('IGNORED-CSSUTILS-TEST')
+    )
+    yield
+    cssutils.log.setLevel(logging.FATAL)
+
+
 class TestErrorHandler:
-    def setup_method(self):
-        "replace default log and ignore its output"
-        self._oldlog = cssutils.log._log
-        self._saved = cssutils.log.raiseExceptions
-
-        cssutils.log.raiseExceptions = False
-        cssutils.log.setLog(logging.getLogger('IGNORED-CSSUTILS-TEST'))
-
-    def teardown_method(self):
-        "reset default log"
-        cssutils.log.setLog(self._oldlog)
-        # for tests only
-        cssutils.log.setLevel(logging.FATAL)
-        cssutils.log.raiseExceptions = self._saved
-
     def _setHandler(self):
         "sets new handler and returns StringIO instance to getvalue"
         s = io.StringIO()
