@@ -465,7 +465,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             ('left', '0', ''): 'left: 0',
             ('left', '0', 'important'): 'left: 0 !important',
             ('LEFT', '0', 'important'): 'left: 0 !important',
-            ('left', '0', 'important'): 'left: 0 !important',
         }
         for test, exp in list(tests.items()):
             s = cssutils.css.CSSStyleDeclaration()

@@ -266,22 +266,6 @@ class _readUrl_TestCase:
                 0,
                 '@charset "latin1";\xc3\xa4',
             ),  # read as latin1!
-            # override ü @charset
-            ('latin1', None, (None, b'@charset "ascii";')): (
-                'latin1',
-                0,
-                '@charset "latin1";',
-            ),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('latin1'))): (
-                'latin1',
-                0,
-                '@charset "latin1";ä',
-            ),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode())): (
-                'latin1',
-                0,
-                '@charset "latin1";\xc3\xa4',
-            ),  # read as latin1!
             # ===== 1. HTTP WINS =====
             (None, 'ascii', ('latin1', b'')): ('latin1', 1, ''),
             (None, 'ascii', ('latin1', b'123')): ('latin1', 1, '123'),

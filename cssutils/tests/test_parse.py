@@ -98,11 +98,6 @@ class TestCSSParser:
                 'utf-8',
                 'a {\n    color: red\n    }',
             ),
-            ('http://cthedot.de/test.css', 'a {color: red}'): (
-                True,
-                'utf-8',
-                'a {\n    color: red\n    }',
-            ),
             ('http://cthedot.de/test.css', '@charset "ascii";a {color: red}'): (
                 True,
                 'ascii',
