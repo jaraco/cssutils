@@ -1,3 +1,18 @@
+v2.8.0
+======
+
+Features
+--------
+
+- Require Python 3.8 or later.
+
+
+Bugfixes
+--------
+
+- Made some unreachable tests reachable.
+
+
 v2.7.1
 ======
 
