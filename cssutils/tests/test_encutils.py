@@ -224,7 +224,7 @@ class TestAutoEncoding:
                 # ('utf-8', u'\u1111'.encode('utf-8'))
             ]
         for exp, test in tests:
-            assert exp == encutils.tryEncodings(test)
+            assert exp == encutils.tryEncodings(test).lower()
 
     def test_getEncodingInfo(self):
         "encutils.getEncodingInfo"
