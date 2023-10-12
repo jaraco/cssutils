@@ -1,1 +1,0 @@
-Made URL fetcher lenient to missing metadata.

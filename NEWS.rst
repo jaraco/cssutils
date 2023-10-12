@@ -1,3 +1,12 @@
+v2.9.0
+======
+
+Features
+--------
+
+- Made URL fetcher lenient to missing metadata.
+
+
 v2.8.0
 ======
 
