@@ -13,7 +13,7 @@ except ImportError:
 log = encutils.buildlog(stream=StringIO())
 
 
-class AutoEncodingTestCase:
+class TestAutoEncoding:
     def _fakeRes(self, content):
         "build a fake HTTP response"
 
