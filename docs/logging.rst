@@ -2,7 +2,7 @@
 
 .. index::
     single: log, cssutils.log
-    object: cssutils.log
+    pair: object; cssutils.log
 
 logging
 =======

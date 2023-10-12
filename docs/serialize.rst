@@ -2,7 +2,7 @@
 
 .. index::
     single: ser, cssutils.ser
-    object: cssutils.ser
+    pair: object; cssutils.ser
 
 ===============
 serializing CSS
@@ -28,7 +28,7 @@ Also most other objects have a similar property which contains the *text* conten
 
 .. index::
     single: cssutils.ser.prefs
-    object: cssutils.ser.prefs
+    pair: object; cssutils.ser.prefs
 
 ``Preferences``
 ===============
