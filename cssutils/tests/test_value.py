@@ -5,8 +5,10 @@ import cssutils
 import types
 import pytest
 
+from . import basetest
 
-class PropertyValueTestCase:
+
+class TestPropertyValue(basetest.BaseTestCase):
     def setup(self):
         self.r = cssutils.css.PropertyValue()
 
@@ -373,7 +375,7 @@ class PropertyValueTestCase:
         assert cssText == s2.cssText
 
 
-class ValueTestCase:
+class TestValue:
     def test_init(self):
         "Value.__init__()"
         v = cssutils.css.Value()
@@ -414,7 +416,7 @@ y"''': (
             assert n == v.value
 
 
-class ColorValueTestCase:
+class TestColorValue(basetest.BaseTestCase):
     def test_init(self):
         "ColorValue.__init__()"
         v = cssutils.css.ColorValue()
@@ -518,7 +520,7 @@ class ColorValueTestCase:
                 assert c.alpha == rgba[3]
 
 
-class URIValueTestCase:
+class TestURIValue(basetest.BaseTestCase):
     def test_init(self):
         "URIValue.__init__()"
         v = cssutils.css.URIValue()
@@ -588,7 +590,7 @@ class URIValueTestCase:
         self.do_raise_r(tests)
 
 
-class DimensionValueTestCase:
+class TestDimensionValue:
     def test_init(self):
         "DimensionValue.__init__()"
         v = cssutils.css.DimensionValue()
@@ -645,7 +647,7 @@ class DimensionValueTestCase:
             assert d == v.dimension
 
 
-class CSSFunctionTestCase:
+class TestCSSFunction:
     def test_init(self):
         "CSSFunction.__init__()"
         v = cssutils.css.CSSFunction()
@@ -673,7 +675,7 @@ class CSSFunctionTestCase:
             assert value == v.value
 
 
-class CSSVariableTestCase:
+class TestCSSVariable:
     def test_init(self):
         "CSSVariable.__init__()"
         v = cssutils.css.CSSVariable()
@@ -773,7 +775,7 @@ class CSSVariableTestCase:
 
 
 @pytest.mark.xfail(reason="not implemented")
-class CSSPrimitiveValueTestCase:
+class TestCSSPrimitiveValue:
     def test_init(self):
         "CSSPrimitiveValue.__init__()"
         v = cssutils.css.CSSPrimitiveValue('1')

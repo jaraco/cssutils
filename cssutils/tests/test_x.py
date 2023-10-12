@@ -7,7 +7,7 @@ import pytest
 import cssutils
 
 
-class XTestCase:
+class TestX:
     @pytest.mark.xfail(reason="not implemented")
     def test_priority(self):
         "Property.priority"

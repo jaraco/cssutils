@@ -7,7 +7,7 @@ import warnings
 import cssutils
 
 
-class DOMImplementationTestCase:
+class TestDOMImplementation:
     def setup(self):
         self.domimpl = cssutils.DOMImplementationCSS()
 

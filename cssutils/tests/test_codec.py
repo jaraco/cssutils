@@ -38,7 +38,7 @@ class Queue:
             return s
 
 
-class CodecTestCase:
+class TestCodec:
     def test_detectencoding_str(self):
         "codec.detectencoding_str()"
         assert codec.detectencoding_str(b'') == (None, False)

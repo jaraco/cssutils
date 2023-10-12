@@ -5,7 +5,7 @@ from . import basetest
 import cssutils
 
 
-class CSSCombine:
+class TestCSSCombine:
     C = '@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}'
 
     def test_combine(self):

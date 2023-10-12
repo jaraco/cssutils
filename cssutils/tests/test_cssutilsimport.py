@@ -3,7 +3,7 @@
 import cssutils
 
 
-class CSSutilsImportTestCase:
+class TestCSSutilsImport:
     def test_import_all(self):
         "from cssutils import *"
         namespace = {}

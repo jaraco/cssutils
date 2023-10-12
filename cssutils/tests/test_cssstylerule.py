@@ -1,4 +1,4 @@
-"""Testcases for cssutils.css.CSSStyleRuleTestCase"""
+"""Test cases for cssutils.css.CSSStyleRule"""
 
 import xml.dom
 from . import test_cssrule

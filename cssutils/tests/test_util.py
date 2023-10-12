@@ -12,7 +12,7 @@ from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
 import pytest
 
 
-class ListSeqTestCase:
+class TestListSeq:
     def test_all(self):
         "util.ListSeq"
         ls = ListSeq()
@@ -44,7 +44,7 @@ class ListSeqTestCase:
             assert 2 == x
 
 
-class BaseTestCase:
+class TestBase:
     def test_normalize(self):
         "Base._normalize()"
         b = Base()
@@ -144,7 +144,7 @@ class BaseTestCase:
             assert exp == res
 
 
-class _readUrl_TestCase:
+class Test_readUrl:
     """needs mock"""
 
     def test_readUrl(self):
