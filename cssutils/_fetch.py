@@ -1,6 +1,7 @@
 """Default URL reading functions"""
 __all__ = ['_defaultFetcher']
 
+import functools
 import urllib.request
 import urllib.error
 
@@ -15,6 +16,14 @@ from . import errorhandler
 log = errorhandler.ErrorHandler()
 
 
+@functools.lru_cache()
+def _get_version():
+    try:
+        return metadata.version('cssutils')
+    except metadata.PackageNotFoundError:
+        return 'unknown'
+
+
 def _defaultFetcher(url):
     """Retrieve data from ``url``. cssutils default implementation of fetch
     URL function.
@@ -23,8 +32,7 @@ def _defaultFetcher(url):
     """
     try:
         request = urllib.request.Request(url)
-        version = metadata.version('cssutils')
-        agent = f'cssutils {version} (https://pypi.org/project/cssutils)'
+        agent = f'cssutils/{_get_version()} (https://pypi.org/project/cssutils)'
         request.add_header('User-agent', agent)
         res = urllib.request.urlopen(request)
     except urllib.error.HTTPError as e:
