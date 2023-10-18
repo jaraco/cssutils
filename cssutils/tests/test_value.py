@@ -9,7 +9,7 @@ from . import basetest
 
 
 class TestPropertyValue(basetest.BaseTestCase):
-    def setup(self):
+    def setup_method(self):
         self.r = cssutils.css.PropertyValue()
 
     def test_init(self):
