@@ -649,7 +649,7 @@ def getEncodingInfo(response=None, text='', log=None, url=None):  # noqa: C901
         and encinfo.http_encoding != encinfo.xml_encoding
     ):
         encinfo.mismatch = True
-        log.warn(
+        log.warning(
             '"%s" (HTTP) != "%s" (XML) encoding mismatch'
             % (encinfo.http_encoding, encinfo.xml_encoding)
         )
