@@ -130,6 +130,10 @@ class TestCSSParser:
 
         with pytest.raises(ValueError):
             parser.parseUrl('../not-valid-in-urllib')
+
+    @pytest.mark.network
+    def test_parseUrl_404(self):
+        parser = cssutils.CSSParser()
         with pytest.raises(urllib.error.HTTPError):
             parser.parseUrl(
                 'http://cthedot.de/not-present.css',

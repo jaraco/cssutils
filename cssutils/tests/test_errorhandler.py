@@ -4,7 +4,6 @@ import logging
 import io
 import sys
 import xml.dom
-import socket
 
 import pytest
 
@@ -89,6 +88,7 @@ class TestErrorHandler:
 
         cssutils.log.raiseExceptions = o
 
+    @pytest.mark.network
     def test_handlers(self):
         "cssutils.log"
         s = self._setHandler()
@@ -112,12 +112,6 @@ class TestErrorHandler:
         )
 
         s = self._setHandler()
-
-        try:
-            socket.getaddrinfo('example.com', 80)
-        except OSError:
-            # skip the test as the name can't resolve
-            return
 
         cssutils.log.setLevel(logging.ERROR)
         cssutils.parseUrl('http://example.com')
