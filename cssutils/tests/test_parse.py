@@ -3,9 +3,7 @@
 
 import xml.dom
 import cssutils
-import urllib.request
 import urllib.error
-import urllib.parse
 from unittest import mock
 import pytest
 
