@@ -501,7 +501,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         else:
             return None
 
-    def getPropertyValue(self, name, normalize=True):
+    def getPropertyValue(self, name, normalize=True, default=''):
         r"""
         :param name:
             of the CSS property, always lowercase (even if not normalized)
@@ -511,16 +511,18 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
             If ``False`` may return **NOT** the effective value but the
             effective for the unnormalized name.
+        :param default:
+            value to be returned if the property has not been set.
         :returns:
             the value of the effective property if it has been explicitly set
-            for this declaration block. Returns the empty string if the
+            for this declaration block. Returns `default` if the
             property has not been set.
         """
         p = self.getProperty(name, normalize)
         if p:
             return p.value
         else:
-            return ''
+            return default
 
     def getPropertyPriority(self, name, normalize=True):
         r"""
