@@ -127,5 +127,5 @@ class CSSProductions:
     pass
 
 
-for i, t in enumerate(PRODUCTIONS):
+for t in PRODUCTIONS:
     setattr(CSSProductions, t[0].replace('-', '_'), t[0])

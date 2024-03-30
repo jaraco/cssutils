@@ -327,7 +327,7 @@ class Prod:
         else:
             self.toSeq = lambda t, tokens: (t[0], t[1])
 
-        if hasattr(toStore, '__call__'):
+        if callable(toStore):
             self.toStore = toStore
         elif toStore:
             self.toStore = makeToStore(toStore)

@@ -129,7 +129,7 @@ if 1:
 font-family : a  b;
 }
 '''
-    cssutils.parseString(s).cssText
+    cssutils.parseString(s).cssText  # noqa: B018
     sys.exit(1)
 
     import cssutils

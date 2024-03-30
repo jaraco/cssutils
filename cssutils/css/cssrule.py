@@ -173,7 +173,7 @@ class CSSRuleRules(CSSRule):
         "Set new cssRules and update contained rules refs."
         cssRules.append = self.insertRule
         cssRules.extend = self.insertRule
-        cssRules.__delitem__ == self.deleteRule
+        cssRules.__delitem__ = self.deleteRule
 
         for rule in cssRules:
             rule._parentRule = self
@@ -224,12 +224,12 @@ class CSSRuleRules(CSSRule):
             self._cssRules[index]._parentRule = None
             del self._cssRules[index]
 
-        except IndexError:
+        except IndexError as err:
             raise xml.dom.IndexSizeErr(
                 '%s: %s is not a valid index '
                 'in the rulelist of length %i'
                 % (self.__class__.__name__, index, self._cssRules.length)
-            )
+            ) from err
 
     def _prepareInsertRule(self, rule, index=None):
         "return checked `index` and optional parsed `rule`"

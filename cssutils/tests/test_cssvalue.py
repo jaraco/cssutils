@@ -67,7 +67,7 @@ class TestCSSValue(basetest.BaseTestCase):
         assert v.CSS_VALUE_LIST == v.cssValueType
         assert 'normal 1px a, b, "c" end' == v.cssText
 
-        for i, x in enumerate(v):
+        for x in v:
             assert x.CSS_PRIMITIVE_VALUE == x.cssValueType
             if x == 0:
                 assert x.CSS_IDENT == x.primitiveType

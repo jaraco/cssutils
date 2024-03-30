@@ -81,7 +81,7 @@ class TestCSSStyleSheet(basetest.BaseTestCase):
         ).cssRules
         # new object
         assert rules != s.cssRules
-        for i, r in enumerate(s.cssRules):
+        for r in s.cssRules:
             assert r.parentStyleSheet == s
 
         # namespaces

@@ -95,12 +95,12 @@ class TestCSSRule(basetest.BaseTestCase):
         test(s)
         # sheet.add CSS
         s = cssutils.css.CSSStyleSheet()
-        for css, type_ in rules:
+        for css, _ in rules:
             s.add(css)
         test(s)
         # sheet.insertRule CSS
         s = cssutils.css.CSSStyleSheet()
-        for css, type_ in rules:
+        for css, _ in rules:
             s.insertRule(css)
         test(s)
 
@@ -117,14 +117,14 @@ class TestCSSRule(basetest.BaseTestCase):
         ]
         # sheet.add CSSRule
         s = cssutils.css.CSSStyleSheet()
-        for i, (css, type_) in enumerate(rules):
+        for i, (css, _) in enumerate(rules):
             rule = types[i]()
             rule.cssText = css
             s.add(rule)
         test(s)
         # sheet.insertRule CSSRule
         s = cssutils.css.CSSStyleSheet()
-        for i, (css, type_) in enumerate(rules):
+        for i, (css, _) in enumerate(rules):
             rule = types[i]()
             rule.cssText = css
             s.insertRule(rule)
@@ -162,12 +162,12 @@ class TestCSSRule(basetest.BaseTestCase):
 
         # sheet.add CSS
         s, mr = getMediaSheet()
-        for css, type_ in rules:
+        for css, _ in rules:
             mr.add(css)
         test(s)
         # sheet.insertRule CSS
         s, mr = getMediaSheet()
-        for css, type_ in rules:
+        for css, _ in rules:
             mr.insertRule(css)
         test(s)
 
@@ -178,14 +178,14 @@ class TestCSSRule(basetest.BaseTestCase):
         ]
         # sheet.add CSSRule
         s, mr = getMediaSheet()
-        for i, (css, type_) in enumerate(rules):
+        for i, (css, _) in enumerate(rules):
             rule = types[i]()
             rule.cssText = css
             mr.add(rule)
         test(s)
         # sheet.insertRule CSSRule
         s, mr = getMediaSheet()
-        for i, (css, type_) in enumerate(rules):
+        for i, (css, _) in enumerate(rules):
             rule = types[i]()
             rule.cssText = css
             mr.insertRule(rule)

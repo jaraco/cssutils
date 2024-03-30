@@ -559,9 +559,7 @@ class CSSPrimitiveValue(CSSValue):
         super().__init__(cssText=cssText, parent=parent, readonly=readonly)
 
     def __str__(self):
-        return (
-            f"<cssutils.css.{self.__class__.__name__} object primitiveType={self.primitiveTypeString} cssText={self.cssText!r} at 0x{id(self):x}>"
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object primitiveType={self.primitiveTypeString} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     _unitnames = [
         'CSS_UNKNOWN',
@@ -695,10 +693,10 @@ class CSSPrimitiveValue(CSSValue):
             val = float(val)
             if val == int(val):
                 val = int(val)
-        except ValueError:
+        except ValueError as err:
             raise xml.dom.InvalidAccessErr(
                 'CSSPrimitiveValue: No float value %r' % self._value[0]
-            )
+            ) from err
 
         return val, dim
 
@@ -730,14 +728,14 @@ class CSSPrimitiveValue(CSSValue):
             # convert if needed
             try:
                 val = self._converter[self.primitiveType, unitType](val)
-            except KeyError:
+            except KeyError as err:
                 raise xml.dom.InvalidAccessErr(
                     'CSSPrimitiveValue: Cannot coerce primitiveType %r to %r'
                     % (
                         self.primitiveTypeString,
                         self._getCSSPrimitiveTypeString(unitType),
                     )
-                )
+                ) from err
 
         if val == int(val):
             val = int(val)
@@ -774,24 +772,24 @@ class CSSPrimitiveValue(CSSValue):
             )
         try:
             val = float(floatValue)
-        except ValueError:
+        except ValueError as err:
             raise xml.dom.InvalidAccessErr(
                 'CSSPrimitiveValue: floatValue %r is not a float' % floatValue
-            )
+            ) from err
 
         oldval, dim = self._getNumDim()
         if self.primitiveType != unitType:
             # convert if possible
             try:
                 val = self._converter[unitType, self.primitiveType](val)
-            except KeyError:
+            except KeyError as err:
                 raise xml.dom.InvalidAccessErr(
                     'CSSPrimitiveValue: Cannot coerce primitiveType %r to %r'
                     % (
                         self.primitiveTypeString,
                         self._getCSSPrimitiveTypeString(unitType),
                     )
-                )
+                ) from err
 
         if val == int(val):
             val = int(val)

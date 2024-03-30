@@ -136,7 +136,7 @@ class DOMImplementationCSS:
             "https://web.archive.org/web/20200701035537/"
             "https://bitbucket.org/cthedot/cssutils/issues/69#comment-30669799"
         )
-        warnings.warn(warning, DeprecationWarning)
+        warnings.warn(warning, DeprecationWarning, stacklevel=2)
         return css.CSSStyleSheet(title=title, media=media)
 
     def createDocument(self, *args, **kwargs):

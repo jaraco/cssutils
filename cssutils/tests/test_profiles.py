@@ -688,7 +688,7 @@ class TestProfiles:
             ),
         }
         # TODO!!!
-        for (name, values), (valid, matching, profile) in list(tests.items()):
+        for (name, values), (valid, _matching, _profile) in list(tests.items()):
             for value in values:
                 assert valid == cssutils.profile.validate(name, value)
 

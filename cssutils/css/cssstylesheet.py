@@ -524,11 +524,11 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
         try:
             rule = self._cssRules[index]
-        except IndexError:
+        except IndexError as err:
             raise xml.dom.IndexSizeErr(
                 'CSSStyleSheet: %s is not a valid index in the rulelist of '
                 'length %i' % (index, self._cssRules.length)
-            )
+            ) from err
         else:
             if rule.type == rule.NAMESPACE_RULE:
                 # check all namespacerules if used

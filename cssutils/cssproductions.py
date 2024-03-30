@@ -111,7 +111,7 @@ class CSSProductions:
     VARIABLES_SYM = 'VARIABLES_SYM'
 
 
-for i, t in enumerate(PRODUCTIONS):
+for t in PRODUCTIONS:
     setattr(CSSProductions, t[0].replace('-', '_'), t[0])
 
 

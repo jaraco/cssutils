@@ -707,7 +707,7 @@ class TestCSSVariable:
             ),
             'var(C, #f00 )': ('var(C, #f00)', 'C', '#fff'),
         }
-        for var, (cssText, name, fallback) in list(tests.items()):
+        for var, (cssText, name, _fallback) in list(tests.items()):
             v = cssutils.css.CSSVariable(var)
             assert cssText == v.cssText
             assert 'VARIABLE' == v.type

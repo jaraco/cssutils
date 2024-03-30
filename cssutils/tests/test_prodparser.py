@@ -243,7 +243,7 @@ class TestSequence:
         }
         for seqitems, results in list(tests.items()):
             for result in results:
-                seq = Sequence(minmax=lambda: (1, 2), *seqitems)
+                seq = Sequence(*seqitems, minmax=lambda: (1, 2))
                 for t, p in result:
                     if isinstance(p, str):
                         with pytest.raises(ParseError, match=re.escape(p)):
