@@ -46,9 +46,8 @@ jobs:
           platform: ubuntu-latest
         - python: "3.11"
           platform: ubuntu-latest
-        # disabled (https://github.com/jaraco/cssutils/issues/39)
-        # - python: pypy3.10
-        #   platform: ubuntu-latest
+        - python: pypy3.10
+          platform: ubuntu-latest
     runs-on: ${{ matrix.platform }}
     continue-on-error: ${{ matrix.python == '3.13' }}
     steps:
