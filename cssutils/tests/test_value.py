@@ -8,10 +8,13 @@ import pytest
 from . import basetest
 
 
-class TestPropertyValue(basetest.BaseTestCase):
-    def setup_method(self):
-        self.r = cssutils.css.PropertyValue()
+@pytest.fixture
+def set_r_property_value(request):
+    request.instance.r = cssutils.css.PropertyValue()
 
+
+@pytest.mark.usefixtures('set_r_property_value')
+class TestPropertyValue(basetest.BaseTestCase):
     def test_init(self):
         "PropertyValue.__init__() .item() .length"
         pv = cssutils.css.PropertyValue()
