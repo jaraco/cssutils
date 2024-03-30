@@ -16,12 +16,13 @@ __all__ = [
     'MSValue',
 ]
 
-from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
-import cssutils
-from cssutils.helper import normalize, pushtoken
 import colorsys
 import re
 import urllib.parse
+
+import cssutils
+from cssutils.helper import normalize, pushtoken
+from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 
 
 class PropertyValue(cssutils.util._NewBase):

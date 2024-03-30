@@ -1,9 +1,11 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 
-import xml.dom
-import cssutils
 import types
+import xml.dom
+
 import pytest
+
+import cssutils
 
 from . import basetest
 

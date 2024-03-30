@@ -1,7 +1,8 @@
 """Testcases for cssutils.css.CSSRuleList"""
 
-import cssutils
 import pytest
+
+import cssutils
 
 
 class TestCSSRuleList:

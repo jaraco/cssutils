@@ -1,6 +1,7 @@
 """Base class for all tests"""
 
 import sys
+
 import pytest
 
 if sys.version_info >= (3, 9):

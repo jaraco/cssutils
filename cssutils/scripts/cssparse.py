@@ -1,9 +1,10 @@
 """utility script to parse given filenames or string"""
 
-import cssutils
 import logging
 import optparse
 import sys
+
+import cssutils
 
 
 def main(args=None):

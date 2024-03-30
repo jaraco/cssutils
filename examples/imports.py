@@ -1,5 +1,6 @@
-import cssutils
 import os.path
+
+import cssutils
 
 EXPOUT = '''@charset "iso-8859-1";
 @import "1inherit-iso.css";

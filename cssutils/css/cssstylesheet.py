@@ -10,12 +10,14 @@ TODO:
 
 __all__ = ['CSSStyleSheet']
 
+import xml.dom
+
+import cssutils.stylesheets
 from cssutils.helper import Deprecated
 from cssutils.util import _Namespaces, _readUrl
+
 from .cssrule import CSSRule
 from .cssvariablesdeclaration import CSSVariablesDeclaration
-import cssutils.stylesheets
-import xml.dom
 
 
 class CSSStyleSheet(cssutils.stylesheets.StyleSheet):

@@ -1,10 +1,12 @@
 """Tests for parsing which does not raise Exceptions normally"""
 
-import xml.dom
-import cssutils
 import urllib.error
+import xml.dom
 from unittest import mock
+
 import pytest
+
+import cssutils
 
 
 class TestCSSParser:

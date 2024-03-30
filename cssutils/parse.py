@@ -2,12 +2,13 @@
 
 __all__ = ['CSSParser']
 
-from .helper import path2url
 import codecs
-import cssutils
-from . import tokenize2
 
+import cssutils
 from cssutils import css
+
+from . import tokenize2
+from .helper import path2url
 
 
 class CSSParser:

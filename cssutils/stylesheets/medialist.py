@@ -7,11 +7,13 @@ TODO:
 
 __all__ = ['MediaList']
 
-from cssutils.prodparser import PreDef, Prod, ProdParser, Sequence
-from cssutils.helper import normalize, pushtoken
-from .mediaquery import MediaQuery
-import cssutils
 import xml.dom
+
+import cssutils
+from cssutils.helper import normalize, pushtoken
+from cssutils.prodparser import PreDef, Prod, ProdParser, Sequence
+
+from .mediaquery import MediaQuery
 
 
 # class MediaList(cssutils.util.Base, cssutils.util.ListSeq):

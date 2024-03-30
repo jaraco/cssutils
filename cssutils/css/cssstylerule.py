@@ -2,11 +2,13 @@
 
 __all__ = ['CSSStyleRule']
 
+import xml.dom
+
+import cssutils
+
+from . import cssrule
 from .cssstyledeclaration import CSSStyleDeclaration
 from .selectorlist import SelectorList
-from . import cssrule
-import cssutils
-import xml.dom
 
 
 class CSSStyleRule(cssrule.CSSRule):

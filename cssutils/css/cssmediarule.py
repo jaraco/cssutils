@@ -2,9 +2,11 @@
 
 __all__ = ['CSSMediaRule']
 
-from . import cssrule
-import cssutils
 import xml.dom
+
+import cssutils
+
+from . import cssrule
 
 
 class CSSMediaRule(cssrule.CSSRuleRules):

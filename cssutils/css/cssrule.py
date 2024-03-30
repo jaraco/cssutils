@@ -2,8 +2,9 @@
 
 __all__ = ['CSSRule']
 
-import cssutils.util
 import xml.dom
+
+import cssutils.util
 
 
 class CSSRule(cssutils.util.Base2):

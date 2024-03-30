@@ -1,18 +1,20 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
 
-import sys
 import re
+import sys
 import xml.dom
-from cssutils.prodparser import (
-    Prod,
-    Sequence,
-    Choice,
-    PreDef,
-    ParseError,
-    Exhausted,
-    ProdParser,
-)
+
 import pytest
+
+from cssutils.prodparser import (
+    Choice,
+    Exhausted,
+    ParseError,
+    PreDef,
+    Prod,
+    ProdParser,
+    Sequence,
+)
 
 
 class TestProd:

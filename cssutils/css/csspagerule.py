@@ -2,12 +2,14 @@
 
 __all__ = ['CSSPageRule']
 
+import xml.dom
 from itertools import chain
+
+import cssutils
+
+from . import cssrule
 from .cssstyledeclaration import CSSStyleDeclaration
 from .marginrule import MarginRule
-from . import cssrule
-import cssutils
-import xml.dom
 
 
 class CSSPageRule(cssrule.CSSRuleRules):

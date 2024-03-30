@@ -53,9 +53,10 @@ or without option -m::
 
 __all__ = ['csscombine']
 
-from cssutils.script import csscombine
 import optparse
 import sys
+
+from cssutils.script import csscombine
 
 
 def main(args=None):

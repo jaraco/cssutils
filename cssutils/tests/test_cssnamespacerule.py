@@ -1,9 +1,12 @@
 """Testcases for cssutils.css.CSSImportRule"""
 
 import xml.dom
-from . import test_cssrule
-import cssutils
+
 import pytest
+
+import cssutils
+
+from . import test_cssrule
 
 
 class TestCSSNamespaceRule(test_cssrule.TestCSSRule):

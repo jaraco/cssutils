@@ -1,9 +1,12 @@
 """Testcases for cssutils.stylesheets.MediaQuery"""
 
 import xml.dom
-from . import basetest
-import cssutils.stylesheets
+
 import pytest
+
+import cssutils.stylesheets
+
+from . import basetest
 
 
 class TestMediaQuery(basetest.BaseTestCase):

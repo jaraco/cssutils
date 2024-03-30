@@ -6,6 +6,7 @@ import xml.dom
 import pytest
 
 import cssutils
+
 from . import test_cssrule
 
 

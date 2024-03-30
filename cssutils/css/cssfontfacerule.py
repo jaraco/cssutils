@@ -6,10 +6,12 @@ added http://www.w3.org/TR/css3-fonts/.
 
 __all__ = ['CSSFontFaceRule']
 
-from .cssstyledeclaration import CSSStyleDeclaration
-from . import cssrule
-import cssutils
 import xml.dom
+
+import cssutils
+
+from . import cssrule
+from .cssstyledeclaration import CSSStyleDeclaration
 
 
 class CSSFontFaceRule(cssrule.CSSRule):

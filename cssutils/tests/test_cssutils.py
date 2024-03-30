@@ -1,14 +1,16 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
 
-from . import basetest
 import codecs
-import cssutils
 import os
 import sys
 import tempfile
 from unittest import mock
 
 import pytest
+
+import cssutils
+
+from . import basetest
 
 
 @pytest.fixture

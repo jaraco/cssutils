@@ -2,9 +2,11 @@
 
 __all__ = ['CSSUnknownRule']
 
-from . import cssrule
-import cssutils
 import xml.dom
+
+import cssutils
+
+from . import cssrule
 
 
 class CSSUnknownRule(cssrule.CSSRule):

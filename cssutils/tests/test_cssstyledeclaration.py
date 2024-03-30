@@ -1,9 +1,12 @@
 """Testcases for cssutils.css.cssstyledelaration.CSSStyleDeclaration."""
 
 import xml.dom
-from . import basetest
-import cssutils
+
 import pytest
+
+import cssutils
+
+from . import basetest
 
 
 class TestCSSStyleDeclaration(basetest.BaseTestCase):

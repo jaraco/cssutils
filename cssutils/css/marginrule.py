@@ -2,11 +2,13 @@
 
 __all__ = ['MarginRule']
 
-from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
-from .cssstyledeclaration import CSSStyleDeclaration
-from . import cssrule
-import cssutils
 import xml.dom
+
+import cssutils
+from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
+
+from . import cssrule
+from .cssstyledeclaration import CSSStyleDeclaration
 
 
 class MarginRule(cssrule.CSSRule):

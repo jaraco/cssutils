@@ -6,7 +6,7 @@ import itertools
 import re
 import sys
 
-from .cssproductions import CSSProductions, MACROS, PRODUCTIONS
+from .cssproductions import MACROS, PRODUCTIONS, CSSProductions
 from .helper import normalize
 
 _TOKENIZER_CACHE = {}

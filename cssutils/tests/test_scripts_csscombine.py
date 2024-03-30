@@ -1,8 +1,9 @@
 """Testcases for cssutils.scripts.csscombine"""
 
-from cssutils.script import csscombine
-from . import basetest
 import cssutils
+from cssutils.script import csscombine
+
+from . import basetest
 
 
 class TestCSSCombine:

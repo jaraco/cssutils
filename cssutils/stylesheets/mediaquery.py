@@ -6,10 +6,11 @@ A cssutils implementation, not defined in official DOM.
 
 __all__ = ['MediaQuery']
 
-from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
-from cssutils.helper import normalize
-import cssutils
 import xml.dom
+
+import cssutils
+from cssutils.helper import normalize
+from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 
 
 class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):

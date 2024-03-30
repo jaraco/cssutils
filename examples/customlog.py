@@ -1,8 +1,7 @@
-import logging
 import io
+import logging
 
 import cssutils
-
 
 EXPOUT = ""
 EXPERR = """Property: Unknown Property name. [1:5: x]

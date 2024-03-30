@@ -9,10 +9,11 @@ TODO:
 
 __all__ = ['CSSCapture']
 
-from cssutils.script import CSSCapture
 import logging
 import optparse
 import sys
+
+from cssutils.script import CSSCapture
 
 
 def main(args=None):

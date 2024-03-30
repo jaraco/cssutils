@@ -1,8 +1,10 @@
 """Testcases for cssutils.css.CSSComment"""
 
 import xml
-from . import test_cssrule
+
 import cssutils.css
+
+from . import test_cssrule
 
 
 class TestCSSComment(test_cssrule.TestCSSRule):

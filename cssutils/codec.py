@@ -1,8 +1,8 @@
 """Python codec for CSS."""
 
 import codecs
-import marshal
 import functools
+import marshal
 
 # We're using bits to store all possible candidate encodings (or variants, i.e.
 # we have two bits for the variants of UTF-16 and two for the

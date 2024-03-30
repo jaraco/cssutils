@@ -8,12 +8,13 @@
 
 __all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor', 'CSSVariable']
 
-from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
-import cssutils
-import cssutils.helper
 import math
 import re
 import xml.dom
+
+import cssutils
+import cssutils.helper
+from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 
 
 class CSSValue(cssutils.util._NewBase):

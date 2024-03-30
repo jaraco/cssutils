@@ -5,8 +5,9 @@ import xml.dom
 
 import pytest
 
-from . import basetest
 import cssutils.stylesheets
+
+from . import basetest
 
 
 class TestMediaList(basetest.BaseTestCase):

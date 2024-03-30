@@ -2,9 +2,10 @@
 
 __all__ = ['Property']
 
-from cssutils.helper import Deprecated
-from .value import PropertyValue
 import cssutils
+from cssutils.helper import Deprecated
+
+from .value import PropertyValue
 
 
 class Property(cssutils.util.Base):

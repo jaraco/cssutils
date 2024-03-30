@@ -4,10 +4,12 @@
 
 __all__ = ['CSSVariablesRule']
 
-from .cssvariablesdeclaration import CSSVariablesDeclaration
-from . import cssrule
-import cssutils
 import xml.dom
+
+import cssutils
+
+from . import cssrule
+from .cssvariablesdeclaration import CSSVariablesDeclaration
 
 
 class CSSVariablesRule(cssrule.CSSRule):

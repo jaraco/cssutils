@@ -3,8 +3,8 @@
 __all__ = ['_defaultFetcher']
 
 import functools
-import urllib.request
 import urllib.error
+import urllib.request
 
 try:
     from importlib import metadata
@@ -12,6 +12,7 @@ except ImportError:
     import importlib_metadata as metadata
 
 import encutils
+
 from . import errorhandler
 
 log = errorhandler.ErrorHandler()

@@ -8,10 +8,11 @@ TODO
 
 __all__ = ['Selector']
 
+import xml.dom
+
+import cssutils
 from cssutils.helper import Deprecated
 from cssutils.util import _SimpleNamespaces
-import cssutils
-import xml.dom
 
 
 class Selector(cssutils.util.Base2):

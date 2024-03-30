@@ -1,6 +1,7 @@
 """Testcases for cssutils.css.property._Property."""
 
 import copy
+
 import cssutils
 from cssutils.css.property import Property
 

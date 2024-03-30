@@ -1,5 +1,6 @@
-import cssutils
 import logging
+
+import cssutils
 
 cssutils.log.setLevel(logging.FATAL)
 

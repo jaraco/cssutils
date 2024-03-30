@@ -1,7 +1,7 @@
 """Tests for parsing which does not raise Exceptions normally"""
 
-import logging
 import io
+import logging
 import sys
 import xml.dom
 

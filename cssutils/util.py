@@ -2,15 +2,15 @@
 
 __all__ = []
 
-from .helper import normalize
-from itertools import chain
-import cssutils
-from . import codec
 import codecs
-from . import errorhandler
-from . import tokenize2
-import xml.dom
 import re
+import xml.dom
+from itertools import chain
+
+import cssutils
+
+from . import codec, errorhandler, tokenize2
+from .helper import normalize
 
 try:
     from ._fetchgae import _defaultFetcher

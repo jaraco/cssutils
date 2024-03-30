@@ -1,10 +1,13 @@
 """Testcases for cssutils.css.selectorlist.SelectorList."""
 
 import xml.dom
-from . import basetest
+
+import pytest
+
 import cssutils
 from cssutils.css.selectorlist import SelectorList
-import pytest
+
+from . import basetest
 
 
 class TestSelectorList(basetest.BaseTestCase):

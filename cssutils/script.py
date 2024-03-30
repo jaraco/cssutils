@@ -2,19 +2,18 @@
 
 __all__ = ['CSSCapture', 'csscombine']
 
-import html.parser
 import codecs
-import cssutils
 import errno
+import html.parser
 import logging
 import os
 import sys
-import urllib.request
 import urllib.error
 import urllib.parse
+import urllib.request
 
+import cssutils
 import encutils
-
 
 # types of sheets in HTML
 LINK = (

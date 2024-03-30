@@ -1,11 +1,11 @@
 """cssutils helper TEST"""
 
+import itertools
 import os
 import re
-import itertools
-import urllib.request
 import urllib.error
 import urllib.parse
+import urllib.request
 
 
 class Deprecated:

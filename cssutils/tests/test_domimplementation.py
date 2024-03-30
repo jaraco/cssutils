@@ -1,8 +1,8 @@
 """Testcases for cssutils.css.DOMImplementation"""
 
+import warnings
 import xml.dom
 import xml.dom.minidom
-import warnings
 
 import pytest
 

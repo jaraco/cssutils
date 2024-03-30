@@ -9,9 +9,9 @@ A module to test must have:
 
 __all__ = ['TestUtil']
 
+import io
 import logging
 import os
-import io
 import sys
 
 import cssutils

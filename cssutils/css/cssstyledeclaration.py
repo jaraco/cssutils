@@ -52,9 +52,10 @@ TODO:
 
 __all__ = ['CSSStyleDeclaration', 'Property']
 
+import cssutils
+
 from .cssproperties import CSS2Properties
 from .property import Property
-import cssutils
 
 
 class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):

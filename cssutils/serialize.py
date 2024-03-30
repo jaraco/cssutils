@@ -2,9 +2,11 @@
 
 __all__ = ['CSSSerializer', 'Preferences']
 
-from cssutils.helper import normalize
 import codecs
+
 import cssutils
+from cssutils.helper import normalize
+
 from . import helper
 
 

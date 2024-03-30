@@ -8,9 +8,10 @@ adds css as text to html
 """
 
 import codecs
-import cssutils
 import sys
 import webbrowser
+
+import cssutils
 
 try:
     from lxml import etree

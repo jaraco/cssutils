@@ -1,14 +1,15 @@
 """Testcases for cssutils.util"""
 
-from email.message import Message
 import re
-import urllib.request
 import urllib.error
 import urllib.parse
+import urllib.request
+from email.message import Message
 from unittest import mock
 
-from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
 import pytest
+
+from cssutils.util import Base, LazyRegex, ListSeq, _defaultFetcher, _readUrl
 
 
 class TestListSeq:

@@ -51,14 +51,14 @@ __all__ = [
     'EncodingInfo',
 ]
 
-from email.message import Message
 import html.parser
 import io
 import re
 import sys
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+from email.message import Message
 
 
 class _MetaHTMLParser(html.parser.HTMLParser):

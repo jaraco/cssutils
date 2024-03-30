@@ -6,8 +6,9 @@ import xml.dom
 import pytest
 from jaraco.test import property_error
 
-from . import basetest
 import cssutils
+
+from . import basetest
 
 
 class TestProperty(basetest.BaseTestCase):

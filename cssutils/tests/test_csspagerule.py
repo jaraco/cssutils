@@ -1,9 +1,12 @@
 """Testcases for cssutils.css.CSSPageRule"""
 
 import xml.dom
-from . import test_cssrule
-import cssutils
+
 import pytest
+
+import cssutils
+
+from . import test_cssrule
 
 
 class TestCSSPageRule(test_cssrule.TestCSSRule):

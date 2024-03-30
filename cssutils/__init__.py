@@ -69,20 +69,17 @@ Example::
 
 """
 
-import os.path
-import urllib.request
-import urllib.parse
-import xml.dom
-import itertools
 import functools
+import itertools
+import os.path
+import urllib.parse
+import urllib.request
+import xml.dom
 
-from . import errorhandler
-from . import css
-from . import stylesheets
+from . import css, errorhandler, stylesheets
 from .parse import CSSParser
-from .serialize import CSSSerializer
 from .profiles import Profiles
-
+from .serialize import CSSSerializer
 
 __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 

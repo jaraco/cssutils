@@ -16,12 +16,14 @@ TODO:
 
 __all__ = ['ProdParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
 
-from .helper import pushtoken
-import cssutils
 import itertools
 import re
 import sys
 import types
+
+import cssutils
+
+from .helper import pushtoken
 
 
 class ParseError(Exception):

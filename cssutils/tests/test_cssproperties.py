@@ -1,8 +1,9 @@
 """Testcases for cssutils.css.cssproperties."""
 
+import pytest
+
 import cssutils.css
 import cssutils.profiles
-import pytest
 
 
 class TestCSSProperties:

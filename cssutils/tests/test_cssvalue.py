@@ -1,11 +1,12 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 
 import xml.dom
-from . import basetest
-import cssutils
 
 import pytest
 
+import cssutils
+
+from . import basetest
 
 pytestmark = pytest.mark.xfail(reason="incomplete")
 

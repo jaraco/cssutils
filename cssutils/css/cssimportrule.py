@@ -3,11 +3,13 @@
 
 __all__ = ['CSSImportRule']
 
-from . import cssrule
-import cssutils
 import os
 import urllib.parse
 import xml.dom
+
+import cssutils
+
+from . import cssrule
 
 
 class CSSImportRule(cssrule.CSSRule):

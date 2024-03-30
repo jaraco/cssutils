@@ -3,9 +3,7 @@
 import codecs
 import sys
 
-from . import helper
-from . import errorhandler
-from . import tokenize2
+from . import errorhandler, helper, tokenize2
 
 
 class ErrorHandler:

@@ -3,9 +3,11 @@
 __all__ = ['CSSCharsetRule']
 
 import codecs
-from . import cssrule
-import cssutils
 import xml.dom
+
+import cssutils
+
+from . import cssrule
 
 
 class CSSCharsetRule(cssrule.CSSRule):

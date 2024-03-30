@@ -18,8 +18,9 @@ TODO
 
 __all__ = ['SelectorList']
 
-from .selector import Selector
 import cssutils
+
+from .selector import Selector
 
 
 class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):

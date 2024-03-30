@@ -1,9 +1,12 @@
 """Testcases for cssutils.css.CSSRule"""
 
 import xml.dom
-from . import basetest
-import cssutils.css
+
 import pytest
+
+import cssutils.css
+
+from . import basetest
 
 
 class TestCSSRule(basetest.BaseTestCase):

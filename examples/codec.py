@@ -3,7 +3,6 @@ import pathlib
 
 import cssutils
 
-
 __here__ = pathlib.Path(__file__).parent
 
 

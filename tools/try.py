@@ -1,13 +1,14 @@
-import cssutils
 import logging
 import os
 import sys
 import timeit
-import urllib.request
 import urllib.error
 import urllib.parse
+import urllib.request
 import xml
 import xml.dom
+
+import cssutils
 
 sys.stdout.write(sys.version)
 print()

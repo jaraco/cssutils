@@ -1,8 +1,10 @@
 """testcases for cssutils.css.CSSUnkownRule"""
 
 import xml.dom
-from . import test_cssrule
+
 import cssutils
+
+from . import test_cssrule
 
 
 class TestCSSUnknownRule(test_cssrule.TestCSSRule):

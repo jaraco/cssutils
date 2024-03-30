@@ -1,9 +1,12 @@
 """Tests for css.CSSStyleSheet"""
 
 import xml.dom
-from . import basetest
-import cssutils.css
+
 import pytest
+
+import cssutils.css
+
+from . import basetest
 
 
 class TestCSSStyleSheet(basetest.BaseTestCase):
