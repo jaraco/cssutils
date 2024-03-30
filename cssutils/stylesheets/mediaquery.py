@@ -67,17 +67,10 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.stylesheets.{}(mediaText={!r})".format(
-            self.__class__.__name__,
-            self.mediaText,
-        )
+        return f"cssutils.stylesheets.{self.__class__.__name__}(mediaText={self.mediaText!r})"
 
     def __str__(self):
-        return "<cssutils.stylesheets.{} object mediaText={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.mediaText,
-            id(self),
-        )
+        return f"<cssutils.stylesheets.{self.__class__.__name__} object mediaText={self.mediaText!r} at 0x{id(self):x}>"
 
     def _getMediaText(self):
         return cssutils.ser.do_stylesheets_mediaquery(self)

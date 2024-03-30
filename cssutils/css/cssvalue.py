@@ -560,12 +560,7 @@ class CSSPrimitiveValue(CSSValue):
 
     def __str__(self):
         return (
-            "<cssutils.css.{} object primitiveType={} cssText={!r} at 0x{:x}>".format(
-                self.__class__.__name__,
-                self.primitiveTypeString,
-                self.cssText,
-                id(self),
-            )
+            f"<cssutils.css.{self.__class__.__name__} object primitiveType={self.primitiveTypeString} cssText={self.cssText!r} at 0x{id(self):x}>"
         )
 
     _unitnames = [
@@ -1136,12 +1131,7 @@ class RGBColor(CSSFunction):
         return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<cssutils.css.{} object colorType={!r} cssText={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.colorType,
-            self.cssText,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object colorType={self.colorType!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -1317,12 +1307,7 @@ class CSSVariable(CSSValue):
         return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<cssutils.css.{} object name={!r} value={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.name,
-            self.value,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object name={self.name!r} value={self.value!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()

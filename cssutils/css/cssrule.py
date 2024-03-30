@@ -79,9 +79,7 @@ class CSSRule(cssutils.util.Base2):
             self._keyword = keyword
         else:
             self._log.error(
-                '{}: Invalid atkeyword for this rule: {!r}'.format(
-                    self.atkeyword, keyword
-                ),
+                f'{self.atkeyword}: Invalid atkeyword for this rule: {keyword!r}',
                 error=xml.dom.InvalidModificationErr,
             )
 

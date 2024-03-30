@@ -740,9 +740,7 @@ if 1:  # noqa: C901
                 if vi.cssValueType == vi.CSS_VARIABLE:
                     if vi.value:
                         print(
-                            '+ CSSValueList: Replacing {!r} with {!r}'.format(
-                                p.value, vi.value
-                            )
+                            f'+ CSSValueList: Replacing {p.value!r} with {vi.value!r}'
                         )
                         newvalue.append(vi.value)
                     else:

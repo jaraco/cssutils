@@ -423,9 +423,9 @@ class TestCSSParser:
         sheet = cssutils.parseString(css)
         assert (
             sheet.cssText
-            == r'''C\x {
+            == br'''C\x {
     c\x: C\x !important
-    }'''.encode()
+    }'''
         )
 
         css = r'\ x{\ x :\ x ;y:1} '

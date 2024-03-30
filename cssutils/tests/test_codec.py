@@ -73,16 +73,16 @@ class TestCodec:
             "utf-32",
             True,
         )
-        assert codec.detectencoding_str('\x00'.encode()) == (None, False)
-        assert codec.detectencoding_str('\x00\x33'.encode()) == ("utf-8", False)
-        assert codec.detectencoding_str('\x00\x00'.encode()) == (None, False)
-        assert codec.detectencoding_str('\x00\x00\x33'.encode()) == ("utf-8", False)
+        assert codec.detectencoding_str(b'\x00') == (None, False)
+        assert codec.detectencoding_str(b'\x00\x33') == ("utf-8", False)
+        assert codec.detectencoding_str(b'\x00\x00') == (None, False)
+        assert codec.detectencoding_str(b'\x00\x00\x33') == ("utf-8", False)
         assert codec.detectencoding_str(b'\x00\x00\xfe') == (
             None,
             False,
         )
-        assert codec.detectencoding_str('\x00\x00\x00\x33'.encode()) == ("utf-8", False)
-        assert codec.detectencoding_str('\x00\x00\x00@'.encode()) == (
+        assert codec.detectencoding_str(b'\x00\x00\x00\x33') == ("utf-8", False)
+        assert codec.detectencoding_str(b'\x00\x00\x00@') == (
             "utf-32-be",
             False,
         )
@@ -91,12 +91,12 @@ class TestCodec:
             True,
         )
         assert codec.detectencoding_str(b'@') == (None, False)
-        assert codec.detectencoding_str('@\x33'.encode()) == ("utf-8", False)
-        assert codec.detectencoding_str('@\x00'.encode()) == (None, False)
-        assert codec.detectencoding_str('@\x00\x33'.encode()) == ("utf-8", False)
-        assert codec.detectencoding_str('@\x00\x00'.encode()) == (None, False)
-        assert codec.detectencoding_str('@\x00\x00\x33'.encode()) == ("utf-8", False)
-        assert codec.detectencoding_str('@\x00\x00\x00'.encode()) == (
+        assert codec.detectencoding_str(b'@\x33') == ("utf-8", False)
+        assert codec.detectencoding_str(b'@\x00') == (None, False)
+        assert codec.detectencoding_str(b'@\x00\x33') == ("utf-8", False)
+        assert codec.detectencoding_str(b'@\x00\x00') == (None, False)
+        assert codec.detectencoding_str(b'@\x00\x00\x33') == ("utf-8", False)
+        assert codec.detectencoding_str(b'@\x00\x00\x00') == (
             "utf-32-le",
             False,
         )

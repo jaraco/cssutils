@@ -56,11 +56,7 @@ class CSSStyleRule(cssrule.CSSRule):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return "cssutils.css.{}(selectorText={!r}, style={!r})".format(
-            self.__class__.__name__,
-            st,
-            self.style.cssText,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(selectorText={st!r}, style={self.style.cssText!r})"
 
     def __str__(self):
         return (

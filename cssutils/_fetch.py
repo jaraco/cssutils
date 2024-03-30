@@ -17,7 +17,7 @@ from . import errorhandler
 log = errorhandler.ErrorHandler()
 
 
-@functools.lru_cache()
+@functools.lru_cache
 def _get_version():
     try:
         return metadata.version('cssutils')

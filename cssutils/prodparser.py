@@ -119,12 +119,7 @@ class Choice:
             raise Exhausted('Extra token')
 
     def __repr__(self):
-        return "<cssutils.prodsparser.{} object sequence={!r} optional={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.__str__(),
-            self.optional,
-            id(self),
-        )
+        return f"<cssutils.prodsparser.{self.__class__.__name__} object sequence={self.__str__()!r} optional={self.optional!r} at 0x{id(self):x}>"
 
     def __str__(self):
         return 'Choice(%s)' % ', '.join([str(x) for x in self._prods])
@@ -239,12 +234,7 @@ class Sequence:
             raise Exhausted('Extra token')
 
     def __repr__(self):
-        return "<cssutils.prodsparser.{} object sequence={!r} optional={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.__str__(),
-            self.optional,
-            id(self),
-        )
+        return f"<cssutils.prodsparser.{self.__class__.__name__} object sequence={self.__str__()!r} optional={self.optional!r} at 0x{id(self):x}>"
 
     def __str__(self):
         return 'Sequence(%s)' % ', '.join([str(x) for x in self._prods])
@@ -359,11 +349,7 @@ class Prod:
         return self._name
 
     def __repr__(self):
-        return "<cssutils.prodsparser.{} object name={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self._name,
-            id(self),
-        )
+        return f"<cssutils.prodsparser.{self.__class__.__name__} object name={self._name!r} at 0x{id(self):x}>"
 
 
 # global tokenizer as there is only one!

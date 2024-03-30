@@ -52,18 +52,10 @@ class CSSFontFaceRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.{}(style={!r})".format(
-            self.__class__.__name__,
-            self.style.cssText,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(style={self.style.cssText!r})"
 
     def __str__(self):
-        return "<cssutils.css.{} object style={!r} valid={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.style.cssText,
-            self.valid,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object style={self.style.cssText!r} valid={self.valid!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""

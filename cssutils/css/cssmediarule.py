@@ -47,17 +47,10 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.{}(mediaText={!r})".format(
-            self.__class__.__name__,
-            self.media.mediaText,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(mediaText={self.media.mediaText!r})"
 
     def __str__(self):
-        return "<cssutils.css.{} object mediaText={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.media.mediaText,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object mediaText={self.media.mediaText!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""

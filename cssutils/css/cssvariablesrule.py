@@ -67,11 +67,7 @@ class CSSVariablesRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.{}(mediaText={!r}, variables={!r})".format(
-            self.__class__.__name__,
-            self._media.mediaText,
-            self.variables.cssText,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(mediaText={self._media.mediaText!r}, variables={self.variables.cssText!r})"
 
     def __str__(self):
         return (

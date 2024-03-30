@@ -208,12 +208,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         )
 
     def __str__(self):
-        return "<cssutils.css.{} object length={!r} (all: {!r}) at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.length,
-            len(self.getProperties(all=True)),
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object length={self.length!r} (all: {len(self.getProperties(all=True))!r}) at 0x{id(self):x}>"
 
     def __nnames(self):
         """Return iterator for all different names in order as set

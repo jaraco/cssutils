@@ -93,11 +93,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.{}(selectorText={!r}, style={!r})".format(
-            self.__class__.__name__,
-            self.selectorText,
-            self.style.cssText,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(selectorText={self.selectorText!r}, style={self.style.cssText!r})"
 
     def __str__(self):
         return (

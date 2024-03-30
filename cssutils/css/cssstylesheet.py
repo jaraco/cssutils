@@ -78,12 +78,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "cssutils.css.{}(href={!r}, media={!r}, title={!r})".format(
-            self.__class__.__name__,
-            self.href,
-            mediaText,
-            self.title,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(href={self.href!r}, media={mediaText!r}, title={self.title!r})"
 
     def __str__(self):
         if self.media:

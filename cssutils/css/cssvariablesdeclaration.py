@@ -49,16 +49,10 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.{}(cssText={!r})".format(
-            self.__class__.__name__, self.cssText
-        )
+        return f"cssutils.css.{self.__class__.__name__}(cssText={self.cssText!r})"
 
     def __str__(self):
-        return "<cssutils.css.{} object length={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.length,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object length={self.length!r} at 0x{id(self):x}>"
 
     def __contains__(self, variableName):
         """Check if a variable is in variable declaration block.

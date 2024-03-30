@@ -259,13 +259,7 @@ class Value(cssutils.util._NewBase):
 
     def __str__(self):
         return (
-            "<cssutils.css.{} object type={} value={!r} cssText={!r} at 0x{:x}>".format(
-                self.__class__.__name__,
-                self.type,
-                self.value,
-                self.cssText,
-                id(self),
-            )
+            f"<cssutils.css.{self.__class__.__name__} object type={self.type} value={self.value!r} cssText={self.cssText!r} at 0x{id(self):x}>"
         )
 
     def _setCssText(self, cssText):
@@ -610,14 +604,7 @@ class URIValue(Value):
     _uri = Value._value
 
     def __str__(self):
-        return "<cssutils.css.{} object type={} value={!r} uri={!r} cssText={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.type,
-            self.value,
-            self.uri,
-            self.cssText,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object type={self.type} value={self.value!r} uri={self.uri!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -794,9 +781,7 @@ class CSSCalc(CSSFunction):
     _functionName = 'CSSCalc'
 
     def __str__(self):
-        return "<cssutils.css.{} object at 0x{:x}>".format(
-            self.__class__.__name__, id(self)
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -877,12 +862,7 @@ class CSSVariable(CSSFunction):
     _fallback = None
 
     def __str__(self):
-        return "<cssutils.css.{} object name={!r} value={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.name,
-            self.value,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object name={self.name!r} value={self.value!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()

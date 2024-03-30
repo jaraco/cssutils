@@ -100,9 +100,7 @@ class MarginRule(cssrule.CSSRule):
 
         if n not in MarginRule.margins:
             self._log.error(
-                'Invalid margin @keyword for this {} rule: {!r}'.format(
-                    self.margin, margin
-                ),
+                f'Invalid margin @keyword for this {self.margin} rule: {margin!r}',
                 error=xml.dom.InvalidModificationErr,
             )
 
@@ -121,11 +119,7 @@ class MarginRule(cssrule.CSSRule):
     atkeyword = margin
 
     def __repr__(self):
-        return "cssutils.css.{}(margin={!r}, style={!r})".format(
-            self.__class__.__name__,
-            self.margin,
-            self.style.cssText,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(margin={self.margin!r}, style={self.style.cssText!r})"
 
     def __str__(self):
         return "<cssutils.css.%s object margin=%r style=%r " "at 0x%x>" % (

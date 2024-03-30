@@ -142,13 +142,7 @@ class EncodingInfo:
             return ''
 
     def __repr__(self):
-        return "<{}.{} object encoding={!r} mismatch={} at 0x{:x}>".format(
-            self.__class__.__module__,
-            self.__class__.__name__,
-            self.encoding,
-            self.mismatch,
-            id(self),
-        )
+        return f"<{self.__class__.__module__}.{self.__class__.__name__} object encoding={self.encoding!r} mismatch={self.mismatch} at 0x{id(self):x}>"
 
 
 def buildlog(

@@ -593,14 +593,7 @@ class Seq:
             else:
                 vals.append(repr(v))
 
-        return "<cssutils.{}.{} object length={!r} items={!r} readonly={!r} at 0x{:x}>".format(
-            self.__module__,
-            self.__class__.__name__,
-            len(self),
-            vals,
-            self._readonly,
-            id(self),
-        )
+        return f"<cssutils.{self.__module__}.{self.__class__.__name__} object length={len(self)!r} items={vals!r} readonly={self._readonly!r} at 0x{id(self):x}>"
 
     def __delitem__(self, i):
         del self._seq[i]
@@ -696,14 +689,7 @@ class Item:
     col = property(lambda self: self.__col)
 
     def __repr__(self):
-        return "{}.{}(value={!r}, type={!r}, line={!r}, col={!r})".format(
-            self.__module__,
-            self.__class__.__name__,
-            self.__value,
-            self.__type,
-            self.__line,
-            self.__col,
-        )
+        return f"{self.__module__}.{self.__class__.__name__}(value={self.__value!r}, type={self.__type!r}, line={self.__line!r}, col={self.__col!r})"
 
 
 class ListSeq:
@@ -872,11 +858,7 @@ class _Namespaces:
         raise IndexError('NamespaceURI %s not found.' % namespaceURI)
 
     def __str__(self):
-        return "<cssutils.util.{} object parentStyleSheet={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            str(self.parentStyleSheet),
-            id(self),
-        )
+        return f"<cssutils.util.{self.__class__.__name__} object parentStyleSheet={str(self.parentStyleSheet)!r} at 0x{id(self):x}>"
 
 
 class _SimpleNamespaces(_Namespaces):
@@ -899,11 +881,7 @@ class _SimpleNamespaces(_Namespaces):
         return self.__namespaces
 
     def __str__(self):
-        return "<cssutils.util.{} object namespaces={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.namespaces,
-            id(self),
-        )
+        return f"<cssutils.util.{self.__class__.__name__} object namespaces={self.namespaces!r} at 0x{id(self):x}>"
 
     def __repr__(self):
         return f"cssutils.util.{self.__class__.__name__}({self.namespaces!r})"

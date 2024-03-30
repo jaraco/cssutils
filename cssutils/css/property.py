@@ -80,23 +80,10 @@ class Property(cssutils.util.Base):
             self.priority = priority
 
     def __repr__(self):
-        return "cssutils.css.{}(name={!r}, value={!r}, priority={!r})".format(
-            self.__class__.__name__,
-            self.literalname,
-            self.propertyValue.cssText,
-            self.priority,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(name={self.literalname!r}, value={self.propertyValue.cssText!r}, priority={self.priority!r})"
 
     def __str__(self):
-        return "<{}.{} object name={!r} value={!r} priority={!r} valid={!r} at 0x{:x}>".format(
-            self.__class__.__module__,
-            self.__class__.__name__,
-            self.name,
-            self.propertyValue.cssText,
-            self.priority,
-            self.valid,
-            id(self),
-        )
+        return f"<{self.__class__.__module__}.{self.__class__.__name__} object name={self.name!r} value={self.propertyValue.cssText!r} priority={self.priority!r} valid={self.valid!r} at 0x{id(self):x}>"
 
     def _isValidating(self):
         """Return True if validation is enabled."""

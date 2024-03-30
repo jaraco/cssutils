@@ -58,16 +58,10 @@ class CSSCharsetRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "cssutils.css.{}(encoding={!r})".format(
-            self.__class__.__name__, self.encoding
-        )
+        return f"cssutils.css.{self.__class__.__name__}(encoding={self.encoding!r})"
 
     def __str__(self):
-        return "<cssutils.css.{} object encoding={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.encoding,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object encoding={self.encoding!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """The parsable textual representation."""

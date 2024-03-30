@@ -75,25 +75,14 @@ class CSSImportRule(cssrule.CSSRule):
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "cssutils.css.{}(href={!r}, mediaText={!r}, name={!r})".format(
-            self.__class__.__name__,
-            self.href,
-            mediaText,
-            self.name,
-        )
+        return f"cssutils.css.{self.__class__.__name__}(href={self.href!r}, mediaText={mediaText!r}, name={self.name!r})"
 
     def __str__(self):
         if self._usemedia:
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "<cssutils.css.{} object href={!r} mediaText={!r} name={!r} at 0x{:x}>".format(
-            self.__class__.__name__,
-            self.href,
-            mediaText,
-            self.name,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object href={self.href!r} mediaText={mediaText!r} name={self.name!r} at 0x{id(self):x}>"
 
     _usemedia = property(
         lambda self: self.media.mediaText not in ('', 'all'),
