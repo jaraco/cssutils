@@ -92,9 +92,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
         return f"cssutils.css.{self.__class__.__name__}(namespaceURI={self.namespaceURI!r}, prefix={self.prefix!r})"
 
     def __str__(self):
-        return (
-            f"<cssutils.css.{self.__class__.__name__} object namespaceURI={self.namespaceURI!r} prefix={self.prefix!r} at 0x{id(self):x}>"
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object namespaceURI={self.namespaceURI!r} prefix={self.prefix!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText"""

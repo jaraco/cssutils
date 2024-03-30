@@ -258,9 +258,7 @@ class Value(cssutils.util._NewBase):
         return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return (
-            f"<cssutils.css.{self.__class__.__name__} object type={self.type} value={self.value!r} cssText={self.cssText!r} at 0x{id(self):x}>"
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object type={self.type} value={self.value!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()

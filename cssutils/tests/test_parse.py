@@ -423,7 +423,7 @@ class TestCSSParser:
         sheet = cssutils.parseString(css)
         assert (
             sheet.cssText
-            == br'''C\x {
+            == rb'''C\x {
     c\x: C\x !important
     }'''
         )
