@@ -6,6 +6,7 @@ what should happen here?
         does not validate but works in IE>5 and FF, does it???
 
 """
+
 import xml.dom
 
 import pytest

@@ -1,4 +1,5 @@
 """GAE specific URL reading functions"""
+
 __all__ = ['_defaultFetcher']
 
 # raises ImportError of not on GAE

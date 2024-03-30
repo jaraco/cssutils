@@ -1,4 +1,5 @@
 """Default URL reading functions"""
+
 __all__ = ['_defaultFetcher']
 
 import functools

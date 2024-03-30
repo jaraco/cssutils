@@ -3,6 +3,7 @@
 DOM Level 2 CSS CSSValue, CSSPrimitiveValue and CSSValueList are **no longer**
 supported and are replaced by these new classes.
 """
+
 __all__ = [
     'PropertyValue',
     'Value',

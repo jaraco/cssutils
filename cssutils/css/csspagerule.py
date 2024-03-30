@@ -1,4 +1,5 @@
 """CSSPageRule implements DOM Level 2 CSS CSSPageRule."""
+
 __all__ = ['CSSPageRule']
 
 from itertools import chain

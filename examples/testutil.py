@@ -6,6 +6,7 @@ A module to test must have:
 - EXPOUT: string which contains expected output
 - EXPERR: string which contains expected error output
 """
+
 __all__ = ['TestUtil']
 
 import logging

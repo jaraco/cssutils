@@ -132,15 +132,13 @@ class TestCSSImportRule(test_cssrule.TestCSSRule):
             '@import\n\t\f url(\n\t\f "u"\n\t\f )\n\t\f tv\n\t\f "name"\n\t\f ;': '@import url(u) tv "name";',
         }
         self.do_equal_r(tests)  # set cssText
-        tests.update(
-            {
-                '@import "x.css" tv': '@import "x.css" tv;',
-                '@import "x.css"': '@import "x.css";',  # no ;
-                "@import 'x.css'": '@import "x.css";',  # no ;
-                '@import url(x.css)': '@import url(x.css);',  # no ;
-                '@import "x;': '@import "x;";',  # no "!
-            }
-        )
+        tests.update({
+            '@import "x.css" tv': '@import "x.css" tv;',
+            '@import "x.css"': '@import "x.css";',  # no ;
+            "@import 'x.css'": '@import "x.css";',  # no ;
+            '@import url(x.css)': '@import url(x.css);',  # no ;
+            '@import "x;': '@import "x;";',  # no "!
+        })
         self.do_equal_p(tests)  # parse
 
         tests = {
@@ -154,21 +152,19 @@ class TestCSSImportRule(test_cssrule.TestCSSRule):
             '''@import "str" "name" all;''': xml.dom.SyntaxErr,
         }
         self.do_raise_p(tests)  # parse
-        tests.update(
-            {
-                '@import "x.css"': xml.dom.SyntaxErr,
-                "@import 'x.css'": xml.dom.SyntaxErr,
-                '@import url(x.css)': xml.dom.SyntaxErr,
-                '@import "x.css" tv': xml.dom.SyntaxErr,
-                '@import "x;': xml.dom.SyntaxErr,
-                '''@import url("x);''': xml.dom.SyntaxErr,
-                # trailing
-                '''@import "x";"a"''': xml.dom.SyntaxErr,
-                # trailing S or COMMENT
-                '''@import "x";/**/''': xml.dom.SyntaxErr,
-                '''@import "x"; ''': xml.dom.SyntaxErr,
-            }
-        )
+        tests.update({
+            '@import "x.css"': xml.dom.SyntaxErr,
+            "@import 'x.css'": xml.dom.SyntaxErr,
+            '@import url(x.css)': xml.dom.SyntaxErr,
+            '@import "x.css" tv': xml.dom.SyntaxErr,
+            '@import "x;': xml.dom.SyntaxErr,
+            '''@import url("x);''': xml.dom.SyntaxErr,
+            # trailing
+            '''@import "x";"a"''': xml.dom.SyntaxErr,
+            # trailing S or COMMENT
+            '''@import "x";/**/''': xml.dom.SyntaxErr,
+            '''@import "x"; ''': xml.dom.SyntaxErr,
+        })
         self.do_raise_r(tests)  # set cssText
 
     def test_href(self):

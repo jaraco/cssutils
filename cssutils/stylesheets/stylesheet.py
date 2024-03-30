@@ -1,4 +1,5 @@
 """StyleSheet implements DOM Level 2 Style Sheets StyleSheet."""
+
 __all__ = ['StyleSheet']
 
 import cssutils

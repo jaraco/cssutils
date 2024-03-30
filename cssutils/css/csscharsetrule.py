@@ -1,4 +1,5 @@
 """CSSCharsetRule implements DOM Level 2 CSS CSSCharsetRule."""
+
 __all__ = ['CSSCharsetRule']
 
 import codecs

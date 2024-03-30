@@ -7,6 +7,7 @@ Partly also:
 TODO:
     - ownerRule and ownerNode
 """
+
 __all__ = ['CSSStyleSheet']
 
 from cssutils.helper import Deprecated

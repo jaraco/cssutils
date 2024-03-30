@@ -13,6 +13,7 @@ log
     - raiseExceptions = [False, True]
     - setloglevel(loglevel)
 """
+
 __all__ = ['ErrorHandler']
 
 import logging
@@ -110,6 +111,7 @@ class _ErrorHandler:
 
 class ErrorHandler(_ErrorHandler):
     "Singleton, see _ErrorHandler"
+
     instance = None
 
     def __init__(self, log=None, defaultloglevel=logging.INFO, raiseExceptions=True):

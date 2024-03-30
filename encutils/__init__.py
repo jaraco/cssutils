@@ -39,6 +39,7 @@ TODO
     - parse @charset of HTML elements?
     - check for more texttypes if only text given
 """
+
 __all__ = [
     'buildlog',
     'encodingByMediaType',
@@ -129,13 +130,7 @@ class EncodingInfo:
         """Initialize all possible properties to ``None``, see class
         description
         """
-        self.encoding = (
-            self.mismatch
-        ) = (
-            self.logtext
-        ) = (
-            self.http_encoding
-        ) = (
+        self.encoding = self.mismatch = self.logtext = self.http_encoding = (
             self.http_media_type
         ) = self.meta_encoding = self.meta_media_type = self.xml_encoding = None
 

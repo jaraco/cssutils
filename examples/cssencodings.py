@@ -3,6 +3,7 @@ example how to use encodings
 
 example css is in default UTF-8 encoding
 """
+
 from cssutils import CSSParser
 
 EXPOUT = '''cssText in different encodings, depending on the console some

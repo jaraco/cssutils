@@ -5,6 +5,7 @@ TODO
     - .contains(selector)
     - .isSubselector(selector)
 """
+
 __all__ = ['Selector']
 
 from cssutils.helper import Deprecated

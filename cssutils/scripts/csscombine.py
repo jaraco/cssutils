@@ -50,6 +50,7 @@ or without option -m::
         }
 
 """
+
 __all__ = ['csscombine']
 
 from cssutils.script import csscombine

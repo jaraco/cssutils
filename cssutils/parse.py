@@ -1,4 +1,5 @@
 """A validating CSSParser"""
+
 __all__ = ['CSSParser']
 
 from .helper import path2url

@@ -114,40 +114,38 @@ class Profiles:
 
         self._defaultProfiles = None
 
-        self.addProfiles(
-            [
-                (
-                    self.CSS_LEVEL_2,
-                    properties[self.CSS_LEVEL_2],
-                    macros[self.CSS_LEVEL_2],
-                ),
-                (
-                    self.CSS3_BACKGROUNDS_AND_BORDERS,
-                    properties[self.CSS3_BACKGROUNDS_AND_BORDERS],
-                    macros[self.CSS3_BACKGROUNDS_AND_BORDERS],
-                ),
-                (
-                    self.CSS3_BASIC_USER_INTERFACE,
-                    properties[self.CSS3_BASIC_USER_INTERFACE],
-                    macros[self.CSS3_BASIC_USER_INTERFACE],
-                ),
-                (self.CSS3_BOX, properties[self.CSS3_BOX], macros[self.CSS3_BOX]),
-                (self.CSS3_COLOR, properties[self.CSS3_COLOR], macros[self.CSS3_COLOR]),
-                (self.CSS3_FONTS, properties[self.CSS3_FONTS], macros[self.CSS3_FONTS]),
-                # new object for font-face only?
-                (
-                    self.CSS3_FONT_FACE,
-                    properties[self.CSS3_FONT_FACE],
-                    macros[self.CSS3_FONTS],
-                ),
-                (
-                    self.CSS3_PAGED_MEDIA,
-                    properties[self.CSS3_PAGED_MEDIA],
-                    macros[self.CSS3_PAGED_MEDIA],
-                ),
-                (self.CSS3_TEXT, properties[self.CSS3_TEXT], macros[self.CSS3_TEXT]),
-            ]
-        )
+        self.addProfiles([
+            (
+                self.CSS_LEVEL_2,
+                properties[self.CSS_LEVEL_2],
+                macros[self.CSS_LEVEL_2],
+            ),
+            (
+                self.CSS3_BACKGROUNDS_AND_BORDERS,
+                properties[self.CSS3_BACKGROUNDS_AND_BORDERS],
+                macros[self.CSS3_BACKGROUNDS_AND_BORDERS],
+            ),
+            (
+                self.CSS3_BASIC_USER_INTERFACE,
+                properties[self.CSS3_BASIC_USER_INTERFACE],
+                macros[self.CSS3_BASIC_USER_INTERFACE],
+            ),
+            (self.CSS3_BOX, properties[self.CSS3_BOX], macros[self.CSS3_BOX]),
+            (self.CSS3_COLOR, properties[self.CSS3_COLOR], macros[self.CSS3_COLOR]),
+            (self.CSS3_FONTS, properties[self.CSS3_FONTS], macros[self.CSS3_FONTS]),
+            # new object for font-face only?
+            (
+                self.CSS3_FONT_FACE,
+                properties[self.CSS3_FONT_FACE],
+                macros[self.CSS3_FONTS],
+            ),
+            (
+                self.CSS3_PAGED_MEDIA,
+                properties[self.CSS3_PAGED_MEDIA],
+                macros[self.CSS3_PAGED_MEDIA],
+            ),
+            (self.CSS3_TEXT, properties[self.CSS3_TEXT], macros[self.CSS3_TEXT]),
+        ])
 
         self.__update_knownNames()
 

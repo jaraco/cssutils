@@ -1,5 +1,5 @@
-"""New CSS Tokenizer (a generator)
-"""
+"""New CSS Tokenizer (a generator)"""
+
 __all__ = ['Tokenizer', 'CSSProductions']
 
 import itertools

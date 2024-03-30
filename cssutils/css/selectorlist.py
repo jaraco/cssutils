@@ -15,6 +15,7 @@ TODO
         a CSS2 user agent must ignore the whole second line, and not set
         the color of H3 to red:
 """
+
 __all__ = ['SelectorList']
 
 from .selector import Selector

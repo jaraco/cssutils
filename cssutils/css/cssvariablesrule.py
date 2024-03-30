@@ -1,6 +1,7 @@
 """CSSVariables implements (and only partly) experimental
 `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
 """
+
 __all__ = ['CSSVariablesRule']
 
 from .cssvariablesdeclaration import CSSVariablesDeclaration

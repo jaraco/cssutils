@@ -1,4 +1,5 @@
 """CSSMediaRule implements DOM Level 2 CSS CSSMediaRule."""
+
 __all__ = ['CSSMediaRule']
 
 from . import cssrule

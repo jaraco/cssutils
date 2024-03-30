@@ -13,6 +13,7 @@ TODO:
         - opt first(), naive impl for now
 
 """
+
 __all__ = ['ProdParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
 
 from .helper import pushtoken

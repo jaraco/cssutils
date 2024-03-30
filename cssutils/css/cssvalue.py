@@ -5,6 +5,7 @@
 - CSSValueList implements DOM Level 2 CSS CSSValueList
 
 """
+
 __all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor', 'CSSVariable']
 
 from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence

@@ -46,6 +46,7 @@ TODO: CSS2Properties DOMImplementation
     and the version is "2.0".
 
 """
+
 __all__ = ['CSS2Properties']
 
 import cssutils.profiles

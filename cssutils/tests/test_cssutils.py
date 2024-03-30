@@ -1,6 +1,5 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
 
-
 from . import basetest
 import codecs
 import cssutils
@@ -379,7 +378,7 @@ background-image: url(prefix/1.png), url(prefix/2.png)'''
             assert b'\xc3\xa4{color:red}\xc3\xa4{color:green}' == c.cssText
 
             c.encoding = 'ascii'
-            assert br'@charset "ascii";\E4 {color:red}\E4 {color:green}' == c.cssText
+            assert rb'@charset "ascii";\E4 {color:red}\E4 {color:green}' == c.cssText
 
         # b cannot be found
         m = mock.Mock()

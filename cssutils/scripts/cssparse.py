@@ -1,5 +1,4 @@
-"""utility script to parse given filenames or string
-"""
+"""utility script to parse given filenames or string"""
 
 import cssutils
 import logging

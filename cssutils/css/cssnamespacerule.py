@@ -1,5 +1,5 @@
-"""CSSNamespaceRule currently implements http://dev.w3.org/csswg/css3-namespace/
-"""
+"""CSSNamespaceRule currently implements http://dev.w3.org/csswg/css3-namespace/"""
+
 __all__ = ['CSSNamespaceRule']
 
 from . import cssrule

@@ -6,6 +6,7 @@ TODO:
 - logger class which handles all cases when no log is given...
 - saveto: why does urllib2 hang?
 """
+
 __all__ = ['CSSCapture']
 
 from cssutils.script import CSSCapture

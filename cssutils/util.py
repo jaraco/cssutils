@@ -1,5 +1,5 @@
-"""base classes and helper functions for css and stylesheets packages
-"""
+"""base classes and helper functions for css and stylesheets packages"""
+
 __all__ = []
 
 from .helper import normalize

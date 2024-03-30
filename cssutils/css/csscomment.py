@@ -3,6 +3,7 @@ class only.
 
 Implements CSSRule which is also extended for a CSSComment rule type.
 """
+
 __all__ = ['CSSComment']
 
 from . import cssrule

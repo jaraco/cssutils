@@ -1,6 +1,7 @@
 """CSSVariablesDeclaration
 http://disruptive-innovations.com/zoo/cssvariables/#mozTocId496530
 """
+
 __all__ = ['CSSVariablesDeclaration']
 
 from cssutils.prodparser import PreDef, Prod, ProdParser, Sequence

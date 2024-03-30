@@ -1,6 +1,5 @@
 """Testcases for cssutils.util"""
 
-
 from email.message import Message
 import re
 import urllib.request

@@ -76,8 +76,8 @@ class TestCSSNamespaceRule(test_cssrule.TestCSSRule):
             '@namespace/*1*/p/*2*/"u"/*3*/;': '@namespace /*1*/ p /*2*/ "u" /*3*/;',
             '@namespace p url(u);': '@namespace p "u";',
             '@namespace p url(\'u\');': '@namespace p "u";',
-            '@namespace p url(\"u\");': '@namespace p "u";',
-            '@namespace p url( \"u\" );': '@namespace p "u";',
+            '@namespace p url("u");': '@namespace p "u";',
+            '@namespace p url( "u" );': '@namespace p "u";',
             # comments
             '@namespace/*1*//*2*/p/*3*//*4*/url(u)/*5*//*6*/;': '@namespace /*1*/ /*2*/ p /*3*/ /*4*/ "u" /*5*/ /*6*/;',
             '@namespace/*1*//*2*/p/*3*//*4*/"u"/*5*//*6*/;': '@namespace /*1*/ /*2*/ p /*3*/ /*4*/ "u" /*5*/ /*6*/;',
@@ -105,17 +105,15 @@ class TestCSSNamespaceRule(test_cssrule.TestCSSRule):
             '@namespace p "u";EXTRA': xml.dom.SyntaxErr,
         }
         self.do_raise_p(tests)  # parse
-        tests.update(
-            {
-                '@namespace p url(x)': xml.dom.SyntaxErr,  # missing ;
-                '@namespace p "u"': xml.dom.SyntaxErr,  # missing ;
-                # trailing
-                '@namespace "u"; ': xml.dom.SyntaxErr,
-                '@namespace "u";/**/': xml.dom.SyntaxErr,
-                '@namespace p "u"; ': xml.dom.SyntaxErr,
-                '@namespace p "u";/**/': xml.dom.SyntaxErr,
-            }
-        )
+        tests.update({
+            '@namespace p url(x)': xml.dom.SyntaxErr,  # missing ;
+            '@namespace p "u"': xml.dom.SyntaxErr,  # missing ;
+            # trailing
+            '@namespace "u"; ': xml.dom.SyntaxErr,
+            '@namespace "u";/**/': xml.dom.SyntaxErr,
+            '@namespace p "u"; ': xml.dom.SyntaxErr,
+            '@namespace p "u";/**/': xml.dom.SyntaxErr,
+        })
 
         def _do(test):
             cssutils.css.CSSNamespaceRule(cssText=test)

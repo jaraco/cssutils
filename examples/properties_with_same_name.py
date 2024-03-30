@@ -1,5 +1,5 @@
-"""shows CSSStyleDeclaration multivalue property examples
-"""
+"""shows CSSStyleDeclaration multivalue property examples"""
+
 import cssutils
 
 print("\n**SameNamePropertyList is replaced with style.getProperties() from 0.9.4**")

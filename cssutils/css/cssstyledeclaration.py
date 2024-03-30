@@ -49,6 +49,7 @@ TODO:
       background: no-repeat left url()  #fff
       -> background: #fff url() no-repeat left
 """
+
 __all__ = ['CSSStyleDeclaration', 'Property']
 
 from .cssproperties import CSS2Properties

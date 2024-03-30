@@ -1,4 +1,5 @@
 """CSSStyleRule implements DOM Level 2 CSS CSSStyleRule."""
+
 __all__ = ['CSSStyleRule']
 
 from .cssstyledeclaration import CSSStyleDeclaration
@@ -156,8 +157,9 @@ class CSSStyleRule(cssrule.CSSRule):
                 )
             else:
                 braceorEOFtoken = styletokens.pop()
-                val, typ = self._tokenvalue(braceorEOFtoken), self._type(
-                    braceorEOFtoken
+                val, typ = (
+                    self._tokenvalue(braceorEOFtoken),
+                    self._type(braceorEOFtoken),
                 )
                 if val != '}' and typ != 'EOF':
                     ok = False

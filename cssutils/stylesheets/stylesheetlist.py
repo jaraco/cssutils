@@ -1,4 +1,5 @@
 """StyleSheetList implements DOM Level 2 Style Sheets StyleSheetList."""
+
 __all__ = ['StyleSheetList']
 
 

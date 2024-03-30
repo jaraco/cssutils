@@ -1,6 +1,5 @@
 """Tests for parsing which does not raise Exceptions normally"""
 
-
 import xml.dom
 import cssutils
 import urllib.error
@@ -433,7 +432,7 @@ class TestCSSParser:
         sheet = cssutils.parseString(css)
         assert (
             sheet.cssText
-            == br'''\ x {
+            == rb'''\ x {
     \ x: \ x;
     y: 1
     }'''

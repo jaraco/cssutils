@@ -1,6 +1,7 @@
 """
 tests for encutils.py
 """
+
 import http.client
 from io import StringIO
 
@@ -58,16 +59,16 @@ class TestAutoEncoding:
     def test_getTextType(self):
         "encutils._getTextType"
         tests = {
-            '\x00\x00\xFE\xFF<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            '\xFF\xFE\x00\x00<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            '\xFE\xFF<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            '\xFF\xFE<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\x00\x00\xfe\xff<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\xff\xfe\x00\x00<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\xfe\xff<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
+            '\xff\xfe<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
             '\xef\xbb\xbf<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
             '<?xml version="1.0"': encutils._XML_APPLICATION_TYPE,
-            '\x00\x00\xFE\xFFanything': encutils._OTHER_TYPE,
-            '\xFF\xFE\x00\x00anything': encutils._OTHER_TYPE,
-            '\xFE\xFFanything': encutils._OTHER_TYPE,
-            '\xFF\xFEanything': encutils._OTHER_TYPE,
+            '\x00\x00\xfe\xffanything': encutils._OTHER_TYPE,
+            '\xff\xfe\x00\x00anything': encutils._OTHER_TYPE,
+            '\xfe\xffanything': encutils._OTHER_TYPE,
+            '\xff\xfeanything': encutils._OTHER_TYPE,
             '\xef\xbb\xbfanything': encutils._OTHER_TYPE,
             'x/x': encutils._OTHER_TYPE,
             'ANYTHING': encutils._OTHER_TYPE,
@@ -191,10 +192,10 @@ class TestAutoEncoding:
         "encutils.detectXMLEncoding"
         tests = (
             # BOM
-            (('utf_32_be'), '\x00\x00\xFE\xFFanything'),
-            (('utf_32_le'), '\xFF\xFE\x00\x00anything'),
-            (('utf_16_be'), '\xFE\xFFanything'),
-            (('utf_16_le'), '\xFF\xFEanything'),
+            (('utf_32_be'), '\x00\x00\xfe\xffanything'),
+            (('utf_32_le'), '\xff\xfe\x00\x00anything'),
+            (('utf_16_be'), '\xfe\xffanything'),
+            (('utf_16_le'), '\xff\xfeanything'),
             (('utf-8'), '\xef\xbb\xbfanything'),
             # encoding=
             (('ascii'), '<?xml version="1.0" encoding="ascii" ?>'),

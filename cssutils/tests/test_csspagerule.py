@@ -125,19 +125,17 @@ class TestCSSPageRule(test_cssrule.TestCSSRule):
             '@page :left }': xml.dom.SyntaxErr,
         }
         self.do_raise_p(tests)  # parse
-        tests.update(
-            {
-                # false selector
-                '@page :right :left {}': xml.dom.SyntaxErr,  # no }
-                '@page :right X {}': xml.dom.SyntaxErr,  # no }
-                '@page X Y {}': xml.dom.SyntaxErr,  # no }
-                '@page :left {': xml.dom.SyntaxErr,  # no }
-                # trailing
-                '@page :left {}1': xml.dom.SyntaxErr,  # no }
-                '@page :left {}/**/': xml.dom.SyntaxErr,  # no }
-                '@page :left {} ': xml.dom.SyntaxErr,  # no }
-            }
-        )
+        tests.update({
+            # false selector
+            '@page :right :left {}': xml.dom.SyntaxErr,  # no }
+            '@page :right X {}': xml.dom.SyntaxErr,  # no }
+            '@page X Y {}': xml.dom.SyntaxErr,  # no }
+            '@page :left {': xml.dom.SyntaxErr,  # no }
+            # trailing
+            '@page :left {}1': xml.dom.SyntaxErr,  # no }
+            '@page :left {}/**/': xml.dom.SyntaxErr,  # no }
+            '@page :left {} ': xml.dom.SyntaxErr,  # no }
+        })
         self.do_raise_r(tests)  # set cssText
 
     def test_cssText2(self):

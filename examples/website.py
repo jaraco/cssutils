@@ -2,6 +2,7 @@
 
 Log output cannot be tested!
 """
+
 import cssutils
 
 cssutils.ser.prefs.useDefaults()

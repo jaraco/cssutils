@@ -1,4 +1,5 @@
 """CSSRule implements DOM Level 2 CSS CSSRule."""
+
 __all__ = ['CSSRule']
 
 import cssutils

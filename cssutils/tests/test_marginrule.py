@@ -65,16 +65,14 @@ class TestMarginRule(test_cssrule.TestCSSRule):
         self.do_equal_r(tests)
 
         # TODO
-        tests.update(
-            {
-                # false selector
-                #            u'@top-left { color:': xml.dom.SyntaxErr, # no }
-                #            u'@top-left { color': xml.dom.SyntaxErr, # no }
-                #            u'@top-left {': xml.dom.SyntaxErr, # no }
-                #            u'@top-left': xml.dom.SyntaxErr, # no }
-                #            u'@top-left;': xml.dom.SyntaxErr, # no }
-            }
-        )
+        tests.update({
+            # false selector
+            #            u'@top-left { color:': xml.dom.SyntaxErr, # no }
+            #            u'@top-left { color': xml.dom.SyntaxErr, # no }
+            #            u'@top-left {': xml.dom.SyntaxErr, # no }
+            #            u'@top-left': xml.dom.SyntaxErr, # no }
+            #            u'@top-left;': xml.dom.SyntaxErr, # no }
+        })
 
     #        self.do_raise_r(tests) # set cssText
 

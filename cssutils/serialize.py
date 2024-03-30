@@ -1,4 +1,5 @@
 """cssutils serializer"""
+
 __all__ = ['CSSSerializer', 'Preferences']
 
 from cssutils.helper import normalize
@@ -117,9 +118,9 @@ class Preferences:
     def __repr__(self):
         return "cssutils.css.{}({})".format(
             self.__class__.__name__,
-            ', '.join(
-                [f'\n    {p}={self.__getattribute__(p)!r}' for p in self.__dict__]
-            ),
+            ', '.join([
+                f'\n    {p}={self.__getattribute__(p)!r}' for p in self.__dict__
+            ]),
         )
 
     def __str__(self):
@@ -338,12 +339,10 @@ class CSSSerializer:
         """
         if not self.prefs.lineSeparator:
             return text
-        return self.prefs.lineSeparator.join(
-            [
-                f'{level * self.prefs.indent}{line}'
-                for line in text.split(self.prefs.lineSeparator)
-            ]
-        )
+        return self.prefs.lineSeparator.join([
+            f'{level * self.prefs.indent}{line}'
+            for line in text.split(self.prefs.lineSeparator)
+        ])
 
     def _propertyname(self, property, actual):
         """

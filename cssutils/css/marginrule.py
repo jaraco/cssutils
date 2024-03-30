@@ -1,4 +1,5 @@
 """MarginRule implements DOM Level 2 CSS MarginRule."""
+
 __all__ = ['MarginRule']
 
 from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
@@ -170,7 +171,7 @@ class MarginRule(cssrule.CSSRule):
                 name='@ margin',
                 match=lambda t, v: t == 'ATKEYWORD'
                 and self._normalize(v) in MarginRule.margins,
-                toStore='margin'
+                toStore='margin',
                 # TODO?
                 # , exception=xml.dom.InvalidModificationErr
             ),

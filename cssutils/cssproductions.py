@@ -10,6 +10,7 @@ open issues
             CSS2.1: 'nmchar': r'[_a-z0-9-]|{nonascii}|{escape}',
             CSS3: 'nmchar': r'[_a-z-]|{nonascii}|{escape}',
 """
+
 __all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
 
 # a complete list of css3 macros
@@ -86,7 +87,7 @@ PRODUCTIONS = [
     ('SUBSTRINGMATCH', r'\*\='),
     ('CDO', r'\<\!\-\-'),
     ('CDC', r'\-\-\>'),
-    ('CHAR', r'[^"\']')  # MUST always be last
+    ('CHAR', r'[^"\']'),  # MUST always be last
     # valid ony at start so not checked everytime
     # ('CHARSET_SYM', r'@charset '), # from Errata includes ending space!
     # checked specially if fullsheet is parsed

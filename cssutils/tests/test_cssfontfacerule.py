@@ -84,15 +84,13 @@ class TestCSSFontFaceRule(test_cssrule.TestCSSRule):
             '@font-face }': xml.dom.SyntaxErr,
         }
         self.do_raise_p(tests)  # parse
-        tests.update(
-            {
-                '@font-face {': xml.dom.SyntaxErr,  # no }
-                # trailing
-                '@font-face {}1': xml.dom.SyntaxErr,
-                '@font-face {}/**/': xml.dom.SyntaxErr,
-                '@font-face {} ': xml.dom.SyntaxErr,
-            }
-        )
+        tests.update({
+            '@font-face {': xml.dom.SyntaxErr,  # no }
+            # trailing
+            '@font-face {}1': xml.dom.SyntaxErr,
+            '@font-face {}/**/': xml.dom.SyntaxErr,
+            '@font-face {} ': xml.dom.SyntaxErr,
+        })
         self.do_raise_r(tests)  # set cssText
 
     def test_style(self):

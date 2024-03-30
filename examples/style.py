@@ -6,6 +6,7 @@ and for debugging also in @title attributes.
 
 adds css as text to html
 """
+
 import codecs
 import cssutils
 import sys

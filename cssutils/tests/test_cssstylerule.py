@@ -150,16 +150,14 @@ class TestCSSStyleRule(test_cssrule.TestCSSRule):
             '''a }''': xml.dom.SyntaxErr,
         }
         self.do_raise_p(tests)  # parse
-        tests.update(
-            {
-                '''/*x*/''': xml.dom.SyntaxErr,
-                '''a {''': xml.dom.SyntaxErr,
-                # trailing
-                '''a {}x''': xml.dom.SyntaxErr,
-                '''a {/**/''': xml.dom.SyntaxErr,
-                '''a {} ''': xml.dom.SyntaxErr,
-            }
-        )
+        tests.update({
+            '''/*x*/''': xml.dom.SyntaxErr,
+            '''a {''': xml.dom.SyntaxErr,
+            # trailing
+            '''a {}x''': xml.dom.SyntaxErr,
+            '''a {/**/''': xml.dom.SyntaxErr,
+            '''a {} ''': xml.dom.SyntaxErr,
+        })
         self.do_raise_r(tests)  # set cssText
 
     def test_selectorList(self):

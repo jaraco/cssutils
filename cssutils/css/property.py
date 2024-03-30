@@ -1,4 +1,5 @@
 """Property is a single CSS property in a CSSStyleDeclaration."""
+
 __all__ = ['Property']
 
 from cssutils.helper import Deprecated

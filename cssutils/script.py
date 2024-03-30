@@ -1,5 +1,5 @@
-"""classes and functions used by cssutils scripts
-"""
+"""classes and functions used by cssutils scripts"""
+
 __all__ = ['CSSCapture', 'csscombine']
 
 import html.parser

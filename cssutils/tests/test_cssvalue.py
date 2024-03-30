@@ -1,6 +1,5 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 
-
 import xml.dom
 from . import basetest
 import cssutils

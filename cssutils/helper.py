@@ -1,5 +1,4 @@
-"""cssutils helper TEST
-"""
+"""cssutils helper TEST"""
 
 import os
 import re

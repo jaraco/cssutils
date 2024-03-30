@@ -27,12 +27,10 @@ class TestCSSComment(test_cssrule.TestCSSRule):
             '/** / ** //*/': None,
         }
         self.do_equal_r(tests)  # set cssText
-        tests.update(
-            {
-                '/*x': '/*x*/',
-                '\n /*': '/**/',
-            }
-        )
+        tests.update({
+            '/*x': '/*x*/',
+            '\n /*': '/**/',
+        })
         self.do_equal_p(tests)  # parse
 
         tests = {

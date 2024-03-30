@@ -3,6 +3,7 @@ http://www.w3.org/TR/css3-mediaqueries/.
 
 A cssutils implementation, not defined in official DOM.
 """
+
 __all__ = ['MediaQuery']
 
 from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence

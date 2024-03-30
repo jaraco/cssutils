@@ -1,5 +1,6 @@
 """CSSImportRule implements DOM Level 2 CSS CSSImportRule plus the
 ``name`` property from http://www.w3.org/TR/css3-cascade/#cascading."""
+
 __all__ = ['CSSImportRule']
 
 from . import cssrule

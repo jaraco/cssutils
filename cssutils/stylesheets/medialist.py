@@ -4,6 +4,7 @@ TODO:
     - delete: maybe if deleting from all, replace *all* with all others?
     - is unknown media an exception?
 """
+
 __all__ = ['MediaList']
 
 from cssutils.prodparser import PreDef, Prod, ProdParser, Sequence
