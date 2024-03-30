@@ -70,7 +70,7 @@ class TestCSSutils(basetest.BaseTestCase):
         }
         self.do_equal_p(tests)
 
-    def test_parseFile(self):
+    def test_parseFile(self, monkeypatch):
         "cssutils.parseFile()"
         # name if used with open, href used for @import resolving
         name = basetest.get_sheet_filename('import.css')
@@ -111,7 +111,7 @@ class TestCSSutils(basetest.BaseTestCase):
 
         # name is used for open and setting of href automatically
         # test needs to be relative to this test file!
-        os.chdir(os.path.dirname(__file__))
+        monkeypatch.chdir(os.path.dirname(__file__))
         name = basetest.get_sheet_filename('import.css')
 
         s = cssutils.parseFile(name, media='screen', title='from file')
