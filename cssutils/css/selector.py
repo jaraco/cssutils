@@ -330,7 +330,7 @@ class Selector(cssutils.util.Base2):
             # used for equality checks and setting of a space combinator
             S = ' '
 
-            def append(seq, val, typ=None, token=None):
+            def append(seq, val, typ=None, token=None):  # noqa: C901
                 """
                 appends to seq
 
@@ -653,7 +653,7 @@ class Selector(cssutils.util.Base2):
                     self._log.error('Selector: Unexpected HASH.', token=token)
                     return expected
 
-            def _char(expected, seq, token, tokenizer=None):
+            def _char(expected, seq, token, tokenizer=None):  # noqa: C901
                 # + > ~ ) [ ] + -
                 context = new['context'][-1]
                 val = self._tokenvalue(token)
