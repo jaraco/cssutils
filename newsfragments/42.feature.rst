@@ -1,1 +1,0 @@
-getPropertyValue now allows specifying a default value.

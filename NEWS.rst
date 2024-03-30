@@ -1,3 +1,12 @@
+v2.10.0
+=======
+
+Features
+--------
+
+- getPropertyValue now allows specifying a default value. (#42)
+
+
 v2.9.0
 ======
 
