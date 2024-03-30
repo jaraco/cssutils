@@ -2,7 +2,7 @@
 
 __all__ = ['CSSRule']
 
-import cssutils
+import cssutils.util
 import xml.dom
 
 
