@@ -1,1 +1,0 @@
-Replace xunit-style setup with pytest fixtures.

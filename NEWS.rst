@@ -1,3 +1,12 @@
+v2.10.1
+=======
+
+Bugfixes
+--------
+
+- Replace xunit-style setup with pytest fixtures. (#45)
+
+
 v2.10.0
 =======
 
