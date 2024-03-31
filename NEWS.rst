@@ -1,3 +1,12 @@
+v2.10.2
+=======
+
+Bugfixes
+--------
+
+- Remove optional dependency only required on unsupported Python versions. (#48)
+
+
 v2.10.1
 =======
 
