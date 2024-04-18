@@ -1,6 +1,81 @@
 [build-system]
-requires = ["setuptools>=56", "setuptools_scm[toml]>=3.4.1"]
+requires = ["setuptools>=61.2", "setuptools_scm[toml]>=3.4.1"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "cssutils"
+authors = [
+	{ name = "Christof Hoeke", email = "c@cthedot.de" },
+]
+maintainers = [
+	{ name = "Jason R. Coombs", email = "jaraco@jaraco.com" },
+]
+description = "A CSS Cascading Style Sheets library for Python"
+readme = "README.rst"
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
+	"Topic :: Internet",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Topic :: Text Processing :: Markup :: HTML",
+]
+keywords = ["CSS", "Cascading Style Sheets", "CSSParser", "DOM Level 2 Stylesheets", "DOM Level 2 CSS"]
+requires-python = ">=3.8"
+dependencies = []
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/jaraco/cssutils"
+
+[project.optional-dependencies]
+testing = [
+	# upstream
+	"pytest >= 6",
+	"pytest-checkdocs >= 2.4",
+	"pytest-cov",
+	"pytest-mypy",
+	"pytest-enabler >= 2.2",
+	"pytest-ruff >= 0.2.1",
+
+	# local
+	'lxml; python_version < "3.11"', # workaround for #25
+	"cssselect",
+	'importlib_resources; python_version < "3.9"',
+	"jaraco.test >= 5.1",
+]
+docs = [
+	# upstream
+	"sphinx >= 3.5",
+	"jaraco.packaging >= 9.3",
+	"rst.linker >= 1.9",
+	"furo",
+	"sphinx-lint",
+
+	# tidelift
+	"jaraco.tidelift >= 1.4",
+
+	# local
+]
+
+[project.scripts]
+csscapture = "cssutils.scripts.csscapture:main"
+csscombine = "cssutils.scripts.csscombine:main"
+cssparse = "cssutils.scripts.cssparse:main"
+
+[tool.setuptools.packages.find]
+exclude = [
+	# duplicate exclusions for pypa/setuptools#2688
+	"docs",
+	"docs.*",
+	"examples*",
+	"sheets",
+	"sheets.*",
+	"tools*",
+]
+namespaces = true
 
 [tool.setuptools_scm]
 
