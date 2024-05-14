@@ -2,13 +2,19 @@
 
 __all__ = ['_defaultFetcher']
 
-import cgi
+import email.message
 
 from google.appengine.api import urlfetch
 
 from . import errorhandler
 
 log = errorhandler.ErrorHandler()
+
+
+def _parse_header(content_type):
+    msg = email.message.EmailMessage()
+    msg['content-type'] = content_type
+    return msg.get_content_type(), msg['content-type'].params
 
 
 def _defaultFetcher(url):
@@ -51,11 +57,11 @@ def _defaultFetcher(url):
     else:
         if r.status_code == 200:
             # find mimetype and encoding
-            mimetype = 'application/octet-stream'
             try:
-                mimetype, params = cgi.parse_header(r.headers['content-type'])
+                mimetype, params = _parse_header(r.headers['content-type'])
                 encoding = params['charset']
             except KeyError:
+                mimetype = 'application/octet-stream'
                 encoding = None
             if mimetype != 'text/css':
                 log.error(
