@@ -54,25 +54,26 @@ def _defaultFetcher(url):
         r = urlfetch.fetch(url, method=urlfetch.GET)
     except urlfetch.Error as e:
         log.warn(f'Error opening url={url!r}: {e}', error=IOError)
-    else:
-        if r.status_code == 200:
-            # find mimetype and encoding
-            try:
-                mimetype, params = _parse_header(r.headers['content-type'])
-                encoding = params['charset']
-            except KeyError:
-                mimetype = 'application/octet-stream'
-                encoding = None
-            if mimetype != 'text/css':
-                log.error(
-                    'Expected "text/css" mime type for url %r but found: %r'
-                    % (url, mimetype),
-                    error=ValueError,
-                )
-            return encoding, r.content
-        else:
-            # TODO: 301 etc
-            log.warn(
-                f'Error opening url={url!r}: HTTP status {r.status_code}',
-                error=IOError,
-            )
+        return
+
+    if r.status_code != 200:
+        # TODO: 301 etc
+        log.warn(
+            f'Error opening url={url!r}: HTTP status {r.status_code}',
+            error=IOError,
+        )
+        return
+
+    # find mimetype and encoding
+    try:
+        mimetype, params = _parse_header(r.headers['content-type'])
+        encoding = params['charset']
+    except KeyError:
+        mimetype = 'application/octet-stream'
+        encoding = None
+    if mimetype != 'text/css':
+        log.error(
+            'Expected "text/css" mime type for url %r but found: %r' % (url, mimetype),
+            error=ValueError,
+        )
+    return encoding, r.content
