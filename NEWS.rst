@@ -1,3 +1,12 @@
+v2.10.3
+=======
+
+Bugfixes
+--------
+
+- Fixed DeprecationWarning with cgi module.
+
+
 v2.10.2
 =======
 
