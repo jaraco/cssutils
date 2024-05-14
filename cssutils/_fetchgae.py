@@ -49,7 +49,6 @@ def _defaultFetcher(url):
             The response data exceeded the maximum allowed size, and the
             allow_truncated parameter passed to fetch() was False.
     """
-    # from google.appengine.api import urlfetch
     try:
         r = urlfetch.fetch(url, method=urlfetch.GET)
     except urlfetch.Error as e:
