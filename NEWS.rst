@@ -1,3 +1,12 @@
+v2.11.0
+=======
+
+Features
+--------
+
+- Reduced cyclomatic complexity in selector module. (#47)
+
+
 v2.10.3
 =======
 
