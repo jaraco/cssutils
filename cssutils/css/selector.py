@@ -19,12 +19,41 @@ from cssutils.helper import Deprecated
 from cssutils.util import _SimpleNamespaces
 
 
+class Constants:
+    "expected constants"
+
+    # used for equality checks and setting of a space combinator
+    S = ' '
+
+    simple_selector_sequence = (
+        'type_selector universal HASH class ' 'attrib pseudo negation '
+    )
+    simple_selector_sequence2 = 'HASH class attrib pseudo negation '
+
+    element_name = 'element_name'
+
+    negation_arg = 'type_selector universal HASH class attrib pseudo'
+    negationend = ')'
+
+    attname = 'prefix attribute'
+    attname2 = 'attribute'
+    attcombinator = 'combinator ]'  # optional
+    attvalue = 'value'  # optional
+    attend = ']'
+
+    expressionstart = 'PLUS - DIMENSION NUMBER STRING IDENT'
+    expression = expressionstart + ' )'
+
+    combinator = ' combinator'
+
+
 @dataclasses.dataclass
 class New(cssutils.util._BaseClass):
     """
     Derives from _BaseClass to provide self._log.
     """
 
+    selector: Selector
     namespaces: dict[str, str]
     context: list[str] = dataclasses.field(default_factory=lambda: [''])
     "stack of: 'attrib', 'negation', 'pseudo'"
@@ -116,6 +145,354 @@ class New(cssutils.util._BaseClass):
             self.element = val
 
         seq.append(val, typ, line=line, col=col)
+
+    def _COMMENT(self, expected, seq, token, tokenizer=None):
+        "special implementation for comment token"
+        self.append(seq, cssutils.css.CSSComment([token]), 'COMMENT', token=token)
+        return expected
+
+    def _S(self, expected, seq, token, tokenizer=None):
+        # S
+        context = self.context[-1]
+        if context.startswith('pseudo-'):
+            if seq and seq[-1].value not in '+-':
+                # e.g. x:func(a + b)
+                self.append(seq, Constants.S, 'S', token=token)
+            return expected
+
+        elif context != 'attrib' and 'combinator' in expected:
+            self.append(seq, Constants.S, 'descendant', token=token)
+            return Constants.simple_selector_sequence + Constants.combinator
+
+        else:
+            return expected
+
+    def _universal(self, expected, seq, token, tokenizer=None):
+        # *|* or prefix|*
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+        if 'universal' in expected:
+            self.append(seq, val, 'universal', token=token)
+
+            if 'negation' == context:
+                return Constants.negationend
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected universal.', token=token)
+            return expected
+
+    def _namespace_prefix(self, expected, seq, token, tokenizer=None):
+        # prefix| => element_name
+        # or prefix| => attribute_name if attrib
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+        if 'attrib' == context and 'prefix' in expected:
+            # [PREFIX|att]
+            self.append(seq, val, '_PREFIX', token=token)
+            return Constants.attname2
+        elif 'type_selector' in expected:
+            # PREFIX|*
+            self.append(seq, val, '_PREFIX', token=token)
+            return Constants.element_name
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected namespace prefix.', token=token)
+            return expected
+
+    def _pseudo(self, expected, seq, token, tokenizer=None):
+        # pseudo-class or pseudo-element :a ::a :a( ::a(
+        """
+        /* '::' starts a pseudo-element, ':' a pseudo-class */
+        /* Exceptions: :first-line, :first-letter, :before and
+        :after. */
+        /* Note that pseudo-elements are restricted to one per selector
+        and */
+        /* occur only in the last simple_selector_sequence. */
+        """
+        context = self.context[-1]
+        val, typ = (
+            self.selector._tokenvalue(token, normalize=True),
+            self.selector._type(token),
+        )
+        if 'pseudo' in expected:
+            if val in (':first-line', ':first-letter', ':before', ':after'):
+                # always pseudo-element ???
+                typ = 'pseudo-element'
+            self.append(seq, val, typ, token=token)
+
+            if val.endswith('('):
+                # function
+                # "pseudo-" "class" or "element"
+                self.context.append(typ)
+                return Constants.expressionstart
+            elif 'negation' == context:
+                return Constants.negationend
+            elif 'pseudo-element' == typ:
+                # only one per element, check at ) also!
+                return Constants.combinator
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected start of pseudo.', token=token)
+            return expected
+
+    def _expression(self, expected, seq, token, tokenizer=None):
+        # [ [ PLUS | '-' | DIMENSION | NUMBER | STRING | IDENT ] S* ]+
+        context = self.context[-1]
+        val, typ = self.selector._tokenvalue(token), self.selector._type(token)
+        if context.startswith('pseudo-'):
+            self.append(seq, val, typ, token=token)
+            return Constants.expression
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected %s.' % typ, token=token)
+            return expected
+
+    def _attcombinator(self, expected, seq, token, tokenizer=None):
+        # context: attrib
+        # PREFIXMATCH | SUFFIXMATCH | SUBSTRINGMATCH | INCLUDES |
+        # DASHMATCH
+        context = self.context[-1]
+        val, typ = self.selector._tokenvalue(token), self.selector._type(token)
+        if 'attrib' == context and 'combinator' in expected:
+            # combinator in attrib
+            self.append(seq, val, typ.lower(), token=token)
+            return Constants.attvalue
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected %s.' % typ, token=token)
+            return expected
+
+    def _string(self, expected, seq, token, tokenizer=None):
+        # identifier
+        context = self.context[-1]
+        typ, val = self.selector._type(token), self.selector._stringtokenvalue(token)
+
+        # context: attrib
+        if 'attrib' == context and 'value' in expected:
+            # attrib: [...=VALUE]
+            self.append(seq, val, typ, token=token)
+            return Constants.attend
+
+        # context: pseudo
+        elif context.startswith('pseudo-'):
+            # :func(...)
+            self.append(seq, val, typ, token=token)
+            return Constants.expression
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected STRING.', token=token)
+            return expected
+
+    def _ident(self, expected, seq, token, tokenizer=None):
+        # identifier
+        context = self.context[-1]
+        val, typ = self.selector._tokenvalue(token), self.selector._type(token)
+
+        # context: attrib
+        if 'attrib' == context and 'attribute' in expected:
+            # attrib: [...|ATT...]
+            self.append(seq, val, 'attribute-selector', token=token)
+            return Constants.attcombinator
+
+        elif 'attrib' == context and 'value' in expected:
+            # attrib: [...=VALUE]
+            self.append(seq, val, 'attribute-value', token=token)
+            return Constants.attend
+
+        # context: negation
+        elif 'negation' == context:
+            # negation: (prefix|IDENT)
+            self.append(seq, val, 'negation-type-selector', token=token)
+            return Constants.negationend
+
+        # context: pseudo
+        elif context.startswith('pseudo-'):
+            # :func(...)
+            self.append(seq, val, typ, token=token)
+            return Constants.expression
+
+        elif 'type_selector' in expected or Constants.element_name == expected:
+            # element name after ns or complete type_selector
+            self.append(seq, val, 'type-selector', token=token)
+            return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected IDENT.', token=token)
+            return expected
+
+    def _class(self, expected, seq, token, tokenizer=None):
+        # .IDENT
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+        if 'class' in expected:
+            self.append(seq, val, 'class', token=token)
+
+            if 'negation' == context:
+                return Constants.negationend
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected class.', token=token)
+            return expected
+
+    def _hash(self, expected, seq, token, tokenizer=None):
+        # #IDENT
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+        if 'HASH' in expected:
+            self.append(seq, val, 'id', token=token)
+
+            if 'negation' == context:
+                return Constants.negationend
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected HASH.', token=token)
+            return expected
+
+    def _char(self, expected, seq, token, tokenizer=None):  # noqa: C901
+        # + > ~ ) [ ] + -
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+
+        # context: attrib
+        if ']' == val and 'attrib' == context and ']' in expected:
+            # end of attrib
+            self.append(seq, val, 'attribute-end', token=token)
+            context = self.context.pop()  # attrib is done
+            context = self.context[-1]
+            if 'negation' == context:
+                return Constants.negationend
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        elif '=' == val and 'attrib' == context and 'combinator' in expected:
+            # combinator in attrib
+            self.append(seq, val, 'equals', token=token)
+            return Constants.attvalue
+
+        # context: negation
+        elif ')' == val and 'negation' == context and ')' in expected:
+            # not(negation_arg)"
+            self.append(seq, val, 'negation-end', token=token)
+            self.context.pop()  # negation is done
+            context = self.context[-1]
+            return Constants.simple_selector_sequence + Constants.combinator
+
+        # context: pseudo (at least one expression)
+        elif val in '+-' and context.startswith('pseudo-'):
+            # :func(+ -)"
+            _names = {'+': 'plus', '-': 'minus'}
+            if val == '+' and seq and seq[-1].value == Constants.S:
+                seq.replace(-1, val, _names[val])
+            else:
+                self.append(seq, val, _names[val], token=token)
+            return Constants.expression
+
+        elif (
+            ')' == val
+            and context.startswith('pseudo-')
+            and Constants.expression == expected
+        ):
+            # :func(expression)"
+            self.append(seq, val, 'function-end', token=token)
+            self.context.pop()  # pseudo is done
+            if 'pseudo-element' == context:
+                return Constants.combinator
+            else:
+                return Constants.simple_selector_sequence + Constants.combinator
+
+        # context: ROOT
+        elif '[' == val and 'attrib' in expected:
+            # start of [attrib]
+            self.append(seq, val, 'attribute-start', token=token)
+            self.context.append('attrib')
+            return Constants.attname
+
+        elif val in '+>~' and 'combinator' in expected:
+            # no other combinator except S may be following
+            _names = {
+                '>': 'child',
+                '+': 'adjacent-sibling',
+                '~': 'following-sibling',
+            }
+            if seq and seq[-1].value == Constants.S:
+                seq.replace(-1, val, _names[val])
+            else:
+                self.append(seq, val, _names[val], token=token)
+            return Constants.simple_selector_sequence
+
+        elif ',' == val:
+            # not a selectorlist
+            self.wellformed = False
+            self._log.error(
+                'Selector: Single selector only.',
+                error=xml.dom.InvalidModificationErr,
+                token=token,
+            )
+            return expected
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected CHAR.', token=token)
+            return expected
+
+    def _negation(self, expected, seq, token, tokenizer=None):
+        # not(
+        val = self.selector._tokenvalue(token, normalize=True)
+        if 'negation' in expected:
+            self.context.append('negation')
+            self.append(seq, val, 'negation-start', token=token)
+            return Constants.negation_arg
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected negation.', token=token)
+            return expected
+
+    def _atkeyword(self, expected, seq, token, tokenizer=None):
+        "invalidates selector"
+        self.wellformed = False
+        self._log.error('Selector: Unexpected ATKEYWORD.', token=token)
+        return expected
+
+    @property
+    def productions(self):
+        return {
+            'CHAR': self._char,
+            'class': self._class,
+            'HASH': self._hash,
+            'STRING': self._string,
+            'IDENT': self._ident,
+            'namespace_prefix': self._namespace_prefix,
+            'negation': self._negation,
+            'pseudo-class': self._pseudo,
+            'pseudo-element': self._pseudo,
+            'universal': self._universal,
+            # pseudo
+            'NUMBER': self._expression,
+            'DIMENSION': self._expression,
+            # attribute
+            'PREFIXMATCH': self._attcombinator,
+            'SUFFIXMATCH': self._attcombinator,
+            'SUBSTRINGMATCH': self._attcombinator,
+            'DASHMATCH': self._attcombinator,
+            'INCLUDES': self._attcombinator,
+            'S': self._S,
+            'COMMENT': self._COMMENT,
+            'ATKEYWORD': self._atkeyword,
+        }
 
 
 class Selector(cssutils.util.Base2):
@@ -302,7 +679,7 @@ class Selector(cssutils.util.Base2):
         """Return serialized format."""
         return cssutils.ser.do_css_Selector(self)
 
-    def _setSelectorText(self, selectorText):  # noqa: C901
+    def _setSelectorText(self, selectorText):
         """
         :param selectorText:
             parsable string or a tuple of (selectorText, dict-of-namespaces).
@@ -336,380 +713,16 @@ class Selector(cssutils.util.Base2):
 
         tokenizer = self._prepare_tokens(tokenizer)
 
-        new = New(namespaces=namespaces)
-
-        # used for equality checks and setting of a space combinator
-        S = ' '
-
-        # expected constants
-        simple_selector_sequence = (
-            'type_selector universal HASH class ' 'attrib pseudo negation '
-        )
-        simple_selector_sequence2 = 'HASH class attrib pseudo negation '
-
-        element_name = 'element_name'
-
-        negation_arg = 'type_selector universal HASH class attrib pseudo'
-        negationend = ')'
-
-        attname = 'prefix attribute'
-        attname2 = 'attribute'
-        attcombinator = 'combinator ]'  # optional
-        attvalue = 'value'  # optional
-        attend = ']'
-
-        expressionstart = 'PLUS - DIMENSION NUMBER STRING IDENT'
-        expression = expressionstart + ' )'
-
-        combinator = ' combinator'
-
-        def _COMMENT(expected, seq, token, tokenizer=None):
-            "special implementation for comment token"
-            new.append(seq, cssutils.css.CSSComment([token]), 'COMMENT', token=token)
-            return expected
-
-        def _S(expected, seq, token, tokenizer=None):
-            # S
-            context = new.context[-1]
-            if context.startswith('pseudo-'):
-                if seq and seq[-1].value not in '+-':
-                    # e.g. x:func(a + b)
-                    new.append(seq, S, 'S', token=token)
-                return expected
-
-            elif context != 'attrib' and 'combinator' in expected:
-                new.append(seq, S, 'descendant', token=token)
-                return simple_selector_sequence + combinator
-
-            else:
-                return expected
-
-        def _universal(expected, seq, token, tokenizer=None):
-            # *|* or prefix|*
-            context = new.context[-1]
-            val = self._tokenvalue(token)
-            if 'universal' in expected:
-                new.append(seq, val, 'universal', token=token)
-
-                if 'negation' == context:
-                    return negationend
-                else:
-                    return simple_selector_sequence2 + combinator
-
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected universal.', token=token)
-                return expected
-
-        def _namespace_prefix(expected, seq, token, tokenizer=None):
-            # prefix| => element_name
-            # or prefix| => attribute_name if attrib
-            context = new.context[-1]
-            val = self._tokenvalue(token)
-            if 'attrib' == context and 'prefix' in expected:
-                # [PREFIX|att]
-                new.append(seq, val, '_PREFIX', token=token)
-                return attname2
-            elif 'type_selector' in expected:
-                # PREFIX|*
-                new.append(seq, val, '_PREFIX', token=token)
-                return element_name
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected namespace prefix.', token=token)
-                return expected
-
-        def _pseudo(expected, seq, token, tokenizer=None):
-            # pseudo-class or pseudo-element :a ::a :a( ::a(
-            """
-            /* '::' starts a pseudo-element, ':' a pseudo-class */
-            /* Exceptions: :first-line, :first-letter, :before and
-            :after. */
-            /* Note that pseudo-elements are restricted to one per selector
-            and */
-            /* occur only in the last simple_selector_sequence. */
-            """
-            context = new.context[-1]
-            val, typ = self._tokenvalue(token, normalize=True), self._type(token)
-            if 'pseudo' in expected:
-                if val in (':first-line', ':first-letter', ':before', ':after'):
-                    # always pseudo-element ???
-                    typ = 'pseudo-element'
-                new.append(seq, val, typ, token=token)
-
-                if val.endswith('('):
-                    # function
-                    # "pseudo-" "class" or "element"
-                    new.context.append(typ)
-                    return expressionstart
-                elif 'negation' == context:
-                    return negationend
-                elif 'pseudo-element' == typ:
-                    # only one per element, check at ) also!
-                    return combinator
-                else:
-                    return simple_selector_sequence2 + combinator
-
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected start of pseudo.', token=token)
-                return expected
-
-        def _expression(expected, seq, token, tokenizer=None):
-            # [ [ PLUS | '-' | DIMENSION | NUMBER | STRING | IDENT ] S* ]+
-            context = new.context[-1]
-            val, typ = self._tokenvalue(token), self._type(token)
-            if context.startswith('pseudo-'):
-                new.append(seq, val, typ, token=token)
-                return expression
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected %s.' % typ, token=token)
-                return expected
-
-        def _attcombinator(expected, seq, token, tokenizer=None):
-            # context: attrib
-            # PREFIXMATCH | SUFFIXMATCH | SUBSTRINGMATCH | INCLUDES |
-            # DASHMATCH
-            context = new.context[-1]
-            val, typ = self._tokenvalue(token), self._type(token)
-            if 'attrib' == context and 'combinator' in expected:
-                # combinator in attrib
-                new.append(seq, val, typ.lower(), token=token)
-                return attvalue
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected %s.' % typ, token=token)
-                return expected
-
-        def _string(expected, seq, token, tokenizer=None):
-            # identifier
-            context = new.context[-1]
-            typ, val = self._type(token), self._stringtokenvalue(token)
-
-            # context: attrib
-            if 'attrib' == context and 'value' in expected:
-                # attrib: [...=VALUE]
-                new.append(seq, val, typ, token=token)
-                return attend
-
-            # context: pseudo
-            elif context.startswith('pseudo-'):
-                # :func(...)
-                new.append(seq, val, typ, token=token)
-                return expression
-
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected STRING.', token=token)
-                return expected
-
-        def _ident(expected, seq, token, tokenizer=None):
-            # identifier
-            context = new.context[-1]
-            val, typ = self._tokenvalue(token), self._type(token)
-
-            # context: attrib
-            if 'attrib' == context and 'attribute' in expected:
-                # attrib: [...|ATT...]
-                new.append(seq, val, 'attribute-selector', token=token)
-                return attcombinator
-
-            elif 'attrib' == context and 'value' in expected:
-                # attrib: [...=VALUE]
-                new.append(seq, val, 'attribute-value', token=token)
-                return attend
-
-            # context: negation
-            elif 'negation' == context:
-                # negation: (prefix|IDENT)
-                new.append(seq, val, 'negation-type-selector', token=token)
-                return negationend
-
-            # context: pseudo
-            elif context.startswith('pseudo-'):
-                # :func(...)
-                new.append(seq, val, typ, token=token)
-                return expression
-
-            elif 'type_selector' in expected or element_name == expected:
-                # element name after ns or complete type_selector
-                new.append(seq, val, 'type-selector', token=token)
-                return simple_selector_sequence2 + combinator
-
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected IDENT.', token=token)
-                return expected
-
-        def _class(expected, seq, token, tokenizer=None):
-            # .IDENT
-            context = new.context[-1]
-            val = self._tokenvalue(token)
-            if 'class' in expected:
-                new.append(seq, val, 'class', token=token)
-
-                if 'negation' == context:
-                    return negationend
-                else:
-                    return simple_selector_sequence2 + combinator
-
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected class.', token=token)
-                return expected
-
-        def _hash(expected, seq, token, tokenizer=None):
-            # #IDENT
-            context = new.context[-1]
-            val = self._tokenvalue(token)
-            if 'HASH' in expected:
-                new.append(seq, val, 'id', token=token)
-
-                if 'negation' == context:
-                    return negationend
-                else:
-                    return simple_selector_sequence2 + combinator
-
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected HASH.', token=token)
-                return expected
-
-        def _char(expected, seq, token, tokenizer=None):  # noqa: C901
-            # + > ~ ) [ ] + -
-            context = new.context[-1]
-            val = self._tokenvalue(token)
-
-            # context: attrib
-            if ']' == val and 'attrib' == context and ']' in expected:
-                # end of attrib
-                new.append(seq, val, 'attribute-end', token=token)
-                context = new.context.pop()  # attrib is done
-                context = new.context[-1]
-                if 'negation' == context:
-                    return negationend
-                else:
-                    return simple_selector_sequence2 + combinator
-
-            elif '=' == val and 'attrib' == context and 'combinator' in expected:
-                # combinator in attrib
-                new.append(seq, val, 'equals', token=token)
-                return attvalue
-
-            # context: negation
-            elif ')' == val and 'negation' == context and ')' in expected:
-                # not(negation_arg)"
-                new.append(seq, val, 'negation-end', token=token)
-                new.context.pop()  # negation is done
-                context = new.context[-1]
-                return simple_selector_sequence + combinator
-
-            # context: pseudo (at least one expression)
-            elif val in '+-' and context.startswith('pseudo-'):
-                # :func(+ -)"
-                _names = {'+': 'plus', '-': 'minus'}
-                if val == '+' and seq and seq[-1].value == S:
-                    seq.replace(-1, val, _names[val])
-                else:
-                    new.append(seq, val, _names[val], token=token)
-                return expression
-
-            elif (
-                ')' == val and context.startswith('pseudo-') and expression == expected
-            ):
-                # :func(expression)"
-                new.append(seq, val, 'function-end', token=token)
-                new.context.pop()  # pseudo is done
-                if 'pseudo-element' == context:
-                    return combinator
-                else:
-                    return simple_selector_sequence + combinator
-
-            # context: ROOT
-            elif '[' == val and 'attrib' in expected:
-                # start of [attrib]
-                new.append(seq, val, 'attribute-start', token=token)
-                new.context.append('attrib')
-                return attname
-
-            elif val in '+>~' and 'combinator' in expected:
-                # no other combinator except S may be following
-                _names = {
-                    '>': 'child',
-                    '+': 'adjacent-sibling',
-                    '~': 'following-sibling',
-                }
-                if seq and seq[-1].value == S:
-                    seq.replace(-1, val, _names[val])
-                else:
-                    new.append(seq, val, _names[val], token=token)
-                return simple_selector_sequence
-
-            elif ',' == val:
-                # not a selectorlist
-                new.wellformed = False
-                self._log.error(
-                    'Selector: Single selector only.',
-                    error=xml.dom.InvalidModificationErr,
-                    token=token,
-                )
-                return expected
-
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected CHAR.', token=token)
-                return expected
-
-        def _negation(expected, seq, token, tokenizer=None):
-            # not(
-            val = self._tokenvalue(token, normalize=True)
-            if 'negation' in expected:
-                new.context.append('negation')
-                new.append(seq, val, 'negation-start', token=token)
-                return negation_arg
-            else:
-                new.wellformed = False
-                self._log.error('Selector: Unexpected negation.', token=token)
-                return expected
-
-        def _atkeyword(expected, seq, token, tokenizer=None):
-            "invalidates selector"
-            new.wellformed = False
-            self._log.error('Selector: Unexpected ATKEYWORD.', token=token)
-            return expected
+        new = New(selector=self, namespaces=namespaces)
 
         # expected: only|not or mediatype, mediatype, feature, and
         newseq = self._tempSeq()
 
         wellformed, expected = self._parse(
-            expected=simple_selector_sequence,
+            expected=Constants.simple_selector_sequence,
             seq=newseq,
             tokenizer=tokenizer,
-            productions={
-                'CHAR': _char,
-                'class': _class,
-                'HASH': _hash,
-                'STRING': _string,
-                'IDENT': _ident,
-                'namespace_prefix': _namespace_prefix,
-                'negation': _negation,
-                'pseudo-class': _pseudo,
-                'pseudo-element': _pseudo,
-                'universal': _universal,
-                # pseudo
-                'NUMBER': _expression,
-                'DIMENSION': _expression,
-                # attribute
-                'PREFIXMATCH': _attcombinator,
-                'SUFFIXMATCH': _attcombinator,
-                'SUBSTRINGMATCH': _attcombinator,
-                'DASHMATCH': _attcombinator,
-                'INCLUDES': _attcombinator,
-                'S': _S,
-                'COMMENT': _COMMENT,
-                'ATKEYWORD': _atkeyword,
-            },
+            productions=new.productions,
         )
         wellformed = wellformed and new.wellformed
 
@@ -727,7 +740,7 @@ class Selector(cssutils.util.Base2):
                 'Selector: No element name found: %s' % self._valuestr(selectorText)
             )
 
-        if expected == simple_selector_sequence and newseq:
+        if expected == Constants.simple_selector_sequence and newseq:
             wellformed = False
             self._log.error(
                 'Selector: Cannot end with combinator: %s'
