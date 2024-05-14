@@ -6,13 +6,492 @@ TODO
     - .isSubselector(selector)
 """
 
+from __future__ import annotations
+
 __all__ = ['Selector']
 
+import contextlib
+import dataclasses
 import xml.dom
 
 import cssutils
 from cssutils.helper import Deprecated
 from cssutils.util import _SimpleNamespaces
+
+
+class Constants:
+    "expected constants"
+
+    # used for equality checks and setting of a space combinator
+    S = ' '
+
+    simple_selector_sequence = (
+        'type_selector universal HASH class ' 'attrib pseudo negation '
+    )
+    simple_selector_sequence2 = 'HASH class attrib pseudo negation '
+
+    element_name = 'element_name'
+
+    negation_arg = 'type_selector universal HASH class attrib pseudo'
+    negationend = ')'
+
+    attname = 'prefix attribute'
+    attname2 = 'attribute'
+    attcombinator = 'combinator ]'  # optional
+    attvalue = 'value'  # optional
+    attend = ']'
+
+    expressionstart = 'PLUS - DIMENSION NUMBER STRING IDENT'
+    expression = expressionstart + ' )'
+
+    combinator = ' combinator'
+
+
+@dataclasses.dataclass
+class New(cssutils.util._BaseClass):
+    """
+    Derives from _BaseClass to provide self._log.
+    """
+
+    selector: Selector
+    namespaces: dict[str, str]
+    context: list[str] = dataclasses.field(default_factory=lambda: [''])
+    "stack of: 'attrib', 'negation', 'pseudo'"
+    element: str | None = None
+    _PREFIX: str | None = None
+    specificity: list[int] = dataclasses.field(default_factory=lambda: [0] * 4)
+    "mutable, finally a tuple!"
+    wellformed: bool = True
+
+    def append(self, seq, val, typ=None, token=None):  # noqa: C901
+        """
+        appends to seq
+
+        namespace_prefix, IDENT will be combined to a tuple
+        (prefix, name) where prefix might be None, the empty string
+        or a prefix.
+
+        Saved are also:
+            - specificity definition: style, id, class/att, type
+            - element: the element this Selector is for
+        """
+        context = self.context[-1]
+        if token:
+            line, col = token[2], token[3]
+        else:
+            line, col = None, None
+
+        if typ == '_PREFIX':
+            # SPECIAL TYPE: save prefix for combination with next
+            self._PREFIX = val[:-1]
+            # handle next time
+            return
+
+        if self._PREFIX is not None:
+            # as saved from before and reset to None
+            prefix, self._PREFIX = self._PREFIX, None
+        elif typ == 'universal' and '|' in val:
+            # val == *|* or prefix|*
+            prefix, val = val.split('|')
+        else:
+            prefix = None
+
+        # namespace
+        if (typ.endswith('-selector') or typ == 'universal') and not (
+            'attribute-selector' == typ and not prefix
+        ):
+            # att **IS NOT** in default ns
+            if prefix == '*':
+                # *|name: in ANY_NS
+                namespaceURI = cssutils._ANYNS
+            elif prefix is None:
+                # e or *: default namespace with prefix u''
+                # or local-name()
+                namespaceURI = self.namespaces.get('', None)
+            elif prefix == '':
+                # |name or |*: in no (or the empty) namespace
+                namespaceURI = ''
+            else:
+                # explicit namespace prefix
+                # does not raise KeyError, see _SimpleNamespaces
+                namespaceURI = self.namespaces[prefix]
+
+                if namespaceURI is None:
+                    self.wellformed = False
+                    self._log.error(
+                        'Selector: No namespaceURI found ' 'for prefix %r' % prefix,
+                        token=token,
+                        error=xml.dom.NamespaceErr,
+                    )
+                    return
+
+            # val is now (namespaceprefix, name) tuple
+            val = (namespaceURI, val)
+
+        # specificity
+        if not context or context == 'negation':
+            if 'id' == typ:
+                self.specificity[1] += 1
+            elif 'class' == typ or '[' == val:
+                self.specificity[2] += 1
+            elif typ in (
+                'type-selector',
+                'negation-type-selector',
+                'pseudo-element',
+            ):
+                self.specificity[3] += 1
+        if not context and typ in ('type-selector', 'universal'):
+            # define element
+            self.element = val
+
+        seq.append(val, typ, line=line, col=col)
+
+    def _COMMENT(self, expected, seq, token, tokenizer=None):
+        "special implementation for comment token"
+        self.append(seq, cssutils.css.CSSComment([token]), 'COMMENT', token=token)
+        return expected
+
+    def _S(self, expected, seq, token, tokenizer=None):
+        # S
+        context = self.context[-1]
+        if context.startswith('pseudo-'):
+            if seq and seq[-1].value not in '+-':
+                # e.g. x:func(a + b)
+                self.append(seq, Constants.S, 'S', token=token)
+            return expected
+
+        elif context != 'attrib' and 'combinator' in expected:
+            self.append(seq, Constants.S, 'descendant', token=token)
+            return Constants.simple_selector_sequence + Constants.combinator
+
+        else:
+            return expected
+
+    def _universal(self, expected, seq, token, tokenizer=None):
+        # *|* or prefix|*
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+        if 'universal' in expected:
+            self.append(seq, val, 'universal', token=token)
+
+            if 'negation' == context:
+                return Constants.negationend
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected universal.', token=token)
+            return expected
+
+    def _namespace_prefix(self, expected, seq, token, tokenizer=None):
+        # prefix| => element_name
+        # or prefix| => attribute_name if attrib
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+        if 'attrib' == context and 'prefix' in expected:
+            # [PREFIX|att]
+            self.append(seq, val, '_PREFIX', token=token)
+            return Constants.attname2
+        elif 'type_selector' in expected:
+            # PREFIX|*
+            self.append(seq, val, '_PREFIX', token=token)
+            return Constants.element_name
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected namespace prefix.', token=token)
+            return expected
+
+    def _pseudo(self, expected, seq, token, tokenizer=None):
+        # pseudo-class or pseudo-element :a ::a :a( ::a(
+        """
+        /* '::' starts a pseudo-element, ':' a pseudo-class */
+        /* Exceptions: :first-line, :first-letter, :before and
+        :after. */
+        /* Note that pseudo-elements are restricted to one per selector
+        and */
+        /* occur only in the last simple_selector_sequence. */
+        """
+        context = self.context[-1]
+        val, typ = (
+            self.selector._tokenvalue(token, normalize=True),
+            self.selector._type(token),
+        )
+        if 'pseudo' in expected:
+            if val in (':first-line', ':first-letter', ':before', ':after'):
+                # always pseudo-element ???
+                typ = 'pseudo-element'
+            self.append(seq, val, typ, token=token)
+
+            if val.endswith('('):
+                # function
+                # "pseudo-" "class" or "element"
+                self.context.append(typ)
+                return Constants.expressionstart
+            elif 'negation' == context:
+                return Constants.negationend
+            elif 'pseudo-element' == typ:
+                # only one per element, check at ) also!
+                return Constants.combinator
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected start of pseudo.', token=token)
+            return expected
+
+    def _expression(self, expected, seq, token, tokenizer=None):
+        # [ [ PLUS | '-' | DIMENSION | NUMBER | STRING | IDENT ] S* ]+
+        context = self.context[-1]
+        val, typ = self.selector._tokenvalue(token), self.selector._type(token)
+        if context.startswith('pseudo-'):
+            self.append(seq, val, typ, token=token)
+            return Constants.expression
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected %s.' % typ, token=token)
+            return expected
+
+    def _attcombinator(self, expected, seq, token, tokenizer=None):
+        # context: attrib
+        # PREFIXMATCH | SUFFIXMATCH | SUBSTRINGMATCH | INCLUDES |
+        # DASHMATCH
+        context = self.context[-1]
+        val, typ = self.selector._tokenvalue(token), self.selector._type(token)
+        if 'attrib' == context and 'combinator' in expected:
+            # combinator in attrib
+            self.append(seq, val, typ.lower(), token=token)
+            return Constants.attvalue
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected %s.' % typ, token=token)
+            return expected
+
+    def _string(self, expected, seq, token, tokenizer=None):
+        # identifier
+        context = self.context[-1]
+        typ, val = self.selector._type(token), self.selector._stringtokenvalue(token)
+
+        # context: attrib
+        if 'attrib' == context and 'value' in expected:
+            # attrib: [...=VALUE]
+            self.append(seq, val, typ, token=token)
+            return Constants.attend
+
+        # context: pseudo
+        elif context.startswith('pseudo-'):
+            # :func(...)
+            self.append(seq, val, typ, token=token)
+            return Constants.expression
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected STRING.', token=token)
+            return expected
+
+    def _ident(self, expected, seq, token, tokenizer=None):
+        # identifier
+        context = self.context[-1]
+        val, typ = self.selector._tokenvalue(token), self.selector._type(token)
+
+        # context: attrib
+        if 'attrib' == context and 'attribute' in expected:
+            # attrib: [...|ATT...]
+            self.append(seq, val, 'attribute-selector', token=token)
+            return Constants.attcombinator
+
+        elif 'attrib' == context and 'value' in expected:
+            # attrib: [...=VALUE]
+            self.append(seq, val, 'attribute-value', token=token)
+            return Constants.attend
+
+        # context: negation
+        elif 'negation' == context:
+            # negation: (prefix|IDENT)
+            self.append(seq, val, 'negation-type-selector', token=token)
+            return Constants.negationend
+
+        # context: pseudo
+        elif context.startswith('pseudo-'):
+            # :func(...)
+            self.append(seq, val, typ, token=token)
+            return Constants.expression
+
+        elif 'type_selector' in expected or Constants.element_name == expected:
+            # element name after ns or complete type_selector
+            self.append(seq, val, 'type-selector', token=token)
+            return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected IDENT.', token=token)
+            return expected
+
+    def _class(self, expected, seq, token, tokenizer=None):
+        # .IDENT
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+        if 'class' in expected:
+            self.append(seq, val, 'class', token=token)
+
+            if 'negation' == context:
+                return Constants.negationend
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected class.', token=token)
+            return expected
+
+    def _hash(self, expected, seq, token, tokenizer=None):
+        # #IDENT
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+        if 'HASH' in expected:
+            self.append(seq, val, 'id', token=token)
+
+            if 'negation' == context:
+                return Constants.negationend
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected HASH.', token=token)
+            return expected
+
+    def _char(self, expected, seq, token, tokenizer=None):  # noqa: C901
+        # + > ~ ) [ ] + -
+        context = self.context[-1]
+        val = self.selector._tokenvalue(token)
+
+        # context: attrib
+        if ']' == val and 'attrib' == context and ']' in expected:
+            # end of attrib
+            self.append(seq, val, 'attribute-end', token=token)
+            context = self.context.pop()  # attrib is done
+            context = self.context[-1]
+            if 'negation' == context:
+                return Constants.negationend
+            else:
+                return Constants.simple_selector_sequence2 + Constants.combinator
+
+        if '=' == val and 'attrib' == context and 'combinator' in expected:
+            # combinator in attrib
+            self.append(seq, val, 'equals', token=token)
+            return Constants.attvalue
+
+        # context: negation
+        if ')' == val and 'negation' == context and ')' in expected:
+            # not(negation_arg)"
+            self.append(seq, val, 'negation-end', token=token)
+            self.context.pop()  # negation is done
+            context = self.context[-1]
+            return Constants.simple_selector_sequence + Constants.combinator
+
+        # context: pseudo (at least one expression)
+        if val in '+-' and context.startswith('pseudo-'):
+            # :func(+ -)"
+            _names = {'+': 'plus', '-': 'minus'}
+            if val == '+' and seq and seq[-1].value == Constants.S:
+                seq.replace(-1, val, _names[val])
+            else:
+                self.append(seq, val, _names[val], token=token)
+            return Constants.expression
+
+        if (
+            ')' == val
+            and context.startswith('pseudo-')
+            and Constants.expression == expected
+        ):
+            # :func(expression)"
+            self.append(seq, val, 'function-end', token=token)
+            self.context.pop()  # pseudo is done
+            if 'pseudo-element' == context:
+                return Constants.combinator
+            else:
+                return Constants.simple_selector_sequence + Constants.combinator
+
+        # context: ROOT
+        if '[' == val and 'attrib' in expected:
+            # start of [attrib]
+            self.append(seq, val, 'attribute-start', token=token)
+            self.context.append('attrib')
+            return Constants.attname
+
+        if val in '+>~' and 'combinator' in expected:
+            # no other combinator except S may be following
+            _names = {
+                '>': 'child',
+                '+': 'adjacent-sibling',
+                '~': 'following-sibling',
+            }
+            if seq and seq[-1].value == Constants.S:
+                seq.replace(-1, val, _names[val])
+            else:
+                self.append(seq, val, _names[val], token=token)
+            return Constants.simple_selector_sequence
+
+        if ',' == val:
+            # not a selectorlist
+            self.wellformed = False
+            self._log.error(
+                'Selector: Single selector only.',
+                error=xml.dom.InvalidModificationErr,
+                token=token,
+            )
+            return expected
+
+        self.wellformed = False
+        self._log.error('Selector: Unexpected CHAR.', token=token)
+        return expected
+
+    def _negation(self, expected, seq, token, tokenizer=None):
+        # not(
+        val = self.selector._tokenvalue(token, normalize=True)
+        if 'negation' in expected:
+            self.context.append('negation')
+            self.append(seq, val, 'negation-start', token=token)
+            return Constants.negation_arg
+        else:
+            self.wellformed = False
+            self._log.error('Selector: Unexpected negation.', token=token)
+            return expected
+
+    def _atkeyword(self, expected, seq, token, tokenizer=None):
+        "invalidates selector"
+        self.wellformed = False
+        self._log.error('Selector: Unexpected ATKEYWORD.', token=token)
+        return expected
+
+    @property
+    def productions(self):
+        return {
+            'CHAR': self._char,
+            'class': self._class,
+            'HASH': self._hash,
+            'STRING': self._string,
+            'IDENT': self._ident,
+            'namespace_prefix': self._namespace_prefix,
+            'negation': self._negation,
+            'pseudo-class': self._pseudo,
+            'pseudo-element': self._pseudo,
+            'universal': self._universal,
+            # pseudo
+            'NUMBER': self._expression,
+            'DIMENSION': self._expression,
+            # attribute
+            'PREFIXMATCH': self._attcombinator,
+            'SUFFIXMATCH': self._attcombinator,
+            'SUBSTRINGMATCH': self._attcombinator,
+            'DASHMATCH': self._attcombinator,
+            'INCLUDES': self._attcombinator,
+            'S': self._S,
+            'COMMENT': self._COMMENT,
+            'ATKEYWORD': self._atkeyword,
+        }
 
 
 class Selector(cssutils.util.Base2):
@@ -199,7 +678,7 @@ class Selector(cssutils.util.Base2):
         """Return serialized format."""
         return cssutils.ser.do_css_Selector(self)
 
-    def _setSelectorText(self, selectorText):  # noqa: C901
+    def _setSelectorText(self, selectorText):
         """
         :param selectorText:
             parsable string or a tuple of (selectorText, dict-of-namespaces).
@@ -221,614 +700,158 @@ class Selector(cssutils.util.Base2):
         # might be (selectorText, namespaces)
         selectorText, namespaces = self._splitNamespacesOff(selectorText)
 
-        try:
+        with contextlib.suppress(AttributeError):
             # uses parent stylesheets namespaces if available,
             # otherwise given ones
             namespaces = self.parent.parentRule.parentStyleSheet.namespaces
-        except AttributeError:
-            pass
+
         tokenizer = self._tokenize2(selectorText)
         if not tokenizer:
             self._log.error('Selector: No selectorText given.')
-        else:
-            # prepare tokenlist:
-            #     "*" -> type "universal"
-            #     "*"|IDENT + "|" -> combined to "namespace_prefix"
-            #     "|" -> type "namespace_prefix"
-            #     "." + IDENT -> combined to "class"
-            #     ":" + IDENT, ":" + FUNCTION -> pseudo-class
-            #     FUNCTION "not(" -> negation
-            #     "::" + IDENT, "::" + FUNCTION -> pseudo-element
-            tokens = []
-            for t in tokenizer:
-                typ, val, lin, col = t
-                if val == ':' and tokens and self._tokenvalue(tokens[-1]) == ':':
-                    # combine ":" and ":"
-                    tokens[-1] = (typ, '::', lin, col)
+            return
 
-                elif typ == 'IDENT' and tokens and self._tokenvalue(tokens[-1]) == '.':
-                    # class: combine to .IDENT
-                    tokens[-1] = ('class', '.' + val, lin, col)
-                elif (
-                    typ == 'IDENT'
-                    and tokens
-                    and self._tokenvalue(tokens[-1]).startswith(':')
-                    and not self._tokenvalue(tokens[-1]).endswith('(')
-                ):
-                    # pseudo-X: combine to :IDENT or ::IDENT but not ":a(" + "b"
-                    if self._tokenvalue(tokens[-1]).startswith('::'):
-                        t = 'pseudo-element'
-                    else:
-                        t = 'pseudo-class'
-                    tokens[-1] = (t, self._tokenvalue(tokens[-1]) + val, lin, col)
+        tokenizer = self._prepare_tokens(tokenizer)
 
-                elif (
-                    typ == 'FUNCTION'
-                    and val == 'not('
-                    and tokens
-                    and ':' == self._tokenvalue(tokens[-1])
-                ):
-                    tokens[-1] = ('negation', ':' + val, lin, tokens[-1][3])
-                elif (
-                    typ == 'FUNCTION'
-                    and tokens
-                    and self._tokenvalue(tokens[-1]).startswith(':')
-                ):
-                    # pseudo-X: combine to :FUNCTION( or ::FUNCTION(
-                    if self._tokenvalue(tokens[-1]).startswith('::'):
-                        t = 'pseudo-element'
-                    else:
-                        t = 'pseudo-class'
-                    tokens[-1] = (t, self._tokenvalue(tokens[-1]) + val, lin, col)
+        new = New(selector=self, namespaces=namespaces)
 
-                elif (
-                    val == '*'
-                    and tokens
-                    and self._type(tokens[-1]) == 'namespace_prefix'
-                    and self._tokenvalue(tokens[-1]).endswith('|')
-                ):
-                    # combine prefix|*
-                    tokens[-1] = (
-                        'universal',
-                        self._tokenvalue(tokens[-1]) + val,
-                        lin,
-                        col,
-                    )
-                elif val == '*':
-                    # universal: "*"
-                    tokens.append(('universal', val, lin, col))
+        # expected: only|not or mediatype, mediatype, feature, and
+        newseq = self._tempSeq()
 
-                elif (
-                    val == '|'
-                    and tokens
-                    and self._type(tokens[-1]) in (self._prods.IDENT, 'universal')
-                    and self._tokenvalue(tokens[-1]).find('|') == -1
-                ):
-                    # namespace_prefix: "IDENT|" or "*|"
-                    tokens[-1] = (
-                        'namespace_prefix',
-                        self._tokenvalue(tokens[-1]) + '|',
-                        lin,
-                        col,
-                    )
-                elif val == '|':
-                    # namespace_prefix: "|"
-                    tokens.append(('namespace_prefix', val, lin, col))
+        wellformed, expected = self._parse(
+            expected=Constants.simple_selector_sequence,
+            seq=newseq,
+            tokenizer=tokenizer,
+            productions=new.productions,
+        )
+        wellformed = wellformed and new.wellformed
 
-                else:
-                    tokens.append(t)
-
-            tokenizer = iter(tokens)
-
-            # for closures: must be a mutable
-            new = {
-                'context': [''],  # stack of: 'attrib', 'negation', 'pseudo'
-                'element': None,
-                '_PREFIX': None,
-                'specificity': [0, 0, 0, 0],  # mutable, finally a tuple!
-                'wellformed': True,
-            }
-            # used for equality checks and setting of a space combinator
-            S = ' '
-
-            def append(seq, val, typ=None, token=None):  # noqa: C901
-                """
-                appends to seq
-
-                namespace_prefix, IDENT will be combined to a tuple
-                (prefix, name) where prefix might be None, the empty string
-                or a prefix.
-
-                Saved are also:
-                    - specificity definition: style, id, class/att, type
-                    - element: the element this Selector is for
-                """
-                context = new['context'][-1]
-                if token:
-                    line, col = token[2], token[3]
-                else:
-                    line, col = None, None
-
-                if typ == '_PREFIX':
-                    # SPECIAL TYPE: save prefix for combination with next
-                    new['_PREFIX'] = val[:-1]
-                    # handle next time
-                    return
-
-                if new['_PREFIX'] is not None:
-                    # as saved from before and reset to None
-                    prefix, new['_PREFIX'] = new['_PREFIX'], None
-                elif typ == 'universal' and '|' in val:
-                    # val == *|* or prefix|*
-                    prefix, val = val.split('|')
-                else:
-                    prefix = None
-
-                # namespace
-                if (typ.endswith('-selector') or typ == 'universal') and not (
-                    'attribute-selector' == typ and not prefix
-                ):
-                    # att **IS NOT** in default ns
-                    if prefix == '*':
-                        # *|name: in ANY_NS
-                        namespaceURI = cssutils._ANYNS
-                    elif prefix is None:
-                        # e or *: default namespace with prefix u''
-                        # or local-name()
-                        namespaceURI = namespaces.get('', None)
-                    elif prefix == '':
-                        # |name or |*: in no (or the empty) namespace
-                        namespaceURI = ''
-                    else:
-                        # explicit namespace prefix
-                        # does not raise KeyError, see _SimpleNamespaces
-                        namespaceURI = namespaces[prefix]
-
-                        if namespaceURI is None:
-                            new['wellformed'] = False
-                            self._log.error(
-                                'Selector: No namespaceURI found '
-                                'for prefix %r' % prefix,
-                                token=token,
-                                error=xml.dom.NamespaceErr,
-                            )
-                            return
-
-                    # val is now (namespaceprefix, name) tuple
-                    val = (namespaceURI, val)
-
-                # specificity
-                if not context or context == 'negation':
-                    if 'id' == typ:
-                        new['specificity'][1] += 1
-                    elif 'class' == typ or '[' == val:
-                        new['specificity'][2] += 1
-                    elif typ in (
-                        'type-selector',
-                        'negation-type-selector',
-                        'pseudo-element',
-                    ):
-                        new['specificity'][3] += 1
-                if not context and typ in ('type-selector', 'universal'):
-                    # define element
-                    new['element'] = val
-
-                seq.append(val, typ, line=line, col=col)
-
-            # expected constants
-            simple_selector_sequence = (
-                'type_selector universal HASH class ' 'attrib pseudo negation '
+        # post condition
+        if len(new.context) > 1 or not newseq:
+            wellformed = False
+            self._log.error(
+                'Selector: Invalid or incomplete selector: %s'
+                % self._valuestr(selectorText)
             )
-            simple_selector_sequence2 = 'HASH class attrib pseudo negation '
 
-            element_name = 'element_name'
-
-            negation_arg = 'type_selector universal HASH class attrib pseudo'
-            negationend = ')'
-
-            attname = 'prefix attribute'
-            attname2 = 'attribute'
-            attcombinator = 'combinator ]'  # optional
-            attvalue = 'value'  # optional
-            attend = ']'
-
-            expressionstart = 'PLUS - DIMENSION NUMBER STRING IDENT'
-            expression = expressionstart + ' )'
-
-            combinator = ' combinator'
-
-            def _COMMENT(expected, seq, token, tokenizer=None):
-                "special implementation for comment token"
-                append(seq, cssutils.css.CSSComment([token]), 'COMMENT', token=token)
-                return expected
-
-            def _S(expected, seq, token, tokenizer=None):
-                # S
-                context = new['context'][-1]
-                if context.startswith('pseudo-'):
-                    if seq and seq[-1].value not in '+-':
-                        # e.g. x:func(a + b)
-                        append(seq, S, 'S', token=token)
-                    return expected
-
-                elif context != 'attrib' and 'combinator' in expected:
-                    append(seq, S, 'descendant', token=token)
-                    return simple_selector_sequence + combinator
-
-                else:
-                    return expected
-
-            def _universal(expected, seq, token, tokenizer=None):
-                # *|* or prefix|*
-                context = new['context'][-1]
-                val = self._tokenvalue(token)
-                if 'universal' in expected:
-                    append(seq, val, 'universal', token=token)
-
-                    if 'negation' == context:
-                        return negationend
-                    else:
-                        return simple_selector_sequence2 + combinator
-
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected universal.', token=token)
-                    return expected
-
-            def _namespace_prefix(expected, seq, token, tokenizer=None):
-                # prefix| => element_name
-                # or prefix| => attribute_name if attrib
-                context = new['context'][-1]
-                val = self._tokenvalue(token)
-                if 'attrib' == context and 'prefix' in expected:
-                    # [PREFIX|att]
-                    append(seq, val, '_PREFIX', token=token)
-                    return attname2
-                elif 'type_selector' in expected:
-                    # PREFIX|*
-                    append(seq, val, '_PREFIX', token=token)
-                    return element_name
-                else:
-                    new['wellformed'] = False
-                    self._log.error(
-                        'Selector: Unexpected namespace prefix.', token=token
-                    )
-                    return expected
-
-            def _pseudo(expected, seq, token, tokenizer=None):
-                # pseudo-class or pseudo-element :a ::a :a( ::a(
-                """
-                /* '::' starts a pseudo-element, ':' a pseudo-class */
-                /* Exceptions: :first-line, :first-letter, :before and
-                :after. */
-                /* Note that pseudo-elements are restricted to one per selector
-                and */
-                /* occur only in the last simple_selector_sequence. */
-                """
-                context = new['context'][-1]
-                val, typ = self._tokenvalue(token, normalize=True), self._type(token)
-                if 'pseudo' in expected:
-                    if val in (':first-line', ':first-letter', ':before', ':after'):
-                        # always pseudo-element ???
-                        typ = 'pseudo-element'
-                    append(seq, val, typ, token=token)
-
-                    if val.endswith('('):
-                        # function
-                        # "pseudo-" "class" or "element"
-                        new['context'].append(typ)
-                        return expressionstart
-                    elif 'negation' == context:
-                        return negationend
-                    elif 'pseudo-element' == typ:
-                        # only one per element, check at ) also!
-                        return combinator
-                    else:
-                        return simple_selector_sequence2 + combinator
-
-                else:
-                    new['wellformed'] = False
-                    self._log.error(
-                        'Selector: Unexpected start of pseudo.', token=token
-                    )
-                    return expected
-
-            def _expression(expected, seq, token, tokenizer=None):
-                # [ [ PLUS | '-' | DIMENSION | NUMBER | STRING | IDENT ] S* ]+
-                context = new['context'][-1]
-                val, typ = self._tokenvalue(token), self._type(token)
-                if context.startswith('pseudo-'):
-                    append(seq, val, typ, token=token)
-                    return expression
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected %s.' % typ, token=token)
-                    return expected
-
-            def _attcombinator(expected, seq, token, tokenizer=None):
-                # context: attrib
-                # PREFIXMATCH | SUFFIXMATCH | SUBSTRINGMATCH | INCLUDES |
-                # DASHMATCH
-                context = new['context'][-1]
-                val, typ = self._tokenvalue(token), self._type(token)
-                if 'attrib' == context and 'combinator' in expected:
-                    # combinator in attrib
-                    append(seq, val, typ.lower(), token=token)
-                    return attvalue
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected %s.' % typ, token=token)
-                    return expected
-
-            def _string(expected, seq, token, tokenizer=None):
-                # identifier
-                context = new['context'][-1]
-                typ, val = self._type(token), self._stringtokenvalue(token)
-
-                # context: attrib
-                if 'attrib' == context and 'value' in expected:
-                    # attrib: [...=VALUE]
-                    append(seq, val, typ, token=token)
-                    return attend
-
-                # context: pseudo
-                elif context.startswith('pseudo-'):
-                    # :func(...)
-                    append(seq, val, typ, token=token)
-                    return expression
-
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected STRING.', token=token)
-                    return expected
-
-            def _ident(expected, seq, token, tokenizer=None):
-                # identifier
-                context = new['context'][-1]
-                val, typ = self._tokenvalue(token), self._type(token)
-
-                # context: attrib
-                if 'attrib' == context and 'attribute' in expected:
-                    # attrib: [...|ATT...]
-                    append(seq, val, 'attribute-selector', token=token)
-                    return attcombinator
-
-                elif 'attrib' == context and 'value' in expected:
-                    # attrib: [...=VALUE]
-                    append(seq, val, 'attribute-value', token=token)
-                    return attend
-
-                # context: negation
-                elif 'negation' == context:
-                    # negation: (prefix|IDENT)
-                    append(seq, val, 'negation-type-selector', token=token)
-                    return negationend
-
-                # context: pseudo
-                elif context.startswith('pseudo-'):
-                    # :func(...)
-                    append(seq, val, typ, token=token)
-                    return expression
-
-                elif 'type_selector' in expected or element_name == expected:
-                    # element name after ns or complete type_selector
-                    append(seq, val, 'type-selector', token=token)
-                    return simple_selector_sequence2 + combinator
-
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected IDENT.', token=token)
-                    return expected
-
-            def _class(expected, seq, token, tokenizer=None):
-                # .IDENT
-                context = new['context'][-1]
-                val = self._tokenvalue(token)
-                if 'class' in expected:
-                    append(seq, val, 'class', token=token)
-
-                    if 'negation' == context:
-                        return negationend
-                    else:
-                        return simple_selector_sequence2 + combinator
-
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected class.', token=token)
-                    return expected
-
-            def _hash(expected, seq, token, tokenizer=None):
-                # #IDENT
-                context = new['context'][-1]
-                val = self._tokenvalue(token)
-                if 'HASH' in expected:
-                    append(seq, val, 'id', token=token)
-
-                    if 'negation' == context:
-                        return negationend
-                    else:
-                        return simple_selector_sequence2 + combinator
-
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected HASH.', token=token)
-                    return expected
-
-            def _char(expected, seq, token, tokenizer=None):  # noqa: C901
-                # + > ~ ) [ ] + -
-                context = new['context'][-1]
-                val = self._tokenvalue(token)
-
-                # context: attrib
-                if ']' == val and 'attrib' == context and ']' in expected:
-                    # end of attrib
-                    append(seq, val, 'attribute-end', token=token)
-                    context = new['context'].pop()  # attrib is done
-                    context = new['context'][-1]
-                    if 'negation' == context:
-                        return negationend
-                    else:
-                        return simple_selector_sequence2 + combinator
-
-                elif '=' == val and 'attrib' == context and 'combinator' in expected:
-                    # combinator in attrib
-                    append(seq, val, 'equals', token=token)
-                    return attvalue
-
-                # context: negation
-                elif ')' == val and 'negation' == context and ')' in expected:
-                    # not(negation_arg)"
-                    append(seq, val, 'negation-end', token=token)
-                    new['context'].pop()  # negation is done
-                    context = new['context'][-1]
-                    return simple_selector_sequence + combinator
-
-                # context: pseudo (at least one expression)
-                elif val in '+-' and context.startswith('pseudo-'):
-                    # :func(+ -)"
-                    _names = {'+': 'plus', '-': 'minus'}
-                    if val == '+' and seq and seq[-1].value == S:
-                        seq.replace(-1, val, _names[val])
-                    else:
-                        append(seq, val, _names[val], token=token)
-                    return expression
-
-                elif (
-                    ')' == val
-                    and context.startswith('pseudo-')
-                    and expression == expected
-                ):
-                    # :func(expression)"
-                    append(seq, val, 'function-end', token=token)
-                    new['context'].pop()  # pseudo is done
-                    if 'pseudo-element' == context:
-                        return combinator
-                    else:
-                        return simple_selector_sequence + combinator
-
-                # context: ROOT
-                elif '[' == val and 'attrib' in expected:
-                    # start of [attrib]
-                    append(seq, val, 'attribute-start', token=token)
-                    new['context'].append('attrib')
-                    return attname
-
-                elif val in '+>~' and 'combinator' in expected:
-                    # no other combinator except S may be following
-                    _names = {
-                        '>': 'child',
-                        '+': 'adjacent-sibling',
-                        '~': 'following-sibling',
-                    }
-                    if seq and seq[-1].value == S:
-                        seq.replace(-1, val, _names[val])
-                    else:
-                        append(seq, val, _names[val], token=token)
-                    return simple_selector_sequence
-
-                elif ',' == val:
-                    # not a selectorlist
-                    new['wellformed'] = False
-                    self._log.error(
-                        'Selector: Single selector only.',
-                        error=xml.dom.InvalidModificationErr,
-                        token=token,
-                    )
-                    return expected
-
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected CHAR.', token=token)
-                    return expected
-
-            def _negation(expected, seq, token, tokenizer=None):
-                # not(
-                val = self._tokenvalue(token, normalize=True)
-                if 'negation' in expected:
-                    new['context'].append('negation')
-                    append(seq, val, 'negation-start', token=token)
-                    return negation_arg
-                else:
-                    new['wellformed'] = False
-                    self._log.error('Selector: Unexpected negation.', token=token)
-                    return expected
-
-            def _atkeyword(expected, seq, token, tokenizer=None):
-                "invalidates selector"
-                new['wellformed'] = False
-                self._log.error('Selector: Unexpected ATKEYWORD.', token=token)
-                return expected
-
-            # expected: only|not or mediatype, mediatype, feature, and
-            newseq = self._tempSeq()
-
-            wellformed, expected = self._parse(
-                expected=simple_selector_sequence,
-                seq=newseq,
-                tokenizer=tokenizer,
-                productions={
-                    'CHAR': _char,
-                    'class': _class,
-                    'HASH': _hash,
-                    'STRING': _string,
-                    'IDENT': _ident,
-                    'namespace_prefix': _namespace_prefix,
-                    'negation': _negation,
-                    'pseudo-class': _pseudo,
-                    'pseudo-element': _pseudo,
-                    'universal': _universal,
-                    # pseudo
-                    'NUMBER': _expression,
-                    'DIMENSION': _expression,
-                    # attribute
-                    'PREFIXMATCH': _attcombinator,
-                    'SUFFIXMATCH': _attcombinator,
-                    'SUBSTRINGMATCH': _attcombinator,
-                    'DASHMATCH': _attcombinator,
-                    'INCLUDES': _attcombinator,
-                    'S': _S,
-                    'COMMENT': _COMMENT,
-                    'ATKEYWORD': _atkeyword,
-                },
+        if expected == 'element_name':
+            wellformed = False
+            self._log.error(
+                'Selector: No element name found: %s' % self._valuestr(selectorText)
             )
-            wellformed = wellformed and new['wellformed']
 
-            # post condition
-            if len(new['context']) > 1 or not newseq:
-                wellformed = False
-                self._log.error(
-                    'Selector: Invalid or incomplete selector: %s'
-                    % self._valuestr(selectorText)
-                )
+        if expected == Constants.simple_selector_sequence and newseq:
+            wellformed = False
+            self._log.error(
+                'Selector: Cannot end with combinator: %s'
+                % self._valuestr(selectorText)
+            )
 
-            if expected == 'element_name':
-                wellformed = False
-                self._log.error(
-                    'Selector: No element name found: %s' % self._valuestr(selectorText)
-                )
+        if (
+            newseq
+            and hasattr(newseq[-1].value, 'strip')
+            and newseq[-1].value.strip() == ''
+        ):
+            del newseq[-1]
 
-            if expected == simple_selector_sequence and newseq:
-                wellformed = False
-                self._log.error(
-                    'Selector: Cannot end with combinator: %s'
-                    % self._valuestr(selectorText)
-                )
+        # set
+        if wellformed:
+            self.__namespaces = namespaces
+            self._element = new.element
+            self._specificity = tuple(new.specificity)
+            self._setSeq(newseq)
+            # filter that only used ones are kept
+            self.__namespaces = self._getUsedNamespaces()
 
-            if (
-                newseq
-                and hasattr(newseq[-1].value, 'strip')
-                and newseq[-1].value.strip() == ''
+    def _prepare_tokens(self, tokenizer):  # noqa: C901
+        """
+        "*" -> type "universal"
+        "*"|IDENT + "|" -> combined to "namespace_prefix"
+        "|" -> type "namespace_prefix"
+        "." + IDENT -> combined to "class"
+        ":" + IDENT, ":" + FUNCTION -> pseudo-class
+        FUNCTION "not(" -> negation
+        "::" + IDENT, "::" + FUNCTION -> pseudo-element
+        """
+        tokens = []
+        for t in tokenizer:
+            typ, val, lin, col = t
+            if val == ':' and tokens and self._tokenvalue(tokens[-1]) == ':':
+                # combine ":" and ":"
+                tokens[-1] = (typ, '::', lin, col)
+
+            elif typ == 'IDENT' and tokens and self._tokenvalue(tokens[-1]) == '.':
+                # class: combine to .IDENT
+                tokens[-1] = ('class', '.' + val, lin, col)
+            elif (
+                typ == 'IDENT'
+                and tokens
+                and self._tokenvalue(tokens[-1]).startswith(':')
+                and not self._tokenvalue(tokens[-1]).endswith('(')
             ):
-                del newseq[-1]
+                # pseudo-X: combine to :IDENT or ::IDENT but not ":a(" + "b"
+                if self._tokenvalue(tokens[-1]).startswith('::'):
+                    t = 'pseudo-element'
+                else:
+                    t = 'pseudo-class'
+                tokens[-1] = (t, self._tokenvalue(tokens[-1]) + val, lin, col)
 
-            # set
-            if wellformed:
-                self.__namespaces = namespaces
-                self._element = new['element']
-                self._specificity = tuple(new['specificity'])
-                self._setSeq(newseq)
-                # filter that only used ones are kept
-                self.__namespaces = self._getUsedNamespaces()
+            elif (
+                typ == 'FUNCTION'
+                and val == 'not('
+                and tokens
+                and ':' == self._tokenvalue(tokens[-1])
+            ):
+                tokens[-1] = ('negation', ':' + val, lin, tokens[-1][3])
+            elif (
+                typ == 'FUNCTION'
+                and tokens
+                and self._tokenvalue(tokens[-1]).startswith(':')
+            ):
+                # pseudo-X: combine to :FUNCTION( or ::FUNCTION(
+                if self._tokenvalue(tokens[-1]).startswith('::'):
+                    t = 'pseudo-element'
+                else:
+                    t = 'pseudo-class'
+                tokens[-1] = (t, self._tokenvalue(tokens[-1]) + val, lin, col)
+
+            elif (
+                val == '*'
+                and tokens
+                and self._type(tokens[-1]) == 'namespace_prefix'
+                and self._tokenvalue(tokens[-1]).endswith('|')
+            ):
+                # combine prefix|*
+                tokens[-1] = (
+                    'universal',
+                    self._tokenvalue(tokens[-1]) + val,
+                    lin,
+                    col,
+                )
+            elif val == '*':
+                # universal: "*"
+                tokens.append(('universal', val, lin, col))
+
+            elif (
+                val == '|'
+                and tokens
+                and self._type(tokens[-1]) in (self._prods.IDENT, 'universal')
+                and self._tokenvalue(tokens[-1]).find('|') == -1
+            ):
+                # namespace_prefix: "IDENT|" or "*|"
+                tokens[-1] = (
+                    'namespace_prefix',
+                    self._tokenvalue(tokens[-1]) + '|',
+                    lin,
+                    col,
+                )
+            elif val == '|':
+                # namespace_prefix: "|"
+                tokens.append(('namespace_prefix', val, lin, col))
+
+            else:
+                tokens.append(t)
+
+        return iter(tokens)
 
     selectorText = property(
         _getSelectorText,
