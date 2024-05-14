@@ -232,94 +232,7 @@ class Selector(cssutils.util.Base2):
             self._log.error('Selector: No selectorText given.')
             return
 
-        # prepare tokenlist:
-        #     "*" -> type "universal"
-        #     "*"|IDENT + "|" -> combined to "namespace_prefix"
-        #     "|" -> type "namespace_prefix"
-        #     "." + IDENT -> combined to "class"
-        #     ":" + IDENT, ":" + FUNCTION -> pseudo-class
-        #     FUNCTION "not(" -> negation
-        #     "::" + IDENT, "::" + FUNCTION -> pseudo-element
-        tokens = []
-        for t in tokenizer:
-            typ, val, lin, col = t
-            if val == ':' and tokens and self._tokenvalue(tokens[-1]) == ':':
-                # combine ":" and ":"
-                tokens[-1] = (typ, '::', lin, col)
-
-            elif typ == 'IDENT' and tokens and self._tokenvalue(tokens[-1]) == '.':
-                # class: combine to .IDENT
-                tokens[-1] = ('class', '.' + val, lin, col)
-            elif (
-                typ == 'IDENT'
-                and tokens
-                and self._tokenvalue(tokens[-1]).startswith(':')
-                and not self._tokenvalue(tokens[-1]).endswith('(')
-            ):
-                # pseudo-X: combine to :IDENT or ::IDENT but not ":a(" + "b"
-                if self._tokenvalue(tokens[-1]).startswith('::'):
-                    t = 'pseudo-element'
-                else:
-                    t = 'pseudo-class'
-                tokens[-1] = (t, self._tokenvalue(tokens[-1]) + val, lin, col)
-
-            elif (
-                typ == 'FUNCTION'
-                and val == 'not('
-                and tokens
-                and ':' == self._tokenvalue(tokens[-1])
-            ):
-                tokens[-1] = ('negation', ':' + val, lin, tokens[-1][3])
-            elif (
-                typ == 'FUNCTION'
-                and tokens
-                and self._tokenvalue(tokens[-1]).startswith(':')
-            ):
-                # pseudo-X: combine to :FUNCTION( or ::FUNCTION(
-                if self._tokenvalue(tokens[-1]).startswith('::'):
-                    t = 'pseudo-element'
-                else:
-                    t = 'pseudo-class'
-                tokens[-1] = (t, self._tokenvalue(tokens[-1]) + val, lin, col)
-
-            elif (
-                val == '*'
-                and tokens
-                and self._type(tokens[-1]) == 'namespace_prefix'
-                and self._tokenvalue(tokens[-1]).endswith('|')
-            ):
-                # combine prefix|*
-                tokens[-1] = (
-                    'universal',
-                    self._tokenvalue(tokens[-1]) + val,
-                    lin,
-                    col,
-                )
-            elif val == '*':
-                # universal: "*"
-                tokens.append(('universal', val, lin, col))
-
-            elif (
-                val == '|'
-                and tokens
-                and self._type(tokens[-1]) in (self._prods.IDENT, 'universal')
-                and self._tokenvalue(tokens[-1]).find('|') == -1
-            ):
-                # namespace_prefix: "IDENT|" or "*|"
-                tokens[-1] = (
-                    'namespace_prefix',
-                    self._tokenvalue(tokens[-1]) + '|',
-                    lin,
-                    col,
-                )
-            elif val == '|':
-                # namespace_prefix: "|"
-                tokens.append(('namespace_prefix', val, lin, col))
-
-            else:
-                tokens.append(t)
-
-        tokenizer = iter(tokens)
+        tokenizer = self._prepare_tokens(tokenizer)
 
         # for closures: must be a mutable
         new = {
@@ -823,6 +736,97 @@ class Selector(cssutils.util.Base2):
             self._setSeq(newseq)
             # filter that only used ones are kept
             self.__namespaces = self._getUsedNamespaces()
+
+    def _prepare_tokens(self, tokenizer):  # noqa: C901
+        """
+        "*" -> type "universal"
+        "*"|IDENT + "|" -> combined to "namespace_prefix"
+        "|" -> type "namespace_prefix"
+        "." + IDENT -> combined to "class"
+        ":" + IDENT, ":" + FUNCTION -> pseudo-class
+        FUNCTION "not(" -> negation
+        "::" + IDENT, "::" + FUNCTION -> pseudo-element
+        """
+        tokens = []
+        for t in tokenizer:
+            typ, val, lin, col = t
+            if val == ':' and tokens and self._tokenvalue(tokens[-1]) == ':':
+                # combine ":" and ":"
+                tokens[-1] = (typ, '::', lin, col)
+
+            elif typ == 'IDENT' and tokens and self._tokenvalue(tokens[-1]) == '.':
+                # class: combine to .IDENT
+                tokens[-1] = ('class', '.' + val, lin, col)
+            elif (
+                typ == 'IDENT'
+                and tokens
+                and self._tokenvalue(tokens[-1]).startswith(':')
+                and not self._tokenvalue(tokens[-1]).endswith('(')
+            ):
+                # pseudo-X: combine to :IDENT or ::IDENT but not ":a(" + "b"
+                if self._tokenvalue(tokens[-1]).startswith('::'):
+                    t = 'pseudo-element'
+                else:
+                    t = 'pseudo-class'
+                tokens[-1] = (t, self._tokenvalue(tokens[-1]) + val, lin, col)
+
+            elif (
+                typ == 'FUNCTION'
+                and val == 'not('
+                and tokens
+                and ':' == self._tokenvalue(tokens[-1])
+            ):
+                tokens[-1] = ('negation', ':' + val, lin, tokens[-1][3])
+            elif (
+                typ == 'FUNCTION'
+                and tokens
+                and self._tokenvalue(tokens[-1]).startswith(':')
+            ):
+                # pseudo-X: combine to :FUNCTION( or ::FUNCTION(
+                if self._tokenvalue(tokens[-1]).startswith('::'):
+                    t = 'pseudo-element'
+                else:
+                    t = 'pseudo-class'
+                tokens[-1] = (t, self._tokenvalue(tokens[-1]) + val, lin, col)
+
+            elif (
+                val == '*'
+                and tokens
+                and self._type(tokens[-1]) == 'namespace_prefix'
+                and self._tokenvalue(tokens[-1]).endswith('|')
+            ):
+                # combine prefix|*
+                tokens[-1] = (
+                    'universal',
+                    self._tokenvalue(tokens[-1]) + val,
+                    lin,
+                    col,
+                )
+            elif val == '*':
+                # universal: "*"
+                tokens.append(('universal', val, lin, col))
+
+            elif (
+                val == '|'
+                and tokens
+                and self._type(tokens[-1]) in (self._prods.IDENT, 'universal')
+                and self._tokenvalue(tokens[-1]).find('|') == -1
+            ):
+                # namespace_prefix: "IDENT|" or "*|"
+                tokens[-1] = (
+                    'namespace_prefix',
+                    self._tokenvalue(tokens[-1]) + '|',
+                    lin,
+                    col,
+                )
+            elif val == '|':
+                # namespace_prefix: "|"
+                tokens.append(('namespace_prefix', val, lin, col))
+
+            else:
+                tokens.append(t)
+
+        return iter(tokens)
 
     selectorText = property(
         _getSelectorText,
