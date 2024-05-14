@@ -1,0 +1,1 @@
+Reduced cyclomatic complexity in selector module.
