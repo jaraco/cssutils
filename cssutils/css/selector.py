@@ -378,13 +378,13 @@ class New(cssutils.util._BaseClass):
             else:
                 return Constants.simple_selector_sequence2 + Constants.combinator
 
-        elif '=' == val and 'attrib' == context and 'combinator' in expected:
+        if '=' == val and 'attrib' == context and 'combinator' in expected:
             # combinator in attrib
             self.append(seq, val, 'equals', token=token)
             return Constants.attvalue
 
         # context: negation
-        elif ')' == val and 'negation' == context and ')' in expected:
+        if ')' == val and 'negation' == context and ')' in expected:
             # not(negation_arg)"
             self.append(seq, val, 'negation-end', token=token)
             self.context.pop()  # negation is done
@@ -392,7 +392,7 @@ class New(cssutils.util._BaseClass):
             return Constants.simple_selector_sequence + Constants.combinator
 
         # context: pseudo (at least one expression)
-        elif val in '+-' and context.startswith('pseudo-'):
+        if val in '+-' and context.startswith('pseudo-'):
             # :func(+ -)"
             _names = {'+': 'plus', '-': 'minus'}
             if val == '+' and seq and seq[-1].value == Constants.S:
@@ -401,7 +401,7 @@ class New(cssutils.util._BaseClass):
                 self.append(seq, val, _names[val], token=token)
             return Constants.expression
 
-        elif (
+        if (
             ')' == val
             and context.startswith('pseudo-')
             and Constants.expression == expected
@@ -415,13 +415,13 @@ class New(cssutils.util._BaseClass):
                 return Constants.simple_selector_sequence + Constants.combinator
 
         # context: ROOT
-        elif '[' == val and 'attrib' in expected:
+        if '[' == val and 'attrib' in expected:
             # start of [attrib]
             self.append(seq, val, 'attribute-start', token=token)
             self.context.append('attrib')
             return Constants.attname
 
-        elif val in '+>~' and 'combinator' in expected:
+        if val in '+>~' and 'combinator' in expected:
             # no other combinator except S may be following
             _names = {
                 '>': 'child',
@@ -434,7 +434,7 @@ class New(cssutils.util._BaseClass):
                 self.append(seq, val, _names[val], token=token)
             return Constants.simple_selector_sequence
 
-        elif ',' == val:
+        if ',' == val:
             # not a selectorlist
             self.wellformed = False
             self._log.error(
@@ -444,10 +444,9 @@ class New(cssutils.util._BaseClass):
             )
             return expected
 
-        else:
-            self.wellformed = False
-            self._log.error('Selector: Unexpected CHAR.', token=token)
-            return expected
+        self.wellformed = False
+        self._log.error('Selector: Unexpected CHAR.', token=token)
+        return expected
 
     def _negation(self, expected, seq, token, tokenizer=None):
         # not(
