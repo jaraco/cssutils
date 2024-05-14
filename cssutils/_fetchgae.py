@@ -2,7 +2,6 @@
 
 __all__ = ['_defaultFetcher']
 
-# raises ImportError of not on GAE
 import cgi
 
 from google.appengine.api import urlfetch
