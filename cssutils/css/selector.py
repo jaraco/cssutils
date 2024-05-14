@@ -8,6 +8,7 @@ TODO
 
 __all__ = ['Selector']
 
+import contextlib
 import xml.dom
 
 import cssutils
@@ -221,12 +222,11 @@ class Selector(cssutils.util.Base2):
         # might be (selectorText, namespaces)
         selectorText, namespaces = self._splitNamespacesOff(selectorText)
 
-        try:
+        with contextlib.suppress(AttributeError):
             # uses parent stylesheets namespaces if available,
             # otherwise given ones
             namespaces = self.parent.parentRule.parentStyleSheet.namespaces
-        except AttributeError:
-            pass
+
         tokenizer = self._tokenize2(selectorText)
         if not tokenizer:
             self._log.error('Selector: No selectorText given.')
