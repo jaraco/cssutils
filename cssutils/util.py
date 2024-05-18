@@ -3,9 +3,12 @@
 __all__ = []
 
 import codecs
+import operator
 import re
 import xml.dom
 from itertools import chain
+
+from more_itertools import unique_everseen
 
 import cssutils
 
@@ -827,14 +830,15 @@ class _Namespaces:
         A property holding only effective @namespace rules in
         self.parentStyleSheets.
         """
-        namespaces = {}
-        for rule in filter(
+        ns_rules = filter(
             lambda r: r.type == r.NAMESPACE_RULE,
             reversed(self.parentStyleSheet.cssRules),
-        ):
-            if rule.namespaceURI not in list(namespaces.values()):
-                namespaces[rule.prefix] = rule.namespaceURI
-        return namespaces
+        )
+        unique_rules = unique_everseen(
+            ns_rules,
+            key=operator.attrgetter('namespaceURI'),
+        )
+        return {rule.prefix: rule.namespaceURI for rule in unique_rules}
 
     def get(self, prefix, default):
         return self.namespaces.get(prefix, default)

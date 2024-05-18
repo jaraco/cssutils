@@ -25,6 +25,7 @@ classifiers = [
 keywords = ["CSS", "Cascading Style Sheets", "CSSParser", "DOM Level 2 Stylesheets", "DOM Level 2 CSS"]
 requires-python = ">=3.8"
 dependencies = [
+	"more_itertools",
 ]
 dynamic = ["version"]
 
