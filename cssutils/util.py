@@ -817,12 +817,11 @@ class _Namespaces:
 
     def __findrule(self, prefix):
         # returns namespace rule where prefix == key
-        for rule in filter(
-            lambda r: r.type == r.NAMESPACE_RULE,
+        found = filter(
+            lambda r: r.type == r.NAMESPACE_RULE and r.prefix == prefix,
             reversed(self.parentStyleSheet.cssRules),
-        ):
-            if rule.prefix == prefix:
-                return rule
+        )
+        return next(found, None)
 
     @property
     def namespaces(self):
