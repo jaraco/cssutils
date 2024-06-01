@@ -36,17 +36,6 @@ Homepage = "https://github.com/jaraco/cssutils"
 test = [
 	# upstream
 	"pytest >= 6, != 8.1.*",
-	"pytest-checkdocs >= 2.4",
-	"pytest-cov",
-	"pytest-mypy",
-	"pytest-enabler >= 2.2",
-	"pytest-ruff >= 0.2.1",
-
-	# local
-	'lxml; python_version < "3.11"', # workaround for #25
-	"cssselect",
-	'importlib_resources; python_version < "3.9"',
-	"jaraco.test >= 5.1",
 ]
 doc = [
 	# upstream
