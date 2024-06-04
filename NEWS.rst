@@ -1,3 +1,12 @@
+v2.11.1
+=======
+
+Bugfixes
+--------
+
+- Consolidated license to simply LGPL 3. (#52)
+
+
 v2.11.0
 =======
 
