@@ -30,7 +30,7 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/jaraco/cssutils"
+Source = "https://github.com/jaraco/cssutils"
 
 [project.optional-dependencies]
 test = [
