@@ -314,7 +314,6 @@ class ColorValue(Value):
 
     from .colors import COLORS
 
-    type = Value.COLOR_VALUE
     # hexcolor, FUNCTION?
     _colorType = None
     _red = 0

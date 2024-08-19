@@ -331,7 +331,7 @@ y"''': '''"xy"''',
                 assert value == v.cssText
                 assert name == v.cssValueTypeString
                 assert getattr(v, name) == v.cssValueType
-                assert cls == type(v)
+                assert isinstance(v, cls)
 
     def test_readonly(self):
         "(CSSValue._readonly)"
@@ -636,7 +636,7 @@ class TestCSSPrimitiveValue:
             initialType, initialValue = test
             pv = cssutils.css.CSSPrimitiveValue(initialValue)
             for setType, setValue, exp, cssText in tests[test]:
-                if type(exp) == type or type(exp) == type:  # 2.4 compatibility
+                if isinstance(exp, type):
                     if cssText:
                         with pytest.raises(exp, match=cssText):
                             pv.setFloatValue(setType, setValue)

@@ -64,10 +64,8 @@ class TestCSSVariablesDeclaration(basetest.BaseTestCase):
         assert 0 == v.length
 
         v.cssText = 'x:0; y:1'
-        keys = []
         # unsorted!
-        for i in range(0, v.length):
-            keys.append(v.item(i))
+        keys = [v.item(i) for i in range(0, v.length)]
         assert sorted(keys) == ['x', 'y']
 
     def test_keys(self):

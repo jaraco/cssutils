@@ -81,9 +81,7 @@ class TestCSSStyleDeclaration(basetest.BaseTestCase):
             border: 0;
         '''
         # __iter__
-        ps = []
-        for p in s:
-            ps.append((p.literalname, p.value, p.priority))
+        ps = [(p.literalname, p.value, p.priority) for p in s]
         assert len(ps) == 3
         assert ps[0] == (r'co\lor', 'green', '')
         assert ps[1] == (r'left', '1px', 'important')
@@ -184,7 +182,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
 
         def t(s):
             for i, x in enumerate(s.children()):
-                assert types[i] == type(x)
+                assert isinstance(x, types[i])
                 assert x.parent == s
 
         t(cssutils.parseStyle(style))

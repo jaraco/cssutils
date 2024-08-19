@@ -776,7 +776,7 @@ class TestCSSVariable:
                 assert value == v.cssText
                 assert name == v.cssValueTypeString
                 assert getattr(v, name) == v.cssValueType
-                assert cls == type(v)
+                assert isinstance(v, cls)
 
 
 @pytest.mark.xfail(reason="not implemented")
