@@ -96,7 +96,10 @@ exclude = [
 ]
 namespaces = true
 
+
 [tool.setuptools_scm]
 
-# disabled
+
 [tool.pytest-enabler.mypy]
+# Disabled due to jaraco/skeleton#143
+# Also disabled for cssutils
