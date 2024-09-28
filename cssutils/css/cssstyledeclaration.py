@@ -51,7 +51,7 @@ TODO:
 """
 
 __all__ = ['CSSStyleDeclaration', 'Property']
-
+ignored_message=""
 import cssutils
 
 from .cssproperties import CSS2Properties
@@ -322,6 +322,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             ignored = self._tokenvalue(token) + self._valuestr(
                 self._tokensupto2(tokenizer, propertyvalueendonly=True)
             )
+            global ignored_message # Expose ignored messages to the outside, allowing users to retrieve the ignored messages for further processing, such as continuing to parse the ignored content.
+            ignored_message=ignored
             self._log.error(
                 'CSSStyleDeclaration: Unexpected token, ignoring ' 'upto %r.' % ignored,
                 token,
