@@ -22,12 +22,12 @@ classifiers = [
 	"Topic :: Software Development :: Libraries :: Python Modules",
 	"Topic :: Text Processing :: Markup :: HTML",
 ]
-keywords = ["CSS", "Cascading Style Sheets", "CSSParser", "DOM Level 2 Stylesheets", "DOM Level 2 CSS"]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
 	"more_itertools",
 ]
 dynamic = ["version"]
+keywords = ["CSS", "Cascading Style Sheets", "CSSParser", "DOM Level 2 Stylesheets", "DOM Level 2 CSS"]
 
 [project.urls]
 Source = "https://github.com/jaraco/cssutils"
