@@ -23,9 +23,7 @@ classifiers = [
 	"Topic :: Text Processing :: Markup :: HTML",
 ]
 requires-python = ">=3.9"
-dependencies = [
-	"more_itertools",
-]
+dependencies = [ ]
 dynamic = ["version"]
 keywords = ["CSS", "Cascading Style Sheets", "CSSParser", "DOM Level 2 Stylesheets", "DOM Level 2 CSS"]
 

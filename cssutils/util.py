@@ -8,8 +8,6 @@ import re
 import xml.dom
 from itertools import chain
 
-from more_itertools import unique_everseen
-
 import cssutils
 
 from . import codec, errorhandler, tokenize2
@@ -21,6 +19,28 @@ except ImportError:
     from ._fetch import _defaultFetcher
 
 log = errorhandler.ErrorHandler()
+
+
+def unique_everseen(iterable, key=None):
+    """
+    Yield unique elements, preserving order. Remember all elements ever seen.
+
+    This is the function available from the itertools recipe page:
+    https://docs.python.org/3/library/itertools.html#itertools-recipes
+    """
+    # unique_everseen('AAAABBBCCDAABBB') → A B C D
+    # unique_everseen('ABBcCAD', str.casefold) → A B c D
+    seen = set()
+    if key is None:
+        for element in filterfalse(seen.__contains__, iterable):
+            seen.add(element)
+            yield element
+    else:
+        for element in iterable:
+            k = key(element)
+            if k not in seen:
+                seen.add(k)
+                yield element
 
 
 class _BaseClass:
