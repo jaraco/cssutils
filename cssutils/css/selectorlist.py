@@ -52,7 +52,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         return f"cssutils.css.{self.__class__.__name__}(selectorText={st!r})"
 
     def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r _namespaces=%r at " "0x%x>" % (
+        return "<cssutils.css.%s object selectorText=%r _namespaces=%r at 0x%x>" % (
             self.__class__.__name__,
             self.selectorText,
             self._namespaces,
@@ -225,12 +225,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     selectorText = property(
         _getSelectorText,
         _setSelectorText,
-        doc="(cssutils) The textual representation of the " "selector for a rule set.",
+        doc="(cssutils) The textual representation of the selector for a rule set.",
     )
 
     length = property(
         lambda self: len(self),
-        doc="The number of :class:`~cssutils.css.Selector` " "objects in the list.",
+        doc="The number of :class:`~cssutils.css.Selector` objects in the list.",
     )
 
     parentRule = property(

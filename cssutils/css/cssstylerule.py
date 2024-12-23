@@ -179,7 +179,7 @@ class CSSStyleRule(cssrule.CSSRule):
     cssText = property(
         _getCssText,
         _setCssText,
-        doc="(DOM) The parsable textual representation of this " "rule.",
+        doc="(DOM) The parsable textual representation of this rule.",
     )
 
     def __getNamespaces(self):
@@ -241,7 +241,7 @@ class CSSStyleRule(cssrule.CSSRule):
     selectorText = property(
         lambda self: self._selectorList.selectorText,
         _setSelectorText,
-        doc="(DOM) The textual representation of the " "selector for the rule set.",
+        doc="(DOM) The textual representation of the selector for the rule set.",
     )
 
     def _setStyle(self, style):
@@ -264,7 +264,7 @@ class CSSStyleRule(cssrule.CSSRule):
 
     type = property(
         lambda self: self.STYLE_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     wellformed = property(lambda self: self.selectorList.wellformed)

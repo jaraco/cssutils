@@ -85,7 +85,7 @@ class CSSComment(cssrule.CSSRule):
 
     type = property(
         lambda self: self.COMMENT,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     # constant but needed:

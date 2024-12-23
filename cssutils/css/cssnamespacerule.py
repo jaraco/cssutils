@@ -221,7 +221,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
     cssText = property(
         fget=_getCssText,
         fset=_setCssText,
-        doc="(DOM) The parsable textual representation of this " "rule.",
+        doc="(DOM) The parsable textual representation of this rule.",
     )
 
     def _setNamespaceURI(self, namespaceURI):
@@ -308,7 +308,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
     type = property(
         lambda self: self.NAMESPACE_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     wellformed = property(lambda self: self.namespaceURI is not None)

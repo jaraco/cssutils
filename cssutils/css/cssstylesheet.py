@@ -204,7 +204,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             if expected > 1:
                 self._log.error(
-                    'CSSStylesheet: CSSImportRule not allowed ' 'here.',
+                    'CSSStylesheet: CSSImportRule not allowed here.',
                     token,
                     xml.dom.HierarchyRequestErr,
                 )
@@ -222,7 +222,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             if expected > 2:
                 self._log.error(
-                    'CSSStylesheet: CSSNamespaceRule not allowed ' 'here.',
+                    'CSSStylesheet: CSSNamespaceRule not allowed here.',
                     token,
                     xml.dom.HierarchyRequestErr,
                 )
@@ -248,7 +248,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
             if expected > 2:
                 self._log.error(
-                    'CSSStylesheet: CSSVariablesRule not allowed ' 'here.',
+                    'CSSStylesheet: CSSVariablesRule not allowed here.',
                     token,
                     xml.dom.HierarchyRequestErr,
                 )
@@ -868,7 +868,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
 
     ownerRule = property(
         lambda self: self._ownerRule,
-        doc='A ref to an @import rule if it is imported, ' 'else ``None``.',
+        doc='A ref to an @import rule if it is imported, else ``None``.',
     )
 
     def _getValid(self):
@@ -888,7 +888,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             cssutils.ser = cssserializer
         else:
             raise ValueError(
-                'Serializer must be an instance of ' 'cssutils.CSSSerializer.'
+                'Serializer must be an instance of cssutils.CSSSerializer.'
             )
 
     @Deprecated('Set pref in ``cssutils.ser.prefs`` instead.')

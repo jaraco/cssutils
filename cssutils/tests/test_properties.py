@@ -131,7 +131,7 @@ class TestProperties:
                     '"a", b',
                     r'a\{b',
                     r'a\ b',
-                    'a b' 'a b, c  d  , e',
+                    'a ba b, c  d  , e',
                 ],
             ),
             # 'src': ('STRING',),

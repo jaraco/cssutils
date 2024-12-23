@@ -147,7 +147,7 @@ class CSSCharsetRule(cssrule.CSSRule):
             or self._prods.IDENT != self._type(encodingtoken)
         ):
             self._log.error(
-                'CSSCharsetRule: Syntax Error in encoding value ' '%r.' % encoding
+                'CSSCharsetRule: Syntax Error in encoding value %r.' % encoding
             )
         else:
             try:
@@ -167,7 +167,7 @@ class CSSCharsetRule(cssrule.CSSRule):
 
     type = property(
         lambda self: self.CHARSET_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     wellformed = property(lambda self: bool(self.encoding))

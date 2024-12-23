@@ -67,10 +67,11 @@ class CSSValue(cssutils.util._NewBase):
         return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return (
-            "<cssutils.css.%s object cssValueTypeString=%r cssText=%r at "
-            "0x%x>"
-            % (self.__class__.__name__, self.cssValueTypeString, self.cssText, id(self))
+        return "<cssutils.css.%s object cssValueTypeString=%r cssText=%r at 0x%x>" % (
+            self.__class__.__name__,
+            self.cssValueTypeString,
+            self.cssText,
+            id(self),
         )
 
     def _setCssText(self, cssText):  # noqa: C901
@@ -977,7 +978,7 @@ class CSSValueList(CSSValue):
 
     length = property(
         lambda self: len(self.__items()),
-        doc="(DOM attribute) The number of CSSValues in the " "list.",
+        doc="(DOM attribute) The number of CSSValues in the list.",
     )
 
 

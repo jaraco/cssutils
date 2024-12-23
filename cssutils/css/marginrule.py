@@ -124,7 +124,7 @@ class MarginRule(cssrule.CSSRule):
         return f"cssutils.css.{self.__class__.__name__}(margin={self.margin!r}, style={self.style.cssText!r})"
 
     def __str__(self):
-        return "<cssutils.css.%s object margin=%r style=%r " "at 0x%x>" % (
+        return "<cssutils.css.%s object margin=%r style=%r at 0x%x>" % (
             self.__class__.__name__,
             self.margin,
             self.style.cssText,
@@ -227,7 +227,7 @@ class MarginRule(cssrule.CSSRule):
 
     type = property(
         lambda self: self.MARGIN_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     wellformed = property(lambda self: bool(self.atkeyword))

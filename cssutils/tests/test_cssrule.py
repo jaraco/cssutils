@@ -223,7 +223,7 @@ class TestCSSRule(basetest.BaseTestCase):
             '@font-face {}',
             '@import url(x);',
             '@media all {}',
-            '@namespace "x";' '@page {}',
+            '@namespace "x";@page {}',
             '@unknown;',
             '@variables;',
             # TODO:

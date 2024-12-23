@@ -149,7 +149,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
     cssText = property(
         _getCssText,
         _setCssText,
-        doc="(DOM) The parsable textual representation of this " "rule.",
+        doc="(DOM) The parsable textual representation of this rule.",
     )
 
     def _setStyle(self, style):
@@ -173,7 +173,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
 
     type = property(
         lambda self: self.FONT_FACE_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     def _getValid(self):

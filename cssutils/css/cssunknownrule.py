@@ -85,7 +85,7 @@ class CSSUnknownRule(cssrule.CSSRule):
                         except IndexError:
                             new['wellformed'] = False
                             self._log.error(
-                                'CSSUnknownRule: Wrong nesting of ' '{, [ or (.',
+                                'CSSUnknownRule: Wrong nesting of {, [ or (.',
                                 token=token,
                             )
 
@@ -219,7 +219,7 @@ class CSSUnknownRule(cssrule.CSSRule):
 
     type = property(
         lambda self: self.UNKNOWN_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     wellformed = property(lambda self: bool(self.atkeyword))

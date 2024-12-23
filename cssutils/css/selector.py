@@ -26,7 +26,7 @@ class Constants:
     S = ' '
 
     simple_selector_sequence = (
-        'type_selector universal HASH class ' 'attrib pseudo negation '
+        'type_selector universal HASH class attrib pseudo negation '
     )
     simple_selector_sequence2 = 'HASH class attrib pseudo negation '
 
@@ -119,7 +119,7 @@ class New(cssutils.util._BaseClass):
                 if namespaceURI is None:
                     self.wellformed = False
                     self._log.error(
-                        'Selector: No namespaceURI found ' 'for prefix %r' % prefix,
+                        'Selector: No namespaceURI found for prefix %r' % prefix,
                         token=token,
                         error=xml.dom.NamespaceErr,
                     )
@@ -856,7 +856,7 @@ class Selector(cssutils.util.Base2):
     selectorText = property(
         _getSelectorText,
         _setSelectorText,
-        doc="(DOM) The parsable textual representation of " "the selector.",
+        doc="(DOM) The parsable textual representation of the selector.",
     )
 
     specificity = property(

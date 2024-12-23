@@ -76,7 +76,7 @@ class PropertyValue(cssutils.util._NewBase):
         return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<cssutils.css.%s object length=%r cssText=%r at " "0x%x>" % (
+        return "<cssutils.css.%s object length=%r cssText=%r at 0x%x>" % (
             self.__class__.__name__,
             self.length,
             self.cssText,
@@ -301,7 +301,7 @@ class Value(cssutils.util._NewBase):
     value = property(
         lambda self: self._value,
         _setValue,
-        doc="Actual value if possible: An int or float or else " " a string",
+        doc="Actual value if possible: An int or float or else  a string",
     )
 
 
@@ -504,7 +504,7 @@ class ColorValue(Value):
     )
 
     name = property(
-        _getName, doc='Name of the color if known (in ColorValue.COLORS) ' 'else None'
+        _getName, doc='Name of the color if known (in ColorValue.COLORS) else None'
     )
 
     red = property(lambda self: self._red, doc='red part as integer between 0 and 255')
@@ -589,7 +589,7 @@ class DimensionValue(Value):
 
     dimension = property(
         lambda self: self._dimension,  # _setValue,
-        doc="Dimension if a DIMENSION or PERCENTAGE value, " "else None",
+        doc="Dimension if a DIMENSION or PERCENTAGE value, else None",
     )
 
 

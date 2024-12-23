@@ -323,7 +323,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                 self._tokensupto2(tokenizer, propertyvalueendonly=True)
             )
             self._log.error(
-                'CSSStyleDeclaration: Unexpected token, ignoring ' 'upto %r.' % ignored,
+                'CSSStyleDeclaration: Unexpected token, ignoring upto %r.' % ignored,
                 token,
             )
             # does not matter in this case

@@ -238,7 +238,7 @@ class Property(cssutils.util.Base):
 
     literalname = property(
         lambda self: self._literalname,
-        doc="Readonly literal (not normalized) name " "of this property",
+        doc="Readonly literal (not normalized) name of this property",
     )
 
     def _setPropertyValue(self, cssText):
@@ -314,7 +314,7 @@ class Property(cssutils.util.Base):
             self._priority = ''
             self._literalpriority = ''
             if priority:
-                self._log.error('Property: No priority in a MediaQuery - ' 'ignored.')
+                self._log.error('Property: No priority in a MediaQuery - ignored.')
             return
 
         if isinstance(priority, str) and 'important' == self._normalize(priority):
@@ -513,7 +513,7 @@ class Property(cssutils.util.Base):
 
     valid = property(
         validate,
-        doc="Check if value of this property is valid " "in the properties context.",
+        doc="Check if value of this property is valid in the properties context.",
     )
 
     @Deprecated('Use ``property.propertyValue`` instead.')

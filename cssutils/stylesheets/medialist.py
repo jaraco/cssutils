@@ -268,8 +268,7 @@ class MediaList(cssutils.util._NewListBase):
 
     parentRule = property(
         lambda self: self._parentRule,
-        doc="The CSSRule (e.g. an @media or @import rule "
-        "this list is part of or None",
+        doc="The CSSRule (e.g. an @media or @import rule this list is part of or None",
     )
 
     wellformed = property(lambda self: self._wellformed)

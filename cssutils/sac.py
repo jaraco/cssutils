@@ -287,7 +287,7 @@ class Parser:
                         self._handler.importStyle(uri, media, name)
                     else:
                         self._errorHandler.error(
-                            'Invalid @import' ' declaration at %r' % (start,)
+                            'Invalid @import declaration at %r' % (start,)
                         )
 
                 elif 'NAMESPACE_SYM' == type_:
@@ -307,7 +307,7 @@ class Parser:
                         self._handler.namespaceDeclaration(prefix, uri, *start)
                     else:
                         self._errorHandler.error(
-                            'Invalid @namespace' ' declaration at %r' % (start,)
+                            'Invalid @namespace declaration at %r' % (start,)
                         )
 
                 else:

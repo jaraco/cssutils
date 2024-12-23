@@ -254,7 +254,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
     cssText = property(
         _getCssText,
         _setCssText,
-        doc="(DOM) The parsable textual representation of this " "rule.",
+        doc="(DOM) The parsable textual representation of this rule.",
     )
 
     @property
@@ -336,7 +336,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
 
     type = property(
         lambda self: self.MEDIA_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     wellformed = property(lambda self: self.media.wellformed)

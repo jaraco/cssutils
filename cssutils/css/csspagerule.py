@@ -215,7 +215,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             else:
                 new['wellformed'] = False
                 self._log.error(
-                    'CSSPageRule selectorText: Unexpected IDENT: ' '%r' % val, token
+                    'CSSPageRule selectorText: Unexpected IDENT: %r' % val, token
                 )
                 return expected
 
@@ -456,7 +456,7 @@ Tuple of (f, g, h) where:
 
     type = property(
         lambda self: self.PAGE_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     # constant but needed:

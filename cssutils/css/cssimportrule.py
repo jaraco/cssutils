@@ -410,12 +410,12 @@ class CSSImportRule(cssrule.CSSRule):
 
     styleSheet = property(
         lambda self: self._styleSheet,
-        doc="(readonly) The style sheet referred to by this " "rule.",
+        doc="(readonly) The style sheet referred to by this rule.",
     )
 
     type = property(
         lambda self: self.IMPORT_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     def _getWellformed(self):

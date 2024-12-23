@@ -143,7 +143,7 @@ class CSSRule(cssutils.util.Base2):
 
     type = property(
         lambda self: self.UNKNOWN_RULE,
-        doc="The type of this rule, as defined by a CSSRule " "type constant.",
+        doc="The type of this rule, as defined by a CSSRule type constant.",
     )
 
     typeString = property(
@@ -185,7 +185,7 @@ class CSSRuleRules(CSSRule):
     cssRules = property(
         lambda self: self._cssRules,
         _setCssRules,
-        "All Rules in this style sheet, a " ":class:`~cssutils.css.CSSRuleList`.",
+        "All Rules in this style sheet, a :class:`~cssutils.css.CSSRuleList`.",
     )
 
     def deleteRule(self, index):
