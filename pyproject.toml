@@ -31,6 +31,9 @@ keywords = ["CSS", "Cascading Style Sheets", "CSSParser", "DOM Level 2 Styleshee
 
 [project.urls]
 Source = "https://github.com/jaraco/cssutils"
+Documentation = "https://cssutils.readthedocs.io"
+Issues = "https://github.com/jaraco/cssutils/issues"
+Changelog = "https://cssutils.readthedocs.io/en/latest/history.html"
 
 [project.optional-dependencies]
 test = [
