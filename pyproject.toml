@@ -85,14 +85,10 @@ csscombine = "cssutils.scripts.csscombine:main"
 cssparse = "cssutils.scripts.cssparse:main"
 
 [tool.setuptools.packages.find]
-exclude = [
-	# duplicate exclusions for pypa/setuptools#2688
-	"docs",
-	"docs.*",
-	"examples*",
-	"sheets",
-	"sheets.*",
-	"tools*",
+include = [
+	"cssutils",
+	"cssutils.*",
+	"encutils",
 ]
 namespaces = true
 
