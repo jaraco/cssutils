@@ -990,7 +990,7 @@ def _ColorProd(parent, nextSor=False, toStore=None):
         name='ColorValue',
         match=lambda t, v: (t == 'HASH' and reHexcolor.match(v))
         or (t == 'FUNCTION' and normalize(v) in ('rgb(', 'rgba(', 'hsl(', 'hsla('))
-        or (t == 'IDENT' and normalize(v) in list(ColorValue.COLORS.keys())),
+        or (t == 'IDENT' and normalize(v) in ColorValue.COLORS.keys()),
         nextSor=nextSor,
         toStore=toStore,
         toSeq=lambda t, tokens: (
