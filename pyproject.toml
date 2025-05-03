@@ -23,6 +23,7 @@ classifiers = [
 	"Topic :: Text Processing :: Markup :: HTML",
 ]
 requires-python = ">=3.9"
+license = "LGPL-3.0-or-later"
 dependencies = [
 	"more_itertools",
 ]
