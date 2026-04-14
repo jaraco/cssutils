@@ -165,8 +165,9 @@ class MarginRule(cssrule.CSSRule):
         prods = Sequence(
             Prod(
                 name='@ margin',
-                match=lambda t, v: t == 'ATKEYWORD'
-                and self._normalize(v) in MarginRule.margins,
+                match=lambda t, v: (
+                    t == 'ATKEYWORD' and self._normalize(v) in MarginRule.margins
+                ),
                 toStore='margin',
                 # TODO?
                 # , exception=xml.dom.InvalidModificationErr
