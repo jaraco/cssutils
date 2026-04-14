@@ -429,6 +429,24 @@ class TestCSSMediaRule(test_cssrule.TestCSSRule):
         }
         self.do_equal_p(tests)  # parse
 
+    def test_fontface_in_media_rule(self):
+        "CSSMediaRule with nested @font-face (issue #30)"
+        css = '@media screen { @font-face { font-family: x } }'
+        sheet = cssutils.parseString(css)
+        rule = sheet.cssRules[0]
+        assert isinstance(rule, cssutils.css.CSSMediaRule)
+        assert len(rule.cssRules) == 1
+        assert isinstance(rule.cssRules[0], cssutils.css.CSSFontFaceRule)
+        assert rule.cssRules[0].style.getPropertyValue('font-family') == 'x'
+
+        # also test insertRule programmatically
+        r = cssutils.css.CSSMediaRule()
+        fontface = cssutils.css.CSSFontFaceRule()
+        fontface.style.setProperty('font-family', 'test')
+        r.insertRule(fontface)
+        assert len(r.cssRules) == 1
+        assert isinstance(r.cssRules[0], cssutils.css.CSSFontFaceRule)
+
     def test_reprANDstr(self):
         "CSSMediaRule.__repr__(), .__str__()"
         mediaText = 'tv, print'
