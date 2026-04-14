@@ -139,26 +139,28 @@ class CSSValue(cssutils.util._NewBase):
             # special case IE only expression
             Prod(
                 name='expression',
-                match=lambda t, v: t == self._prods.FUNCTION
-                and (
-                    cssutils.helper.normalize(v)
-                    in (
-                        'expression(',
-                        'alpha(',
-                        'blur(',
-                        'chroma(',
-                        'dropshadow(',
-                        'fliph(',
-                        'flipv(',
-                        'glow(',
-                        'gray(',
-                        'invert(',
-                        'mask(',
-                        'shadow(',
-                        'wave(',
-                        'xray(',
+                match=lambda t, v: (
+                    t == self._prods.FUNCTION
+                    and (
+                        cssutils.helper.normalize(v)
+                        in (
+                            'expression(',
+                            'alpha(',
+                            'blur(',
+                            'chroma(',
+                            'dropshadow(',
+                            'fliph(',
+                            'flipv(',
+                            'glow(',
+                            'gray(',
+                            'invert(',
+                            'mask(',
+                            'shadow(',
+                            'wave(',
+                            'xray(',
+                        )
+                        or v.startswith('progid:DXImageTransform.Microsoft.')
                     )
-                    or v.startswith('progid:DXImageTransform.Microsoft.')
                 ),
                 nextSor=nextSor,
                 toSeq=lambda t, tokens: (
@@ -1013,14 +1015,16 @@ class CSSFunction(CSSPrimitiveValue):
             PreDef.unary(),
             Prod(
                 name='PrimitiveValue',
-                match=lambda t, v: t
-                in (
-                    types.DIMENSION,
-                    types.HASH,
-                    types.IDENT,
-                    types.NUMBER,
-                    types.PERCENTAGE,
-                    types.STRING,
+                match=lambda t, v: (
+                    t
+                    in (
+                        types.DIMENSION,
+                        types.HASH,
+                        types.IDENT,
+                        types.NUMBER,
+                        types.PERCENTAGE,
+                        types.STRING,
+                    )
                 ),
                 toSeq=lambda t, tokens: (t[0], CSSPrimitiveValue(t[1])),
             ),
@@ -1146,8 +1150,11 @@ class RGBColor(CSSFunction):
         funccolor = Sequence(
             Prod(
                 name='FUNC',
-                match=lambda t, v: t == types.FUNCTION
-                and cssutils.helper.normalize(v) in ('rgb(', 'rgba(', 'hsl(', 'hsla('),
+                match=lambda t, v: (
+                    t == types.FUNCTION
+                    and cssutils.helper.normalize(v)
+                    in ('rgb(', 'rgba(', 'hsl(', 'hsla(')
+                ),
                 toSeq=lambda t, v: (t, v),  # cssutils.helper.normalize(v)),
                 toStore='colorType',
             ),

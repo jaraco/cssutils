@@ -124,23 +124,26 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
             Sequence(
                 Prod(
                     name='ONLY|NOT',  # media_query
-                    match=lambda t, v: t == PreDef.types.IDENT
-                    and normalize(v) in ('only', 'not'),
+                    match=lambda t, v: (
+                        t == PreDef.types.IDENT and normalize(v) in ('only', 'not')
+                    ),
                     optional=True,
                     toStore='not simple',
                 ),
                 Prod(
                     name='media_type',
-                    match=lambda t, v: t == PreDef.types.IDENT
-                    and normalize(v) in self.MEDIA_TYPES,
+                    match=lambda t, v: (
+                        t == PreDef.types.IDENT and normalize(v) in self.MEDIA_TYPES
+                    ),
                     stopIfNoMoreMatch=True,
                     toStore='media_type',
                 ),
                 Sequence(
                     Prod(
                         name='AND',
-                        match=lambda t, v: t == PreDef.types.IDENT
-                        and normalize(v) == 'and',
+                        match=lambda t, v: (
+                            t == PreDef.types.IDENT and normalize(v) == 'and'
+                        ),
                         toStore='not simple',
                     ),
                     expression(),
@@ -152,8 +155,9 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
                 Sequence(
                     Prod(
                         name='AND',
-                        match=lambda t, v: t == PreDef.types.IDENT
-                        and normalize(v) == 'and',
+                        match=lambda t, v: (
+                            t == PreDef.types.IDENT and normalize(v) == 'and'
+                        ),
                     ),
                     expression(),
                     minmax=lambda: (0, None),
