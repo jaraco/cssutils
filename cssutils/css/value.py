@@ -384,8 +384,9 @@ class ColorValue(Value):
         )
         namedcolor = Prod(
             name='Named Color',
-            match=lambda t, v: t == 'IDENT'
-            and (normalize(v) in list(self.COLORS.keys())),
+            match=lambda t, v: (
+                t == 'IDENT' and (normalize(v) in list(self.COLORS.keys()))
+            ),
             stop=True,
         )
 
@@ -988,9 +989,11 @@ reHexcolor = re.compile(r'^\#(?:[0-9abcdefABCDEF]{3}|[0-9abcdefABCDEF]{6})$')
 def _ColorProd(parent, nextSor=False, toStore=None):
     return Prod(
         name='ColorValue',
-        match=lambda t, v: (t == 'HASH' and reHexcolor.match(v))
-        or (t == 'FUNCTION' and normalize(v) in ('rgb(', 'rgba(', 'hsl(', 'hsla('))
-        or (t == 'IDENT' and normalize(v) in list(ColorValue.COLORS.keys())),
+        match=lambda t, v: (
+            (t == 'HASH' and reHexcolor.match(v))
+            or (t == 'FUNCTION' and normalize(v) in ('rgb(', 'rgba(', 'hsl(', 'hsla('))
+            or (t == 'IDENT' and normalize(v) in list(ColorValue.COLORS.keys()))
+        ),
         nextSor=nextSor,
         toStore=toStore,
         toSeq=lambda t, tokens: (

@@ -80,7 +80,8 @@ def string(value):
     """
     # \n = 0xa, \r = 0xd, \f = 0xc
     value = (
-        value.replace('\n', '\\a ')
+        value
+        .replace('\n', '\\a ')
         .replace('\r', '\\d ')
         .replace('\f', '\\c ')
         .replace('"', '\\"')
