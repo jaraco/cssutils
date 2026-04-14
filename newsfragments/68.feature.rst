@@ -1,0 +1,1 @@
+Allow @font-face rules nested inside @media rules.
