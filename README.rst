@@ -25,6 +25,8 @@ Overview
 ========
 A Python package to parse and build CSS Cascading Style Sheets. DOM only, not any rendering facilities!
 
+You can find more documentation at `cssutils.readthedocs.io <https://cssutils.readthedocs.io>`_.
+
 Based upon and partly implementing the following specifications :
 
 `CSS 2.1rev1 <http://www.w3.org/TR/CSS2/>`__
