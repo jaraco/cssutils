@@ -188,7 +188,8 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         t(cssutils.parseStyle(style))
         t(cssutils.parseString('a {' + style + '}').cssRules[0].style)
         t(
-            cssutils.parseString('@media all {a {' + style + '}}')
+            cssutils
+            .parseString('@media all {a {' + style + '}}')
             .cssRules[0]
             .cssRules[0]
             .style

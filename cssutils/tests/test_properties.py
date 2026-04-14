@@ -23,6 +23,12 @@ class TestProperties:
             'IN': '1.2in',
             'PT': '1.2pt',
             'PC': '1.2pc',
+            'REM': '1.2rem',
+            'CH': '1.2ch',
+            'VH': '1.2vh',
+            'VW': '1.2vw',
+            'VMIN': '1.2vmin',
+            'VMAX': '1.2vmax',
             'ANGLES': ('1deg', '1rad', '1grad'),
             'TIMES': ('1s', '1ms'),
             'FREQUENCIES': ('1hz', '1khz'),
@@ -62,7 +68,21 @@ class TestProperties:
 
         # combined values, only keys of V may be used!
         self.V['LENGTHS'] = expanded(
-            '0', 'EM', 'EX', 'PX', 'CM', 'MM', 'IN', 'PT', 'PC'
+            '0',
+            'EM',
+            'EX',
+            'REM',
+            'CH',
+            'PX',
+            'CM',
+            'MM',
+            'IN',
+            'PT',
+            'PC',
+            'VH',
+            'VW',
+            'VMIN',
+            'VMAX',
         )
         self.V['COLORS'] = expanded('HEX3', 'HEX6', 'RGB', 'RGB100')
         self.V['COLORS3'] = expanded('RGBA', 'RGBA100', 'HSL', 'HSLA')

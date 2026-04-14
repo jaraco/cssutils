@@ -771,7 +771,7 @@ class PreDef:
         "#123 or #123456"
         return Prod(
             name='HEX color',
-            match=lambda t, v: (t == PreDef.types.HASH and PreDef.reHexcolor.match(v)),
+            match=lambda t, v: t == PreDef.types.HASH and PreDef.reHexcolor.match(v),
             stop=stop,
             nextSor=nextSor,
         )
