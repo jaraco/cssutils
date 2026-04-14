@@ -68,8 +68,21 @@ class TestProperties:
 
         # combined values, only keys of V may be used!
         self.V['LENGTHS'] = expanded(
-            '0', 'EM', 'EX', 'REM', 'CH', 'PX', 'CM', 'MM', 'IN', 'PT', 'PC',
-            'VH', 'VW', 'VMIN', 'VMAX'
+            '0',
+            'EM',
+            'EX',
+            'REM',
+            'CH',
+            'PX',
+            'CM',
+            'MM',
+            'IN',
+            'PT',
+            'PC',
+            'VH',
+            'VW',
+            'VMIN',
+            'VMAX',
         )
         self.V['COLORS'] = expanded('HEX3', 'HEX6', 'RGB', 'RGB100')
         self.V['COLORS3'] = expanded('RGBA', 'RGBA100', 'HSL', 'HSLA')
