@@ -1,3 +1,14 @@
+v2.12.0
+=======
+
+Features
+--------
+
+- Simplify dictionary keys access in _ColorProd function. (#63)
+- Allow @font-face rules nested inside @media rules. (#68)
+- Added REM and other CSS3 length units to length macros. (#69)
+
+
 v2.11.1
 =======
 
