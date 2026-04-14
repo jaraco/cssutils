@@ -1,3 +1,4 @@
+[build-system]
 requires = [
 	"setuptools>=77",
 	"setuptools_scm[toml]>=3.4.1",
