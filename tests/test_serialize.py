@@ -1,11 +1,10 @@
 """Testcases for cssutils.CSSSerializer"""
 
-import basetest
-
 import cssutils
+import cssutils.testing
 
 
-class TestPreferences(basetest.BaseTestCase):
+class TestPreferences(cssutils.testing.BaseTestCase):
     """
     testcases for cssutils.serialize.Preferences
     """

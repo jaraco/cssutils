@@ -2,14 +2,15 @@
 
 import codecs
 import os
+import pathlib
 import sys
 import tempfile
 from unittest import mock
 
-import basetest
 import pytest
 
 import cssutils
+import cssutils.testing
 
 
 @pytest.fixture
@@ -17,7 +18,7 @@ def serializer(monkeypatch):
     monkeypatch.setattr(cssutils, 'ser', cssutils.serialize.CSSSerializer())
 
 
-class TestCSSutils(basetest.BaseTestCase):
+class TestCSSutils(cssutils.testing.BaseTestCase):
     exp = '''@import "import/import2.css";
 .import {
     /* ./import.css */
@@ -42,7 +43,7 @@ class TestCSSutils(basetest.BaseTestCase):
         irs = ir.styleSheet
         assert isinstance(irs, cssutils.css.CSSStyleSheet)
 
-        href = basetest.get_sheet_filename('import.css')
+        href = pathlib.Path(__file__).parent / 'sheets' / 'import.css'
         href = cssutils.helper.path2url(href)
         s = cssutils.parseString(self.exp, href=href)
         assert href == s.href
@@ -74,7 +75,7 @@ class TestCSSutils(basetest.BaseTestCase):
     def test_parseFile(self, monkeypatch):
         "cssutils.parseFile()"
         # name if used with open, href used for @import resolving
-        name = basetest.get_sheet_filename('import.css')
+        name = pathlib.Path(__file__).parent / 'sheets' / 'import.css'
         href = cssutils.helper.path2url(name)
 
         s = cssutils.parseFile(name, href=href, media='screen', title='from file')
@@ -113,7 +114,7 @@ class TestCSSutils(basetest.BaseTestCase):
         # name is used for open and setting of href automatically
         # test needs to be relative to this test file!
         monkeypatch.chdir(os.path.dirname(__file__))
-        name = basetest.get_sheet_filename('import.css')
+        name = pathlib.Path(__file__).parent / 'sheets' / 'import.css'
 
         s = cssutils.parseFile(name, media='screen', title='from file')
         assert isinstance(s, cssutils.css.CSSStyleSheet)
@@ -191,7 +192,7 @@ class TestCSSutils(basetest.BaseTestCase):
 
     def test_parseUrl(self):
         "cssutils.parseUrl()"
-        href = basetest.get_sheet_filename('import.css')
+        href = pathlib.Path(__file__).parent / 'sheets' / 'import.css'
         # href = u'file:' + urllib.pathname2url(href)
         href = cssutils.helper.path2url(href)
         # href = 'http://seewhatever.de/sheets/import.css'

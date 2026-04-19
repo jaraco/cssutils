@@ -2,13 +2,13 @@
 
 import xml.dom
 
-import basetest
 import pytest
 
 import cssutils.css
+import cssutils.testing
 
 
-class TestCSSRule(basetest.BaseTestCase):
+class TestCSSRule(cssutils.testing.BaseTestCase):
     """
     base class for all CSSRule subclass tests
 

@@ -2,13 +2,13 @@
 
 import xml.dom
 
-import basetest
 import pytest
 
 import cssutils.stylesheets
+import cssutils.testing
 
 
-class TestMediaQuery(basetest.BaseTestCase):
+class TestMediaQuery(cssutils.testing.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.stylesheets.MediaQuery()
 

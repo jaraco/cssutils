@@ -41,7 +41,7 @@ Source = "https://github.com/jaraco/cssutils"
 [project.optional-dependencies]
 test = [
 	# upstream
-	"pytest >= 7, != 8.1.*",
+	"pytest >= 6, != 8.1.*",
 
 	# local
 	'lxml; python_version < "3.11"', # workaround for #25

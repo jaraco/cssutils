@@ -2,14 +2,14 @@
 
 import xml.dom
 
-import basetest
 import pytest
 
 import cssutils
+import cssutils.testing
 from cssutils.css.selectorlist import SelectorList
 
 
-class TestSelectorList(basetest.BaseTestCase):
+class TestSelectorList(cssutils.testing.BaseTestCase):
     def setup_method(self):
         self.r = SelectorList()
 
