@@ -92,13 +92,6 @@ csscapture = "cssutils.scripts.csscapture:main"
 csscombine = "cssutils.scripts.csscombine:main"
 cssparse = "cssutils.scripts.cssparse:main"
 
-[tool.setuptools.packages.find]
-include = [
-	"cssutils",
-	"cssutils.*",
-]
-namespaces = true
-
 
 [tool.setuptools_scm]
 
