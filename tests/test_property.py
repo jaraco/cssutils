@@ -3,12 +3,11 @@
 import re
 import xml.dom
 
+import basetest
 import pytest
 from jaraco.test import property_error
 
 import cssutils
-
-import basetest
 
 
 class TestProperty(basetest.BaseTestCase):

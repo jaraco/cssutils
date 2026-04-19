@@ -2,8 +2,9 @@
 
 import pathlib
 
-import cssutils
 import pytest
+
+import cssutils
 
 
 def get_sheet_filename(sheet_name):

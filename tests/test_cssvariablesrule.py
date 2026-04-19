@@ -3,10 +3,9 @@
 import xml.dom
 
 import pytest
+import test_cssrule
 
 import cssutils
-
-import test_cssrule
 
 
 class TestCSSVariablesRule(test_cssrule.TestCSSRule):

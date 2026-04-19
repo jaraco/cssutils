@@ -3,10 +3,9 @@
 import xml.dom
 
 import pytest
+import test_cssrule
 
 import cssutils.css
-
-import test_cssrule
 
 
 class TestCSSCharsetRule(test_cssrule.TestCSSRule):

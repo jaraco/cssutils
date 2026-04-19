@@ -2,11 +2,10 @@
 
 import xml.dom
 
+import basetest
 import pytest
 
 import cssutils
-
-import basetest
 
 pytestmark = pytest.mark.xfail(reason="incomplete")
 

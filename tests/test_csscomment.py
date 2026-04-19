@@ -2,9 +2,9 @@
 
 import xml
 
-import cssutils.css
-
 import test_cssrule
+
+import cssutils.css
 
 
 class TestCSSComment(test_cssrule.TestCSSRule):

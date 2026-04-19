@@ -3,11 +3,10 @@
 import types
 import xml.dom
 
+import basetest
 import pytest
 
 import cssutils
-
-import basetest
 
 
 @pytest.fixture

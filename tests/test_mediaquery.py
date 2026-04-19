@@ -2,11 +2,10 @@
 
 import xml.dom
 
+import basetest
 import pytest
 
 import cssutils.stylesheets
-
-import basetest
 
 
 class TestMediaQuery(basetest.BaseTestCase):

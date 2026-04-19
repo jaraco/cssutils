@@ -4,10 +4,9 @@ import re
 import xml.dom
 
 import pytest
+import test_cssrule
 
 import cssutils
-
-import test_cssrule
 
 
 class TestCSSImportRule(test_cssrule.TestCSSRule):

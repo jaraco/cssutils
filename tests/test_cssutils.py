@@ -6,11 +6,10 @@ import sys
 import tempfile
 from unittest import mock
 
+import basetest
 import pytest
 
 import cssutils
-
-import basetest
 
 
 @pytest.fixture

@@ -2,9 +2,9 @@
 
 import xml.dom
 
-import cssutils
-
 import basetest
+
+import cssutils
 
 
 class TestCSSVariablesDeclaration(basetest.BaseTestCase):
