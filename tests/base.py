@@ -1,15 +1,20 @@
 """Base class for all tests"""
 
-import pathlib
+import sys
 
 import pytest
+
+if sys.version_info >= (3, 9):
+    from importlib import resources
+else:
+    import importlib_resources as resources
 
 import cssutils
 
 
 def get_sheet_filename(sheet_name):
     """Get the filename for the given sheet."""
-    return pathlib.Path(__file__).parent / 'sheets' / sheet_name
+    return resources.files('tests') / 'sheets' / sheet_name
 
 
 class BaseTestCase:
