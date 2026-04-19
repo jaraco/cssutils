@@ -2,15 +2,15 @@
 
 import xml.dom
 
+import base
 import pytest
 
 import cssutils
-import cssutils.testing
 
 pytestmark = pytest.mark.xfail(reason="incomplete")
 
 
-class TestCSSValue(cssutils.testing.BaseTestCase):
+class TestCSSValue(base.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.CSSValue()  # needed for tests
 

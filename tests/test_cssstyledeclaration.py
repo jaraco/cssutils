@@ -2,13 +2,13 @@
 
 import xml.dom
 
+import base
 import pytest
 
 import cssutils
-import cssutils.testing
 
 
-class TestCSSStyleDeclaration(cssutils.testing.BaseTestCase):
+class TestCSSStyleDeclaration(base.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.CSSStyleDeclaration()
 

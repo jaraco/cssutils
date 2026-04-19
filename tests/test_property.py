@@ -3,14 +3,14 @@
 import re
 import xml.dom
 
+import base
 import pytest
 from jaraco.test import property_error
 
 import cssutils
-import cssutils.testing
 
 
-class TestProperty(cssutils.testing.BaseTestCase):
+class TestProperty(base.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.property.Property('top', '1px')  # , 'important')
 

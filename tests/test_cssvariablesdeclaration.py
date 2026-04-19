@@ -2,11 +2,12 @@
 
 import xml.dom
 
+import base
+
 import cssutils
-import cssutils.testing
 
 
-class TestCSSVariablesDeclaration(cssutils.testing.BaseTestCase):
+class TestCSSVariablesDeclaration(base.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.CSSVariablesDeclaration()
 

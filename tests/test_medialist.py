@@ -3,13 +3,13 @@
 import re
 import xml.dom
 
+import base
 import pytest
 
 import cssutils.stylesheets
-import cssutils.testing
 
 
-class TestMediaList(cssutils.testing.BaseTestCase):
+class TestMediaList(base.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.stylesheets.MediaList()
 

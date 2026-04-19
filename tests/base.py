@@ -1,4 +1,4 @@
-"""Shared test helpers for cssutils test suites."""
+"""Base test case for cssutils test suites."""
 
 import pytest
 

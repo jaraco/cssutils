@@ -9,14 +9,14 @@ what should happen here?
 
 import xml.dom
 
+import base
 import pytest
 from jaraco.test import property_error
 
 import cssutils
-import cssutils.testing
 
 
-class TestSelector(cssutils.testing.BaseTestCase):
+class TestSelector(base.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.Selector('*')
 

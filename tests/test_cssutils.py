@@ -7,10 +7,10 @@ import sys
 import tempfile
 from unittest import mock
 
+import base
 import pytest
 
 import cssutils
-import cssutils.testing
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def serializer(monkeypatch):
     monkeypatch.setattr(cssutils, 'ser', cssutils.serialize.CSSSerializer())
 
 
-class TestCSSutils(cssutils.testing.BaseTestCase):
+class TestCSSutils(base.BaseTestCase):
     exp = '''@import "import/import2.css";
 .import {
     /* ./import.css */
