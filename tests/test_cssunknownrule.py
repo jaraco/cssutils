@@ -2,9 +2,9 @@
 
 import xml.dom
 
-import test_cssrule
-
 import cssutils
+
+from . import test_cssrule
 
 
 class TestCSSUnknownRule(test_cssrule.TestCSSRule):

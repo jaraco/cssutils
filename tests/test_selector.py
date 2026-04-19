@@ -9,11 +9,12 @@ what should happen here?
 
 import xml.dom
 
-import base
 import pytest
 from jaraco.test import property_error
 
 import cssutils
+
+from . import base
 
 
 class TestSelector(base.BaseTestCase):

@@ -2,15 +2,15 @@
 
 import codecs
 import os
-import pathlib
 import sys
 import tempfile
 from unittest import mock
 
-import base
 import pytest
 
 import cssutils
+
+from . import base
 
 
 @pytest.fixture
@@ -43,7 +43,7 @@ class TestCSSutils(base.BaseTestCase):
         irs = ir.styleSheet
         assert isinstance(irs, cssutils.css.CSSStyleSheet)
 
-        href = pathlib.Path(__file__).parent / 'sheets' / 'import.css'
+        href = base.get_sheet_filename('import.css')
         href = cssutils.helper.path2url(href)
         s = cssutils.parseString(self.exp, href=href)
         assert href == s.href
@@ -75,7 +75,7 @@ class TestCSSutils(base.BaseTestCase):
     def test_parseFile(self, monkeypatch):
         "cssutils.parseFile()"
         # name if used with open, href used for @import resolving
-        name = pathlib.Path(__file__).parent / 'sheets' / 'import.css'
+        name = base.get_sheet_filename('import.css')
         href = cssutils.helper.path2url(name)
 
         s = cssutils.parseFile(name, href=href, media='screen', title='from file')
@@ -114,7 +114,7 @@ class TestCSSutils(base.BaseTestCase):
         # name is used for open and setting of href automatically
         # test needs to be relative to this test file!
         monkeypatch.chdir(os.path.dirname(__file__))
-        name = pathlib.Path(__file__).parent / 'sheets' / 'import.css'
+        name = base.get_sheet_filename('import.css')
 
         s = cssutils.parseFile(name, media='screen', title='from file')
         assert isinstance(s, cssutils.css.CSSStyleSheet)
@@ -192,7 +192,7 @@ class TestCSSutils(base.BaseTestCase):
 
     def test_parseUrl(self):
         "cssutils.parseUrl()"
-        href = pathlib.Path(__file__).parent / 'sheets' / 'import.css'
+        href = base.get_sheet_filename('import.css')
         # href = u'file:' + urllib.pathname2url(href)
         href = cssutils.helper.path2url(href)
         # href = 'http://seewhatever.de/sheets/import.css'

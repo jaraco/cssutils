@@ -1,8 +1,15 @@
-"""Base test case for cssutils test suites."""
+"""Base class for all tests"""
+
+import pathlib
 
 import pytest
 
 import cssutils
+
+
+def get_sheet_filename(sheet_name):
+    """Get the filename for the given sheet."""
+    return pathlib.Path(__file__).parent / 'sheets' / sheet_name
 
 
 class BaseTestCase:

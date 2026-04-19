@@ -1,13 +1,8 @@
 import importlib
-import pathlib
-import sys
 
 import pytest
 
 import cssutils
-
-# Allow test modules to import each other (e.g. test_csscharsetrule imports test_cssrule)
-sys.path.insert(0, str(pathlib.Path(__file__).parent / 'tests'))
 
 collect_ignore = [
     'cssutils/_fetchgae.py',

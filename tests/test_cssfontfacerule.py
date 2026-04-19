@@ -3,7 +3,7 @@
 # flake8: noqa
 
 import xml.dom
-import test_cssrule
+from . import test_cssrule
 import cssutils
 import pytest
 

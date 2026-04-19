@@ -2,11 +2,12 @@
 
 import xml.dom
 
-import base
 import pytest
 
 import cssutils
 from cssutils.css.selectorlist import SelectorList
+
+from . import base
 
 
 class TestSelectorList(base.BaseTestCase):

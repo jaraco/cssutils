@@ -2,10 +2,11 @@
 
 import xml.dom
 
-import base
 import pytest
 
 import cssutils.css
+
+from . import base
 
 
 class TestCSSStyleSheet(base.BaseTestCase):

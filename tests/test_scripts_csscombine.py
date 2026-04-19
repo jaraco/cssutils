@@ -1,9 +1,9 @@
 """Testcases for cssutils.scripts.csscombine"""
 
-import pathlib
-
 import cssutils
 from cssutils.script import csscombine
+
+from . import base
 
 
 class TestCSSCombine:
@@ -13,7 +13,7 @@ class TestCSSCombine:
         "scripts.csscombine()"
 
         # path, SHOULD be keyword argument!
-        csspath = pathlib.Path(__file__).parent / 'sheets' / 'csscombine-proxy.css'
+        csspath = base.get_sheet_filename('csscombine-proxy.css')
         combined = csscombine(csspath)
         assert combined == self.C.encode()
         combined = csscombine(path=csspath, targetencoding='ascii')

@@ -3,9 +3,10 @@
 import xml.dom
 
 import pytest
-import test_cssrule
 
 import cssutils
+
+from . import test_cssrule
 
 
 class TestCSSPageRule(test_cssrule.TestCSSRule):

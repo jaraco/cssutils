@@ -1,8 +1,8 @@
 """Testcases for cssutils.CSSSerializer"""
 
-import base
-
 import cssutils
+
+from . import base
 
 
 class TestPreferences(base.BaseTestCase):

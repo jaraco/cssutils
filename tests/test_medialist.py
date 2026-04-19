@@ -3,10 +3,11 @@
 import re
 import xml.dom
 
-import base
 import pytest
 
 import cssutils.stylesheets
+
+from . import base
 
 
 class TestMediaList(base.BaseTestCase):

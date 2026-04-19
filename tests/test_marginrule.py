@@ -3,9 +3,10 @@
 import xml.dom
 
 import pytest
-import test_cssrule
 
 import cssutils
+
+from . import test_cssrule
 
 
 class TestMarginRule(test_cssrule.TestCSSRule):
