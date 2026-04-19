@@ -14,7 +14,7 @@ import cssutils
 
 def get_sheet_filename(sheet_name):
     """Get the filename for the given sheet."""
-    return resources.files('cssutils') / 'tests' / 'sheets' / sheet_name
+    return resources.files('tests') / 'sheets' / sheet_name
 
 
 class BaseTestCase:
