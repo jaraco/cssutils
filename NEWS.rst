@@ -1,3 +1,12 @@
+v2.13.0
+=======
+
+Features
+--------
+
+- Replaced encutils with separate package of the same name. (#73)
+
+
 v2.12.0
 =======
 
