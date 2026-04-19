@@ -41,12 +41,11 @@ Source = "https://github.com/jaraco/cssutils"
 [project.optional-dependencies]
 test = [
 	# upstream
-	"pytest >= 6, != 8.1.*",
+	"pytest >= 7, != 8.1.*",
 
 	# local
 	'lxml; python_version < "3.11"', # workaround for #25
 	"cssselect",
-	'importlib_resources; python_version < "3.9"',
 	"jaraco.test >= 5.1",
 ]
 
