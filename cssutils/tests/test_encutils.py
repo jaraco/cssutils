@@ -5,10 +5,7 @@ tests for encutils.py
 import http.client
 from io import StringIO
 
-try:
-    import cssutils.encutils as encutils
-except ImportError:
-    import encutils
+import encutils
 
 # helper log
 log = encutils.buildlog(stream=StringIO())

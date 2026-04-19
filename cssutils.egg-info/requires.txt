@@ -1,0 +1,38 @@
+more_itertools
+encutils
+
+[check]
+pytest-checkdocs>=2.14
+
+[check:sys_platform != "cygwin"]
+pytest-ruff>=0.2.1
+
+[cover]
+pytest-cov
+
+[doc]
+sphinx>=3.5
+jaraco.packaging>=9.3
+rst.linker>=1.9
+furo
+sphinx-lint
+jaraco.tidelift>=1.4
+
+[enabler]
+pytest-enabler>=3.4
+
+[test]
+pytest!=8.1.*,>=6
+cssselect
+jaraco.test>=5.1
+
+[test:python_version < "3.11"]
+lxml
+
+[test:python_version < "3.9"]
+importlib_resources
+
+[type]
+
+[type:platform_python_implementation != "PyPy"]
+pytest-mypy>=1.0.1
