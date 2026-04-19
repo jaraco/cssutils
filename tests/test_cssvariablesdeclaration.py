@@ -4,10 +4,10 @@ import xml.dom
 
 import cssutils
 
-from . import base
+from . import basetest
 
 
-class TestCSSVariablesDeclaration(base.BaseTestCase):
+class TestCSSVariablesDeclaration(basetest.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.CSSVariablesDeclaration()
 

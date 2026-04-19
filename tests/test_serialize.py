@@ -2,10 +2,10 @@
 
 import cssutils
 
-from . import base
+from . import basetest
 
 
-class TestPreferences(base.BaseTestCase):
+class TestPreferences(basetest.BaseTestCase):
     """
     testcases for cssutils.serialize.Preferences
     """

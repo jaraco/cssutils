@@ -8,10 +8,10 @@ from jaraco.test import property_error
 
 import cssutils
 
-from . import base
+from . import basetest
 
 
-class TestProperty(base.BaseTestCase):
+class TestProperty(basetest.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.property.Property('top', '1px')  # , 'important')
 

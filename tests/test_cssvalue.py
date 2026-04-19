@@ -6,12 +6,12 @@ import pytest
 
 import cssutils
 
-from . import base
+from . import basetest
 
 pytestmark = pytest.mark.xfail(reason="incomplete")
 
 
-class TestCSSValue(base.BaseTestCase):
+class TestCSSValue(basetest.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.CSSValue()  # needed for tests
 

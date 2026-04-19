@@ -6,10 +6,10 @@ import pytest
 
 import cssutils
 
-from . import base
+from . import basetest
 
 
-class TestCSSStyleDeclaration(base.BaseTestCase):
+class TestCSSStyleDeclaration(basetest.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.css.CSSStyleDeclaration()
 

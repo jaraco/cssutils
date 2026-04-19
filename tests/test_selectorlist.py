@@ -7,10 +7,10 @@ import pytest
 import cssutils
 from cssutils.css.selectorlist import SelectorList
 
-from . import base
+from . import basetest
 
 
-class TestSelectorList(base.BaseTestCase):
+class TestSelectorList(basetest.BaseTestCase):
     def setup_method(self):
         self.r = SelectorList()
 

@@ -7,10 +7,10 @@ import pytest
 
 import cssutils.stylesheets
 
-from . import base
+from . import basetest
 
 
-class TestMediaList(base.BaseTestCase):
+class TestMediaList(basetest.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.stylesheets.MediaList()
 

@@ -6,10 +6,10 @@ import pytest
 
 import cssutils.stylesheets
 
-from . import base
+from . import basetest
 
 
-class TestMediaQuery(base.BaseTestCase):
+class TestMediaQuery(basetest.BaseTestCase):
     def setup_method(self):
         self.r = cssutils.stylesheets.MediaQuery()
 

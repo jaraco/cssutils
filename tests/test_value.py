@@ -7,7 +7,7 @@ import pytest
 
 import cssutils
 
-from . import base
+from . import basetest
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def set_r_property_value(request):
 
 
 @pytest.mark.usefixtures('set_r_property_value')
-class TestPropertyValue(base.BaseTestCase):
+class TestPropertyValue(basetest.BaseTestCase):
     def test_init(self):
         "PropertyValue.__init__() .item() .length"
         pv = cssutils.css.PropertyValue()
@@ -421,7 +421,7 @@ y"''': (
             assert n == v.value
 
 
-class TestColorValue(base.BaseTestCase):
+class TestColorValue(basetest.BaseTestCase):
     def test_init(self):
         "ColorValue.__init__()"
         v = cssutils.css.ColorValue()
@@ -525,7 +525,7 @@ class TestColorValue(base.BaseTestCase):
                 assert c.alpha == rgba[3]
 
 
-class TestURIValue(base.BaseTestCase):
+class TestURIValue(basetest.BaseTestCase):
     def test_init(self):
         "URIValue.__init__()"
         v = cssutils.css.URIValue()

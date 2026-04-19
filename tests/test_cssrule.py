@@ -6,10 +6,10 @@ import pytest
 
 import cssutils.css
 
-from . import base
+from . import basetest
 
 
-class TestCSSRule(base.BaseTestCase):
+class TestCSSRule(basetest.BaseTestCase):
     """
     base class for all CSSRule subclass tests
 
