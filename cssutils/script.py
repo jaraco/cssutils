@@ -12,8 +12,9 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-import cssutils
 import encutils
+
+import cssutils
 
 # types of sheets in HTML
 LINK = (

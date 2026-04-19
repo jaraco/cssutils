@@ -30,6 +30,7 @@ requires-python = ">=3.10"
 license = "LGPL-3.0-or-later"
 dependencies = [
 	"more_itertools",
+	"encutils",
 ]
 dynamic = ["version"]
 keywords = ["CSS", "Cascading Style Sheets", "CSSParser", "DOM Level 2 Stylesheets", "DOM Level 2 CSS"]
@@ -90,14 +91,6 @@ type = [
 csscapture = "cssutils.scripts.csscapture:main"
 csscombine = "cssutils.scripts.csscombine:main"
 cssparse = "cssutils.scripts.cssparse:main"
-
-[tool.setuptools.packages.find]
-include = [
-	"cssutils",
-	"cssutils.*",
-	"encutils",
-]
-namespaces = true
 
 
 [tool.setuptools_scm]
