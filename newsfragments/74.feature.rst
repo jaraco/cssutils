@@ -1,0 +1,1 @@
+Moved tests out of the install.
