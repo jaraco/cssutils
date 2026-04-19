@@ -1,3 +1,12 @@
+v2.14.0
+=======
+
+Features
+--------
+
+- Moved tests out of the install. (#74)
+
+
 v2.13.0
 =======
 
