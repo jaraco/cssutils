@@ -298,6 +298,20 @@ class TestSelector(basetest.BaseTestCase):
             ':not([a])': None,
             ':not(:first-letter)': None,
             ':not(::first-letter)': None,
+            # Selectors Level 4: :has() with complex selectors
+            'fieldset:has(option)': None,
+            'fieldset:has(option:checked)': None,
+            'fieldset:has(option[value="foo"]:checked)': None,
+            'fieldset:has(option[value="foo"])': None,
+            ':has(.bar)': None,
+            ':has(#id)': None,
+            ':has(div span)': None,
+            # Selectors Level 4: :is() and :where()
+            ':is(div)': None,
+            ':is(.foo)': None,
+            ':is(div.foo:hover)': None,
+            ':where(div)': None,
+            ':where(.foo:hover)': None,
             # escapes
             r'\74\72 td': 'trtd',
             r'\74\72  td': 'tr td',
