@@ -410,11 +410,16 @@ class TestSelector(basetest.BaseTestCase):
             '* a': (0, 0, 0, 1),
             'a *': (0, 0, 0, 1),
             'a * b': (0, 0, 0, 2),
-            'a:hover': (0, 0, 0, 1),
+            'a:hover': (0, 0, 1, 1),
             'a:first-line': (0, 0, 0, 2),
             'a:first-letter': (0, 0, 0, 2),
             'a:before': (0, 0, 0, 2),
             'a:after': (0, 0, 0, 2),
+            # pseudo-classes count as class selectors (column c)
+            ':last-child': (0, 0, 1, 0),
+            'tr:last-child': (0, 0, 1, 1),
+            ':nth-child(2)': (0, 0, 1, 0),
+            '.table > :last-child > tr:last-child > *': (0, 0, 3, 1),
             # classes and attributes
             '.a': (0, 0, 1, 0),
             '*.a': (0, 0, 1, 0),

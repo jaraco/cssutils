@@ -132,7 +132,7 @@ class New(cssutils.util._BaseClass):
         if not context or context == 'negation':
             if 'id' == typ:
                 self.specificity[1] += 1
-            elif 'class' == typ or '[' == val:
+            elif 'class' == typ or '[' == val or 'pseudo-class' == typ:
                 self.specificity[2] += 1
             elif typ in (
                 'type-selector',
