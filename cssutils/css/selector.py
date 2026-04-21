@@ -46,6 +46,12 @@ class Constants:
 
     combinator = ' combinator'
 
+    # Selectors Level 4 pseudo-classes that accept a full selector list
+    # as their argument (rather than a simple expression like an+b).
+    selector_pseudos = frozenset(
+        [':has(', ':is(', ':where(', ':matches(', ':any(']
+    )
+
 
 @dataclasses.dataclass
 class New(cssutils.util._BaseClass):
@@ -154,7 +160,12 @@ class New(cssutils.util._BaseClass):
     def _S(self, expected, seq, token, tokenizer=None):
         # S
         context = self.context[-1]
-        if context.startswith('pseudo-'):
+        if context == 'pseudo-class-has' and 'combinator' in expected:
+            # space is a descendant combinator inside :has(), :is(), etc.
+            self.append(seq, Constants.S, 'descendant', token=token)
+            return Constants.simple_selector_sequence + Constants.combinator
+
+        elif context.startswith('pseudo-'):
             if seq and seq[-1].value not in '+-':
                 # e.g. x:func(a + b)
                 self.append(seq, Constants.S, 'S', token=token)
@@ -226,6 +237,11 @@ class New(cssutils.util._BaseClass):
             if val.endswith('('):
                 # function
                 # "pseudo-" "class" or "element"
+                if val.lower() in Constants.selector_pseudos:
+                    # Selectors Level 4: :has(), :is(), :where(), etc.
+                    # accept a full selector list as argument
+                    self.context.append('pseudo-class-has')
+                    return Constants.simple_selector_sequence
                 self.context.append(typ)
                 return Constants.expressionstart
             elif 'negation' == context:
@@ -312,6 +328,11 @@ class New(cssutils.util._BaseClass):
             self.append(seq, val, 'negation-type-selector', token=token)
             return Constants.negationend
 
+        # context: pseudo-class-has (selector-accepting pseudo like :has())
+        elif context == 'pseudo-class-has':
+            self.append(seq, val, 'type-selector', token=token)
+            return Constants.simple_selector_sequence2 + Constants.combinator
+
         # context: pseudo
         elif context.startswith('pseudo-'):
             # :func(...)
@@ -390,6 +411,17 @@ class New(cssutils.util._BaseClass):
             self.context.pop()  # negation is done
             context = self.context[-1]
             return Constants.simple_selector_sequence + Constants.combinator
+
+        # context: pseudo-class-has (:has(), :is(), :where(), etc.)
+        if ')' == val and context == 'pseudo-class-has':
+            # :has(selector) end
+            self.append(seq, val, 'function-end', token=token)
+            self.context.pop()  # pseudo-class-has is done
+            context = self.context[-1]
+            if 'pseudo-element' == context:
+                return Constants.combinator
+            else:
+                return Constants.simple_selector_sequence + Constants.combinator
 
         # context: pseudo (at least one expression)
         if val in '+-' and context.startswith('pseudo-'):
