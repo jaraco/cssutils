@@ -1,0 +1,1 @@
+Fixed pseudo-class specificity calculation. Pseudo-classes (e.g. ``:hover``, ``:last-child``, ``:nth-child()``) now correctly contribute to the class-weight column per the CSS Selectors spec.
