@@ -50,6 +50,10 @@ class Constants:
     # as their argument (rather than a simple expression like an+b).
     selector_pseudos = frozenset([':has(', ':is(', ':where(', ':matches(', ':any('])
 
+    # CSS4 pseudo-elements whose argument is a selector (not an expression).
+    # These push a 'pseudo-element' context and accept simple_selector_sequence.
+    selector_pseudo_elements = frozenset(['::slotted(', '::cue(', '::cue-region('])
+
 
 @dataclasses.dataclass
 class New(cssutils.util._BaseClass):
@@ -240,6 +244,11 @@ class New(cssutils.util._BaseClass):
                     # accept a full selector list as argument
                     self.context.append('pseudo-class-has')
                     return Constants.simple_selector_sequence
+                if val.lower() in Constants.selector_pseudo_elements:
+                    # CSS4 pseudo-elements accepting a full selector argument
+                    # (e.g. ::slotted(), ::cue()).
+                    self.context.append('pseudo-element')
+                    return Constants.simple_selector_sequence
                 self.context.append(typ)
                 return Constants.expressionstart
             elif 'negation' == context:
@@ -415,6 +424,18 @@ class New(cssutils.util._BaseClass):
             # :has(selector) end
             self.append(seq, val, 'function-end', token=token)
             self.context.pop()  # pseudo-class-has is done
+            context = self.context[-1]
+            if 'pseudo-element' == context:
+                # inside ::slotted(:is(...)) — outer pseudo-element still open
+                return Constants.expression
+            else:
+                return Constants.simple_selector_sequence + Constants.combinator
+
+        # context: pseudo-element with selector argument (e.g. ::slotted(.foo))
+        if ')' == val and context == 'pseudo-element' and 'combinator' in expected:
+            # ::slotted(selector) end
+            self.append(seq, val, 'function-end', token=token)
+            self.context.pop()  # pseudo-element is done
             context = self.context[-1]
             if 'pseudo-element' == context:
                 return Constants.combinator
