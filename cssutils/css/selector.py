@@ -240,17 +240,18 @@ class New(cssutils.util._BaseClass):
                 # function
                 # "pseudo-" "class" or "element"
                 if val.lower() in Constants.selector_pseudos:
-                    # Selectors Level 4: :has(), :is(), :where(), etc.
-                    # accept a full selector list as argument
-                    self.context.append('pseudo-class-has')
-                    return Constants.simple_selector_sequence
-                if val.lower() in Constants.selector_pseudo_elements:
+                    ctx = 'pseudo-class-has'
+                elif val.lower() in Constants.selector_pseudo_elements:
                     # CSS4 pseudo-elements accepting a full selector argument
                     # (e.g. ::slotted(), ::cue()).
-                    self.context.append('pseudo-element')
-                    return Constants.simple_selector_sequence
-                self.context.append(typ)
-                return Constants.expressionstart
+                    ctx = 'pseudo-element'
+                else:
+                    self.context.append(typ)
+                    return Constants.expressionstart
+                # Selectors Level 4: both pseudo-class and pseudo-element
+                # forms that accept a full selector list as argument
+                self.context.append(ctx)
+                return Constants.simple_selector_sequence
             elif 'negation' == context:
                 return Constants.negationend
             elif 'pseudo-element' == typ:
@@ -431,17 +432,6 @@ class New(cssutils.util._BaseClass):
             else:
                 return Constants.simple_selector_sequence + Constants.combinator
 
-        # context: pseudo-element with selector argument (e.g. ::slotted(.foo))
-        if ')' == val and context == 'pseudo-element' and 'combinator' in expected:
-            # ::slotted(selector) end
-            self.append(seq, val, 'function-end', token=token)
-            self.context.pop()  # pseudo-element is done
-            context = self.context[-1]
-            if 'pseudo-element' == context:
-                return Constants.combinator
-            else:
-                return Constants.simple_selector_sequence + Constants.combinator
-
         # context: pseudo (at least one expression)
         if val in '+-' and context.startswith('pseudo-'):
             # :func(+ -)"
@@ -455,11 +445,16 @@ class New(cssutils.util._BaseClass):
         if (
             ')' == val
             and context.startswith('pseudo-')
-            and Constants.expression == expected
+            and (
+                Constants.expression == expected
+                or (context == 'pseudo-element' and 'combinator' in expected)
+            )
         ):
-            # :func(expression)"
+            # :func(expression) or ::slotted(selector) end
             self.append(seq, val, 'function-end', token=token)
             self.context.pop()  # pseudo is done
+            # context still holds the pre-pop value: check what *type* of pseudo
+            # we just closed to decide what may follow.
             if 'pseudo-element' == context:
                 return Constants.combinator
             else:
