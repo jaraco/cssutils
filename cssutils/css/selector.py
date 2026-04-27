@@ -48,9 +48,7 @@ class Constants:
 
     # Selectors Level 4 pseudo-classes that accept a full selector list
     # as their argument (rather than a simple expression like an+b).
-    selector_pseudos = frozenset(
-        [':has(', ':is(', ':where(', ':matches(', ':any(']
-    )
+    selector_pseudos = frozenset([':has(', ':is(', ':where(', ':matches(', ':any('])
 
 
 @dataclasses.dataclass
