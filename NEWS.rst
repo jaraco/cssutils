@@ -1,3 +1,13 @@
+v2.15.0
+=======
+
+Features
+--------
+
+- Added support for Selectors Level 4 pseudo-classes that accept full selector lists as arguments (:has(), :is(), :where(), :matches(), :any()). (#66)
+- Fixed pseudo-class specificity calculation. Pseudo-classes (e.g. ``:hover``, ``:last-child``, ``:nth-child()``) now correctly contribute to the class-weight column per the CSS Selectors spec. (#76)
+
+
 v2.14.0
 =======
 

@@ -1,1 +1,0 @@
-Added support for Selectors Level 4 pseudo-classes that accept full selector lists as arguments (:has(), :is(), :where(), :matches(), :any()).
