@@ -15,16 +15,16 @@ class TestCSSCombine:
         # path, SHOULD be keyword argument!
         csspath = basetest.get_sheet_filename('csscombine-proxy.css')
         combined = csscombine(csspath)
-        assert combined == self.C.encode()
+        assert combined == self.C
         combined = csscombine(path=csspath, targetencoding='ascii')
-        assert combined == ('@charset "ascii";' + self.C).encode()
+        assert combined == '@charset "ascii";' + self.C
 
         # url
         cssurl = cssutils.helper.path2url(csspath)
         combined = csscombine(url=cssurl)
-        assert combined == self.C.encode()
+        assert combined == self.C
         combined = csscombine(url=cssurl, targetencoding='ascii')
-        assert combined == ('@charset "ascii";' + self.C).encode()
+        assert combined == '@charset "ascii";' + self.C
 
         # cssText
         # TODO: really need binary or can handle str too?
@@ -32,9 +32,9 @@ class TestCSSCombine:
         cssText = f.read()
         f.close()
         combined = csscombine(cssText=cssText, href=cssurl)
-        assert combined == self.C.encode()
+        assert combined == self.C
         combined = csscombine(cssText=cssText, href=cssurl, targetencoding='ascii')
-        assert combined == ('@charset "ascii";' + self.C).encode()
+        assert combined == '@charset "ascii";' + self.C
 
     def test_combine_resolveVariables(self):
         "scripts.csscombine(minify=..., resolveVariables=...)"
@@ -50,15 +50,15 @@ class TestCSSCombine:
         # default minify
         assert (
             csscombine(cssText=cssText, resolveVariables=False)
-            == b'@variables{c:#0f0}a{color:var(c)}'
+            == '@variables{c:#0f0}a{color:var(c)}'
         )
-        assert csscombine(cssText=cssText) == b'a{color:#0f0}'
+        assert csscombine(cssText=cssText) == 'a{color:#0f0}'
 
         # no minify
         assert (
             csscombine(cssText=cssText, minify=False, resolveVariables=False)
-            == b'@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }'
+            == '@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }'
         )
         assert (
-            csscombine(cssText=cssText, minify=False) == b'a {\n    color: #0f0\n    }'
+            csscombine(cssText=cssText, minify=False) == 'a {\n    color: #0f0\n    }'
         )

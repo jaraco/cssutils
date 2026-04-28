@@ -127,13 +127,13 @@ class TestSelector(basetest.BaseTestCase):
         sheet = cssutils.css.CSSStyleSheet()
         sheet.cssText = css
         assert (
-            sheet.cssText == b'@namespace "default";\na[att] {\n    color: green\n    }'
+            sheet.cssText == '@namespace "default";\na[att] {\n    color: green\n    }'
         )
         # use a prefix for default namespace, does not goes for atts!
         sheet.namespaces['p'] = 'default'
         assert (
             sheet.cssText
-            == b'@namespace p "default";\np|a[att] {\n    color: green\n    }'
+            == '@namespace p "default";\np|a[att] {\n    color: green\n    }'
         )
 
     def test_parent(self):

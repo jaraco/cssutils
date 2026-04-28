@@ -26,7 +26,7 @@ class BaseTestCase:
             s = p.parseString(test)
             if expected is None:
                 expected = test
-            assert str(s.__getattribute__(att), 'utf-8') == expected
+            assert s.__getattribute__(att) == expected
 
     @staticmethod
     def do_raise_p(tests, raising=True):

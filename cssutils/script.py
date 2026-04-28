@@ -310,7 +310,7 @@ class CSSCapture:
                 uf = codecs.getwriter('css')(sf)
                 uf.write(cssText)
             else:
-                sf.write(sheet.cssText)
+                sf.write(sheet.cssText.encode(sheet.encoding))
             sf.close()
 
 

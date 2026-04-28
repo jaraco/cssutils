@@ -38,7 +38,7 @@ def cssparse_example():
     >>> cssutils.log.setLevel(logging.FATAL)
     >>> sheet = cssutils.parseString('@import url(example.css); body { color: red }')
     >>> # log output not shown
-    >>> print(sheet.cssText.decode())
+    >>> print(sheet.cssText)
     @import url(example.css);
     body {
         color: red
@@ -77,7 +77,7 @@ def prefs():
     >>> cssutils.ser.prefs.importHrefFormat = 'uri'
     >>> # or 'string', defaults to the format used in parsed stylesheet
     >>> cssutils.ser.prefs.lineNumbers = True
-    >>> print(sheet.cssText.decode())
+    >>> print(sheet.cssText)
     1: @import url(example.css);
     2: body {
     3:   color: red
@@ -93,7 +93,7 @@ def work_and_build():
     >>> from cssutils import css, stylesheets
     >>> sheet = css.CSSStyleSheet()
     >>> sheet.cssText = '@import url(example.css) tv;'
-    >>> print(sheet.cssText.decode())
+    >>> print(sheet.cssText)
     @import url(example.css) tv;
     >>> style = css.CSSStyleDeclaration()
     >>> style['color'] = 'red' # until 0.9.5: setProperty(u'color', u'red')
@@ -104,7 +104,7 @@ def work_and_build():
     >>> # sheet.insertRule(stylerule, 0) # try before @import
     >>> # xml.dom.HierarchyRequestErr: CSSStylesheet: Found @charset, @import or @namespace before index 0.
     >>> # sheet.insertRule(stylerule) # at end of rules, returns index
-    >>> print(sheet.cssText.decode())
+    >>> print(sheet.cssText)
     @import url(example.css) tv;
     body {
         color: red
@@ -115,7 +115,7 @@ def work_and_build():
     >>> # returns the new Selector:
     >>> sheet.cssRules[1].selectorList.appendSelector('a')
     cssutils.css.Selector(selectorText='a')
-    >>> print(sheet.cssText.decode())
+    >>> print(sheet.cssText)
     @import url(example.css) tv, print;
     body, a {
         color: red
