@@ -116,9 +116,7 @@ class TestCSSParser:
                 assert sheet1.cssText == cssText
                 assert sheet2.encoding == override
                 if sheet1.cssText and cssText.startswith('@charset'):
-                    assert sheet2.cssText == (
-                        cssText.replace('ascii', override)
-                    )
+                    assert sheet2.cssText == (cssText.replace('ascii', override))
                 elif sheet1.cssText:
                     assert sheet2.cssText == (overrideprefix + '\n' + cssText)
                 else:

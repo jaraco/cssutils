@@ -361,9 +361,7 @@ class TestCSSImportRule(test_cssrule.TestCSSRule):
         assert ir2.styleSheet.media.mediaText == 'all'
         assert ir2.styleSheet.parentStyleSheet is None  # ir.styleSheet
         assert ir2.styleSheet.title == 'title2'
-        assert (
-            ir2.styleSheet.cssText == '@charset "ascii";\na {\n    color: red\n    }'
-        )
+        assert ir2.styleSheet.cssText == '@charset "ascii";\na {\n    color: red\n    }'
 
         sheet = cssutils.parseString('@import "CANNOT-FIND.css";')
         ir = sheet.cssRules[0]
