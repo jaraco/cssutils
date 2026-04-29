@@ -146,7 +146,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         self._cssRules = cssRules
 
     def _getCssText(self):
-        "Textual representation of the stylesheet (a text string)."
+        "Textual representation of the stylesheet."
         return cssutils.ser.do_CSSStyleSheet(self)
 
     def _setCssText(self, cssText):  # noqa: C901
@@ -361,7 +361,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
     cssText = property(
         _getCssText,
         _setCssText,
-        "Textual representation of the stylesheet (a text string)",
+        "Textual representation of the stylesheet",
     )
 
     def _resolveImport(self, url):
