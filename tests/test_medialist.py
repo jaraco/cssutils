@@ -113,7 +113,7 @@ class TestMediaList(basetest.BaseTestCase):
             ml.appendMedium('print')
 
         sheet = cssutils.parseString('@media all, print { /**/ }')
-        assert b'@media all {\n    /**/\n    }' == sheet.cssText
+        assert '@media all {\n    /**/\n    }' == sheet.cssText
 
     def test_delete(self):
         "MediaList.deleteMedium()"

@@ -408,8 +408,7 @@ class CSSSerializer:
         except (IndexError, AttributeError):
             encoding = 'UTF-8'
 
-        # TODO: py3 return b str but tests use unicode?
-        return text.encode(encoding, 'escapecss')
+        return text.encode(encoding, 'escapecss').decode(encoding)
 
     def do_CSSComment(self, rule):
         """

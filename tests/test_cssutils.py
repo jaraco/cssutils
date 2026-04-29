@@ -32,11 +32,11 @@ class TestCSSutils(basetest.BaseTestCase):
         )
         assert isinstance(s, cssutils.css.CSSStyleSheet)
         assert s.href is None
-        assert self.exp.encode() == s.cssText
+        assert self.exp == s.cssText
         assert 'utf-8' == s.encoding
         assert 'handheld, screen' == s.media.mediaText
         assert 'from string' == s.title
-        assert self.exp.encode() == s.cssText
+        assert self.exp == s.cssText
 
         ir = s.cssRules[0]
         assert 'import/import2.css' == ir.href
@@ -53,17 +53,17 @@ class TestCSSutils(basetest.BaseTestCase):
         irs = ir.styleSheet
         assert isinstance(irs, cssutils.css.CSSStyleSheet)
         assert (
-            irs.cssText == b'@import "../import3.css";\n'
-            b'@import "import-impossible.css" print;\n.import2 {\n'
-            b'    /* sheets/import2.css */\n'
-            b'    background: url(http://example.com/images/example.gif);\n'
-            b'    background: url(//example.com/images/example.gif);\n'
-            b'    background: url(/images/example.gif);\n'
-            b'    background: url(images2/example.gif);\n'
-            b'    background: url(./images2/example.gif);\n'
-            b'    background: url(../images/example.gif);\n'
-            b'    background: url(./../images/example.gif)\n'
-            b'    }'
+            irs.cssText == '@import "../import3.css";\n'
+            '@import "import-impossible.css" print;\n.import2 {\n'
+            '    /* sheets/import2.css */\n'
+            '    background: url(http://example.com/images/example.gif);\n'
+            '    background: url(//example.com/images/example.gif);\n'
+            '    background: url(/images/example.gif);\n'
+            '    background: url(images2/example.gif);\n'
+            '    background: url(./images2/example.gif);\n'
+            '    background: url(../images/example.gif);\n'
+            '    background: url(./../images/example.gif)\n'
+            '    }'
         )
 
         tests = {
@@ -90,25 +90,25 @@ class TestCSSutils(basetest.BaseTestCase):
         assert 'utf-8' == s.encoding
         assert 'screen' == s.media.mediaText
         assert 'from file' == s.title
-        assert self.exp.encode() == s.cssText
+        assert self.exp == s.cssText
 
         ir = s.cssRules[0]
         assert 'import/import2.css' == ir.href
         irs = ir.styleSheet
         assert isinstance(irs, cssutils.css.CSSStyleSheet)
         assert (
-            irs.cssText == b'@import "../import3.css";\n'
-            b'@import "import-impossible.css" print;\n'
-            b'.import2 {\n'
-            b'    /* sheets/import2.css */\n'
-            b'    background: url(http://example.com/images/example.gif);\n'
-            b'    background: url(//example.com/images/example.gif);\n'
-            b'    background: url(/images/example.gif);\n'
-            b'    background: url(images2/example.gif);\n'
-            b'    background: url(./images2/example.gif);\n'
-            b'    background: url(../images/example.gif);\n'
-            b'    background: url(./../images/example.gif)\n'
-            b'    }'
+            irs.cssText == '@import "../import3.css";\n'
+            '@import "import-impossible.css" print;\n'
+            '.import2 {\n'
+            '    /* sheets/import2.css */\n'
+            '    background: url(http://example.com/images/example.gif);\n'
+            '    background: url(//example.com/images/example.gif);\n'
+            '    background: url(/images/example.gif);\n'
+            '    background: url(images2/example.gif);\n'
+            '    background: url(./images2/example.gif);\n'
+            '    background: url(../images/example.gif);\n'
+            '    background: url(./../images/example.gif)\n'
+            '    }'
         )
 
         # name is used for open and setting of href automatically
@@ -128,25 +128,25 @@ class TestCSSutils(basetest.BaseTestCase):
         assert 'utf-8' == s.encoding
         assert 'screen' == s.media.mediaText
         assert 'from file' == s.title
-        assert self.exp.encode() == s.cssText
+        assert self.exp == s.cssText
 
         ir = s.cssRules[0]
         assert 'import/import2.css' == ir.href
         irs = ir.styleSheet
         assert isinstance(irs, cssutils.css.CSSStyleSheet)
         assert (
-            irs.cssText == b'@import "../import3.css";\n'
-            b'@import "import-impossible.css" print;\n'
-            b'.import2 {\n'
-            b'    /* sheets/import2.css */\n'
-            b'    background: url(http://example.com/images/example.gif);\n'
-            b'    background: url(//example.com/images/example.gif);\n'
-            b'    background: url(/images/example.gif);\n'
-            b'    background: url(images2/example.gif);\n'
-            b'    background: url(./images2/example.gif);\n'
-            b'    background: url(../images/example.gif);\n'
-            b'    background: url(./../images/example.gif)\n'
-            b'    }'
+            irs.cssText == '@import "../import3.css";\n'
+            '@import "import-impossible.css" print;\n'
+            '.import2 {\n'
+            '    /* sheets/import2.css */\n'
+            '    background: url(http://example.com/images/example.gif);\n'
+            '    background: url(//example.com/images/example.gif);\n'
+            '    background: url(/images/example.gif);\n'
+            '    background: url(images2/example.gif);\n'
+            '    background: url(./images2/example.gif);\n'
+            '    background: url(../images/example.gif);\n'
+            '    background: url(./../images/example.gif)\n'
+            '    }'
         )
 
         # next test
@@ -199,7 +199,7 @@ class TestCSSutils(basetest.BaseTestCase):
         s = cssutils.parseUrl(href, media='tv, print', title='from url')
         assert isinstance(s, cssutils.css.CSSStyleSheet)
         assert href == s.href
-        assert self.exp.encode() == s.cssText
+        assert self.exp == s.cssText
         assert 'utf-8' == s.encoding
         assert 'tv, print' == s.media.mediaText
         assert 'from url' == s.title
@@ -212,33 +212,33 @@ class TestCSSutils(basetest.BaseTestCase):
         assert 'import/import2.css' == ir.href
         irs = ir.styleSheet
         assert (
-            irs.cssText == b'@import "../import3.css";\n'
-            b'@import "import-impossible.css" print;\n'
-            b'.import2 {\n'
-            b'    /* sheets/import2.css */\n'
-            b'    background: url(http://example.com/images/example.gif);\n'
-            b'    background: url(//example.com/images/example.gif);\n'
-            b'    background: url(/images/example.gif);\n'
-            b'    background: url(images2/example.gif);\n'
-            b'    background: url(./images2/example.gif);\n'
-            b'    background: url(../images/example.gif);\n'
-            b'    background: url(./../images/example.gif)\n'
-            b'    }'
+            irs.cssText == '@import "../import3.css";\n'
+            '@import "import-impossible.css" print;\n'
+            '.import2 {\n'
+            '    /* sheets/import2.css */\n'
+            '    background: url(http://example.com/images/example.gif);\n'
+            '    background: url(//example.com/images/example.gif);\n'
+            '    background: url(/images/example.gif);\n'
+            '    background: url(images2/example.gif);\n'
+            '    background: url(./images2/example.gif);\n'
+            '    background: url(../images/example.gif);\n'
+            '    background: url(./../images/example.gif)\n'
+            '    }'
         )
 
         ir2 = irs.cssRules[0]
         assert '../import3.css' == ir2.href
         irs2 = ir2.styleSheet
         assert (
-            irs2.cssText == b'/* import3 */\n'
-            b'.import3 {\n'
-            b'    /* from ./import/../import3.css */\n'
-            b'    background: url(images/example3.gif);\n'
-            b'    background: url(./images/example3.gif);\n'
-            b'    background: url(import/images2/example2.gif);\n'
-            b'    background: url(./import/images2/example2.gif);\n'
-            b'    background: url(import/images2/../../images/example3.gif)\n'
-            b'    }'
+            irs2.cssText == '/* import3 */\n'
+            '.import3 {\n'
+            '    /* from ./import/../import3.css */\n'
+            '    background: url(images/example3.gif);\n'
+            '    background: url(./images/example3.gif);\n'
+            '    background: url(import/images2/example2.gif);\n'
+            '    background: url(./import/images2/example2.gif);\n'
+            '    background: url(import/images2/../../images/example3.gif)\n'
+            '    }'
         )
 
     def test_setCSSSerializer(self):
@@ -250,13 +250,13 @@ class TestCSSutils(basetest.BaseTestCase):
         exp1 = '''a {
  left: 0
  }'''
-        assert exp4.encode() == s.cssText
+        assert exp4 == s.cssText
         newser = cssutils.CSSSerializer(cssutils.serialize.Preferences(indent=' '))
         cssutils.setSerializer(newser)
-        assert exp1.encode() == s.cssText
+        assert exp1 == s.cssText
         newser = cssutils.CSSSerializer(cssutils.serialize.Preferences(indent='    '))
         cssutils.ser = newser
-        assert exp4.encode() == s.cssText
+        assert exp4 == s.cssText
 
     def test_parseStyle(self):
         "cssutils.parseStyle()"
@@ -362,7 +362,7 @@ background-image: url(prefix/1.png), url(prefix/2.png)'''
         a = '@charset "iso-8859-1";@import"b.css";\xe4{color:green}'.encode(
             'iso-8859-1'
         )
-        b = b'@charset "ascii";\\E4 {color:red}'
+        b = '@charset "ascii";\\E4 {color:red}'
 
         # normal
         m = mock.Mock()
@@ -370,17 +370,15 @@ background-image: url(prefix/1.png), url(prefix/2.png)'''
             m.return_value = (None, b)
             s = cssutils.parseString(a)
 
-            # py3 TODO
-            assert a == s.cssText
+            assert a.decode('iso-8859-1') == s.cssText
             assert b == s.cssRules[1].styleSheet.cssText
 
             c = cssutils.resolveImports(s)
 
-            # py3 TODO
-            assert b'\xc3\xa4{color:red}\xc3\xa4{color:green}' == c.cssText
+            assert '\xe4{color:red}\xe4{color:green}' == c.cssText
 
             c.encoding = 'ascii'
-            assert rb'@charset "ascii";\E4 {color:red}\E4 {color:green}' == c.cssText
+            assert r'@charset "ascii";\E4 {color:red}\E4 {color:green}' == c.cssText
 
         # b cannot be found
         m = mock.Mock()
@@ -388,12 +386,10 @@ background-image: url(prefix/1.png), url(prefix/2.png)'''
             m.return_value = (None, None)
             s = cssutils.parseString(a)
 
-            # py3 TODO
-            assert a == s.cssText
+            assert a.decode('iso-8859-1') == s.cssText
             assert isinstance(s.cssRules[1].styleSheet, cssutils.css.CSSStyleSheet)
             c = cssutils.resolveImports(s)
-            # py3 TODO
-            assert b'@import"b.css";\xc3\xa4{color:green}' == c.cssText
+            assert '@import"b.css";\xe4{color:green}' == c.cssText
 
         # @import with media
         a = '@import"b.css";@import"b.css" print, tv ;@import"b.css" all;'
@@ -405,7 +401,7 @@ background-image: url(prefix/1.png), url(prefix/2.png)'''
 
             c = cssutils.resolveImports(s)
 
-            assert b'a{color:red}@media print,tv{a{color:red}}a{color:red}' == c.cssText
+            assert 'a{color:red}@media print,tv{a{color:red}}a{color:red}' == c.cssText
 
         # cannot resolve with media => keep original
         a = '@import"b.css"print;'
@@ -415,7 +411,7 @@ background-image: url(prefix/1.png), url(prefix/2.png)'''
             m.return_value = (None, b)
             s = cssutils.parseString(a)
             c = cssutils.resolveImports(s)
-            assert a.encode() == c.cssText
+            assert a == c.cssText
 
         # urls are adjusted too, layout:
         # a.css
@@ -460,7 +456,7 @@ background-image: url(prefix/1.png), url(prefix/2.png)'''
 
         cssutils.ser.prefs.useDefaults()
         cssutils.ser.prefs.keepComments = False
-        expected = b'''c {
+        expected = '''c {
     x: url(/img/abs.gif);
     y: url(img/img.gif);
     z: url(b/subimg/subimg.gif)

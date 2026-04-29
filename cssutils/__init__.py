@@ -61,8 +61,7 @@ Example::
     >>> parser = CSSParser()
     >>> sheet = parser.parseString('a { color: red}')
 
-    # TODO: shouldn't have to decode here
-    >>> print(sheet.cssText.decode())
+    >>> print(sheet.cssText)
     a {
         color: red
         }

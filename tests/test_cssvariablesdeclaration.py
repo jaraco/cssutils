@@ -254,7 +254,7 @@ class TestCSSVariablesDeclaration(basetest.BaseTestCase):
         cssutils.ser.prefs.resolveVariables = False
         assert (
             s.cssText
-            == b'''@import "1.css";
+            == '''@import "1.css";
 @variables {
     over3-2-1-0: 0;
     over3-2-0: 0;
@@ -287,7 +287,7 @@ a {
         cssutils.ser.prefs.resolveVariables = True
         assert (
             s.cssText
-            == b'''@import "1.css";
+            == '''@import "1.css";
 a {
     local0: 0;
     local1: 1;
@@ -309,7 +309,7 @@ a {
         s = cssutils.resolveImports(s)
         assert (
             s.cssText
-            == b'''/* START @import "1.css" */
+            == '''/* START @import "1.css" */
 /* START @import "3.css" */
 /* START @import "2.css" */
 a {
