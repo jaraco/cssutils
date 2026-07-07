@@ -447,6 +447,27 @@ class TestSelector(basetest.BaseTestCase):
             'tr:last-child': (0, 0, 1, 1),
             ':nth-child(2)': (0, 0, 1, 0),
             '.table > :last-child > tr:last-child > *': (0, 0, 3, 1),
+            # Selectors Level 4 functional pseudo-classes: :is()/:has()/
+            # :matches()/:any() take the specificity of their argument, while
+            # :where() always contributes zero. The pseudo-class function
+            # itself does not count as a class.
+            ':where(#a)': (0, 0, 0, 0),
+            ':where(.foo:hover)': (0, 0, 0, 0),
+            ':where(a b c)': (0, 0, 0, 0),
+            'div:where(#a)': (0, 0, 0, 1),
+            ':is(#a)': (0, 1, 0, 0),
+            ':is(.x .y #z)': (0, 1, 2, 0),
+            ':is(div.foo:hover)': (0, 0, 2, 1),
+            ':matches(.a)': (0, 0, 1, 0),
+            ':any(#b)': (0, 1, 0, 0),
+            ':has(option:checked)': (0, 0, 1, 1),
+            'div:is(.a):where(#b)': (0, 0, 1, 1),
+            # Nested functional pseudo-classes: :where() zeroes everything it
+            # contains, even a nested :is(), while :is() takes the (zero)
+            # specificity of a :where() argument.
+            ':is(:where(#a))': (0, 0, 0, 0),
+            ':where(:is(#a))': (0, 0, 0, 0),
+            ':is(:is(#a))': (0, 1, 0, 0),
             # classes and attributes
             '.a': (0, 0, 1, 0),
             '*.a': (0, 0, 1, 0),
