@@ -33,6 +33,19 @@ class TestCSSStyleDeclaration(basetest.BaseTestCase):
         assert 'top: 0' == s.cssText
         assert sheet == s.parentRule
 
+    def test_at_in_property_name(self):
+        "CSSStyleDeclaration with an '@' in a property name"
+        # A property name containing '@' reached the default productions with
+        # new=None and used to raise TypeError ('NoneType' object does not
+        # support item assignment). It should be reported as a normal CSS
+        # error instead: parsing a whole sheet drops the bad property and keeps
+        # the rest, and building a declaration directly raises SyntaxErr.
+        sheet = cssutils.parseString('a { col@or: red; width: 1px }')
+        assert '1px' == sheet.cssRules[0].style.getPropertyValue('width')
+
+        with pytest.raises(xml.dom.SyntaxErr):
+            cssutils.css.CSSStyleDeclaration(cssText='col@or: red')
+
     def test_items(self):
         "CSSStyleDeclaration[CSSName]"
         s = cssutils.css.CSSStyleDeclaration()

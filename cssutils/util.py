@@ -468,6 +468,13 @@ class Base(_BaseClass):
         """
         wellformed = True
 
+        if new is None:
+            # ``new`` is optional, but the default productions record the
+            # wellformed state into it (new['wellformed'] = False). Give them a
+            # throwaway dict when a caller that does not track it (e.g. parsing
+            # a bare property name) passes None, to avoid a TypeError.
+            new = {}
+
         if initialtoken:
             # add initialtoken to tokenizer
             def tokens():
