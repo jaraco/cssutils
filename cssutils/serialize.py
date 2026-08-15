@@ -720,8 +720,10 @@ class CSSSerializer:
             for item in rule.seq:
                 type_, val = item.type, item.value
                 # PRE
-                if '}' == val:
-                    # close last open item on stack
+                if '}' == val and stacks:
+                    # close last open item on stack (a "}" with no matching
+                    # "{" leaves the stack empty; fall through and emit it as a
+                    # plain token instead of popping from an empty list)
                     stackblock = stacks.pop().value()
                     if stackblock:
                         val = self._indentblock(

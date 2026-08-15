@@ -55,6 +55,14 @@ class TestCSSUnknownRule(test_cssrule.TestCSSRule):
         assert '@init xxx {\n    yyy\n    }' == r.cssText
         assert r.wellformed
 
+    def test_serialize_unmatched_closing_brace(self):
+        "CSSUnknownRule serialization with a '}' that has no matching '{'"
+        # Serializing such a rule used to raise IndexError (pop from empty
+        # list) while walking the brace stack.
+        sheet = cssutils.parseString('@keyframes k { 0% { opacity: 0; }"}')
+        # must not raise
+        assert isinstance(sheet.cssText, bytes)
+
     def test_cssText(self):
         "CSSUnknownRule.cssText"
         tests = {
