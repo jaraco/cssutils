@@ -681,6 +681,11 @@ class TestProfiles:
                     'black',
                 ),
             ): (False, False, C3T),
+            (
+                'overflow-wrap',
+                ('normal', 'break-word', 'anywhere', 'inherit', 'initial', 'unset'),
+            ): (True, True, C3T),
+            ('overflow-wrap', ('auto', 'wrap', 'break_word')): (False, False, C3T),
             ('unicode-range', ('u+1', 'U+111111-ffffff', 'u+123456  ,  U+1-f')): (
                 True,
                 True,
