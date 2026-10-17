@@ -1,7 +1,7 @@
 """cssutils ErrorHandler
 
 ErrorHandler
-    used as log with usual levels (debug, info, warn, error)
+    used as log with usual levels (debug, info, warn/warning, error)
 
     if instanciated with ``raiseExceptions=True`` raises exeptions instead
     of logging
@@ -60,7 +60,7 @@ class _ErrorHandler:
 
     def __getattr__(self, name):
         "use self._log items"
-        calls = ('debug', 'info', 'warn', 'error', 'critical', 'fatal')
+        calls = ('debug', 'info', 'warn', 'warning', 'error', 'critical', 'fatal')
         other = ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler')
 
         if name in calls:
