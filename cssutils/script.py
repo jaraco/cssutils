@@ -27,7 +27,10 @@ class CSSCaptureHTMLParser(html.parser.HTMLParser):
     """CSSCapture helper: Parse given data for link and style elements"""
 
     curtag = ''
-    sheets = []  # (type, [atts, cssText])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sheets = []  # (type, [atts, cssText])
 
     def _loweratts(self, atts):
         return {a.lower(): v.lower() for a, v in atts}
