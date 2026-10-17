@@ -14,7 +14,7 @@ TODO:
 
 """
 
-__all__ = ['ProdParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
+__all__ = ['Choice', 'PreDef', 'Prod', 'ProdParser', 'Sequence']
 
 import itertools
 import re
@@ -29,31 +29,21 @@ from .helper import pushtoken
 class ParseError(Exception):
     """Base Exception class for ProdParser (used internally)."""
 
-    pass
-
 
 class Done(ParseError):
     """Raised if Sequence or Choice is finished and no more Prods left."""
-
-    pass
 
 
 class Exhausted(ParseError):
     """Raised if Sequence or Choice is finished but token is given."""
 
-    pass
-
 
 class Missing(ParseError):
     """Raised if Sequence or Choice is not finished but no matching token given."""
 
-    pass
-
 
 class NoMatch(ParseError):
     """Raised if nothing in Sequence or Choice does match."""
-
-    pass
 
 
 class Choice:
@@ -112,11 +102,10 @@ class Choice:
                     return p
                 elif p.optional:
                     optional = True
-            else:
-                if not optional:
-                    # None matched but also None is optional
-                    raise NoMatch(f'No match for {token} in {self}')
-                    # raise ParseError(u'No match in %s for %s' % (self, token))
+            if not optional:
+                # None matched but also None is optional
+                raise NoMatch(f'No match for {token} in {self}')
+                # raise ParseError(u'No match in %s for %s' % (self, token))
         elif token:
             raise Exhausted('Extra token')
 
@@ -124,7 +113,7 @@ class Choice:
         return f"<cssutils.prodsparser.{self.__class__.__name__} object sequence={self.__str__()!r} optional={self.optional!r} at 0x{id(self):x}>"
 
     def __str__(self):
-        return 'Choice(%s)' % ', '.join([str(x) for x in self._prods])
+        return 'Choice({})'.format(', '.join([str(x) for x in self._prods]))
 
 
 class Sequence:
@@ -142,7 +131,7 @@ class Sequence:
         try:
             minmax = options['minmax']
         except KeyError:
-            minmax = lambda: (1, 1)  # noqa: E731
+            minmax = lambda: (1, 1)
 
         self._min, self._max = minmax()
         if self._max is None:
@@ -181,8 +170,7 @@ class Sequence:
         for prod in self._prods[self._i :]:
             if not prod.optional:
                 return str(prod)
-        else:
-            return 'Sequence'
+        return 'Sequence'
 
     optional = property(lambda self: self._min == 0)
 
@@ -221,11 +209,11 @@ class Sequence:
             elif (
                 round < self._min or self._roundstarted
             ):  # or (round == 0 and self._min == 0):
-                raise Missing('Missing token for production %s' % p)
+                raise Missing(f'Missing token for production {p}')
 
             elif not token:
                 if self._roundstarted:
-                    raise Missing('Missing token for production %s' % p)
+                    raise Missing(f'Missing token for production {p}')
                 else:
                     raise Done()
 
@@ -239,7 +227,7 @@ class Sequence:
         return f"<cssutils.prodsparser.{self.__class__.__name__} object sequence={self.__str__()!r} optional={self.optional!r} at 0x{id(self):x}>"
 
     def __str__(self):
-        return 'Sequence(%s)' % ', '.join([str(x) for x in self._prods])
+        return 'Sequence({})'.format(', '.join([str(x) for x in self._prods]))
 
 
 class Prod:
@@ -341,7 +329,7 @@ class Prod:
         """Return if token matches."""
         if not token:
             return False
-        type_, val, line, col = token
+        type_, val, _line, _col = token
         return self.match(type_, val)
 
     def reset(self):

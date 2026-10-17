@@ -332,7 +332,7 @@ class TestPropertyValue(basetest.BaseTestCase):
             '/* comment */  green  /* comment */',
             '/* comment *//**/  green  /* comment *//**/',
         ):
-            sheet = cssutils.parseString('body {color: %s; }' % t)
+            sheet = cssutils.parseString(f'body {{color: {t}; }}')
             p = sheet.cssRules[0].style.getProperties()[0]
             assert p.valid
         for t in (
@@ -343,7 +343,7 @@ class TestPropertyValue(basetest.BaseTestCase):
             '/* comment */  gree  /* comment */',
             '/* comment *//**/  gree  /* comment *//**/',
         ):
-            sheet = cssutils.parseString('body {color: %s; }' % t)
+            sheet = cssutils.parseString(f'body {{color: {t}; }}')
             p = sheet.cssRules[0].style.getProperties()[0]
             assert not p.valid
 
@@ -351,7 +351,7 @@ class TestPropertyValue(basetest.BaseTestCase):
         "PropertyValue (incomplete)"
         tests = {'url("a': 'url(a)', 'url(a': 'url(a)'}
         for v, exp in list(tests.items()):
-            s = cssutils.parseString('a { background: %s' % v)
+            s = cssutils.parseString(f'a {{ background: {v}')
             v = s.cssRules[0].style.background
             assert v == exp
 
@@ -362,10 +362,10 @@ class TestPropertyValue(basetest.BaseTestCase):
 
         v = cssutils.css.PropertyValue(cssText='inherit', readonly=True)
         assert True is v._readonly
-        assert 'inherit', v.cssText
+        assert 'inherit' == v.cssText
         with pytest.raises(xml.dom.NoModificationAllowedErr):
             v._setCssText('x')
-        assert 'inherit', v.cssText
+        assert 'inherit' == v.cssText
 
     def test_reprANDstr(self):
         "PropertyValue.__repr__(), .__str__()"
@@ -834,7 +834,7 @@ class TestCSSPrimitiveValue:
         ]
         for dim, name in defs:
             for n in (0, 1, 1.1, -1, -1.1, -0):
-                v = cssutils.css.CSSPrimitiveValue('%i%s' % (n, dim))
+                v = cssutils.css.CSSPrimitiveValue(f'{int(n)}{dim}')
                 assert name == v.primitiveTypeString
                 assert getattr(v, name) == v.primitiveType
 
@@ -914,9 +914,8 @@ class TestCSSPrimitiveValue:
             # '1khz': (v.CSS_HZ, 1000),
             '1DIMENSION': (v.CSS_DIMENSION, 1),
         }
-        for cssText in tests:
+        for cssText, (unitType, exp) in tests.items():
             v.cssText = cssText
-            unitType, exp = tests[cssText]
             val = v.getFloatValue(unitType)
             if unitType in (v.CSS_IN, v.CSS_CM):
                 val = round(val)
@@ -1052,10 +1051,10 @@ class TestCSSPrimitiveValue:
                 (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
             ],
         }
-        for test in tests:
+        for test, expected in tests.items():
             initialType, initialValue = test
             pv = cssutils.css.CSSPrimitiveValue(initialValue)
-            for setType, setValue, exp, cssText in tests[test]:
+            for setType, setValue, exp, cssText in expected:
                 if isinstance(exp, types.TypeType):
                     if cssText:
                         self.assertRaisesMsg(
@@ -1090,8 +1089,7 @@ class TestCSSPrimitiveValue:
             pv.CSS_IDENT: ('red', None),
             pv.CSS_ATTR: ('attr(att-name)', 'att-name'),  # the name of the attrr
         }
-        for t in tests:
-            val, exp = tests[t]
+        for t, (val, exp) in tests.items():
             if not exp:
                 exp = val
 

@@ -75,13 +75,14 @@ import os.path
 import urllib.parse
 import urllib.request
 import xml.dom
+from typing import ClassVar
 
 from . import css, errorhandler, stylesheets
 from .parse import CSSParser
 from .profiles import Profiles
 from .serialize import CSSSerializer
 
-__all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
+__all__ = ['CSSParser', 'CSSSerializer', 'css', 'stylesheets']
 
 log = errorhandler.ErrorHandler()
 ser = CSSSerializer()
@@ -101,7 +102,7 @@ class DOMImplementationCSS:
     an instance of this class then.
     """
 
-    _features = [
+    _features: ClassVar = [
         ('css', '1.0'),
         ('css', '2.0'),
         ('stylesheets', '1.0'),
@@ -141,7 +142,7 @@ class DOMImplementationCSS:
         # xml.dom.getDOMImplementation, so provide an implementation
         # see (https://web.archive.org/web/20200701035537/
         # https://bitbucket.org/cthedot/cssutils/issues/69)
-        import xml.dom.minidom as minidom
+        from xml.dom import minidom
 
         return minidom.DOMImplementation().createDocument(*args, **kwargs)
 
@@ -150,7 +151,7 @@ class DOMImplementationCSS:
         # xml.dom.getDOMImplementation, so provide an implementation
         # see (https://web.archive.org/web/20200701035537/
         # https://bitbucket.org/cthedot/cssutils/issues/69)
-        import xml.dom.minidom as minidom
+        from xml.dom import minidom
 
         return minidom.DOMImplementation().createDocumentType(*args, **kwargs)
 
@@ -278,7 +279,7 @@ class Replacer:
         self.base = self.extract_base(base)
 
     def __call__(self, uri):
-        scheme, location, path, query, fragment = urllib.parse.urlsplit(uri)
+        scheme, location, path, _query, _fragment = urllib.parse.urlsplit(uri)
         if scheme or location or path.startswith('/'):
             # keep anything absolute
             return uri
@@ -350,39 +351,39 @@ class MediaCombineDisallowed(Exception):
 
 
 def _resolve_import(rule, target):
-    log.info('Processing @import %r' % rule.href, neverraise=True)
+    log.info(f'Processing @import {rule.href!r}', neverraise=True)
 
     if not rule.hrefFound:
         # keep @import as it is
         log.error(
-            'Cannot get referenced stylesheet %r, keeping rule' % rule.href,
+            f'Cannot get referenced stylesheet {rule.href!r}, keeping rule',
             neverraise=True,
         )
         target.add(rule)
         return
 
     # add all rules of @import to current sheet
-    target.add(css.CSSComment(cssText='/* START @import "%s" */' % rule.href))
+    target.add(css.CSSComment(cssText=f'/* START @import "{rule.href}" */'))
 
     try:
         # nested imports
         importedSheet = resolveImports(rule.styleSheet)
     except xml.dom.HierarchyRequestErr as e:
-        log.warn(
-            '@import: Cannot resolve target, keeping rule: %s' % e,
+        log.warning(
+            f'@import: Cannot resolve target, keeping rule: {e}',
             neverraise=True,
         )
         target.add(rule)
         return
 
     # adjust relative URI references
-    log.info('@import: Adjusting paths for %r' % rule.href, neverraise=True)
+    log.info(f'@import: Adjusting paths for {rule.href!r}', neverraise=True)
     replaceUrls(importedSheet, Replacer(rule.href), ignoreImportRules=True)
 
     try:
         media_proxy = _check_media_proxy(rule, importedSheet)
     except MediaCombineDisallowed as exc:
-        log.warn(
+        log.warning(
             'Cannot combine imported sheet with given media as rules other than '
             f'comments or stylerules; found {exc.failed[0]!r}, keeping {rule.cssText}',
             neverraise=True,

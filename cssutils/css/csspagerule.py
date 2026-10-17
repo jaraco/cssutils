@@ -116,7 +116,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
 
     def keys(self):
         "Return list of all set margins (MarginRule)."
-        return list(r.margin for r in self.cssRules)
+        return [r.margin for r in self.cssRules]
 
     def __getitem__(self, margin):
         """Retrieve the style (of MarginRule)
@@ -134,8 +134,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             if r.margin == margin:
                 r.style = style
                 return i
-        else:
-            return self.add(MarginRule(margin, style))
+        return self.add(MarginRule(margin, style))
 
     def __delitem__(self, margin):
         """Delete the style (the MarginRule)
@@ -168,14 +167,15 @@ class CSSPageRule(cssrule.CSSRuleRules):
                     if self._prods.IDENT != ityp:
                         self._log.error(
                             'CSSPageRule selectorText: Expected '
-                            'IDENT but found: %r' % ival,
+                            f'IDENT but found: {ival!r}',
                             token,
                         )
                     else:
                         if ival not in ('first', 'left', 'right'):
                             self._log.warn(
-                                'CSSPageRule: Unknown @page '
-                                'selector: %r' % (':' + ival,),
+                                'CSSPageRule: Unknown @page selector: {!r}'.format(
+                                    ':' + ival
+                                ),
                                 neverraise=True,
                             )
                         if ival == 'first':
@@ -188,7 +188,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             else:
                 new['wellformed'] = False
                 self._log.error(
-                    'CSSPageRule selectorText: Unexpected CHAR: %r' % val, token
+                    f'CSSPageRule selectorText: Unexpected CHAR: {val!r}', token
                 )
                 return expected
 
@@ -200,7 +200,6 @@ class CSSPageRule(cssrule.CSSRuleRules):
             return expected
 
         def IDENT(expected, seq, token, tokenizer=None):
-            """ """
             val = self._tokenvalue(token)
             if 'page' == expected:
                 if self._normalize(val) == 'auto':
@@ -215,7 +214,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             else:
                 new['wellformed'] = False
                 self._log.error(
-                    'CSSPageRule selectorText: Unexpected IDENT: %r' % val, token
+                    f'CSSPageRule selectorText: Unexpected IDENT: {val!r}', token
                 )
                 return expected
 
@@ -237,8 +236,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         # post conditions
         if expected == 'ident':
             self._log.error(
-                'CSSPageRule selectorText: No valid selector: %r'
-                % self._valuestr(selectorText)
+                f'CSSPageRule selectorText: No valid selector: {self._valuestr(selectorText)!r}'
             )
 
         return wellformed, newseq, (new['name'], new['first'], new['lr'])
@@ -300,7 +298,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         tokenizer = self._tokenize2(cssText)
         if self._type(self._nexttoken(tokenizer)) != self._prods.PAGE_SYM:
             self._log.error(
-                'CSSPageRule: No CSSPageRule found: %s' % self._valuestr(cssText),
+                f'CSSPageRule: No CSSPageRule found: {self._valuestr(cssText)}',
                 error=xml.dom.InvalidModificationErr,
             )
         else:
@@ -318,7 +316,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
                 ok = False
                 self._log.error(
                     'CSSPageRule: No start { of style declaration '
-                    'found: %r' % self._valuestr(cssText),
+                    f'found: {self._valuestr(cssText)!r}',
                     startbrace,
                 )
             elif nonetoken:
@@ -333,8 +331,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             if val != '}' and type_ != 'EOF':
                 ok = False
                 self._log.error(
-                    'CSSPageRule: No "}" after style declaration found: %r'
-                    % self._valuestr(cssText)
+                    f'CSSPageRule: No "}}" after style declaration found: {self._valuestr(cssText)!r}'
                 )
             else:
                 if 'EOF' == type_:
@@ -426,17 +423,19 @@ class CSSPageRule(cssrule.CSSRuleRules):
             return
 
         # check hierarchy
-        if (
-            isinstance(rule, cssutils.css.CSSCharsetRule)
-            or isinstance(rule, cssutils.css.CSSFontFaceRule)
-            or isinstance(rule, cssutils.css.CSSImportRule)
-            or isinstance(rule, cssutils.css.CSSNamespaceRule)
-            or isinstance(rule, CSSPageRule)
-            or isinstance(rule, cssutils.css.CSSMediaRule)
+        if isinstance(
+            rule,
+            (
+                cssutils.css.CSSCharsetRule,
+                cssutils.css.CSSFontFaceRule,
+                cssutils.css.CSSImportRule,
+                cssutils.css.CSSNamespaceRule,
+                CSSPageRule,
+                cssutils.css.CSSMediaRule,
+            ),
         ):
             self._log.error(
-                '%s: This type of rule is not allowed here: %s'
-                % (self.__class__.__name__, rule.cssText),
+                f'{self.__class__.__name__}: This type of rule is not allowed here: {rule.cssText}',
                 error=xml.dom.HierarchyRequestErr,
             )
             return

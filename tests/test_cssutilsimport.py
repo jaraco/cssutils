@@ -7,7 +7,7 @@ class TestCSSutilsImport:
     def test_import_all(self):
         "from cssutils import *"
         namespace = {}
-        exec('from cssutils import *', namespace)
+        exec('from cssutils import *', namespace)  # noqa: S102
         del namespace['__builtins__']
         exp = {
             'CSSParser': cssutils.CSSParser,

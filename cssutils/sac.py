@@ -59,7 +59,7 @@ class DocumentHandler:
 
     def __init__(self):
         def log(msg):
-            sys.stderr.write('INFO\t%s\n' % msg)
+            sys.stderr.write(f'INFO\t{msg}\n')
 
         self._log = log
 
@@ -70,7 +70,7 @@ class DocumentHandler:
     def startDocument(self, encoding):
         "Receive notification of the beginning of a style sheet."
         # source
-        self._log("startDocument encoding=%s" % encoding)
+        self._log(f"startDocument encoding={encoding}")
 
     def endDocument(self, source=None, line=None, col=None):
         "Receive notification of the end of a document."
@@ -117,26 +117,26 @@ class EchoHandler(DocumentHandler):
     def startDocument(self, encoding):
         super().startDocument(encoding)
         if 'utf-8' != encoding:
-            self._out.append('@charset "%s";\n' % encoding)
+            self._out.append(f'@charset "{encoding}";\n')
 
     def importStyle(self, uri, media, name, line=None, col=None):
         "Receive notification of a import statement in the style sheet."
         # defaultNamespaceURI???
         super().importStyle(uri, media, name, line, col)
         self._out.append(
-            '@import %s%s%s;\n'
-            % (
+            '@import {}{}{};\n'.format(
                 helper.string(uri),
-                '%s ' % media if media else '',
-                '%s ' % name if name else '',
+                f'{media} ' if media else '',
+                f'{name} ' if name else '',
             )
         )
 
     def namespaceDeclaration(self, prefix, uri, line=None, col=None):
         super().namespaceDeclaration(prefix, uri, line, col)
         self._out.append(
-            '@namespace %s%s;\n'
-            % ('%s ' % prefix if prefix else '', helper.string(uri))
+            '@namespace {}{};\n'.format(
+                f'{prefix} ' if prefix else '', helper.string(uri)
+            )
         )
 
     def startSelector(self, selectors=None, line=None, col=None):
@@ -287,7 +287,7 @@ class Parser:
                         self._handler.importStyle(uri, media, name)
                     else:
                         self._errorHandler.error(
-                            'Invalid @import declaration at %r' % (start,)
+                            f'Invalid @import declaration at {start!r}'
                         )
 
                 elif 'NAMESPACE_SYM' == type_:
@@ -307,7 +307,7 @@ class Parser:
                         self._handler.namespaceDeclaration(prefix, uri, *start)
                     else:
                         self._errorHandler.error(
-                            'Invalid @namespace declaration at %r' % (start,)
+                            f'Invalid @namespace declaration at {start!r}'
                         )
 
                 else:
@@ -342,9 +342,7 @@ class Parser:
                             # name:
                             t = next(tokens)
                             type_, val, line, col = t
-                            if 'S' == type_:
-                                pass
-                            elif simple(t):
+                            if 'S' == type_ or simple(t):
                                 pass
                             elif 'IDENT' == type_:
                                 if name:
@@ -370,10 +368,10 @@ class Parser:
                                 break
                             else:
                                 self._errorHandler.error(
-                                    'unexpected property name token %r' % val, t
+                                    f'unexpected property name token {val!r}', t
                                 )
 
-                        while not ';' == end and not '}' == end:
+                        while ';' != end and '}' != end:
                             # value !;}
                             t = next(tokens)
                             type_, val, line, col = t
@@ -407,7 +405,7 @@ class Parser:
                                 break
                             else:
                                 self._errorHandler.error(
-                                    'unexpected priority token %r' % val
+                                    f'unexpected priority token {val!r}'
                                 )
 
                         if name and value:

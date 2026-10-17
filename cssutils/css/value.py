@@ -5,15 +5,15 @@ supported and are replaced by these new classes.
 """
 
 __all__ = [
-    'PropertyValue',
-    'Value',
+    'CSSCalc',
+    'CSSFunction',
+    'CSSVariable',
     'ColorValue',
     'DimensionValue',
-    'URIValue',
-    'CSSFunction',
-    'CSSCalc',
-    'CSSVariable',
     'MSValue',
+    'PropertyValue',
+    'URIValue',
+    'Value',
 ]
 
 import colorsys
@@ -76,12 +76,7 @@ class PropertyValue(cssutils.util._NewBase):
         return f"cssutils.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<cssutils.css.%s object length=%r cssText=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.length,
-            self.cssText,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object length={self.length!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def __items(self, seq=None):
         "a generator of Value obects only, no , / or ' '"
@@ -173,7 +168,7 @@ class PropertyValue(cssutils.util._NewBase):
             ),
         )
         # parse
-        ok, seq, store, unused = ProdParser().parse(cssText, 'PropertyValue', prods)
+        ok, seq, _store, _unused = ProdParser().parse(cssText, 'PropertyValue', prods)
         # must be at least one value!
         ok = ok and len(list(self.__items(seq))) > 0
 
@@ -187,8 +182,7 @@ class PropertyValue(cssutils.util._NewBase):
             self._setSeq(seq)
         else:
             self._log.error(
-                'PropertyValue: Unknown syntax or no value: %s'
-                % self._valuestr(cssText)
+                f'PropertyValue: Unknown syntax or no value: {self._valuestr(cssText)}'
             )
 
     cssText = property(
@@ -270,7 +264,7 @@ class Value(cssutils.util._NewBase):
             PreDef.string(stop=True),
             PreDef.unicode_range(stop=True),
         )
-        ok, seq, store, unused = ProdParser().parse(cssText, 'Value', prods)
+        ok, seq, _store, _unused = ProdParser().parse(cssText, 'Value', prods)
         self.wellformed = ok
         if ok:
             # only 1 value anyway!
@@ -323,19 +317,8 @@ class ColorValue(Value):
 
     def __str__(self):
         return (
-            "<cssutils.css.%s object type=%s value=%r colorType=%r "
-            "red=%s blue=%s green=%s alpha=%s at 0x%x>"
-            % (
-                self.__class__.__name__,
-                self.type,
-                self.value,
-                self.colorType,
-                self.red,
-                self.green,
-                self.blue,
-                self.alpha,
-                id(self),
-            )
+            f"<cssutils.css.{self.__class__.__name__} object type={self.type} value={self.value!r} colorType={self.colorType!r} "
+            f"red={self.red} blue={self.green} green={self.blue} alpha={self.alpha} at 0x{id(self):x}>"
         )
 
     def _setCssText(self, cssText):  # noqa: C901
@@ -392,7 +375,7 @@ class ColorValue(Value):
 
         prods = Choice(PreDef.hexcolor(stop=True), namedcolor, noalp, witha)
 
-        ok, seq, store, unused = ProdParser().parse(cssText, self.type, prods)
+        ok, seq, _store, _unused = ProdParser().parse(cssText, self.type, prods)
         self.wellformed = ok
         if ok:
             t, v = seq[0].type, seq[0].value
@@ -446,9 +429,9 @@ class ColorValue(Value):
                     r, g, b = colorsys.hls_to_rgb(h, l_, s)
                     # back to 255 based
                     rgba = [
-                        int(round(r * 255)),
-                        int(round(g * 255)),
-                        int(round(b * 255)),
+                        round(r * 255),
+                        round(g * 255),
+                        round(b * 255),
                     ]
 
                     if len(raw) > 3:
@@ -470,8 +453,8 @@ class ColorValue(Value):
                 }
                 if check not in checks[functiontype]:
                     self._log.error(
-                        'ColorValue has invalid %s) parameters: '
-                        '%s (N=Number, P=Percentage)' % (functiontype, check)
+                        f'ColorValue has invalid {functiontype}) parameters: '
+                        f'{check} (N=Number, P=Percentage)'
                     )
 
             self._colorType = t
@@ -533,22 +516,14 @@ class DimensionValue(Value):
     Covers DIMENSION, PERCENTAGE or NUMBER values.
     """
 
-    __reUnNumDim = re.compile(r'^([+-]?)(\d*\.\d+|\d+)(.*)$', re.I | re.U | re.X)
+    __reUnNumDim = re.compile(
+        r'^([+-]?)(\d*\.\d+|\d+)(.*)$', re.IGNORECASE | re.UNICODE | re.VERBOSE
+    )
     _dimension = None
     _sign = None
 
     def __str__(self):
-        return (
-            "<cssutils.css.%s object type=%s value=%r dimension=%r cssText=%r at 0x%x>"
-            % (
-                self.__class__.__name__,
-                self.type,
-                self.value,
-                self.dimension,
-                self.cssText,
-                id(self),
-            )
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object type={self.type} value={self.value!r} dimension={self.dimension!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -560,7 +535,7 @@ class DimensionValue(Value):
                 PreDef.percentage(stop=True),
             )
         )
-        ok, seq, store, unused = ProdParser().parse(cssText, 'DimensionValue', prods)
+        ok, seq, _store, _unused = ProdParser().parse(cssText, 'DimensionValue', prods)
         self.wellformed = ok
         if ok:
             item = seq[0]
@@ -610,7 +585,7 @@ class URIValue(Value):
 
         prods = Sequence(PreDef.uri(stop=True))
 
-        ok, seq, store, unused = ProdParser().parse(cssText, 'URIValue', prods)
+        ok, seq, _store, _unused = ProdParser().parse(cssText, 'URIValue', prods)
         self.wellformed = ok
         if ok:
             # only 1 value only anyway
@@ -691,7 +666,7 @@ class CSSFunction(Value):
 
     def _setCssText(self, cssText):
         self._checkReadonly()
-        ok, seq, store, unused = ProdParser().parse(
+        ok, seq, _store, _unused = ProdParser().parse(
             cssText, self.type, self._productions()
         )
         self.wellformed = ok
@@ -817,7 +792,7 @@ class CSSCalc(CSSFunction):
             ),
         )
 
-        _operant = lambda: Choice(  # noqa:E731
+        _operant = lambda: Choice(
             _DimensionProd(self), _CalcValueProd(self), _CSSVariableProd(self)
         )
 
@@ -833,7 +808,7 @@ class CSSCalc(CSSFunction):
         )
 
         # store: name of variable
-        ok, seq, store, unused = ProdParser().parse(
+        ok, seq, _store, _unused = ProdParser().parse(
             cssText, 'CSSCalc', prods, checkS=True
         )
         self.wellformed = ok
@@ -891,7 +866,7 @@ class CSSVariable(CSSFunction):
 
         # store: name of variable
         store = {'ident': None, 'fallback': None}
-        ok, seq, store, unused = ProdParser().parse(cssText, 'CSSVariable', prods)
+        ok, seq, store, _unused = ProdParser().parse(cssText, 'CSSVariable', prods)
         self.wellformed = ok
 
         if ok:
@@ -992,7 +967,7 @@ def _ColorProd(parent, nextSor=False, toStore=None):
         match=lambda t, v: (
             (t == 'HASH' and reHexcolor.match(v))
             or (t == 'FUNCTION' and normalize(v) in ('rgb(', 'rgba(', 'hsl(', 'hsla('))
-            or (t == 'IDENT' and normalize(v) in ColorValue.COLORS.keys())
+            or (t == 'IDENT' and normalize(v) in ColorValue.COLORS)
         ),
         nextSor=nextSor,
         toStore=toStore,

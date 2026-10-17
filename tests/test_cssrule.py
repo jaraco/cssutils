@@ -149,7 +149,7 @@ class TestCSSRule(basetest.BaseTestCase):
                 assert rule.parentStyleSheet == mr.parentStyleSheet
                 assert rule.type == rules[i][1]
 
-        cssText = '@media all { %s }' % ''.join(r[0] for r in rules)
+        cssText = '@media all {{ {} }}'.format(''.join(r[0] for r in rules))
         # parsing
         s = cssutils.parseString(cssText)
         test(s)
@@ -238,7 +238,7 @@ class TestCSSRule(basetest.BaseTestCase):
                 continue
 
             if test.startswith(startwithspace):
-                test = ' %s' % test
+                test = f' {test}'
 
             with pytest.raises(xml.dom.InvalidModificationErr):
                 self.r._setCssText(test)

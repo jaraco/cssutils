@@ -121,8 +121,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.NAMESPACE_SYM:
             self._log.error(
-                'CSSNamespaceRule: No CSSNamespaceRule found: %s'
-                % self._valuestr(cssText),
+                f'CSSNamespaceRule: No CSSNamespaceRule found: {self._valuestr(cssText)}',
                 error=xml.dom.InvalidModificationErr,
             )
         else:
@@ -201,14 +200,13 @@ class CSSNamespaceRule(cssrule.CSSRule):
             if new['uri'] is None:
                 wellformed = False
                 self._log.error(
-                    'CSSNamespaceRule: No namespace URI found: %s'
-                    % self._valuestr(cssText)
+                    f'CSSNamespaceRule: No namespace URI found: {self._valuestr(cssText)}'
                 )
 
             if expected != 'EOF':
                 wellformed = False
                 self._log.error(
-                    'CSSNamespaceRule: No ";" found: %s' % self._valuestr(cssText)
+                    f'CSSNamespaceRule: No ";" found: {self._valuestr(cssText)}'
                 )
 
             # set all
@@ -282,7 +280,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             prefixtoken = self._nexttoken(tokenizer, None)
             if not prefixtoken or self._type(prefixtoken) != self._prods.IDENT:
                 self._log.error(
-                    'CSSNamespaceRule: No valid prefix "%s".' % self._valuestr(prefix),
+                    f'CSSNamespaceRule: No valid prefix "{self._valuestr(prefix)}".',
                     error=xml.dom.SyntaxErr,
                 )
                 return

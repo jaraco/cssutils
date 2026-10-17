@@ -3,6 +3,7 @@
 __all__ = ['MarginRule']
 
 import xml.dom
+from typing import ClassVar
 
 import cssutils
 from cssutils.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
@@ -49,7 +50,7 @@ class MarginRule(cssrule.CSSRule):
             }
     """
 
-    margins = [
+    margins: ClassVar = [
         '@top-left-corner',
         '@top-left',
         '@top-center',
@@ -124,12 +125,7 @@ class MarginRule(cssrule.CSSRule):
         return f"cssutils.css.{self.__class__.__name__}(margin={self.margin!r}, style={self.style.cssText!r})"
 
     def __str__(self):
-        return "<cssutils.css.%s object margin=%r style=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.margin,
-            self.style.cssText,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object margin={self.margin!r} style={self.style.cssText!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -180,7 +176,7 @@ class MarginRule(cssrule.CSSRule):
             PreDef.char('CLOSE', '}', stopAndKeep=True),
         )
         # parse
-        ok, seq, store, unused = ProdParser().parse(cssText, 'MarginRule', prods)
+        ok, seq, store, _unused = ProdParser().parse(cssText, 'MarginRule', prods)
 
         if ok:
             # TODO: use seq for serializing instead of fixed stuff?
@@ -191,7 +187,7 @@ class MarginRule(cssrule.CSSRule):
                 self.margin = store['margin'].value
             else:
                 self._log.error(
-                    'No margin @keyword for this %s rule' % self.margin,
+                    f'No margin @keyword for this {self.margin} rule',
                     error=xml.dom.InvalidModificationErr,
                 )
 

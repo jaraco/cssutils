@@ -147,11 +147,11 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         }
         cssutils.ser.prefs.keepAllProperties = False
         for test, exp in list(tests.items()):
-            sh = cssutils.parseString('a { %s }' % test)
+            sh = cssutils.parseString(f'a {{ {test} }}')
             if exp is None:
-                exp = '%s' % test
+                exp = f'{test}'
             elif exp != '':
-                exp = '%s' % exp
+                exp = f'{exp}'
             assert exp == sh.cssRules[0].style.cssText
 
     def test_serialize(self):
@@ -331,9 +331,8 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             ('x', True): [('x', 'a', 'important'), ('\\x', 'b', '')],
             ('\\x', True): [('x', 'a', 'important'), ('\\x', 'b', '')],
         }
-        for test in tests:
+        for test, expected in tests.items():
             name, all = test
-            expected = tests[test]
             actual = s.getProperties(name, all)
             assert len(expected) == len(actual)
             for i, ex in enumerate(expected):
@@ -394,9 +393,9 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             r'color: red !important; color: green !important': 'green',
             r'color: green !important; color: red': 'green',
         }
-        for test in tests:
+        for test, expected in tests.items():
             s = cssutils.css.CSSStyleDeclaration(cssText=test)
-            assert tests[test] == s.getPropertyValue('color')
+            assert expected == s.getPropertyValue('color')
 
     def test_getPropertyPriority(self):
         "CSSStyleDeclaration.getPropertyPriority()"

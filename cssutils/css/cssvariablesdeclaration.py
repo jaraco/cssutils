@@ -148,7 +148,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             PreDef.char(';', ';', toSeq=False, optional=True),
         )
         # parse
-        wellformed, seq, store, notused = ProdParser().parse(
+        wellformed, seq, _store, _notused = ProdParser().parse(
             cssText, 'CSSVariableDeclaration', prods, emptyOk=True
         )
         if wellformed:
@@ -279,7 +279,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         self._checkReadonly()
 
         # check name
-        wellformed, seq, store, unused = ProdParser().parse(
+        wellformed, _seq, _store, _unused = ProdParser().parse(
             normalize(variableName), 'variableName', Sequence(PreDef.ident())
         )
         if not wellformed:

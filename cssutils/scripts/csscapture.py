@@ -85,11 +85,10 @@ def main(args=None):
     else:
         for i, s in enumerate(stylesheetlist):
             print(
-                '''%s.
-    encoding: %r
-    title: %r
-    href: %r'''
-                % (i + 1, s.encoding, s.title, s.href)
+                f'''{i + 1}.
+    encoding: {s.encoding!r}
+    title: {s.title!r}
+    href: {s.href!r}'''
             )
 
 

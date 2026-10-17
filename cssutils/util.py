@@ -7,6 +7,7 @@ import operator
 import re
 import xml.dom
 from itertools import chain
+from typing import ClassVar
 
 from more_itertools import unique_everseen
 
@@ -36,7 +37,7 @@ class _BaseClass:
     def _checkReadonly(self):
         "Raise xml.dom.NoModificationAllowedErr if rule/... is readonly"
         if hasattr(self, '_readonly') and self._readonly:
-            raise xml.dom.NoModificationAllowedErr('%s is readonly.' % self.__class__)
+            raise xml.dom.NoModificationAllowedErr(f'{self.__class__} is readonly.')
             return True
         return False
 
@@ -150,7 +151,7 @@ class Base(_BaseClass):
     # for more on shorthand properties see
     # http://www.dustindiaz.com/css-shorthand/
     # format: shorthand: [(propname, mandatorycheck?)*]
-    _SHORTHANDPROPERTIES = {
+    _SHORTHANDPROPERTIES: ClassVar = {
         'background': [],
         # u'background-position': [], # list of 2 values!
         'border': [],
@@ -345,7 +346,7 @@ class Base(_BaseClass):
 
         if tokenizer:
             for token in tokenizer:
-                typ, val, line, col = token
+                typ, val, _line, _col = token
                 if 'EOF' == typ:
                     resulttokens.append(token)
                     break
@@ -487,7 +488,7 @@ class Base(_BaseClass):
                     expected = p(expected, seq, token, tokenizer)
                 else:
                     wellformed = False
-                    self._log.error('Unexpected token (%s, %s, %s, %s)' % token)
+                    self._log.error('Unexpected token ({}, {}, {}, {})'.format(*token))
         return wellformed, expected
 
 
@@ -582,7 +583,7 @@ class Seq:
         return 'cssutils.{}.{}([\n    {}], readonly={!r})'.format(
             self.__module__,
             self.__class__.__name__,
-            ',\n    '.join(['%r' % item for item in self._seq]),
+            ',\n    '.join([f'{item!r}' for item in self._seq]),
             self._readonly,
         )
 
@@ -765,7 +766,7 @@ class _Namespaces:
         self._log = log
 
     def __repr__(self):
-        return "%r" % self.namespaces
+        return f"{self.namespaces!r}"
 
     def __contains__(self, prefix):
         return prefix in self.namespaces
@@ -780,13 +781,13 @@ class _Namespaces:
                 self.parentStyleSheet.deleteRule(i)
                 return
 
-        self._log.error('Prefix %s not found.' % prefix, error=xml.dom.NamespaceErr)
+        self._log.error(f'Prefix {prefix} not found.', error=xml.dom.NamespaceErr)
 
     def __getitem__(self, prefix):
         try:
             return self.namespaces[prefix]
         except KeyError:
-            self._log.error('Prefix %s not found.' % prefix, error=xml.dom.NamespaceErr)
+            self._log.error(f'Prefix {prefix} not found.', error=xml.dom.NamespaceErr)
 
     def __iter__(self):
         return self.namespaces.__iter__()
@@ -853,7 +854,7 @@ class _Namespaces:
         for prefix, uri in list(self.namespaces.items()):
             if uri == namespaceURI:
                 return prefix
-        raise IndexError('NamespaceURI %s not found.' % namespaceURI)
+        raise IndexError(f'NamespaceURI {namespaceURI} not found.')
 
     def __str__(self):
         return f"<cssutils.util.{self.__class__.__name__} object parentStyleSheet={str(self.parentStyleSheet)!r} at 0x{id(self):x}>"
@@ -967,7 +968,7 @@ def _readUrl(  # noqa: C901
                     decodedCssText = content.decode(encoding if encoding else 'utf-8')
 
             except UnicodeDecodeError as e:
-                log.warn(e, neverraise=True)
+                log.warning(e, neverraise=True)
                 decodedCssText = None
 
         return encoding, enctype, decodedCssText
@@ -992,7 +993,7 @@ class LazyRegex:
                       pattern is not yet compiled.
     """
 
-    __slots__ = ('pattern', 'flags', 'matcher', 'groups', 'groupindex')
+    __slots__ = ('flags', 'groupindex', 'groups', 'matcher', 'pattern')
 
     def __init__(self, pattern, flags=0):
         self.pattern = pattern

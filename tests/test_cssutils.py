@@ -170,9 +170,8 @@ class TestCSSutils(basetest.BaseTestCase):
         assert s.cssRules[1].selectorText == 'a:after'
 
         css = '@charset "iso-8859-1"; a:after { content: "ä" }'
-        t = codecs.open(name, 'w', 'iso-8859-1')
-        t.write(css)
-        t.close()
+        with codecs.open(name, 'w', 'iso-8859-1') as t:
+            t.write(css)
 
         with pytest.raises(UnicodeDecodeError):
             cssutils.parseFile(name, 'ascii')

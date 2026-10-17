@@ -332,7 +332,7 @@ ex2|x {
         with pytest.raises(xml.dom.NamespaceErr):
             s.namespaces.__getitem__('UNSET')
         # __iter__
-        assert ['', 'ex2'] == sorted(list(s.namespaces))
+        assert ['', 'ex2'] == sorted(s.namespaces)
         # __len__
         assert 2 == len(s.namespaces)
         # __setitem__
@@ -559,7 +559,7 @@ ex2|SEL4, a, ex2|SELSR {
         b { color: blue; }
         c { color: green; }
         '''
-        n, s1, s2, s3 = s.cssRules
+        n, _s1, s2, _s3 = s.cssRules
 
         r = cssutils.css.CSSStyleRule()
         with pytest.raises(xml.dom.IndexSizeErr):
@@ -741,7 +741,7 @@ ex2|SEL4, a, ex2|SELSR {
         s.insertRule(self.sr)
         assert L + 2 == s.cssRules.length
         # insert rulelist
-        s2, L2 = self._gets()
+        s2, _L2 = self._gets()
         rulelist = s2.cssRules
         del rulelist[:-2]
         s.insertRule(rulelist)
@@ -784,7 +784,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_charset(self):
         "CSSStyleSheet.insertRule(@charset)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr,)
         notafter = (
             self.cr,
@@ -801,7 +801,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_import(self):
         "CSSStyleSheet.insertRule(@import)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr,)
         notafter = (self.nr, self.pr, self.mr, self.sr)
         anywhere = (self.c, self.ur, self.ir)
@@ -809,7 +809,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_namespace(self):
         "CSSStyleSheet.insertRule(@namespace)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr, self.ir)
         notafter = (self.pr, self.mr, self.sr)
         anywhere = (self.c, self.ur, self.nr)
@@ -817,7 +817,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_media_page_style(self):
         "CSSStyleSheet.insertRule(@media, @page, stylerule)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr, self.ir, self.nr)
         notafter = ()
         anywhere = (self.c, self.ur, self.mr, self.pr, self.sr)
@@ -825,7 +825,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_unknownandcomment(self):
         "CSSStyleSheet.insertRule(@ unknown, comment)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr,)
         notafter = ()
         anywhere = (self.c, self.ur, self.ir, self.nr, self.mr, self.pr, self.sr)

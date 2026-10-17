@@ -78,8 +78,6 @@ def mod(module):
 
 
 def main():
-    global modules, errors
-
     import build
 
     mod(build)
@@ -106,7 +104,7 @@ def main():
 
     print()
     print(80 * '-')
-    print('Ran %i tests (%i errors).' % (modules, errors))
+    print(f'Ran {modules} tests ({errors} errors).')
     print('doctests do not work in Python 3 (yet?)!')
 
 

@@ -84,8 +84,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.FONT_FACE_SYM:
             self._log.error(
-                'CSSFontFaceRule: No CSSFontFaceRule found: %s'
-                % self._valuestr(cssText),
+                f'CSSFontFaceRule: No CSSFontFaceRule found: {self._valuestr(cssText)}',
                 error=xml.dom.InvalidModificationErr,
             )
         else:
@@ -99,7 +98,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 ok = False
                 self._log.error(
                     'CSSFontFaceRule: No start { of style '
-                    'declaration found: %r' % self._valuestr(cssText),
+                    f'declaration found: {self._valuestr(cssText)!r}',
                     brace,
                 )
 
@@ -107,7 +106,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             new = {'wellformed': True}
             newseq = self._tempSeq()
 
-            beforewellformed, expected = self._parse(
+            beforewellformed, _expected = self._parse(
                 expected=':',
                 seq=newseq,
                 tokenizer=self._tokenize2(beforetokens),
@@ -124,7 +123,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
                 ok = False
                 self._log.error(
                     'CSSFontFaceRule: No "}" after style '
-                    'declaration found: %r' % self._valuestr(cssText)
+                    f'declaration found: {self._valuestr(cssText)!r}'
                 )
 
             nonetoken = self._nexttoken(tokenizer)

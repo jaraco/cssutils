@@ -7,7 +7,7 @@ http://www.w3.org/TR/css3-syntax/#grammar0
 
 """
 
-__all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
+__all__ = ['MACROS', 'PRODUCTIONS', 'CSSProductions']
 
 # option case-insensitive
 MACROS = {
@@ -98,7 +98,7 @@ PRODUCTIONS = [
     ('DIMEN', r'{num}{ident}'),  # {num}{ident}        {return DIMEN;}
     ('NUMBER', r'{num}'),  # {num}            {return NUMBER;}
     # ('UNICODERANGE', r'U\+{range}'), #U\+{range}        {return UNICODERANGE;}
-    # ('UNICODERANGE', r'U\+{h}{1,6}-{h}{1,6}'), #U\+{h}{1,6}-{h}{1,6}    {return UNICODERANGE;}  # noqa
+    # ('UNICODERANGE', r'U\+{h}{1,6}-{h}{1,6}'), #U\+{h}{1,6}-{h}{1,6}    {return UNICODERANGE;}
     # --- CSS3 ---
     ('UNICODE-RANGE', r'[0-9A-F?]{1,6}(\-[0-9A-F]{1,6})?'),
     ('CDO', r'\<\!\-\-'),  # "<!--"            {return CDO;}

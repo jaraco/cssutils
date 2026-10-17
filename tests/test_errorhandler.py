@@ -119,7 +119,7 @@ class TestErrorHandler:
 
     def test_parsevalidation(self):
         style = 'color: 1'
-        t = 'a { %s }' % style
+        t = f'a {{ {style} }}'
 
         cssutils.log.setLevel(logging.DEBUG)
 

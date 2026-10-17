@@ -28,9 +28,8 @@ class TestCSSCombine:
 
         # cssText
         # TODO: really need binary or can handle str too?
-        f = open(csspath, mode="rb")
-        cssText = f.read()
-        f.close()
+        with open(csspath, mode="rb") as f:
+            cssText = f.read()
         combined = csscombine(cssText=cssText, href=cssurl)
         assert combined == self.C.encode()
         combined = csscombine(cssText=cssText, href=cssurl, targetencoding='ascii')

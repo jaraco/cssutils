@@ -11,7 +11,7 @@ open issues
             CSS3: 'nmchar': r'[_a-z-]|{nonascii}|{escape}',
 """
 
-__all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
+__all__ = ['MACROS', 'PRODUCTIONS', 'CSSProductions']
 
 # a complete list of css3 macros
 MACROS = {

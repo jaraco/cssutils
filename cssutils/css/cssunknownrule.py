@@ -63,7 +63,7 @@ class CSSUnknownRule(cssrule.CSSRule):
         attoken = self._nexttoken(tokenizer, None)
         if not attoken or self._type(attoken) != self._prods.ATKEYWORD:
             self._log.error(
-                'CSSUnknownRule: No CSSUnknownRule found: %s' % self._valuestr(cssText),
+                f'CSSUnknownRule: No CSSUnknownRule found: {self._valuestr(cssText)}',
                 error=xml.dom.InvalidModificationErr,
             )
         else:
@@ -197,13 +197,12 @@ class CSSUnknownRule(cssrule.CSSRule):
                 wellformed = False
                 self._log.error(
                     'CSSUnknownRule: No ending ";" or "}" found: '
-                    '%r' % self._valuestr(cssText)
+                    f'{self._valuestr(cssText)!r}'
                 )
             elif new['nesting']:
                 wellformed = False
                 self._log.error(
-                    'CSSUnknownRule: Unclosed "{", "[" or "(": %r'
-                    % self._valuestr(cssText)
+                    f'CSSUnknownRule: Unclosed "{{", "[" or "(": {self._valuestr(cssText)!r}'
                 )
 
             # set all

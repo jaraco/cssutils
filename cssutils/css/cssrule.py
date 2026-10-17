@@ -3,6 +3,7 @@
 __all__ = ['CSSRule']
 
 import xml.dom
+from typing import ClassVar
 
 import cssutils.util
 
@@ -47,7 +48,7 @@ class CSSRule(cssutils.util.Base2):
     """``cssutils.css.MarginRule`` - experimental rule
     not in the offical spec"""
 
-    _typestrings = {
+    _typestrings: ClassVar = {
         UNKNOWN_RULE: 'UNKNOWN_RULE',
         STYLE_RULE: 'STYLE_RULE',
         CHARSET_RULE: 'CHARSET_RULE',
@@ -216,8 +217,8 @@ class CSSRuleRules(CSSRule):
                     break
             else:
                 raise xml.dom.IndexSizeErr(
-                    "%s: Not a rule in "
-                    "this rule'a cssRules list: %s" % (self.__class__.__name__, index)
+                    f"{self.__class__.__name__}: Not a rule in "
+                    f"this rule'a cssRules list: {index}"
                 )
 
         try:
@@ -227,9 +228,8 @@ class CSSRuleRules(CSSRule):
 
         except IndexError as err:
             raise xml.dom.IndexSizeErr(
-                '%s: %s is not a valid index '
-                'in the rulelist of length %i'
-                % (self.__class__.__name__, index, self._cssRules.length)
+                f'{self.__class__.__name__}: {index} is not a valid index '
+                f'in the rulelist of length {self._cssRules.length}'
             ) from err
 
     def _prepareInsertRule(self, rule, index=None):
@@ -242,9 +242,8 @@ class CSSRuleRules(CSSRule):
 
         elif index < 0 or index > self._cssRules.length:
             raise xml.dom.IndexSizeErr(
-                '%s: Invalid index %s for '
-                'CSSRuleList with a length of %s.'
-                % (self.__class__.__name__, index, self._cssRules.length)
+                f'{self.__class__.__name__}: Invalid index {index} for '
+                f'CSSRuleList with a length of {self._cssRules.length}.'
             )
 
         # check and optionally parse rule

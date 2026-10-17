@@ -104,7 +104,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         if self._prods.STRING != encodingtype or not encoding:
             wellformed = False
             self._log.error(
-                'CSSCharsetRule: no encoding found; %r.' % self._valuestr(cssText)
+                f'CSSCharsetRule: no encoding found; {self._valuestr(cssText)!r}.'
             )
 
         semicolon = self._tokenvalue(self._nexttoken(tokenizer))
@@ -112,7 +112,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         if ';' != semicolon or EOFtype not in ('EOF', None):
             wellformed = False
             self._log.error(
-                'CSSCharsetRule: Syntax Error: %r.' % self._valuestr(cssText)
+                f'CSSCharsetRule: Syntax Error: {self._valuestr(cssText)!r}.'
             )
 
         if wellformed:
@@ -147,14 +147,14 @@ class CSSCharsetRule(cssrule.CSSRule):
             or self._prods.IDENT != self._type(encodingtoken)
         ):
             self._log.error(
-                'CSSCharsetRule: Syntax Error in encoding value %r.' % encoding
+                f'CSSCharsetRule: Syntax Error in encoding value {encoding!r}.'
             )
         else:
             try:
                 codecs.lookup(encoding)
             except LookupError:
                 self._log.error(
-                    'CSSCharsetRule: Unknown (Python) encoding %r.' % encoding
+                    f'CSSCharsetRule: Unknown (Python) encoding {encoding!r}.'
                 )
             else:
                 self._encoding = encoding.lower()

@@ -505,7 +505,7 @@ class TestLazyRegex:
             'groupindex',
         ]
         for method in methods:
-            assert hasattr(self.lazyre, method), 'expected %r public attribute' % method
+            assert hasattr(self.lazyre, method), f'expected {method!r} public attribute'
 
     def test_ensure(self):
         assert self.lazyre.matcher is None

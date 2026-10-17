@@ -1,10 +1,11 @@
 """New CSS Tokenizer (a generator)"""
 
-__all__ = ['Tokenizer', 'CSSProductions']
+__all__ = ['CSSProductions', 'Tokenizer']
 
 import itertools
 import re
 import sys
+from typing import ClassVar
 
 from .cssproductions import MACROS, PRODUCTIONS, CSSProductions
 from .helper import normalize
@@ -18,7 +19,7 @@ class Tokenizer:
         (Tokenname, value, startline, startcolumn)
     """
 
-    _atkeywords = {
+    _atkeywords: ClassVar = {
         '@font-face': CSSProductions.FONT_FACE_SYM,
         '@import': CSSProductions.IMPORT_SYM,
         '@media': CSSProductions.MEDIA_SYM,
@@ -50,8 +51,8 @@ class Tokenizer:
             tokenmatches = self._compile_productions(
                 self._expand_macros(macros, productions)
             )
-            commentmatcher = [x[1] for x in tokenmatches if x[0] == 'COMMENT'][0]
-            urimatcher = [x[1] for x in tokenmatches if x[0] == 'URI'][0]
+            commentmatcher = next(x[1] for x in tokenmatches if x[0] == 'COMMENT')
+            urimatcher = next(x[1] for x in tokenmatches if x[0] == 'URI')
             _TOKENIZER_CACHE[hash_key] = (tokenmatches, commentmatcher, urimatcher)
 
         self.tokenmatches = tokenmatches
@@ -65,7 +66,7 @@ class Tokenizer:
         """returns macro expanded productions, order of productions is kept"""
 
         def macro_value(m):
-            return '(?:%s)' % macros[m.groupdict()['macro']]
+            return '(?:{})'.format(macros[m.groupdict()['macro']])
 
         expanded = []
         for key, value in productions:
@@ -80,7 +81,7 @@ class Tokenizer:
         """compile productions into callable match objects, order is kept"""
         compiled = []
         for key, value in expanded_productions:
-            compiled.append((key, re.compile('(?:%s)' % value, re.U).match))
+            compiled.append((key, re.compile(f'(?:{value})', re.UNICODE).match))
         return compiled
 
     def push(self, *tokens):
@@ -160,7 +161,7 @@ class Tokenizer:
                     # TODO: USE bad comment?
                     if fullsheet and name == 'CHAR' and has_at(text, pos, '/*'):
                         # before CHAR production test for incomplete comment
-                        possiblecomment = '%s*/' % text[pos:]
+                        possiblecomment = f'{text[pos:]}*/'
                         match = self.commentmatcher(possiblecomment)
                         if match and self._doComments:
                             yield ('COMMENT', possiblecomment, line, col)

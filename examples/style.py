@@ -159,9 +159,8 @@ def render2content(document, view, css):
 
 def show(text, name, encoding='utf-8'):
     "saves text to file with name and encoding"
-    f = codecs.open(name, 'w', encoding=encoding)
-    f.write(text)
-    f.close()
+    with codecs.open(name, 'w', encoding=encoding) as f:
+        f.write(text)
     webbrowser.open(name)
 
 

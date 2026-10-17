@@ -90,7 +90,7 @@ def string(value):
     if value.endswith('\\'):
         value = value[:-1] + '\\\\'
 
-    return '"%s"' % value
+    return f'"{value}"'
 
 
 def stringvalue(string):
@@ -103,7 +103,7 @@ def stringvalue(string):
     return string.replace('\\' + string[0], string[0])[1:-1]
 
 
-_match_forbidden_in_uri = re.compile(r'''.*?[\(\)\s\;,'"]''', re.U).match
+_match_forbidden_in_uri = re.compile(r'''.*?[\(\)\s\;,'"]''', re.UNICODE).match
 
 
 def uri(value):
@@ -114,7 +114,7 @@ def uri(value):
     """
     if _match_forbidden_in_uri(value):
         value = string(value)
-    return 'url(%s)' % value
+    return f'url({value})'
 
 
 def urivalue(uri):

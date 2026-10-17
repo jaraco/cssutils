@@ -20,7 +20,6 @@ class CSSRuleList(list):
 
     def __init__(self, *ignored):
         "Nothing is set as this must also be defined later."
-        pass
 
     def __notimplemented(self, *ignored):
         "Implemented in class using a CSSRuleList only."

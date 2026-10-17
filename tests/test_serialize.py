@@ -114,8 +114,8 @@ prefix|x, a + b > c ~ d, b {
         }
         cssutils.ser.prefs.useDefaults()
         for test, exp in list(tests.items()):
-            s = cssutils.parseString('a{x:%s}' % test)
-            assert ('a {\n    x: %s\n    }' % exp).encode() == s.cssText
+            s = cssutils.parseString(f'a{{x:{test}}}')
+            assert (f'a {{\n    x: {exp}\n    }}').encode() == s.cssText
 
     def test_useMinified(self):
         "Preferences.useMinified()"
@@ -198,8 +198,8 @@ prefix|x, a + b > c ~ d, b {
             '-.1 -.1 -.1px -.1px -.1% -.1%',
         }
         for test, exp in list(valuetests.items()):
-            s = cssutils.parseString('a{x:%s}' % test)
-            assert ('a{x:%s}' % exp).encode() == s.cssText
+            s = cssutils.parseString(f'a{{x:{test}}}')
+            assert (f'a{{x:{exp}}}').encode() == s.cssText
 
     def test_defaultAtKeyword(self):
         "Preferences.defaultAtKeyword"
@@ -421,9 +421,8 @@ h1 {
     }''',
             )
         }
-        for test in tests:
+        for test, (expwith, expwithout) in tests.items():
             s = cssutils.parseString(test)
-            expwith, expwithout = tests[test]
             cssutils.ser.prefs.keepUnknownAtRules = True
             assert s.cssText == expwith.encode()
             cssutils.ser.prefs.keepUnknownAtRules = False
@@ -462,9 +461,8 @@ h1 {
                 '@namespace p "u";\np|a {\n    top: 0\n    }',
             ),
         }
-        for test in tests:
+        for test, (expwith, expwithout) in tests.items():
             s = cssutils.parseString(test)
-            expwith, expwithout = tests[test]
             cssutils.ser.prefs.keepUsedNamespaceRulesOnly = False
             assert s.cssText == expwith.encode()
             cssutils.ser.prefs.keepUsedNamespaceRulesOnly = True

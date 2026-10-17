@@ -1,6 +1,7 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
 
 import re
+from typing import ClassVar
 
 import pytest
 
@@ -19,8 +20,8 @@ CSS2_FM3 = (FM3[0], CSS2[0])
 
 
 class TestProfiles:
-    M1 = {'testvalue': 'x'}
-    P1 = {
+    M1: ClassVar = {'testvalue': 'x'}
+    P1: ClassVar = {
         '-test-tokenmacro': '({num}{w}){1,2}',
         '-test-macro': '{ident}|{percentage}',
         '-test-custommacro': '{testvalue}',
@@ -649,13 +650,17 @@ class TestProfiles:
                     'local(  "x"  )',
                     'url(../fonts/LateefRegAAT.ttf) format(  "truetype-aat"  )',
                     'url(a) format(  "123x"  , "a"   )',
-                    'url(a) format( "123x"  , "a"   ), '
-                    'url(a) format( "123x"  , "a"   )',
+                    (
+                        'url(a) format( "123x"  , "a"   ), '
+                        'url(a) format( "123x"  , "a"   )'
+                    ),
                     'local(HiraKakuPro-W3), local(Meiryo), local(IPAPGothic)',
                     'local(Gentium), url(/fonts/Gentium.ttf)',
                     'local("Gentium"), url("/fonts/Gentium.ttf")',
-                    'local(Futura-Medium), url(fonts.svg#MyGeometricModern) '
-                    'format("svg")',
+                    (
+                        'local(Futura-Medium), url(fonts.svg#MyGeometricModern) '
+                        'format("svg")'
+                    ),
                 ),
             ): (True, True, FM3FF),
             (

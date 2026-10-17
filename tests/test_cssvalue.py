@@ -269,7 +269,7 @@ y"''': '''"xy"''',
         "CSSValue (incomplete)"
         tests = {'url("a': 'url(a)', 'url(a': 'url(a)'}
         for v, exp in list(tests.items()):
-            s = cssutils.parseString('a { background: %s' % v)
+            s = cssutils.parseString(f'a {{ background: {v}')
             v = s.cssRules[0].style.background
             assert v == exp
 
@@ -340,10 +340,10 @@ y"''': '''"xy"''',
 
         v = cssutils.css.CSSValue(cssText='inherit', readonly=True)
         assert True is v._readonly
-        assert 'inherit', v.cssText
+        assert 'inherit' == v.cssText
         with pytest.raises(xml.dom.NoModificationAllowedErr):
             v._setCssText('x')
-        assert 'inherit', v.cssText
+        assert 'inherit' == v.cssText
 
     def test_reprANDstr(self):
         "CSSValue.__repr__(), .__str__()"
@@ -412,7 +412,7 @@ class TestCSSPrimitiveValue:
         ]
         for dim, name in defs:
             for n in (0, 1, 1.1, -1, -1.1, -0):
-                v = cssutils.css.CSSPrimitiveValue('%i%s' % (n, dim))
+                v = cssutils.css.CSSPrimitiveValue(f'{int(n)}{dim}')
                 assert name == v.primitiveTypeString
                 assert getattr(v, name) == v.primitiveType
 
@@ -492,9 +492,8 @@ class TestCSSPrimitiveValue:
             # '1khz': (v.CSS_HZ, 1000),
             '1DIMENSION': (v.CSS_DIMENSION, 1),
         }
-        for cssText in tests:
+        for cssText, (unitType, exp) in tests.items():
             v.cssText = cssText
-            unitType, exp = tests[cssText]
             val = v.getFloatValue(unitType)
             if unitType in (v.CSS_IN, v.CSS_CM):
                 val = round(val)
@@ -593,15 +592,19 @@ class TestCSSPrimitiveValue:
                     V.CSS_EMS,
                     1,
                     xml.dom.InvalidAccessErr,
-                    "CSSPrimitiveValue: Cannot coerce "
-                    "primitiveType 'CSS_NUMBER' to 'CSS_EMS'",
+                    (
+                        "CSSPrimitiveValue: Cannot coerce "
+                        "primitiveType 'CSS_NUMBER' to 'CSS_EMS'"
+                    ),
                 ),
                 (
                     V.CSS_EXS,
                     1,
                     xml.dom.InvalidAccessErr,
-                    "CSSPrimitiveValue: Cannot coerce primitiveType "
-                    "'CSS_NUMBER' to 'CSS_EXS'",
+                    (
+                        "CSSPrimitiveValue: Cannot coerce primitiveType "
+                        "'CSS_NUMBER' to 'CSS_EXS'"
+                    ),
                 ),
             ],
             (V.CSS_MM, '1mm'): [
@@ -632,10 +635,10 @@ class TestCSSPrimitiveValue:
                 (V.CSS_PX, 1, xml.dom.InvalidAccessErr, None),
             ],
         }
-        for test in tests:
+        for test, expected in tests.items():
             initialType, initialValue = test
             pv = cssutils.css.CSSPrimitiveValue(initialValue)
-            for setType, setValue, exp, cssText in tests[test]:
+            for setType, setValue, exp, cssText in expected:
                 if isinstance(exp, type):
                     if cssText:
                         with pytest.raises(exp, match=cssText):
@@ -669,8 +672,7 @@ class TestCSSPrimitiveValue:
             pv.CSS_IDENT: ('red', None),
             pv.CSS_ATTR: ('attr(att-name)', 'att-name'),  # the name of the attrr
         }
-        for t in tests:
-            val, exp = tests[t]
+        for t, (val, exp) in tests.items():
             if not exp:
                 exp = val
 
@@ -886,8 +888,7 @@ class TestCSSValueList:
             'url(x.gif)0 0': ('url(x.gif) 0 0', 3),
             'url(x.gif)no-repeat': ('url(x.gif) no-repeat', 2),
         }
-        for test in tests:
-            exp, num = tests[test]
+        for test, (exp, num) in tests.items():
             if not exp:
                 exp = test
             v = cssutils.css.CSSValue(cssText=test)

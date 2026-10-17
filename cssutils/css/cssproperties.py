@@ -86,7 +86,7 @@ class CSS2Properties:
         pass
 
 
-_reCSStoDOMname = re.compile('-[a-z]', re.I)
+_reCSStoDOMname = re.compile('-[a-z]', re.IGNORECASE)
 
 
 def _toDOMname(CSSname):

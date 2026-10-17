@@ -127,7 +127,7 @@ class New(cssutils.util._BaseClass):
                 if namespaceURI is None:
                     self.wellformed = False
                     self._log.error(
-                        'Selector: No namespaceURI found for prefix %r' % prefix,
+                        f'Selector: No namespaceURI found for prefix {prefix!r}',
                         token=token,
                         error=xml.dom.NamespaceErr,
                     )
@@ -274,7 +274,7 @@ class New(cssutils.util._BaseClass):
             return Constants.expression
         else:
             self.wellformed = False
-            self._log.error('Selector: Unexpected %s.' % typ, token=token)
+            self._log.error(f'Selector: Unexpected {typ}.', token=token)
             return expected
 
     def _attcombinator(self, expected, seq, token, tokenizer=None):
@@ -289,7 +289,7 @@ class New(cssutils.util._BaseClass):
             return Constants.attvalue
         else:
             self.wellformed = False
-            self._log.error('Selector: Unexpected %s.' % typ, token=token)
+            self._log.error(f'Selector: Unexpected {typ}.', token=token)
             return expected
 
     def _string(self, expected, seq, token, tokenizer=None):
@@ -657,15 +657,8 @@ class Selector(cssutils.util.Base2):
 
     def __str__(self):
         return (
-            "<cssutils.css.%s object selectorText=%r specificity=%r"
-            " _namespaces=%r at 0x%x>"
-            % (
-                self.__class__.__name__,
-                self.selectorText,
-                self.specificity,
-                self._getUsedNamespaces(),
-                id(self),
-            )
+            f"<cssutils.css.{self.__class__.__name__} object selectorText={self.selectorText!r} specificity={self.specificity!r}"
+            f" _namespaces={self._getUsedNamespaces()!r} at 0x{id(self):x}>"
         )
 
     def _getUsedUris(self):
@@ -775,21 +768,19 @@ class Selector(cssutils.util.Base2):
         if len(new.context) > 1 or not newseq:
             wellformed = False
             self._log.error(
-                'Selector: Invalid or incomplete selector: %s'
-                % self._valuestr(selectorText)
+                f'Selector: Invalid or incomplete selector: {self._valuestr(selectorText)}'
             )
 
         if expected == 'element_name':
             wellformed = False
             self._log.error(
-                'Selector: No element name found: %s' % self._valuestr(selectorText)
+                f'Selector: No element name found: {self._valuestr(selectorText)}'
             )
 
         if expected == Constants.simple_selector_sequence and newseq:
             wellformed = False
             self._log.error(
-                'Selector: Cannot end with combinator: %s'
-                % self._valuestr(selectorText)
+                f'Selector: Cannot end with combinator: {self._valuestr(selectorText)}'
             )
 
         if (

@@ -13,7 +13,7 @@ class TestCSSPageRule(test_cssrule.TestCSSRule):
     def _setup_rule(self):
         self.r = cssutils.css.CSSPageRule()
         self.rRO = cssutils.css.CSSPageRule(readonly=True)
-        self.r_type = cssutils.css.CSSPageRule.PAGE_RULE  #
+        self.r_type = cssutils.css.CSSPageRule.PAGE_RULE
         self.r_typeString = 'PAGE_RULE'
 
     def test_init(self):
@@ -226,7 +226,7 @@ class TestCSSPageRule(test_cssrule.TestCSSRule):
             assert r.specificity == exp
 
             r = cssutils.css.CSSPageRule()
-            r.cssText = '@page %s {}' % sel
+            r.cssText = f'@page {sel} {{}}'
             assert r.specificity == exp
 
     def test_cssRules(self):

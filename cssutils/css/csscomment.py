@@ -71,7 +71,7 @@ class CSSComment(cssrule.CSSRule):
             or unexpected
         ):
             self._log.error(
-                'CSSComment: Not a CSSComment: %r' % self._valuestr(cssText),
+                f'CSSComment: Not a CSSComment: {self._valuestr(cssText)!r}',
                 error=xml.dom.InvalidModificationErr,
             )
         else:

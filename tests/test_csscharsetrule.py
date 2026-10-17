@@ -38,7 +38,7 @@ class TestCSSCharsetRule(test_cssrule.TestCSSRule):
                 assert '' == r.cssText
             else:
                 assert enc.lower() == r.encoding
-                assert '@charset "%s";' % enc.lower() == r.cssText
+                assert f'@charset "{enc.lower()}";' == r.cssText
 
         for enc in (' ascii ', ' ascii', 'ascii '):
             with pytest.raises(xml.dom.SyntaxErr, match="Syntax Error"):
@@ -53,7 +53,7 @@ class TestCSSCharsetRule(test_cssrule.TestCSSRule):
         for enc in ('UTF-8', 'utf-8', 'iso-8859-1', 'ascii'):
             self.r.encoding = enc
             assert enc.lower() == self.r.encoding
-            assert '@charset "%s";' % enc.lower() == self.r.cssText
+            assert f'@charset "{enc.lower()}";' == self.r.cssText
 
         for enc in (None, ' ascii ', ' ascii', 'ascii '):
             with pytest.raises(xml.dom.SyntaxErr, match="Syntax Error"):

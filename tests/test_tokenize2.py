@@ -4,15 +4,16 @@ TODO: old tests as new ones are **not complete**!
 """
 
 import sys
+from typing import ClassVar
 
 import pytest
 
-import cssutils.tokenize2 as tokenize2
+from cssutils import tokenize2
 from cssutils.tokenize2 import Tokenizer
 
 
 class TestTokenizer:
-    testsall = {
+    testsall: ClassVar = {
         # IDENT
         'äöüß€': [('IDENT', 'äöüß€', 1, 1)],
         ' a ': [('S', ' ', 1, 1), ('IDENT', 'a', 1, 2), ('S', ' ', 1, 3)],
@@ -147,7 +148,7 @@ class TestTokenizer:
         ' . ': [('S', ' ', 1, 1), ('CHAR', '.', 1, 2), ('S', ' ', 1, 3)],
     }
 
-    tests3 = {
+    tests3: ClassVar = {
         # UNICODE-RANGE
         ' u+0 ': [('S', ' ', 1, 1), ('UNICODE-RANGE', 'u+0', 1, 2), ('S', ' ', 1, 5)],
         ' u+01 ': [('S', ' ', 1, 1), ('UNICODE-RANGE', 'u+01', 1, 2), ('S', ' ', 1, 6)],
@@ -258,7 +259,7 @@ class TestTokenizer:
         ],
     }
 
-    tests2 = {
+    tests2: ClassVar = {
         # escapes work not for a-f!
         # IMPORT_SYM
         ' @import ': [
@@ -411,7 +412,7 @@ class TestTokenizer:
     }
 
     # overwriting tests in testsall
-    tests2only = {
+    tests2only: ClassVar = {
         # LBRACE
         ' { ': [('S', ' ', 1, 1), ('LBRACE', '{', 1, 2), ('S', ' ', 1, 3)],
         # PLUS
@@ -424,7 +425,7 @@ class TestTokenizer:
         ' . ': [('S', ' ', 1, 1), ('CLASS', '.', 1, 2), ('S', ' ', 1, 3)],
     }
 
-    testsfullsheet = {
+    testsfullsheet: ClassVar = {
         # escape ends with explicit space but \r\n as single space
         '\\65\r\nb': [('IDENT', 'eb', 1, 1)],
         # STRING
@@ -461,7 +462,7 @@ class TestTokenizer:
     }
 
     # tests if fullsheet=False is set on tokenizer
-    testsfullsheetfalse = {
+    testsfullsheetfalse: ClassVar = {
         # COMMENT incomplete
         '/*': [('CHAR', '/', 1, 1), ('CHAR', '*', 1, 2)],
         # INVALID incomplete
@@ -478,7 +479,7 @@ class TestTokenizer:
     }
 
     # tests if fullsheet=True is set on tokenizer
-    testsfullsheettrue = {
+    testsfullsheettrue: ClassVar = {
         # COMMENT incomplete
         '/*': [('COMMENT', '/**/', 1, 1)],
         #        # INVALID incomplete => STRING
@@ -514,16 +515,16 @@ class TestTokenizer:
         tests.update(self.tests3)
         tests.update(self.testsfullsheet)
         tests.update(self.testsfullsheetfalse)
-        for css in tests:
+        for css, value in tests.items():
             # check token format
             tokens = tokenizer.tokenize(css)
             for i, actual in enumerate(tokens):
-                expected = tests[css][i]
+                expected = value[i]
                 assert expected == actual
 
             # check if all same number of tokens
             tokens = list(tokenizer.tokenize(css))
-            assert len(tokens) == len(tests[css])
+            assert len(tokens) == len(value)
 
     def test_tokenizefullsheet(self):
         "cssutils Tokenizer().tokenize(fullsheet=True)"
@@ -538,12 +539,12 @@ class TestTokenizer:
         tests.update(self.tests3)
         tests.update(self.testsfullsheet)
         tests.update(self.testsfullsheettrue)
-        for css in tests:
+        for css, value in tests.items():
             # check token format
             tokens = tokenizer.tokenize(css, fullsheet=True)
             for i, actual in enumerate(tokens):
                 try:
-                    expected = tests[css][i]
+                    expected = value[i]
                 except IndexError:
                     # EOF is added
                     assert actual[0] == 'EOF'
@@ -553,13 +554,13 @@ class TestTokenizer:
             # check if all same number of tokens
             tokens = list(tokenizer.tokenize(css, fullsheet=True))
             # EOF is added so -1
-            assert len(tokens) - 1 == len(tests[css])
+            assert len(tokens) - 1 == len(value)
 
 
 class TestTokenizerUtils:
     """Tests for the util functions of tokenize"""
 
-    has_at_cases = [
+    has_at_cases: ClassVar = [
         ('foo', 0, 'foo', True),
         ('foo', 0, 'f', True),
         ('foo', 1, 'o', True),
@@ -573,7 +574,7 @@ class TestTokenizerUtils:
     def test_has_at(self, string, pos, text, expected):
         assert tokenize2.has_at(string, pos, text) == expected
 
-    suffix_eq_cases = [
+    suffix_eq_cases: ClassVar = [
         ('foobar', 0, 'foobar', True),
         ('foobar', 3, 'bar', True),
         ('foobar', 3, 'foo', False),

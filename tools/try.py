@@ -15,9 +15,8 @@ print()
 
 
 def save(name, string):
-    f = open(name, 'w')
-    f.write(string)
-    f.close()
+    with open(name, 'w') as f:
+        f.write(string)
 
 
 def maketokens(valuelist):
@@ -224,10 +223,14 @@ if 1:
 
 if 1:
     sel = [
-        'E[foo="bar"], E[foo~="bar"], E[foo^="bar"], E[foo$="bar"], '
-        'E[foo*="bar"], E[foo|="bar"]',
-        'E:dir(ltr), E:lang(fr), E:any-link, E:local-link, E:local-link(0), '
-        'E:target, E:scope',
+        (
+            'E[foo="bar"], E[foo~="bar"], E[foo^="bar"], E[foo$="bar"], '
+            'E[foo*="bar"], E[foo|="bar"]'
+        ),
+        (
+            'E:dir(ltr), E:lang(fr), E:any-link, E:local-link, E:local-link(0), '
+            'E:target, E:scope'
+        ),
         'E:not(s1, s2)',
         'E:matches(s1, s2)',
         'E[foo="bar" i]',
@@ -375,7 +378,7 @@ ul, ol, li, dd {
     t = timeit.Timer(do)  # outside the try/except
     try:
         print(t.timeit(100))  # or t.repeat(...)
-    except Exception:
+    except Exception:  # noqa: BLE001
         print(t.print_exc())
 
     #    print cssutils.script.csscombine(p,
@@ -467,7 +470,7 @@ if 0:
     # Issue 34
     try:
         raise xml.dom.SyntaxErr('msg')
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(e)
     sys.exit(1)
 
@@ -615,7 +618,7 @@ if 1:
     t = timeit.Timer(do)  # outside the try/except
     try:
         print(t.timeit(100))  # or t.repeat(...)
-    except Exception:
+    except Exception:  # noqa: BLE001
         print(t.print_exc())
 
     sys.exit(0)
@@ -624,7 +627,7 @@ if 1:
 if 1:
 
     def f(url):
-        return (None, '/*%s*/' % url)
+        return (None, f'/*{url}*/')
 
     p = cssutils.CSSParser(fetcher=f)
 
@@ -685,7 +688,7 @@ if 0:
 
     for k in v:
         print(k, v[k])
-    for i in range(0, v.length):
+    for i in range(v.length):
         print(i, v.item(i), v.getVariableValue(v.item(i)))
 
     v.removeVariable('a')
@@ -695,7 +698,7 @@ if 0:
 
     sys.exit(0)
 
-if 1:  # noqa: C901
+if 1:
     css = '''
     @variables {
       c1: #0f0;
@@ -745,7 +748,7 @@ if 1:  # noqa: C901
                         )
                         newvalue.append(vi.value)
                     else:
-                        print('- CSSValueList: No value found for %r' % vi.cssText)
+                        print(f'- CSSValueList: No value found for {vi.cssText!r}')
                         newvalue.append(vi.cssText)
                 else:
                     newvalue.append(vi.cssText)
@@ -757,7 +760,7 @@ if 1:  # noqa: C901
                 print(f'+ Replacing {p.value!r} with {v.value!r}')
                 p.value = v.value
             else:
-                print('- No value found for %r' % p.value)
+                print(f'- No value found for {p.value!r}')
 
     # remove @variables rules
     for r in s:
@@ -776,8 +779,10 @@ if 0:
         1,
         (
             'EXPRESSION',
-            r'\(?\s*function\s*\(({ident},?\s*)*\)\s*\{(\s|\S)*\}\s*\)?'
-            r'\((({ident}|\.),?\s*)*\)',
+            (
+                r'\(?\s*function\s*\(({ident},?\s*)*\)\s*\{(\s|\S)*\}\s*\)?'
+                r'\((({ident}|\.),?\s*)*\)'
+            ),
         ),
     )
 
@@ -1063,7 +1068,7 @@ if 0:
 
     # href = 'file:' + urllib.pathname2url(name)
 
-    from nturl2path import pathname2url  # noqa
+    from nturl2path import pathname2url
 
     href = pathname2url(os.path.abspath(name))
     href = href.replace('|', ':')
@@ -1112,7 +1117,6 @@ if 1:
     print(p)
 
     v = cssutils.css.CSSValue(css)
-    #
     print(v)
     print(v.cssText)
 
@@ -1221,11 +1225,10 @@ if 0:
         else:
             if r.status_code == 200:
                 # find mimetype and encoding
-                mimetype = 'application/octet-stream'
                 try:
                     import cgi
 
-                    mimetype, params = cgi.parse_header(r.headers['content-type'])
+                    _mimetype, params = cgi.parse_header(r.headers['content-type'])
                     encoding = params['charset']
                 except KeyError:
                     encoding = None
@@ -1366,7 +1369,7 @@ if 1:
     </html>'''
 
     from lxml import etree
-    from lxml.cssselect import CSSSelector  # noqa
+    from lxml.cssselect import CSSSelector
 
     document = etree.HTML(html)
     e = etree.Element('pre', {'class': 'cssutils'})
@@ -1419,9 +1422,8 @@ if 1:
         element.set('style', v)
         element.set('title', v)
 
-    f = open('c.html', 'w')
-    f.write(etree.tostring(document, pretty_print=True))
-    f.close()
+    with open('c.html', 'w') as f:
+        f.write(etree.tostring(document, pretty_print=True))
 
     sys.exit(0)
 

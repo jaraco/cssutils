@@ -362,11 +362,11 @@ class TestProdParser:
         def prods():
             return Sequence(PreDef.char(';', ';'), PreDef.char(':', ':'))
 
-        w, seq, store, unused = p.parse('; :', 'test', prods(), keepS=True)
+        w, seq, _, _ = p.parse('; :', 'test', prods(), keepS=True)
         assert w
         assert 3 == len(seq)
 
-        w, seq, store, unused = p.parse('; :', 'test', prods(), keepS=False)
+        w, seq, _store, _unused = p.parse('; :', 'test', prods(), keepS=False)
         assert w
         assert 2 == len(seq)
 
@@ -391,7 +391,7 @@ class TestProdParser:
         for text, exp in list(tests.items()):
             prods = Choice(Sequence(p1, p2, minmax=lambda: (1, 2)), p3)
             if exp is True:
-                wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
+                wellformed, *_ = ProdParser().parse(text, 'T', prods)
                 assert wellformed == exp
             else:
                 with pytest.raises(xml.dom.SyntaxErr, match=re.escape(f'T: {exp}')):
@@ -417,7 +417,7 @@ class TestProdParser:
         for text, exp in list(tests.items()):
             prods = Sequence(Choice(Sequence(p1, minmax=lambda: (1, 2)), p2), p3)
             if exp is True:
-                wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
+                wellformed, _seq, _store, _unused = ProdParser().parse(text, 'T', prods)
                 assert wellformed == exp
             else:
                 with pytest.raises(xml.dom.SyntaxErr, match=re.escape(f'T: {exp}')):

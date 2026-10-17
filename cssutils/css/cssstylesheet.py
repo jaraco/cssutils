@@ -88,17 +88,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         else:
             mediaText = None
         return (
-            "<cssutils.css.%s object encoding=%r href=%r "
-            "media=%r title=%r namespaces=%r at 0x%x>"
-            % (
-                self.__class__.__name__,
-                self.encoding,
-                self.href,
-                mediaText,
-                self.title,
-                self.namespaces.namespaces,
-                id(self),
-            )
+            f"<cssutils.css.{self.__class__.__name__} object encoding={self.encoding!r} href={self.href!r} "
+            f"media={mediaText!r} title={self.title!r} namespaces={self.namespaces.namespaces!r} at 0x{id(self):x}>"
         )
 
     def _cleanNamespaces(self):
@@ -325,7 +316,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         newseq = []
 
         # ['CHARSET', 'IMPORT', ('VAR', NAMESPACE'), ('PAGE', 'MEDIA', ruleset)]
-        wellformed, expected = self._parse(
+        wellformed, _expected = self._parse(
             0,
             newseq,
             tokenizer,
@@ -520,16 +511,15 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     break
             else:
                 raise xml.dom.IndexSizeErr(
-                    "CSSStyleSheet: Not a rule in"
-                    " this sheets'a cssRules list: %s" % index
+                    f"CSSStyleSheet: Not a rule in this sheets'a cssRules list: {index}"
                 )
 
         try:
             rule = self._cssRules[index]
         except IndexError as err:
             raise xml.dom.IndexSizeErr(
-                'CSSStyleSheet: %s is not a valid index in the rulelist of '
-                'length %i' % (index, self._cssRules.length)
+                f'CSSStyleSheet: {index} is not a valid index in the rulelist of '
+                f'length {self._cssRules.length}'
             ) from err
         else:
             if rule.type == rule.NAMESPACE_RULE:
@@ -587,8 +577,8 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             index = len(self._cssRules)
         elif index < 0 or index > self._cssRules.length:
             raise xml.dom.IndexSizeErr(
-                'CSSStyleSheet: Invalid index %s for CSSRuleList with a '
-                'length of %s.' % (index, self._cssRules.length)
+                f'CSSStyleSheet: Invalid index {index} for CSSRuleList with a '
+                f'length of {self._cssRules.length}.'
             )
             return
 
@@ -622,7 +612,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             if len(tempsheet.cssRules) != newrulescount or (
                 not isinstance(tempsheet.cssRules[newruleindex], cssutils.css.CSSRule)
             ):
-                self._log.error('CSSStyleSheet: Not a CSSRule: %s' % rule)
+                self._log.error(f'CSSStyleSheet: Not a CSSRule: {rule}')
                 return
             rule = tempsheet.cssRules[newruleindex]
             rule._parentStyleSheet = None  # done later?
@@ -722,7 +712,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @import here,'
                             ' found @namespace, @variables, @media, @page or'
-                            ' CSSStyleRule before index %s.' % index,
+                            f' CSSStyleRule before index {index}.',
                             error=xml.dom.HierarchyRequestErr,
                         )
                         return
@@ -758,7 +748,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     if r.type in (r.CHARSET_RULE, r.IMPORT_RULE):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @namespace here,'
-                            ' found @charset or @import after index %s.' % index,
+                            f' found @charset or @import after index {index}.',
                             error=xml.dom.HierarchyRequestErr,
                         )
                         return
@@ -774,7 +764,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @namespace here,'
                             ' found @variables, @media, @page or CSSStyleRule'
-                            ' before index %s.' % index,
+                            f' before index {index}.',
                             error=xml.dom.HierarchyRequestErr,
                         )
                         return
@@ -817,7 +807,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @variables here,'
                             ' found @charset, @import or @namespace after'
-                            ' index %s.' % index,
+                            f' index {index}.',
                             error=xml.dom.HierarchyRequestErr,
                         )
                         return
@@ -832,7 +822,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @variables here,'
                             ' found @media, @page or CSSStyleRule'
-                            ' before index %s.' % index,
+                            f' before index {index}.',
                             error=xml.dom.HierarchyRequestErr,
                         )
                         return
@@ -851,7 +841,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
                     if r.type in (r.CHARSET_RULE, r.IMPORT_RULE, r.NAMESPACE_RULE):
                         self._log.error(
                             'CSSStylesheet: Cannot insert rule here, found '
-                            '@charset, @import or @namespace before index %s.' % index,
+                            f'@charset, @import or @namespace before index {index}.',
                             error=xml.dom.HierarchyRequestErr,
                         )
                         return
@@ -887,7 +877,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
         if isinstance(cssserializer, cssutils.CSSSerializer):
             cssutils.ser = cssserializer
         else:
-            raise ValueError(
+            raise ValueError(  # noqa: TRY004 retained for compatibility
                 'Serializer must be an instance of cssutils.CSSSerializer.'
             )
 

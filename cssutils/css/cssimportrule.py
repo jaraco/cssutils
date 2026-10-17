@@ -115,7 +115,7 @@ class CSSImportRule(cssrule.CSSRule):
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.IMPORT_SYM:
             self._log.error(
-                'CSSImportRule: No CSSImportRule found: %s' % self._valuestr(cssText),
+                f'CSSImportRule: No CSSImportRule found: {self._valuestr(cssText)}',
                 error=xml.dom.InvalidModificationErr,
             )
         else:
@@ -176,7 +176,7 @@ class CSSImportRule(cssrule.CSSRule):
                     if lastval != ';' and lasttyp not in ('EOF', self._prods.STRING):
                         new['wellformed'] = False
                         self._log.error(
-                            'CSSImportRule: No ";" found: %s' % self._valuestr(cssText),
+                            f'CSSImportRule: No ";" found: {self._valuestr(cssText)}',
                             token=token,
                         )
 
@@ -188,8 +188,7 @@ class CSSImportRule(cssrule.CSSRule):
                     else:
                         new['wellformed'] = False
                         self._log.error(
-                            'CSSImportRule: Invalid MediaList: %s'
-                            % self._valuestr(cssText),
+                            f'CSSImportRule: Invalid MediaList: {self._valuestr(cssText)}',
                             token=token,
                         )
 
@@ -238,13 +237,13 @@ class CSSImportRule(cssrule.CSSRule):
             if not new['href']:
                 ok = False
                 self._log.error(
-                    'CSSImportRule: No href found: %s' % self._valuestr(cssText)
+                    f'CSSImportRule: No href found: {self._valuestr(cssText)}'
                 )
 
             if expected != 'EOF':
                 ok = False
                 self._log.error(
-                    'CSSImportRule: No ";" found: %s' % self._valuestr(cssText)
+                    f'CSSImportRule: No ";" found: {self._valuestr(cssText)}'
                 )
 
             # set all
@@ -325,7 +324,7 @@ class CSSImportRule(cssrule.CSSRule):
             except (OSError, ValueError) as e:
                 self._log.warn(
                     'CSSImportRule: While processing imported '
-                    'style sheet href=%s: %r' % (self.href, e),
+                    f'style sheet href={self.href}: {e!r}',
                     neverraise=True,
                 )
 
@@ -397,7 +396,7 @@ class CSSImportRule(cssrule.CSSRule):
                 self.styleSheet.title = name
 
         else:
-            self._log.error('CSSImportRule: Not a valid name: %s' % name)
+            self._log.error(f'CSSImportRule: Not a valid name: {name}')
 
     def _getName(self):
         return self._name

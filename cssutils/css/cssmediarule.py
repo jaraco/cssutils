@@ -82,13 +82,13 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         super()._setCssText(cssText)
 
         # might be (cssText, namespaces)
-        cssText, namespaces = self._splitNamespacesOff(cssText)
+        cssText, _namespaces = self._splitNamespacesOff(cssText)
 
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.MEDIA_SYM:
             self._log.error(
-                'CSSMediaRule: No CSSMediaRule found: %s' % self._valuestr(cssText),
+                f'CSSMediaRule: No CSSMediaRule found: {self._valuestr(cssText)}',
                 error=xml.dom.InvalidModificationErr,
             )
 
@@ -120,17 +120,17 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                 nametokens, end = self._tokensupto2(
                     tokenizer, blockstartonly=True, separateEnd=True
                 )
-                wellformed, expected = self._parse(None, nameseq, nametokens, {})
+                wellformed, _ = self._parse(None, nameseq, nametokens, {})
                 if not wellformed:
                     ok = False
                     self._log.error(
-                        'CSSMediaRule: Syntax Error: %s' % self._valuestr(cssText)
+                        f'CSSMediaRule: Syntax Error: {self._valuestr(cssText)}'
                     )
 
             # check for {
             if '{' != self._tokenvalue(end):
                 self._log.error(
-                    'CSSMediaRule: No "{" found: %s' % self._valuestr(cssText)
+                    f'CSSMediaRule: No "{{" found: {self._valuestr(cssText)}'
                 )
                 return
 
@@ -197,7 +197,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                         self._log.error(
                             'CSSMediaRule: This rule is not '
                             'allowed in CSSMediaRule - ignored: '
-                            '%s.' % self._valuestr(tokens),
+                            f'{self._valuestr(tokens)}.',
                             token=token,
                             error=xml.dom.HierarchyRequestErr,
                         )
@@ -225,7 +225,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                 seq = []  # not used really
 
                 tokenizer = iter(cssrulestokens)
-                wellformed, expected = self._parse(
+                wellformed, _expected = self._parse(
                     braceOrEOF,
                     seq,
                     tokenizer,
@@ -271,7 +271,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
 
             self._name = name
         else:
-            self._log.error('CSSImportRule: Not a valid name: %s' % name)
+            self._log.error(f'CSSImportRule: Not a valid name: {name}')
 
     def _setName(self, name):
         self.name = name
@@ -318,15 +318,17 @@ class CSSMediaRule(cssrule.CSSRuleRules):
             return
 
         # check hierarchy
-        if (
-            isinstance(rule, cssutils.css.CSSCharsetRule)
-            or isinstance(rule, cssutils.css.CSSImportRule)
-            or isinstance(rule, cssutils.css.CSSNamespaceRule)
-            or isinstance(rule, cssutils.css.MarginRule)
+        if isinstance(
+            rule,
+            (
+                cssutils.css.CSSCharsetRule,
+                cssutils.css.CSSImportRule,
+                cssutils.css.CSSNamespaceRule,
+                cssutils.css.MarginRule,
+            ),
         ):
             self._log.error(
-                '%s: This type of rule is not allowed here: %s'
-                % (self.__class__.__name__, rule.cssText),
+                f'{self.__class__.__name__}: This type of rule is not allowed here: {rule.cssText}',
                 error=xml.dom.HierarchyRequestErr,
             )
             return

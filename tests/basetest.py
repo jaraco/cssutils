@@ -1,13 +1,8 @@
 """Base class for all tests"""
 
-import sys
+from importlib import resources
 
 import pytest
-
-if sys.version_info >= (3, 9):
-    from importlib import resources
-else:
-    import importlib_resources as resources
 
 import cssutils
 

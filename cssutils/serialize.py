@@ -20,7 +20,7 @@ def _escapecss(e):
     s = e.object[e.start : e.end]
     return (
         ''.join(
-            [r'\%s ' % str(hex(ord(x)))[2:].upper() for x in s]  # remove 0x from hex
+            [rf'\{str(hex(ord(x)))[2:].upper()} ' for x in s]  # remove 0x from hex
         ),
         e.end,
     )
@@ -362,7 +362,7 @@ class CSSSerializer:
             pad = len(str(text.count(self.prefs.lineSeparator) + 1))
             out = []
             for i, line in enumerate(text.split(self.prefs.lineSeparator)):
-                out.append(('%*i: %s') % (pad, i + 1, line))
+                out.append(f'{i + 1:{pad}}: {line}')
             text = self.prefs.lineSeparator.join(out)
         return text
 
@@ -429,7 +429,7 @@ class CSSSerializer:
         no comments or other things allowed!
         """
         if rule.wellformed:
-            return '@charset %s;' % helper.string(rule.encoding)
+            return f'@charset {helper.string(rule.encoding)};'
         else:
             return ''
 
@@ -695,11 +695,7 @@ class CSSSerializer:
                 out.append(self._atkeyword(rule), type_='ATKEYWORD')
                 out.append('{')
                 out.append(
-                    '%s%s'
-                    % (
-                        self._indentblock(styleText, self._level + 1),
-                        self.prefs.lineSeparator,
-                    )
+                    f'{self._indentblock(styleText, self._level + 1)}{self.prefs.lineSeparator}'
                 )
                 out.append('}')
                 return out.value()
@@ -793,8 +789,7 @@ class CSSSerializer:
                 return f'{selectorText}{self.prefs.paranthesisSpacer}{{}}'
         else:
             return self._indentblock(
-                '%s%s{%s%s%s%s}'
-                % (
+                '{}{}{{{}{}{}{}}}'.format(
                     selectorText,
                     self.prefs.paranthesisSpacer,
                     self.prefs.lineSeparator,
@@ -816,7 +811,7 @@ class CSSSerializer:
                     out.append(part.selectorText)
                 else:
                     out.append(part)  # should not happen
-            sep = ',%s' % self.prefs.listItemSpacer
+            sep = f',{self.prefs.listItemSpacer}'
             return sep.join(out)
         else:
             return ''
@@ -1074,14 +1069,14 @@ class CSSSerializer:
                     # cut off after . which is zero anyway
                     val = str(int(value.value))
                 elif self.prefs.omitLeadingZero and -1 < value.value < 1:
-                    v = self._strip_zeros('%f' % value.value)  # issue #27
+                    v = self._strip_zeros(f'{value.value:f}')  # issue #27
                     val = v
                     if value._sign == '-':
                         val = v[0] + v[2:]
                     else:
                         val = v[1:]
                 else:
-                    val = self._strip_zeros('%f' % value.value)  # issue #27
+                    val = self._strip_zeros(f'{value.value:f}')  # issue #27
 
                 # keep '+' if given
                 if value.value != 0 and value._sign == '+':

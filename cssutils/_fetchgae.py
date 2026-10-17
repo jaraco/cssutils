@@ -52,12 +52,12 @@ def _defaultFetcher(url):
     try:
         r = urlfetch.fetch(url, method=urlfetch.GET)
     except urlfetch.Error as e:
-        log.warn(f'Error opening url={url!r}: {e}', error=IOError)
+        log.warning(f'Error opening url={url!r}: {e}', error=IOError)
         return
 
     if r.status_code != 200:
         # TODO: 301 etc
-        log.warn(
+        log.warning(
             f'Error opening url={url!r}: HTTP status {r.status_code}',
             error=IOError,
         )

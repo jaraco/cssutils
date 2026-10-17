@@ -88,7 +88,7 @@ class MediaList(cssutils.util._NewListBase):
         """
         self._checkReadonly()
 
-        mediaquery = lambda: Prod(  # noqa
+        mediaquery = lambda: Prod(
             name='MediaQueryStart',
             match=lambda t, v: t == 'IDENT' or v == '(',
             toSeq=lambda t, tokens: (
@@ -102,7 +102,7 @@ class MediaList(cssutils.util._NewListBase):
             Sequence(PreDef.comma(toSeq=False), mediaquery(), minmax=lambda: (0, None)),
         )
         # parse
-        ok, seq, store, unused = ProdParser().parse(
+        ok, seq, _store, _unused = ProdParser().parse(
             mediaText, 'MediaList', prods, debug="ml"
         )
 
@@ -206,8 +206,8 @@ class MediaList(cssutils.util._NewListBase):
 
             if 'all' in mts:
                 self._log.info(
-                    'MediaList: Ignoring new medium %r as already specified '
-                    '"all" (set ``mediaText`` instead).' % newMedium,
+                    f'MediaList: Ignoring new medium {newMedium!r} as already specified '
+                    '"all" (set ``mediaText`` instead).',
                     error=xml.dom.InvalidModificationErr,
                 )
 
@@ -253,7 +253,7 @@ class MediaList(cssutils.util._NewListBase):
                 break
         else:
             self._log.error(
-                '"%s" not in this MediaList' % oldMedium, error=xml.dom.NotFoundErr
+                f'"{oldMedium}" not in this MediaList', error=xml.dom.NotFoundErr
             )
 
     def item(self, index):

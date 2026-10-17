@@ -39,23 +39,22 @@ def _defaultFetcher(url):
         res = urllib.request.urlopen(request)
     except urllib.error.HTTPError as e:
         # http error, e.g. 404, e can be raised
-        log.warn(f'HTTPError opening url={url}: {e.code} {e.msg}', error=e)
+        log.warning(f'HTTPError opening url={url}: {e.code} {e.msg}', error=e)
     except urllib.error.URLError as e:
         # URLError like mailto: or other IO errors, e can be raised
-        log.warn('URLError, %s' % e.reason, error=e)
+        log.warning(f'URLError, {e.reason}', error=e)
     except OSError as e:
         # e.g if file URL and not found
-        log.warn(e, error=OSError)
+        log.warning(e, error=OSError)
     except ValueError as e:
         # invalid url, e.g. "1"
-        log.warn('ValueError, %s' % e.args[0], error=ValueError)
+        log.warning(f'ValueError, {e.args[0]}', error=ValueError)
     else:
         if res:
             mimeType, encoding = encutils.getHTTPInfo(res)
             if mimeType != 'text/css':
                 log.error(
-                    'Expected "text/css" mime type for url=%r but found: %r'
-                    % (url, mimeType),
+                    f'Expected "text/css" mime type for url={url!r} but found: {mimeType!r}',
                     error=ValueError,
                 )
             content = res.read()

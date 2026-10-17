@@ -166,7 +166,7 @@ class TestCSSNamespaceRule(test_cssrule.TestCSSRule):
         for prefix in valid:
             r.prefix = prefix
             assert r.prefix == prefix
-            assert '@namespace %s "u";' % prefix == r.cssText
+            assert f'@namespace {prefix} "u";' == r.cssText
 
         invalid = ('1', ' x', ' ', ',')
         for prefix in invalid:

@@ -474,9 +474,9 @@ class TestSelector(basetest.BaseTestCase):
             '#a#b': (0, 2, 0, 0),
             '#a #b': (0, 2, 0, 0),
         }
-        for text in tests:
+        for text, expected in tests.items():
             selector.selectorText = text
-            assert tests[text] == selector.specificity
+            assert expected == selector.specificity
 
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"

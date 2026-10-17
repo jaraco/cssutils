@@ -52,12 +52,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         return f"cssutils.css.{self.__class__.__name__}(selectorText={st!r})"
 
     def __str__(self):
-        return "<cssutils.css.%s object selectorText=%r _namespaces=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.selectorText,
-            self._namespaces,
-            id(self),
-        )
+        return f"<cssutils.css.{self.__class__.__name__} object selectorText={self.selectorText!r} _namespaces={self._namespaces!r} at 0x{id(self):x}>"
 
     def __setitem__(self, index, newSelector):
         """Overwrite ListSeq.__setitem__
@@ -202,8 +197,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                 else:
                     wellformed = False
                     self._log.error(
-                        'SelectorList: Invalid Selector: %s'
-                        % self._valuestr(selectortokens)
+                        f'SelectorList: Invalid Selector: {self._valuestr(selectortokens)}'
                     )
             else:
                 break
@@ -212,12 +206,12 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
         if ',' == expected:
             wellformed = False
             self._log.error(
-                'SelectorList: Cannot end with ",": %r' % self._valuestr(selectorText)
+                f'SelectorList: Cannot end with ",": {self._valuestr(selectorText)!r}'
             )
         elif expected:
             wellformed = False
             self._log.error(
-                'SelectorList: Unknown Syntax: %r' % self._valuestr(selectorText)
+                f'SelectorList: Unknown Syntax: {self._valuestr(selectorText)!r}'
             )
         if wellformed:
             self.seq = newseq

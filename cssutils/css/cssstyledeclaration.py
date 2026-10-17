@@ -198,8 +198,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         else:
             raise AttributeError(
                 'Unknown CSS Property, '
-                '``CSSStyleDeclaration.setProperty("%s", '
-                '...)`` MUST be used.' % n
+                f'``CSSStyleDeclaration.setProperty("{n}", '
+                '...)`` MUST be used.'
             )
 
     def __repr__(self):
@@ -312,7 +312,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             else:
                 self._log.error(
                     'CSSStyleDeclaration: Syntax Error in '
-                    'Property: %s' % self._valuestr(tokens)
+                    f'Property: {self._valuestr(tokens)}'
                 )
             # does not matter in this case
             return expected
@@ -323,7 +323,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                 self._tokensupto2(tokenizer, propertyvalueendonly=True)
             )
             self._log.error(
-                'CSSStyleDeclaration: Unexpected token, ignoring upto %r.' % ignored,
+                f'CSSStyleDeclaration: Unexpected token, ignoring upto {ignored!r}.',
                 token,
             )
             # does not matter in this case
@@ -334,7 +334,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             if self._tokenvalue(token) == ';':
                 self._log.info(
                     'CSSStyleDeclaration: Stripped standalone semicolon'
-                    ': %s' % self._valuestr([token]),
+                    f': {self._valuestr([token])}',
                     neverraise=True,
                 )
                 return expected
@@ -343,7 +343,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
         # [Property: Value;]* Property: Value?
         newseq = self._tempSeq()
-        wellformed, expected = self._parse(
+        _wellformed, _expected = self._parse(
             expected=None,
             seq=newseq,
             tokenizer=tokenizer,
@@ -446,12 +446,13 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         found = None
         for item in reversed(self.seq):
             val = item.value
-            if isinstance(val, Property):
-                if (normalize and nname == val.name) or name == val.literalname:
-                    if val.priority:
-                        return val
-                    elif not found:
-                        found = val
+            if isinstance(val, Property) and (
+                (normalize and nname == val.name) or name == val.literalname
+            ):
+                if val.priority:
+                    return val
+                elif not found:
+                    found = val
         return found
 
     def getPropertyCSSValue(self, name, normalize=True):
@@ -487,8 +488,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         nname = self._normalize(name)
         if nname in self._SHORTHANDPROPERTIES:
             self._log.info(
-                'CSSValue for shorthand property "%s" should be '
-                'None, this may be implemented later.' % nname,
+                f'CSSValue for shorthand property "{nname}" should be '
+                'None, this may be implemented later.',
                 neverraise=True,
             )
 
@@ -649,11 +650,11 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                 nname = self._normalize(name)
                 properties = self.getProperties(name, all=(not normalize))
                 for property in reversed(properties):
-                    if normalize and property.name == nname:
-                        property.propertyValue = newp.propertyValue.cssText
-                        property.priority = newp.priority
-                        return
-                    elif property.literalname == name:
+                    if (
+                        normalize
+                        and property.name == nname
+                        or property.literalname == name
+                    ):
                         property.propertyValue = newp.propertyValue.cssText
                         property.priority = newp.priority
                         return

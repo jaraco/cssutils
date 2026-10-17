@@ -206,10 +206,8 @@ class TestCSSParser:
                 b'@charset "iso-8859-1";\n/*\\20AC */',
             ),
         }
-        for test in tests:
-            css, encoding = test
-            sheet = cssutils.parseString(css, encoding=encoding)
-            encoding, cssText = tests[test]
+        for (css, input_encoding), (encoding, cssText) in tests.items():
+            sheet = cssutils.parseString(css, encoding=input_encoding)
             assert encoding == sheet.encoding
             assert cssText == sheet.cssText
 
@@ -228,7 +226,7 @@ class TestCSSParser:
     def test_validate(self):
         """CSSParser(validate)"""
         style = 'color: red'
-        t = 'a { %s }' % style
+        t = f'a {{ {style} }}'
 
         # helper
         s = cssutils.parseString(t)
@@ -384,9 +382,9 @@ class TestCSSParser:
             ),
         }
         parser = cssutils.CSSParser()
-        for test in tests:
+        for test, expected in tests.items():
             css, encoding, fetchdata = test
-            sheetencoding, importIndex, importEncoding, importText = tests[test]
+            sheetencoding, importIndex, importEncoding, importText = expected
 
             # use setFetcher
             parser.setFetcher(self._make_fetcher(*fetchdata))
@@ -490,8 +488,7 @@ a {
             'p @here {color: red} p {color: green}': 'p {\n    color: green\n    }',
         }
 
-        for css in tests:
-            exp = tests[css]
+        for css, exp in tests.items():
             if exp is None:
                 exp = css
             s = cssutils.parseString(css)
@@ -522,8 +519,7 @@ o very long title"] {/*...*/}''': '''a[title="a not so very long title"] {
     /*...*/
     }'''
         }
-        for css in tests:
-            exp = tests[css]
+        for css, exp in tests.items():
             if exp is None:
                 exp = css
             s = cssutils.parseString(css)

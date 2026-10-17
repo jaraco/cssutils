@@ -7,6 +7,7 @@ A cssutils implementation, not defined in official DOM.
 __all__ = ['MediaQuery']
 
 import xml.dom
+from typing import ClassVar
 
 import cssutils
 from cssutils.helper import normalize
@@ -36,7 +37,7 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
 
     """
 
-    MEDIA_TYPES = [
+    MEDIA_TYPES: ClassVar = [
         'all',
         'braille',
         'handheld',
@@ -107,7 +108,7 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
         """
         self._checkReadonly()
 
-        expression = lambda: Sequence(  # noqa
+        expression = lambda: Sequence(
             PreDef.char(name='expression', char='('),
             Prod(name='media_feature', match=lambda t, v: t == PreDef.types.IDENT),
             Sequence(
@@ -166,7 +167,7 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
         )
 
         # parse
-        ok, seq, store, unused = ProdParser().parse(mediaText, 'MediaQuery', prods)
+        ok, seq, store, _unused = ProdParser().parse(mediaText, 'MediaQuery', prods)
         self._wellformed = ok
         if ok:
             try:
@@ -205,7 +206,7 @@ class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
 
         if nmediaType not in self.MEDIA_TYPES:
             self._log.error(
-                'MediaQuery: Syntax Error in media type "%s".' % mediaType,
+                f'MediaQuery: Syntax Error in media type "{mediaType}".',
                 error=xml.dom.SyntaxErr,
             )
         else:

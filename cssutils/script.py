@@ -104,7 +104,7 @@ class CSSCapture:
         Return (url, rawcontent)
             url might have been changed by server due to redirects etc
         """
-        self._log.debug('    CSSCapture._doRequest\n        * URL: %s' % url)
+        self._log.debug(f'    CSSCapture._doRequest\n        * URL: {url}')
 
         req = urllib.request.Request(url)
         if self._ua:
@@ -140,7 +140,7 @@ class CSSCapture:
             used if inline style found, same as self.docencoding
         """
         if cssText is None:
-            encoding, enctype, cssText = cssutils.util._readUrl(
+            encoding, _enctype, cssText = cssutils.util._readUrl(
                 href, parentEncoding=self.docencoding
             )
             encoding = None  # already decoded???
@@ -153,7 +153,7 @@ class CSSCapture:
             return None
 
         else:
-            self._log.info('    %s\n' % sheet)
+            self._log.info(f'    {sheet}\n')
             self._nonparsed[sheet] = cssText
             return sheet
 
@@ -174,7 +174,7 @@ class CSSCapture:
             sheet = None
 
             if LINK == typ:
-                self._log.info('+ PROCESSING <link> %r' % data)
+                self._log.info(f'+ PROCESSING <link> {data!r}')
 
                 atts = data
                 href = urllib.parse.urljoin(docurl, atts.get('href', None))
@@ -184,7 +184,7 @@ class CSSCapture:
                     title=atts.get('title', None),
                 )
             elif STYLE == typ:
-                self._log.info('+ PROCESSING <style> %r' % data)
+                self._log.info(f'+ PROCESSING <style> {data!r}')
 
                 atts, cssText = data
                 sheet = self._createStyleSheet(
@@ -212,11 +212,11 @@ class CSSCapture:
         for rule in parentStyleSheet.cssRules:
             if rule.type == rule.IMPORT_RULE:
                 self._log.info('+ PROCESSING @import:')
-                self._log.debug('    IN: %s\n' % parentStyleSheet.href)
+                self._log.debug(f'    IN: {parentStyleSheet.href}\n')
                 sheet = rule.styleSheet
                 href = urllib.parse.urljoin(base, rule.href)
                 if sheet:
-                    self._log.info('    %s\n' % sheet)
+                    self._log.info(f'    {sheet}\n')
                     self.stylesheetlist.append(sheet)
                     self._doImports(sheet, base=href)
 
@@ -235,7 +235,7 @@ class CSSCapture:
         self.stylesheetlist = cssutils.stylesheets.StyleSheetList()
 
         # used to save inline styles
-        scheme, loc, path, query, fragment = urllib.parse.urlsplit(url)
+        _scheme, _loc, path, _query, _fragment = urllib.parse.urlsplit(url)
         self._filename = os.path.basename(path)
 
         # get url content
@@ -287,7 +287,7 @@ class CSSCapture:
                 url = f'{self._filename}_INLINE_{inlines}.css'
 
             # build savepath
-            scheme, loc, path, query, fragment = urllib.parse.urlsplit(url)
+            _scheme, _loc, path, _query, _fragment = urllib.parse.urlsplit(url)
             # no absolute path
             if path and path.startswith('/'):
                 path = path[1:]
@@ -299,19 +299,18 @@ class CSSCapture:
                 os.makedirs(savepath)
             except OSError as e:
                 if e.errno != errno.EEXIST:
-                    raise e
+                    raise
                 self._log.debug('Path "%s" already exists.', savepath)
 
             self._log.info(f'SAVING {i + 1}, {msg} {savefn!r}')
 
-            sf = open(savefn, 'wb')
-            if saveraw:
-                cssText = self._nonparsed[sheet]
-                uf = codecs.getwriter('css')(sf)
-                uf.write(cssText)
-            else:
-                sf.write(sheet.cssText)
-            sf.close()
+            with open(savefn, 'wb') as sf:
+                if saveraw:
+                    cssText = self._nonparsed[sheet]
+                    uf = codecs.getwriter('css')(sf)
+                    uf.write(cssText)
+                else:
+                    sf.write(sheet.cssText)
 
 
 def csscombine(
@@ -344,9 +343,9 @@ def csscombine(
         `resolveVariables` = True
             defines if variables in combined sheet should be resolved
     """
-    cssutils.log.info('Combining files from %r' % url, neverraise=True)
+    cssutils.log.info(f'Combining files from {url!r}', neverraise=True)
     if sourceencoding is not None:
-        cssutils.log.info('Using source encoding %r' % sourceencoding, neverraise=True)
+        cssutils.log.info(f'Using source encoding {sourceencoding!r}', neverraise=True)
 
     parser = cssutils.CSSParser(parseComments=not minify)
 
@@ -361,7 +360,7 @@ def csscombine(
 
     result = cssutils.resolveImports(src)
     result.encoding = targetencoding
-    cssutils.log.info('Using target encoding: %r' % targetencoding, neverraise=True)
+    cssutils.log.info(f'Using target encoding: {targetencoding!r}', neverraise=True)
 
     oldser = cssutils.ser
     cssutils.setSerializer(cssutils.serialize.CSSSerializer())

@@ -128,13 +128,13 @@ class Property(cssutils.util.Base):
             if self._tokenvalue(colontoken) != ':':
                 wellformed = False
                 self._log.error(
-                    'Property: No ":" after name found: %s' % self._valuestr(cssText),
+                    f'Property: No ":" after name found: {self._valuestr(cssText)}',
                     colontoken,
                 )
             elif not nametokens:
                 wellformed = False
                 self._log.error(
-                    'Property: No property name found: %s' % self._valuestr(cssText),
+                    f'Property: No property name found: {self._valuestr(cssText)}',
                     colontoken,
                 )
 
@@ -145,7 +145,7 @@ class Property(cssutils.util.Base):
             else:
                 wellformed = False
                 self._log.error(
-                    'Property: No property value found: %s' % self._valuestr(cssText),
+                    f'Property: No property value found: {self._valuestr(cssText)}',
                     colontoken,
                 )
 
@@ -162,7 +162,7 @@ class Property(cssutils.util.Base):
 
         else:
             self._log.error(
-                'Property: No property name found: %s' % self._valuestr(cssText)
+                f'Property: No property name found: {self._valuestr(cssText)}'
             )
 
     cssText = property(
@@ -191,7 +191,7 @@ class Property(cssutils.util.Base):
                 return expected
 
         newseq = []
-        wellformed, expected = self._parse(
+        wellformed, _expected = self._parse(
             expected='name',
             seq=newseq,
             tokenizer=self._tokenize2(name),
@@ -210,7 +210,7 @@ class Property(cssutils.util.Base):
         if not new['literalname']:
             wellformed = False
             self._log.error(
-                'Property: No name found: %s' % self._valuestr(name), token=token
+                f'Property: No name found: {self._valuestr(name)}', token=token
             )
 
         if wellformed:
@@ -318,7 +318,7 @@ class Property(cssutils.util.Base):
             return
 
         if isinstance(priority, str) and 'important' == self._normalize(priority):
-            priority = '!%s' % priority
+            priority = f'!{priority}'
 
         # for closures: must be a mutable
         new = {'literalpriority': '', 'wellformed': True}
@@ -347,7 +347,7 @@ class Property(cssutils.util.Base):
                 return expected
 
         newseq = []
-        wellformed, expected = self._parse(
+        wellformed, _expected = self._parse(
             expected='!',
             seq=newseq,
             tokenizer=self._tokenize2(priority),
@@ -358,7 +358,7 @@ class Property(cssutils.util.Base):
         # post conditions
         if priority and not new['literalpriority']:
             wellformed = False
-            self._log.info('Property: Invalid priority: %s' % self._valuestr(priority))
+            self._log.info(f'Property: Invalid priority: {self._valuestr(priority)}')
 
         if wellformed:
             self.wellformed = self.wellformed and wellformed
@@ -367,7 +367,7 @@ class Property(cssutils.util.Base):
             self.seqs[2] = newseq
             # validate priority
             if self._priority not in ('', 'important'):
-                self._log.error('Property: No CSS priority value: %s' % self._priority)
+                self._log.error(f'Property: No CSS priority value: {self._priority}')
 
     literalpriority = property(
         lambda self: self._literalpriority,
@@ -383,7 +383,7 @@ class Property(cssutils.util.Base):
     def parent(self, parent):
         self._parent = parent
 
-    def validate(self):  # noqa: C901
+    def validate(self):
         """Validate value against `profiles` which are checked dynamically.
         properties in e.g. @font-face rules are checked against
         ``cssutils.profile.CSS3_FONT_FACE`` only.
@@ -454,57 +454,58 @@ class Property(cssutils.util.Base):
         except AttributeError:
             pass
         else:
-            if rule is not None:
-                if rule.type == rule.FONT_FACE_RULE:
-                    profiles = [cssutils.profile.CSS3_FONT_FACE]
-                # TODO: same for @page
+            if rule is not None and rule.type == rule.FONT_FACE_RULE:
+                profiles = [cssutils.profile.CSS3_FONT_FACE]
+            # TODO: same for @page
 
-        if self.name and self.value:
-            # TODO
-            # cv = self.propertyValue
-            # if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
-            #     # TODO: false alarms too!
-            #     cssutils.log.warn(u'No value for variable "%s" found, keeping '
-            #                       u'variable.' % cv.name, neverraise=True)
+        # TODO
+        # cv = self.propertyValue
+        # if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
+        #     # TODO: false alarms too!
+        #     cssutils.log.warn(u'No value for variable "%s" found, keeping '
+        #                       u'variable.' % cv.name, neverraise=True)
 
-            if self.name in cssutils.profile.knownNames:
-                # add valid, matching, validprofiles...
-                valid, matching, validprofiles = cssutils.profile.validateWithProfile(
-                    self.name, self.value, profiles
+        if self.name and self.value and self.name in cssutils.profile.knownNames:
+            # add valid, matching, validprofiles...
+            valid, matching, validprofiles = cssutils.profile.validateWithProfile(
+                self.name, self.value, profiles
+            )
+
+            if not valid:
+                self._log.error(
+                    'Property: Invalid value for "{}" property: {}'.format(
+                        '/'.join(validprofiles), self.value
+                    ),
+                    token=self.__nametoken,
+                    neverraise=True,
                 )
 
-                if not valid:
-                    self._log.error(
-                        'Property: Invalid value for '
-                        '"%s" property: %s' % ('/'.join(validprofiles), self.value),
-                        token=self.__nametoken,
-                        neverraise=True,
-                    )
+            # TODO: remove logic to profiles!
+            elif (
+                valid and not matching
+            ):  # (profiles and profiles not in validprofiles):
+                if not profiles:
+                    notvalidprofiles = '/'.join(cssutils.profile.defaultProfiles)
+                else:
+                    notvalidprofiles = profiles
+                self._log.warn(
+                    'Property: Not valid for profile "{}" '
+                    'but valid "{}" value: {} '.format(
+                        notvalidprofiles, '/'.join(validprofiles), self.value
+                    ),
+                    token=self.__nametoken,
+                    neverraise=True,
+                )
+                valid = False
 
-                # TODO: remove logic to profiles!
-                elif (
-                    valid and not matching
-                ):  # (profiles and profiles not in validprofiles):
-                    if not profiles:
-                        notvalidprofiles = '/'.join(cssutils.profile.defaultProfiles)
-                    else:
-                        notvalidprofiles = profiles
-                    self._log.warn(
-                        'Property: Not valid for profile "%s" '
-                        'but valid "%s" value: %s '
-                        % (notvalidprofiles, '/'.join(validprofiles), self.value),
-                        token=self.__nametoken,
-                        neverraise=True,
-                    )
-                    valid = False
-
-                elif valid:
-                    self._log.debug(
-                        'Property: Found valid "%s" value: %s'
-                        % ('/'.join(validprofiles), self.value),
-                        token=self.__nametoken,
-                        neverraise=True,
-                    )
+            elif valid:
+                self._log.debug(
+                    'Property: Found valid "{}" value: {}'.format(
+                        '/'.join(validprofiles), self.value
+                    ),
+                    token=self.__nametoken,
+                    neverraise=True,
+                )
 
         if self._priority not in ('', 'important'):
             valid = False
