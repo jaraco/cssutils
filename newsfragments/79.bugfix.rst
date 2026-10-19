@@ -1,0 +1,1 @@
+Corrected specificity of the Selectors Level 4 functional pseudo-classes. ``:is()``, ``:has()``, ``:matches()`` and ``:any()`` now contribute the specificity of their argument, and ``:where()`` correctly contributes zero, per the CSS Selectors spec.
