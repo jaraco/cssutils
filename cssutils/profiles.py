@@ -727,5 +727,6 @@ properties[Profiles.CSS3_PAGED_MEDIA] = {
 
 macros[Profiles.CSS3_TEXT] = {}
 properties[Profiles.CSS3_TEXT] = {
+    'overflow-wrap': 'normal|break-word|anywhere|inherit|initial|unset',
     'text-shadow': 'none|{shadow}({w},{w}{shadow})*',
 }
