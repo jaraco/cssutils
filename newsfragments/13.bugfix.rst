@@ -1,0 +1,1 @@
+Do not override an existing logging configuration when the CSSUTILS logger is created.

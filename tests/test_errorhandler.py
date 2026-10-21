@@ -8,6 +8,7 @@ import xml.dom
 import pytest
 
 import cssutils
+from cssutils.errorhandler import _ErrorHandler
 
 
 @pytest.fixture(autouse=True)
@@ -144,3 +145,72 @@ class TestErrorHandler:
         s = self._setHandler()
         cssutils.parseStyle(style, validate=False)
         assert s.getvalue() == ''
+
+
+class TestErrorHandlerSetup:
+    """Tests for the initial configuration of the CSSUTILS logger."""
+
+    @pytest.fixture
+    def logger(self, monkeypatch):
+        "the logger cssutils configures"
+        logger = logging.getLogger('CSSUTILS')
+        monkeypatch.setattr(logger, 'level', logging.NOTSET)
+        root = logging.getLogger()
+        monkeypatch.setattr(root, 'level', logging.WARNING)
+        return logger
+
+    def test_installs_default_configuration(self, monkeypatch):
+        "an unconfigured logger gets the default handler and level"
+        logger = logging.getLogger('CSSUTILS-TEST')
+        logger.handlers.clear()
+        logger.setLevel(logging.NOTSET)
+        root = logging.getLogger()
+        monkeypatch.setattr(root, 'handlers', [])
+        monkeypatch.setattr(root, 'level', logging.WARNING)
+        real_get_logger = logging.getLogger
+        monkeypatch.setattr(
+            logging,
+            'getLogger',
+            lambda name=None: logger if name == 'CSSUTILS' else real_get_logger(name),
+        )
+
+        _ErrorHandler(None)
+
+        assert len(logger.handlers) == 1
+        assert logger.handlers[0].stream is sys.stderr
+        assert logger.level == logging.INFO
+
+    def test_keeps_existing_handler(self, logger):
+        "a handler installed by the application is not replaced"
+        handler = logging.NullHandler()
+        logger.addHandler(handler)
+        before = list(logger.handlers)
+
+        _ErrorHandler(None)
+
+        assert list(logger.handlers) == before
+
+    def test_keeps_configured_level(self, logger):
+        "a level set for the logger is preserved"
+        logger.setLevel(logging.ERROR)
+
+        _ErrorHandler(None)
+
+        assert logger.level == logging.ERROR
+
+    def test_keeps_root_level(self, logger):
+        "a level set for the root logger is preserved"
+        logging.getLogger().setLevel(logging.ERROR)
+
+        _ErrorHandler(None)
+
+        assert logger.level == logging.NOTSET
+
+    def test_keeps_root_configuration(self, logger, monkeypatch):
+        "a logging configuration for the root logger is not overridden"
+        root = logging.getLogger()
+        monkeypatch.setattr(root, 'handlers', [logging.NullHandler()])
+
+        _ErrorHandler(None)
+
+        assert logger.level == logging.NOTSET
