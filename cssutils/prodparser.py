@@ -677,7 +677,10 @@ class PreDef:
     """
 
     types = cssutils.cssproductions.CSSProductions
-    reHexcolor = re.compile(r'^\#(?:[0-9abcdefABCDEF]{3}|[0-9abcdefABCDEF]{6})$')
+    reHexcolor = re.compile(
+        r'^\#(?:[0-9abcdefABCDEF]{3}|[0-9abcdefABCDEF]{4}'
+        r'|[0-9abcdefABCDEF]{6}|[0-9abcdefABCDEF]{8})$'
+    )
 
     @staticmethod
     def calc(toSeq=None, nextSor=False):

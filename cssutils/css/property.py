@@ -31,8 +31,8 @@ class Property(cssutils.util.Base):
           ;
         /*
          * There is a constraint on the color that it must
-         * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
-         * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
+         * have either 3, 4, 6 or 8 hex-digits (i.e., [0-9a-fA-F])
+         * after the "#"; e.g., "#000" is OK, but "#abcde" is not.
          */
         hexcolor
           : HASH S*

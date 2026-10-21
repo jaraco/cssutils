@@ -149,6 +149,8 @@ class TestPropertyValue(basetest.BaseTestCase):
             # hash and rgb/a
             '#112234': '#112234',
             '#112233': '#123',
+            '#1234': '#1234',
+            '#12345678': '#12345678',
             'rgb(1,2,3)': 'rgb(1, 2, 3)',
             'rgb(  1  ,  2  ,  3  )': 'rgb(1, 2, 3)',
             'rgba(1,2,3,4)': 'rgba(1, 2, 3, 4)',
@@ -246,7 +248,6 @@ class TestPropertyValue(basetest.BaseTestCase):
             '#00',
             '#12x',
             '#xyz',
-            '#0000',
             '#00000',
             '#0000000',
             '-#0',
@@ -437,6 +438,9 @@ class TestColorValue(basetest.BaseTestCase):
             # HASH
             '#123': ('#123',),
             '#112233': ('#123',),
+            # HASH with alpha (CSS Color Module 4)
+            '#1234': ('#1234',),
+            '#11223344': ('#11223344',),
             # rgb
             'rgb(1,2,3)': ('rgb(1, 2, 3)',),
             'rgb(1%,2%,3%)': ('rgb(1%, 2%, 3%)',),
@@ -464,9 +468,7 @@ class TestColorValue(basetest.BaseTestCase):
             '1': xml.dom.SyntaxErr,
             'a': xml.dom.SyntaxErr,
             '#12': xml.dom.SyntaxErr,
-            '#1234': xml.dom.SyntaxErr,
             '#1234567': xml.dom.SyntaxErr,
-            '#12345678': xml.dom.SyntaxErr,
             'rgb(1,1%,1%)': xml.dom.SyntaxErr,
             'rgb(1%,1,1)': xml.dom.SyntaxErr,
             'rgb(-1,-1%,-1%)': xml.dom.SyntaxErr,
@@ -515,6 +517,9 @@ class TestColorValue(basetest.BaseTestCase):
             ('rgba(255, 127, 0, .1)', 'rgba(100%, 50%, 0%, .1)'): (255, 127, 0, 0.1),
             ('transparent', 'rgba(0, 0, 0, 0)'): (0, 0, 0, 0),
             ('aqua',): (0, 255, 255, 1.0),
+            # hex colors with alpha (CSS Color Module 4)
+            ('#0f08',): (0, 255, 0, 136 / 255),
+            ('#00808080',): (0, 128, 128, 128 / 255),
         }
         for colors, rgba in list(tests.items()):
             for color in colors:
@@ -523,6 +528,14 @@ class TestColorValue(basetest.BaseTestCase):
                 assert c.green == rgba[1]
                 assert c.blue == rgba[2]
                 assert c.alpha == rgba[3]
+
+    def test_hex_alpha_in_sheet(self):
+        "hex colors with alpha are valid property values"
+        p = cssutils.CSSParser(raiseExceptions=True)
+        sheet = p.parseString('body { color: #00808080; background: #0f08; }')
+        declaration = sheet.cssRules[0].style
+        assert '#00808080' == declaration.getPropertyValue('color')
+        assert '#0f08' == declaration.getPropertyValue('background')
 
 
 class TestURIValue(basetest.BaseTestCase):

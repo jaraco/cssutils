@@ -111,8 +111,8 @@ class PropertyValue(cssutils.util._NewBase):
               ;
             /*
              * There is a constraint on the color that it must
-             * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
-             * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
+             * have either 3, 4, 6 or 8 hex-digits (i.e., [0-9a-fA-F])
+             * after the "#"; e.g., "#000" is OK, but "#abcde" is not.
              */
             hexcolor
               : HASH S*
@@ -382,17 +382,16 @@ class ColorValue(Value):
             if 'IDENT' == t:
                 rgba = self.COLORS[normalize(v)]
             if 'HASH' == t:
-                if len(v) == 4:
-                    # HASH #rgb
-                    rgba = (
-                        int(2 * v[1], 16),
-                        int(2 * v[2], 16),
-                        int(2 * v[3], 16),
-                        1.0,
-                    )
+                digits = v[1:]
+                if len(digits) in (3, 4):
+                    # HASH #rgb or #rgba
+                    r, g, b = (int(2 * d, 16) for d in digits[:3])
+                    a = 1.0 if len(digits) == 3 else int(2 * digits[3], 16) / 255
                 else:
-                    # HASH #rrggbb
-                    rgba = (int(v[1:3], 16), int(v[3:5], 16), int(v[5:7], 16), 1.0)
+                    # HASH #rrggbb or #rrggbbaa
+                    r, g, b = (int(digits[i : i + 2], 16) for i in (0, 2, 4))
+                    a = 1.0 if len(digits) == 6 else int(digits[6:8], 16) / 255
+                rgba = (r, g, b, a)
 
             elif 'FUNCTION' == t:
                 functiontype, raw, check = None, [], ''
@@ -958,7 +957,7 @@ def _URIProd(parent, nextSor=False, toStore=None):
     )
 
 
-reHexcolor = re.compile(r'^\#(?:[0-9abcdefABCDEF]{3}|[0-9abcdefABCDEF]{6})$')
+reHexcolor = PreDef.reHexcolor
 
 
 def _ColorProd(parent, nextSor=False, toStore=None):
