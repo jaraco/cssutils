@@ -50,11 +50,20 @@ class _ErrorHandler:
             import sys
 
             self._log = logging.getLogger('CSSUTILS')
-            hdlr = logging.StreamHandler(sys.stderr)
-            formatter = logging.Formatter('%(levelname)s\t%(message)s')
-            hdlr.setFormatter(formatter)
-            self._log.addHandler(hdlr)
-            self._log.setLevel(defaultloglevel)
+            if not self._log.hasHandlers():
+                # only install a handler if the application hasn't configured logging
+                hdlr = logging.StreamHandler(sys.stderr)
+                formatter = logging.Formatter('%(levelname)s\t%(message)s')
+                hdlr.setFormatter(formatter)
+                self._log.addHandler(hdlr)
+            root = logging.getLogger()
+            if (
+                self._log.level == logging.NOTSET
+                and not root.handlers
+                and root.level == logging.WARNING
+            ):
+                # only set the default level if the application hasn't chosen one
+                self._log.setLevel(defaultloglevel)
 
         self.raiseExceptions = raiseExceptions
 
