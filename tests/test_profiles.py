@@ -269,6 +269,12 @@ class TestProfiles:
             #     'color', color
             # )
 
+    def test_css_wide_keywords(self):
+        "the CSS-wide keywords are valid for any property"
+        for name in cssutils.profile.knownNames:
+            for keyword in ('inherit', 'initial', 'unset', 'revert'):
+                assert cssutils.profile.validate(name, keyword), (name, keyword)
+
     def test_validate(self):
         "Profiles.validate()"
         tests = {
@@ -431,6 +437,9 @@ class TestProfiles:
                 'color',
                 (
                     'inherit',
+                    'initial',
+                    'unset',
+                    'revert',
                     'black',
                     '#000',
                     '#000000',
