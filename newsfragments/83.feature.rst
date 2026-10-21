@@ -1,0 +1,1 @@
+Support the hex color notations with an alpha channel (#RGBA and #RRGGBBAA) defined by CSS Color Module 4.
