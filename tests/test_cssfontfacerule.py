@@ -215,11 +215,12 @@ class TestCSSFontFaceRule(test_cssrule.TestCSSRule):
             True: (
                 N,
                 N + 'font-style: italic; font-weight: bold',
+                # a CSS-wide keyword is valid for any property
+                N + 'font-style: inherit',
             ),
             False: (
                 '',
                 'font-family: x, y; src: local(x);',
-                N + 'font-style: inherit',
                 N + 'invalid: 1',
             ),
         }

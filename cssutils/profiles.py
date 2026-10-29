@@ -12,6 +12,10 @@ __all__ = ['Profiles']
 from cssutils import util
 import re
 
+# The CSS-wide keywords are valid in place of the value of any property.
+# https://drafts.csswg.org/css-values-4/#common-keywords
+CSS_WIDE_KEYWORDS = 'inherit|initial|unset|revert'
+
 
 class NoSuchProfileException(Exception):
     """Raised if no profile with given name is found"""
@@ -168,10 +172,10 @@ class Profiles:
         for key, value in list(dictionary.items()):
             if not hasattr(value, '__call__'):
                 # Compiling them now will slow down the cssutils import time,
-                # even if cssutils is not needed. Thus, lazily compile them the
-                # first time they're needed.
+                # even if the cssutils is not needed. Thus, lazily compile them
+                # the first time they're needed.
                 # https://web.archive.org/web/20200701035537/https://bitbucket.org/cthedot/cssutils/issues/69)
-                value = util.LazyRegex('^(?:%s)$' % value, re.I)
+                value = util.LazyRegex('^(?:%s|%s)$' % (value, CSS_WIDE_KEYWORDS), re.I)
             dictionary[key] = value
 
         return dictionary
