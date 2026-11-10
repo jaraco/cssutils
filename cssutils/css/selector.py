@@ -69,6 +69,9 @@ class New(cssutils.util._BaseClass):
     _PREFIX: str | None = None
     specificity: list[int] = dataclasses.field(default_factory=lambda: [0] * 4)
     "mutable, finally a tuple!"
+    pseudo_specificity: list[bool] = dataclasses.field(default_factory=list)
+    "stack of flags: whether the arguments of the currently open selector-list "
+    "pseudo-class (:is(), :has(), … but not :where()) contribute to specificity"
     wellformed: bool = True
 
     def append(self, seq, val, typ=None, token=None):  # noqa: C901
@@ -137,10 +140,32 @@ class New(cssutils.util._BaseClass):
             val = (namespaceURI, val)
 
         # specificity
-        if not context or context == 'negation':
+        # Count in the current sequence, in :not(), and inside those
+        # selector-list pseudo-classes whose arguments contribute to
+        # specificity (:is(), :has(), :matches(), :any() -- but not :where(),
+        # which always contributes zero per the Selectors spec).
+        count = (
+            not context
+            or context == 'negation'
+            or (
+                context == 'pseudo-class-has'
+                and self.pseudo_specificity
+                and all(self.pseudo_specificity)
+            )
+        )
+        if count:
             if 'id' == typ:
                 self.specificity[1] += 1
-            elif 'class' == typ or '[' == val or 'pseudo-class' == typ:
+            elif (
+                'class' == typ
+                or '[' == val
+                or (
+                    'pseudo-class' == typ
+                    and val.lower() not in Constants.selector_pseudos
+                )
+            ):
+                # A functional selector-list pseudo-class (:is(), :where(), …)
+                # contributes only through its argument, not as a class itself.
                 self.specificity[2] += 1
             elif typ in (
                 'type-selector',
@@ -241,6 +266,10 @@ class New(cssutils.util._BaseClass):
                 # "pseudo-" "class" or "element"
                 if val.lower() in Constants.selector_pseudos:
                     ctx = 'pseudo-class-has'
+                    # :where() contributes zero specificity; the others
+                    # (:is(), :has(), :matches(), :any()) take the
+                    # specificity of their argument.
+                    self.pseudo_specificity.append(val.lower() != ':where(')
                 elif val.lower() in Constants.selector_pseudo_elements:
                     # CSS4 pseudo-elements accepting a full selector argument
                     # (e.g. ::slotted(), ::cue()).
@@ -425,6 +454,7 @@ class New(cssutils.util._BaseClass):
             # :has(selector) end
             self.append(seq, val, 'function-end', token=token)
             self.context.pop()  # pseudo-class-has is done
+            self.pseudo_specificity.pop()
             context = self.context[-1]
             if 'pseudo-element' == context:
                 # inside ::slotted(:is(...)) — outer pseudo-element still open
