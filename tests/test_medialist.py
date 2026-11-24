@@ -131,6 +131,52 @@ class TestMediaList(basetest.BaseTestCase):
         assert 0 == ml.length
         assert 'all' == ml.mediaText
 
+    @pytest.mark.parametrize(
+        ('medium', 'expected'),
+        [
+            ('print', '/* keep */ screen'),
+            ('SCREEN', '/* keep */ print'),
+        ],
+    )
+    def test_delete_with_comment(self, medium, expected):
+        ml = cssutils.stylesheets.MediaList('/* keep */ print, screen')
+
+        assert ml.deleteMedium(medium) is None
+
+        assert ml.mediaText == expected
+        assert ml.length == 1
+
+    @pytest.mark.parametrize(
+        ('medium', 'expected'),
+        [
+            ('print', '/* keep */ screen, print'),
+            ('SCREEN', '/* keep */ print, SCREEN'),
+        ],
+    )
+    def test_append_existing_medium_with_comment(self, medium, expected):
+        ml = cssutils.stylesheets.MediaList('/* keep */ print, screen')
+
+        assert ml.appendMedium(medium)
+
+        assert ml.mediaText == expected
+        assert ml.length == 2
+
+    def test_delete_missing_with_comment(self):
+        ml = cssutils.stylesheets.MediaList('/* keep */ print, screen')
+
+        with pytest.raises(xml.dom.NotFoundErr):
+            ml.deleteMedium('tv')
+
+        assert ml.mediaText == '/* keep */ print, screen'
+
+    def test_delete_readonly_with_comment(self):
+        ml = cssutils.stylesheets.MediaList('/* keep */ print, screen', readonly=True)
+
+        with pytest.raises(xml.dom.NoModificationAllowedErr):
+            ml.deleteMedium('print')
+
+        assert ml.mediaText == '/* keep */ print, screen'
+
     def test_item(self):
         "MediaList.item()"
         ml = cssutils.stylesheets.MediaList()

@@ -247,8 +247,8 @@ class MediaList(cssutils.util._NewListBase):
         self._checkReadonly()
         oldMedium = normalize(oldMedium)
 
-        for i, mq in enumerate(self):
-            if normalize(mq.value.mediaType) == oldMedium:
+        for i, mq in enumerate(self._seq):
+            if mq.type == 'MediaQuery' and normalize(mq.value.mediaType) == oldMedium:
                 del self[i]
                 break
         else:
